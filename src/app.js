@@ -3,11 +3,11 @@
 function AppConfig($stateProvider, $locationProvider) {
     $stateProvider
         .state('home', {
-            url: '/',
+            url: '/'
         })
         .state('login', {
-            name: '/login',
-            template: 'login/login.html',
+            url: '/login',
+            templateUrl: 'login/login.html',
             controller: 'LoginController',
             controllerAs: 'vm'
         });
