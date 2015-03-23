@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="caiLunAdminUi">
 <head lang="en">
+    <base href="/gentics/cailun-admin-ui/build/">
     <meta charset="UTF-8">
     <title>Cai Lun Admin UI</title>
 
@@ -8,9 +9,9 @@
     <!-- endinject -->
 </head>
 <body ng-controller="AppController as vm">
-<h1>{{ vm.foo }}</h1>
+<h1>Home</h1>
 
-
+<div ui-view></div>
 
 
 <!-- inject:js -->

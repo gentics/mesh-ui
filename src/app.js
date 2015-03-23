@@ -1,10 +1,35 @@
 
-function AppController() {
-    var vm = this;
-    
-    vm.foo = "hello";
+
+function AppConfig($stateProvider, $locationProvider) {
+    $stateProvider
+        .state('home', {
+            url: '/',
+        })
+        .state('login', {
+            name: '/login',
+            template: 'login/login.html',
+            controller: 'LoginController',
+            controllerAs: 'vm'
+        });
+
+
+    $locationProvider.html5Mode(true).hashPrefix('!');
 }
 
 
-angular.module('caiLunAdminUi', [])
+function AppController($scope, $state, authService) {
+    var vm = this;
+
+    $scope.$on('$stateChangeStart', function(e, toState, toStateParams) {
+        if (toState.name !== 'login' && !authService.isLoggedIn) {
+            $state.go('login');
+        }
+    });
+}
+
+
+angular.module('caiLunAdminUi', [
+    'ui.router'
+])
+    .config(AppConfig)
     .controller('AppController', AppController);
