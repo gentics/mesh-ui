@@ -1,0 +1,15 @@
+target
+.classpath
+.project
+.settings
+.bin
+.*
+hs_err_*.log
+.vertx
+dependency-reduced-pom.xml
+.checkstyle
+cailun.json
+.bak
+verticles/admin-gui/node_modules
+verticles/admin-gui/bower_components
+npm-debug.log*
