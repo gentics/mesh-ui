@@ -1,3 +1,9 @@
+.idea
+node_modules
+bower_components
+build
+
+
 target
 .classpath
 .project
