@@ -5,6 +5,9 @@ function AppConfig($stateProvider, $locationProvider) {
         .state('home', {
             url: '/'
         })
+        .state('forbidden', {
+            url: '/forbidden'
+        })
         .state('login', {
             url: '/login',
             templateUrl: 'login/login.html',
@@ -20,8 +23,9 @@ function AppConfig($stateProvider, $locationProvider) {
 function AppController($scope, $state, authService) {
     var vm = this;
 
-    $scope.$on('$stateChangeStart', function(e, toState, toStateParams) {
+    $scope.$on('$stateChangeStart', function(event, toState) {
         if (toState.name !== 'login' && !authService.isLoggedIn) {
+            event.preventDefault();
             $state.go('login');
         }
     });
@@ -29,7 +33,8 @@ function AppController($scope, $state, authService) {
 
 
 angular.module('caiLunAdminUi', [
-    'ui.router'
+    'ui.router',
+    'ngMaterial'
 ])
     .config(AppConfig)
     .controller('AppController', AppController);
