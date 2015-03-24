@@ -3,6 +3,7 @@ var gulp = require('gulp'),
     jsHint = require('gulp-jshint'),
     inject = require('gulp-inject'),
     templateCache = require('gulp-angular-templatecache'),
+    less = require('gulp-less'),
     livereload = require('gulp-livereload');
 
 
@@ -40,12 +41,19 @@ gulp.task('app-templates', function() {
         .pipe(livereload());
 });
 
+gulp.task('app-styles', function() {
+    return gulp.src('src/styles/app.less')
+        .pipe(less())
+        .pipe(gulp.dest('build/styles'))
+        .pipe(livereload());
+});
+
 gulp.task('vendor-styles', function() {
     return gulp.src(VENDOR_STYLES)
         .pipe(gulp.dest('build/vendor/styles'));
 });
 
-gulp.task('index', ['app-scripts', 'app-templates', 'vendor-scripts', 'vendor-styles'], function() {
+gulp.task('index', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-styles', 'vendor-styles'], function() {
     return gulp.src('src/index.html')
         //.pipe(gulp.dest('build/'))
         .pipe(inject(gulp.src([
@@ -67,11 +75,11 @@ gulp.task('static-assets', function() {
         .pipe(livereload());
 });
 
-gulp.task('watch', ['index'], function() {
+gulp.task('watch', ['default'], function() {
     livereload.listen();
     gulp.watch('src/app/**/*.js', ['app-scripts']);
     gulp.watch('src/app/**/*.html', ['app-templates']);
-    //gulp.watch('src/less/*.less', ['styles']);
+    gulp.watch('src/styles/**/*.less', ['app-styles']);
     gulp.watch('src/index.html', ['index']);
     //gulp.watch(['src/assets/**/*.*', 'src/app/.htaccess', 'src/app/static-page.php'], ['static-assets']);
 });
