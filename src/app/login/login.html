@@ -1,15 +1,17 @@
 <div layout="column" layout-align="center center" class="login-container">
     <h2>Log in</h2>
-    <md-input-container>
-        <label>User Name</label>
-        <input ng-model="vm.userName">
-    </md-input-container>
-    <md-input-container>
-        <label>Password</label>
-        <input ng-model="vm.password" type="password">
-    </md-input-container>
-    <md-button class="md-raised md-primary">
-      Log In
-    </md-button>
+    <form ng-submit="vm.submitForm($event, vm.userName, vm.password)">
+        <md-input-container>
+            <label>User Name</label>
+            <input ng-model="vm.userName">
+        </md-input-container>
+        <md-input-container>
+            <label>Password</label>
+            <input ng-model="vm.password" type="password">
+        </md-input-container>
+        <md-button class="md-raised md-primary" type="submit">
+            Log In
+        </md-button>
+    </form>
 </div>
 

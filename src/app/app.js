@@ -2,11 +2,9 @@
 
 function AppConfig($stateProvider, $locationProvider) {
     $stateProvider
-        .state('home', {
-            url: '/'
-        })
-        .state('forbidden', {
-            url: '/forbidden'
+        .state('projects', {
+            url: '/projects',
+            template: '<h1>Projects</h1>'
         })
         .state('login', {
             url: '/login',

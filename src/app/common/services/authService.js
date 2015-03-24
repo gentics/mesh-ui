@@ -24,7 +24,9 @@ function authService() {
     }
 
     return {
-        isLoggedIn: isLoggedIn,
+        get isLoggedIn() {
+            return isLoggedIn
+        },
         logIn: logIn
     };
 }
