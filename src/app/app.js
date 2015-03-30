@@ -12,6 +12,16 @@ function AppConfig($stateProvider, $locationProvider, $urlRouterProvider) {
                 }
             }
         })
+        .state('projects.explorer', {
+            url: '/:projectId',
+            views: {
+                'main@' : {
+                    templateUrl: 'projects/projectExplorer.html',
+                    controller: 'ProjectExplorerController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
         .state('login', {
             url: '/login',
             views: {
@@ -33,6 +43,7 @@ function AppConfig($stateProvider, $locationProvider, $urlRouterProvider) {
 function appRunBlock($rootScope, $state, authService) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState) {
+        console.log('transitioning to state: ' + toState.name);
         if (toState.name !== 'login' && !authService.isLoggedIn) {
             event.preventDefault();
             $state.go('login');

@@ -1,0 +1,38 @@
+<project-search-bar></project-search-bar>
+
+<div class="app-content">
+
+    <breadcrumbs></breadcrumbs>
+
+    <div layout="row">
+
+        <md-sidenav md-component-id="left" class="md-sidenav-left" md-is-locked-open="true">
+            <div class="tag-list-container">
+                <md-list>
+                    <md-item ng-repeat="tag in vm.tags">
+                        <md-item-content>
+                            <div class="md-tile-content">
+                                <a>{{tag}}</a>
+                            </div>
+                        </md-item-content>
+                        <md-divider ng-if="!$last"></md-divider>
+                    </md-item>
+                </md-list>
+            </div>
+        </md-sidenav>
+
+        <div flex>
+            <md-toolbar>
+                <h2 class="md-toolbar-tools">
+                    <span>Toolbar</span>
+                </h2>
+            </md-toolbar>
+            <md-content class="md-padding">
+                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
+            </md-content>
+        </div>
+
+
+    </div>
+
+</div>
