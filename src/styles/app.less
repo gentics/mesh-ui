@@ -1,5 +1,15 @@
-.login-container {
-  h2 {
-    margin-top: 10%;
+@import "vars";
+
+
+.top-menu-container {
+  max-width: @app-width;
+
+  .top-menu-tab {
+    padding: 20px;
+
+    &:not(:last-child) {
+      border-right: 1px solid red;
+    }
   }
+
 }

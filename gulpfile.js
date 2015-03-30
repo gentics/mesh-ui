@@ -10,6 +10,7 @@ var gulp = require('gulp'),
 var VENDOR_SCRIPTS = [
     'bower_components/angular/angular.js',
     'bower_components/angular-animate/angular-animate.js',
+    'bower_components/angular-cookies/angular-cookies.js',
     'bower_components/angular-aria/angular-aria.js',
     'bower_components/angular-material/angular-material.js',
     'bower_components/ui-router/release/angular-ui-router.js'
