@@ -30,7 +30,8 @@ function authService($cookies) {
 
     /**
      * Register a callback function to be run upon successful login. This is a more explicit
-     * flow than using an event-based approach.
+     * flow than using an event-based approach as it creates a traceable path of callback
+     * registration from the point of use.
      *
      * @param callback
      */

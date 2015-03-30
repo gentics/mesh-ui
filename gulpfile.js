@@ -70,7 +70,8 @@ gulp.task('index', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
 
 gulp.task('static-assets', function() {
     return gulp.src([
-        'src/.htaccess'
+        'src/.htaccess',
+        'src/assets**/**/*'
     ])
         .pipe(gulp.dest('build/'))
         .pipe(livereload());
