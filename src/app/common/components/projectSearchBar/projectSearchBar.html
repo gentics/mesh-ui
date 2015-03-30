@@ -1,0 +1,18 @@
+<div class="project-search-bar">
+
+    <div class="content" layout="row" layout-align="start" >
+        <md-select ng-model="currentContext" class="project-selector">
+            <md-option ng-value="all" ng-selected="currentContext === ''">All Projects</md-option>
+            <md-option ng-value="project" ng-repeat="project in projects">{{ project }}</md-option>
+        </md-select>
+
+        <md-input-container class="search-term">
+            <label>Search</label>
+            <input type="text" ng-model="searchTerm">
+        </md-input-container>
+
+        <div flex class="active-filters">
+
+        </div>
+    </div>
+</div>
