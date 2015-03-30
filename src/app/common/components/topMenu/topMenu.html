@@ -1,15 +1,26 @@
 <md-toolbar ng-if="isLoggedIn">
     <div class="md-toolbar-tools" layout-align="center">
         <div class="top-menu-container" layout="row" flex>
-            <div flex="20" layout="row">
-                <div class="top-menu-tab">Content</div>
+            <div flex layout="row">
+                <div class="top-menu-tab active">Content</div>
                 <div class="top-menu-tab">Admin</div>
             </div>
 
             <div flex></div>
 
-            <div flex="20" layout="row" layout-align="end center">
-                <div>User Name</div>
+            <div flex layout="row" layout-align="end center">
+                <div class="user-container" layout="row">
+                    <div class="profile-image" style="background-image: url({{ profileImage }})"></div>
+                    <div flex layout="column" layout-align="center end">
+                        <div class="user-name">{{ userName }}</div>
+                        <div class="language">
+                            <i class="icon-language"></i>
+                            <span>EN</span>
+                            <i class="icon-arrow-drop-down"></i>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
