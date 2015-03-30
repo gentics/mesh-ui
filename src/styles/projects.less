@@ -1,2 +1,27 @@
 .tag-list-container {
 }
+
+.md-table {
+  min-width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    border-bottom: 1px solid rgb(230,230,230);
+    color: rgb(130,130,130);
+    text-align: left;
+    font-weight: 700;
+    padding: 16px 16px 16px 0;
+    text-transform: uppercase;
+  }
+
+  tbody tr:hover, tbody tr:focus {
+    cursor:pointer;
+    background-color: fadeout(@color-denim, 90%);
+  }
+
+  td {
+    white-space: nowrap;
+    font-size: 0.8em;
+    padding: 16px;
+  }
+}
