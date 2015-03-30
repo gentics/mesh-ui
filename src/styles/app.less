@@ -1,15 +1,19 @@
 @import "vars";
+@import "icons";
 
+// Components styles
+@import "topMenu";
+@import "projectSearchBar";
 
-.top-menu-container {
+.app-viewport {
+}
+
+.app-content {
   max-width: @app-width;
+  margin: auto;
 
-  .top-menu-tab {
-    padding: 20px;
-
-    &:not(:last-child) {
-      border-right: 1px solid red;
-    }
+  h1 {
+    font-size: 3em;
+    font-weight: 300;
   }
-
 }
