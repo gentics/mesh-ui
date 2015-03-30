@@ -9,7 +9,7 @@
             <md-item ng-repeat="project in vm.projects">
                 <md-item-content>
                     <div class="md-tile-content">
-                        <h3>{{project.name}}</h3>
+                        <h3><a ui-sref="projects.explorer({ projectId: '94e648a8a3f241f7a648a8a3f261f7c5' })">{{project.name}}</a></h3>
                         <h4>{{project.roles}}</h4>
                         <p>
                             {{project.description}}

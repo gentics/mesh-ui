@@ -1,6 +1,6 @@
 
 
-function AppConfig($stateProvider, $locationProvider, $urlRouterProvider) {
+function AppConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThemingProvider) {
     $stateProvider
         .state('projects', {
             url: '/projects',
@@ -34,9 +34,11 @@ function AppConfig($stateProvider, $locationProvider, $urlRouterProvider) {
         });
 
     $urlRouterProvider.otherwise('/projects');
-
-
     $locationProvider.html5Mode(true).hashPrefix('!');
+
+    $mdThemingProvider.theme('default')
+        .primaryPalette('amber')
+        .accentPalette('blue');
 }
 
 
