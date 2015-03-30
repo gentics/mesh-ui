@@ -1,30 +1,43 @@
 
 
-function AppConfig($stateProvider, $locationProvider) {
+function AppConfig($stateProvider, $locationProvider, $urlRouterProvider) {
     $stateProvider
         .state('projects', {
             url: '/projects',
-            template: '<h1>Projects</h1>'
+            views: {
+                'main' : {
+                    templateUrl: 'projects/projectsList.html'
+                }
+            }
         })
         .state('login', {
             url: '/login',
-            templateUrl: 'login/login.html',
-            controller: 'LoginController',
-            controllerAs: 'vm'
+            views: {
+                'main': {
+                    templateUrl: 'login/login.html',
+                    controller: 'LoginController',
+                    controllerAs: 'vm'
+                }
+            }
         });
+
+    $urlRouterProvider.otherwise('/projects');
 
 
     $locationProvider.html5Mode(true).hashPrefix('!');
 }
 
 
-function AppController($scope, $state, authService) {
-    var vm = this;
+function appRunBlock($rootScope, $state, authService) {
 
-    $scope.$on('$stateChangeStart', function(event, toState) {
+    $rootScope.$on('$stateChangeStart', function(event, toState) {
         if (toState.name !== 'login' && !authService.isLoggedIn) {
             event.preventDefault();
             $state.go('login');
+        }
+        else if (toState.name === 'login' && authService.isLoggedIn) {
+            event.preventDefault();
+            $state.go('projects');
         }
     });
 }
@@ -32,7 +45,8 @@ function AppController($scope, $state, authService) {
 
 angular.module('caiLunAdminUi', [
     'ui.router',
-    'ngMaterial'
+    'ngMaterial',
+    'ngCookies'
 ])
     .config(AppConfig)
-    .controller('AppController', AppController);
+    .run(appRunBlock);

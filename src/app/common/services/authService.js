@@ -4,8 +4,9 @@
  *
  * @returns {{isLoggedIn: boolean}}
  */
-function authService() {
-    var isLoggedIn = false;
+function authService($cookies) {
+    var isLoggedIn = !!$cookies.isLoggedIn,
+        onLogInCallbacks = [];
 
     /**
      * Attempts to log the user in based on the supplied username and password.
@@ -18,16 +19,31 @@ function authService() {
     function logIn(userName, password) {
         if (userName === 'admin' && password === 'admin') {
             isLoggedIn = true;
+            $cookies.isLoggedIn = true;
+            onLogInCallbacks.forEach(function(fn) {
+                fn();
+            });
         }
 
         return isLoggedIn;
+    }
+
+    /**
+     * Register a callback function to be run upon successful login. This is a more explicit
+     * flow than using an event-based approach.
+     *
+     * @param callback
+     */
+    function onLogIn(callback) {
+        onLogInCallbacks.push(callback);
     }
 
     return {
         get isLoggedIn() {
             return isLoggedIn
         },
-        logIn: logIn
+        logIn: logIn,
+        onLogIn: onLogIn
     };
 }
 
