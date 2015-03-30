@@ -12,7 +12,7 @@ function topMenuDirective(authService) {
 
     return {
         restrict: 'E',
-        templateUrl: 'common/components/topMenu.html',
+        templateUrl: 'common/components/topMenu/topMenu.html',
         link: topMenuLinkFn
     };
 }
