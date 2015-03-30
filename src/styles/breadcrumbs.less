@@ -1,0 +1,17 @@
+.breadcrumbs {
+  font-size: 1.4em;
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  li{
+    display: inline-block;
+
+    &:not(:first-child):before {
+      content: '/';
+    }
+    span {
+      margin-left: 5px;
+    }
+  }
+}

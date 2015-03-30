@@ -7,8 +7,21 @@
 // Components styles
 @import "topMenu";
 @import "projectSearchBar";
+@import "breadcrumbs";
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,300,700);
 
 .app-viewport {
+}
+
+a {
+  &:link, &:visited {
+    text-decoration: none;
+    color: @color-denim;
+  }
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
 }
 
 .app-content {
