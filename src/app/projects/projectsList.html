@@ -2,4 +2,23 @@
 
 <div class="app-content">
     <h1>Projects</h1>
+
+
+    <md-content>
+        <md-list>
+            <md-item ng-repeat="project in vm.projects">
+                <md-item-content>
+                    <div class="md-tile-content">
+                        <h3>{{project.name}}</h3>
+                        <h4>{{project.roles}}</h4>
+                        <p>
+                            {{project.description}}
+                        </p>
+                    </div>
+                </md-item-content>
+                <md-divider ng-if="!$last"></md-divider>
+            </md-item>
+        </md-list>
+    </md-content>
+
 </div>

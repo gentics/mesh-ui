@@ -6,7 +6,9 @@ function AppConfig($stateProvider, $locationProvider, $urlRouterProvider) {
             url: '/projects',
             views: {
                 'main' : {
-                    templateUrl: 'projects/projectsList.html'
+                    templateUrl: 'projects/projectsList.html',
+                    controller: 'ProjectsListController',
+                    controllerAs: 'vm'
                 }
             }
         })
