@@ -1,6 +1,6 @@
-<div layout="column" layout-align="center center" class="login-container">
-    <h2 class="md-display-2">Log in</h2>
-    <form ng-submit="vm.submitForm($event, vm.userName, vm.password)">
+<div layout="column" layout-align="center center" class="login-container app-content">
+    <h1 class="md-display-2">Log in</h1>
+    <form ng-submit="vm.submitForm($event, vm.userName, vm.password)"  layout="column" layout-align="center center" >
         <md-input-container>
             <label>User Name</label>
             <input ng-model="vm.userName">
