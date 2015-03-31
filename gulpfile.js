@@ -44,6 +44,18 @@ gulp.task('app-templates', function() {
 
 gulp.task('app-styles', function() {
     return gulp.src('src/styles/app.less')
+        /**
+         * Dynamically injects @import statements into the main app.less file, allowing
+         * .less files to be placed around the app structure with the component
+         * or page they apply to.
+         */
+        .pipe(inject(gulp.src(['../**/*.less'], {read: false, cwd: 'src/styles/'}), {
+            starttag: '/* inject:imports */',
+            endtag: '/* endinject */',
+            transform: function (filepath, file, i, length) {
+                return '@import ".' + filepath + '";';
+            }
+        }))
         .pipe(less())
         .pipe(gulp.dest('build/styles'))
         .pipe(livereload());
@@ -82,7 +94,7 @@ gulp.task('watch', ['default'], function() {
     livereload.listen();
     gulp.watch('src/app/**/*.js', ['app-scripts']);
     gulp.watch('src/app/**/*.html', ['app-templates']);
-    gulp.watch('src/styles/**/*.less', ['app-styles']);
+    gulp.watch('src/**/*.less', ['app-styles']);
     gulp.watch('src/index.html', ['index']);
     //gulp.watch(['src/assets/**/*.*', 'src/app/.htaccess', 'src/app/static-page.php'], ['static-assets']);
 });
