@@ -13,7 +13,9 @@ var VENDOR_SCRIPTS = [
     'bower_components/angular-cookies/angular-cookies.js',
     'bower_components/angular-aria/angular-aria.js',
     'bower_components/angular-material/angular-material.js',
-    'bower_components/ui-router/release/angular-ui-router.js'
+    'bower_components/ui-router/release/angular-ui-router.js',
+    'bower_components/lodash/dist/lodash.js',
+    'bower_components/restangular/dist/restangular.js'
 ];
 
 var VENDOR_STYLES = [
@@ -52,7 +54,7 @@ gulp.task('app-styles', function() {
         .pipe(inject(gulp.src(['../**/*.less'], {read: false, cwd: 'src/styles/'}), {
             starttag: '/* inject:imports */',
             endtag: '/* endinject */',
-            transform: function (filepath, file, i, length) {
+            transform: function (filepath) {
                 return '@import ".' + filepath + '";';
             }
         }))

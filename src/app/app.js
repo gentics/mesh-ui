@@ -1,6 +1,6 @@
 
 
-function AppConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThemingProvider) {
+function AppConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThemingProvider, dataServiceProvider) {
     $stateProvider
         .state('projects', {
             url: '/projects',
@@ -39,10 +39,12 @@ function AppConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThe
     $mdThemingProvider.theme('default')
         .primaryPalette('amber')
         .accentPalette('blue');
+
+    dataServiceProvider.setApiUrl('http://localhost:8080/api/v1');
 }
 
 
-function appRunBlock($rootScope, $state, authService) {
+function appRunBlock($rootScope, $state, authService, dataService) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState) {
         if (toState.name !== 'login' && !authService.isLoggedIn) {
@@ -53,6 +55,10 @@ function appRunBlock($rootScope, $state, authService) {
             event.preventDefault();
             $state.go('projects');
         }
+    });
+
+    dataService.getProjects().then(function(data) {
+        console.log(data);
     });
 
     /**
@@ -66,6 +72,7 @@ function appRunBlock($rootScope, $state, authService) {
 
 
 angular.module('caiLunAdminUi', [
+    'restangular',
     'ui.router',
     'ngMaterial',
     'ngCookies'
