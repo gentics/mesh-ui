@@ -1,0 +1,23 @@
+<div>
+    <div class="expand-side-nav" ng-click="toggleOpen()"><i class="icon-menu"></i></div>
+    <md-sidenav md-component-id="left" class="md-sidenav-left tag-list-container" md-is-locked-open="$mdMedia('gt-sm') || isOpen">
+        <md-list>
+            <md-item ng-repeat="tag in vm.tags">
+                <md-item-content>
+                    <div class="md-tile-content">
+                        <a href="#"><i class="icon-label-outline"></i> {{tag}}</a>
+                    </div>
+                </md-item-content>
+            </md-item>
+            <md-item>
+                <md-item-content>
+                    <div class="md-tile-content">
+                        <md-button class="md-raised md-accent">
+                            <i class="icon-add-circle"></i> Create New Tag
+                        </md-button>
+                    </div>
+                </md-item-content>
+            </md-item>
+        </md-list>
+    </md-sidenav>
+</div>

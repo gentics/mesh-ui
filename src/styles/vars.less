@@ -1,9 +1,26 @@
 @app-width: 1200px;
 
+// media query breakpoints
+@mq-sm: 600px;
+@mq-md: 960px;
+@mq-lg: 1200px;
 
- /**
-  Colors
-  */
+// responsive mixins
+.responsive-max(@maxWidth; @rules) {
+    @media only screen and (max-width: @maxWidth) {
+        @rules();
+    }
+}
+.responsive-min(@minWidth; @rules) {
+    @media only screen and (min-width: @minWidth) {
+        @rules();
+    }
+}
+
+
+/**
+ Colors
+ */
 // greys
 @color-almost-white: #f5f5f5;
 

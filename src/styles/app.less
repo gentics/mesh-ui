@@ -8,11 +8,16 @@
 @import "topMenu";
 @import "projectSearchBar";
 @import "breadcrumbs";
+@import "explorerSideNav";
 
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
 
 html {
   font-family: "Open Sans", sans-serif, arial;
+
+  .responsive-max(@mq-sm, {
+    font-size: 0.8em;
+  })
 }
 
 .app-viewport {
@@ -31,6 +36,10 @@ a {
 .app-content {
   max-width: @app-width;
   margin: auto;
+
+  .responsive-max(@mq-md, {
+    padding: 0 8px;
+  });
 
   h1 {
     font-size: 3em;

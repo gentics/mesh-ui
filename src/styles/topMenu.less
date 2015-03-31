@@ -4,9 +4,17 @@
   .top-menu-tab {
     padding: 20px;
 
+    .responsive-max(@mq-md, {
+      font-size: 0.8em;
+    });
+
     &.active {
+      @negative-margin: 6px;
+      @toolbar-height: 64px;
+
       background-color: @color-almost-white;
-      margin-bottom: -6px;
+      margin-bottom: -@negative-margin;
+      min-height: @toolbar-height + @negative-margin;
       color: #555;
     }
 
