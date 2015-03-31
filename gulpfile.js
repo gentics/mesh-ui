@@ -5,7 +5,8 @@ var gulp = require('gulp'),
     templateCache = require('gulp-angular-templatecache'),
     less = require('gulp-less'),
     livereload = require('gulp-livereload'),
-    karma = require('karma').server;
+    karma = require('karma').server,
+    exec = require('child_process').exec;
 
 
 var VENDOR_SCRIPTS = [
@@ -107,6 +108,13 @@ gulp.task('karma-test', function() {
     karma.start({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
+    });
+});
+
+gulp.task('e2e', function() {
+    exec('protractor e2e/protractor.conf.js', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
     });
 });
 
