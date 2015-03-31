@@ -45,7 +45,6 @@ function AppConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThe
 function appRunBlock($rootScope, $state, authService) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState) {
-        console.log('transitioning to state: ' + toState.name);
         if (toState.name !== 'login' && !authService.isLoggedIn) {
             event.preventDefault();
             $state.go('login');
@@ -54,6 +53,14 @@ function appRunBlock($rootScope, $state, authService) {
             event.preventDefault();
             $state.go('projects');
         }
+    });
+
+    /**
+     * Register a callback to redirect to the login screen whenever the user gets
+     * logged out.
+     */
+    authService.onLogOut(function() {
+        $state.go('login');
     });
 }
 

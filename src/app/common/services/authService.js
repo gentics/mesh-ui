@@ -5,8 +5,9 @@
  * @returns {{isLoggedIn: boolean}}
  */
 function authService($cookies) {
-    var isLoggedIn = !!$cookies.isLoggedIn,
-        onLogInCallbacks = [];
+    var isLoggedIn = $cookies.isLoggedIn === 'true',
+        onLogInCallbacks = [],
+        onLogOutCallbacks = [];
 
     /**
      * Attempts to log the user in based on the supplied username and password.
@@ -28,6 +29,14 @@ function authService($cookies) {
         return isLoggedIn;
     }
 
+    function logOut() {
+        isLoggedIn = false;
+        $cookies.isLoggedIn = false;
+        onLogOutCallbacks.forEach(function(fn) {
+            fn();
+        });
+    }
+
     /**
      * Register a callback function to be run upon successful login. This is a more explicit
      * flow than using an event-based approach as it creates a traceable path of callback
@@ -39,12 +48,18 @@ function authService($cookies) {
         onLogInCallbacks.push(callback);
     }
 
+    function onLogOut(callback) {
+        onLogOutCallbacks.push(callback);
+    }
+
     return {
         get isLoggedIn() {
             return isLoggedIn
         },
         logIn: logIn,
-        onLogIn: onLogIn
+        logOut: logOut,
+        onLogIn: onLogIn,
+        onLogOut: onLogOut
     };
 }
 

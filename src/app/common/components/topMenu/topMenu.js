@@ -9,8 +9,16 @@ function topMenuDirective(authService) {
         scope.userName = 'John Smith';
         scope.profileImage = 'assets/images/example-profile-pic.jpg';
 
+        scope.logout = function() {
+            authService.logOut();
+        };
+
         authService.onLogIn(function() {
             scope.isLoggedIn = true;
+        });
+
+        authService.onLogOut(function() {
+            scope.isLoggedIn = false;
         });
     }
 
