@@ -4,7 +4,8 @@ var gulp = require('gulp'),
     inject = require('gulp-inject'),
     templateCache = require('gulp-angular-templatecache'),
     less = require('gulp-less'),
-    livereload = require('gulp-livereload');
+    livereload = require('gulp-livereload'),
+    karma = require('karma').server;
 
 
 var VENDOR_SCRIPTS = [
@@ -24,6 +25,7 @@ var VENDOR_STYLES = [
 
 gulp.task('app-scripts', function() {
    return gulp.src([
+       '!src/**/*.spec.js',
        'src/**/*.js'
    ])
        .pipe(jsHint())
@@ -92,13 +94,29 @@ gulp.task('static-assets', function() {
         .pipe(livereload());
 });
 
-gulp.task('watch', ['default'], function() {
+gulp.task('karma-watch', function() {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js'
+    });
+});
+
+/**
+ * Single-run all the tests
+ * */
+gulp.task('karma-test', function() {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    });
+});
+
+gulp.task('watch', ['default', 'karma-watch'], function() {
     livereload.listen();
     gulp.watch('src/app/**/*.js', ['app-scripts']);
     gulp.watch('src/app/**/*.html', ['app-templates']);
     gulp.watch('src/**/*.less', ['app-styles']);
     gulp.watch('src/index.html', ['index']);
-    //gulp.watch(['src/assets/**/*.*', 'src/app/.htaccess', 'src/app/static-page.php'], ['static-assets']);
+    gulp.watch('src/assets/**/*.*', ['static-assets']);
 });
 
 gulp.task('default', ['index', 'static-assets']);

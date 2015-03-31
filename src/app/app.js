@@ -57,9 +57,9 @@ function appRunBlock($rootScope, $state, authService, dataService) {
         }
     });
 
-    dataService.getProjects().then(function(data) {
+   /* dataService.getProjects().then(function(data) {
         console.log(data);
-    });
+    });*/
 
     /**
      * Register a callback to redirect to the login screen whenever the user gets
