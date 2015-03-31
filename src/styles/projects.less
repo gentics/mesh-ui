@@ -1,5 +1,11 @@
 .tag-list-container {
+  &.md-locked-open {
+    width: @app-width / 5;
+    min-width: @app-width / 5;
+    max-width: @app-width / 5;
+  }
 }
+
 
 .md-table {
   min-width: 100%;
@@ -19,9 +25,15 @@
     background-color: fadeout(@color-denim, 90%);
   }
 
+  tbody td:first-child {
+    text-transform: capitalize;
+    font-size: 1em;
+  }
+
   td {
     white-space: nowrap;
     font-size: 0.8em;
-    padding: 16px;
+    padding: 12px;
+    border-bottom: 1px solid @color-almost-white;
   }
 }

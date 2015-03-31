@@ -4,7 +4,8 @@ function ProjectExplorerController() {
     // TODO: get this data from the server
     vm.tags = ['January News', 'February News', 'March News'];
 
-    vm.content = [{
+    vm.content = [
+        {
         "id": "9afad7b4-af03-4821-b123-c0eabf3a28fc",
         "title": "morbi non quam nec",
         "schema": "Page",

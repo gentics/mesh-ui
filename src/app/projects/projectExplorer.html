@@ -6,28 +6,25 @@
 
     <div layout="row">
 
-        <md-sidenav md-component-id="left" class="md-sidenav-left" md-is-locked-open="true">
-            <div class="tag-list-container">
-                <md-list>
-                    <md-item ng-repeat="tag in vm.tags">
-                        <md-item-content>
-                            <div class="md-tile-content">
-                                <a href="#">{{tag}}</a>
-                            </div>
-                        </md-item-content>
-                        <md-divider></md-divider>
-                    </md-item>
-                    <md-item>
-                        <md-item-content>
-                            <div class="md-tile-content">
-                                <md-button class="md-raised md-accent">
-                                    <i class="icon-add-circle"></i> Create New Tag
-                                </md-button>
-                            </div>
-                        </md-item-content>
-                    </md-item>
-                </md-list>
-            </div>
+        <md-sidenav md-component-id="left" class="md-sidenav-left tag-list-container" md-is-locked-open="$mdMedia('gt-sm')">
+            <md-list>
+                <md-item ng-repeat="tag in vm.tags">
+                    <md-item-content>
+                        <div class="md-tile-content">
+                            <a href="#"><i class="icon-label-outline"></i> {{tag}}</a>
+                        </div>
+                    </md-item-content>
+                </md-item>
+                <md-item>
+                    <md-item-content>
+                        <div class="md-tile-content">
+                            <md-button class="md-raised md-accent">
+                                <i class="icon-add-circle"></i> Create New Tag
+                            </md-button>
+                        </div>
+                    </md-item-content>
+                </md-item>
+            </md-list>
         </md-sidenav>
 
         <md-content class="md-padding" flex>

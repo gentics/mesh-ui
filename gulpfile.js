@@ -62,6 +62,7 @@ gulp.task('index', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
             'vendor/**/*.js',
             '**/app.js',
             '**/*.js',
+            '**/angular-material.css',
             '**/*.css'
         ], { cwd: 'build/'} ),  { addRootSlash: false }))
         .pipe(gulp.dest('build/'))
