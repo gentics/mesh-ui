@@ -2,8 +2,19 @@
 
     <div class="content" layout="row" layout-align="start" >
         <md-select ng-model="currentContext" class="project-selector">
-            <md-option ng-value="all" ng-selected="vm.currentProject === ''" class="project-search-name">All Projects</md-option>
-            <md-option ng-value="project" ng-repeat="project in vm.projects" ng-selected="vm.currentProject === project.name" class="project-search-name">{{ project.name }}</md-option>
+            <md-option ng-value="all"
+                       ng-selected="vm.currentProject === ''"
+                       class="project-search-name"
+                       ng-click="vm.goToContext('')">
+                All Projects
+            </md-option>
+            <md-option ng-value="project"
+                       ng-repeat="project in vm.projects"
+                       ng-selected="vm.currentProject === project.name"
+                       class="project-search-name"
+                       ng-click="vm.goToContext(project.name)">
+                {{ project.name }}
+            </md-option>
         </md-select>
 
         <md-input-container class="search-term">
