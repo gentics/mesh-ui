@@ -47,11 +47,11 @@ function authService($cookies) {
      *
      * @param callback
      */
-    function onLogIn(callback) {
+    function registerLogInHandler(callback) {
         onLogInCallbacks.push(callback);
     }
 
-    function onLogOut(callback) {
+    function registerLogOutHandler(callback) {
         onLogOutCallbacks.push(callback);
     }
 
@@ -61,7 +61,7 @@ function authService($cookies) {
         },
         logIn: logIn,
         logOut: logOut,
-        onLogIn: onLogIn,
-        onLogOut: onLogOut
+        registerLogInHandler: registerLogInHandler,
+        registerLogOutHandler: registerLogOutHandler
     };
 }

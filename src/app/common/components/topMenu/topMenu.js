@@ -16,11 +16,11 @@ function topMenuDirective(authService) {
             authService.logOut();
         };
 
-        authService.onLogIn(function() {
+        authService.registerLogInHandler(function() {
             scope.isLoggedIn = true;
         });
 
-        authService.onLogOut(function() {
+        authService.registerLogOutHandler(function() {
             scope.isLoggedIn = false;
         });
     }
