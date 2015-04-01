@@ -33,19 +33,28 @@ function configRoutes($stateProvider) {
     $stateProvider
         .state('projects', {
             url: '/projects',
+            abstract: true,
             views: {
                 'main' : {
-                    templateUrl: 'projects/projectsList.html',
+                    templateUrl: 'projects/projects.html',
                     controller: 'ProjectsListController',
                     controllerAs: 'vm'
                 }
             }
         })
-        .state('projects.explorer', {
-            url: '/:projectId',
+        .state('projects.list', {
+            url: '',
             views: {
-                'main@' : {
-                    templateUrl: 'projects/projectExplorer.html',
+                'projects': {
+                    templateUrl: 'projects/projectsList/projectsList.html'
+                }
+            }
+        })
+        .state('projects.explorer', {
+            url: '/:projectName',
+            views: {
+                'projects' : {
+                    templateUrl: 'projects/projectExplorer/projectExplorer.html',
                     controller: 'ProjectExplorerController',
                     controllerAs: 'vm'
                 }
@@ -71,7 +80,7 @@ function configRoutes($stateProvider) {
  * @param authService
  * @param dataService
  */
-function appRunBlock($rootScope, $state, authService, dataService) {
+function appRunBlock($rootScope, $state, authService) {
 
     /**
      * Route unauthenticated users to the login page.
@@ -87,15 +96,11 @@ function appRunBlock($rootScope, $state, authService, dataService) {
         }
     });
 
-    /* dataService.getProjects().then(function(data) {
-     console.log(data);
-     });*/
-
     /**
      * Register a callback to redirect to the login screen whenever the user gets
      * logged out.
      */
-    authService.onLogOut(function() {
+    authService.registerLogOutHandler(function() {
         $state.go('login');
     });
 }
