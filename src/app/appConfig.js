@@ -1,20 +1,35 @@
-angular.module('caiLunAdminUi', [
-
-    // app sub-modules
-    'caiLunAdminUi.common',
-    'caiLunAdminUi.login',
-    'caiLunAdminUi.projects',
-
-    // third-party modules
-    'ui.router',
-    'ngMaterial',
-    'ngCookies'
-])
-    .config(AppConfig)
+angular.module('caiLunAdminUi')
+    .config(appConfig)
     .run(appRunBlock);
 
+/**
+ * App-wide config settings.
+ *
+ * @param $stateProvider
+ * @param $locationProvider
+ * @param $urlRouterProvider
+ * @param $mdThemingProvider
+ * @param dataServiceProvider
+ * @constructor
+ */
+function appConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThemingProvider, dataServiceProvider) {
 
-function AppConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThemingProvider, dataServiceProvider) {
+    configRoutes($stateProvider);
+    $urlRouterProvider.otherwise('/projects');
+    $locationProvider.html5Mode(true).hashPrefix('!');
+
+    $mdThemingProvider.theme('default')
+        .primaryPalette('amber')
+        .accentPalette('blue');
+
+    dataServiceProvider.setApiUrl('http://localhost:8080/api/v1');
+}
+
+/**
+ * Configuration of top-level routes
+ * @param $stateProvider
+ */
+function configRoutes($stateProvider) {
     $stateProvider
         .state('projects', {
             url: '/projects',
@@ -46,20 +61,21 @@ function AppConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThe
                 }
             }
         });
-
-    $urlRouterProvider.otherwise('/projects');
-    $locationProvider.html5Mode(true).hashPrefix('!');
-
-    $mdThemingProvider.theme('default')
-        .primaryPalette('amber')
-        .accentPalette('blue');
-
-    dataServiceProvider.setApiUrl('http://localhost:8080/api/v1');
 }
 
-
+/**
+ * Tasks to be run when the app is bootstrapped.
+ *
+ * @param $rootScope
+ * @param $state
+ * @param authService
+ * @param dataService
+ */
 function appRunBlock($rootScope, $state, authService, dataService) {
 
+    /**
+     * Route unauthenticated users to the login page.
+     */
     $rootScope.$on('$stateChangeStart', function(event, toState) {
         if (toState.name !== 'login' && !authService.isLoggedIn) {
             event.preventDefault();
@@ -71,9 +87,9 @@ function appRunBlock($rootScope, $state, authService, dataService) {
         }
     });
 
-   /* dataService.getProjects().then(function(data) {
-        console.log(data);
-    });*/
+    /* dataService.getProjects().then(function(data) {
+     console.log(data);
+     });*/
 
     /**
      * Register a callback to redirect to the login screen whenever the user gets
