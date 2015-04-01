@@ -63,5 +63,5 @@ function authService($cookies) {
     };
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.common')
     .factory('authService', authService);

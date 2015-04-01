@@ -11,5 +11,5 @@ function breadcrumbsDirective() {
     };
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.common')
     .directive('breadcrumbs', breadcrumbsDirective);

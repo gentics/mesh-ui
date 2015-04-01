@@ -3,6 +3,7 @@ var gulp = require('gulp'),
     jsHint = require('gulp-jshint'),
     inject = require('gulp-inject'),
     templateCache = require('gulp-angular-templatecache'),
+    angularFilesort = require('gulp-angular-filesort'),
     less = require('gulp-less'),
     livereload = require('gulp-livereload'),
     karma = require('karma').server,
@@ -25,14 +26,14 @@ var VENDOR_STYLES = [
 ];
 
 gulp.task('app-scripts', function() {
-   return gulp.src([
-       '!src/**/*.spec.js',
-       'src/**/*.js'
-   ])
-       .pipe(jsHint())
-       .pipe(ngAnnotate())
-       .pipe(gulp.dest('build/'))
-       .pipe(livereload());
+    return gulp.src([
+        '!src/**/*.spec.js',
+        'src/**/*.js'
+    ])
+        .pipe(jsHint())
+        .pipe(ngAnnotate())
+        .pipe(gulp.dest('build/'))
+        .pipe(livereload());
 });
 
 gulp.task('vendor-scripts', function() {
@@ -49,11 +50,11 @@ gulp.task('app-templates', function() {
 
 gulp.task('app-styles', function() {
     return gulp.src('src/styles/app.less')
-        /**
-         * Dynamically injects @import statements into the main app.less file, allowing
-         * .less files to be placed around the app structure with the component
-         * or page they apply to.
-         */
+    /**
+     * Dynamically injects @import statements into the main app.less file, allowing
+     * .less files to be placed around the app structure with the component
+     * or page they apply to.
+     */
         .pipe(inject(gulp.src(['../**/*.less'], {read: false, cwd: 'src/styles/'}), {
             starttag: '/* inject:imports */',
             endtag: '/* endinject */',
@@ -72,16 +73,33 @@ gulp.task('vendor-styles', function() {
 });
 
 gulp.task('index', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-styles', 'vendor-styles'], function() {
+
+    var vendorJs = gulp.src([
+        'vendor/**/angular.js',
+        'vendor/**/*.js'
+    ], { cwd: 'build/'} );
+
+    var appJs = gulp.src([
+        'app/**/*.js'
+    ], { cwd: 'build/'} )
+        .pipe(angularFilesort());
+
+    var css = gulp.src([
+        '**/*.css'
+    ], { cwd: 'build/'} );
+
     return gulp.src('src/index.html')
-        //.pipe(gulp.dest('build/'))
-        .pipe(inject(gulp.src([
-            'vendor/**/angular.js',
-            'vendor/**/*.js',
-            '**/app.js',
-            '**/*.js',
-            '**/angular-material.css',
-            '**/*.css'
-        ], { cwd: 'build/'} ),  { addRootSlash: false }))
+        .pipe(inject(css, { addRootSlash: false }))
+        .pipe(inject(vendorJs,  {
+            addRootSlash: false,
+            starttag: '<!-- inject:vendorjs -->',
+            endtag: '<!-- endinject -->'
+        }))
+        .pipe(inject(appJs,  {
+            addRootSlash: false,
+            starttag: '<!-- inject:appjs -->',
+            endtag: '<!-- endinject -->'
+        }))
         .pipe(gulp.dest('build/'))
         .pipe(livereload());
 });
@@ -119,7 +137,7 @@ gulp.task('e2e', function() {
 });
 
 gulp.task('watch', ['default', 'karma-watch'], function() {
-    livereload.listen();
+    livereload.listen({ quiet: true });
     gulp.watch('src/app/**/*.js', ['app-scripts']);
     gulp.watch('src/app/**/*.html', ['app-templates']);
     gulp.watch('src/**/*.less', ['app-styles']);

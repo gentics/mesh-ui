@@ -21,5 +21,5 @@ function LoginController($state, $mdDialog, authService) {
     }
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.login')
     .controller('LoginController', LoginController);

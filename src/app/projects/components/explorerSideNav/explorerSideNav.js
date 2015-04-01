@@ -15,5 +15,5 @@ function explorerSideNavDirective() {
     };
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.projects')
     .directive('explorerSideNav', explorerSideNavDirective);

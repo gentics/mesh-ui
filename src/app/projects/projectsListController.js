@@ -16,5 +16,5 @@ function ProjectsListController() {
     ];
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.projects')
     .controller('ProjectsListController', ProjectsListController);

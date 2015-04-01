@@ -15,5 +15,5 @@ function projectSearchBarDirective() {
     };
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.common')
     .directive('projectSearchBar', projectSearchBarDirective);

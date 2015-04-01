@@ -308,5 +308,5 @@ function ProjectExplorerController() {
     }];
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.projects')
     .controller('ProjectExplorerController', ProjectExplorerController);

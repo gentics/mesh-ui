@@ -1,3 +1,17 @@
+angular.module('caiLunAdminUi', [
+
+    // app sub-modules
+    'caiLunAdminUi.common',
+    'caiLunAdminUi.login',
+    'caiLunAdminUi.projects',
+
+    // third-party modules
+    'ui.router',
+    'ngMaterial',
+    'ngCookies'
+])
+    .config(AppConfig)
+    .run(appRunBlock);
 
 
 function AppConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThemingProvider, dataServiceProvider) {
@@ -69,13 +83,3 @@ function appRunBlock($rootScope, $state, authService, dataService) {
         $state.go('login');
     });
 }
-
-
-angular.module('caiLunAdminUi', [
-    'restangular',
-    'ui.router',
-    'ngMaterial',
-    'ngCookies'
-])
-    .config(AppConfig)
-    .run(appRunBlock);

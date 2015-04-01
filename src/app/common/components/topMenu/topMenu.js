@@ -29,5 +29,5 @@ function topMenuDirective(authService) {
     };
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.common')
     .directive('topMenu', topMenuDirective);

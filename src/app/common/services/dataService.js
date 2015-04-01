@@ -22,12 +22,10 @@ function dataServiceProvider() {
     };
 }
 
-angular.module('caiLunAdminUi')
+angular.module('caiLunAdminUi.common')
     .config(function(RestangularProvider) {
         // basic auth credentials: joe1:test123
         // header string: Authorization: Basic am9lMTp0ZXN0MTIz
-        RestangularProvider.setDefaultHeaders({ "authorization": "Basic am9lMTp0ZXN0MTIz", token: 'awdawdawdawdaawd'});
+        RestangularProvider.setDefaultHeaders({ "Authorization": "Basic am9lMTp0ZXN0MTIz"});
     })
     .provider('dataService', dataServiceProvider);
-
-
