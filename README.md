@@ -45,7 +45,7 @@ angular.module('root.common', []);
 angular.module('root.sectionOne', []);
 angular.module('root.sectionTwo', []);
 // etc.
-``
+```
 
 Each new module must be declared in it's own file following the pattern `moduleName.module.js`.
 
