@@ -3,6 +3,5 @@
 exports.config = {
     seleniumAddress: 'http://localhost:4444/wd/hub',
     specs: ['**/*.e2e.js'],
-    baseUrl: 'http://localhost/gentics/cailun-admin-ui/build/',
     rootElement: 'html'
 };
