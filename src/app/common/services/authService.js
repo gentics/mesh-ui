@@ -1,5 +1,5 @@
 angular.module('caiLunAdminUi.common')
-    .factory('authService', authService);
+    .service('authService', authService);
 
 /**
  * Currently a mock service which will eventually use OAuth 2 once it has
@@ -11,6 +11,15 @@ function authService($cookies) {
     var isLoggedIn = $cookies.isLoggedIn === 'true',
         onLogInCallbacks = [],
         onLogOutCallbacks = [];
+
+    // public API
+    Object.defineProperties(this, {
+        "isLoggedIn": { get: function () { return isLoggedIn; } }
+    });
+    this.logIn = logIn;
+    this.logOut = logOut;
+    this.registerLogInHandler = registerLogInHandler;
+    this.registerLogOutHandler = registerLogOutHandler;
 
     /**
      * Attempts to log the user in based on the supplied username and password.
@@ -54,14 +63,4 @@ function authService($cookies) {
     function registerLogOutHandler(callback) {
         onLogOutCallbacks.push(callback);
     }
-
-    return {
-        get isLoggedIn() {
-            return isLoggedIn
-        },
-        logIn: logIn,
-        logOut: logOut,
-        registerLogInHandler: registerLogInHandler,
-        registerLogOutHandler: registerLogOutHandler
-    };
 }
