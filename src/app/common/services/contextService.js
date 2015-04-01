@@ -7,13 +7,23 @@ angular.module('caiLunAdminUi.common')
  */
 function contextService() {
     var currentProject = {},
-        currentTag = {};
+        currentTag = {},
+        contextChangeCallbacks = [];
 
     // public API
+    this.registerContextChangeHandler = registerContextChangeHandler;
     this.setProject = setProject;
     this.getProject = getProject;
     this.setTag = setTag;
     this.getTag = getTag;
+
+    /**
+     * Allows components to register a callback when the context changes
+     * @param callback
+     */
+    function registerContextChangeHandler(callback) {
+        contextChangeCallbacks.push(callback);
+    }
 
     /**
      *
@@ -23,6 +33,7 @@ function contextService() {
     function setProject(name, id) {
         currentProject.name = name;
         currentProject.id = id;
+        runContextChangeHandlers();
     }
 
     /**
@@ -41,6 +52,7 @@ function contextService() {
     function setTag(name, id) {
         currentTag.name = name;
         currentTag.id = id;
+        runContextChangeHandlers();
     }
 
     /**
@@ -49,5 +61,15 @@ function contextService() {
      */
     function getTag() {
         return currentTag;
+    }
+
+    /**
+     * Invoke any registered context change handlers and pass each one the
+     * current project and tag objects.
+     */
+    function runContextChangeHandlers() {
+        contextChangeCallbacks.forEach(function(fn) {
+            fn.call(null, currentProject, currentTag);
+        });
     }
 }

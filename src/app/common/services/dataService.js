@@ -30,11 +30,19 @@ function dataServiceProvider() {
     function dataService(Restangular) {
 
         Restangular.setBaseUrl(apiUrl);
-        var projects = Restangular.all('projects');
-        var users = Restangular.all('users');
+        var projects = Restangular.all('projects'),
+            projectsCache,
+            users = Restangular.all('users');
 
-        function getProjects() {
-            return projects.getList();
+        function getProjects(forceRefresh) {
+            forceRefresh = forceRefresh || false;
+
+            if (typeof projectsCache === 'undefined' || forceRefresh) {
+                projectsCache = projects.getList();
+                return projects.getList();
+            } else {
+                return projectsCache;
+            }
         }
         function getUsers() {
             return users.getList();
