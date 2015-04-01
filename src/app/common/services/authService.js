@@ -1,3 +1,6 @@
+angular.module('caiLunAdminUi.common')
+    .factory('authService', authService);
+
 /**
  * Currently a mock service which will eventually use OAuth 2 once it has
  * been implemented on the server.
@@ -62,6 +65,3 @@ function authService($cookies) {
         onLogOut: onLogOut
     };
 }
-
-angular.module('caiLunAdminUi.common')
-    .factory('authService', authService);

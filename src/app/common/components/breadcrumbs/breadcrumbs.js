@@ -1,3 +1,6 @@
+angular.module('caiLunAdminUi.common')
+    .directive('breadcrumbs', breadcrumbsDirective);
+
 function breadcrumbsDirective() {
 
     function breadcrumbsLinkFn(scope) {
@@ -10,6 +13,3 @@ function breadcrumbsDirective() {
         link: breadcrumbsLinkFn
     };
 }
-
-angular.module('caiLunAdminUi.common')
-    .directive('breadcrumbs', breadcrumbsDirective);

@@ -1,3 +1,6 @@
+angular.module('caiLunAdminUi.common')
+    .directive('projectSearchBar', projectSearchBarDirective);
+
 function projectSearchBarDirective() {
 
     function projectSearchBarLinkFn(scope) {
@@ -15,5 +18,3 @@ function projectSearchBarDirective() {
     };
 }
 
-angular.module('caiLunAdminUi.common')
-    .directive('projectSearchBar', projectSearchBarDirective);

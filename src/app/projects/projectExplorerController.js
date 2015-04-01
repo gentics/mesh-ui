@@ -1,3 +1,6 @@
+angular.module('caiLunAdminUi.projects')
+    .controller('ProjectExplorerController', ProjectExplorerController);
+
 function ProjectExplorerController() {
     var vm = this;
 
@@ -307,6 +310,3 @@ function ProjectExplorerController() {
         "created": "7/19/2014"
     }];
 }
-
-angular.module('caiLunAdminUi.projects')
-    .controller('ProjectExplorerController', ProjectExplorerController);

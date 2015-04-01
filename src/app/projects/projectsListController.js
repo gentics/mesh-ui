@@ -1,3 +1,6 @@
+angular.module('caiLunAdminUi.projects')
+    .controller('ProjectsListController', ProjectsListController);
+
 function ProjectsListController() {
     var vm = this;
 
@@ -15,6 +18,3 @@ function ProjectsListController() {
         }
     ];
 }
-
-angular.module('caiLunAdminUi.projects')
-    .controller('ProjectsListController', ProjectsListController);

@@ -1,3 +1,6 @@
+angular.module('caiLunAdminUi.login')
+    .controller('LoginController', LoginController);
+
 function LoginController($state, $mdDialog, authService) {
     var vm = this;
 
@@ -20,6 +23,3 @@ function LoginController($state, $mdDialog, authService) {
         $mdDialog.show(logInErrorDialog);
     }
 }
-
-angular.module('caiLunAdminUi.login')
-    .controller('LoginController', LoginController);

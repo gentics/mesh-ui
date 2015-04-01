@@ -1,3 +1,6 @@
+angular.module('caiLunAdminUi.common')
+    .directive('topMenu', topMenuDirective);
+
 function topMenuDirective(authService) {
 
     var isLoggedIn = authService.isLoggedIn;
@@ -28,6 +31,3 @@ function topMenuDirective(authService) {
         link: topMenuLinkFn
     };
 }
-
-angular.module('caiLunAdminUi.common')
-    .directive('topMenu', topMenuDirective);
