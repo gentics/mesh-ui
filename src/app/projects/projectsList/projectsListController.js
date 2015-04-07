@@ -4,7 +4,11 @@ angular.module('caiLunAdminUi.projects')
 function ProjectsListController(dataService) {
     var vm = this;
 
-    dataService.getProjects().then(function(data) {
-        vm.projects = data;
-    });
+    populate();
+
+    function populate() {
+        dataService.getProjects().then(function(data) {
+            vm.projects = data;
+        });
+    }
 }

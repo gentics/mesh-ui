@@ -6,7 +6,7 @@ function LoginController($state, $mdDialog, authService) {
 
     vm.submitForm = function(event, userName, password) {
         if (authService.logIn(userName, password)) {
-            $state.go('projects');
+            $state.go('projects.list');
         } else {
             showErrorDialog(event);
         }

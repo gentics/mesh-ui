@@ -78,7 +78,6 @@ function configRoutes($stateProvider) {
  * @param $rootScope
  * @param $state
  * @param authService
- * @param dataService
  */
 function appRunBlock($rootScope, $state, authService) {
 
