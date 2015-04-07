@@ -1,6 +1,14 @@
 angular.module('caiLunAdminUi.projects')
     .directive('projectSearchBar', projectSearchBarDirective);
 
+/**
+ * The search/nav bar component which allows and contextual search of projects.
+ *
+ * @param $state
+ * @param dataService
+ * @param contextService
+ * @returns {{}} Directive Definition Object
+ */
 function projectSearchBarDirective($state, dataService, contextService) {
 
     var callbackRegistered = false;
@@ -19,6 +27,10 @@ function projectSearchBarDirective($state, dataService, contextService) {
             callbackRegistered = true;
         }
 
+        /**
+         * Jump to a new context
+         * @param {string} projectName
+         */
         function goToContext(projectName) {
             if (projectName !== '') {
                 $state.go('projects.explorer', {projectName: projectName});
@@ -28,6 +40,11 @@ function projectSearchBarDirective($state, dataService, contextService) {
             }
         }
 
+        /**
+         * Update the view model with the current context
+         * @param {string} currentProject
+         * @param {string} currentTag
+         */
         function updateCurrentContext(currentProject, currentTag) {
             vm.currentProject = currentProject.name;
         }

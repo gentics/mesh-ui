@@ -1,13 +1,14 @@
 angular.module('caiLunAdminUi.common')
-    .service('authService', authService);
+    .service('authService', AuthService);
 
 /**
+ * Used to log a user in & out, and keep track of that fact.
  * Currently a mock service which will eventually use OAuth 2 once it has
  * been implemented on the server.
  *
- * @returns {{isLoggedIn: boolean}}
+ * @constructor
  */
-function authService($cookies) {
+function AuthService($cookies) {
     var isLoggedIn = $cookies.isLoggedIn === 'true',
         onLogInCallbacks = [],
         onLogOutCallbacks = [];
@@ -25,8 +26,8 @@ function authService($cookies) {
      * Attempts to log the user in based on the supplied username and password.
      * Return true on success, else false.
      *
-     * @param userName
-     * @param password
+     * @param {string} userName
+     * @param {string} password
      * @returns {boolean}
      */
     function logIn(userName, password) {
@@ -41,6 +42,9 @@ function authService($cookies) {
         return isLoggedIn;
     }
 
+    /**
+     * Log the user out and persist that fact to the cookie.
+     */
     function logOut() {
         isLoggedIn = false;
         $cookies.isLoggedIn = false;
@@ -54,12 +58,17 @@ function authService($cookies) {
      * flow than using an event-based approach as it creates a traceable path of callback
      * registration from the point of use.
      *
-     * @param callback
+     * @param {function()} callback
      */
     function registerLogInHandler(callback) {
         onLogInCallbacks.push(callback);
     }
 
+    /**
+     * Register a callback which will be executed when user logs out.
+     *
+     * @param {function()} callback
+     */
     function registerLogOutHandler(callback) {
         onLogOutCallbacks.push(callback);
     }

@@ -6,8 +6,8 @@ angular.module('caiLunAdminUi.common')
  * being viewed by the user. The purpose is to facilitate context-aware searching and creation of objects.
  */
 function contextService() {
-    var currentProject = {},
-        currentTag = {},
+    var currentProject = { name: '', id: '' },
+        currentTag = { name: '', id: '' },
         contextChangeCallbacks = [];
 
     // public API
@@ -19,16 +19,16 @@ function contextService() {
 
     /**
      * Allows components to register a callback when the context changes
-     * @param callback
+     * @param {function()} callback
      */
     function registerContextChangeHandler(callback) {
         contextChangeCallbacks.push(callback);
     }
 
     /**
-     *
-     * @param name
-     * @param id
+     * Set the current project and invoke any registered handlers
+     * @param {string} name
+     * @param {string} id
      */
     function setProject(name, id) {
         currentProject.name = name;
@@ -37,17 +37,17 @@ function contextService() {
     }
 
     /**
-     *
-     * @returns {{}}
+     * Get the current project object.
+     * @returns {{name: string, id: string}}
      */
     function getProject() {
         return currentProject;
     }
 
     /**
-     *
-     * @param name
-     * @param id
+     * Set the current tag and invoke any registered handlers
+     * @param {string} name
+     * @param {string} id
      */
     function setTag(name, id) {
         currentTag.name = name;
@@ -56,8 +56,8 @@ function contextService() {
     }
 
     /**
-     *
-     * @returns {{}}
+     * Get the current tag object
+     * @returns {{name: string, id: string}}
      */
     function getTag() {
         return currentTag;

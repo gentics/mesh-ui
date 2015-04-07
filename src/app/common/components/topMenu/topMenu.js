@@ -1,6 +1,14 @@
 angular.module('caiLunAdminUi.common')
     .directive('topMenu', topMenuDirective);
 
+/**
+ * Directive for the top menu bar which is present on every screen apart from the login.
+ *
+ * @param $state
+ * @param authService
+ * @param i18nService
+ * @returns {{}} Directive Definition Object
+ */
 function topMenuDirective($state, authService, i18nService) {
 
     var isLoggedIn = authService.isLoggedIn;

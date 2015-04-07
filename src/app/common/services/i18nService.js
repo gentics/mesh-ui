@@ -21,13 +21,21 @@ function I18nService() {
     this.setLanguage = setLanguage;
     this.getLanguage = getLanguage;
 
-
+    /**
+     * Set the 2-character (ISO-639-1) language code, which must be part of the
+     * availableLanguages array.
+     * @param {string} value
+     */
     function setLanguage(value) {
         if (-1 < availableLanguages.indexOf(value)) {
             language = value;
         }
     }
 
+    /**
+     * Get the 2-character language code of the current language.
+     * @returns {string}
+     */
     function getLanguage() {
         return language;
     }

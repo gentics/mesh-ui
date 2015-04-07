@@ -1,6 +1,12 @@
 angular.module('caiLunAdminUi.login')
     .controller('LoginController', LoginController);
 
+/**
+ * @param $state
+ * @param $mdDialog
+ * @param authService
+ * @constructor
+ */
 function LoginController($state, $mdDialog, authService) {
     var vm = this;
 
@@ -12,6 +18,10 @@ function LoginController($state, $mdDialog, authService) {
         }
     };
 
+    /**
+     * Displays an error message on login failure.
+     * @param event
+     */
     function showErrorDialog(event) {
         var logInErrorDialog = $mdDialog.alert()
             .title('Error')

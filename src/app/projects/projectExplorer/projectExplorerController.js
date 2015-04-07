@@ -1,6 +1,11 @@
 angular.module('caiLunAdminUi.projects')
     .controller('ProjectExplorerController', ProjectExplorerController);
 
+/**
+ * @param dataService
+ * @param contextService
+ * @constructor
+ */
 function ProjectExplorerController(dataService, contextService) {
     var vm = this;
 

@@ -26,6 +26,7 @@
     "gulp-livereload": "^3.8.0",
     "gulp-ng-annotate": "^0.5.2",
     "jasmine-core": "^2.2.0",
+    "jshint-stylish": "^1.0.1",
     "karma": "^0.12.31",
     "karma-angular-filesort": "^0.1.0",
     "karma-chrome-launcher": "^0.1.7",

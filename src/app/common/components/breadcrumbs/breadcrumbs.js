@@ -1,6 +1,12 @@
 angular.module('caiLunAdminUi.common')
     .directive('breadcrumbs', breadcrumbsDirective);
 
+/**
+ * Directive to generate breadcrumbs for navigating a project.
+ *
+ * @param contextService
+ * @returns {{}} Directive Definition Object
+ */
 function breadcrumbsDirective(contextService) {
 
     function breadcrumbsController() {

@@ -27,9 +27,11 @@ function dataServiceProvider() {
 /**
  * The data service itself which is responsible for all requests to the API.
  *
+ * @constructor
  * @param Restangular
- * @param apiUrl
- * @returns {{getProjects: getProjects}}
+ * @param i18nService
+ * @param {string} apiUrl
+ * @returns {{}}
  */
 function DataService(Restangular, i18nService, apiUrl) {
 
@@ -69,6 +71,14 @@ function DataService(Restangular, i18nService, apiUrl) {
     this.getRoles = getRoles;
     this.getGroups = getGroups;
 
+    /**
+     * Since getProjects is called on almost every page (by any context-aware components using
+     * the contextService), the projects list is cached. The forceRefresh flag is used to force
+     * a new request to be sent to the server.
+     *
+     * @param {boolean} forceRefresh
+     * @returns {*}
+     */
     function getProjects(forceRefresh) {
         var data;
         forceRefresh = forceRefresh || false;
@@ -84,6 +94,7 @@ function DataService(Restangular, i18nService, apiUrl) {
     }
 
     function getUsers() {
+        // stub
         return users.getList();
     }
 
@@ -91,6 +102,14 @@ function DataService(Restangular, i18nService, apiUrl) {
         // stub
     }
 
+    /**
+     * Get the contents of a given project, with optional parameters that specify query options.
+     * @param {string} projectName
+     * @param {number} itemsPerPage
+     * @param {number} page
+     * @param {string} search
+     * @returns {restangular.EnhancedCollectionPromise<any>|restangular.ICollectionPromise<any>}
+     */
     function getContents(projectName, itemsPerPage, page, search) {
         var options = {
             lang: i18nService.getLanguage()
@@ -109,6 +128,7 @@ function DataService(Restangular, i18nService, apiUrl) {
     }
 
     function getSchemas() {
+        // stub
         return schemas.getList();
     }
 
@@ -117,6 +137,7 @@ function DataService(Restangular, i18nService, apiUrl) {
     }
 
     function getGroups() {
+        // stub
         groups.getList();
     }
 }
@@ -138,8 +159,8 @@ function dataServiceConfig(RestangularProvider) {
 /**
  * Extract the payload from the response, which is returned as the value of the "data" key.
  *
- * @param data
- * @param operation
+ * @param {{}} data
+ * @param {string} operation
  * @returns {Object}
  */
 function restangularResponseInterceptor(data, operation) {
