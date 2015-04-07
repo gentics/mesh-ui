@@ -11,8 +11,8 @@ function dataServiceProvider() {
     var apiUrl;
 
     this.setApiUrl = setApiUrl;
-    this.$get = function(Restangular, i18nService) {
-        return new DataService(Restangular, i18nService, apiUrl);
+    this.$get = function($cacheFactory, Restangular, i18nService) {
+        return new DataService($cacheFactory, Restangular, i18nService, apiUrl);
     };
 
     /**
@@ -28,12 +28,13 @@ function dataServiceProvider() {
  * The data service itself which is responsible for all requests to the API.
  *
  * @constructor
+ * @param $cacheFactory
  * @param Restangular
  * @param i18nService
  * @param {string} apiUrl
  * @returns {{}}
  */
-function DataService(Restangular, i18nService, apiUrl) {
+function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
 
     Restangular.setBaseUrl(apiUrl);
     Restangular.addResponseInterceptor(function(data, operation) {
@@ -54,7 +55,6 @@ function DataService(Restangular, i18nService, apiUrl) {
     });
 
     var projects = Restangular.all('projects'),
-        projectsCache,
         users = Restangular.all('users'),
         schemas = Restangular.all('schemas'),
         tags = Restangular.all('tags'),
@@ -72,25 +72,10 @@ function DataService(Restangular, i18nService, apiUrl) {
     this.getGroups = getGroups;
 
     /**
-     * Since getProjects is called on almost every page (by any context-aware components using
-     * the contextService), the projects list is cached. The forceRefresh flag is used to force
-     * a new request to be sent to the server.
-     *
-     * @param {boolean} forceRefresh
      * @returns {*}
      */
-    function getProjects(forceRefresh) {
-        var data;
-        forceRefresh = forceRefresh || false;
-
-        if (typeof projectsCache === 'undefined' || forceRefresh) {
-            projectsCache = projects.getList();
-            data = projects.getList();
-        } else {
-            data = projectsCache;
-        }
-
-        return data;
+    function getProjects() {
+        return projects.getList();
     }
 
     function getUsers() {
@@ -103,28 +88,24 @@ function DataService(Restangular, i18nService, apiUrl) {
     }
 
     /**
-     * Get the contents of a given project, with optional parameters that specify query options.
+     * Get the contents of a given project, with optional parameters that specify query string options.
+     *
      * @param {string} projectName
-     * @param {number} itemsPerPage
-     * @param {number} page
-     * @param {string} search
+     * @param {{}} queryParams
+     * @param {boolean} refresh Invalidate cache for this request and make a new request to the server.
      * @returns {restangular.EnhancedCollectionPromise<any>|restangular.ICollectionPromise<any>}
      */
-    function getContents(projectName, itemsPerPage, page, search) {
-        var options = {
-            lang: i18nService.getLanguage()
-        };
+    function getContents(projectName, queryParams, refresh) {
+        var contents = Restangular.all(projectName + '/contents'),
+            invalidateCache = !!refresh;
 
-        if (itemsPerPage) {
-            options.per_page = itemsPerPage;
-        }
-        if (page) {
-            options.page = page;
+        queryParams.lang = i18nService.getLanguage();
+
+        if (invalidateCache) {
+            clearCache();
         }
 
-        return Restangular
-            .all(projectName + '/contents')
-            .getList(options);
+        return contents.getList(queryParams);
     }
 
     function getSchemas() {
@@ -140,6 +121,19 @@ function DataService(Restangular, i18nService, apiUrl) {
         // stub
         groups.getList();
     }
+
+    /**
+     * The $http service is configured to cache all requests by default, but sometimes we want to get a fresh
+     * response from the server (e.g. after doing a CRUD operation, the list will change). This function is invoked
+     * by specifying a parameter in one of the public API methods and will clear the cache, forcing a new request.
+     *
+     * TODO: It would be good if there was some way to invalidate the cache only for a specific enpoint, e.g.
+     * just for "projects", but this is not simple since the URL *and* any query parameters must match to
+     * remove the correct cache key.
+     */
+    function clearCache() {
+        $cacheFactory.get('$http').removeAll();
+    }
 }
 
 /**
@@ -147,13 +141,15 @@ function DataService(Restangular, i18nService, apiUrl) {
  *
  * @param RestangularProvider
  */
-function dataServiceConfig(RestangularProvider) {
+function dataServiceConfig($httpProvider, RestangularProvider) {
     // basic auth credentials: joe1:test123
     // header string: Authorization: Basic am9lMTp0ZXN0MTIz
     // TODO: this will be replaced by an OAuth 2 solution.
     RestangularProvider.setDefaultHeaders({ "Authorization": "Basic am9lMTp0ZXN0MTIz"});
 
     RestangularProvider.addResponseInterceptor(restangularResponseInterceptor);
+
+    $httpProvider.defaults.cache = true;
 }
 
 /**

@@ -23,8 +23,13 @@ function ProjectExplorerController(dataService, contextService) {
     populate(1);
 
     function populate(page) {
-        var projectName = contextService.getProject().name;
-        dataService.getContents(projectName, vm.itemsPerPage, page)
+        var projectName = contextService.getProject().name,
+            queryParams = {
+                page: page,
+                per_page: vm.itemsPerPage
+            };
+
+        dataService.getContents(projectName, queryParams, true)
             .then(function (data) {
                 vm.contents = data;
                 vm.totalItems = data.metadata.total_count;
