@@ -3,7 +3,7 @@ angular.module('caiLunAdminUi.common')
     .provider('dataService', dataServiceProvider);
 
 /**
- * The dataServiceProvider is used to configure and create the dataService which is used
+ * The dataServiceProvider is used to configure and create the DataService which is used
  * for all requests to the API.
  */
 function dataServiceProvider() {
@@ -11,7 +11,9 @@ function dataServiceProvider() {
     var apiUrl;
 
     this.setApiUrl = setApiUrl;
-    this.$get = dataService;
+    this.$get = function(Restangular) {
+        return new DataService(Restangular, apiUrl);
+    };
 
     /**
      * Allow config of the API url in the app's config phase.
@@ -20,38 +22,73 @@ function dataServiceProvider() {
     function setApiUrl(value) {
         apiUrl = value;
     }
+}
 
-    /**
-     * The data service itself which is responsible for all requests to the API.
-     *
-     * @param Restangular
-     * @returns {{getProjects: getProjects}}
-     */
-    function dataService(Restangular) {
+/**
+ * The data service itself which is responsible for all requests to the API.
+ *
+ * @param Restangular
+ * @param apiUrl
+ * @returns {{getProjects: getProjects}}
+ */
+function DataService(Restangular, apiUrl) {
 
-        Restangular.setBaseUrl(apiUrl);
-        var projects = Restangular.all('projects'),
-            projectsCache,
-            users = Restangular.all('users');
+    Restangular.setBaseUrl(apiUrl);
+    var projects = Restangular.all('projects'),
+        projectsCache,
+        users = Restangular.all('users'),
+        schemas = Restangular.all('schemas'),
+        tags = Restangular.all('tags'),
+        roles = Restangular.all('roles'),
+        groups = Restangular.all('groups'),
+        contents = Restangular.all('contents');
 
-        function getProjects(forceRefresh) {
-            forceRefresh = forceRefresh || false;
+    // public API
+    this.getProjects = getProjects;
+    this.getUsers = getUsers;
+    this.getTags = getTags;
+    this.getContents = getContents;
+    this.getSchemas = getSchemas;
+    this.getRoles = getRoles;
+    this.getGroups = getGroups;
 
-            if (typeof projectsCache === 'undefined' || forceRefresh) {
-                projectsCache = projects.getList();
-                return projects.getList();
-            } else {
-                return projectsCache;
-            }
+    function getProjects(forceRefresh) {
+        var data;
+        forceRefresh = forceRefresh || false;
+
+        if (typeof projectsCache === 'undefined' || forceRefresh) {
+            projectsCache = projects.getList();
+            data = projects.getList();
         }
-        function getUsers() {
-            return users.getList();
+        else {
+            data = projectsCache;
         }
 
-        return {
-            getProjects: getProjects,
-            getUsers: getUsers
-        };
+        return data;
+    }
+
+    function getUsers() {
+        return users.getList();
+    }
+
+    function getTags() {
+        // stub
+    }
+
+    function getContents() {
+        // stub
+    }
+
+    function getSchemas() {
+        return schemas.getList();
+    }
+
+    function getRoles() {
+        // stub
+    }
+
+    function getGroups() {
+        groups.getList();
     }
 }
 
