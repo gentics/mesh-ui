@@ -1,4 +1,4 @@
-<md-toolbar ng-if="isLoggedIn">
+<md-toolbar ng-if="vm.isLoggedIn">
     <div class="md-toolbar-tools" layout-align="center">
         <div class="top-menu-container" layout="row" flex>
 
@@ -9,21 +9,21 @@
 
             <div flex layout="row" layout-align="end center">
                 <div class="user-container" layout="row">
-                    <div class="profile-image" style="background-image: url({{ profileImage }})"></div>
+                    <div class="profile-image" style="background-image: url({{ vm.profileImage }})"></div>
 
                     <div flex layout="column" layout-align="center center">
-                        <md-select ng-model="someModel">
+                        <md-select ng-model="vm.someModel">
                             <md-select-label>
-                                <div class="user-name">{{ userName }}</div>
+                                <div class="user-name">{{ vm.userName }}</div>
                             </md-select-label>
                             <md-option value="1" ng-click="">Profile</md-option>
-                            <md-option value="2" ng-click="logout()">Log Out</md-option>
+                            <md-option value="2" ng-click="vm.logout()">Log Out</md-option>
                         </md-select>
 
                         <div class="language">
                             <i class="icon-language"></i>
-                            <md-select ng-model="lang" ng-change="updateLanguage(lang)">
-                                <md-option ng-repeat="language in languages" ng-value="language">{{ language | uppercase }}</md-option>
+                            <md-select ng-model="vm.lang" ng-change="vm.updateLanguage(vm.lang)">
+                                <md-option ng-repeat="language in vm.languages" ng-value="language">{{ language | uppercase }}</md-option>
                             </md-select>
                         </div>
                     </div>
