@@ -1,15 +1,21 @@
 angular.module('caiLunAdminUi.common')
     .directive('breadcrumbs', breadcrumbsDirective);
 
-function breadcrumbsDirective() {
+function breadcrumbsDirective(contextService) {
 
-    function breadcrumbsLinkFn(scope) {
-        // hard-coded values for now
+    function breadcrumbsController() {
+        var vm = this;
+
+        vm.breadcrumbs = [
+            contextService.getProject().name
+        ];
     }
 
     return {
         restrict: 'E',
         templateUrl: 'common/components/breadcrumbs/breadcrumbs.html',
-        link: breadcrumbsLinkFn
+        controller: breadcrumbsController,
+        controllerAs: 'vm',
+        scope: {}
     };
 }
