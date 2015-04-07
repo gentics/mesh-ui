@@ -76,8 +76,7 @@ function DataService(Restangular, i18nService, apiUrl) {
         if (typeof projectsCache === 'undefined' || forceRefresh) {
             projectsCache = projects.getList();
             data = projects.getList();
-        }
-        else {
+        } else {
             data = projectsCache;
         }
 
@@ -92,8 +91,21 @@ function DataService(Restangular, i18nService, apiUrl) {
         // stub
     }
 
-    function getContents(projectName) {
-        return Restangular.all(projectName + '/contents').getList({ lang: i18nService.getLanguage() });
+    function getContents(projectName, itemsPerPage, page, search) {
+        var options = {
+            lang: i18nService.getLanguage()
+        };
+
+        if (itemsPerPage) {
+            options.per_page = itemsPerPage;
+        }
+        if (page) {
+            options.page = page;
+        }
+
+        return Restangular
+            .all(projectName + '/contents')
+            .getList(options);
     }
 
     function getSchemas() {
@@ -135,7 +147,7 @@ function restangularResponseInterceptor(data, operation) {
 
     if (operation === "getList") {
         extractedData = data.data;
-        extractedData.metadata = data['_metainfo'];
+        extractedData.metadata = data._metainfo;
     } else {
         extractedData = data;
     }

@@ -8,6 +8,22 @@
 
         <md-content class="md-padding" flex>
 
+            <div layout="columns">
+                <div flex>
+                    <dir-pagination-controls on-page-change="vm.getPage(newPageNumber)"></dir-pagination-controls>
+                </div>
+                <div flex="30" layout="columns" layout-align="center center ">
+                    <div flex>
+                        <div class="select-label">Items per page:</div>
+                    </div>
+                    <div flex>
+                        <md-select ng-model="vm.itemsPerPage">
+                            <md-option ng-value="number" ng-repeat="number in [10, 25, 50]">{{ number }}</md-option>
+                        </md-select>
+                    </div>
+                </div>
+            </div>
+
             <table class="md-table">
                 <thead>
                     <tr>
@@ -18,7 +34,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="item in vm.contents">
+                    <tr dir-paginate="item in vm.contents | itemsPerPage: vm.itemsPerPage" total-items="vm.totalItems" current-page="vm.currentPage">
                         <td>{{ item.properties.name }}</td>
                         <td>{{ item.schemaName }}</td>
                         <td>{{ item.author.firstname }} {{ item.author.lastname }}</td>
@@ -26,6 +42,7 @@
                     </tr>
                 </tbody>
             </table>
+
         </md-content>
 
 

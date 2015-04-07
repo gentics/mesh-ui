@@ -12,7 +12,12 @@ angular.module('caiLunAdminUi')
  * @param dataServiceProvider
  * @constructor
  */
-function appConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThemingProvider, dataServiceProvider) {
+function appConfig($stateProvider,
+                   $locationProvider,
+                   $urlRouterProvider,
+                   $mdThemingProvider,
+                   dataServiceProvider,
+                   paginationTemplateProvider) {
 
     configRoutes($stateProvider);
     $urlRouterProvider.otherwise('/projects');
@@ -23,6 +28,8 @@ function appConfig($stateProvider, $locationProvider, $urlRouterProvider, $mdThe
         .accentPalette('blue');
 
     dataServiceProvider.setApiUrl('http://localhost:8080/api/v1');
+
+    paginationTemplateProvider.setPath('common/components/pagination/pagination.html');
 }
 
 /**
