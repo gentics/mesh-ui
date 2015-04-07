@@ -22,11 +22,9 @@
 
                         <div class="language">
                             <i class="icon-language"></i>
-                            <span>EN</span>
-                            <md-tooltip md-visible="demo.showTooltip">
-                                <i class="icon-check"></i> EN - English<br>
-                                <i class="icon-check-box-outline-blank"></i> DE - Deutsch<br>
-                            </md-tooltip>
+                            <md-select ng-model="lang" ng-change="updateLanguage(lang)">
+                                <md-option ng-repeat="language in languages" ng-value="language">{{ language | uppercase }}</md-option>
+                            </md-select>
                         </div>
                     </div>
                 </div>

@@ -18,10 +18,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="item in vm.content">
-                        <td>{{ item.title }}</td>
-                        <td>{{ item.schema }}</td>
-                        <td>{{ item.author }}</td>
+                    <tr ng-repeat="item in vm.contents">
+                        <td>{{ item.properties.name }}</td>
+                        <td>{{ item.schemaName }}</td>
+                        <td>{{ item.author.firstname }} {{ item.author.lastname }}</td>
                         <td>{{ item.created }}</td>
                     </tr>
                 </tbody>

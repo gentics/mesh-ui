@@ -11,8 +11,8 @@ function dataServiceProvider() {
     var apiUrl;
 
     this.setApiUrl = setApiUrl;
-    this.$get = function(Restangular) {
-        return new DataService(Restangular, apiUrl);
+    this.$get = function(Restangular, i18nService) {
+        return new DataService(Restangular, i18nService, apiUrl);
     };
 
     /**
@@ -31,9 +31,26 @@ function dataServiceProvider() {
  * @param apiUrl
  * @returns {{getProjects: getProjects}}
  */
-function DataService(Restangular, apiUrl) {
+function DataService(Restangular, i18nService, apiUrl) {
 
     Restangular.setBaseUrl(apiUrl);
+    Restangular.addResponseInterceptor(function(data, operation) {
+        // normalize the response to remove the extra language properties
+        // and move the content of the currently-selected language up to
+        // the "properties" level.
+        var lang = i18nService.getLanguage();
+
+        if (operation === "getList") {
+            data.forEach(function(result) {
+                if (result.properties && result.properties[lang]) {
+                    result.properties = result.properties[lang];
+                }
+            });
+        }
+
+        return data;
+    });
+
     var projects = Restangular.all('projects'),
         projectsCache,
         users = Restangular.all('users'),
@@ -75,8 +92,8 @@ function DataService(Restangular, apiUrl) {
         // stub
     }
 
-    function getContents() {
-        // stub
+    function getContents(projectName) {
+        return Restangular.all(projectName + '/contents').getList({ lang: i18nService.getLanguage() });
     }
 
     function getSchemas() {
