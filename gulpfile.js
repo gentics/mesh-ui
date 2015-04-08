@@ -7,7 +7,7 @@ var gulp = require('gulp'),
     less = require('gulp-less'),
     livereload = require('gulp-livereload'),
     karma = require('karma').server,
-    exec = require('child_process').exec;
+    child_process = require('child_process');
 
 
 var VENDOR_SCRIPTS = [
@@ -132,10 +132,15 @@ gulp.task('karma-test', function() {
 });
 
 gulp.task('e2e', function() {
-    exec('protractor e2e/protractor.conf.js', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-    });
+    var selenium = child_process.exec('webdriver-manager start');
+
+    setTimeout(function() {
+        child_process.exec('protractor e2e/protractor.conf.js', function (err, stdout, stderr) {
+            selenium.kill();
+            console.log(stdout);
+            console.log(stderr);
+        });
+    }, 1000);
 });
 
 gulp.task('watch', ['default', 'karma-watch'], function() {
