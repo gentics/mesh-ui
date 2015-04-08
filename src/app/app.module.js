@@ -11,6 +11,5 @@ angular.module('caiLunAdminUi', [
     // third-party modules
     'ui.router',
     'ngMaterial',
-    'ngCookies',
     'angularUtils.directives.dirPagination'
 ]);

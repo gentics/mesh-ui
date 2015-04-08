@@ -1,3 +1,4 @@
 angular.module('caiLunAdminUi.common', [
-    'restangular'
+    'restangular',
+    'ngCookies'
 ]);
