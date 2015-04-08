@@ -6,26 +6,7 @@
 
         <explorer-side-nav></explorer-side-nav>
 
-        <md-content class="md-padding" flex>
-
-            <div layout="columns">
-                <div class="loading-indicator" flex="10">
-                    <md-progress-circular md-mode="indeterminate" ng-show="vm.loading" md-diameter="32"></md-progress-circular>
-                </div>
-                <div flex>
-                    <dir-pagination-controls on-page-change="vm.getPage(newPageNumber)"></dir-pagination-controls>
-                </div>
-                <div flex="30" layout="columns" layout-align="center center ">
-                    <div flex>
-                        <div class="select-label">Items per page:</div>
-                    </div>
-                    <div flex>
-                        <md-select ng-model="vm.itemsPerPage" ng-change="vm.setItemsPerPage()">
-                            <md-option ng-value="number" ng-repeat="number in [10, 25, 50]">{{ number }}</md-option>
-                        </md-select>
-                    </div>
-                </div>
-            </div>
+        <md-content flex>
 
             <table class="md-table">
                 <thead>
@@ -46,7 +27,28 @@
                 </tbody>
             </table>
 
+            <div layout="columns">
+                <div class="loading-indicator" flex="10">
+                    <md-progress-circular md-mode="indeterminate" ng-show="vm.loading" md-diameter="32"></md-progress-circular>
+                </div>
+                <div flex>
+                    <dir-pagination-controls on-page-change="vm.getPage(newPageNumber)"></dir-pagination-controls>
+                </div>
+                <div flex="30" layout="columns" layout-align="center center ">
+                    <div flex>
+                        <div class="select-label">Items per page:</div>
+                    </div>
+                    <div flex>
+                        <md-select ng-model="vm.itemsPerPage" ng-change="vm.setItemsPerPage()">
+                            <md-option ng-value="number" ng-repeat="number in [10, 25, 50]">{{ number }}</md-option>
+                        </md-select>
+                    </div>
+                </div>
+            </div>
+
         </md-content>
+
+
 
 
     </div>

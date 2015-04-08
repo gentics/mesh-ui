@@ -11,7 +11,7 @@ function ProjectExplorerController($location, dataService, contextService) {
     var vm = this;
 
     vm.totalItems = 0;
-    vm.itemsPerPage = $location.search().per_page || 25;
+    vm.itemsPerPage = $location.search().per_page || 10;
     vm.currentPage = $location.search().page || 1;
     vm.loading = true;
 
