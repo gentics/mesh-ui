@@ -10,6 +10,7 @@ angular.module('caiLunAdminUi', [
 
     // third-party modules
     'ui.router',
+    'ngAnimate',
     'ngMaterial',
     'angularUtils.directives.dirPagination'
 ]);

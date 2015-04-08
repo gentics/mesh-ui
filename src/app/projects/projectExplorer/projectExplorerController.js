@@ -13,6 +13,7 @@ function ProjectExplorerController($location, dataService, contextService) {
     vm.totalItems = 0;
     vm.itemsPerPage = $location.search().per_page || 25;
     vm.currentPage = $location.search().page || 1;
+    vm.loading = true;
 
     // TODO: get this data from the server
     vm.tags = ['January News', 'February News', 'March News'];
@@ -42,11 +43,13 @@ function ProjectExplorerController($location, dataService, contextService) {
                 page: page,
                 per_page: vm.itemsPerPage
             };
+        vm.loading = true;
 
-        dataService.getContents(projectName, queryParams, true)
+        dataService.getContents(projectName, queryParams)
             .then(function (data) {
                 vm.contents = data;
                 vm.totalItems = data.metadata.total_count;
+                vm.loading = false;
             });
     }
 }
