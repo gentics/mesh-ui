@@ -73,6 +73,18 @@ myComponent/
 
 Gulp is configured to automatically include the .less files into the main app stylesheet on build.
 
+## Exceptions
+
+Services and components should be written with robust error handling in mind. Since Angular has a global error handler service, we can
+throw new errors whenever we need to, and know that it will be caught by Angular. By default, Angular will just log it to the console,
+but in future we can easily implement another error handling strategy by simply extending the default handler. See [this article](http://bahmutov.calepin.co/catch-all-errors-in-angular-app.html).
+
+Guidelines:
+
+* Always throw an instance of Error class, never throw a string or an object: `throw new Error('message');`
+* Prefix the message with the name of the service/component/whatever that produces the error (optional hash to specify a method): 
+'myMenuComponent#doThing: invalid argument...'
+
 ## Testing
 
 ### Unit Tests

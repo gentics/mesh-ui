@@ -88,7 +88,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
     }
 
     /**
-     * Get the contents of a given project, with optional parameters that specify query string options.
+     * Get the contents of a given project, with optional parameters that specifies query string options.
      *
      * @param {string} projectName
      * @param {{}} queryParams
@@ -127,7 +127,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
      * response from the server (e.g. after doing a CRUD operation, the list will change). This function is invoked
      * by specifying a parameter in one of the public API methods and will clear the cache, forcing a new request.
      *
-     * TODO: It would be good if there was some way to invalidate the cache only for a specific enpoint, e.g.
+     * TODO: It would be good if there was some way to invalidate the cache only for a specific endpoint, e.g.
      * just for "projects", but this is not simple since the URL *and* any query parameters must match to
      * remove the correct cache key.
      */
@@ -139,6 +139,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
 /**
  * Configure Restangular
  *
+ * @param $httpProvider
  * @param RestangularProvider
  */
 function dataServiceConfig($httpProvider, RestangularProvider) {
@@ -155,7 +156,7 @@ function dataServiceConfig($httpProvider, RestangularProvider) {
 /**
  * Extract the payload from the response, which is returned as the value of the "data" key.
  *
- * @param {{}} data
+ * @param {Object} data
  * @param {string} operation
  * @returns {Object}
  */
