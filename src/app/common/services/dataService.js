@@ -59,8 +59,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
         schemas = Restangular.all('schemas'),
         tags = Restangular.all('tags'),
         roles = Restangular.all('roles'),
-        groups = Restangular.all('groups'),
-        contents = Restangular.all('contents');
+        groups = Restangular.all('groups');
 
     // public API
     this.getProjects = getProjects;
@@ -83,8 +82,18 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
         return users.getList();
     }
 
-    function getTags() {
-        // stub
+    /**
+     * Get the tags for the given project
+     * @param {string} projectName
+     * @param {Object} queryParams
+     * @returns {restangular.EnhancedCollectionPromise<any>|restangular.ICollectionPromise<any>}
+     */
+    function getTags(projectName, queryParams) {
+        var tags = Restangular.all(projectName + '/tags');
+        queryParams = queryParams || {};
+        queryParams.lang = i18nService.getLanguage();
+
+        return tags.getList(queryParams);
     }
 
     /**
@@ -99,6 +108,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
         var contents = Restangular.all(projectName + '/contents'),
             invalidateCache = !!refresh;
 
+        queryParams = queryParams || {};
         queryParams.lang = i18nService.getLanguage();
 
         if (invalidateCache) {

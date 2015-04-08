@@ -4,8 +4,8 @@
         <md-list>
             <md-item ng-repeat="tag in vm.tags">
                 <md-item-content>
-                    <div class="md-tile-content">
-                        <a href="#"><i class="icon-label-outline"></i> {{tag}}</a>
+                    <div class="tag-item">
+                        <a href="#"><i class="icon-label-outline"></i> {{ tag.properties.name }}</a>
                     </div>
                 </md-item-content>
             </md-item>

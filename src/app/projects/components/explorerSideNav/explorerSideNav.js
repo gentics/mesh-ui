@@ -6,7 +6,7 @@ angular.module('caiLunAdminUi.projects')
  *
  * @returns {{}} Directive Definition Object
  */
-function explorerSideNavDirective() {
+function explorerSideNavDirective(dataService, contextService) {
 
     function explorerSideNavController() {
         var vm = this;
@@ -15,6 +15,11 @@ function explorerSideNavDirective() {
         vm.toggleOpen = function() {
             vm.isOpen = !vm.isOpen;
         };
+
+        dataService.getTags(contextService.getProject().name)
+            .then(function(data) {
+               vm.tags = data;
+            });
     }
 
     return {
