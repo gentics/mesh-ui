@@ -17,7 +17,7 @@
                         <div class="select-label">Items per page:</div>
                     </div>
                     <div flex>
-                        <md-select ng-model="vm.itemsPerPage">
+                        <md-select ng-model="vm.itemsPerPage" ng-change="vm.setItemsPerPage()">
                             <md-option ng-value="number" ng-repeat="number in [10, 25, 50]">{{ number }}</md-option>
                         </md-select>
                     </div>
