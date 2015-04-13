@@ -11,6 +11,7 @@ angular.module('caiLunAdminUi')
  * @param $mdThemingProvider
  * @param dataServiceProvider
  * @constructor
+ * @param paginationTemplateProvider
  */
 function appConfig($stateProvider,
                    $locationProvider,
@@ -38,35 +39,6 @@ function appConfig($stateProvider,
  */
 function configRoutes($stateProvider) {
     $stateProvider
-        .state('projects', {
-            url: '/projects',
-            abstract: true,
-            views: {
-                'main' : {
-                    templateUrl: 'projects/projects.html',
-                    controller: 'ProjectsListController',
-                    controllerAs: 'vm'
-                }
-            }
-        })
-        .state('projects.list', {
-            url: '',
-            views: {
-                'projects': {
-                    templateUrl: 'projects/projectsList/projectsList.html'
-                }
-            }
-        })
-        .state('projects.explorer', {
-            url: '/:projectName',
-            views: {
-                'projects' : {
-                    templateUrl: 'projects/projectExplorer/projectExplorer.html',
-                    controller: 'ProjectExplorerController',
-                    controllerAs: 'vm'
-                }
-            }
-        })
         .state('login', {
             url: '/login',
             views: {

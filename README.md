@@ -56,6 +56,16 @@ This will ensure the .js files are ordered correctly in the index.html file so a
 
 In production, all JavaScript will be concatenated into a single file anyway so order of loading will not be an issue.
 
+### Routing
+Routes specific to a single module should be defined at the level of that module. Only global routes (e.g. 'login') would be defined
+in the main app config.
+
+This is managed by ui-router's support for nested routes. The purpose is to prevent a huge and unmanageable routes list from developing as
+the app grows, and to keep the concerns of single modules all in one place.
+
+As above, modules are defined in `moduleName.module.js`.
+Routes and other config/run logic for the module (if it exists) should be defined in `moduleName.config.js`.
+
 ## Modular Components
 
 Separate to the Angular module definitions, the app is physically organized into logical components, and each component is typically in its own folder. This folder contains *all* code 
