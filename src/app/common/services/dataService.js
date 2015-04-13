@@ -37,7 +37,8 @@ function dataServiceProvider() {
 function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
 
     Restangular.setBaseUrl(apiUrl);
-    Restangular.addResponseInterceptor(responseInterceptor);
+    Restangular.addRequestInterceptor(requestLangWrapper);
+    Restangular.addResponseInterceptor(responseLangUnwrapper);
 
     var projects = Restangular.all('projects'),
         users = Restangular.all('users'),
@@ -52,6 +53,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
     this.getTags = getTags;
     this.getContents = getContents;
     this.getContent = getContent;
+    this.persistContent = persistContent;
     this.getSchemas = getSchemas;
     this.getSchema = getSchema;
     this.getRoles = getRoles;
@@ -121,6 +123,14 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
         return contents.one('contents', uuid).get(queryParams);
     }
 
+    /**
+     * Create or update the content object on the server.
+     * @param content
+     */
+    function persistContent(content) {
+        content.save();
+    }
+
     function getSchemas() {
         // stub
         return schemas.getList();
@@ -161,7 +171,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
      * @param operation
      * @returns {*}
      */
-    function responseInterceptor(data, operation) {
+    function responseLangUnwrapper(data, operation) {
         var lang = i18nService.getLanguage();
 
         function extractCurrentLanguage(item) {
@@ -178,6 +188,38 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
         }
 
         return data;
+    }
+
+    /**
+     * Performs the opposite action of responseLangUnwrapper(), ie for certain types of
+     * object, it wraps the properties in the current language code.
+     *
+     * @param element
+     * @param operation
+     * @param what
+     * @param url
+     * @returns {*}
+     */
+    function requestLangWrapper(element, operation, what, url) {
+        if (operation === 'put' || operation === 'post') {
+            if (what === 'contents') {
+                return wrapCurrentLanguage(element);
+            }
+        }
+    }
+
+    /**
+     * Re-wraps the object's "properties" in the current language, i.e. "properties" { ... }
+     * becomes "properties" { "en": ... }
+     * @param obj
+     */
+    function wrapCurrentLanguage(obj) {
+        var properties = angular.copy(obj.properties),
+            lang = i18nService.getLanguage();
+
+        obj.properties = {};
+        obj.properties[lang] = properties;
+        return obj;
     }
 }
 
