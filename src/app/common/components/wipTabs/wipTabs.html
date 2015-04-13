@@ -1,0 +1,5 @@
+<div layout="rows" class="wip-tabs app-content">
+        <div ng-repeat="wip in vm.wips" class="wip-tab" ng-class="{ 'active' : vm.selectedIndex === $index }">
+            <a ui-sref="projects.explorer.content( { uuid: wip.uuid } )">{{ wip.properties.name }}</a>
+        </div>
+</div>
