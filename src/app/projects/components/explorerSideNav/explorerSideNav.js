@@ -6,20 +6,10 @@ angular.module('caiLunAdminUi.projects')
  *
  * @returns {{}} Directive Definition Object
  */
-function explorerSideNavDirective(dataService, contextService) {
+function explorerSideNavDirective() {
 
     function explorerSideNavController() {
         var vm = this;
-
-        vm.isOpen = false;
-        vm.toggleOpen = function() {
-            vm.isOpen = !vm.isOpen;
-        };
-
-        dataService.getTags(contextService.getProject().name)
-            .then(function(data) {
-               vm.tags = data;
-            });
     }
 
     return {
@@ -28,6 +18,9 @@ function explorerSideNavDirective(dataService, contextService) {
         templateUrl: 'projects/components/explorerSideNav/explorerSideNav.html',
         controller: explorerSideNavController,
         controllerAs: 'vm',
-        scope: {}
+        bindToController: true,
+        scope: {
+            tags: '='
+        }
     };
 }

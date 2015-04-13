@@ -16,9 +16,6 @@ function ProjectExplorerController($state, $location, dataService, contextServic
     vm.currentPage = $location.search().page || 1;
     vm.loading = true;
 
-    // TODO: get this data from the server
-    vm.tags = ['January News', 'February News', 'March News'];
-
     /**
      * Called when a page is changed via pagination - update the url query string
      * and get the results from the dataService.
@@ -46,6 +43,10 @@ function ProjectExplorerController($state, $location, dataService, contextServic
 
     populate(vm.currentPage);
 
+    /**
+     * Fill the vm with contents & tags data from the server.
+     * @param page
+     */
     function populate(page) {
         var projectName = contextService.getProject().name,
             queryParams = {
@@ -59,6 +60,11 @@ function ProjectExplorerController($state, $location, dataService, contextServic
                 vm.contents = data;
                 vm.totalItems = data.metadata.total_count;
                 vm.loading = false;
+            });
+
+        dataService.getTags(projectName)
+            .then(function(data) {
+                vm.tags = data;
             });
     }
 }
