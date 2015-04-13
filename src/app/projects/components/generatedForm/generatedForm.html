@@ -1,0 +1,8 @@
+<form>
+    <div ng-repeat="field in vm.fields">
+        <md-input-container>
+            <label>{{ field.key }}</label>
+            <input type="text" ng-model="vm.model[field.key]">
+        </md-input-container>
+    </div>
+</form>

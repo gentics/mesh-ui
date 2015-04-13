@@ -37,22 +37,7 @@ function dataServiceProvider() {
 function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
 
     Restangular.setBaseUrl(apiUrl);
-    Restangular.addResponseInterceptor(function(data, operation) {
-        // normalize the response to remove the extra language properties
-        // and move the content of the currently-selected language up to
-        // the "properties" level.
-        var lang = i18nService.getLanguage();
-
-        if (operation === "getList") {
-            data.forEach(function(result) {
-                if (result.properties && result.properties[lang]) {
-                    result.properties = result.properties[lang];
-                }
-            });
-        }
-
-        return data;
-    });
+    Restangular.addResponseInterceptor(responseInterceptor);
 
     var projects = Restangular.all('projects'),
         users = Restangular.all('users'),
@@ -166,6 +151,34 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
     function clearCache() {
         $cacheFactory.get('$http').removeAll();
     }
+
+    /**
+     * Normalize the response to remove the extra language properties
+     * and move the content of the currently-selected language up to
+     * the "properties" level.
+     *
+     * @param data
+     * @param operation
+     * @returns {*}
+     */
+    function responseInterceptor(data, operation) {
+        var lang = i18nService.getLanguage();
+
+        function extractCurrentLanguage(item) {
+            if (item.properties && item.properties[lang]) {
+                item.properties = item.properties[lang];
+            }
+            return item;
+        }
+
+        if (operation === "getList") {
+            data.forEach(extractCurrentLanguage);
+        } else {
+            extractCurrentLanguage(data);
+        }
+
+        return data;
+    }
 }
 
 /**
@@ -179,6 +192,10 @@ function dataServiceConfig($httpProvider, RestangularProvider) {
     // header string: Authorization: Basic am9lMTp0ZXN0MTIz
     // TODO: this will be replaced by an OAuth 2 solution.
     RestangularProvider.setDefaultHeaders({ "Authorization": "Basic am9lMTp0ZXN0MTIz"});
+
+    RestangularProvider.setRestangularFields({
+       id: "uuid"
+    });
 
     RestangularProvider.addResponseInterceptor(restangularResponseInterceptor);
 

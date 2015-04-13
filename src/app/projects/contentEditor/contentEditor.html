@@ -2,15 +2,13 @@
 
     <breadcrumbs></breadcrumbs>
 
-    <h1>Content Editor!!1</h1>
+    <h1>{{ vm.content.properties.name }}</h1>
 
-<pre>
-    {{ vm.content.properties | json }}
-</pre>
+    <generated-form model="vm.content.properties" fields="vm.schema.properties"></generated-form>
 
-    <h2>Schema</h2>
-<pre>
-    {{ vm.schema | json }}
-</pre>
+    <pre>
+        {{ vm.schema | json}}
+    </pre>
+    <md-button class="md-raised md-primary" ng-click="vm.persist(vm.content)"><i class="icon-save"></i> Update</md-button>
 
 </div>
