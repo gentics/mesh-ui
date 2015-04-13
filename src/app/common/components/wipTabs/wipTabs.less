@@ -1,13 +1,22 @@
 .wip-tabs {
-  background-color: #e9ffe5;
+  background-color: @color-almost-white;
 
   .wip-tab {
     padding: 6px;
-    margin: 0 5px;
-    border: 1px solid @color-subdued;
+    margin: 0;
+    border: 1px solid @color-almost-white;
+    border-bottom: none;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    a:link, a:visited, a:active {
+      color: @color-subdued;
+      text-decoration: none;
+    }
 
     &.active {
-      background-color: red;
+      background-color: white;
+      border: 1px solid @color-subdued;
+      border-bottom: none;
     }
   }
 }
