@@ -10,7 +10,6 @@ angular.module('caiLunAdminUi')
  * @param $urlRouterProvider
  * @param $mdThemingProvider
  * @param dataServiceProvider
- * @constructor
  * @param paginationTemplateProvider
  */
 function appConfig($stateProvider,

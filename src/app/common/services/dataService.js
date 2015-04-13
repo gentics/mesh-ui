@@ -66,7 +66,9 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
     this.getUsers = getUsers;
     this.getTags = getTags;
     this.getContents = getContents;
+    this.getContent = getContent;
     this.getSchemas = getSchemas;
+    this.getSchema = getSchema;
     this.getRoles = getRoles;
     this.getGroups = getGroups;
 
@@ -118,9 +120,29 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
         return contents.getList(queryParams);
     }
 
+    /**
+     * Get a single content record.
+     *
+     * @param projectName
+     * @param uuid
+     * @returns {restangular.RestangularElement|restangular.IElement}
+     */
+    function getContent(projectName, uuid) {
+        var contents = Restangular.all(projectName);
+        var queryParams = {
+            lang: i18nService.getLanguage()
+        };
+
+        return contents.one('contents', uuid).get(queryParams);
+    }
+
     function getSchemas() {
         // stub
         return schemas.getList();
+    }
+
+    function getSchema(uuid) {
+        return Restangular.one('schemas', uuid).get();
     }
 
     function getRoles() {

@@ -2,12 +2,13 @@ angular.module('caiLunAdminUi.projects')
     .controller('ProjectExplorerController', ProjectExplorerController);
 
 /**
+ * @param $state
  * @param $location
  * @param dataService
  * @param contextService
  * @constructor
  */
-function ProjectExplorerController($location, dataService, contextService) {
+function ProjectExplorerController($state, $location, dataService, contextService) {
     var vm = this;
 
     vm.totalItems = 0;
@@ -33,6 +34,14 @@ function ProjectExplorerController($location, dataService, contextService) {
      */
     vm.setItemsPerPage = function() {
         $location.search('per_page' , vm.itemsPerPage);
+    };
+
+    /**
+     * Transition to the contentEditor view for the given uuid
+     * @param uuid
+     */
+    vm.goToContent = function(uuid) {
+        $state.go('projects.explorer.content', { uuid: uuid });
     };
 
     populate(vm.currentPage);
