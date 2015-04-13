@@ -15,6 +15,7 @@ function WipService() {
 
     this.openContent = openContent;
     this.closeContent = closeContent;
+    this.getContent = getContent;
     this.getOpenContents = getOpenContents;
     this.registerWipChangeHandler = registerWipChangeHandler;
 
@@ -50,6 +51,16 @@ function WipService() {
             }
         }
         return contentsArray;
+    }
+
+    /**
+     * Returns the wip content specified by the uuid if it exists in the contents store.
+     *
+     * @param {String} uuid
+     * @returns {*}
+     */
+    function getContent(uuid) {
+        return contents[uuid];
     }
 
     /**

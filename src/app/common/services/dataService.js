@@ -136,6 +136,11 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
         return schemas.getList();
     }
 
+    /**
+     *
+     * @param uuid
+     * @returns {EnhancedPromise<any>|restangular.IPromise<any>}
+     */
     function getSchema(uuid) {
         return Restangular.one('schemas', uuid).get();
     }

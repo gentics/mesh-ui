@@ -54,7 +54,7 @@ function wipTabs($state, wipService) {
 
         $scope.$on('$stateChangeSuccess', function(event, toState, toParams) {
             if (toParams && toParams.uuid) {
-                //vm.selectedIndex = indexByUuid(vm.wips, toParams.uuid);
+                vm.selectedIndex = indexByUuid(vm.wips, toParams.uuid);
             } else {
                 vm.selectedIndex = -1;
             }
