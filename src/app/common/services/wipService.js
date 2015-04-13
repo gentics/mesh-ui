@@ -10,44 +10,53 @@ angular.module('caiLunAdminUi.common')
  * @constructor
  */
 function WipService() {
-    var contents = {},
+    var wipStore = {},
         onWipChangeCallbacks = [];
 
-    this.openContent = openContent;
-    this.closeContent = closeContent;
-    this.getContent = getContent;
-    this.getOpenContents = getOpenContents;
+    this.openItem = openItem;
+    this.closeItem = closeItem;
+    this.getItem = getItem;
+    this.getOpenItems = getOpenItems;
     this.registerWipChangeHandler = registerWipChangeHandler;
 
     /**
-     * Add a new content items to the open contents store.
-     * @param {Object} content
+     * Add a new wip item of specified type to the store.
+     * @param {String} type
+     * @param {Object} item
      */
-    function openContent(content) {
-        contents[content.uuid] = content;
+    function openItem(type, item) {
+        if (!wipStore[type]) {
+            wipStore[type] = {};
+        }
+        wipStore[type][item.uuid] = item;
         invokeChangeCallbacks();
     }
 
     /**
-     * Remove an existing content item from the open contents store.
-     * @param content
+     * Remove an existing item of the specified type from the store.
+     * @param {String} type
+     * @param {Object} item
      */
-    function closeContent(content) {
-        if (contents[content.uuid]) {
-            delete contents[content.uuid];
+    function closeItem(type, item) {
+        if (wipStore[type] && wipStore[type][item.uuid]) {
+            delete wipStore[type][item.uuid];
             invokeChangeCallbacks();
         }
     }
 
     /**
-     * Get an array of all open contents.
+     * Get an array of all open items of the specified type.
+     * @param {String} type
      * @returns {Array}
      */
-    function getOpenContents() {
+    function getOpenItems(type) {
         var contentsArray = [];
-        for(var key in contents) {
-            if (contents.hasOwnProperty(key)) {
-                contentsArray.push(contents[key]);
+
+        if (wipStore[type]) {
+            for (var key in wipStore[type]) {
+                if (wipStore[type].hasOwnProperty(key)) {
+                    contentsArray.push(wipStore[type][key]);
+                }
             }
         }
         return contentsArray;
@@ -56,11 +65,12 @@ function WipService() {
     /**
      * Returns the wip content specified by the uuid if it exists in the contents store.
      *
+     * @param {String} type
      * @param {String} uuid
      * @returns {*}
      */
-    function getContent(uuid) {
-        return contents[uuid];
+    function getItem(type, uuid) {
+        return wipStore[type] && wipStore[type][uuid];
     }
 
     /**

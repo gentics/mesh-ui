@@ -26,7 +26,7 @@ function wipTabs($state, wipService) {
         vm.closeWip = function(index) {
             var wip = vm.wips[index],
                 newWip;
-            wipService.closeContent(wip);
+            wipService.closeItem('contents', wip);
 
             if (0 < vm.wips.length) {
                 vm.selectedIndex = lastIndex < vm.wips.length ? lastIndex : vm.wips.length - 1;
@@ -41,7 +41,7 @@ function wipTabs($state, wipService) {
         };
 
         wipService.registerWipChangeHandler(function() {
-            var updatedWips = wipService.getOpenContents();
+            var updatedWips = wipService.getOpenItems('contents');
             console.log('number of wips: ' + updatedWips.length);
 
             vm.wips = updatedWips;

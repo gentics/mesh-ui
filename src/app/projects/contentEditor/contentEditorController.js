@@ -20,7 +20,7 @@ function ContentEditorController($stateParams, contextService, dataService, wipS
      */
     function getContentData() {
         var uuid = $stateParams.uuid,
-            wipContent = wipService.getContent(uuid);
+            wipContent = wipService.getItem('contents', uuid);
 
         if (wipContent) {
             vm.content = wipContent;
@@ -30,7 +30,7 @@ function ContentEditorController($stateParams, contextService, dataService, wipS
                 .getContent(projectName, uuid)
                 .then(function(data) {
                     vm.content = data;
-                    wipService.openContent(data);
+                    wipService.openItem('contents', data);
                     return dataService.getSchema(data.schema.schemaUuid);
                 });
         }
