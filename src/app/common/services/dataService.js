@@ -128,7 +128,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
      * @param content
      */
     function persistContent(content) {
-        content.save();
+        return content.save();
     }
 
     function getSchemas() {

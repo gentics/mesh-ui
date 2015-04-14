@@ -2,7 +2,13 @@ angular.module('caiLunAdminUi.projects')
     .directive('generatedForm', generatedFormDirective);
 
 /**
- * The left-hand side navigation for displaying the sub-tags of the current tag.
+ * Component for auto-generating a form from schema data.
+ *
+ * API:
+ * ====
+ * model = the object properties from the database, e.g. "content.properties", "tag.properties" etc.
+ * fields = the schema properties array
+ * modifiedFlag = boolean value that will be set to true when user modifies any form fields.
  *
  * @returns {{}} Directive Definition Object
  */
