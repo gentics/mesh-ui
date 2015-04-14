@@ -1,0 +1,121 @@
+describe('wipService', function() {
+
+    var wipService,
+        itemType,
+        testItem;
+
+    beforeEach(module('caiLunAdminUi.common'));
+    beforeEach(inject(function (_wipService_) {
+        wipService = _wipService_;
+        testItem = {
+            uuid: 'someProject',
+            name: 'Item One'
+        };
+        itemType = 'testType';
+    }));
+
+    it('should be initially empty.', function() {
+        expect(wipService.getOpenItems(itemType)).toEqual([]);
+    });
+
+    it('should add an item to the store with openItem()', function() {
+        wipService.openItem(itemType, testItem);
+
+        var openItems = wipService.getOpenItems(itemType);
+
+        expect(openItems.length).toBe(1);
+        expect(openItems[0].name).toEqual(testItem.name);
+    });
+    
+    it('should remove the item from the store with closeItem()', function() {
+        wipService.openItem(itemType, testItem);
+        wipService.closeItem(itemType, testItem);
+
+        expect(wipService.getOpenItems(itemType)).toEqual([]);
+    });
+
+    it('should return a specific item with getItem()', function() {
+        wipService.openItem(itemType, testItem);
+
+        expect(wipService.getItem(itemType, testItem.uuid)).toBe(testItem);
+    });
+
+    it('should return undefined with getItem() if uuid not found', function() {
+        wipService.openItem(itemType, testItem);
+
+        expect(wipService.getItem(itemType, 'nonExistentId')).toBeUndefined();
+    });
+
+    it('should mark item as modified with setAsModified()', function() {
+        wipService.openItem(itemType, testItem);
+
+        expect(wipService.isModified(itemType, testItem)).toBe(false);
+        wipService.setAsModified(itemType, testItem);
+        expect(wipService.isModified(itemType, testItem)).toBe(true);
+    });
+
+    it('should mark item as unmodified with setAsUnmodified()', function() {
+        wipService.openItem(itemType, testItem);
+
+        wipService.setAsModified(itemType, testItem);
+        expect(wipService.isModified(itemType, testItem)).toBe(true);
+        wipService.setAsUnmodified(itemType, testItem);
+        expect(wipService.isModified(itemType, testItem)).toBe(false);
+    });
+
+    it('should not alter the original item when marking as modified', function() {
+        var original = angular.copy(testItem);
+        wipService.openItem(itemType, testItem);
+        wipService.setAsModified(itemType, testItem);
+
+        expect(testItem).toEqual(original);
+    });
+
+    describe('exceptional input', function() {
+
+        it('should throw if item has no uuid on openItem()', function() {
+            function addBadItem() {
+                wipService.openItem(itemType, { foo: 'bar'});
+            }
+
+            expect(addBadItem).toThrow();
+        });
+
+        it('should throw if attempting to modify non-existent item', function() {
+            function closeItem() { wipService.closeItem(itemType, testItem); }
+            function setAsModified() { wipService.setAsModified(itemType, testItem); }
+            function setAsUnmodified() { wipService.setAsUnmodified(itemType, testItem); }
+            function isModified() { wipService.isModified(itemType, testItem); }
+
+            expect(closeItem).toThrow();
+            expect(setAsModified).toThrow();
+            expect(setAsUnmodified).toThrow();
+            expect(isModified).toThrow();
+        });
+    });
+
+
+    describe('change handlers', function() {
+
+        var handlerFn;
+
+        beforeEach(function() {
+            wipService.openItem(itemType, testItem);
+            handlerFn = jasmine.createSpy('handlerFn');
+            wipService.registerWipChangeHandler(handlerFn);
+        });
+
+        it('should invoke the callback when an item is added', function() {
+            expect(handlerFn).not.toHaveBeenCalled();
+
+            wipService.openItem(itemType, { uuid: 'foo' });
+            expect(handlerFn.calls.count()).toBe(1);
+        });
+
+        it('should invoke the callback when an item is added', function() {
+            wipService.closeItem(itemType, testItem);
+            expect(handlerFn.calls.count()).toBe(1);
+        });
+
+    });
+});

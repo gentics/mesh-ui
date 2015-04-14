@@ -14,6 +14,7 @@ angular.module('caiLunAdminUi.common')
  */
 function WipService() {
     var wipStore = {},
+        modifiedWips = {},
         onWipChangeCallbacks = [];
 
     this.openItem = openItem;
@@ -31,8 +32,10 @@ function WipService() {
      * @param {Object} item
      */
     function openItem(type, item) {
+        validateItem(item);
         if (!wipStore[type]) {
             wipStore[type] = {};
+            modifiedWips[type] = {};
         }
         wipStore[type][item.uuid] = item;
         invokeChangeCallbacks();
@@ -46,9 +49,9 @@ function WipService() {
      * @param {Object} item
      */
     function setAsModified(type, item) {
-        if (wipStore[type] && wipStore[type][item.uuid]) {
-            wipStore[type][item.uuid].__wipModified = true;
-        }
+        validateItem(item);
+        checkItemExists(type, item);
+        modifiedWips[type][item.uuid] = true;
     }
 
     /**
@@ -60,9 +63,9 @@ function WipService() {
      * @param {Object} item
      */
     function setAsUnmodified(type, item) {
-        if (wipStore[type] && wipStore[type][item.uuid]) {
-            wipStore[type][item.uuid].__wipModified = false;
-        }
+        validateItem(item);
+        checkItemExists(type, item);
+        modifiedWips[type][item.uuid] = false;
     }
 
     /**
@@ -73,9 +76,9 @@ function WipService() {
      * @returns {boolean}
      */
     function isModified(type, item) {
-        if (wipStore[type] && wipStore[type][item.uuid]) {
-            return wipStore[type][item.uuid].__wipModified === true;
-        }
+        validateItem(item);
+        checkItemExists(type, item);
+        return modifiedWips[type][item.uuid] === true;
     }
 
     /**
@@ -84,10 +87,10 @@ function WipService() {
      * @param {Object} item
      */
     function closeItem(type, item) {
-        if (wipStore[type] && wipStore[type][item.uuid]) {
-            delete wipStore[type][item.uuid];
-            invokeChangeCallbacks();
-        }
+        validateItem(item);
+        checkItemExists(type, item);
+        delete wipStore[type][item.uuid];
+        invokeChangeCallbacks();
     }
 
     /**
@@ -140,4 +143,21 @@ function WipService() {
         });
     }
 
+    /**
+     * Throws an exception if the item object does not have a `uuid` property.
+     * @param item
+     */
+    function validateItem(item) {
+        if (!item.uuid) {
+            throw new Error('wipService: `item` does not have a `uuid` property.');
+        }
+    }
+
+    function checkItemExists(type, item) {
+        if (!wipStore[type]) {
+            throw new Error('wipService: the wipStore does not contain any items of the type "' + type + '".');
+        } else if (!wipStore[type][item.uuid]) {
+            throw new Error('wipService: item of type "' + type + '" with uuid "' + item.uuid + '" not found.');
+        }
+    }
 }
