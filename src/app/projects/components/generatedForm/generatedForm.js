@@ -10,6 +10,9 @@ function generatedFormDirective() {
 
     function generatedFormController() {
         var vm = this;
+        vm.setModifiedFlag = function() {
+            vm.modifiedFlag = true;
+        };
     }
 
     return {
@@ -21,7 +24,8 @@ function generatedFormDirective() {
         bindToController: true,
         scope: {
             model: '=',
-            fields: '='
+            fields: '=',
+            modifiedFlag: '='
         }
     };
 }

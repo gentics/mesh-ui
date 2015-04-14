@@ -4,11 +4,14 @@
 
     <h1>{{ vm.content.properties.name }}</h1>
 
-    <generated-form model="vm.content.properties" fields="vm.schema.properties"></generated-form>
+    <generated-form model="vm.content.properties"
+                    fields="vm.schema.properties"
+                    modified-flag="vm.contentModified"></generated-form>
 
-    <pre>
-        {{ vm.content | json}}
-    </pre>
-    <md-button class="md-raised md-primary" ng-click="vm.persist(vm.content)"><i class="icon-save"></i> Update</md-button>
+    <md-button class="md-raised md-primary"
+               ng-click="vm.persist(vm.content)"
+               ng-show="vm.contentModified">
+        <i class="icon-save"></i> Update
+    </md-button>
 
 </div>

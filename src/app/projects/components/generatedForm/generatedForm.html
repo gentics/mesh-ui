@@ -1,8 +1,8 @@
-<form>
+<form name="contentEditorForm">
     <div ng-repeat="field in vm.fields">
         <md-input-container>
             <label>{{ field.key }}</label>
-            <input type="text" ng-model="vm.model[field.key]">
+            <input type="text" ng-model="vm.model[field.key]" ng-change="vm.setModifiedFlag()">
         </md-input-container>
     </div>
 </form>
