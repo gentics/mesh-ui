@@ -1,22 +1,51 @@
+@tab-border-color: @color-silver;
+@tab-bg-color: white;
+@status-modified-color: #fb945e;
+
 .wip-tabs {
-  background-color: @color-almost-white;
+
+  border-bottom: 1px solid @tab-border-color;
 
   .wip-tab {
+    cursor: pointer;
     padding: 6px;
-    margin: 0;
-    border: 1px solid @color-almost-white;
+    margin: 0 0 -1px 0;
     border-bottom: none;
     font-size: 0.75em;
     text-transform: uppercase;
-    a:link, a:visited, a:active {
-      color: @color-subdued;
-      text-decoration: none;
+    color: @color-boulder;
+    position: relative;
+
+    border-top: 1px solid @color-transparent;
+    border-right: 1px solid @tab-border-color;
+    &:first-child {
+      border-left: 1px solid @tab-border-color;
+    }
+
+    &:hover {
+      background-color: darken(@tab-bg-color, 10%);
     }
 
     &.active {
-      background-color: white;
-      border: 1px solid @color-subdued;
-      border-bottom: none;
+      background-color: @tab-bg-color;
+      color: @color-subdued;
+      border-top: 1px solid @tab-border-color;
+
+      .status-indicator {
+        background-color: @status-modified-color;
+        top: 0;
+        bottom: 0;
+      }
+    }
+
+    .status-indicator {
+      display: inline-block;
+      position: absolute;
+      width: 5px;
+      top: -1px;
+      left: 0;
+      bottom: 1px;
+      background-color: lighten(@status-modified-color, 20%);
     }
   }
 }

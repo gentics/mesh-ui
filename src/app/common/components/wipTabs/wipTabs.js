@@ -19,11 +19,17 @@ function wipTabs($state, $mdDialog, wipService, dataService) {
             lastIndex = 0;
 
         vm.wips = [];
+        vm.modified = [];
         vm.selectedIndex = 0;
+        vm.isModified = isModified;
         vm.closeWip = closeWip;
 
         wipService.registerWipChangeHandler(wipChangeHandler);
         $scope.$on('$stateChangeSuccess', stateChangeHandler);
+
+        function isModified(uuid) {
+            return -1 < vm.modified.indexOf(uuid);
+        }
 
         /**
          * Close a WIP tab and remove the WIP item from the wipService, automatically switching to another
@@ -86,6 +92,7 @@ function wipTabs($state, $mdDialog, wipService, dataService) {
          */
         function wipChangeHandler() {
             vm.wips = wipService.getOpenItems('contents');
+            vm.modified = wipService.getModifiedItems('contents');
             vm.selectedIndex = indexByUuid(vm.wips, $state.params.uuid);
             if (-1 < vm.selectedIndex) {
                 lastIndex = vm.selectedIndex;
