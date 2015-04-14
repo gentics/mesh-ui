@@ -8,7 +8,7 @@ describe('wipService', function() {
     beforeEach(inject(function (_wipService_) {
         wipService = _wipService_;
         testItem = {
-            uuid: 'someProject',
+            uuid: 'some_uuid',
             name: 'Item One'
         };
         itemType = 'testType';
@@ -46,29 +46,52 @@ describe('wipService', function() {
         expect(wipService.getItem(itemType, 'nonExistentId')).toBeUndefined();
     });
 
-    it('should mark item as modified with setAsModified()', function() {
-        wipService.openItem(itemType, testItem);
+    describe('change tracking', function() {
 
-        expect(wipService.isModified(itemType, testItem)).toBe(false);
-        wipService.setAsModified(itemType, testItem);
-        expect(wipService.isModified(itemType, testItem)).toBe(true);
-    });
+        beforeEach(function() {
+            wipService.openItem(itemType, testItem);
+        });
 
-    it('should mark item as unmodified with setAsUnmodified()', function() {
-        wipService.openItem(itemType, testItem);
+        it('should mark item as modified with setAsModified()', function() {
+            expect(wipService.isModified(itemType, testItem)).toBe(false);
+            wipService.setAsModified(itemType, testItem);
+            expect(wipService.isModified(itemType, testItem)).toBe(true);
+        });
 
-        wipService.setAsModified(itemType, testItem);
-        expect(wipService.isModified(itemType, testItem)).toBe(true);
-        wipService.setAsUnmodified(itemType, testItem);
-        expect(wipService.isModified(itemType, testItem)).toBe(false);
-    });
+        it('should mark item as unmodified with setAsUnmodified()', function() {
+            wipService.setAsModified(itemType, testItem);
+            expect(wipService.isModified(itemType, testItem)).toBe(true);
+            wipService.setAsUnmodified(itemType, testItem);
+            expect(wipService.isModified(itemType, testItem)).toBe(false);
+        });
 
-    it('should not alter the original item when marking as modified', function() {
-        var original = angular.copy(testItem);
-        wipService.openItem(itemType, testItem);
-        wipService.setAsModified(itemType, testItem);
+        it('should not alter the original item when marking as modified', function() {
+            var original = angular.copy(testItem);
+            wipService.setAsModified(itemType, testItem);
 
-        expect(testItem).toEqual(original);
+            expect(testItem).toEqual(original);
+        });
+
+        it('should list all modified with getModifiedItems()', function() {
+            var secondItem = {
+                uuid: 'foobar'
+            };
+            wipService.openItem(itemType, secondItem);
+
+            wipService.setAsModified(itemType, testItem);
+            expect(wipService.getModifiedItems(itemType)).toEqual([testItem.uuid]);
+
+            wipService.setAsModified(itemType, secondItem);
+            expect(wipService.getModifiedItems(itemType)).toEqual([testItem.uuid, secondItem.uuid]);
+
+        });
+
+        it('should correctly list modified items after setting to unmodified', function() {
+            wipService.setAsModified(itemType, testItem);
+            wipService.setAsUnmodified(itemType, testItem);
+
+            expect(wipService.getModifiedItems(itemType)).toEqual([]);
+        });
     });
 
     describe('exceptional input', function() {

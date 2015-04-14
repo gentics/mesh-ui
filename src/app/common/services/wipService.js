@@ -24,6 +24,7 @@ function WipService() {
     this.closeItem = closeItem;
     this.getItem = getItem;
     this.getOpenItems = getOpenItems;
+    this.getModifiedItems = getModifiedItems;
     this.registerWipChangeHandler = registerWipChangeHandler;
 
     /**
@@ -52,6 +53,7 @@ function WipService() {
         validateItem(item);
         checkItemExists(type, item);
         modifiedWips[type][item.uuid] = true;
+        invokeChangeCallbacks();
     }
 
     /**
@@ -66,6 +68,7 @@ function WipService() {
         validateItem(item);
         checkItemExists(type, item);
         modifiedWips[type][item.uuid] = false;
+        invokeChangeCallbacks();
     }
 
     /**
@@ -99,16 +102,34 @@ function WipService() {
      * @returns {Array}
      */
     function getOpenItems(type) {
-        var contentsArray = [];
+        var itemsArray = [];
 
         if (wipStore[type]) {
             for (var key in wipStore[type]) {
                 if (wipStore[type].hasOwnProperty(key)) {
-                    contentsArray.push(wipStore[type][key]);
+                    itemsArray.push(wipStore[type][key]);
                 }
             }
         }
-        return contentsArray;
+        return itemsArray;
+    }
+
+    /**
+     * Get an array of uuids of each item of the specified type which has been modified.
+     * @param {String} type
+     * @returns {Array}
+     */
+    function getModifiedItems(type) {
+        var itemsArray = [];
+
+        if (modifiedWips[type]) {
+            for (var key in modifiedWips[type]) {
+                if (modifiedWips[type].hasOwnProperty(key) && modifiedWips[type][key] === true) {
+                    itemsArray.push(key);
+                }
+            }
+        }
+        return itemsArray;
     }
 
     /**
