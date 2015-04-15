@@ -93,6 +93,7 @@ function WipService() {
         validateItem(item);
         checkItemExists(type, item);
         delete wipStore[type][item.uuid];
+        delete modifiedWips[type][item.uuid];
         invokeChangeCallbacks();
     }
 

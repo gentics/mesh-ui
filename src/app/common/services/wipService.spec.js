@@ -92,6 +92,12 @@ describe('wipService', function() {
 
             expect(wipService.getModifiedItems(itemType)).toEqual([]);
         });
+
+        it('should remove an item from modified list if close with closeItem()', function() {
+            wipService.setAsModified(itemType, testItem);
+            wipService.closeItem(itemType, testItem);
+            expect(wipService.getModifiedItems(itemType)).toEqual([]);
+        });
     });
 
     describe('exceptional input', function() {
