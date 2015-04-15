@@ -39,7 +39,7 @@ function routesConfig($stateProvider) {
             }
         })
         .state('projects.explorer.content', {
-            url: '/:uuid',
+            url: '/content/:uuid',
             views: {
                 'projects@projects' : {
                     templateUrl: 'projects/contentEditor/contentEditor.html',
