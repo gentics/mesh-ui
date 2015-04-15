@@ -4,10 +4,11 @@ angular.module('caiLunAdminUi.login')
 /**
  * @param $state
  * @param $mdDialog
+ * @param i18n
  * @param authService
  * @constructor
  */
-function LoginController($state, $mdDialog, authService) {
+function LoginController($state, $mdDialog, i18n, authService) {
     var vm = this;
 
     vm.submitForm = function(event, userName, password) {
@@ -24,9 +25,9 @@ function LoginController($state, $mdDialog, authService) {
      */
     function showErrorDialog(event) {
         var logInErrorDialog = $mdDialog.alert()
-            .title('Error')
-            .content('Please check your login details and try again.')
-            .ariaLabel('Log In Error')
+            .title(i18n('ERROR'))
+            .content(i18n('ERR_CHECK_LOGIN_DETAILS'))
+            .ariaLabel(i18n('ERR_CHECK_LOGIN_DETAILS'))
             .ok('Okay')
             .targetEvent(event);
 
