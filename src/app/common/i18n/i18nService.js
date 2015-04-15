@@ -12,8 +12,8 @@ function i18nServiceProvider() {
             'de'
         ];
 
-    this.$get = function(){
-        return new I18nService(availableLangs, defaultLang);
+    this.$get = function($translate){
+        return new I18nService($translate, availableLangs, defaultLang);
     };
 
     /**
@@ -49,7 +49,7 @@ function i18nServiceProvider() {
  * @param {Array} availableLangs
  * @param {String} defaultLang
  */
-function I18nService(availableLangs, defaultLang) {
+function I18nService($translate, availableLangs, defaultLang) {
 
     var language = defaultLang;
 
@@ -68,6 +68,7 @@ function I18nService(availableLangs, defaultLang) {
     function setLanguage(value) {
         if (-1 < availableLangs.indexOf(value)) {
             language = value;
+            $translate.use(value);
         } else {
             throw new Error('I18nService#setLanguage: ' + value + ' is not an available language.');
         }
