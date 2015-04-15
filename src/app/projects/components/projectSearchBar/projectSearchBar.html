@@ -5,8 +5,8 @@
             <md-option ng-value="all"
                        ng-selected="vm.currentProject === ''"
                        class="project-search-name"
-                       ng-click="vm.goToContext('')">
-                All Projects
+                       ng-click="vm.goToContext('')" translate>
+                ALL_PROJECTS
             </md-option>
             <md-option ng-value="project"
                        ng-repeat="project in vm.projects"
@@ -18,7 +18,7 @@
         </md-select>
 
         <md-input-container class="search-term">
-            <label>Search</label>
+            <label translate>SEARCH</label>
             <input type="text" ng-model="searchTerm">
         </md-input-container>
 
