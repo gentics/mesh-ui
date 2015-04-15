@@ -24,6 +24,7 @@ module.exports = function(config) {
             'bower_components/lodash/dist/lodash.js',
             'bower_components/restangular/dist/restangular.js',
             'bower_components/angular-utils-pagination/dirPagination.js',
+            'bower_components/angular-translate/angular-translate.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'src/**/*.js'
         ],

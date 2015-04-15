@@ -19,7 +19,8 @@ var VENDOR_SCRIPTS = [
     'bower_components/ui-router/release/angular-ui-router.js',
     'bower_components/lodash/dist/lodash.js',
     'bower_components/restangular/dist/restangular.js',
-    'bower_components/angular-utils-pagination/dirPagination.js'
+    'bower_components/angular-utils-pagination/dirPagination.js',
+    'bower_components/angular-translate/angular-translate.js'
 ];
 
 var VENDOR_STYLES = [
