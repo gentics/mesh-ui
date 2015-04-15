@@ -8,16 +8,24 @@ describe('selectiveCache', function() {
 
     describe('provider config', function() {
 
-        it('setCacheableUrls() accepts array of Regexps', inject(function () {
+        it('setCacheableGroups() accepts hash of <string, Regexp>', inject(function () {
             function configure() {
-                provider.setCacheableUrls([/a/, /b/, /c/]);
+                provider.setCacheableGroups({
+                    a: /a/,
+                    b: /b/,
+                    c: /c/
+                });
             }
             expect(configure).not.toThrow();
         }));
 
-        it('should throw when setCacheableUrls() is passed non-regexp values', function() {
+        it('should throw when setCacheableGroups() is passed non-regexp values', function() {
             function configure() {
-                provider.setCacheableUrls(['a', 'b', 'c']);
+                provider.setCacheableGroups({
+                    a: 'a',
+                    b: 'b',
+                    c: 'c'
+                });
             }
             console.log('ribbit');
             expect(configure).toThrow();
@@ -32,10 +40,10 @@ describe('selectiveCache', function() {
 
         beforeEach(inject(function($cacheFactory) {
             baseUrl = 'localhost/';
-            provider.setCacheableUrls([
-                /^route\-one/,
-                /^route\-two\/[0-9]*$/
-            ]);
+            provider.setCacheableGroups({
+                'routeOne': /^route\-one/,
+                'routeTwo': /^route\-two\/[0-9]*$/
+            });
             provider.setBaseUrl(baseUrl);
             selectiveCache = provider.$get($cacheFactory);
         }));
@@ -66,7 +74,7 @@ describe('selectiveCache', function() {
             selectiveCache.put('route-one/a', 'a');
 
             expect(selectiveCache.info().size).toEqual(11);
-            var removedCount = selectiveCache.remove(/^route\-two\/[0-9]*$/);
+            var removedCount = selectiveCache.remove('routeTwo');
             expect(selectiveCache.info().size).toEqual(1);
             expect(removedCount).toEqual(10);
         });
