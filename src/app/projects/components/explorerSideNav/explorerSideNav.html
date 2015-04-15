@@ -1,6 +1,6 @@
 <div>
     <div class="expand-side-nav" ng-click="vm.toggleOpen()"><i class="icon-menu"></i></div>
-    <md-sidenav md-component-id="left" class="md-sidenav-left tag-list-container" md-is-locked-open="$mdMedia('gt-sm') || vm.isOpen">
+    <md-sidenav md-component-id="left" class="md-sidenav-left tag-list-container" md-is-locked-open="$mdMedia('gt-sm')" md-is-open="vm.isOpen">
         <md-list>
             <md-item ng-repeat="tag in vm.tags">
                 <md-item-content>

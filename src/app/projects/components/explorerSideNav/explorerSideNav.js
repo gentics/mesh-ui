@@ -10,6 +10,11 @@ function explorerSideNavDirective() {
 
     function explorerSideNavController() {
         var vm = this;
+
+        vm.isOpen = false;
+        vm.toggleOpen = function() {
+            vm.isOpen = !vm.isOpen;
+        };
     }
 
     return {
