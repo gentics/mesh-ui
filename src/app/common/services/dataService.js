@@ -11,8 +11,8 @@ function dataServiceProvider() {
     var apiUrl;
 
     this.setApiUrl = setApiUrl;
-    this.$get = function($cacheFactory, Restangular, i18nService) {
-        return new DataService($cacheFactory, Restangular, i18nService, apiUrl);
+    this.$get = function($http, selectiveCache, Restangular, i18nService) {
+        return new DataService($http, selectiveCache, Restangular, i18nService, apiUrl);
     };
 
     /**
@@ -28,14 +28,17 @@ function dataServiceProvider() {
  * The data service itself which is responsible for all requests to the API.
  *
  * @constructor
- * @param $cacheFactory
+ * @param $http
+ * @param selectiveCache
  * @param Restangular
  * @param i18nService
  * @param {string} apiUrl
  * @returns {{}}
  */
-function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
+function DataService($http, selectiveCache, Restangular, i18nService, apiUrl) {
 
+    selectiveCache.setBaseUrl(apiUrl);
+    $http.defaults.cache = selectiveCache;
     Restangular.setBaseUrl(apiUrl);
     Restangular.addRequestInterceptor(requestLangWrapper);
     Restangular.addResponseInterceptor(responseLangUnwrapper);
@@ -58,6 +61,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
     this.getSchema = getSchema;
     this.getRoles = getRoles;
     this.getGroups = getGroups;
+    this.clearCache = clearCache;
 
     /**
      * @returns {*}
@@ -128,6 +132,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
      * @param content
      */
     function persistContent(content) {
+        clearCache('contents');
         return content.save();
     }
 
@@ -139,7 +144,7 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
     /**
      *
      * @param uuid
-     * @returns {EnhancedPromise<any>|restangular.IPromise<any>}
+     * @returns {ng.IPromise<any>|restangular.IPromise<any>}
      */
     function getSchema(uuid) {
         return Restangular.one('schemas', uuid).get();
@@ -163,8 +168,8 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
      * just for "projects", but this is not simple since the URL *and* any query parameters must match to
      * remove the correct cache key.
      */
-    function clearCache() {
-        $cacheFactory.get('$http').removeAll();
+    function clearCache(groupName) {
+        selectiveCache.remove(groupName);
     }
 
     /**
@@ -231,10 +236,10 @@ function DataService($cacheFactory, Restangular, i18nService, apiUrl) {
 /**
  * Configure Restangular
  *
- * @param $httpProvider
  * @param RestangularProvider
+ * @param selectiveCacheProvider
  */
-function dataServiceConfig($httpProvider, RestangularProvider) {
+function dataServiceConfig(RestangularProvider, selectiveCacheProvider) {
     // basic auth credentials: joe1:test123
     // header string: Authorization: Basic am9lMTp0ZXN0MTIz
     // TODO: this will be replaced by an OAuth 2 solution.
@@ -246,7 +251,14 @@ function dataServiceConfig($httpProvider, RestangularProvider) {
 
     RestangularProvider.addResponseInterceptor(restangularResponseInterceptor);
 
-    $httpProvider.defaults.cache = true;
+    // define the urls we wish to cache
+    var cacheable = {
+        'projects': /^\/projects/,
+        'contents': /^\/[a-zA-Z]*\/contents\??.*/,
+        'tags': /^\/[a-zA-Z]*\/tags\??.*/,
+        'schemas': /^\/schemas\/[a-z0-9]+$/
+    };
+    selectiveCacheProvider.setCacheableGroups(cacheable);
 }
 
 /**
