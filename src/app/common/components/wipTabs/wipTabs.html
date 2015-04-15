@@ -8,7 +8,7 @@
 
         <span class="status-indicator" ng-show="vm.isModified(wip.uuid)"></span>
         <span class="label">{{ wip.properties.name }}</span>
-        <span ng-click="vm.closeWip($index)"><i class="icon-close"></i></span>
+        <span ng-click="vm.closeWip($event, $index)" class="close"><i class="icon-close"></i></span>
 
     </div>
 </div>

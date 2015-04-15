@@ -15,11 +15,10 @@
     text-transform: uppercase;
     color: @color-boulder;
     position: relative;
-
     border-top: 1px solid @color-transparent;
-    border-right: 1px solid @tab-border-color;
-    &:first-child {
-      border-left: 1px solid @tab-border-color;
+
+    &:last-child {
+      border-right: 1px solid @tab-border-color;
     }
 
     &:hover {
@@ -30,20 +29,16 @@
       background-color: @tab-bg-color;
       color: @color-subdued;
       border-top: 1px solid @tab-border-color;
+      border-left: 1px solid @tab-border-color;
+      border-right: 1px solid @tab-border-color;
+      border-radius: 3px 3px 0 0;
+      overflow-x: hidden;
 
       .status-indicator {
         background-color: @status-modified-color;
         top: 0;
         bottom: 0;
       }
-    }
-
-    .label {
-      max-width: 200px;
-      display: inline-block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .status-indicator {
@@ -55,5 +50,38 @@
       bottom: 1px;
       background-color: lighten(@status-modified-color, 20%);
     }
+
+    .label {
+      width: 92%;
+      max-width: 100px;
+      .responsive-min(@mq-sm, {
+        max-width: 200px;
+      });
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .close {
+      position: absolute;
+      right: 5px;
+      top: 7px;
+
+      i {
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+      }
+      &:hover {
+        i {
+          background-color: @color-silver;
+        }
+      }
+    }
+  }
+
+  div:not(.active) + .wip-tab, .wip-tab:first-child {
+    border-left: 1px solid @tab-border-color;
   }
 }

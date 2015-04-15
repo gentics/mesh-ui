@@ -37,8 +37,10 @@ function wipTabs($state, $mdDialog, wipService, dataService) {
          *
          * @param {number} index
          */
-        function closeWip(index) {
+        function closeWip(event, index) {
             var wip = vm.wips[index];
+
+            event.stopPropagation();
 
             if (wipService.isModified('contents', wip)) {
                 showDialog().then(function(response) {
