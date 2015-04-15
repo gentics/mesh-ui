@@ -11,10 +11,10 @@
             <table class="md-table">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Schema</th>
-                        <th>Author</th>
-                        <th>Created</th>
+                        <th translate>TITLE</th>
+                        <th translate>SCHEMA</th>
+                        <th translate>AUTHOR</th>
+                        <th translate>CREATED</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,7 +40,7 @@
                 </div>
                 <div flex="30" layout="columns" layout-align="center center ">
                     <div flex>
-                        <div class="select-label">Items per page:</div>
+                        <div class="select-label" translate>ITEMS_PER_PAGE</div>
                     </div>
                     <div flex>
                         <md-select ng-model="vm.itemsPerPage" ng-change="vm.setItemsPerPage()">

@@ -1,20 +1,20 @@
 <md-dialog>
   <md-content>
-      <h2>Content Modified</h2>
-      <p>
-          This content has been modified. How would you like to proceed?
+      <h2 translate>CONTENT_MODIFIED</h2>
+      <p translate>
+          CONTENT_MODIFIED_HOW_TO_PROCEED
       </p>
   </md-content>
 
   <div class="md-actions">
     <md-button ng-click="vm.save()" class="md-raised md-primary">
-      Save Changes
+      <span translate>SAVE_CHANGES</span>
     </md-button>
     <md-button ng-click="vm.discard()" class="md-raised md-warn">
-      Discard Changes
+        <span translate>DISCARD_CHANGES</span>
     </md-button>
-    <md-button ng-click="vm.cancel()" class="">
-      Cancel
+    <md-button ng-click="vm.cancel()" class="" translate>
+        <span translate>CANCEL</span>
     </md-button>
   </div>
 </md-dialog>
