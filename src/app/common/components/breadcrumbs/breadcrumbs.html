@@ -1,5 +1,7 @@
 <div class="breadcrumbs">
     <ul>
-        <li ng-repeat="label in vm.breadcrumbs"><span><a href="#">{{ label }}</a></span></li>
+        <li ng-repeat="label in vm.breadcrumbs">
+            <span><a href="#" ui-sref="projects.explorer({ projectName: label.name, tagId: label.id })">{{ label.name }}</a></span>
+        </li>
     </ul>
 </div>
