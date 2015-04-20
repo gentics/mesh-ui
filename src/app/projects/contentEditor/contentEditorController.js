@@ -2,7 +2,7 @@ angular.module('caiLunAdminUi.projects')
     .controller('ContentEditorController', ContentEditorController);
 
 
-function ContentEditorController($scope, $stateParams, contextService, dataService, wipService) {
+function ContentEditorController($scope, $stateParams, contextService, dataService, wipService, notifyService) {
     var vm = this,
         projectName = contextService.getProject().name;
 
@@ -10,6 +10,7 @@ function ContentEditorController($scope, $stateParams, contextService, dataServi
 
     vm.persist = function(content) {
         dataService.persistContent(content);
+        notifyService.toast('SAVED_CHANGES');
         wipService.setAsUnmodified('contents', vm.content);
         vm.contentModified = false;
     };

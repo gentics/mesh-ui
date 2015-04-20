@@ -9,10 +9,11 @@ angular.module('caiLunAdminUi.common')
  * @param $mdDialog
  * @param wipService
  * @param dataService
+ * @param notifyService
  *
  * @returns {{}} Directive Definition Object
  */
-function wipTabs($state, $mdDialog, wipService, dataService) {
+function wipTabs($state, $mdDialog, wipService, dataService, notifyService) {
 
     function wipTabsController($scope) {
         var vm = this,
@@ -35,6 +36,7 @@ function wipTabs($state, $mdDialog, wipService, dataService) {
          * Close a WIP tab and remove the WIP item from the wipService, automatically switching to another
          * tab or the list view.
          *
+         * @param event
          * @param {number} index
          */
         function closeWip(event, index) {
@@ -46,6 +48,7 @@ function wipTabs($state, $mdDialog, wipService, dataService) {
                 showDialog().then(function(response) {
                     if (response === 'save') {
                         dataService.persistContent(wip);
+                        notifyService.toast('SAVED_CHANGES');
                     }
                     wipService.closeItem('contents', wip);
                     goToNextTab();

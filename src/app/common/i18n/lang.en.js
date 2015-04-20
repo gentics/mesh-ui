@@ -26,6 +26,7 @@ var englishTranslations = {
     /* Dialogs */
     'CONTENT_MODIFIED': 'Content Modified',
     'CONTENT_MODIFIED_HOW_TO_PROCEED': 'This content has been modified. How would you like to proceed?',
+    'SAVED_CHANGES': 'Saved changes',
     
     /* Common buttons */
     'SAVE_CHANGES': 'Save Changes',
