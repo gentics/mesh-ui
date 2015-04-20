@@ -2,13 +2,14 @@ angular.module('caiLunAdminUi.projects')
     .controller('ProjectExplorerController', ProjectExplorerController);
 
 /**
+ * @param $scope
  * @param $state
  * @param $location
  * @param dataService
  * @param contextService
  * @constructor
  */
-function ProjectExplorerController($state, $location, dataService, contextService) {
+function ProjectExplorerController($scope, $state, $location, dataService, contextService) {
     var vm = this;
 
     vm.totalItems = 0;
@@ -16,38 +17,51 @@ function ProjectExplorerController($state, $location, dataService, contextServic
     vm.currentPage = $location.search().page || 1;
     vm.loading = true;
 
+    vm.getPage = getPage;
+    vm.setItemsPerPage = setItemsPerPage;
+    vm.goToContent = goToContent;
+
+    $scope.$on('$locationChangeSuccess', updateCurrentPage);
+
+    populateContent(vm.currentPage);
+    populateTags();
+
     /**
-     * Called when a page is changed via pagination - update the url query string
-     * and get the results from the dataService.
+     * Populate the contents in accordance with the current page.
+     */
+    function updateCurrentPage() {
+        vm.currentPage = $location.search().page;
+        populateContent(vm.currentPage);
+    }
+
+    /**
+     * Called when a page is changed via pagination - update the url query string.
      * @param {number} newPage
      */
-    vm.getPage = function(newPage) {
+    function getPage(newPage) {
         $location.search('page' , newPage);
-        populate(newPage);
-    };
+    }
 
     /**
      * When the number of items per page is changed, update the url query string.
      */
-    vm.setItemsPerPage = function() {
+    function setItemsPerPage() {
         $location.search('per_page' , vm.itemsPerPage);
-    };
+    }
 
     /**
      * Transition to the contentEditor view for the given uuid
      * @param uuid
      */
-    vm.goToContent = function(uuid) {
+    function goToContent(uuid) {
         $state.go('projects.explorer.content', { uuid: uuid });
-    };
-
-    populate(vm.currentPage);
+    }
 
     /**
-     * Fill the vm with contents & tags data from the server.
+     * Fill the vm with the child contents of the current tag.
      * @param {number} page
      */
-    function populate(page) {
+    function populateContent(page) {
         var projectName = contextService.getProject().name,
             tagId = contextService.getTag().id,
             queryParams = {
@@ -63,6 +77,14 @@ function ProjectExplorerController($state, $location, dataService, contextServic
                 vm.totalItems = data.metadata.total_count;
                 vm.loading = false;
             });
+    }
+
+    /**
+     * Fill the vm with the child tags of the current tag.
+     */
+    function populateTags() {
+        var projectName = contextService.getProject().name,
+            tagId = contextService.getTag().id;
 
         dataService.getTags(projectName, tagId)
             .then(function(data) {
