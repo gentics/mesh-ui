@@ -25,7 +25,6 @@ function ProjectExplorerController($scope, $state, $location, dataService, conte
         return $location.search().page;
     }, updateCurrentPage);
 
-    populateContent(vm.currentPage);
     populateTags();
 
     /**
