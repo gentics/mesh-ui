@@ -11,8 +11,8 @@ function dataServiceProvider() {
     var apiUrl;
 
     this.setApiUrl = setApiUrl;
-    this.$get = function($http, selectiveCache, Restangular, i18nService) {
-        return new DataService($http, selectiveCache, Restangular, i18nService, apiUrl);
+    this.$get = function($http, $q, selectiveCache, Restangular, i18nService) {
+        return new DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl);
     };
 
     /**
@@ -29,13 +29,14 @@ function dataServiceProvider() {
  *
  * @constructor
  * @param $http
+ * @param $q
  * @param selectiveCache
  * @param Restangular
  * @param i18nService
  * @param {string} apiUrl
  * @returns {{}}
  */
-function DataService($http, selectiveCache, Restangular, i18nService, apiUrl) {
+function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl) {
 
     selectiveCache.setBaseUrl(apiUrl);
     $http.defaults.cache = selectiveCache;
@@ -52,6 +53,8 @@ function DataService($http, selectiveCache, Restangular, i18nService, apiUrl) {
 
     // public API
     this.getProjects = getProjects;
+    this.getProjectId = getProjectId;
+    this.getProjectRootTagId = getProjectRootTagId;
     this.getUsers = getUsers;
     this.getTags = getTags;
     this.getContents = getContents;
@@ -64,10 +67,59 @@ function DataService($http, selectiveCache, Restangular, i18nService, apiUrl) {
     this.clearCache = clearCache;
 
     /**
+     * Get all projects as a list.
+     *
      * @returns {*}
      */
     function getProjects() {
         return projects.getList();
+    }
+
+    /**
+     * Get the uuid of the specified project.
+     *
+     * @param {string} projectName
+     * @returns {ng.IPromise.<string>}
+     */
+    function getProjectId(projectName) {
+        return getProjectProperty(projectName, 'uuid');
+    }
+
+    /**
+     * Get the root tag uuid of the specified project.
+     *
+     * @param {string} projectName
+     * @returns {ng.IPromise.<string>}
+     */
+    function getProjectRootTagId(projectName) {
+        return getProjectProperty(projectName, 'rootTagUuid');
+    }
+
+    /**
+     * Get the value of the specified property for a project matching
+     * projectName. If no matching project is found, the promise is
+     * rejected.
+     *
+     * @param {string} projectName
+     * @param {string} propertyName
+     * @returns {ng.IPromise<string>}
+     */
+    function getProjectProperty(projectName, propertyName) {
+        var deferred = $q.defer();
+
+        getProjects().then(function(projects) {
+            var filtered = projects.filter(function(project) {
+                return project.name === projectName;
+            });
+
+            if (filtered[0] && filtered[0][propertyName]) {
+                deferred.resolve(filtered[0][propertyName]);
+            } else {
+                deferred.reject('Property "' + propertyName + '" of project "' + projectName + '" not found.');
+            }
+        });
+
+        return deferred.promise;
     }
 
     function getUsers() {
@@ -76,13 +128,17 @@ function DataService($http, selectiveCache, Restangular, i18nService, apiUrl) {
     }
 
     /**
-     * Get the tags for the given project
+     * Get the child tags for the parentTag in the given project.
+     *
      * @param {string} projectName
-     * @param {Object} queryParams
+     * @param {string} parentTagId
+     * @param {Object=} queryParams
      * @returns {restangular.EnhancedCollectionPromise<any>|restangular.ICollectionPromise<any>}
      */
-    function getTags(projectName, queryParams) {
-        var tags = Restangular.all(projectName + '/tags');
+    function getTags(projectName, parentTagId, queryParams) {
+        var url = projectName + '/tags/' + parentTagId + '/tags/',
+            tags = Restangular.all(url);
+
         queryParams = queryParams || {};
         queryParams.lang = i18nService.getLanguage();
 
@@ -93,20 +149,16 @@ function DataService($http, selectiveCache, Restangular, i18nService, apiUrl) {
      * Get the contents of a given project, with optional parameters that specifies query string options.
      *
      * @param {string} projectName
-     * @param {{}} queryParams
-     * @param {boolean} refresh Invalidate cache for this request and make a new request to the server.
+     * @param {string} parentTagId
+     * @param {Object=} queryParams
      * @returns {restangular.EnhancedCollectionPromise<any>|restangular.ICollectionPromise<any>}
      */
-    function getContents(projectName, queryParams, refresh) {
-        var contents = Restangular.all(projectName + '/contents'),
-            invalidateCache = !!refresh;
+    function getContents(projectName, parentTagId, queryParams) {
+        var url = projectName + '/tags/' + parentTagId + '/contents/',
+            contents = Restangular.all(url);
 
         queryParams = queryParams || {};
         queryParams.lang = i18nService.getLanguage();
-
-        if (invalidateCache) {
-            clearCache();
-        }
 
         return contents.getList(queryParams);
     }
@@ -160,13 +212,13 @@ function DataService($http, selectiveCache, Restangular, i18nService, apiUrl) {
     }
 
     /**
-     * The $http service is configured to cache all requests by default, but sometimes we want to get a fresh
-     * response from the server (e.g. after doing a CRUD operation, the list will change). This function is invoked
-     * by specifying a parameter in one of the public API methods and will clear the cache, forcing a new request.
+     * Clear the $http cache of all keys matching groupName. Proper use of this method
+     * depends on the use of the selectiveCache service, which allows selective removal
+     * of only certain groups of cached keys at a time. The groupName parameter must
+     * match a groupName registered with the `selectiveCacheProvider.setCacheableGroups()`
+     * config method.
      *
-     * TODO: It would be good if there was some way to invalidate the cache only for a specific endpoint, e.g.
-     * just for "projects", but this is not simple since the URL *and* any query parameters must match to
-     * remove the correct cache key.
+     * @param {string} groupName
      */
     function clearCache(groupName) {
         selectiveCache.remove(groupName);
@@ -252,10 +304,15 @@ function dataServiceConfig(RestangularProvider, selectiveCacheProvider) {
     RestangularProvider.addResponseInterceptor(restangularResponseInterceptor);
 
     // define the urls we wish to cache
+    var projectName = '^\\/[a-zA-Z\\-]*',
+        uuid = '[a-z0-9]{32}',
+        _ = '\\/',
+        projectNameTags = projectName + _ + 'tags' + _ + uuid + _;
+
     var cacheable = {
         'projects': /^\/projects/,
-        'contents': /^\/[a-zA-Z]*\/contents\??.*/,
-        'tags': /^\/[a-zA-Z]*\/tags\??.*/,
+        'contents': new RegExp(projectNameTags + 'contents\\/', 'gi'),
+        'tags':  new RegExp(projectNameTags + 'tags\\/', 'gi'),
         'schemas': /^\/schemas\/[a-z0-9]+$/
     };
     selectiveCacheProvider.setCacheableGroups(cacheable);
