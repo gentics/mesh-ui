@@ -27,6 +27,7 @@ describe('selectiveCache', function() {
                     c: 'c'
                 });
             }
+            console.log('ribbit');
             expect(configure).toThrow();
         });
 

@@ -6,9 +6,6 @@ function ProjectsListController(dataService) {
 
     populate();
 
-    /**
-     * Populate the vm with a list of available projects.
-     */
     function populate() {
         dataService.getProjects().then(function(data) {
             vm.projects = data;

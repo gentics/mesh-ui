@@ -11,21 +11,13 @@ angular.module('caiLunAdminUi.login')
 function LoginController($state, $mdDialog, i18n, authService) {
     var vm = this;
 
-    vm.submitForm = submitForm;
-
-    /**
-     * Attempt to log in with the supplied username and password.
-     * @param event
-     * @param userName
-     * @param password
-     */
-    function submitForm(event, userName, password) {
+    vm.submitForm = function(event, userName, password) {
         if (authService.logIn(userName, password)) {
             $state.go('projects.list');
         } else {
             showErrorDialog(event);
         }
-    }
+    };
 
     /**
      * Displays an error message on login failure.
