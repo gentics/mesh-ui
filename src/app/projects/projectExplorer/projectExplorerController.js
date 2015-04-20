@@ -16,32 +16,36 @@ function ProjectExplorerController($state, $location, dataService, contextServic
     vm.currentPage = $location.search().page || 1;
     vm.loading = true;
 
+    vm.getPage = getPage;
+    vm.setItemsPerPage = setItemsPerPage;
+    vm.goToContent = goToContent;
+
+    populate(vm.currentPage);
+
     /**
      * Called when a page is changed via pagination - update the url query string
      * and get the results from the dataService.
      * @param {number} newPage
      */
-    vm.getPage = function(newPage) {
+    function getPage(newPage) {
         $location.search('page' , newPage);
         populate(newPage);
-    };
+    }
 
     /**
      * When the number of items per page is changed, update the url query string.
      */
-    vm.setItemsPerPage = function() {
+    function setItemsPerPage() {
         $location.search('per_page' , vm.itemsPerPage);
-    };
+    }
 
     /**
      * Transition to the contentEditor view for the given uuid
      * @param uuid
      */
-    vm.goToContent = function(uuid) {
+    function goToContent(uuid) {
         $state.go('projects.explorer.content', { uuid: uuid });
-    };
-
-    populate(vm.currentPage);
+    }
 
     /**
      * Fill the vm with contents & tags data from the server.

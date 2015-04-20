@@ -7,17 +7,24 @@ function ContentEditorController($scope, $stateParams, contextService, dataServi
         projectName = contextService.getProject().name;
 
     vm.contentModified = false;
-
-    vm.persist = function(content) {
-        dataService.persistContent(content);
-        notifyService.toast('SAVED_CHANGES');
-        wipService.setAsUnmodified('contents', vm.content);
-        vm.contentModified = false;
-    };
+    vm.persist = persist;
 
     getContentData().then(getSchema);
 
     $scope.$watch('vm.contentModified', modifiedWatchHandler);
+
+    /**
+     * Persist the content data back to the server, notify user
+     * and update the wipService.
+     *
+     * @param {Object} content
+     */
+    function persist(content) {
+        dataService.persistContent(content);
+        notifyService.toast('SAVED_CHANGES');
+        wipService.setAsUnmodified('contents', vm.content);
+        vm.contentModified = false;
+    }
 
     /**
      * When the value of vm.contentModified evaluates to true, set the wip as
