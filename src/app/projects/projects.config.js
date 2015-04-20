@@ -26,7 +26,7 @@ function routesConfig($stateProvider) {
             }
         })
         .state('projects.explorer', {
-            url: '/:projectName',
+            url: '/:projectName/:tagId',
             views: {
                 'projects' : {
                     templateUrl: 'projects/projectExplorer/projectExplorer.html',
@@ -55,9 +55,24 @@ function routesConfig($stateProvider) {
  * state defs so that it will get invoked by any child states of a project on page load.
  *
  * @param $stateParams
+ * @param dataService
  * @param contextService
  */
-function updateContext($stateParams, contextService) {
-    var projectName = $stateParams.projectName || '';
-    contextService.setProject(projectName, '');
+function updateContext($stateParams, dataService, contextService) {
+    var projectName = $stateParams.projectName || '',
+        tagId = $stateParams.tagId,
+        result;
+
+    if (projectName !== '') {
+        result = dataService.getProjectId(projectName)
+            .then(function (projectId) {
+                contextService.setProject(projectName, projectId);
+                contextService.setTag('', tagId);
+            });
+    } else {
+        result = contextService.setProject('', '');
+        contextService.setTag('', '');
+    }
+
+    return result;
 }

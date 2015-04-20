@@ -45,24 +45,26 @@ function ProjectExplorerController($state, $location, dataService, contextServic
 
     /**
      * Fill the vm with contents & tags data from the server.
-     * @param page
+     * @param {number} page
      */
     function populate(page) {
         var projectName = contextService.getProject().name,
+            tagId = contextService.getTag().id,
             queryParams = {
                 page: page,
                 per_page: vm.itemsPerPage
             };
+
         vm.loading = true;
 
-        dataService.getContents(projectName, queryParams)
+        dataService.getContents(projectName, tagId, queryParams)
             .then(function (data) {
                 vm.contents = data;
                 vm.totalItems = data.metadata.total_count;
                 vm.loading = false;
             });
 
-        dataService.getTags(projectName)
+        dataService.getTags(projectName, tagId)
             .then(function(data) {
                 vm.tags = data;
             });

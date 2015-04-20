@@ -5,7 +5,7 @@
             <md-item ng-repeat="tag in vm.tags">
                 <md-item-content>
                     <div class="tag-item">
-                        <a href="#"><i class="icon-label-outline"></i> {{ tag.properties.name }}</a>
+                        <a href="#" ng-click="vm.goTo(tag.uuid)"><i class="icon-label-outline"></i> {{ tag.properties.name }}</a>
                     </div>
                 </md-item-content>
             </md-item>

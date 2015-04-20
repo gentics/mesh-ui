@@ -6,15 +6,30 @@ angular.module('caiLunAdminUi.projects')
  *
  * @returns {{}} Directive Definition Object
  */
-function explorerSideNavDirective() {
+function explorerSideNavDirective($state, contextService) {
 
     function explorerSideNavController() {
         var vm = this;
 
         vm.isOpen = false;
-        vm.toggleOpen = function() {
+        vm.goTo = goTo;
+        vm.toggleOpen = toggleOpen;
+
+        /**
+         * Toggle whether the sidebar is open.
+         */
+        function toggleOpen() {
             vm.isOpen = !vm.isOpen;
-        };
+        }
+
+        /**
+         * Transition to the tag specified by tagId in the current project.
+         * @param {string} tagId
+         */
+        function goTo(tagId) {
+            var projectName = contextService.getProject().name;
+            $state.go('projects.explorer', { projectName: projectName, tagId: tagId });
+        }
     }
 
     return {
