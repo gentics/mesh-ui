@@ -21,7 +21,9 @@ function ProjectExplorerController($scope, $state, $location, dataService, conte
     vm.setItemsPerPage = setItemsPerPage;
     vm.goToContent = goToContent;
 
-    $scope.$on('$locationChangeSuccess', updateCurrentPage);
+    $scope.$watch(function() {
+        return $location.search().page;
+    }, updateCurrentPage);
 
     populateContent(vm.currentPage);
     populateTags();
@@ -29,8 +31,8 @@ function ProjectExplorerController($scope, $state, $location, dataService, conte
     /**
      * Populate the contents in accordance with the current page.
      */
-    function updateCurrentPage() {
-        vm.currentPage = $location.search().page;
+    function updateCurrentPage(newVal) {
+        vm.currentPage = newVal;
         populateContent(vm.currentPage);
     }
 
