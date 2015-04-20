@@ -114,15 +114,13 @@ function SelectiveCache($cacheFactory, baseUrl, cacheableGroups) {
      * @returns {number}
      */
     function remove(group) {
-        if (!(cacheableGroups[group] instanceof RegExp)) {
-            throw new Error('SelectiveCache#remove(): The group "' +
-                                group + '" has not been registered as cacheable.');
-        }
-        var keyRegexp = cacheableGroups[group],
-            matching = cachedKeys.filter(matches(keyRegexp));
-        matching.forEach(removeFromCache);
+        if (cacheableGroups[group] instanceof RegExp) {
+            var keyRegexp = cacheableGroups[group],
+                matching = cachedKeys.filter(matches(keyRegexp));
+            matching.forEach(removeFromCache);
 
-        return matching.length;
+            return matching.length;
+        }
     }
 
     /**

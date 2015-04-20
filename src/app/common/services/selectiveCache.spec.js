@@ -79,6 +79,14 @@ describe('selectiveCache', function() {
             expect(removedCount).toEqual(10);
         });
 
+        it('should not throw if remove() group not matched', function() {
+            function remove() {
+                selectiveCache.remove('some/random/url');
+            }
+
+            expect(remove).not.toThrow();
+        });
+
     });
 
 
