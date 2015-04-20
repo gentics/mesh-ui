@@ -6,12 +6,19 @@
 
     <generated-form model="vm.content.properties"
                     fields="vm.schema.properties"
-                    modified-flag="vm.contentModified"></generated-form>
+                    modified-flag="vm.contentModified"
+                    perms="vm.content.perms"></generated-form>
 
     <md-button class="md-raised md-primary"
                ng-click="vm.persist(vm.content)"
                ng-show="vm.contentModified">
         <i class="icon-save"></i><span translate>UPDATE</span>
+    </md-button>
+
+    <md-button class="md-raised md-warn"
+               ng-click="vm.remove(vm.content)"
+               ng-show="vm.canDelete()">
+        <i class="icon-delete"></i><span translate>DELETE</span>
     </md-button>
 
 </div>

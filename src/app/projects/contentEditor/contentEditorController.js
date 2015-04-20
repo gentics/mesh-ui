@@ -2,22 +2,38 @@ angular.module('caiLunAdminUi.projects')
     .controller('ContentEditorController', ContentEditorController);
 
 
-function ContentEditorController($scope, $stateParams, contextService, dataService, wipService, notifyService) {
+function ContentEditorController($scope, $state, $stateParams, contextService, dataService, wipService, notifyService) {
     var vm = this,
         projectName = contextService.getProject().name;
 
     vm.contentModified = false;
-
-    vm.persist = function(content) {
-        dataService.persistContent(content);
-        notifyService.toast('SAVED_CHANGES');
-        wipService.setAsUnmodified('contents', vm.content);
-        vm.contentModified = false;
-    };
+    vm.canDelete = canDelete;
+    vm.persist = persist;
+    vm.remove = remove;
 
     getContentData().then(getSchema);
-
     $scope.$watch('vm.contentModified', modifiedWatchHandler);
+
+    /**
+     * Save the changes back to the server.
+     * @param {Object} content
+     */
+    function persist(content) {
+        dataService.persistContent(content)
+            .then(function() {
+                notifyService.toast('SAVED_CHANGES');
+                wipService.setAsUnmodified('contents', vm.content);
+                vm.contentModified = false;
+            });
+    }
+
+    function remove(content) {
+        dataService.deleteContent(content)
+            .then(function() {
+                notifyService.toast('Deleted');
+                $state.go('projects.explorer');
+            });
+    }
 
     /**
      * When the value of vm.contentModified evaluates to true, set the wip as
@@ -27,6 +43,12 @@ function ContentEditorController($scope, $stateParams, contextService, dataServi
     function modifiedWatchHandler(val) {
         if (val === true) {
             wipService.setAsModified('contents', vm.content);
+        }
+    }
+
+    function canDelete() {
+        if (vm.content) {
+            return -1 < vm.content.perms.indexOf('delete');
         }
     }
 

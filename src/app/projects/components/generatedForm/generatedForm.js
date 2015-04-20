@@ -16,9 +16,17 @@ function generatedFormDirective() {
 
     function generatedFormController() {
         var vm = this;
-        vm.setModifiedFlag = function() {
+
+        vm.canUpdate = canUpdate;
+        vm.setModifiedFlag = setModifiedFlag;
+
+        function setModifiedFlag() {
             vm.modifiedFlag = true;
-        };
+        }
+
+        function canUpdate() {
+            return -1 < vm.perms.indexOf('update');
+        }
     }
 
     return {
@@ -31,7 +39,8 @@ function generatedFormDirective() {
         scope: {
             model: '=',
             fields: '=',
-            modifiedFlag: '='
+            modifiedFlag: '=',
+            perms: '='
         }
     };
 }
