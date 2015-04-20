@@ -52,19 +52,27 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         groups = Restangular.all('groups');
 
     // public API
+
+    // Projects
     this.getProjects = getProjects;
     this.getProjectId = getProjectId;
     this.getProjectRootTagId = getProjectRootTagId;
+    // Users
     this.getUsers = getUsers;
+    // Tags
     this.getTags = getTags;
+    // Contents
     this.getContents = getContents;
     this.getContent = getContent;
     this.persistContent = persistContent;
+    this.deleteContent = deleteContent;
+    // Schemas
     this.getSchemas = getSchemas;
     this.getSchema = getSchema;
+    // Roles
     this.getRoles = getRoles;
+    // Groups
     this.getGroups = getGroups;
-    this.clearCache = clearCache;
 
     /**
      * Get all projects as a list.
@@ -166,7 +174,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     /**
      * Get a single content record.
      *
-     * @param projectName
+     * @param {string} projectName
      * @param uuid
      * @returns {restangular.RestangularElement|restangular.IElement}
      */
@@ -181,11 +189,22 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
 
     /**
      * Create or update the content object on the server.
-     * @param content
+     * @param {Object} content
+     * @returns {*|ng.IPromise<any>|restangular.IPromise<any>|void}
      */
     function persistContent(content) {
         clearCache('contents');
         return content.save();
+    }
+
+    /**
+     * Remove the content from the server.
+     * @param content
+     * @returns {*|ng.IPromise<any>|restangular.IPromise<any>|void}
+     */
+    function deleteContent(content) {
+        clearCache('contents');
+        return content.remove();
     }
 
     function getSchemas() {
@@ -305,7 +324,7 @@ function dataServiceConfig(RestangularProvider, selectiveCacheProvider) {
 
     // define the urls we wish to cache
     var projectName = '^\\/[a-zA-Z\\-]*',
-        uuid = '[a-z0-9]{32}',
+        uuid = '[a-z0-9]{30,32}',
         _ = '\\/',
         projectNameTags = projectName + _ + 'tags' + _ + uuid + _;
 
