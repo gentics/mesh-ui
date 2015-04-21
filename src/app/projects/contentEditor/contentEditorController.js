@@ -2,11 +2,13 @@ angular.module('caiLunAdminUi.projects')
     .controller('ContentEditorController', ContentEditorController);
 
 
-function ContentEditorController($scope, $state, $stateParams, contextService, dataService, wipService, notifyService) {
+function ContentEditorController($scope, $state, $stateParams, contextService, i18nService, dataService, wipService, notifyService) {
     var vm = this,
         projectName = contextService.getProject().name;
 
     vm.contentModified = false;
+    vm.selectedLangs = {};
+    vm.selectedLangs[i18nService.getLanguage()] = true; // set the default language
     vm.canDelete = canDelete;
     vm.persist = persist;
     vm.remove = remove;

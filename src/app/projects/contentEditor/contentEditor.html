@@ -2,12 +2,25 @@
 
     <breadcrumbs></breadcrumbs>
 
-    <h1>{{ vm.content.properties.name }}</h1>
+    <div layout="rows">
+        <div flex="20">
+            <span class="inline-label">Edit Localized Version:</span>
+        </div>
+        <md-checkbox md-no-ink flex="5" ng-repeat="(lang, obj) in vm.content.properties" ng-model="vm.selectedLangs[lang]">
+            {{ lang }}
+        </md-checkbox>
+    </div>
 
-    <generated-form model="vm.content.properties"
-                    fields="vm.schema.properties"
-                    modified-flag="vm.contentModified"
-                    perms="vm.content.perms"></generated-form>
+    <div layout="rows">
+        <div flex class="content-editor-pane"
+             ng-repeat="(lang, properties) in vm.content.properties"
+             ng-if="vm.selectedLangs[lang]">
+            <generated-form model="properties"
+                            fields="vm.schema.properties"
+                            modified-flag="vm.contentModified"
+                            perms="vm.content.perms"></generated-form>
+        </div>
+    </div>
 
     <md-button class="md-raised md-primary"
                ng-click="vm.persist(vm.content)"

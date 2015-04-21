@@ -8,7 +8,7 @@ angular.module('caiLunAdminUi.projects')
  * ====
  * model = the object properties from the database, e.g. "content.properties", "tag.properties" etc.
  * fields = the schema properties array
- * modifiedFlag = boolean value that will be set to true when user modifies any form fields.
+ * modified-flag = boolean value that will be set to true when user modifies any form fields.
  *
  * @returns {{}} Directive Definition Object
  */
@@ -18,14 +18,32 @@ function generatedFormDirective() {
         var vm = this;
 
         vm.canUpdate = canUpdate;
-        vm.setModifiedFlag = setModifiedFlag;
+        vm.getType = getType;
 
-        function setModifiedFlag() {
-            vm.modifiedFlag = true;
-        }
-
+        /**
+         * Does the current user have permission to update this content? If not,
+         * form fields are disabled.
+         * @returns {boolean}
+         */
         function canUpdate() {
             return -1 < vm.perms.indexOf('update');
+        }
+
+        /**
+         * Get the field data type - used to decide what kind of form input to
+         * map the field to.
+         * TODO: This is a naive implementation since the final data types are not nailed down yet.
+         * @param property
+         * @returns {*}
+         */
+        function getType(property) {
+            var type;
+            if (50 < property.length) {
+                type = "textBlock";
+            } else {
+                type = "textString";
+            }
+            return type;
         }
     }
 
@@ -39,7 +57,7 @@ function generatedFormDirective() {
         scope: {
             model: '=',
             fields: '=',
-            modifiedFlag: '=',
+            modified: '=modifiedFlag',
             perms: '='
         }
     };

@@ -1,0 +1,25 @@
+.content-editor-pane {
+  overflow: hidden;
+  padding: 0 8px;
+  max-width: 600px;
+  border-right: 1px solid @color-transparent;
+  transition: border ease 0.1s;
+  &:not(.ng-hide):not(:last-child) {
+    border-right: 1px solid @color-silver;
+  }
+}
+
+.content-editor-pane.ng-enter,
+.content-editor-pane.ng-leave.ng-leave-active {
+  max-width: 0;
+  transition: max-width ease 0.2s 0s;
+  textarea {
+    min-width: 600px;
+  }
+}
+
+.content-editor-pane.ng-leave,
+.content-editor-pane.ng-enter.ng-enter-active {
+  max-width: 600px;
+  transition: max-width ease 0.2s;
+}
