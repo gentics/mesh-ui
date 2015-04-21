@@ -41,8 +41,6 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     selectiveCache.setBaseUrl(apiUrl);
     $http.defaults.cache = selectiveCache;
     Restangular.setBaseUrl(apiUrl);
-    Restangular.addRequestInterceptor(requestLangWrapper);
-    Restangular.addResponseInterceptor(responseLangUnwrapper);
 
     var projects = Restangular.all('projects'),
         users = Restangular.all('users'),
@@ -52,7 +50,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         groups = Restangular.all('groups');
 
     // public API
-
+    // ==========
     // Projects
     this.getProjects = getProjects;
     this.getProjectId = getProjectId;
@@ -150,7 +148,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         queryParams = queryParams || {};
         queryParams.lang = i18nService.getLanguage();
 
-        return tags.getList(queryParams);
+        return tags.getList(queryParams)
+            .then(unwrapCurrentLanguage);
     }
 
     /**
@@ -168,7 +167,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         queryParams = queryParams || {};
         queryParams.lang = i18nService.getLanguage();
 
-        return contents.getList(queryParams);
+        return contents.getList(queryParams)
+            .then(unwrapCurrentLanguage);
     }
 
     /**
@@ -181,7 +181,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     function getContent(projectName, uuid) {
         var contents = Restangular.all(projectName);
         var queryParams = {
-            lang: i18nService.getLanguage()
+            lang: i18nService.languages.join(',')
         };
 
         return contents.one('contents', uuid).get(queryParams);
@@ -249,10 +249,9 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * the "properties" level.
      *
      * @param data
-     * @param operation
      * @returns {*}
      */
-    function responseLangUnwrapper(data, operation) {
+    function unwrapCurrentLanguage(data) {
         var lang = i18nService.getLanguage();
 
         function extractCurrentLanguage(item) {
@@ -262,31 +261,13 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
             return item;
         }
 
-        if (operation === "getList") {
+        if (data.constructor === Array) {
             data.forEach(extractCurrentLanguage);
         } else {
             extractCurrentLanguage(data);
         }
 
         return data;
-    }
-
-    /**
-     * Performs the opposite action of responseLangUnwrapper(), ie for certain types of
-     * object, it wraps the properties in the current language code.
-     *
-     * @param element
-     * @param operation
-     * @param what
-     * @param url
-     * @returns {*}
-     */
-    function requestLangWrapper(element, operation, what, url) {
-        if (operation === 'put' || operation === 'post') {
-            if (what === 'contents') {
-                return wrapCurrentLanguage(element);
-            }
-        }
     }
 
     /**
