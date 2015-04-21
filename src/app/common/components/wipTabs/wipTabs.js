@@ -13,7 +13,7 @@ angular.module('caiLunAdminUi.common')
  *
  * @returns {{}} Directive Definition Object
  */
-function wipTabs($state, $mdDialog, wipService, dataService, notifyService) {
+function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notifyService) {
 
     function wipTabsController($scope) {
         var vm = this,
@@ -24,6 +24,7 @@ function wipTabs($state, $mdDialog, wipService, dataService, notifyService) {
         vm.selectedIndex = 0;
         vm.isModified = isModified;
         vm.closeWip = closeWip;
+        vm.lang = i18nService.getLanguage();
 
         wipService.registerWipChangeHandler(wipChangeHandler);
         $scope.$on('$stateChangeSuccess', stateChangeHandler);
