@@ -18,6 +18,8 @@ function WipService() {
         onWipChangeCallbacks = [];
 
     this.openItem = openItem;
+    this.setMetadata = setMetadata;
+    this.getMetadata = getMetadata;
     this.setAsModified = setAsModified;
     this.setAsUnmodified = setAsUnmodified;
     this.isModified = isModified;
@@ -29,21 +31,51 @@ function WipService() {
 
     /**
      * Add a new wip item of specified type to the store.
+     * Metadata is an optional argument which can be used to store
+     * arbitrary key-value data that can be retrieved later.
+     *
      * @param {String} type
      * @param {Object} item
+     * @param {Object} metadata
      */
-    function openItem(type, item) {
+    function openItem(type, item, metadata) {
         validateItem(item);
         if (!wipStore[type]) {
             wipStore[type] = {};
             modifiedWips[type] = {};
         }
-        wipStore[type][item.uuid] = item;
+        wipStore[type][item.uuid] = {
+            item: item,
+            metadata: metadata || {}
+        };
         invokeChangeCallbacks();
     }
 
     /**
-     * Add the __wipModified flag to the item to indicate that it has been modified,
+     * Set a key-value pair on the wip item's metadata object.
+     * @param type
+     * @param uuid
+     * @param key
+     * @param value
+     */
+    function setMetadata(type, uuid, key, value) {
+        checkItemInWipStore(type, uuid);
+        wipStore[type][uuid].metadata[key] = value;
+    }
+
+    /**
+     * Get the metadata associated with the wip item.
+     * @param type
+     * @param uuid
+     * @returns {Object}
+     */
+    function getMetadata(type, uuid) {
+        checkItemInWipStore(type, uuid);
+        return wipStore[type][uuid].metadata;
+    }
+
+    /**
+     * Mark the item as having been modified,
      * which determines its behaviour on closing.
      *
      * @param {String} type
@@ -51,7 +83,7 @@ function WipService() {
      */
     function setAsModified(type, item) {
         validateItem(item);
-        checkItemExists(type, item);
+        checkItemInWipStore(type, item);
         modifiedWips[type][item.uuid] = true;
         invokeChangeCallbacks();
     }
@@ -66,7 +98,7 @@ function WipService() {
      */
     function setAsUnmodified(type, item) {
         validateItem(item);
-        checkItemExists(type, item);
+        checkItemInWipStore(type, item);
         modifiedWips[type][item.uuid] = false;
         invokeChangeCallbacks();
     }
@@ -80,7 +112,7 @@ function WipService() {
      */
     function isModified(type, item) {
         validateItem(item);
-        checkItemExists(type, item);
+        checkItemInWipStore(type, item);
         return modifiedWips[type][item.uuid] === true;
     }
 
@@ -91,7 +123,7 @@ function WipService() {
      */
     function closeItem(type, item) {
         validateItem(item);
-        checkItemExists(type, item);
+        checkItemInWipStore(type, item);
         delete wipStore[type][item.uuid];
         delete modifiedWips[type][item.uuid];
         invokeChangeCallbacks();
@@ -141,7 +173,7 @@ function WipService() {
      * @returns {*}
      */
     function getItem(type, uuid) {
-        return wipStore[type] && wipStore[type][uuid];
+        return wipStore[type] && wipStore[type][uuid] && wipStore[type][uuid].item;
     }
 
     /**
@@ -175,11 +207,18 @@ function WipService() {
         }
     }
 
-    function checkItemExists(type, item) {
+    /**
+     * Check to see whether the item exists in the wipStore object. If not, an exception
+     * is thrown.
+     * @param {string} type
+     * @param {string|Object} itemOrUuid
+     */
+    function checkItemInWipStore(type, itemOrUuid) {
+        var id = typeof itemOrUuid === 'string' ? itemOrUuid : itemOrUuid.uuid;
         if (!wipStore[type]) {
             throw new Error('wipService: the wipStore does not contain any items of the type "' + type + '".');
-        } else if (!wipStore[type][item.uuid]) {
-            throw new Error('wipService: item of type "' + type + '" with uuid "' + item.uuid + '" not found.');
+        } else if (!wipStore[type][id]) {
+            throw new Error('wipService: item of type "' + type + '" with uuid "' + id + '" not found.');
         }
     }
 }

@@ -2,12 +2,12 @@
     <div ng-repeat="wip in vm.wips"
          class="wip-tab"
          ng-class="{ 'active' : vm.selectedIndex === $index }"
-         ui-sref="projects.explorer.content( { uuid: wip.uuid } )"
-         aria-label="{{ wip.properties.name }}"
-         title="{{ wip.properties.name }}">
+         ui-sref="projects.explorer.content( { uuid: wip.item.uuid } )"
+         aria-label="{{ wip.item.properties[vm.lang].name }}"
+         title="{{ wip.item.properties[vm.lang].name }}">
 
-        <span class="status-indicator" ng-show="vm.isModified(wip.uuid)"></span>
-        <span class="label">{{ wip.properties[vm.lang].name }}</span>
+        <span class="status-indicator" ng-show="vm.isModified(wip.item.uuid)"></span>
+        <span class="label">{{ wip.item.properties[vm.lang].name }}</span>
         <span ng-click="vm.closeWip($event, $index)" class="close"><i class="icon-close"></i></span>
 
     </div>

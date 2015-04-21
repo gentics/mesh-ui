@@ -24,9 +24,30 @@ describe('wipService', function() {
         var openItems = wipService.getOpenItems(itemType);
 
         expect(openItems.length).toBe(1);
-        expect(openItems[0].name).toEqual(testItem.name);
+        expect(openItems[0].item.name).toEqual(testItem.name);
     });
-    
+
+    it('should store metadata if passed to openItem()', function() {
+        var myMetadata = { foo: 'bar' };
+        wipService.openItem(itemType, testItem, myMetadata);
+
+        expect(wipService.getMetadata(itemType, testItem.uuid)).toEqual(myMetadata);
+    });
+
+    it('should add new metadata with setMetadata()', function() {
+        wipService.openItem(itemType, testItem);
+        wipService.setMetadata(itemType, testItem.uuid, 'quux', 'bax');
+
+        expect(wipService.getMetadata(itemType, testItem.uuid)).toEqual({ quux: 'bax'});
+    });
+
+    it('should modify existing metadata with setMetadata()', function() {
+        wipService.openItem(itemType, testItem, { foo: 'bar' });
+        wipService.setMetadata(itemType, testItem.uuid, 'foo', 'fubar');
+
+        expect(wipService.getMetadata(itemType, testItem.uuid)).toEqual({ foo: 'fubar'});
+    });
+
     it('should remove the item from the store with closeItem()', function() {
         wipService.openItem(itemType, testItem);
         wipService.closeItem(itemType, testItem);

@@ -7,6 +7,7 @@ angular.module('caiLunAdminUi.common')
  *
  * @param $state
  * @param $mdDialog
+ * @param i18nService
  * @param wipService
  * @param dataService
  * @param notifyService
