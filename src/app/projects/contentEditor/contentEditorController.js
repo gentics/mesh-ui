@@ -4,6 +4,7 @@ angular.module('caiLunAdminUi.projects')
 
 function ContentEditorController($scope, $state, $stateParams, contextService, i18nService, dataService, wipService, notifyService) {
     var vm = this,
+        wipType = 'contents',
         projectName = contextService.getProject().name;
 
     vm.contentModified = false;
@@ -15,6 +16,7 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
 
     getContentData().then(getSchema);
     $scope.$watch('vm.contentModified', modifiedWatchHandler);
+    $scope.$on('$destroy', saveWipMetadata);
 
     /**
      * Save the changes back to the server.
@@ -24,7 +26,7 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
         dataService.persistContent(content)
             .then(function() {
                 notifyService.toast('SAVED_CHANGES');
-                wipService.setAsUnmodified('contents', vm.content);
+                wipService.setAsUnmodified(wipType, vm.content);
                 vm.contentModified = false;
             });
     }
@@ -44,8 +46,12 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
      */
     function modifiedWatchHandler(val) {
         if (val === true) {
-            wipService.setAsModified('contents', vm.content);
+            wipService.setAsModified(wipType, vm.content);
         }
+    }
+
+    function saveWipMetadata() {
+        wipService.setMetadata(wipType, vm.content.uuid, 'selectedLangs', vm.selectedLangs);
     }
 
     function canDelete() {
@@ -62,18 +68,19 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
      */
     function getContentData() {
         var uuid = $stateParams.uuid,
-            wipContent = wipService.getItem('contents', uuid);
+            wipContent = wipService.getItem(wipType, uuid);
 
         if (wipContent) {
             vm.content = wipContent;
-            vm.contentModified = wipService.isModified('contents', vm.content);
+            vm.contentModified = wipService.isModified(wipType, vm.content);
+            vm.selectedLangs = wipService.getMetadata(wipType, vm.content.uuid).selectedLangs;
             return dataService.getSchema(vm.content.schema.schemaUuid);
         } else {
             return dataService
                 .getContent(projectName, uuid)
                 .then(function(data) {
                     vm.content = data;
-                    wipService.openItem('contents', data);
+                    wipService.openItem(wipType, data);
                     return dataService.getSchema(data.schema.schemaUuid);
                 });
         }
