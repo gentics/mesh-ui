@@ -30,6 +30,8 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
         wipService.registerWipChangeHandler(wipChangeHandler);
         $scope.$on('$stateChangeSuccess', stateChangeHandler);
 
+        wipChangeHandler();
+
         function isModified(uuid) {
             return -1 < vm.modified.indexOf(uuid);
         }
@@ -130,7 +132,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
          */
         function indexByUuid(collection, uuid) {
             return collection.map(function(wip) {
-                return wip.uuid;
+                return wip.item.uuid;
             }).indexOf(uuid);
         }
     }
