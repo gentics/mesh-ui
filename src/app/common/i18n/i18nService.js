@@ -46,6 +46,7 @@ function i18nServiceProvider() {
 /**
  * Service for setting and retrieving app-wide language settings.
  * @constructor
+ * @param $translate
  * @param {Array} availableLangs
  * @param {String} defaultLang
  */
