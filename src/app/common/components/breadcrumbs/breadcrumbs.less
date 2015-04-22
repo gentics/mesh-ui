@@ -1,5 +1,6 @@
 .breadcrumbs {
-  font-size: 1.4em;
+  font-size: 1.2em;
+  text-transform: uppercase;
   ul {
     list-style-type: none;
     padding-left: 0;
@@ -12,6 +13,11 @@
     }
     span {
       margin-right: 5px;
+    }
+  }
+  li:not(:first-child) {
+    span {
+      margin-left: 10px;
     }
   }
 }

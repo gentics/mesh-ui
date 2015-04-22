@@ -58,16 +58,21 @@ function routesConfig($stateProvider) {
  * @param dataService
  * @param contextService
  */
-function updateContext($stateParams, dataService, contextService) {
+function updateContext($q, $stateParams, dataService, contextService) {
     var projectName = $stateParams.projectName || '',
         tagId = $stateParams.tagId,
         result;
 
     if (projectName !== '') {
-        result = dataService.getProjectId(projectName)
-            .then(function (projectId) {
+        var qProject = dataService.getProjectId(projectName),
+            qTag = dataService.getTag(projectName, tagId);
+
+        result = $q.all([qProject, qTag])
+            .then(function(result) {
+                var projectId = result[0],
+                    tag = result[1];
                 contextService.setProject(projectName, projectId);
-                contextService.setTag('', tagId);
+                contextService.setTag(tag.properties.name || '', tagId);
             });
     } else {
         result = contextService.setProject('', '');
