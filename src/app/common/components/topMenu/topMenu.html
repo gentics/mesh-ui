@@ -23,7 +23,7 @@
                         <div class="language">
                             <i class="icon-language"></i>
                             <md-select ng-model="vm.lang" ng-change="vm.updateLanguage(vm.lang)">
-                                <md-option ng-repeat="language in vm.languages" ng-value="language">{{ language | uppercase }}</md-option>
+                                <md-option ng-repeat="language in vm.languages" ng-value="language.code">{{ language.nativeName | uppercase }}</md-option>
                             </md-select>
                         </div>
                     </div>

@@ -8,8 +8,9 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
         projectName = contextService.getProject().name;
 
     vm.contentModified = false;
+    vm.availableLangs = i18nService.languages;
     vm.selectedLangs = {};
-    vm.selectedLangs[i18nService.getLanguage()] = true; // set the default language
+    vm.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
     vm.canDelete = canDelete;
     vm.persist = persist;
     vm.remove = remove;

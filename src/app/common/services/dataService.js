@@ -146,7 +146,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
             tags = Restangular.all(url);
 
         queryParams = queryParams || {};
-        queryParams.lang = i18nService.getLanguage();
+        queryParams.lang = i18nService.getCurrentLang().code;
 
         return tags.getList(queryParams)
             .then(unwrapCurrentLanguage);
@@ -165,7 +165,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
             contents = Restangular.all(url);
 
         queryParams = queryParams || {};
-        queryParams.lang = i18nService.getLanguage();
+        queryParams.lang = i18nService.getCurrentLang().code;
 
         return contents.getList(queryParams)
             .then(unwrapCurrentLanguage);
@@ -181,7 +181,9 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     function getContent(projectName, uuid) {
         var contents = Restangular.all(projectName);
         var queryParams = {
-            lang: i18nService.languages.join(',')
+            lang: i18nService.languages.map(function(lang) {
+                return lang.code;
+            }).join(',')
         };
 
         return contents.one('contents', uuid).get(queryParams);
@@ -252,7 +254,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {*}
      */
     function unwrapCurrentLanguage(data) {
-        var lang = i18nService.getLanguage();
+        var lang = i18nService.getCurrentLang().code;
 
         function extractCurrentLanguage(item) {
             if (item.properties && item.properties[lang]) {
@@ -277,7 +279,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      */
     function wrapCurrentLanguage(obj) {
         var properties = angular.copy(obj.properties),
-            lang = i18nService.getLanguage();
+            lang = i18nService.getCurrentLang().code;
 
         obj.properties = {};
         obj.properties[lang] = properties;

@@ -18,7 +18,8 @@ function i18nConfig(i18nServiceProvider, $translateProvider, en, de) {
 
     i18nServiceProvider.setAvailableLanguages([
         'en',
-        'de'
+        'de',
+        'ar'
     ]);
 
     $translateProvider

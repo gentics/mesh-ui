@@ -1,0 +1,15 @@
+.lang-color(@index, @color) {
+  md-checkbox.lang-color-@{index}:not([disabled]).md-checked .md-icon {
+    background-color: @color;
+  }
+  .lang-color-@{index}.content-editor-pane {
+    border-left: 2px solid @color;
+  }
+}
+
+.lang-color(0, rgba(68,138,255,0.87));
+.lang-color(1, #2ecc71);
+.lang-color(2, #d35400);
+.lang-color(3, #8e44ad);
+.lang-color(4, #16a085);
+.lang-color(5, #2c3e50);

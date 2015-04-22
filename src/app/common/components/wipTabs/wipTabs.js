@@ -25,12 +25,12 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
         vm.selectedIndex = 0;
         vm.isModified = isModified;
         vm.closeWip = closeWip;
-        vm.lang = i18nService.getLanguage();
+        vm.lang = i18nService.getCurrentLang().code;
 
         wipService.registerWipChangeHandler(wipChangeHandler);
         $scope.$on('$stateChangeSuccess', stateChangeHandler);
 
-        wipChangeHandler();
+        wipChangeHandler(); // populate with WIPs on load.
 
         function isModified(uuid) {
             return -1 < vm.modified.indexOf(uuid);
@@ -44,7 +44,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
          * @param {number} index
          */
         function closeWip(event, index) {
-            var wip = vm.wips[index];
+            var wip = vm.wips[index].item;
 
             event.stopPropagation();
 

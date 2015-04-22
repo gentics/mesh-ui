@@ -3,19 +3,18 @@
     <breadcrumbs></breadcrumbs>
 
     <div layout="rows">
-        <div flex="20">
-            <span class="inline-label">Edit Localized Version:</span>
-        </div>
-        <md-checkbox md-no-ink flex="5" ng-repeat="(lang, obj) in vm.content.properties" ng-model="vm.selectedLangs[lang]">
-            {{ lang }}
+        <span class="inline-label">Edit Localized Version:</span>
+        <md-checkbox md-no-ink ng-repeat="lang in vm.availableLangs" ng-model="vm.selectedLangs[lang.code]" ng-class="'lang-color-' + $index">
+            {{::lang.nativeName }}
         </md-checkbox>
     </div>
 
     <div layout="rows">
         <div flex class="content-editor-pane"
-             ng-repeat="(lang, properties) in vm.content.properties"
-             ng-if="vm.selectedLangs[lang]">
-            <generated-form model="properties"
+             ng-repeat="lang in vm.availableLangs"
+             ng-class="'lang-color-' + $index"
+             ng-if="vm.selectedLangs[lang.code]">
+            <generated-form model="vm.content.properties[lang.code]"
                             fields="vm.schema.properties"
                             modified-flag="vm.contentModified"
                             perms="vm.content.perms"></generated-form>
