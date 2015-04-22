@@ -3,6 +3,7 @@ angular.module('caiLunAdminUi.common')
 
 /**
  * Directive to generate breadcrumbs for navigating a project.
+ * TODO: This is just a demo implementation. Awaiting API endpoint for breadcrumbs.
  *
  * @param dataService
  * @param contextService
@@ -33,7 +34,7 @@ function breadcrumbsDirective(dataService, contextService) {
                 name: newVal.name,
                 id: newVal.id
             };
-        }, true)
+        }, true);
 
     }
 

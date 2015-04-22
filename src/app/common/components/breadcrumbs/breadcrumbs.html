@@ -1,6 +1,6 @@
 <div class="breadcrumbs">
     <ul>
-        <li ng-repeat="label in vm.breadcrumbs">
+        <li ng-repeat="label in vm.breadcrumbs" ng-if="label.name">
             <span><a href="#" ui-sref="projects.explorer({ projectName: vm.projectName, tagId: label.id })">{{ label.name }}</a></span>
         </li>
     </ul>

@@ -3,13 +3,13 @@
     <breadcrumbs></breadcrumbs>
 
     <div layout="rows">
-        <span class="inline-label">Edit Localized Version:</span>
+        <span class="inline-label" translate>EDIT_LOCALIZED_VERSION</span>
         <md-checkbox md-no-ink ng-repeat="lang in vm.availableLangs" ng-model="vm.selectedLangs[lang.code]" ng-class="'lang-color-' + $index">
             {{::lang.nativeName }}
         </md-checkbox>
     </div>
 
-    <div layout="rows">
+    <div layout="row">
         <div flex class="content-editor-pane"
              ng-repeat="lang in vm.availableLangs"
              ng-class="'lang-color-' + $index"
@@ -21,16 +21,22 @@
         </div>
     </div>
 
-    <md-button class="md-raised md-primary"
-               ng-click="vm.persist(vm.content)"
-               ng-show="vm.contentModified">
-        <i class="icon-save"></i><span translate>UPDATE</span>
-    </md-button>
+    <div layout="row" layout-align="start center" class="main-buttons">
 
-    <md-button class="md-raised md-warn"
-               ng-click="vm.remove(vm.content)"
-               ng-show="vm.canDelete()">
-        <i class="icon-delete"></i><span translate>DELETE</span>
-    </md-button>
+        <md-button class="md-raised md-primary"
+                   ng-click="vm.persist(vm.content)"
+                   ng-disabled="!vm.contentModified">
+            <i class="icon-save"></i>
+            <span ng-if="!vm.isNew" translate>UPDATE</span>
+            <span ng-if="vm.isNew" translate>CREATE</span>
+        </md-button>
+
+        <md-button class="md-raised md-warn"
+                   ng-click="vm.remove(vm.content)"
+                   ng-disabled="!vm.canDelete()">
+            <i class="icon-delete"></i><span translate>DELETE</span>
+        </md-button>
+
+    </div>
 
 </div>

@@ -11,6 +11,12 @@ var germanTranslations = {
     /* Tags */
     'CREATE_NEW_TAG': 'Neuen Tag erstellen',
 
+    /* Explorer View */
+    'CREATE_NEW': 'Neue...',
+
+    /* Content Editor */
+    'EDIT_LOCALIZED_VERSION': 'Lokalisierte Version bearbeiten:',
+
     /* Other */
     'SEARCH': 'Suche',
     'UPDATE': 'Aktualisieren',
@@ -28,6 +34,8 @@ var germanTranslations = {
     'SAVE_CHANGES': 'Speichern',
     'DISCARD_CHANGES': 'Wegwerfen',
     'CANCEL': 'Stornieren',
+    'DELETE': 'Löschen',
+    'CREATE': 'Speichern',
 
     /* Error messages */
     'ERROR': 'Fehler',

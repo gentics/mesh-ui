@@ -14,6 +14,12 @@ var englishTranslations = {
     /* Tags */
     'CREATE_NEW_TAG': 'Create new tag',
 
+    /* Explorer View */
+    'CREATE_NEW': 'Create new...',
+
+    /* Content Editor */
+    'EDIT_LOCALIZED_VERSION': 'Edit localized version:',
+
     /* Other */
     'SEARCH': 'Search',
     'UPDATE': 'Update',
@@ -32,6 +38,8 @@ var englishTranslations = {
     'SAVE_CHANGES': 'Save Changes',
     'DISCARD_CHANGES': 'Discard Changes',
     'CANCEL': 'Cancel',
+    'DELETE': 'Delete',
+    'CREATE': 'Create',
 
     /* Error messages */
     'ERROR': 'Error',

@@ -5,9 +5,9 @@ angular.module('caiLunAdminUi.projects')
 function ContentEditorController($scope, $state, $stateParams, contextService, i18nService, dataService, wipService, notifyService) {
     var vm = this,
         wipType = 'contents',
-        projectName = contextService.getProject().name,
-        isNew = false;
+        projectName = contextService.getProject().name;
 
+    vm.isNew = false;
     vm.contentModified = false;
     vm.availableLangs = i18nService.languages;
     vm.selectedLangs = {};
@@ -27,11 +27,11 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
     function persist(content) {
         dataService.persistContent(projectName, content)
             .then(function(response) {
-                if (isNew) {
+                if (vm.isNew) {
                     wipService.closeItem(wipType, content);
                     content.uuid = response.uuid;
                     wipService.openItem(wipType, content, { projectName: projectName });
-                    isNew = false;
+                    vm.isNew = false;
                 } else {
                     notifyService.toast('SAVED_CHANGES');
                     wipService.setAsUnmodified(wipType, vm.content);
@@ -65,7 +65,7 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
 
     function canDelete() {
         if (vm.content) {
-            return -1 < vm.content.perms.indexOf('delete');
+            return -1 < vm.content.perms.indexOf('delete') && !vm.isNew;
         }
     }
 
@@ -94,7 +94,7 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
             }
         } else if (params.schemaId) {
             // creating new content
-            isNew = true;
+            vm.isNew = true;
             return dataService.getSchema(params.schemaId)
                 .then(function(schema) {
                     vm.content = createEmptyContent(params.tagId, schema.uuid, schema.title);
