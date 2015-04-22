@@ -18,6 +18,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
 
     function wipTabsController($scope) {
         var vm = this,
+            wipType = 'contents',
             lastIndex = 0;
 
         vm.wips = [];
@@ -44,21 +45,22 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
          * @param {number} index
          */
         function closeWip(event, index) {
-            var wip = vm.wips[index].item;
+            var wip = vm.wips[index].item,
+                projectName = vm.wips[index].metadata.projectName;
 
             event.stopPropagation();
 
-            if (wipService.isModified('contents', wip)) {
+            if (wipService.isModified(wipType, wip)) {
                 showDialog().then(function(response) {
                     if (response === 'save') {
-                        dataService.persistContent(wip);
+                        dataService.persistContent(projectName, wip);
                         notifyService.toast('SAVED_CHANGES');
                     }
-                    wipService.closeItem('contents', wip);
+                    wipService.closeItem(wipType, wip);
                     goToNextTab();
                 });
             } else {
-                wipService.closeItem('contents', wip);
+                wipService.closeItem(wipType, wip);
                 goToNextTab();
             }
         }
@@ -84,7 +86,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
 
             if (0 < vm.wips.length) {
                 vm.selectedIndex = lastIndex < vm.wips.length ? lastIndex : vm.wips.length - 1;
-                newWip = vm.wips[vm.selectedIndex];
+                newWip = vm.wips[vm.selectedIndex].item;
             }
 
             if (newWip) {
@@ -100,8 +102,8 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
          * wip store.
          */
         function wipChangeHandler() {
-            vm.wips = wipService.getOpenItems('contents');
-            vm.modified = wipService.getModifiedItems('contents');
+            vm.wips = wipService.getOpenItems(wipType);
+            vm.modified = wipService.getModifiedItems(wipType);
             vm.selectedIndex = indexByUuid(vm.wips, $state.params.uuid);
             if (-1 < vm.selectedIndex) {
                 lastIndex = vm.selectedIndex;

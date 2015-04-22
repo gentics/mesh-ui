@@ -22,7 +22,7 @@ function routesConfig($stateProvider) {
                 }
             },
             resolve: {
-                currentProject: updateContext
+                parentTag: updateContext
             }
         })
         .state('projects.explorer', {
@@ -35,11 +35,21 @@ function routesConfig($stateProvider) {
                 }
             },
             resolve: {
-                currentProject: updateContext
+                parentTag: updateContext
             }
         })
         .state('projects.explorer.content', {
             url: '/content/:uuid',
+            views: {
+                'projects@projects' : {
+                    templateUrl: 'projects/contentEditor/contentEditor.html',
+                    controller: 'ContentEditorController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
+        .state('projects.explorer.createContent', {
+            url: '/content/new?schemaId',
             views: {
                 'projects@projects' : {
                     templateUrl: 'projects/contentEditor/contentEditor.html',
@@ -54,6 +64,7 @@ function routesConfig($stateProvider) {
  * Update the context service with the current project. Used in the "resolve" property of the
  * state defs so that it will get invoked by any child states of a project on page load.
  *
+ * @param $q
  * @param $stateParams
  * @param dataService
  * @param contextService
@@ -73,9 +84,10 @@ function updateContext($q, $stateParams, dataService, contextService) {
                     tag = result[1];
                 contextService.setProject(projectName, projectId);
                 contextService.setTag(tag.properties.name || '', tagId);
+                return tag;
             });
     } else {
-        result = contextService.setProject('', '');
+        contextService.setProject('', '');
         contextService.setTag('', '');
     }
 

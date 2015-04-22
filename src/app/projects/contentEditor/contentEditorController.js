@@ -5,7 +5,8 @@ angular.module('caiLunAdminUi.projects')
 function ContentEditorController($scope, $state, $stateParams, contextService, i18nService, dataService, wipService, notifyService) {
     var vm = this,
         wipType = 'contents',
-        projectName = contextService.getProject().name;
+        projectName = contextService.getProject().name,
+        isNew = false;
 
     vm.contentModified = false;
     vm.availableLangs = i18nService.languages;
@@ -15,7 +16,7 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
     vm.persist = persist;
     vm.remove = remove;
 
-    getContentData().then(getSchema);
+    getContentData($stateParams).then(populateSchema);
     $scope.$watch('vm.contentModified', modifiedWatchHandler);
     $scope.$on('$destroy', saveWipMetadata);
 
@@ -24,11 +25,18 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
      * @param {Object} content
      */
     function persist(content) {
-        dataService.persistContent(content)
-            .then(function() {
-                notifyService.toast('SAVED_CHANGES');
-                wipService.setAsUnmodified(wipType, vm.content);
-                vm.contentModified = false;
+        dataService.persistContent(projectName, content)
+            .then(function(response) {
+                if (isNew) {
+                    wipService.closeItem(wipType, content);
+                    content.uuid = response.uuid;
+                    wipService.openItem(wipType, content, { projectName: projectName });
+                    isNew = false;
+                } else {
+                    notifyService.toast('SAVED_CHANGES');
+                    wipService.setAsUnmodified(wipType, vm.content);
+                    vm.contentModified = false;
+                }
             });
     }
 
@@ -67,31 +75,72 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
      *
      * @returns {ng.IPromise}
      */
-    function getContentData() {
-        var uuid = $stateParams.uuid,
-            wipContent = wipService.getItem(wipType, uuid);
+    function getContentData(params) {
+        if (params.uuid) {
+            // loading existing content
+            var uuid = params.uuid,
+                wipContent = wipService.getItem(wipType, uuid);
 
-        if (wipContent) {
-            vm.content = wipContent;
-            vm.contentModified = wipService.isModified(wipType, vm.content);
-            vm.selectedLangs = wipService.getMetadata(wipType, vm.content.uuid).selectedLangs;
-            return dataService.getSchema(vm.content.schema.schemaUuid);
-        } else {
-            return dataService
-                .getContent(projectName, uuid)
-                .then(function(data) {
-                    vm.content = data;
-                    wipService.openItem(wipType, data);
-                    return dataService.getSchema(data.schema.schemaUuid);
+            if (wipContent) {
+                return populateFromWip(wipContent);
+            } else {
+                return dataService
+                    .getContent(projectName, uuid)
+                    .then(function (data) {
+                        vm.content = data;
+                        wipService.openItem(wipType, data, { projectName: projectName });
+                        return dataService.getSchema(data.schema.schemaUuid);
+                    });
+            }
+        } else if (params.schemaId) {
+            // creating new content
+            isNew = true;
+            return dataService.getSchema(params.schemaId)
+                .then(function(schema) {
+                    vm.content = createEmptyContent(params.tagId, schema.uuid, schema.title);
+                    wipService.openItem(wipType, vm.content, { projectName: projectName, isNew: true });
+                    return schema;
                 });
         }
+    }
+
+    /**
+     * Populate the vm based on the content item retrieved from the wipService.
+     * @param {Object} wipContent
+     * @returns {ng.IPromise}
+     */
+    function populateFromWip(wipContent) {
+        vm.content = wipContent;
+        vm.contentModified = wipService.isModified(wipType, vm.content);
+        vm.selectedLangs = wipService.getMetadata(wipType, vm.content.uuid).selectedLangs;
+        return dataService.getSchema(vm.content.schema.schemaUuid);
+    }
+
+    /**
+     * Create an empty content object which is pre-configured according to the arguments passed.
+     *
+     * @param {string} parentTagId
+     * @param {string} schemaId
+     * @param {string} schemaName
+     * @returns {{tagUuid: *, perms: string[], uuid: *, schema: {schemaUuid: *}, schemaName: *}}
+     */
+    function createEmptyContent(parentTagId, schemaId, schemaName) {
+        return {
+            tagUuid: parentTagId,
+            perms: ['read', 'create', 'update', 'delete'],
+            uuid: wipService.generateTempId(),
+            schema: {
+                schemaUuid: schemaId
+            },
+            schemaName: schemaName // legacy TODO: remove this in favour of nested schema data above
+        };
     }
 
     /**
      * Load the schema data into the vm.
      * @param {Object} data
      */
-    function getSchema(data) {
+    function populateSchema(data) {
         vm.schema = data;
     }
 }

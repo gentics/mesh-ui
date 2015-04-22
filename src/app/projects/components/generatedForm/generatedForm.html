@@ -2,11 +2,11 @@
     <div ng-repeat="field in vm.fields">
         <div ng-switch="vm.getType(vm.model[field.key])">
             <md-input-container ng-switch-when="textBlock">
-                <label>{{ field.key }}</label>
+                <label>{{ field.displayName || field.key }}</label>
                 <textarea type="text" ng-model="vm.model[field.key]" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()"></textarea>
             </md-input-container>
             <md-input-container ng-switch-default>
-                <label>{{ field.key }}</label>
+                <label>{{ field.displayName || field.key }}</label>
                 <input type="text" ng-model="vm.model[field.key]" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()">
             </md-input-container>
         </div>

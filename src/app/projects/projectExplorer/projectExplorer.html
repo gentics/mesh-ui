@@ -6,9 +6,23 @@
 
         <explorer-side-nav tags="vm.tags"></explorer-side-nav>
 
-        <md-content flex ng-show="0 < vm.contents.length">
+        <md-content flex ng-show="0 < vm.contents.length" layout="column" class="content-list-container">
 
-            <table class="md-table">
+            <div flex layout="row" layout-align="end" class="create-content-menu">
+                <md-select ng-model="_" ng-if="vm.createPermission">
+                    <md-select-label>
+                        <div class="user-name">Create new...</div>
+                    </md-select-label>
+                    <md-option ng-repeat="schema in vm.schemas"
+                               value="{{::$index}}"
+                               ui-sref="projects.explorer.createContent({ schemaId: schema.uuid })">
+                        {{::schema.displayName || schema.title}}
+                    </md-option>
+                </md-select>
+
+            </div>
+
+            <table flex class="md-table">
                 <thead>
                     <tr>
                         <th translate>TITLE</th>
@@ -25,13 +39,13 @@
                     ng-click="vm.goToContent(item.uuid)">
                     <td>{{ item.properties.name }}</td>
                     <td>{{ item.schema.schemaName }}</td>
-                    <td>{{ item.author.firstname }} {{ item.author.lastname }}</td>
+                    <td>{{ item.creator.firstname }} {{ item.creator.lastname }}</td>
                     <td>{{ item.created }}</td>
                 </tr>
                 </tbody>
             </table>
 
-            <div layout="columns">
+            <div flex layout="row">
                 <div class="loading-indicator" flex="10">
                     <md-progress-circular md-mode="indeterminate" ng-show="vm.loading" md-diameter="32"></md-progress-circular>
                 </div>

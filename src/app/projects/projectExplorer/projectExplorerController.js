@@ -7,15 +7,17 @@ angular.module('caiLunAdminUi.projects')
  * @param $location
  * @param dataService
  * @param contextService
+ * @param parentTag injected from the router resolve function
  * @constructor
  */
-function ProjectExplorerController($scope, $state, $location, dataService, contextService) {
+function ProjectExplorerController($scope, $state, $location, dataService, contextService, parentTag) {
     var vm = this;
 
     vm.totalItems = 0;
     vm.itemsPerPage = $location.search().per_page || 10;
     vm.currentPage = $location.search().page || 1;
     vm.loading = true;
+    vm.createPermission = -1 < parentTag.perms.indexOf('create');
 
     vm.getPage = getPage;
     vm.setItemsPerPage = setItemsPerPage;
@@ -26,6 +28,7 @@ function ProjectExplorerController($scope, $state, $location, dataService, conte
     }, updateCurrentPage);
 
     populateTags();
+    populateSchemas();
 
     /**
      * Populate the contents in accordance with the current page.
@@ -90,6 +93,13 @@ function ProjectExplorerController($scope, $state, $location, dataService, conte
         dataService.getTags(projectName, tagId)
             .then(function(data) {
                 vm.tags = data;
+            });
+    }
+
+    function populateSchemas() {
+        dataService.getSchemas()
+            .then(function(schemas) {
+                vm.schemas = schemas;
             });
     }
 }
