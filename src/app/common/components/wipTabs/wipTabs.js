@@ -124,6 +124,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
             } else {
                 vm.selectedIndex = -1;
             }
+            vm.explorer = toState.name === 'projects.explorer';
         }
 
         /**

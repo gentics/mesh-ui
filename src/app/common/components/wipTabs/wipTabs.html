@@ -1,8 +1,16 @@
-<div layout="rows" class="wip-tabs app-content" ng-show="vm.wips.length">
+<div layout="rows" class="wip-tabs app-content">
+    <div class="wip-tab"
+         ng-class="{ 'active' : vm.explorer }"
+         ui-sref="projects.explorer"
+         aria-label="Project Explorer"
+         title="Project Explorer">
+        <span class="label">Project</span>
+
+    </div>
     <div ng-repeat="wip in vm.wips"
          class="wip-tab"
          ng-class="{ 'active' : vm.selectedIndex === $index }"
-         ui-sref="projects.explorer.content( { uuid: wip.item.uuid } )"
+         ui-sref="projects.explorer.content( { tagId: wip.metadata.parentTagId, uuid: wip.item.uuid } )"
          aria-label="{{ wip.item.properties[vm.lang].name }}"
          title="{{ wip.item.properties[vm.lang].name }}">
 

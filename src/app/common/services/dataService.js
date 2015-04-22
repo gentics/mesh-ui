@@ -343,7 +343,9 @@ function dataServiceConfig(RestangularProvider, selectiveCacheProvider) {
         'projects': /^\/projects/,
         'contents': new RegExp(projectNameTags + 'contents\\/', 'gi'),
         'tags':  new RegExp(projectNameTags + 'tags\\/', 'gi'),
-        'schemas': /^\/schemas\/[a-z0-9]+$/
+        'tag':  new RegExp(projectName + _ + 'tags' + _ + uuid, 'gi'),
+        'schemas': /^\/schemas$/,
+        'schema': /^\/schemas\/[a-z0-9]+$/
     };
     selectiveCacheProvider.setCacheableGroups(cacheable);
 }
