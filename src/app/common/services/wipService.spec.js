@@ -123,6 +123,15 @@ describe('wipService', function() {
 
     describe('exceptional input', function() {
 
+        it('should throw if item uuid already exists with openItem()', function() {
+            function openTwice() {
+                wipService.openItem(itemType, testItem);
+                wipService.openItem(itemType, testItem);
+            }
+
+            expect(openTwice).toThrow();
+        });
+
         it('should throw if item has no uuid on openItem()', function() {
             function addBadItem() {
                 wipService.openItem(itemType, { foo: 'bar'});

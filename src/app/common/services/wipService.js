@@ -17,6 +17,7 @@ function WipService() {
         modifiedWips = {},
         onWipChangeCallbacks = [];
 
+    this.generateTempId = generateTempId;
     this.openItem = openItem;
     this.setMetadata = setMetadata;
     this.getMetadata = getMetadata;
@@ -28,6 +29,17 @@ function WipService() {
     this.getOpenItems = getOpenItems;
     this.getModifiedItems = getModifiedItems;
     this.registerWipChangeHandler = registerWipChangeHandler;
+
+
+    function generateTempId() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
 
     /**
      * Add a new wip item of specified type to the store.
@@ -43,6 +55,10 @@ function WipService() {
         if (!wipStore[type]) {
             wipStore[type] = {};
             modifiedWips[type] = {};
+        }
+        if (wipStore[type][item.uuid]) {
+            throw new Error('wipStore#openItem: "' + type + '" with uuid "' +
+                item.uuid + '" is already open.');
         }
         wipStore[type][item.uuid] = {
             item: item,
