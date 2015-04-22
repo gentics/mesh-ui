@@ -211,12 +211,20 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
 
     /**
      * Create or update the content object on the server.
+     * @param {string} projectName
      * @param {Object} content
      * @returns {*|ng.IPromise<any>|restangular.IPromise<any>|void}
      */
-    function persistContent(content) {
+    function persistContent(projectName, content) {
         clearCache('contents');
-        return content.save();
+        if (content.hasOwnProperty('save')) {
+            // this is a Restangular object
+            return content.save();
+        } else {
+            // this is a plain object (newly-created)
+            var contents = Restangular.all(projectName + '/contents');
+            return contents.post(content);
+        }
     }
 
     /**
