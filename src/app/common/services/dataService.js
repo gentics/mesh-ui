@@ -59,6 +59,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.getUsers = getUsers;
     // Tags
     this.getTags = getTags;
+    this.getTag = getTag;
     // Contents
     this.getContents = getContents;
     this.getContent = getContent;
@@ -149,6 +150,25 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         queryParams.lang = i18nService.getCurrentLang().code;
 
         return tags.getList(queryParams)
+            .then(unwrapCurrentLanguage);
+    }
+
+    /**
+     * Get a single tag specified by uuid.
+     *
+     * @param {string} projectName
+     * @param {string} uuid
+     * @param {Object=} queryParams
+     * @returns {ng.IPromise<Object>}
+     */
+    function getTag(projectName, uuid, queryParams) {
+        var url = projectName + '/tags/' + uuid,
+            tag = Restangular.one(url);
+
+        queryParams = queryParams || {};
+        queryParams.lang = i18nService.getCurrentLang().code;
+
+        return tag.get(queryParams)
             .then(unwrapCurrentLanguage);
     }
 
