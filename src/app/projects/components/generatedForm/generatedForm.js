@@ -38,7 +38,7 @@ function generatedFormDirective() {
          */
         function getType(property) {
             var type;
-            if (50 < property.length) {
+            if (property && 50 < property.length) {
                 type = "textBlock";
             } else {
                 type = "textString";

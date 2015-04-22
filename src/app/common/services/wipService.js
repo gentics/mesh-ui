@@ -59,8 +59,9 @@ function WipService() {
      * @param value
      */
     function setMetadata(type, uuid, key, value) {
-        checkItemInWipStore(type, uuid);
-        wipStore[type][uuid].metadata[key] = value;
+        if (wipStore[type] && wipStore[type][uuid]) {
+            wipStore[type][uuid].metadata[key] = value;
+        }
     }
 
     /**
