@@ -1,0 +1,20 @@
+<div class="tag-list-container">
+    <md-list>
+        <md-item ng-repeat="tag in vm.tags">
+            <md-item-content>
+                <div class="tag-item">
+                    <a href="#" ng-click="vm.goTo(tag.uuid)"><i class="icon-label-outline"></i> {{ tag.properties.name }}</a>
+                </div>
+            </md-item-content>
+        </md-item>
+        <md-item>
+            <md-item-content>
+                <div class="md-tile-content">
+                    <!--<md-button class="md-raised md-accent">
+                        <i class="icon-add-circle"></i><span translate>CREATE_NEW_TAG</span>
+                    </md-button>-->
+                </div>
+            </md-item-content>
+        </md-item>
+    </md-list>
+</div>

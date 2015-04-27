@@ -1,26 +1,16 @@
 angular.module('caiLunAdminUi.projects')
-    .directive('explorerSideNav', explorerSideNavDirective);
+    .directive('explorerTagsList', explorerTagsListDirective);
 
 /**
  * The left-hand side navigation for displaying the sub-tags of the current tag.
  *
  * @returns {{}} Directive Definition Object
  */
-function explorerSideNavDirective($state, contextService) {
+function explorerTagsListDirective($state, contextService) {
 
-    function explorerSideNavController() {
+    function explorerTagsListController() {
         var vm = this;
-
-        vm.isOpen = false;
         vm.goTo = goTo;
-        vm.toggleOpen = toggleOpen;
-
-        /**
-         * Toggle whether the sidebar is open.
-         */
-        function toggleOpen() {
-            vm.isOpen = !vm.isOpen;
-        }
 
         /**
          * Transition to the tag specified by tagId in the current project.
@@ -35,8 +25,8 @@ function explorerSideNavDirective($state, contextService) {
     return {
         restrict: 'E',
         replace: true,
-        templateUrl: 'projects/components/explorerSideNav/explorerSideNav.html',
-        controller: explorerSideNavController,
+        templateUrl: 'projects/components/explorerTagsList/explorerTagsList.html',
+        controller: explorerTagsListController,
         controllerAs: 'vm',
         bindToController: true,
         scope: {
