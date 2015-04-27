@@ -1,0 +1,40 @@
+<div>
+    <table flex class="md-table"  ng-show="0 < vm.contents.length" >
+        <thead>
+        <tr>
+            <th translate>TITLE</th>
+            <th translate>SCHEMA</th>
+            <th translate>AUTHOR</th>
+            <th translate>CREATED</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr dir-paginate="item in vm.contents | itemsPerPage: vm.itemsPerPage"
+            total-items="vm.totalItems"
+            current-page="vm.currentPage"
+            class="animate-item"
+            ng-click="vm.goToContent(item.uuid)">
+            <td>{{ item.properties.name }}</td>
+            <td>{{ item.schema.schemaName }}</td>
+            <td>{{ item.creator.firstname }} {{ item.creator.lastname }}</td>
+            <td>{{ item.created }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div flex layout="row"  ng-show="0 < vm.contents.length" >
+        <div flex>
+            <dir-pagination-controls on-page-change="vm.update()"></dir-pagination-controls>
+        </div>
+        <div flex="30" layout="row" layout-align="end">
+            <div>
+                <div class="select-label" translate>ITEMS_PER_PAGE</div>
+            </div>
+            <div>
+                <md-select ng-model="vm.itemsPerPage" ng-change="vm.update(newPageNumber)">
+                    <md-option ng-value="number" ng-repeat="number in [10, 25, 50]">{{ number }}</md-option>
+                </md-select>
+            </div>
+        </div>
+    </div>
+</div>

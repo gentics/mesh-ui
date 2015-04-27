@@ -3,62 +3,41 @@ angular.module('caiLunAdminUi.projects')
 
 /**
  * @param $scope
- * @param $state
  * @param $location
  * @param dataService
  * @param contextService
  * @param parentTag injected from the router resolve function
  * @constructor
  */
-function ProjectExplorerController($scope, $state, $location, dataService, contextService, parentTag) {
+function ProjectExplorerController($scope, $location, dataService, contextService, parentTag) {
     var vm = this;
 
     vm.totalItems = 0;
     vm.itemsPerPage = $location.search().per_page || 10;
     vm.currentPage = $location.search().page || 1;
-    vm.loading = true;
     vm.createPermission = -1 < parentTag.perms.indexOf('create');
-
-    vm.getPage = getPage;
-    vm.setItemsPerPage = setItemsPerPage;
-    vm.goToContent = goToContent;
+    vm.updateContents = updateContents;
 
     $scope.$watch(function() {
         return $location.search().page;
-    }, updateCurrentPage);
+    }, function(newVal) {
+        updateContents(newVal, vm.itemsPerPage);
+        populateContent(newVal);
+    });
 
     populateTags();
     populateSchemas();
 
     /**
-     * Populate the contents in accordance with the current page.
+     * Update the URL query params and vm values for
+     * current page and items per page. New content will be
+     * requested from the server via the watcher.
      */
-    function updateCurrentPage(newVal) {
-        vm.currentPage = newVal;
-        populateContent(vm.currentPage);
-    }
-
-    /**
-     * Called when a page is changed via pagination - update the url query string.
-     * @param {number} newPage
-     */
-    function getPage(newPage) {
-        $location.search('page' , newPage);
-    }
-
-    /**
-     * When the number of items per page is changed, update the url query string.
-     */
-    function setItemsPerPage() {
-        $location.search('per_page' , vm.itemsPerPage);
-    }
-
-    /**
-     * Transition to the contentEditor view for the given uuid
-     * @param uuid
-     */
-    function goToContent(uuid) {
-        $state.go('projects.explorer.content', { uuid: uuid });
+    function updateContents(currentPage, itemsPerPage) {
+        vm.currentPage = currentPage;
+        vm.itemsPerPage = itemsPerPage;
+        $location.search('page' , currentPage);
+        $location.search('per_page' , itemsPerPage);
     }
 
     /**
@@ -79,7 +58,6 @@ function ProjectExplorerController($scope, $state, $location, dataService, conte
             .then(function (data) {
                 vm.contents = data;
                 vm.totalItems = data.metadata.total_count;
-                vm.loading = false;
             });
     }
 
@@ -96,6 +74,9 @@ function ProjectExplorerController($scope, $state, $location, dataService, conte
             });
     }
 
+    /**
+     * Fill the vm with all available schemas.
+     */
     function populateSchemas() {
         dataService.getSchemas()
             .then(function(schemas) {
