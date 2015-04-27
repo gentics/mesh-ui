@@ -1,32 +1,20 @@
 .top-menu-container {
   max-width: @app-width;
+  padding-top: 6px;
+  padding-bottom: 6px;
 
-  .top-menu-tab {
-    padding: 20px;
+  .admin-menu-icon {
+    font-size: 24px;
+  }
 
-    .responsive-max(@mq-md, {
-      font-size: 0.8em;
-    });
-
-    &.active {
-      @negative-margin: 6px;
-      @toolbar-height: 64px;
-
-      background-color: @color-almost-white;
-      margin-bottom: -@negative-margin;
-      min-height: @toolbar-height + @negative-margin;
-      color: #555;
-    }
-
-    &:not(:last-child) {
-      border-right: 1px solid #ddd;
-    }
+  .logo {
+    font-size: 24px;
   }
 
   .user-container {
     .profile-image {
-      width: 45px;
-      height: 45px;
+      width: 36px;
+      height: 36px;
       background: no-repeat center center;
       background-size: cover;
       border-radius: 50%;

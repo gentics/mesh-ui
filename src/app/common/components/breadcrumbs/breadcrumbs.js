@@ -12,28 +12,41 @@ angular.module('caiLunAdminUi.common')
 function breadcrumbsDirective(dataService, contextService) {
 
     function breadcrumbsController($scope) {
-        var vm = this,
-            projectName = contextService.getProject().name;
+        var vm = this;
 
-        vm.projectName = projectName;
+        vm.clearProject = function() {
+            vm.projectName = '';
+            vm.breadcrumbs = [];
+        };
 
-        dataService.getProjectRootTagId(projectName)
-            .then(function(id) {
-                vm.breadcrumbs = [
-                    {
-                        name: projectName,
-                        id: id
-                    }, {}
-                ];
-            });
+        $scope.$watch(function() {
+            return contextService.getProject();
+        }, function(project) {
+            vm.projectName = project.name;
+            getProjectRootTag(project.name);
+        }, true);
+
+        function getProjectRootTag(projectName) {
+            dataService.getProjectRootTagId(projectName)
+                .then(function (id) {
+                    vm.breadcrumbs = [
+                        {
+                            name: projectName,
+                            id: id
+                        }, {}
+                    ];
+                });
+        }
 
         $scope.$watch(function() {
             return contextService.getTag();
         }, function(newVal) {
-            vm.breadcrumbs[1] = {
-                name: newVal.name,
-                id: newVal.id
-            };
+            if (vm.breadcrumbs) {
+                vm.breadcrumbs[1] = {
+                    name: newVal.name,
+                    id: newVal.id
+                };
+            }
         }, true);
 
     }

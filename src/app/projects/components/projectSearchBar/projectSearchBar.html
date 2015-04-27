@@ -1,28 +1,12 @@
 <div class="project-search-bar">
 
-    <div class="content" layout="row" layout-align="start" >
-        <md-select ng-model="currentContext" class="project-selector">
-            <md-option ng-value="all"
-                       ng-selected="vm.currentProject === ''"
-                       class="project-search-name"
-                       ng-click="vm.goToContext('')" translate>
-                ALL_PROJECTS
-            </md-option>
-            <md-option ng-value="project"
-                       ng-repeat="project in vm.projects"
-                       ng-selected="vm.currentProject === project.name"
-                       class="project-search-name"
-                       ng-click="vm.goToContext(project.name)">
-                {{ project.name }}
-            </md-option>
-        </md-select>
-
-        <md-input-container class="search-term">
-            <label translate>SEARCH</label>
-            <input type="text" ng-model="searchTerm">
-        </md-input-container>
-
-        <div flex class="active-filters">
+    <div class="content" layout="row" layout-align="center" >
+        <div flex="80" layout="row">
+            <i class="icon-search"></i>
+            <md-input-container flex class="search-term">
+                <label><span translate>SEARCH</span> in {{ vm.currentTag || vm.currentProject }}</label>
+                <input type="text" ng-model="searchTerm">
+            </md-input-container>
         </div>
     </div>
 </div>

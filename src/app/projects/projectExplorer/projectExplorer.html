@@ -1,13 +1,26 @@
 <div class="app-content">
     <project-search-bar></project-search-bar>
 
-    <div layout="row">
+    <div layout="row" layout-sm="column">
 
-        <explorer-tags-list tags="vm.tags"></explorer-tags-list>
+        <div flex-gt-sm="25" flex-gt-md="15" class="explorer-tags-col">
+            <h2>Tags
+                <md-button aria-label="Create Tag">
+                    <i class="icon-add"></i>
+                </md-button>
+            </h2>
 
-        <div flex layout="column" class="content-list-container">
+            <explorer-tags-list tags="vm.tags"></explorer-tags-list>
+        </div>
 
-            <div flex layout="row" layout-align="end" class="create-content-menu">
+        <div flex class="explorer-contents-col">
+            <h2>Contents
+                <md-button class="md-icon-button" aria-label="Create Tag">
+                                    <i class="icon-add"></i>
+                                </md-button>
+            </h2>
+
+            <!--<div flex layout="row" layout-align="end" class="create-content-menu">
                 <md-select ng-model="_" ng-if="vm.createPermission">
                     <md-select-label>
                         <div class="user-name" translate>CREATE_NEW</div>
@@ -19,14 +32,14 @@
                     </md-option>
                 </md-select>
 
-            </div>
+            </div>-->
 
             <explorer-contents-list contents="vm.contents"
                                     current-page="vm.currentPage"
                                     items-per-page="vm.itemsPerPage"
                                     total-items="vm.totalItems"
-                                    on-update="vm.updateContents(currentPage, itemsPerPage)"></explorer-contents-list>
-
+                                    on-update="vm.updateContents(currentPage, itemsPerPage)">
+            </explorer-contents-list>
         </div>
     </div>
 

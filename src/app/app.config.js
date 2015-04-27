@@ -24,7 +24,7 @@ function appConfig($stateProvider,
     $locationProvider.html5Mode(true).hashPrefix('!');
 
     $mdThemingProvider.theme('default')
-        .primaryPalette('amber')
+        .primaryPalette('blue')
         .accentPalette('blue');
 
     dataServiceProvider.setApiUrl('http://localhost:8080/api/v1');

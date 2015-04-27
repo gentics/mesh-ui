@@ -52,8 +52,6 @@ function ProjectExplorerController($scope, $location, dataService, contextServic
                 per_page: vm.itemsPerPage
             };
 
-        vm.loading = true;
-
         dataService.getContents(projectName, tagId, queryParams)
             .then(function (data) {
                 vm.contents = data;

@@ -1,11 +1,9 @@
-@tab-border-color: @color-silver;
+@tab-bottom-color: @color-silver;
+@tab-border-color: lighten(@tab-bottom-color, 10%);
 @tab-bg-color: white;
 @status-modified-color: #fb945e;
 
 .wip-tabs {
-
-  border-bottom: 1px solid @tab-border-color;
-
   .wip-tab {
     cursor: pointer;
     padding: 7px 6px 5px 8px;
@@ -17,8 +15,8 @@
     position: relative;
     border-top: 1px solid @color-transparent;
 
-    &:last-child {
-      border-right: 1px solid @tab-border-color;
+    &:first-child {
+      border-left: 1px solid @color-transparent;
     }
 
     &:hover {
@@ -82,7 +80,7 @@
     }
   }
 
-  div:not(.active) + .wip-tab, .wip-tab:first-child {
+  div:not(.active) + .wip-tab {
     border-left: 1px solid @tab-border-color;
   }
 }

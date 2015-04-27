@@ -1,12 +1,12 @@
-<div layout="rows" class="wip-tabs app-content">
-    <div class="wip-tab"
+<div layout="rows" class="wip-tabs">
+   <!-- <div class="wip-tab"
          ng-class="{ 'active' : vm.explorer }"
          ui-sref="projects.explorer"
          aria-label="Project Explorer"
          title="Project Explorer">
-        <span class="label">Project</span>
+        <span class="label">In Progress</span>
 
-    </div>
+    </div>-->
     <div ng-repeat="wip in vm.wips"
          class="wip-tab"
          ng-class="{ 'active' : vm.selectedIndex === $index }"
