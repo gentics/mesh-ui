@@ -36,10 +36,12 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
         dataService.persistContent(projectName, content)
             .then(function(response) {
                 if (vm.isNew) {
+                    notifyService.toast('NEW_CONTENT_CREATED');
                     wipService.closeItem(wipType, content);
-                    content.uuid = response.uuid;
-                    wipService.openItem(wipType, content, { projectName: projectName, parentTagId: parentTagId });
+                    content = response;
+                    wipService.openItem(wipType, content, { projectName: projectName, parentTagId: parentTagId, selectedLangs: vm.selectedLangs });
                     vm.isNew = false;
+                    $state.go('projects.explorer.content', { projectName: projectName, tagId: parentTagId, uuid: content.uuid });
                 } else {
                     notifyService.toast('SAVED_CHANGES');
                     wipService.setAsUnmodified(wipType, vm.content);
@@ -51,6 +53,7 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
     function remove(content) {
         dataService.deleteContent(content)
             .then(function() {
+                wipService.closeItem(wipType, content);
                 notifyService.toast('Deleted');
                 $state.go('projects.explorer');
             });
@@ -152,9 +155,9 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
             perms: ['read', 'create', 'update', 'delete'],
             uuid: wipService.generateTempId(),
             schema: {
-                schemaUuid: schemaId
-            },
-            schemaName: schemaName // legacy TODO: remove this in favour of nested schema data above
+                schemaUuid: schemaId,
+                schemaName: schemaName
+            }
         };
     }
 
