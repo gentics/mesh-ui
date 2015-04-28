@@ -1,6 +1,6 @@
-<div ng-if="vm.isLoggedIn" layout layout-align="center">
+<div ng-if="vm.isLoggedIn" class="top-menu-container" layout layout-align="center">
 
-    <div class="top-menu-container" layout="row" flex>
+    <div class="top-menu" layout="row" flex>
 
         <div flex>
             <i class="icon-menu admin-menu-icon"></i>
@@ -10,14 +10,6 @@
         <div flex layout="row" layout-align="end center">
 
             <div class="user-container" layout="row">
-                <div class="profile-image" style="background-image: url({{ vm.profileImage }})"></div>
-                <md-select ng-model="vm.someModel">
-                    <md-select-label>
-                        <div class="user-name">{{ vm.userName }}</div>
-                    </md-select-label>
-                    <md-option value="1" ng-click="" translate>PROFILE</md-option>
-                    <md-option value="2" ng-click="vm.logout()" translate>LOG_OUT</md-option>
-                </md-select>
 
                <!-- <div class="language">
                     <i class="icon-language"></i>
@@ -25,6 +17,18 @@
                         <md-option ng-repeat="language in vm.languages" ng-value="language.code">{{ language.nativeName | uppercase }}</md-option>
                     </md-select>
                 </div>-->
+                <mh-dropdown>
+                    <mh-dropdown-label layout="row" layout-align="center center">
+                        <div class="profile-image" style="background-image: url({{ vm.profileImage }})"></div>
+                        <div>{{ vm.userName }} <i class="icon-arrow-drop-down"></i></div>
+                    </mh-dropdown-label>
+                    <div mh-dropdown-options>
+                    <ul>
+                        <li translate>PROFILE</li>
+                        <li ng-click="vm.logout()" translate>LOG_OUT</li>
+                    </ul>
+                    </div>
+                </mh-dropdown>
             </div>
 
         </div>

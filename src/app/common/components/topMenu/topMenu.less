@@ -1,40 +1,46 @@
 .top-menu-container {
-  max-width: @app-width;
-  padding-top: 6px;
-  padding-bottom: 6px;
 
-  .admin-menu-icon {
-    font-size: 24px;
-  }
+  background-color: @color-almost-white;
 
-  .logo {
-    font-size: 24px;
-  }
+  .top-menu {
+    max-width: @app-width;
+    padding-top: 6px;
+    padding-bottom: 6px;
 
-  .user-container {
-    .profile-image {
-      width: 36px;
-      height: 36px;
-      background: no-repeat center center;
-      background-size: cover;
-      border-radius: 50%;
+    .admin-menu-icon {
+      font-size: 24px;
     }
 
-    md-select {
-      margin: 0;
-    }
-    .md-select-label {
-      border-bottom: 0;
+    .logo {
+      font-size: 24px;
     }
 
-    .user-name {
-      font-size: 0.8em;
-      margin-left: 6px;
-    }
+    .user-container {
+      .profile-image {
+        margin-right: 5px;
+        width: 36px;
+        height: 36px;
+        background: no-repeat center center;
+        background-size: cover;
+        border-radius: 50%;
+      }
 
-    .language {
-      font-size: 12px;
-      cursor: pointer;
+      md-select {
+        margin: 0;
+      }
+      .md-select-label {
+        border-bottom: 0;
+      }
+
+      .user-name {
+        font-size: 0.8em;
+        margin-left: 6px;
+      }
+
+      .language {
+        font-size: 12px;
+        cursor: pointer;
+      }
     }
   }
 }
