@@ -4,8 +4,22 @@
 @status-modified-color: #fb945e;
 
 .wip-tabs {
+  height: 30px;
+  transition: height 0.2s;
+
+  &.empty {
+    height: 0;
+
+    .wip-tab {
+      height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
   .wip-tab {
     cursor: pointer;
+    overflow: hidden;
     padding: 7px 6px 5px 8px;
     margin: 0 0 -1px 0;
     border-bottom: none;
@@ -14,6 +28,7 @@
     color: @color-boulder;
     position: relative;
     border-top: 1px solid @color-transparent;
+    transition: background-color 0.2s;
 
     &:first-child {
       border-left: 1px solid @color-transparent;
@@ -26,9 +41,9 @@
     &.active {
       background-color: @tab-bg-color;
       color: @color-subdued;
-      border-top: 1px solid @tab-border-color;
-      border-left: 1px solid @tab-border-color;
-      border-right: 1px solid @tab-border-color;
+      border-top: 1px solid @tab-bottom-color;
+      border-left: 1px solid @tab-bottom-color !important;
+      border-right: 1px solid @tab-bottom-color;
       border-radius: 3px 3px 0 0;
       overflow-x: hidden;
 
