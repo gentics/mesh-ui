@@ -12,5 +12,6 @@ angular.module('caiLunAdminUi', [
     'ui.router',
     'ngAnimate',
     'ngMaterial',
-    'angularUtils.directives.dirPagination'
+    'angularUtils.directives.dirPagination',
+    'angular-loading-bar'
 ]);

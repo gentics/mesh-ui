@@ -17,7 +17,8 @@ function appConfig($stateProvider,
                    $urlRouterProvider,
                    $mdThemingProvider,
                    dataServiceProvider,
-                   paginationTemplateProvider) {
+                   paginationTemplateProvider,
+                   cfpLoadingBarProvider) {
 
     configRoutes($stateProvider);
     $urlRouterProvider.otherwise('/projects');
@@ -30,6 +31,9 @@ function appConfig($stateProvider,
     dataServiceProvider.setApiUrl('http://localhost:8080/api/v1');
 
     paginationTemplateProvider.setPath('common/components/pagination/pagination.html');
+
+    cfpLoadingBarProvider.latencyThreshold = 300;
+    cfpLoadingBarProvider.includeSpinner = false;
 }
 
 /**
