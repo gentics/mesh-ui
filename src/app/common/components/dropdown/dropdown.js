@@ -11,12 +11,12 @@ angular.module('caiLunAdminUi.common')
  *    <mh-dropdown-label>
  *        Label
  *    </mh-dropdown-label>
- *    <div mh-dropdown-options>
+ *    <mh-dropdown-options>
  *        <ul>
  *            <li>Option 1</li>
  *            <li>Option 2</li>
  *        </ul>
- *    </div>
+ *    </mh-dropdown-options>
  * </mh-dropdown>
  *
  * @param $scope
@@ -64,7 +64,7 @@ function dropdownController($scope, $element, $document) {
 function dropdownDirective() {
     return {
         restrict: 'E',
-        template: '<ng-transclude class="mh-dropdown"></ng-transclude>',
+        template: '<div class="mh-dropdown" ng-transclude></div>',
         controller: 'mhDropdownController',
         transclude: true,
         replace: true,
@@ -100,8 +100,7 @@ function dropdownLabelDirective() {
  */
 function dropdownOptionsDirective() {
     function linkFn(scope, element, attrs, dropdownCtrl) {
-        var container = element[0],
-            contentsHeight = container.children[0].offsetHeight;
+        var container = element[0];
 
         scope.dropdown = dropdownCtrl;
         container.style.top = dropdownCtrl.labelHeight + 'px';
@@ -109,7 +108,9 @@ function dropdownOptionsDirective() {
         scope.$watch('dropdown.isOpen', setHeight);
 
         function setHeight(isOpen) {
+            var contentsHeight;
             if (isOpen) {
+                contentsHeight = container.children[0].offsetHeight;
                 container.style.height =  contentsHeight + 'px';
             } else {
                 container.style.height = 0;
@@ -117,7 +118,7 @@ function dropdownOptionsDirective() {
         }
     }
     return {
-        restrict: 'A',
+        restrict: 'AE',
         template: '<div class="mh-dropdown-options" ng-transclude></div>',
         scope: {},
         replace: true,

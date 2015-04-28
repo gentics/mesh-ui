@@ -5,6 +5,7 @@
 
 .mh-dropdown {
   position: relative;
+  display: block;
 }
 
 .mh-dropdown-label {
@@ -44,7 +45,7 @@
   li {
     cursor: pointer;
     padding: @mh-dropdown-padding @mh-dropdown-padding @mh-dropdown-padding @mh-dropdown-padding*2;
-
+    transition: background-color 0.2s;
     &:hover {
       background-color: darken(@mh-dropdown-background-color, 8%);
     }
