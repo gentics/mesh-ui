@@ -10,9 +10,10 @@ angular.module('caiLunAdminUi.common')
  * In any of these methods that have an `item` requirement, `item` must be an
  * object with a `uuid` property.
  *
+ * @param {ng.IQService} $q
  * @constructor
  */
-function WipService() {
+function WipService($q) {
     var wipStore = {},
         modifiedWips = {},
         onWipChangeCallbacks = [];
@@ -137,13 +138,19 @@ function WipService() {
      * Remove an existing item of the specified type from the store.
      * @param {String} type
      * @param {Object} item
+     * @return {ng.IPromise}
      */
     function closeItem(type, item) {
+        var deferred = $q.defer();
+
         validateItem(item);
         checkItemInWipStore(type, item);
         delete wipStore[type][item.uuid];
         delete modifiedWips[type][item.uuid];
-        invokeChangeCallbacks();
+        invokeChangeCallbacks(function() {
+            deferred.resolve();
+        });
+        return deferred.promise;
     }
 
     /**
@@ -208,10 +215,14 @@ function WipService() {
      * Invokes any change handler callbacks which were previously registered via
      * registerWipChangeHandler().
      */
-    function invokeChangeCallbacks() {
+    function invokeChangeCallbacks(done) {
+        console.log(wipStore.contents);
         onWipChangeCallbacks.forEach(function(fn) {
             fn();
         });
+        if (typeof done === 'function') {
+            done();
+        }
     }
 
     /**
