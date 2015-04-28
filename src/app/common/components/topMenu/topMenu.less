@@ -15,7 +15,26 @@
       font-size: 24px;
     }
 
+    .top-menu-label {
+      height: 43px;
+    }
+
+    .language-container {
+      padding-right: 20px;
+      border-right: 1px solid @color-silver;
+      .language-select-label {
+        i {
+          margin-right: 5px;
+        }
+        font-size: 0.8em;
+        color: @color-subdued;
+        padding: 0 10px;
+      }
+    }
+
+
     .user-container {
+      padding-left: 20px;
       .profile-image {
         margin-right: 5px;
         width: 36px;
@@ -25,21 +44,9 @@
         border-radius: 50%;
       }
 
-      md-select {
-        margin: 0;
-      }
-      .md-select-label {
-        border-bottom: 0;
-      }
-
       .user-name {
         font-size: 0.8em;
         margin-left: 6px;
-      }
-
-      .language {
-        font-size: 12px;
-        cursor: pointer;
       }
     }
   }

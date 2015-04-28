@@ -8,26 +8,35 @@
         </div>
 
         <div flex layout="row" layout-align="end center">
+            <div class="language-container">
+                <mh-dropdown>
+                    <mh-dropdown-label layout="row" layout-align="center center" class="language-select-label top-menu-label">
+                        <i class="icon-language"></i>
+                        <div>
+                            {{ vm.lang.nativeName }}
+                        </div>
+                    </mh-dropdown-label>
+                    <mh-dropdown-options>
+                        <ul>
+                            <li ng-repeat="language in vm.languages"
+                                ng-click="vm.updateLanguage(language.code)" >{{ language.nativeName | uppercase }}</li>
+                        </ul>
+                    </mh-dropdown-options>
+                </mh-dropdown>
+            </div>
 
             <div class="user-container" layout="row">
-
-               <!-- <div class="language">
-                    <i class="icon-language"></i>
-                    <md-select ng-model="vm.lang" ng-change="vm.updateLanguage(vm.lang)">
-                        <md-option ng-repeat="language in vm.languages" ng-value="language.code">{{ language.nativeName | uppercase }}</md-option>
-                    </md-select>
-                </div>-->
                 <mh-dropdown>
-                    <mh-dropdown-label layout="row" layout-align="center center">
+                    <mh-dropdown-label layout="row" layout-align="center center" class="top-menu-label">
                         <div class="profile-image" style="background-image: url({{ vm.profileImage }})"></div>
-                        <div>{{ vm.userName }} <i class="icon-arrow-drop-down"></i></div>
+                        <div class="user-name">{{ vm.userName }} <i class="icon-arrow-drop-down"></i></div>
                     </mh-dropdown-label>
-                    <div mh-dropdown-options>
+                    <mh-dropdown-options>
                     <ul>
                         <li translate>PROFILE</li>
                         <li ng-click="vm.logout()" translate>LOG_OUT</li>
                     </ul>
-                    </div>
+                    </mh-dropdown-options>
                 </mh-dropdown>
             </div>
 

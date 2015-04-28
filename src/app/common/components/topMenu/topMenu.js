@@ -18,7 +18,7 @@ function topMenuDirective($state, authService, i18nService) {
         
         vm.isLoggedIn = isLoggedIn;
         vm.languages = i18nService.languages;
-        vm.lang = i18nService.getCurrentLang().code;
+        vm.lang = i18nService.getCurrentLang();
 
         // TODO: get this data from the backend, not hard-coded
         vm.userName = 'John Smith';
@@ -30,6 +30,7 @@ function topMenuDirective($state, authService, i18nService) {
 
         vm.updateLanguage = function(lang) {
             i18nService.setCurrentLang(lang);
+            vm.lang = i18nService.getCurrentLang();
             $state.reload();
         };
 
