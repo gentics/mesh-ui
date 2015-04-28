@@ -16,8 +16,14 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
     vm.canDelete = canDelete;
     vm.persist = persist;
     vm.remove = remove;
+    vm.isLoaded = false;
 
-    getContentData().then(populateSchema).then(getParentTag);
+    getContentData()
+        .then(populateSchema)
+        .then(getParentTag)
+        .then(function() {
+           vm.isLoaded = true;
+        });
 
     $scope.$watch('vm.contentModified', modifiedWatchHandler);
     $scope.$on('$destroy', saveWipMetadata);

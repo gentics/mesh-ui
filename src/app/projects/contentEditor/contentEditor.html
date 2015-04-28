@@ -1,4 +1,4 @@
-<div class="app-content">
+<div class="app-content content-editor-container" ng-show="vm.isLoaded">
 
     <h1 class="title-font">{{ vm.content.properties[vm.availableLangs[0].code].name }}</h1>
 
@@ -25,7 +25,8 @@
 
         <md-button class="md-raised md-primary"
                    ng-click="vm.persist(vm.content)"
-                   ng-disabled="!vm.contentModified">
+                   ng-disabled="!vm.contentModified"
+                   aria-label="save">
             <i class="icon-save"></i>
             <span ng-if="!vm.isNew" translate>UPDATE</span>
             <span ng-if="vm.isNew" translate>CREATE</span>
@@ -33,7 +34,8 @@
 
         <md-button class="md-raised md-warn"
                    ng-click="vm.remove(vm.content)"
-                   ng-disabled="!vm.canDelete()">
+                   ng-disabled="!vm.canDelete()"
+                   aria-label="delete">
             <i class="icon-delete"></i><span translate>DELETE</span>
         </md-button>
 

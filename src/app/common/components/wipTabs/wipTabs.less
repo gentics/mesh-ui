@@ -6,9 +6,12 @@
 .wip-tabs {
   height: 30px;
   transition: height 0.2s;
+  border-top: 1px solid @color-concrete;
+  border-bottom: 1px solid @color-concrete;
 
   &.empty {
     height: 0;
+    border-bottom: 0;
 
     .wip-tab {
       height: 0;
@@ -27,25 +30,38 @@
     text-transform: uppercase;
     color: @color-boulder;
     position: relative;
-    border-top: 1px solid @color-transparent;
+    //border-top: 3px solid @color-transparent;
     transition: background-color 0.2s;
 
     &:first-child {
-      border-left: 1px solid @color-transparent;
+      //border-left: 1px solid @color-transparent;
+    }
+
+    &:not(:first-child) {
+      border-left: 1px solid @color-silver;
     }
 
     &:hover {
       background-color: darken(@tab-bg-color, 10%);
     }
 
+    .label {
+      transition: border 0.3s;
+      border-bottom: 2px solid @color-transparent;
+    }
+
     &.active {
-      background-color: @tab-bg-color;
-      color: @color-subdued;
-      border-top: 1px solid @tab-bottom-color;
-      border-left: 1px solid @tab-bottom-color !important;
-      border-right: 1px solid @tab-bottom-color;
-      border-radius: 3px 3px 0 0;
+      //background: white;
+      color: @color-mineshaft;
+      //border-bottom: 2px solid @color-primary;
+      //border-left: 1px solid @tab-bottom-color !important;
+      //border-right: 1px solid @tab-bottom-color;
+      //border-radius: 3px 3px 0 0;
       overflow-x: hidden;
+
+      .label {
+        border-bottom: 2px solid @color-primary;
+      }
 
       .status-indicator {
         background-color: @status-modified-color;
@@ -95,7 +111,7 @@
     }
   }
 
-  div:not(.active) + .wip-tab {
+  /*div:not(.active) + .wip-tab {
     border-left: 1px solid @tab-border-color;
-  }
+  }*/
 }
