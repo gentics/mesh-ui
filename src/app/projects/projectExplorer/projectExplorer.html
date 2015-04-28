@@ -4,35 +4,46 @@
     <div layout="row" layout-sm="column">
 
         <div flex-gt-sm="25" flex-gt-md="15" class="explorer-tags-col">
-            <h2>Tags
-                <md-button aria-label="Create Tag">
-                    <i class="icon-add"></i>
-                </md-button>
-            </h2>
+            <div layout="row">
+                <h2>Tags</h2>
+                <mh-dropdown>
+                    <mh-dropdown-label>
+                        <md-button class="md-icon-button" md-no-ink aria-label="Create Tag">
+                            <i class="icon-add"></i>
+                        </md-button>
+                    </mh-dropdown-label>
+                    <mh-dropdown-options>
+                        <ul class="create-options">
+                            <li>Create Tag
+                            </li>
+                        </ul>
+                    </mh-dropdown-options>
+                </mh-dropdown>
+            </div>
 
             <explorer-tags-list tags="vm.tags"></explorer-tags-list>
         </div>
 
         <div flex class="explorer-contents-col">
-            <h2>Contents
-                <md-button class="md-icon-button" aria-label="Create Tag">
-                                    <i class="icon-add"></i>
-                                </md-button>
-            </h2>
-
-            <!--<div flex layout="row" layout-align="end" class="create-content-menu">
-                <md-select ng-model="_" ng-if="vm.createPermission">
-                    <md-select-label>
-                        <div class="user-name" translate>CREATE_NEW</div>
-                    </md-select-label>
-                    <md-option ng-repeat="schema in vm.schemas"
-                               value="{{::$index}}"
-                               ui-sref="projects.explorer.createContent({ schemaId: schema.uuid })">
-                        {{::schema.displayName || schema.title}}
-                    </md-option>
-                </md-select>
-
-            </div>-->
+            <div layout="row">
+                <h2>Contents</h2>
+                <mh-dropdown>
+                    <mh-dropdown-label>
+                        <md-button class="md-icon-button" md-no-ink aria-label="Create Tag">
+                            <i class="icon-add"></i>
+                        </md-button>
+                    </mh-dropdown-label>
+                    <mh-dropdown-options>
+                        <ul class="create-options">
+                            <li ng-repeat="schema in vm.schemas"
+                                value="{{::$index}}"
+                                ui-sref="projects.explorer.createContent({ schemaId: schema.uuid })">
+                                {{::schema.displayName || schema.title}}
+                            </li>
+                        </ul>
+                    </mh-dropdown-options>
+                </mh-dropdown>
+            </div>
 
             <explorer-contents-list contents="vm.contents"
                                     current-page="vm.currentPage"
