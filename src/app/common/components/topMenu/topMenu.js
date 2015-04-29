@@ -7,10 +7,14 @@ angular.module('caiLunAdminUi.common')
  * @param $state
  * @param authService
  * @param i18nService
- * @returns {{}} Directive Definition Object
+ * @returns {ng.IDirective} Directive definition object
  */
 function topMenuDirective($state, authService, i18nService) {
 
+    /**
+     * Whether or not the current user is logged in.
+     * @type {boolean}
+     */
     var isLoggedIn = authService.isLoggedIn;
 
     function topMenuController() {

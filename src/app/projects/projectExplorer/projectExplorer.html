@@ -12,12 +12,12 @@
                             <i class="icon-add"></i>
                         </md-button>
                     </mh-dropdown-label>
-                    <mh-dropdown-options>
+                    <mh-dropdown-body>
                         <ul class="create-options">
                             <li>Create Tag
                             </li>
                         </ul>
-                    </mh-dropdown-options>
+                    </mh-dropdown-body>
                 </mh-dropdown>
             </div>
 
@@ -33,7 +33,7 @@
                             <i class="icon-add"></i>
                         </md-button>
                     </mh-dropdown-label>
-                    <mh-dropdown-options>
+                    <mh-dropdown-body>
                         <ul class="create-options">
                             <li ng-repeat="schema in vm.schemas"
                                 value="{{::$index}}"
@@ -41,7 +41,7 @@
                                 {{::schema.displayName || schema.title}}
                             </li>
                         </ul>
-                    </mh-dropdown-options>
+                    </mh-dropdown-body>
                 </mh-dropdown>
             </div>
 

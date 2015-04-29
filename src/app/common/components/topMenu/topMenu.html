@@ -16,12 +16,12 @@
                             {{ vm.lang.nativeName }}
                         </div>
                     </mh-dropdown-label>
-                    <mh-dropdown-options>
+                    <mh-dropdown-body>
                         <ul>
                             <li ng-repeat="language in vm.languages"
                                 ng-click="vm.updateLanguage(language.code)" >{{ language.nativeName | uppercase }}</li>
                         </ul>
-                    </mh-dropdown-options>
+                    </mh-dropdown-body>
                 </mh-dropdown>
             </div>
 
@@ -31,12 +31,12 @@
                         <div class="profile-image" style="background-image: url({{ vm.profileImage }})"></div>
                         <div class="user-name">{{ vm.userName }} <i class="icon-arrow-drop-down"></i></div>
                     </mh-dropdown-label>
-                    <mh-dropdown-options>
+                    <mh-dropdown-body>
                     <ul>
                         <li translate>PROFILE</li>
                         <li ng-click="vm.logout()" translate>LOG_OUT</li>
                     </ul>
-                    </mh-dropdown-options>
+                    </mh-dropdown-body>
                 </mh-dropdown>
             </div>
 

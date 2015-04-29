@@ -6,7 +6,7 @@ angular.module('caiLunAdminUi.projects')
  *
  * @param $state
  * @param contextService
- * @returns {{}} Directive Definition Object
+ * @returns {ng.IDirective} Directive definition object
  */
 function projectSearchBarDirective($state, contextService) {
 

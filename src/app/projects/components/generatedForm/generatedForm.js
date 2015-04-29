@@ -10,7 +10,7 @@ angular.module('caiLunAdminUi.projects')
  * fields = the schema properties array
  * modified-flag = boolean value that will be set to true when user modifies any form fields.
  *
- * @returns {{}} Directive Definition Object
+ * @returns {ng.IDirective} Directive definition object
  */
 function generatedFormDirective() {
 

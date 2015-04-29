@@ -2,11 +2,11 @@ angular.module('caiLunAdminUi.projects')
     .controller('ProjectExplorerController', ProjectExplorerController);
 
 /**
- * @param $scope
- * @param $location
+ * @param {ng.IScope} $scope
+ * @param {ng.ILocationService} $location
  * @param dataService
  * @param contextService
- * @param parentTag injected from the router resolve function
+ * @param {Object} parentTag injected from the router resolve function
  * @constructor
  */
 function ProjectExplorerController($scope, $location, dataService, contextService, parentTag) {

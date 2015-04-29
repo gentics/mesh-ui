@@ -1,7 +1,19 @@
 angular.module('caiLunAdminUi.projects')
     .controller('ContentEditorController', ContentEditorController);
 
-
+/**
+ * Controller for the content edit/create form.
+ *
+ * @param {ng.IScope} $scope
+ * @param $state
+ * @param $stateParams
+ * @param contextService
+ * @param i18nService
+ * @param dataService
+ * @param wipService
+ * @param notifyService
+ * @constructor
+ */
 function ContentEditorController($scope, $state, $stateParams, contextService, i18nService, dataService, wipService, notifyService) {
     var vm = this,
         wipType = 'contents',

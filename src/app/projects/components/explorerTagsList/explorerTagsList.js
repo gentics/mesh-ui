@@ -4,7 +4,7 @@ angular.module('caiLunAdminUi.projects')
 /**
  * The left-hand side navigation for displaying the sub-tags of the current tag.
  *
- * @returns {{}} Directive Definition Object
+ * @returns {ng.IDirective} Directive definition object
  */
 function explorerTagsListDirective($state, contextService) {
 

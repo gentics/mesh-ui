@@ -2,7 +2,7 @@ angular.module('caiLunAdminUi.common')
     .controller('mhDropdownController', dropdownController)
     .directive('mhDropdown', dropdownDirective)
     .directive('mhDropdownLabel', dropdownLabelDirective)
-    .directive('mhDropdownOptions', dropdownOptionsDirective);
+    .directive('mhDropdownBody', dropdownBodyDirective);
 
 /**
  * Controller for the mh-dropdown component. The component expects the following markup:
@@ -11,22 +11,32 @@ angular.module('caiLunAdminUi.common')
  *    <mh-dropdown-label>
  *        Label
  *    </mh-dropdown-label>
- *    <mh-dropdown-options>
+ *    <mh-dropdown-body>
  *        <ul>
  *            <li>Option 1</li>
  *            <li>Option 2</li>
  *        </ul>
- *    </mh-dropdown-options>
+ *    </mh-dropdown-body>
  * </mh-dropdown>
  *
- * @param $scope
- * @param $element
- * @param $document
+ * @param {ng.IScope} $scope
+ * @param {ng.IElement} $element
+ * @param {ng.IDocumentService} $document
  */
 function dropdownController($scope, $element, $document) {
     var vm = this;
 
+    /**
+     * Tracks the state of the dropdown
+     * @type {boolean}
+     */
     vm.isOpen = false;
+
+    /**
+     * Stores the height in pixels of the dropdown label, used for
+     * correct positioning of the dropdown options div.
+     * @type {number}
+     */
     vm.labelHeight = 0;
     vm.toggle = toggle;
 
@@ -42,8 +52,8 @@ function dropdownController($scope, $element, $document) {
     }
 
     /**
-     * Close the dropdown and deregister the global click handler.
-     * @param event
+     * Close the dropdown and de-register the global click handler.
+     * @param {Event} event
      */
     function closeDropdown(event) {
         var target = event.target;
@@ -57,9 +67,11 @@ function dropdownController($scope, $element, $document) {
 }
 
 /**
- * The container for the dropdown
+ * The container for the whole dropdown component. Its main purpose is to
+ * establish an isolate scope and make the shared controller available
+ * to the other parts of the component.
  *
- * @returns {{}} Directive Definition Object
+ * @returns {ng.IDirective} Directive definition object
  */
 function dropdownDirective() {
     return {
@@ -75,7 +87,7 @@ function dropdownDirective() {
 /**
  * The dropdown label
  *
- * @returns {{restrict: string, template: string, transclude: boolean, replace: boolean, require: string, link: dropdownLabelLink, scope: {}}}
+ * @returns {ng.IDirective} Directive definition object
  */
 function dropdownLabelDirective() {
     function dropdownLabelLink(scope, element, attrs, dropdownCtrl) {
@@ -94,11 +106,11 @@ function dropdownLabelDirective() {
 }
 
 /**
- * The dropdown options.
+ * The dropdown body.
  *
- * @returns {{restrict: string, template: string, scope: {}, replace: boolean, transclude: boolean, require: string, link: linkFn}}
+ * @returns {ng.IDirective} Directive definition object
  */
-function dropdownOptionsDirective() {
+function dropdownBodyDirective() {
     function linkFn(scope, element, attrs, dropdownCtrl) {
         var container = element[0];
 
@@ -119,7 +131,7 @@ function dropdownOptionsDirective() {
     }
     return {
         restrict: 'AE',
-        template: '<div class="mh-dropdown-options" ng-transclude></div>',
+        template: '<div class="mh-dropdown-body" ng-transclude></div>',
         scope: {},
         replace: true,
         transclude: true,

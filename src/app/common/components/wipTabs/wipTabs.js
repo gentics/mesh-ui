@@ -5,22 +5,24 @@ angular.module('caiLunAdminUi.common')
 /**
  * Directive work-in-progress (WIP) tabs which allow switching between open editor views.
  *
- * @param $state
- * @param $mdDialog
+ * @param {ng.ui.IStateService} $state
+ * @param {ng.material.MDDialogService} $mdDialog
  * @param i18nService
  * @param wipService
  * @param dataService
  * @param notifyService
  *
- * @returns {{}} Directive Definition Object
+ * @returns {ng.IDirective} Directive definition object
  */
 function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notifyService) {
 
+    /**
+     * @param {ng.IScope} $scope
+     */
     function wipTabsController($scope) {
         var vm = this,
             wipType = 'contents',
             lastIndex = 0;
-
         vm.wips = [];
         vm.modified = [];
         vm.selectedIndex = 0;
@@ -33,15 +35,20 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
 
         wipChangeHandler(); // populate with WIPs on load.
 
+        /**
+         * Has the WIP with the specified uuid been modified?
+         * @param {string} uuid
+         * @returns {boolean}
+         */
         function isModified(uuid) {
             return -1 < vm.modified.indexOf(uuid);
         }
 
         /**
-         * Close a WIP tab and remove the WIP item from the wipService, automatically switching to another
-         * tab or the list view.
+         * Close a WIP tab and remove the WIP item from the wipService,
+         * automatically switching to another tab or the list view.
          *
-         * @param event
+         * @param {Event} event
          * @param {number} index
          */
         function closeWip(event, index) {
@@ -68,7 +75,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
         /**
          * Display the close confirmation dialog box. Returns a promise which is resolved
          * to 'save', 'discard', or rejected if user cancels.
-         * @return {Promise<String>}
+         * @return {ng.IPromise<String>}
          */
         function showDialog() {
             return $mdDialog.show({
@@ -114,9 +121,9 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
          * Establishes the currently-selected tab upon the user transitioning state
          * to a contentEditor view, or deselects all tabs if not in that view.
          *
-         * @param event
-         * @param toState
-         * @param toParams
+         * @param {Object} event
+         * @param {Object} toState
+         * @param {Object} toParams
          */
         function stateChangeHandler(event, toState, toParams) {
             if (toParams && toParams.uuid) {
@@ -152,7 +159,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
 /**
  * Controller used to set the return value of the close dialog box.
  *
- * @param $mdDialog
+ * @param {ng.material.MDDialogService} $mdDialog
  * @constructor
  */
 function WipTabsDialogController($mdDialog) {

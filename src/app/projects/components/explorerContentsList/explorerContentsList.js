@@ -4,7 +4,7 @@ angular.module('caiLunAdminUi.projects')
 /**
  * The table used to display the contents of a tag.
  *
- * @returns {{}} Directive Definition Object
+ * @returns {ng.IDirective} Directive definition object
  */
 function explorerContentsListDirective($state) {
 

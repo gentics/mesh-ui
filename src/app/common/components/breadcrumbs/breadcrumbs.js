@@ -7,7 +7,7 @@ angular.module('caiLunAdminUi.common')
  *
  * @param dataService
  * @param contextService
- * @returns {{}} Directive Definition Object
+ * @returns {ng.IDirective} Directive definition object
  */
 function breadcrumbsDirective(dataService, contextService) {
 
