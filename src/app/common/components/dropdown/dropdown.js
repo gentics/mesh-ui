@@ -32,6 +32,8 @@ function dropdownController($scope, $element, $document) {
      */
     vm.isOpen = false;
 
+    vm.align = vm.align || 'left';
+
     /**
      * Stores the height in pixels of the dropdown label, used for
      * correct positioning of the dropdown options div.
@@ -74,10 +76,13 @@ function dropdownController($scope, $element, $document) {
  * @returns {ng.IDirective} Directive definition object
  */
 function dropdownDirective() {
+
     return {
         restrict: 'E',
         template: '<div class="mh-dropdown" ng-transclude></div>',
         controller: 'mhDropdownController',
+        controllerAs: 'vm',
+        bindToController: true,
         transclude: true,
         replace: true,
         scope: {}
@@ -114,8 +119,10 @@ function dropdownBodyDirective() {
     function linkFn(scope, element, attrs, dropdownCtrl) {
         var container = element[0];
 
+        adjustPosition();
+
         scope.dropdown = dropdownCtrl;
-        container.style.top = dropdownCtrl.labelHeight + 'px';
+        container.style.top = dropdownCtrl.labelHeight - 12 + 'px';
 
         scope.$watch('dropdown.isOpen', setHeight);
 
@@ -123,15 +130,30 @@ function dropdownBodyDirective() {
             var contentsHeight;
             if (isOpen) {
                 contentsHeight = container.children[0].offsetHeight;
-                container.style.height =  contentsHeight + 'px';
+                container.style.height =  contentsHeight + 12 + 'px';
+                container.classList.add('open');
             } else {
                 container.style.height = 0;
+                container.classList.remove('open');
+            }
+        }
+
+        /**
+         * Check to see if the dropdown body goes off the edge of the viewport,
+         * and adjust it if so.
+         */
+        function adjustPosition() {
+            if (container.getBoundingClientRect().left < 0) {
+                container.style.left = '0';
+                container.style.right = 'auto';
+                container.classList.remove('left');
+                container.classList.add('right');
             }
         }
     }
     return {
         restrict: 'AE',
-        template: '<div class="mh-dropdown-body" ng-transclude></div>',
+        template: '<div class="mh-dropdown-body left"><div class="contents" ng-transclude></div></div>',
         scope: {},
         replace: true,
         transclude: true,
