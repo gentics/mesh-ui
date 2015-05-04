@@ -12,10 +12,6 @@ body {
   background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
 }
 
-.title-font {
-  font-family: @title-font;
-}
-
 .app-viewport {
 }
 
@@ -39,6 +35,18 @@ a {
   }
 }
 
+[ui-view].ng-enter {
+  transition: opacity .4s ease;
+}
+
+[ui-view].ng-enter {
+  opacity: 0;
+}
+
+[ui-view].ng-enter-active {
+  opacity: 1;
+}
+
 .select-label {
   margin-top: 1.8em;
   margin-right: 6px;
@@ -52,16 +60,36 @@ a {
   color: @color-subdued;
 }
 
-[ui-view].ng-enter {
-  transition: opacity .4s ease;
+/**
+ * Buttons
+ */
+.custom-button(@name, @accent) {
+  &.btn-@{name}:not([disabled]) {
+    border-bottom: 2px solid fade(@accent, 80%);
+  }
+
+  &.btn-@{name}:not([disabled]):hover {
+    background-color: @accent;
+    color: white;
+  }
 }
 
-[ui-view].ng-enter {
-  opacity: 0;
-}
+button.btn {
+  background-color: @color-alto;
+  border: none;
+  border-bottom: 2px solid @color-silver;
+  padding: 0.4em 0.6em;
+  text-transform: uppercase;
+  border-radius: 1px;
+  transition: background-color 0.2s, color 0.2s;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.1);
 
-[ui-view].ng-enter-active {
-  opacity: 1;
+  &:not([disabled]):hover {
+    background-color: @color-silver;
+  }
+
+  .custom-button(primary, @color-primary);
+  .custom-button(warn, @color-warn);
 }
 
 /**
@@ -69,4 +97,8 @@ a {
  */
 #loading-bar .bar {
   background: @color-accent;
+}
+
+.md-dialog-container {
+  font-size: @font-size-standard;
 }
