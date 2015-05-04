@@ -5,6 +5,7 @@ var gulp = require('gulp'),
     templateCache = require('gulp-angular-templatecache'),
     angularFilesort = require('gulp-angular-filesort'),
     less = require('gulp-less'),
+    autoprefix = require('gulp-autoprefixer'),
     livereload = require('gulp-livereload'),
     karma = require('karma').server,
     child_process = require('child_process');
@@ -68,6 +69,7 @@ gulp.task('app-styles', function() {
             }
         }))
         .pipe(less())
+        .pipe(autoprefix())
         .pipe(gulp.dest('build/styles'))
         .pipe(livereload());
 });
