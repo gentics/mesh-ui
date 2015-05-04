@@ -8,12 +8,17 @@ angular.module('caiLunAdminUi.login')
  * @param authService
  * @constructor
  */
-function LoginController($state, $mdDialog, i18n, authService) {
+function LoginController($timeout, $state, $mdDialog, i18n, authService) {
     var vm = this;
+
+    vm.success = false;
 
     vm.submitForm = function(event, userName, password) {
         if (authService.logIn(userName, password)) {
-            $state.go('projects.list');
+            vm.success = true;
+            $timeout(function() {
+                $state.go('projects.list');
+            }, 1750);
         } else {
             showErrorDialog(event);
         }

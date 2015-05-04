@@ -52,6 +52,18 @@ a {
   color: @color-subdued;
 }
 
+[ui-view].ng-enter {
+  transition: opacity .4s ease;
+}
+
+[ui-view].ng-enter {
+  opacity: 0;
+}
+
+[ui-view].ng-enter-active {
+  opacity: 1;
+}
+
 /**
  Vendor overrides
  */

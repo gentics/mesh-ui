@@ -1,17 +1,24 @@
-<div layout="column" layout-align="center center" class="login-container app-content">
-    <h1 class="title-font" translate>LOG_IN</h1>
-    <form ng-submit="vm.submitForm($event, vm.userName, vm.password)"  layout="column" layout-align="center center" >
-        <md-input-container>
-            <label translate>USER_NAME</label>
-            <input ng-model="vm.userName">
-        </md-input-container>
-        <md-input-container>
-            <label translate>PASSWORD</label>
-            <input ng-model="vm.password" type="password">
-        </md-input-container>
-        <md-button class="md-raised md-primary" type="submit">
-            <span translate>LOG_IN</span>
-        </md-button>
-    </form>
+<div class="login-backdrop">
+
+    <div layout="column" layout-align="start center" class="login-container" ng-class="{ success: vm.success }">
+        <h1 class="title-font" translate>LOG_IN</h1>
+        <form ng-submit="vm.submitForm($event, vm.userName, vm.password)"  layout="column" layout-align="center center" >
+            <md-input-container>
+                <label translate>USER_NAME</label>
+                <input ng-model="vm.userName">
+            </md-input-container>
+            <md-input-container>
+                <label translate>PASSWORD</label>
+                <input ng-model="vm.password" type="password">
+            </md-input-container>
+            <md-button class="md-raised md-primary" type="submit">
+                <span translate>LOG_IN</span>
+            </md-button>
+        </form>
+    </div>
+
+    <div class="overlay" ng-class="{ success: vm.success }">
+
+    </div>
 </div>
 
