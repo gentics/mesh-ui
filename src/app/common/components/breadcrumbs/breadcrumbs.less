@@ -1,22 +1,25 @@
 .breadcrumbs {
-  font-size: 1.4em;
+  font-size: @font-size-title-2;
   font-family: @title-font;
-  padding-top: 10px;
-  ul {
-    list-style-type: none;
-    padding-left: 5px;
-    margin: 0 0 15px 0;
+  text-transform: uppercase;
+  padding: 1em 0;
+
+  a:link, a:visited {
+    color: @color-boulder;
   }
 
-  .responsive-max(@mq-sm, {
-    font-size: 1.1em;
-  });
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+  }
 
   li{
     display: inline-block;
 
     &:after {
       content: '/';
+      color: @color-silver;
     }
     span {
       margin-right: 1px;

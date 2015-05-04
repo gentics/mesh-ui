@@ -3,7 +3,6 @@
     <h1 class="title-font">{{ vm.content.properties[vm.availableLangs[0].code].name }}</h1>
 
     <div layout="rows">
-        <span class="inline-label" translate>EDIT_LOCALIZED_VERSION</span>
         <md-checkbox md-no-ink ng-repeat="lang in vm.availableLangs" ng-model="vm.selectedLangs[lang.code]" ng-class="'lang-color-' + $index">
             {{::lang.nativeName }}
         </md-checkbox>

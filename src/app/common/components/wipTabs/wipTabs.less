@@ -4,63 +4,45 @@
 @status-modified-color: #fb945e;
 
 .wip-tabs {
-  height: 30px;
+  height: 25px;
   transition: height 0.2s;
-  border-top: 1px solid @color-concrete;
-  border-bottom: 1px solid @color-concrete;
-
-  &.empty {
-    height: 0;
-    border-bottom: 0;
-
-    .wip-tab {
-      height: 0;
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-  }
+  margin-left: -8px;
+  margin-bottom: 2.4em;
 
   .wip-tab {
     cursor: pointer;
     overflow: hidden;
     padding: 7px 6px 5px 8px;
-    margin: 0 0 -1px 0;
     border-bottom: none;
-    font-size: 0.75em;
+    font-size: @font-size-smaller;
+    font-family: @title-font;
     text-transform: uppercase;
     color: @color-boulder;
     position: relative;
-    //border-top: 3px solid @color-transparent;
-    //transition: background-color 0.2s;
-
-    &:first-child {
-      //border-left: 1px solid @color-transparent;
-    }
 
     &:not(:first-child) {
       border-left: 1px solid @color-silver;
     }
 
     &:hover {
-      background-color: darken(@tab-bg-color, 10%);
+      .label {
+        border-bottom: 2px solid @color-silver;
+      }
     }
 
     .label {
-      //transition: border 0.3s;
       border-bottom: 2px solid @color-transparent;
     }
 
     &.active {
-      //background: white;
       color: @color-mineshaft;
-      //border-bottom: 2px solid @color-primary;
-      //border-left: 1px solid @tab-bottom-color !important;
-      //border-right: 1px solid @tab-bottom-color;
-      //border-radius: 3px 3px 0 0;
       overflow-x: hidden;
 
       .label {
         border-bottom: 2px solid @color-primary;
+        .responsive-max(@mq-sm, {
+          border-bottom-width: 1px;
+        });
       }
 
       .status-indicator {
@@ -81,12 +63,8 @@
     }
 
     .label {
-      width: 92%;
+      max-width: 92%;
       margin-right: 18px;
-      max-width: 100px;
-      .responsive-min(@mq-sm, {
-        max-width: 200px;
-      });
       display: inline-block;
       white-space: nowrap;
       overflow: hidden;
@@ -105,13 +83,10 @@
       }
       &:hover {
         i {
+          color: white;
           background-color: @color-silver;
         }
       }
     }
   }
-
-  /*div:not(.active) + .wip-tab {
-    border-left: 1px solid @tab-border-color;
-  }*/
 }

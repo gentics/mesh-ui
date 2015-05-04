@@ -1,18 +1,15 @@
 @import "vars";
 @import "icons";
+@import "typography";
 
 /* inject:imports */
 /* endinject */
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
-@import url(http://fonts.googleapis.com/css?family=Cantata+One);
-
 html {
-  font-family: "Open Sans", sans-serif, arial;
+}
 
-  .responsive-max(@mq-sm, {
-    font-size: 0.8em;
-  })
+body {
+  background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
 }
 
 .title-font {
@@ -35,13 +32,9 @@ a {
 .app-content {
   max-width: @app-width;
   margin: auto;
-
-  .responsive-max(@mq-lg, {
-    padding: 0 8px;
-  });
-
+  font-size: @font-size-standard;
   h1 {
-    font-size: 3em;
+    font-size: @font-size-title-1;
     font-weight: 300;
   }
 }
@@ -57,4 +50,11 @@ a {
   display: inline-block;
   margin-top: 20px;
   color: @color-subdued;
+}
+
+/**
+ Vendor overrides
+ */
+#loading-bar .bar {
+  background: @color-accent;
 }

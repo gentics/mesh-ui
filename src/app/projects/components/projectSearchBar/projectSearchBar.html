@@ -1,12 +1,13 @@
 <div class="project-search-bar">
 
-    <div class="content" layout="row" layout-align="center" >
-        <div flex="80" layout="row">
-            <i class="icon-search"></i>
+    <div class="content" layout="row" layout-align="end" >
+        <div flex layout="row">
+
             <md-input-container flex class="search-term">
                 <label><span translate>SEARCH</span> in {{ vm.currentTag || vm.currentProject }}</label>
                 <input type="text" ng-model="searchTerm">
             </md-input-container>
+            <i class="icon-search"></i>
         </div>
     </div>
 </div>

@@ -1,7 +1,17 @@
 .top-menu-container {
 
-  background-color: @color-concrete;
+  background-color: white;
   border-bottom: 1px solid @color-silver;
+  box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.2);
+
+  .top-menu-color-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, rgba(68,239,255,1) 0%,rgba(64,150,238,1) 100%);
+  }
 
   .top-menu {
     max-width: @app-width;
@@ -9,12 +19,16 @@
     padding-bottom: 6px;
 
     .admin-menu-icon {
-      font-size: 24px;
+      font-size: 32px;
+      margin-right: 0.7em;
+      color: @color-boulder;
     }
 
     .logo {
       font-size: 24px;
       color: @color-silver;
+      img {
+      }
     }
 
     .top-menu-label {
@@ -28,9 +42,9 @@
         i {
           margin-right: 5px;
         }
-        font-size: 0.8em;
         color: @color-subdued;
         padding: 0 10px;
+        font-size: @font-size-smaller;
       }
     }
 
@@ -47,8 +61,8 @@
       }
 
       .user-name {
-        font-size: 0.8em;
         margin-left: 6px;
+        font-size: @font-size-smaller;
       }
     }
   }

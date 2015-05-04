@@ -90,6 +90,8 @@ gulp.task('index', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
         .pipe(angularFilesort());
 
     var css = gulp.src([
+        '**/angular-material.css',
+        '**/loading-bar.css',
         '**/*.css'
     ], { cwd: 'build/'} );
 

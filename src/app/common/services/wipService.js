@@ -216,7 +216,6 @@ function WipService($q) {
      * registerWipChangeHandler().
      */
     function invokeChangeCallbacks(done) {
-        console.log(wipStore.contents);
         onWipChangeCallbacks.forEach(function(fn) {
             fn();
         });

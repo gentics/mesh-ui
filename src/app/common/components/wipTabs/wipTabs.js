@@ -87,6 +87,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
 
         /**
          * Go to either the next closest tab, or back to the explorer view if all tabs are closed.
+         * TODO: fix the logic so that it acts more like a "back" button, but without opening closed tabs
          */
         function goToNextTab() {
             var newWip;
