@@ -18,7 +18,7 @@ function LoginController($timeout, $state, $mdDialog, i18n, authService) {
             vm.success = true;
             $timeout(function() {
                 $state.go('projects.list');
-            }, 1750);
+            }, 2250);
         } else {
             showErrorDialog(event);
         }

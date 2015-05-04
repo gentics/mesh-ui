@@ -26,12 +26,12 @@
   }
 
   &.success {
-    animation: fade-out 0.8s ease;
+    animation: fade-out 0.8s cubic-bezier(.57,.03,.86,.76);
     animation-fill-mode: forwards;
   }
 }
 
-.overlay {
+.overlay1 {
   position: absolute;
   top: 0;
   left: 0;
@@ -42,10 +42,29 @@
   z-index: 5;
 
   &.success {
-    animation: slide-up 1s cubic-bezier(.42,.03,.88,.69) 0.5s;
+    animation: slide-up 1s cubic-bezier(.9,.05,.88,.69) 1s;
     animation-fill-mode: forwards;
   }
 }
+
+
+.overlay2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20vh;
+  width: 100vw;
+  background: fade(@color-accent, 90%);
+  transform: translateY(100vh);
+  z-index: 1;
+
+  &.success {
+    animation: slide-up2 1.6s cubic-bezier(.09,.92,.81,.7) 0.7s;
+    animation-fill-mode: forwards;
+  }
+}
+
+
 
 @keyframes slide-up {
   0% {
@@ -56,11 +75,34 @@
   }
 }
 
+
+@keyframes slide-up2 {
+  0% {
+    transform: translateY(100vh);
+    height: 20vh;
+  }
+  100% {
+    transform: translateY(-20vh);
+    height: 50vh;
+  }
+}
+
+@keyframes slide-down {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
 @keyframes fade-out {
   0% {
+    transform: translateZ(0);
     opacity: 1;
   }
   100% {
+    transform: translateZ(-100px);
     opacity: 0;
   }
 }
