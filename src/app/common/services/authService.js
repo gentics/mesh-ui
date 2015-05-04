@@ -31,7 +31,7 @@ function AuthService($cookies) {
      * @returns {boolean}
      */
     function logIn(userName, password) {
-        if (userName === 'admin' && password === 'admin') {
+        if ((userName === 'admin' && password === 'admin') || (userName === 'a' && password === 'a')) {
             isLoggedIn = true;
             $cookies.isLoggedIn = true;
             onLogInCallbacks.forEach(function(fn) {

@@ -38,32 +38,21 @@
   height: 100vh;
   width: 100vw;
   background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
-  transition: transform 1s cubic-bezier(.42,.03,.88,.69) 0.5s;
   transform: translateY(100vh);
   z-index: 5;
 
   &.success {
-    transform: translateY(0);
+    animation: slide-up 1s cubic-bezier(.42,.03,.88,.69) 0.5s;
+    animation-fill-mode: forwards;
   }
 }
 
-@keyframes fall-away {
+@keyframes slide-up {
   0% {
-    transform: translateZ(0) rotateX(0) translateY(0);
-    opacity: 1;
+    transform: translateY(100vh);
   }
   100% {
-    transform: translateZ(0px) rotateX(0) translateY(0);
-    opacity: 0;
-  }
-}
-
-@keyframes slide-out {
-  0% {
     transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-100vh);
   }
 }
 
