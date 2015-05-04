@@ -17,7 +17,7 @@
     font-size: @font-size-smaller;
     font-family: @title-font;
     text-transform: uppercase;
-    color: @color-boulder;
+    color: lighten(@color-boulder, 20%);
     position: relative;
 
     &:not(:first-child) {
@@ -30,10 +30,6 @@
       }
     }
 
-    .label {
-      border-bottom: 2px solid @color-transparent;
-    }
-
     &.active {
       color: @color-mineshaft;
       overflow-x: hidden;
@@ -43,32 +39,24 @@
         .responsive-max(@mq-sm, {
           border-bottom-width: 1px;
         });
+        &.modified {
+          border-bottom: 2px solid @status-modified-color;
+        }
       }
-
-      .status-indicator {
-        background-color: @status-modified-color;
-        top: 0;
-        bottom: 0;
-      }
-    }
-
-    .status-indicator {
-      display: inline-block;
-      position: absolute;
-      width: 5px;
-      top: -1px;
-      left: 0;
-      bottom: 1px;
-      background-color: lighten(@status-modified-color, 20%);
     }
 
     .label {
+      border-bottom: 2px solid @color-transparent;
       max-width: 92%;
       margin-right: 18px;
       display: inline-block;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      &.modified {
+        //border-bottom: 2px solid lighten(@status-modified-color, 20%);
+      }
     }
 
     .close {

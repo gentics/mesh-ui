@@ -6,6 +6,12 @@
 
   a:link, a:visited {
     color: @color-boulder;
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: @color-primary;
+    text-decoration: none;
   }
 
   ul {
@@ -17,17 +23,43 @@
   li{
     display: inline-block;
 
+    i {
+      margin-left: -5px;
+      color: @color-boulder;
+    }
     &:after {
       content: '/';
-      color: @color-silver;
+      color: @color-boulder;
     }
+
     span {
-      margin-right: 1px;
+      position: relative;
+      display: inline-block;
+      padding-right: 0.3em;
+
+      //padding-right: 0.5em;
+      /* border-top: 1px solid @color-silver;
+       border-bottom: 1px solid @color-silver;*/
+
+     /* &:after {
+        display: inline-block;
+        z-index: 1;
+        width: 0.87em;
+        height: 0.87em;
+        content: ' ';
+        position: absolute;
+        top: 0.16em;
+        right: -0.45em;
+        color: @color-silver;
+        border-top: 1px solid @color-silver;
+        border-right: 1px solid @color-silver;
+        transform: rotate(45deg);
+      }*/
     }
   }
   li:not(:first-child) {
     span {
-      margin-left: 8px;
+      padding-left:0.3em;
     }
   }
 }

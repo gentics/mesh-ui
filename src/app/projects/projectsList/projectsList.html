@@ -1,21 +1,5 @@
 <div class="app-content">
-    <h1 class="title-font" translate>PROJECTS</h1>
-
-
-    <md-content>
-        <md-list>
-            <md-item ng-repeat="project in vm.projects">
-                <md-item-content>
-                    <div class="md-tile-content">
-                        <h3><a ui-sref="projects.explorer({ projectName: project.name, tagId: project.rootTagUuid })">{{project.name}}</a></h3>
-                        <p>
-                            Description...
-                        </p>
-                    </div>
-                </md-item-content>
-                <md-divider ng-if="!$last"></md-divider>
-            </md-item>
-        </md-list>
-    </md-content>
-
+    <div ng-repeat="project in vm.projects">
+        <h1 class="title-font"><a ui-sref="projects.explorer({ projectName: project.name, tagId: project.rootTagUuid })">{{project.name}}</a></h1>
+    </div>
 </div>
