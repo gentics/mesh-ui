@@ -7,6 +7,7 @@ angular.module('caiLunAdminUi', [
     'caiLunAdminUi.common',
     'caiLunAdminUi.login',
     'caiLunAdminUi.projects',
+    'caiLunAdminUi.admin',
 
     // third-party modules
     'ui.router',
