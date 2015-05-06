@@ -14,6 +14,11 @@ function explorerContentsListDirective($state) {
         vm.totalItems = 0;
         vm.update = update;
         vm.goToContent = goToContent;
+        vm.selectedItems = [];
+        vm.toggleSelect = toggleSelect;
+        vm.isSelected = isSelected;
+        vm.selectAll = toggleSelectAll;
+        vm.areAllSelected = false;
 
         /**
          * Invoke the callback defined in the `on-update` attribute.
@@ -23,6 +28,54 @@ function explorerContentsListDirective($state) {
                 currentPage: vm.currentPage,
                 itemsPerPage: vm.itemsPerPage
             });
+            vm.selectedItems = [];
+        }
+
+        /**
+         * Toggle whether the items at index is selected.
+         * @param index
+         */
+        function toggleSelect(index) {
+            if (isSelected(index)) {
+                var idx = vm.selectedItems.indexOf(index);
+                vm.selectedItems.splice(idx, 1);
+            } else {
+                vm.selectedItems.push(index);
+            }
+            vm.areAllSelected = areAllSelected();
+        }
+
+        /**
+         * Toggle between all items being selected or none.
+         */
+        function toggleSelectAll() {
+            if (vm.selectedItems.length === vm.itemsPerPage) {
+                vm.selectedItems = [];
+                vm.areAllSelected = false;
+            } else {
+                vm.selectedItems = [];
+                for (var i = 0; i < vm.itemsPerPage; i++) {
+                    vm.selectedItems.push(i);
+                }
+                vm.areAllSelected = true;
+            }
+        }
+
+        /**
+         * Is the item at index currently selected?
+         * @param $index
+         * @returns {boolean}
+         */
+        function isSelected($index) {
+            return -1 < vm.selectedItems.indexOf($index);
+        }
+
+        /**
+         * Are all items selected?
+         * @returns {boolean}
+         */
+        function areAllSelected() {
+            return vm.selectedItems.length === vm.itemsPerPage;
         }
 
         /**
@@ -30,6 +83,7 @@ function explorerContentsListDirective($state) {
          * @param uuid
          */
         function goToContent(uuid) {
+            vm.selectedItems = [];
             $state.go('projects.explorer.content', { uuid: uuid });
         }
     }
