@@ -2,6 +2,7 @@
     <div layout="row" layout-sm="column">
 
         <div flex-gt-sm="25" flex-gt-md="15" class="explorer-tags-col">
+
             <div layout="row">
                 <h2>Tags</h2>
                 <mh-dropdown>
@@ -20,9 +21,11 @@
             </div>
 
             <explorer-tags-list tags="vm.tags"></explorer-tags-list>
+
         </div>
 
         <div flex class="explorer-contents-col">
+
             <div layout="row">
                 <h2>Contents</h2>
                 <mh-dropdown>
@@ -44,12 +47,23 @@
                 <project-search-bar flex></project-search-bar>
             </div>
 
+            <div class="group-actions" layout="row" layout-align="end">
+                <button class="btn btn-primary btn-tiny" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.openSelected()">
+                    Edit Selected
+                </button>
+                <button class="btn btn-warn btn-tiny" ng-disabled="0 === vm.selectedItems.length">
+                    Delete Selected
+                </button>
+            </div>
+
             <explorer-contents-list contents="vm.contents"
                                     current-page="vm.currentPage"
                                     items-per-page="vm.itemsPerPage"
                                     total-items="vm.totalItems"
+                                    selected-items="vm.selectedItems"
                                     on-update="vm.updateContents(currentPage, itemsPerPage)">
             </explorer-contents-list>
+
         </div>
     </div>
 

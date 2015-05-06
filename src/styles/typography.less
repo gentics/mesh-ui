@@ -13,11 +13,9 @@
 /**
  Font families
  */
-@title-font: 'Cantata One', serif;
-@title-font: 'Old Standard TT', serif;
-@title-font: 'Droid Serif', serif;
-@title-font: 'Open Sans', sans-serif;
 @title-font: 'Roboto', sans-serif;
+@copy-font: 'Open Sans', sans-serif, arial;
+@detail-font: 'Roboto', sans-serif;
 
 
 /**
@@ -25,9 +23,8 @@
  Use rem units for global font sizes.
  */
 html {
-  font-size: 62.5%;
-
-  font-family: "Open Sans", sans-serif, arial;
+  font-size: 62.5%; // so 1rem === 10px
+  font-family: @copy-font;
 
   .responsive-max(@mq-sm, {
     font-size: 50%;
@@ -38,3 +35,9 @@ html {
 
 @font-size-standard: 1.4rem;
 @font-size-smaller: 1.2rem;
+@font-size-tiny: 1rem;
+
+
+.title-font {
+  font-family: @title-font;
+}

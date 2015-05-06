@@ -6,10 +6,12 @@ angular.module('caiLunAdminUi.projects')
  * @param {ng.ILocationService} $location
  * @param dataService
  * @param contextService
+ * @param wipService
+ * @param i18nService
  * @param {Object} parentTag injected from the router resolve function
  * @constructor
  */
-function ProjectExplorerController($scope, $location, dataService, contextService, parentTag) {
+function ProjectExplorerController($scope, $location, dataService, contextService, wipService, i18nService, parentTag) {
     var vm = this;
 
     vm.totalItems = 0;
@@ -17,6 +19,8 @@ function ProjectExplorerController($scope, $location, dataService, contextServic
     vm.currentPage = $location.search().page || 1;
     vm.createPermission = -1 < parentTag.perms.indexOf('create');
     vm.updateContents = updateContents;
+    vm.selectedItems = [];
+    vm.openSelected = openSelected;
 
     $scope.$watch(function() {
         return $location.search().page;
@@ -80,5 +84,33 @@ function ProjectExplorerController($scope, $location, dataService, contextServic
             .then(function(schemas) {
                 vm.schemas = schemas;
             });
+    }
+
+    /**
+     * Open the selected items for editing (i.e. add them to the wipService open items)
+     */
+    function openSelected() {
+        var projectName = contextService.getProject().name,
+            parentTagId = contextService.getTag().id,
+            selectedLangs = {};
+
+        selectedLangs[i18nService.getCurrentLang().code] = true;
+
+        vm.selectedItems.forEach(function(index) {
+            var uuid = vm.contents[index].uuid;
+
+            if (!wipService.getItem('contents', uuid)) {
+                dataService.getContent(projectName, uuid)
+                    .then(function (item) {
+                        wipService.openItem('contents', item, {
+                            projectName: projectName,
+                            parentTagId: parentTagId,
+                            selectedLangs: selectedLangs
+                        });
+                    });
+            }
+        });
+
+        vm.selectedItems = [];
     }
 }

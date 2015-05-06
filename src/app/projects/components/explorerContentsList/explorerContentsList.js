@@ -14,6 +14,7 @@ function explorerContentsListDirective($state) {
         vm.totalItems = 0;
         vm.update = update;
         vm.goToContent = goToContent;
+
         vm.selectedItems = [];
         vm.toggleSelect = toggleSelect;
         vm.isSelected = isSelected;
@@ -100,6 +101,7 @@ function explorerContentsListDirective($state) {
             totalItems: '=',
             itemsPerPage: '=',
             currentPage: '=',
+            selectedItems: '=',
             onUpdate: '&'
         }
     };
