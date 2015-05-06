@@ -1,18 +1,23 @@
 angular.module('caiLunAdminUi.projects')
-    .controller('ProjectExplorerController', ProjectExplorerController);
+    .controller('ProjectExplorerController', ProjectExplorerController)
+    .controller('ProjectExplorerGroupDeleteDialogController', ProjectExplorerGroupDeleteDialogController);
 
 /**
  * @param {ng.IScope} $scope
+ * @param {ng.IQService} $q
  * @param {ng.ILocationService} $location
+ * @param {ng.material.MDDialogService} $mdDialog
  * @param dataService
  * @param contextService
  * @param wipService
  * @param i18nService
+ * @param notifyService
  * @param {Object} parentTag injected from the router resolve function
  * @constructor
  */
-function ProjectExplorerController($scope, $location, dataService, contextService, wipService, i18nService, parentTag) {
-    var vm = this;
+function ProjectExplorerController($scope, $q, $location, $mdDialog, dataService, contextService, wipService, i18nService, notifyService, parentTag) {
+    var vm = this,
+        projectName = contextService.getProject().name;
 
     vm.totalItems = 0;
     vm.itemsPerPage = $location.search().per_page || 10;
@@ -21,6 +26,7 @@ function ProjectExplorerController($scope, $location, dataService, contextServic
     vm.updateContents = updateContents;
     vm.selectedItems = [];
     vm.openSelected = openSelected;
+    vm.deleteSelected = deleteSelected;
 
     $scope.$watch(function() {
         return $location.search().page;
@@ -87,13 +93,10 @@ function ProjectExplorerController($scope, $location, dataService, contextServic
     }
 
     /**
-     * Open the selected items for editing (i.e. add them to the wipService open items)
+     * Open the selected content items for editing (i.e. add them to the wipService open items)
      */
     function openSelected() {
-        var projectName = contextService.getProject().name,
-            parentTagId = contextService.getTag().id,
-            selectedLangs = {};
-
+        var selectedLangs = {};
         selectedLangs[i18nService.getCurrentLang().code] = true;
 
         vm.selectedItems.forEach(function(index) {
@@ -104,7 +107,7 @@ function ProjectExplorerController($scope, $location, dataService, contextServic
                     .then(function (item) {
                         wipService.openItem('contents', item, {
                             projectName: projectName,
-                            parentTagId: parentTagId,
+                            parentTagId: parentTag.uuid,
                             selectedLangs: selectedLangs
                         });
                     });
@@ -113,4 +116,78 @@ function ProjectExplorerController($scope, $location, dataService, contextServic
 
         vm.selectedItems = [];
     }
+
+    /**
+     * Delete the selected content items
+     */
+    function deleteSelected() {
+        var deletedCount = vm.selectedItems.length;
+
+        showDeleteDialog().then(doDelete);
+
+        function doDelete() {
+            $q.when(deleteNext())
+                .then(function () {
+                    notifyService.toast('Deleted ' + deletedCount + ' contents');
+                    populateContent(vm.currentPage);
+                });
+        }
+    }
+
+    /**
+     * Display a confirmation dialog for the group delete action.
+     * @returns {angular.IPromise<any>|any|void}
+     */
+    function showDeleteDialog() {
+        return $mdDialog.show({
+            templateUrl: 'projects/projectExplorer/groupDeleteDialog.html',
+            controller: 'ProjectExplorerGroupDeleteDialogController',
+            controllerAs: 'vm'
+        });
+    }
+
+    /**
+     * Recursively deletes the selected content items as specified by the indices in the
+     * vm.selectedItems array. Done recursively in order to allow each DELETE request to
+     * complete before sending the next. When done in parallel, deleting more than a few
+     * items at once causes server error.
+     *
+     * @returns {ng.IPromise<undefined>}
+     */
+    function deleteNext() {
+        if (vm.selectedItems.length === 0) {
+            return;
+        } else {
+            var index = vm.selectedItems.pop(),
+                uuid = vm.contents[index].uuid;
+
+            return dataService.getContent(projectName, uuid)
+                .then(function (item) {
+                    return dataService.deleteContent(item);
+                })
+                .then(function () {
+                    if (wipService.getItem('contents', uuid)) {
+                        wipService.closeItem('contents', {uuid: uuid});
+                    }
+                    return deleteNext();
+                });
+        }
+    }
+}
+
+/**
+ * Controller used to set the return value of the close dialog box.
+ *
+ * @param {ng.material.MDDialogService} $mdDialog
+ * @constructor
+ */
+function ProjectExplorerGroupDeleteDialogController($mdDialog) {
+    var vm = this;
+
+    vm.confirm = function() {
+        $mdDialog.hide(true);
+    };
+    vm.cancel = function() {
+        $mdDialog.cancel();
+    };
 }
