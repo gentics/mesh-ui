@@ -9,7 +9,7 @@
     transition: color 0.2s;
   }
 
-  a:hover {
+  a:hover, a:active, a:focus {
     color: @color-primary;
     text-decoration: none;
   }
@@ -27,7 +27,7 @@
       margin-left: -5px;
       color: @color-boulder;
     }
-    &:after {
+    &:not(:last-child):after {
       content: '/';
       color: @color-boulder;
     }
@@ -59,7 +59,12 @@
   }
   li:not(:first-child) {
     span {
-      padding-left:0.3em;
+      padding-left: 0.5em;
+    }
+  }
+  li:last-child {
+    a:link, a:visited {
+      color: @color-subdued;
     }
   }
 }

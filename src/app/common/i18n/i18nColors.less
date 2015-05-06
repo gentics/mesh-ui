@@ -3,7 +3,8 @@
     background-color: @color;
   }
   .lang-color-@{index}.content-editor-pane {
-    border-left: 2px solid @color;
+    border-left: 2px solid fade(@color, 50%);
+    //background-color: fade(@color, 10%);
   }
 }
 

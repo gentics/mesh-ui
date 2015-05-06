@@ -13,10 +13,10 @@
   background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
   font-size: @font-size-standard;
   position: absolute;
-  top: 1em;
-  bottom: 1em;
-  left: 1em;
-  right: 1em;
+  top: 2em;
+  bottom: 2em;
+  left: 2em;
+  right: 2em;
   border-radius: 3px;
 
   h1 {
@@ -26,7 +26,7 @@
   }
 
   &.success {
-    animation: fade-out 0.8s cubic-bezier(.57,.03,.86,.76);
+    animation: fade-out 0.8s cubic-bezier(0,.2,.09,.74);
     animation-fill-mode: forwards;
   }
 }
@@ -102,7 +102,7 @@
     opacity: 1;
   }
   100% {
-    transform: translateZ(-100px);
+    transform: translateZ(-150px);
     opacity: 0;
   }
 }
