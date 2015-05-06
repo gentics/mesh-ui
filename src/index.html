@@ -9,10 +9,14 @@
     <!-- inject:css -->
     <!-- endinject -->
 </head>
-<body>
+<body layout="column">
 
 <top-menu></top-menu>
-<div ui-view="main" class="app-viewport"></div>
+
+<div layout="row" flex>
+    <admin-menu></admin-menu>
+    <div flex ui-view="main" class="app-viewport"></div>
+</div>
 
 <!-- inject:vendorjs -->
 <!-- endinject -->

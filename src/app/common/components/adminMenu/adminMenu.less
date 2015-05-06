@@ -1,0 +1,55 @@
+.admin-menu-icon {
+  cursor: pointer;
+  font-size: 32px;
+  margin-right: 0.7em;
+  color: @color-boulder;
+
+  transition: color 0.3s, text-shadow 0.3s;
+  &:hover {
+    color: @color-subdued;
+  }
+  &.open {
+    color: black;
+    text-shadow: 0 0 4px @color-boulder;
+  }
+}
+
+.admin-menu-container {
+  font-size: @font-size-standard;
+  color: @color-almost-white;
+  background-color: fade(black, 70%);
+  box-shadow: inset -9px 8px 17px -10px rgba(0,0,0,0.75);
+  overflow: hidden;
+
+  max-width: 0;
+  padding-left: 0;
+  transition: padding-left 0.5s, max-width 0.5s;
+
+  &.open {
+    max-width: 20vw;
+    padding-left: 5vw;
+  }
+
+  .menu {
+    width: 200px;
+    padding: 2.4rem 0;
+
+    h2 {
+      font-size: @font-size-title-2;
+      font-family: @title-font;
+      text-transform: uppercase;
+      font-weight: normal;
+      margin-top: 0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      li {
+        padding: 0.8em 0;
+      }
+    }
+
+
+  }
+}
