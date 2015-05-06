@@ -1,10 +1,10 @@
 <div class="admin-menu-container" ng-class="{ open: vm.menu.isOpen() }">
     <div class="menu">
-        <h2>Admin</h2>
+        <h2 class="page-title">Admin</h2>
         <ul>
-                <li>Users</li>
-                <li>Projects</li>
-                <li>Schemas</li>
+                <li><a ui-sref="admin.users">Users</a></li>
+                <li><a ui-sref="admin.projects">Projects</a></li>
+                <li><a ui-sref="admin.schemas">Schemas</a></li>
             </ul>
     </div>
 

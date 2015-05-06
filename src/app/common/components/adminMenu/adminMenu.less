@@ -32,15 +32,7 @@
 
   .menu {
     width: 200px;
-    padding: 2.4rem 0;
-
-    h2 {
-      font-size: @font-size-title-2;
-      font-family: @title-font;
-      text-transform: uppercase;
-      font-weight: normal;
-      margin-top: 0;
-    }
+    padding: 0;
 
     ul {
       list-style-type: none;
@@ -50,6 +42,16 @@
       }
     }
 
+    a {
+      transition: color 0.2s;
+      &:link, &:visited {
+        color: @color-alto;
+      }
 
+      &:hover {
+        color: white;
+        text-decoration: none;
+      }
+    }
   }
 }
