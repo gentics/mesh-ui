@@ -29,9 +29,11 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
         vm.isModified = isModified;
         vm.closeWip = closeWip;
         vm.lang = i18nService.getCurrentLang().code;
+        vm.displayTabs = false;
 
         wipService.registerWipChangeHandler(wipChangeHandler);
-        $scope.$on('$stateChangeSuccess', stateChangeHandler);
+        $scope.$on('$stateChangeStart', stateChangeStartHandler);
+        $scope.$on('$stateChangeSuccess', stateChangeSuccessHandler);
 
         wipChangeHandler(); // populate with WIPs on load.
 
@@ -125,13 +127,25 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
          * @param {Object} toState
          * @param {Object} toParams
          */
-        function stateChangeHandler(event, toState, toParams) {
+        function stateChangeSuccessHandler(event, toState, toParams) {
             if (toParams && toParams.uuid) {
                 vm.selectedIndex = indexByUuid(vm.wips, toParams.uuid);
             } else {
                 vm.selectedIndex = -1;
             }
             vm.explorer = toState.name === 'projects.explorer';
+        }
+
+        /**
+         * Since tab contents are relative to a project, we don't want to display the tabs
+         * in the "projects list" view. They should only be visible from within the context a
+         * selected project.
+         *
+         * @param event
+         * @param toState
+         */
+        function stateChangeStartHandler(event, toState) {
+            vm.displayTabs = toState.name !== 'projects.list';
         }
 
         /**
