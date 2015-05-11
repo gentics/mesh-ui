@@ -13,6 +13,7 @@ function breadcrumbsDirective(dataService, contextService) {
 
     function breadcrumbsController($scope) {
         var vm = this;
+        vm.breadcrumbs = [];
 
         vm.clearProject = function() {
             vm.projectName = '';
@@ -29,12 +30,10 @@ function breadcrumbsDirective(dataService, contextService) {
         function getProjectRootTag(projectName) {
             dataService.getProjectRootTagId(projectName)
                 .then(function (id) {
-                    vm.breadcrumbs = [
-                        {
+                    vm.breadcrumbs[0] = {
                             name: projectName,
                             id: id
-                        }, {}
-                    ];
+                        };
                 });
         }
 
