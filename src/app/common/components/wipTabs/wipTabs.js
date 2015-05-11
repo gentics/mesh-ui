@@ -23,13 +23,14 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
         var vm = this,
             wipType = 'contents',
             lastIndex = 0;
+
         vm.wips = [];
         vm.modified = [];
         vm.selectedIndex = 0;
         vm.isModified = isModified;
         vm.closeWip = closeWip;
         vm.lang = i18nService.getCurrentLang().code;
-        vm.displayTabs = false;
+        vm.displayTabs = true;
 
         wipService.registerWipChangeHandler(wipChangeHandler);
         $scope.$on('$stateChangeStart', stateChangeStartHandler);
@@ -58,6 +59,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
                 projectName = vm.wips[index].metadata.projectName;
 
             event.stopPropagation();
+            lastIndex = vm.selectedIndex;
 
             if (wipService.isModified(wipType, wip)) {
                 showDialog().then(function(response) {
@@ -66,11 +68,11 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
                         notifyService.toast('SAVED_CHANGES');
                     }
                     wipService.closeItem(wipType, wip);
-                    $state.go('projects.explorer');
+                    transitionIfCurrentTabClosed(index);
                 });
             } else {
                 wipService.closeItem(wipType, wip);
-                $state.go('projects.explorer');
+                transitionIfCurrentTabClosed(index);
             }
         }
 
@@ -88,19 +90,10 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
         }
 
         /**
-         * Go to either the next closest tab, or back to the explorer view if all tabs are closed.
+         * If the current tab has been closed, go to the explorer state, else stay in current state.
          */
-        function goToNextTab() {
-            var newWip;
-
-            if (0 < vm.wips.length) {
-                vm.selectedIndex = lastIndex < vm.wips.length ? lastIndex : vm.wips.length - 1;
-                newWip = vm.wips[vm.selectedIndex].item;
-            }
-
-            if (newWip) {
-                $state.go('projects.explorer.content', { uuid: newWip.uuid });
-            } else {
+        function transitionIfCurrentTabClosed(closedTabIndex) {
+            if (closedTabIndex === lastIndex) {
                 $state.go('projects.explorer');
             }
         }
@@ -114,9 +107,6 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
             vm.wips = wipService.getOpenItems(wipType);
             vm.modified = wipService.getModifiedItems(wipType);
             vm.selectedIndex = indexByUuid(vm.wips, $state.params.uuid);
-            if (-1 < vm.selectedIndex) {
-                lastIndex = vm.selectedIndex;
-            }
         }
 
         /**
