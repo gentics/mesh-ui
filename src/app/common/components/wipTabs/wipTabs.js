@@ -35,6 +35,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
         wipService.registerWipChangeHandler(wipChangeHandler);
         $scope.$on('$stateChangeStart', stateChangeStartHandler);
         $scope.$on('$stateChangeSuccess', stateChangeSuccessHandler);
+        window.addEventListener('beforeunload', persistOpenWipsLocally);
 
         wipChangeHandler(); // populate with WIPs on load.
 
@@ -136,6 +137,13 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
          */
         function stateChangeStartHandler(event, toState) {
             vm.displayTabs = toState.name !== 'projects.list';
+        }
+
+        /**
+         * Persist any open WIPs to the browser's localStorage.
+         */
+        function persistOpenWipsLocally() {
+            wipService.persistLocal();
         }
 
         /**

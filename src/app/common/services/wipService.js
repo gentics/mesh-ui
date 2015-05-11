@@ -1,5 +1,18 @@
-angular.module('meshAdminUi.common')
+angular.module('meshAdminUi.common.wipService', [
+    'LocalStorageModule'
+])
+    .config(localStorageConfig)
     .service('wipService', WipService);
+
+
+/**
+ * Specify the prefix for the app's localStorage entries.
+ * @param localStorageServiceProvider
+ */
+function localStorageConfig(localStorageServiceProvider) {
+    localStorageServiceProvider
+        .setPrefix('mesh');
+}
 
 /**
  * Service to track work-in-progress (WIP) items, i.e. objects which have
@@ -11,9 +24,10 @@ angular.module('meshAdminUi.common')
  * object with a `uuid` property.
  *
  * @param {ng.IQService} $q
+ * @param localStorageService
  * @constructor
  */
-function WipService($q) {
+function WipService($q, localStorageService) {
     var wipStore = {},
         modifiedWips = {},
         onWipChangeCallbacks = [];
@@ -30,8 +44,18 @@ function WipService($q) {
     this.getOpenItems = getOpenItems;
     this.getModifiedItems = getModifiedItems;
     this.registerWipChangeHandler = registerWipChangeHandler;
+    this.persistLocal = persistToLocalStorage;
+    this.clearLocal = clearLocalStorage;
 
+    populateFromLocalStorage();
 
+    /**
+     * Generates a temporary unique ID for newly-created items so that
+     * they can be referenced before they are saved to the server (at
+     * which point they should get a new, server-generated ID).
+     *
+     * @returns {string}
+     */
     function generateTempId() {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -247,5 +271,36 @@ function WipService($q) {
         } else if (!wipStore[type][id]) {
             throw new Error('wipService: item of type "' + type + '" with uuid "' + id + '" not found.');
         }
+    }
+
+    /**
+     * Load any wips which have been persisted to localStorage via persistToLocalStorage().
+     */
+    function populateFromLocalStorage() {
+        var localWipstore = localStorageService.get('wipStore'),
+        localModifiedWips = localStorageService.get('modifiedWips');
+
+        if (localWipstore) {
+            wipStore = localWipstore;
+        }
+        if (localModifiedWips) {
+            modifiedWips = localModifiedWips;
+        }
+    }
+
+    /**
+     * Persist the open wips to the browser's localStorage.
+     */
+    function persistToLocalStorage() {
+        localStorageService.set('wipStore', wipStore);
+        localStorageService.set('modifiedWips', modifiedWips);
+    }
+
+    /**
+     * Clear any wip data from the browser's localStorage.
+     */
+    function clearLocalStorage() {
+        localStorageService.remove('wipStore');
+        localStorageService.remove('modifiedWips');
     }
 }

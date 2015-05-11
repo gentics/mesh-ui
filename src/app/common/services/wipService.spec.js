@@ -4,9 +4,10 @@ describe('wipService', function() {
         itemType,
         testItem;
 
-    beforeEach(module('meshAdminUi.common'));
+    beforeEach(module('meshAdminUi.common.wipService'));
     beforeEach(inject(function (_wipService_) {
         wipService = _wipService_;
+        wipService.clearLocal();
         testItem = {
             uuid: 'some_uuid',
             name: 'Item One'
@@ -176,5 +177,38 @@ describe('wipService', function() {
             expect(handlerFn.calls.count()).toBe(1);
         });
 
+    });
+
+    describe('local storage', function() {
+
+        var otherItem =  { name: 'foo', uuid: 'bar'};
+
+        beforeAll(function() {
+            wipService.clearLocal();
+            wipService.openItem(itemType, testItem);
+            wipService.persistLocal();
+        });
+
+        it('should be populated with previously-opened item.', function() {
+            expect(wipService.getOpenItems(itemType)[0].item).toEqual(testItem);
+
+            wipService.openItem(itemType, otherItem);
+            wipService.persistLocal();
+        });
+
+        it('should accrue subsequent changes', function() {
+            expect(wipService.getOpenItems(itemType)[1].item.name).toEqual(otherItem.name);
+
+            wipService.setAsModified(itemType, otherItem);
+            wipService.persistLocal();
+        });
+
+        it('should persist modified items', function() {
+            expect(wipService.getModifiedItems(itemType)).toEqual([otherItem.uuid]);
+        });
+
+        afterAll(function() {
+            wipService.clearLocal();
+        });
     });
 });
