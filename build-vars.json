@@ -1,0 +1,20 @@
+{
+  "VENDOR_SCRIPTS" : [
+      "bower_components/angular/angular.js",
+      "bower_components/angular-animate/angular-animate.js",
+      "bower_components/angular-cookies/angular-cookies.js",
+      "bower_components/angular-aria/angular-aria.js",
+      "bower_components/angular-material/angular-material.js",
+      "bower_components/ui-router/release/angular-ui-router.js",
+      "bower_components/lodash/dist/lodash.js",
+      "bower_components/restangular/dist/restangular.js",
+      "bower_components/angular-utils-pagination/dirPagination.js",
+      "bower_components/angular-translate/angular-translate.js",
+      "bower_components/angular-local-storage/dist/angular-local-storage.js",
+      "bower_components/angular-loading-bar/build/loading-bar.js"
+  ],
+  "VENDOR_STYLES": [
+      "bower_components/angular-material/angular-material.css",
+      "bower_components/angular-loading-bar/build/loading-bar.css"
+  ]
+}

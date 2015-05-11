@@ -1,6 +1,12 @@
 // Karma configuration
 // Generated on Tue Mar 31 2015 14:42:52 GMT+0200 (W. Europe Daylight Time)
 
+var vars = require('./build-vars.json'),
+    filesArray = vars.VENDOR_SCRIPTS.concat([
+        'bower_components/angular-mocks/angular-mocks.js',
+        'src/**/*.js'
+    ]);
+
 module.exports = function(config) {
     config.set({
 
@@ -12,22 +18,8 @@ module.exports = function(config) {
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
         frameworks: ['jasmine', 'angular-filesort'],
 
-
         // list of files / patterns to load in the browser
-        files: [
-            'bower_components/angular/angular.js',
-            'bower_components/angular-animate/angular-animate.js',
-            'bower_components/angular-cookies/angular-cookies.js',
-            'bower_components/angular-aria/angular-aria.js',
-            'bower_components/angular-material/angular-material.js',
-            'bower_components/ui-router/release/angular-ui-router.js',
-            'bower_components/lodash/dist/lodash.js',
-            'bower_components/restangular/dist/restangular.js',
-            'bower_components/angular-utils-pagination/dirPagination.js',
-            'bower_components/angular-translate/angular-translate.js',
-            'bower_components/angular-mocks/angular-mocks.js',
-            'src/**/*.js'
-        ],
+        files: filesArray,
 
         angularFilesort: {
             whitelist: [

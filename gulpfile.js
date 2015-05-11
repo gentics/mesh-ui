@@ -8,27 +8,11 @@ var gulp = require('gulp'),
     autoprefix = require('gulp-autoprefixer'),
     livereload = require('gulp-livereload'),
     karma = require('karma').server,
-    child_process = require('child_process');
+    child_process = require('child_process'),
 
-
-var VENDOR_SCRIPTS = [
-    'bower_components/angular/angular.js',
-    'bower_components/angular-animate/angular-animate.js',
-    'bower_components/angular-cookies/angular-cookies.js',
-    'bower_components/angular-aria/angular-aria.js',
-    'bower_components/angular-material/angular-material.js',
-    'bower_components/ui-router/release/angular-ui-router.js',
-    'bower_components/lodash/dist/lodash.js',
-    'bower_components/restangular/dist/restangular.js',
-    'bower_components/angular-utils-pagination/dirPagination.js',
-    'bower_components/angular-translate/angular-translate.js',
-    'bower_components/angular-loading-bar/build/loading-bar.js'
-];
-
-var VENDOR_STYLES = [
-    'bower_components/angular-material/angular-material.css',
-    'bower_components/angular-loading-bar/build/loading-bar.css'
-];
+    vars = require('./build-vars.json'),
+    VENDOR_SCRIPTS = vars.VENDOR_SCRIPTS,
+    VENDOR_STYLES = vars.VENDOR_STYLES;
 
 gulp.task('app-scripts', function() {
     return gulp.src([
