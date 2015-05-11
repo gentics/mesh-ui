@@ -64,11 +64,11 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
                         notifyService.toast('SAVED_CHANGES');
                     }
                     wipService.closeItem(wipType, wip);
-                    goToNextTab();
+                    $state.go('projects.explorer');
                 });
             } else {
                 wipService.closeItem(wipType, wip);
-                goToNextTab();
+                $state.go('projects.explorer');
             }
         }
 
@@ -87,7 +87,6 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
 
         /**
          * Go to either the next closest tab, or back to the explorer view if all tabs are closed.
-         * TODO: fix the logic so that it acts more like a "back" button, but without opening closed tabs
          */
         function goToNextTab() {
             var newWip;
