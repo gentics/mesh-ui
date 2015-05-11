@@ -1,11 +1,28 @@
 ul.tag-list {
   padding: 0;
-  margin: 0;
+  margin: 0 0 1em 0;
   list-style-type: none;
 }
 .tag-item {
-  padding: 12px 0;
-  &:first-child {
-    padding-top: 0;
+  padding: 12px;
+  border-left: 2px solid @color-transparent;
+  border-bottom: 1px solid @color-concrete;
+  cursor: pointer;
+  color: @color-primary;
+
+  transition: border-left-color 0.1s;
+
+  &:hover {
+    border-left: 2px solid @color-primary;
+
+    .edit-tag {
+      opacity: 1;
+    }
+  }
+
+  .edit-tag {
+    float: right;
+    opacity: 0;
+    transition: opacity 0.1s;
   }
 }

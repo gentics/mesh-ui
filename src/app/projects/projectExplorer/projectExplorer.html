@@ -5,10 +5,13 @@
 
             <div layout="row">
                 <h2>Tags</h2>
+            </div>
+
+            <div class="actions-bar" layout="row">
                 <mh-dropdown>
                     <mh-dropdown-label>
-                        <md-button class="md-icon-button" md-no-ink aria-label="Create Tag">
-                            <i class="icon-add"></i>
+                        <md-button class="btn btn-tiny btn-primary" md-no-ink aria-label="Create Tag">
+                            Create Tag
                         </md-button>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
@@ -28,26 +31,28 @@
 
             <div layout="row">
                 <h2>Contents</h2>
-                <mh-dropdown>
-                    <mh-dropdown-label>
-                        <md-button class="md-icon-button" md-no-ink aria-label="Create Tag">
-                            <i class="icon-add"></i>
-                        </md-button>
-                    </mh-dropdown-label>
-                    <mh-dropdown-body>
-                        <ul class="create-options">
-                            <li ng-repeat="schema in vm.schemas"
-                                value="{{::$index}}"
-                                ui-sref="projects.explorer.createContent({ schemaId: schema.uuid })">
-                                {{::schema.displayName || schema.title}}
-                            </li>
-                        </ul>
-                    </mh-dropdown-body>
-                </mh-dropdown>
                 <project-search-bar flex></project-search-bar>
             </div>
-
-            <div class="group-actions" layout="row" layout-align="end">
+            <div class="actions-bar" layout="row" layout-align="end">
+                <div>
+                    <mh-dropdown>
+                        <mh-dropdown-label>
+                            <md-button class="btn btn-primary btn-tiny" md-no-ink aria-label="Create Tag">
+                                Create Content
+                            </md-button>
+                        </mh-dropdown-label>
+                        <mh-dropdown-body>
+                            <ul class="create-options">
+                                <li ng-repeat="schema in vm.schemas"
+                                    value="{{::$index}}"
+                                    ui-sref="projects.explorer.createContent({ schemaId: schema.uuid })">
+                                    {{::schema.displayName || schema.title}}
+                                </li>
+                            </ul>
+                        </mh-dropdown-body>
+                    </mh-dropdown>
+                </div>
+                <div flex></div>
                 <button class="btn btn-primary btn-tiny" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.openSelected()">
                     Edit Selected
                 </button>

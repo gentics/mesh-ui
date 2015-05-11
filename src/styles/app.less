@@ -84,11 +84,11 @@ a {
   }
 }
 
-button.btn {
+.btn {
   background-color: @color-alto;
   border: none;
   border-bottom: 2px solid @color-silver;
-  padding: 0.4em 0.6em;
+  padding: 0.4rem 0.6rem;
   text-transform: uppercase;
   border-radius: 1px;
   transition: background-color 0.2s, color 0.2s;
@@ -98,9 +98,27 @@ button.btn {
     background-color: @color-silver;
   }
 
-  &.btn-tiny {
-    font-size: @font-size-tiny;
-    padding: 0.3em 0.4em;
+  .custom-button(primary, @color-primary);
+  .custom-button(warn, @color-warn);
+}
+
+&.btn-tiny {
+  font-size: @font-size-tiny;
+  padding: 0.3rem 0.4rem;
+}
+
+// a secondary button type which looks like a label
+// without a background
+.label-btn {
+  border: none;
+  padding: 0.2rem;
+  text-transform: uppercase;
+  border-radius: 1px;
+  transition: background-color 0.2s, color 0.2s;
+  background: none;
+
+  &:not([disabled]):hover {
+    background-color: @color-concrete;
   }
 
   .custom-button(primary, @color-primary);

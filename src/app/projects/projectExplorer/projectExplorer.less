@@ -8,11 +8,24 @@
   }
 }
 
+.explorer-contents-col {
+  .responsive-min(@mq-sm, {
+    h2 {
+      padding-left: 10px;
+    }
+    .actions-bar {
+      padding-left: 10px;
+    }
+  });
+
+  border-left: 1px solid @color-concrete;
+}
+
 .create-options {
   min-width: 145px;
 }
 
-.group-actions {
+.actions-bar {
   margin: 1em 0;
   button {
     margin: 0 3px;
