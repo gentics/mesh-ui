@@ -5,8 +5,9 @@ angular.module('meshAdminUi.projects')
  * Controller for the content edit/create form.
  *
  * @param {ng.IScope} $scope
- * @param $state
- * @param $stateParams
+ * @param {ng.ui.IStateService} $state
+ * @param {ng.ui.IStateParamsService} $stateParams
+ * @param {ng.material.MDDialogService} $mdDialog
  * @param contextService
  * @param i18nService
  * @param dataService
@@ -14,7 +15,7 @@ angular.module('meshAdminUi.projects')
  * @param notifyService
  * @constructor
  */
-function ContentEditorController($scope, $state, $stateParams, contextService, i18nService, dataService, wipService, notifyService) {
+function ContentEditorController($scope, $state, $stateParams, $mdDialog, contextService, i18nService, dataService, wipService, notifyService) {
     var vm = this,
         wipType = 'contents',
         projectName = contextService.getProject().name,
@@ -62,13 +63,33 @@ function ContentEditorController($scope, $state, $stateParams, contextService, i
             });
     }
 
+    /**
+     * Delete the open content, displaying a confirmation dialog first before making the API call.
+     * @param content
+     */
     function remove(content) {
-        dataService.deleteContent(content)
+
+        showDeleteDialog()
+            .then(function() {
+            return dataService.deleteContent(content)
+        })
             .then(function() {
                 wipService.closeItem(wipType, content);
                 notifyService.toast('Deleted');
                 $state.go('projects.explorer');
             });
+    }
+
+    /**
+     * Display a confirmation dialog for the delete action.
+     * @returns {angular.IPromise<any>|any|void}
+     */
+    function showDeleteDialog() {
+        return $mdDialog.show({
+            templateUrl: 'projects/projectExplorer/groupDeleteDialog.html',
+            controller: 'ProjectExplorerGroupDeleteDialogController',
+            controllerAs: 'vm'
+        });
     }
 
     /**
