@@ -43,7 +43,7 @@ function adminMenuButtonDirective(adminMenuService) {
         restrict: 'E',
         controller: adminMenuButtonController,
         controllerAs: 'vm',
-        template: '<i class="icon-menu admin-menu-icon" ng-click="vm.menu.toggle()" ng-class="{ open: vm.menu.isOpen() }"></i>',
+        template: '<div class="admin-menu-icon" ng-click="vm.menu.toggle()" ng-class="{ open: vm.menu.isOpen() }"><span></span></div>',
         scope: {}
     };
 }

@@ -1,16 +1,39 @@
 .admin-menu-icon {
   cursor: pointer;
-  font-size: 32px;
-  margin-right: 0.7em;
-  color: @color-boulder;
-
-  transition: color 0.3s, text-shadow 0.3s;
-  &:hover {
-    color: @color-subdued;
+  padding: 12px 45px 16px 0;
+  span, span:before, span:after {
+    cursor: pointer;
+    border-radius: 1px;
+    height: 5px;
+    width: 35px;
+    background: @color-boulder;
+    position: absolute;
+    display: block;
+    content: '';
   }
-  &.open {
-    color: black;
-    text-shadow: 0 0 4px @color-boulder;
+   span:before {
+    top: -10px;
+  }
+   span:after {
+    bottom: -10px;
+  }
+
+   span,  span:before,  span:after {
+    transition: all 200ms ease;
+  }
+  &.open span {
+    background-color: transparent;
+  }
+  &.open span:before, &.open span:after {
+    top: 0;
+    background-color: @color-subdued;
+  }
+  &.open span:before {
+    transform: rotate(45deg);
+  }
+  &.open span:after {
+    transform: translateY(-10px) rotate(-45deg);
+    top: 10px;
   }
 }
 
