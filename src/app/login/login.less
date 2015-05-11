@@ -13,10 +13,10 @@
   background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
   font-size: @font-size-standard;
   position: absolute;
-  top: 2em;
-  bottom: 2em;
-  left: 2em;
-  right: 2em;
+  top: 2px;
+  bottom: 0;
+  left: 0;
+  right: 0;
   border-radius: 3px;
 
   h1 {
@@ -42,7 +42,8 @@
   z-index: 5;
 
   &.success {
-    animation: slide-up 1s cubic-bezier(.9,.05,.88,.69) 1s;
+    animation: slide-up 1s cubic-bezier(.9,.05,.88,.69) 0.3s;
+    animation: slide-up 1.5s ease 0.8s;
     animation-fill-mode: forwards;
   }
 }
@@ -52,14 +53,14 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 20vh;
-  width: 100vw;
-  background: fade(@color-accent, 90%);
+  height: 100vh;
+  width: 20vw;
+  background-color: rgba(73, 73, 73, 1);
   transform: translateY(100vh);
   z-index: 1;
 
   &.success {
-    animation: slide-up2 1.6s cubic-bezier(.09,.92,.81,.7) 0.7s;
+    animation: slide-in 0.9s linear 0.3s;
     animation-fill-mode: forwards;
   }
 }
@@ -76,14 +77,17 @@
 }
 
 
-@keyframes slide-up2 {
+@keyframes slide-in {
   0% {
-    transform: translateY(100vh);
-    height: 20vh;
+    transform: translateX(100vw);
+    width: 90vh;
+  }
+  70% {
+    width: 70vw;
   }
   100% {
-    transform: translateY(-20vh);
-    height: 50vh;
+    transform: translateX(0);
+    width: 20vh;
   }
 }
 
