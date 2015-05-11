@@ -4,7 +4,7 @@ describe('wipService', function() {
         itemType,
         testItem;
 
-    beforeEach(module('caiLunAdminUi.common'));
+    beforeEach(module('meshAdminUi.common'));
     beforeEach(inject(function (_wipService_) {
         wipService = _wipService_;
         testItem = {

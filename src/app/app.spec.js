@@ -1,6 +1,6 @@
 describe('Test test suite', function() {
 
-    beforeEach(module('caiLunAdminUi'));
+    beforeEach(module('meshAdminUi'));
 
     it('should be true', function() {
         var a = true;

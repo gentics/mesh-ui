@@ -1,4 +1,4 @@
-angular.module('caiLunAdminUi.common')
+angular.module('meshAdminUi.common')
     .directive('adminMenu', adminMenuDirective)
     .directive('adminMenuButton', adminMenuButtonDirective)
     .factory('adminMenuService', adminMenuService);

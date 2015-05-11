@@ -1,4 +1,4 @@
-angular.module('caiLunAdminUi.admin')
+angular.module('meshAdminUi.admin')
     .config(routesConfig);
 
 function routesConfig($stateProvider) {

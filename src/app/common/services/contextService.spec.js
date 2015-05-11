@@ -4,7 +4,7 @@ describe('contextService', function() {
         project,
         tag;
 
-    beforeEach(module('caiLunAdminUi.common'));
+    beforeEach(module('meshAdminUi.common'));
     beforeEach(inject(function (_contextService_) {
         contextService = _contextService_;
         project = {

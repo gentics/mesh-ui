@@ -1,4 +1,4 @@
-angular.module('caiLunAdminUi.projects')
+angular.module('meshAdminUi.projects')
     .controller('ProjectExplorerController', ProjectExplorerController)
     .controller('ProjectExplorerGroupDeleteDialogController', ProjectExplorerGroupDeleteDialogController);
 

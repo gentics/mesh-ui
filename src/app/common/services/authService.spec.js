@@ -2,7 +2,7 @@ describe('authService', function() {
 
     var authService;
 
-    beforeEach(module('caiLunAdminUi.common'));
+    beforeEach(module('meshAdminUi.common'));
     beforeEach(inject(function(_authService_) {
         authService = _authService_;
     }));

@@ -1,4 +1,4 @@
-angular.module('caiLunAdminUi.common.i18n')
+angular.module('meshAdminUi.common.i18n')
     .factory('i18n', i18nFilter);
 
 /**

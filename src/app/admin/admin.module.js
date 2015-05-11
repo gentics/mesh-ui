@@ -1,4 +1,4 @@
-angular.module('caiLunAdminUi.admin', [
-    'caiLunAdminUi.common',
+angular.module('meshAdminUi.admin', [
+    'meshAdminUi.common',
     'ui.router'
 ]);

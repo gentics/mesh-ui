@@ -1,6 +1,6 @@
-# Cai Lun Admin UI
+# Mesh Admin UI
 
-Browser-based client app for the Cai Lun CMS REST API.
+Browser-based client app for the Mesh CMS REST API.
 
 ## Build
 

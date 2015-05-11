@@ -1,4 +1,4 @@
-angular.module('caiLunAdminUi.login')
+angular.module('meshAdminUi.login')
     .controller('LoginController', LoginController);
 
 /**

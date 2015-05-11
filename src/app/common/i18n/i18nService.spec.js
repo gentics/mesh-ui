@@ -2,7 +2,7 @@ describe('i18nService', function() {
 
     var provider;
 
-    beforeEach(module('caiLunAdminUi.common', function( i18nServiceProvider ) {
+    beforeEach(module('meshAdminUi.common', function( i18nServiceProvider ) {
         provider = i18nServiceProvider;
     }));
 

@@ -1,5 +1,5 @@
-angular.module('caiLunAdminUi.common', [
-    'caiLunAdminUi.common.i18n',
+angular.module('meshAdminUi.common', [
+    'meshAdminUi.common.i18n',
     'restangular',
     'ngCookies',
     'ngMaterial'

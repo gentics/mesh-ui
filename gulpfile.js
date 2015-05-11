@@ -49,7 +49,7 @@ gulp.task('vendor-scripts', function() {
 
 gulp.task('app-templates', function() {
     return gulp.src('src/app/**/*.html')
-        .pipe(templateCache('templates.js', { module: 'caiLunAdminUi'}))
+        .pipe(templateCache('templates.js', { module: 'meshAdminUi'}))
         .pipe(gulp.dest('build/app/'))
         .pipe(livereload());
 });

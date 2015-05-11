@@ -1,13 +1,13 @@
 /**
  * Root module for the app.
  */
-angular.module('caiLunAdminUi', [
+angular.module('meshAdminUi', [
 
     // app sub-modules
-    'caiLunAdminUi.common',
-    'caiLunAdminUi.login',
-    'caiLunAdminUi.projects',
-    'caiLunAdminUi.admin',
+    'meshAdminUi.common',
+    'meshAdminUi.login',
+    'meshAdminUi.projects',
+    'meshAdminUi.admin',
 
     // third-party modules
     'ui.router',

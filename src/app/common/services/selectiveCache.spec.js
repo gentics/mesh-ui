@@ -2,7 +2,7 @@ describe('selectiveCache', function() {
 
     var provider;
 
-    beforeEach(module('caiLunAdminUi.common', function( selectiveCacheProvider ) {
+    beforeEach(module('meshAdminUi.common', function( selectiveCacheProvider ) {
         provider = selectiveCacheProvider;
     }));
 

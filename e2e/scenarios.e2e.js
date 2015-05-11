@@ -1,4 +1,4 @@
-var BASE_URL = 'http://localhost/gentics/cailun-admin-ui/build/';
+var BASE_URL = 'http://localhost/gentics/mesh-admin-ui/build/';
 
 describe('Login page', function() {
 
@@ -9,7 +9,7 @@ describe('Login page', function() {
     it('should have a title', function() {
         browser.get(BASE_URL);
 
-        expect(browser.getTitle()).toEqual('Cai Lun Admin UI');
+        expect(browser.getTitle()).toEqual('Mesh Admin UI');
     });
 
     it('should redirect to login when not logged in', function() {

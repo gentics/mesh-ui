@@ -1,11 +1,11 @@
 {
-  "name": "cailun-admin-ui",
+  "name": "mesh-admin-ui",
   "version": "0.0.0",
-  "homepage": "https://github.com/gentics/cailun",
+  "homepage": "https://github.com/gentics/mesh",
   "authors": [
     "Michael Bromley <michael@michaelbromley.co.uk>"
   ],
-  "description": "Admin UI for Cailun",
+  "description": "Admin UI for Mesh",
   "moduleType": [
     "globals"
   ],

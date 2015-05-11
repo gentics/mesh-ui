@@ -42,5 +42,5 @@ var germanTranslations = {
     'ERR_CHECK_LOGIN_DETAILS': 'Überprüfen Sie bitte Ihre Daten ein und versuchen Sie es erneut.'
 };
 
-angular.module('caiLunAdminUi.common.i18n')
+angular.module('meshAdminUi.common.i18n')
     .constant('de', germanTranslations);

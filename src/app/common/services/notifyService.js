@@ -1,4 +1,4 @@
-angular.module('caiLunAdminUi.common')
+angular.module('meshAdminUi.common')
     .service('notifyService', NotifyService);
 
 /**

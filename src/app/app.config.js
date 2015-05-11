@@ -1,4 +1,4 @@
-angular.module('caiLunAdminUi')
+angular.module('meshAdminUi')
     .config(appConfig)
     .run(appRunBlock);
 

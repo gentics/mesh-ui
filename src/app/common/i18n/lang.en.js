@@ -47,5 +47,5 @@ var englishTranslations = {
     'ERR_CHECK_LOGIN_DETAILS': 'Please check your login details and try again.'
 };
 
-angular.module('caiLunAdminUi.common.i18n')
+angular.module('meshAdminUi.common.i18n')
     .constant('en', englishTranslations);
