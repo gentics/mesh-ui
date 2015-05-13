@@ -81,6 +81,7 @@ a {
   &.btn-@{name}:not([disabled]):hover {
     background-color: @accent;
     color: white;
+    border-bottom-color: darken(@accent, 10%);
   }
 }
 
@@ -90,7 +91,7 @@ a {
   border-bottom: 2px solid @color-silver;
   padding: 0.4rem 0.6rem;
   text-transform: uppercase;
-  border-radius: 1px;
+  border-radius: 2px;
   transition: background-color 0.2s, color 0.2s;
   box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.1);
 
@@ -102,8 +103,8 @@ a {
   .custom-button(warn, @color-warn);
 }
 
-&.btn-tiny {
-  font-size: @font-size-tiny;
+&.btn-small {
+  font-size: @font-size-smaller;
   padding: 0.3rem 0.4rem;
 }
 
