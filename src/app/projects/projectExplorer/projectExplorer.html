@@ -10,9 +10,9 @@
             <div class="actions-bar" layout="row">
                 <mh-dropdown>
                     <mh-dropdown-label>
-                        <md-button class="btn btn-tiny btn-primary" md-no-ink aria-label="Create Tag">
+                        <button class="btn btn-small btn-primary" aria-label="Create Tag">
                             Create Tag
-                        </md-button>
+                        </button>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
                         <ul class="create-options">
@@ -37,9 +37,9 @@
                 <div>
                     <mh-dropdown>
                         <mh-dropdown-label>
-                            <md-button class="btn btn-primary btn-tiny" md-no-ink aria-label="Create Tag">
+                            <button class="btn btn-primary btn-small" aria-label="Create Tag">
                                 Create Content
-                            </md-button>
+                            </button>
                         </mh-dropdown-label>
                         <mh-dropdown-body>
                             <ul class="create-options">
@@ -53,10 +53,10 @@
                     </mh-dropdown>
                 </div>
                 <div flex></div>
-                <button class="btn btn-primary btn-tiny" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.openSelected()">
+                <button class="btn btn-primary btn-small" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.openSelected()">
                     Edit Selected
                 </button>
-                <button class="btn btn-warn btn-tiny" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.deleteSelected()">
+                <button class="btn btn-warn btn-small" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.deleteSelected()">
                     Delete Selected
                 </button>
             </div>

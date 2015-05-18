@@ -7,7 +7,7 @@
   height: 25px;
   transition: height 0.2s;
   margin-left: -8px;
-  margin-bottom: 2.4em;
+  margin-bottom: 2.4rem;
 
   &.hidden {
     visibility: hidden;
@@ -44,7 +44,7 @@
           border-bottom-width: 1px;
         });
         &.modified {
-          border-bottom: 2px solid @status-modified-color;
+          border-bottom-color: 2px solid @status-modified-color;
         }
       }
     }
@@ -60,6 +60,7 @@
 
       &.modified {
         border-bottom-color: lighten(@status-modified-color, 20%);
+        animation: pulsate 1s linear infinite alternate;
       }
     }
 
@@ -80,5 +81,14 @@
         }
       }
     }
+  }
+}
+
+@keyframes pulsate {
+  0% {
+    border-bottom-color: fade(@status-modified-color, 30%);
+  }
+  100% {
+    border-bottom-color: fade(@status-modified-color, 100%);
   }
 }

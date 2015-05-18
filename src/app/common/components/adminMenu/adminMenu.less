@@ -1,12 +1,12 @@
 .admin-menu-icon {
   cursor: pointer;
-  padding: 12px 45px 16px 0;
+  padding: 14px 45px 16px 0;
   span, span:before, span:after {
     cursor: pointer;
     border-radius: 1px;
-    height: 5px;
+    height: 3px;
     width: 35px;
-    background: @color-boulder;
+    background: lighten(@color-boulder, 10%);
     position: absolute;
     display: block;
     content: '';
@@ -43,6 +43,7 @@
   background-color: fade(black, 70%);
   box-shadow: inset -9px 8px 17px -10px rgba(0,0,0,0.75);
   overflow: hidden;
+  z-index: 5;
 
   max-width: 0;
   padding-left: 0;
