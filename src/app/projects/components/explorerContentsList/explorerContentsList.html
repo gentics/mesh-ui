@@ -21,9 +21,7 @@
             ng-class="{ selected: vm.isSelected($index) }"
             ng-click="vm.toggleSelect($index)">
             <td>
-                <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select All">
-
-                </md-checkbox>
+                <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select All"></md-checkbox>
             </td>
             <td><a href="#" ng-click="vm.goToContent(item.uuid)">{{:: item.properties.name }}</a></td>
             <td>{{:: item.schema.schemaName }}</td>
