@@ -71,7 +71,7 @@ function ContentEditorController($scope, $state, $stateParams, $mdDialog, contex
 
         showDeleteDialog()
             .then(function() {
-            return dataService.deleteContent(content)
+            return dataService.deleteContent(content);
         })
             .then(function() {
                 wipService.closeItem(wipType, content);
@@ -145,7 +145,7 @@ function ContentEditorController($scope, $state, $stateParams, $mdDialog, contex
                     .getContent(projectName, currentTagId)
                     .then(function (data) {
                         vm.content = data;
-                        wipService.openItem(wipType, data, { projectName: projectName, parentTagId: parentTagId });
+                        wipService.openItem(wipType, data, { projectName: projectName, parentTagId: parentTagId, selectedLangs: vm.selectedLangs });
                         return dataService.getSchema(data.schema.schemaUuid);
                     });
             }
@@ -155,7 +155,7 @@ function ContentEditorController($scope, $state, $stateParams, $mdDialog, contex
             return dataService.getSchema(schemaId)
                 .then(function(schema) {
                     vm.content = createEmptyContent(parentTagId, schema.uuid, schema.title);
-                    wipService.openItem(wipType, vm.content, { projectName: projectName, parentTagId: parentTagId, isNew: true });
+                    wipService.openItem(wipType, vm.content, { projectName: projectName, parentTagId: parentTagId, isNew: true, selectedLangs: vm.selectedLangs });
                     return schema;
                 });
         }
