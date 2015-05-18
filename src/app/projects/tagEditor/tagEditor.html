@@ -1,0 +1,43 @@
+<div class="app-content tag-editor-container" ng-show="vm.isLoaded">
+
+    <h1 class="title-font">{{ vm.content.properties[vm.availableLangs[0].code].name }}</h1>
+
+    <div layout="rows" class="language-selector">
+        <md-checkbox md-no-ink ng-repeat="lang in vm.availableLangs" ng-model="vm.selectedLangs[lang.code]" ng-class="'lang-color-' + $index">
+            {{::lang.nativeName }}
+        </md-checkbox>
+    </div>
+
+    <div layout="row">
+        <div flex class="content-editor-pane"
+             ng-repeat="lang in vm.availableLangs"
+             ng-class="'lang-color-' + $index"
+             ng-if="vm.selectedLangs[lang.code]">
+            <generated-form model="vm.content.properties[lang.code]"
+                            fields="vm.schema.properties"
+                            modified-flag="vm.contentModified"
+                            perms="vm.content.perms"></generated-form>
+        </div>
+    </div>
+
+    <div layout="row" layout-align="center center" class="main-buttons">
+
+        <button class="btn btn-primary"
+                   ng-click="vm.persist(vm.content)"
+                   ng-disabled="!vm.contentModified"
+                   aria-label="save">
+            <i class="icon-save"></i>
+            <span ng-if="!vm.isNew" translate>UPDATE</span>
+            <span ng-if="vm.isNew" translate>CREATE</span>
+        </button>
+
+        <button class="btn btn-warn"
+                   ng-click="vm.remove(vm.content)"
+                   ng-disabled="!vm.canDelete()"
+                   aria-label="delete">
+            <i class="icon-delete"></i><span translate>DELETE</span>
+        </button>
+
+    </div>
+
+</div>

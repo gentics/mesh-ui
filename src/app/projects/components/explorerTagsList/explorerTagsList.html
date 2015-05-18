@@ -2,7 +2,7 @@
     <ul class="tag-list">
         <li ng-repeat="tag in vm.tags" class="tag-item" ng-click="vm.goTo(tag.uuid)">
             <span>{{ tag.properties.name }}</span>
-            <button class="edit-tag label-btn btn-tiny">Edit Tag</button>
+            <button class="edit-tag label-btn btn-small" ng-click="vm.editTag($event, tag.uuid)">Edit Tag</button>
         </li>
     </ul>
 </div>

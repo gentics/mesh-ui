@@ -57,6 +57,26 @@ function routesConfig($stateProvider) {
                     controllerAs: 'vm'
                 }
             }
+        })
+        .state('projects.explorer.tag', {
+            url: '/tag/:uuid',
+            views: {
+                'projects@projects' : {
+                    templateUrl: 'projects/tagEditor/tagEditor.html',
+                    controller: 'TagEditorController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
+        .state('projects.explorer.createTag', {
+            url: '/tag/new?schemaId',
+            views: {
+                'projects@projects' : {
+                    templateUrl: 'projects/tagEditor/tagEditor.html',
+                    controller: 'TagEditorController',
+                    controllerAs: 'vm'
+                }
+            }
         });
 }
 
