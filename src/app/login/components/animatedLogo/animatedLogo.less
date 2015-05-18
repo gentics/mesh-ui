@@ -1,6 +1,6 @@
 @base: 50px;
 @initialDelay: 0.5s;
-@delay: 0.3s;
+@delay: .3s;
 @shadowTiming: cubic-bezier(.73,.01,.85,.38);
 
 .logo-container {
@@ -102,28 +102,29 @@
   }
 
   #logo.out {
+    @outDelay: @delay / 2;
     #one {
-      animation: oneOut @delay / 2 @delay;
+      animation: oneOut @delay / 2 @outDelay;
       animation-fill-mode: forwards;
     }
     #shadow-one {
-      animation: shadowOut @delay / 2 @shadowTiming @delay;
+      animation: shadowOut @delay / 2 @shadowTiming @outDelay;
       animation-fill-mode: forwards;
     }
     #two {
-      animation: twoOut @delay / 2 ease @delay + @delay / 2;
+      animation: twoOut @delay / 2 ease @outDelay + @delay / 2;
       animation-fill-mode: forwards;
     }
     #three {
-      animation: threeOut @delay / 2 ease @delay + @delay * 1.5;
+      animation: threeOut @delay / 2 ease @outDelay + @delay;
       animation-fill-mode: forwards;
     }
     #shadow-three {
-      animation: shadowOut @delay / 2 @shadowTiming @delay + @delay * 1.5;
+      animation: shadowOut @delay / 2 @shadowTiming @outDelay + @delay;
       animation-fill-mode: forwards;
     }
     #four {
-      animation: fourOut @delay * 4;
+      animation: fourOut @delay * 4 cubic-bezier(.09,1.18,.1,.98);
       animation-fill-mode: forwards;
     }
   }
@@ -221,15 +222,17 @@
   50% {
     height: @base * 16;
   }
-  80% {
+  65% {
     height: @base * 16;
     top: 0;
+  }
+  90% {
     opacity: 1;
   }
   100% {
-    top: @base * 26;
+    top: @base * 18;
     height: @base * 16;
-    opacity: 1;
+    opacity: 0;
   }
 }
 @keyframes shadowOut {
