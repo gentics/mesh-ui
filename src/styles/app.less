@@ -71,62 +71,6 @@ a {
 }
 
 /**
- * Buttons
- */
-.custom-button(@name, @accent) {
-  &.btn-@{name}:not([disabled]) {
-    border-bottom: 2px solid fade(@accent, 80%);
-  }
-
-  &.btn-@{name}:not([disabled]):hover {
-    background-color: @accent;
-    color: white;
-    border-bottom-color: darken(@accent, 10%);
-  }
-}
-
-.btn {
-  background-color: @color-alto;
-  border: none;
-  border-bottom: 2px solid @color-silver;
-  padding: 0.4rem 0.6rem;
-  text-transform: uppercase;
-  border-radius: 2px;
-  transition: background-color 0.2s, color 0.2s;
-  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.1);
-
-  &:not([disabled]):hover {
-    background-color: @color-silver;
-  }
-
-  .custom-button(primary, @color-primary);
-  .custom-button(warn, @color-warn);
-}
-
-&.btn-small {
-  font-size: @font-size-smaller;
-  padding: 0.3rem 0.4rem;
-}
-
-// a secondary button type which looks like a label
-// without a background
-.label-btn {
-  border: none;
-  padding: 0.2rem;
-  text-transform: uppercase;
-  border-radius: 1px;
-  transition: background-color 0.2s, color 0.2s;
-  background: none;
-
-  &:not([disabled]):hover {
-    background-color: @color-concrete;
-  }
-
-  .custom-button(primary, @color-primary);
-  .custom-button(warn, @color-warn);
-}
-
-/**
  Vendor overrides
  */
 #loading-bar .bar {

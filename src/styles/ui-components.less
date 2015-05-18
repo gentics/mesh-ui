@@ -1,0 +1,105 @@
+.mh-table {
+  min-width: 100%;
+  border-collapse: collapse;
+  font-family: @detail-font;
+  font-size: @font-size-standard;
+  margin-top: -1px;
+
+  thead {
+    border-bottom: 1px solid rgb(230,230,230);
+    color: rgb(130,130,130);
+    text-align: left;
+    padding: 16px 16px 16px 0;
+    text-transform: uppercase;
+  }
+
+  tbody tr {
+    &:hover {
+      cursor: pointer;
+      background-color: @color-concrete;
+    }
+    &.selected {
+      background-color: @color-concrete;
+      border-left: 2px solid @color-primary;
+    }
+  }
+
+  tbody td:first-child {
+    width: 65px;
+  }
+
+  td, th {
+    white-space: nowrap;
+    color: @color-subdued;
+    padding: 5px 0;
+    border-bottom: 1px solid @color-concrete;
+    height: 44px;
+  }
+
+  td, th {
+    md-checkbox {
+      margin-top: 5px;
+      margin-bottom: 5px;
+      opacity: 0.4;
+      &.md-checked {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/**
+ * Buttons
+ */
+.custom-button(@name, @accent) {
+  &.btn-@{name}:not([disabled]) {
+    border-bottom: 2px solid fade(@accent, 80%);
+  }
+
+  &.btn-@{name}:not([disabled]):hover {
+    background-color: @accent;
+    color: white;
+    border-bottom-color: darken(@accent, 10%);
+  }
+}
+
+.btn {
+  background-color: @color-alto;
+  border: none;
+  border-bottom: 2px solid @color-silver;
+  padding: 0.4rem 0.6rem;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background-color 0.2s, color 0.2s;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.1);
+
+  &:not([disabled]):hover {
+    background-color: @color-silver;
+  }
+
+  .custom-button(primary, @color-primary);
+  .custom-button(warn, @color-warn);
+}
+
+&.btn-small {
+  font-size: @font-size-smaller;
+  padding: 0.3rem 0.4rem;
+}
+
+// a secondary button type which looks like a label
+// without a background
+.label-btn {
+  border: none;
+  padding: 0.2rem;
+  text-transform: uppercase;
+  border-radius: 1px;
+  transition: background-color 0.2s, color 0.2s;
+  background: none;
+
+  &:not([disabled]):hover {
+    background-color: @color-concrete;
+  }
+
+  .custom-button(primary, @color-primary);
+  .custom-button(warn, @color-warn);
+}
