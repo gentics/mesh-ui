@@ -19,10 +19,23 @@ function routesConfig($stateProvider) {
             }
         })
         .state('admin.projects', {
+           abstract: true
+        })
+        .state('admin.projects.list', {
             url: '/projects',
             views: {
                 'main@': {
-                    templateUrl: 'admin/projects/projects.html'
+                    templateUrl: 'admin/projects/list/projectList.html',
+                    controller: 'ProjectListController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
+        .state('admin.projects.detail', {
+            url: '/projects/:uuid',
+            views: {
+                'main@': {
+                    templateUrl: 'admin/projects/detail/projectDetail.html'
                 }
             }
         })
