@@ -2,31 +2,41 @@ angular.module('meshAdminUi.login')
     .controller('LoginController', LoginController);
 
 /**
+ * @param $timeout
  * @param $state
  * @param $mdDialog
- * @param i18n
  * @param authService
  * @constructor
  */
-function LoginController($timeout, $state, $mdDialog, i18n, authService) {
+function LoginController($timeout, $state, $mdDialog, authService) {
     var vm = this;
 
     vm.success = false;
+    vm.logoVisible = false;
 
-    vm.submitForm = function(event, userName, password) {
+    $timeout(function() { vm.logoVisible = true; }, 1500);
+
+    vm.submitForm = submitForm;
+
+    /**
+     *
+     * @param {Event} event
+     * @param {string} userName
+     * @param {string} password
+     */
+    function submitForm(event, userName, password) {
         if (authService.logIn(userName, password)) {
             vm.success = true;
             $timeout(function() {
                 $state.go('projects.list');
-            }, 2250);
+            }, 2800);
         } else {
             showErrorDialog(event);
         }
-    };
+    }
 
     /**
      * Displays an error message on login failure.
-     * @param event
      */
     function showErrorDialog() {
         return $mdDialog.show({

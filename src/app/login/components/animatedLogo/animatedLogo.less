@@ -1,0 +1,242 @@
+@base: 50px;
+@initialDelay: 0.5s;
+@delay: 0.3s;
+@shadowTiming: cubic-bezier(.73,.01,.85,.38);
+
+.logo-container {
+  width: 100vw;
+  height: @base * 5;
+  margin-top: 120px;
+  text-align: center;
+
+  #logo {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    margin-left: -178px;
+  }
+
+  .ribbon {
+    position: absolute;
+    width: @base * 1.5;
+    height: @base * 4;
+  }
+
+  #one,
+  #three {
+    background-color: #00d3ff;
+    background: linear-gradient(to bottom, rgba(0,201,252,1) 0%,rgba(0,211,255,1) 10%,rgba(0,211,255,1) 88%,rgba(0,201,252,1) 100%);
+    transform: skewX(-27deg);
+  }
+
+  #two,
+  #four {
+    background-color: grey;
+    background: linear-gradient(to bottom, #414141 0%, #777777 28%, #777777 79%, #636363 100%)
+  }
+
+  #one {
+    z-index: 3;
+  }
+
+  .shadow {
+    position: absolute;
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: (@base * 3.3) (@base * 1.5) 0 0;
+    border-color: rgba(0, 0, 0, 0.2) transparent transparent transparent;
+  }
+
+  #shadow-one {
+    left: @base * 1.03;
+    z-index: 1;
+  }
+
+  #two {
+    left: @base * 1.02;
+    z-index: -1;
+  }
+
+  #three {
+    left: @base * 2.04;
+    z-index: 2;
+  }
+
+  #shadow-three {
+    left: @base * 3.06;
+    z-index: 1;
+  }
+
+  #four {
+    left: @base * 3.06;
+  }
+
+  // animations
+  #logo.in {
+    #one {
+      animation: oneIn @delay * 4 @initialDelay;
+      animation-fill-mode: backwards;
+    }
+    #shadow-one {
+      animation: shadowIn @delay @shadowTiming @delay + @initialDelay;
+      animation-fill-mode: backwards;
+    }
+    #two {
+      animation: twoIn @delay ease @delay + @initialDelay;
+      animation-fill-mode: backwards;
+    }
+    #three {
+      animation: threeIn @delay ease @delay * 2 + @initialDelay;
+      animation-fill-mode: backwards;
+    }
+    #shadow-three {
+      animation: shadowIn @delay @shadowTiming @delay * 3 + @initialDelay;
+      animation-fill-mode: backwards;
+    }
+    #four {
+      animation: twoIn @delay ease @delay * 3 + @initialDelay;
+      animation-fill-mode: backwards;
+    }
+  }
+
+  #logo.out {
+    #one {
+      animation: oneOut @delay / 2 @delay;
+      animation-fill-mode: forwards;
+    }
+    #shadow-one {
+      animation: shadowOut @delay / 2 @shadowTiming @delay;
+      animation-fill-mode: forwards;
+    }
+    #two {
+      animation: twoOut @delay / 2 ease @delay + @delay / 2;
+      animation-fill-mode: forwards;
+    }
+    #three {
+      animation: threeOut @delay / 2 ease @delay + @delay * 1.5;
+      animation-fill-mode: forwards;
+    }
+    #shadow-three {
+      animation: shadowOut @delay / 2 @shadowTiming @delay + @delay * 1.5;
+      animation-fill-mode: forwards;
+    }
+    #four {
+      animation: fourOut @delay * 4;
+      animation-fill-mode: forwards;
+    }
+  }
+}
+
+
+@keyframes oneIn {
+  0% {
+    opacity: 0;
+    top: @base * 16;
+    left: -@base * 1.02 * 8;
+  }
+  5% {
+    opacity: 1;
+  }
+  20% {
+    height: @base * 20;
+    left: -@base * 1.02 * 4;
+    top: 0;
+  }
+  80% {
+    height: @base * 20;
+    left: -@base * 1.02 * 4;
+    top: 0;
+  }
+  100% {
+    height: @base * 4;
+    top: 0;
+    left: 0;
+  }
+}
+@keyframes twoIn {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: @base * 4;
+  }
+}
+@keyframes threeIn {
+  0% {
+    height: 0;
+    left: @base * 1.02;
+    top: @base * 4;
+  }
+  100% {
+    height: @base * 4;
+    top: 0;
+    left: @base * 2.04;
+  }
+}
+@keyframes shadowIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes oneOut {
+  0% {
+    height: @base * 4;
+    left: 0;
+  }
+  100% {
+    height: 0;
+    left: @base * 1.02;
+  }
+}
+@keyframes twoOut {
+  0% {
+    height: @base * 4;
+    top: 0;
+  }
+  100% {
+    height: 0;
+    top:  @base * 4;
+  }
+}
+@keyframes threeOut {
+  0% {
+    height: @base * 4;
+    left: @base * 2.04;
+  }
+  100% {
+    height: 0;
+    left: @base * 2.04 + @base * 1.02;
+  }
+}
+@keyframes fourOut {
+  0% {
+    height: @base * 4;
+  }
+  50% {
+    height: @base * 16;
+  }
+  80% {
+    height: @base * 16;
+    top: 0;
+    opacity: 1;
+  }
+  100% {
+    top: @base * 26;
+    height: @base * 16;
+    opacity: 1;
+  }
+}
+@keyframes shadowOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

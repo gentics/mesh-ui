@@ -1,19 +1,31 @@
 .login-backdrop {
   position: absolute;
   top: 0;
-  perspective: 800px;
-  background: linear-gradient(to right, rgba(68,239,255,1) 0%,rgba(64,150,238,1) 100%);
   height: 100vh;
   width: 100vw;
 
   overflow: hidden;
 }
 
+.top-ribbon {
+  position: absolute;
+  height: 55px;
+  left: 0;
+  top: 0;
+  width: 0;
+  z-index: 1;
+  background: linear-gradient(to right, rgba(68,239,255,1) 0%,rgba(64,150,238,1) 100%);
+  transition: width 0.6s 1.3s;
+  &.success {
+    width: 100vw;
+  }
+}
+
 .login-container {
   background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
   font-size: @font-size-standard;
   position: absolute;
-  top: 2px;
+  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
@@ -26,87 +38,13 @@
   }
 
   &.success {
-    animation: fade-out 0.8s cubic-bezier(0,.2,.09,.74);
-    animation-fill-mode: forwards;
   }
 }
 
-.overlay1 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
-  transform: translateY(100vh);
-  z-index: 5;
-
-  &.success {
-    animation: slide-up 1s cubic-bezier(.9,.05,.88,.69) 0.3s;
-    animation: slide-up 1.5s ease 0.8s;
-    animation-fill-mode: forwards;
-  }
-}
-
-
-.overlay2 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 20vw;
-  background-color: rgba(73, 73, 73, 1);
-  transform: translateY(100vh);
-  z-index: 1;
-
-  &.success {
-    animation: slide-in 0.9s linear 0.3s;
-    animation-fill-mode: forwards;
-  }
-}
-
-
-
-@keyframes slide-up {
-  0% {
-    transform: translateY(100vh);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-
-@keyframes slide-in {
-  0% {
-    transform: translateX(100vw);
-    width: 90vh;
-  }
-  70% {
-    width: 70vw;
-  }
-  100% {
-    transform: translateX(0);
-    width: 20vh;
-  }
-}
-
-@keyframes slide-down {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(100vh);
-  }
-}
-
-@keyframes fade-out {
-  0% {
-    transform: translateZ(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateZ(-150px);
+.login-form {
+  opacity: 1;
+  transition: opacity 0.5s;
+  &.ng-hide {
     opacity: 0;
   }
 }

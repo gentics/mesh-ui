@@ -1,8 +1,12 @@
 <div class="login-backdrop">
 
+    <div class="top-ribbon" ng-class="{ success: vm.success }"></div>
+
     <div layout="column" layout-align="start center" class="login-container" ng-class="{ success: vm.success }">
-        <h1 class="title-font" translate>LOG_IN</h1>
-        <form ng-submit="vm.submitForm($event, vm.userName, vm.password)"  layout="column" layout-align="center center" >
+
+        <animated-logo animate-in="true" animate-out="vm.success"></animated-logo>
+
+        <form ng-submit="vm.submitForm($event, vm.userName, vm.password)" layout="column" layout-align="center center" class="login-form" ng-show="vm.logoVisible && !vm.success">
             <md-input-container>
                 <label translate>USER_NAME</label>
                 <input ng-model="vm.userName">
@@ -17,7 +21,5 @@
         </form>
     </div>
 
-    <div class="overlay2" ng-class="{ success: vm.success }"></div>
-    <div class="overlay1" ng-class="{ success: vm.success }"></div>
 </div>
 
