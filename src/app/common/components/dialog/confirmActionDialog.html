@@ -1,0 +1,17 @@
+<md-dialog>
+  <md-content>
+      <h2 translate>{{ vm.title }}</h2>
+      <p translate>
+          {{ vm.message }}
+      </p>
+  </md-content>
+
+  <div class="md-actions">
+    <button ng-click="vm.confirm()" class="btn" ng-class="vm.confirmButtonClass">
+        <span translate>{{ vm.confirmLabel }}</span>
+    </button>
+    <button ng-click="vm.cancel()" class="btn">
+        <span translate>{{ vm.cancelLabel }}</span>
+    </button>
+  </div>
+</md-dialog>
