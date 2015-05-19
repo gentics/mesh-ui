@@ -5,6 +5,10 @@
 /* inject:imports */
 /* endinject */
 
+html {
+  background-color: @color-almost-white;
+}
+
 html, body {
   width: 100%;
   height: 100%;
@@ -15,15 +19,18 @@ body {
 }
 
 body:before {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
-  background-attachment: fixed;
-  content: '';
-  z-index: -1;
+  .responsive-min(@mq-sm, {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,1) 50%,rgba(231,231,231,1) 100%);
+    background-attachment: fixed;
+    content: '';
+    z-index: -1;
+  });
+
 }
 
 .app-viewport {
@@ -79,4 +86,7 @@ a {
 
 .md-dialog-container {
   font-size: @font-size-standard;
+}
+md-option .md-text {
+  font-size: @font-size-smaller;
 }

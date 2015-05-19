@@ -31,15 +31,15 @@
         </tbody>
     </table>
 
-    <div flex layout="row"  ng-show="0 < vm.contents.length" >
+    <div flex layout="row" layout-sm="column"  ng-show="0 < vm.contents.length" >
         <div flex>
             <dir-pagination-controls on-page-change="vm.update()"></dir-pagination-controls>
         </div>
-        <div flex="30" layout="row" layout-align="end">
+        <div flex-gt-sm="20" layout="row" layout-align="end">
             <div>
                 <div class="select-label" translate>ITEMS_PER_PAGE</div>
             </div>
-            <div>
+            <div class="items-per-page-select">
                 <md-select ng-model="vm.itemsPerPage" ng-change="vm.update(newPageNumber)">
                     <md-option ng-value="number" ng-repeat="number in [10, 25, 50]">{{ number }}</md-option>
                 </md-select>
