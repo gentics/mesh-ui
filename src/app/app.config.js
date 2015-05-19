@@ -29,7 +29,7 @@ function appConfig($stateProvider,
         .primaryPalette('light-blue')
         .accentPalette('blue');
 
-    dataServiceProvider.setApiUrl(window.location.origin + ':8080/api/v1');
+    dataServiceProvider.setApiUrl(window.location.protocol + '//' + window.location.hostname + ':8080/api/v1');
 
     paginationTemplateProvider.setPath('common/components/pagination/pagination.html');
 
