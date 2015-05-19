@@ -56,10 +56,12 @@ function adminMenuButtonDirective(adminMenuService) {
  * @param {ng.IRootScopeService} $rootScope
  * @param {ng.IDocumentService} $document
  * @param {ng.ui.IStateService} $state
+ * @param contextService
  * @returns {{isOpen: isOpen, toggle: toggle}}
  */
 function adminMenuService($rootScope, $document, $state, contextService) {
     var _isOpen = false;
+    $rootScope.$on('$stateChangeSuccess', openIfAdminState);
 
     return {
         isOpen: isOpen,
@@ -113,6 +115,10 @@ function adminMenuService($rootScope, $document, $state, contextService) {
                 toggle();
             });
         }
+    }
+
+    function openIfAdminState() {
+        _isOpen = isAdminState();
     }
 
     /**

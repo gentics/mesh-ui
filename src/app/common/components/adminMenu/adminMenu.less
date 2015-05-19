@@ -44,13 +44,12 @@
   box-shadow: inset -9px 8px 17px -10px rgba(0,0,0,0.75);
   overflow: hidden;
   z-index: 5;
-
-  max-width: 0;
+  width: 0;
   padding-left: 0;
-  transition: padding-left 0.5s, max-width 0.5s;
+  transition: width 0.5s, padding-left 0.5s;
 
   &.open {
-    max-width: 20vw;
+    width: 20vw;
     padding-left: 5vw;
   }
 
@@ -78,4 +77,22 @@
       }
     }
   }
+
+  .responsive-max(@mq-sm, {
+    max-height: 0;
+    transition: max-height 0.5s;
+    .menu ul li {
+      display: inline-block;
+      padding: 0 8px;
+
+      &:first-child {
+        padding-left: 0;
+      }
+    }
+    &.open {
+      max-height: 12rem;
+      width: 100vw;
+      padding-left: 5%;
+    }
+  });
 }
