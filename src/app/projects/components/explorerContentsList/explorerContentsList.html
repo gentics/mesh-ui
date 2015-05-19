@@ -9,8 +9,8 @@
             </th>
             <th translate>TITLE</th>
             <th translate>SCHEMA</th>
-            <th translate>AUTHOR</th>
-            <th translate>CREATED</th>
+            <th translate class="hide-sm">AUTHOR</th>
+            <th translate class="hide-sm">CREATED</th>
         </tr>
         </thead>
         <tbody>
@@ -25,8 +25,8 @@
             </td>
             <td><a href="#" ng-click="vm.goToContent(item.uuid)">{{:: item.properties.name }}</a></td>
             <td>{{:: item.schema.schemaName }}</td>
-            <td>{{:: item.creator.firstname }} {{ item.creator.lastname }}</td>
-            <td>{{:: item.created }}</td>
+            <td class="hide-sm">{{:: item.creator.firstname }} {{ item.creator.lastname }}</td>
+            <td class="hide-sm">{{:: item.created }}</td>
         </tr>
         </tbody>
     </table>

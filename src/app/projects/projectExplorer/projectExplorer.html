@@ -4,26 +4,26 @@
         <div flex-gt-sm="25" flex-gt-md="15" class="explorer-tags-col">
 
             <div layout="row">
-                <h2>Tags</h2>
+                <h2>Folders</h2>
             </div>
 
-            <div class="actions-bar" layout="row">
+            <div class="actions-bar hide-sm" layout="row">
                 <mh-dropdown>
                     <mh-dropdown-label>
                         <button class="btn btn-small btn-primary" aria-label="Create Tag">
-                            Create Tag
+                            Create Folder
                         </button>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
                         <ul class="create-options">
-                            <li>Create Tag
+                            <li>Create Folder
                             </li>
                         </ul>
                     </mh-dropdown-body>
                 </mh-dropdown>
             </div>
 
-            <explorer-tags-list tags="vm.tags"></explorer-tags-list>
+            <explorer-folders-list tags="vm.tags"></explorer-folders-list>
 
         </div>
 
@@ -33,7 +33,7 @@
                 <h2>Contents</h2>
                 <project-search-bar flex></project-search-bar>
             </div>
-            <div class="actions-bar" layout="row" layout-align="end">
+            <div class="actions-bar hide-sm" layout="row" layout-align="end">
                 <div>
                     <mh-dropdown>
                         <mh-dropdown-label>
