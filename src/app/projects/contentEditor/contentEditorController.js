@@ -7,7 +7,7 @@ angular.module('meshAdminUi.projects')
  * @param {ng.IScope} $scope
  * @param {ng.ui.IStateService} $state
  * @param {ng.ui.IStateParamsService} $stateParams
- * @param {ng.material.MDDialogService} $mdDialog
+ * @param {ConfirmActionDialog} confirmActionDialog
  * @param contextService
  * @param i18nService
  * @param dataService
@@ -15,7 +15,7 @@ angular.module('meshAdminUi.projects')
  * @param notifyService
  * @constructor
  */
-function ContentEditorController($scope, $state, $stateParams, $mdDialog, contextService, i18nService, dataService, wipService, notifyService) {
+function ContentEditorController($scope, $state, $stateParams, confirmActionDialog, contextService, i18nService, dataService, wipService, notifyService) {
     var vm = this,
         wipType = 'contents',
         projectName = contextService.getProject().name,
@@ -85,10 +85,9 @@ function ContentEditorController($scope, $state, $stateParams, $mdDialog, contex
      * @returns {angular.IPromise<any>|any|void}
      */
     function showDeleteDialog() {
-        return $mdDialog.show({
-            templateUrl: 'projects/projectExplorer/groupDeleteDialog.html',
-            controller: 'ProjectExplorerGroupDeleteDialogController',
-            controllerAs: 'vm'
+        return confirmActionDialog.show({
+            title: 'Delete Content?',
+            message: 'Are you sure you want to delete the selected content?'
         });
     }
 

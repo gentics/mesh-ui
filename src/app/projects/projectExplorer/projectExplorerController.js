@@ -1,12 +1,11 @@
 angular.module('meshAdminUi.projects')
-    .controller('ProjectExplorerController', ProjectExplorerController)
-    .controller('ProjectExplorerGroupDeleteDialogController', ProjectExplorerGroupDeleteDialogController);
+    .controller('ProjectExplorerController', ProjectExplorerController);
 
 /**
  * @param {ng.IScope} $scope
  * @param {ng.IQService} $q
  * @param {ng.ILocationService} $location
- * @param {ng.material.MDDialogService} $mdDialog
+ * @param {ConfirmActionDialog} confirmActionDialog
  * @param dataService
  * @param contextService
  * @param wipService
@@ -15,7 +14,7 @@ angular.module('meshAdminUi.projects')
  * @param {Object} parentTag injected from the router resolve function
  * @constructor
  */
-function ProjectExplorerController($scope, $q, $location, $mdDialog, dataService, contextService, wipService, i18nService, notifyService, parentTag) {
+function ProjectExplorerController($scope, $q, $location, confirmActionDialog, dataService, contextService, wipService, i18nService, notifyService, parentTag) {
     var vm = this,
         projectName = contextService.getProject().name;
 
@@ -139,10 +138,9 @@ function ProjectExplorerController($scope, $q, $location, $mdDialog, dataService
      * @returns {angular.IPromise<any>|any|void}
      */
     function showDeleteDialog() {
-        return $mdDialog.show({
-            templateUrl: 'projects/projectExplorer/groupDeleteDialog.html',
-            controller: 'ProjectExplorerGroupDeleteDialogController',
-            controllerAs: 'vm'
+        return confirmActionDialog.show({
+            title: 'Delete Content?',
+            message: 'Are you sure you want to delete the selected contents?'
         });
     }
 
@@ -173,21 +171,4 @@ function ProjectExplorerController($scope, $q, $location, $mdDialog, dataService
                 });
         }
     }
-}
-
-/**
- * Controller used to set the return value of the close dialog box.
- *
- * @param {ng.material.MDDialogService} $mdDialog
- * @constructor
- */
-function ProjectExplorerGroupDeleteDialogController($mdDialog) {
-    var vm = this;
-
-    vm.confirm = function() {
-        $mdDialog.hide(true);
-    };
-    vm.cancel = function() {
-        $mdDialog.cancel();
-    };
 }

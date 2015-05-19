@@ -5,19 +5,21 @@ angular.module('meshAdminUi.admin')
  *
  * @param {ng.ui.IStateService} $state
  * @param {ng.ui.IStateParamsService} $stateParams
- * @param dataService
- * @param notifyService
+ * @param {ConfirmActionDialog} confirmActionDialog
+ * @param {DataService} dataService
+ * @param {NotifyService} notifyService
  * @constructor
  */
-function ProjectDetailController($state, $stateParams, dataService, notifyService) {
+function ProjectDetailController($state, $stateParams, confirmActionDialog, dataService, notifyService) {
     var vm = this;
 
     vm.isNew = false;
     vm.modified = false;
     vm.persist = persist;
+    vm.remove = remove;
+    vm.canDelete = canDelete;
 
     getProjectData();
-
 
     /**
      * Persist the project data back to the server.
@@ -34,6 +36,40 @@ function ProjectDetailController($state, $stateParams, dataService, notifyServic
                     vm.modified = false;
                 }
             });
+    }
+
+    /**
+     * Delete the open content, displaying a confirmation dialog first before making the API call.
+     * @param project
+     */
+    function remove(project) {
+
+        showDeleteDialog()
+            .then(function() {
+                return dataService.deleteContent(project);
+            })
+            .then(function() {
+                notifyService.toast('Deleted');
+                $state.go('admin.projects.list');
+            });
+    }
+
+    /**
+     * @returns {ng.IPromise}
+     */
+    function showDeleteDialog() {
+        return confirmActionDialog.show({
+            title: 'Delete Project?',
+            message: 'Are you sure you want to delete this project?'
+        });
+    }
+
+    function canDelete() {
+        if (vm.project) {
+            // TODO: reinstate once API returns permissions correctly, see https://jira.gentics.com/browse/CL-110
+            //return -1 < vm.project.perms.indexOf('delete') && !vm.isNew;
+            return !vm.isNew;
+        }
     }
 
     /**
