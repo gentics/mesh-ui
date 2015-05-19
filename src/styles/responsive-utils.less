@@ -1,0 +1,17 @@
+/**
+ * Some helper classes to perform commonly-used responsive design tasks
+ */
+
+.hide-sm {
+  //display: inherit;
+  .responsive-max(@mq-sm, {
+    display: none !important;
+  })
+}
+
+.show-sm {
+  display: none;
+  .responsive-max(@mq-sm, {
+    display: inherit;
+  })
+}
