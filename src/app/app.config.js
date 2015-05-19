@@ -11,6 +11,7 @@ angular.module('meshAdminUi')
  * @param $mdThemingProvider
  * @param dataServiceProvider
  * @param paginationTemplateProvider
+ * @param cfpLoadingBarProvider
  */
 function appConfig($stateProvider,
                    $locationProvider,
@@ -25,10 +26,10 @@ function appConfig($stateProvider,
     $locationProvider.html5Mode(true).hashPrefix('!');
 
     $mdThemingProvider.theme('default')
-        .primaryPalette('blue')
+        .primaryPalette('light-blue')
         .accentPalette('blue');
 
-    dataServiceProvider.setApiUrl('http://localhost:8080/api/v1');
+    dataServiceProvider.setApiUrl(window.location.origin + ':8080/api/v1');
 
     paginationTemplateProvider.setPath('common/components/pagination/pagination.html');
 
