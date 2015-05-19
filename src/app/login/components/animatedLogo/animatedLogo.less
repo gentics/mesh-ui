@@ -6,7 +6,10 @@
 .logo-container {
   width: 100vw;
   height: @base * 5;
-  margin-top: 120px;
+  margin-top: 20px;
+  .responsive-min(@mq-sm, {
+    margin-top: 120px;
+  });
   text-align: center;
 
   #logo {

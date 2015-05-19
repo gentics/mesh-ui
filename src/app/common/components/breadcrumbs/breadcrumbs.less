@@ -17,7 +17,7 @@
   ul {
     list-style-type: none;
     padding-left: 0;
-    margin: 0;
+    margin: 4rem 0 0 0;
   }
 
   li{
@@ -30,19 +30,22 @@
     &:not(:last-child):after {
       content: '/';
       color: @color-boulder;
+      padding-right: 0.2em;
+      .responsive-min(@mq-sm, {
+        padding-right: 0.5em;
+      });
     }
 
     span {
       position: relative;
       display: inline-block;
-      padding-right: 0.3em;
 
       .page-title();
-    }
-  }
-  li:not(:first-child) {
-    span {
-      padding-left: 0.5em;
+      margin-top: 0;
+
+      .responsive-min(@mq-sm, {
+        padding-right: 0.3em;
+      });
     }
   }
   li:last-child {

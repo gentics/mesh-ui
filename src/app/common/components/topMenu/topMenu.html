@@ -16,8 +16,11 @@
                 <mh-dropdown>
                     <mh-dropdown-label layout="row" layout-align="center center" class="language-select-label top-menu-label">
                         <i class="icon-language"></i>
-                        <div>
+                        <div class="name hide-sm">
                             {{ vm.lang.nativeName }}
+                        </div>
+                        <div class="code show-sm">
+                            {{ vm.lang.code }}
                         </div>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
@@ -32,8 +35,8 @@
             <div class="user-container" layout="row">
                 <mh-dropdown>
                     <mh-dropdown-label layout="row" layout-align="center center" class="top-menu-label">
-                        <div class="profile-image" style="background-image: url({{ vm.profileImage }})"></div>
-                        <div class="user-name">{{ vm.userName }} <i class="icon-arrow-drop-down"></i></div>
+                        <div class="profile-image" ng-style="{'background-image': 'url({{ vm.profileImage }})' }"></div>
+                        <div class="user-name"><span class="hide-sm">{{ vm.userName }}</span><i class="icon-arrow-drop-down"></i></div>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
                     <ul>
