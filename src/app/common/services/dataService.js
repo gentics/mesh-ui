@@ -53,6 +53,9 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     // ==========
     // Projects
     this.getProjects = getProjects;
+    this.getProject = getProject;
+    this.persistProject = persistProject;
+    this.deleteProject = deleteProject;
     this.getProjectId = getProjectId;
     this.getProjectRootTagId = getProjectRootTagId;
     // Users
@@ -80,6 +83,45 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      */
     function getProjects() {
         return projects.getList();
+    }
+
+    /**
+     * Get the details of a single project specified by uuid.
+     *
+     * @param {string} uuid
+     * @returns {EnhancedPromise<any>|restangular.IPromise<any>}
+     */
+    function getProject(uuid) {
+        return Restangular.one('projects', uuid).get();
+    }
+
+    /**
+     * Persist the project back to the server.
+     *
+     * @param project
+     * @returns {*}
+     */
+    function persistProject(project) {
+        clearCache('projects');
+        clearCache('tags');
+        if (project.hasOwnProperty('save')) {
+            // this is a Restangular object
+            return project.save();
+        } else {
+            // this is a plain object (newly-created)
+            var projects = Restangular.all('projects');
+            return projects.post(project);
+        }
+    }
+
+    /**
+     * Delete the project from the server.
+     * @param project
+     * @returns {*|EnhancedPromise<any>|restangular.IPromise<any>|void}
+     */
+    function deleteProject(project) {
+        clearCache('projects');
+        return project.remove();
     }
 
     /**

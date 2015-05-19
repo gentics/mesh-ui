@@ -46,7 +46,7 @@ function ProjectDetailController($state, $stateParams, confirmActionDialog, data
 
         showDeleteDialog()
             .then(function() {
-                return dataService.deleteContent(project);
+                return dataService.deleteProject(project);
             })
             .then(function() {
                 notifyService.toast('Deleted');
