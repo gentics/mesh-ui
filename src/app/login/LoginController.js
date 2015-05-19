@@ -29,7 +29,7 @@ function LoginController($timeout, $state, $mdDialog, authService) {
             vm.success = true;
             $timeout(function() {
                 $state.go('projects.list');
-            }, 2800);
+            }, 2000);
         } else {
             showErrorDialog(event);
         }
