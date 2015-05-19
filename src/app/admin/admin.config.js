@@ -35,7 +35,19 @@ function routesConfig($stateProvider) {
             url: '/projects/:uuid',
             views: {
                 'main@': {
-                    templateUrl: 'admin/projects/detail/projectDetail.html'
+                    templateUrl: 'admin/projects/detail/projectDetail.html',
+                    controller: 'ProjectDetailController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
+        .state('admin.projects.create', {
+            url: '/projects/new',
+            views: {
+                'main@': {
+                    templateUrl: 'admin/projects/detail/projectDetail.html',
+                    controller: 'ProjectDetailController',
+                    controllerAs: 'vm'
                 }
             }
         })
