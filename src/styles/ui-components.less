@@ -65,6 +65,7 @@
 
 .btn {
   background-color: @color-alto;
+  color: @color-subdued;
   font-family: @detail-font;
   border: none;
   border-bottom: 2px solid @color-silver;
@@ -76,6 +77,10 @@
 
   &:not([disabled]):hover {
     background-color: @color-silver;
+  }
+
+  &[disabled] {
+    color: lighten(@color-subdued, 30%);
   }
 
   .custom-button(primary, @color-primary);
@@ -108,4 +113,19 @@
 
   .custom-button(primary, @color-primary);
   .custom-button(warn, @color-warn);
+}
+
+// some links should not be styled with the default link styles,
+// but we still want to use an <a> tag rather than, say, a <span>
+// because we want the browser to provide the behavioural properties
+// of an <a> tag - e.g. on mobile the text within <a> will not be
+// selected on tap.
+a.a-plain {
+  &:link, &:visited {
+    text-decoration: none;
+    color: inherit;
+  }
+  &:hover, &:focus {
+    text-decoration: none;
+  }
 }

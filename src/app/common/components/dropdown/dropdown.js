@@ -101,7 +101,7 @@ function dropdownLabelDirective() {
     }
     return {
         restrict: 'E',
-        template: '<div class="mh-dropdown-label" ng-click="dropdown.toggle()" ng-class="{ open: dropdown.isOpen }" ng-transclude></div>',
+        template: '<div class="mh-dropdown-label" ng-click="dropdown.toggle()" ng-class="{ open: dropdown.isOpen }"><a href="#" class="a-plain" ng-transclude></a></div>',
         transclude: true,
         replace: true,
         require: '^^mhDropdown',

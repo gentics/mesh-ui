@@ -6,9 +6,8 @@
          aria-label="{{ wip.item.properties[vm.lang].name }}"
          title="{{ wip.item.properties[vm.lang].name }}">
 
-       <!-- <span class="status-indicator" ng-show="vm.isModified(wip.item.uuid)"></span>-->
-        <span class="label" ng-class="{ modified: vm.isModified(wip.item.uuid) }">{{ wip.item.properties[vm.lang].name || 'Untitled' }}</span>
-        <span ng-click="vm.closeWip($event, $index)" class="close"><i class="icon-close"></i></span>
+        <a href="#" class="a-plain label" ng-class="{ modified: vm.isModified(wip.item.uuid) }">{{ wip.item.properties[vm.lang].name || 'Untitled' }}</a>
+        <a href="#" ng-click="vm.closeWip($event, $index)" class="a-plain close"><i class="icon-close"></i></a>
 
     </div>
 </div>
