@@ -1,5 +1,5 @@
 angular.module('meshAdminUi.projects')
-    .directive('explorerTagsList', explorerTagsListDirective);
+    .directive('explorerFoldersList', explorerFoldersListDirective);
 
 /**
  * The left-hand side navigation for displaying the sub-tags of the current tag.
@@ -8,9 +8,9 @@ angular.module('meshAdminUi.projects')
  * @param contextService
  * @returns {ng.IDirective} Directive definition object
  */
-function explorerTagsListDirective($state, contextService) {
+function explorerFoldersListDirective($state, contextService) {
 
-    function explorerTagsListController() {
+    function explorerFoldersListController() {
         var vm = this;
         vm.goTo = goTo;
         vm.editTag = editTag;
@@ -39,12 +39,12 @@ function explorerTagsListDirective($state, contextService) {
     return {
         restrict: 'E',
         replace: true,
-        templateUrl: 'projects/components/explorerTagsList/explorerTagsList.html',
-        controller: explorerTagsListController,
+        templateUrl: 'projects/components/explorerFoldersList/explorerFoldersList.html',
+        controller: explorerFoldersListController,
         controllerAs: 'vm',
         bindToController: true,
         scope: {
-            tags: '='
+            folders: '='
         }
     };
 }
