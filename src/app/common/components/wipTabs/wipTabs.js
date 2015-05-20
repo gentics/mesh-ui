@@ -60,6 +60,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
                 projectName = vm.wips[index].metadata.projectName;
 
             event.stopPropagation();
+            event.preventDefault();
             lastIndex = vm.selectedIndex;
 
             if (wipService.isModified(wipType, wip)) {
