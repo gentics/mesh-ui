@@ -1,5 +1,5 @@
 <div>
-    <table flex class="mh-table" ng-show="0 < vm.contents.length" >
+    <table class="mh-table" ng-show="0 < vm.contents.length" >
         <thead>
         <tr>
             <th>
@@ -31,8 +31,8 @@
         </tbody>
     </table>
 
-    <div flex layout="row" layout-sm="column"  ng-show="0 < vm.contents.length" >
-        <div flex>
+    <div layout-gt-sm="row" layout-sm="column"  ng-show="0 < vm.contents.length" >
+        <div flex-gt-sm>
             <dir-pagination-controls on-page-change="vm.update()"></dir-pagination-controls>
         </div>
         <div flex-gt-sm="20" layout="row" layout-align="end">
