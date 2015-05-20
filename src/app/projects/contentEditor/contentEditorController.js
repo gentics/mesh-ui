@@ -8,6 +8,7 @@ angular.module('meshAdminUi.projects')
  * @param {ng.ui.IStateService} $state
  * @param {ng.ui.IStateParamsService} $stateParams
  * @param {ConfirmActionDialog} confirmActionDialog
+ * @param {ng.material.MDDialogService} $mdDialog
  * @param contextService
  * @param i18nService
  * @param dataService
@@ -15,7 +16,7 @@ angular.module('meshAdminUi.projects')
  * @param notifyService
  * @constructor
  */
-function ContentEditorController($scope, $state, $stateParams, confirmActionDialog, contextService, i18nService, dataService, wipService, notifyService) {
+function ContentEditorController($scope, $state, $stateParams, confirmActionDialog, $mdDialog, contextService, i18nService, dataService, wipService, notifyService) {
     var vm = this,
         wipType = 'contents',
         projectName = contextService.getProject().name,
@@ -29,6 +30,7 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
     vm.canDelete = canDelete;
     vm.persist = persist;
     vm.remove = remove;
+    vm.close = close;
     vm.isLoaded = false;
 
     getContentData()
@@ -78,6 +80,37 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
                 notifyService.toast('Deleted');
                 $state.go('projects.explorer');
             });
+    }
+
+    function close(content) {
+        if (wipService.isModified(wipType, content)) {
+            showCloseDialog().then(function(response) {
+                if (response === 'save') {
+                    dataService.persistContent(projectName, content);
+                    notifyService.toast('SAVED_CHANGES');
+                }
+                wipService.closeItem(wipType, content);
+                $state.go('projects.explorer');
+            });
+        } else {
+            wipService.closeItem(wipType, content);
+            $state.go('projects.explorer');
+        }
+    }
+
+
+    /**
+     * Display the close confirmation dialog box. Returns a promise which is resolved
+     * to 'save', 'discard', or rejected if user cancels.
+     * TODO: figure out a way to decouple this from the wipTabs component without duplicating all the code.
+     * @return {ng.IPromise<String>}
+     */
+    function showCloseDialog() {
+        return $mdDialog.show({
+            templateUrl: 'common/components/wipTabs/wipTabsCloseDialog.html',
+            controller: 'wipTabsDialogController',
+            controllerAs: 'vm'
+        });
     }
 
     /**

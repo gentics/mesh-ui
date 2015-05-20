@@ -1,5 +1,9 @@
 <div class="app-content content-editor-container" ng-show="vm.isLoaded">
 
+    <div class="close-content show-sm">
+        <i class="icon-close" ng-click="vm.close(vm.content)"></i>
+    </div>
+
     <h1 class="title-font">{{ vm.content.properties[vm.availableLangs[0].code].name }}</h1>
 
     <div layout="rows" class="language-selector">

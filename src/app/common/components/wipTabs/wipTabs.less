@@ -16,10 +16,10 @@
   .wip-tab {
     cursor: pointer;
     overflow: hidden;
-    padding: 7px 6px 5px 8px;
+    padding: 4px 6px 5px 8px;
     border-bottom: none;
     font-size: @font-size-smaller;
-    font-family: @title-font;
+    font-family: @detail-font;
     text-transform: uppercase;
     color: lighten(@color-boulder, 20%);
     position: relative;
@@ -67,7 +67,7 @@
     .close {
       position: absolute;
       right: 5px;
-      top: 7px;
+      top: 5px;
 
       i {
         border-radius: 50%;
@@ -81,6 +81,16 @@
         }
       }
     }
+
+    .responsive-max(@mq-sm, {
+      .label {
+        max-width: 100%;
+        margin-right: 0;
+      }
+      .close {
+        display: none;
+      }
+    });
   }
 }
 

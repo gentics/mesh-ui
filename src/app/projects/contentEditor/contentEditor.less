@@ -3,6 +3,9 @@
   h1 {
     margin-top: 0;
     font-size: @font-size-title-1;
+    .responsive-max(@mq-sm, {
+      margin-right: 3rem;
+    })
   }
   &.ng-hide-remove {
     opacity: 0;
@@ -10,7 +13,23 @@
       opacity: 1;
     }
   }
+}
 
+.close-content {
+  position: absolute;
+  right: 10px;
+  font-size: @font-size-title-1;
+  color: @color-boulder;
+  i {
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  &:hover {
+    i {
+      color: white;
+      background-color: @color-silver;
+    }
+  }
 }
 
 .language-selector {
