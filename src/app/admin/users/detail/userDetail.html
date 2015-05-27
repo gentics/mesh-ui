@@ -1,0 +1,65 @@
+<div class="app-content">
+    <div class="breadcrumbs">
+        <ul>
+            <li>
+                <span>
+                    <a href="#" ui-sref="admin.users.list">Users</a>
+                </span>
+            </li><li><span>
+                    {{ vm.user.username }}
+                </span>
+        </li>
+        </ul>
+    </div>
+
+    <form name="projectEditorForm" class="admin-form">
+
+        <md-input-container>
+            <label>Username</label>
+            <input type="text" ng-model="vm.user.username" ng-change="vm.modified = true">
+        </md-input-container>
+        <md-input-container ng-if="vm.isNew">
+            <label>Password</label>
+            <input type="text" ng-model="vm.user.password" ng-change="vm.modified = true">
+        </md-input-container>
+        <md-input-container>
+            <label>First Name</label>
+            <input type="text" ng-model="vm.user.firstname" ng-change="vm.modified = true">
+        </md-input-container>
+        <md-input-container>
+            <label>Last Name</label>
+            <input type="text" ng-model="vm.user.lastname" ng-change="vm.modified = true">
+        </md-input-container>
+        <md-input-container>
+            <label>Email Address</label>
+            <input type="text" ng-model="vm.user.emailAddress" ng-change="vm.modified = true">
+        </md-input-container>
+        <div class="group-selector">
+            <ul>
+                <li ng-repeat="group in vm.groups">
+                    <md-checkbox md-no-ink ng-model="vm.selectedGroups[group.name]" aria-label="Select">{{:: group.name }}</md-checkbox>
+                </li>
+            </ul>
+        </div>
+    </form>
+
+    <div layout="row" layout-align="center center" class="main-buttons">
+
+        <button class="btn btn-primary"
+                ng-click="vm.persist(vm.user)"
+                ng-disabled="!vm.modified"
+                aria-label="save">
+            <i class="icon-save"></i>
+            <span ng-if="!vm.isNew" translate>UPDATE</span>
+            <span ng-if="vm.isNew" translate>CREATE</span>
+        </button>
+
+        <button class="btn btn-warn"
+                ng-click="vm.remove(vm.user)"
+                ng-disabled="!vm.canDelete()"
+                aria-label="delete">
+            <i class="icon-delete"></i><span translate>DELETE</span>
+        </button>
+
+    </div>
+</div>

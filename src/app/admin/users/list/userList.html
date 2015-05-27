@@ -1,0 +1,20 @@
+<div class="app-content">
+    <h1 class="page-title">Users</h1>
+
+    <div class="actions-bar" layout="row">
+        <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.users.create">
+            Create New User
+        </button>
+    </div>
+
+    <table class="mh-table">
+        <tr ng-repeat="user in vm.users">
+            <td>
+                <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select"></md-checkbox>
+            </td>
+            <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.username }}</td>
+            <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.firstname }} {{:: user.lastname }}</td>
+            <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.emailAddress }}</td>
+        </tr>
+    </table>
+</div>

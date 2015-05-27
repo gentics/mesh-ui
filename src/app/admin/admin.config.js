@@ -11,10 +11,35 @@ function routesConfig($stateProvider) {
             }
         })
         .state('admin.users', {
+            abstract: true
+        })
+        .state('admin.users.list', {
             url: '/users',
             views: {
                 'main@': {
-                    templateUrl: 'admin/users/users.html'
+                    templateUrl: 'admin/users/list/userList.html',
+                    controller: 'UserListController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
+        .state('admin.users.detail', {
+            url: '/users/:uuid',
+            views: {
+                'main@': {
+                    templateUrl: 'admin/users/detail/userDetail.html',
+                    controller: 'UserDetailController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
+        .state('admin.users.create', {
+            url: '/users/new',
+            views: {
+                'main@': {
+                    templateUrl: 'admin/users/detail/userDetail.html',
+                    controller: 'UserDetailController',
+                    controllerAs: 'vm'
                 }
             }
         })

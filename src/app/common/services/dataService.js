@@ -60,6 +60,13 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.getProjectRootTagId = getProjectRootTagId;
     // Users
     this.getUsers = getUsers;
+    this.getUser = getUser;
+    this.persistUser = persistUser;
+    this.deleteUser = deleteUser;
+    this.addUserToGroup = addUserToGroup;
+    this.removeUserFromGroup = removeUserFromGroup;
+    // Groups
+    this.getGroups = getGroups;
     // Tags
     this.getTags = getTags;
     this.getTag = getTag;
@@ -73,8 +80,6 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.getSchema = getSchema;
     // Roles
     this.getRoles = getRoles;
-    // Groups
-    this.getGroups = getGroups;
 
     /**
      * Get all projects as a list.
@@ -174,6 +179,53 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     function getUsers() {
         // stub
         return users.getList();
+    }
+
+    function getUser(uuid) {
+        return Restangular.one('users', uuid).get();
+    }
+
+    /**
+     * Persist the user back to the server.
+     *
+     * @param user
+     * @returns {*}
+     */
+    function persistUser(user) {
+        clearCache('users');
+        if (user.hasOwnProperty('save')) {
+            // this is a Restangular object
+            return user.save();
+        } else {
+            // this is a plain object (newly-created)
+            var users = Restangular.all('users');
+            return users.post(user);
+        }
+    }
+
+    /**
+     *
+     * @param user
+     */
+    function deleteUser(user) {
+        clearCache('users');
+        return user.remove();
+    }
+
+    function addUserToGroup(userId, groupId) {
+        var endpoint = Restangular.all('users/' + userId + '/groups/' + groupId);
+        return endpoint.doPUT();
+    }
+
+    function removeUserFromGroup(userId, groupId) {
+        var endpoint = Restangular.all('users/' + userId + '/groups/' + groupId);
+        return endpoint.remove();
+    }
+
+
+    function getGroups() {
+        // stub
+        return groups.getList();
     }
 
     /**
@@ -295,11 +347,6 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
 
     function getRoles() {
         // stub
-    }
-
-    function getGroups() {
-        // stub
-        groups.getList();
     }
 
     /**
