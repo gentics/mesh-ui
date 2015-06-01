@@ -1,18 +1,26 @@
 var gulp = require('gulp'),
     ngAnnotate = require('gulp-ng-annotate'),
     jsHint = require('gulp-jshint'),
+    uglify = require('gulp-uglify'),
+    wrap = require('gulp-wrap'),
+    concat = require('gulp-concat'),
+    minifyHtml = require('gulp-minify-html'),
     inject = require('gulp-inject'),
     templateCache = require('gulp-angular-templatecache'),
     angularFilesort = require('gulp-angular-filesort'),
     less = require('gulp-less'),
+    minifyCss = require('gulp-minify-css'),
     autoprefix = require('gulp-autoprefixer'),
+    merge = require('merge-stream'),
+    replace = require('gulp-replace'),
     livereload = require('gulp-livereload'),
     karma = require('karma').server,
     child_process = require('child_process'),
 
     vars = require('./build-vars.json'),
     VENDOR_SCRIPTS = vars.VENDOR_SCRIPTS,
-    VENDOR_STYLES = vars.VENDOR_STYLES;
+    VENDOR_STYLES = vars.VENDOR_STYLES,
+    BASE_HREF = vars.BASE_HREF;
 
 gulp.task('app-scripts', function() {
     return gulp.src([
@@ -21,6 +29,7 @@ gulp.task('app-scripts', function() {
     ])
         .pipe(jsHint())
         .pipe(jsHint.reporter('jshint-stylish'))
+        .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
         .pipe(ngAnnotate())
         .pipe(gulp.dest('build/'))
         .pipe(livereload());
@@ -93,6 +102,7 @@ gulp.task('index', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
             starttag: '<!-- inject:appjs -->',
             endtag: '<!-- endinject -->'
         }))
+        .pipe(replace(/BASE_HREF/, BASE_HREF.build))
         .pipe(gulp.dest('build/'))
         .pipe(livereload());
 });
@@ -105,6 +115,70 @@ gulp.task('static-assets', function() {
         .pipe(gulp.dest('build/'))
         .pipe(livereload());
 });
+
+gulp.task('dist', ['dist-assets', 'dist-css', 'dist-js'], function() {
+
+    var css = gulp.src('app/app.css', { cwd: 'dist' });
+    var js = gulp.src('app/app.js', { cwd: 'dist' });
+    var empty = gulp.src('');
+
+    return gulp.src('src/index.html')
+        .pipe(inject(css, {
+            addRootSlash: false
+        }))
+        .pipe(inject(empty,  {
+            addRootSlash: false,
+            starttag: '<!-- inject:vendorjs -->',
+            endtag: '<!-- endinject -->'
+        }))
+        .pipe(inject(js,  {
+            addRootSlash: false,
+            starttag: '<!-- inject:appjs -->',
+            endtag: '<!-- endinject -->'
+        }))
+        .pipe(replace(/BASE_HREF/, BASE_HREF.dist))
+        .pipe(minifyHtml({ loose: true }))
+        .pipe(gulp.dest('dist/'))
+});
+
+gulp.task('dist-assets', function() {
+    return gulp.src([
+        'src/.htaccess',
+        'src/assets**/**/*'
+    ])
+        .pipe(gulp.dest('dist/'));
+});
+
+gulp.task('dist-css', ['index'], function() {
+    return gulp.src([
+            '**/angular-material.css',
+            '**/loading-bar.css',
+            '**/*.css'
+        ], { cwd: 'build/'} )
+        .pipe(concat('app.css'))
+        //.pipe(minifyCss({ processImport: false, keepBreaks: true }))
+        .pipe(gulp.dest('dist/app/'));
+});
+
+gulp.task('dist-js', ['index'], function() {
+    var vendorJs = gulp.src([
+        'vendor/**/angular.js',
+        'vendor/**/*.js'
+    ], { cwd: 'build/'} );
+
+    var appJs = gulp.src([
+        'app/**/*.js'
+    ], { cwd: 'build/'} )
+        .pipe(angularFilesort());
+
+    var js = merge(vendorJs, appJs);
+
+    return js
+        .pipe(concat('app.js'))
+        //.pipe(uglify())
+        .pipe(gulp.dest('dist/app/'));
+});
+
 
 gulp.task('karma-watch', function() {
     karma.start({
