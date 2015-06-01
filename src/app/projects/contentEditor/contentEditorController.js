@@ -82,6 +82,12 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
             });
     }
 
+    /**
+     * Close the content, displaying a dialog if it has been modified asking
+     * whether to keep or discard the changes.
+     *
+     * @param content
+     */
     function close(content) {
         if (wipService.isModified(wipType, content)) {
             showCloseDialog().then(function(response) {
