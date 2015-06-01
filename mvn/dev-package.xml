@@ -14,6 +14,7 @@
 				<include>**</include>
 			</includes>
 			<excludes>
+				<exclude>**/junit.xml</exclude>
 				<exclude>**/.*</exclude>
 			</excludes>
 		</fileSet>
