@@ -176,7 +176,7 @@ gulp.task('dist-js', ['build'], function() {
 
     return js
         .pipe(concat('app.js'))
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(gulp.dest('dist/app/'));
 });
 
