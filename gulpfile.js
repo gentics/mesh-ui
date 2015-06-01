@@ -72,7 +72,7 @@ gulp.task('vendor-styles', function() {
         .pipe(gulp.dest('build/vendor/styles'));
 });
 
-gulp.task('index', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-styles', 'vendor-styles'], function() {
+gulp.task('build', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-styles', 'vendor-styles'], function() {
 
     var vendorJs = gulp.src([
         'vendor/**/angular.js',
@@ -116,7 +116,7 @@ gulp.task('static-assets', function() {
         .pipe(livereload());
 });
 
-gulp.task('dist', ['dist-assets', 'dist-css', 'dist-js'], function() {
+gulp.task('dist', ['karma-test', 'dist-assets', 'dist-css', 'dist-js'], function() {
 
     var css = gulp.src('app/app.css', { cwd: 'dist' });
     var js = gulp.src('app/app.js', { cwd: 'dist' });
@@ -149,18 +149,19 @@ gulp.task('dist-assets', function() {
         .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('dist-css', ['index'], function() {
+gulp.task('dist-css', ['build'], function() {
     return gulp.src([
             '**/angular-material.css',
             '**/loading-bar.css',
             '**/*.css'
         ], { cwd: 'build/'} )
         .pipe(concat('app.css'))
+        // TODO: clean-css is breaking the icon font definition - investigate a fix and then enable
         //.pipe(minifyCss({ processImport: false, keepBreaks: true }))
         .pipe(gulp.dest('dist/app/'));
 });
 
-gulp.task('dist-js', ['index'], function() {
+gulp.task('dist-js', ['build'], function() {
     var vendorJs = gulp.src([
         'vendor/**/angular.js',
         'vendor/**/*.js'
@@ -213,8 +214,8 @@ gulp.task('watch', ['default', 'karma-watch'], function() {
     gulp.watch('src/app/**/*.js', ['app-scripts']);
     gulp.watch('src/app/**/*.html', ['app-templates']);
     gulp.watch('src/**/*.less', ['app-styles']);
-    gulp.watch('src/index.html', ['index']);
+    gulp.watch('src/index.html', ['build']);
     gulp.watch('src/assets/**/*.*', ['static-assets']);
 });
 
-gulp.task('default', ['index', 'static-assets']);
+gulp.task('default', ['build', 'static-assets']);
