@@ -19,3 +19,4 @@ cailun.json
 verticles/admin-gui/node_modules
 verticles/admin-gui/bower_components
 npm-debug.log*
+/node
