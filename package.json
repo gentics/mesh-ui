@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/gentics/mesh",
   "devDependencies": {
+    "bower": "^1.4.1",
     "gulp": "^3.8.11",
     "gulp-angular-filesort": "^1.1.1",
     "gulp-angular-templatecache": "^1.5.0",
