@@ -57,7 +57,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.persistProject = persistProject;
     this.deleteProject = deleteProject;
     this.getProjectId = getProjectId;
-    this.getProjectRootTagId = getProjectRootTagId;
+    this.getProjectRootNodeId = getProjectRootNodeId;
     // Users
     this.getUsers = getUsers;
     this.getUser = getUser;
@@ -68,7 +68,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     // Groups
     this.getGroups = getGroups;
     // Tags
-    this.getTags = getTags;
+    this.getTags = getChildNodes;
     this.getTag = getTag;
     // Contents
     this.getContents = getContents;
@@ -145,8 +145,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @param {string} projectName
      * @returns {ng.IPromise.<string>}
      */
-    function getProjectRootTagId(projectName) {
-        return getProjectProperty(projectName, 'rootTagUuid');
+    function getProjectRootNodeId(projectName) {
+        return getProjectProperty(projectName, 'rootNodeUuid');
     }
 
     /**
@@ -232,18 +232,18 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * Get the child tags for the parentTag in the given project.
      *
      * @param {string} projectName
-     * @param {string} parentTagId
+     * @param parentNodeId
      * @param {Object=} queryParams
-     * @returns {restangular.EnhancedCollectionPromise<any>|restangular.ICollectionPromise<any>}
+     * @returns {ng.IPromise<any>|restangular.ICollectionPromise<any>}
      */
-    function getTags(projectName, parentTagId, queryParams) {
-        var url = projectName + '/tags/' + parentTagId + '/tags/',
-            tags = Restangular.all(url);
+    function getChildNodes(projectName, parentNodeId, queryParams) {
+        var url = projectName + '/nodes/' + parentNodeId + '/children/',
+            nodes = Restangular.all(url);
 
         queryParams = queryParams || {};
         queryParams.lang = i18nService.getCurrentLang().code;
 
-        return tags.getList(queryParams)
+        return nodes.getList(queryParams)
             .then(unwrapCurrentLanguage);
     }
 

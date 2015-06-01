@@ -26,7 +26,7 @@ function routesConfig($stateProvider) {
             }
         })
         .state('projects.explorer', {
-            url: '/:projectName/:tagId',
+            url: '/:projectName/:nodeId',
             views: {
                 'projects' : {
                     templateUrl: 'projects/projectExplorer/projectExplorer.html',
@@ -91,24 +91,24 @@ function routesConfig($stateProvider) {
  */
 function updateContext($q, $stateParams, dataService, contextService) {
     var projectName = $stateParams.projectName || '',
-        tagId = $stateParams.tagId,
+        nodeId = $stateParams.nodeId,
         result;
 
     if (projectName !== '') {
         var qProject = dataService.getProjectId(projectName),
-            qTag = dataService.getTag(projectName, tagId);
+            qNode = dataService.getNode(projectName, nodeId);
 
-        result = $q.all([qProject, qTag])
+        result = $q.all([qProject, qNode])
             .then(function(result) {
                 var projectId = result[0],
-                    tag = result[1];
+                    node = result[1];
                 contextService.setProject(projectName, projectId);
-                contextService.setTag(tag.properties.name || '', tagId);
-                return tag;
+                contextService.setNode(node.properties.name || '', nodeId);
+                return node;
             });
     } else {
         contextService.setProject('', '');
-        contextService.setTag('', '');
+        contextService.setNode('', '');
     }
 
     return result;
