@@ -103,12 +103,12 @@ function updateContext($q, $stateParams, dataService, contextService) {
                 var projectId = result[0],
                     node = result[1];
                 contextService.setProject(projectName, projectId);
-                contextService.setNode(node.properties.name || '', nodeId);
+                contextService.setParentNode(nodeId);
                 return node;
             });
     } else {
         contextService.setProject('', '');
-        contextService.setNode('', '');
+        contextService.setParentNode('');
     }
 
     return result;

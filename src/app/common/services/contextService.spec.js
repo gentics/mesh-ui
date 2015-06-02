@@ -2,7 +2,7 @@ describe('contextService', function() {
 
     var contextService,
         project,
-        tag;
+        node;
 
     beforeEach(module('meshAdminUi.common'));
     beforeEach(inject(function (_contextService_) {
@@ -11,8 +11,7 @@ describe('contextService', function() {
             name: 'someProject',
             id: '12345abc'
         };
-        tag = {
-            name: 'someTag',
+        node = {
             id: '12345abc'
         };
     }));
@@ -23,10 +22,10 @@ describe('contextService', function() {
         expect(contextService.getProject()).toEqual(project);
     });
 
-    it('setTag() should set current tag', function() {
-        contextService.setTag(tag.name, tag.id);
+    it('setParentNode() should set current node', function() {
+        contextService.setParentNode(node.id);
 
-        expect(contextService.getTag()).toEqual(tag);
+        expect(contextService.getParentNode()).toEqual(node);
     });
 
     it('should call change handlers with correct args', function() {
@@ -34,9 +33,9 @@ describe('contextService', function() {
         contextService.registerContextChangeHandler(handler);
 
         contextService.setProject(project.name, project.id);
-        expect(handler).toHaveBeenCalledWith(project, { name: '', id: '' });
+        expect(handler).toHaveBeenCalledWith(project, { id: '' });
 
-        contextService.setTag(tag.name, tag.id);
+        contextService.setParentNode(node.id);
         expect(handler.calls.count()).toBe(2);
     });
     

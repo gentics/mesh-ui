@@ -7,15 +7,15 @@ angular.module('meshAdminUi.common')
  */
 function contextService() {
     var currentProject = { name: '', id: '' },
-        currentTag = { name: '', id: '' },
+        currentNode = { id: ''},
         contextChangeCallbacks = [];
 
     // public API
     this.registerContextChangeHandler = registerContextChangeHandler;
     this.setProject = setProject;
     this.getProject = getProject;
-    this.setTag = setTag;
-    this.getTag = getTag;
+    this.setParentNode = setParentNode;
+    this.getParentNode = getParentNode;
 
     /**
      * Allows components to register a callback when the context changes
@@ -44,23 +44,13 @@ function contextService() {
         return currentProject;
     }
 
-    /**
-     * Set the current tag and invoke any registered handlers
-     * @param {string} name
-     * @param {string} id
-     */
-    function setTag(name, id) {
-        currentTag.name = name;
-        currentTag.id = id;
+    function setParentNode(id) {
+        currentNode.id = id;
         runContextChangeHandlers();
     }
 
-    /**
-     * Get the current tag object
-     * @returns {{name: string, id: string}}
-     */
-    function getTag() {
-        return currentTag;
+    function getParentNode() {
+        return currentNode;
     }
 
     /**
@@ -69,7 +59,7 @@ function contextService() {
      */
     function runContextChangeHandlers() {
         contextChangeCallbacks.forEach(function(fn) {
-            fn.call(null, currentProject, currentTag);
+            fn.call(null, currentProject, currentNode);
         });
     }
 }

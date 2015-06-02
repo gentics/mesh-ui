@@ -28,7 +28,7 @@ function breadcrumbsDirective(dataService, contextService) {
         }, true);
 
         function getProjectRootTag(projectName) {
-            dataService.getProjectRootTagId(projectName)
+            dataService.getProjectRootNodeId(projectName)
                 .then(function (id) {
                     vm.breadcrumbs[0] = {
                             name: projectName,
@@ -38,7 +38,7 @@ function breadcrumbsDirective(dataService, contextService) {
         }
 
         $scope.$watch(function() {
-            return contextService.getTag();
+            return contextService.getParentNode();
         }, function(newVal) {
             if (vm.breadcrumbs) {
                 vm.breadcrumbs[1] = {

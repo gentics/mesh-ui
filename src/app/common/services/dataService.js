@@ -67,9 +67,9 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.removeUserFromGroup = removeUserFromGroup;
     // Groups
     this.getGroups = getGroups;
-    // Tags
-    this.getTags = getChildNodes;
-    this.getTag = getTag;
+    // Nodes
+    this.getChildNodes = getChildNodes;
+    this.getNode = getNode;
     // Contents
     this.getContents = getContents;
     this.getContent = getContent;
@@ -245,6 +245,24 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
 
         return nodes.getList(queryParams)
             .then(unwrapCurrentLanguage);
+    }
+
+    /**
+     * Get a single node.
+     *
+     * @param {string} projectName
+     * @param uuid
+     * @returns {restangular.RestangularElement|restangular.IElement}
+     */
+    function getNode(projectName, uuid) {
+        var contents = Restangular.all(projectName);
+        var queryParams = {
+            lang: i18nService.languages.map(function(lang) {
+                return lang.code;
+            }).join(',')
+        };
+
+        return contents.one('nodes', uuid).get(queryParams);
     }
 
     /**
