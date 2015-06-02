@@ -106,17 +106,6 @@
 							<arguments>dist</arguments>
 						</configuration>
 					</execution>
-					<!-- install bower -->
-					<execution>
-						<id>npm install bower</id>
-						<goals>
-							<goal>npm</goal>
-						</goals>
-						<phase>compile</phase>
-						<configuration>
-							<arguments>install bower</arguments>
-						</configuration>
-					</execution>
 					<!-- run bower -->
 					<execution>
 						<id>bower install</id>
