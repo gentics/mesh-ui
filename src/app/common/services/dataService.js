@@ -69,6 +69,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.getGroups = getGroups;
     // Nodes
     this.getChildNodes = getChildNodes;
+    this.getChildFolders = getChildFolders;
+    this.getChildContents = getChildContents;
     this.getNode = getNode;
     // Contents
     this.getContents = getContents;
@@ -244,6 +246,27 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         queryParams.lang = i18nService.getCurrentLang().code;
 
         return nodes.getList(queryParams)
+            .then(unwrapCurrentLanguage);
+    }
+
+    function getChildFolders(projectName, parentNodeId, queryParams) {
+        var url = projectName + '/nodes/' + parentNodeId + '/children_folders',
+            nodes = Restangular.all(url);
+
+        queryParams = queryParams || {};
+        queryParams.lang = i18nService.getCurrentLang().code;
+
+        return nodes.getList()
+            .then(unwrapCurrentLanguage);
+    }
+    function getChildContents(projectName, parentNodeId, queryParams) {
+        var url = projectName + '/nodes/' + parentNodeId + '/children_contents',
+            nodes = Restangular.all(url);
+
+        queryParams = queryParams || {};
+        queryParams.lang = i18nService.getCurrentLang().code;
+
+        return nodes.getList()
             .then(unwrapCurrentLanguage);
     }
 

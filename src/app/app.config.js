@@ -29,7 +29,8 @@ function appConfig($stateProvider,
         .primaryPalette('light-blue')
         .accentPalette('blue');
 
-    dataServiceProvider.setApiUrl(window.location.protocol + '//' + window.location.hostname + ':8080/api/v1');
+    //dataServiceProvider.setApiUrl(window.location.protocol + '//' + window.location.hostname + ':8080/api/v1');
+    dataServiceProvider.setApiUrl(window.location.protocol + '//' + window.location.hostname + '/gentics/mesh-mock-backend');
 
     paginationTemplateProvider.setPath('common/components/pagination/pagination.html');
 
