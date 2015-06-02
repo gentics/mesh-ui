@@ -17,22 +17,22 @@ function explorerFoldersListDirective($state, contextService) {
 
         /**
          * Transition to the tag specified by tagId in the current project.
-         * @param {string} tagId
+         * @param {string} nodeId
          */
-        function goTo(tagId) {
+        function goTo(nodeId) {
             var projectName = contextService.getProject().name;
-            $state.go('projects.explorer', { projectName: projectName, tagId: tagId });
+            $state.go('projects.explorer', { projectName: projectName, nodeId: nodeId });
         }
 
         /**
          * Transition to the tag editor state for the specified tagId.
          *
          * @param {Event} event
-         * @param {string} tagId
+         * @param {string} nodeId
          */
-        function editTag(event, tagId) {
+        function editTag(event, nodeId) {
             event.preventDefault();
-            $state.go('projects.explorer.tag', { uuid: tagId });
+            $state.go('projects.explorer.tag', { uuid: nodeId });
         }
     }
 

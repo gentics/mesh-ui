@@ -1,5 +1,5 @@
 <div class="app-content">
     <div ng-repeat="project in vm.projects">
-        <h1 class="title-font"><a ui-sref="projects.explorer({ projectName: project.name, tagId: project.rootTagUuid })">{{project.name}}</a></h1>
+        <h1 class="title-font"><a ui-sref="projects.explorer({ projectName: project.name, nodeId: project.rootNodeUuid })">{{project.name}}</a></h1>
     </div>
 </div>

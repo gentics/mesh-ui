@@ -22,7 +22,7 @@ function routesConfig($stateProvider) {
                 }
             },
             resolve: {
-                parentTag: updateContext
+                parentNode: updateContext
             }
         })
         .state('projects.explorer', {
@@ -35,7 +35,7 @@ function routesConfig($stateProvider) {
                 }
             },
             resolve: {
-                parentTag: updateContext
+                parentNode: updateContext
             }
         })
         .state('projects.explorer.content', {
@@ -103,7 +103,7 @@ function updateContext($q, $stateParams, dataService, contextService) {
                 var projectId = result[0],
                     node = result[1];
                 contextService.setProject(projectName, projectId);
-                contextService.setParentNode(nodeId);
+                contextService.setParentNode(node.segmentName, nodeId);
                 return node;
             });
     } else {

@@ -15,7 +15,7 @@ function projectSearchBarDirective($state, contextService) {
     function projectSearchBarController() {
         var vm = this;
         vm.currentProject = contextService.getProject().name;
-        vm.currentTag = contextService.getTag().name;
+        vm.currentNode = contextService.getParentNode().name;
         vm.goToContext = goToContext;
 
         if (!callbackRegistered) {
@@ -39,11 +39,11 @@ function projectSearchBarDirective($state, contextService) {
         /**
          * Update the view model with the current context
          * @param {string} currentProject
-         * @param {string} currentTag
+         * @param {string} currentNode
          */
-        function updateCurrentContext(currentProject, currentTag) {
+        function updateCurrentContext(currentProject, currentNode) {
             vm.currentProject = currentProject.name;
-            vm.currentTag = currentTag.name;
+            vm.currentNode = currentNode.name;
         }
     }
 

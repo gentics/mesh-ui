@@ -7,7 +7,7 @@ angular.module('meshAdminUi.common')
  */
 function contextService() {
     var currentProject = { name: '', id: '' },
-        currentNode = { id: ''},
+        currentNode = { name: '', id: ''},
         contextChangeCallbacks = [];
 
     // public API
@@ -44,7 +44,8 @@ function contextService() {
         return currentProject;
     }
 
-    function setParentNode(id) {
+    function setParentNode(name, id) {
+        currentNode.name = name;
         currentNode.id = id;
         runContextChangeHandlers();
     }

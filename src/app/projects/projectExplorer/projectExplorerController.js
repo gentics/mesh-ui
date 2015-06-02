@@ -11,17 +11,17 @@ angular.module('meshAdminUi.projects')
  * @param wipService
  * @param i18nService
  * @param notifyService
- * @param {Object} parentTag injected from the router resolve function
+ * @param {Object} parentNode injected from the router resolve function
  * @constructor
  */
-function ProjectExplorerController($scope, $q, $location, confirmActionDialog, dataService, contextService, wipService, i18nService, notifyService, parentTag) {
+function ProjectExplorerController($scope, $q, $location, confirmActionDialog, dataService, contextService, wipService, i18nService, notifyService, parentNode) {
     var vm = this,
         projectName = contextService.getProject().name;
 
     vm.totalItems = 0;
     vm.itemsPerPage = $location.search().per_page || 10;
     vm.currentPage = $location.search().page || 1;
-    vm.createPermission = -1 < parentTag.perms.indexOf('create');
+    vm.createPermission = -1 < parentNode.perms.indexOf('create');
     vm.updateContents = updateContents;
     vm.selectedItems = [];
     vm.openSelected = openSelected;
@@ -31,10 +31,9 @@ function ProjectExplorerController($scope, $q, $location, confirmActionDialog, d
         return $location.search().page;
     }, function(newVal) {
         updateContents(newVal, vm.itemsPerPage);
-        populateContent(newVal);
+        populateChildNodes(newVal);
     });
 
-    populateTags();
     populateSchemas();
 
     /**
@@ -53,33 +52,25 @@ function ProjectExplorerController($scope, $q, $location, confirmActionDialog, d
      * Fill the vm with the child contents of the current tag.
      * @param {number} page
      */
-    function populateContent(page) {
+    function populateChildNodes(page) {
         var projectName = contextService.getProject().name,
-            tagId = contextService.getTag().id,
+            parentNodeId = parentNode.uuid,
             queryParams = {
                 page: page,
                 per_page: vm.itemsPerPage
             };
 
-        dataService.getContents(projectName, tagId, queryParams)
+        dataService.getChildFolders(projectName, parentNodeId, queryParams)
             .then(function (data) {
+                vm.folders = data;
+                return dataService.getChildContents(projectName, parentNodeId, queryParams);
+            })
+            .then(function(data) {
                 vm.contents = data;
                 vm.totalItems = data.metadata.total_count;
             });
     }
 
-    /**
-     * Fill the vm with the child tags of the current tag.
-     */
-    function populateTags() {
-        var projectName = contextService.getProject().name,
-            tagId = contextService.getTag().id;
-
-        dataService.getTags(projectName, tagId)
-            .then(function(data) {
-                vm.tags = data;
-            });
-    }
 
     /**
      * Fill the vm with all available schemas.
@@ -106,7 +97,7 @@ function ProjectExplorerController($scope, $q, $location, confirmActionDialog, d
                     .then(function (item) {
                         wipService.openItem('contents', item, {
                             projectName: projectName,
-                            parentTagId: parentTag.uuid,
+                            parentTagId: parentNode.uuid,
                             selectedLangs: selectedLangs
                         });
                     });
@@ -128,7 +119,7 @@ function ProjectExplorerController($scope, $q, $location, confirmActionDialog, d
             $q.when(deleteNext())
                 .then(function () {
                     notifyService.toast('Deleted ' + deletedCount + ' contents');
-                    populateContent(vm.currentPage);
+                    populateChildNodes(vm.currentPage);
                 });
         }
     }
