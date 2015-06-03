@@ -4,7 +4,7 @@
         <i class="icon-close" ng-click="vm.close(vm.content)"></i>
     </div>
 
-    <h1 class="title-font">{{ vm.content.properties[vm.availableLangs[0].code].name }}</h1>
+    <h1 class="title-font">{{ vm.content.fields[vm.content.displayField] || vm.content.name }}</h1>
 
     <div layout="rows" class="language-selector">
         <md-checkbox md-no-ink ng-repeat="lang in vm.availableLangs" ng-model="vm.selectedLangs[lang.code]" ng-class="'lang-color-' + $index">
