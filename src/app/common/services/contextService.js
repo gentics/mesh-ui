@@ -8,7 +8,8 @@ angular.module('meshAdminUi.common')
 function contextService() {
     var currentProject = { name: '', id: '' },
         currentNode = { name: '', id: ''},
-        contextChangeCallbacks = [];
+        contextChangeCallbacks = [],
+        queueCallback = false;
 
     // public API
     this.registerContextChangeHandler = registerContextChangeHandler;
@@ -57,10 +58,23 @@ function contextService() {
     /**
      * Invoke any registered context change handlers and pass each one the
      * current project and tag objects.
+     *
+     * A timeout is used to ensure that the callbacks are only invoked once per
+     * event loop. Thus, even if this runContextChangeHandlers() function is called
+     * several times during the event loop, all those calls will only result in the
+     * registered callbacks being invoked exactly once.
      */
     function runContextChangeHandlers() {
-        contextChangeCallbacks.forEach(function(fn) {
-            fn.call(null, currentProject, currentNode);
-        });
+        if (!queueCallback) {
+            queueCallback = true;
+
+            setTimeout(function() {
+                contextChangeCallbacks.forEach(function(fn) {
+                    fn.call(null, currentProject, currentNode);
+                });
+                queueCallback = false;
+            }, 0);
+        }
+
     }
 }

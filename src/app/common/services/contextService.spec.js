@@ -15,7 +15,13 @@ describe('contextService', function() {
             name: 'someNode',
             id: '12345abc'
         };
+
+        jasmine.clock().install();
     }));
+
+    afterEach(function() {
+        jasmine.clock().uninstall();
+    });
 
     it('setProject() should set current project', function() {
         contextService.setProject(project.name, project.id);
@@ -34,10 +40,24 @@ describe('contextService', function() {
         contextService.registerContextChangeHandler(handler);
 
         contextService.setProject(project.name, project.id);
-        expect(handler).toHaveBeenCalledWith(project, { name: '', id: '' });
 
-        contextService.setParentNode(node.id);
-        expect(handler.calls.count()).toBe(2);
+        jasmine.clock().tick(1);
+
+        expect(handler).toHaveBeenCalledWith(project, { name: '', id: '' });
     });
-    
+
+    it('should only call change handlers once per event loop', function() {
+        var handler = jasmine.createSpy('handler');
+        contextService.registerContextChangeHandler(handler);
+
+        contextService.setProject(project.name, project.id);
+        contextService.setProject(project.name, project.id);
+        contextService.setParentNode(node.name, node.id);
+        contextService.setParentNode(node.name, node.id);
+
+        jasmine.clock().tick(1);
+
+        expect(handler.calls.count()).toEqual(1);
+    });
+
 });
