@@ -82,6 +82,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.getSchema = getSchema;
     // Roles
     this.getRoles = getRoles;
+    // Breadcrumbs
+    this.getBreadcrumb = getBreadcrumb;
 
     /**
      * Get all projects as a list.
@@ -388,6 +390,10 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
 
     function getRoles() {
         // stub
+    }
+
+    function getBreadcrumb(projectName, uuid) {
+        return Restangular.one(projectName + '/breadcrumb', uuid).get();
     }
 
     /**

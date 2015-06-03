@@ -101,9 +101,11 @@ function updateContext($q, $stateParams, dataService, contextService) {
         result = $q.all([qProject, qNode])
             .then(function(result) {
                 var projectId = result[0],
-                    node = result[1];
+                    node = result[1],
+                    nodeSegmentName = node.fields[node.segmentField];
+
                 contextService.setProject(projectName, projectId);
-                contextService.setParentNode(node.segmentName, nodeId);
+                contextService.setParentNode(nodeSegmentName, nodeId);
                 return node;
             });
     } else {

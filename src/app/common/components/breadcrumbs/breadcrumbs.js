@@ -3,7 +3,6 @@ angular.module('meshAdminUi.common')
 
 /**
  * Directive to generate breadcrumbs for navigating a project.
- * TODO: This is just a demo implementation. Awaiting API endpoint for breadcrumbs.
  *
  * @param dataService
  * @param contextService
@@ -11,7 +10,7 @@ angular.module('meshAdminUi.common')
  */
 function breadcrumbsDirective(dataService, contextService) {
 
-    function breadcrumbsController($scope) {
+    function breadcrumbsController() {
         var vm = this;
         vm.breadcrumbs = [];
 
@@ -20,33 +19,36 @@ function breadcrumbsDirective(dataService, contextService) {
             vm.breadcrumbs = [];
         };
 
-        $scope.$watch(function() {
-            return contextService.getProject();
-        }, function(project) {
-            vm.projectName = project.name;
-            getProjectRootTag(project.name);
-        }, true);
+        populateBreadcrumbs();
+        contextService.registerContextChangeHandler(contextChangeHandler);
 
-        function getProjectRootTag(projectName) {
-            dataService.getProjectRootNodeId(projectName)
-                .then(function (id) {
-                    vm.breadcrumbs[0] = {
-                            name: projectName,
-                            id: id
-                        };
-                });
+        /**
+         * Populate the breadcrumbs on the initial page load. This would only be called once, when
+         * the app bootstraps, and is responsible for setting the breadcrumbs on first load.
+         */
+        function populateBreadcrumbs() {
+            contextChangeHandler(contextService.getProject(), contextService.getParentNode());
         }
 
-        $scope.$watch(function() {
-            return contextService.getParentNode();
-        }, function(newVal) {
-            if (vm.breadcrumbs) {
-                vm.breadcrumbs[1] = {
-                    name: newVal.name,
-                    id: newVal.id
-                };
+        /**
+         * Update the breadcrumbs array whenever the context changes (i.e. user moves to a new
+         * node or project).
+         *
+         * @param currentProject
+         * @param currentNode
+         */
+        function contextChangeHandler(currentProject, currentNode) {
+            vm.projectName = currentProject.name;
+
+            if (vm.projectName === '') {
+                vm.breadcrumbs = [];
+            } else {
+                dataService.getBreadcrumb(vm.projectName, currentNode.id)
+                    .then(function (data) {
+                        vm.breadcrumbs = data;
+                    });
             }
-        }, true);
+        }
 
     }
 
