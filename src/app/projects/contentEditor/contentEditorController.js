@@ -14,13 +14,14 @@ angular.module('meshAdminUi.projects')
  * @param dataService
  * @param wipService
  * @param notifyService
+ * @param parentNode
  * @constructor
  */
-function ContentEditorController($scope, $state, $stateParams, confirmActionDialog, $mdDialog, contextService, i18nService, dataService, wipService, notifyService) {
+function ContentEditorController($scope, $state, $stateParams, confirmActionDialog, $mdDialog, contextService, i18nService, dataService, wipService, notifyService, parentNode) {
     var vm = this,
         wipType = 'contents',
         projectName = contextService.getProject().name,
-        parentTagId = $stateParams.tagId;
+        parentNodeId = $stateParams.nodeId;
 
     vm.isNew = false;
     vm.contentModified = false;
@@ -35,7 +36,7 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
 
     getContentData()
         .then(populateSchema)
-        .then(getParentTag)
+        .then(getParentNode)
         .then(function() {
            vm.isLoaded = true;
         });
@@ -54,9 +55,9 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
                     notifyService.toast('NEW_CONTENT_CREATED');
                     wipService.closeItem(wipType, content);
                     content = response;
-                    wipService.openItem(wipType, content, { projectName: projectName, parentTagId: parentTagId, selectedLangs: vm.selectedLangs });
+                    wipService.openItem(wipType, content, { projectName: projectName, parentTagId: parentNodeId, selectedLangs: vm.selectedLangs });
                     vm.isNew = false;
-                    $state.go('projects.explorer.content', { projectName: projectName, tagId: parentTagId, uuid: content.uuid });
+                    $state.go('projects.explorer.content', { projectName: projectName, tagId: parentNodeId, uuid: content.uuid });
                 } else {
                     notifyService.toast('SAVED_CHANGES');
                     wipService.setAsUnmodified(wipType, vm.content);
@@ -152,14 +153,9 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
     }
 
 
-    function getParentTag() {
-        wipService.setMetadata(wipType, vm.content.uuid, 'parentTagId', parentTagId);
-        if (!vm.parentTag) {
-            return dataService.getTag(projectName, parentTagId)
-                .then(function (tag) {
-                    vm.parentTag = tag;
-                });
-        }
+    function getParentNode() {
+        wipService.setMetadata(wipType, vm.content.uuid, 'parentNodeId', parentNodeId);
+        vm.parentNode = parentNode;
     }
 
     /**
@@ -183,8 +179,8 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
                     .getContent(projectName, currentTagId)
                     .then(function (data) {
                         vm.content = data;
-                        wipService.openItem(wipType, data, { projectName: projectName, parentTagId: parentTagId, selectedLangs: vm.selectedLangs });
-                        return dataService.getSchema(data.schema.schemaUuid);
+                        wipService.openItem(wipType, data, { projectName: projectName, parentTagId: parentNodeId, selectedLangs: vm.selectedLangs });
+                        return dataService.getSchema(data.schema.uuid);
                     });
             }
         } else if (schemaId) {
@@ -192,8 +188,8 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
             vm.isNew = true;
             return dataService.getSchema(schemaId)
                 .then(function(schema) {
-                    vm.content = createEmptyContent(parentTagId, schema.uuid, schema.title);
-                    wipService.openItem(wipType, vm.content, { projectName: projectName, parentTagId: parentTagId, isNew: true, selectedLangs: vm.selectedLangs });
+                    vm.content = createEmptyContent(parentNodeId, schema.uuid, schema.title);
+                    wipService.openItem(wipType, vm.content, { projectName: projectName, parentTagId: parentNodeId, isNew: true, selectedLangs: vm.selectedLangs });
                     return schema;
                 });
         }
@@ -209,7 +205,7 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
         vm.content = wipContent;
         vm.contentModified = wipService.isModified(wipType, vm.content);
         vm.selectedLangs = wipMetadata.selectedLangs;
-        return dataService.getSchema(vm.content.schema.schemaUuid);
+        return dataService.getSchema(vm.content.schema.uuid);
     }
 
     /**

@@ -17,8 +17,8 @@
              ng-repeat="lang in vm.availableLangs"
              ng-class="'lang-color-' + $index"
              ng-if="vm.selectedLangs[lang.code]">
-            <generated-form model="vm.content.properties[lang.code]"
-                            fields="vm.schema.properties"
+            <generated-form model="vm.content.fields"
+                            fields="vm.schema.fields"
                             modified-flag="vm.contentModified"
                             perms="vm.content.perms"></generated-form>
         </div>

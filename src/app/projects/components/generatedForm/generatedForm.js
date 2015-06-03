@@ -18,7 +18,6 @@ function generatedFormDirective() {
         var vm = this;
 
         vm.canUpdate = canUpdate;
-        vm.getType = getType;
 
         /**
          * Does the current user have permission to update this content? If not,
@@ -27,23 +26,6 @@ function generatedFormDirective() {
          */
         function canUpdate() {
             return -1 < vm.perms.indexOf('update');
-        }
-
-        /**
-         * Get the field data type - used to decide what kind of form input to
-         * map the field to.
-         * TODO: This is a naive implementation since the final data types are not nailed down yet.
-         * @param property
-         * @returns {*}
-         */
-        function getType(property) {
-            var type;
-            if (property && 50 < property.length) {
-                type = "textBlock";
-            } else {
-                type = "textString";
-            }
-            return type;
         }
     }
 

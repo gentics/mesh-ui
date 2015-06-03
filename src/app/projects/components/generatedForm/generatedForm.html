@@ -1,13 +1,13 @@
 <form name="contentEditorForm">
     <div ng-repeat="field in vm.fields">
-        <div ng-switch="vm.getType(vm.model[field.key])">
-            <md-input-container ng-switch-when="textBlock">
-                <label>{{ field.displayName || field.key }}</label>
-                <textarea type="text" ng-model="vm.model[field.key]" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()"></textarea>
+        <div ng-switch="field.type">
+            <md-input-container ng-switch-when="html">
+                <label>{{ field.label || field.name }}</label>
+                <textarea ng-model="vm.model[field.name]" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()"></textarea>
             </md-input-container>
             <md-input-container ng-switch-default>
-                <label>{{ field.displayName || field.key }}</label>
-                <input type="text" ng-model="vm.model[field.key]" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()">
+                <label>{{ field.label || field.name }}</label>
+                <input type="text" ng-model="vm.model[field.name]" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()">
             </md-input-container>
         </div>
     </div>

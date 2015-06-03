@@ -341,7 +341,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
             }).join(',')
         };
 
-        return contents.one('contents', uuid).get(queryParams);
+        return contents.one('nodes', uuid).get(queryParams);
     }
 
     /**
