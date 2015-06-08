@@ -12,13 +12,12 @@ function widgetProxyDirective($compile) {
 
         scope.formBuilder = formBuilderController;
 
-        if (scope.field.type !== 'microschema') {
-            var directiveName = 'mh-' + scope.field.type + '-widget';
-            template = '<' + directiveName + '></' + directiveName + '>';
-
-        } else {
+        if (scope.field.type === 'microschema') {
             // Pass microschema name through the custom widgets to check for a match.
             template = '<microschema-form-builder></microschema-form-builder>';
+        } else {
+            var directiveName = 'mh-' + scope.field.type + '-widget';
+            template = '<' + directiveName + '></' + directiveName + '>';
         }
 
         var compiledDom = $compile(template)(scope);

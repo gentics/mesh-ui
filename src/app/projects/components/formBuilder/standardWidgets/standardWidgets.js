@@ -64,8 +64,8 @@ function dateWidgetDirective() {
      * @param {ng.IScope} scope
      */
     function dateWidgetLinkFn(scope) {
-        if (0 < scope.value) {
-            scope.date = new Date(scope.value * 1000);
+        if (0 < scope.model[scope.path]) {
+            scope.date = new Date(scope.model[scope.path] * 1000);
         } else {
             scope.date = new Date();
         }

@@ -3,6 +3,8 @@
  */
 angular.module('meshAdminUi', [
 
+    'meshAdminUi.templates',
+
     // app sub-modules
     'meshAdminUi.common',
     'meshAdminUi.login',

@@ -4,6 +4,7 @@
 var vars = require('./build-vars.json'),
     filesArray = vars.VENDOR_SCRIPTS.concat([
         'bower_components/angular-mocks/angular-mocks.js',
+        'build/app/templates.js',
         'src/**/*.js'
     ]);
 
