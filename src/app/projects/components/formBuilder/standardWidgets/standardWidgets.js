@@ -64,15 +64,15 @@ function dateWidgetDirective() {
      * @param {ng.IScope} scope
      */
     function dateWidgetLinkFn(scope) {
-        if (0 < scope.vm.model[scope.field.name]) {
-            scope.date = new Date(scope.vm.model[scope.field.name] * 1000);
+        if (0 < scope.value) {
+            scope.date = new Date(scope.value * 1000);
         } else {
             scope.date = new Date();
         }
 
         scope.$watch('date', function(newVal) {
             if (newVal) {
-                scope.vm.model[scope.field.name] = newVal.getTime() / 1000;
+                scope.model[scope.path] = newVal.getTime() / 1000;
             }
         });
     }
@@ -134,9 +134,16 @@ function nodeWidgetDirective() {
  * @returns {ng.IDirective} Directive definition object
  */
 function listWidgetDirective() {
+
+    function listWidgetLinkFn(scope) {
+        scope.listTypeField = angular.copy(scope.field);
+        scope.listTypeField.type = scope.field.listType;
+    }
+
     return {
         restrict: 'E',
         replace: true,
+        link: listWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/listWidget.html',
         scope: true
     };

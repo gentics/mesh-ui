@@ -13,7 +13,7 @@ function microschemaFormBuilderDirective($injector, $templateCache, $compile, da
         '</div></div>';
 
     function microschemaProxyLinkFn(scope, element) {
-        var model = scope.$parent.vm.model[scope.field.name];
+        var model = scope.model[scope.path];
         scope.microschemaName = model.microschema.name;
 
 
@@ -31,7 +31,7 @@ function microschemaFormBuilderDirective($injector, $templateCache, $compile, da
             scope.vm = {
                 model: model.fields,
                 fields: microschema.fields,
-                canUpdate: scope.$parent.vm.canUpdate
+                canUpdate: scope.$parent.formBuilder.canUpdate
             };
 
             var compiledDom = $compile(template)(scope);

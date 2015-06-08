@@ -1,5 +1,12 @@
-<form name="contentEditorForm">
-    <div ng-repeat="field in vm.fields">
-        <widget-proxy field="field"></widget-proxy>
+<div layout="row">
+    <form flex name="contentEditorForm">
+        <div ng-repeat="field in formBuilder.fields">
+            <widget-proxy model="formBuilder.model" path="field.name" field="field"></widget-proxy>
+        </div>
+    </form>
+    <div flex>
+        <pre>
+            {{ formBuilder.model | json}}
+        </pre>
     </div>
-</form>
+</div>

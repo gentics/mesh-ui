@@ -1,0 +1,5 @@
+<div class="list-container">
+    <div ng-repeat="item in model[path] track by $index">
+        <widget-proxy model="model[path]" path="$index" field="listTypeField"></widget-proxy>
+    </div>
+</div>

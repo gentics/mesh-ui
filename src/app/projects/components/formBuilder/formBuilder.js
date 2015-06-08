@@ -15,9 +15,9 @@ angular.module('meshAdminUi.projects.formBuilder')
 function formBuilderDirective() {
 
     function formBuilderController() {
-        var vm = this;
+        var formBuilder = this;
 
-        vm.canUpdate = canUpdate;
+        formBuilder.canUpdate = canUpdate;
 
         /**
          * Does the current user have permission to update this content? If not,
@@ -25,7 +25,7 @@ function formBuilderDirective() {
          * @returns {boolean}
          */
         function canUpdate() {
-            return -1 < vm.perms.indexOf('update');
+            return -1 < formBuilder.perms.indexOf('update');
         }
     }
 
@@ -34,7 +34,7 @@ function formBuilderDirective() {
         replace: true,
         templateUrl: 'projects/components/formBuilder/formBuilder.html',
         controller: formBuilderController,
-        controllerAs: 'vm',
+        controllerAs: 'formBuilder',
         bindToController: true,
         scope: {
             model: '=',

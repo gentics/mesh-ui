@@ -1,4 +1,4 @@
 <md-input-container >
     <label>{{ field.label || field.name }}</label>
-    <input type="date" ng-model="date" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()">
+    <input type="date" ng-model="date" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()">
 </md-input-container>
