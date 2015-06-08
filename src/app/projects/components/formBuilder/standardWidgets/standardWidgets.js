@@ -138,6 +138,14 @@ function listWidgetDirective() {
     function listWidgetLinkFn(scope) {
         scope.listTypeField = angular.copy(scope.field);
         scope.listTypeField.type = scope.field.listType;
+
+        scope.addItem = function() {
+            scope.model[scope.path].push(null);
+        };
+
+        scope.removeItem = function(index) {
+            scope.model[scope.path].splice(index, 1);
+        };
     }
 
     return {

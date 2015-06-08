@@ -1,5 +1,9 @@
 <div class="list-container">
-    <div ng-repeat="item in model[path] track by $index">
-        <widget-proxy model="model[path]" path="$index" field="listTypeField"></widget-proxy>
+    <div ng-repeat="item in model[path] track by $index" layout="row">
+        <widget-proxy flex model="model[path]" path="$index" field="listTypeField"></widget-proxy>
+        <div flex="20">
+            <button class="btn btn-small" ng-click="removeItem($index)">Remove</button>
+        </div>
     </div>
+    <button class="btn btn-small" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max">Add item</button>
 </div>
