@@ -1,0 +1,6 @@
+<md-input-container>
+    {{ field.label || field.name }}
+    <md-select ng-model="vm.model[field.name]" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()">
+        <md-option ng-value="opt" ng-repeat="opt in field.options">{{ opt }}</md-option>
+    </md-select>
+</md-input-container>

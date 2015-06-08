@@ -1,5 +1,5 @@
-angular.module('meshAdminUi.projects')
-    .directive('generatedForm', generatedFormDirective);
+angular.module('meshAdminUi.projects.formBuilder')
+    .directive('formBuilder', formBuilderDirective);
 
 /**
  * Component for auto-generating a form from schema data.
@@ -12,9 +12,9 @@ angular.module('meshAdminUi.projects')
  *
  * @returns {ng.IDirective} Directive definition object
  */
-function generatedFormDirective() {
+function formBuilderDirective() {
 
-    function generatedFormController() {
+    function formBuilderController() {
         var vm = this;
 
         vm.canUpdate = canUpdate;
@@ -32,8 +32,8 @@ function generatedFormDirective() {
     return {
         restrict: 'E',
         replace: true,
-        templateUrl: 'projects/components/generatedForm/generatedForm.html',
-        controller: generatedFormController,
+        templateUrl: 'projects/components/formBuilder/formBuilder.html',
+        controller: formBuilderController,
         controllerAs: 'vm',
         bindToController: true,
         scope: {

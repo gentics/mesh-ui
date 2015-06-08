@@ -1,0 +1,4 @@
+<md-input-container>
+    <label>{{ field.label || field.name }}</label>
+    <textarea ng-model="vm.model[field.name]" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()"></textarea>
+</md-input-container>

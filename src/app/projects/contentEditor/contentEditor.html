@@ -17,10 +17,10 @@
              ng-repeat="lang in vm.availableLangs"
              ng-class="'lang-color-' + $index"
              ng-if="vm.selectedLangs[lang.code]">
-            <generated-form model="vm.content.fields"
+            <form-builder model="vm.content.fields"
                             fields="vm.schema.fields"
                             modified-flag="vm.contentModified"
-                            perms="vm.content.perms"></generated-form>
+                            perms="vm.content.perms"></form-builder>
         </div>
     </div>
 

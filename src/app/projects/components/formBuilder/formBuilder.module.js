@@ -1,0 +1,1 @@
+angular.module('meshAdminUi.projects.formBuilder', []);
