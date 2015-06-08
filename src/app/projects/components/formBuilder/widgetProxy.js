@@ -22,7 +22,7 @@ function widgetProxyDirective($compile) {
         }
 
         var compiledDom = $compile(template)(scope);
-        element.append(compiledDom);
+        element.replaceWith(compiledDom);
     }
 
 

@@ -1,8 +1,6 @@
 <div layout="row">
-    <form flex name="contentEditorForm">
-        <div ng-repeat="field in formBuilder.fields">
-            <widget-proxy model="formBuilder.model" path="field.name" field="field"></widget-proxy>
-        </div>
+    <form flex name="contentEditorForm" layout-wrap layout="row">
+        <widget-proxy ng-repeat="field in formBuilder.fields" model="formBuilder.model" path="field.name" field="field"></widget-proxy>
     </form>
     <div flex>
         <pre>
