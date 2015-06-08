@@ -2,31 +2,56 @@ angular.module('meshAdminUi.projects.formBuilder')
     .directive('microschemaFormBuilder', microschemaFormBuilderDirective);
 
 /**
- * Directive that takes a microschema { name, uui } and the fields object for it,
+ * Directive that takes a microschema { name, uuid } and the fields object for it,
  * and either dispatches to a custom widget (if one exists) or builds the form
  * for it from the standard set of widgets.
  */
-function microschemaFormBuilderDirective($compile, dataService) {
+function microschemaFormBuilderDirective($injector, $templateCache, $compile, dataService) {
 
     var defaultTemplate = '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})<div ng-repeat="field in vm.fields">' +
-                            '<widget-proxy field="field"></widget-proxy>' +
-                          '</div></div>';
+        '<widget-proxy field="field"></widget-proxy>' +
+        '</div></div>';
 
     function microschemaProxyLinkFn(scope, element) {
         var model = scope.$parent.vm.model[scope.field.name];
         scope.microschemaName = model.microschema.name;
 
-        dataService.getMicroschema(model.microschema.name)
-            .then(function(data) {
-                scope.vm = {
-                    model: model.fields,
-                    fields: data.fields
-                };
 
-                var compiledDom = $compile(defaultTemplate)(scope);
-                element.replaceWith(compiledDom);
-            });
+        dataService.getMicroschema(model.microschema.name).then(renderMicroschema);
+
+        function renderMicroschema(microschema) {
+            var template;
+
+            if (customWidgetExistsFor(model.microschema.name)) {
+               template = getCustomWidgetTemplate(model.microschema.name);
+            } else {
+                template = defaultTemplate;
+            }
+
+            scope.vm = {
+                model: model.fields,
+                fields: microschema.fields,
+                canUpdate: scope.$parent.vm.canUpdate
+            };
+
+            var compiledDom = $compile(template)(scope);
+            element.replaceWith(compiledDom);
+        }
     }
+
+    function getCustomWidgetTemplate(microschemaName) {
+        var template = '<' + microschemaName + '-widget></' + microschemaName + '-widget>';
+        /*var directive = $injector.get(microschemaName + 'WidgetDirective')[0];
+        template =  directive.template || $templateCache.get(directive.templateUrl);*/
+        return '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})' + template + '</div>';
+    }
+
+    function customWidgetExistsFor(microschemaName) {
+        var directiveName = microschemaName + 'WidgetDirective';
+        return $injector.has(directiveName);
+    }
+
+
 
     return {
         restrict: 'EA',
