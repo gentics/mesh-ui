@@ -42,6 +42,7 @@ function htmlWidgetDirective() {
  * @returns {ng.IDirective} Directive definition object
  */
 function numberWidgetDirective() {
+
     return {
         restrict: 'E',
         replace: true,
@@ -56,9 +57,30 @@ function numberWidgetDirective() {
  * @returns {ng.IDirective} Directive definition object
  */
 function dateWidgetDirective() {
+
+    /**
+     * Since the input[type="date"] directive requires a Date object, we need to convert the
+     * timestamp into a Date object and bind to that.
+     * @param {ng.IScope} scope
+     */
+    function dateWidgetLinkFn(scope) {
+        if (0 < scope.vm.model[scope.field.name]) {
+            scope.date = new Date(scope.vm.model[scope.field.name] * 1000);
+        } else {
+            scope.date = new Date();
+        }
+
+        scope.$watch('date', function(newVal) {
+            if (newVal) {
+                scope.vm.model[scope.field.name] = newVal.getTime() / 1000;
+            }
+        });
+    }
+
     return {
         restrict: 'E',
         replace: true,
+        link: dateWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/dateWidget.html',
         scope: true
     };
