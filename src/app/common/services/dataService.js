@@ -80,6 +80,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     // Schemas
     this.getSchemas = getSchemas;
     this.getSchema = getSchema;
+    // Microschemas
+    this.getMicroschema = getMicroschema;
     // Roles
     this.getRoles = getRoles;
     // Breadcrumbs
@@ -386,6 +388,15 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      */
     function getSchema(uuid) {
         return Restangular.one('schemas', uuid).get();
+    }
+
+    /**
+     * Get a microschema by name
+     * @param name
+     * @returns {ng.IPromise<any>|restangular.IPromise<any>}
+     */
+    function getMicroschema(name) {
+        return Restangular.one('microschemas', name).get();
     }
 
     function getRoles() {

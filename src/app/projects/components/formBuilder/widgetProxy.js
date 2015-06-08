@@ -8,15 +8,19 @@ angular.module('meshAdminUi.projects.formBuilder')
 function widgetProxyDirective($injector, $compile, $templateCache) {
 
     function widgetProxyLinkFn(scope, element) {
+        var template;
+
         if (scope.field.type !== 'microschema') {
             var directive = $injector.get('mh' + capitalize(scope.field.type) + 'WidgetDirective')[0];
-            var template = directive.template || $templateCache.get(directive.templateUrl);
-            var compiledDom = $compile(template)(scope.$parent);
-            element.replaceWith(compiledDom);
+            template = directive.template || $templateCache.get(directive.templateUrl);
+
         } else {
             // Pass microschema name through the custom widgets to check for a match.
-            var a = 1;
+            template = '<microschema-form-builder></microschema-form-builder>';
         }
+
+        var compiledDom = $compile(template)(scope.$parent);
+        element.replaceWith(compiledDom);
     }
 
     /**
