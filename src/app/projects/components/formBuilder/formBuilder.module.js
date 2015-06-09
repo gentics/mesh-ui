@@ -1,1 +1,1 @@
-angular.module('meshAdminUi.projects.formBuilder', []);
+angular.module('meshAdminUi.projects.formBuilder', ['dndLists']);

@@ -15,7 +15,8 @@
       "bower_components/angular-utils-pagination/dirPagination.js",
       "bower_components/angular-translate/angular-translate.js",
       "bower_components/angular-local-storage/dist/angular-local-storage.js",
-      "bower_components/angular-loading-bar/build/loading-bar.js"
+      "bower_components/angular-loading-bar/build/loading-bar.js",
+      "bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js"
   ],
   "VENDOR_STYLES": [
       "bower_components/angular-material/angular-material.css",
