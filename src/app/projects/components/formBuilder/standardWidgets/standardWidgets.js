@@ -207,6 +207,7 @@ function listWidgetDirective(dataService) {
         function endDrag(item, index) {
             if (index !== (dragStartIndex + 1)) {
                 scope.model[scope.path].splice(dragStartIndex, 1);
+                scope.formBuilder.modified = true;
                 return item;
             }
         }
