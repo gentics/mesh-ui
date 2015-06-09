@@ -179,7 +179,8 @@ function listWidgetDirective(dataService) {
          * Add a new primitive-type item to the list
          */
         function addItem() {
-            scope.model[scope.path].push(null);
+            var defaultValue = getDefaultValue(scope.listTypeField);
+            scope.model[scope.path].push(defaultValue);
         }
 
         /**
@@ -267,6 +268,8 @@ function listWidgetDirective(dataService) {
             defaultValue = fieldObject.options[0] || "";
         } else if (fieldObject.type === 'list') {
             defaultValue = [];
+        } else if (fieldObject.type === 'node') {
+            defaultValue = {};
         }
 
         return defaultValue;

@@ -192,7 +192,7 @@ describe('formBuilder Module', function() {
             listScope.addItem();
 
             expect($scope.model.list.length).toEqual(4);
-            expect($scope.model.list[3]).toBeNull();
+            expect($scope.model.list[3]).toEqual('');
         });
 
         it('removeItem() should remove an item', function() {
