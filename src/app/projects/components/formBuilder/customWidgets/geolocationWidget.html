@@ -1,16 +1,16 @@
 <div>
     <md-input-container>
-        <label>{{:: vm.fields[0].label }}</label>
-        <input type="text" ng-model="vm.model.title" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()">
+        <label>{{:: microschemaFields[0].label }}</label>
+        <input type="text" ng-model="microschemaModel.title" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()">
     </md-input-container>
     <div layout="row">
         <md-input-container flex>
-            <label>{{:: vm.fields[1].label}}</label>
-            <input type="number" ng-model="vm.model.longitude" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()" max="180" min="-180" step="0.01">
+            <label>{{:: microschemaFields[1].label}}</label>
+            <input type="number" ng-model="microschemaModel.longitude" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()" max="180" min="-180" step="0.01">
         </md-input-container>
         <md-input-container flex>
-            <label>{{:: vm.fields[2].label}}</label>
-            <input type="number" ng-model="vm.model.latitude" ng-change="vm.modified = true" ng-readonly="!vm.canUpdate()" max="180" min="-180" step="0.01">
+            <label>{{:: microschemaFields[2].label}}</label>
+            <input type="number" ng-model="microschemaModel.latitude" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()" max="180" min="-180" step="0.01">
         </md-input-container>
     </div>
     <div class="map-container" style="height: 400px; width: 500px;"></div>

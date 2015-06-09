@@ -19,18 +19,19 @@ function geolocationWidgetDirective() {
         function initMap() {
             var mapCanvas = element[0].querySelector('.map-container');
             var mapOptions = {
-                center: { lat: parseFloat(scope.vm.model.latitude), lng: parseFloat(scope.vm.model.longitude)},
+                center: { lat: parseFloat(scope.microschemaModel.latitude), lng: parseFloat(scope.microschemaModel.longitude)},
                 zoom: 12
             };
             map = new google.maps.Map(mapCanvas, mapOptions);
         }
 
-        scope.$watchCollection('vm.model', updateMapSrc);
-
+        scope.$watchCollection('microschemaModel', updateMapSrc);
 
         function updateMapSrc() {
             if (map) {
-                map.panTo({lat: parseFloat(scope.vm.model.latitude), lng: parseFloat(scope.vm.model.longitude)});
+                if (scope.microschemaModel.latitude && scope.microschemaModel.longitude) {
+                    map.panTo({lat: parseFloat(scope.microschemaModel.latitude), lng: parseFloat(scope.microschemaModel.longitude)});
+                }
             }
         }
 

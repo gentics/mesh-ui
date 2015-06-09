@@ -8,8 +8,8 @@ angular.module('meshAdminUi.projects.formBuilder')
  */
 function microschemaFormBuilderDirective($injector, $templateCache, $compile, dataService) {
 
-    var defaultTemplate = '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})<div ng-repeat="field in vm.fields">' +
-        '<widget-proxy field="field"></widget-proxy>' +
+    var defaultTemplate = '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})<div ng-repeat="field in microschemaFields">' +
+        '<widget-proxy field="field" model="microschemaModel" path="field.name"></widget-proxy>' +
         '</div></div>';
 
     function microschemaProxyLinkFn(scope, element) {
@@ -28,11 +28,8 @@ function microschemaFormBuilderDirective($injector, $templateCache, $compile, da
                 template = defaultTemplate;
             }
 
-            scope.vm = {
-                model: model.fields,
-                fields: microschema.fields,
-                canUpdate: scope.$parent.formBuilder.canUpdate
-            };
+            scope.microschemaFields = microschema.fields;
+            scope.microschemaModel = model.fields;
 
             var compiledDom = $compile(template)(scope);
             element.replaceWith(compiledDom);
@@ -41,8 +38,6 @@ function microschemaFormBuilderDirective($injector, $templateCache, $compile, da
 
     function getCustomWidgetTemplate(microschemaName) {
         var template = '<' + microschemaName + '-widget></' + microschemaName + '-widget>';
-        /*var directive = $injector.get(microschemaName + 'WidgetDirective')[0];
-        template =  directive.template || $templateCache.get(directive.templateUrl);*/
         return '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})' + template + '</div>';
     }
 
@@ -55,6 +50,7 @@ function microschemaFormBuilderDirective($injector, $templateCache, $compile, da
 
     return {
         restrict: 'EA',
-        link: microschemaProxyLinkFn
+        link: microschemaProxyLinkFn,
+        scope: true
     };
 }
