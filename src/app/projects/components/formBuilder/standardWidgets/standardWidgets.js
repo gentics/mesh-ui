@@ -199,7 +199,7 @@ function listWidgetDirective(dataService) {
 
         /**
          * Record the index of the item that is being dragged.
-         * @param index
+         * @param {number} index
          */
         function startDrag(index) {
             dragStartIndex = index;
@@ -207,16 +207,23 @@ function listWidgetDirective(dataService) {
 
         /**
          * Remove the original dragged item from the list.
-         * @param item
-         * @param index
+         * @param {Object} item
+         * @param {number} dragEndIndex
+         * @param {Array<Object>} list
          * @returns {*}
          */
-        function endDrag(item, index) {
-            if (index !== (dragStartIndex + 1)) {
-                scope.model[scope.path].splice(dragStartIndex, 1);
-                scope.formBuilder.modified = true;
-                return item;
+        function endDrag(item, dragEndIndex, list) {
+            var indexToSplice;
+
+            if (dragEndIndex < dragStartIndex) {
+                indexToSplice = dragStartIndex + 1;
+            } else {
+                indexToSplice = dragStartIndex;
             }
+
+            list.splice(dragEndIndex, 0, item); // add the new position
+            list.splice(indexToSplice, 1); // remove the old position
+            scope.formBuilder.modified = true;
         }
     }
 

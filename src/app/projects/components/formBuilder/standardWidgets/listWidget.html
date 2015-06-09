@@ -1,7 +1,7 @@
 <div class="list-container"  flex="100">
 
     <ul dnd-list="model[path]"
-        dnd-drop="endDrag(item, index)"
+        dnd-drop="endDrag(item, index, model[path])"
         dnd-allowed-types="[listTypeField.name]">
 
         <li ng-repeat="item in model[path] track by tracker(item, $id, $index)"
