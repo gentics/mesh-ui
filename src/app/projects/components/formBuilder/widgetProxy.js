@@ -24,7 +24,6 @@ function widgetProxyDirective($compile) {
         element.replaceWith(compiledDom);
     }
 
-
     return {
         restrict: 'EA',
         require: '^formBuilder',

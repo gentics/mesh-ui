@@ -2,7 +2,7 @@
     <form flex name="contentEditorForm" layout-wrap layout="row">
         <widget-proxy ng-repeat="field in formBuilder.fields" model="formBuilder.model" path="field.name" field="field"></widget-proxy>
     </form>
-    <div flex>
+    <div flex class="model-json">
         <pre>{{ formBuilder.model | json}}</pre>
     </div>
 </div>
