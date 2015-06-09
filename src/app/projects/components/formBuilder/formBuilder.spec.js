@@ -3,9 +3,11 @@ describe('formBuilder Module', function() {
     var $compile,
         $scope,
         $timeout,
-        containingElement;
+        containingElement,
+        $q;
 
     beforeEach(module('meshAdminUi.projects.formBuilder'));
+    beforeEach(module('meshAdminUi.common'));
     beforeEach(module('ngMaterial'));
     beforeEach(module('meshAdminUi.templates'));
 
@@ -129,6 +131,172 @@ describe('formBuilder Module', function() {
         expect(containingElement.querySelector('input[type="date"]').value).toEqual(getDateString(timestamp));
 
     });
+
+    it('should generate a select type field', function() {
+        var fields = [{
+            "name": "select",
+            "label": "Select Type",
+            "type": "select",
+            "options": ["foo", "bar", "baz"]
+        }];
+
+        var model = {
+            "select": "bar"
+        };
+
+        compileElement(fields, model);
+        expect(containingElement.querySelector('md-select').innerHTML).toContain('bar');
+    });
+
+    it('should generate a list type field', function() {
+        var fields = [{
+            "name": "list",
+            "label": "List Type",
+            "type": "list",
+            "listType": "string"
+        }];
+
+        var model = {
+            "list": ["do", "re", "mi"]
+        };
+
+        compileElement(fields, model);
+        expect(containingElement.querySelectorAll('ul li').length).toEqual(3);
+        expect(containingElement.querySelectorAll('ul li')[1].innerHTML).toContain('re');
+    });
+
+    describe('list functions', function() {
+        var listContainer,
+            listScope;
+
+        function compileListField(fields, model) {
+            fields = fields || [{
+                "name": "list",
+                "label": "List Type",
+                "type": "list",
+                "listType": "string"
+            }];
+
+            model = model || {
+                "list": ["do", "re", "mi"]
+            };
+
+            compileElement(fields, model);
+
+            listContainer = containingElement.querySelector('.list-container'),
+                listScope = angular.element(listContainer).scope();
+        }
+
+        it('addItem() should add a new item', function() {
+            compileListField();
+            listScope.addItem();
+
+            expect($scope.model.list.length).toEqual(4);
+            expect($scope.model.list[3]).toBeNull();
+        });
+
+        it('removeItem() should remove an item', function() {
+            compileListField();
+            listScope.removeItem(0);
+
+            expect($scope.model.list).toEqual(['re', 'mi']);
+        });
+
+        describe('microschema instance creation with addWidget()', function() {
+
+            var scopeListObject;
+
+            beforeEach(inject(function($q, dataService) {
+                // return a mock microschema is dataService.getMicroschema() is called
+                spyOn(dataService, "getMicroschema").and.callFake(function() {
+                    return $q.when({
+                        "name": "testMicroschema",
+                        "uuid": "uuid_test_microschema",
+                        "fields": [
+                            {
+                                "name": "title",
+                                "label": "Title of Thing",
+                                "type": "string",
+                                "required": true
+                            },
+                            {
+                                "name": "greeting",
+                                "label": "Greeting",
+                                "type": "string",
+                                "defaultValue": "hello"
+                            },
+                            {
+                                "name": "age",
+                                "label": "Age",
+                                "type": "number",
+                                "min": 18
+                            },
+                            {
+                                "name": "volume",
+                                "label": "Volume",
+                                "type": "number",
+                                "min": 0,
+                                "max": 100
+                            },
+                            {
+                                "name": "date",
+                                "label": "Today's Date",
+                                "type": "date"
+                            }
+                        ]
+                    });
+                });
+            }));
+            beforeEach(function() {
+                var fields = [{
+                        "name": "list",
+                        "label": "List Type",
+                        "type": "list",
+                        "listType": "microschema",
+                        "allow": ["test"]
+                    }],
+                    model = {
+                        "list": []
+                    };
+                compileListField(fields, model);
+                listScope.addWidget('test');
+                $scope.$apply();
+                scopeListObject = $scope.model.list[0];
+            });
+
+            it('should create "microschema" property', function() {
+                expect(scopeListObject.microschema.name).toEqual("testMicroschema");
+                expect(scopeListObject.microschema.uuid).toEqual("uuid_test_microschema");
+            });
+
+            it('should create correct number of fields', function() {
+                expect(Object.keys(scopeListObject.fields)).toEqual(['title', 'greeting', 'age', 'volume', 'date']);
+            });
+
+            it('should create empty string when no defaultValue set', function() {
+                expect(scopeListObject.fields.title).toEqual('');
+            });
+
+            it('should create correct default for field with a defaultValue set', function() {
+                expect(scopeListObject.fields.greeting).toEqual('hello');
+            });
+
+            it('should create correct default for number with range', function() {
+                expect(scopeListObject.fields.volume).toEqual(50);
+            });
+
+            it('should create correct default for number with only lower bound', function() {
+                expect(scopeListObject.fields.age).toEqual(18);
+            });
+
+            it('should create correct default for date', function() {
+                // divide by 10 to get around imprecision caused by getting Date.now() slightly after the method is called.
+                expect(Math.round(scopeListObject.fields.date / 10)).toEqual(Math.round(Date.now() / 10000));
+            });
+        });
+    });
+
+
 });
 
 // utilities

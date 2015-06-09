@@ -6,7 +6,7 @@ angular.module('meshAdminUi.projects.formBuilder')
  * and either dispatches to a custom widget (if one exists) or builds the form
  * for it from the standard set of widgets.
  */
-function microschemaFormBuilderDirective($injector, $templateCache, $compile, dataService) {
+function microschemaFormBuilderDirective($injector, $compile, dataService) {
 
     var defaultTemplate = '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})<div ng-repeat="field in microschemaFields">' +
         '<widget-proxy field="field" model="microschemaModel" path="field.name"></widget-proxy>' +
@@ -45,8 +45,6 @@ function microschemaFormBuilderDirective($injector, $templateCache, $compile, da
         var directiveName = microschemaName + 'WidgetDirective';
         return $injector.has(directiveName);
     }
-
-
 
     return {
         restrict: 'EA',
