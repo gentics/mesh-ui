@@ -8,9 +8,24 @@
   border: 1px solid @color-denim;
   margin: 10px;
   padding: 5px;
+
+  .dndDraggingSource {
+    opacity: 0.5;
+  }
+
+  .dndPlaceholder {
+    display: block;
+    background-color: #ddd;
+    min-height: 5px;
+  }
 }
 
 .model-json {
   padding-left: 20px;
   font-size: 1.6rem;
+}
+
+.sort-handle {
+  font-size: @font-size-title-2;
+  cursor: move;
 }
