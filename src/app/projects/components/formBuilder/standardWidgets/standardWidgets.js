@@ -28,9 +28,15 @@ function stringWidgetDirective() {
  * @returns {ng.IDirective} Directive definition object
  */
 function htmlWidgetDirective() {
+
+    function htmlWidgetLinkFn(scope, element) {
+        //var editor = new MediumEditor(element[0].querySelector('.htmlField'));
+    }
+
     return {
         restrict: 'E',
         replace: true,
+        link: htmlWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/htmlWidget.html',
         scope: true
     };

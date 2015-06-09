@@ -20,9 +20,23 @@
   }
 }
 
+.html-container {
+  .htmlField {
+    background-color: white;
+    border: 1px solid @color-alto;
+    padding: 5px;
+    min-height: 100px;
+
+    &[data-medium-focused="true"] {
+      border-color: @color-primary;
+    }
+  }
+}
+
 .model-json {
   padding-left: 20px;
   font-size: 1.6rem;
+  overflow: auto;
 }
 
 .sort-handle {

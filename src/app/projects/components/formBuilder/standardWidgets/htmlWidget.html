@@ -1,4 +1,4 @@
-<md-input-container  flex="100">
+<div class="html-container"  flex="100">
     <label>{{ field.label || field.name }}</label>
-    <textarea ng-model="model[path]" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()"></textarea>
-</md-input-container>
+    <div medium-editor class="htmlField" ng-model="model[path]" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()"></div>
+</div>

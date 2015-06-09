@@ -16,10 +16,14 @@
       "bower_components/angular-translate/angular-translate.js",
       "bower_components/angular-local-storage/dist/angular-local-storage.js",
       "bower_components/angular-loading-bar/build/loading-bar.js",
-      "bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js"
+      "bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js",
+      "bower_components/medium-editor/dist/js/medium-editor.js",
+      "bower_components/angular-medium-editor/dist/angular-medium-editor.js"
   ],
   "VENDOR_STYLES": [
       "bower_components/angular-material/angular-material.css",
-      "bower_components/angular-loading-bar/build/loading-bar.css"
+      "bower_components/angular-loading-bar/build/loading-bar.css",
+      "bower_components/medium-editor/dist/css/medium-editor.css",
+      "bower_components/medium-editor/dist/css/themes/flat.css"
   ]
 }
