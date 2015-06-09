@@ -133,7 +133,7 @@ function nodeWidgetDirective() {
  *
  * @returns {ng.IDirective} Directive definition object
  */
-function listWidgetDirective() {
+function listWidgetDirective(dataService) {
 
     function listWidgetLinkFn(scope) {
         scope.listTypeField = angular.copy(scope.field);
@@ -143,9 +143,65 @@ function listWidgetDirective() {
             scope.model[scope.path].push(null);
         };
 
+        scope.addWidget = function(microschemaName) {
+            dataService.getMicroschema(microschemaName)
+                .then(createEmptyMicroschemaObject)
+                .then(function(newMicroschemaObject) {
+                    scope.model[scope.path].push(newMicroschemaObject);
+                });
+        };
+
         scope.removeItem = function(index) {
             scope.model[scope.path].splice(index, 1);
         };
+    }
+
+    function createEmptyMicroschemaObject(microschema) {
+        var newMicroschemaObject = {
+            "microschema": {
+                "name": microschema.name,
+                "uuid": microschema.uuid
+            },
+            "fields": {}
+        };
+
+        microschema.fields.forEach(function(fieldObject) {
+            newMicroschemaObject.fields[fieldObject.name] = getDefaultValue(fieldObject);
+        });
+
+        return newMicroschemaObject;
+    }
+
+    function getDefaultValue(fieldObject) {
+        var defaultValue = null;
+
+        if (typeof fieldObject.defaultValue !== 'undefined') {
+            defaultValue = fieldObject.defaultValue;
+
+        } else if (fieldObject.type === 'number') {
+
+            if (typeof fieldObject.min !== 'undefined') {
+                if (typeof fieldObject.max !== 'undefined') {
+                    defaultValue = Math.round((fieldObject.min + fieldObject.max) / 2);
+                } else {
+                    defaultValue = fieldObject.min;
+                }
+            } else {
+                defaultValue = 0;
+            }
+        } else if (fieldObject.type === 'string' || fieldObject.type === 'html') {
+            defaultValue = '';
+        } else if (fieldObject.type === 'boolean') {
+            defaultValue = false;
+        } else if (fieldObject.type === 'date') {
+            defaultValue = Math.floor(Date.now() / 1000);
+        } else if (fieldObject.type === 'select') {
+            defaultValue = fieldObject.options[0] || "";
+        } else if (fieldObject.type === 'list') {
+            defaultValue = [];
+        }
+
+        return defaultValue;
     }
 
     return {

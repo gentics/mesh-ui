@@ -5,5 +5,23 @@
             <button class="btn btn-small" ng-click="removeItem($index)">Remove</button>
         </div>
     </div>
-    <button class="btn btn-small" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max">Add item</button>
+
+    <div ng-if="listTypeField.type !== 'microschema'">
+        <button class="btn btn-small btn-primary" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max">Add item</button>
+    </div>
+
+    <span ng-if="listTypeField.type === 'microschema'">
+        <mh-dropdown>
+            <mh-dropdown-label>
+                <button class="btn btn-small btn-primary"  ng-disabled="model[path].length >= listTypeField.max" aria-label="Add Item">
+                    Add Item <i class="icon-arrow-drop-down"></i>
+                </button>
+            </mh-dropdown-label>
+            <mh-dropdown-body>
+                <ul class="create-options">
+                    <li ng-repeat="microschema in listTypeField.allow"><a href="#" ng-click="addWidget(microschema)">{{:: microschema }}</a></li>
+                </ul>
+            </mh-dropdown-body>
+        </mh-dropdown>
+    </span>
 </div>
