@@ -136,26 +136,87 @@ function nodeWidgetDirective() {
 function listWidgetDirective(dataService) {
 
     function listWidgetLinkFn(scope) {
+        var dragStartIndex;
+
         scope.listTypeField = angular.copy(scope.field);
         scope.listTypeField.type = scope.field.listType;
 
-        scope.addItem = function() {
-            scope.model[scope.path].push(null);
-        };
+        scope.tracker = tracker;
+        scope.addItem = addItem;
+        scope.addWidget = addWidget;
+        scope.removeItem = removeItem;
+        scope.startDrag = startDrag;
+        scope.endDrag = endDrag;
 
-        scope.addWidget = function(microschemaName) {
+        /**
+         * Tracking function to be used in the ng-repeat of the list items. Primitive types should
+         * be tracked by $index, whereas microschemas need to be tracked by reference to the
+         * object itself in order for sorting to work correctly.
+         *
+         * @param item
+         * @param $id
+         * @param $index
+         * @returns {*}
+         */
+        function tracker(item, $id, $index) {
+            return scope.listTypeField.type === 'microschema' ? $id(item) : $index;
+        }
+
+        /**
+         * Add a new, empty microschema widget to the list.
+         *
+         * @param {string} microschemaName
+         */
+        function addWidget(microschemaName) {
             dataService.getMicroschema(microschemaName)
                 .then(createEmptyMicroschemaObject)
                 .then(function(newMicroschemaObject) {
                     scope.model[scope.path].push(newMicroschemaObject);
                 });
-        };
+        }
 
-        scope.removeItem = function(index) {
+        /**
+         * Add a new primitive-type item to the list
+         */
+        function addItem() {
+            scope.model[scope.path].push(null);
+        }
+
+        /**
+         * Remove the item at index from the list
+         * @param index
+         */
+        function removeItem(index) {
             scope.model[scope.path].splice(index, 1);
-        };
+        }
+
+        /**
+         * Record the index of the item that is being dragged.
+         * @param index
+         */
+        function startDrag(index) {
+            dragStartIndex = index;
+        }
+
+        /**
+         * Remove the original dragged item from the list.
+         * @param item
+         * @param index
+         * @returns {*}
+         */
+        function endDrag(item, index) {
+            if (index !== (dragStartIndex + 1)) {
+                scope.model[scope.path].splice(dragStartIndex, 1);
+                return item;
+            }
+        }
     }
 
+    /**
+     * Create an empty microschema instance, populated with default values.
+     * @param microschema
+     * @returns {{microschema: {name: string, uuid: string}, fields: {}}}
+     */
     function createEmptyMicroschemaObject(microschema) {
         var newMicroschemaObject = {
             "microschema": {
@@ -172,6 +233,12 @@ function listWidgetDirective(dataService) {
         return newMicroschemaObject;
     }
 
+    /**
+     * Returns the correct default value for a field definition object.
+     *
+     * @param fieldObject
+     * @returns {*}
+     */
     function getDefaultValue(fieldObject) {
         var defaultValue = null;
 
