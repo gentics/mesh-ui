@@ -17,22 +17,6 @@
   width: 100%;
 }
 
-.list-container {
-  border: 1px solid @color-silver;
-  margin: 10px;
-  padding: 5px;
-
-  .dndDraggingSource {
-    opacity: 0.5;
-  }
-
-  .dndPlaceholder {
-    display: block;
-    background-color: #ddd;
-    min-height: 5px;
-  }
-}
-
 .html-container {
   padding: 2px 2px 26px 2px;
 
@@ -93,6 +77,8 @@
 }
 
 .node-container {
+  margin-bottom: 26px;
+
   label {
     font-size: 1.06rem;
     margin-left: 1px;
@@ -111,13 +97,72 @@
   border: 1px solid @color-boulder;
 }
 
+.list-container {
+  margin-bottom: 26px;
+  & > label {
+    color: @color-form-label;
+  }
+
+  &:hover > label {
+    color: @color-primary;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  li.list-item {
+    padding: 2px;
+    margin: 2px 0;
+  }
+
+  .dndDraggingSource {
+    opacity: 0.4;
+    outline: 1px dashed @color-boulder;
+    //background-color: lighten(@color-primary, 40%)
+  }
+
+  .dndPlaceholder {
+    display: block;
+    background-color: @color-primary;
+    height: 0;
+    outline: 1px solid @color-primary;
+  }
+
+
+  .sort-handle, .remove-item {
+    font-size: @font-size-title-2;
+    margin-right: 10px;
+    color: @color-boulder;
+  }
+
+  .remove-item:hover {
+    color: @color-warn;
+  }
+
+  .sort-handle {
+    cursor: move;
+  }
+
+  // Widgets that are contained in a list should have certain
+  // styling modified:
+
+  // widgets inside lists should always be the same width
+  .editor-widget {
+    flex: 0 0 80% !important;
+    max-width: 80% !important;
+  }
+
+  // labels should be removed, since the overall label is displayed
+  // at the top of the list
+  .editor-widget label {
+    display: none;
+  }
+}
+
 .model-json {
   padding-left: 20px;
   font-size: 1.6rem;
   overflow: auto;
-}
-
-.sort-handle {
-  font-size: @font-size-title-2;
-  cursor: move;
 }

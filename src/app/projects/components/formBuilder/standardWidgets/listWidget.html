@@ -1,43 +1,55 @@
-<div class="list-container"  flex="100">
+<div class="list-container" flex="100">
+    <label>{{:: field.label || field.name }}</label>
+    <div>
+        <ul dnd-list="model[path]"
+            dnd-drop="endDrag(item, index, model[path])"
+            dnd-allowed-types="[listTypeField.name]">
 
-    <ul dnd-list="model[path]"
-        dnd-drop="endDrag(item, index, model[path])"
-        dnd-allowed-types="[listTypeField.name]">
-
-        <li ng-repeat="item in model[path] track by tracker(item, $id, $index)"
-            layout="row"
-            dnd-draggable="item"
-            dnd-dragstart="startDrag($index)"
+            <li flex ng-repeat="item in model[path] track by tracker(item, $id, $index)"
+                class="list-item"
+                layout="row"
+                dnd-draggable="item"
+                dnd-dragstart="startDrag($index)"
                 dnd-type="listTypeField.name">
 
-            <widget-proxy flex model="model[path]" path="$index" field="listTypeField"></widget-proxy>
+                <widget-proxy flex model="model[path]" path="$index" field="listTypeField"></widget-proxy>
 
-            <div flex="20">
-                <button class="btn btn-small" ng-click="removeItem($index)">Remove</button>
+                <div>
+                    <div class="remove-item" ng-click="removeItem($index)">
+                        <a href="#" class="a-plain"><i class="icon-close"></i></a>
+                    </div>
+                </div>
+                <div class="sort-handle" dnd-handle>
+                    <div class="">
+                        <i class="icon-import-export"></i>
+                    </div>
+                </div>
+
+            </li>
+        </ul>
+
+        <div layout="row">
+            <div flex="80"></div>
+
+            <div ng-if="listTypeField.type !== 'microschema'">
+                <button class="btn btn-small btn-primary" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max">Add item</button>
             </div>
-            <div class="sort-handle" dnd-handle>
-                <i class="icon-import-export"></i>
+
+            <div ng-if="listTypeField.type === 'microschema'">
+                <mh-dropdown>
+                    <mh-dropdown-label>
+                        <button class="btn btn-small btn-primary"  ng-disabled="model[path].length >= listTypeField.max" aria-label="Add Item">
+                            Add Item <i class="icon-arrow-drop-down"></i>
+                        </button>
+                    </mh-dropdown-label>
+                    <mh-dropdown-body>
+                        <ul class="create-options">
+                            <li ng-repeat="microschema in listTypeField.allow"><a href="#" ng-click="addWidget(microschema)">{{:: microschema }}</a></li>
+                        </ul>
+                    </mh-dropdown-body>
+                </mh-dropdown>
             </div>
+        </div>
 
-        </li>
-    </ul>
-
-    <div ng-if="listTypeField.type !== 'microschema'">
-        <button class="btn btn-small btn-primary" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max">Add item</button>
     </div>
-
-    <span ng-if="listTypeField.type === 'microschema'">
-        <mh-dropdown>
-            <mh-dropdown-label>
-                <button class="btn btn-small btn-primary"  ng-disabled="model[path].length >= listTypeField.max" aria-label="Add Item">
-                    Add Item <i class="icon-arrow-drop-down"></i>
-                </button>
-            </mh-dropdown-label>
-            <mh-dropdown-body>
-                <ul class="create-options">
-                    <li ng-repeat="microschema in listTypeField.allow"><a href="#" ng-click="addWidget(microschema)">{{:: microschema }}</a></li>
-                </ul>
-            </mh-dropdown-body>
-        </mh-dropdown>
-    </span>
 </div>
