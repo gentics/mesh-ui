@@ -45,12 +45,12 @@ function htmlWidgetDirective() {
         htmlField.addEventListener('focus', function() {
             scope.$apply(function() {
                 scope.isFocused = true;
-            })
+            });
         });
         htmlField.addEventListener('blur', function() {
             scope.$apply(function() {
                 scope.isFocused = false;
-            })
+            });
         });
 
     }

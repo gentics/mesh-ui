@@ -20,8 +20,14 @@ function widgetProxyDirective($compile) {
             template = '<' + directiveName + '></' + directiveName + '>';
         }
 
+
         var compiledDom = $compile(template)(scope);
         element.replaceWith(compiledDom);
+
+        //element[0].innerHTML = template;
+        //element[0].parentNode.replaceChild(angular.element(template)[0], element[0]);
+        //element.replaceWith(angular.element(template));
+        //$compile(element[0])(scope);
     }
 
     return {

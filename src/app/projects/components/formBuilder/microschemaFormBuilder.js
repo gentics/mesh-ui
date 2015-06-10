@@ -8,9 +8,11 @@ angular.module('meshAdminUi.projects.formBuilder')
  */
 function microschemaFormBuilderDirective($injector, $compile, dataService) {
 
-    var defaultTemplate = '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})<div ng-repeat="field in microschemaFields">' +
-        '<widget-proxy field="field" model="microschemaModel" path="field.name"></widget-proxy>' +
-        '</div></div>';
+    var defaultTemplate = '<div class="microschema-container editor-widget" flex="100">' +
+                              '<label class="microschema-label">{{:: field.label || field.name  }}</label>' +
+                              '<div ng-repeat="field in microschemaFields">' +
+                              '<widget-proxy field="field" model="microschemaModel" path="field.name"></widget-proxy>' +
+                          '</div></div>';
 
     function microschemaProxyLinkFn(scope, element) {
         var model = scope.model[scope.path];
@@ -40,7 +42,10 @@ function microschemaFormBuilderDirective($injector, $compile, dataService) {
         var normalizedName =  microschemaName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
             template = '<' + normalizedName + '-widget></' + microschemaName + '-widget>';
 
-        return '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})' + template + '</div>';
+        return '<div class="microschema-container editor-widget" flex="100">' +
+                    '<label class="microschema-label">{{:: field.label || field.name  }}</label>' +
+                    template +
+               '</div>';
     }
 
     function customWidgetExistsFor(microschemaName) {

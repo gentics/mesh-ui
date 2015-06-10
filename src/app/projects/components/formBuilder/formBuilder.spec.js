@@ -82,7 +82,7 @@ describe('formBuilder Module', function() {
         };
 
         compileElement(fields, model);
-        expect(containingElement.querySelector('textarea').value).toEqual('<p>hello</p>');
+        expect(containingElement.querySelector('.htmlField').innerHTML).toEqual('<p>hello</p>');
     });
 
     it('should generate a number type field', function() {

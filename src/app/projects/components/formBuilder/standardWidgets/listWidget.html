@@ -1,4 +1,4 @@
-<div class="list-container" flex="100">
+<div class="list-container editor-widget" flex="100">
     <label>{{:: field.label || field.name }}</label>
     <div>
         <ul dnd-list="model[path]"
@@ -16,7 +16,7 @@
 
                 <div>
                     <div class="remove-item" ng-click="removeItem($index)">
-                        <a href="#" class="a-plain"><i class="icon-close"></i></a>
+                       <i class="icon-close"></i>
                     </div>
                 </div>
                 <div class="sort-handle" dnd-handle>
@@ -29,7 +29,7 @@
         </ul>
 
         <div layout="row">
-            <div flex="80"></div>
+            <div flex="90"></div>
 
             <div ng-if="listTypeField.type !== 'microschema'">
                 <button class="btn btn-small btn-primary" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max">Add item</button>

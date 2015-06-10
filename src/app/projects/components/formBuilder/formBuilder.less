@@ -1,20 +1,28 @@
+// debug class
+.model-json {
+  padding-left: 20px;
+  font-size: 1.6rem;
+  overflow: auto;
+}
+
 .editor-widget {
+
+  position: relative;
+
+  /*&:before {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    left: -0px;
+    height: 100%;
+    background-color: @color-alto;
+  }*/
+
   &.display-field input {
     font-size: @font-size-title-1;
   }
-  input {
-   // background-color: @color-almost-white;
-   /* border-left: 1px solid @color-boulder;
-    border-right: 1px solid @color-boulder;
-    border-top: 1px solid @color-boulder;*/
-  }
-}
-
-.microschema-container {
-  border: 1px solid @color-boulder;
-  margin: 10px;
-  padding: 5px;
-  width: 100%;
 }
 
 .html-container {
@@ -115,12 +123,15 @@
   li.list-item {
     padding: 2px;
     margin: 2px 0;
+    transition: background-color 0.3s;
+    &:hover {
+      //background-color: rgba(200, 200, 200, 0.1);
+    }
   }
 
   .dndDraggingSource {
     opacity: 0.4;
     outline: 1px dashed @color-boulder;
-    //background-color: lighten(@color-primary, 40%)
   }
 
   .dndPlaceholder {
@@ -131,17 +142,19 @@
   }
 
 
-  .sort-handle, .remove-item {
-    font-size: @font-size-title-2;
+  .remove-item {
     margin-right: 10px;
-    color: @color-boulder;
-  }
-
-  .remove-item:hover {
-    color: @color-warn;
+    color: @color-form-label;
+    font-size: @font-size-title-2;
+    cursor: pointer;
+    &:hover {
+      color: @color-warn;
+    }
   }
 
   .sort-handle {
+    font-size: @font-size-title-2;
+    color: @color-form-label;
     cursor: move;
   }
 
@@ -150,8 +163,8 @@
 
   // widgets inside lists should always be the same width
   .editor-widget {
-    flex: 0 0 80% !important;
-    max-width: 80% !important;
+    flex: 0 0 90% !important;
+    max-width: 90% !important;
   }
 
   // labels should be removed, since the overall label is displayed
@@ -159,10 +172,16 @@
   .editor-widget label {
     display: none;
   }
+
+
+  .microschema-container label:not(.microschema-label) {
+    display: block;
+  }
 }
 
-.model-json {
-  padding-left: 20px;
-  font-size: 1.6rem;
-  overflow: auto;
+.microschema-container {
+  margin-bottom: 26px;
+  & > label {
+    color: @color-form-label;
+  }
 }
