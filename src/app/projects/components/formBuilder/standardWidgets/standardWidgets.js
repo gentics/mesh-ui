@@ -29,9 +29,36 @@ function stringWidgetDirective() {
  */
 function htmlWidgetDirective() {
 
+    /**
+     * We need a way to let the widget know when the inner htmlField (content editable div)
+     * is focused. We have no direct access to that information, so we need to set up
+     * event listeners on the native "focus" and "blur" events and use them to update
+     * the scope.
+     *
+     * @param scope
+     * @param element
+     */
+    function htmlWidgetLinkFn(scope, element) {
+        var htmlField = element[0].querySelector('.htmlField');
+        scope.isFocused = false;
+
+        htmlField.addEventListener('focus', function() {
+            scope.$apply(function() {
+                scope.isFocused = true;
+            })
+        });
+        htmlField.addEventListener('blur', function() {
+            scope.$apply(function() {
+                scope.isFocused = false;
+            })
+        });
+
+    }
+
     return {
         restrict: 'E',
         replace: true,
+        link: htmlWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/htmlWidget.html',
         scope: true
     };
