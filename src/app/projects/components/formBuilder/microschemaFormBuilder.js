@@ -37,7 +37,9 @@ function microschemaFormBuilderDirective($injector, $compile, dataService) {
     }
 
     function getCustomWidgetTemplate(microschemaName) {
-        var template = '<' + microschemaName + '-widget></' + microschemaName + '-widget>';
+        var normalizedName =  microschemaName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
+            template = '<' + normalizedName + '-widget></' + microschemaName + '-widget>';
+
         return '<div class="microschema-container">{{:: field.name }} (microschema: {{:: microschemaName }})' + template + '</div>';
     }
 
