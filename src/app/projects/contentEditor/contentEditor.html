@@ -4,21 +4,22 @@
         <i class="icon-close" ng-click="vm.close(vm.content)"></i>
     </div>
 
-    <h1 class="title-font">{{ vm.content.fields[vm.content.displayField] || vm.content.name || 'Untitled'}}</h1>
+    <!--<h1 class="title-font">{{ vm.content.fields[vm.content.displayField] || vm.content.name || 'Untitled'}}</h1>-->
 
-    <div layout="rows" class="language-selector">
+    <!--<div layout="rows" class="language-selector">
         <md-checkbox md-no-ink ng-repeat="lang in vm.availableLangs" ng-model="vm.selectedLangs[lang.code]" ng-class="'lang-color-' + $index">
             {{::lang.nativeName }}
         </md-checkbox>
-    </div>
+    </div>-->
 
     <div layout="row">
         <div flex class="content-editor-pane"
-             ng-repeat="lang in vm.availableLangs"
-             ng-class="'lang-color-' + $index"
-             ng-if="vm.selectedLangs[lang.code]">
+             xng-repeat="lang in vm.availableLangs"
+             xng-class="'lang-color-' + $index"
+             xng-if="vm.selectedLangs[lang.code]">
             <form-builder model="vm.content.fields"
                             fields="vm.schema.fields"
+                            display-field="vm.schema.displayField"
                             modified-flag="vm.contentModified"
                             perms="vm.content.perms"></form-builder>
         </div>

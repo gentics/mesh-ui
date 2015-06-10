@@ -18,6 +18,7 @@ function formBuilderDirective() {
         var formBuilder = this;
 
         formBuilder.canUpdate = canUpdate;
+        formBuilder.isDisplayField = isDisplayField;
 
         /**
          * Does the current user have permission to update this content? If not,
@@ -26,6 +27,10 @@ function formBuilderDirective() {
          */
         function canUpdate() {
             return -1 < formBuilder.perms.indexOf('update');
+        }
+
+        function isDisplayField(fieldName) {
+            return fieldName === formBuilder.displayField;
         }
     }
 
@@ -40,7 +45,8 @@ function formBuilderDirective() {
             model: '=',
             fields: '=',
             modified: '=modifiedFlag',
-            perms: '='
+            perms: '=',
+            displayField: '='
         }
     };
 }
