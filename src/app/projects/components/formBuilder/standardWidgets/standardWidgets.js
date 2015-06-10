@@ -29,14 +29,9 @@ function stringWidgetDirective() {
  */
 function htmlWidgetDirective() {
 
-    function htmlWidgetLinkFn(scope, element) {
-        //var editor = new MediumEditor(element[0].querySelector('.htmlField'));
-    }
-
     return {
         restrict: 'E',
         replace: true,
-        link: htmlWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/htmlWidget.html',
         scope: true
     };
@@ -123,12 +118,48 @@ function selectWidgetDirective() {
 /**
  * Input for node field types
  *
+ * @param {ng.material.MDDialogService} $mdDialog
  * @returns {ng.IDirective} Directive definition object
  */
-function nodeWidgetDirective() {
+function nodeWidgetDirective($mdDialog) {
+
+    function nodeWidgetController() {
+        var vm = this;
+
+        vm.showDialog = showDialog;
+
+        function showDialog() {
+            $mdDialog.show({
+                templateUrl: 'projects/components/formBuilder/standardWidgets/nodeWidgetSelectDialog.html',
+                controller: nodeSelectDialogController,
+                controllerAs: 'vm'
+            });
+        }
+    }
+
+    /**
+     *
+     * @param {ng.material.MDDialogService} $mdDialog
+     */
+    function nodeSelectDialogController($mdDialog) {
+        var vm = this;
+        vm.select = select;
+        vm.cancel = cancel;
+
+        function select() {
+            $mdDialog.hide();
+        }
+
+        function cancel() {
+            $mdDialog.cancel();
+        }
+    }
+
     return {
         restrict: 'E',
         replace: true,
+        controller: nodeWidgetController,
+        controllerAs: 'vm',
         templateUrl: 'projects/components/formBuilder/standardWidgets/nodeWidget.html',
         scope: true
     };
