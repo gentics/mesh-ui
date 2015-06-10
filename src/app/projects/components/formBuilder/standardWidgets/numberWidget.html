@@ -1,4 +1,7 @@
-<md-input-container flex="33">
+<md-input-container class="editor-widget" flex-sm="50" flex-gt-sm="33" flex-gt-lg="20">
     <label>{{:: field.label || field.name }}</label>
-    <input type="number" ng-model="model[path]" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()" step="{{:: field.step }}">
+    <input type="number" ng-model="model[path]" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()"
+           step="{{:: field.step }}"
+           min="{{:: field.min }}"
+           max="{{:: field.max }}">
 </md-input-container>

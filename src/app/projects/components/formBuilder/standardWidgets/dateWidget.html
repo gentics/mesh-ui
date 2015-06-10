@@ -1,4 +1,4 @@
-<md-input-container flex="33">
+<md-input-container class="editor-widget"  flex-sm="50" flex-gt-sm="33" flex-gt-lg="20">
     <label>{{ field.label || field.name }}</label>
     <input type="date" ng-model="date" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()">
 </md-input-container>

@@ -1,11 +1,24 @@
+.editor-widget {
+  &.display-field input {
+    font-size: @font-size-title-1;
+  }
+  input {
+   // background-color: @color-almost-white;
+   /* border-left: 1px solid @color-boulder;
+    border-right: 1px solid @color-boulder;
+    border-top: 1px solid @color-boulder;*/
+  }
+}
+
 .microschema-container {
-  border: 1px solid @color-subdued;
+  border: 1px solid @color-boulder;
   margin: 10px;
   padding: 5px;
+  width: 100%;
 }
 
 .list-container {
-  border: 1px solid @color-denim;
+  border: 1px solid @color-silver;
   margin: 10px;
   padding: 5px;
 
@@ -21,16 +34,81 @@
 }
 
 .html-container {
+  padding: 2px 2px 26px 2px;
+
+  label {
+    font-size: 1.06rem;
+    margin-left: 1px;
+    color: @color-form-label;
+
+    &.focused {
+      color: @color-primary;
+    }
+  }
+
   .htmlField {
-    background-color: white;
-    border: 1px solid @color-alto;
-    padding: 5px;
+    border-bottom: 1px solid @color-alto;
+    padding: 0 2px 1px 2px;
     min-height: 100px;
 
     &[data-medium-focused="true"] {
-      border-color: @color-primary;
+      border-bottom: 2px solid @color-primary;
+      padding-bottom: 0;
     }
   }
+}
+
+.boolean-container {
+  color: @color-form-label;
+  :focus {
+    color: @color-primary;
+  }
+}
+
+.select-container {
+  margin-right: 20px;
+  md-select {
+    margin-top: 18px;
+  }
+  .md-select-label {
+    padding-bottom: 14px;
+  }
+  md-select:not([disabled]):focus .md-select-label {
+    padding-bottom: 13px;
+  }
+  .label {
+    position: absolute;
+    top: 4px;
+    font-size: 1.06rem;
+    margin-left: 1px;
+    color: @color-form-label;
+
+    &.focused {
+      color: @color-primary;
+    }
+  }
+  md-select:focus + .label {
+    color: @color-primary;
+  }
+}
+
+.node-container {
+  label {
+    font-size: 1.06rem;
+    margin-left: 1px;
+    color: @color-form-label;
+    display: block;
+    margin-top: 4px;
+  }
+  .select-link {
+    margin-top: 9px;
+  }
+}
+
+.node-select-container {
+  min-width: 50vw;
+  min-height: 300px;
+  border: 1px solid @color-boulder;
 }
 
 .model-json {
