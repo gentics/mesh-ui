@@ -11,18 +11,13 @@ function widgetProxyDirective($compile, widgetHighlighterService) {
 
     function widgetProxyLinkFn(scope, element, attrs, formBuilderController) {
         var template,
-            flexAttrs,
-            parent,
-            isTopElement;
+            flexAttrs = 'flex',
+            isTopElement = element.parent()[0].tagName === 'FORM';
 
         scope.formBuilder = formBuilderController;
-        parent = element.parent();
-        isTopElement = parent[0].tagName === 'FORM';
 
         if (isTopElement) {
             flexAttrs = getFlexAttributes(scope.field.type);
-        } else {
-            flexAttrs = 'flex';
         }
 
         if (scope.field.type === 'microschema') {
@@ -47,6 +42,11 @@ function widgetProxyDirective($compile, widgetHighlighterService) {
 
     }
 
+    /**
+     * Different field types have different flex attributes to set how wide they will appear in the form.
+     * @param {string} type
+     * @returns {*}
+     */
     function getFlexAttributes(type) {
         var flexAttrs;
 
@@ -83,26 +83,62 @@ function widgetProxyDirective($compile, widgetHighlighterService) {
     };
 }
 
+/**
+ * This service keeps a track of the currently-active (i.e. hovered or clicked) form widget. It allows
+ * other components to register callbacks which will be invoked any time the highlight() or hide() methods
+ * are called. This is intended for use by the widgetHighlighterDirective, which does the actual
+ * DOM manipulation of the highlighter div.
+ *
+ * @returns {{highlight: highlight, hide: hide, registerChangeHandler: registerChangeHandler}}
+ */
 function widgetHighlighterService() {
-    var top, left, height, opacity, changeHandlers = [];
+    var currentElement,
+        top,
+        left,
+        height,
+        opacity,
+        changeHandlers = [];
 
+    return {
+        highlight: highlight,
+        hide: hide,
+        registerChangeHandler: registerChangeHandler
+    };
+
+    /**
+     * Records the dimensions of the highlighted widget and sets opacity value to 1.
+     *
+     * @param {HTMLElement} element
+     */
     function highlight(element) {
-        top = element.offsetTop;
-        left = element.parentNode.offsetLeft;
-        height = element.offsetHeight;
+        currentElement = element || currentElement;
+        top = currentElement.offsetTop;
+        left = currentElement.parentNode.offsetLeft;
+        height = currentElement.offsetHeight;
         opacity = 1;
         invokeChangeHandlers();
     }
 
+    /**
+     * Sets the opacity value to 0.
+     */
     function hide() {
         opacity = 0;
         invokeChangeHandlers();
     }
 
+    /**
+     * Allows registration of callbacks which will be invoked any time a widget is highlighted or hidden.
+     *
+     * @param {Function} fn
+     */
     function registerChangeHandler(fn) {
         changeHandlers.push(fn);
     }
 
+    /**
+     * Invokes any callbacks previously registered with registerChangeHandler();
+     */
     function invokeChangeHandlers() {
         changeHandlers.forEach(function(fn) {
             fn({
@@ -113,22 +149,23 @@ function widgetHighlighterService() {
             });
         });
     }
-
-    return {
-        highlight: highlight,
-        hide: hide,
-        registerChangeHandler: registerChangeHandler
-    };
 }
 
+/**
+ * This directive generates the colored highlight bar that appears to the left of the widget form.
+ * @param {widgetHighlighterService} widgetHighlighterService
+ * @returns {{restrict: string, link: widgetHighlighterLinkFn, replace: boolean, template: string}}
+ */
 function widgetHighlighterDirective(widgetHighlighterService) {
+
+    var leftMargin = 8;
 
     function widgetHighlighterLinkFn(scope, element) {
         widgetHighlighterService.registerChangeHandler(function(pos) {
             element.css({
                 height: pos.height + 'px',
                 top: pos.top + 'px',
-                left: (pos.left - 8) + 'px',
+                left: (pos.left - leftMargin) + 'px',
                 opacity: pos.opacity
             });
         });

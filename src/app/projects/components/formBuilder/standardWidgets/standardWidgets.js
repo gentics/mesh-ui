@@ -190,7 +190,7 @@ function nodeWidgetDirective($mdDialog) {
  *
  * @returns {ng.IDirective} Directive definition object
  */
-function listWidgetDirective(dataService) {
+function listWidgetDirective(dataService, widgetHighlighterService) {
 
     function listWidgetLinkFn(scope) {
         var dragStartIndex;
@@ -229,6 +229,7 @@ function listWidgetDirective(dataService) {
                 .then(createEmptyMicroschemaObject)
                 .then(function(newMicroschemaObject) {
                     scope.model[scope.path].push(newMicroschemaObject);
+                    reHighlight();
                 });
         }
 
@@ -238,6 +239,7 @@ function listWidgetDirective(dataService) {
         function addItem() {
             var defaultValue = getDefaultValue(scope.listTypeField);
             scope.model[scope.path].push(defaultValue);
+            reHighlight();
         }
 
         /**
@@ -246,6 +248,7 @@ function listWidgetDirective(dataService) {
          */
         function removeItem(index) {
             scope.model[scope.path].splice(index, 1);
+            reHighlight();
         }
 
         /**
@@ -275,6 +278,17 @@ function listWidgetDirective(dataService) {
             list.splice(dragEndIndex, 0, item); // add the new position
             list.splice(indexToSplice, 1); // remove the old position
             scope.formBuilder.modified = true;
+        }
+
+        /**
+         * Re-apply the widget highlighting, since the height of the list
+         * would have changed after adding or removing an item. The timeout is there to allow the
+         * new dimensions to take effect (i.e. the DOM to update) before re-calculating the highlight height.
+         */
+        function reHighlight() {
+            setTimeout(function() {
+                widgetHighlighterService.highlight();
+            }, 500);
         }
     }
 
