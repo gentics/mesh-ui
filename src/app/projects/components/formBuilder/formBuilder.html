@@ -1,5 +1,5 @@
 <div layout="row">
-    <form flex="70" name="contentEditorForm" layout-wrap layout="row">
+    <form flex-sm="100" flex="70" name="contentEditorForm" layout-wrap layout="row">
         <widget-proxy ng-repeat="field in formBuilder.fields" model="formBuilder.model" path="field.name" field="field"></widget-proxy>
     </form>
     <widget-highlighter></widget-highlighter>
