@@ -133,21 +133,46 @@
     outline: 1px solid @color-primary;
   }
 
+  .list-icon-btn {
+    color: @color-dusty;
+    font-size: @font-size-title-2;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  &:hover {
+    .list-icon-btn {
+      color: @color-subdued;
+    }
+  }
 
   .remove-item {
     margin-right: 10px;
-    color: @color-form-label;
-    font-size: @font-size-title-2;
-    cursor: pointer;
     &:hover {
       color: @color-warn;
     }
   }
 
+  .add-item {
+    &:hover {
+      color: @color-primary;
+    }
+  }
+
   .sort-handle {
-    font-size: @font-size-title-2;
-    color: @color-form-label;
+    color: @color-concrete;
+    text-shadow: 1px 1px 0 rgba(150, 150, 150, 0.5);
     cursor: move;
+    touch-action: none;
+  }
+  &:hover {
+    .sort-handle {
+      color: @color-concrete;
+      &:hover {
+        text-shadow: 1px 1px 0 rgba(150, 150, 150, 1);
+        color: @color-alto;
+      }
+    }
   }
 
   // Widgets that are contained in a list should have certain

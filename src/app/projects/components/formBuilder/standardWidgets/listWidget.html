@@ -15,31 +15,32 @@
                 <widget-proxy flex model="model[path]" path="$index" field="listTypeField"></widget-proxy>
 
                 <div>
-                    <div class="remove-item" ng-click="removeItem($index)">
-                       <i class="icon-close"></i>
+                    <div class="remove-item list-icon-btn" ng-click="removeItem($index)">
+                       <i class="icon-close" title="Remove from list"></i>
                     </div>
                 </div>
-                <div class="sort-handle" dnd-handle>
+                <div class="sort-handle list-icon-btn" dnd-handle>
                     <div class="">
-                        <i class="icon-import-export"></i>
+                        <i class="icon-more-vert" title="Drag to sort"></i>
                     </div>
                 </div>
 
             </li>
         </ul>
 
-        <div layout="row">
-            <div flex="90"></div>
-
+        <div layout="row" class="add-item-row">
             <div ng-if="listTypeField.type !== 'microschema'">
-                <button class="btn btn-small btn-primary" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max">Add item</button>
+                <div class="add-item list-icon-btn" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max" title="Add item to list">
+                    <i class="icon-add">
+                    </i>
+                </div>
             </div>
 
             <div ng-if="listTypeField.type === 'microschema'">
                 <mh-dropdown>
                     <mh-dropdown-label>
                         <button class="btn btn-small btn-primary"  ng-disabled="model[path].length >= listTypeField.max" aria-label="Add Item">
-                            Add Item <i class="icon-arrow-drop-down"></i>
+                            Add Widget <i class="icon-arrow-drop-down"></i>
                         </button>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
