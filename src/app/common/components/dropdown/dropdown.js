@@ -24,7 +24,9 @@ angular.module('meshAdminUi.common')
  * @param {ng.IDocumentService} $document
  */
 function dropdownController($scope, $element, $document) {
-    var vm = this;
+    var vm = this,
+        labelElement,
+        caretHeight = 12;
 
     /**
      * Tracks the state of the dropdown
@@ -34,13 +36,10 @@ function dropdownController($scope, $element, $document) {
 
     vm.align = vm.align || 'left';
 
-    /**
-     * Stores the height in pixels of the dropdown label, used for
-     * correct positioning of the dropdown options div.
-     * @type {number}
-     */
-    vm.labelHeight = 0;
+
     vm.toggle = toggle;
+    vm.setLabelElement = setLabelElement;
+    vm.getContentTop = getContentTop;
 
     /**
      * Toggle the open state of the dropdown and register a
@@ -51,6 +50,24 @@ function dropdownController($scope, $element, $document) {
         if (vm.isOpen) {
             $document.on('click', closeDropdown);
         }
+    }
+
+    /**
+     * Keep a reference to the label element, used for
+     * correct positioning of the dropdown content div.
+     * @type {number}
+     */
+    function setLabelElement(element) {
+        labelElement = element;
+    }
+
+    /**
+     * Get the top position of the content div, which is based on the
+     * height of the label element.
+     * @returns {number}
+     */
+    function getContentTop() {
+        return labelElement.offsetHeight - caretHeight;
     }
 
     /**
@@ -96,7 +113,7 @@ function dropdownDirective() {
  */
 function dropdownLabelDirective() {
     function dropdownLabelLink(scope, element, attrs, dropdownCtrl) {
-        dropdownCtrl.labelHeight = element[0].offsetHeight;
+        dropdownCtrl.setLabelElement(element[0]);
         scope.dropdown = dropdownCtrl;
     }
     return {
@@ -120,15 +137,19 @@ function dropdownBodyDirective() {
         var container = element[0];
 
         adjustPosition();
-
         scope.dropdown = dropdownCtrl;
-        container.style.top = dropdownCtrl.labelHeight - 12 + 'px';
-
         scope.$watch('dropdown.isOpen', setHeight);
+
+        element.on('click', function(e) {
+            //if (e.target.tagName === 'A') {
+                dropdownCtrl.toggle();
+           // }
+        });
 
         function setHeight(isOpen) {
             var contentsHeight;
             if (isOpen) {
+                container.style.top = dropdownCtrl.getContentTop() + 'px';
                 contentsHeight = container.children[0].offsetHeight;
                 container.style.height =  contentsHeight + 12 + 'px';
                 container.classList.add('open');
