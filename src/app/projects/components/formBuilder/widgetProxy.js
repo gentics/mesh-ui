@@ -112,10 +112,12 @@ function widgetHighlighterService() {
      */
     function highlight(element) {
         currentElement = element || currentElement;
-        top = currentElement.offsetTop;
-        left = currentElement.parentNode.offsetLeft;
-        height = currentElement.offsetHeight;
-        opacity = 1;
+        if (currentElement) {
+            top = currentElement.offsetTop;
+            left = currentElement.parentNode.offsetLeft;
+            height = currentElement.offsetHeight;
+            opacity = 1;
+        }
         invokeChangeHandlers();
     }
 

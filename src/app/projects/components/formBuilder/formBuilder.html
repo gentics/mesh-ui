@@ -1,9 +1,9 @@
 <div layout="row">
-    <form flex-sm="100" flex="70" name="contentEditorForm" layout-wrap layout="row">
+    <form flex="100" flex-gt-lg="70" name="contentEditorForm" layout-wrap layout="row">
         <widget-proxy ng-repeat="field in formBuilder.fields" model="formBuilder.model" path="field.name" field="field"></widget-proxy>
     </form>
     <widget-highlighter></widget-highlighter>
-    <!--<div flex class="model-json">
+    <div flex="0" flex-gt-lg="30" class="model-json">
         <pre>{{ formBuilder.model | json}}</pre>
-    </div>-->
+    </div>
 </div>

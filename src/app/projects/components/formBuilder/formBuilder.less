@@ -99,6 +99,9 @@
 }
 
 .list-container {
+
+  min-height: 100px;
+
   & > label {
     color: @color-form-label;
   }
@@ -160,14 +163,14 @@
   }
 
   .sort-handle {
-    color: @color-concrete;
+    color: @color-alto;
     text-shadow: 1px 1px 0 rgba(150, 150, 150, 0.5);
     cursor: move;
     touch-action: none;
   }
   &:hover {
     .sort-handle {
-      color: @color-concrete;
+      color: @color-alto;
       &:hover {
         text-shadow: 1px 1px 0 rgba(150, 150, 150, 1);
         color: @color-alto;
