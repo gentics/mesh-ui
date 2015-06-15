@@ -16,7 +16,6 @@ angular.module('meshAdminUi.projects.formBuilder')
 function stringWidgetDirective() {
     return {
         restrict: 'E',
-        replace: true,
         templateUrl: 'projects/components/formBuilder/standardWidgets/stringWidget.html',
         scope: true
     };
@@ -57,7 +56,6 @@ function htmlWidgetDirective() {
 
     return {
         restrict: 'E',
-        replace: true,
         link: htmlWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/htmlWidget.html',
         scope: true
@@ -73,7 +71,6 @@ function numberWidgetDirective() {
 
     return {
         restrict: 'E',
-        replace: true,
         templateUrl: 'projects/components/formBuilder/standardWidgets/numberWidget.html',
         scope: true
     };
@@ -107,7 +104,6 @@ function dateWidgetDirective() {
 
     return {
         restrict: 'E',
-        replace: true,
         link: dateWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/dateWidget.html',
         scope: true
@@ -122,7 +118,6 @@ function dateWidgetDirective() {
 function booleanWidgetDirective() {
     return {
         restrict: 'E',
-        replace: true,
         templateUrl: 'projects/components/formBuilder/standardWidgets/booleanWidget.html',
         scope: true
     };
@@ -136,7 +131,6 @@ function booleanWidgetDirective() {
 function selectWidgetDirective() {
     return {
         restrict: 'E',
-        replace: true,
         templateUrl: 'projects/components/formBuilder/standardWidgets/selectWidget.html',
         scope: true
     };
@@ -184,7 +178,6 @@ function nodeWidgetDirective($mdDialog) {
 
     return {
         restrict: 'E',
-        replace: true,
         controller: nodeWidgetController,
         controllerAs: 'vm',
         templateUrl: 'projects/components/formBuilder/standardWidgets/nodeWidget.html',
@@ -348,7 +341,6 @@ function listWidgetDirective(dataService) {
 
     return {
         restrict: 'E',
-        replace: true,
         link: listWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/listWidget.html',
         scope: true

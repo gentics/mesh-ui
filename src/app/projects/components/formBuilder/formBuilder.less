@@ -5,20 +5,15 @@
   overflow: auto;
 }
 
+.widget-container {
+  margin-bottom: 26px;
+  md-input-container {
+    padding-bottom: 0 !important;
+  }
+}
+
 .editor-widget {
-
   position: relative;
-
-  /*&:before {
-    content: ' ';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 5px;
-    left: -0px;
-    height: 100%;
-    background-color: @color-alto;
-  }*/
 
   &.display-field input {
     font-size: @font-size-title-1;
@@ -26,7 +21,7 @@
 }
 
 .html-container {
-  padding: 2px 2px 26px 2px;
+  padding: 2px 2px 0 2px;
 
   label {
     font-size: 1.06rem;
@@ -85,8 +80,6 @@
 }
 
 .node-container {
-  margin-bottom: 26px;
-
   label {
     font-size: 1.06rem;
     margin-left: 1px;
@@ -106,7 +99,6 @@
 }
 
 .list-container {
-  margin-bottom: 26px;
   & > label {
     color: @color-form-label;
   }
@@ -180,8 +172,14 @@
 }
 
 .microschema-container {
-  margin-bottom: 26px;
   & > label {
     color: @color-form-label;
   }
+}
+
+.widget-highlighter {
+  background-color: fade(@color-primary, 50%);
+  width: 2px;
+  position: absolute;
+  transition: top 0.1s, height 0.1s, opacity 1s;
 }
