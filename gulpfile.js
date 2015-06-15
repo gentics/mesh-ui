@@ -86,7 +86,7 @@ gulp.task('build', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
 
     var css = gulp.src([
         '**/angular-material.css',
-        '**/loading-bar.css',
+        '**/vendor/*.css',
         '**/*.css'
     ], { cwd: 'build/'} );
 
