@@ -21,7 +21,8 @@ function geolocationWidgetDirective() {
             var mapCanvas = element[0].querySelector('.map-container');
             var mapOptions = {
                 center: { lat: parseFloat(scope.microschemaModel.latitude), lng: parseFloat(scope.microschemaModel.longitude)},
-                zoom: 12
+                zoom: 12,
+                scrollwheel: false
             };
             map = new google.maps.Map(mapCanvas, mapOptions);
 
