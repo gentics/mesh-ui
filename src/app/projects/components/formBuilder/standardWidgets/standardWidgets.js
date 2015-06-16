@@ -142,37 +142,16 @@ function selectWidgetDirective() {
  * @param {ng.material.MDDialogService} $mdDialog
  * @returns {ng.IDirective} Directive definition object
  */
-function nodeWidgetDirective($mdDialog) {
+function nodeWidgetDirective(nodeSelector) {
 
     function nodeWidgetController() {
         var vm = this;
 
         vm.showDialog = showDialog;
 
-        function showDialog() {
-            $mdDialog.show({
-                templateUrl: 'projects/components/formBuilder/standardWidgets/nodeWidgetSelectDialog.html',
-                controller: nodeSelectDialogController,
-                controllerAs: 'vm'
-            });
-        }
-    }
-
-    /**
-     *
-     * @param {ng.material.MDDialogService} $mdDialog
-     */
-    function nodeSelectDialogController($mdDialog) {
-        var vm = this;
-        vm.select = select;
-        vm.cancel = cancel;
-
-        function select() {
-            $mdDialog.hide();
-        }
-
-        function cancel() {
-            $mdDialog.cancel();
+        function showDialog(event) {
+            event.preventDefault();
+            nodeSelector.open();
         }
     }
 

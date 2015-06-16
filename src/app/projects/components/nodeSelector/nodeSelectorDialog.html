@@ -1,0 +1,22 @@
+<md-dialog>
+  <md-content>
+      <h2 translate>Select Node</h2>
+
+      <div class="node-select-container">
+          <node-tree-view selected-nodes="dialog.selectedNodes"></node-tree-view>
+      </div>
+      Selected Nodes:
+     <ul>
+         <li ng-repeat="node in dialog.selectedNodes">{{ node.uuid}} - {{ node.fields[node.displayField] }}</li>
+     </ul>
+  </md-content>
+
+  <div class="md-actions">
+    <button ng-click="dialog.select()" class="btn btn-primary">
+        <span translate>Use Selected</span>
+    </button>
+    <button ng-click="dialog.cancel()" class="btn">
+        <span translate>CANCEL</span>
+    </button>
+  </div>
+</md-dialog>
