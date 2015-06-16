@@ -144,14 +144,16 @@ function selectWidgetDirective() {
  */
 function nodeWidgetDirective(nodeSelector) {
 
-    function nodeWidgetController() {
+    function nodeWidgetController($scope) {
         var vm = this;
 
         vm.showDialog = showDialog;
 
         function showDialog(event) {
             event.preventDefault();
-            nodeSelector.open();
+            nodeSelector.open({
+                allow: $scope.field.allow || []
+            });
         }
     }
 

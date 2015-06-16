@@ -12,7 +12,11 @@ function nodeSelector($mdDialog) {
         return $mdDialog.show({
             templateUrl: 'projects/components/nodeSelector/nodeSelectorDialog.html',
             controller: nodeSelectDialogController,
-            controllerAs: 'dialog'
+            controllerAs: 'dialog',
+            locals: {
+                allow: options.allow || []
+            },
+            bindToController: true
         });
     }
 
@@ -27,7 +31,7 @@ function nodeSelector($mdDialog) {
         dialog.selectedNodes = [];
 
         function select() {
-            $mdDialog.hide();
+            $mdDialog.hide(dialog.selectedNodes);
         }
 
         function cancel() {
@@ -91,12 +95,20 @@ function nodeSelectorDirective(dataService, contextService) {
                     return dataService.getChildContents(projectName, currentNodeId);
                 })
                 .then(function(data) {
-                    vm.contents = data;
+                    vm.contents = data.filter(allowedSchemaFilter);
                     return dataService.getBreadcrumb(projectName, currentNodeId);
                 })
                 .then(function(data) {
                     vm.breadcrumbs = data;
-                })
+                });
+        }
+
+        function allowedSchemaFilter(node) {
+            if (0 < vm.allowedSchemas.length) {
+                return -1 < vm.allowedSchemas.indexOf(node.schema.name);
+            } else {
+                return true;
+            }
         }
     }
 
@@ -107,7 +119,8 @@ function nodeSelectorDirective(dataService, contextService) {
         controllerAs: 'vm',
         bindToController: true,
         scope: {
-            selectedNodes: '='
+            selectedNodes: '=',
+            allowedSchemas: '='
         }
     };
 }

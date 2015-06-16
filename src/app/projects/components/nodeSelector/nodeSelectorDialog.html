@@ -3,8 +3,11 @@
       <h2 translate>Select Node</h2>
 
       <div class="node-select-container">
-          <node-selector selected-nodes="dialog.selectedNodes"></node-selector>
+          <node-selector
+                  selected-nodes="dialog.selectedNodes"
+                  allowed-schemas="dialog.allow"></node-selector>
       </div>
+      Allowed schemas: {{ dialog.allow }} <br>
       Selected Nodes:
      <ul>
          <li ng-repeat="node in dialog.selectedNodes">{{ node.uuid}} - {{ node.fields[node.displayField] }}</li>
