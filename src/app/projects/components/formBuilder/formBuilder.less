@@ -3,10 +3,13 @@
   padding-left: 20px;
   font-size: 1.6rem;
   overflow: auto;
-  opacity: 0.5;
+  opacity: 0.3;
+  transition: opacity 1.5s;
   &:hover {
     opacity: 1;
   }
+  max-height: 100vh;
+  overflow-y: scroll;
 }
 
 .widget-container {
@@ -130,7 +133,6 @@
   .dndPlaceholder {
     display: block;
     background-color: @color-primary;
-    height: 0;
     outline: 1px solid @color-primary;
   }
 
