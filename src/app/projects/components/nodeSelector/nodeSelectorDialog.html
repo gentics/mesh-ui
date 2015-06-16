@@ -1,11 +1,12 @@
 <md-dialog flex="100">
   <md-content>
-      <h2 translate>Select Node</h2>
+      <h2 translate>{{:: dialog.title }}</h2>
 
       <div class="node-select-container">
           <node-selector
                   selected-nodes="dialog.selectedNodes"
-                  allowed-schemas="dialog.allow"></node-selector>
+                  allowed-schemas="dialog.allow"
+                  multi-select="dialog.multiSelect"></node-selector>
       </div>
       Allowed schemas: {{ dialog.allow }} <br>
       Selected Nodes:

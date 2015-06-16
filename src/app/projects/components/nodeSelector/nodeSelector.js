@@ -2,19 +2,42 @@ angular.module('meshAdminUi.projects')
     .factory('nodeSelector', nodeSelector)
     .directive('nodeSelector', nodeSelectorDirective);
 
+/**
+ * The nodeSelector service is used to configure and display a node selector modal dialog.
+ *
+ * @param {ng.material.MDDialogService} $mdDialog
+ * @class nodeSelector
+ * @returns {{open: open}}
+ */
 function nodeSelector($mdDialog) {
 
     return {
+        /**
+         * @type Function
+         */
         open: open
     };
 
+    /**
+     * Opens the node selector dialog. Accepts an `options` object where the following
+     * options may be configured:
+     *
+     * - allow: array, allowed schema types to filter by.
+     * - title: string, title of the dialog box.
+     * - multiSelect: bool, whether more than one node may be selected.
+     *
+     * @param {{}} options
+     * @returns {ng.IPromise<Array>}
+     */
     function open(options) {
         return $mdDialog.show({
             templateUrl: 'projects/components/nodeSelector/nodeSelectorDialog.html',
             controller: nodeSelectDialogController,
             controllerAs: 'dialog',
             locals: {
-                allow: options.allow || []
+                allow: options.allow || [],
+                title: options.title || 'Select Node',
+                multiSelect: options.multiSelect || false
             },
             bindToController: true
         });
@@ -64,6 +87,10 @@ function nodeSelectorDirective(dataService, contextService) {
         }
 
         function selectNode(node) {
+            if (!vm.multiSelect) {
+                selectedNodesHash = {};
+                vm.selectedNodes = [];
+            }
             selectedNodesHash[node.uuid] = node;
             vm.selectedNodes.push(node);
         }
@@ -120,7 +147,8 @@ function nodeSelectorDirective(dataService, contextService) {
         bindToController: true,
         scope: {
             selectedNodes: '=',
-            allowedSchemas: '='
+            allowedSchemas: '=',
+            multiSelect: '='
         }
     };
 }
