@@ -1,0 +1,12 @@
+<div layout="column" class="captioned-image-container md-whiteframe-z1">
+    <div>
+        <div class="image-holder" layout="row" layout-align="center center" ng-click="selectImage()" title="Click to select image">
+            <i ng-if="!microschemaModel.image.path" class="icon-image"></i>
+            <img ng-if="microschemaModel.image.path" ng-src="{{ microschemaModel.image.path }}" />
+        </div>
+    </div>
+    <md-input-container>
+        <label>{{:: microschemaFields[1].label }}</label>
+        <input type="text" ng-model="microschemaModel.caption" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()">
+    </md-input-container>
+</div>
