@@ -1,6 +1,6 @@
 angular.module('meshAdminUi.projects')
     .factory('nodeSelector', nodeSelector)
-    .directive('nodeTreeView', nodeTreeViewDirective);
+    .directive('nodeSelector', nodeSelectorDirective);
 
 function nodeSelector($mdDialog) {
 
@@ -36,9 +36,9 @@ function nodeSelector($mdDialog) {
     }
 }
 
-function nodeTreeViewDirective(dataService, contextService) {
+function nodeSelectorDirective(dataService, contextService) {
 
-    function nodeTreeViewController() {
+    function nodeSelectorController() {
         var vm = this,
             selectedNodesHash = {},
             projectName = contextService.getProject().name,
@@ -46,11 +46,10 @@ function nodeTreeViewDirective(dataService, contextService) {
 
         vm.selectedNodes = vm.selectedNodes instanceof Array ? vm.selectedNodes : [];
         vm.openNode = openNode;
-        vm.goToParentNode = goToParentNode;
         vm.toggleSelect = toggleSelect;
         vm.isSelected = isSelected;
 
-        getChildren();
+        populateContents();
 
         function toggleSelect(node) {
             if (isSelected(node)) {
@@ -82,17 +81,10 @@ function nodeTreeViewDirective(dataService, contextService) {
 
         function openNode(nodeId) {
             currentNodeId = nodeId;
-            getChildren();
+            populateContents();
         }
 
-        function goToParentNode() {
-            dataService.getNode(projectName, currentNodeId)
-                .then(function(data) {
-                    openNode(data.parentNodeUuid);
-                });
-        }
-
-        function getChildren() {
+        function populateContents() {
             dataService.getChildFolders(projectName, currentNodeId)
                 .then(function(data) {
                     vm.folders = data;
@@ -100,14 +92,18 @@ function nodeTreeViewDirective(dataService, contextService) {
                 })
                 .then(function(data) {
                     vm.contents = data;
-                });
+                    return dataService.getBreadcrumb(projectName, currentNodeId);
+                })
+                .then(function(data) {
+                    vm.breadcrumbs = data;
+                })
         }
     }
 
     return {
         restrict: 'E',
-        templateUrl: 'projects/components/nodeSelector/nodeTreeView.html',
-        controller: nodeTreeViewController,
+        templateUrl: 'projects/components/nodeSelector/nodeSelector.html',
+        controller: nodeSelectorController,
         controllerAs: 'vm',
         bindToController: true,
         scope: {

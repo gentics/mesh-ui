@@ -1,0 +1,44 @@
+<div layout="column" class="node-selector">
+
+    <div class="breadcrumbs">
+        <ul>
+           <li ng-repeat="label in vm.breadcrumbs" ng-if="label.name">
+               <span>
+                    <a href="#" ng-click="vm.openNode(label.uuid)">{{ label.name }}</a>
+               </span>
+        </li>
+        </ul>
+    </div>
+
+    <div layout="row">
+
+        <div flex="20">
+            <div class="tag-list-container">
+                <ul class="tag-list">
+                    <li ng-repeat="folder in vm.folders track by $index" class="tag-item" ng-click="vm.openNode(folder.uuid)">
+                        <a href="#" class="a-plain">{{ folder.segmentName }}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div flex>
+            <table class="mh-table" ng-show="0 < vm.contents.length" >
+                <tbody>
+                <tr ng-repeat="content in vm.contents"
+                    ng-class="{ selected: vm.isSelected(content) }"
+                    ng-click="vm.toggleSelect(content)">
+                    <td>
+                        <md-checkbox md-no-ink ng-checked="vm.isSelected(content)" aria-label="Select All"></md-checkbox>
+                    </td>
+                    <td>{{:: content.fields[content.displayField] }}</td>
+                    <td>{{:: content.schema.name }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+</div>
