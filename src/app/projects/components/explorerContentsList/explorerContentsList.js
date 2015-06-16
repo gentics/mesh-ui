@@ -20,6 +20,7 @@ function explorerContentsListDirective($state) {
         vm.isSelected = isSelected;
         vm.selectAll = toggleSelectAll;
         vm.areAllSelected = false;
+        vm.getBinaryRepresentation = getBinaryRepresentation;
 
         /**
          * Invoke the callback defined in the `on-update` attribute.
@@ -86,6 +87,10 @@ function explorerContentsListDirective($state) {
         function goToContent(uuid) {
             vm.selectedItems = [];
             $state.go('projects.explorer.content', { uuid: uuid });
+        }
+
+        function getBinaryRepresentation(item) {
+            return item.path;
         }
     }
 
