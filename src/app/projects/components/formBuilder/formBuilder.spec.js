@@ -157,7 +157,7 @@ describe('formBuilder Module', function() {
         }];
 
         var model = {
-            "list": ["do", "re", "mi"]
+            "list": { items: ["do", "re", "mi"] }
         };
 
         compileElement(fields, model);
@@ -178,7 +178,7 @@ describe('formBuilder Module', function() {
             }];
 
             model = model || {
-                "list": ["do", "re", "mi"]
+                "list": { items: ["do", "re", "mi"] }
             };
 
             compileElement(fields, model);
@@ -191,15 +191,15 @@ describe('formBuilder Module', function() {
             compileListField();
             listScope.addItem();
 
-            expect($scope.model.list.length).toEqual(4);
-            expect($scope.model.list[3]).toEqual('');
+            expect($scope.model.list.items.length).toEqual(4);
+            expect($scope.model.list.items[3]).toEqual('');
         });
 
         it('removeItem() should remove an item', function() {
             compileListField();
             listScope.removeItem(0);
 
-            expect($scope.model.list).toEqual(['re', 'mi']);
+            expect($scope.model.list.items).toEqual(['re', 'mi']);
         });
 
         describe('microschema instance creation with addWidget()', function() {
@@ -256,12 +256,14 @@ describe('formBuilder Module', function() {
                         "allow": ["test"]
                     }],
                     model = {
-                        "list": []
+                        "list": {
+                            "items": []
+                        }
                     };
                 compileListField(fields, model);
                 listScope.addWidget('test');
                 $scope.$apply();
-                scopeListObject = $scope.model.list[0];
+                scopeListObject = $scope.model.list.items[0];
             });
 
             it('should create "microschema" property', function() {

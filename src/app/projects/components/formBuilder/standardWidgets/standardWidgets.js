@@ -219,7 +219,8 @@ function listWidgetDirective(dataService, widgetHighlighterService) {
             dataService.getMicroschema(microschemaName)
                 .then(createEmptyMicroschemaObject)
                 .then(function(newMicroschemaObject) {
-                    scope.model[scope.path].push(newMicroschemaObject);
+                    scope.model[scope.path].items.push(newMicroschemaObject);
+                    scope.formBuilder.modified = true;
                     reHighlight();
                 });
         }
@@ -229,7 +230,8 @@ function listWidgetDirective(dataService, widgetHighlighterService) {
          */
         function addItem() {
             var defaultValue = getDefaultValue(scope.listTypeField);
-            scope.model[scope.path].push(defaultValue);
+            scope.model[scope.path].items.push(defaultValue);
+            scope.formBuilder.modified = true;
             reHighlight();
         }
 
@@ -238,7 +240,8 @@ function listWidgetDirective(dataService, widgetHighlighterService) {
          * @param index
          */
         function removeItem(index) {
-            scope.model[scope.path].splice(index, 1);
+            scope.model[scope.path].items.splice(index, 1);
+            scope.formBuilder.modified = true;
             reHighlight();
         }
 
@@ -336,7 +339,9 @@ function listWidgetDirective(dataService, widgetHighlighterService) {
         } else if (fieldObject.type === 'select') {
             defaultValue = fieldObject.options[0] || "";
         } else if (fieldObject.type === 'list') {
-            defaultValue = [];
+            defaultValue = {
+                items: []
+            };
         } else if (fieldObject.type === 'node') {
             defaultValue = {};
         }

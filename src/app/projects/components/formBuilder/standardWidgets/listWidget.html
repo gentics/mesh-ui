@@ -2,17 +2,17 @@
     <label>{{:: field.label || field.name }}</label>
     <div>
         <ul dnd-list="model[path]"
-            dnd-drop="endDrag(item, index, model[path])"
+            dnd-drop="endDrag(item, index, model[path].items)"
             dnd-allowed-types="[listTypeField.name]">
 
-            <li flex ng-repeat="item in model[path] track by tracker(item, $id, $index)"
+            <li flex ng-repeat="item in model[path].items track by tracker(item, $id, $index)"
                 class="list-item"
                 layout="row"
                 dnd-draggable="item"
                 dnd-dragstart="startDrag($index)"
                 dnd-type="listTypeField.name">
 
-                <widget-proxy flex model="model[path]" path="$index" field="listTypeField"></widget-proxy>
+                <widget-proxy flex model="model[path].items" path="$index" field="listTypeField"></widget-proxy>
 
                 <div>
                     <div class="remove-item list-icon-btn" ng-click="removeItem($index)">
