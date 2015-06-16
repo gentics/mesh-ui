@@ -26,16 +26,20 @@ function geolocationWidgetDirective() {
             map = new google.maps.Map(mapCanvas, mapOptions);
 
             google.maps.event.addListener(map, 'center_changed', function() {
-                var center = map.getCenter();
-                scope.$apply(function() {
-                    scope.microschemaModel.latitude = center.lat();
-                    scope.microschemaModel.longitude = center.lng();
-                });
+               setTimeout(updateValues, 0);
             });
 
         }
 
         scope.$watchCollection('microschemaModel', updateMapSrc);
+
+        function updateValues() {
+            var center = map.getCenter();
+            scope.$apply(function() {
+                scope.microschemaModel.latitude = center.lat();
+                scope.microschemaModel.longitude = center.lng();
+            });
+        }
 
         function updateMapSrc() {
             if (map) {
