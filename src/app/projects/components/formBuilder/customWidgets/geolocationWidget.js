@@ -24,6 +24,15 @@ function geolocationWidgetDirective() {
                 zoom: 12
             };
             map = new google.maps.Map(mapCanvas, mapOptions);
+
+            google.maps.event.addListener(map, 'center_changed', function() {
+                var center = map.getCenter();
+                scope.$apply(function() {
+                    scope.microschemaModel.latitude = center.lat();
+                    scope.microschemaModel.longitude = center.lng();
+                });
+            });
+
         }
 
         scope.$watchCollection('microschemaModel', updateMapSrc);
