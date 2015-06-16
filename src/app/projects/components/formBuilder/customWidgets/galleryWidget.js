@@ -20,7 +20,9 @@ function galleryWidgetDirective(nodeSelector) {
         function selectImages() {
             var options = {
                 multiSelect: true,
-                allow: ['image']
+                allow: ['image'],
+                title: 'Select Images',
+                displayMode: 'grid'
             };
             event.preventDefault();
             nodeSelector.open(options)

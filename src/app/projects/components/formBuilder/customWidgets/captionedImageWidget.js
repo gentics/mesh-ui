@@ -12,8 +12,13 @@ function captionedImageWidgetDirective(nodeSelector) {
         scope.selectImage = selectImage;
 
         function selectImage() {
+            var options = {
+                allow: ['image'],
+                displayMode: 'grid',
+                title: 'Select An Image'
+            };
             event.preventDefault();
-            nodeSelector.open({ allow: ['image'] })
+            nodeSelector.open(options)
                 .then(function(nodes) {
                     scope.microschemaModel.image = nodes[0];
                 });
