@@ -1,4 +1,6 @@
 <div class="editor-widget node-container">
     <label>{{ field.label || field.name }}</label>
-    <div class="select-link"><a href="#" ng-click="vm.showDialog($event)">Select node...</a></div>
+    <span ng-show="model[path].uuid"><i class="icon-link"></i></span>
+    <span>{{ model[path].fields[model[path].displayField] || model[path].uuid || 'None selected' }}</span> |
+    <span class="select-link"><a href="#" ng-click="showDialog($event)">Select node...</a></span>
 </div>

@@ -139,28 +139,38 @@ function selectWidgetDirective() {
 /**
  * Input for node field types
  *
- * @param {ng.material.MDDialogService} $mdDialog
+ * @param {nodeSelector} nodeSelector
  * @returns {ng.IDirective} Directive definition object
  */
 function nodeWidgetDirective(nodeSelector) {
 
-    function nodeWidgetController($scope) {
-        var vm = this;
+    function nodeWidgetLinkFn(scope) {
 
-        vm.showDialog = showDialog;
+        scope.showDialog = showDialog;
 
         function showDialog(event) {
+            var options = {
+                allow: scope.field.allow || []
+            };
             event.preventDefault();
-            nodeSelector.open({
-                allow: $scope.field.allow || []
-            });
+            nodeSelector.open(options)
+                .then(function(nodes) {
+                    scope.model[scope.path] = maskNode(nodes[0]);
+                });
+        }
+
+        function maskNode(node) {
+            return {
+                uuid: node.uuid,
+                displayField: node.displayField,
+                fields: node.fields
+            };
         }
     }
 
     return {
         restrict: 'E',
-        controller: nodeWidgetController,
-        controllerAs: 'vm',
+        link: nodeWidgetLinkFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/nodeWidget.html',
         scope: true
     };
