@@ -1,0 +1,30 @@
+.gallery-container {
+  .image-box {
+    width: 200px;
+    height: 200px;
+    border: 1px solid @color-alto;
+    margin: 8px;
+    position: relative;
+
+    img {
+      height: auto;
+      width: 100%;
+    }
+
+    .box-controls {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background-color: rgba(255, 255, 255,0.1);
+    }
+  }
+
+  .add-image {
+    cursor: pointer;
+    i {
+      color: @color-alto;
+      font-size: 64px;
+    }
+  }
+}
