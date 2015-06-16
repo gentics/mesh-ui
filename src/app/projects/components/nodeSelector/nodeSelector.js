@@ -25,6 +25,7 @@ function nodeSelector($mdDialog) {
      * - allow: array, allowed schema types to filter by.
      * - title: string, title of the dialog box.
      * - multiSelect: bool, whether more than one node may be selected.
+     * - displayMode: string, either 'list' or 'grid'
      *
      * @param {{}} options
      * @returns {ng.IPromise<Array>}
@@ -37,7 +38,8 @@ function nodeSelector($mdDialog) {
             locals: {
                 allow: options.allow || [],
                 title: options.title || 'Select Node',
-                multiSelect: options.multiSelect || false
+                multiSelect: options.multiSelect || false,
+                displayMode: options.displayMode || 'list'
             },
             bindToController: true
         });
@@ -148,7 +150,8 @@ function nodeSelectorDirective(dataService, contextService) {
         scope: {
             selectedNodes: '=',
             allowedSchemas: '=',
-            multiSelect: '='
+            multiSelect: '=',
+            displayMode: '='
         }
     };
 }

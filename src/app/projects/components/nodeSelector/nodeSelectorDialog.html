@@ -6,13 +6,10 @@
           <node-selector
                   selected-nodes="dialog.selectedNodes"
                   allowed-schemas="dialog.allow"
-                  multi-select="dialog.multiSelect"></node-selector>
+                  multi-select="dialog.multiSelect"
+                  display-mode="dialog.displayMode"></node-selector>
       </div>
       Allowed schemas: {{ dialog.allow }} <br>
-      Selected Nodes:
-     <ul>
-         <li ng-repeat="node in dialog.selectedNodes">{{ node.uuid}} - {{ node.fields[node.displayField] }}</li>
-     </ul>
   </md-content>
 
   <div class="md-actions">

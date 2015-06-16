@@ -23,9 +23,10 @@
         </div>
 
         <div flex>
-            <table class="mh-table" ng-show="0 < vm.contents.length" >
+
+            <table class="mh-table" ng-show="0 < vm.contents.length" ng-if="vm.displayMode === 'list'">
                 <tbody>
-                <tr ng-repeat="content in vm.contents"
+                <tr ng-repeat="content in vm.contents track by content.uuid"
                     ng-class="{ selected: vm.isSelected(content) }"
                     ng-click="vm.toggleSelect(content)">
                     <td>
@@ -36,6 +37,17 @@
                 </tr>
                 </tbody>
             </table>
+
+            <div class="node-grid" ng-if="vm.displayMode === 'grid'" layout="row" layout-wrap>
+                <div class="grid-item"
+                     layout="column" layout-align="space-around center"
+                     ng-repeat="content in vm.contents track by content.uuid"
+                     ng-class="{ selected: vm.isSelected(content) }"
+                     ng-click="vm.toggleSelect(content)">
+                    <img ng-src="{{:: content.path }}">
+                    <div>{{:: content.fields[content.displayField] }}</div>
+                </div>
+            </div>
         </div>
 
     </div>

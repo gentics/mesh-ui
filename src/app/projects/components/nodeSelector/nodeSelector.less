@@ -14,4 +14,30 @@
       font-size: @font-size-standard;
     }
   }
+
+  .grid-item {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+    border: 1px solid @color-concrete;
+    transition: border-color 0.3s, box-shadow 0.3s;
+
+    &:hover {
+      background-color: @color-concrete;
+    }
+
+    &.selected {
+      background-color: @color-concrete;
+      border-color: @color-primary;
+      box-shadow: @mh-box-shadow;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
 }
