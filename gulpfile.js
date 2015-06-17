@@ -72,7 +72,7 @@ gulp.task('vendor-styles', function() {
         .pipe(gulp.dest('build/vendor/styles'));
 });
 
-gulp.task('build', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-styles', 'vendor-styles'], function() {
+gulp.task('build', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-styles', 'vendor-styles', 'static-assets'], function() {
 
     var vendorJs = gulp.src([
         'vendor/**/angular.js',
@@ -110,7 +110,8 @@ gulp.task('build', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
 gulp.task('static-assets', function() {
     return gulp.src([
         'src/.htaccess',
-        'src/assets**/**/*'
+        'src/assets**/**/*',
+        'mesh-mock-backend*/**/*'
     ])
         .pipe(gulp.dest('build/'))
         .pipe(livereload());
@@ -122,7 +123,7 @@ gulp.task('dist', ['karma-test', 'dist-assets', 'dist-css', 'dist-js'], function
     var js = gulp.src('app/app.js', { cwd: 'dist' });
     var empty = gulp.src('');
 
-    return gulp.src('src/index.html')
+    return gulp.src(['src/index.html', 'src/meshConfig.js'])
         .pipe(inject(css, {
             addRootSlash: false
         }))
@@ -137,14 +138,15 @@ gulp.task('dist', ['karma-test', 'dist-assets', 'dist-css', 'dist-js'], function
             endtag: '<!-- endinject -->'
         }))
         .pipe(replace(/BASE_HREF/, BASE_HREF.dist))
-        .pipe(minifyHtml({ loose: true }))
+        //.pipe(minifyHtml({ loose: true }))
         .pipe(gulp.dest('dist/'))
 });
 
 gulp.task('dist-assets', function() {
     return gulp.src([
         'src/.htaccess',
-        'src/assets**/**/*'
+        'src/assets**/**/*',
+        'mesh-mock-backend*/**/*'
     ])
         .pipe(gulp.dest('dist/'));
 });
@@ -190,7 +192,7 @@ gulp.task('karma-watch', function() {
 /**
  * Single-run all the tests
  * */
-gulp.task('karma-test', function() {
+gulp.task('karma-test', ['app-templates'], function() {
     karma.start({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true

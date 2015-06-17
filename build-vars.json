@@ -1,7 +1,7 @@
 {
   "BASE_HREF": {
     "build": "/gentics/mesh-admin-ui/build/",
-    "dist": "/gentics/mesh-admin-ui/dist/"
+    "dist": "/"
   },
   "VENDOR_SCRIPTS" : [
       "bower_components/angular/angular.js",
