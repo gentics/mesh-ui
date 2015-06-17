@@ -95,17 +95,6 @@
 							<arguments>install</arguments>
 						</configuration>
 					</execution>
-					<!-- run gulp -->
-					<execution>
-						<id>gulp</id>
-						<goals>
-							<goal>gulp</goal>
-						</goals>
-						<phase>compile</phase>
-						<configuration>
-							<arguments>dist</arguments>
-						</configuration>
-					</execution>
 					<!-- run bower -->
 					<execution>
 						<id>bower install</id>
@@ -115,6 +104,17 @@
 						<phase>compile</phase>
 						<configuration>
 							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<!-- run gulp -->
+					<execution>
+						<id>gulp</id>
+						<goals>
+							<goal>gulp</goal>
+						</goals>
+						<phase>compile</phase>
+						<configuration>
+							<arguments>dist</arguments>
 						</configuration>
 					</execution>
 				</executions>
