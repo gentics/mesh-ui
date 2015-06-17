@@ -6,7 +6,7 @@
 
         <animated-logo animate-in="true" animate-out="vm.success"></animated-logo>
 
-        <form ng-submit="vm.submitForm($event, vm.userName, vm.password)" layout="column" layout-align="center center" class="login-form" ng-show="vm.logoVisible && !vm.success">
+        <form ng-submit="vm.submitForm($event, vm.userName, vm.password)" layout="column" layout-align="center center" class="login-form" ng-show="!vm.success">
             <md-input-container>
                 <label translate>USER_NAME</label>
                 <input ng-model="vm.userName">
@@ -15,7 +15,7 @@
                 <label translate>PASSWORD</label>
                 <input ng-model="vm.password" type="password">
             </md-input-container>
-            <button class="btn btn-primary " type="submit">
+            <button class="btn btn-primary login-btn" type="submit" ng-show="vm.logoVisible" ng-class="{ 'hidden' : !(vm.password && vm.userName) }">
                 <span translate>LOG_IN</span>
             </button>
         </form>
