@@ -1,0 +1,143 @@
+{
+  "data":[
+    {
+      "uuid": "e0c64ad00a9343cc864ad00a9373cc26",
+      "language": "en",
+      "availableLanguages": [
+        "en",
+        "de"
+      ],
+      "path": "/products/aeroplane.en.html",
+      "breadcrumb": [
+        {
+          "uuid": "e0c64dsgasdgasdgdgasdgasdgasdg33",
+          "segmentName": "products"
+        },
+        {
+          "uuid": "e0c64ad00a9343cc864ad00a9373cc23",
+          "segmentName": "aeroplane.en.html"
+        }
+      ],
+      "creator": {
+        "uuid": "UUIDOFUSER1",
+        "lastname": "Doe",
+        "firstname": "Joe",
+        "username": "joe1",
+        "emailAddress": "j.doe@spam.gentics.com",
+        "groups": [],
+        "perms": [
+          "read",
+          "update"
+        ]
+      },
+      "created": 1333530472,
+      "editor": {
+        "uuid": "UUIDOFUSER1",
+        "lastname": "Doe",
+        "firstname": "Joe",
+        "username": "joe1",
+        "emailAddress": "j.doe@spam.gentics.com",
+        "groups": [],
+        "perms": ["read"]
+      },
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "availableVersions": {
+        "totalCount": 2000,
+        "items": [
+          {
+            "uuid": "dgasdgasdgasdgasd",
+            "version": "5.2.0"
+          },
+          {
+            "uuid": "dgasdgasdgasdgasd",
+            "version": "5.1.0"
+          },
+          {
+            "uuid": "dgasdgasdgasdgasd",
+            "version": "4.9.0"
+          }
+        ]
+      },
+      "parentNodeUuid": "uuid_boats_node",
+      "segmentName": "boat.en.html",
+      "project": {"uuid": "wegasdsdhdsfh"},
+      "order": 10,
+      "tags": {
+        "totalCount": 2000,
+        "items": [
+          {"uuid": "235hr9283yr98239823410f"},
+          {"uuid": "dgasdgasdhasdh346234dsgf"}
+        ]
+      },
+      "children": {
+        "totalCount": 2000,
+        "items": [
+          {"uuid": "235hr9283yrwasdgasdgasg"},
+          {"uuid": "gasdgasdgasdgasdgasdgasg"}
+        ]
+      },
+      "displayField": "name",
+      "fields": {
+        "name": "Luxury Yacht",
+        "description": "A good car.",
+        "image": {
+          "uuid": "a8u328u23u8r09j23o9r09",
+          "language": "en",
+          "availableLanguages": [
+            "en",
+            "de"
+          ],
+          "tags": [],
+          "creator": {},
+          "path": "/products/aeroplane/plane.jpg",
+          "fileName": "plane.jpg",
+          "binaryProperties": {
+            "width": 400,
+            "height": 800,
+            "sha512sum": "sdgasdgasdgasdgasdgasdgasdg",
+            "fileSize": 1241324,
+            "mimeType": "image/jpeg",
+            "dpi": 72
+          },
+          "fields": {
+            "title": "Front view of the plane"
+          },
+          "perms": [],
+          "schema": {}
+        },
+        "sku": "3898-990",
+        "price": 13223.00,
+        "relatedCategory": {
+          "uuid": "235hr9283yr98239822430f"
+        },
+        "relatedProducts": {
+          "order": "desc",
+          "orderBy": "name",
+          "totalCount": 2000,
+          "items": [
+            {"uuid": "235hr9283yr98239823410f"},
+            {"uuid": "38wq3jo39r20jr029j3h838"},
+            {"uuid": "21982ej081320eu1092u309"}
+          ]
+        }
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ],
+      "schema": {
+        "name": "product",
+        "uuid": "4776dcfee87745f3b6dcfee87705f3ad"
+      }
+    }
+  ],
+  "_metainfo":{
+    "page":1,
+    "per_page":25,
+    "page_count":1,
+    "total_count":1
+  }
+}

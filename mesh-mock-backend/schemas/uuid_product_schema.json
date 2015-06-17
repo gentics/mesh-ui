@@ -1,0 +1,53 @@
+{
+  "name": "product",
+  "uuid": "uuid_product_schema",
+  "displayField": "name",
+  "segmentField": "filename",
+  "fields": [
+    {
+      "name": "name",
+      "label": "Product Name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "filename",
+      "label": "File Name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "description",
+      "label": "description",
+      "type": "html"
+    },
+    {
+      "name": "image",
+      "label": "Main Image",
+      "type": "node",
+      "allow": ["image"]
+    },
+    {
+      "name": "sku",
+      "label": "SKU/Product Code",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "price",
+      "label": "Price",
+      "type": "number",
+      "step": 0.01,
+      "required": true
+    },
+    {
+      "name": "relatedProducts",
+      "label": "Related Products",
+      "type": "list",
+      "listType": "node",
+      "allow": ["product"],
+      "min:": 0,
+      "max": 10
+    }
+  ]
+}

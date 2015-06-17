@@ -1,0 +1,10 @@
+[
+  {
+    "uuid": "uuid_root_node",
+    "name": "rootNode"
+  },
+  {
+    "uuid": "uuid_products_node",
+    "name": "products"
+  }
+]

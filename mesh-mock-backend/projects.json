@@ -1,0 +1,22 @@
+{
+   "data":[
+      {
+         "@class":"com.gentics.mesh.core.rest.project.response.ProjectResponse",
+         "uuid":"uuid_dummy_project",
+         "name":"dummy",
+         "perms":[
+            "read",
+            "create",
+            "update",
+            "delete"
+         ],
+         "rootNodeUuid": "uuid_root_node"
+      }
+   ],
+   "_metainfo":{
+      "page":1,
+      "per_page":25,
+      "page_count":1,
+      "total_count":1
+   }
+}

@@ -1,0 +1,108 @@
+{
+  "uuid": "uuid_test_node",
+  "language": "en",
+  "availableLanguages": [
+    "en",
+    "de"
+  ],
+  "path": "/test.en.html",
+  "breadcrumb": [
+    {
+      "uuid": "e0c64dsgasdgasdgdgasdgasdgasdg33",
+      "segmentName": "products"
+    },
+    {
+      "uuid": "e0c64ad00a9343cc864ad00a9373cc23",
+      "segmentName": "aeroplane.en.html"
+    }
+  ],
+  "creator": {
+    "uuid": "UUIDOFUSER1",
+    "lastname": "Doe",
+    "firstname": "Joe",
+    "username": "joe1",
+    "emailAddress": "j.doe@spam.gentics.com",
+    "groups": [],
+    "perms": [
+      "read",
+      "update"
+    ]
+  },
+  "created": 1333530472,
+  "editor": {
+    "uuid": "UUIDOFUSER1",
+    "lastname": "Doe",
+    "firstname": "Joe",
+    "username": "joe1",
+    "emailAddress": "j.doe@spam.gentics.com",
+    "groups": [],
+    "perms": ["read"]
+  },
+  "edited": 1333530472,
+  "version": "5.2.0",
+  "parentNodeUuid": "uuid_root_node",
+  "project": {"uuid": "uuid_dummy_project"},
+  "order": 10,
+  "tags": {
+    "totalCount": 2000,
+    "items": [
+      {"uuid": "235hr9283yr98239823410f"},
+      {"uuid": "dgasdgasdhasdh346234dsgf"}
+    ]
+  },
+  "children": {
+    "totalCount": 2000,
+    "items": [
+      {"uuid": "235hr9283yrwasdgasdgasg"},
+      {"uuid": "gasdgasdgasdgasdgasdgasg"}
+    ]
+  },
+  "segmentField": "string",
+  "displayField": "string",
+  "fields": {
+    "string": "Test Node for UI Rendering Field Types",
+    "html": "<h3><span style=\"line-height: 1.846; font-size: 1.4rem;\">Test Node - HTML Type</span></h3><p><span style=\"line-height: 1.846; font-size: 1.4rem;\" class=\"\">This is an <u>HTML</u> field. Look how is is rendered. <i>Nice, huh?</i></span><br></p><p>Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.</p><p>Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. Dramatically maintain clicks-and-mortar solutions without functional solutions.</p>",
+    "numberBasic": 42,
+    "numberRange": 50,
+    "date": 1433336633,
+    "boolean": true,
+    "select": "red",
+    "node": { },
+    "listStringBasic": {
+      "order": "desc",
+      "totalCount": 2,
+      "items": [ "foo", "bar" ]
+    },
+    "listNumberConstrained": {
+      "order": "desc",
+      "totalCount": 3,
+      "items": [ 2, 3, 4 ]
+    },
+    "microschemaSingle": {
+      "microschema": {
+        "name": "geolocation",
+        "uuid": "uuid_geolocation_microschema"
+      },
+      "fields": {
+        "title": "Office",
+        "longitude": 16.37,
+        "latitude": 48.22
+      }
+    },
+    "microschemaList":  {
+      "order": "desc",
+      "totalCount": 0,
+      "items": []
+    }
+  },
+  "perms": [
+    "read",
+    "create",
+    "update",
+    "delete"
+  ],
+  "schema": {
+    "name": "article",
+    "uuid": "uuid_test_schema"
+  }
+}
