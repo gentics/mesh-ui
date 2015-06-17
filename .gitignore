@@ -10,7 +10,6 @@ target
 .project
 .settings
 .bin
-.*
 hs_err_*.log
 .vertx
 dependency-reduced-pom.xml
