@@ -30,7 +30,7 @@
 
         <div layout="row" class="add-item-row">
             <div ng-if="listTypeField.type !== 'microschema'">
-                <div class="add-item list-icon-btn" ng-click="addItem()" ng-disabled="model[path].length >= listTypeField.max" title="Add item to list">
+                <div class="add-item list-icon-btn" ng-click="addItem()" ng-hide="model[path].items.length >= listTypeField.max" title="Add item to list">
                     <i class="icon-add">
                     </i>
                 </div>
@@ -39,9 +39,9 @@
             <div ng-if="listTypeField.type === 'microschema'">
                 <mh-dropdown>
                     <mh-dropdown-label>
-                        <button class="btn btn-small btn-primary"  ng-disabled="model[path].length >= listTypeField.max" aria-label="Add Item">
-                            Add Widget <i class="icon-arrow-drop-down"></i>
-                        </button>
+                        <div class="add-item list-icon-btn"  ng-hide="model[path].length >= listTypeField.max" aria-label="Add Item">
+                            <i class="icon-add"></i> <i class="icon-arrow-drop-down"></i>
+                        </div>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
                         <ul class="create-options">
