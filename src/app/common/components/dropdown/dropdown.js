@@ -136,19 +136,18 @@ function dropdownBodyDirective() {
     function linkFn(scope, element, attrs, dropdownCtrl) {
         var container = element[0];
 
-        adjustPosition();
+
         scope.dropdown = dropdownCtrl;
         scope.$watch('dropdown.isOpen', setHeight);
 
         element.on('click', function(e) {
-            //if (e.target.tagName === 'A') {
-                dropdownCtrl.toggle();
-           // }
+            dropdownCtrl.toggle();
         });
 
         function setHeight(isOpen) {
             var contentsHeight;
             if (isOpen) {
+                adjustPosition();
                 container.style.top = dropdownCtrl.getContentTop() + 'px';
                 contentsHeight = container.children[0].offsetHeight;
                 container.style.height =  contentsHeight + 12 + 'px';
