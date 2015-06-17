@@ -76,7 +76,7 @@ function appRunBlock($rootScope, $state, authService) {
         }
         else if (toState.name === 'login' && authService.isLoggedIn) {
             event.preventDefault();
-            $state.go('projects');
+            $state.go('projects.list');
         }
     });
 
