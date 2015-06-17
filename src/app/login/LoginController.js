@@ -5,7 +5,7 @@ angular.module('meshAdminUi.login')
  * @param $timeout
  * @param $state
  * @param $mdDialog
- * @param authService
+ * @param {AuthService} authService
  * @constructor
  */
 function LoginController($timeout, $state, $mdDialog, authService) {

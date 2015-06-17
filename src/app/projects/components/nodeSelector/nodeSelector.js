@@ -2,19 +2,16 @@ angular.module('meshAdminUi.projects')
     .factory('nodeSelector', nodeSelector)
     .directive('nodeSelector', nodeSelectorDirective);
 
+
 /**
  * The nodeSelector service is used to configure and display a node selector modal dialog.
  *
  * @param {ng.material.MDDialogService} $mdDialog
- * @class nodeSelector
- * @returns {{open: open}}
  */
 function nodeSelector($mdDialog) {
 
+
     return {
-        /**
-         * @type Function
-         */
         open: open
     };
 
@@ -27,7 +24,8 @@ function nodeSelector($mdDialog) {
      * - multiSelect: bool, whether more than one node may be selected.
      * - displayMode: string, either 'list' or 'grid'
      *
-     * @param {{}} options
+     * @memberof nodeSelector
+     * @param {{}} [options]
      * @returns {ng.IPromise<Array>}
      */
     function open(options) {
@@ -65,6 +63,12 @@ function nodeSelector($mdDialog) {
     }
 }
 
+/**
+ *
+ * @param {DataService} dataService
+ * @param contextService
+ * @returns {{restrict: string, templateUrl: string, controller: nodeSelectorController, controllerAs: string, bindToController: boolean, scope: {selectedNodes: string, allowedSchemas: string, multiSelect: string, displayMode: string}}}
+ */
 function nodeSelectorDirective(dataService, contextService) {
 
     function nodeSelectorController() {

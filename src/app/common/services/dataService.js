@@ -27,14 +27,13 @@ function dataServiceProvider() {
 /**
  * The data service itself which is responsible for all requests to the API.
  *
- * @constructor
  * @param $http
  * @param $q
  * @param selectiveCache
  * @param Restangular
  * @param i18nService
  * @param {string} apiUrl
- * @returns {{}}
+ * @constructor
  */
 function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl) {
 
@@ -100,7 +99,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * Get the details of a single project specified by uuid.
      *
      * @param {string} uuid
-     * @returns {EnhancedPromise<any>|restangular.IPromise<any>}
+     * @returns {ng.IPromise<any>|restangular.IPromise<any>}
      */
     function getProject(uuid) {
         return Restangular.one('projects', uuid).get();
@@ -128,7 +127,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     /**
      * Delete the project from the server.
      * @param project
-     * @returns {*|EnhancedPromise<any>|restangular.IPromise<any>|void}
+     * @returns {ng.IPromise<any>|restangular.IPromise<any>|void}
      */
     function deleteProject(project) {
         clearCache('projects');
@@ -460,6 +459,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         obj.properties[lang] = properties;
         return obj;
     }
+
+
 }
 
 /**
