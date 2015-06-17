@@ -14,6 +14,9 @@ angular.module('meshAdminUi.projects.formBuilder')
  */
 function formBuilderDirective() {
 
+    /**
+     * @name formBuilderController
+     */
     function formBuilderController() {
         var formBuilder = this;
 

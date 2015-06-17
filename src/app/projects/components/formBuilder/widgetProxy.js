@@ -4,11 +4,25 @@ angular.module('meshAdminUi.projects.formBuilder')
     .factory('widgetHighlighterService', widgetHighlighterService);
 
 /**
- * using the pattern outlined here http://stackoverflow.com/a/20686132/772859
- * to dynamically include the correct directive for the field type.
+ * This directive is used to dynamically populate the content editing form with the correct
+ * type of input to match the schema fields. E.g. a field of type "string" should render as
+ * a text input, whereas a field of type "date" should be a date picker, etc.
+ *
+ * Each of the standard components for the various field types can be found in the "standardWidgets" folder.
+ * This proxy will delegate to the correct standard widget based on the "field" attribute that is passed in.
+ *
+ * @param {ng.ICompileService} $compile
+ * @param {widgetHighlighterService} widgetHighlighterService
  */
 function widgetProxyDirective($compile, widgetHighlighterService) {
 
+    /**
+     *
+     * @param {Object} scope
+     * @param element
+     * @param attrs
+     * @param {formBuilderController} formBuilderController
+     */
     function widgetProxyLinkFn(scope, element, attrs, formBuilderController) {
         var template,
             flexAttrs = 'flex',
