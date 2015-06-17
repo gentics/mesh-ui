@@ -90,7 +90,7 @@ gulp.task('build', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
         '**/*.css'
     ], { cwd: 'build/'} );
 
-    return gulp.src('src/index.html')
+    return gulp.src(['src/index.html', 'src/meshConfig.js'])
         .pipe(inject(css, { addRootSlash: false }))
         .pipe(inject(vendorJs,  {
             addRootSlash: false,

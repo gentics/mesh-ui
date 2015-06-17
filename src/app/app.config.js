@@ -5,11 +5,13 @@ angular.module('meshAdminUi')
 /**
  * App-wide config settings.
  *
+ * @global meshConfig
+ *
  * @param $stateProvider
  * @param $locationProvider
  * @param $urlRouterProvider
  * @param $mdThemingProvider
- * @param dataServiceProvider
+ * @param {dataServiceProvider} dataServiceProvider
  * @param paginationTemplateProvider
  * @param cfpLoadingBarProvider
  */
@@ -29,8 +31,7 @@ function appConfig($stateProvider,
         .primaryPalette('light-blue')
         .accentPalette('blue');
 
-    //dataServiceProvider.setApiUrl(window.location.protocol + '//' + window.location.hostname + ':8080/api/v1');
-    dataServiceProvider.setApiUrl(window.location.protocol + '//' + window.location.hostname + '/gentics/mesh-mock-backend');
+    dataServiceProvider.setApiUrl(meshConfig.apiUrl);
 
     paginationTemplateProvider.setPath('common/components/pagination/pagination.html');
 
