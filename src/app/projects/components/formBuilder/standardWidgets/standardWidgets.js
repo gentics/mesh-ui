@@ -28,35 +28,199 @@ function stringWidgetDirective() {
  */
 function htmlWidgetDirective() {
 
+    var activeAlohaPlugins = [
+        'common/ui',
+        'common/format',
+        'common/table',
+        'common/highlighteditables',
+        'common/link'
+    ];
+    // an array of functions that will be called when Aloha has loaded.
+    var callbacks = [];
+
+    function htmlWidgetCompileFn() {
+        if (!window.Aloha) {
+            // configure Aloha editor
+            window.Aloha = {}; window.Aloha.settings = {
+                "sidebar": {
+                    "disabled": true
+                },
+                "plugins" : {
+                    "formatlesspaste" : {
+                        "config" : {
+                            "strippedElements" : [ "a", "em", "strong", "small", "s", "cite", "q", "dfn", "abbr", "time", "code", "var", "samp", "kbd", "sub", "sup", "i", "b", "u", "mark", "ruby", "rt", "rp", "bdi", "bdo", "ins", "del" ],
+                            "button" : "False",
+                            "formatlessPasteOption" : "1"
+                        }
+                    },
+                    "block" : {
+                        "dragdrop" : "1",
+                        "dropzones" : [ ".dropzone > div" ],
+                        "config" : {
+                            "toggleDragdropGlobal" : "true"
+                        }
+                    },
+                    "image" : {
+                        "minHeight" : "5",
+                        "minWidth" : "5",
+                        "fixedAspectRatio" : "true",
+                        "maxHeight" : "786",
+                        "maxWidth" : "1024"
+                    },
+                    "list" : {
+                        "templates" : {
+                            "ul" : {
+                                "classes" : [ ]
+                            },
+                            "dl" : {
+                                "classes" : [ ]
+                            },
+                            "ol" : {
+                                "classes" : [ ]
+                            }
+                        }
+                    }
+                },
+                "i18n" : {
+                    "current" : "de"
+                },
+                "locale" : "de",
+                "logLevels" : {
+                    "error" : true
+                },
+                "readonly" : false,
+                "toolbar" : {
+                    "tabs" : [ {
+                        "label" : "tab.format.label"
+                    }, {
+                        "label" : "tab.insert.label",
+                        "components" : [ [ "gcnArena" ] ]
+                    }, {
+                        "label" : "tab.link.label",
+                        "components" : [ "editLink", "removeLink", "linkBrowser", "gcnLinkBrowser", "gcnFileUpload" ]
+                    } ]
+                },
+                "bundles" : {
+                    "custom" : "/custom"
+                },
+                "contentHandler" : {
+                    "insertHtml" : [ "gcn-tagcopy", "word", "generic", "block", "formatless" ],
+                    "getContents" : [ "blockelement", "basic" ],
+                    "initEditable" : [ "blockelement" ]
+                },
+                "sanitizeCharacters" : {
+                    "ï" : "i",
+                    "î" : "i",
+                    " " : "_",
+                    "ë" : "e",
+                    "ê" : "e",
+                    "é" : "e",
+                    "è" : "e",
+                    "Ä" : "Ae",
+                    "ä" : "ae",
+                    "â" : "a",
+                    "à" : "a",
+                    "Ü" : "Ue",
+                    "ü" : "ue",
+                    "ß" : "ss",
+                    "û" : "u",
+                    "ù" : "u",
+                    "ö" : "oe",
+                    "Ö" : "Oe",
+                    "ô" : "o"
+                }
+            };
+
+            loadScript('assets/vendor/aloha-editor/lib/aloha-full.min.js', initAloha);
+        }
+
+        /**
+         * @param scope
+         * @param element
+         */
+        return function htmlWidgetLinkFn(scope, element) {
+
+            var htmlField = element[0].querySelector('.htmlField');
+
+            if (Aloha.ready) {
+                registerBindings();
+            } else {
+                callbacks.push(registerBindings);
+            }
+
+            /**
+             * We need a way to let the widget know when the inner htmlField (content editable div)
+             * is focused. We have no direct access to that information, so we need to set up
+             * event listeners on the native "focus" and "blur" events and use them to update
+             * the scope.
+             * @type {HTMLElement}
+             */
+            scope.isFocused = false;
+
+            scope.$watch(function() {
+                return htmlField.classList.contains('aloha-editable-active');
+            }, function(val) {
+                scope.isFocused = !!val;
+            });
+
+            // initialize the content.
+            htmlField.innerHTML = scope.model[scope.path];
+
+            function registerBindings() {
+                Aloha.bind('aloha-smart-content-changed', function(jQueryEvent, alohaEditable) {
+                    scope.$apply(function() {
+                        scope.model[scope.path] = alohaEditable.editable.getContents();
+                        scope.formBuilder.modified = true;
+                    });
+                });
+            }
+
+        };
+    }
+
     /**
-     * We need a way to let the widget know when the inner htmlField (content editable div)
-     * is focused. We have no direct access to that information, so we need to set up
-     * event listeners on the native "focus" and "blur" events and use them to update
-     * the scope.
-     *
-     * @param scope
-     * @param element
+     * Create the Aloha editable areas and run any callbacks that have
+     * been registered.
      */
-    function htmlWidgetLinkFn(scope, element) {
-        var htmlField = element[0].querySelector('.htmlField');
-        scope.isFocused = false;
-
-        htmlField.addEventListener('focus', function() {
-            scope.$apply(function() {
-                scope.isFocused = true;
-            });
-        });
-        htmlField.addEventListener('blur', function() {
-            scope.$apply(function() {
-                scope.isFocused = false;
-            });
+    function initAloha() {
+        var $ = Aloha.jQuery;
+        Aloha.ready( function() {
+            $('.htmlField').aloha();
         });
 
+        callbacks.forEach(function(fn) {
+            fn();
+        });
+    }
+
+    /**
+     * this function will work cross-browser for loading scripts asynchronously
+     * Based on http://stackoverflow.com/a/7719185/772859
+     */
+    function loadScript(src, callback) {
+      var s,
+          r,
+          t;
+        r = false;
+        s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.src = src;
+        s.setAttribute('data-aloha-plugins', activeAlohaPlugins.join(','));
+        s.onload = s.onreadystatechange = function() {
+            //console.log( this.readyState ); //uncomment this line to see which ready states are called.
+            if ( !r && (!this.readyState || this.readyState == 'complete') )
+            {
+                r = true;
+                callback();
+            }
+        };
+        t = document.getElementsByTagName('script')[0];
+      t.parentNode.insertBefore(s, t);
     }
 
     return {
         restrict: 'E',
-        link: htmlWidgetLinkFn,
+        compile: htmlWidgetCompileFn,
         templateUrl: 'projects/components/formBuilder/standardWidgets/htmlWidget.html',
         scope: true
     };
