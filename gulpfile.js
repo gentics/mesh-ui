@@ -25,6 +25,7 @@ var gulp = require('gulp'),
 gulp.task('app-scripts', function() {
     return gulp.src([
         '!src/**/*.spec.js',
+        '!src/assets/**/*.*',
         'src/**/*.js'
     ])
         .pipe(jsHint())
@@ -86,7 +87,8 @@ gulp.task('build', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
 
     var css = gulp.src([
         '**/angular-material.css',
-        '**/vendor/*.css',
+        'vendor/**/*.css',
+        '!assets/vendor/**/*.css',
         '**/*.css'
     ], { cwd: 'build/'} );
 
