@@ -12,6 +12,7 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>**</include>
+				<include>**/.htaccess</include>
 			</includes>
 			<excludes>
 				<exclude>**/junit.xml</exclude>
