@@ -61,7 +61,7 @@
   "displayField": "string",
   "fields": {
     "string": "Test Node for UI Rendering Field Types",
-    "html": "<h3><span style=\"line-height: 1.846; font-size: 1.4rem;\">Test Node - HTML Type</span></h3><p><span style=\"line-height: 1.846; font-size: 1.4rem;\" class=\"\">This is an <u>HTML</u> field. Look how is is rendered. <i>Nice, huh?</i></span><br></p><p>Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.</p><p>Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. Dramatically maintain clicks-and-mortar solutions without functional solutions.</p>",
+    "html": "<h3>Test Node - HTML Type</h3><p>This is an <u>HTML</u> field. Look how is is rendered. <i>Nice, huh?</i><br></p><p>Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.</p><p>Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. Dramatically maintain clicks-and-mortar solutions without functional solutions.</p>",
     "numberBasic": 42,
     "numberRange": 50,
     "date": 1433336633,
