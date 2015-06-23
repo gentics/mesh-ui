@@ -125,13 +125,26 @@ function build_vendorStyles() {
     });
 }
 
+function build_mockBackend() {
+    console.log('build_mockBackend');
+
+    return new Promise(function(resolve, reject) {
+        return gulp.src([
+            'mesh-mock-backend*/**/*'
+        ])
+            .pipe(gulp.dest('build/'))
+            .pipe(livereload())
+            .on('end', resolve)
+            .on('error', reject);
+    });
+}
+
 function build_staticAssets() {
     console.log('build_staticAssets');
 
     return new Promise(function(resolve, reject) {
         return gulp.src([
-            'src/assets**/**/*',
-            'mesh-mock-backend*/**/*'
+            'src/assets**/**/*'
         ])
             .pipe(gulp.dest('build/'))
             .pipe(livereload())
@@ -191,6 +204,7 @@ gulp.task('build', function() {
                 build_vendorScripts(),
                 build_appStyles(),
                 build_vendorStyles(),
+                build_mockBackend(),
                 build_staticAssets()
             ]);
         })
@@ -346,6 +360,7 @@ gulp.task('watch', ['default', 'karma-watch'], function() {
     gulp.watch('src/**/*.less', build_appStyles);
     gulp.watch('src/index.html', build_index);
     gulp.watch('src/assets/**/*.*', build_staticAssets);
+    gulp.watch('mesh-mock-backend/**/*.*', build_mockBackend);
 });
 
 gulp.task('default', ['build']);
