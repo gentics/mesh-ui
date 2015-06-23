@@ -482,7 +482,8 @@ function dataServiceConfig($httpProvider, RestangularProvider, selectiveCachePro
     RestangularProvider.addResponseInterceptor(restangularResponseInterceptor);
 
     /**
-     * Interceptor to add index.json to get requests, so the mock backend works on any webserver.
+     * Interceptor to add index.json to get requests, so the mock backend works without
+     * specific server config like DirectoryIndex or MultiViews
      * TODO: Remove this when moving to real API
      */
     $httpProvider.interceptors.push(function() {
@@ -490,6 +491,8 @@ function dataServiceConfig($httpProvider, RestangularProvider, selectiveCachePro
             'request': function(config) {
                 if (config.url.match(/mesh-mock-backend\/dummy\/nodes\/[a-z_]*$/)) {
                     config.url += '/index.json';
+                } else if (config.url.match(/mesh-mock-backend\//)) {
+                    config.url = config.url.substr(0, config.url.length ) + '.json';
                 }
                 return config;
             }
