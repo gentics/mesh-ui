@@ -157,24 +157,61 @@ function htmlWidgetDirective() {
              */
             scope.isFocused = false;
 
-            scope.$watch(function() {
-                return htmlField.classList.contains('aloha-editable-active');
-            }, function(val) {
-                scope.isFocused = !!val;
-            });
-
             // initialize the content.
-            htmlField.innerHTML = scope.model[scope.path];
+            syncView();
 
             function registerBindings() {
+                var $ = Aloha.jQuery;
+
+                /**
+                 * View -> Model data binding
+                 */
                 Aloha.bind('aloha-smart-content-changed', function(jQueryEvent, alohaEditable) {
-                    scope.$apply(function() {
-                        scope.model[scope.path] = alohaEditable.editable.getContents();
-                        scope.formBuilder.modified = true;
-                    });
+                    if (eventTargetIsThisElement(alohaEditable)) {
+                        scope.$apply(function () {
+                            scope.model[scope.path] = alohaEditable.editable.getContents();
+                            scope.formBuilder.modified = true;
+                        });
+                    }
+                });
+
+                /**
+                 * Model -> data binding
+                 */
+                scope.$watch('model[path]', function(val) {
+                    if (typeof val !== 'undefined') {
+                        syncView();
+                    }
+                });
+
+                Aloha.bind('aloha-editable-activated', function(jQueryEvent, alohaEditable) {
+                    if (eventTargetIsThisElement(alohaEditable)) {
+                        scope.$apply(function () {
+                            scope.isFocused = true;
+                        });
+                    }
+                });
+
+                Aloha.bind('aloha-editable-deactivated', function(jQueryEvent, alohaEditable) {
+                    if (eventTargetIsThisElement(alohaEditable)) {
+                        scope.$apply(function () {
+                            scope.isFocused = false;
+                        });
+                    }
+                });
+
+                Aloha.ready( function() {
+                    $('.htmlField').aloha();
                 });
             }
 
+            function eventTargetIsThisElement(alohaEditable) {
+                return htmlField.getAttribute('id') === alohaEditable.editable.getId();
+            }
+
+            function syncView() {
+                htmlField.innerHTML = scope.model[scope.path];
+            }
         };
     }
 
@@ -183,11 +220,6 @@ function htmlWidgetDirective() {
      * been registered.
      */
     function initAloha() {
-        var $ = Aloha.jQuery;
-        Aloha.ready( function() {
-            $('.htmlField').aloha();
-        });
-
         callbacks.forEach(function(fn) {
             fn();
         });
