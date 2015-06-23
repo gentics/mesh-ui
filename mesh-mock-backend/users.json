@@ -1,0 +1,50 @@
+{
+  "data" : [
+    {
+      "@class" : "com.gentics.mesh.core.rest.user.response.UserResponse",
+      "uuid" : "uuid_joe_doe_user",
+      "lastname" : "Doe",
+      "firstname" : "Joe",
+      "username" : "jdoe42",
+      "emailAddress" : "j.doe@nowhere.com",
+      "groups" : [{
+        "name": "editors",
+        "uuid": "uuid_editors_group"
+      }],
+      "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+    },
+    {
+      "@class" : "com.gentics.mesh.core.rest.user.response.UserResponse",
+      "uuid" : "uuid_john_smith_user",
+      "lastname" : "Smith",
+      "firstname" : "John",
+      "username" : "jsmith",
+      "emailAddress" : "j.smith@nowhere.com",
+      "groups" : [{
+        "name": "editors",
+        "uuid": "uuid_editors_group"
+      }],
+      "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+    }, {
+      "@class" : "com.gentics.mesh.core.rest.user.response.UserResponse",
+      "uuid" : "uuid_jane_row_user",
+      "lastname" : "Roe",
+      "firstname" : "Jane",
+      "username" : "jroe",
+      "emailAddress" : "j.roe@nowhere.com",
+      "groups" : [{
+        "name": "editors",
+        "uuid": "uuid_editors_group"
+      },{
+        "name": "administrators",
+        "uuid": "uuid_administrators_group"
+      }   ],
+      "perms" : [ ]
+    } ],
+  "_metainfo" : {
+    "page" : 1,
+    "per_page" : 10,
+    "page_count" : 10,
+    "total_count" : 3
+  }
+}
