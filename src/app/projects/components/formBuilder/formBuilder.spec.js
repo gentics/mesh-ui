@@ -3,8 +3,7 @@ describe('formBuilder Module', function() {
     var $compile,
         $scope,
         $timeout,
-        containingElement,
-        $q;
+        containingElement;
 
     beforeEach(module('meshAdminUi.projects.formBuilder'));
     beforeEach(module('meshAdminUi.common'));
@@ -70,7 +69,7 @@ describe('formBuilder Module', function() {
         });
     });
 
-    xit('should generate a html type field', function() {
+    it('should generate a html type field', function() {
         var fields = [{
             "name": "html",
             "label": "HTML Type",
@@ -291,7 +290,7 @@ describe('formBuilder Module', function() {
                 expect(scopeListObject.fields.age).toEqual(18);
             });
 
-            xit('should create correct default for date', function() {
+            it('should create correct default for date', function() {
                 // divide by 10 to get around imprecision caused by getting Date.now() slightly after the method is called.
                 expect(Math.round(scopeListObject.fields.date / 10)).toEqual(Math.round(Date.now() / 10000));
             });
@@ -317,6 +316,6 @@ function getDateString(timeStampInSeconds) {
  */
 function pad(n, width, z) {
     z = z || '0';
-    n = n + '';
+    n += '';
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
