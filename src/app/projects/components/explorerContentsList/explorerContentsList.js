@@ -84,7 +84,8 @@ function explorerContentsListDirective($state) {
          * Transition to the contentEditor view for the given uuid
          * @param uuid
          */
-        function goToContent(uuid) {
+        function goToContent(event, uuid) {
+            event.preventDefault();
             vm.selectedItems = [];
             $state.go('projects.explorer.content', { uuid: uuid });
         }

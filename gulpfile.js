@@ -19,8 +19,7 @@ var gulp = require('gulp'),
 
     vars = require('./build-vars.json'),
     VENDOR_SCRIPTS = vars.VENDOR_SCRIPTS,
-    VENDOR_STYLES = vars.VENDOR_STYLES,
-    BASE_HREF = vars.BASE_HREF;
+    VENDOR_STYLES = vars.VENDOR_STYLES;
 
 gulp.task('app-scripts', function() {
     return gulp.src([
@@ -104,7 +103,6 @@ gulp.task('build', ['app-scripts', 'app-templates', 'vendor-scripts', 'app-style
             starttag: '<!-- inject:appjs -->',
             endtag: '<!-- endinject -->'
         }))
-        .pipe(replace(/BASE_HREF/, BASE_HREF.build))
         .pipe(gulp.dest('build/'))
         .pipe(livereload());
 });
@@ -139,8 +137,7 @@ gulp.task('dist', ['karma-test', 'dist-assets', 'dist-css', 'dist-js'], function
             starttag: '<!-- inject:appjs -->',
             endtag: '<!-- endinject -->'
         }))
-        .pipe(replace(/BASE_HREF/, BASE_HREF.dist))
-        //.pipe(minifyHtml({ loose: true }))
+        .pipe(minifyHtml({ loose: true }))
         .pipe(gulp.dest('dist/'))
 });
 
@@ -185,7 +182,7 @@ gulp.task('dist-js', ['build'], function() {
 });
 
 
-gulp.task('karma-watch', function() {
+gulp.task('karma-watch', ['app-templates'], function() {
     karma.start({
         configFile: __dirname + '/karma.conf.js'
     });

@@ -24,7 +24,7 @@
                 <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select All"></md-checkbox>
             </td>
             <td>
-                <a href="#" ng-click="vm.goToContent(item.uuid)">{{:: item.fields[item.displayField] }}</a>
+                <a href="#" ng-click="vm.goToContent($event, item.uuid)">{{:: item.fields[item.displayField] }}</a>
                <!-- <span class="binary-preview" ng-if="item.binaryProperties && item.binaryProperties.mimeType == 'image/jpeg'">
                     <img ng-src="{{ vm.getBinaryRepresentation(item) }}" />
                 </span>-->

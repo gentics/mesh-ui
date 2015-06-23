@@ -25,7 +25,7 @@ function appConfig($stateProvider,
 
     configRoutes($stateProvider);
     $urlRouterProvider.otherwise('/projects');
-    $locationProvider.html5Mode(true).hashPrefix('!');
+    $locationProvider.hashPrefix('!');
 
     $mdThemingProvider.theme('default')
         .primaryPalette('light-blue')
