@@ -272,7 +272,7 @@
         "here"
       ],
       "creator": {},
-      "path": "../mesh-mock-backend/binaries/plane.jpg",
+      "path": "mesh-mock-backend/binaries/plane.jpg",
       "fileName": "plane.jpg",
       "displayField": "description",
       "binaryProperties": {
@@ -305,7 +305,7 @@
       ],
       "tags": [],
       "creator": {},
-      "path": "../mesh-mock-backend/binaries/merc.jpg",
+      "path": "mesh-mock-backend/binaries/merc.jpg",
       "fileName": "merc.jpg",
       "displayField": "description",
       "binaryProperties": {
@@ -338,7 +338,7 @@
       ],
       "tags": [],
       "creator": {},
-      "path": "../mesh-mock-backend/binaries/flying_car.jpg",
+      "path": "mesh-mock-backend/binaries/flying_car.jpg",
       "fileName": "flying_car.jpg",
       "displayField": "description",
       "binaryProperties": {
