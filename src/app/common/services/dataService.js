@@ -469,7 +469,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
  * @param RestangularProvider
  * @param selectiveCacheProvider
  */
-function dataServiceConfig(RestangularProvider, selectiveCacheProvider) {
+function dataServiceConfig($httpProvider, RestangularProvider, selectiveCacheProvider) {
     // basic auth credentials: joe1:test123
     // header string: Authorization: Basic am9lMTp0ZXN0MTIz
     // TODO: this will be replaced by an OAuth 2 solution.
@@ -480,6 +480,22 @@ function dataServiceConfig(RestangularProvider, selectiveCacheProvider) {
     });
 
     RestangularProvider.addResponseInterceptor(restangularResponseInterceptor);
+
+    /**
+     * Interceptor to add index.json to get requests, so the mock backend works on any webserver.
+     * TODO: Remove this when moving to real API
+     */
+    $httpProvider.interceptors.push(function() {
+        return {
+            'request': function(config) {
+                if (config.url.match(/mesh-mock-backend\/dummy\/nodes\/[a-z_]*$/)) {
+                    config.url += '/index.json';
+                }
+                return config;
+            }
+        };
+    });
+
 
     // define the urls we wish to cache
     var projectName = '^\\/[a-zA-Z\\-]*',
@@ -510,7 +526,9 @@ function restangularResponseInterceptor(data, operation) {
 
     if (operation === "getList") {
         extractedData = data.data;
-        extractedData.metadata = data._metainfo;
+        if (data._metainfo) {
+            extractedData.metadata = data._metainfo;
+        }
     } else {
         extractedData = data;
     }
