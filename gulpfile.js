@@ -2,6 +2,8 @@
  * Mesh Build Script
  *
  * Using pure JS functions and built-in ES6 Promises where possible as in http://stackoverflow.com/a/29722640/772859
+ * Native promises require Node >= v0.12.x
+ *
  * @type {gulp.Gulp}
  */
 
@@ -223,6 +225,8 @@ function dist_css() {
             'styles/app.css'
         ], {cwd: 'build/'})
             .pipe(concat('app.css'))
+            // piping through the less plugin forces the font @imports to the top of the file.
+            .pipe(less())
             // TODO: clean-css is breaking the icon font definition - investigate a fix and then enable
             //.pipe(minifyCss({ processImport: false, keepBreaks: true }))
             .pipe(gulp.dest('dist/app/'))
