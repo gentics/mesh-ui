@@ -7,6 +7,10 @@ describe('authService', function() {
         authService = _authService_;
     }));
 
+    afterEach(function() {
+        authService.logOut();
+    });
+
     it('should not be logged in initially', function() {
         expect(authService.isLoggedIn).toBe(false);
     });

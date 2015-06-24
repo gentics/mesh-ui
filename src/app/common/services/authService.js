@@ -9,7 +9,7 @@ angular.module('meshAdminUi.common')
  * @constructor
  */
 function AuthService($cookies) {
-    var isLoggedIn = $cookies.isLoggedIn === 'true',
+    var isLoggedIn = $cookies.get('isLoggedIn') === 'true',
         onLogInCallbacks = [],
         onLogOutCallbacks = [];
 
@@ -33,7 +33,7 @@ function AuthService($cookies) {
     function logIn(userName, password) {
         if ((userName === 'admin' && password === 'admin') || (userName === 'a' && password === 'a')) {
             isLoggedIn = true;
-            $cookies.isLoggedIn = true;
+            $cookies.put('isLoggedIn', 'true');
             onLogInCallbacks.forEach(function(fn) {
                 fn();
             });
@@ -47,7 +47,7 @@ function AuthService($cookies) {
      */
     function logOut() {
         isLoggedIn = false;
-        $cookies.isLoggedIn = false;
+        $cookies.put('isLoggedIn', 'false');
         onLogOutCallbacks.forEach(function(fn) {
             fn();
         });
