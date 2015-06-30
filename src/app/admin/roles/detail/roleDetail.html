@@ -3,7 +3,7 @@
         <ul>
             <li>
                 <span>
-                    <a href="#" ui-sref="admin.projects.list">Roles</a>
+                    <a href="#" ui-sref="admin.roles.list">Roles</a>
                 </span>
             </li><li><span>
                     {{ vm.role.name }}
@@ -12,31 +12,41 @@
         </ul>
     </div>
 
-    <form name="projectEditorForm" class="admin-form">
+    <form name="roleEditorForm" class="admin-form">
 
         <md-input-container>
-            <label>Project Name</label>
-            <input type="text" ng-model="vm.project.name" ng-change="vm.modified = true">
+            <label>Role Name</label>
+            <input type="text" ng-model="vm.role.name" ng-change="vm.modified = true">
         </md-input-container>
+
+        <md-content class="">
+            <md-tabs md-no-ink md-dynamic-height="true" md-border-bottom>
+                <md-tab label="Content Permissions">
+                    <node-permissions-selector></node-permissions-selector>
+                </md-tab>
+                <md-tab label="Administrative Permissions">
+                    <permissions-table
+                            root-name="Schemas"
+                            root-uuid=""
+                            items="vm.schemas"
+                            item-name-field="item.name"></permissions-table>
+                    <permissions-table
+                            root-name="Microschemas"
+                            root-uuid=""
+                            items="vm.microschemas"
+                            item-name-field="item.name"></permissions-table>
+                    <permissions-table
+                            root-name="Projects"
+                            root-uuid=""
+                            items="vm.projects"
+                            item-name-field="item.name"></permissions-table>
+                    <permissions-table
+                            root-name="Roles"
+                            root-uuid=""
+                            items="vm.roles"
+                            item-name-field="item.name"></permissions-table>
+                </md-tab>
+            </md-tabs>
+        </md-content>
     </form>
-
-    <div layout="row" layout-align="center center" class="main-buttons">
-
-        <button class="btn btn-primary"
-                ng-click="vm.persist(vm.project)"
-                ng-disabled="!vm.modified"
-                aria-label="save">
-            <i class="icon-save"></i>
-            <span ng-if="!vm.isNew" translate>UPDATE</span>
-            <span ng-if="vm.isNew" translate>CREATE</span>
-        </button>
-
-        <button class="btn btn-warn"
-                ng-click="vm.remove(vm.project)"
-                ng-disabled="!vm.canDelete()"
-                aria-label="delete">
-            <i class="icon-delete"></i><span translate>DELETE</span>
-        </button>
-
-    </div>
 </div>

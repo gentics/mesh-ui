@@ -1,8 +1,9 @@
 angular.module('meshAdminUi.admin')
-    .controller('ProjectDetailController', ProjectDetailController);
+    .controller('RoleDetailController', RoleDetailController);
 
 /**
  *
+ * @param {ng.IQService} $q
  * @param {ng.ui.IStateService} $state
  * @param {ng.ui.IStateParamsService} $stateParams
  * @param {ConfirmActionDialog} confirmActionDialog
@@ -10,7 +11,7 @@ angular.module('meshAdminUi.admin')
  * @param {NotifyService} notifyService
  * @constructor
  */
-function ProjectDetailController($state, $stateParams, confirmActionDialog, dataService, notifyService) {
+function RoleDetailController($q, $state, $stateParams, confirmActionDialog, dataService, notifyService) {
     var vm = this;
 
     vm.isNew = false;
@@ -21,6 +22,19 @@ function ProjectDetailController($state, $stateParams, confirmActionDialog, data
 
     getRoleData();
 
+    $q.all([
+        dataService.getSchemas(),
+        dataService.getMicroschemas(),
+        dataService.getProjects(),
+        dataService.getRoles()
+    ])
+        .then(function(dataArray) {
+            vm.schemas = dataArray[0];
+            vm.microschemas = dataArray[1];
+            vm.projects = dataArray[2];
+            vm.roles = dataArray[3];
+        });
+
     /**
      * Persist the project data back to the server.
      */
@@ -28,9 +42,9 @@ function ProjectDetailController($state, $stateParams, confirmActionDialog, data
         dataService.persistProject(vm.project)
             .then(function(response) {
                 if (vm.isNew) {
-                    notifyService.toast('NEW_PROJECT_CREATED');
+                    notifyService.toast('NEW_ROLE_CREATED');
                     vm.isNew = false;
-                    $state.go('admin.projects.detail', { uuid: response.uuid });
+                    $state.go('admin.roles.detail', { uuid: response.uuid });
                 } else {
                     notifyService.toast('SAVED_CHANGES');
                     vm.modified = false;
@@ -50,7 +64,7 @@ function ProjectDetailController($state, $stateParams, confirmActionDialog, data
             })
             .then(function() {
                 notifyService.toast('Deleted');
-                $state.go('admin.projects.list');
+                $state.go('admin.roles.list');
             });
     }
 
@@ -59,8 +73,8 @@ function ProjectDetailController($state, $stateParams, confirmActionDialog, data
      */
     function showDeleteDialog() {
         return confirmActionDialog.show({
-            title: 'Delete Project?',
-            message: 'Are you sure you want to delete this project?'
+            title: 'Delete Role?',
+            message: 'Are you sure you want to delete this role?'
         });
     }
 
@@ -83,10 +97,10 @@ function ProjectDetailController($state, $stateParams, confirmActionDialog, data
         if (roleId) {
             return dataService.getRole($stateParams.uuid)
                 .then(function (data) {
-                    vm.project = data;
+                    vm.role = data;
                 });
         } else {
-            vm.project = createEmptyRole();
+            vm.role = createEmptyRole();
             vm.isNew = true;
         }
     }
