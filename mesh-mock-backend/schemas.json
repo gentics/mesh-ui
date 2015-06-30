@@ -1,0 +1,181 @@
+{
+  "data":[
+    {
+      "name": "article",
+      "uuid": "uuid_article_schema",
+      "displayField": "name",
+      "fields": [
+        {
+          "name": "name",
+          "label": "Article Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "content",
+          "label": "Content",
+          "type": "list",
+          "listType": "microschema",
+          "allow": ["htmlBlock", "captionedImage", "gallery"]
+        }
+      ],
+      "perms":["read", "create", "update", "delete"]
+    },
+    {
+      "name": "image",
+      "uuid": "uuid_image_schema",
+      "binary": true,
+      "displayField": "filename",
+      "fields": [
+        {
+          "name": "description",
+          "label": "File Name",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "perms":["read", "create", "update", "delete"]
+    },
+    {
+      "name": "product",
+      "uuid": "uuid_product_schema",
+      "displayField": "name",
+      "segmentField": "filename",
+      "fields": [
+        {
+          "name": "name",
+          "label": "Product Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "filename",
+          "label": "File Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "label": "description",
+          "type": "html"
+        },
+        {
+          "name": "image",
+          "label": "Main Image",
+          "type": "node",
+          "allow": ["image"]
+        },
+        {
+          "name": "sku",
+          "label": "SKU/Product Code",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "price",
+          "label": "Price",
+          "type": "number",
+          "step": 0.01,
+          "required": true
+        },
+        {
+          "name": "relatedProducts",
+          "label": "Related Products",
+          "type": "list",
+          "listType": "node",
+          "allow": ["product"],
+          "min:": 0,
+          "max": 10
+        }
+      ],
+      "perms":["read", "create", "update", "delete"]
+    },
+    {
+      "name": "test",
+      "uuid": "uuid_test_schema",
+      "displayField": "string",
+      "segmentField": "string",
+      "fields": [
+        {
+          "name": "string",
+          "label": "String Type",
+          "type": "string"
+        },
+        {
+          "name": "html",
+          "label": "Html Type",
+          "type": "html"
+        },
+        {
+          "name": "numberBasic",
+          "label": "Basic Number Type",
+          "type": "number"
+        },
+        {
+          "name": "numberRange",
+          "label": "Ranged Number Type",
+          "type": "number",
+          "min": 0,
+          "max": 100,
+          "step": 0.5
+        },
+        {
+          "name": "date",
+          "label": "Date Type",
+          "type": "date"
+        },
+        {
+          "name": "boolean",
+          "label": "Boolean Type",
+          "type": "boolean"
+        },
+        {
+          "name": "select",
+          "label": "Select Type",
+          "type": "select",
+          "options": ["red", "green", "blue"]
+        },
+        {
+          "name": "node",
+          "label": "Node Type",
+          "type": "node",
+          "allow": ["article", "product"]
+        },
+        {
+          "name": "listStringBasic",
+          "label": "List (string) Type - Basic",
+          "type": "list",
+          "listType": "string"
+        },
+        {
+          "name": "listNumberConstrained",
+          "label": "List (number) Type - Constrained",
+          "type": "list",
+          "listType": "number",
+          "min": 2,
+          "max": 5
+        },
+        {
+          "name": "microschemaSingle",
+          "label": "Single Microschema Type",
+          "type": "microschema",
+          "allow": ["geolocation"]
+        },
+        {
+          "name": "microschemaList",
+          "label": "Microschema List Type",
+          "type": "list",
+          "listType": "microschema",
+          "allow": ["geolocation", "gallery"]
+        }
+      ],
+      "perms":["read", "create", "update", "delete"]
+    }
+  ],
+  "_metainfo":{
+    "page":1,
+    "per_page":25,
+    "page_count":1,
+    "total_count":4
+  }
+}

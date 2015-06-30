@@ -70,13 +70,6 @@
           {"uuid": "dgasdgasdhasdh346234dsgf"}
         ]
       },
-      "children": {
-        "totalCount": 2000,
-        "items": [
-          {"uuid": "235hr9283yrwasdgasdgasg"},
-          {"uuid": "gasdgasdgasdgasdgasdgasg"}
-        ]
-      },
       "displayField": "name",
       "fields": {
         "name": "Welcome to Mesh - Getting Started",
@@ -143,13 +136,6 @@
         "items": [
           {"uuid": "235hr9283yr98239823410f"},
           {"uuid": "dgasdgasdhasdh346234dsgf"}
-        ]
-      },
-      "children": {
-        "totalCount": 2000,
-        "items": [
-          {"uuid": "235hr9283yrwasdgasdgasg"},
-          {"uuid": "gasdgasdgasdgasdgasdgasg"}
         ]
       },
       "segmentField": "string",

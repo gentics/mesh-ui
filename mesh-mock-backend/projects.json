@@ -5,10 +5,7 @@
          "uuid":"uuid_dummy_project",
          "name":"dummy",
          "perms":[
-            "read",
-            "create",
-            "update",
-            "delete"
+            "read"
          ],
          "rootNodeUuid": "uuid_root_node"
       }

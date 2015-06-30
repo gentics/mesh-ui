@@ -196,13 +196,6 @@
           {"uuid": "dgasdgasdhasdh346234dsgf"}
         ]
       },
-      "children": {
-        "totalCount": 2000,
-        "items": [
-          {"uuid": "235hr9283yrwasdgasdgasg"},
-          {"uuid": "gasdgasdgasdgasdgasdgasg"}
-        ]
-      },
       "displayField": "name",
       "fields": {
         "name": "Car",
