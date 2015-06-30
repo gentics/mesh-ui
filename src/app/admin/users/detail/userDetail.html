@@ -34,13 +34,6 @@
             <label>Email Address</label>
             <input type="text" ng-model="vm.user.emailAddress" ng-change="vm.modified = true">
         </md-input-container>
-        <div class="group-selector">
-            <ul>
-                <li ng-repeat="group in vm.groups">
-                    <md-checkbox md-no-ink ng-model="vm.selectedGroups[group.name]" aria-label="Select">{{:: group.name }}</md-checkbox>
-                </li>
-            </ul>
-        </div>
     </form>
 
     <div layout="row" layout-align="center center" class="main-buttons">

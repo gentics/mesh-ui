@@ -3,7 +3,6 @@ angular.module('meshAdminUi.admin')
 
 /**
  *
- * @param {ng.IQService} $q
  * @param {ng.ui.IStateService} $state
  * @param {ng.ui.IStateParamsService} $stateParams
  * @param {ConfirmActionDialog} confirmActionDialog
@@ -11,7 +10,7 @@ angular.module('meshAdminUi.admin')
  * @param {NotifyService} notifyService
  * @constructor
  */
-function UserDetailController($q, $state, $stateParams, confirmActionDialog, dataService, notifyService) {
+function UserDetailController($state, $stateParams, confirmActionDialog, dataService, notifyService) {
     var vm = this;
 
     vm.isNew = false;
@@ -19,7 +18,6 @@ function UserDetailController($q, $state, $stateParams, confirmActionDialog, dat
     vm.persist = persist;
     vm.remove = remove;
     vm.canDelete = canDelete;
-    vm.selectedGroups = {};
 
     getUserData();
 
@@ -41,98 +39,6 @@ function UserDetailController($q, $state, $stateParams, confirmActionDialog, dat
                     vm.modified = false;
                 }
             });
-    }
-
-    /**
-     * Set the groups that this user belongs to. Two lists are needed in order to do a
-     * diff and then trigger the correct API "add" and "remove" calls.
-     *
-     * @param {Array<string>} originalGroups
-     * @param {Array<string>} selectedGroups
-     * @returns {ng.IPromise<any[]>|ng.IPromise<{}>}
-     */
-    function persistUserGroups(originalGroups, selectedGroups) {
-        var asyncCalls = [];
-
-        originalGroups.forEach(function(groupName) {
-            if (-1 === selectedGroups.indexOf(groupName)) {
-                asyncCalls.push(doRemoveFromGroupCall(groupName));
-            }
-        });
-        selectedGroups.forEach(function(groupName) {
-            if (-1 === originalGroups.indexOf(groupName)) {
-                asyncCalls.push(doAddToGroupCall(groupName));
-            }
-        });
-
-        return $q.all(asyncCalls);
-    }
-
-    /**
-     * Given a group name, do a call to the server to remove the user from this group.
-     * @param {string} groupName
-     * @returns {*}
-     */
-    function doRemoveFromGroupCall(groupName) {
-        if (groupName !== null) {
-            return dataService.removeUserFromGroup(vm.user.uuid, groupNameToId(groupName));
-        }
-    }
-
-    /**
-     * Given a group name, do a call to the server to add the user to this group.
-     * @param {string} groupName
-     * @returns {*}
-     */
-    function doAddToGroupCall(groupName) {
-        if (groupName !== null) {
-            return dataService.addUserToGroup(vm.user.uuid, groupNameToId(groupName));
-        }
-    }
-
-    /**
-     * Returns the group uuid associated with the specified group name.
-     * @param {string} name
-     * @returns {string}
-     */
-    function groupNameToId(name) {
-        return vm.groups.filter(function(group) {
-            return group.name === name;
-        })[0].uuid;
-    }
-
-    /**
-     * Convert an array of group names into an object hash that can be used as a model for the
-     * group select checkboxes.
-     *
-     * @param {Array<string>} groupsArray
-     * @returns {Object<string, boolean>}
-     */
-    function groupsArrayToObject(groupsArray) {
-        var selectedGroups = {};
-
-        groupsArray.forEach(function(groupName) {
-            selectedGroups[groupName] = true;
-        });
-
-        return selectedGroups;
-    }
-
-    /**
-     * Convert the object hash containing the selected groups back into an array of the selected
-     * group names.
-     *
-     * @param {Object<string, boolean>}selectedGroups
-     * @returns {Array<string>}
-     */
-    function selectedGroupsToArray(selectedGroups) {
-        var groups = [];
-        for (var groupName in selectedGroups) {
-           if (selectedGroups.hasOwnProperty(groupName) && selectedGroups[groupName] === true) {
-               groups.push(groupName);
-           }
-        }
-        return groups;
     }
 
     /**

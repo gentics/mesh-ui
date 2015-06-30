@@ -1,20 +1,79 @@
 <div class="app-content">
     <h1 class="page-title">Users</h1>
 
-    <div class="actions-bar" layout="row">
-        <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.users.create">
-            Create New User
-        </button>
-    </div>
 
-    <table class="mh-table">
-        <tr ng-repeat="user in vm.users">
-            <td>
-                <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select"></md-checkbox>
-            </td>
-            <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.username }}</td>
-            <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.firstname }} {{:: user.lastname }}</td>
-            <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.emailAddress }}</td>
-        </tr>
-    </table>
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <h2 class="md-title" flex >Users</h2>
+            <md-input-container flex>
+                <label>Filter Users</label>
+                <input ng-model="vm.userFilter">
+            </md-input-container>
+            <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.users.create">
+                Create New User
+            </button>
+        </div>
+    </md-toolbar>
+    <md-content layout-padding class="admin-content-block">
+
+
+        <table class="mh-table">
+            <tr ng-repeat="user in vm.users | filter:vm.userFilter track by user.uuid">
+                <td>
+                    <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select"></md-checkbox>
+                </td>
+                <td ui-sref="admin.users.detail({ uuid: user.uuid })"><strong>{{:: user.firstname }} {{:: user.lastname }}</strong></td>
+                <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.username }}</td>
+                <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.emailAddress }}</td>
+                <td>
+                    <md-chips ng-model="user.groups"  md-require-match md-on-append="vm.validateGroup($chip, user)">
+                        <md-autocomplete
+                                md-selected-item="selectedItem"
+                                md-search-text="searchText"
+                                md-items="group in vm.filterBy(vm.groups, searchText)"
+                                md-item-text="item.name"
+                                placeholder="Add user to a group">
+                            <span md-highlight-text="searchText">{{ group.name }}</span>
+                        </md-autocomplete>
+                        <md-chip-template>
+                            <span>{{$chip.name}}</span>
+                        </md-chip-template>
+                    </md-chips>
+
+
+                </td>
+            </tr>
+        </table>
+    </md-content>
+
+
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <h2 flex >Groups</h2>
+            <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.users.create">
+                Create New Group
+            </button>
+        </div>
+    </md-toolbar>
+    <md-content layout-padding class="admin-content-block">
+
+        <md-list>
+            <md-list-item class="" ng-repeat="group in vm.groups track by $index" layout="column" layout-align="start start">
+                <h3>{{:: group.name}}</h3>
+                <md-chips ng-model="group.roles" md-require-match md-on-append="vm.validateRole($chip, group)" layout-fill>
+                    <md-autocomplete
+                            md-selected-item="selectedItem"
+                            md-search-text="searchText"
+                            md-items="role in vm.filterBy(vm.roles, searchText)"
+                            md-item-text="group.name"
+                            placeholder="Add a role">
+                        <span md-highlight-text="searchText">{{ role.name }}</span>
+                    </md-autocomplete>
+                    <md-chip-template>
+                        <span>{{$chip.name}}</span>
+                    </md-chip-template>
+                </md-chips>
+            </md-list-item>
+        </md-list>
+    </md-content>
 </div>
