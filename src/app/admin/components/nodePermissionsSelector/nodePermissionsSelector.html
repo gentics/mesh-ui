@@ -1,0 +1,40 @@
+<div class="node-permissions-selector-container">
+    <div class="breadcrumbs">
+        <ul>
+            <li ng-repeat="label in vm.breadcrumbs" ng-if="label.name">
+                  <span>
+                       <a href="#" ng-click="vm.openNode($event, label)">{{ label.name }}</a>
+                  </span>
+            </li>
+        </ul>
+    </div>
+
+    <table class="mh-table permissions-table">
+        <tr ng-class="{'root-row': item.children || item.rootNodeUuid }" ng-repeat="item in vm.items track by item.uuid">
+            <td>
+                <span ng-if="!item.children && !item.rootNodeUuid">{{:: item.name || item.fields[item.displayField] || item.segmentName }}</span>
+                <a href="#" ng-click="vm.openNode($event, item)" ng-if="item.children || item.rootNodeUuid">{{:: item.name || item.fields[item.displayField] || item.segmentName }}</a>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">
+                    Create
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']">
+                    Read
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']">
+                    Update
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']">
+                    Delete
+                </md-checkbox>
+            </td>
+        </tr>
+    </table>
+</div>
