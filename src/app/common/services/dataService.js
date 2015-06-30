@@ -83,6 +83,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.getMicroschema = getMicroschema;
     // Roles
     this.getRoles = getRoles;
+    this.getRole = getRole;
     // Breadcrumbs
     this.getBreadcrumb = getBreadcrumb;
 
@@ -399,7 +400,11 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     }
 
     function getRoles() {
-        // stub
+        return roles.getList();
+    }
+
+    function getRole(uuid) {
+        return Restangular.one('roles', uuid).get();
     }
 
     function getBreadcrumb(projectName, uuid) {
