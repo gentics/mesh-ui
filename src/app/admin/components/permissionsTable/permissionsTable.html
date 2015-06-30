@@ -1,0 +1,50 @@
+<div class="permissions-table-container">
+    <table class="mh-table permissions-table">
+        <tr class="root-row">
+            <td><strong>{{:: vm.rootName }}</strong></td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Create">
+                    Create
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Read">
+                    Read
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Update">
+                    Update
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Delete">
+                    Delete
+                </md-checkbox>
+            </td>
+        </tr>
+        <tr ng-repeat="item in vm.items track by item.uuid">
+            <td>{{:: vm.displayItemName(item) }}</td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">
+                    Create
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']">
+                    Read
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']">
+                    Update
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']">
+                    Delete
+                </md-checkbox>
+            </td>
+        </tr>
+    </table>
+</div>
