@@ -1,0 +1,42 @@
+<div class="app-content">
+    <div class="breadcrumbs">
+        <ul>
+            <li>
+                <span>
+                    <a href="#" ui-sref="admin.projects.list">Roles</a>
+                </span>
+            </li><li><span>
+                    {{ vm.role.name }}
+                </span>
+        </li>
+        </ul>
+    </div>
+
+    <form name="projectEditorForm" class="admin-form">
+
+        <md-input-container>
+            <label>Project Name</label>
+            <input type="text" ng-model="vm.project.name" ng-change="vm.modified = true">
+        </md-input-container>
+    </form>
+
+    <div layout="row" layout-align="center center" class="main-buttons">
+
+        <button class="btn btn-primary"
+                ng-click="vm.persist(vm.project)"
+                ng-disabled="!vm.modified"
+                aria-label="save">
+            <i class="icon-save"></i>
+            <span ng-if="!vm.isNew" translate>UPDATE</span>
+            <span ng-if="vm.isNew" translate>CREATE</span>
+        </button>
+
+        <button class="btn btn-warn"
+                ng-click="vm.remove(vm.project)"
+                ng-disabled="!vm.canDelete()"
+                aria-label="delete">
+            <i class="icon-delete"></i><span translate>DELETE</span>
+        </button>
+
+    </div>
+</div>

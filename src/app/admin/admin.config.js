@@ -43,6 +43,39 @@ function routesConfig($stateProvider) {
                 }
             }
         })
+        .state('admin.roles', {
+            abstract: true
+        })
+        .state('admin.roles.list', {
+            url: '/roles',
+            views: {
+                'main@': {
+                    templateUrl: 'admin/roles/list/roleList.html',
+                    controller: 'RoleListController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
+        .state('admin.roles.detail', {
+            url: '/roles/:uuid',
+            views: {
+                'main@': {
+                    templateUrl: 'admin/roles/detail/roleDetail.html',
+                    controller: 'RoleDetailController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
+        .state('admin.roles.create', {
+            url: '/roles/new',
+            views: {
+                'main@': {
+                    templateUrl: 'admin/roles/detail/roleDetail.html',
+                    controller: 'RoleDetailController',
+                    controllerAs: 'vm'
+                }
+            }
+        })
         .state('admin.projects', {
            abstract: true
         })

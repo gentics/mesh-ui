@@ -1,0 +1,20 @@
+<div class="app-content">
+    <h1 class="page-title">Roles</h1>
+
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <h2 class="md-title" flex >Roles</h2>
+            <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.roles.create">
+                Create New Role!
+            </button>
+        </div>
+    </md-toolbar>
+
+    <md-content layout-padding class="admin-content-block">
+        <md-list>
+            <md-list-item class="" ng-repeat="role in vm.roles track by $index" layout="column" layout-align="start start">
+                <h3><a ui-sref="admin.roles.detail({ uuid: role.uuid })">{{:: role.name}}</a></h3>
+            </md-list-item>
+        </md-list>
+    </md-content>
+</div>
