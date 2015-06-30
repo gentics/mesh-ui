@@ -45,7 +45,12 @@ function breadcrumbsDirective(dataService, contextService) {
             } else {
                 dataService.getBreadcrumb(vm.projectName, currentNode.id)
                     .then(function (data) {
-                        vm.breadcrumbs = data;
+                        vm.breadcrumbs = data.map(function(item) {
+                            if (item.name === 'rootNode') {
+                                item.name = currentProject.name;
+                            }
+                            return item;
+                        });
                     });
             }
         }
