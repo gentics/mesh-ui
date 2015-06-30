@@ -1,5 +1,5 @@
 <md-dialog flex="100">
-  <md-content>
+  <md-dialog-content>
       <h2 translate>{{:: dialog.title }}</h2>
 
       <div class="node-select-container">
@@ -10,7 +10,7 @@
                   display-mode="dialog.displayMode"></node-selector>
       </div>
       Allowed schemas: {{ dialog.allow }} <br>
-  </md-content>
+  </md-dialog-content>
 
   <div class="md-actions">
     <button ng-click="dialog.select()" class="btn btn-primary">
