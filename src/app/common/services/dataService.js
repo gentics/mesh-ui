@@ -44,6 +44,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     var projects = Restangular.all('projects'),
         users = Restangular.all('users'),
         schemas = Restangular.all('schemas'),
+        microschemas = Restangular.all('microschemas'),
         tags = Restangular.all('tags'),
         roles = Restangular.all('roles'),
         groups = Restangular.all('groups');
@@ -80,6 +81,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.getSchemas = getSchemas;
     this.getSchema = getSchema;
     // Microschemas
+    this.getMicroschemas = getMicroschemas;
     this.getMicroschema = getMicroschema;
     // Roles
     this.getRoles = getRoles;
@@ -388,6 +390,10 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      */
     function getSchema(uuid) {
         return Restangular.one('schemas', uuid).get();
+    }
+
+    function getMicroschemas(name) {
+        return microschemas.getList();
     }
 
     /**
