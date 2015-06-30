@@ -1,0 +1,39 @@
+{
+  "data" : [ {
+    "@class" : "com.gentics.mesh.core.rest.role.response.RoleResponse",
+    "name": "Create Content",
+    "uuid": "uuid_create_content_role",
+    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+  }, {
+    "@class" : "com.gentics.mesh.core.rest.role.response.RoleResponse",
+    "name": "Update Content",
+    "uuid": "uuid_update_content_role",
+    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+  }, {
+    "@class" : "com.gentics.mesh.core.rest.role.response.RoleResponse",
+    "name": "File Upload",
+    "uuid": "uuid_file_upload_role",
+    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+  },{
+    "@class" : "com.gentics.mesh.core.rest.role.response.RoleResponse",
+    "name": "Administer Users",
+    "uuid": "uuid_administer_users_role",
+    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+  },{
+    "@class" : "com.gentics.mesh.core.rest.role.response.RoleResponse",
+    "name": "Administer Schemas",
+    "uuid": "uuid_administer_schemas_role",
+    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+  },{
+    "@class" : "com.gentics.mesh.core.rest.role.response.RoleResponse",
+    "name": "God Mode",
+    "uuid": "uuid_god_mode_role",
+    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+  }],
+  "_metainfo" : {
+    "page" : 1,
+    "per_page" : 2,
+    "page_count" : 10,
+    "total_count" : 20
+  }
+}

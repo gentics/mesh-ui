@@ -27,7 +27,7 @@
       "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
     }, {
       "@class" : "com.gentics.mesh.core.rest.user.response.UserResponse",
-      "uuid" : "uuid_jane_row_user",
+      "uuid" : "uuid_jane_roe_user",
       "lastname" : "Roe",
       "firstname" : "Jane",
       "username" : "jroe",
@@ -40,7 +40,54 @@
         "uuid": "uuid_administrators_group"
       }   ],
       "perms" : [ ]
-    } ],
+    } , {
+      "@class" : "com.gentics.mesh.core.rest.user.response.UserResponse",
+      "uuid" : "uuid_bryan_petersen_user",
+      "lastname" : "Petersen",
+      "firstname" : "Bryan",
+      "username" : "bpetersen",
+      "emailAddress" : "b.petersen@nowhere.com",
+      "groups" : [{
+        "name": "editors",
+        "uuid": "uuid_editors_group"
+      },{
+        "name": "administrators",
+        "uuid": "uuid_administrators_group"
+      } ],
+      "perms" : [ ]
+    }, {
+      "@class": "com.gentics.mesh.core.rest.user.response.UserResponse",
+      "uuid": "uuid_wei_wong_user",
+      "lastname": "Wong",
+      "firstname": "Wei",
+      "username": "wwong",
+      "emailAddress": "w.wong@nowhere.com",
+      "groups": [
+        {
+          "name": "editors",
+          "uuid": "uuid_editors_group"
+        },
+        {
+          "name": "translators",
+          "uuid": "uuid_translators_group"
+        }
+      ],
+      "perms": []
+    }, {
+      "@class": "com.gentics.mesh.core.rest.user.response.UserResponse",
+      "uuid": "uuid_thomas_anderson_user",
+      "lastname": "Anderson",
+      "firstname": "Thomas",
+      "username": "neo",
+      "emailAddress": "t.anderson@nowhere.com",
+      "groups": [
+        {
+          "name": "superadmin",
+          "uuid": "uuid_superadmin_group"
+        }
+      ],
+      "perms": []
+    }],
   "_metainfo" : {
     "page" : 1,
     "per_page" : 10,
