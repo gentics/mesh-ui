@@ -1,16 +1,30 @@
-.permissions-table {
-
-  td:first-child {
-    padding-left: 10px;
-    min-width: 200px;
-  }
-
-  tr:not(.root-row) td:first-child {
-    padding-left: 30px;
-  }
-
-  tr.root-row td {
+.permissions-table-container {
+  .root-row {
+    padding: 0 10px;
     background-color: @color-almost-white;
     border-bottom: 1px solid @color-alto;
+
+    md-checkbox {
+      opacity: 0.4;
+      &.md-checked {
+        opacity: 1;
+      }
+    }
   }
-} 
+
+  .permissions-table {
+    max-height: 300px;
+    overflow-y: auto;
+
+    table {
+      td:first-child {
+        padding-left: 10px;
+        min-width: 200px;
+      }
+
+      tr:not(.root-row) td:first-child {
+        padding-left: 30px;
+      }
+    }
+  }
+}

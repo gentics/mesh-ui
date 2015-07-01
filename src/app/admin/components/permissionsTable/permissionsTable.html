@@ -1,50 +1,60 @@
 <div class="permissions-table-container">
-    <table class="mh-table permissions-table">
-        <tr class="root-row">
-            <td><strong>{{:: vm.rootName }}</strong></td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Create">
-                    Create
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Read">
-                    Read
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Update">
-                    Update
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Delete">
-                    Delete
-                </md-checkbox>
-            </td>
-        </tr>
-        <tr ng-repeat="item in vm.items track by item.uuid">
-            <td>{{:: vm.displayItemName(item) }}</td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">
-                    Create
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']">
-                    Read
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']">
-                    Update
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']">
-                    Delete
-                </md-checkbox>
-            </td>
-        </tr>
-    </table>
+
+    <div class="root-row" layout="row" layout-align="start center">
+        <strong>{{:: vm.rootName }}</strong>
+        <md-input-container flex>
+            <label>Filter {{:: vm.rootName }}</label>
+            <input type="text" ng-model="vm.filter">
+        </md-input-container>
+        <div>
+            <md-checkbox md-no-ink aria-label="Create">
+                Create
+            </md-checkbox>
+        </div>
+        <div>
+            <md-checkbox md-no-ink aria-label="Read">
+                Read
+            </md-checkbox>
+        </div>
+        <div>
+            <md-checkbox md-no-ink aria-label="Update">
+                Update
+            </md-checkbox>
+        </div>
+        <div>
+            <md-checkbox md-no-ink aria-label="Delete">
+                Delete
+            </md-checkbox>
+        </div>
+    </div>
+
+    <div class="permissions-table">
+        <table class="mh-table">
+            <tbody>
+            <tr ng-repeat="item in vm.items | filter: { name: vm.filter } track by item.uuid">
+                <td>{{:: vm.displayItemName(item) }}</td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">
+                        Create
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']">
+                        Read
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']">
+                        Update
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']">
+                        Delete
+                    </md-checkbox>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
