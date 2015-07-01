@@ -4,9 +4,10 @@ angular.module('meshAdminUi.admin')
 /**
  *
  * @param {DataService} dataService
+ * @param {meshUtils} mu
  * @returns {{}}
  */
-function nodePermissionsSelectorDirective(dataService) {
+function nodePermissionsSelectorDirective(dataService, mu) {
 
     function nodePermissionsSelectorController() {
         var vm = this,
@@ -17,12 +18,17 @@ function nodePermissionsSelectorDirective(dataService) {
                     uuid: null
                 }];
 
-        vm.selectedNodes = vm.selectedNodes instanceof Array ? vm.selectedNodes : [];
         vm.openNode = openNode;
         vm.items = [];
 
         populateContents();
 
+        /**
+         * Open the selected node and display its child folders and contents.
+         *
+         * @param {Event} event
+         * @param {Object} node
+         */
         function openNode(event, node) {
             event.preventDefault();
 
@@ -35,14 +41,13 @@ function nodePermissionsSelectorDirective(dataService) {
             populateContents();
         }
 
+        /**
+         * Fetch the folders and contents which are children of the currentNodeId, and
+         * concatenate into a single array, and populate the breadcrumbs.
+         */
         function populateContents() {
-
             if (currentNodeId === null) {
-                dataService.getProjects()
-                    .then(function(data) {
-                        vm.items = data;
-                        vm.breadcrumbs = breadcrumbsBase;
-                    });
+                loadProjects();
             } else {
                 dataService.getChildFolders(projectName, currentNodeId)
                     .then(function(data) {
@@ -50,24 +55,45 @@ function nodePermissionsSelectorDirective(dataService) {
                         return dataService.getChildContents(projectName, currentNodeId);
                     })
                     .then(function(data) {
-                        vm.items = vm.items.concat(data).map(function(item) {
-                            item.create = item.perms.indexOf('create') > -1;
-                            item.read = item.perms.indexOf('read') > -1;
-                            item.update = item.perms.indexOf('update') > -1;
-                            item['delete'] = item.perms.indexOf('delete') > -1;
-                            return item;
-                        });
+                        vm.items = vm.items.concat(data).map(mu.permissionsArrayToKeys);
                         return dataService.getBreadcrumb(projectName, currentNodeId);
                     })
-                    .then(function(data) {
-                        vm.breadcrumbs = breadcrumbsBase.concat(data.map(function(item) {
-                            if (item.name === 'rootNode') {
-                                item.name = projectName;
-                            }
-                            return item;
-                        }));
-                    });
+                    .then(populateBreadcrumbs);
             }
+        }
+
+        /**
+         * Fetch all projects and put them into the "items" array.
+         */
+        function loadProjects() {
+            dataService.getProjects()
+                .then(function(data) {
+                    vm.items = data.map(mu.permissionsArrayToKeys);
+                    vm.breadcrumbs = breadcrumbsBase;
+                });
+        }
+
+        /**
+         * Create the breadcrumbs array by concatenating the fetched breadcrumb data with
+         *  the `breadcrumbBase` array.
+         * @param {Array<Object>} data
+         */
+        function populateBreadcrumbs(data) {
+            vm.breadcrumbs = breadcrumbsBase.concat(data.map(replaceRootnodeWithProjectName));
+        }
+
+        /**
+         * Used to map over the breadcrumb array and replace the rootNode with the
+         * current project name.
+         *
+         * @param {Object} item
+         * @returns {Object}
+         */
+        function replaceRootnodeWithProjectName(item) {
+            if (item.name === 'rootNode') {
+                item.name = projectName;
+            }
+            return item;
         }
     }
 

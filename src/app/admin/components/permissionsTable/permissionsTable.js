@@ -2,37 +2,34 @@ angular.module('meshAdminUi.admin')
 .directive('permissionsTable', permissionsTableDirective);
 
 
-function permissionsTableDirective($timeout) {
+function permissionsTableDirective(mu) {
 
     function permissionsTableController($scope) {
         var vm = this;
 
         vm.displayItemName = displayItemName;
 
-
+        /**
+         * The `item` array will be populated async when the data arrives from the server call, so we
+         * need to watch it and once it is populated, process the array and cancel the watcher.
+         * @type {Function}
+         */
         var cancelItemsWatcher = $scope.$watch('vm.items', function(newVal) {
             if (newVal) {
-                permissionsToProperties();
+                vm.items = newVal.map(mu.permissionsArrayToKeys);
                 cancelItemsWatcher();
             }
         });
 
         /**
-         * Expand the permissions array into a series of key: value pairs so
-         * they can be easily bound to the view via ng-model.
+         * Evaluate the expression provided in the `itemNameField` field against the provided
+         * `item` object and return the result.
+         *
+         * @param {Object} item
+         * @returns {any}
          */
-        function permissionsToProperties() {
-            vm.items.forEach(function(item) {
-                item.create = item.perms.indexOf('create') > -1;
-                item.read = item.perms.indexOf('read') > -1;
-                item.update = item.perms.indexOf('update') > -1;
-                item['delete'] = item.perms.indexOf('delete') > -1;
-            });
-        }
-
         function displayItemName(item) {
-            var name = $scope.$eval(vm.itemNameField, { item: item });
-            return name;
+            return $scope.$eval(vm.itemNameField, {item: item});
         }
 
     }
