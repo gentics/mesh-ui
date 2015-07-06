@@ -1,8 +1,4 @@
 describe('meshUtils', function() {
-
-    /**
-     * @type {meshUtils}
-     */
     var mu;
 
     beforeEach(module('meshAdminUi.common'));
@@ -46,4 +42,39 @@ describe('meshUtils', function() {
         });
     });
 
+    describe('flatten method', function() {
+
+        it('should work on 1D array', function() {
+            var arr = [1, 2, 3];
+            var expected = [1, 2, 3];
+            var result = mu.flatten(arr);
+
+            expect(result).toEqual(expected);
+        });
+
+        it('should work on 2D array', function() {
+            var arr = [[1, 2], ['a', 'b']];
+            var expected = [1, 2, 'a', 'b'];
+            var result = mu.flatten(arr);
+
+            expect(result).toEqual(expected);
+        });
+
+        it('should work on irregular 3D array', function() {
+            var arr = [1, ['a', 'b'], [['foo', 'bar', [10, 11]], 'quux'], 'z'];
+            var expected = [1, 'a', 'b', 'foo', 'bar', 10, 11, 'quux', 'z'];
+            var result = mu.flatten(arr);
+
+            expect(result).toEqual(expected);
+        });
+
+        it('should throw if argument is not an array', function() {
+            var notArr = 'hello';
+            function run() {
+                mu.flatten(notArr);
+            }
+
+            expect(run).toThrow();
+        });
+    });
 });

@@ -3,6 +3,7 @@ angular.module('meshAdminUi.admin')
 
 /**
  *
+ * @param {ng.IQService} $q
  * @param {DataService} dataService
  * @param {meshUtils} mu
  * @returns {{}}
@@ -39,6 +40,10 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
             }
         }
 
+        /**
+         * Toggle whether the tags in a tag family should be expanded.
+         * @param {Object} tagFamily
+         */
         function toggleExpand(tagFamily) {
             if (tagFamily.description) {
                 if (vm.expand === tagFamily.uuid) {
@@ -64,7 +69,7 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
                     });
                     return $q.all(promises);
                 })
-                .then(flatten)
+                .then(mu.flatten)
                 .then(function(items) {
                     vm.items = items.map(mu.rolePermissionsArrayToKeys);
                 });
@@ -88,26 +93,6 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
                     });
                     return $q.all(promises);
                 });
-        }
-
-        /**
-         * Flatten an n-dimensional array.
-         *
-         * @param {Array} mdArray
-         * @returns {Array}
-         */
-        function flatten(mdArray) {
-            var flatArray = [];
-
-            mdArray.forEach(function(item) {
-                if (item instanceof Array) {
-                    flatArray = flatArray.concat(flatten(item));
-                } else {
-                    flatArray.push(item);
-                }
-            });
-
-            return flatArray;
         }
     }
 

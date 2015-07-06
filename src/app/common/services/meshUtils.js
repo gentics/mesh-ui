@@ -7,7 +7,8 @@ angular.module('meshAdminUi.common')
 function meshUtils() {
 
     return {
-        rolePermissionsArrayToKeys: rolePermissionsArrayToKeys
+        rolePermissionsArrayToKeys: rolePermissionsArrayToKeys,
+        flatten: flatten
     };
 
     /**
@@ -57,5 +58,30 @@ function meshUtils() {
         }
 
         return temp;
+    }
+
+
+    /**
+     * Flatten an n-dimensional array.
+     *
+     * @param {Array} mdArray
+     * @returns {Array}
+     */
+    function flatten(mdArray) {
+        var flatArray = [];
+
+        if (!(mdArray instanceof Array)) {
+            throw new Error('meshUtils#flatten: argument must be of type Array, got ' + typeof mdArray);
+        }
+
+        mdArray.forEach(function(item) {
+            if (item instanceof Array) {
+                flatArray = flatArray.concat(flatten(item));
+            } else {
+                flatArray.push(item);
+            }
+        });
+
+        return flatArray;
     }
 }
