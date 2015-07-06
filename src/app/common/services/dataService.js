@@ -45,7 +45,6 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         users = Restangular.all('users'),
         schemas = Restangular.all('schemas'),
         microschemas = Restangular.all('microschemas'),
-        tags = Restangular.all('tags'),
         roles = Restangular.all('roles'),
         groups = Restangular.all('groups');
 
@@ -67,6 +66,9 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     this.removeUserFromGroup = removeUserFromGroup;
     // Groups
     this.getGroups = getGroups;
+    // Tags
+    this.getTagFamilies = getTagFamilies;
+    this.getTags = getTags;
     // Nodes
     this.getChildNodes = getChildNodes;
     this.getChildFolders = getChildFolders;
@@ -91,21 +93,24 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
 
     /**
      * Get all projects as a list.
-     *
+     * @param {Object=} queryParams
      * @returns {*}
      */
-    function getProjects() {
-        return projects.getList();
+    function getProjects(queryParams) {
+        queryParams = queryParams || {};
+        return projects.getList(queryParams);
     }
 
     /**
      * Get the details of a single project specified by uuid.
      *
      * @param {string} uuid
+     * @param {Object=} queryParams
      * @returns {ng.IPromise<any>|restangular.IPromise<any>}
      */
-    function getProject(uuid) {
-        return Restangular.one('projects', uuid).get();
+    function getProject(uuid, queryParams) {
+        queryParams = queryParams || {};
+        return Restangular.one('projects', uuid).get(queryParams);
     }
 
     /**
@@ -184,13 +189,25 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         return deferred.promise;
     }
 
-    function getUsers() {
-        // stub
-        return users.getList();
+    /**
+     *
+     * @param {Object=} queryParams
+     * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
+     */
+    function getUsers(queryParams) {
+        queryParams = queryParams || {};
+        return users.getList(queryParams);
     }
 
-    function getUser(uuid) {
-        return Restangular.one('users', uuid).get();
+    /**
+     *
+     * @param {String} uuid
+     * @param {Object=} queryParams
+     * @returns {EnhancedPromise<any>|IPromise<any>}
+     */
+    function getUser(uuid, queryParams) {
+        queryParams = queryParams || {};
+        return Restangular.one('users', uuid).get(queryParams);
     }
 
     /**
@@ -230,10 +247,14 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         return endpoint.remove();
     }
 
-
-    function getGroups() {
-        // stub
-        return groups.getList();
+    /**
+     *
+     * @param {Object=} queryParams
+     * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
+     */
+    function getGroups(queryParams) {
+        queryParams = queryParams || {};
+        return groups.getList(queryParams);
     }
 
     /**
@@ -255,6 +276,13 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
             .then(unwrapCurrentLanguage);
     }
 
+    /**
+     *
+     * @param projectName
+     * @param parentNodeId
+     * @param queryParams
+     * @returns {IPromise<TResult>}
+     */
     function getChildFolders(projectName, parentNodeId, queryParams) {
         var url = projectName + '/nodes/' + parentNodeId + '/children_folders',
             nodes = Restangular.all(url);
@@ -265,6 +293,14 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         return nodes.getList()
             .then(unwrapCurrentLanguage);
     }
+
+    /**
+     *
+     * @param projectName
+     * @param parentNodeId
+     * @param queryParams
+     * @returns {IPromise<TResult>}
+     */
     function getChildContents(projectName, parentNodeId, queryParams) {
         var url = projectName + '/nodes/' + parentNodeId + '/children_contents',
             nodes = Restangular.all(url);
@@ -279,38 +315,53 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     /**
      * Get a single node.
      *
-     * @param {string} projectName
-     * @param uuid
+     * @param {String} projectName
+     * @param {String} uuid
+     * @param {Object=} queryParams
      * @returns {restangular.RestangularElement|restangular.IElement}
      */
-    function getNode(projectName, uuid) {
+    function getNode(projectName, uuid, queryParams) {
         var contents = Restangular.all(projectName);
-        var queryParams = {
-            lang: i18nService.languages.map(function(lang) {
+        queryParams = queryParams || {};
+        queryParams.lang = i18nService.languages.map(function(lang) {
                 return lang.code;
-            }).join(',')
-        };
+            }).join(',');
 
         return contents.one('nodes', uuid).get(queryParams);
     }
 
     /**
-     * Get a single tag specified by uuid.
-     *
-     * @param {string} projectName
-     * @param {string} uuid
+     * @param {String} projectName
      * @param {Object=} queryParams
-     * @returns {ng.IPromise<Object>}
+     * @returns {ng.IPromise<any>}
      */
-    function getTag(projectName, uuid, queryParams) {
-        var url = projectName + '/tags/' + uuid,
-            tag = Restangular.one(url);
+    function getTagFamilies(projectName, queryParams) {
+        var url = projectName + '/tagFamilies/',
+            nodes = Restangular.all(url);
 
         queryParams = queryParams || {};
-        queryParams.lang = i18nService.getCurrentLang().code;
 
-        return tag.get(queryParams)
-            .then(unwrapCurrentLanguage);
+        return nodes.getList(queryParams);
+    }
+
+    /**
+     *
+     * @param {String} projectName
+     * @param {String=} tagFamilyUuid
+     * @param {Object=} queryParams
+     * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
+     */
+    function getTags(projectName, tagFamilyUuid, queryParams) {
+        var url;
+        queryParams = queryParams || {};
+
+        if (typeof tagFamilyUuid === 'undefined') {
+            url = projectName + '/tags/';
+        } else {
+            url = projectName + '/tagFamilies/' + tagFamilyUuid + '/tags/';
+        }
+
+        return Restangular.all(url).getList(queryParams);
     }
 
     /**
@@ -378,41 +429,75 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         return content.remove();
     }
 
-    function getSchemas() {
-        // stub
-        return schemas.getList();
+    /**
+     *
+     * @param {Object=} queryParams
+     * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
+     */
+    function getSchemas(queryParams) {
+        queryParams = queryParams || {};
+        return schemas.getList(queryParams);
     }
 
     /**
      *
      * @param uuid
+     * @param {Object=} queryParams
      * @returns {ng.IPromise<any>|restangular.IPromise<any>}
      */
-    function getSchema(uuid) {
-        return Restangular.one('schemas', uuid).get();
+    function getSchema(uuid, queryParams) {
+        queryParams = queryParams || {};
+        return Restangular.one('schemas', uuid).get(queryParams);
     }
 
-    function getMicroschemas(name) {
-        return microschemas.getList();
+    /**
+     *
+     * @param {Object=} queryParams
+     * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
+     */
+    function getMicroschemas(queryParams) {
+        queryParams = queryParams || {};
+        return microschemas.getList(queryParams);
     }
 
     /**
      * Get a microschema by name
-     * @param name
+     * @param {String} name
+     * @param {Object=} queryParams
      * @returns {ng.IPromise<any>|restangular.IPromise<any>}
      */
-    function getMicroschema(name) {
-        return Restangular.one('microschemas', name).get();
+    function getMicroschema(name, queryParams) {
+        queryParams = queryParams || {};
+        return Restangular.one('microschemas', name).get(queryParams);
     }
 
-    function getRoles() {
-        return roles.getList();
+    /**
+     *
+     * @param {Object=} queryParams
+     * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
+     */
+    function getRoles(queryParams) {
+        queryParams = queryParams || {};
+        return roles.getList(queryParams);
     }
 
-    function getRole(uuid) {
-        return Restangular.one('roles', uuid).get();
+    /**
+     *
+     * @param {String} uuid
+     * @param {Object=} queryParams
+     * @returns {EnhancedPromise<any>|IPromise<any>}
+     */
+    function getRole(uuid, queryParams) {
+        queryParams = queryParams || {};
+        return Restangular.one('roles', uuid).get(queryParams);
     }
 
+    /**
+     *
+     * @param projectName
+     * @param uuid
+     * @returns {EnhancedPromise<any>|IPromise<any>}
+     */
     function getBreadcrumb(projectName, uuid) {
         return Restangular.one(projectName + '/breadcrumb', uuid).get();
     }
@@ -503,7 +588,14 @@ function dataServiceConfig($httpProvider, RestangularProvider, selectiveCachePro
                 if (config.url.match(/mesh-mock-backend\/dummy\/nodes\/[a-z_]*$/)) {
                     config.url += '/index.json';
                 } else if (config.url.match(/mesh-mock-backend\//)) {
-                    config.url = config.url.substr(0, config.url.length ) + '.json';
+                    var url;
+                    // remove trailing slash if exists
+                    if (config.url[config.url.length - 1] === '/') {
+                        url = config.url.substr(0, config.url.length - 1);
+                    } else {
+                        url = config.url;
+                    }
+                    config.url = url + '.json';
                 }
                 return config;
             }
