@@ -11,7 +11,6 @@ describe('formBuilder Module', function() {
     beforeEach(module('meshAdminUi.templates'));
 
     beforeEach(inject(function($rootScope, _$compile_, _$timeout_) {
-
         $compile = _$compile_;
         $timeout = _$timeout_;
         $scope = $rootScope.$new();
@@ -303,7 +302,6 @@ describe('formBuilder Module', function() {
 // utilities
 function getDateString(timeStampInSeconds) {
     var dateObject = new Date(timeStampInSeconds * 1000);
-    console.log(dateObject);
     return pad(dateObject.getFullYear(), 4) + '-' + pad(dateObject.getMonth() + 1, 2) + '-' + pad(dateObject.getDay(), 2);
 }
 

@@ -3,7 +3,7 @@ angular.module('meshAdminUi.admin')
 
 /**
  *
- * @param mu
+ * @param {meshUtils} mu
  * @returns {{restrict: string, templateUrl: string, controller: permissionsTableController, controllerAs: string, bindToController: boolean, scope: {rootName: string, rootUuid: string, items: string, itemNameField: string}}}
  */
 function permissionsTableDirective(mu) {
