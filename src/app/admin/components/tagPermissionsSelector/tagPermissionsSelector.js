@@ -18,6 +18,7 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
 
         vm.filterTags = filterTags;
         vm.toggleExpand = toggleExpand;
+        vm.collapsed = true;
         vm.filter = '';
         vm.items = [];
 

@@ -1,48 +1,57 @@
 <div class="node-permissions-selector-container">
-    <div class="root-row" layout="row" layout-align="start center">
-        <strong>Node Permissions</strong>
-        <md-input-container flex>
-            <label>Filter</label>
-            <input type="text" ng-model="vm.filter">
-        </md-input-container>
-    </div>
 
-    <div class="breadcrumbs">
-        <ul>
-            <li ng-repeat="label in vm.breadcrumbs" ng-if="label.name">
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <h2 class="md-title" flex >
+                Node Permissions
+                <i class="icon-expand-more" ng-show="vm.collapsed" ng-click="vm.collapsed = false"></i>
+                <i class="icon-expand-less" ng-show="!vm.collapsed" ng-click="vm.collapsed = true"></i>
+            </h2>
+            <md-input-container flex>
+                <label>Filter</label>
+                <input ng-model="vm.filter">
+            </md-input-container>
+        </div>
+    </md-toolbar>
+    <md-content layout-padding class="admin-content-block" ng-class="{ 'collapsed': vm.collapsed }">
+
+        <div class="breadcrumbs">
+            <ul>
+                <li ng-repeat="label in vm.breadcrumbs" ng-if="label.name">
                   <span>
                        <a href="#" ng-click="vm.openNode($event, label)">{{ label.name }}</a>
                   </span>
-            </li>
-        </ul>
-    </div>
+                </li>
+            </ul>
+        </div>
 
-    <table class="mh-table permissions-table">
-        <tr ng-class="{'root-row': item.children || item.rootNodeUuid }" ng-repeat="item in vm.items | filter: vm.filterNodes track by item.uuid">
-            <td>
-                <span ng-if="!item.children && !item.rootNodeUuid">{{:: item.name || item.fields[item.displayField] }}</span>
-                <a href="#" ng-click="vm.openNode($event, item)" ng-if="item.children || item.rootNodeUuid">{{:: item.name || item.fields[item.segmentField] }}</a>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">
-                    Create
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']">
-                    Read
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']">
-                    Update
-                </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']">
-                    Delete
-                </md-checkbox>
-            </td>
-        </tr>
-    </table>
+        <table class="mh-table permissions-table">
+            <tr ng-class="{'folder': item.children || item.rootNodeUuid }" ng-repeat="item in vm.items | filter: vm.filterNodes track by item.uuid">
+                <td>
+                    <span ng-if="!item.children && !item.rootNodeUuid">{{:: item.name || item.fields[item.displayField] }}</span>
+                    <a href="#" ng-click="vm.openNode($event, item)" ng-if="item.children || item.rootNodeUuid">{{:: item.name || item.fields[item.segmentField] }}</a>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">
+                        Create
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']">
+                        Read
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']">
+                        Update
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']">
+                        Delete
+                    </md-checkbox>
+                </td>
+            </tr>
+        </table>
+    </md-content>
 </div>

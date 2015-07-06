@@ -21,6 +21,7 @@ function nodePermissionsSelectorDirective(dataService, mu) {
                 "role": vm.roleId
             };
 
+        vm.collapsed = true;
         vm.openNode = openNode;
         vm.filterNodes = filterNodes;
         vm.filter = '';

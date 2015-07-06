@@ -19,45 +19,39 @@
             <input type="text" ng-model="vm.role.name" ng-change="vm.modified = true">
         </md-input-container>
 
-        <md-content class="">
-            <md-tabs md-no-ink md-dynamic-height="true" md-border-bottom>
-                <md-tab label="Content Permissions">
-                    <node-permissions-selector role-id="vm.roleId"></node-permissions-selector>
-                    <tag-permissions-selector role-id="vm.roleId"></tag-permissions-selector>
-                </md-tab>
-                <md-tab label="Administrative Permissions">
-                    <permissions-table
-                            root-name="Schemas"
-                            root-uuid=""
-                            items="vm.schemas"
-                            item-name-field="item.name"></permissions-table>
-                    <permissions-table
-                            root-name="Microschemas"
-                            root-uuid=""
-                            items="vm.microschemas"
-                            item-name-field="item.name"></permissions-table>
-                    <permissions-table
-                            root-name="Projects"
-                            root-uuid=""
-                            items="vm.projects"
-                            item-name-field="item.name"></permissions-table>
-                    <permissions-table
-                            root-name="Users"
-                            root-uuid=""
-                            items="vm.users"
-                            item-name-field="item.firstname + ' ' + item.lastname"></permissions-table>
-                    <permissions-table
-                            root-name="Groups"
-                            root-uuid=""
-                            items="vm.groups"
-                            item-name-field="item.name"></permissions-table>
-                    <permissions-table
-                            root-name="Roles"
-                            root-uuid=""
-                            items="vm.roles"
-                            item-name-field="item.name"></permissions-table>
-                </md-tab>
-            </md-tabs>
-        </md-content>
+        <node-permissions-selector
+                role-id="vm.roleId"></node-permissions-selector>
+        <tag-permissions-selector
+                role-id="vm.roleId"></tag-permissions-selector>
+        <permissions-table
+                root-name="Projects"
+                root-uuid=""
+                items="vm.projects"
+                item-name-field="item.name"></permissions-table>
+        <permissions-table
+                root-name="Schemas"
+                root-uuid=""
+                items="vm.schemas"
+                item-name-field="item.name"></permissions-table>
+        <permissions-table
+                root-name="Microschemas"
+                root-uuid=""
+                items="vm.microschemas"
+                item-name-field="item.name"></permissions-table>
+        <permissions-table
+                root-name="Users"
+                root-uuid=""
+                items="vm.users"
+                item-name-field="item.firstname + ' ' + item.lastname"></permissions-table>
+        <permissions-table
+                root-name="Groups"
+                root-uuid=""
+                items="vm.groups"
+                item-name-field="item.name"></permissions-table>
+        <permissions-table
+                root-name="Roles"
+                root-uuid=""
+                items="vm.roles"
+                item-name-field="item.name"></permissions-table>
     </form>
 </div>

@@ -11,6 +11,7 @@ function permissionsTableDirective(mu) {
     function permissionsTableController($scope) {
         var vm = this;
 
+        vm.collapsed = true;
         vm.displayItemName = displayItemName;
         vm.filter = '';
         vm.itemNameFilter = itemNameFilter;

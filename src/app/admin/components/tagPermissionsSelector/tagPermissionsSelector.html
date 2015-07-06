@@ -1,66 +1,73 @@
 <div class="tag-permissions-selector-container">
 
-
-    <div class="root-row" layout="row" layout-align="start center">
-        <strong>Tag Permissions</strong>
-        <md-input-container flex>
-            <label>Filter</label>
-            <input type="text" ng-model="vm.filter">
-        </md-input-container>
-        <div>
-            <md-checkbox md-no-ink aria-label="Create">
-                Create
-            </md-checkbox>
-        </div>
-        <div>
-            <md-checkbox md-no-ink aria-label="Read">
-                Read
-            </md-checkbox>
-        </div>
-        <div>
-            <md-checkbox md-no-ink aria-label="Update">
-                Update
-            </md-checkbox>
-        </div>
-        <div>
-            <md-checkbox md-no-ink aria-label="Delete">
-                Delete
-            </md-checkbox>
-        </div>
-    </div>
-
-    <table class="mh-table permissions-table">
-        <tr ng-class="{'project': item.rootNodeUuid, 'tag-family': item.description, 'tag': item.fields }"
-            ng-repeat="item in vm.items | filter: vm.filterTags track by item.uuid"
-            ng-hide="!vm.filter && item.fields && item.tagFamily.uuid !== vm.expand">
-
-            <td ng-click="vm.toggleExpand(item)">
-                <span ng-if="::item.description">Family: {{:: item.name }}</span>
-                <span ng-if="::item.rootNodeUuid">Project: {{:: item.name }}</span>
-                <span ng-if="::item.fields.name"><i class="icon-label-outline"></i> {{:: item.fields.name }}</span>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']" ng-if="::!item.rootNodeUuid">
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <h2 class="md-title" flex >
+                Tag Permissions
+                <i class="icon-expand-more" ng-show="vm.collapsed" ng-click="vm.collapsed = false"></i>
+                <i class="icon-expand-less" ng-show="!vm.collapsed" ng-click="vm.collapsed = true"></i>
+            </h2>
+            <md-input-container flex>
+                <label>Filter</label>
+                <input type="text" ng-model="vm.filter">
+            </md-input-container>
+            <div>
+                <md-checkbox md-no-ink aria-label="Create">
                     Create
                 </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']" ng-if="::!item.rootNodeUuid">
+            </div>
+            <div>
+                <md-checkbox md-no-ink aria-label="Read">
                     Read
                 </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']" ng-if="::!item.rootNodeUuid">
+            </div>
+            <div>
+                <md-checkbox md-no-ink aria-label="Update">
                     Update
                 </md-checkbox>
-            </td>
-            <td>
-                <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']" ng-if="::!item.rootNodeUuid">
+            </div>
+            <div>
+                <md-checkbox md-no-ink aria-label="Delete">
                     Delete
                 </md-checkbox>
-            </td>
+            </div>
+        </div>
+    </md-toolbar>
+    <md-content layout-padding class="admin-content-block" ng-class="{ 'collapsed': vm.collapsed }">
 
-        </tr>
-    </table>
+        <table class="mh-table permissions-table">
+            <tr ng-class="{'project': item.rootNodeUuid, 'tag-family': item.description, 'tag': item.fields }"
+                ng-repeat="item in vm.items | filter: vm.filterTags track by item.uuid"
+                ng-hide="!vm.filter && item.fields && item.tagFamily.uuid !== vm.expand">
+
+                <td ng-click="vm.toggleExpand(item)">
+                    <span ng-if="::item.description">Family: {{:: item.name }}</span>
+                    <span ng-if="::item.rootNodeUuid">Project: {{:: item.name }}</span>
+                    <span ng-if="::item.fields.name"><i class="icon-label-outline"></i> {{:: item.fields.name }}</span>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']" ng-if="::!item.rootNodeUuid">
+                        Create
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']" ng-if="::!item.rootNodeUuid">
+                        Read
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']" ng-if="::!item.rootNodeUuid">
+                        Update
+                    </md-checkbox>
+                </td>
+                <td>
+                    <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']" ng-if="::!item.rootNodeUuid">
+                        Delete
+                    </md-checkbox>
+                </td>
+
+            </tr>
+        </table>
+    </md-content>
 
 </div>
