@@ -11,7 +11,7 @@
         "name": "editors",
         "uuid": "uuid_editors_group"
       }],
-      "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+      "perms" : [ "read", "update", "delete", "create" ]
     },
     {
       "@class" : "com.gentics.mesh.core.rest.user.response.UserResponse",
@@ -24,7 +24,7 @@
         "name": "editors",
         "uuid": "uuid_editors_group"
       }],
-      "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+      "perms" : [ "read", "update", "delete", "create" ]
     }, {
       "@class" : "com.gentics.mesh.core.rest.user.response.UserResponse",
       "uuid" : "uuid_jane_roe_user",

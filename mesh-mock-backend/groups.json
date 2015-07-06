@@ -14,7 +14,7 @@
       "uuid": "uuid_file_upload_role"
      } ],
     "users" : [ ],
-    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+    "perms" : [ "read", "update", "delete", "create" ]
   }, {
     "@class" : "com.gentics.mesh.core.rest.group.response.GroupResponse",
     "uuid" : "uuid_administrators_group",
@@ -36,7 +36,7 @@
       "uuid": "uuid_administer_schemas_role"
     }],
     "users" : [ ],
-    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+    "perms" : [ "read", "update", "delete", "create" ]
   }, {
     "@class" : "com.gentics.mesh.core.rest.group.response.GroupResponse",
     "uuid" : "uuid_translators_group",
@@ -46,7 +46,7 @@
       "uuid": "uuid_update_content_role"
     }],
     "users" : [ ],
-    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+    "perms" : [ "read", "update", "delete", "create" ]
   } , {
     "@class" : "com.gentics.mesh.core.rest.group.response.GroupResponse",
     "uuid" : "uuid_superadmin_group",
@@ -56,7 +56,7 @@
       "uuid": "uuid_god_mode_role"
     }],
     "users" : [ ],
-    "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ]
+    "perms" : [ "read", "update", "delete", "create" ]
   } ],
   "_metainfo" : {
     "page" : 1,
