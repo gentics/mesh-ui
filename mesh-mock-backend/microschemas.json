@@ -18,7 +18,8 @@
           "required": true
         }
       ],
-      "perms":["read", "create", "update", "delete"]
+      "perms":["read", "create", "update", "delete"],
+      "rolePerms": ["read"]
     },
     {
       "name": "gallery",
@@ -40,7 +41,8 @@
           "max": 20
         }
       ],
-      "perms":["read", "create", "update", "delete"]
+      "perms":["read", "create", "update", "delete"],
+      "rolePerms": ["read"]
     },
     {
       "name": "geolocation",
@@ -71,7 +73,8 @@
           "required": true
         }
       ],
-      "perms":["read", "create", "update", "delete"]
+      "perms":["read", "create", "update", "delete"],
+      "rolePerms": ["read"]
     },
     {
       "name": "htmlBlock",
@@ -84,7 +87,8 @@
           "required": true
         }
       ],
-      "perms":["read", "create", "update", "delete"]
+      "perms":["read", "create", "update", "delete"],
+      "rolePerms": ["read"]
     }
   ],
   "_metainfo":{

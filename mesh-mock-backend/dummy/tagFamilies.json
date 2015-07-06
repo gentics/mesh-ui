@@ -10,7 +10,12 @@
         "update",
         "delete",
         "create"
-      ]
+      ],
+      "rolePerms": [
+        "read",
+        "update",
+        "delete",
+        "create"]
     },
     {
       "uuid": "uuid_vehicleType_tagFamily",
@@ -18,6 +23,12 @@
       "description": "The available types of vehicle",
       "count": 5,
       "perms": [
+        "read",
+        "update",
+        "delete",
+        "create"
+      ],
+      "rolePerms": [
         "read",
         "update",
         "delete",

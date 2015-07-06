@@ -19,7 +19,8 @@
           "allow": ["htmlBlock", "captionedImage", "gallery"]
         }
       ],
-      "perms":["read", "create", "update", "delete"]
+      "perms":["read", "create", "update", "delete"],
+      "rolePerms": ["read"]
     },
     {
       "name": "image",
@@ -34,7 +35,8 @@
           "required": true
         }
       ],
-      "perms":["read", "create", "update", "delete"]
+      "perms":["read", "create", "update", "delete"],
+      "rolePerms": ["read"]
     },
     {
       "name": "product",
@@ -88,7 +90,8 @@
           "max": 10
         }
       ],
-      "perms":["read", "create", "update", "delete"]
+      "perms":["read", "create", "update", "delete"],
+      "rolePerms": ["read"]
     },
     {
       "name": "test",
@@ -169,7 +172,8 @@
           "allow": ["geolocation", "gallery"]
         }
       ],
-      "perms":["read", "create", "update", "delete"]
+      "perms":["read", "create", "update", "delete"],
+      "rolePerms": ["read"]
     }
   ],
   "_metainfo":{
