@@ -48,7 +48,8 @@
       "uuid": "uuid_update_content_role"
     }],
     "users" : [ ],
-    "perms" : [ "read", "update", "delete", "create" ]
+    "perms" : [ "read", "update", "delete", "create" ],
+    "rolePerms": ["read"]
   } , {
     "@class" : "com.gentics.mesh.core.rest.group.response.GroupResponse",
     "uuid" : "uuid_superadmin_group",

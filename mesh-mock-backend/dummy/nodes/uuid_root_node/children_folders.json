@@ -62,6 +62,10 @@
         "update",
         "delete"
       ],
+      "rolePerms": [
+        "read",
+        "update"
+      ],
       "schema": {
         "name": "folder",
         "uuid": "uuid_folder_schema"

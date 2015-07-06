@@ -111,6 +111,10 @@
         "update",
         "delete"
       ],
+      "rolePerms": [
+        "read",
+        "update"
+      ],
       "schema": {
         "name": "product",
         "uuid": "4776dcfee87745f3b6dcfee87705f3ad"
@@ -227,6 +231,10 @@
         "update",
         "delete"
       ],
+      "rolePerms": [
+        "read",
+        "update"
+      ],
       "schema": {
         "name": "product",
         "uuid": "4776dcfee87745f3b6dcfee87705f3ad"
@@ -264,6 +272,10 @@
         "create",
         "update",
         "delete"],
+      "rolePerms": [
+        "read",
+        "update"
+      ],
       "schema": {
         "uuid": "uuid_image_schema",
         "name": "image"
@@ -297,6 +309,10 @@
         "create",
         "update",
         "delete"],
+      "rolePerms": [
+        "read",
+        "update"
+      ],
       "schema": {
         "uuid": "uuid_image_schema",
         "name": "image"
@@ -330,6 +346,10 @@
         "create",
         "update",
         "delete"],
+      "rolePerms": [
+        "read",
+        "update"
+      ],
       "schema": {
         "uuid": "uuid_image_schema",
         "name": "image"

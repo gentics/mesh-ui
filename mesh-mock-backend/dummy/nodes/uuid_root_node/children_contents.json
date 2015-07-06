@@ -71,6 +71,10 @@
         "update",
         "delete"
       ],
+      "rolePerms": [
+        "read",
+        "update"
+      ],
       "schema": {
         "name": "article",
         "uuid": "uuid_article_schema"
@@ -141,6 +145,10 @@
         "create",
         "update",
         "delete"
+      ],
+      "rolePerms": [
+        "read",
+        "update"
       ],
       "schema": {
         "name": "article",
