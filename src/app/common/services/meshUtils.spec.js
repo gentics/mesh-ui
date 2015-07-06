@@ -10,39 +10,39 @@ describe('meshUtils', function() {
         mu = _mu_;
     }));
 
-    describe('permissionsArrayToKeys method', function() {
+    describe('rolePermissionsArrayToKeys method', function() {
 
         it('should throw on invalid object', function() {
             var invalid = { foo: 'bar' };
             function run() {
-                return mu.permissionsArrayToKeys(invalid);
+                return mu.rolePermissionsArrayToKeys(invalid);
             }
 
             expect(run).toThrow();
         });
 
         it('should convert valid perms to keys', function() {
-            var item = { perms: ['create', 'read', 'update', 'delete'] };
-            var expected = { 'create': true, 'read': true, 'update': true, 'delete': true, perms: ['create', 'read', 'update', 'delete'] };
-            var result = mu.permissionsArrayToKeys(item);
+            var item = { rolePerms: ['create', 'read', 'update', 'delete'] };
+            var expected = { 'create': true, 'read': true, 'update': true, 'delete': true, rolePerms: ['create', 'read', 'update', 'delete'] };
+            var result = mu.rolePermissionsArrayToKeys(item);
 
             expect(result).toEqual(expected);
         });
 
         it('should not overwrite existing keys', function() {
-            var item = { perms: ['create', 'read', 'update', 'delete'], update: function() {} };
+            var item = { rolePerms: ['create', 'read', 'update', 'delete'], update: function() {} };
             function run() {
-                return mu.permissionsArrayToKeys(item);
+                return mu.rolePermissionsArrayToKeys(item);
             }
 
             expect(run).toThrow();
         });
 
         it('should not mutate the original object', function() {
-            var item = { perms: ['create', 'read', 'update', 'delete'] };
-            mu.permissionsArrayToKeys(item);
+            var item = { rolePerms: ['create', 'read', 'update', 'delete'] };
+            mu.rolePermissionsArrayToKeys(item);
 
-            expect(item).toEqual({ perms: ['create', 'read', 'update', 'delete'] });
+            expect(item).toEqual({ rolePerms: ['create', 'read', 'update', 'delete'] });
         });
     });
 

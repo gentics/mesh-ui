@@ -3,34 +3,33 @@ angular.module('meshAdminUi.common')
 
 /**
  * A collection of static utility methods for use throughout the app.
- * @returns {{permissionsArrayToKeys: permissionsArrayToKeys}}
  */
 function meshUtils() {
 
     return {
-        permissionsArrayToKeys: permissionsArrayToKeys
+        rolePermissionsArrayToKeys: rolePermissionsArrayToKeys
     };
 
     /**
-     * Given an object `item` with a `perms` property of type ['create', 'read', 'update' 'delete'], this function
+     * Given an object `item` with a `rolePerms` property of type ['create', 'read', 'update' 'delete'], this function
      * will return a clone of the object with each permission as a key set to `true`.
      *
      * @param {Object} original
      * @returns {Object}
      */
-    function permissionsArrayToKeys(original) {
+    function rolePermissionsArrayToKeys(original) {
         var item = clone(original),
             perms = ['create', 'read', 'update', 'delete'];
 
-        if (!(item.hasOwnProperty('perms') && item.perms instanceof Array)) {
-            throw new Error('meshUtils#permissionsArrayToKeys: argument must have a "perms" property of type Array.');
+        if (!(item.hasOwnProperty('rolePerms') && item.rolePerms instanceof Array)) {
+            throw new Error('meshUtils#rolePermissionsArrayToKeys: argument must have a "rolePerms" property of type Array.');
         }
 
         perms.forEach(function(perm) {
             if (item.hasOwnProperty(perm)) {
-                throw new Error('meshUtils#permissionsArrayToKeys: item already has a key "' + perm + '".');
+                throw new Error('meshUtils#rolePermissionsArrayToKeys: item already has a key "' + perm + '".');
             } else {
-                item[perm] = item.perms.indexOf(perm) > -1;
+                item[perm] = item.rolePerms.indexOf(perm) > -1;
             }
         });
         return item;
@@ -38,6 +37,8 @@ function meshUtils() {
 
     /**
      * Deep clone an object, from http://stackoverflow.com/a/122190/772859
+     * Note that this will not handle object containing circular references.
+     *
      * @param obj
      * @returns {*}
      */
