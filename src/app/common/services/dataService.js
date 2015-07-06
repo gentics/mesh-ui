@@ -272,8 +272,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         queryParams = queryParams || {};
         queryParams.lang = i18nService.getCurrentLang().code;
 
-        return nodes.getList(queryParams)
-            .then(unwrapCurrentLanguage);
+        return nodes.getList(queryParams);
     }
 
     /**
@@ -288,10 +287,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
             nodes = Restangular.all(url);
 
         queryParams = queryParams || {};
-        queryParams.lang = i18nService.getCurrentLang().code;
 
-        return nodes.getList()
-            .then(unwrapCurrentLanguage);
+        return nodes.getList(queryParams);
     }
 
     /**
@@ -308,8 +305,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         queryParams = queryParams || {};
         queryParams.lang = i18nService.getCurrentLang().code;
 
-        return nodes.getList()
-            .then(unwrapCurrentLanguage);
+        return nodes.getList(queryParams);
     }
 
     /**

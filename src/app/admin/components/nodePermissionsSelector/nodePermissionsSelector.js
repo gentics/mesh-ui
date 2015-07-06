@@ -16,7 +16,10 @@ function nodePermissionsSelectorDirective(dataService, mu) {
             breadcrumbsBase = [{
                     name: 'Projects',
                     uuid: null
-                }];
+                }],
+            queryParams = {
+                "role": vm.roleId
+            };
 
         vm.openNode = openNode;
         vm.filterNodes = filterNodes;
@@ -71,10 +74,10 @@ function nodePermissionsSelectorDirective(dataService, mu) {
             if (currentNodeId === null) {
                 loadProjects();
             } else {
-                dataService.getChildFolders(projectName, currentNodeId)
+                dataService.getChildFolders(projectName, currentNodeId, queryParams)
                     .then(function(data) {
                         vm.items = data;
-                        return dataService.getChildContents(projectName, currentNodeId);
+                        return dataService.getChildContents(projectName, currentNodeId, queryParams);
                     })
                     .then(function(data) {
                         vm.items = vm.items.concat(data).map(mu.rolePermissionsArrayToKeys);
@@ -88,7 +91,7 @@ function nodePermissionsSelectorDirective(dataService, mu) {
          * Fetch all projects and put them into the "items" array.
          */
         function loadProjects() {
-            dataService.getProjects()
+            dataService.getProjects(queryParams)
                 .then(function(data) {
                     vm.items = data.map(mu.rolePermissionsArrayToKeys);
                     vm.breadcrumbs = breadcrumbsBase;
@@ -129,6 +132,8 @@ function nodePermissionsSelectorDirective(dataService, mu) {
         controller: nodePermissionsSelectorController,
         controllerAs: 'vm',
         bindToController: true,
-        scope: {}
+        scope: {
+            roleId: '='
+        }
     };
 }

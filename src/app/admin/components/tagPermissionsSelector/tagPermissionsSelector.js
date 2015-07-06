@@ -11,7 +11,10 @@ angular.module('meshAdminUi.admin')
 function tagPermissionsSelectorDirective($q, dataService, mu) {
 
     function tagPermissionsSelectorController() {
-        var vm = this;
+        var vm = this,
+            queryParams = {
+                "role": vm.roleId
+            };
 
         vm.filterTags = filterTags;
         vm.toggleExpand = toggleExpand;
@@ -60,7 +63,7 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
          *
          */
         function populateItems() {
-            return dataService.getProjects()
+            return dataService.getProjects(queryParams)
                 .then(function(projects) {
                     var promises = [];
                     projects.forEach(function(project) {
@@ -83,13 +86,13 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
          * @returns {IPromise<TResult>}
          */
         function populateTagFamilies(project) {
-            return dataService.getTagFamilies(project.name)
+            return dataService.getTagFamilies(project.name, queryParams)
                 .then(function(tagFamilies) {
                     var promises = [];
                     project.tagFamilies = tagFamilies;
                     project.tagFamilies.forEach(function(tagFamily) {
                         promises.push($q.when(tagFamily));
-                        promises = promises.concat(dataService.getTags(project.name, tagFamily.uuid));
+                        promises = promises.concat(dataService.getTags(project.name, tagFamily.uuid, queryParams));
                     });
                     return $q.all(promises);
                 });
@@ -102,6 +105,8 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
         controller: tagPermissionsSelectorController,
         controllerAs: 'vm',
         bindToController: true,
-        scope: {}
+        scope: {
+            roleId: '='
+        }
     };
 }

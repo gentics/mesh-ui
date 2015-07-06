@@ -14,6 +14,7 @@ angular.module('meshAdminUi.admin')
 function RoleDetailController($q, $state, $stateParams, confirmActionDialog, dataService, notifyService) {
     var vm = this;
 
+    vm.roleId = $stateParams.uuid;
     vm.isNew = false;
     vm.modified = false;
     vm.persist = persist;
@@ -22,13 +23,17 @@ function RoleDetailController($q, $state, $stateParams, confirmActionDialog, dat
 
     getRoleData();
 
+    var queryParams = {
+        "role": $stateParams.uuid
+    };
+
     $q.all([
-        dataService.getSchemas(),
-        dataService.getMicroschemas(),
-        dataService.getProjects(),
-        dataService.getRoles(),
-        dataService.getGroups(),
-        dataService.getUsers()
+        dataService.getSchemas(queryParams),
+        dataService.getMicroschemas(queryParams),
+        dataService.getProjects(queryParams),
+        dataService.getRoles(queryParams),
+        dataService.getGroups(queryParams),
+        dataService.getUsers(queryParams)
     ])
         .then(function(dataArray) {
             vm.schemas = dataArray[0];
