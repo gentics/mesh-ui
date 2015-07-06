@@ -16,7 +16,7 @@
             <div class="tag-list-container">
                 <ul class="tag-list">
                     <li ng-repeat="folder in vm.folders track by $index" class="tag-item" ng-click="vm.openNode(folder.uuid)">
-                        <a href="#" class="a-plain">{{ folder.segmentName }}</a>
+                        <a href="#" class="a-plain">{{ folder.fields[folder.segmentField] }}</a>
                     </li>
                 </ul>
             </div>
