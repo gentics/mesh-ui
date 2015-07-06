@@ -8,12 +8,18 @@
             </li>
         </ul>
     </div>
+    <div class="root-row">
+        <md-input-container flex>
+            <label>Filter</label>
+            <input type="text" ng-model="vm.filter">
+        </md-input-container>
+    </div>
 
     <table class="mh-table permissions-table">
-        <tr ng-class="{'root-row': item.children || item.rootNodeUuid }" ng-repeat="item in vm.items track by item.uuid">
+        <tr ng-class="{'root-row': item.children || item.rootNodeUuid }" ng-repeat="item in vm.items | filter: vm.filterNodes track by item.uuid">
             <td>
-                <span ng-if="!item.children && !item.rootNodeUuid">{{:: item.name || item.fields[item.displayField] || item.segmentName }}</span>
-                <a href="#" ng-click="vm.openNode($event, item)" ng-if="item.children || item.rootNodeUuid">{{:: item.name || item.fields[item.displayField] || item.segmentName }}</a>
+                <span ng-if="!item.children && !item.rootNodeUuid">{{:: item.name || item.fields[item.displayField] }}</span>
+                <a href="#" ng-click="vm.openNode($event, item)" ng-if="item.children || item.rootNodeUuid">{{:: item.name || item.fields[item.segmentField] }}</a>
             </td>
             <td>
                 <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">

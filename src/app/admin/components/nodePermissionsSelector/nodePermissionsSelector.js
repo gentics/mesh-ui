@@ -19,6 +19,8 @@ function nodePermissionsSelectorDirective(dataService, mu) {
                 }];
 
         vm.openNode = openNode;
+        vm.filterNodes = filterNodes;
+        vm.filter = '';
         vm.items = [];
 
         populateContents();
@@ -32,13 +34,28 @@ function nodePermissionsSelectorDirective(dataService, mu) {
         function openNode(event, node) {
             event.preventDefault();
 
-            if (node.rootNodeUuid) {
+            if (isProjectNode(node)) {
                 currentNodeId = node.rootNodeUuid;
                 projectName = node.name;
             } else {
                 currentNodeId = node.uuid;
             }
             populateContents();
+        }
+
+        function filterNodes(node) {
+            var name;
+
+            if (vm.filter !== '') {
+                if (isProjectNode(node)) {
+                    name = node.name;
+                } else {
+                    name = node.fields[node.displayField];
+                }
+                return name.toLowerCase().indexOf(vm.filter.toLowerCase()) > -1;
+            } else {
+                return true;
+            }
         }
 
         /**
@@ -94,6 +111,10 @@ function nodePermissionsSelectorDirective(dataService, mu) {
                 item.name = projectName;
             }
             return item;
+        }
+
+        function isProjectNode(node) {
+            return node.hasOwnProperty('rootNodeUuid');
         }
     }
 
