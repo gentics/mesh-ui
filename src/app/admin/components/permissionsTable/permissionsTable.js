@@ -8,6 +8,8 @@ function permissionsTableDirective(mu) {
         var vm = this;
 
         vm.displayItemName = displayItemName;
+        vm.filter = '';
+        vm.itemNameFilter = itemNameFilter;
 
         /**
          * The `item` array will be populated async when the data arrives from the server call, so we
@@ -30,6 +32,22 @@ function permissionsTableDirective(mu) {
          */
         function displayItemName(item) {
             return $scope.$eval(vm.itemNameField, {item: item});
+        }
+
+        /**
+         * Filter by item name.
+         * @param {Object} item
+         * @returns {boolean}
+         */
+        function itemNameFilter(item) {
+            var name;
+
+            if (vm.filter !== '') {
+                name = displayItemName(item);
+                return name.toLowerCase().indexOf(vm.filter.toLowerCase()) > -1;
+            } else {
+                return true;
+            }
         }
 
     }

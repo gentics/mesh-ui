@@ -31,7 +31,7 @@
     <div class="permissions-table">
         <table class="mh-table">
             <tbody>
-            <tr ng-repeat="item in vm.items | filter: { name: vm.filter } track by item.uuid">
+            <tr ng-repeat="item in vm.items | filter: vm.itemNameFilter track by item.uuid">
                 <td>{{:: vm.displayItemName(item) }}</td>
                 <td>
                     <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">
