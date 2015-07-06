@@ -43,6 +43,11 @@ function nodePermissionsSelectorDirective(dataService, mu) {
             populateContents();
         }
 
+        /**
+         * Filter function for matching node names.
+         * @param {Object} node
+         * @returns {boolean}
+         */
         function filterNodes(node) {
             var name;
 
@@ -72,7 +77,7 @@ function nodePermissionsSelectorDirective(dataService, mu) {
                         return dataService.getChildContents(projectName, currentNodeId);
                     })
                     .then(function(data) {
-                        vm.items = vm.items.concat(data).map(mu.permissionsArrayToKeys);
+                        vm.items = vm.items.concat(data).map(mu.rolePermissionsArrayToKeys);
                         return dataService.getBreadcrumb(projectName, currentNodeId);
                     })
                     .then(populateBreadcrumbs);
@@ -85,7 +90,7 @@ function nodePermissionsSelectorDirective(dataService, mu) {
         function loadProjects() {
             dataService.getProjects()
                 .then(function(data) {
-                    vm.items = data.map(mu.permissionsArrayToKeys);
+                    vm.items = data.map(mu.rolePermissionsArrayToKeys);
                     vm.breadcrumbs = breadcrumbsBase;
                 });
         }

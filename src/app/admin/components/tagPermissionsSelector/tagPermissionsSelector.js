@@ -66,7 +66,7 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
                 })
                 .then(flatten)
                 .then(function(items) {
-                    vm.items = items.map(mu.permissionsArrayToKeys);
+                    vm.items = items.map(mu.rolePermissionsArrayToKeys);
                 });
         }
 

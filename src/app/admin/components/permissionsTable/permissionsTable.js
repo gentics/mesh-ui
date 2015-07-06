@@ -1,7 +1,11 @@
 angular.module('meshAdminUi.admin')
 .directive('permissionsTable', permissionsTableDirective);
 
-
+/**
+ *
+ * @param mu
+ * @returns {{restrict: string, templateUrl: string, controller: permissionsTableController, controllerAs: string, bindToController: boolean, scope: {rootName: string, rootUuid: string, items: string, itemNameField: string}}}
+ */
 function permissionsTableDirective(mu) {
 
     function permissionsTableController($scope) {
@@ -18,7 +22,7 @@ function permissionsTableDirective(mu) {
          */
         var cancelItemsWatcher = $scope.$watch('vm.items', function(newVal) {
             if (newVal) {
-                vm.items = newVal.map(mu.permissionsArrayToKeys);
+                vm.items = newVal.map(mu.rolePermissionsArrayToKeys);
                 cancelItemsWatcher();
             }
         });
