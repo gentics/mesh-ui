@@ -35,7 +35,6 @@
       "version": "5.2.0",
       "availableVersions": {},
       "parentNodeUuid": "uuid_root_node",
-      "segmentName": "products",
       "project": {"uuid": "wegasdsdhdsfh"},
       "order": 10,
       "tags": {
@@ -53,7 +52,10 @@
         ]
       },
       "displayField": "name",
-      "fields": { },
+      "segmentField": "name",
+      "fields": {
+        "name": "Products"
+      },
       "perms": [
         "read",
         "create",
