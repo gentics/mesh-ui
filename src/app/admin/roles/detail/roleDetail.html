@@ -14,7 +14,7 @@
 
     <form name="roleEditorForm" class="admin-form">
 
-        <md-input-container>
+        <md-input-container class="role-name">
             <label>Role Name</label>
             <input type="text" ng-model="vm.role.name" ng-change="vm.modified = true">
         </md-input-container>
@@ -22,7 +22,10 @@
         <md-content class="">
             <md-tabs md-no-ink md-dynamic-height="true" md-border-bottom>
                 <md-tab label="Content Permissions">
+                    <h2>Node Permissions</h2>
                     <node-permissions-selector></node-permissions-selector>
+                    <h2>Tag Permissions</h2>
+                    <tag-permissions-selector></tag-permissions-selector>
                 </md-tab>
                 <md-tab label="Administrative Permissions">
                     <permissions-table

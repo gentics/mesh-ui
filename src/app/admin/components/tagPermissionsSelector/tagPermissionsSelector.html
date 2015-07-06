@@ -1,0 +1,43 @@
+<div class="tag-permissions-selector-container">
+
+    <div class="root-row">
+        <md-input-container flex>
+            <label>Filter</label>
+            <input type="text" ng-model="vm.filter">
+        </md-input-container>
+    </div>
+
+    <table class="mh-table permissions-table">
+        <tr ng-class="{'root-row': item.rootNodeUuid, 'tag-family': item.description, 'tag': item.fields }"
+            ng-repeat="item in vm.items | filter: vm.filterTags track by item.uuid"
+            ng-hide="!vm.filter && item.fields && item.tagFamily.uuid !== vm.expand">
+
+            <td ng-click="vm.toggleExpand(item)">
+                <span ng-if="item.description">Family: {{:: item.name }}</span>
+                <span ng-if="!item.description">{{:: item.name || item.fields.name }}</span>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']" ng-if="!item.rootNodeUuid">
+                    Create
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']" ng-if="!item.rootNodeUuid">
+                    Read
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']" ng-if="!item.rootNodeUuid">
+                    Update
+                </md-checkbox>
+            </td>
+            <td>
+                <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']" ng-if="!item.rootNodeUuid">
+                    Delete
+                </md-checkbox>
+            </td>
+
+        </tr>
+    </table>
+
+</div>
