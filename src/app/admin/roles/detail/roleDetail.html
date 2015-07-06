@@ -41,6 +41,16 @@
                             items="vm.projects"
                             item-name-field="item.name"></permissions-table>
                     <permissions-table
+                            root-name="Users"
+                            root-uuid=""
+                            items="vm.users"
+                            item-name-field="item.firstname + ' ' + item.lastname"></permissions-table>
+                    <permissions-table
+                            root-name="Groups"
+                            root-uuid=""
+                            items="vm.groups"
+                            item-name-field="item.name"></permissions-table>
+                    <permissions-table
                             root-name="Roles"
                             root-uuid=""
                             items="vm.roles"

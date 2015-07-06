@@ -26,13 +26,17 @@ function RoleDetailController($q, $state, $stateParams, confirmActionDialog, dat
         dataService.getSchemas(),
         dataService.getMicroschemas(),
         dataService.getProjects(),
-        dataService.getRoles()
+        dataService.getRoles(),
+        dataService.getGroups(),
+        dataService.getUsers()
     ])
         .then(function(dataArray) {
             vm.schemas = dataArray[0];
             vm.microschemas = dataArray[1];
             vm.projects = dataArray[2];
             vm.roles = dataArray[3];
+            vm.groups = dataArray[4];
+            vm.users = dataArray[5];
         });
 
     /**
