@@ -1,0 +1,114 @@
+{
+  "data": [
+    {
+      "uuid": "uuid_red_tag",
+      "fields": {
+        "name": "red"
+      },
+      "tagFamily": {
+        "name": "colors",
+        "uuid": "uuid_colors_tagFamily"
+      },
+      "published": true,
+      "creator": {},
+      "created": 1333530472,
+      "editor": {},
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "project": {
+        "name": "dummy",
+        "uuid": "uuid_dummy_project"
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    {
+      "uuid": "uuid_green_tag",
+      "fields": {
+        "name": "green"
+      },
+      "tagFamily": {
+        "name": "colors",
+        "uuid": "uuid_colors_tagFamily"
+      },
+      "published": true,
+      "creator": {},
+      "created": 1333530472,
+      "editor": {},
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "project": {
+        "name": "dummy",
+        "uuid": "uuid_dummy_project"
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    {
+      "uuid": "uuid_blue_tag",
+      "fields": {
+        "name": "blue"
+      },
+      "tagFamily": {
+        "name": "colors",
+        "uuid": "uuid_colors_tagFamily"
+      },
+      "published": true,
+      "creator": {},
+      "created": 1333530472,
+      "editor": {},
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "project": {
+        "name": "dummy",
+        "uuid": "uuid_dummy_project"
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    {
+      "uuid": "uuid_yellow_tag",
+      "fields": {
+        "name": "yellow"
+      },
+      "tagFamily": {
+        "name": "colors",
+        "uuid": "uuid_colors_tagFamily"
+      },
+      "published": true,
+      "creator": {},
+      "created": 1333530472,
+      "editor": {},
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "project": {
+        "name": "dummy",
+        "uuid": "uuid_dummy_project"
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
+    }
+  ],
+  "_metainfo": {
+    "page": 1,
+    "per_page": 2,
+    "page_count": 10,
+    "total_count": 20
+  }
+}

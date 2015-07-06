@@ -1,0 +1,114 @@
+{
+  "data": [
+    {
+      "uuid": "uuid_car_tag",
+      "fields": {
+        "name": "car"
+      },
+      "tagFamily": {
+        "name": "vehicle type",
+        "uuid": "uuid_vehicleType_tagFamily"
+      },
+      "published": true,
+      "creator": {},
+      "created": 1333530472,
+      "editor": {},
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "project": {
+        "name": "dummy",
+        "uuid": "uuid_dummy_project"
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    {
+      "uuid": "uuid_plane_tag",
+      "fields": {
+        "name": "plane"
+      },
+      "tagFamily": {
+        "name": "vehicle type",
+        "uuid": "uuid_vehicleType_tagFamily"
+      },
+      "published": true,
+      "creator": {},
+      "created": 1333530472,
+      "editor": {},
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "project": {
+        "name": "dummy",
+        "uuid": "uuid_dummy_project"
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    {
+      "uuid": "uuid_boat_tag",
+      "fields": {
+        "name": "boat"
+      },
+      "tagFamily": {
+        "name": "vehicle type",
+        "uuid": "uuid_vehicleType_tagFamily"
+      },
+      "published": true,
+      "creator": {},
+      "created": 1333530472,
+      "editor": {},
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "project": {
+        "name": "dummy",
+        "uuid": "uuid_dummy_project"
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
+    },
+    {
+      "uuid": "uuid_train_tag",
+      "fields": {
+        "name": "train"
+      },
+      "tagFamily": {
+        "name": "vehicle type",
+        "uuid": "uuid_vehicleType_tagFamily"
+      },
+      "published": true,
+      "creator": {},
+      "created": 1333530472,
+      "editor": {},
+      "edited": 1333530472,
+      "version": "5.2.0",
+      "project": {
+        "name": "dummy",
+        "uuid": "uuid_dummy_project"
+      },
+      "perms": [
+        "read",
+        "create",
+        "update",
+        "delete"
+      ]
+    }
+  ],
+  "_metainfo": {
+    "page": 1,
+    "per_page": 2,
+    "page_count": 10,
+    "total_count": 20
+  }
+}
