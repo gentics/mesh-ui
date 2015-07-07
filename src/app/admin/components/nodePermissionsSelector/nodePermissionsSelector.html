@@ -11,6 +11,26 @@
                 <label>Filter</label>
                 <input ng-model="vm.filter">
             </md-input-container>
+            <div>
+                <md-checkbox md-no-ink aria-label="Create">
+                    Create
+                </md-checkbox>
+            </div>
+            <div>
+                <md-checkbox md-no-ink aria-label="Read">
+                    Read
+                </md-checkbox>
+            </div>
+            <div>
+                <md-checkbox md-no-ink aria-label="Update">
+                    Update
+                </md-checkbox>
+            </div>
+            <div>
+                <md-checkbox md-no-ink aria-label="Delete">
+                    Delete
+                </md-checkbox>
+            </div>
         </div>
     </md-toolbar>
     <md-content layout-padding class="admin-content-block" ng-class="{ 'collapsed': vm.collapsed }">
