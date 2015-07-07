@@ -1,0 +1,15 @@
+<div layout="row" layout-align="start center" class="recursive-toggle-container">
+    <md-checkbox ng-model="vm.model" md-no-ink aria-label="{{:: vm.label }}">
+        {{:: vm.label }}
+    </md-checkbox>
+    <mh-dropdown>
+        <mh-dropdown-label>
+            <i class="icon-arrow-drop-down"></i>
+        </mh-dropdown-label>
+        <mh-dropdown-body>
+            <ul>
+                <li ng-click="vm.recursiveClick()"><a href="" class="a-plain">Toggle Recursively</a></li>
+            </ul>
+        </mh-dropdown-body>
+    </mh-dropdown>
+</div>
