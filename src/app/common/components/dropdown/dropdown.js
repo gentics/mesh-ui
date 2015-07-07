@@ -118,7 +118,7 @@ function dropdownLabelDirective() {
     }
     return {
         restrict: 'E',
-        template: '<div class="mh-dropdown-label" ng-click="dropdown.toggle()" ng-class="{ open: dropdown.isOpen }"><a href="#" class="a-plain" ng-transclude></a></div>',
+        template: '<div class="mh-dropdown-label" ng-click="dropdown.toggle()" ng-class="{ open: dropdown.isOpen }"><a href="" class="a-plain" ng-transclude></a></div>',
         transclude: true,
         replace: true,
         require: '^^mhDropdown',
@@ -141,7 +141,9 @@ function dropdownBodyDirective() {
         scope.$watch('dropdown.isOpen', setHeight);
 
         element.on('click', function(e) {
-            dropdownCtrl.toggle();
+            scope.$digest(function() {
+                dropdownCtrl.toggle();
+            });
         });
 
         function setHeight(isOpen) {
