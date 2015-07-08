@@ -17,7 +17,7 @@ function routesConfig($stateProvider) {
         .state('projects.list', {
             url: '',
             views: {
-                'projects': {
+                'explorer': {
                     templateUrl: 'projects/projectsList/projectsList.html'
                 }
             },
@@ -28,7 +28,7 @@ function routesConfig($stateProvider) {
         .state('projects.explorer', {
             url: '/:projectName/:nodeId',
             views: {
-                'projects' : {
+                'explorer' : {
                     templateUrl: 'projects/projectExplorer/projectExplorer.html',
                     controller: 'ProjectExplorerController',
                     controllerAs: 'vm'
@@ -38,20 +38,20 @@ function routesConfig($stateProvider) {
                 parentNode: updateContext
             }
         })
-        .state('projects.explorer.content', {
-            url: '/content/:uuid',
+       /* .state('projects.explorer.content', {
+            url: '?uuid',
             views: {
-                'projects@projects' : {
+                'editor@projects' : {
                     templateUrl: 'projects/contentEditor/contentEditor.html',
                     controller: 'ContentEditorController',
                     controllerAs: 'vm'
                 }
             }
-        })
+        })*/
         .state('projects.explorer.createContent', {
             url: '/content/new?schemaId',
             views: {
-                'projects@projects' : {
+                'explorer@explorer' : {
                     templateUrl: 'projects/contentEditor/contentEditor.html',
                     controller: 'ContentEditorController',
                     controllerAs: 'vm'

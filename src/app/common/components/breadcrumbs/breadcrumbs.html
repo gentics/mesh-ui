@@ -2,11 +2,11 @@
     <ul>
         <li>
             <span>
-                <a href="#" ui-sref="projects.list" ng-click="vm.clearProject()">Projects</a>
+                <a href="" ui-sref="projects.list" ng-click="vm.clearProject()">Projects</a>
             </span>
         </li><li ng-repeat="label in vm.breadcrumbs" ng-if="label.name">
             <span>
-                <a href="#" ui-sref="projects.explorer({ projectName: vm.projectName, nodeId: label.uuid })">{{ label.name }}</a>
+                <a href="" ui-sref="projects.explorer({ projectName: vm.projectName, nodeId: label.uuid })">{{ label.name }}</a>
             </span>
         </li>
     </ul>

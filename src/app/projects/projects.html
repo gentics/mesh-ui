@@ -1,7 +1,10 @@
 <div class="project-header-container">
     <div class="projects-header">
         <breadcrumbs></breadcrumbs>
-        <wip-tabs></wip-tabs>
     </div>
 </div>
-<div ui-view="projects" class="project-body-container"></div>
+<div layout="row" class="app-content">
+    <div ui-view="explorer" class="project-body-container" flex="45"></div>
+    <wip-tabs flex></wip-tabs>
+    <editor-pane flex="45"></editor-pane>
+</div>

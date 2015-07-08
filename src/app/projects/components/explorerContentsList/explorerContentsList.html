@@ -1,54 +1,8 @@
-<div>
-    <table class="mh-table" ng-show="0 < vm.contents.length" >
-        <thead>
-        <tr>
-            <th>
-                <md-checkbox md-no-ink aria-label="Select All"
-                             ng-change="vm.selectAll()"
-                             ng-model="vm.areAllSelected"></md-checkbox>
-            </th>
-            <th translate>TITLE</th>
-            <th translate>SCHEMA</th>
-            <th translate class="hide-sm">AUTHOR</th>
-            <th translate class="hide-sm">CREATED</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr dir-paginate="item in vm.contents | itemsPerPage: vm.itemsPerPage"
-            total-items="vm.totalItems"
-            current-page="vm.currentPage"
-            class="animate-item"
-            ng-class="{ selected: vm.isSelected($index) }"
-            ng-click="vm.toggleSelect($index)">
-            <td class="checkbox">
-                <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select All"></md-checkbox>
-            </td>
-            <td>
-                <a href="#" ng-click="vm.goToContent($event, item.uuid)">{{:: item.fields[item.displayField] }}</a>
-               <!-- <span class="binary-preview" ng-if="item.binaryProperties && item.binaryProperties.mimeType == 'image/jpeg'">
-                    <img ng-src="{{ vm.getBinaryRepresentation(item) }}" />
-                </span>-->
-            </td>
-            <td>{{:: item.schema.name }}</td>
-            <td class="hide-sm">{{:: item.creator.firstname }} {{:: item.creator.lastname }}</td>
-            <td class="hide-sm">{{:: item.created }}</td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div layout-gt-sm="row" layout-sm="column"  ng-show="0 < vm.contents.length" >
-        <div flex-gt-sm>
-            <dir-pagination-controls on-page-change="vm.update()"></dir-pagination-controls>
-        </div>
-        <div flex-gt-sm="20" layout="row" layout-align="end">
-            <div>
-                <div class="select-label" translate>ITEMS_PER_PAGE</div>
-            </div>
-            <div class="items-per-page-select">
-                <md-select ng-model="vm.itemsPerPage" ng-change="vm.update(newPageNumber)">
-                    <md-option ng-value="number" ng-repeat="number in [10, 25, 50]">{{ number }}</md-option>
-                </md-select>
-            </div>
+<div class="contents-list-container">
+    <div ng-repeat="bundle in vm.contents" class="node-bundle">
+        <div class="schema-name">{{:: bundle.schema }}</div>
+        <div ng-repeat="node in bundle.nodes" class="bundle-item">
+            <a href="" ng-click="vm.openNode(node)">{{:: node.fields[node.displayField] }}</a>
         </div>
     </div>
 </div>

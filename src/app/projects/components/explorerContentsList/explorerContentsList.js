@@ -6,14 +6,14 @@ angular.module('meshAdminUi.projects')
  *
  * @returns {ng.IDirective} Directive definition object
  */
-function explorerContentsListDirective($state) {
+function explorerContentsListDirective($state, contextService, editorService) {
 
     function explorerContentsListController() {
         var vm = this;
 
         vm.totalItems = 0;
         vm.update = update;
-        vm.goToContent = goToContent;
+        vm.openNode = openNode;
 
         vm.selectedItems = [];
         vm.toggleSelect = toggleSelect;
@@ -82,12 +82,15 @@ function explorerContentsListDirective($state) {
 
         /**
          * Transition to the contentEditor view for the given uuid
-         * @param uuid
+         * @param {Object} node
          */
-        function goToContent(event, uuid) {
-            event.preventDefault();
+        function openNode(node) {
             vm.selectedItems = [];
-            $state.go('projects.explorer.content', { uuid: uuid });
+            if (node.hasOwnProperty('children')) {
+                $state.go('projects.explorer', {projectName: contextService.getProject().name, nodeId: node.uuid });
+            } else {
+                editorService.open(node.uuid);
+            }
         }
 
         function getBinaryRepresentation(item) {

@@ -26,6 +26,7 @@ function ProjectExplorerController($scope, $q, $location, confirmActionDialog, d
     vm.selectedItems = [];
     vm.openSelected = openSelected;
     vm.deleteSelected = deleteSelected;
+    vm.contents = [];
 
     $scope.$watch(function() {
         return $location.search().page;
@@ -62,11 +63,17 @@ function ProjectExplorerController($scope, $q, $location, confirmActionDialog, d
 
         dataService.getChildFolders(projectName, parentNodeId, queryParams)
             .then(function (data) {
-                vm.folders = data;
+                vm.contents.push({
+                    schema: 'folder',
+                    nodes: data
+                });
                 return dataService.getChildContents(projectName, parentNodeId, queryParams);
             })
             .then(function(data) {
-                vm.contents = data;
+                vm.contents.push({
+                    schema: 'article',
+                    nodes: data
+                });
                 vm.totalItems = data.metadata.total_count;
             });
     }

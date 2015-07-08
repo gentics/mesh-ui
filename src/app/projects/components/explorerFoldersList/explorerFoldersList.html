@@ -1,8 +1,0 @@
-<div class="tag-list-container">
-    <ul class="tag-list">
-        <li ng-repeat="folder in vm.folders" class="tag-item" ng-click="vm.goTo(folder.uuid)">
-            <a class="a-plain">{{ folder.fields[folder.segmentField] }}</a>
-            <button class="edit-tag label-btn btn-small" ng-click="vm.editTag($event, folder.uuid)">Edit</button>
-        </li>
-    </ul>
-</div>
