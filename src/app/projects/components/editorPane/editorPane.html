@@ -1,0 +1,32 @@
+<div class="app-content content-editor-container" ng-show="vm.isLoaded">
+
+    <div class="close-content show-sm">
+        <i class="icon-close" ng-click="vm.close(vm.content)"></i>
+    </div>
+
+    <form-builder model="vm.content.fields"
+                  fields="vm.schema.fields"
+                  display-field="vm.schema.displayField"
+                  modified-flag="vm.contentModified"
+                  perms="vm.content.perms"></form-builder>
+
+    <div layout="row" layout-align="center center" class="main-buttons">
+
+        <button class="btn btn-primary"
+                ng-click="vm.persist(vm.content)"
+                ng-disabled="!vm.contentModified"
+                aria-label="save">
+            <i class="icon-save"></i>
+            <span ng-if="!vm.isNew" translate>UPDATE</span>
+            <span ng-if="vm.isNew" translate>CREATE</span>
+        </button>
+
+        <button class="btn btn-warn"
+                ng-click="vm.remove(vm.content)"
+                ng-disabled="!vm.canDelete()"
+                aria-label="delete">
+            <i class="icon-delete"></i><span translate>DELETE</span>
+        </button>
+    </div>
+
+</div>

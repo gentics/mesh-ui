@@ -70,6 +70,7 @@ function appRunBlock($rootScope, $state, authService) {
      * Route unauthenticated users to the login page.
      */
     $rootScope.$on('$stateChangeStart', function(event, toState) {
+        console.log('transitioning to state ' + toState.name);
         if (toState.name !== 'login' && !authService.isLoggedIn) {
             event.preventDefault();
             $state.go('login');
