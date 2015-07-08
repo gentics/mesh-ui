@@ -14,7 +14,7 @@ angular.module('meshAdminUi.common')
  *
  * @returns {ng.IDirective} Directive definition object
  */
-function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notifyService) {
+function wipTabs($state, $mdDialog, editorService, i18nService, wipService, dataService, notifyService) {
 
     /**
      * @param {ng.IScope} $scope
@@ -29,6 +29,7 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
         vm.selectedIndex = 0;
         vm.isModified = isModified;
         vm.closeWip = closeWip;
+        vm.open = open;
         vm.lang = i18nService.getCurrentLang().code;
         vm.displayTabs = true;
 
@@ -46,6 +47,10 @@ function wipTabs($state, $mdDialog, i18nService, wipService, dataService, notify
          */
         function isModified(uuid) {
             return -1 < vm.modified.indexOf(uuid);
+        }
+
+        function open(uuid) {
+            editorService.open(uuid);
         }
 
         /**

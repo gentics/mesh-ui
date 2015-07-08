@@ -4,10 +4,7 @@
 @status-modified-color: #fb945e;
 
 .wip-tabs {
-  height: 25px;
   transition: height 0.2s;
-  margin-left: -8px;
-  margin-bottom: 2.4rem;
 
   &.hidden {
     visibility: hidden;
@@ -24,10 +21,6 @@
     text-transform: uppercase;
     color: lighten(@color-boulder, 20%);
     position: relative;
-
-    &:not(:first-child) {
-      border-left: 1px solid @color-silver;
-    }
 
     &:hover {
       .label {

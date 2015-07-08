@@ -1,13 +1,13 @@
-<div layout="rows" class="wip-tabs" ng-class="{ hidden: !vm.displayTabs }">
+<div layout="column" class="wip-tabs" ng-class="{ hidden: !vm.displayTabs }">
     <div ng-repeat="wip in vm.wips"
          class="wip-tab"
          ng-class="{ 'active' : vm.selectedIndex === $index }"
-         ui-sref="projects.explorer.content( { tagId: wip.metadata.parentTagId, uuid: wip.item.uuid } )"
+         ng-click="vm.open(wip.item.uuid)"
          aria-label="{{ wip.item.fields[wip.item.displayField] }}"
          title="{{ wip.item.fields[wip.item.displayField] }}">
 
-        <a href="#" class="a-plain label" ng-class="{ modified: vm.isModified(wip.item.uuid) }">{{ wip.item.fields[wip.item.displayField] || 'Untitled' }}</a>
-        <a href="#" ng-click="vm.closeWip($event, $index)" class="a-plain close"><i class="icon-close"></i></a>
+        <a href="" class="a-plain label" ng-class="{ modified: vm.isModified(wip.item.uuid) }">{{ wip.item.fields[wip.item.displayField] || 'Untitled' }}</a>
+        <a href="" ng-click="vm.closeWip($event, $index)" class="a-plain close"><i class="icon-close"></i></a>
 
     </div>
 </div>
