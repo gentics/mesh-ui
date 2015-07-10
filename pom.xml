@@ -7,7 +7,7 @@
 	<groupId>com.gentics.mesh</groupId>
 	<artifactId>mesh-admin-ui</artifactId>
 	<version>0.1.0-nav-v2-SNAPSHOT</version>
-	
+
 	<packaging>pom</packaging>
 	<name>Mesh - Admin UI</name>
 	<description>Mesh Adminstation UI</description>
@@ -44,6 +44,20 @@
 							<appendAssemblyId>true</appendAssemblyId>
 							<descriptors>
 								<descriptor>mvn/dev-package.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+					<execution>
+						<id>make-dist-webjar-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<attach>true</attach>
+							<appendAssemblyId>true</appendAssemblyId>
+							<descriptors>
+								<descriptor>mvn/dist-webjar-package.xml</descriptor>
 							</descriptors>
 						</configuration>
 					</execution>
@@ -122,15 +136,15 @@
 		</plugins>
 	</build>
 	<distributionManagement>
-			<repository>
-					<id>lan.releases.staging.mesh</id>
-					<name>Gentics Releases Repository</name>
-					<url>http://artifactory.office/repository/lan.releases.staging.mesh</url>
-			</repository>
-			<snapshotRepository>
-					<id>lan.snapshots</id>
-					<name>Gentics Snapshots Repository</name>
-					<url>http://artifactory.office/repository/lan.snapshots.mesh</url>
-			</snapshotRepository>
+		<repository>
+			<id>lan.releases.staging.mesh</id>
+			<name>Gentics Releases Repository</name>
+			<url>http://artifactory.office/repository/lan.releases.staging.mesh</url>
+		</repository>
+		<snapshotRepository>
+			<id>lan.snapshots</id>
+			<name>Gentics Snapshots Repository</name>
+			<url>http://artifactory.office/repository/lan.snapshots.mesh</url>
+		</snapshotRepository>
 	</distributionManagement>
 </project>
