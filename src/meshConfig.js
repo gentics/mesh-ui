@@ -8,7 +8,7 @@
      */
     var meshConfig = {
         // The URL to the Mesh API
-        apiUrl: 'mesh-mock-backend'
+        apiUrl: 'http://localhost/api/v1'
     };
 
 

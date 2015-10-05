@@ -29,7 +29,7 @@ function formBuilderDirective() {
          * @returns {boolean}
          */
         function canUpdate() {
-            return -1 < formBuilder.perms.indexOf('update');
+            return -1 < formBuilder.permissions.indexOf('update');
         }
 
         function isDisplayField(fieldName) {

@@ -25,14 +25,16 @@ function LoginController($timeout, $state, $mdDialog, authService) {
      * @param {string} password
      */
     function submitForm(event, userName, password) {
-        if (authService.logIn(userName, password)) {
-            vm.success = true;
-            $timeout(function() {
-                $state.go('projects.list');
-            }, 2000);
-        } else {
-            showErrorDialog(event);
-        }
+        authService.logIn(userName, password)
+            .then(function() {
+                vm.success = true;
+                $timeout(function() {
+                    $state.go('projects.list');
+                }, 2000);
+            })
+            .catch(function() {
+                showErrorDialog(event);
+            });
     }
 
     /**

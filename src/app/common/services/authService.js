@@ -1,4 +1,5 @@
 angular.module('meshAdminUi.common')
+    .config(authInterceptorConfig)
     .service('authService', AuthService);
 
 /**
@@ -8,15 +9,18 @@ angular.module('meshAdminUi.common')
  *
  * @constructor
  */
-function AuthService($cookies) {
+function AuthService($injector, $cookies) {
     var isLoggedIn = $cookies.get('isLoggedIn') === 'true',
+        authString = $cookies.get('authString') === '',
         onLogInCallbacks = [],
-        onLogOutCallbacks = [];
+        onLogOutCallbacks = [],
+        AUTH_HEADER_NAME = 'Authorization';
 
     // public API
     Object.defineProperties(this, {
         "isLoggedIn": { get: function () { return isLoggedIn; } }
     });
+    this.getAuthValue = getAuthValue;
     this.logIn = logIn;
     this.logOut = logOut;
     this.registerLogInHandler = registerLogInHandler;
@@ -31,15 +35,38 @@ function AuthService($cookies) {
      * @returns {boolean}
      */
     function logIn(userName, password) {
-        if ((userName === 'admin' && password === 'admin') || (userName === 'a' && password === 'a')) {
-            isLoggedIn = true;
-            $cookies.put('isLoggedIn', 'true');
-            onLogInCallbacks.forEach(function(fn) {
-                fn();
-            });
-        }
+        var authHeaderKey,
+            authHeaderValue,
+            $http = $injector.get("$http");
 
-        return isLoggedIn;
+
+        var config = { headers: {} };
+
+        authHeaderKey = AUTH_HEADER_NAME;
+        authHeaderValue = "Basic " + btoa(userName + ":" + password);
+        config.headers[authHeaderKey] = authHeaderValue;
+
+        return $http.get('/api/v1/auth/me', config)
+            .then(function(response) {
+                if (response.status === 200) {
+                    authString = authHeaderValue;
+                    isLoggedIn = true;
+                    $cookies.put('isLoggedIn', 'true');
+                    $cookies.put('authString', authString);
+                } else {
+                    console.log('Error, status: ' + response.status);
+                }
+            },
+            function (response) {
+                if (response.status === LoginService.CODE_RESPONSE_UNAUTHORIZED) {
+                    //TODO: Display error message
+                    console.log('not authorized: ' + response.status);
+                }
+            });
+    }
+
+    function getAuthValue() {
+        return authString;
     }
 
     /**
@@ -72,4 +99,27 @@ function AuthService($cookies) {
     function registerLogOutHandler(callback) {
         onLogOutCallbacks.push(callback);
     }
+}
+
+function authInterceptorConfig($httpProvider) {
+    $httpProvider.interceptors.push(authInterceptor);
+}
+
+function authInterceptor(authService) {
+    var AUTH_HEADER_NAME = 'Authorization';
+    return {
+        request: function (config) {
+            console.log(config.url);
+            // TODO: need to read the API URL from the config file
+            if (config.url.indexOf('api/') > -1 && !config.headers.hasOwnProperty(AUTH_HEADER_NAME)) {
+                if (authService.isLoggedIn) {
+                    config.headers[AUTH_HEADER_NAME] = authService.getAuthValue();
+                } else {
+                    console.log('not authorized!');
+                }
+            }
+
+            return config;
+        }
+    };
 }

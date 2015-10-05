@@ -21,7 +21,7 @@ function ProjectExplorerController($scope, $q, $location, confirmActionDialog, d
     vm.totalItems = 0;
     vm.itemsPerPage = $location.search().per_page || 10;
     vm.currentPage = $location.search().page || 1;
-    vm.createPermission = -1 < parentNode.perms.indexOf('create');
+    vm.createPermission = -1 < parentNode.permissions.indexOf('create');
     vm.updateContents = updateContents;
     vm.selectedItems = [];
     vm.openSelected = openSelected;

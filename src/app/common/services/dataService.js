@@ -283,12 +283,17 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {IPromise<TResult>}
      */
     function getChildFolders(projectName, parentNodeId, queryParams) {
-        var url = projectName + '/nodes/' + parentNodeId + '/children_folders',
+        var url = projectName + '/nodes/' + parentNodeId + '/children',
             nodes = Restangular.all(url);
 
         queryParams = queryParams || {};
 
-        return nodes.getList(queryParams);
+        return nodes.getList(queryParams)
+            .then(function(response) {
+                return response.filter(function(node) {
+                    return node.hasOwnProperty('children');
+                });
+            });
     }
 
     /**
@@ -299,13 +304,18 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {IPromise<TResult>}
      */
     function getChildContents(projectName, parentNodeId, queryParams) {
-        var url = projectName + '/nodes/' + parentNodeId + '/children_contents',
+        var url = projectName + '/nodes/' + parentNodeId + '/children',
             nodes = Restangular.all(url);
 
         queryParams = queryParams || {};
         queryParams.lang = i18nService.getCurrentLang().code;
 
-        return nodes.getList(queryParams);
+        return nodes.getList(queryParams)
+            .then(function(response) {
+                return response.filter(function(node) {
+                    return !node.hasOwnProperty('children');
+                });
+            });
     }
 
     /**
@@ -562,42 +572,13 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
  * @param selectiveCacheProvider
  */
 function dataServiceConfig($httpProvider, RestangularProvider, selectiveCacheProvider) {
-    // basic auth credentials: joe1:test123
-    // header string: Authorization: Basic am9lMTp0ZXN0MTIz
-    // TODO: this will be replaced by an OAuth 2 solution.
-    RestangularProvider.setDefaultHeaders({ "Authorization": "Basic am9lMTp0ZXN0MTIz"});
 
     RestangularProvider.setRestangularFields({
        id: "uuid"
     });
 
+    $httpProvider.interceptors.push(languageRequestInterceptor);
     RestangularProvider.addResponseInterceptor(restangularResponseInterceptor);
-
-    /**
-     * Interceptor to add index.json to get requests, so the mock backend works without
-     * specific server config like DirectoryIndex or MultiViews
-     * TODO: Remove this when moving to real API
-     */
-    $httpProvider.interceptors.push(function() {
-        return {
-            'request': function(config) {
-                if (config.url.match(/mesh-mock-backend\/dummy\/nodes\/[a-z_]*$/)) {
-                    config.url += '/index.json';
-                } else if (config.url.match(/mesh-mock-backend\//)) {
-                    var url;
-                    // remove trailing slash if exists
-                    if (config.url[config.url.length - 1] === '/') {
-                        url = config.url.substr(0, config.url.length - 1);
-                    } else {
-                        url = config.url;
-                    }
-                    config.url = url + '.json';
-                }
-                return config;
-            }
-        };
-    });
-
 
     // define the urls we wish to cache
     var projectName = '^\\/[a-zA-Z\\-]*',
@@ -636,4 +617,17 @@ function restangularResponseInterceptor(data, operation) {
     }
 
     return extractedData;
+}
+
+function languageRequestInterceptor(i18nService) {
+    return {
+        request: function(config) {
+            // TODO: need to read the API URL from the config file
+            if (config.url.indexOf('/api') > -1) {
+                config.params = config.params || {};
+                config.params.lang = i18nService.getCurrentLang().code;
+            }
+            return config;
+        }
+    };
 }

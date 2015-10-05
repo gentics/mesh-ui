@@ -148,7 +148,7 @@ function ContentEditorController($scope, $state, $stateParams, confirmActionDial
 
     function canDelete() {
         if (vm.content) {
-            return -1 < vm.content.perms.indexOf('delete') && !vm.isNew;
+            return -1 < vm.content.permissions.indexOf('delete') && !vm.isNew;
         }
     }
 
