@@ -9,6 +9,7 @@
 
 var gulp = require('gulp'),
     del = require('del'),
+    ts = require('gulp-typescript'),
     ngAnnotate = require('gulp-ng-annotate'),
     jsHint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
@@ -51,12 +52,20 @@ function build_appScripts() {
         return gulp.src([
             '!src/**/*.spec.js',
             '!src/assets/**/*.*',
-            'src/**/*.js'
+            'src/**/*.js',
+            'src/**/*.ts'
         ])
             .pipe(jsHint())
             .pipe(jsHint.reporter('jshint-stylish'))
             .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
             .pipe(ngAnnotate())
+            .pipe(ts({
+                declarationFiles: true,
+                noExternalResolve: true,
+                sortOutput: true,
+                target: 'ES5',
+                out: 'app.js'
+            })).js
             .pipe(gulp.dest('build/'))
             .pipe(livereload())
             .on('end', resolve)
