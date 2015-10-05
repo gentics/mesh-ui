@@ -7,6 +7,7 @@ angular.module('meshAdminUi.common')
  *
  * @param {ng.ui.IStateService} $state
  * @param {ng.material.MDDialogService} $mdDialog
+ * @param editorService
  * @param i18nService
  * @param wipService
  * @param dataService
@@ -34,6 +35,7 @@ function wipTabs($state, $mdDialog, editorService, i18nService, wipService, data
         vm.displayTabs = true;
 
         wipService.registerWipChangeHandler(wipChangeHandler);
+        editorService.registerOnOpenCallback(editorOpenHandler);
         $scope.$on('$stateChangeStart', stateChangeStartHandler);
         $scope.$on('$stateChangeSuccess', stateChangeSuccessHandler);
         window.addEventListener('beforeunload', persistOpenWipsLocally);
@@ -51,6 +53,7 @@ function wipTabs($state, $mdDialog, editorService, i18nService, wipService, data
 
         function open(uuid) {
             editorService.open(uuid);
+            editorOpenHandler(uuid);
         }
 
         /**
@@ -113,7 +116,11 @@ function wipTabs($state, $mdDialog, editorService, i18nService, wipService, data
         function wipChangeHandler() {
             vm.wips = wipService.getOpenItems(wipType);
             vm.modified = wipService.getModifiedItems(wipType);
-            vm.selectedIndex = indexByUuid(vm.wips, $state.params.uuid);
+            vm.selectedIndex = indexByUuid(vm.wips, editorService.getOpenNodeId());
+        }
+
+        function editorOpenHandler(uuid) {
+            vm.selectedIndex = indexByUuid(vm.wips, uuid);
         }
 
         /**

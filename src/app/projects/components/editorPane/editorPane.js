@@ -18,7 +18,9 @@ function editorPaneDirective() {
  * Controller for the content edit/create form.
  *
  * @param {ng.IScope} $scope
+ * @param $location
  * @param {ng.ui.IStateService} $state
+ * @param editorService
  * @param {ConfirmActionDialog} confirmActionDialog
  * @param {ng.material.MDDialogService} $mdDialog
  * @param contextService
@@ -43,6 +45,7 @@ function EditorPaneController($scope, $location, $state, editorService, confirmA
         vm.isNew = false;
         vm.contentModified = false;
         vm.availableLangs = i18nService.languages;
+        vm.content = [];
         vm.selectedLangs = {};
         vm.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
         vm.canDelete = canDelete;
@@ -248,19 +251,39 @@ function EditorPaneController($scope, $location, $state, editorService, confirmA
     }
 }
 
-function editorService() {
+function editorService($rootScope, $location) {
 
-    var onOpenCallbacks =[];
+    var onOpenCallbacks =[],
+        openNodeId;
+
+    /**
+     * We need to watch the "edit" query string in order to react to
+     * external URL changes, e.g. caused by use of browser back &
+     * forward buttons.
+     */
+    $rootScope.$watch(function() {
+        return $location.search().edit;
+    }, function(newVal) {
+        if (newVal && newVal !== openNodeId) {
+            open(newVal);
+        }
+    });
 
     return {
         open: open,
+        getOpenNodeId: getOpenNodeId,
         registerOnOpenCallback: registerOnOpenCallback
     };
 
     function open(uuid) {
+        openNodeId = uuid;
         onOpenCallbacks.forEach(function(fn) {
             fn.call(null, uuid);
         });
+    }
+
+    function getOpenNodeId() {
+        return openNodeId;
     }
 
     function registerOnOpenCallback(callback) {

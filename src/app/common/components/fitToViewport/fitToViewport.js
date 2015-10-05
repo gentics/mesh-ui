@@ -1,6 +1,14 @@
 angular.module('meshAdminUi.common')
 .directive('fitToViewport', fitToViewportDirective);
 
+/**
+ * Behavioural directive that sets the height of the element to take up
+ * the rest of the vertical space of the viewport.
+ *
+ * @param $window
+ * @param $timeout
+ * @returns {{restrict: string, link: fitToViewportLinkFn}}
+ */
 function fitToViewportDirective($window, $timeout) {
 
     function fitToViewportLinkFn(scope, element) {
