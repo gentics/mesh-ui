@@ -61,20 +61,20 @@ function ProjectExplorerController($scope, $q, $location, confirmActionDialog, d
                 per_page: vm.itemsPerPage
             };
 
-        dataService.getChildFolders(projectName, parentNodeId, queryParams)
-            .then(function (data) {
-                vm.contents.push({
-                    schema: 'folder',
-                    nodes: data
+        dataService.getChildNodes(projectName, parentNodeId, queryParams)
+            .then(function (response) {
+                var schemaGroups = {};
+                response.data.forEach(function(node) {
+                    if (!schemaGroups[node.schema.name]) {
+                        schemaGroups[node.schema.name] = { schema: node.schema.name, nodes: [] };
+                    }
+
+                    schemaGroups[node.schema.name].nodes.push(node);
                 });
-                return dataService.getChildContents(projectName, parentNodeId, queryParams);
-            })
-            .then(function(data) {
-                vm.contents.push({
-                    schema: 'article',
-                    nodes: data
-                });
-                vm.totalItems = data.metadata.total_count;
+                for(var schemaName in schemaGroups) {
+                    vm.contents.push(schemaGroups[schemaName]);
+                }
+                vm.totalItems = response.metadata.totalCount;
             });
     }
 

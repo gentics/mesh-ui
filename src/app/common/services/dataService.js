@@ -11,8 +11,8 @@ function dataServiceProvider() {
     var apiUrl;
 
     this.setApiUrl = setApiUrl;
-    this.$get = function($http, $q, selectiveCache, Restangular, i18nService) {
-        return new DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl);
+    this.$get = function($http, $q, selectiveCache, i18nService) {
+        return new DataService($http, $q, selectiveCache, i18nService, apiUrl);
     };
 
     /**
@@ -30,23 +30,14 @@ function dataServiceProvider() {
  * @param $http
  * @param $q
  * @param selectiveCache
- * @param Restangular
  * @param i18nService
  * @param {string} apiUrl
  * @constructor
  */
-function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl) {
+function DataService($http, $q, selectiveCache, i18nService, apiUrl) {
 
     selectiveCache.setBaseUrl(apiUrl);
     $http.defaults.cache = selectiveCache;
-    Restangular.setBaseUrl(apiUrl);
-
-    var projects = Restangular.all('projects'),
-        users = Restangular.all('users'),
-        schemas = Restangular.all('schemas'),
-        microschemas = Restangular.all('microschemas'),
-        roles = Restangular.all('roles'),
-        groups = Restangular.all('groups');
 
     // public API
     // ==========
@@ -91,14 +82,45 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
     // Breadcrumbs
     this.getBreadcrumb = getBreadcrumb;
 
+
+    function meshGet(url, params, config) {
+        config = makeConfigObject(params, config);
+        return $http.get(apiUrl + url, config)
+            .then(function(response) {
+                return response.data;
+            })
+    }
+
+    function meshPut(url, data, params, config) {
+        config = makeConfigObject(params, config);
+        return $http.put(apiUrl + url, data, config);
+    }
+
+    function meshPost(url, data, params, config) {
+        config = makeConfigObject(params, config);
+        return $http.post(apiUrl + url, data, config);
+    }
+
+    function meshDelete(url, params, config) {
+        config = makeConfigObject(params, config);
+        return $http.delete(apiUrl + url, config);
+    }
+
+    function makeConfigObject(params, config) {
+        params = params || {};
+        params.lang = params.lang || i18nService.getCurrentLang().code;
+        config = config || {};
+        config.params = params;
+        return config;
+    }
+
     /**
      * Get all projects as a list.
      * @param {Object=} queryParams
      * @returns {*}
      */
     function getProjects(queryParams) {
-        queryParams = queryParams || {};
-        return projects.getList(queryParams);
+        return meshGet('projects', queryParams);
     }
 
     /**
@@ -106,11 +128,10 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      *
      * @param {string} uuid
      * @param {Object=} queryParams
-     * @returns {ng.IPromise<any>|restangular.IPromise<any>}
+     * @returns {ng.IPromise<any>}
      */
     function getProject(uuid, queryParams) {
-        queryParams = queryParams || {};
-        return Restangular.one('projects', uuid).get(queryParams);
+        return meshGet('projects/' + uuid, queryParams);
     }
 
     /**
@@ -124,11 +145,10 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         clearCache('tags');
         if (project.hasOwnProperty('save')) {
             // this is a Restangular object
-            return project.save();
+            return meshPut('projects', project);
         } else {
             // this is a plain object (newly-created)
-            var projects = Restangular.all('projects');
-            return projects.post(project);
+            return meshPost('projects', project);
         }
     }
 
@@ -139,7 +159,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      */
     function deleteProject(project) {
         clearCache('projects');
-        return project.remove();
+        return meshDelete('projects/' + project.uuid);
     }
 
     /**
@@ -175,7 +195,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         var deferred = $q.defer();
 
         getProjects().then(function(projects) {
-            var filtered = projects.filter(function(project) {
+            var filtered = projects.data.filter(function(project) {
                 return project.name === projectName;
             });
 
@@ -195,8 +215,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
      */
     function getUsers(queryParams) {
-        queryParams = queryParams || {};
-        return users.getList(queryParams);
+        return meshGet('users', queryParams);
     }
 
     /**
@@ -206,8 +225,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {EnhancedPromise<any>|IPromise<any>}
      */
     function getUser(uuid, queryParams) {
-        queryParams = queryParams || {};
-        return Restangular.one('users', uuid).get(queryParams);
+        return meshGet('users/' + uuid, queryParams);
     }
 
     /**
@@ -220,11 +238,10 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         clearCache('users');
         if (user.hasOwnProperty('save')) {
             // this is a Restangular object
-            return user.save();
+            return meshPut('users', user);
         } else {
             // this is a plain object (newly-created)
-            var users = Restangular.all('users');
-            return users.post(user);
+           return meshPost('users', user);
         }
     }
 
@@ -234,17 +251,15 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      */
     function deleteUser(user) {
         clearCache('users');
-        return user.remove();
+        return meshDelete('users/' + user.uuid);
     }
 
     function addUserToGroup(userId, groupId) {
-        var endpoint = Restangular.all('users/' + userId + '/groups/' + groupId);
-        return endpoint.doPUT();
+        return meshPut('users/' + userId + '/groups/' + groupId, {});
     }
 
     function removeUserFromGroup(userId, groupId) {
-        var endpoint = Restangular.all('users/' + userId + '/groups/' + groupId);
-        return endpoint.remove();
+        return meshDelete('users/' + userId + '/groups/' + groupId, {});
     }
 
     /**
@@ -253,8 +268,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
      */
     function getGroups(queryParams) {
-        queryParams = queryParams || {};
-        return groups.getList(queryParams);
+        return meshGet('groups', queryParams);
     }
 
     /**
@@ -266,13 +280,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {ng.IPromise<any>|restangular.ICollectionPromise<any>}
      */
     function getChildNodes(projectName, parentNodeId, queryParams) {
-        var url = projectName + '/nodes/' + parentNodeId + '/children/',
-            nodes = Restangular.all(url);
-
-        queryParams = queryParams || {};
-        queryParams.lang = i18nService.getCurrentLang().code;
-
-        return nodes.getList(queryParams);
+        var url = projectName + '/nodes/' + parentNodeId + '/children';
+        return meshGet(url, queryParams);
     }
 
     /**
@@ -283,14 +292,9 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {IPromise<TResult>}
      */
     function getChildFolders(projectName, parentNodeId, queryParams) {
-        var url = projectName + '/nodes/' + parentNodeId + '/children',
-            nodes = Restangular.all(url);
-
-        queryParams = queryParams || {};
-
-        return nodes.getList(queryParams)
+        return getChildNodes(projectName, parentNodeId, queryParams)
             .then(function(response) {
-                return response.filter(function(node) {
+                return response.data.filter(function(node) {
                     return node.hasOwnProperty('children');
                 });
             });
@@ -304,15 +308,9 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {IPromise<TResult>}
      */
     function getChildContents(projectName, parentNodeId, queryParams) {
-        var url = projectName + '/nodes/' + parentNodeId + '/children',
-            nodes = Restangular.all(url);
-
-        queryParams = queryParams || {};
-        queryParams.lang = i18nService.getCurrentLang().code;
-
-        return nodes.getList(queryParams)
+        return getChildNodes(projectName, parentNodeId, queryParams)
             .then(function(response) {
-                return response.filter(function(node) {
+                return response.data.filter(function(node) {
                     return !node.hasOwnProperty('children');
                 });
             });
@@ -327,13 +325,11 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {restangular.RestangularElement|restangular.IElement}
      */
     function getNode(projectName, uuid, queryParams) {
-        var contents = Restangular.all(projectName);
         queryParams = queryParams || {};
         queryParams.lang = i18nService.languages.map(function(lang) {
                 return lang.code;
             }).join(',');
-
-        return contents.one('nodes', uuid).get(queryParams);
+        return meshGet(projectName + '/nodes/' + uuid, queryParams);
     }
 
     /**
@@ -342,12 +338,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {ng.IPromise<any>}
      */
     function getTagFamilies(projectName, queryParams) {
-        var url = projectName + '/tagFamilies/',
-            nodes = Restangular.all(url);
-
-        queryParams = queryParams || {};
-
-        return nodes.getList(queryParams);
+        var url = projectName + '/tagFamilies/';
+        return meshGet(url, queryParams);
     }
 
     /**
@@ -359,15 +351,12 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      */
     function getTags(projectName, tagFamilyUuid, queryParams) {
         var url;
-        queryParams = queryParams || {};
-
         if (typeof tagFamilyUuid === 'undefined') {
             url = projectName + '/tags/';
         } else {
             url = projectName + '/tagFamilies/' + tagFamilyUuid + '/tags/';
         }
-
-        return Restangular.all(url).getList(queryParams);
+        return meshGet(url, queryParams);
     }
 
     /**
@@ -379,13 +368,8 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {restangular.EnhancedCollectionPromise<any>|restangular.ICollectionPromise<any>}
      */
     function getContents(projectName, parentTagId, queryParams) {
-        var url = projectName + '/tags/' + parentTagId + '/contents/',
-            contents = Restangular.all(url);
-
-        queryParams = queryParams || {};
-        queryParams.lang = i18nService.getCurrentLang().code;
-
-        return contents.getList(queryParams)
+        var url = projectName + '/tags/' + parentTagId + '/contents/';
+        return meshGet(url, queryParams)
             .then(unwrapCurrentLanguage);
     }
 
@@ -397,14 +381,12 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {restangular.RestangularElement|restangular.IElement}
      */
     function getContent(projectName, uuid) {
-        var contents = Restangular.all(projectName);
         var queryParams = {
             lang: i18nService.languages.map(function(lang) {
                 return lang.code;
             }).join(',')
         };
-
-        return contents.one('nodes', uuid).get(queryParams);
+        return meshGet(projectName + '/nodes/' + uuid, queryParams);
     }
 
     /**
@@ -417,11 +399,10 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
         clearCache('contents');
         if (content.hasOwnProperty('save')) {
             // this is a Restangular object
-            return content.save();
+            return meshPut(projectName + '/nodes/' + content.uuid, content);
         } else {
             // this is a plain object (newly-created)
-            var contents = Restangular.all(projectName + '/contents');
-            return contents.post(content);
+            return meshPost(projectName + '/nodes/', content);
         }
     }
 
@@ -432,7 +413,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      */
     function deleteContent(content) {
         clearCache('contents');
-        return content.remove();
+        return meshDelete(content.project + '/nodes/' + content.uuid);
     }
 
     /**
@@ -441,8 +422,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
      */
     function getSchemas(queryParams) {
-        queryParams = queryParams || {};
-        return schemas.getList(queryParams);
+        return meshGet('schemas', queryParams);
     }
 
     /**
@@ -452,8 +432,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {ng.IPromise<any>|restangular.IPromise<any>}
      */
     function getSchema(uuid, queryParams) {
-        queryParams = queryParams || {};
-        return Restangular.one('schemas', uuid).get(queryParams);
+        return meshGet('schemas/' +  uuid, queryParams);
     }
 
     /**
@@ -462,8 +441,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
      */
     function getMicroschemas(queryParams) {
-        queryParams = queryParams || {};
-        return microschemas.getList(queryParams);
+        return meshGet('microschemas', queryParams);
     }
 
     /**
@@ -473,8 +451,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {ng.IPromise<any>|restangular.IPromise<any>}
      */
     function getMicroschema(name, queryParams) {
-        queryParams = queryParams || {};
-        return Restangular.one('microschemas', name).get(queryParams);
+        return meshGet('microschemas/' + name, queryParams);
     }
 
     /**
@@ -483,8 +460,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {EnhancedCollectionPromise<any>|ICollectionPromise<any>}
      */
     function getRoles(queryParams) {
-        queryParams = queryParams || {};
-        return roles.getList(queryParams);
+        return meshGet('roles', queryParams);
     }
 
     /**
@@ -494,8 +470,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {EnhancedPromise<any>|IPromise<any>}
      */
     function getRole(uuid, queryParams) {
-        queryParams = queryParams || {};
-        return Restangular.one('roles', uuid).get(queryParams);
+        return meshGet('roles/' + uuid, queryParams);
     }
 
     /**
@@ -505,7 +480,7 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
      * @returns {EnhancedPromise<any>|IPromise<any>}
      */
     function getBreadcrumb(projectName, uuid) {
-        return Restangular.one(projectName + '/breadcrumb', uuid).get();
+        return meshGet(projectName + '/breadcrumb/' + uuid);
     }
 
     /**
@@ -566,19 +541,15 @@ function DataService($http, $q, selectiveCache, Restangular, i18nService, apiUrl
 }
 
 /**
- * Configure Restangular
+ * Configure the dataService
  *
- * @param RestangularProvider
+ * @param $httpProvider
  * @param selectiveCacheProvider
  */
-function dataServiceConfig($httpProvider, RestangularProvider, selectiveCacheProvider) {
-
-    RestangularProvider.setRestangularFields({
-       id: "uuid"
-    });
+function dataServiceConfig($httpProvider, selectiveCacheProvider) {
 
     $httpProvider.interceptors.push(languageRequestInterceptor);
-    RestangularProvider.addResponseInterceptor(restangularResponseInterceptor);
+    $httpProvider.interceptors.push(listResponseInterceptor);
 
     // define the urls we wish to cache
     var projectName = '^\\/[a-zA-Z\\-]*',
@@ -604,19 +575,16 @@ function dataServiceConfig($httpProvider, RestangularProvider, selectiveCachePro
  * @param {string} operation
  * @returns {Object}
  */
-function restangularResponseInterceptor(data, operation) {
-    var extractedData;
-
-    if (operation === "getList") {
-        extractedData = data.data;
-        if (data._metainfo) {
-            extractedData.metadata = data._metainfo;
+function listResponseInterceptor() {
+    return {
+        response: function(response) {
+            if (response.data._metainfo) {
+                response.data.metadata = response.data._metainfo;
+                delete response.data._metainfo;
+            }
+            return response;
         }
-    } else {
-        extractedData = data;
-    }
-
-    return extractedData;
+    };
 }
 
 function languageRequestInterceptor(i18nService) {

@@ -8,7 +8,7 @@ function ProjectsListController(dataService) {
 
     function populate() {
         dataService.getProjects().then(function(data) {
-            vm.projects = data;
+            vm.projects = data.data;
         });
     }
 }

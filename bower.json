@@ -22,7 +22,6 @@
     "angular-material": "~0.10.0",
     "ui-router": "~0.2.13",
     "angular-cookies": "~1.4.1",
-    "restangular": "~1.4.0",
     "angular-utils-pagination": "~0.6.1",
     "angular-translate": "~2.6.1",
     "angular-loading-bar": "~0.7.1",
