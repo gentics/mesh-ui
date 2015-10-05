@@ -33,7 +33,7 @@ function LoginController($timeout, $state, $mdDialog, authService) {
                 }, 2000);
             })
             .catch(function() {
-                showErrorDialog(event);
+                showErrorDialog();
             });
     }
 

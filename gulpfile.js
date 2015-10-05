@@ -11,7 +11,7 @@ var gulp = require('gulp'),
     del = require('del'),
     ts = require('gulp-typescript'),
     ngAnnotate = require('gulp-ng-annotate'),
-    jsHint = require('gulp-jshint'),
+    tslint = require('gulp-tslint'),
     uglify = require('gulp-uglify'),
     wrap = require('gulp-wrap'),
     concat = require('gulp-concat'),
@@ -50,23 +50,21 @@ function build_appScripts() {
 
     return new Promise(function(resolve, reject) {
         return gulp.src([
-            '!src/**/*.spec.js',
-            '!src/assets/**/*.*',
-            'src/**/*.js',
-            'src/**/*.ts'
+            'typings/**/*.ts',
+            'src/app/**/*.ts'
         ])
-            .pipe(jsHint())
-            .pipe(jsHint.reporter('jshint-stylish'))
-            .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
-            .pipe(ngAnnotate())
+            /*.pipe(tslint())
+             .pipe(tslint.report('prose'))*/
+            //.pipe(ngAnnotate())
             .pipe(ts({
                 declarationFiles: true,
-                noExternalResolve: true,
-                sortOutput: true,
-                target: 'ES5',
-                out: 'app.js'
+                noExternalResolve: false,
+                target: 'ES5'
             })).js
-            .pipe(gulp.dest('build/'))
+            .pipe(angularFilesort())
+            .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
+            .pipe(concat('app.js'))
+            .pipe(gulp.dest('build/app'))
             .pipe(livereload())
             .on('end', resolve)
             .on('error', reject);
@@ -174,8 +172,7 @@ function build_index() {
 
         var appJs = gulp.src([
             'app/**/*.js'
-        ], {cwd: 'build/'})
-            .pipe(angularFilesort());
+        ], {cwd: 'build/'});
 
         var css = gulp.src([
             '**/angular-material.css',
@@ -269,8 +266,7 @@ function dist_js() {
 
         var appJs = gulp.src([
             'app/**/*.js'
-        ], {cwd: 'build/'})
-            .pipe(angularFilesort());
+        ], {cwd: 'build/'});
 
         var js = merge(vendorJs, appJs);
 
@@ -362,9 +358,9 @@ gulp.task('e2e', function() {
     }, 1000);
 });
 
-gulp.task('watch', ['default', 'karma-watch'], function() {
+gulp.task('watch', ['default'], function() {
     livereload.listen({ quiet: true });
-    gulp.watch('src/app/**/*.js', build_appScripts);
+    gulp.watch(['src/app/**/*.js', 'src/app/**/*.ts'], build_appScripts);
     gulp.watch('src/app/**/*.html', build_appTemplates);
     gulp.watch('src/**/*.less', build_appStyles);
     gulp.watch('src/index.html', build_index);

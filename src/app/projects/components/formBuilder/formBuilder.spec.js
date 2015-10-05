@@ -1,4 +1,4 @@
-describe('formBuilder Module', function() {
+xdescribe('formBuilder Module', function() {
 
     var $compile,
         $scope,

@@ -2,6 +2,8 @@ angular.module('meshAdminUi')
     .config(appConfig)
     .run(appRunBlock);
 
+declare var meshConfig: any;
+
 /**
  * App-wide config settings.
  *

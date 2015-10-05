@@ -108,7 +108,7 @@ function adminMenuService($rootScope, $document, $state, contextService) {
      */
     function closeAdminMenu(event) {
         var target = event.target,
-            appViewport = document.querySelector('.app-viewport');
+            appViewport: any = document.querySelector('.app-viewport');
 
         if (!isAdminState() && (target === appViewport || appViewport.contains(target))) {
             $rootScope.$apply(function() {
