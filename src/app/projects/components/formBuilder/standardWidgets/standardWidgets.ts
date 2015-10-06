@@ -551,7 +551,8 @@ module meshAdminUi {
 
     angular.module('meshAdminUi.projects.formBuilder')
            .directive('mhStringWidget', stringWidgetDirective)
-           .directive('mhHtmlWidget', htmlWidgetDirective)
+        // TODO: update the aloha-based HTML input to work with the new API
+           .directive('mhHtmlWidget', stringWidgetDirective)
            .directive('mhNumberWidget', numberWidgetDirective)
            .directive('mhBooleanWidget', booleanWidgetDirective)
            .directive('mhDateWidget', dateWidgetDirective)

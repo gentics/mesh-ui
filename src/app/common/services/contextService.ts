@@ -12,18 +12,15 @@ module meshAdminUi {
         
         /**
          * Allows components to register a callback when the context changes
-         * @param {function()} callback
          */
-        public registerContextChangeHandler(callback) {
+        public registerContextChangeHandler(callback: Function) {
             this.contextChangeCallbacks.push(callback);
         }
 
         /**
          * Set the current project and invoke any registered handlers
-         * @param {string} name
-         * @param {string} id
          */
-        public setProject(name, id) {
+        public setProject(name: string, id: string) {
             this.currentProject.name = name;
             this.currentProject.id = id;
             this.runContextChangeHandlers();
@@ -31,19 +28,18 @@ module meshAdminUi {
 
         /**
          * Get the current project object.
-         * @returns {{name: string, id: string}}
          */
-        public getProject() {
+        public getProject(): {name: string, id: string} {
             return this.currentProject;
         }
 
-        public setParentNode(name, id) {
+        public setParentNode(name: string, id: string) {
             this.currentNode.name = name;
             this.currentNode.id = id;
             this.runContextChangeHandlers();
         }
 
-        public getParentNode() {
+        public getParentNode(): {name: string, id: string} {
             return this.currentNode;
         }
 

@@ -30,7 +30,7 @@ module meshAdminUi {
     /**
      * The data service itself which is responsible for all requests to the API.
      */
-    class DataService {
+    export class DataService {
 
         constructor(private $http:ng.IHttpService,
                     private $q:ng.IQService,
@@ -84,7 +84,7 @@ module meshAdminUi {
         /**
          * Get the details of a single project specified by uuid.
          */
-        public getProject(uuid:string, queryParams:any):ng.IPromise<any> {
+        public getProject(uuid:string, queryParams?:any):ng.IPromise<any> {
             return this.meshGet('projects/' + uuid, queryParams);
         }
 
@@ -151,21 +151,21 @@ module meshAdminUi {
         /**
          *
          */
-        public getUsers(queryParams):ng.IPromise<any> {
+        public getUsers(queryParams?): ng.IPromise<any> {
             return this.meshGet('users', queryParams);
         }
 
         /**
          *
          */
-        public getUser(uuid, queryParams):ng.IPromise<any> {
+        public getUser(uuid: string, queryParams?): ng.IPromise<any> {
             return this.meshGet('users/' + uuid, queryParams);
         }
 
         /**
          * Persist the user back to the server.
          */
-        public persistUser(user):ng.IPromise<any> {
+        public persistUser(user): ng.IPromise<any> {
             this.clearCache('users');
             if (user.hasOwnProperty('save')) {
                 // this is a Restangular object
@@ -179,7 +179,7 @@ module meshAdminUi {
         /**
          *
          */
-        public deleteUser(user):ng.IPromise<any> {
+        public deleteUser(user): ng.IPromise<any> {
             this.clearCache('users');
             return this.meshDelete('users/' + user.uuid);
         }
@@ -195,14 +195,14 @@ module meshAdminUi {
         /**
          *
          */
-        public getGroups(queryParams):ng.IPromise<any> {
+        public getGroups(queryParams?):ng.IPromise<any> {
             return this.meshGet('groups', queryParams);
         }
 
         /**
          * Get the child tags for the parentTag in the given project.
          */
-        public getChildNodes(projectName, parentNodeId, queryParams):ng.IPromise<any> {
+        public getChildNodes(projectName, parentNodeId, queryParams?):ng.IPromise<any> {
             var url = projectName + '/nodes/' + parentNodeId + '/children';
             return this.meshGet(url, queryParams);
         }
@@ -210,7 +210,7 @@ module meshAdminUi {
         /**
          *
          */
-        public getChildFolders(projectName, parentNodeId, queryParams):ng.IPromise<any> {
+        public getChildFolders(projectName, parentNodeId, queryParams?):ng.IPromise<any> {
             return this.getChildNodes(projectName, parentNodeId, queryParams)
                 .then(response => {
                     return response.data.filter(node => node.hasOwnProperty('children'));
@@ -220,7 +220,7 @@ module meshAdminUi {
         /**
          *
          */
-        public getChildContents(projectName, parentNodeId, queryParams):ng.IPromise<any> {
+        public getChildContents(projectName, parentNodeId, queryParams?):ng.IPromise<any> {
             return this.getChildNodes(projectName, parentNodeId, queryParams)
                 .then(response => {
                     return response.data.filter(node => !node.hasOwnProperty('children'));
@@ -230,7 +230,7 @@ module meshAdminUi {
         /**
          * Get a single node.
          */
-        public getNode(projectName, uuid, queryParams):ng.IPromise<any> {
+        public getNode(projectName, uuid, queryParams?):ng.IPromise<any> {
             queryParams = queryParams || {};
             queryParams.lang = this.i18nService.languages.map(lang => lang.code).join(',');
             return this.meshGet(projectName + '/nodes/' + uuid, queryParams);
@@ -238,7 +238,7 @@ module meshAdminUi {
 
         /**
          */
-        public getTagFamilies(projectName, queryParams):ng.IPromise<any> {
+        public getTagFamilies(projectName, queryParams?):ng.IPromise<any> {
             var url = projectName + '/tagFamilies/';
             return this.meshGet(url, queryParams);
         }
@@ -246,7 +246,7 @@ module meshAdminUi {
         /**
          *
          */
-        public getTags(projectName, tagFamilyUuid, queryParams):ng.IPromise<any> {
+        public getTags(projectName, tagFamilyUuid, queryParams?):ng.IPromise<any> {
             var url;
             if (typeof tagFamilyUuid === 'undefined') {
                 url = projectName + '/tags/';
@@ -259,7 +259,7 @@ module meshAdminUi {
         /**
          * Get the contents of a given project, with optional parameters that specifies query string options.
          */
-        public getContents(projectName, parentTagId, queryParams):ng.IPromise<any> {
+        public getContents(projectName, parentTagId, queryParams?): ng.IPromise<any> {
             var url = projectName + '/tags/' + parentTagId + '/contents/';
             return this.meshGet(url, queryParams)
                 .then(result => this.unwrapCurrentLanguage(result));
@@ -268,7 +268,7 @@ module meshAdminUi {
         /**
          * Get a single content record.
          */
-        public getContent(projectName, uuid):ng.IPromise<any> {
+        public getContent(projectName, uuid): ng.IPromise<any> {
             var queryParams = {
                 lang: this.i18nService.languages.map(lang => lang.code).join(',')
             };
@@ -300,42 +300,42 @@ module meshAdminUi {
         /**
          *
          */
-        public getSchemas(queryParams):ng.IPromise<any> {
+        public getSchemas(queryParams?):ng.IPromise<any> {
             return this.meshGet('schemas', queryParams);
         }
 
         /**
          *
          */
-        public getSchema(uuid, queryParams):ng.IPromise<any> {
+        public getSchema(uuid, queryParams?):ng.IPromise<any> {
             return this.meshGet('schemas/' + uuid, queryParams);
         }
 
         /**
          *
          */
-        public getMicroschemas(queryParams):ng.IPromise<any> {
+        public getMicroschemas(queryParams?):ng.IPromise<any> {
             return this.meshGet('microschemas', queryParams);
         }
 
         /**
          * Get a microschema by name
          */
-        public getMicroschema(name, queryParams):ng.IPromise<any> {
+        public getMicroschema(name, queryParams?):ng.IPromise<any> {
             return this.meshGet('microschemas/' + name, queryParams);
         }
 
         /**
          *
          */
-        public getRoles(queryParams):ng.IPromise<any> {
+        public getRoles(queryParams?):ng.IPromise<any> {
             return this.meshGet('roles', queryParams);
         }
 
         /**
          *
          */
-        public getRole(uuid, queryParams):ng.IPromise<any> {
+        public getRole(uuid, queryParams?):ng.IPromise<any> {
             return this.meshGet('roles/' + uuid, queryParams);
         }
 

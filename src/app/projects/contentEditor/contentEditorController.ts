@@ -1,238 +1,245 @@
-angular.module('meshAdminUi.projects')
-    .controller('ContentEditorController', ContentEditorController);
-
-/**
- * Controller for the content edit/create form.
- *
- * @param {ng.IScope} $scope
- * @param {ng.ui.IStateService} $state
- * @param {ng.ui.IStateParamsService} $stateParams
- * @param {ConfirmActionDialog} confirmActionDialog
- * @param {ng.material.MDDialogService} $mdDialog
- * @param contextService
- * @param i18nService
- * @param dataService
- * @param wipService
- * @param notifyService
- * @param parentNode
- * @constructor
- */
-function ContentEditorController($scope, $state, $stateParams, confirmActionDialog, $mdDialog, contextService, i18nService, dataService, wipService, notifyService, parentNode) {
-    var vm = this,
-        wipType = 'contents',
-        projectName = contextService.getProject().name,
-        parentNodeId = $stateParams.nodeId;
-
-    vm.isNew = false;
-    vm.contentModified = false;
-    vm.availableLangs = i18nService.languages;
-    vm.selectedLangs = {};
-    vm.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
-    vm.canDelete = canDelete;
-    vm.persist = persist;
-    vm.remove = remove;
-    vm.close = close;
-    vm.isLoaded = false;
-
-    getContentData()
-        .then(populateSchema)
-        .then(getParentNode)
-        .then(function() {
-           vm.isLoaded = true;
-        });
-
-    $scope.$watch('vm.contentModified', modifiedWatchHandler);
-    $scope.$on('$destroy', saveWipMetadata);
+module meshAdminUi {
 
     /**
-     * Save the changes back to the server.
-     * @param {Object} content
+     * Controller for the content edit/create form.
      */
-    function persist(content) {
-        dataService.persistContent(projectName, content)
-            .then(function(response) {
-                if (vm.isNew) {
-                    notifyService.toast('NEW_CONTENT_CREATED');
-                    wipService.closeItem(wipType, content);
-                    content = response;
-                    wipService.openItem(wipType, content, { projectName: projectName, parentTagId: parentNodeId, selectedLangs: vm.selectedLangs });
-                    vm.isNew = false;
-                    $state.go('projects.explorer.content', { projectName: projectName, tagId: parentNodeId, uuid: content.uuid });
-                } else {
-                    notifyService.toast('SAVED_CHANGES');
-                    wipService.setAsUnmodified(wipType, vm.content);
-                    vm.contentModified = false;
-                }
-            });
-    }
+    class ContentEditorController{
+        private wipType = 'contents';
+        private projectName: string;
+        private parentNodeId: string;
 
-    /**
-     * Delete the open content, displaying a confirmation dialog first before making the API call.
-     * @param content
-     */
-    function remove(content) {
+        private isNew: boolean = false;
+        private contentModified: boolean = false;
+        private availableLangs: ILanguageInfo[];
+        private selectedLangs = {};
+        private isLoaded: boolean = false;
+        private content: INode;
+        private schema: any;
 
-        showDeleteDialog()
-            .then(function() {
-            return dataService.deleteContent(content);
-        })
-            .then(function() {
-                wipService.closeItem(wipType, content);
-                notifyService.toast('Deleted');
-                $state.go('projects.explorer');
-            });
-    }
+        constructor(private $scope: ng.IScope,
+                    private $state: ng.ui.IStateService,
+                    private $stateParams: any,
+                    private confirmActionDialog: ConfirmActionDialog,
+                    private $mdDialog: ng.material.IDialogService,
+                    private contextService: ContextService,
+                    private i18nService: I18nService,
+                    private dataService: DataService,
+                    private wipService: WipService,
+                    private notifyService: NotifyService,
+                    private parentNode)  {
 
-    /**
-     * Close the content, displaying a dialog if it has been modified asking
-     * whether to keep or discard the changes.
-     *
-     * @param content
-     */
-    function close(content) {
-        if (wipService.isModified(wipType, content)) {
-            showCloseDialog().then(function(response) {
-                if (response === 'save') {
-                    dataService.persistContent(projectName, content);
-                    notifyService.toast('SAVED_CHANGES');
-                }
-                wipService.closeItem(wipType, content);
-                $state.go('projects.explorer');
-            });
-        } else {
-            wipService.closeItem(wipType, content);
-            $state.go('projects.explorer');
+            this.parentNodeId = $stateParams.nodeId;
+            this.availableLangs = i18nService.languages;
+            this.projectName = contextService.getProject().name;
+            this.selectedLangs[i18nService.getCurrentLang().code] = true;
+
+            this.getContentData()
+                .then(data => this.populateSchema(data))
+                .then(() => this.getParentNode())
+                .then(() => this.isLoaded = true);
+
+            $scope.$watch('this.contentModified', val => this.modifiedWatchHandler(val));
+            $scope.$on('$destroy', () => this.saveWipMetadata());
         }
-    }
 
 
-    /**
-     * Display the close confirmation dialog box. Returns a promise which is resolved
-     * to 'save', 'discard', or rejected if user cancels.
-     * TODO: figure out a way to decouple this from the wipTabs component without duplicating all the code.
-     * @return {ng.IPromise<String>}
-     */
-    function showCloseDialog() {
-        return $mdDialog.show({
-            templateUrl: 'common/components/wipTabs/wipTabsCloseDialog.html',
-            controller: 'wipTabsDialogController',
-            controllerAs: 'vm'
-        });
-    }
-
-    /**
-     * Display a confirmation dialog for the delete action.
-     * @returns {angular.IPromise<any>|any|void}
-     */
-    function showDeleteDialog() {
-        return confirmActionDialog.show({
-            title: 'Delete Content?',
-            message: 'Are you sure you want to delete the selected content?'
-        });
-    }
-
-    /**
-     * When the value of vm.contentModified evaluates to true, set the wip as
-     * modified.
-     * @param val
-     */
-    function modifiedWatchHandler(val) {
-        if (val === true) {
-            wipService.setAsModified(wipType, vm.content);
-        }
-    }
-
-    function saveWipMetadata() {
-        wipService.setMetadata(wipType, vm.content.uuid, 'selectedLangs', vm.selectedLangs);
-    }
-
-    function canDelete() {
-        if (vm.content) {
-            return -1 < vm.content.permissions.indexOf('delete') && !vm.isNew;
-        }
-    }
-
-
-    function getParentNode() {
-        wipService.setMetadata(wipType, vm.content.uuid, 'parentNodeId', parentNodeId);
-        vm.parentNode = parentNode;
-    }
-
-    /**
-     * Get the content object either from the server if this is being newly opened, or from the
-     * wipService if it exists there.
-     *
-     * @returns {ng.IPromise}
-     */
-    function getContentData() {
-        var currentTagId = $stateParams.uuid,
-            schemaId = $stateParams.schemaId;
-
-        if (currentTagId) {
-            // loading existing content
-            var wipContent = wipService.getItem(wipType, currentTagId);
-
-            if (wipContent) {
-                return populateFromWip(wipContent);
-            } else {
-                return dataService
-                    .getContent(projectName, currentTagId)
-                    .then(function (data) {
-                        vm.content = data;
-                        wipService.openItem(wipType, data, { projectName: projectName, parentTagId: parentNodeId, selectedLangs: vm.selectedLangs });
-                        return dataService.getSchema(data.schema.uuid);
-                    });
-            }
-        } else if (schemaId) {
-            // creating new content
-            vm.isNew = true;
-            return dataService.getSchema(schemaId)
-                .then(function(schema) {
-                    vm.content = createEmptyContent(parentNodeId, schema.uuid, schema.title);
-                    wipService.openItem(wipType, vm.content, { projectName: projectName, parentTagId: parentNodeId, isNew: true, selectedLangs: vm.selectedLangs });
-                    return schema;
+        /**
+         * Save the changes back to the server.
+         * @param {Object} content
+         */
+        public persist(content) {
+            this.dataService.persistContent(this.projectName, content)
+                .then(response => {
+                    if (this.isNew) {
+                        this.notifyService.toast('NEW_CONTENT_CREATED');
+                        this.wipService.closeItem(this.wipType, content);
+                        content = response;
+                        this.wipService.openItem(this.wipType, content, {
+                            projectName: this.projectName,
+                            parentTagId: this.parentNodeId,
+                            selectedLangs: this.selectedLangs
+                        });
+                        this.isNew = false;
+                        this.$state.go('projects.explorer.content', {
+                            projectName: this.projectName,
+                            tagId: this.parentNodeId,
+                            uuid: content.uuid
+                        });
+                    } else {
+                        this.notifyService.toast('SAVED_CHANGES');
+                        this.wipService.setAsUnmodified(this.wipType, this.content);
+                        this.contentModified = false;
+                    }
                 });
         }
-    }
 
-    /**
-     * Populate the vm based on the content item retrieved from the wipService.
-     * @param {Object} wipContent
-     * @returns {ng.IPromise}
-     */
-    function populateFromWip(wipContent) {
-        var wipMetadata = wipService.getMetadata(wipType, wipContent.uuid);
-        vm.content = wipContent;
-        vm.contentModified = wipService.isModified(wipType, vm.content);
-        vm.selectedLangs = wipMetadata.selectedLangs;
-        return dataService.getSchema(vm.content.schema.uuid);
-    }
+        /**
+         * Delete the open content, displaying a confirmation dialog first before making the API call.
+         * @param content
+         */
+        public remove(content) {
 
-    /**
-     * Create an empty content object which is pre-configured according to the arguments passed.
-     *
-     * @param {string} parentTagId
-     * @param {string} schemaId
-     * @param {string} schemaName
-     * @returns {{tagUuid: *, perms: string[], uuid: *, schema: {schemaUuid: *}, schemaName: *}}
-     */
-    function createEmptyContent(parentTagId, schemaId, schemaName) {
-        return {
-            tagUuid: parentTagId,
-            perms: ['read', 'create', 'update', 'delete'],
-            uuid: wipService.generateTempId(),
-            schema: {
-                schemaUuid: schemaId,
-                schemaName: schemaName
+            this.showDeleteDialog()
+                .then(() => this.dataService.deleteContent(content))
+                .then(() => {
+                    this.wipService.closeItem(this.wipType, content);
+                    this.notifyService.toast('Deleted');
+                    this.$state.go('projects.explorer');
+                });
+        }
+
+        /**
+         * Close the content, displaying a dialog if it has been modified asking
+         * whether to keep or discard the changes.
+         */
+        public close(content) {
+            if (this.wipService.isModified(this.wipType, content)) {
+                this.showCloseDialog()
+                    .then(response => {
+                        if (response === 'save') {
+                            this.dataService.persistContent(this.projectName, content);
+                            this.notifyService.toast('SAVED_CHANGES');
+                        }
+                        this.wipService.closeItem(this.wipType, content);
+                        this.$state.go('projects.explorer');
+                    });
+            } else {
+                this.wipService.closeItem(this.wipType, content);
+                this.$state.go('projects.explorer');
             }
-        };
+        }
+
+
+        /**
+         * Display the close confirmation dialog box. Returns a promise which is resolved
+         * to 'save', 'discard', or rejected if user cancels.
+         * TODO: figure out a way to decouple this from the wipTabs component without duplicating all the code.
+         */
+        public showCloseDialog(): ng.IPromise<string> {
+            return this.$mdDialog.show({
+                templateUrl: 'common/components/wipTabs/wipTabsCloseDialog.html',
+                controller: 'wipTabsDialogController',
+                controllerAs: 'vm'
+            });
+        }
+
+        /**
+         * Display a confirmation dialog for the delete action.
+         */
+        public showDeleteDialog(): ng.IPromise<any> {
+            return this.confirmActionDialog.show({
+                title: 'Delete Content?',
+                message: 'Are you sure you want to delete the selected content?'
+            });
+        }
+
+        /**
+         * When the value of this.contentModified evaluates to true, set the wip as
+         * modified.
+         * @param val
+         */
+        public modifiedWatchHandler(val) {
+            if (val === true) {
+                this.wipService.setAsModified(this.wipType, this.content);
+            }
+        }
+
+        public saveWipMetadata() {
+            this.wipService.setMetadata(this.wipType, this.content.uuid, 'selectedLangs', this.selectedLangs);
+        }
+
+        public canDelete() {
+            if (this.content && this.content.permissions) {
+                return -1 < this.content.permissions.indexOf('delete') && !this.isNew;
+            }
+        }
+
+
+        public getParentNode() {
+            this.wipService.setMetadata(this.wipType, this.content.uuid, 'parentNodeId', this.parentNodeId);
+            this.parentNode = this.parentNode;
+        }
+
+        /**
+         * Get the content object either from the server if this is being newly opened, or from the
+         * wipService if it exists there.
+         */
+        public getContentData(): ng.IPromise<any> {
+            var currentTagId = this.$stateParams.uuid,
+                schemaId = this.$stateParams.schemaId;
+
+            if (currentTagId) {
+                // loading existing content
+                var wipContent = this.wipService.getItem(this.wipType, currentTagId);
+
+                if (wipContent) {
+                    return this.populateFromWip(wipContent);
+                } else {
+                    return this.dataService
+                        .getContent(this.projectName, currentTagId)
+                        .then(data => {
+                            this.content = data;
+                            this.wipService.openItem(this.wipType, data, {
+                                projectName: this.projectName,
+                                parentTagId: this.parentNodeId,
+                                selectedLangs: this.selectedLangs
+                            });
+                            return this.dataService.getSchema(data.schema.uuid);
+                        });
+                }
+            } else if (schemaId) {
+                // creating new content
+                this.isNew = true;
+                return this.dataService.getSchema(schemaId)
+                    .then(schema => {
+                        this.content = this.createEmptyContent(this.parentNodeId, schema.uuid, schema.title);
+                        this.wipService.openItem(this.wipType, this.content, {
+                            projectName: this.projectName,
+                            parentTagId: this.parentNodeId,
+                            isNew: true,
+                            selectedLangs: this.selectedLangs
+                        });
+                        return schema;
+                    });
+            }
+        }
+
+        /**
+         * Populate the vm based on the content item retrieved from the wipService.
+         */
+        public populateFromWip(wipContent: any): ng.IPromise<any> {
+            var wipMetadata = this.wipService.getMetadata(this.wipType, wipContent.uuid);
+            this.content = wipContent;
+            this.contentModified = this.wipService.isModified(this.wipType, this.content);
+            this.selectedLangs = wipMetadata.selectedLangs;
+            return this.dataService.getSchema(this.content.schema.uuid);
+        }
+
+        /**
+         * Create an empty content object which is pre-configured according to the arguments passed.
+         * @returns {{tagUuid: *, perms: string[], uuid: *, schema: {schemaUuid: *}, schemaName: *}}
+         */
+        public createEmptyContent(parentTagId: string, schemaId: string, schemaName: string) {
+            return {
+                tagUuid: parentTagId,
+                perms: ['read', 'create', 'update', 'delete'],
+                uuid: this.wipService.generateTempId(),
+                schema: {
+                    schemaUuid: schemaId,
+                    schemaName: schemaName
+                }
+            };
+        }
+
+        /**
+         * Load the schema data into the this.
+         * @param {Object} data
+         */
+        public populateSchema(data) {
+            this.schema = data;
+        }
     }
 
-    /**
-     * Load the schema data into the vm.
-     * @param {Object} data
-     */
-    function populateSchema(data) {
-        vm.schema = data;
-    }
+    angular.module('meshAdminUi.projects')
+        .controller('ContentEditorController', ContentEditorController);
 }

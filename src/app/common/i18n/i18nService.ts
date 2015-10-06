@@ -1,8 +1,5 @@
 module meshAdminUi {
 
-    angular.module('meshAdminUi.common.i18n')
-        .provider('i18nService', i18nServiceProvider);
-
     /**
      * This provider allows language settings to be set up at config time for the app.
      */
@@ -46,44 +43,47 @@ module meshAdminUi {
         };
     }
 
+    export interface ILanguageInfo {
+        code: string;
+        name: string;
+        nativeName: string;
+    }
 
     /**
      * Service for setting and retrieving app-wide language settings.
-     * @constructor
-     * @param $translate
-     * @param {Array} availableLangs
-     * @param {String} defaultLang
      */
-    function I18nService($translate, availableLangs, defaultLang) {
-        var currentLang = defaultLang, // 2-char language code
-            isoLangs = getIsoLangs();
+    export class I18nService {
+        private currentLang: string;
+        private isoLangs: any;
 
-        // public API
-        Object.defineProperties(this, {
-            "languages": {get: getAvailableLanguages}
-        });
-        this.setCurrentLang = setCurrentLang;
-        this.getCurrentLang = getCurrentLang;
+        constructor(private $translate: ng.translate.ITranslateService,
+                    private availableLangs: string[],
+                    private defaultLang: string) {
+
+            this.currentLang = defaultLang;
+            this.isoLangs = this.getIsoLangs();
+        }
+
+
+        public get languages() {
+            return this.getAvailableLanguages();
+        }
 
         /**
          * Getter function to get an array of available languages.
-         * @returns {Array<{code: string, name: string, nativeName: string}>}
          */
-        function getAvailableLanguages() {
-            return availableLangs.map(function (code) {
-                return codeToFullInfo(code, isoLangs);
-            });
+        public getAvailableLanguages(): ILanguageInfo[] {
+            return this.availableLangs.map(code => this.codeToFullInfo(code, this.isoLangs));
         }
 
         /**
          * Set the 2-character (ISO-639-1) language code, which must be part of the
          * availableLanguages array.
-         * @param {string} value
          */
-        function setCurrentLang(value) {
-            if (-1 < availableLangs.indexOf(value)) {
-                currentLang = value;
-                $translate.use(value);
+        public setCurrentLang(value: string) {
+            if (-1 < this.availableLangs.indexOf(value)) {
+                this.currentLang = value;
+                this.$translate.use(value);
             } else {
                 throw new Error('I18nService#setCurrentLang: ' + value + ' is not an available language.');
             }
@@ -91,19 +91,14 @@ module meshAdminUi {
 
         /**
          * Get the 2-character language code of the current language.
-         * @returns {{code: string, name: string, nativeName: string}}
          */
-        function getCurrentLang() {
-            return codeToFullInfo(currentLang, isoLangs);
+        public getCurrentLang(): ILanguageInfo {
+            return this.codeToFullInfo(this.currentLang, this.isoLangs);
         }
 
         /**
-         *
-         * @param code
-         * @param isoLangs
-         * @returns {{code: string, name: string, nativeName: string}}
          */
-        function codeToFullInfo(code, isoLangs) {
+        private codeToFullInfo(code, isoLangs): ILanguageInfo {
             return {
                 code: code,
                 name: isoLangs[code].name,
@@ -123,9 +118,8 @@ module meshAdminUi {
          * }
          *
          * @author Phil Teare using wikipedia data
-         * @return {Object}
          */
-        function getIsoLangs() {
+        private getIsoLangs() {
             // disable jsHint check for unsafe characters
             /* jshint -W100 */
             return {
@@ -860,4 +854,7 @@ module meshAdminUi {
             };
         }
     }
+
+    angular.module('meshAdminUi.common.i18n')
+           .provider('i18nService', i18nServiceProvider);
 }
