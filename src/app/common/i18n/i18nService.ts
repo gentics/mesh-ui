@@ -14,9 +14,11 @@ module meshAdminUi {
                 'de'
             ];
 
-        this.$get = function ($translate) {
+        function getFn($translate) {
             return new I18nService($translate, availableLangs, defaultLang);
-        };
+        }
+
+        this.$get = getFn;
 
         /**
          * Set the app's default language at config time.

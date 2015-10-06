@@ -15,7 +15,7 @@ function topMenuDirective($state, authService, i18nService) {
      * Whether or not the current user is logged in.
      * @type {boolean}
      */
-    var isLoggedIn = authService.isLoggedIn;
+    var isLoggedIn = authService.isLoggedIn();
 
     function topMenuController() {
         var vm = this;

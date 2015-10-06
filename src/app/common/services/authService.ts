@@ -1,15 +1,12 @@
 module meshAdminUi {
 
-    angular.module('meshAdminUi.common')
-        .config(authInterceptorConfig)
-        .service('authService', AuthService);
-
     /**
      * Used to log a user in & out, and keep track of that fact.
      * Currently a mock service which will eventually use OAuth 2 once it has
      * been implemented on the server.
      */
-    class AuthService {
+    export class AuthService {
+
         private _isLoggedIn;
         private authString;
         private onLogInCallbacks;
@@ -20,15 +17,15 @@ module meshAdminUi {
         constructor(private $injector:ng.auto.IInjectorService,
                     private $cookies) {
 
-            this._isLoggedIn = $cookies.get('isLoggedIn') === 'true',
-                this.authString = $cookies.get('authString') === '',
-                this.onLogInCallbacks = [],
-                this.onLogOutCallbacks = [];
+            this._isLoggedIn = $cookies.get('isLoggedIn') === 'true';
+            this.authString = $cookies.get('authString') === '';
+            this.onLogInCallbacks = [];
+            this.onLogOutCallbacks = [];
         }
 
 
         // public API
-        public get isLoggedIn() {
+        public isLoggedIn() {
             return this._isLoggedIn;
         }
 
@@ -52,18 +49,20 @@ module meshAdminUi {
             authHeaderValue = "Basic " + btoa(userName + ":" + password);
             config.headers[authHeaderKey] = authHeaderValue;
 
+            // TODO: replace url with config value.
             return $http.get('/api/v1/auth/me', config)
-                .then(function (response) {
+                .then(response => {
                     if (response.status === 200) {
                         this.authString = authHeaderValue;
                         this._isLoggedIn = true;
                         this.$cookies.put('isLoggedIn', 'true');
                         this.$cookies.put('authString', this.authString);
+                        this.onLogInCallbacks.forEach(fn => fn());
                     } else {
                         console.log('Error, status: ' + response.status);
                     }
                 },
-                function (response) {
+                response => {
                     if (response.status === this.CODE_RESPONSE_UNAUTHORIZED) {
                         //TODO: Display error message
                         console.log('not authorized: ' + response.status);
@@ -81,9 +80,7 @@ module meshAdminUi {
         public logOut() {
             this._isLoggedIn = false;
             this.$cookies.put('isLoggedIn', 'false');
-            this.onLogOutCallbacks.forEach(function (fn) {
-                fn();
-            });
+            this.onLogOutCallbacks.forEach(fn => fn());
         }
 
         /**
@@ -107,17 +104,17 @@ module meshAdminUi {
         }
     }
 
-    function authInterceptorConfig($httpProvider:ng.IHttpProvider) {
+    function authInterceptorConfig($httpProvider: ng.IHttpProvider) {
         $httpProvider.interceptors.push(authInterceptor);
     }
 
-    function authInterceptor(authService:AuthService) {
+    function authInterceptor(authService: AuthService) {
         var AUTH_HEADER_NAME = 'Authorization';
         return {
             request: function (config) {
                 // TODO: need to read the API URL from the config file
                 if (config.url.indexOf('api/') > -1 && !config.headers.hasOwnProperty(AUTH_HEADER_NAME)) {
-                    if (authService.isLoggedIn) {
+                    if (authService.isLoggedIn()) {
                         config.headers[AUTH_HEADER_NAME] = authService.getAuthValue();
                     } else {
                         console.log('not authorized!');
@@ -128,4 +125,8 @@ module meshAdminUi {
             }
         };
     }
+
+    angular.module('meshAdminUi.common')
+            .config(authInterceptorConfig)
+            .service('authService', AuthService);
 }

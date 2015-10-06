@@ -55,14 +55,13 @@ function build_appScripts() {
         ])
             /*.pipe(tslint())
              .pipe(tslint.report('prose'))*/
-            //.pipe(ngAnnotate())
             .pipe(ts({
                 declarationFiles: true,
                 noExternalResolve: false,
                 target: 'ES5'
             })).js
+            //.pipe(ngAnnotate())
             .pipe(angularFilesort())
-            .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
             .pipe(concat('app.js'))
             .pipe(gulp.dest('build/app'))
             .pipe(livereload())
@@ -358,7 +357,7 @@ gulp.task('e2e', function() {
     }, 1000);
 });
 
-gulp.task('watch', ['default'], function() {
+gulp.task('watch', ['default', 'karma-watch'], function() {
     livereload.listen({ quiet: true });
     gulp.watch(['src/app/**/*.js', 'src/app/**/*.ts'], build_appScripts);
     gulp.watch('src/app/**/*.html', build_appTemplates);
