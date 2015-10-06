@@ -1,10 +1,10 @@
 <div class="editor-widget select-container">
     <div flex>
         <md-input-container flex>
-            <md-select ng-model="model[path]" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()" md-no-ink>
-                <md-option ng-value="opt" ng-repeat="opt in field.options">{{ opt }}</md-option>
+            <md-select ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate" md-no-ink>
+                <md-option ng-value="opt" ng-repeat="opt in vm.fieldModel.options">{{ opt }}</md-option>
             </md-select>
-            <span class="label">{{ field.label || field.name }}</span>
+            <span class="label">{{ vm.fieldModel.label || vm.fieldModel.name }}</span>
         </md-input-container>
     </div>
 </div>

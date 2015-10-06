@@ -18,28 +18,23 @@ function widgetProxyDirective($compile, widgetHighlighterService) {
 
     /**
      *
-     * @param {Object} scope
-     * @param element
-     * @param attrs
-     * @param {formBuilderController} formBuilderController
      */
-    function widgetProxyLinkFn(scope, element, attrs, formBuilderController) {
+    function widgetProxyLinkFn(scope, element, attrs) {
         var template,
             flexAttrs = 'flex',
             isTopElement = element.parent()[0].tagName === 'FORM';
 
-        scope.formBuilder = formBuilderController;
 
         if (isTopElement) {
-            flexAttrs = getFlexAttributes(scope.field.type);
+            scope.flexAttrs = getFlexAttributes(scope.fieldModel.type);
         }
 
-        if (scope.field.type === 'microschema') {
+        /*if (scope.fieldModel.type === 'microschema') {
             // Pass microschema name through the custom widgets to check for a match.
-            template = '<microschema-form-builder ' + flexAttrs + ' class="widget-container" ></microschema-form-builder>';
+            template = '<microschema-form-builder ' + flexAttrs + ' field-model="fieldModel" class="widget-container" ></microschema-form-builder>';
         } else {
-            var directiveName = 'mh-' + scope.field.type + '-widget';
-            template = '<' + directiveName + ' ' + flexAttrs + ' class="widget-container" ></' + directiveName + '>';
+            var directiveName = 'mh-' + scope.fieldModel.type + '-widget';
+            template = '<' + directiveName + ' ' + flexAttrs + ' field-model="fieldModel" class="widget-container" ></' + directiveName + '>';
         }
 
         var compiledDom = $compile(template)(scope);
@@ -52,7 +47,7 @@ function widgetProxyDirective($compile, widgetHighlighterService) {
             compiledDom.on('mouseleave', function () {
                 widgetHighlighterService.hide();
             });
-        }
+        }*/
 
     }
 
@@ -62,24 +57,31 @@ function widgetProxyDirective($compile, widgetHighlighterService) {
      * @returns {*}
      */
     function getFlexAttributes(type) {
-        var flexAttrs;
+        var flexAttrs = {
+            sm: 100,
+            gtSm: 100,
+            gtLg: 100
+        };
 
         switch (type) {
             case 'html':
             case 'list':
             case 'microschema':
-                flexAttrs = 'flex="100"';
+                //flexAttrs = 'flex="100"';
                 break;
             case 'number':
             case 'boolean':
             case 'date':
-                flexAttrs = 'flex-sm="50" flex-gt-sm="33" flex-gt-lg="20"';
+                //flexAttrs = 'flex-sm="50" flex-gt-sm="33" flex-gt-lg="20"';
+                flexAttrs.sm = 50;
+                flexAttrs.gtSm = 33;
+                flexAttrs.gtLg = 20;
                 break;
             case 'string':
-                flexAttrs = 'flex="100"';
+                //flexAttrs = 'flex="100"';
                 break;
             default:
-                flexAttrs = '';
+                //flexAttrs = '';
         }
 
         return flexAttrs;
@@ -87,12 +89,11 @@ function widgetProxyDirective($compile, widgetHighlighterService) {
 
     return {
         restrict: 'EA',
-        require: '^formBuilder',
         link: widgetProxyLinkFn,
+        replace: true,
+        templateUrl: 'projects/components/formBuilder/widgetProxy.html',
         scope: {
-            model: '=',
-            path: '=',
-            field: '='
+            fieldModel: '='
         }
     };
 }

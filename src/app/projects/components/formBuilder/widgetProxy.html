@@ -1,0 +1,15 @@
+<div class="widget-proxy"
+     ng-switch="fieldModel.type"
+     flex-sm="{{ flexAttrs.sm }}"
+     flex-gt-sm="{{ flexAttrs.gtSm }}"
+     flex-gt-lg="{{ flexAttrs.gtLg }}">
+    <div ng-switch-when="string"><mh-string-widget field-model="fieldModel"></mh-string-widget></div>
+    <div ng-switch-when="date"><mh-date-widget field-model="fieldModel"></mh-date-widget></div>
+    <div ng-switch-when="boolean"><mh-boolean-widget field-model="fieldModel"></mh-boolean-widget></div>
+    <div ng-switch-when="node"><mh-node-widget field-model="fieldModel"></mh-node-widget></div>
+    <div ng-switch-when="number"><mh-number-widget field-model="fieldModel"></mh-number-widget></div>
+    <div ng-switch-when="select"><mh-select-widget field-model="fieldModel"></mh-select-widget></div>
+    <!--<div ng-switch-when="list"><mh-list-widget field-model="fieldModel"></mh-list-widget></div>
+    <div ng-switch-when="html"><mh-html-widget field-model="fieldModel"></mh-html-widget></div>
+    <div ng-switch-when="microschema"><microschema-form-builder field-model="fieldModel" class="widget-container" ></microschema-form-builder></div>-->
+</div>

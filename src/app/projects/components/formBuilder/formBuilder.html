@@ -1,12 +1,6 @@
 <div layout="row">
-
-    <ul>
-        <li ng-repeat="field in formBuilder.fields" >
-           <pre> {{ field | json }}</pre>
-        </li>
-    </ul>
     <form flex="100" name="contentEditorForm" layout-wrap layout="row">
-        <widget-proxy ng-repeat="field in formBuilder.fields" model="formBuilder.model" path="field.name" field="field"></widget-proxy>
+        <widget-proxy ng-repeat="field in vm.nodeFieldModelCollection" field-model="field"></widget-proxy>
     </form>
    <!-- <widget-highlighter></widget-highlighter>-->
    <!-- <div flex="0" flex-gt-lg="30" class="model-json">

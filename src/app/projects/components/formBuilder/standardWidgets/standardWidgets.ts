@@ -2,15 +2,32 @@ module meshAdminUi {
 
     declare var Aloha: any;
 
-    angular.module('meshAdminUi.projects.formBuilder')
-        .directive('mhStringWidget', stringWidgetDirective)
-        .directive('mhHtmlWidget', htmlWidgetDirective)
-        .directive('mhNumberWidget', numberWidgetDirective)
-        .directive('mhBooleanWidget', booleanWidgetDirective)
-        .directive('mhDateWidget', dateWidgetDirective)
-        .directive('mhSelectWidget', selectWidgetDirective)
-        .directive('mhNodeWidget', nodeWidgetDirective)
-        .directive('mhListWidget', listWidgetDirective);
+    class StandardWidgetController {
+
+        public fieldModel: INodeFieldModel;
+        public value: any;
+
+        constructor() {
+            console.log('instantiating widget controller');
+            this.value = angular.copy(this.fieldModel.value);
+        }
+    }
+
+    function makeStandardWidgetDDO(type, controller?) {
+
+        console.log('creating widget of type', type);
+        controller = controller || StandardWidgetController;
+        return {
+            restrict: 'E',
+            templateUrl: `projects/components/formBuilder/standardWidgets/${type}Widget.html`,
+            controller: controller,
+            controllerAs: 'vm',
+            bindToController: true,
+            scope: {
+                fieldModel: '='
+            }
+        };
+    }
 
     /**
      * Input for string field types
@@ -18,11 +35,7 @@ module meshAdminUi {
      * @returns {ng.IDirective} Directive definition object
      */
     function stringWidgetDirective() {
-        return {
-            restrict: 'E',
-            templateUrl: 'projects/components/formBuilder/standardWidgets/stringWidget.html',
-            scope: true
-        };
+        return makeStandardWidgetDDO('string');
     }
 
     /**
@@ -268,12 +281,31 @@ module meshAdminUi {
      * @returns {ng.IDirective} Directive definition object
      */
     function numberWidgetDirective() {
+        return makeStandardWidgetDDO('number');
+    }
 
-        return {
-            restrict: 'E',
-            templateUrl: 'projects/components/formBuilder/standardWidgets/numberWidget.html',
-            scope: true
-        };
+
+    /**
+     * Since the input[type="date"] directive requires a Date object, we need to convert the
+     * timestamp into a Date object and bind to that.
+     */
+    class DateWidgetController extends StandardWidgetController {
+
+        constructor($scope) {
+            super();
+
+            if (0 < this.fieldModel.value) {
+                this.value= new Date(this.fieldModel.value * 1000);
+            } else {
+                this.value = new Date();
+            }
+
+            $scope.$watch(() => this.value, newVal => {
+                if (newVal) {
+                    this.fieldModel.update(newVal.getTime() / 1000);
+                }
+            });
+        }
     }
 
     /**
@@ -282,32 +314,7 @@ module meshAdminUi {
      * @returns {ng.IDirective} Directive definition object
      */
     function dateWidgetDirective() {
-
-        /**
-         * Since the input[type="date"] directive requires a Date object, we need to convert the
-         * timestamp into a Date object and bind to that.
-         * @param {ng.IScope} scope
-         */
-        function dateWidgetLinkFn(scope) {
-            if (0 < scope.model[scope.path]) {
-                scope.date = new Date(scope.model[scope.path] * 1000);
-            } else {
-                scope.date = new Date();
-            }
-
-            scope.$watch('date', function (newVal) {
-                if (newVal) {
-                    scope.model[scope.path] = newVal.getTime() / 1000;
-                }
-            });
-        }
-
-        return {
-            restrict: 'E',
-            link: dateWidgetLinkFn,
-            templateUrl: 'projects/components/formBuilder/standardWidgets/dateWidget.html',
-            scope: true
-        };
+        return makeStandardWidgetDDO('date', DateWidgetController);
     }
 
     /**
@@ -316,11 +323,7 @@ module meshAdminUi {
      * @returns {ng.IDirective} Directive definition object
      */
     function booleanWidgetDirective() {
-        return {
-            restrict: 'E',
-            templateUrl: 'projects/components/formBuilder/standardWidgets/booleanWidget.html',
-            scope: true
-        };
+        return makeStandardWidgetDDO('boolean');
     }
 
     /**
@@ -329,51 +332,40 @@ module meshAdminUi {
      * @returns {ng.IDirective} Directive definition object
      */
     function selectWidgetDirective() {
-        return {
-            restrict: 'E',
-            templateUrl: 'projects/components/formBuilder/standardWidgets/selectWidget.html',
-            scope: true
-        };
+        return makeStandardWidgetDDO('select');
+    }
+
+    class NodeWidgetController extends StandardWidgetController {
+
+        constructor(private nodeSelector: NodeSelector) {
+            super();
+        }
+
+        public showDialog(event: ng.IAngularEvent) {
+            var options = {
+                allow: this.fieldModel.allow || []
+            };
+            event.preventDefault();
+            this.nodeSelector.open(options)
+                .then(nodes => {
+                    this.fieldModel.update(this.maskNode(nodes[0]));
+                });
+        }
+
+        private maskNode(node: INode) {
+            return {
+                uuid: node.uuid,
+                displayField: node.displayField,
+                fields: node.fields
+            };
+        }
     }
 
     /**
      * Input for node field types
-     *
-     * @param {nodeSelector} nodeSelector
-     * @returns {ng.IDirective} Directive definition object
      */
-    function nodeWidgetDirective(nodeSelector) {
-
-        function nodeWidgetLinkFn(scope) {
-
-            scope.showDialog = showDialog;
-
-            function showDialog(event) {
-                var options = {
-                    allow: scope.field.allow || []
-                };
-                event.preventDefault();
-                nodeSelector.open(options)
-                    .then(function (nodes) {
-                        scope.model[scope.path] = maskNode(nodes[0]);
-                    });
-            }
-
-            function maskNode(node) {
-                return {
-                    uuid: node.uuid,
-                    displayField: node.displayField,
-                    fields: node.fields
-                };
-            }
-        }
-
-        return {
-            restrict: 'E',
-            link: nodeWidgetLinkFn,
-            templateUrl: 'projects/components/formBuilder/standardWidgets/nodeWidget.html',
-            scope: true
-        };
+    function nodeWidgetDirective() {
+        return makeStandardWidgetDDO('node', NodeWidgetController);
     }
 
     /**
@@ -557,4 +549,13 @@ module meshAdminUi {
         };
     }
 
+    angular.module('meshAdminUi.projects.formBuilder')
+           .directive('mhStringWidget', stringWidgetDirective)
+           .directive('mhHtmlWidget', htmlWidgetDirective)
+           .directive('mhNumberWidget', numberWidgetDirective)
+           .directive('mhBooleanWidget', booleanWidgetDirective)
+           .directive('mhDateWidget', dateWidgetDirective)
+           .directive('mhSelectWidget', selectWidgetDirective)
+           .directive('mhNodeWidget', nodeWidgetDirective)
+           .directive('mhListWidget', listWidgetDirective);
 }

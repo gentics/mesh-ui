@@ -1,55 +1,73 @@
-angular.module('meshAdminUi.projects.formBuilder')
-    .directive('formBuilder', formBuilderDirective);
-
-/**
- * Component for auto-generating a form from schema data.
- *
- * API:
- * ====
- * model = the object properties from the database, e.g. "content.properties", "tag.properties" etc.
- * fields = the schema properties array
- * modified-flag = boolean value that will be set to true when user modifies any form fields.
- *
- * @returns {ng.IDirective} Directive definition object
- */
-function formBuilderDirective() {
+module meshAdminUi {
 
     /**
-     * @name formBuilderController
+     * Component for auto-generating a form from schema data.
+     *
+     * API:
+     * ====
+     * fields = the object properties from the node fields
+     * schema = the schema fields definitions
+     * modified-flag = boolean value that will be set to true when user modifies any form fields.
+     *
      */
-    function formBuilderController() {
-        var formBuilder = this;
+    function formBuilderDirective() {
 
-        formBuilder.canUpdate = canUpdate;
-        formBuilder.isDisplayField = isDisplayField;
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: 'projects/components/formBuilder/formBuilder.html',
+            controller: 'formBuilderController',
+            controllerAs: 'vm',
+            bindToController: true,
+            scope: {
+                fields: '=',
+                schema: '=',
+                modified: '=modifiedFlag',
+                perms: '=',
+                displayField: '='
+            }
+        };
+    }
 
-        /**
-         * Does the current user have permission to update this content? If not,
-         * form fields are disabled.
-         * @returns {boolean}
-         */
-        function canUpdate() {
-            return -1 < formBuilder.permissions.indexOf('update');
+    class FormBuilderController {
+
+        public nodeFieldModelCollection: INodeFieldModel[];
+        private fields: INodeFields;
+        private schema: ISchemaFieldDefinition[];
+        private modified: boolean;
+        private perms: string[];
+        private displayField: string;
+
+        constructor($scope: any) {
+            var unwatch = $scope.$watch(() => this.schema, val => {
+                if (val) {
+                    this.nodeFieldModelCollection = this.createNodeFieldsModel(this.fields, this.schema);
+                }
+            })
         }
 
-        function isDisplayField(fieldName) {
-            return fieldName === formBuilder.displayField;
+        private createNodeFieldsModel(nodeFields: INodeFields, schemaFields: ISchemaFieldDefinition[]): INodeFieldModel[] {
+            let canUpdate =  -1 < this.perms.indexOf('update');
+            return schemaFields.map(schemaField => {
+                let model: INodeFieldModel = angular.copy(schemaField);
+                model.value = nodeFields[schemaField.name];
+                model.path = [schemaField.name];
+                model.canUpdate = canUpdate;
+                model.isDisplayField = schemaField.name === this.displayField;
+                model.update = this.makeUpdateFunction(model.path);
+                return model;
+            });
+        }
+
+        private makeUpdateFunction(path) {
+            return (value) => {
+                console.log('The value', value, 'will update in the path', path);
+            }
         }
     }
 
-    return {
-        restrict: 'E',
-        replace: true,
-        templateUrl: 'projects/components/formBuilder/formBuilder.html',
-        controller: formBuilderController,
-        controllerAs: 'formBuilder',
-        bindToController: true,
-        scope: {
-            model: '=',
-            fields: '=',
-            modified: '=modifiedFlag',
-            perms: '=',
-            displayField: '='
-        }
-    };
+    angular.module('meshAdminUi.projects.formBuilder')
+        .directive('formBuilder', formBuilderDirective)
+        .controller('formBuilderController', FormBuilderController);
+
 }

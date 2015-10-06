@@ -1,4 +1,4 @@
-<md-input-container class="editor-widget" ng-class="{ 'display-field' : formBuilder.isDisplayField(field.name) }">
-    <label>{{ field.label || field.name }}</label>
-    <input type="text" ng-model="model[path]" ng-change="formBuilder.modified = true" ng-readonly="!formBuilder.canUpdate()">
+<md-input-container class="editor-widget" ng-class="{ 'display-field' : vm.fieldModel.isDisplayField }">
+    <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
+    <input type="text" ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate">
 </md-input-container>
