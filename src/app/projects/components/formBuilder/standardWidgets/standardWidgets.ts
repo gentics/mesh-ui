@@ -284,10 +284,12 @@ module meshAdminUi {
      * Since the input[type="date"] directive requires a Date object, we need to convert the
      * timestamp into a Date object and bind to that.
      */
-    class DateWidgetController extends StandardWidgetController {
+    class DateWidgetController {
 
-        constructor($scope) {
-            super($scope);
+        public fieldModel: INodeFieldModel;
+        public value: any;
+
+        constructor($scope: ng.IScope) {
 
             if (0 < this.fieldModel.value) {
                 this.value= new Date(this.fieldModel.value * 1000);
@@ -296,7 +298,7 @@ module meshAdminUi {
             }
 
             $scope.$watch(() => this.value, newVal => {
-                if (newVal) {
+                if (newVal && newVal instanceof Date) {
                     this.fieldModel.update(newVal.getTime() / 1000);
                 }
             });
@@ -365,6 +367,7 @@ module meshAdminUi {
         private listFieldModels: INodeFieldModel[] = [];
 
         constructor(private $scope: ng.IScope,
+                    private $element: ng.IAugmentedJQuery,
                     private dataService: DataService,
                     private widgetHighlighterService: WidgetHighlighterService,
                     private mu: MeshUtils) {
@@ -481,7 +484,7 @@ module meshAdminUi {
          */
         private reHighlight() {
             setTimeout(() => {
-                this.widgetHighlighterService.highlight();
+                this.widgetHighlighterService.highlight(this.$element.children()[0]);
             }, 500);
         }
 

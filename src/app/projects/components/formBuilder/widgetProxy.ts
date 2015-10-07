@@ -103,7 +103,7 @@ module meshAdminUi {
             this.currentElement = element || this.currentElement;
             let parentNode = <HTMLElement>this.currentElement.parentNode;
             if (this.currentElement) {
-                this.top = this.currentElement.offsetTop;
+                this.top = this.currentElement.getBoundingClientRect().top;
                 this.left = parentNode.offsetLeft;
                 this.height = this.currentElement.offsetHeight;
                 this.opacity = 1;
@@ -132,7 +132,7 @@ module meshAdminUi {
          * Invokes any callbacks previously registered with registerChangeHandler();
          */
         private invokeChangeHandlers() {
-            this.changeHandlers.forEach(function (fn) {
+            this.changeHandlers.forEach(fn => {
                 fn({
                     top: this.top,
                     left: this.left,
