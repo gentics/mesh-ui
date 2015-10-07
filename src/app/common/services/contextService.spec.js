@@ -9,11 +9,14 @@ describe('contextService', function() {
         contextService = _contextService_;
         project = {
             name: 'someProject',
-            id: '12345abc'
+            uuid: '12345abc'
         };
         node = {
-            name: 'someNode',
-            id: '12345abc'
+            displayField: 'name',
+            uuid: '12345abc',
+            fields: {
+                name: 'someNode'
+            }
         };
 
         jasmine.clock().install();
@@ -24,36 +27,36 @@ describe('contextService', function() {
     });
 
     it('setProject() should set current project', function() {
-        contextService.setProject(project.name, project.id);
+        contextService.setProject(project);
 
         expect(contextService.getProject()).toEqual(project);
     });
 
     it('setParentNode() should set current node', function() {
-        contextService.setParentNode(node.name, node.id);
+        contextService.setCurrentNode(node);
 
-        expect(contextService.getParentNode()).toEqual(node);
+        expect(contextService.getCurrentNode()).toEqual(node);
     });
 
     it('should call change handlers with correct args', function() {
         var handler = jasmine.createSpy('handler');
         contextService.registerContextChangeHandler(handler);
 
-        contextService.setProject(project.name, project.id);
+        contextService.setProject(project);
 
         jasmine.clock().tick(1);
 
-        expect(handler).toHaveBeenCalledWith(project, { name: '', id: '' });
+        expect(handler).toHaveBeenCalledWith(project, {});
     });
 
     it('should only call change handlers once per event loop', function() {
         var handler = jasmine.createSpy('handler');
         contextService.registerContextChangeHandler(handler);
 
-        contextService.setProject(project.name, project.id);
-        contextService.setProject(project.name, project.id);
-        contextService.setParentNode(node.name, node.id);
-        contextService.setParentNode(node.name, node.id);
+        contextService.setProject(project);
+        contextService.setProject(project);
+        contextService.setCurrentNode(node);
+        contextService.setCurrentNode(node);
 
         jasmine.clock().tick(1);
 

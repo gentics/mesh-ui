@@ -95,22 +95,21 @@ function updateContext($q, $stateParams, dataService, contextService) {
         result;
 
     if (projectName !== '') {
-        var qProject = dataService.getProjectId(projectName),
+        var qProject = dataService.getProjectByName(projectName),
             qNode = dataService.getNode(projectName, nodeId);
 
         result = $q.all([qProject, qNode])
-            .then(function(result) {
-                var projectId = result[0],
-                    node = result[1],
-                    nodeSegmentName = node.fields[node.segmentField];
+            .then(result => {
+                var project = result[0],
+                    node = result[1];
 
-                contextService.setProject(projectName, projectId);
-                contextService.setParentNode(nodeSegmentName, nodeId);
+                contextService.setProject(project);
+                contextService.setCurrentNode(node);
                 return node;
             });
     } else {
-        contextService.setProject('', '');
-        contextService.setParentNode('');
+        contextService.setProject();
+        contextService.setCurrentNode();
     }
 
     return result;

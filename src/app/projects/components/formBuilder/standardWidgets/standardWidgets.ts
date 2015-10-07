@@ -16,7 +16,6 @@ module meshAdminUi {
 
     function makeStandardWidgetDDO(type, controller?) {
 
-        console.log('creating widget of type', type);
         controller = controller || StandardWidgetController;
         return {
             restrict: 'E',

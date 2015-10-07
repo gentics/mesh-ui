@@ -77,7 +77,7 @@ module meshAdminUi {
         /**
          * Get all projects as a list.
          */
-        public getProjects(queryParams?:any):ng.IPromise<any> {
+        public getProjects(queryParams?:any): ng.IPromise<any> {
             return this.meshGet('projects', queryParams);
         }
 
@@ -86,6 +86,11 @@ module meshAdminUi {
          */
         public getProject(uuid:string, queryParams?:any):ng.IPromise<any> {
             return this.meshGet('projects/' + uuid, queryParams);
+        }
+
+        public getProjectByName(name: string, queryParams?): ng.IPromise<IProject> {
+            return this.getProjects(queryParams)
+                .then(response => response.data.filter(project => project.name === name)[0]);
         }
 
         /**

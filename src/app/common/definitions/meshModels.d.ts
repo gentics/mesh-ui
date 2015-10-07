@@ -1,5 +1,16 @@
 declare module meshAdminUi {
 
+    export interface IProject {
+        uuid?: string;
+        creator?: INodeReference;
+        created?: number;
+        editor?: INodeReference;
+        edited?: number;
+        name: string;
+        permissions?: string[];
+        rootNodeUuid: string;
+    }
+
     export interface INodeReference {
         name: string;
         uuid: string;

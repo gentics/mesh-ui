@@ -91,7 +91,7 @@ function adminMenuService($rootScope, $document, $state, contextService) {
             $document.off('click', closeAdminMenu);
             if (isAdminState()) {
                 var projectName = contextService.getProject().name,
-                    nodeId = contextService.getParentNode().id;
+                    nodeId = contextService.getCurrentNode().id;
 
                 if (projectName) {
                     $state.go('projects.explorer', {projectName: projectName, nodeId: nodeId});

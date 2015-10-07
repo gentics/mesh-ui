@@ -15,7 +15,7 @@ function projectSearchBarDirective($state, contextService) {
     function projectSearchBarController() {
         var vm = this;
         vm.currentProject = contextService.getProject().name;
-        vm.currentNode = contextService.getParentNode().name;
+        vm.currentNode = contextService.getCurrentNode().name;
         vm.goToContext = goToContext;
 
         if (!callbackRegistered) {

@@ -55,7 +55,7 @@ module meshAdminUi {
             var vm = this,
                 selectedNodesHash = {},
                 projectName = contextService.getProject().name,
-                currentNodeId = contextService.getParentNode().id;
+                currentNodeId = contextService.getCurrentNode().id;
 
             vm.selectedNodes = vm.selectedNodes instanceof Array ? vm.selectedNodes : [];
             vm.openNode = openNode;
