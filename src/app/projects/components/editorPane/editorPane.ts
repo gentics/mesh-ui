@@ -58,6 +58,13 @@ module meshAdminUi {
             };
 
             editorService.registerOnOpenCallback(init);
+            /*wipService.registerWipChangeHandler(() => {
+                if (wipService.getOpenItems(this.wipType).length === 0) {
+                    this.isLoaded = false;
+                } else {
+
+                }
+            });*/
             $scope.$watch('this.contentModified', val => this.modifiedWatchHandler(val));
             $scope.$on('$destroy', () => this.saveWipMetadata());
         }
@@ -279,7 +286,7 @@ module meshAdminUi {
 
         public open(uuid) {
             this.openNodeId = uuid;
-            this.onOpenCallbacks.forEach(function (fn) {
+            this.onOpenCallbacks.forEach(fn => {
                 fn.call(null, uuid);
             });
         }

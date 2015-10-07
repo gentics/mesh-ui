@@ -1,98 +1,94 @@
-angular.module('meshAdminUi.common')
-    .directive('wipTabs', wipTabs)
-    .controller('wipTabsDialogController', WipTabsDialogController);
-
-/**
- * Directive work-in-progress (WIP) tabs which allow switching between open editor views.
- *
- * @param {ng.ui.IStateService} $state
- * @param {ng.material.MDDialogService} $mdDialog
- * @param editorService
- * @param i18nService
- * @param wipService
- * @param dataService
- * @param notifyService
- *
- * @returns {ng.IDirective} Directive definition object
- */
-function wipTabs($state, $mdDialog, editorService, i18nService, wipService, dataService, notifyService) {
+module meshAdminUi {
 
     /**
-     * @param {ng.IScope} $scope
+     * Directive work-in-progress (WIP) tabs which allow switching between open editor views.
      */
-    function wipTabsController($scope) {
-        var vm = this,
-            wipType = 'contents',
-            lastIndex = 0;
+    function wipTabs() {
 
-        vm.wips = [];
-        vm.modified = [];
-        vm.selectedIndex = 0;
-        vm.isModified = isModified;
-        vm.closeWip = closeWip;
-        vm.open = open;
-        vm.lang = i18nService.getCurrentLang().code;
-        vm.displayTabs = true;
+        return {
+            restrict: 'E',
+            templateUrl: 'common/components/wipTabs/wipTabs.html',
+            controller: 'wipTabsController',
+            controllerAs: 'vm',
+            scope: {}
+        };
+    }
 
-        wipService.registerWipChangeHandler(wipChangeHandler);
-        editorService.registerOnOpenCallback(editorOpenHandler);
-        $scope.$on('$stateChangeStart', stateChangeStartHandler);
-        $scope.$on('$stateChangeSuccess', stateChangeSuccessHandler);
-        window.addEventListener('beforeunload', persistOpenWipsLocally);
+    class WipTabsController {
+        private wipType: string = 'contents';
+        private lastIndex: number = 0;
+        private wips: any[] = [];
+        private modified: string[] = [];
+        private selectedIndex: number = 0;
+        private lang: string;
+        private displayTabs: boolean = true;
+        private explorer;
 
-        wipChangeHandler(); // populate with WIPs on load.
+        constructor(private $scope: ng.IScope,
+                    private $state: ng.ui.IStateService,
+                    private $mdDialog: ng.material.IDialogService,
+                    private editorService: EditorService,
+                    private i18nService: I18nService,
+                    private wipService: WipService,
+                    private dataService: DataService,
+                    private notifyService: NotifyService) {
+
+            this.lang = i18nService.getCurrentLang().code;
+
+            wipService.registerWipChangeHandler(() => this.wipChangeHandler());
+            editorService.registerOnOpenCallback(uuid => this.editorOpenHandler(uuid));
+            $scope.$on('$stateChangeStart', (event, toState) => this.stateChangeStartHandler(event, toState));
+            $scope.$on('$stateChangeSuccess', (event, toState, toParams) => this.stateChangeSuccessHandler(event, toState, toParams));
+            window.addEventListener('beforeunload', () => this.persistOpenWipsLocally());
+
+            this.wipChangeHandler(); // populate with WIPs on load.
+        }
 
         /**
          * Has the WIP with the specified uuid been modified?
-         * @param {string} uuid
-         * @returns {boolean}
          */
-        function isModified(uuid) {
-            return -1 < vm.modified.indexOf(uuid);
+        public isModified(uuid: string): boolean {
+            return -1 < this.modified.indexOf(uuid);
         }
 
-        function open(uuid) {
-            editorService.open(uuid);
-            editorOpenHandler(uuid);
+        public open(uuid: string) {
+            this.editorService.open(uuid);
+            this.editorOpenHandler(uuid);
         }
 
         /**
          * Close a WIP tab and remove the WIP item from the wipService,
          * automatically switching to another tab or the list view.
-         *
-         * @param {Event} event
-         * @param {number} index
          */
-        function closeWip(event, index) {
-            var wip = vm.wips[index].item,
-                projectName = vm.wips[index].metadata.projectName;
+        public closeWip(event: Event, index: number) {
+            var wip = this.wips[index].item,
+                projectName = this.wips[index].metadata.projectName;
 
             event.stopPropagation();
             event.preventDefault();
-            lastIndex = vm.selectedIndex;
+            this.lastIndex = this.selectedIndex;
 
-            if (wipService.isModified(wipType, wip)) {
-                showDialog().then(function(response) {
+            if (this.wipService.isModified(this.wipType, wip)) {
+                this.showDialog().then(response => {
                     if (response === 'save') {
-                        dataService.persistContent(projectName, wip);
-                        notifyService.toast('SAVED_CHANGES');
+                        this.dataService.persistContent(projectName, wip);
+                        this.notifyService.toast('SAVED_CHANGES');
                     }
-                    wipService.closeItem(wipType, wip);
-                    transitionIfCurrentTabClosed(index);
+                    this.wipService.closeItem(this.wipType, wip);
+                    this.transitionIfCurrentTabClosed(index);
                 });
             } else {
-                wipService.closeItem(wipType, wip);
-                transitionIfCurrentTabClosed(index);
+                this.wipService.closeItem(this.wipType, wip);
+                this.transitionIfCurrentTabClosed(index);
             }
         }
 
         /**
          * Display the close confirmation dialog box. Returns a promise which is resolved
          * to 'save', 'discard', or rejected if user cancels.
-         * @return {ng.IPromise<String>}
          */
-        function showDialog() {
-            return $mdDialog.show({
+        public showDialog(): ng.IPromise<string> {
+            return this.$mdDialog.show({
                 templateUrl: 'common/components/wipTabs/wipTabsCloseDialog.html',
                 controller: 'wipTabsDialogController',
                 controllerAs: 'vm'
@@ -102,9 +98,9 @@ function wipTabs($state, $mdDialog, editorService, i18nService, wipService, data
         /**
          * If the current tab has been closed, go to the explorer state, else stay in current state.
          */
-        function transitionIfCurrentTabClosed(closedTabIndex) {
-            if (closedTabIndex === lastIndex) {
-                $state.go('projects.explorer');
+        private transitionIfCurrentTabClosed(closedTabIndex: number) {
+            if (closedTabIndex === this.lastIndex) {
+                this.editorService.open(this.wips[this.selectedIndex].item.uuid)
             }
         }
 
@@ -113,31 +109,27 @@ function wipTabs($state, $mdDialog, editorService, i18nService, wipService, data
          * i.e. an item is added or removed. Keeps the UI in sync with the
          * wip store.
          */
-        function wipChangeHandler() {
-            vm.wips = wipService.getOpenItems(wipType);
-            vm.modified = wipService.getModifiedItems(wipType);
-            vm.selectedIndex = indexByUuid(vm.wips, editorService.getOpenNodeId());
+        private wipChangeHandler() {
+            this.wips = this.wipService.getOpenItems(this.wipType);
+            this.modified = this.wipService.getModifiedItems(this.wipType);
+            this.selectedIndex = this.indexByUuid(this.wips, this.editorService.getOpenNodeId());
         }
 
-        function editorOpenHandler(uuid) {
-            vm.selectedIndex = indexByUuid(vm.wips, uuid);
+        private editorOpenHandler(uuid: string) {
+            this.selectedIndex = this.indexByUuid(this.wips, uuid);
         }
 
         /**
          * Establishes the currently-selected tab upon the user transitioning state
          * to a contentEditor view, or deselects all tabs if not in that view.
-         *
-         * @param {Object} event
-         * @param {Object} toState
-         * @param {Object} toParams
          */
-        function stateChangeSuccessHandler(event, toState, toParams) {
+        private stateChangeSuccessHandler(event: Event, toState: any, toParams: any) {
             if (toParams && toParams.uuid) {
-                vm.selectedIndex = indexByUuid(vm.wips, toParams.uuid);
+                this.selectedIndex = this.indexByUuid(this.wips, toParams.uuid);
             } else {
-                vm.selectedIndex = -1;
+                this.selectedIndex = -1;
             }
-            vm.explorer = toState.name === 'projects.explorer';
+            this.explorer = toState.name === 'projects.explorer';
         }
 
         /**
@@ -148,55 +140,48 @@ function wipTabs($state, $mdDialog, editorService, i18nService, wipService, data
          * @param event
          * @param toState
          */
-        function stateChangeStartHandler(event, toState) {
-            vm.displayTabs = toState.name !== 'projects.list';
+        private stateChangeStartHandler(event, toState) {
+            this.displayTabs = toState.name !== 'projects.list';
         }
 
         /**
          * Persist any open WIPs to the browser's localStorage.
          */
-        function persistOpenWipsLocally() {
-            wipService.persistLocal();
+        private persistOpenWipsLocally() {
+            this.wipService.persistLocal();
         }
 
         /**
          * Get the index of a given WIP item in the collection by its uuid.
-         * @param {Array} collection
-         * @param {String} uuid
-         * @returns {number}
          */
-        function indexByUuid(collection, uuid) {
-            return collection.map(function(wip) {
-                return wip.item.uuid;
-            }).indexOf(uuid);
+        private indexByUuid(collection: any[], uuid: string): number {
+            return collection.map(wip => wip.item.uuid).indexOf(uuid);
         }
     }
 
-    return {
-        restrict: 'E',
-        templateUrl: 'common/components/wipTabs/wipTabs.html',
-        controller: wipTabsController,
-        controllerAs: 'vm',
-        scope: {}
-    };
-}
+    /**
+     * Controller used to set the return value of the close dialog box.
+     */
+    class WipTabsDialogController {
 
-/**
- * Controller used to set the return value of the close dialog box.
- *
- * @param {ng.material.MDDialogService} $mdDialog
- * @constructor
- */
-function WipTabsDialogController($mdDialog) {
-    var vm = this;
+        constructor(private $mdDialog: ng.material.IDialogService) {}
 
-    vm.save = function() {
-        $mdDialog.hide('save');
-    };
-    vm.discard = function() {
-        $mdDialog.hide('discard');
-    };
-    vm.cancel = function() {
-        $mdDialog.cancel();
-    };
+        public save() {
+            this.$mdDialog.hide('save');
+        }
+
+        public discard() {
+            this.$mdDialog.hide('discard');
+        }
+
+        public cancel() {
+            this.$mdDialog.cancel();
+        }
+    }
+
+    angular.module('meshAdminUi.common')
+        .directive('wipTabs', wipTabs)
+        .controller('wipTabsController', WipTabsController)
+        .controller('wipTabsDialogController', WipTabsDialogController);
+
 }
