@@ -1,8 +1,5 @@
 module meshAdminUi {
 
-
-
-
     function editorPaneDirective() {
         return {
             restrict: 'E',
@@ -15,77 +12,78 @@ module meshAdminUi {
 
     /**
      * Controller for the content edit/create form.
-     *
-     * @param {ng.IScope} $scope
-     * @param $location
-     * @param {ng.ui.IStateService} $state
-     * @param editorService
-     * @param {ConfirmActionDialog} confirmActionDialog
-     * @param {ng.material.MDDialogService} $mdDialog
-     * @param contextService
-     * @param i18nService
-     * @param dataService
-     * @param wipService
-     * @param notifyService
-     * @constructor
      */
-    function EditorPaneController($scope, $location, $state, editorService, confirmActionDialog, $mdDialog, contextService, i18nService, dataService, wipService, notifyService) {
-        var vm = this,
-            currentNodeId,
-            wipType = 'contents',
-            projectName = contextService.getProject().name;
+    class EditorPaneController {
+        
+        private currentNodeId: string;
+        private wipType: string = 'contents';
+        private projectName: string;
+        private isNew: boolean;
+        private contentModified: boolean;
+        private availableLangs: ILanguageInfo[];
+        private content: INode;
+        private selectedLangs: any;
+        private isLoaded: boolean;
+        private schema: ISchema;
 
+        constructor(private $scope: ng.IScope,
+                    private $location: ng.ILocationService,
+                    private $state: ng.ui.IStateService,
+                    private editorService: EditorService,
+                    private confirmActionDialog: ConfirmActionDialog,
+                    private $mdDialog: ng.material.IDialogService,
+                    private contextService: ContextService,
+                    private i18nService: I18nService,
+                    private dataService: DataService,
+                    private wipService: WipService,
+                    private notifyService: NotifyService) {
 
-        function init(nodeUuid) {
+            const init = (nodeUuid) => {
 
-            currentNodeId = nodeUuid;
-            $location.search('edit', nodeUuid);
+                this.projectName = contextService.getProject().name;
+                this.currentNodeId = nodeUuid;
+                $location.search('edit', nodeUuid);
 
-            vm.isNew = false;
-            vm.contentModified = false;
-            vm.availableLangs = i18nService.languages;
-            vm.content = [];
-            vm.selectedLangs = {};
-            vm.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
-            vm.canDelete = canDelete;
-            vm.persist = persist;
-            vm.remove = remove;
-            vm.close = close;
-            vm.isLoaded = false;
+                this.isNew = false;
+                this.contentModified = false;
+                this.availableLangs = i18nService.languages;
+                this.content = undefined;
+                this.selectedLangs = {};
+                this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
+                this.isLoaded = false;
 
-            getContentData()
-                .then(populateSchema)
-                .then(function () {
-                    vm.isLoaded = true;
-                });
+                this.getContentData()
+                    .then(data => this.populateSchema(data))
+                    .then(() => this.isLoaded = true);
+            };
+
+            editorService.registerOnOpenCallback(init);
+            $scope.$watch('this.contentModified', val => this.modifiedWatchHandler(val));
+            $scope.$on('$destroy', () => this.saveWipMetadata());
         }
 
-        editorService.registerOnOpenCallback(init);
-
-        $scope.$watch('vm.contentModified', modifiedWatchHandler);
-        $scope.$on('$destroy', saveWipMetadata);
 
         /**
          * Save the changes back to the server.
          * @param {Object} content
          */
-        function persist(content) {
-            dataService.persistContent(projectName, content)
-                .then(function (response) {
-                    if (vm.isNew) {
-                        notifyService.toast('NEW_CONTENT_CREATED');
-                        wipService.closeItem(wipType, content);
+        public persist(content) {
+            this.dataService.persistContent(this.projectName, content)
+                .then(response => {
+                    if (this.isNew) {
+                        this.notifyService.toast('NEW_CONTENT_CREATED');
+                        this.wipService.closeItem(this.wipType, content);
                         content = response;
-                        wipService.openItem(wipType, content, {
-                            projectName: projectName,
-                            selectedLangs: vm.selectedLangs
+                        this.wipService.openItem(this.wipType, content, {
+                            projectName: this.projectName,
+                            selectedLangs: this.selectedLangs
                         });
-                        vm.isNew = false;
-                        $state.go('projects.explorer.content', {projectName: projectName, uuid: content.uuid});
+                        this.isNew = false;
+                        this.$state.go('projects.explorer.content', {projectName: this.projectName, uuid: content.uuid});
                     } else {
-                        notifyService.toast('SAVED_CHANGES');
-                        wipService.setAsUnmodified(wipType, vm.content);
-                        vm.contentModified = false;
+                        this.notifyService.toast('SAVED_CHANGES');
+                        this.wipService.setAsUnmodified(this.wipType, this.content);
+                        this.contentModified = false;
                     }
                 });
         }
@@ -94,16 +92,14 @@ module meshAdminUi {
          * Delete the open content, displaying a confirmation dialog first before making the API call.
          * @param content
          */
-        function remove(content) {
+        public remove(content) {
 
-            showDeleteDialog()
-                .then(function () {
-                    return dataService.deleteContent(content);
-                })
-                .then(function () {
-                    wipService.closeItem(wipType, content);
-                    notifyService.toast('Deleted');
-                    $state.go('projects.explorer');
+            this.showDeleteDialog()
+                .then(() => this.dataService.deleteContent(content))
+                .then(() => {
+                    this.wipService.closeItem(this.wipType, content);
+                    this.notifyService.toast('Deleted');
+                    this.$state.go('projects.explorer');
                 });
         }
 
@@ -113,19 +109,20 @@ module meshAdminUi {
          *
          * @param content
          */
-        function close(content) {
-            if (wipService.isModified(wipType, content)) {
-                showCloseDialog().then(function (response) {
+        public close(content) {
+            if (this.wipService.isModified(this.wipType, content)) {
+                this.showCloseDialog()
+                    .then(response => {
                     if (response === 'save') {
-                        dataService.persistContent(projectName, content);
-                        notifyService.toast('SAVED_CHANGES');
+                        this.dataService.persistContent(this.projectName, content);
+                        this.notifyService.toast('SAVED_CHANGES');
                     }
-                    wipService.closeItem(wipType, content);
-                    $state.go('projects.explorer');
+                    this.wipService.closeItem(this.wipType, content);
+                    this.$state.go('projects.explorer');
                 });
             } else {
-                wipService.closeItem(wipType, content);
-                $state.go('projects.explorer');
+                this.wipService.closeItem(this.wipType, content);
+                this.$state.go('projects.explorer');
             }
         }
 
@@ -136,8 +133,8 @@ module meshAdminUi {
          * TODO: figure out a way to decouple this from the wipTabs component without duplicating all the code.
          * @return {ng.IPromise<String>}
          */
-        function showCloseDialog() {
-            return $mdDialog.show({
+        public showCloseDialog() {
+            return this.$mdDialog.show({
                 templateUrl: 'common/components/wipTabs/wipTabsCloseDialog.html',
                 controller: 'wipTabsDialogController',
                 controllerAs: 'vm'
@@ -148,31 +145,31 @@ module meshAdminUi {
          * Display a confirmation dialog for the delete action.
          * @returns {angular.IPromise<any>|any|void}
          */
-        function showDeleteDialog() {
-            return confirmActionDialog.show({
+        public showDeleteDialog() {
+            return this.confirmActionDialog.show({
                 title: 'Delete Content?',
                 message: 'Are you sure you want to delete the selected content?'
             });
         }
 
         /**
-         * When the value of vm.contentModified evaluates to true, set the wip as
+         * When the value of this.contentModified evaluates to true, set the wip as
          * modified.
          * @param val
          */
-        function modifiedWatchHandler(val) {
+        public modifiedWatchHandler(val) {
             if (val === true) {
-                wipService.setAsModified(wipType, vm.content);
+                this.wipService.setAsModified(this.wipType, this.content);
             }
         }
 
-        function saveWipMetadata() {
-            wipService.setMetadata(wipType, vm.content.uuid, 'selectedLangs', vm.selectedLangs);
+        public saveWipMetadata() {
+            this.wipService.setMetadata(this.wipType, this.content.uuid, 'selectedLangs', this.selectedLangs);
         }
 
-        function canDelete() {
-            if (vm.content) {
-                return -1 < vm.content.permissions.indexOf('delete') && !vm.isNew;
+        public canDelete() {
+            if (this.content) {
+                return -1 < this.content.permissions.indexOf('delete') && !this.isNew;
             }
         }
 
@@ -183,37 +180,37 @@ module meshAdminUi {
          *
          * @returns {ng.IPromise}
          */
-        function getContentData() {
-            var schemaId = $location.search().schemaId;
+        private getContentData() {
+            var schemaId = this.$location.search().schemaId;
 
-            if (currentNodeId) {
+            if (this.currentNodeId) {
                 // loading existing content
-                var wipContent = wipService.getItem(wipType, currentNodeId);
+                var wipContent = this.wipService.getItem(this.wipType, this.currentNodeId);
 
                 if (wipContent) {
-                    return populateFromWip(wipContent);
+                    return this.populateFromWip(wipContent);
                 } else {
-                    return dataService
-                        .getContent(projectName, currentNodeId)
-                        .then(function (data) {
-                            vm.content = data;
-                            wipService.openItem(wipType, data, {
-                                projectName: projectName,
-                                selectedLangs: vm.selectedLangs
+                    return this.dataService
+                        .getContent(this.projectName, this.currentNodeId)
+                        .then(data => {
+                            this.content = data;
+                            this.wipService.openItem(this.wipType, data, {
+                                projectName: this.projectName,
+                                selectedLangs: this.selectedLangs
                             });
-                            return dataService.getSchema(data.schema.uuid);
+                            return this.dataService.getSchema(data.schema.uuid);
                         });
                 }
             } else if (schemaId) {
                 // creating new content
-                vm.isNew = true;
-                return dataService.getSchema(schemaId)
-                    .then(function (schema) {
-                        vm.content = createEmptyContent(schema.uuid, schema.title);
-                        wipService.openItem(wipType, vm.content, {
-                            projectName: projectName,
+                this.isNew = true;
+                return this.dataService.getSchema(schemaId)
+                    .then(schema => {
+                        this.content = this.createEmptyContent(schema.uuid, schema.title);
+                        this.wipService.openItem(this.wipType, this.content, {
+                            projectName: this.projectName,
                             isNew: true,
-                            selectedLangs: vm.selectedLangs
+                            selectedLangs: this.selectedLangs
                         });
                         return schema;
                     });
@@ -225,12 +222,12 @@ module meshAdminUi {
          * @param {Object} wipContent
          * @returns {ng.IPromise}
          */
-        function populateFromWip(wipContent) {
-            var wipMetadata = wipService.getMetadata(wipType, wipContent.uuid);
-            vm.content = wipContent;
-            vm.contentModified = wipService.isModified(wipType, vm.content);
-            vm.selectedLangs = wipMetadata.selectedLangs;
-            return dataService.getSchema(vm.content.schema.uuid);
+        private populateFromWip(wipContent) {
+            var wipMetadata = this.wipService.getMetadata(this.wipType, wipContent.uuid);
+            this.content = wipContent;
+            this.contentModified = this.wipService.isModified(this.wipType, this.content);
+            this.selectedLangs = wipMetadata.selectedLangs;
+            return this.dataService.getSchema(this.content.schema.uuid);
         }
 
         /**
@@ -240,23 +237,24 @@ module meshAdminUi {
          * @param {string} schemaName
          * @returns {{tagUuid: *, perms: string[], uuid: *, schema: {schemaUuid: *}, schemaName: *}}
          */
-        function createEmptyContent(schemaId, schemaName) {
+        private createEmptyContent(schemaId, schemaName) {
             return {
                 perms: ['read', 'create', 'update', 'delete'],
-                uuid: wipService.generateTempId(),
+                uuid: this.wipService.generateTempId(),
                 schema: {
-                    schemaUuid: schemaId,
-                    schemaName: schemaName
-                }
+                    uuid: schemaId,
+                    name: schemaName
+                },
+                fields: {}
             };
         }
 
         /**
-         * Load the schema data into the vm.
+         * Load the schema data into the this.
          * @param {Object} data
          */
-        function populateSchema(data) {
-            vm.schema = data;
+        private populateSchema(data) {
+            this.schema = data;
         }
     }
 

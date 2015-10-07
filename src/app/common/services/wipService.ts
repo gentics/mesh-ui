@@ -22,7 +22,8 @@ module meshAdminUi {
         private onWipChangeCallbacks = [];
 
         constructor(private $q: ng.IQService,
-                    private localStorageService) {
+                    private localStorageService,
+                    private mu: MeshUtils) {
             this.populateFromLocalStorage();
         }
 
@@ -34,11 +35,7 @@ module meshAdminUi {
          * which point they should get a new, server-generated ID).
          */
         public generateTempId(): string {
-            const s4 = () => {
-                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-            };
-
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+            return this.mu.generateGuid();
         }
 
         /**

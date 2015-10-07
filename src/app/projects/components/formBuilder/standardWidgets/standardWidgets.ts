@@ -7,9 +7,10 @@ module meshAdminUi {
         public fieldModel: INodeFieldModel;
         public value: any;
 
-        constructor() {
-            console.log('instantiating widget controller');
-            this.value = angular.copy(this.fieldModel.value);
+        constructor($scope: ng.IScope) {
+            $scope.$watch(() => this.fieldModel.value, val => {
+                this.value = angular.copy(val);
+            });
         }
     }
 
@@ -31,8 +32,6 @@ module meshAdminUi {
 
     /**
      * Input for string field types
-     *
-     * @returns {ng.IDirective} Directive definition object
      */
     function stringWidgetDirective() {
         return makeStandardWidgetDDO('string');
@@ -40,8 +39,6 @@ module meshAdminUi {
 
     /**
      * Input for html field types
-     *
-     * @returns {ng.IDirective} Directive definition object
      */
     function htmlWidgetDirective() {
 
@@ -277,8 +274,6 @@ module meshAdminUi {
 
     /**
      * Input for number field types
-     *
-     * @returns {ng.IDirective} Directive definition object
      */
     function numberWidgetDirective() {
         return makeStandardWidgetDDO('number');
@@ -292,7 +287,7 @@ module meshAdminUi {
     class DateWidgetController extends StandardWidgetController {
 
         constructor($scope) {
-            super();
+            super($scope);
 
             if (0 < this.fieldModel.value) {
                 this.value= new Date(this.fieldModel.value * 1000);
@@ -310,8 +305,6 @@ module meshAdminUi {
 
     /**
      * Input for number field types
-     *
-     * @returns {ng.IDirective} Directive definition object
      */
     function dateWidgetDirective() {
         return makeStandardWidgetDDO('date', DateWidgetController);
@@ -319,8 +312,6 @@ module meshAdminUi {
 
     /**
      * Input for boolean field types
-     *
-     * @returns {ng.IDirective} Directive definition object
      */
     function booleanWidgetDirective() {
         return makeStandardWidgetDDO('boolean');
@@ -328,8 +319,6 @@ module meshAdminUi {
 
     /**
      * Input for select field types
-     *
-     * @returns {ng.IDirective} Directive definition object
      */
     function selectWidgetDirective() {
         return makeStandardWidgetDDO('select');
@@ -337,8 +326,8 @@ module meshAdminUi {
 
     class NodeWidgetController extends StandardWidgetController {
 
-        constructor(private nodeSelector: NodeSelector) {
-            super();
+        constructor($scope: ng.IScope, private nodeSelector: NodeSelector) {
+            super($scope);
         }
 
         public showDialog(event: ng.IAngularEvent) {
@@ -368,122 +357,138 @@ module meshAdminUi {
         return makeStandardWidgetDDO('node', NodeWidgetController);
     }
 
-    /**
-     * Input for list field types
-     *
-     * @returns {ng.IDirective} Directive definition object
-     */
-    function listWidgetDirective(dataService, widgetHighlighterService) {
 
-        function listWidgetLinkFn(scope) {
-            var dragStartIndex;
+    class ListWidgetController extends StandardWidgetController {
 
-            scope.listTypeField = angular.copy(scope.field);
-            scope.listTypeField.type = scope.field.listType;
 
-            scope.tracker = tracker;
-            scope.addItem = addItem;
-            scope.addWidget = addWidget;
-            scope.removeItem = removeItem;
-            scope.startDrag = startDrag;
-            scope.endDrag = endDrag;
+        private dragStartIndex: number;
+        private listFieldModels: INodeFieldModel[] = [];
 
-            /**
-             * Tracking function to be used in the ng-repeat of the list items. Primitive types should
-             * be tracked by $index, whereas microschemas need to be tracked by reference to the
-             * object itself in order for sorting to work correctly.
-             *
-             * @param item
-             * @param $id
-             * @param $index
-             * @returns {*}
-             */
-            function tracker(item, $id, $index) {
-                return scope.listTypeField.type === 'microschema' ? $id(item) : $index;
-            }
+        constructor(private $scope: ng.IScope,
+                    private dataService: DataService,
+                    private widgetHighlighterService: WidgetHighlighterService,
+                    private mu: MeshUtils) {
+            super($scope);
 
-            /**
-             * Add a new, empty microschema widget to the list.
-             *
-             * @param {string} microschemaName
-             */
-            function addWidget(microschemaName) {
-                dataService.getMicroschema(microschemaName)
-                    .then(createEmptyMicroschemaObject)
-                    .then(function (newMicroschemaObject) {
-                        scope.model[scope.path].items.push(newMicroschemaObject);
-                        scope.formBuilder.modified = true;
-                        reHighlight();
-                    });
-            }
+            $scope.$watchCollection(() => this.fieldModel.value, list => {
+                this.updateListFieldModels(list);
+            });
+        }
 
-            /**
-             * Add a new primitive-type item to the list
-             */
-            function addItem() {
-                var defaultValue = getDefaultValue(scope.listTypeField);
-                scope.model[scope.path].items.push(defaultValue);
-                scope.formBuilder.modified = true;
-                reHighlight();
-            }
+        private updateListFieldModels(list) {
+            if (typeof list !== 'undefined') {
+                let type = this.fieldModel.listType;
 
-            /**
-             * Remove the item at index from the list
-             * @param index
-             */
-            function removeItem(index) {
-                scope.model[scope.path].items.splice(index, 1);
-                scope.formBuilder.modified = true;
-                reHighlight();
-            }
-
-            /**
-             * Record the index of the item that is being dragged.
-             * @param {number} index
-             */
-            function startDrag(index) {
-                dragStartIndex = index;
-            }
-
-            /**
-             * Remove the original dragged item from the list.
-             * @param {Object} item
-             * @param {number} dragEndIndex
-             * @param {Array<Object>} list
-             * @returns {*}
-             */
-            function endDrag(item, dragEndIndex, list) {
-                var indexToSplice;
-
-                if (dragEndIndex < dragStartIndex) {
-                    indexToSplice = dragStartIndex + 1;
-                } else {
-                    indexToSplice = dragStartIndex;
-                }
-
-                list.splice(dragEndIndex, 0, item); // add the new position
-                list.splice(indexToSplice, 1); // remove the old position
-                scope.formBuilder.modified = true;
-            }
-
-            /**
-             * Re-apply the widget highlighting, since the height of the list
-             * would have changed after adding or removing an item. The timeout is there to allow the
-             * new dimensions to take effect (i.e. the DOM to update) before re-calculating the highlight height.
-             */
-            function reHighlight() {
-                setTimeout(function () {
-                    widgetHighlighterService.highlight();
-                }, 500);
+                this.listFieldModels.length = list.length;
+                list.forEach((value: any, i: number) => {
+                    if (this.listFieldModels[i]) {
+                        this.listFieldModels[i].value = value;
+                    } else {
+                        this.listFieldModels[i] = this.createListItemFieldModel(type, value, i);
+                    }
+                });
             }
         }
 
         /**
-         * Create an empty microschema instance, populated with default values.
-         * @param microschema
-         * @returns {{microschema: {name: string, uuid: string}, fields: {}}}
+         * Each item in the list needs its own NodeFieldModel object which can then be passed into the
+         * widgetProxy and generate the sub-widgets.
          */
-        function createEmptyMicroschemaObject(microschema) {
+        private createListItemFieldModel(type: string, value: any, index: number): INodeFieldModel {
+            let path = angular.copy(this.fieldModel.path),
+                model: INodeFieldModel = <INodeFieldModel>{};
+
+            path.push(index);
+            model.id = this.mu.generateGuid();
+            model.type = type;
+            model.value = value;
+            model.path = path;
+            model.canUpdate = this.fieldModel.canUpdate;
+            model.isDisplayField = false;
+            model.update = this.fieldModel.updateFnFactory(path);
+            return model;
+        }
+
+        /**
+         * Tracking function to be used in the ng-repeat of the list items. Primitive types should
+         * be tracked by $index, whereas microschemas need to be tracked by reference to the
+         * object itself in order for sorting to work correctly.
+         */
+        public tracker(item: INodeFieldModel, $id: Function, $index: number): any {
+            return item.id;
+        }
+
+        /**
+         * Add a new, empty microschema widget to the list.
+         */
+        public addWidget(microschemaName: string) {
+            this.dataService.getMicroschema(microschemaName)
+                .then(microschema => this.createEmptyMicroschemaObject(microschema))
+                .then(newMicroschemaObject => {
+                    this.fieldModel.value.push(newMicroschemaObject);
+                    this.fieldModel.update(this.fieldModel.value);
+                    this.reHighlight();
+                });
+        }
+
+        /**
+         * Add a new primitive-type item to the list
+         */
+        public addItem() {
+            var defaultValue = this.getDefaultValue(this.fieldModel.type);
+            this.fieldModel.value.push(defaultValue);
+            this.fieldModel.update(this.fieldModel.value);
+            this.reHighlight();
+        }
+
+        /**
+         * Remove the item at index from the list
+         */
+        public removeItem(index: number) {
+            this.fieldModel.value.splice(index, 1);
+            this.fieldModel.update(this.fieldModel.value);
+            this.reHighlight();
+        }
+
+        /**
+         * Record the index of the item that is being dragged.
+         */
+        public startDrag(index: number) {
+            this.dragStartIndex = index;
+        }
+
+        /**
+         * Remove the original dragged item from the list.
+         */
+        public endDrag(item: INodeFieldModel, dragEndIndex: number, list: any[]) {
+            var indexToSplice;
+
+            if (dragEndIndex < this.dragStartIndex) {
+                indexToSplice = this.dragStartIndex + 1;
+            } else {
+                indexToSplice = this.dragStartIndex;
+            }
+
+            list.splice(dragEndIndex, 0, item.value); // add the new position
+            list.splice(indexToSplice, 1); // remove the old position
+            this.fieldModel.update(this.fieldModel.value);
+        }
+
+        /**
+         * Re-apply the widget highlighting, since the height of the list
+         * would have changed after adding or removing an item. The timeout is there to allow the
+         * new dimensions to take effect (i.e. the DOM to update) before re-calculating the highlight height.
+         */
+        private reHighlight() {
+            setTimeout(() => {
+                this.widgetHighlighterService.highlight();
+            }, 500);
+        }
+
+        /**
+         * Create an empty microschema instance, populated with default values.
+         */
+        private createEmptyMicroschemaObject(microschema) {
             var newMicroschemaObject = {
                 "microschema": {
                     "name": microschema.name,
@@ -493,7 +498,7 @@ module meshAdminUi {
             };
 
             microschema.fields.forEach(function (fieldObject) {
-                newMicroschemaObject.fields[fieldObject.name] = getDefaultValue(fieldObject);
+                newMicroschemaObject.fields[fieldObject.name] = this.getDefaultValue(fieldObject);
             });
 
             return newMicroschemaObject;
@@ -501,11 +506,8 @@ module meshAdminUi {
 
         /**
          * Returns the correct default value for a field definition object.
-         *
-         * @param fieldObject
-         * @returns {*}
          */
-        function getDefaultValue(fieldObject) {
+        private getDefaultValue(fieldObject): any {
             var defaultValue = null;
 
             if (typeof fieldObject.defaultValue !== 'undefined') {
@@ -540,23 +542,23 @@ module meshAdminUi {
 
             return defaultValue;
         }
+    }
 
-        return {
-            restrict: 'E',
-            link: listWidgetLinkFn,
-            templateUrl: 'projects/components/formBuilder/standardWidgets/listWidget.html',
-            scope: true
-        };
+    /**
+     * Input for list field types
+     */
+    function listWidgetDirective() {
+        return makeStandardWidgetDDO('list', ListWidgetController);
     }
 
     angular.module('meshAdminUi.projects.formBuilder')
-           .directive('mhStringWidget', stringWidgetDirective)
+        .directive('mhStringWidget', stringWidgetDirective)
         // TODO: update the aloha-based HTML input to work with the new API
-           .directive('mhHtmlWidget', stringWidgetDirective)
-           .directive('mhNumberWidget', numberWidgetDirective)
-           .directive('mhBooleanWidget', booleanWidgetDirective)
-           .directive('mhDateWidget', dateWidgetDirective)
-           .directive('mhSelectWidget', selectWidgetDirective)
-           .directive('mhNodeWidget', nodeWidgetDirective)
-           .directive('mhListWidget', listWidgetDirective);
+        .directive('mhHtmlWidget', stringWidgetDirective)
+        .directive('mhNumberWidget', numberWidgetDirective)
+        .directive('mhBooleanWidget', booleanWidgetDirective)
+        .directive('mhDateWidget', dateWidgetDirective)
+        .directive('mhSelectWidget', selectWidgetDirective)
+        .directive('mhNodeWidget', nodeWidgetDirective)
+        .directive('mhListWidget', listWidgetDirective);
 }

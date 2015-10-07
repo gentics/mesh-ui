@@ -1,21 +1,26 @@
 <div class="list-container editor-widget">
-    <label>{{:: field.label || field.name }}</label>
-    <div>
-        <ul dnd-list="model[path]"
-            dnd-drop="endDrag(item, index, model[path].items)"
-            dnd-allowed-types="[listTypeField.name]">
 
-            <li flex ng-repeat="item in model[path].items track by tracker(item, $id, $index)"
+    <script type="text/ng-template" id="widget-proxy-recursion-safe.html">
+        <widget-proxy field-model="item"></widget-proxy>
+    </script>
+
+    <label>{{:: vm.fieldModel.label || vm.fieldModel.name }}</label>
+    <div>
+        <ul dnd-list="vm.fieldModel.value"
+            dnd-drop="vm.endDrag(item, index, vm.fieldModel.value)"
+            dnd-allowed-types="[vm.fieldModel.listType]">
+
+            <li flex ng-repeat="item in vm.listFieldModels track by vm.tracker(item, $id, $index)"
                 class="list-item"
                 layout="row"
                 dnd-draggable="item"
-                dnd-dragstart="startDrag($index)"
-                dnd-type="listTypeField.name">
+                dnd-dragstart="vm.startDrag($index)"
+                dnd-type="vm.fieldModel.listType">
 
-                <widget-proxy flex model="model[path].items" path="$index" field="listTypeField"></widget-proxy>
+                <div flex ng-include="'widget-proxy-recursion-safe.html'"></div>
 
                 <div>
-                    <div class="remove-item list-icon-btn" ng-click="removeItem($index)">
+                    <div class="remove-item list-icon-btn" ng-click="vm.removeItem($index)">
                        <i class="icon-close" title="Remove from list"></i>
                     </div>
                 </div>
@@ -29,23 +34,23 @@
         </ul>
 
         <div layout="row" class="add-item-row">
-            <div ng-if="listTypeField.type !== 'microschema'">
-                <div class="add-item list-icon-btn" ng-click="addItem()" ng-hide="model[path].items.length >= listTypeField.max" title="Add item to list">
+            <div ng-if="vm.fieldModel.listType !== 'microschema'">
+                <div class="add-item list-icon-btn" ng-click="vm.addItem()" ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" title="Add item to list">
                     <i class="icon-add">
                     </i>
                 </div>
             </div>
 
-            <div ng-if="listTypeField.type === 'microschema'">
+            <div ng-if="vm.fieldModel.listType === 'microschema'">
                 <mh-dropdown>
                     <mh-dropdown-label>
-                        <div class="add-item list-icon-btn"  ng-hide="model[path].length >= listTypeField.max" aria-label="Add Item">
+                        <div class="add-item list-icon-btn"  ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" aria-label="Add Item">
                             <i class="icon-add"></i> <i class="icon-arrow-drop-down"></i>
                         </div>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
                         <ul class="create-options">
-                            <li ng-repeat="microschema in listTypeField.allow"  ng-click="addWidget(microschema)"><a href="#" class="a-plain">{{:: microschema }}</a></li>
+                            <li ng-repeat="microschema in vm.fieldModel.allow"  ng-click="vm.addWidget(microschema)"><a href="#" class="a-plain">{{:: microschema }}</a></li>
                         </ul>
                     </mh-dropdown-body>
                 </mh-dropdown>

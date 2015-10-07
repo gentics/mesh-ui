@@ -4,7 +4,7 @@ describe('wipService', function() {
         itemType,
         testItem;
 
-    beforeEach(module('meshAdminUi.common.wipService'));
+    beforeEach(module('meshAdminUi.common.wipService', 'meshAdminUi.common'));
     beforeEach(inject(function (_wipService_) {
         wipService = _wipService_;
         wipService.clearLocal();

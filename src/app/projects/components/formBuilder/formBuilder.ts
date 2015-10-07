@@ -38,31 +38,51 @@ module meshAdminUi {
         private perms: string[];
         private displayField: string;
 
-        constructor($scope: any) {
-            var unwatch = $scope.$watch(() => this.schema, val => {
+        constructor($scope: ng.IScope, private mu: MeshUtils) {
+            $scope.$watch(() => this.schema, val => {
                 if (val) {
                     this.nodeFieldModelCollection = this.createNodeFieldsModel(this.fields, this.schema);
                 }
-            })
+            });
         }
 
         private createNodeFieldsModel(nodeFields: INodeFields, schemaFields: ISchemaFieldDefinition[]): INodeFieldModel[] {
             let canUpdate =  -1 < this.perms.indexOf('update');
             return schemaFields.map(schemaField => {
                 let model: INodeFieldModel = <INodeFieldModel>angular.copy(schemaField);
+                model.id = this.mu.generateGuid();
                 model.value = nodeFields[schemaField.name];
                 model.path = [schemaField.name];
                 model.canUpdate = canUpdate;
                 model.isDisplayField = schemaField.name === this.displayField;
                 model.update = this.makeUpdateFunction(model.path);
+                model.updateFnFactory = (path) => this.makeUpdateFunction(path);
                 return model;
             });
         }
 
-        private makeUpdateFunction(path) {
+        /**
+         * Returns a pre-configured function that will update the node field specified by a path array.
+         */
+        private makeUpdateFunction(path): (value: any) => any {
             return (value) => {
-                console.log('The value', value, 'will update in the path', path);
+                //console.log('The path', path, 'will update with the value: ', value);
+                this.modified = true;
+                this.updateAtPath(this.fields, path, value);
+                console.log(this.fields);
             }
+        }
+
+        /**
+         * Given an object, update the value specified by the `path` array with the given value.
+         */
+        private updateAtPath(object: any, path: any[], value: any): any {
+            let pointer = object;
+            for (let i = 0; i < path.length - 1; i ++) {
+                let key = path[i];
+                pointer = pointer[key];
+            }
+            return pointer[path[path.length - 1]] = value;
         }
     }
 

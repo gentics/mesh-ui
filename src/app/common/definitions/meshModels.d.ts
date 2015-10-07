@@ -68,11 +68,13 @@ declare module meshAdminUi {
     }
 
     export interface INodeFieldModel extends ISchemaFieldDefinition{
+        id: string;
         value: any;
-        path: string[];
+        path: (string|number)[];
         canUpdate: boolean;
         isDisplayField: boolean;
         update: (value: any) => void;
+        updateFnFactory: (path: any[]) => (value: any) => void;
     }
 
 }
