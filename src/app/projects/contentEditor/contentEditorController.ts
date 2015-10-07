@@ -225,9 +225,10 @@ module meshAdminUi {
                 perms: ['read', 'create', 'update', 'delete'],
                 uuid: this.wipService.generateTempId(),
                 schema: {
-                    schemaUuid: schemaId,
-                    schemaName: schemaName
-                }
+                    uuid: schemaId,
+                    name: schemaName
+                },
+                fields: {}
             };
         }
 

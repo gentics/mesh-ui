@@ -1,4 +1,4 @@
-module meshAdminUi {
+declare module meshAdminUi {
 
     export interface INodeReference {
         name: string;
@@ -20,21 +20,21 @@ module meshAdminUi {
     }
 
     export interface INode {
-        uuid: string;
+        uuid?: string;
         children?: string[];
-        creator: INodeReference;
-        created: number;
+        creator?: INodeReference;
+        created?: number;
         displayField?: string;
-        editor: INodeReference;
-        edited: number;
-        language: string;
-        permissions: string[];
-        published: boolean;
-        tags: ITags;
+        editor?: INodeReference;
+        edited?: number;
+        language?: string;
+        permissions?: string[];
+        published?: boolean;
+        tags?: ITags;
         schema: INodeReference;
-        container: boolean;
-        parentNodeUuid: string;
-        parentNode: {
+        container?: boolean;
+        parentNodeUuid?: string;
+        parentNode?: {
             uuid: string;
         };
         fields: INodeFields

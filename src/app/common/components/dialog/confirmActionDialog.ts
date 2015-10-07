@@ -23,25 +23,19 @@ module meshAdminUi {
          * Show a confirmation dialog box.
          */
         public show(options: IConfirmActionDialogOptions) {
-            options = options || {};
-            var title = options.title || 'Delete?',
-                message = options.message || 'Do you want to delete this object?',
-                confirmLabel = options.confirmLabel || 'DELETE',
-                cancelLabel = options.cancelLabel || 'CANCEL',
-                confirmButtonClass = options.confirmButtonClass || 'btn-warn';
-
+            let locals = {
+                title: options.title || 'Delete?',
+                message: options.message || 'Do you want to delete this object?',
+                confirmLabel:  options.confirmLabel || 'DELETE',
+                cancelLabel: options.cancelLabel || 'CANCEL',
+                confirmButtonClass:  options.confirmButtonClass || 'btn-warn'
+            };
 
             return this.$mdDialog.show({
                 templateUrl: 'common/components/dialog/confirmActionDialog.html',
                 controller: 'confirmActionDialogController',
                 controllerAs: 'vm',
-                locals: {
-                    title: title,
-                    message: message,
-                    confirmLabel: confirmLabel,
-                    cancelLabel: cancelLabel,
-                    confirmButtonClass: confirmButtonClass
-                },
+                locals: locals,
                 bindToController: true
             });
         }

@@ -49,7 +49,7 @@ module meshAdminUi {
         private createNodeFieldsModel(nodeFields: INodeFields, schemaFields: ISchemaFieldDefinition[]): INodeFieldModel[] {
             let canUpdate =  -1 < this.perms.indexOf('update');
             return schemaFields.map(schemaField => {
-                let model: INodeFieldModel = angular.copy(schemaField);
+                let model: INodeFieldModel = <INodeFieldModel>angular.copy(schemaField);
                 model.value = nodeFields[schemaField.name];
                 model.path = [schemaField.name];
                 model.canUpdate = canUpdate;

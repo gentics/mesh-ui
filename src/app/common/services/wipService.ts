@@ -115,7 +115,7 @@ module meshAdminUi {
         /**
          * Remove an existing item of the specified type from the store.
          */
-        public closeItem(type: string, item: any): ng.IPromise {
+        public closeItem(type: string, item: any): ng.IPromise<any> {
             var deferred = this.$q.defer();
 
             this.validateItem(item);
