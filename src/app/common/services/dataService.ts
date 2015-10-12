@@ -455,18 +455,18 @@ module meshAdminUi {
         $httpProvider.interceptors.push(listResponseInterceptor);
 
         // define the urls we wish to cache
-        var projectName = '^\\/[a-zA-Z\\-]*',
+        var projectName = '^[a-zA-Z\\-]*',
             uuid = '[a-z0-9]{30,32}',
             _ = '\\/',
             projectNameTags = projectName + _ + 'tags' + _ + uuid + _;
 
         var cacheable = {
-            'projects': /^\/projects/,
-            'contents': new RegExp(projectNameTags + 'contents\\/', 'gi'),
+            'projects': /^projects/,
+            'contents': new RegExp(projectName + _ + 'nodes\\/', 'gi'),
             'tags': new RegExp(projectNameTags + 'tags\\/', 'gi'),
             'tag': new RegExp(projectName + _ + 'tags' + _ + uuid, 'gi'),
-            'schemas': /^\/schemas$/,
-            'schema': /^\/schemas\/[a-z0-9]+$/
+            'schemas': /^schemas$/,
+            'schema': /^schemas\/[a-z0-9]+/
         };
         selectiveCacheProvider.setCacheableGroups(cacheable);
     }
