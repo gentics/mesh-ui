@@ -128,7 +128,7 @@ module meshAdminUi {
          * Establishes the currently-selected tab upon the user transitioning state
          * to a contentEditor view, or deselects all tabs if not in that view.
          */
-        private stateChangeSuccessHandler(event: Event, toState: any, toParams: any) {
+        private stateChangeSuccessHandler(event: ng.IAngularEvent, toState: any, toParams: any) {
             if (toParams && toParams.uuid) {
                 this.selectedIndex = this.indexByUuid(this.wips, toParams.uuid);
             } else {

@@ -2,38 +2,41 @@
 
     <div class="breadcrumbs">
         <ul>
-           <li ng-repeat="label in vm.breadcrumbs" ng-if="label.name">
+            <li ng-repeat="label in vm.breadcrumbs">
                <span>
-                    <a href="#" ng-click="vm.openNode(label.uuid)">{{ label.name }}</a>
+                    <a href="" ng-click="vm.openNode(label.uuid, $event)">{{ label.name }}</a>
                </span>
-        </li>
+            </li>
         </ul>
     </div>
 
     <div layout="row">
 
-        <div flex="20">
+        <!--<div flex="20">
             <div class="tag-list-container">
                 <ul class="tag-list">
                     <li ng-repeat="folder in vm.folders track by $index" class="tag-item" ng-click="vm.openNode(folder.uuid)">
-                        <a href="#" class="a-plain">{{ folder.fields[folder.segmentField] }}</a>
+                        <a href="#" class="a-plain">{{ folder.fields[folder.displayField] }}</a>
                     </li>
                 </ul>
             </div>
-        </div>
+        </div>-->
 
         <div flex>
 
-            <table class="mh-table" ng-show="0 < vm.contents.length" ng-if="vm.displayMode === 'list'">
+            <table class="mh-table" ng-show="0 < vm.nodes.length" ng-if="vm.displayMode === 'list'">
                 <tbody>
-                <tr ng-repeat="content in vm.contents track by content.uuid"
-                    ng-class="{ selected: vm.isSelected(content) }"
-                    ng-click="vm.toggleSelect(content)">
+                <tr ng-repeat="node in vm.nodes track by node.uuid"
+                    ng-class="{ selected: vm.isSelected(node) }"
+                    ng-click="vm.toggleSelect(node)">
                     <td>
-                        <md-checkbox md-no-ink ng-checked="vm.isSelected(content)" aria-label="Select All"></md-checkbox>
+                        <md-checkbox ng-show="vm.isAllowedSchema(node)"
+                                     md-no-ink
+                                     ng-checked="vm.isSelected(node)"
+                                     aria-label="Select All"></md-checkbox>
                     </td>
-                    <td>{{:: content.fields[content.displayField] }}</td>
-                    <td>{{:: content.schema.name }}</td>
+                    <td><a href="" ng-click="vm.openNode(node.uuid, $event)">{{:: node.fields[node.displayField] }}</a></td>
+                    <td>{{:: node.schema.name }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -41,7 +44,7 @@
             <div class="node-grid" ng-if="vm.displayMode === 'grid'" layout="row" layout-wrap>
                 <div class="grid-item"
                      layout="column" layout-align="space-around center"
-                     ng-repeat="content in vm.contents track by content.uuid"
+                     ng-repeat="content in vm.nodes track by content.uuid"
                      ng-class="{ selected: vm.isSelected(content) }"
                      ng-click="vm.toggleSelect(content)">
                     <img ng-src="{{:: content.path }}">

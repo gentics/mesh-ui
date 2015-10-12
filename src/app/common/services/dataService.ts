@@ -207,9 +207,14 @@ module meshAdminUi {
         /**
          * Get the child tags for the parentTag in the given project.
          */
-        public getChildNodes(projectName, parentNodeId, queryParams?):ng.IPromise<any> {
+        public getChildNodes(projectName: string, parentNodeId: string, queryParams?):ng.IPromise<any> {
             var url = projectName + '/nodes/' + parentNodeId + '/children';
-            return this.meshGet(url, queryParams);
+
+            return this.meshGet(url, queryParams)
+                .then(result => {
+                    result.data.sort(this.sortNodesBySchemaName);
+                    return result;
+                });
         }
 
         /**
@@ -347,8 +352,40 @@ module meshAdminUi {
         /**
          *
          */
-        public getBreadcrumb(projectName, uuid):ng.IPromise<any> {
-            return this.meshGet(projectName + '/breadcrumb/' + uuid);
+        public getBreadcrumb(project: IProject, currentNode: INode):ng.IPromise<INode[]> {
+            //return this.meshGet(projectName + '/breadcrumb/' + uuid);
+
+            /**
+             * TODO: implement dedicated breadcrumbs endpoint when one becomes available.
+             * This is a recursive promise-based solution which is inefficient in that it
+             * needs to make a call for each level of the breadcrumb hierarchy.
+             */
+            const getBreadcrumbs = (project: IProject, currentNode:INode, breadcrumbs: any = []): ng.IPromise<INode[]> => {
+                let complete = breadcrumbs;
+                breadcrumbs.push(currentNode);
+
+                if (currentNode.parentNode && currentNode.parentNode.uuid !== project.rootNodeUuid) {
+                    complete = this.getNode(project.name, currentNode.parentNode.uuid)
+                        .then(node => getBreadcrumbs(project, node, breadcrumbs));
+                }
+
+                return this.$q.when(complete);
+            };
+
+            return getBreadcrumbs(project, currentNode);
+        }
+
+        /**
+         * Sort function to be used with array.sort()
+         */
+        private sortNodesBySchemaName(a: INode, b: INode): number {
+            if (a.schema.name < b.schema.name) {
+                return -1;
+            }
+            if (a.schema.name > b.schema.name) {
+                return 1;
+            }
+            return 0;
         }
 
         /**

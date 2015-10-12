@@ -49,86 +49,115 @@ module meshAdminUi {
         }
     }
 
-    function nodeSelectorDirective(dataService, contextService) {
+    class NodeSelectorController {
 
-        function nodeSelectorController() {
-            var vm = this,
-                selectedNodesHash = {},
-                projectName = contextService.getProject().name,
-                currentNodeId = contextService.getCurrentNode().id;
+        private selectedNodesHash;
+        private currentProject: IProject;
+        private currentNode: INode;
+        private selectedNodes;
+        private multiSelect;
+        private allowedSchemas;
+        private nodes;
+        private breadcrumbs: any[];
 
-            vm.selectedNodes = vm.selectedNodes instanceof Array ? vm.selectedNodes : [];
-            vm.openNode = openNode;
-            vm.toggleSelect = toggleSelect;
-            vm.isSelected = isSelected;
+        constructor(private dataService: DataService,
+                    private contextService: ContextService) {
 
-            populateContents();
+            this.selectedNodesHash = {};
+            this.currentProject = contextService.getProject();
+            this.currentNode = contextService.getCurrentNode();
+            this.selectedNodes = this.selectedNodes instanceof Array ? this.selectedNodes : [];
 
-            function toggleSelect(node) {
-                if (isSelected(node)) {
-                    deselectNode(node);
+            this.populateContents();
+        }
+
+
+        public toggleSelect(node) {
+            if (this.isAllowedSchema(node)) {
+                if (this.isSelected(node)) {
+                    this.deselectNode(node);
                 } else {
-                    selectNode(node);
-                }
-            }
-
-            function selectNode(node) {
-                if (!vm.multiSelect) {
-                    selectedNodesHash = {};
-                    vm.selectedNodes = [];
-                }
-                selectedNodesHash[node.uuid] = node;
-                vm.selectedNodes.push(node);
-            }
-
-            function deselectNode(node) {
-                delete selectedNodesHash[node.uuid];
-                vm.selectedNodes = vm.selectedNodes.filter(function (n) {
-                    return n.uuid !== node.uuid;
-                });
-            }
-
-            function isSelected(node) {
-                if (node && node.uuid) {
-                    return !!selectedNodesHash[node.uuid];
-                } else {
-                    return false;
-                }
-            }
-
-            function openNode(nodeId) {
-                currentNodeId = nodeId;
-                populateContents();
-            }
-
-            function populateContents() {
-                dataService.getChildFolders(projectName, currentNodeId)
-                    .then(function (data) {
-                        vm.folders = data;
-                        return dataService.getChildContents(projectName, currentNodeId);
-                    })
-                    .then(function (data) {
-                        vm.contents = data.filter(allowedSchemaFilter);
-                        return dataService.getBreadcrumb(projectName, currentNodeId);
-                    })
-                    .then(function (data) {
-                        vm.breadcrumbs = data;
-                    });
-            }
-
-            function allowedSchemaFilter(node) {
-                if (0 < vm.allowedSchemas.length) {
-                    return -1 < vm.allowedSchemas.indexOf(node.schema.name);
-                } else {
-                    return true;
+                    this.selectNode(node);
                 }
             }
         }
 
+        public selectNode(node) {
+            if (!this.multiSelect) {
+                this.selectedNodesHash = {};
+                this.selectedNodes = [];
+            }
+            this.selectedNodesHash[node.uuid] = node;
+            this.selectedNodes.push(node);
+        }
+
+        public deselectNode(node) {
+            delete this.selectedNodesHash[node.uuid];
+            this.selectedNodes = this.selectedNodes.filter(function (n) {
+                return n.uuid !== node.uuid;
+            });
+        }
+
+        public isSelected(node) {
+            if (node && node.uuid) {
+                return !!this.selectedNodesHash[node.uuid];
+            } else {
+                return false;
+            }
+        }
+
+        public openNode(nodeUuid: string, event: ng.IAngularEvent) {
+            event.stopPropagation();
+            this.dataService.getNode(this.currentProject.name, nodeUuid)
+                .then(node => {
+                    this.currentNode = node;
+                    this.populateContents();
+                });
+        }
+
+        private populateContents() {
+            this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid)
+                .then(response => {
+                    this.nodes = response.data.filter(node => this.isAllowedSchemaOrFolder(node));
+                    return this.dataService.getBreadcrumb(this.currentProject, this.currentNode);
+                })
+                .then(breadcrumbs => {
+
+                    let breadcrumbLabels = breadcrumbs.map(node => {
+                        return {
+                            name: node.fields[node.displayField],
+                            uuid: node.uuid
+                        };
+                    });
+
+                    breadcrumbLabels.push({
+                        name: this.currentProject.name,
+                        uuid: this.currentProject.rootNodeUuid
+                    });
+
+                    this.breadcrumbs = breadcrumbLabels.reverse();
+                });
+        }
+
+        public isAllowedSchema(node: INode) {
+            if (0 < this.allowedSchemas.length) {
+                return -1 < this.allowedSchemas.indexOf(node.schema.name);
+            } else {
+                return true;
+            }
+        }
+
+        private isAllowedSchemaOrFolder(node: INode) {
+            return this.isAllowedSchema(node) || node.container;
+        }
+    }
+
+    function nodeSelectorDirective() {
+
         return {
             restrict: 'E',
             templateUrl: 'projects/components/nodeSelector/nodeSelector.html',
-            controller: nodeSelectorController,
+            controller: 'nodeSelectorController',
             controllerAs: 'vm',
             bindToController: true,
             scope: {
@@ -142,6 +171,7 @@ module meshAdminUi {
 
     angular.module('meshAdminUi.projects')
            .service('nodeSelector', NodeSelector)
+           .controller('nodeSelectorController', NodeSelectorController)
            .directive('nodeSelector', nodeSelectorDirective);
 
 

@@ -325,10 +325,12 @@ module meshAdminUi {
         return makeStandardWidgetDDO('select');
     }
 
-    class NodeWidgetController extends StandardWidgetController {
+    class NodeWidgetController  {
 
-        constructor($scope: ng.IScope, private nodeSelector: NodeSelector) {
-            super($scope);
+        public fieldModel: INodeFieldModel;
+        public value: any;
+
+        constructor(private nodeSelector: NodeSelector) {
         }
 
         public showDialog(event: ng.IAngularEvent) {
@@ -338,7 +340,9 @@ module meshAdminUi {
             event.preventDefault();
             this.nodeSelector.open(options)
                 .then(nodes => {
-                    this.fieldModel.update(this.maskNode(nodes[0]));
+                    let newVal = this.maskNode(nodes[0]);
+                    this.fieldModel.value = newVal;
+                    this.fieldModel.update(newVal);
                 });
         }
 

@@ -36,9 +36,7 @@ module meshAdminUi {
                     vm.breadcrumbs = [];
                 } else {
                     return dataService.getNode(currentProject.name, currentNode.uuid)
-                        .then(node => {
-                            return getBreadcrumbs(currentProject, node);
-                        })
+                        .then(node => dataService.getBreadcrumb(currentProject, node))
                         .then(breadcrumbs => {
 
                             let breadcrumbLabels = breadcrumbs.map(node => {
@@ -57,24 +55,6 @@ module meshAdminUi {
                         });
                 }
             }
-
-            /**
-             * TODO: implement dedicated breadcrumbs endpoint when one becomes available.
-             * This is a recursive promise-based solution which is inefficient in that it
-             * needs to make a call for each level of the breadcrumb hierarchy.
-             */
-            function getBreadcrumbs(project: IProject, currentNode:INode, breadcrumbs: INode[] = []): ng.IPromise<INode[]> {
-                let complete = breadcrumbs;
-                breadcrumbs.push(currentNode);
-
-                if (currentNode.parentNode && currentNode.parentNode.uuid !== project.uuid) {
-                    complete = dataService.getNode(project.name, currentNode.parentNode.uuid)
-                        .then(node => getBreadcrumbs(project, node, breadcrumbs));
-                }
-
-                return $q.when(complete);
-            }
-
         }
 
         return {
