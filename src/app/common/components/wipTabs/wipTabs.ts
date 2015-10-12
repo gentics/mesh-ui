@@ -21,11 +21,8 @@ module meshAdminUi {
         private modified: string[] = [];
         private selectedIndex: number = 0;
         private lang: string;
-        private displayTabs: boolean = true;
-        private explorer;
 
-        constructor(private $scope: ng.IScope,
-                    private $q: ng.IQService,
+        constructor(private $q: ng.IQService,
                     private $mdDialog: ng.material.IDialogService,
                     private editorService: EditorService,
                     private i18nService: I18nService,
@@ -37,8 +34,6 @@ module meshAdminUi {
 
             wipService.registerWipChangeHandler(() => this.wipChangeHandler());
             editorService.registerOnOpenCallback(uuid => this.editorOpenHandler(uuid));
-            $scope.$on('$stateChangeStart', (event, toState) => this.stateChangeStartHandler(event, toState));
-            $scope.$on('$stateChangeSuccess', (event, toState, toParams) => this.stateChangeSuccessHandler(event, toState, toParams));
             window.addEventListener('beforeunload', () => this.persistOpenWipsLocally());
 
             this.wipChangeHandler(); // populate with WIPs on load.
@@ -99,7 +94,7 @@ module meshAdminUi {
         }
 
         /**
-         * If the current tab has been closed, go to the explorer state, else stay in current state.
+         * If the current tab has been closed, select the next tab in the editor pane.
          */
         private transitionIfCurrentTabClosed(closedTabIndex: number) {
             if (closedTabIndex === this.lastIndex) {
@@ -125,31 +120,6 @@ module meshAdminUi {
 
         private editorOpenHandler(uuid: string) {
             this.selectedIndex = this.indexByUuid(this.wips, uuid);
-        }
-
-        /**
-         * Establishes the currently-selected tab upon the user transitioning state
-         * to a contentEditor view, or deselects all tabs if not in that view.
-         */
-        private stateChangeSuccessHandler(event: ng.IAngularEvent, toState: any, toParams: any) {
-            if (toParams && toParams.uuid) {
-                this.selectedIndex = this.indexByUuid(this.wips, toParams.uuid);
-            } else {
-                this.selectedIndex = -1;
-            }
-            this.explorer = toState.name === 'projects.explorer';
-        }
-
-        /**
-         * Since tab contents are relative to a project, we don't want to display the tabs
-         * in the "projects list" view. They should only be visible from within the context a
-         * selected project.
-         *
-         * @param event
-         * @param toState
-         */
-        private stateChangeStartHandler(event, toState) {
-            this.displayTabs = toState.name !== 'projects.list';
         }
 
         /**

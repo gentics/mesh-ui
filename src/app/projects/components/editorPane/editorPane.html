@@ -1,19 +1,19 @@
 <div class="content-editor-container" flex ng-show="vm.isLoaded">
 
     <div class="close-content show-sm">
-        <i class="icon-close" ng-click="vm.close(vm.content)"></i>
+        <i class="icon-close" ng-click="vm.close(vm.node)"></i>
     </div>
 
-    <form-builder fields="vm.content.fields"
+    <form-builder fields="vm.node.fields"
                   schema="vm.schema.fields"
                   display-field="vm.schema.displayField"
                   on-change="vm.setAsModified()"
-                  perms="vm.content.permissions"></form-builder>
+                  perms="vm.node.permissions"></form-builder>
 
     <div layout="row" layout-align="center center" class="main-buttons">
 
         <button class="btn btn-primary"
-                ng-click="vm.persist(vm.content)"
+                ng-click="vm.persist(vm.node)"
                 ng-disabled="!vm.contentModified"
                 aria-label="save">
             <i class="icon-save"></i>
@@ -22,8 +22,8 @@
         </button>
 
         <button class="btn btn-warn"
-                ng-click="vm.remove(vm.content)"
-                ng-disabled="!vm.canDelete(vm.content)"
+                ng-click="vm.remove(vm.node)"
+                ng-disabled="!vm.canDelete(vm.node)"
                 aria-label="delete">
             <i class="icon-delete"></i><span translate>DELETE</span>
         </button>

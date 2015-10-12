@@ -276,16 +276,6 @@ module meshAdminUi {
         }
 
         /**
-         * Get a single content record.
-         */
-        public getContent(projectName, uuid): ng.IPromise<any> {
-            var queryParams = {
-                lang: this.i18nService.languages.map(lang => lang.code).join(',')
-            };
-            return this.meshGet(projectName + '/nodes/' + uuid, queryParams);
-        }
-
-        /**
          * Create or update the node object on the server.
          */
         public persistNode(projectName: string, node: INode): ng.IPromise<INode> {

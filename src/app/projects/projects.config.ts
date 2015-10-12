@@ -38,26 +38,6 @@ function routesConfig($stateProvider) {
                 parentNode: updateContext
             }
         })
-       /* .state('projects.explorer.content', {
-            url: '?uuid',
-            views: {
-                'editor@projects' : {
-                    templateUrl: 'projects/contentEditor/contentEditor.html',
-                    controller: 'ContentEditorController',
-                    controllerAs: 'vm'
-                }
-            }
-        })*/
-        .state('projects.explorer.createContent', {
-            url: '/content/new?schemaId',
-            views: {
-                'explorer@explorer' : {
-                    templateUrl: 'projects/contentEditor/contentEditor.html',
-                    controller: 'ContentEditorController',
-                    controllerAs: 'vm'
-                }
-            }
-        })
         .state('projects.explorer.tag', {
             url: '/tag/:uuid',
             views: {

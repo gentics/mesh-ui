@@ -1,5 +1,5 @@
 module meshAdminUi {
-    
+
     /**
      *
      */
@@ -26,8 +26,8 @@ module meshAdminUi {
                      private notifyService: NotifyService,
                      private parentNode: INode) {
 
-        this.itemsPerPage = $location.search().per_page || 10;
-                this.currentPage = $location.search().page || 1;
+            this.itemsPerPage = $location.search().per_page || 10;
+            this.currentPage = $location.search().page || 1;
             this.projectName = contextService.getProject().name;
             this.createPermission = -1 < parentNode.permissions.indexOf('create');
 
@@ -105,7 +105,7 @@ module meshAdminUi {
                 var uuid = this.contents[index].uuid;
 
                 if (!this.wipService.getItem('contents', uuid)) {
-                    this.dataService.getContent(this.projectName, uuid)
+                    this.dataService.getNode(this.projectName, uuid)
                         .then(item => {
                             this.wipService.openItem('contents', item, {
                                 projectName: this.projectName,
@@ -159,7 +159,7 @@ module meshAdminUi {
                 var index = this.selectedItems.pop(),
                     uuid = this.contents[index].uuid;
 
-                return this.dataService.getContent(this.projectName, uuid)
+                return this.dataService.getNode(this.projectName, uuid)
                     .then(item => this.dataService.deleteNode(this.projectName, item))
                     .then(() => {
                         if (this.wipService.getItem('contents', uuid)) {
@@ -170,9 +170,9 @@ module meshAdminUi {
             }
         }
     }
-    
+
     angular.module('meshAdminUi.projects')
-           .controller('ProjectExplorerController', ProjectExplorerController);
-    
+        .controller('ProjectExplorerController', ProjectExplorerController);
+
 
 }

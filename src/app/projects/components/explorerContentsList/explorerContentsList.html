@@ -2,7 +2,7 @@
     <div class="contents-list">
         <div ng-repeat="bundle in vm.contents" class="node-bundle">
             <div class="schema-name">{{:: bundle.schema }}</div>
-            <div ng-repeat="node in bundle.nodes" class="bundle-item">
+            <div ng-repeat="node in bundle.nodes track by node.uuid" class="bundle-item">
                 <a href="" ng-click="vm.openNode(node)">{{:: node.fields[node.displayField] }}</a>
                 <button class="btn btn-primary btn-small" ng-click="vm.editNode(node)">edit</button>
             </div>

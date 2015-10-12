@@ -11,7 +11,7 @@ module meshAdminUi {
     }
 
     /**
-     * Controller for the content edit/create form.
+     * Controller for the node edit/create form.
      */
     class EditorPaneController {
         
@@ -20,14 +20,13 @@ module meshAdminUi {
         private projectName: string;
         private contentModified: boolean;
         private availableLangs: ILanguageInfo[];
-        private content: INode;
+        private node: INode;
         private selectedLangs: any;
         private isLoaded: boolean;
         private schema: ISchema;
 
         constructor(private $scope: ng.IScope,
                     private $location: ng.ILocationService,
-                    private $state: ng.ui.IStateService,
                     private editorService: EditorService,
                     private confirmActionDialog: ConfirmActionDialog,
                     private $mdDialog: ng.material.IDialogService,
@@ -43,19 +42,18 @@ module meshAdminUi {
                 this.currentNodeId = nodeUuid;
                 this.contentModified = false;
                 this.availableLangs = i18nService.languages;
-                this.content = undefined;
+                this.node = undefined;
                 this.selectedLangs = {};
                 this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
                 this.isLoaded = false;
 
-                this.getContentData(schemaUuid, parentNodeUuid)
+                this.getNodeData(schemaUuid, parentNodeUuid)
                     .then(data => this.populateSchema(data))
                     .then(() => this.isLoaded = true)
-                    .then(() => $location.search('edit', this.content.uuid));
+                    .then(() => $location.search('edit', this.node.uuid));
             };
 
             const empty = () => {
-                console.log('running onCloseCallback "empty()"');
                 this.isLoaded = false;
             };
 
@@ -77,13 +75,13 @@ module meshAdminUi {
                             .then(() => node);
                     } else {
                         this.notifyService.toast('SAVED_CHANGES');
-                        this.wipService.setAsUnmodified(this.wipType, this.content);
+                        this.wipService.setAsUnmodified(this.wipType, this.node);
                         this.contentModified = false;
                         return node;
                     }
                 })
                 .then(node => {
-                    this.content = node;
+                    this.node = node;
                     this.$location.search('edit', node.uuid);
                     this.wipService.openItem(this.wipType, node, {
                         projectName: this.projectName,
@@ -93,7 +91,7 @@ module meshAdminUi {
         }
 
         /**
-         * Delete the open content, displaying a confirmation dialog first before making the API call.
+         * Delete the open node, displaying a confirmation dialog first before making the API call.
          */
         public remove(node: INode) {
 
@@ -110,7 +108,7 @@ module meshAdminUi {
         }
 
         /**
-         * Close the content, displaying a dialog if it has been modified asking
+         * Close the node, displaying a dialog if it has been modified asking
          * whether to keep or discard the changes.
          */
         public close(content) {
@@ -156,7 +154,7 @@ module meshAdminUi {
         public showDeleteDialog() {
             return this.confirmActionDialog.show({
                 title: 'Delete Content?',
-                message: 'Are you sure you want to delete the selected content?'
+                message: 'Are you sure you want to delete the selected node?'
             });
         }
 
@@ -165,12 +163,12 @@ module meshAdminUi {
          */
         public setAsModified() {
             this.contentModified = true;
-            this.wipService.setAsModified(this.wipType, this.content);
+            this.wipService.setAsModified(this.wipType, this.node);
 
         }
 
         public saveWipMetadata() {
-            this.wipService.setMetadata(this.wipType, this.content.uuid, 'selectedLangs', this.selectedLangs);
+            this.wipService.setMetadata(this.wipType, this.node.uuid, 'selectedLangs', this.selectedLangs);
         }
 
         public canDelete(node: INode) {
@@ -181,22 +179,21 @@ module meshAdminUi {
 
 
         /**
-         * Get the content object either from the server if this is being newly opened, or from the
+         * Get the node object either from the server if this is being newly opened, or from the
          * wipService if it exists there.
          */
-        private getContentData(schemaUuid?: string, parentNodeUuid?: string): ng.IPromise<any> {
+        private getNodeData(schemaUuid?: string, parentNodeUuid?: string): ng.IPromise<any> {
 
             if (this.currentNodeId) {
-                // loading existing content
+                // loading existing node
                 var wipContent = this.wipService.getItem(this.wipType, this.currentNodeId);
 
                 if (wipContent) {
                     return this.populateFromWip(wipContent);
                 } else {
-                    return this.dataService
-                        .getContent(this.projectName, this.currentNodeId)
+                    return this.dataService.getNode(this.projectName, this.currentNodeId)
                         .then(data => {
-                            this.content = data;
+                            this.node = data;
                             this.wipService.openItem(this.wipType, data, {
                                 projectName: this.projectName,
                                 selectedLangs: this.selectedLangs
@@ -205,11 +202,11 @@ module meshAdminUi {
                         });
                 }
             } else if (schemaUuid) {
-                // creating new content
+                // creating new node
                 return this.dataService.getSchema(schemaUuid)
                     .then((schema: ISchema) => {
-                        this.content = this.createEmptyContent(schema, parentNodeUuid);
-                        this.wipService.openItem(this.wipType, this.content, {
+                        this.node = this.createEmptyContent(schema, parentNodeUuid);
+                        this.wipService.openItem(this.wipType, this.node, {
                             projectName: this.projectName,
                             selectedLangs: this.selectedLangs
                         });
@@ -219,20 +216,20 @@ module meshAdminUi {
         }
 
         /**
-         * Populate the vm based on the content item retrieved from the wipService.
+         * Populate the vm based on the node item retrieved from the wipService.
          * @param {Object} wipContent
          * @returns {ng.IPromise}
          */
         private populateFromWip(wipContent) {
             var wipMetadata = this.wipService.getMetadata(this.wipType, wipContent.uuid);
-            this.content = wipContent;
-            this.contentModified = this.wipService.isModified(this.wipType, this.content);
+            this.node = wipContent;
+            this.contentModified = this.wipService.isModified(this.wipType, this.node);
             this.selectedLangs = wipMetadata.selectedLangs;
-            return this.dataService.getSchema(this.content.schema.uuid);
+            return this.dataService.getSchema(this.node.schema.uuid);
         }
 
         /**
-         * Create an empty content object which is pre-configured according to the arguments passed.
+         * Create an empty node object which is pre-configured according to the arguments passed.
          */
         private createEmptyContent(schema: ISchema, parentNodeUuid: string) {
             return {
@@ -257,75 +254,15 @@ module meshAdminUi {
             this.schema = data;
         }
 
-        private isNew(node: INode) {
+        /**
+         * Is the node new, i.e. is has not come from Mesh, but is has been created on the client.
+         */
+        private isNew(node: INode): boolean {
             return !node.hasOwnProperty('created');
-        }
-    }
-
-    export class EditorService {
-
-        private onOpenCallbacks: Function[] = [];
-        private onCloseCallbacks: Function[] = [];
-        private openNodeId;
-
-        constructor(private $rootScope: ng.IRootScopeService,
-                    private $location: ng.ILocationService) {
-            /**
-             * We need to watch the "edit" query string in order to react to
-             * external URL changes, e.g. caused by use of browser back &
-             * forward buttons.
-             */
-            $rootScope.$watch(() => $location.search().edit, newVal => {
-                if (newVal && newVal !== this.openNodeId) {
-                    this.open(newVal);
-                }
-            });
-        }
-
-        public open(uuid: string) {
-            console.log('opening', uuid);
-            this.openNodeId = uuid;
-            this.onOpenCallbacks.forEach(fn => {
-                fn.call(null, uuid);
-            });
-        }
-
-        public create(schemaId: string, parentNodeUuid: string) {
-            this.openNodeId = undefined;
-            this.onOpenCallbacks.forEach(fn => {
-                fn.call(null, undefined, schemaId, parentNodeUuid);
-            });
-        }
-
-        public close() {
-            this.onCloseCallbacks.forEach(fn => {
-                fn.call(null);
-            });
-        }
-
-        public closeAll() {
-            this.$location.search('edit', null);
-            this.openNodeId = undefined;
-            this.onCloseCallbacks.forEach(fn => {
-                fn.call(null);
-            });
-        }
-
-        public getOpenNodeId() {
-            return this.openNodeId;
-        }
-
-        public registerOnOpenCallback(callback) {
-            this.onOpenCallbacks.push(callback);
-        }
-
-        public registerOnCloseCallback(callback) {
-            this.onCloseCallbacks.push(callback);
         }
     }
 
     angular.module('meshAdminUi.projects')
         .directive('editorPane', editorPaneDirective)
-        .controller('EditorPaneController', EditorPaneController)
-        .service('editorService', EditorService);
+        .controller('EditorPaneController', EditorPaneController);
 }
