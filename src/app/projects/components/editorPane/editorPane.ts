@@ -57,7 +57,12 @@ module meshAdminUi {
                     .then(() => this.isLoaded = true);
             };
 
+            const empty = () => {
+                this.isLoaded = false;
+            };
+
             editorService.registerOnOpenCallback(init);
+            editorService.registerOnCloseCallback(empty);
             /*wipService.registerWipChangeHandler(() => {
                 if (wipService.getOpenItems(this.wipType).length === 0) {
                     this.isLoaded = false;
@@ -267,7 +272,8 @@ module meshAdminUi {
 
     export class EditorService {
 
-        private onOpenCallbacks = [];
+        private onOpenCallbacks: Function[] = [];
+        private onCloseCallbacks: Function[] = [];
         private openNodeId;
 
         constructor(private $rootScope: ng.IRootScopeService,
@@ -291,12 +297,23 @@ module meshAdminUi {
             });
         }
 
+        public closeAll() {
+            this.openNodeId = undefined;
+            this.onCloseCallbacks.forEach(fn => {
+                fn.call(null);
+            });
+        }
+
         public getOpenNodeId() {
             return this.openNodeId;
         }
 
         public registerOnOpenCallback(callback) {
             this.onOpenCallbacks.push(callback);
+        }
+
+        public registerOnCloseCallback(callback) {
+            this.onCloseCallbacks.push(callback);
         }
     }
 

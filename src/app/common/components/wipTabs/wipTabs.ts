@@ -100,7 +100,12 @@ module meshAdminUi {
          */
         private transitionIfCurrentTabClosed(closedTabIndex: number) {
             if (closedTabIndex === this.lastIndex) {
-                this.editorService.open(this.wips[this.selectedIndex].item.uuid)
+                if (0 < this.wips.length) {
+                    let selectedIndex = this.selectedIndex !== -1 ? this.selectedIndex : 0;
+                    this.editorService.open(this.wips[selectedIndex].item.uuid)
+                } else {
+                    this.editorService.closeAll();
+                }
             }
         }
 
