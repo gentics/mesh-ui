@@ -1,9 +1,11 @@
-<div class="contents-list-container">
-    <div ng-repeat="bundle in vm.contents" class="node-bundle">
-        <div class="schema-name">{{:: bundle.schema }}</div>
-        <div ng-repeat="node in bundle.nodes" class="bundle-item">
-            <a href="" ng-click="vm.openNode(node)">{{:: node.fields[node.displayField] }}</a>
-            <button class="btn btn-primary btn-small" ng-click="vm.editNode(node)">edit</button>
+<div class="contents-list-container" fit-to-viewport>
+    <div class="contents-list">
+        <div ng-repeat="bundle in vm.contents" class="node-bundle">
+            <div class="schema-name">{{:: bundle.schema }}</div>
+            <div ng-repeat="node in bundle.nodes" class="bundle-item">
+                <a href="" ng-click="vm.openNode(node)">{{:: node.fields[node.displayField] }}</a>
+                <button class="btn btn-primary btn-small" ng-click="vm.editNode(node)">edit</button>
+            </div>
         </div>
     </div>
 </div>
