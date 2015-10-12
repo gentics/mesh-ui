@@ -80,7 +80,7 @@ module meshAdminUi {
         public remove(content) {
 
             this.showDeleteDialog()
-                .then(() => this.dataService.deleteContent(content))
+                .then(() => this.dataService.deleteNode(content))
                 .then(() => {
                     this.wipService.closeItem(this.wipType, content);
                     this.notifyService.toast('Deleted');

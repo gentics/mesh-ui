@@ -18,7 +18,6 @@ module meshAdminUi {
         private currentNodeId: string;
         private wipType: string = 'contents';
         private projectName: string;
-        private isNew: boolean;
         private contentModified: boolean;
         private availableLangs: ILanguageInfo[];
         private content: INode;
@@ -38,13 +37,10 @@ module meshAdminUi {
                     private wipService: WipService,
                     private notifyService: NotifyService) {
 
-            const init = (nodeUuid) => {
+            const init = (nodeUuid: string, schemaUuid?: string, parentNodeUuid?: string) => {
 
                 this.projectName = contextService.getProject().name;
                 this.currentNodeId = nodeUuid;
-                $location.search('edit', nodeUuid);
-
-                this.isNew = false;
                 this.contentModified = false;
                 this.availableLangs = i18nService.languages;
                 this.content = undefined;
@@ -52,12 +48,14 @@ module meshAdminUi {
                 this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
                 this.isLoaded = false;
 
-                this.getContentData()
+                this.getContentData(schemaUuid, parentNodeUuid)
                     .then(data => this.populateSchema(data))
-                    .then(() => this.isLoaded = true);
+                    .then(() => this.isLoaded = true)
+                    .then(() => $location.search('edit', this.content.uuid));
             };
 
             const empty = () => {
+                console.log('running onCloseCallback "empty()"');
                 this.isLoaded = false;
             };
 
@@ -70,62 +68,70 @@ module meshAdminUi {
         /**
          * Save the changes back to the server.
          */
-        public persist(node: INode) {
-            this.dataService.persistNode(this.projectName, node)
-                .then(response => {
-                    if (this.isNew) {
+        public persist(originalNode: INode) {
+            this.dataService.persistNode(this.projectName, originalNode)
+                .then((node: INode) => {
+                    if (this.isNew(node)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
-                        this.wipService.closeItem(this.wipType, node);
-                        node = response;
-                        this.wipService.openItem(this.wipType, node, {
-                            projectName: this.projectName,
-                            selectedLangs: this.selectedLangs
-                        });
-                        this.isNew = false;
+                        return this.wipService.closeItem(this.wipType, originalNode)
+                            .then(() => node);
                     } else {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.wipService.setAsUnmodified(this.wipType, this.content);
                         this.contentModified = false;
+                        return node;
                     }
-                });
+                })
+                .then(node => {
+                    this.content = node;
+                    this.$location.search('edit', node.uuid);
+                    this.wipService.openItem(this.wipType, node, {
+                        projectName: this.projectName,
+                        selectedLangs: this.selectedLangs
+                    });
+                })
         }
 
         /**
          * Delete the open content, displaying a confirmation dialog first before making the API call.
-         * @param content
          */
-        public remove(content) {
+        public remove(node: INode) {
 
             this.showDeleteDialog()
-                .then(() => this.dataService.deleteContent(content))
                 .then(() => {
-                    this.wipService.closeItem(this.wipType, content);
+                    if (!this.isNew(node)) {
+                        return this.dataService.deleteNode(this.projectName, node)
+                    }
+                })
+                .then(() => {
                     this.notifyService.toast('Deleted');
-                    this.$state.go('projects.explorer');
+                    this.closeWipAndClearPane(node);
                 });
         }
 
         /**
          * Close the content, displaying a dialog if it has been modified asking
          * whether to keep or discard the changes.
-         *
-         * @param content
          */
         public close(content) {
             if (this.wipService.isModified(this.wipType, content)) {
                 this.showCloseDialog()
                     .then(response => {
-                    if (response === 'save') {
-                        this.dataService.persistNode(this.projectName, content);
-                        this.notifyService.toast('SAVED_CHANGES');
-                    }
-                    this.wipService.closeItem(this.wipType, content);
-                    this.$state.go('projects.explorer');
-                });
+                        if (response === 'save') {
+                            this.dataService.persistNode(this.projectName, content);
+                            this.notifyService.toast('SAVED_CHANGES');
+                        }
+                        this.closeWipAndClearPane(content);
+                    });
             } else {
-                this.wipService.closeItem(this.wipType, content);
-                this.$state.go('projects.explorer');
+                this.closeWipAndClearPane(content);
             }
+        }
+
+        private closeWipAndClearPane(node: INode) {
+            this.editorService.close();
+            this.wipService.closeItem(this.wipType, node);
+            this.$location.search('edit', null);
         }
 
 
@@ -158,6 +164,7 @@ module meshAdminUi {
          * Set the wip as modified.
          */
         public setAsModified() {
+            this.contentModified = true;
             this.wipService.setAsModified(this.wipType, this.content);
 
         }
@@ -166,9 +173,9 @@ module meshAdminUi {
             this.wipService.setMetadata(this.wipType, this.content.uuid, 'selectedLangs', this.selectedLangs);
         }
 
-        public canDelete() {
-            if (this.content) {
-                return -1 < this.content.permissions.indexOf('delete') && !this.isNew;
+        public canDelete(node: INode) {
+            if (node) {
+                return -1 < node.permissions.indexOf('delete');
             }
         }
 
@@ -176,11 +183,8 @@ module meshAdminUi {
         /**
          * Get the content object either from the server if this is being newly opened, or from the
          * wipService if it exists there.
-         *
-         * @returns {ng.IPromise}
          */
-        private getContentData() {
-            var schemaId = this.$location.search().schemaId;
+        private getContentData(schemaUuid?: string, parentNodeUuid?: string): ng.IPromise<any> {
 
             if (this.currentNodeId) {
                 // loading existing content
@@ -200,15 +204,13 @@ module meshAdminUi {
                             return this.dataService.getSchema(data.schema.uuid);
                         });
                 }
-            } else if (schemaId) {
+            } else if (schemaUuid) {
                 // creating new content
-                this.isNew = true;
-                return this.dataService.getSchema(schemaId)
-                    .then(schema => {
-                        this.content = this.createEmptyContent(schema.uuid, schema.title);
+                return this.dataService.getSchema(schemaUuid)
+                    .then((schema: ISchema) => {
+                        this.content = this.createEmptyContent(schema, parentNodeUuid);
                         this.wipService.openItem(this.wipType, this.content, {
                             projectName: this.projectName,
-                            isNew: true,
                             selectedLangs: this.selectedLangs
                         });
                         return schema;
@@ -231,18 +233,17 @@ module meshAdminUi {
 
         /**
          * Create an empty content object which is pre-configured according to the arguments passed.
-         *
-         * @param {string} schemaId
-         * @param {string} schemaName
-         * @returns {{tagUuid: *, perms: string[], uuid: *, schema: {schemaUuid: *}, schemaName: *}}
          */
-        private createEmptyContent(schemaId, schemaName) {
+        private createEmptyContent(schema: ISchema, parentNodeUuid: string) {
             return {
-                perms: ['read', 'create', 'update', 'delete'],
+                permissions: ['read', 'create', 'update', 'delete'],
                 uuid: this.wipService.generateTempId(),
+                parentNodeUuid: parentNodeUuid,
+                displayField: schema.displayField,
+                language : this.i18nService.getCurrentLang().code,
                 schema: {
-                    uuid: schemaId,
-                    name: schemaName
+                    uuid: schema.uuid,
+                    name: schema.name
                 },
                 fields: {}
             };
@@ -254,6 +255,10 @@ module meshAdminUi {
          */
         private populateSchema(data) {
             this.schema = data;
+        }
+
+        private isNew(node: INode) {
+            return !node.hasOwnProperty('created');
         }
     }
 
@@ -272,19 +277,34 @@ module meshAdminUi {
              */
             $rootScope.$watch(() => $location.search().edit, newVal => {
                 if (newVal && newVal !== this.openNodeId) {
-                    open(newVal);
+                    this.open(newVal);
                 }
             });
         }
 
-        public open(uuid) {
+        public open(uuid: string) {
+            console.log('opening', uuid);
             this.openNodeId = uuid;
             this.onOpenCallbacks.forEach(fn => {
                 fn.call(null, uuid);
             });
         }
 
+        public create(schemaId: string, parentNodeUuid: string) {
+            this.openNodeId = undefined;
+            this.onOpenCallbacks.forEach(fn => {
+                fn.call(null, undefined, schemaId, parentNodeUuid);
+            });
+        }
+
+        public close() {
+            this.onCloseCallbacks.forEach(fn => {
+                fn.call(null);
+            });
+        }
+
         public closeAll() {
+            this.$location.search('edit', null);
             this.openNodeId = undefined;
             this.onCloseCallbacks.forEach(fn => {
                 fn.call(null);

@@ -34,7 +34,7 @@ module meshAdminUi {
         private fields: INodeFields;
         private schema: ISchemaFieldDefinition[];
         private onChange: Function;
-        private perms: string[];
+        private perms: string[] = [];
         private displayField: string;
 
         constructor($scope: ng.IScope, private mu: MeshUtils) {

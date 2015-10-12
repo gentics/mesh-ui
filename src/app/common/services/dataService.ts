@@ -288,7 +288,7 @@ module meshAdminUi {
         /**
          * Create or update the node object on the server.
          */
-        public persistNode(projectName: string, node: INode): ng.IPromise<any> {
+        public persistNode(projectName: string, node: INode): ng.IPromise<INode> {
             let isNew = !node.hasOwnProperty('created');
             this.clearCache('contents');
             return isNew ? this.createNode(projectName, node) : this.updatedNode(projectName, node);
@@ -297,20 +297,20 @@ module meshAdminUi {
 
         private createNode(projectName: string, node: INode): ng.IPromise<INode> {
             this.clearCache('contents');
-            return this.meshPost(projectName + '/nodes/', node);
+            return this.meshPost(projectName + '/nodes', node).then(response => response.data);
         }
 
         private updatedNode(projectName: string, node: INode): ng.IPromise<INode> {
             this.clearCache('contents');
-            return this.meshPut(projectName + '/nodes/' + node.uuid, node);
+            return this.meshPut(projectName + '/nodes/' + node.uuid, node).then(response => response.data);
         }
 
         /**
          * Remove the content from the server.
          */
-        public deleteContent(content):ng.IPromise<any> {
+        public deleteNode(projectName: string, node: INode):ng.IPromise<any> {
             this.clearCache('contents');
-            return this.meshDelete(content.project + '/nodes/' + content.uuid);
+            return this.meshDelete(projectName + '/nodes/' + node.uuid);
         }
 
         /**

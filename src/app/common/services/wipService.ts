@@ -43,7 +43,7 @@ module meshAdminUi {
          * Metadata is an optional argument which can be used to store
          * arbitrary key-value data that can be retrieved later.
          */
-        public openItem(type: string, item: any, metadata: any) {
+        public openItem(type: string, item: any, metadata?: any) {
             this.validateItem(item);
             if (!this.wipStore[type]) {
                 this.wipStore[type] = {};
@@ -119,7 +119,7 @@ module meshAdminUi {
             this.checkItemInWipStore(type, item);
             delete this.wipStore[type][item.uuid];
             delete this.modifiedWips[type][item.uuid];
-            this.invokeChangeCallbacks(() => deferred.resolve());
+            this.invokeChangeCallbacks(() => deferred.resolve(item));
             return deferred.promise;
         }
 
@@ -180,10 +180,14 @@ module meshAdminUi {
          * registerWipChangeHandler().
          */
         public invokeChangeCallbacks(done?: Function) {
-            this.onWipChangeCallbacks.forEach(fn => fn());
-            if (typeof done === 'function') {
-                done();
-            }
+            this.$q.all(this.onWipChangeCallbacks.map(fn => {
+                return this.$q.when(fn());
+            }))
+                .then(() => {
+                    if (typeof done === 'function') {
+                        done();
+                    }
+                });
         }
 
         /**

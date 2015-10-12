@@ -23,7 +23,7 @@
 
         <button class="btn btn-warn"
                 ng-click="vm.remove(vm.content)"
-                ng-disabled="!vm.canDelete()"
+                ng-disabled="!vm.canDelete(vm.content)"
                 aria-label="delete">
             <i class="icon-delete"></i><span translate>DELETE</span>
         </button>

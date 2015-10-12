@@ -12,8 +12,8 @@
                     <ul class="create-options">
                         <li ng-repeat="schema in vm.schemas"
                             value="{{::$index}}"
-                            ui-sref="projects.explorer.createContent({ schemaId: schema.uuid })">
-                            {{::schema.displayName || schema.title}}
+                            ng-click="vm.createNewNode(schema.uuid)">
+                            {{::schema.name}}
                         </li>
                     </ul>
                 </mh-dropdown-body>
