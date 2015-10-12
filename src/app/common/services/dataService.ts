@@ -286,17 +286,23 @@ module meshAdminUi {
         }
 
         /**
-         * Create or update the content object on the server.
+         * Create or update the node object on the server.
          */
-        public persistContent(projectName, content):ng.IPromise<any> {
+        public persistNode(projectName: string, node: INode): ng.IPromise<any> {
+            let isNew = !node.hasOwnProperty('created');
             this.clearCache('contents');
-            if (content.hasOwnProperty('save')) {
-                // this is a Restangular object
-                return this.meshPut(projectName + '/nodes/' + content.uuid, content);
-            } else {
-                // this is a plain object (newly-created)
-                return this.meshPost(projectName + '/nodes/', content);
-            }
+            return isNew ? this.createNode(projectName, node) : this.updatedNode(projectName, node);
+
+        }
+
+        private createNode(projectName: string, node: INode): ng.IPromise<INode> {
+            this.clearCache('contents');
+            return this.meshPost(projectName + '/nodes/', node);
+        }
+
+        private updatedNode(projectName: string, node: INode): ng.IPromise<INode> {
+            this.clearCache('contents');
+            return this.meshPut(projectName + '/nodes/' + node.uuid, node);
         }
 
         /**

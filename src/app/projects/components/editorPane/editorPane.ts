@@ -63,35 +63,25 @@ module meshAdminUi {
 
             editorService.registerOnOpenCallback(init);
             editorService.registerOnCloseCallback(empty);
-            /*wipService.registerWipChangeHandler(() => {
-                if (wipService.getOpenItems(this.wipType).length === 0) {
-                    this.isLoaded = false;
-                } else {
-
-                }
-            });*/
-            $scope.$watch('this.contentModified', val => this.modifiedWatchHandler(val));
             $scope.$on('$destroy', () => this.saveWipMetadata());
         }
 
 
         /**
          * Save the changes back to the server.
-         * @param {Object} content
          */
-        public persist(content) {
-            this.dataService.persistContent(this.projectName, content)
+        public persist(node: INode) {
+            this.dataService.persistNode(this.projectName, node)
                 .then(response => {
                     if (this.isNew) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
-                        this.wipService.closeItem(this.wipType, content);
-                        content = response;
-                        this.wipService.openItem(this.wipType, content, {
+                        this.wipService.closeItem(this.wipType, node);
+                        node = response;
+                        this.wipService.openItem(this.wipType, node, {
                             projectName: this.projectName,
                             selectedLangs: this.selectedLangs
                         });
                         this.isNew = false;
-                        this.$state.go('projects.explorer.content', {projectName: this.projectName, uuid: content.uuid});
                     } else {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.wipService.setAsUnmodified(this.wipType, this.content);
@@ -126,7 +116,7 @@ module meshAdminUi {
                 this.showCloseDialog()
                     .then(response => {
                     if (response === 'save') {
-                        this.dataService.persistContent(this.projectName, content);
+                        this.dataService.persistNode(this.projectName, content);
                         this.notifyService.toast('SAVED_CHANGES');
                     }
                     this.wipService.closeItem(this.wipType, content);
@@ -165,14 +155,11 @@ module meshAdminUi {
         }
 
         /**
-         * When the value of this.contentModified evaluates to true, set the wip as
-         * modified.
-         * @param val
+         * Set the wip as modified.
          */
-        public modifiedWatchHandler(val) {
-            if (val === true) {
-                this.wipService.setAsModified(this.wipType, this.content);
-            }
+        public setAsModified() {
+            this.wipService.setAsModified(this.wipType, this.content);
+
         }
 
         public saveWipMetadata() {

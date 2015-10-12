@@ -25,7 +25,7 @@ module meshAdminUi {
         private explorer;
 
         constructor(private $scope: ng.IScope,
-                    private $state: ng.ui.IStateService,
+                    private $q: ng.IQService,
                     private $mdDialog: ng.material.IDialogService,
                     private editorService: EditorService,
                     private i18nService: I18nService,
@@ -62,25 +62,28 @@ module meshAdminUi {
          */
         public closeWip(event: Event, index: number) {
             var wip = this.wips[index].item,
-                projectName = this.wips[index].metadata.projectName;
+                projectName = this.wips[index].metadata.projectName,
+                action;
 
             event.stopPropagation();
             event.preventDefault();
             this.lastIndex = this.selectedIndex;
 
             if (this.wipService.isModified(this.wipType, wip)) {
-                this.showDialog().then(response => {
+                action = this.showDialog().then(response => {
                     if (response === 'save') {
-                        this.dataService.persistContent(projectName, wip);
                         this.notifyService.toast('SAVED_CHANGES');
+                        this.dataService.persistNode(projectName, wip);
                     }
-                    this.wipService.closeItem(this.wipType, wip);
-                    this.transitionIfCurrentTabClosed(index);
                 });
             } else {
+                action = this.$q.when();
+            }
+
+            action.then(() => {
                 this.wipService.closeItem(this.wipType, wip);
                 this.transitionIfCurrentTabClosed(index);
-            }
+            });
         }
 
         /**

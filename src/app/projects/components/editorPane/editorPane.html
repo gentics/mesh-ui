@@ -7,7 +7,7 @@
     <form-builder fields="vm.content.fields"
                   schema="vm.schema.fields"
                   display-field="vm.schema.displayField"
-                  modified-flag="vm.contentModified"
+                  on-change="vm.setAsModified()"
                   perms="vm.content.permissions"></form-builder>
 
     <div layout="row" layout-align="center center" class="main-buttons">

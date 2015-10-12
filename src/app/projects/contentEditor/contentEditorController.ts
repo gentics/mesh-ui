@@ -48,7 +48,7 @@ module meshAdminUi {
          * @param {Object} content
          */
         public persist(content) {
-            this.dataService.persistContent(this.projectName, content)
+            this.dataService.persistNode(this.projectName, content)
                 .then(response => {
                     if (this.isNew) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
@@ -97,7 +97,7 @@ module meshAdminUi {
                 this.showCloseDialog()
                     .then(response => {
                         if (response === 'save') {
-                            this.dataService.persistContent(this.projectName, content);
+                            this.dataService.persistNode(this.projectName, content);
                             this.notifyService.toast('SAVED_CHANGES');
                         }
                         this.wipService.closeItem(this.wipType, content);

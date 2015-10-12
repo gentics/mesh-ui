@@ -7,7 +7,6 @@ module meshAdminUi {
      * ====
      * fields = the object properties from the node fields
      * schema = the schema fields definitions
-     * modified-flag = boolean value that will be set to true when user modifies any form fields.
      *
      */
     function formBuilderDirective() {
@@ -22,7 +21,7 @@ module meshAdminUi {
             scope: {
                 fields: '=',
                 schema: '=',
-                modified: '=modifiedFlag',
+                onChange: '&',
                 perms: '=',
                 displayField: '='
             }
@@ -34,7 +33,7 @@ module meshAdminUi {
         public nodeFieldModelCollection: INodeFieldModel[];
         private fields: INodeFields;
         private schema: ISchemaFieldDefinition[];
-        private modified: boolean;
+        private onChange: Function;
         private perms: string[];
         private displayField: string;
 
@@ -66,7 +65,7 @@ module meshAdminUi {
          */
         private makeUpdateFunction(path): (value: any) => any {
             return (value) => {
-                this.modified = true;
+                this.onChange();
                 this.updateAtPath(this.fields, path, value);
             }
         }
