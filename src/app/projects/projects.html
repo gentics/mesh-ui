@@ -3,8 +3,17 @@
         <breadcrumbs></breadcrumbs>
     </div>
 </div>
-<wip-tabs flex></wip-tabs>
-<div layout="row" class="app-content" fit-to-viewport>
-    <div ui-view="explorer" class="project-body-container" flex="30"></div>
-    <editor-pane flex="70"></editor-pane>
+<div layout="row" class="app-content" fit-to-viewport ng-mousemove="vm.resizerMousemove($event)" ng-mouseup="vm.resizerMouseup($event)">
+    <div flex ng-style="vm.explorerPaneStyle">
+        <div ui-view="explorer" class="project-body-container" ></div>
+    </div>
+    <div class="resize-bar" ng-mousedown="vm.resizerMousedown($event)" layout="row" layout-align="center center">
+        <i class="icon-more-vert" flex></i>
+    </div>
+    <div flex class="editor-container">
+        <wip-tabs></wip-tabs>
+        <div fit-to-viewport style="overflow-y: auto">
+            <editor-pane></editor-pane>
+        </div>
+    </div>
 </div>

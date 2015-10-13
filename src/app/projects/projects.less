@@ -7,5 +7,28 @@
   margin: auto;
 }
 
+
+.resize-bar {
+  cursor: col-resize;
+  width: 10px;
+  border-right: 1px solid @color-silver;
+  margin-top: 32px;
+  margin-left: 6px;
+  transition: background 0.3s;
+
+  i {
+    font-size: 32px;
+    color: @color-silver;
+    margin-left: -12px;
+  }
+
+  &:hover {
+    background-color: fade(@color-primary, 50%);
+  }
+}
+
+.editor-container {
+}
+
 .project-body-container {
 }
