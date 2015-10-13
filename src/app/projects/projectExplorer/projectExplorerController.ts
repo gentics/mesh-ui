@@ -54,9 +54,9 @@ module meshAdminUi {
         }
 
         /**
-         * Fill the vm with the child contents of the current tag.
+         * Fill the vm with the child children of the current node.
          */
-        public populateChildNodes(page: number) {
+        public populateChildNodes(page: number): ng.IPromise<any> {
             var projectName = this.contextService.getProject().name,
                 parentNodeId = this.parentNode.uuid,
                 queryParams = {
@@ -64,16 +64,16 @@ module meshAdminUi {
                     per_page: this.itemsPerPage
                 };
 
-            this.dataService.getChildNodes(projectName, parentNodeId, queryParams)
+            return this.dataService.getChildNodes(projectName, parentNodeId, queryParams)
                 .then(response => {
                     var schemaGroups = {};
                     response.data.forEach(node => {
                         if (!schemaGroups[node.schema.name]) {
                             schemaGroups[node.schema.name] = {schema: node.schema.name, nodes: []};
                         }
-
                         schemaGroups[node.schema.name].nodes.push(node);
                     });
+                    this.contents.length = 0;
                     for (var schemaName in schemaGroups) {
                         this.contents.push(schemaGroups[schemaName]);
                     }
@@ -100,22 +100,7 @@ module meshAdminUi {
         public openSelected() {
             var selectedLangs = {};
             selectedLangs[this.i18nService.getCurrentLang().code] = true;
-
-            this.selectedItems.forEach(function (index) {
-                var uuid = this.contents[index].uuid;
-
-                if (!this.wipService.getItem('contents', uuid)) {
-                    this.dataService.getNode(this.projectName, uuid)
-                        .then(item => {
-                            this.wipService.openItem('contents', item, {
-                                projectName: this.projectName,
-                                parentTagId: this.parentNode.uuid,
-                                selectedLangs: selectedLangs
-                            });
-                        });
-                }
-            });
-
+            this.selectedItems.forEach(uuid => this.editorService.open(uuid));
             this.selectedItems = [];
         }
 
@@ -123,17 +108,16 @@ module meshAdminUi {
          * Delete the selected content items
          */
         public deleteSelected() {
-            var deletedCount = this.selectedItems.length;
+            let deletedCount = this.selectedItems.length,
+                doDelete = () => {
+                    this.$q.when(this.deleteNext())
+                        .then(() => {
+                            this.notifyService.toast('Deleted ' + deletedCount + ' contents');
+                            this.populateChildNodes(this.currentPage);
+                        });
+                };
 
             this.showDeleteDialog().then(doDelete);
-
-            function doDelete() {
-                this.$q.when(this.deleteNext())
-                    .then(function () {
-                        this.notifyService.toast('Deleted ' + deletedCount + ' contents');
-                        this.populateChildNodes(this.currentPage);
-                    });
-            }
         }
 
         /**
@@ -156,8 +140,7 @@ module meshAdminUi {
             if (this.selectedItems.length === 0) {
                 return;
             } else {
-                var index = this.selectedItems.pop(),
-                    uuid = this.contents[index].uuid;
+                var uuid = this.selectedItems.pop();
 
                 return this.dataService.getNode(this.projectName, uuid)
                     .then(item => this.dataService.deleteNode(this.projectName, item))

@@ -27,12 +27,12 @@ module meshAdminUi {
 
     class ExplorerContentsListController {
 
-        private totalItems: number = 0;
-        private selectedItems: any[] = [];
+        public totalItems: number = 0;
+        public selectedItems: string[] = [];
         private _areAllSelected: boolean = false;
-        private currentPage: number;
-        private itemsPerPage: number;
-        private onUpdate: Function;
+        public currentPage: number;
+        public itemsPerPage: number;
+        public onUpdate: Function;
 
         constructor(private $state: ng.ui.IStateService,
                     private contextService: ContextService,
@@ -55,12 +55,12 @@ module meshAdminUi {
         /**
          * Toggle whether the items at index is selected.
          */
-        public toggleSelect(index) {
-            if (this.isSelected(index)) {
-                var idx = this.selectedItems.indexOf(index);
+        public toggleSelect(uuid: string) {
+            if (this.isSelected(uuid)) {
+                var idx = this.selectedItems.indexOf(uuid);
                 this.selectedItems.splice(idx, 1);
             } else {
-                this.selectedItems.push(index);
+                this.selectedItems.push(uuid);
             }
             this._areAllSelected = this.areAllSelected();
         }
@@ -83,11 +83,9 @@ module meshAdminUi {
 
         /**
          * Is the item at index currently selected?
-         * @param $index
-         * @returns {boolean}
          */
-        public isSelected($index) {
-            return -1 < this.selectedItems.indexOf($index);
+        public isSelected(uuid: string): boolean {
+            return -1 < this.selectedItems.indexOf(uuid);
         }
 
         /**
@@ -100,16 +98,22 @@ module meshAdminUi {
 
         /**
          * Transition to the contentEditor view for the given uuid
-         * @param {Object} node
          */
-        public openNode(node) {
+        public openNode(node, event: ng.IAngularEvent) {
+            event.preventDefault();
+            event.stopPropagation();
             this.selectedItems = [];
             if (node.hasOwnProperty('children')) {
                 this.$state.go('projects.explorer', {projectName: this.contextService.getProject().name, nodeId: node.uuid});
             }
         }
 
-        public editNode(node) {
+        /**
+         * Open the node up in the editor pane
+         */
+        public editNode(node: INode, event: ng.IAngularEvent) {
+            event.preventDefault();
+            event.stopPropagation();
             this.selectedItems = [];
             this.editorService.open(node.uuid);
         }

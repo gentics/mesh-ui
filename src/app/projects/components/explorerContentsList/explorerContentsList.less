@@ -6,19 +6,37 @@
   }
 
   .node-bundle {
-    margin-bottom: 20px;
+    margin-top: 30px;
 
     .schema-name {
       text-transform: uppercase;
-      color: @color-silver;
+      color: @color-dusty;
       margin-bottom: 10px;
     }
+    .node-title {
+      .noselect();
+      &.container {
+        cursor: pointer;
+        color: @color-primary;
+      }
+    }
     .bundle-item {
-      padding-bottom: 10px;
+      padding: 10px;
+      border-left: 3px solid transparent;
+      transition: border 0.2s, background 0.2s;
+
+      &:hover {
+        border-left-color: @color-alto;
+        background-color: @color-concrete;
+      }
+
+      &.selected {
+        border-left-color: @color-primary;
+        background-color: @color-concrete;
+      }
     }
     .bundle-item + .bundle-item {
       border-top: 1px solid @color-concrete;
-      padding: 10px 0;
     }
   }
 }
