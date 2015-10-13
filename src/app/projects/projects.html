@@ -3,13 +3,11 @@
         <breadcrumbs></breadcrumbs>
     </div>
 </div>
-<div layout="row" class="app-content" fit-to-viewport ng-mousemove="vm.resizerMousemove($event)" ng-mouseup="vm.resizerMouseup($event)">
-    <div flex ng-style="vm.explorerPaneStyle">
+<div layout="row" class="app-content" fit-to-viewport resizer-frame resizer-style="explorerPaneStyle">
+    <div flex ng-style="explorerPaneStyle">
         <div ui-view="explorer" class="project-body-container" ></div>
     </div>
-    <div class="resize-bar" ng-mousedown="vm.resizerMousedown($event)" layout="row" layout-align="center center">
-        <i class="icon-more-vert" flex></i>
-    </div>
+    <resizer></resizer>
     <div flex class="editor-container">
         <wip-tabs></wip-tabs>
         <div fit-to-viewport style="overflow-y: auto">
