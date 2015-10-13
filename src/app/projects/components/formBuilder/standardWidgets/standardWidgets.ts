@@ -290,6 +290,10 @@ module meshAdminUi {
 
         constructor($scope: ng.IScope) {
 
+            // this flag prevents the update callback from firing as soon as the
+            // widget loads and performs a mutation of the value to a Date object.
+            let initialDateConversionDone = false;
+
             if (0 < this.fieldModel.value) {
                 this.value= new Date(this.fieldModel.value * 1000);
             } else {
@@ -298,7 +302,11 @@ module meshAdminUi {
 
             $scope.$watch(() => this.value, newVal => {
                 if (newVal && newVal instanceof Date) {
-                    this.fieldModel.update(newVal.getTime() / 1000);
+                    if (initialDateConversionDone){
+                        this.fieldModel.update(newVal.getTime() / 1000);
+                    } else {
+                        initialDateConversionDone = true;
+                    }
                 }
             });
         }
