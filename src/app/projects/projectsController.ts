@@ -22,10 +22,6 @@ module meshAdminUi {
 
             this.projectName = contextService.getProject().name;
             this.createPermission = -1 < contextService.getCurrentNode().permissions.indexOf('create');
-
-
-            console.log('create projectExplorerController');
-
             this.populateSchemas();
         }
 
