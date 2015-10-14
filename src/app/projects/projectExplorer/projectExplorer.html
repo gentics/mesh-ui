@@ -1,33 +1,4 @@
 <div class="">
-    <project-search-bar flex></project-search-bar>
-    <div class="actions-bar hide-sm" layout="row" layout-align="end">
-        <div>
-            <mh-dropdown>
-                <mh-dropdown-label>
-                    <button class="btn btn-primary btn-small" aria-label="Create Tag">
-                        Create Node
-                    </button>
-                </mh-dropdown-label>
-                <mh-dropdown-body>
-                    <ul class="create-options">
-                        <li ng-repeat="schema in vm.schemas"
-                            value="{{::$index}}"
-                            ng-click="vm.createNewNode(schema.uuid)">
-                            {{::schema.name}}
-                        </li>
-                    </ul>
-                </mh-dropdown-body>
-            </mh-dropdown>
-        </div>
-        <div flex></div>
-        <button class="btn btn-primary btn-small" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.openSelected()">
-            Edit Selected
-        </button>
-        <button class="btn btn-warn btn-small" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.deleteSelected()">
-            Delete Selected
-        </button>
-    </div>
-
     <explorer-contents-list contents="vm.contents"
                             current-page="vm.currentPage"
                             items-per-page="vm.itemsPerPage"
@@ -35,5 +6,4 @@
                             selected-items="vm.selectedItems"
                             on-update="vm.updateContents(currentPage, itemsPerPage)">
     </explorer-contents-list>
-
 </div>

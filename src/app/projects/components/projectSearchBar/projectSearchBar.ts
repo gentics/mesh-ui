@@ -25,7 +25,7 @@ module meshAdminUi {
             if (projectName !== '') {
                 this.$state.go('projects.explorer', {projectName: projectName});
             } else {
-                this.$state.go('projects.list');
+                this.$state.go('projectsList');
             }
         }
 

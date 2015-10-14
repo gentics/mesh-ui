@@ -1,4 +1,5 @@
 <div class="app-content">
+    <breadcrumbs></breadcrumbs>
     <div ng-repeat="project in vm.projects">
         <h1 class="title-font"><a ui-sref="projects.explorer({ projectName: project.name, nodeId: project.rootNodeUuid })">{{project.name}}</a></h1>
     </div>

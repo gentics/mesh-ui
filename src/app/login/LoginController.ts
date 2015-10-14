@@ -19,7 +19,7 @@ module meshAdminUi {
             this.authService.logIn(userName, password)
                 .then(() => {
                     this.success = true;
-                    this.$timeout(() => this.$state.go('projects.list'), 2000);
+                    this.$timeout(() => this.$state.go('projectsList'), 2000);
                 })
                 .catch(() => this.showErrorDialog());
         }

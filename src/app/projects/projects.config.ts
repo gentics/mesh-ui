@@ -10,17 +10,17 @@ module meshAdminUi {
                 abstract: true,
                 views: {
                     'main': {
-                        templateUrl: 'projects/projects.html',
-                        controller: 'ProjectsListController',
-                        controllerAs: 'vm'
+                        templateUrl: 'projects/projects.html'
                     }
                 }
             })
-            .state('projects.list', {
-                url: '',
+            .state('projectsList', {
+                url: '/projects',
                 views: {
-                    'explorer': {
-                        templateUrl: 'projects/projectsList/projectsList.html'
+                    'main': {
+                        templateUrl: 'projects/projectsList/projectsList.html',
+                        controller: 'ProjectsListController',
+                        controllerAs: 'vm'
                     }
                 },
                 resolve: {
