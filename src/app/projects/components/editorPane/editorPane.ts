@@ -71,23 +71,23 @@ module meshAdminUi {
                 .then((node: INode) => {
                     if (this.isNew(node)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
-                        return this.wipService.closeItem(this.wipType, originalNode)
-                            .then(() => node);
+                        this.wipService.closeItem(this.wipType, originalNode);
+                        this.processNewNode(node);
                     } else {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.wipService.setAsUnmodified(this.wipType, this.node);
                         this.contentModified = false;
-                        return node;
                     }
-                })
-                .then(node => {
-                    this.node = node;
-                    this.$location.search('edit', node.uuid);
-                    this.wipService.openItem(this.wipType, node, {
-                        projectName: this.projectName,
-                        selectedLangs: this.selectedLangs
-                    });
-                })
+                });
+        }
+
+        private processNewNode(node: INode) {
+            this.node = node;
+            this.$location.search('edit', node.uuid);
+            this.wipService.openItem(this.wipType, node, {
+                projectName: this.projectName,
+                selectedLangs: this.selectedLangs
+            });
         }
 
         /**
@@ -258,7 +258,7 @@ module meshAdminUi {
          * Is the node new, i.e. is has not come from Mesh, but is has been created on the client.
          */
         private isNew(node: INode): boolean {
-            return !node.hasOwnProperty('created');
+            return node && !node.hasOwnProperty('created');
         }
     }
 

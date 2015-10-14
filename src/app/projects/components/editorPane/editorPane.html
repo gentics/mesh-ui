@@ -16,8 +16,8 @@
                 ng-disabled="!vm.contentModified"
                 aria-label="save">
             <i class="icon-save"></i>
-            <span ng-if="!vm.isNew" translate>UPDATE</span>
-            <span ng-if="vm.isNew" translate>CREATE</span>
+            <span ng-if="!vm.isNew()" translate>UPDATE</span>
+            <span ng-if="vm.isNew()" translate>CREATE</span>
         </button>
 
         <button class="btn btn-warn"
