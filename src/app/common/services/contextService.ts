@@ -7,14 +7,10 @@ module meshAdminUi {
     export class ContextService {
         private currentProject: IProject = <IProject>{};
         private currentNode: INode = <INode>{};
-        private contextChangeCallbacks = [];
         private queueCallback = false;
         
-        /**
-         * Allows components to register a callback when the context changes
-         */
-        public registerContextChangeHandler(callback: Function) {
-            this.contextChangeCallbacks.push(callback);
+        constructor(private dispatcher: Dispatcher) {
+
         }
 
         /**
@@ -22,7 +18,7 @@ module meshAdminUi {
          */
         public setProject(project: IProject = <IProject>{}) {
             this.currentProject = project;
-            this.runContextChangeHandlers();
+            this.dispatchChangeEvent();
         }
 
         /**
@@ -34,7 +30,7 @@ module meshAdminUi {
 
         public setCurrentNode(node: INode = <INode>{}) {
             this.currentNode = node;
-            this.runContextChangeHandlers();
+            this.dispatchChangeEvent();
         }
 
         public getCurrentNode(): INode {
@@ -50,12 +46,12 @@ module meshAdminUi {
          * several times during the event loop, all those calls will only result in the
          * registered callbacks being invoked exactly once.
          */
-        private runContextChangeHandlers() {
+        private dispatchChangeEvent() {
             if (!this.queueCallback) {
                 this.queueCallback = true;
 
                 setTimeout(() => {
-                    this.contextChangeCallbacks.forEach(fn => fn.call(null, this.currentProject, this.currentNode));
+                    this.dispatcher.publish(this.dispatcher.events.contextChanged, this.currentProject, this.currentNode);
                     this.queueCallback = false;
                 }, 0);
             }

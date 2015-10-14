@@ -1,57 +1,58 @@
-angular.module('meshAdminUi.projects')
-    .directive('projectSearchBar', projectSearchBarDirective);
+module meshAdminUi {
 
-/**
- * The search/nav bar component which allows and contextual search of projects.
- *
- * @param $state
- * @param contextService
- * @returns {ng.IDirective} Directive definition object
- */
-function projectSearchBarDirective($state, contextService) {
+    class ProjectSearchBarController {
 
-    var callbackRegistered = false;
+        public currentProject: IProject;
+        public currentNode: INode;
 
-    function projectSearchBarController() {
-        var vm = this;
-        vm.currentProject = contextService.getProject().name;
-        vm.currentNode = contextService.getCurrentNode().name;
-        vm.goToContext = goToContext;
+        constructor($scope: ng.IScope,
+                    private $state: ng.ui.IStateService,
+                    private contextService: ContextService,
+                    private dispatcher: Dispatcher) {
+            this.updateCurrentContext(contextService.getProject(), contextService.getCurrentNode());
 
-        if (!callbackRegistered) {
-            contextService.registerContextChangeHandler(updateCurrentContext);
-            callbackRegistered = true;
+            const changeHandler = (event, project: IProject, node: INode) => {
+                this.updateCurrentContext(project, node);
+            };
+            dispatcher.subscribe(dispatcher.events.contextChanged, changeHandler);
+            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(changeHandler));
         }
 
         /**
          * Jump to a new context
-         * @param {string} projectName
          */
-        function goToContext(projectName) {
+        public goToContext(projectName: string) {
             if (projectName !== '') {
-                $state.go('projects.explorer', {projectName: projectName});
-            }
-            else {
-                $state.go('projects.list');
+                this.$state.go('projects.explorer', {projectName: projectName});
+            } else {
+                this.$state.go('projects.list');
             }
         }
 
         /**
          * Update the view model with the current context
-         * @param {string} currentProject
-         * @param {string} currentNode
          */
-        function updateCurrentContext(currentProject, currentNode) {
-            vm.currentProject = currentProject.name;
-            vm.currentNode = currentNode.name;
+        private updateCurrentContext(currentProject: IProject, currentNode: INode) {
+            this.currentProject = currentProject;
+            this.currentNode = currentNode;
         }
     }
 
-    return {
-        restrict: 'E',
-        templateUrl: 'projects/components/projectSearchBar/projectSearchBar.html',
-        controller: projectSearchBarController,
-        controllerAs: 'vm',
-        scope: {}
-    };
+    /**
+     * The search/nav bar component which allows and contextual search of projects.
+     */
+    function projectSearchBarDirective() {
+
+        return {
+            restrict: 'E',
+            templateUrl: 'projects/components/projectSearchBar/projectSearchBar.html',
+            controller: 'projectSearchBarController',
+            controllerAs: 'vm',
+            scope: {}
+        };
+    }
+
+    angular.module('meshAdminUi.projects')
+        .directive('projectSearchBar', projectSearchBarDirective)
+        .controller('projectSearchBarController', ProjectSearchBarController);
 }

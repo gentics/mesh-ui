@@ -1,73 +1,74 @@
 module meshAdminUi {
 
+    class BreadcrumbsController {
+        private breadcrumbs = [];
+        private projectName: string;
+
+        constructor($scope: ng.IScope,
+                    private dataService: DataService,
+                    private dispatcher: Dispatcher) {
+
+            const changeHandler = (event, project: IProject, node: INode) => {
+                this.contextChangeHandler(project, node);
+            };
+
+            dispatcher.subscribe(dispatcher.events.contextChanged, changeHandler);
+            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(changeHandler))
+        }
+
+        /**
+         * Update the breadcrumbs array whenever the context changes (i.e. user moves to a new
+         * node or project).
+         */
+        private contextChangeHandler(currentProject: IProject, currentNode: INode) {
+            if (!currentProject.name || !currentNode.uuid) {
+                this.breadcrumbs = [];
+                return;
+            }
+
+            this.projectName = currentProject.name;
+            if (this.projectName === '') {
+                this.breadcrumbs = [];
+            } else {
+                return this.dataService.getNode(currentProject.name, currentNode.uuid)
+                    .then(node => this.dataService.getBreadcrumb(currentProject, node))
+                    .then(breadcrumbs => {
+                        let breadcrumbLabels = breadcrumbs.map(node => {
+                            return {
+                                name: node.fields[node.displayField],
+                                uuid: node.uuid
+                            };
+                        });
+
+                        breadcrumbLabels.push({
+                            name: currentProject.name,
+                            uuid: currentProject.rootNodeUuid
+                        });
+
+                        this.breadcrumbs = breadcrumbLabels.reverse();
+                    });
+            }
+        }
+    }
+
+
     /**
      * Directive to generate breadcrumbs for navigating a project.
      */
-    function breadcrumbsDirective($q: ng.IQService, dataService: DataService, contextService: ContextService) {
-
-        function breadcrumbsController() {
-            var vm = this;
-            vm.breadcrumbs = [];
-
-            vm.clearProject = function () {
-                vm.projectName = '';
-                vm.breadcrumbs = [];
-            };
-
-            populateBreadcrumbs();
-            contextService.registerContextChangeHandler(contextChangeHandler);
-
-            /**
-             * Populate the breadcrumbs on the initial page load. This would only be called once, when
-             * the app bootstraps, and is responsible for setting the breadcrumbs on first load.
-             */
-            function populateBreadcrumbs() {
-                contextChangeHandler(contextService.getProject(), contextService.getCurrentNode());
-            }
-
-            /**
-             * Update the breadcrumbs array whenever the context changes (i.e. user moves to a new
-             * node or project).
-             */
-            function contextChangeHandler(currentProject: IProject, currentNode: INode) {
-                vm.projectName = currentProject.name;
-
-                if (vm.projectName === '') {
-                    vm.breadcrumbs = [];
-                } else {
-                    return dataService.getNode(currentProject.name, currentNode.uuid)
-                        .then(node => dataService.getBreadcrumb(currentProject, node))
-                        .then(breadcrumbs => {
-
-                            let breadcrumbLabels = breadcrumbs.map(node => {
-                                return {
-                                    name: node.fields[node.displayField],
-                                    uuid: node.uuid
-                                };
-                            });
-
-                            breadcrumbLabels.push({
-                                name: currentProject.name,
-                                uuid: currentProject.rootNodeUuid
-                            });
-
-                            vm.breadcrumbs = breadcrumbLabels.reverse();
-                        });
-                }
-            }
-        }
+    function breadcrumbsDirective() {
 
         return {
             restrict: 'E',
             templateUrl: 'common/components/breadcrumbs/breadcrumbs.html',
-            controller: breadcrumbsController,
+            controller: 'breadcrumbsController',
             controllerAs: 'vm',
             scope: {}
         };
     }
 
     angular.module('meshAdminUi.common')
-            .directive('breadcrumbs', breadcrumbsDirective);
+        .directive('breadcrumbs', breadcrumbsDirective)
+        .controller('breadcrumbsController', BreadcrumbsController);
 
 
 }

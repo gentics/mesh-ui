@@ -1,52 +1,46 @@
-angular.module('meshAdminUi.login')
-    .controller('LoginController', LoginController);
+module meshAdminUi {
 
-/**
- * @param $timeout
- * @param $state
- * @param $mdDialog
- * @param {AuthService} authService
- * @constructor
- */
-function LoginController($timeout, $state, $mdDialog, authService) {
-    var vm = this;
+    class LoginController {
 
-    vm.success = false;
-    vm.logoVisible = false;
+        private success: boolean = false;
+        private logoVisible: boolean = false;
 
-    $timeout(function() { vm.logoVisible = true; }, 1500);
+        constructor( private $timeout: ng.ITimeoutService,
+                     private $state: ng.ui.IStateService,
+                     private $mdDialog: ng.material.IDialogService,
+                     private authService: AuthService) {
 
-    vm.submitForm = submitForm;
+            $timeout(function () {
+                this.logoVisible = true;
+            }, 1500);
+        }
 
-    /**
-     *
-     * @param {Event} event
-     * @param {string} userName
-     * @param {string} password
-     */
-    function submitForm(event, userName, password) {
-        authService.logIn(userName, password)
-            .then(function() {
-                vm.success = true;
-                $timeout(function() {
-                    $state.go('projects.list');
-                }, 2000);
-            })
-            .catch(function() {
-                showErrorDialog();
+        public submitForm(event: Event, userName: string, password: string) {
+            this.authService.logIn(userName, password)
+                .then(() => {
+                    this.success = true;
+                    this.$timeout(() => this.$state.go('projects.list'), 2000);
+                })
+                .catch(() => this.showErrorDialog());
+        }
+
+        /**
+         * Displays an error message on login failure.
+         */
+        private showErrorDialog() {
+            return this.$mdDialog.show({
+                templateUrl: 'login/loginErrorDialog.html',
+                controller: function ($mdDialog) {
+                    this.cancel = function () {
+                        $mdDialog.cancel();
+                    };
+                },
+                controllerAs: 'vm'
             });
+        }
     }
 
-    /**
-     * Displays an error message on login failure.
-     */
-    function showErrorDialog() {
-        return $mdDialog.show({
-            templateUrl: 'login/loginErrorDialog.html',
-            controller: function($mdDialog) {
-                this.cancel = function() { $mdDialog.cancel(); };
-            },
-            controllerAs: 'vm'
-        });
-    }
+    angular.module('meshAdminUi.login')
+        .controller('LoginController', LoginController);
+
 }

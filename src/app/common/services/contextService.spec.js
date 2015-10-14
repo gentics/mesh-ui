@@ -1,12 +1,14 @@
 describe('contextService', function() {
 
     var contextService,
+        dispatcher,
         project,
         node;
 
     beforeEach(module('meshAdminUi.common'));
-    beforeEach(inject(function (_contextService_) {
+    beforeEach(inject(function (_contextService_, _dispatcher_) {
         contextService = _contextService_;
+        dispatcher = _dispatcher_;
         project = {
             name: 'someProject',
             uuid: '12345abc'
@@ -38,20 +40,8 @@ describe('contextService', function() {
         expect(contextService.getCurrentNode()).toEqual(node);
     });
 
-    it('should call change handlers with correct args', function() {
-        var handler = jasmine.createSpy('handler');
-        contextService.registerContextChangeHandler(handler);
-
-        contextService.setProject(project);
-
-        jasmine.clock().tick(1);
-
-        expect(handler).toHaveBeenCalledWith(project, {});
-    });
-
-    it('should only call change handlers once per event loop', function() {
-        var handler = jasmine.createSpy('handler');
-        contextService.registerContextChangeHandler(handler);
+    it('should only send change event once per event loop', function() {
+        spyOn(dispatcher, 'publish');
 
         contextService.setProject(project);
         contextService.setProject(project);
@@ -60,7 +50,7 @@ describe('contextService', function() {
 
         jasmine.clock().tick(1);
 
-        expect(handler.calls.count()).toEqual(1);
+        expect(dispatcher.publish.calls.count()).toEqual(1);
     });
 
 });

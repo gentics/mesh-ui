@@ -8,7 +8,8 @@ module meshAdminUi {
         public events = {
             loginSuccess: 'mesh:loginSuccess',
             logoutSuccess: 'mesh:logoutSuccess',
-            wipsChanged: 'mesh:wipsChanged'
+            wipsChanged: 'mesh:wipsChanged',
+            contextChanged: 'mesh:contextChanged'
         };
 
         private callbacks: any[] = [];
