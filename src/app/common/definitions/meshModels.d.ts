@@ -1,13 +1,17 @@
 declare module meshAdminUi {
 
-    export interface IProject {
+    // properties common to all Mesh nodes
+    interface IMeshBaseProps {
         uuid?: string;
         creator?: INodeReference;
         created?: number;
         editor?: INodeReference;
         edited?: number;
-        name: string;
         permissions?: string[];
+    }
+
+    export interface IProject extends IMeshBaseProps{
+        name: string;
         rootNodeUuid: string;
     }
 
@@ -30,16 +34,10 @@ declare module meshAdminUi {
         [name: string]: any;
     }
 
-    export interface INode {
-        uuid?: string;
+    export interface INode extends IMeshBaseProps{
         children?: string[];
-        creator?: INodeReference;
-        created?: number;
         displayField?: string;
-        editor?: INodeReference;
-        edited?: number;
         language?: string;
-        permissions?: string[];
         published?: boolean;
         tags?: ITags;
         schema: INodeReference;
@@ -86,6 +84,29 @@ declare module meshAdminUi {
         isDisplayField: boolean;
         update: (value: any) => void;
         updateFnFactory: (path: any[]) => (value: any) => void;
+    }
+
+    export interface IUser extends IMeshBaseProps {
+        firstname?: string;
+        lastname?: string;
+        username: string;
+        password?: string;
+        emailAddress: string;
+        nodeReference?: {
+            projectName : string;
+            uuid : string
+        };
+        groups: string[];
+    }
+
+    export interface IUserGroup extends IMeshBaseProps {
+        name: string;
+        roles: any[];
+    }
+
+    export interface IUserRole extends IMeshBaseProps {
+        name: string;
+        groups: any[];
     }
 
 }

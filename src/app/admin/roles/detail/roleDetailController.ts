@@ -1,126 +1,77 @@
-angular.module('meshAdminUi.admin')
-    .controller('RoleDetailController', RoleDetailController);
+module meshAdminUi {
 
-/**
- *
- * @param {ng.IQService} $q
- * @param {ng.ui.IStateService} $state
- * @param {ng.ui.IStateParamsService} $stateParams
- * @param {ConfirmActionDialog} confirmActionDialog
- * @param {DataService} dataService
- * @param {NotifyService} notifyService
- * @constructor
- */
-function RoleDetailController($q, $state, $stateParams, confirmActionDialog, dataService, notifyService) {
-    var vm = this;
+    class RoleDetailController {
+        private roleId: string;
+        private isNew: boolean;
+        private modified: boolean;
+        private role: IUserRole;
+        private schemas: ISchema[];
+        private microschemas: any[];
+        private projects: IProject[];
+        private roles: IUserRole[];
+        private groups: IUserGroup[];
+        private users: IUser[];
 
-    vm.roleId = $stateParams.uuid;
-    vm.isNew = false;
-    vm.modified = false;
-    vm.persist = persist;
-    vm.remove = remove;
-    vm.canDelete = canDelete;
+        constructor(
+            private $q: ng.IQService,
+            private $stateParams: any,
+            private dataService: DataService) {
 
-    getRoleData();
+            this.roleId = $stateParams.uuid;
+            this.isNew = false;
+            this.modified = false;
 
-    var queryParams = {
-        "role": $stateParams.uuid
-    };
+            this.getRoleData();
 
-    $q.all([
-        dataService.getSchemas(queryParams),
-        dataService.getMicroschemas(queryParams),
-        dataService.getProjects(queryParams),
-        dataService.getRoles(queryParams),
-        dataService.getGroups(queryParams),
-        dataService.getUsers(queryParams)
-    ])
-        .then(function(dataArray) {
-            vm.schemas = dataArray[0];
-            vm.microschemas = dataArray[1];
-            vm.projects = dataArray[2];
-            vm.roles = dataArray[3];
-            vm.groups = dataArray[4];
-            vm.users = dataArray[5];
-        });
+            var queryParams = {
+                "role": $stateParams.uuid
+            };
 
-    /**
-     * Persist the project data back to the server.
-     */
-    function persist() {
-        dataService.persistProject(vm.project)
-            .then(function(response) {
-                if (vm.isNew) {
-                    notifyService.toast('NEW_ROLE_CREATED');
-                    vm.isNew = false;
-                    $state.go('admin.roles.detail', { uuid: response.uuid });
-                } else {
-                    notifyService.toast('SAVED_CHANGES');
-                    vm.modified = false;
-                }
-            });
-    }
-
-    /**
-     * Delete the open content, displaying a confirmation dialog first before making the API call.
-     * @param project
-     */
-    function remove(project) {
-
-        showDeleteDialog()
-            .then(function() {
-                return dataService.deleteProject(project);
-            })
-            .then(function() {
-                notifyService.toast('Deleted');
-                $state.go('admin.roles.list');
-            });
-    }
-
-    /**
-     * @returns {ng.IPromise}
-     */
-    function showDeleteDialog() {
-        return confirmActionDialog.show({
-            title: 'Delete Role?',
-            message: 'Are you sure you want to delete this role?'
-        });
-    }
-
-    function canDelete() {
-        if (vm.project) {
-            // TODO: reinstate once API returns permissions correctly, see https://jira.gentics.com/browse/CL-110
-            //return -1 < vm.project.perms.indexOf('delete') && !vm.isNew;
-            return !vm.isNew;
-        }
-    }
-
-    /**
-     * Get the project data from the server, or in the case of a new project,
-     * create an empty project object.
-     *
-     * @returns {ng.IPromise<Object>}
-     */
-    function getRoleData() {
-        var roleId = $stateParams.uuid;
-        if (roleId) {
-            return dataService.getRole($stateParams.uuid)
-                .then(function (data) {
-                    vm.role = data;
+            $q.all([
+                dataService.getSchemas(queryParams),
+                dataService.getMicroschemas(queryParams),
+                dataService.getProjects(queryParams),
+                dataService.getRoles(queryParams),
+                dataService.getGroups(queryParams),
+                dataService.getUsers(queryParams)
+            ])
+                .then((dataArray: any[]) => {
+                    this.schemas = dataArray[0].data;
+                    this.microschemas = dataArray[1].data;
+                    this.projects = dataArray[2].data;
+                    this.roles = dataArray[3].data;
+                    this.groups = dataArray[4].data;
+                    this.users = dataArray[5].data;
                 });
-        } else {
-            vm.role = createEmptyRole();
-            vm.isNew = true;
+
+        }
+
+        /**
+         * Get the project data from the server, or in the case of a new project,
+         * create an empty project object.
+         */
+        public getRoleData() {
+            if (this.roleId) {
+                return this.dataService.getRole(this.roleId)
+                    .then(data =>this.role = data);
+            } else {
+                this.role = this.createEmptyRole();
+                this.isNew = true;
+            }
+        }
+
+        /**
+         * Create an empty project object.
+         */
+        public createEmptyRole(): IUserRole {
+            return {
+                name: '',
+                groups: []
+            };
         }
     }
 
-    /**
-     * Create an empty project object.
-     * @returns {{name: string}}
-     */
-    function createEmptyRole() {
-        return {
-            name: ''
-        };
-    }
+    angular.module('meshAdminUi.admin')
+        .controller('RoleDetailController', RoleDetailController);
+
 }

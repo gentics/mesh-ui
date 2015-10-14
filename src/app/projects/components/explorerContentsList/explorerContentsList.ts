@@ -68,7 +68,7 @@ module meshAdminUi {
         /**
          * Toggle between all items being selected or none.
          */
-        public toggleSelectAll() {
+       /* public toggleSelectAll() {
             if (this.selectedItems.length === this.itemsPerPage) {
                 this.selectedItems = [];
                 this._areAllSelected = false;
@@ -79,7 +79,7 @@ module meshAdminUi {
                 }
                 this._areAllSelected = true;
             }
-        }
+        }*/
 
         /**
          * Is the item at index currently selected?

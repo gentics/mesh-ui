@@ -22,9 +22,12 @@
                 <td>
                     <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select"></md-checkbox>
                 </td>
-                <td ui-sref="admin.users.detail({ uuid: user.uuid })"><strong>{{:: user.firstname }} {{:: user.lastname }}</strong></td>
-                <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.username }}</td>
-                <td ui-sref="admin.users.detail({ uuid: user.uuid })">{{:: user.emailAddress }}</td>
+                <td>
+                    <a ui-sref="admin.users.detail({ uuid: user.uuid })">
+                        <strong>{{ vm.userDisplayName(user) }}</strong><br>
+                        {{:: user.emailAddress }}
+                    </a>
+                </td>
                 <td>
                     <md-chips ng-model="user.groups"  md-require-match md-on-append="vm.validateGroup($chip, user)">
                         <md-autocomplete
@@ -36,7 +39,7 @@
                             <span md-highlight-text="searchText">{{ group.name }}</span>
                         </md-autocomplete>
                         <md-chip-template>
-                            <span>{{$chip.name}}</span>
+                            <span>{{$chip}}</span>
                         </md-chip-template>
                     </md-chips>
 

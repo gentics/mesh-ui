@@ -1,67 +1,54 @@
-angular.module('meshAdminUi.admin')
-    .directive('nodePermissionsSelector', nodePermissionsSelectorDirective);
+module meshAdminUi {
 
-/**
- *
- * @param {DataService} dataService
- * @param {meshUtils} mu
- * @returns {{}}
- */
-function nodePermissionsSelectorDirective(dataService, mu) {
+    class NodePermissionsSelectorController {
 
-    function nodePermissionsSelectorController() {
-        var vm = this,
-            projectName = null,
-            currentNodeId = null,
-            breadcrumbsBase = [{
-                    name: 'Projects',
-                    uuid: null
-                }],
-            queryParams = {
-                "role": vm.roleId
-            };
+        private projectName: string = null;
+        private currentNodeId: string = null;
+        private breadcrumbsBase = [{
+            name: 'Projects',
+            uuid: null
+        }];
+        private queryParams;
+        private collapsed: boolean = true;
+        private filter: string = '';
+        private items: any[] = [];
+        private roleId: string;
+        private breadcrumbs;
 
-        vm.collapsed = true;
-        vm.openNode = openNode;
-        vm.filterNodes = filterNodes;
-        vm.filter = '';
-        vm.items = [];
-
-        populateContents();
+        constructor(private dataService: DataService,
+                    private mu: MeshUtils) {
+            this.queryParams = { 'role': this.roleId };
+            this.populateContents();
+        }
 
         /**
          * Open the selected node and display its child folders and contents.
-         *
-         * @param {Event} event
-         * @param {Object} node
          */
-        function openNode(event, node) {
+        public openNode(event: Event, node: any) {
             event.preventDefault();
 
-            if (isProjectNode(node)) {
-                currentNodeId = node.rootNodeUuid;
-                projectName = node.name;
+            if (this.isProjectNode(node)) {
+                this.currentNodeId = node.rootNodeUuid;
+                this.projectName = node.name;
             } else {
-                currentNodeId = node.uuid;
+                this.currentNodeId = node.uuid;
             }
-            populateContents();
+            this.populateContents();
         }
 
         /**
          * Filter function for matching node names.
-         * @param {Object} node
-         * @returns {boolean}
          */
-        function filterNodes(node) {
+        public filterNodes(node: any): boolean {
             var name;
 
-            if (vm.filter !== '') {
-                if (isProjectNode(node)) {
+            if (this.filter !== '') {
+                if (this.isProjectNode(node)) {
                     name = node.name;
                 } else {
                     name = node.fields[node.displayField];
                 }
-                return name.toLowerCase().indexOf(vm.filter.toLowerCase()) > -1;
+                return name.toLowerCase().indexOf(this.filter.toLowerCase()) > -1;
             } else {
                 return true;
             }
@@ -71,41 +58,36 @@ function nodePermissionsSelectorDirective(dataService, mu) {
          * Fetch the folders and contents which are children of the currentNodeId, and
          * concatenate into a single array, and populate the breadcrumbs.
          */
-        function populateContents() {
-            if (currentNodeId === null) {
-                loadProjects();
+        private populateContents() {
+            if (this.currentNodeId === null) {
+                this.loadProjects();
             } else {
-                dataService.getChildFolders(projectName, currentNodeId, queryParams)
-                    .then(function(data) {
-                        vm.items = data;
-                        return dataService.getChildContents(projectName, currentNodeId, queryParams);
+                this.dataService.getChildNodes(this.projectName, this.currentNodeId, this.queryParams)
+                    .then(data => {
+                        this.items = data.data.map(node => this.mu.rolePermissionsArrayToKeys(node));
+                        return this.dataService.getBreadcrumb(this.projectName, this.currentNodeId);
                     })
-                    .then(function(data) {
-                        vm.items = vm.items.concat(data).map(mu.rolePermissionsArrayToKeys);
-                        return dataService.getBreadcrumb(projectName, currentNodeId);
-                    })
-                    .then(populateBreadcrumbs);
+                    .then(breadcrumbs => this.populateBreadcrumbs(breadcrumbs));
             }
         }
 
         /**
          * Fetch all projects and put them into the "items" array.
          */
-        function loadProjects() {
-            dataService.getProjects(queryParams)
-                .then(function(data) {
-                    vm.items = data.map(mu.rolePermissionsArrayToKeys);
-                    vm.breadcrumbs = breadcrumbsBase;
+        private loadProjects() {
+            this.dataService.getProjects(this.queryParams)
+                .then(data => {
+                    this.items = data.data.map(project => this.mu.rolePermissionsArrayToKeys(project));
+                    this.breadcrumbs = this.breadcrumbsBase;
                 });
         }
 
         /**
          * Create the breadcrumbs array by concatenating the fetched breadcrumb data with
          *  the `breadcrumbBase` array.
-         * @param {Array<Object>} data
          */
-        function populateBreadcrumbs(data) {
-            vm.breadcrumbs = breadcrumbsBase.concat(data.map(replaceRootnodeWithProjectName));
+        private populateBreadcrumbs(data: any[]) {
+            this.breadcrumbs = this.breadcrumbsBase.concat(data.map(item => this.replaceRootnodeWithProjectName(item)));
         }
 
         /**
@@ -115,26 +97,33 @@ function nodePermissionsSelectorDirective(dataService, mu) {
          * @param {Object} item
          * @returns {Object}
          */
-        function replaceRootnodeWithProjectName(item) {
+        private replaceRootnodeWithProjectName(item) {
             if (item.name === 'rootNode') {
-                item.name = projectName;
+                item.name = this.projectName;
             }
             return item;
         }
 
-        function isProjectNode(node) {
+        private isProjectNode(node) {
             return node.hasOwnProperty('rootNodeUuid');
         }
     }
 
-    return {
-        restrict: 'E',
-        templateUrl: 'admin/components/nodePermissionsSelector/nodePermissionsSelector.html',
-        controller: nodePermissionsSelectorController,
-        controllerAs: 'vm',
-        bindToController: true,
-        scope: {
-            roleId: '='
-        }
-    };
+    function nodePermissionsSelectorDirective() {
+        return {
+            restrict: 'E',
+            templateUrl: 'admin/components/nodePermissionsSelector/nodePermissionsSelector.html',
+            controller: 'nodePermissionsSelectorController',
+            controllerAs: 'vm',
+            bindToController: true,
+            scope: {
+                roleId: '='
+            }
+        };
+    }
+
+    angular.module('meshAdminUi.admin')
+        .directive('nodePermissionsSelector', nodePermissionsSelectorDirective)
+        .controller('nodePermissionsSelectorController', NodePermissionsSelectorController);
+
 }

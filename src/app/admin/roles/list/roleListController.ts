@@ -1,11 +1,19 @@
-angular.module('meshAdminUi.admin')
-    .controller('RoleListController', RoleListController);
+module meshAdminUi {
 
-function RoleListController(dataService) {
-    var vm = this;
+    class RoleListController {
 
-    dataService.getRoles()
-        .then(function(data) {
-            vm.roles = data;
-        });
+        private roles: IUserRole[];
+
+        constructor(private dataService: DataService) {
+            dataService.getRoles()
+                .then(data => {
+                    this.roles = data.data;
+                });
+        }
+
+    }
+
+    angular.module('meshAdminUi.admin')
+            .controller('RoleListController', RoleListController);
+
 }

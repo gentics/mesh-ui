@@ -170,20 +170,20 @@ module meshAdminUi {
         /**
          * Persist the user back to the server.
          */
-        public persistUser(user): ng.IPromise<any> {
+        public persistUser(user: IUser): ng.IPromise<IUser> {
+            let isNew = !user.hasOwnProperty('created');
             this.clearCache('users');
-            if (user.hasOwnProperty('save')) {
-                // this is a Restangular object
-                return this.meshPut('users', user);
-            } else {
-                // this is a plain object (newly-created)
-                return this.meshPost('users', user);
-            }
+            return isNew ? this.createUser(user) : this.updateUser(user);
         }
 
-        /**
-         *
-         */
+        private createUser(user: IUser): ng.IPromise<IUser> {
+            return this.meshPost('users', user).then(response => response.data);
+        }
+
+        private updateUser(user: IUser): ng.IPromise<IUser> {
+            return this.meshPut('users/' + user.uuid, user).then(response => response.data);
+        }
+
         public deleteUser(user): ng.IPromise<any> {
             this.clearCache('users');
             return this.meshDelete('users/' + user.uuid);
@@ -281,17 +281,15 @@ module meshAdminUi {
         public persistNode(projectName: string, node: INode): ng.IPromise<INode> {
             let isNew = !node.hasOwnProperty('created');
             this.clearCache('contents');
-            return isNew ? this.createNode(projectName, node) : this.updatedNode(projectName, node);
+            return isNew ? this.createNode(projectName, node) : this.updateNode(projectName, node);
 
         }
 
         private createNode(projectName: string, node: INode): ng.IPromise<INode> {
-            this.clearCache('contents');
             return this.meshPost(projectName + '/nodes', node).then(response => response.data);
         }
 
-        private updatedNode(projectName: string, node: INode): ng.IPromise<INode> {
-            this.clearCache('contents');
+        private updateNode(projectName: string, node: INode): ng.IPromise<INode> {
             return this.meshPut(projectName + '/nodes/' + node.uuid, node).then(response => response.data);
         }
 
@@ -461,8 +459,12 @@ module meshAdminUi {
             'contents': new RegExp(projectName + _ + 'nodes\\/', 'gi'),
             'tags': new RegExp(projectNameTags + 'tags\\/', 'gi'),
             'tag': new RegExp(projectName + _ + 'tags' + _ + uuid, 'gi'),
-            'schemas': /^schemas$/,
-            'schema': /^schemas\/[a-z0-9]+/
+            'schemas': /^schemas\??/,
+            'schema': /^schemas\/[a-z0-9]+/,
+            'users': /^users\??/,
+            'user': /^users\/[a-z0-9]+/,
+            'roles': /^roles\??/,
+            'role': /^roles\/[a-z0-9]+/,
         };
         selectiveCacheProvider.setCacheableGroups(cacheable);
     }

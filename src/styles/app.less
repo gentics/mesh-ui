@@ -14,7 +14,7 @@ html, body {
   height: initial;
   min-height: 100vh;
   max-height: 100vh;
-  overflow-y: hidden;
+  //overflow-y: hidden;
 }
 
 body {
@@ -56,7 +56,12 @@ a {
 .app-content {
   margin: auto;
   margin-left: 5%;
+  margin-right: 5%;
   font-size: @font-size-standard;
+
+  &.flush-right {
+    margin-right: 0;
+  }
 }
 
 [ui-view].ng-enter {
@@ -88,7 +93,7 @@ a {
  Vendor overrides
  */
 #loading-bar .bar {
-  background: @color-accent;
+  background: #0eff7e;
 }
 
 .md-dialog-container {

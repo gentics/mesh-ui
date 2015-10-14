@@ -1,36 +1,38 @@
 
 module meshAdminUi {
 
-    angular.module('meshAdminUi.admin')
-        .controller('UserDetailController', UserDetailController);
-
     /**
      *
      */
-    function UserDetailController($state, $stateParams, confirmActionDialog, dataService, notifyService) {
-        this.isNew = false;
-        this.modified = false;
-        this.persist = persist;
-        this.remove = remove;
-        this.canDelete = canDelete;
+    class UserDetailController {
 
-        getUserData();
+        private isNew: boolean = false;
+        private modified: boolean = false;
+        private user: IUser;
+
+        constructor(
+            private $state: ng.ui.IStateService,
+            private $stateParams: any,
+            private confirmActionDialog: ConfirmActionDialog,
+            private dataService: DataService,
+            private notifyService: NotifyService) {
+
+            this.getUserData();
+        }
+
 
         /**
          * Persist the user data back to the server.
          */
-        function persist(user) {
-            dataService.persistUser(user)
-                .then(() => {
-                    //return persistUserGroups(user.groups, this.selectedGroupsToArray(this.selectedGroups));
-                })
-                .then(function (response) {
+        public persist(user: IUser) {
+            this.dataService.persistUser(user)
+                .then((response: any) => {
                     if (this.isNew) {
-                        notifyService.toast('NEW_USER_CREATED');
+                        this.notifyService.toast('NEW_USER_CREATED');
                         this.isNew = false;
-                        $state.go('admin.users.detail', {uuid: response.uuid});
+                        this.$state.go('admin.users.detail', {uuid: response.uuid});
                     } else {
-                        notifyService.toast('SAVED_CHANGES');
+                        this.notifyService.toast('SAVED_CHANGES');
                         this.modified = false;
                     }
                 });
@@ -38,31 +40,30 @@ module meshAdminUi {
 
         /**
          * Delete the open content, displaying a confirmation dialog first before making the API call.
-         * @param user
          */
-        function remove(user) {
+        public remove(user: IUser) {
 
-            showDeleteDialog()
-                .then(function () {
-                    return dataService.deleteUser(user);
+            this.showDeleteDialog()
+                .then(() => {
+                    return this.dataService.deleteUser(user);
                 })
-                .then(function () {
-                    notifyService.toast('Deleted');
-                    $state.go('admin.users.list');
+                .then(() => {
+                    this.notifyService.toast('Deleted');
+                    this.$state.go('admin.users.list');
                 });
         }
 
         /**
          * @returns {ng.IPromise}
          */
-        function showDeleteDialog() {
-            return confirmActionDialog.show({
+        private showDeleteDialog() {
+            return this.confirmActionDialog.show({
                 title: 'Delete User?',
                 message: 'Are you sure you want to delete this user?'
             });
         }
 
-        function canDelete() {
+        public canDelete() {
             if (this.user) {
                 // TODO: reinstate once API returns permissions correctly, see https://jira.gentics.com/browse/CL-110
                 //return -1 < this.project.perms.indexOf('delete') && !this.isNew;
@@ -73,39 +74,33 @@ module meshAdminUi {
         /**
          * Get the user data from the server, or in the case of a new user,
          * create an empty user object.
-         *
-         * @returns {ng.IPromise<Object>}
          */
-        function getUserData() {
-            var userId = $stateParams.uuid;
+        private getUserData() {
+            var userId = this.$stateParams.uuid;
             if (userId) {
-                return dataService.getGroups()
-                    .then(function (data) {
-                        this.groups = data;
-                        return dataService.getUser($stateParams.uuid);
-                    })
-                    .then(function (data) {
-                        this.user = data;
-                        //this.selectedGroups = groupsArrayToObject(this.user.groups);
-                    });
+                return this.dataService.getUser(userId)
+                    .then(data => this.user = data);
             } else {
-                this.user = createEmptyUser();
+                this.user = this.createEmptyUser();
                 this.isNew = true;
             }
         }
 
         /**
          * Create an empty user object.
-         * @returns {{firstname: String(""), lastname: String(""), emailAddress: String(""), username: String("")}}
          */
-        function createEmptyUser() {
+        private createEmptyUser(): IUser {
             return {
                 firstname: '',
                 lastname: '',
                 emailAddress: '',
                 username: '',
-                password: ''
+                password: '',
+                groups: []
             };
         }
     }
+
+    angular.module('meshAdminUi.admin')
+          .controller('UserDetailController', UserDetailController);
 }

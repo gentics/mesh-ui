@@ -1,68 +1,77 @@
-angular.module('meshAdminUi.admin')
-    .controller('UserListController', UserListController);
+module meshAdminUi {
 
-function UserListController($q, dataService) {
-    var vm = this;
+    class UserListController {
+        private groups: IUserGroup[];
+        private users: IUser[];
+        private roles: IUserRole[];
 
-    vm.validateGroup = validateGroup;
-    vm.validateRole = validateRole;
-    vm.filterBy = filterBy;
+        constructor(private $q: ng.IQService,
+                    private dataService: DataService) {
+            $q.all([
+                dataService.getGroups(),
+                dataService.getUsers(),
+                dataService.getRoles()
+            ])
+                .then((dataArray: any[]) => {
+                    this.groups = dataArray[0].data;
+                    this.users = dataArray[1].data;
+                    this.roles = dataArray[2].data;
+                });
+        }
 
-    $q.all([
-        dataService.getGroups(),
-        dataService.getUsers(),
-        dataService.getRoles()
-    ])
-        .then(function(dataArray) {
-            vm.groups = dataArray[0];
-            vm.users = dataArray[1];
-            vm.roles = dataArray[2];
-        });
+        public validateGroup(group, user) {
+            var userAlreadyInGroup = user.groups.map(function (group) {
+                    return group.name;
+                }).indexOf(group.name) > -1;
 
+            if (userAlreadyInGroup || !group.name) {
+                return {
+                    name: "invalid group name"
+                };
+            } else {
+                return group;
+            }
+        }
 
+        public validateRole(role, group) {
+            var groupAlreadyHasRole = group.roles.map(function (role) {
+                    return role.name;
+                }).indexOf(role.name) > -1;
 
-    function validateGroup(group, user) {
-        var userAlreadyInGroup = user.groups.map(function(group) {
-            return group.name;
-        }).indexOf(group.name) > -1;
+            if (groupAlreadyHasRole || !role.name) {
+                return {
+                    name: "invalid role"
+                };
+            } else {
+                return role;
+            }
+        }
 
-        if (userAlreadyInGroup || !group.name) {
-           return {
-               name: "invalid group name"
-           };
-        } else {
-            return group;
+        public userDisplayName(user: IUser): string {
+            if (user.firstname && user.lastname) {
+                return user.firstname + ' ' + user.lastname;
+            } else {
+                return user.username;
+            }
+        }
+
+        /**
+         * Search for thing.
+         */
+        public filterBy(collection, query) {
+            return query ? collection.filter(this.createFilterFor(query)) : [];
+        }
+
+        /**
+         * Create filter function for a query string
+         */
+        private createFilterFor(query) {
+            var lowercaseQuery = angular.lowercase(query);
+            return item => item.name.toLowerCase().indexOf(lowercaseQuery) === 0;
         }
     }
 
-    function validateRole(role, group) {
-        var groupAlreadyHasRole = group.roles.map(function(role) {
-            return role.name;
-        }).indexOf(role.name) > -1;
+    angular.module('meshAdminUi.admin')
+          .controller('UserListController', UserListController);
 
-        if (groupAlreadyHasRole || !role.name) {
-           return {
-               name: "invalid role"
-           };
-        } else {
-            return role;
-        }
-    }
-
-    /**
-     * Search for thing.
-     */
-    function filterBy(collection, query) {
-        return query ? collection.filter(createFilterFor(query)) : [];
-    }
-
-    /**
-     * Create filter function for a query string
-     */
-    function createFilterFor(query) {
-        var lowercaseQuery = angular.lowercase(query);
-        return function filterFn(item) {
-            return (item.name.toLowerCase().indexOf(lowercaseQuery) === 0);
-        };
-    }
 }
