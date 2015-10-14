@@ -24,6 +24,7 @@ module meshAdminUi {
 
         constructor(private $q: ng.IQService,
                     private $mdDialog: ng.material.IDialogService,
+                    private dispatcher: Dispatcher,
                     private editorService: EditorService,
                     private i18nService: I18nService,
                     private wipService: WipService,
@@ -32,7 +33,8 @@ module meshAdminUi {
 
             this.lang = i18nService.getCurrentLang().code;
 
-            wipService.registerWipChangeHandler(() => this.wipChangeHandler());
+            //wipService.registerWipChangeHandler(() => this.wipChangeHandler());
+            this.dispatcher.subscribe(this.dispatcher.events.wipsChanged, () => this.wipChangeHandler());
             editorService.registerOnOpenCallback(uuid => this.editorOpenHandler(uuid));
             window.addEventListener('beforeunload', () => this.persistOpenWipsLocally());
 

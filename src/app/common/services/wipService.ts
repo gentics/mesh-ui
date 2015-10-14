@@ -19,11 +19,11 @@ module meshAdminUi {
     export class WipService {
         private wipStore = {};
         private modifiedWips = {};
-        private onWipChangeCallbacks = [];
 
         constructor(private $q: ng.IQService,
                     private localStorageService,
-                    private mu: MeshUtils) {
+                    private mu: MeshUtils,
+                    private dispatcher: Dispatcher) {
             this.populateFromLocalStorage();
         }
 
@@ -57,7 +57,7 @@ module meshAdminUi {
                 item: item,
                 metadata: metadata || {}
             };
-            this.invokeChangeCallbacks();
+            this.dispatcher.publish(this.dispatcher.events.wipsChanged)
         }
 
         /**
@@ -85,7 +85,7 @@ module meshAdminUi {
             this.validateItem(item);
             this.checkItemInWipStore(type, item);
             this.modifiedWips[type][item.uuid] = true;
-            this.invokeChangeCallbacks();
+            this.dispatcher.publish(this.dispatcher.events.wipsChanged);
         }
 
         /**
@@ -97,7 +97,7 @@ module meshAdminUi {
             this.validateItem(item);
             this.checkItemInWipStore(type, item);
             this.modifiedWips[type][item.uuid] = false;
-            this.invokeChangeCallbacks();
+            this.dispatcher.publish(this.dispatcher.events.wipsChanged);
         }
 
         /**
@@ -119,7 +119,8 @@ module meshAdminUi {
             this.checkItemInWipStore(type, item);
             delete this.wipStore[type][item.uuid];
             delete this.modifiedWips[type][item.uuid];
-            this.invokeChangeCallbacks(() => deferred.resolve(item));
+            deferred.resolve(item);
+            this.dispatcher.publish(this.dispatcher.events.wipsChanged);
             return deferred.promise;
         }
 
@@ -164,30 +165,6 @@ module meshAdminUi {
          */
         public getItem(type: string, uuid: string): any {
             return this.wipStore[type] && this.wipStore[type][uuid] && this.wipStore[type][uuid].item;
-        }
-
-        /**
-         * Register a callback function which will be invoked every time there is a change to
-         * the status of wip items (i.e. whenever a new wip item is opened, or an existing one
-         * is closed).
-         */
-        public registerWipChangeHandler(callback: Function) {
-            this.onWipChangeCallbacks.push(callback);
-        }
-
-        /**
-         * Invokes any change handler callbacks which were previously registered via
-         * registerWipChangeHandler().
-         */
-        public invokeChangeCallbacks(done?: Function) {
-            this.$q.all(this.onWipChangeCallbacks.map(fn => {
-                return this.$q.when(fn());
-            }))
-                .then(() => {
-                    if (typeof done === 'function') {
-                        done();
-                    }
-                });
         }
 
         /**

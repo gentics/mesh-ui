@@ -154,31 +154,6 @@ describe('wipService', function() {
         });
     });
 
-
-    describe('change handlers', function() {
-
-        var handlerFn;
-
-        beforeEach(function() {
-            wipService.openItem(itemType, testItem);
-            handlerFn = jasmine.createSpy('handlerFn');
-            wipService.registerWipChangeHandler(handlerFn);
-        });
-
-        it('should invoke the callback when an item is added', function() {
-            expect(handlerFn).not.toHaveBeenCalled();
-
-            wipService.openItem(itemType, { uuid: 'foo' });
-            expect(handlerFn.calls.count()).toBe(1);
-        });
-
-        it('should invoke the callback when an item is added', function() {
-            wipService.closeItem(itemType, testItem);
-            expect(handlerFn.calls.count()).toBe(1);
-        });
-
-    });
-
     describe('local storage', function() {
 
         var otherItem =  { name: 'foo', uuid: 'bar'};

@@ -3,11 +3,12 @@ module meshAdminUi {
     /**
      * Central event-dispatching system. To be used instead of littering $scope.$on() calls around the code.
      */
-    class Dispatcher {
+    export class Dispatcher {
 
         public events = {
             loginSuccess: 'mesh:loginSuccess',
             logoutSuccess: 'mesh:logoutSuccess',
+            wipsChanged: 'mesh:wipsChanged'
         };
 
         private callbacks: any[] = [];

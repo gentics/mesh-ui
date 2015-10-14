@@ -7,7 +7,11 @@
   transition: height 0.2s;
   height: 30px;
   margin-left: 10px;
-  margin-top: 11px;
+  border-bottom: 1px solid @color-alto;
+  margin-top: 3px;
+  &.empty {
+    border-bottom-color: transparent;
+  }
 
   &.hidden {
     visibility: hidden;
@@ -17,7 +21,7 @@
     cursor: pointer;
     overflow: hidden;
     max-width: 200px;
-    padding: 4px 6px 5px 8px;
+    padding: 4px 6px 5px 0;
     border-bottom: none;
     font-size: @font-size-smaller;
     font-family: @detail-font;

@@ -1,4 +1,4 @@
-<div layout="row" class="wip-tabs">
+<div layout="row" class="wip-tabs" ng-class="{ 'empty' : vm.wips.length === 0 }">
     <div ng-repeat="wip in vm.wips"
          class="wip-tab"
          ng-class="{ 'active' : vm.selectedIndex === $index }"
