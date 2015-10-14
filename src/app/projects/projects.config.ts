@@ -6,12 +6,27 @@ module meshAdminUi {
     function routesConfig($stateProvider) {
         $stateProvider
             .state('projects', {
-                url: '/projects',
                 abstract: true,
+                url: '',
                 views: {
                     'main': {
-                        templateUrl: 'projects/projects.html'
+                        templateUrl: 'projects/projects.html',
+                        controller: 'projectController',
+                        controllerAs: 'vm'
                     }
+                }
+            })
+            .state('projects.node', {
+                url: '/projects/:projectName/:nodeId',
+                views: {
+                    'node-contents': {
+                        templateUrl: `projects/projectExplorer/projectExplorer.html`,
+                        controller: 'ProjectExplorerController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    parentNode: updateContext
                 }
             })
             .state('projectsList', {
@@ -20,19 +35,6 @@ module meshAdminUi {
                     'main': {
                         templateUrl: 'projects/projectsList/projectsList.html',
                         controller: 'ProjectsListController',
-                        controllerAs: 'vm'
-                    }
-                },
-                resolve: {
-                    parentNode: updateContext
-                }
-            })
-            .state('projects.explorer', {
-                url: '/:projectName/:nodeId',
-                views: {
-                    'explorer': {
-                        templateUrl: 'projects/projectExplorer/projectExplorer.html',
-                        controller: 'ProjectExplorerController',
                         controllerAs: 'vm'
                     }
                 },

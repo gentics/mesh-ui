@@ -104,7 +104,7 @@ module meshAdminUi {
             event.stopPropagation();
             this.selectedItems = [];
             if (node.hasOwnProperty('children')) {
-                this.$state.go('projects.explorer', {projectName: this.contextService.getProject().name, nodeId: node.uuid});
+                this.$state.go('projects.node', {projectName: this.contextService.getProject().name, nodeId: node.uuid});
             }
         }
 

@@ -6,7 +6,7 @@
          aria-label="{{ wip.item.fields[wip.item.displayField] }}"
          title="{{ wip.item.fields[wip.item.displayField] }}">
 
-        <a href="" class="a-plain label" ng-class="{ modified: vm.isModified(wip.item.uuid) }">{{ wip.item.fields[wip.item.displayField] || 'Untitled' }}</a>
+        <a href="" class="a-plain label" ng-class="{ modified: vm.isModified(wip.item.uuid) }">{{ wip.item.fields[wip.item.displayField] || 'Untitled ' + wip.item.schema.name  }}</a>
         <a href="" ng-click="vm.closeWip($event, $index)" class="a-plain close"><i class="icon-close"></i></a>
 
     </div>

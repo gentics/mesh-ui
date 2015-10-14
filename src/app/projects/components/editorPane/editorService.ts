@@ -2,11 +2,10 @@ module meshAdminUi {
 
     export class EditorService {
 
-        private onOpenCallbacks: Function[] = [];
-        private onCloseCallbacks: Function[] = [];
         private openNodeId;
 
         constructor(private $rootScope: ng.IRootScopeService,
+                    private dispatcher: Dispatcher,
                     private $location: ng.ILocationService) {
             /**
              * We need to watch the "edit" query string in order to react to
@@ -21,43 +20,31 @@ module meshAdminUi {
         }
 
         public open(uuid: string) {
+            let eventName = this.dispatcher.events.editorServiceNodeOpened;
             this.openNodeId = uuid;
-            this.onOpenCallbacks.forEach(fn => {
-                fn.call(null, uuid);
-            });
+            this.dispatcher.publish(eventName, uuid);
         }
 
         public create(schemaId: string, parentNodeUuid: string) {
+            let eventName = this.dispatcher.events.editorServiceNodeOpened;
             this.openNodeId = undefined;
-            this.onOpenCallbacks.forEach(fn => {
-                fn.call(null, undefined, schemaId, parentNodeUuid);
-            });
+            this.dispatcher.publish(eventName, undefined, schemaId, parentNodeUuid);
         }
 
         public close() {
-            this.onCloseCallbacks.forEach(fn => {
-                fn.call(null);
-            });
+            let eventName = this.dispatcher.events.editorServiceNodeClosed;
+            this.dispatcher.publish(eventName);
         }
 
         public closeAll() {
+            let eventName = this.dispatcher.events.editorServiceNodeClosed;
             this.$location.search('edit', null);
             this.openNodeId = undefined;
-            this.onCloseCallbacks.forEach(fn => {
-                fn.call(null);
-            });
+            this.dispatcher.publish(eventName);
         }
 
         public getOpenNodeId() {
             return this.openNodeId;
-        }
-
-        public registerOnOpenCallback(callback) {
-            this.onOpenCallbacks.push(callback);
-        }
-
-        public registerOnCloseCallback(callback) {
-            this.onCloseCallbacks.push(callback);
         }
     }
 

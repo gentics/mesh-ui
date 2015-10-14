@@ -19,10 +19,11 @@ module meshAdminUi {
      * @param paginationTemplateProvider
      * @param cfpLoadingBarProvider
      */
-    function appConfig($stateProvider,
-                       $locationProvider,
-                       $urlRouterProvider,
-                       $mdThemingProvider,
+    function appConfig($stateProvider: ng.ui.IStateProvider,
+                       $locationProvider: ng.ILocationProvider,
+                       $urlRouterProvider: ng.ui.IUrlRouterProvider,
+                       $mdThemingProvider: ng.material.IThemingProvider,
+                       $animateProvider: ng.IAnimateProvider,
                        dataServiceProvider,
                        paginationTemplateProvider,
                        cfpLoadingBarProvider) {
@@ -30,6 +31,8 @@ module meshAdminUi {
         configRoutes($stateProvider);
         $urlRouterProvider.otherwise('/projects');
         $locationProvider.hashPrefix('!');
+
+        $animateProvider.classNameFilter(/animate/);
 
         $mdThemingProvider.theme('default')
             .primaryPalette('light-blue')

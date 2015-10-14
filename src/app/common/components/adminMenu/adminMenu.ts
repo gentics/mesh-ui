@@ -88,9 +88,9 @@ module meshAdminUi {
                         nodeId = this.contextService.getCurrentNode().uuid;
 
                     if (projectName) {
-                        this.$state.go('projects.explorer', {projectName: projectName, nodeId: nodeId});
+                        this.$state.go('projects.node', {projectName: projectName, nodeId: nodeId});
                     } else {
-                        this.$state.go('projects.list');
+                        this.$state.go('projectsList');
                     }
                 }
             }

@@ -22,7 +22,8 @@ module meshAdminUi {
         private selectedIndex: number = 0;
         private lang: string;
 
-        constructor(private $q: ng.IQService,
+        constructor($scope: ng.IScope,
+                    private $q: ng.IQService,
                     private $mdDialog: ng.material.IDialogService,
                     private dispatcher: Dispatcher,
                     private editorService: EditorService,
@@ -31,11 +32,15 @@ module meshAdminUi {
                     private dataService: DataService,
                     private notifyService: NotifyService) {
 
-            this.lang = i18nService.getCurrentLang().code;
+            const changeHandler = () => this.wipChangeHandler();
+            const openHandler = (event, uuid) => this.editorOpenHandler(uuid);
 
-            //wipService.registerWipChangeHandler(() => this.wipChangeHandler());
-            this.dispatcher.subscribe(this.dispatcher.events.wipsChanged, () => this.wipChangeHandler());
-            editorService.registerOnOpenCallback(uuid => this.editorOpenHandler(uuid));
+            this.lang = i18nService.getCurrentLang().code;
+            this.dispatcher.subscribe(this.dispatcher.events.wipsChanged, changeHandler);
+            this.dispatcher.subscribe(this.dispatcher.events.editorServiceNodeOpened, openHandler);
+            $scope.$on('$destroy', () => {
+                this.dispatcher.unsubscribeAll(changeHandler, openHandler);
+            });
             window.addEventListener('beforeunload', () => this.persistOpenWipsLocally());
 
             this.wipChangeHandler(); // populate with WIPs on load.

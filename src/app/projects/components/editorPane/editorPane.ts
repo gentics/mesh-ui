@@ -28,6 +28,7 @@ module meshAdminUi {
         constructor(private $scope: ng.IScope,
                     private $location: ng.ILocationService,
                     private editorService: EditorService,
+                    private dispatcher: Dispatcher,
                     private confirmActionDialog: ConfirmActionDialog,
                     private $mdDialog: ng.material.IDialogService,
                     private contextService: ContextService,
@@ -36,7 +37,7 @@ module meshAdminUi {
                     private wipService: WipService,
                     private notifyService: NotifyService) {
 
-            const init = (nodeUuid: string, schemaUuid?: string, parentNodeUuid?: string) => {
+            const init = (event: ng.IAngularEvent, nodeUuid: string, schemaUuid?: string, parentNodeUuid?: string) => {
 
                 this.projectName = contextService.getProject().name;
                 this.currentNodeId = nodeUuid;
@@ -57,11 +58,13 @@ module meshAdminUi {
                 this.isLoaded = false;
             };
 
-            editorService.registerOnOpenCallback(init);
-            editorService.registerOnCloseCallback(empty);
-            $scope.$on('$destroy', () => this.saveWipMetadata());
+            dispatcher.subscribe(dispatcher.events.editorServiceNodeOpened, init);
+            dispatcher.subscribe(dispatcher.events.editorServiceNodeClosed, empty);
+            $scope.$on('$destroy', () => {
+                dispatcher.unsubscribeAll(init, empty);
+                this.saveWipMetadata()
+            });
         }
-
 
         /**
          * Save the changes back to the server.
@@ -69,7 +72,7 @@ module meshAdminUi {
         public persist(originalNode: INode) {
             this.dataService.persistNode(this.projectName, originalNode)
                 .then((node: INode) => {
-                    if (this.isNew(node)) {
+                    if (this.isNew(originalNode)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
                         this.wipService.closeItem(this.wipType, originalNode);
                         this.processNewNode(node);
@@ -258,7 +261,7 @@ module meshAdminUi {
          * Is the node new, i.e. is has not come from Mesh, but is has been created on the client.
          */
         private isNew(node: INode): boolean {
-            return node && !node.hasOwnProperty('created');
+            return !node || !node.hasOwnProperty('created');
         }
     }
 

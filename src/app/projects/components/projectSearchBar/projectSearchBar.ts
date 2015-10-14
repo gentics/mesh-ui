@@ -23,7 +23,7 @@ module meshAdminUi {
          */
         public goToContext(projectName: string) {
             if (projectName !== '') {
-                this.$state.go('projects.explorer', {projectName: projectName});
+                this.$state.go('projects.node', {projectName: projectName});
             } else {
                 this.$state.go('projectsList');
             }

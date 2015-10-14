@@ -36,6 +36,8 @@ module meshAdminUi {
                 this.populateChildNodes(newVal);
             });
 
+            console.log('create projectExploereersers');
+
             this.populateSchemas();
         }
 

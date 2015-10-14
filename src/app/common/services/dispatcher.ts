@@ -9,7 +9,9 @@ module meshAdminUi {
             loginSuccess: 'mesh:loginSuccess',
             logoutSuccess: 'mesh:logoutSuccess',
             wipsChanged: 'mesh:wipsChanged',
-            contextChanged: 'mesh:contextChanged'
+            contextChanged: 'mesh:contextChanged',
+            editorServiceNodeOpened: 'mesh:editorServiceNodeOpened',
+            editorServiceNodeClosed: 'mesh:editorServiceNodeClosed'
         };
 
         private callbacks: any[] = [];
@@ -28,16 +30,17 @@ module meshAdminUi {
         }
 
         /**
-         * Unsubscribe the callback function from all events it is subscribed to.
-         * @param callback
+         * Unsubscribe the callback functions from all events it is subscribed to.
          */
-        public unsubscribeAll(callback: Function) {
-            this.callbacks.forEach(obj => {
-                if (obj.fn === callback) {
-                    obj.unsubscribe();
-                }
+        public unsubscribeAll(...callbacks: Function[]) {
+            callbacks.forEach(callback => {
+                this.callbacks.forEach(obj => {
+                    if (obj.fn === callback) {
+                        obj.unsubscribe();
+                    }
+                });
+                this.callbacks = this.callbacks.filter(obj => obj.fn !== callback);
             });
-            this.callbacks = this.callbacks.filter(obj => obj.fn !== callback);
         }
 
         public publish(event: string, ...args) {
