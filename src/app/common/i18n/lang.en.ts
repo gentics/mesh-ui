@@ -19,6 +19,9 @@ var englishTranslations = {
 
     /* Content Editor */
     'EDIT_LOCALIZED_VERSION': 'Edit localized version:',
+    'TIMEPICKER_HOURS': 'Hours',
+    'TIMEPICKER_MINUTES': 'Minutes',
+    'TIMEPICKER_SECONDS': 'Seconds',
 
     /* Other */
     'SEARCH': 'Search',

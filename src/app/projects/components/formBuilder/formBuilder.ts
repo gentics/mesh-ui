@@ -65,6 +65,7 @@ module meshAdminUi {
          */
         private makeUpdateFunction(path): (value: any) => any {
             return (value) => {
+                //console.log('updating', path, 'with value', value);
                 this.onChange();
                 this.updateAtPath(this.fields, path, value);
             }

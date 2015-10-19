@@ -1,4 +1,24 @@
-<md-input-container class="editor-widget">
-    <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
-    <input type="date" ng-model="vm.value" ng-readonly="!vm.fieldModel.canUpdate">
-</md-input-container>
+<div class="editor-widget datetime-picker" layout="row">
+    <md-input-container flex>
+        <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
+        <input type="date" ng-model="vm.value" ng-readonly="!vm.fieldModel.canUpdate">
+
+    </md-input-container>
+
+    <div ng-click="vm.focusFirst($event)" class="time-picker" flex>
+        <input type="text" placeholder="hh" class="hour"
+               ng-model="vm.time.h" pattern="[0-9]{0,2}" maxlength="2" ng-model-options="{ 'updateOn': 'blur' }"
+               ng-keydown="vm.keydown($event)" ng-focus="vm.focus($event, 'h')" ng-blur="vm.blur($event)">:
+        <input type="text" placeholder="mm" class="minute"
+               ng-model="vm.time.m" pattern="[0-9]{0,2}" maxlength="2" ng-model-options="{ 'updateOn': 'blur' }"
+               ng-keydown="vm.keydown($event)" ng-focus="vm.focus($event, 'm')" ng-blur="vm.blur($event)">:
+        <input type="text" placeholder="ss" class="second"
+               ng-model="vm.time.s" pattern="[0-9]{0,2}" maxlength="2" ng-model-options="{ 'updateOn': 'blur' }"
+               ng-keydown="vm.keydown($event)" ng-focus="vm.focus($event, 's')" ng-blur="vm.blur($event)">
+       <!-- <div class="time-input-tooltip">
+            <span translate ng-show="vm.focussed === 'h'">TIMEPICKER_HOURS</span>
+            <span translate ng-show="vm.focussed === 'm'">TIMEPICKER_MINUTES</span>
+            <span translate ng-show="vm.focussed === 's'">TIMEPICKER_SECONDS</span>
+        </div>-->
+    </div>
+</div>

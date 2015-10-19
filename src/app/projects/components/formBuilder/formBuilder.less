@@ -201,6 +201,48 @@
   }
 }
 
+.datetime-picker {
+  .time-picker {
+    display: block;
+    position: relative;
+    margin-top: 26px;
+    height: 27px;
+    border-bottom: 1px solid @color-alto;
+
+    &.focus {
+      border-bottom: 2px solid @color-primary;
+      .time-input-tooltip {
+        display: block;
+      }
+    }
+
+    input {
+      width: 28px;
+      border: none;
+      background-color: transparent;
+      text-align: center;
+      margin-right: 4px;
+      //color: @color;
+
+      &:focus {
+        outline: none;
+        border-bottom: 1px solid @color-boulder;
+      }
+    }
+
+    .time-input-tooltip {
+      background-color: white;
+      z-index: 10;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 2px;
+      border: 1px solid @color-almost-white;
+      display: none;
+    }
+  }
+}
+
 .microschema-container {
   & > label {
     color: @color-form-label;

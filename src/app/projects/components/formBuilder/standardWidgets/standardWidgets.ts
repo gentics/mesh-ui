@@ -278,6 +278,8 @@ module meshAdminUi {
         return makeStandardWidgetDDO('number');
     }
 
+    declare var moment: moment.MomentStatic;
+
 
     /**
      * Since the input[type="date"] directive requires a Date object, we need to convert the
@@ -286,29 +288,164 @@ module meshAdminUi {
     class DateWidgetController {
 
         public fieldModel: INodeFieldModel;
-        public value: any;
+        public value: Date;
+        private valueMoment: moment.Moment;
+        public focussed: string = '';
+        public time = { h: null, m: null, s: null};
 
-        constructor($scope: ng.IScope) {
+
+        constructor(private $scope: any, private $element: any) {
 
             // this flag prevents the update callback from firing as soon as the
             // widget loads and performs a mutation of the value to a Date object.
             let initialDateConversionDone = false;
 
             if (0 < this.fieldModel.value) {
-                this.value= new Date(this.fieldModel.value * 1000);
+                this.valueMoment = moment.unix(this.fieldModel.value);
             } else {
-                this.value = new Date();
+                this.valueMoment = moment();
             }
+            this.value = this.valueMoment.toDate();
+            this.setTimeFields(this.valueMoment);
 
-            $scope.$watch(() => this.value, newVal => {
-                if (newVal && newVal instanceof Date) {
+            $scope.$watch(() => this.value.valueOf(), newVal => {
+                if (newVal) {
                     if (initialDateConversionDone){
-                        this.fieldModel.update(newVal.getTime() / 1000);
+                        this.valueMoment = moment(newVal);
+                        this.fieldModel.update(this.valueMoment.unix());
+                        this.setTimeFields(this.valueMoment);
                     } else {
                         initialDateConversionDone = true;
                     }
                 }
             });
+        }
+
+        private setTimeFields(currentMoment: moment.Moment) {
+            this.time = {
+                h: currentMoment.format('HH'),
+                m: currentMoment.format('mm'),
+                s: currentMoment.format('ss')
+            };
+        }
+
+        public keydown(event: any) {
+            var input = <HTMLInputElement>event.target,
+                key = {
+                    leftArrow: 37,
+                    rightArrow: 39,
+                    upArrow: 38,
+                    downArrow: 40
+                },
+                char = String.fromCharCode(event.which),
+                isNumeric = /[0-9]/.test(char),
+                isAlpha = /[a-zA-Z]/.test(char);
+
+            if (isAlpha) {
+                event.preventDefault();
+                return;
+            }
+
+            if (event.which === key.upArrow) {
+                this.increment(input);
+                event.preventDefault();
+            } else if (event.which === key.downArrow) {
+                this.decrement(input);
+                event.preventDefault();
+            }
+
+            if (input.selectionStart === input.value.length && event.which === key.rightArrow) {
+                this.focusNext(input);
+            }
+
+            if (input.selectionEnd === 0 && event.which === key.leftArrow) {
+                this.focusPrev(input);
+            }
+
+            if (input.selectionStart === 1) {
+                if (input.value.length === 1 && isNumeric) {
+                    this.focusNext(input);
+                }
+            }
+
+        }
+
+        private updateValue(input: HTMLInputElement) {
+            let method;
+            if (input.classList.contains('hour')) {
+                method = "hour";
+            } else if (input.classList.contains('minute')) {
+                method = "minute";
+            } else {
+                method = "second";
+            }
+            this.valueMoment[method](input.value);
+            this.value = this.valueMoment.toDate();
+        }
+
+        private increment(input: HTMLInputElement) {
+            this.valueMoment.add(this.getIncrementAmount(input), 's');
+            this.value = this.valueMoment.toDate();
+        }
+
+        private decrement(input: HTMLInputElement) {
+            this.valueMoment.subtract(this.getIncrementAmount(input), 's');
+            this.value = this.valueMoment.toDate();
+        }
+
+        private getIncrementAmount(input: HTMLInputElement) {
+            var factors = {
+                hour: 3600,
+                minute: 60,
+                second: 1
+            };
+            return factors[input.classList[0]];
+        }
+
+        public focusFirst(event) {
+            if (event.target.classList.contains('time-picker')) {
+                let input = <HTMLInputElement>this.$element[0].querySelectorAll('.time-picker input')[0];
+                input.focus();
+            }
+        }
+
+        public focus(event, focusTarget) {
+            this.$element[0].querySelector('.time-picker').classList.add('focus');
+            this.focussed = focusTarget;
+            event.preventDefault();
+        }
+
+        public blur(event) {
+            this.$element[0].querySelector('.time-picker').classList.remove('focus');
+            this.updateValue(event.target);
+        }
+
+        private focusNext(input) {
+            let nextElement = <HTMLInputElement>angular.element(input).next()[0];
+            if (nextElement && nextElement.tagName === 'INPUT') {
+                setTimeout(() => {
+                    nextElement.focus();
+                    nextElement.select();
+                }, 0);
+            }
+        }
+
+        private focusPrev(input) {
+            function prev(element): HTMLInputElement {
+                var elm = element.previousSibling;
+                while (elm != null && elm.nodeType !== 1) {
+                    elm = elm.previousSibling;
+                }
+                return elm && elm.tagName === 'INPUT' ? elm : undefined;
+            }
+
+            let previousElement = prev(input);
+            if (previousElement) {
+                setTimeout(() => {
+                    previousElement.focus()
+                    previousElement.select();
+                }, 0);
+            }
         }
     }
 

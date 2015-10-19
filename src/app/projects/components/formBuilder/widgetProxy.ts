@@ -50,15 +50,15 @@ module meshAdminUi {
                 case 'html':
                 case 'list':
                 case 'microschema':
+                case 'date':
                     //flexAttrs = 'flex="100"';
                     break;
                 case 'number':
                 case 'boolean':
-                case 'date':
                     //flexAttrs = 'flex-sm="50" flex-gt-sm="33" flex-gt-lg="20"';
                     flexAttrs.sm = 50;
                     flexAttrs.gtSm = 33;
-                    flexAttrs.gtLg = 20;
+                    flexAttrs.gtLg = 25;
                     break;
                 case 'string':
                     //flexAttrs = 'flex="100"';

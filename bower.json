@@ -26,7 +26,8 @@
     "angular-translate": "~2.6.1",
     "angular-loading-bar": "~0.7.1",
     "angular-local-storage": "~0.2.0",
-    "angular-drag-and-drop-lists": "~1.2.0"
+    "angular-drag-and-drop-lists": "~1.2.0",
+    "moment": "~2.10.6"
   },
   "resolutions": {
     "angular": "~1.4.1"
