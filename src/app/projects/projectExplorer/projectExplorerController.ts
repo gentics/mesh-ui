@@ -14,6 +14,7 @@ module meshAdminUi {
 
         constructor( private $scope: ng.IScope,
                      private $location: ng.ILocationService,
+                     private explorerContentsListService: ExplorerContentsListService,
                      private dataService: DataService,
                      private contextService: ContextService,
                      private parentNode: INode) {
@@ -66,6 +67,7 @@ module meshAdminUi {
                         this.contents.push(schemaGroups[schemaName]);
                     }
                     this.totalItems = response.metadata.totalCount;
+                    this.explorerContentsListService.init(this.totalItems, this.itemsPerPage);
                 });
         }
     }

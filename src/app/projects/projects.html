@@ -29,17 +29,16 @@
                 </mh-dropdown>
             </div>
             <div flex></div>
-            <button class="btn btn-primary btn-small" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.openSelected()">
+            <button class="btn btn-primary btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.openSelected()">
                 Edit Selected
             </button>
-            <button class="btn btn-warn btn-small" ng-disabled="0 === vm.selectedItems.length" ng-click="vm.deleteSelected()">
+            <button class="btn btn-warn btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.deleteSelected()">
                 Delete Selected
             </button>
         </div>
 
         <div ui-view="node-contents" class="animate"></div>
 
-        </explorer-contents-list>
     </div>
 
     <resizer></resizer>

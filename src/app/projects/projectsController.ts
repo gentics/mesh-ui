@@ -7,11 +7,11 @@ module meshAdminUi {
 
         private schemas: ISchema;
         private createPermission: boolean;
-        private selectedItems = [];
         private contents = [];
         private projectName: string;
 
         constructor(private $q: ng.IQService,
+                    private explorerContentsListService: ExplorerContentsListService,
                     private editorService: EditorService,
                     private confirmActionDialog: ConfirmActionDialog,
                     private dataService: DataService,
@@ -44,15 +44,15 @@ module meshAdminUi {
         public openSelected() {
             var selectedLangs = {};
             selectedLangs[this.i18nService.getCurrentLang().code] = true;
-            this.selectedItems.forEach(uuid => this.editorService.open(uuid));
-            this.selectedItems = [];
+            this.explorerContentsListService.getSelection().forEach(uuid => this.editorService.open(uuid));
+            this.explorerContentsListService.clearSelection();
         }
 
         /**
          * Delete the selected content items
          */
         public deleteSelected() {
-            let deletedCount = this.selectedItems.length,
+            let deletedCount = this.explorerContentsListService.getSelection().length,
                 doDelete = () => {
                     this.$q.when(this.deleteNext())
                         .then(() => {
@@ -80,10 +80,11 @@ module meshAdminUi {
          * items at once causes server error.
          */
         private deleteNext(): ng.IPromise<any> {
-            if (this.selectedItems.length === 0) {
+            let selection = this.explorerContentsListService.getSelection();
+            if (selection.length === 0) {
                 return;
             } else {
-                var uuid = this.selectedItems.pop();
+                var uuid = selection.pop();
 
                 return this.dataService.getNode(this.projectName, uuid)
                     .then(item => this.dataService.deleteNode(this.projectName, item))
@@ -94,6 +95,10 @@ module meshAdminUi {
                         return this.deleteNext();
                     });
             }
+        }
+
+        public nodesSelected(): boolean {
+            return 0 < this.explorerContentsListService.getSelection().length;
         }
     }
 
