@@ -22,12 +22,29 @@ module meshAdminUi {
 
     class ExplorerContentsListController {
 
-        constructor(private $state: ng.ui.IStateService,
+        public searchQuery: string = '';
+        public filterNodes: Function;
+
+        constructor($scope: ng.IScope,
+                    private $state: ng.ui.IStateService,
+                    private dispatcher: Dispatcher,
                     private explorerContentsListService: ExplorerContentsListService,
                     private contextService: ContextService,
                     private editorService: EditorService) {
-        }
 
+            const searchTermHandler = (event, term: string) => {
+                this.searchQuery = term;
+            };
+            dispatcher.subscribe(dispatcher.events.explorerSearchTermChanged, searchTermHandler);
+            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(searchTermHandler));
+
+            this.filterNodes = (node: INode) => {
+                if (!this.searchQuery) {
+                    return true;
+                }
+                return -1 < node.fields[node.displayField].indexOf(this.searchQuery);
+            }
+        }
 
         /**
          * Toggle whether the items at index is selected.
@@ -50,6 +67,7 @@ module meshAdminUi {
             event.preventDefault();
             event.stopPropagation();
             if (node.hasOwnProperty('children')) {
+                this.explorerContentsListService.clearSelection();
                 this.$state.go('projects.node', {projectName: this.contextService.getProject().name, nodeId: node.uuid});
             }
         }

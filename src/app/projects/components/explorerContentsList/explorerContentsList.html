@@ -4,7 +4,7 @@
         <div ng-repeat="bundle in vm.contents" class="node-bundle">
             <div class="schema-name">{{:: bundle.schema }}</div>
 
-            <div ng-repeat="node in bundle.nodes track by node.uuid"
+            <div ng-repeat="node in bundle.nodes | filter: vm.filterNodes track by node.uuid"
                  class="bundle-item"
                  ng-class="{'selected' : vm.isSelected(node.uuid) }"
                  ng-click="vm.toggleSelect(node.uuid)"

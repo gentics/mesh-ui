@@ -4,10 +4,11 @@ module meshAdminUi {
 
         public currentProject: IProject;
         public currentNode: INode;
+        public searchTerm: string;
 
         constructor($scope: ng.IScope,
-                    private $state: ng.ui.IStateService,
                     private contextService: ContextService,
+                    private explorerContentsListService: ExplorerContentsListService,
                     private dispatcher: Dispatcher) {
             this.updateCurrentContext(contextService.getProject(), contextService.getCurrentNode());
 
@@ -19,22 +20,15 @@ module meshAdminUi {
         }
 
         /**
-         * Jump to a new context
-         */
-        public goToContext(projectName: string) {
-            if (projectName !== '') {
-                this.$state.go('projects.node', {projectName: projectName});
-            } else {
-                this.$state.go('projectsList');
-            }
-        }
-
-        /**
          * Update the view model with the current context
          */
         private updateCurrentContext(currentProject: IProject, currentNode: INode) {
             this.currentProject = currentProject;
             this.currentNode = currentNode;
+        }
+
+        public updateSearchTerm(event) {
+            this.dispatcher.publish(this.dispatcher.events.explorerSearchTermChanged, event.target.value);
         }
     }
 

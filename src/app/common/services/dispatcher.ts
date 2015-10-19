@@ -11,7 +11,8 @@ module meshAdminUi {
             wipsChanged: 'mesh:wipsChanged',
             contextChanged: 'mesh:contextChanged',
             editorServiceNodeOpened: 'mesh:editorServiceNodeOpened',
-            editorServiceNodeClosed: 'mesh:editorServiceNodeClosed'
+            editorServiceNodeClosed: 'mesh:editorServiceNodeClosed',
+            explorerSearchTermChanged: 'mesh:explorerSearchTermChanged'
         };
 
         private callbacks: any[] = [];
