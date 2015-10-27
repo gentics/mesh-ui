@@ -75,7 +75,8 @@ module meshAdminUi {
                 action = this.showDialog().then(response => {
                     if (response === 'save') {
                         this.notifyService.toast('SAVED_CHANGES');
-                        this.dataService.persistNode(projectName, wip);
+                        this.dataService.persistNode(projectName, wip)
+                            .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
                     }
                 });
             } else {
