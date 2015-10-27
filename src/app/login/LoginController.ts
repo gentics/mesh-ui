@@ -10,9 +10,7 @@ module meshAdminUi {
                      private $mdDialog: ng.material.IDialogService,
                      private authService: AuthService) {
 
-            $timeout(function () {
-                this.logoVisible = true;
-            }, 1500);
+            $timeout(() => this.logoVisible = true, 1500);
         }
 
         public submitForm(event: Event, userName: string, password: string) {
