@@ -51,6 +51,16 @@ module meshAdminUi {
             return temp;
         }
 
+        /**
+         * Helper for filtering nodes by the display name against a string query.
+         */
+        public nodeFilterFn(node: INode, query: string): boolean {
+            if (!query) {
+                return true;
+            }
+            return -1 < node.fields[node.displayField].toLowerCase().indexOf(query.toLowerCase());
+        }
+
 
         /**
          * Flatten an n-dimensional array.

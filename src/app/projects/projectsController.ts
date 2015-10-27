@@ -56,7 +56,8 @@ module meshAdminUi {
             this.nodeSelector.open({ containersOnly: true })
                 .then((selection: INode[]) => this.dataService.moveNodes(this.projectName, uuids, selection[0].uuid))
                 .then(movedUuids => this.notifyService.toast('Moved ' + movedUuids.length + ' nodes'))
-                .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
+                .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged))
+                .catch(response => this.notifyService.toast('Error: ' + response.data.message));
         }
 
         /**

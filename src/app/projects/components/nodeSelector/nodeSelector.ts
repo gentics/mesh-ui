@@ -71,8 +71,11 @@ module meshAdminUi {
         private containersOnly: boolean;
         private nodes;
         private breadcrumbs: any[];
+        private filterNodes;
+        private q: string;
 
         constructor(private dataService: DataService,
+                    mu: MeshUtils,
                     private contextService: ContextService) {
 
             this.selectedNodesHash = {};
@@ -81,6 +84,9 @@ module meshAdminUi {
             this.selectedNodes = this.selectedNodes instanceof Array ? this.selectedNodes : [];
 
             this.populateContents();
+            this.filterNodes = (node: INode) => {
+                return mu.nodeFilterFn(node, this.q);
+            }
         }
 
 

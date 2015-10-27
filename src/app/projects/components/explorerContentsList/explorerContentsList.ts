@@ -28,6 +28,7 @@ module meshAdminUi {
         constructor($scope: ng.IScope,
                     private $state: ng.ui.IStateService,
                     private dispatcher: Dispatcher,
+                    private mu: MeshUtils,
                     private explorerContentsListService: ExplorerContentsListService,
                     private contextService: ContextService,
                     private editorService: EditorService) {
@@ -39,10 +40,7 @@ module meshAdminUi {
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(searchTermHandler));
 
             this.filterNodes = (node: INode) => {
-                if (!this.searchQuery) {
-                    return true;
-                }
-                return -1 < node.fields[node.displayField].indexOf(this.searchQuery);
+                return mu.nodeFilterFn(node, this.searchQuery);
             }
         }
 
