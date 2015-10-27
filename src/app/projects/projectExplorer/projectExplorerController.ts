@@ -17,6 +17,7 @@ module meshAdminUi {
                      private explorerContentsListService: ExplorerContentsListService,
                      private dataService: DataService,
                      private contextService: ContextService,
+                     private dispatcher: Dispatcher,
                      private parentNode: INode) {
 
             this.itemsPerPage = $location.search().per_page || 10;
@@ -24,10 +25,15 @@ module meshAdminUi {
             this.projectName = contextService.getProject().name;
             this.createPermission = -1 < parentNode.permissions.indexOf('create');
 
-            $scope.$watch(() => $location.search().page, newVal => {
-                this.updateContents(newVal, this.itemsPerPage);
-                this.populateChildNodes(newVal);
-            });
+            const updateContents = (pageNumber?) => {
+                pageNumber = pageNumber || this.currentPage;
+                this.updateContents(pageNumber, this.itemsPerPage);
+                this.populateChildNodes(pageNumber);
+            };
+
+            $scope.$watch(() => $location.search().page, updateContents);
+            dispatcher.subscribe(dispatcher.events.explorerContentsChanged, updateContents);
+            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents));
         }
 
         /**

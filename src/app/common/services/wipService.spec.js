@@ -68,6 +68,12 @@ describe('wipService', function() {
         expect(wipService.getItem(itemType, 'nonExistentId')).toBeUndefined();
     });
 
+    it('isOpen() should give correct result', function() {
+        expect(wipService.isOpen(itemType, testItem.uuid)).toBe(false);
+        wipService.openItem(itemType, testItem);
+        expect(wipService.isOpen(itemType, testItem.uuid)).toBe(true);
+    });
+
     describe('change tracking', function() {
 
         beforeEach(function() {

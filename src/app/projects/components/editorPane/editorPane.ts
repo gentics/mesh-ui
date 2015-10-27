@@ -58,10 +58,17 @@ module meshAdminUi {
                 this.isLoaded = false;
             };
 
+            const emptyIfOpenNodeDeleted = () => {
+                if (!wipService.isOpen(this.wipType, this.node.uuid)) {
+                    empty();
+                }
+            };
+
             dispatcher.subscribe(dispatcher.events.editorServiceNodeOpened, init);
             dispatcher.subscribe(dispatcher.events.editorServiceNodeClosed, empty);
+            dispatcher.subscribe(dispatcher.events.explorerContentsChanged, emptyIfOpenNodeDeleted);
             $scope.$on('$destroy', () => {
-                dispatcher.unsubscribeAll(init, empty);
+                dispatcher.unsubscribeAll(init, empty, emptyIfOpenNodeDeleted);
                 this.saveWipMetadata()
             });
         }
@@ -81,6 +88,7 @@ module meshAdminUi {
                         this.wipService.setAsUnmodified(this.wipType, this.node);
                         this.contentModified = false;
                     }
+                    this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
                 });
         }
 
@@ -107,6 +115,7 @@ module meshAdminUi {
                 .then(() => {
                     this.notifyService.toast('Deleted');
                     this.closeWipAndClearPane(node);
+                    this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
                 });
         }
 

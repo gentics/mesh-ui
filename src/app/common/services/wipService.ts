@@ -141,6 +141,13 @@ module meshAdminUi {
         }
 
         /**
+         * Is the item of the given type and UUID open in the wip store?
+         */
+        public isOpen(type: string, uuid: string): boolean {
+            return !!(this.wipStore[type] && this.wipStore[type].hasOwnProperty(uuid));
+        }
+
+        /**
          * Get an array of uuids of each item of the specified type which has been modified.
          */
         public getModifiedItems(type: string): any[] {

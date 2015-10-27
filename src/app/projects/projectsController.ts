@@ -17,6 +17,7 @@ module meshAdminUi {
                     private dataService: DataService,
                     private contextService: ContextService,
                     private wipService: WipService,
+                    private dispatcher: Dispatcher,
                     private i18nService: I18nService,
                     private notifyService: NotifyService) {
 
@@ -54,13 +55,15 @@ module meshAdminUi {
         public deleteSelected() {
             let deletedCount = this.explorerContentsListService.getSelection().length,
                 doDelete = () => {
-                    this.$q.when(this.deleteNext())
+                    return this.$q.when(this.deleteNext())
                         .then(() => {
                             this.notifyService.toast('Deleted ' + deletedCount + ' contents');
                         });
                 };
 
-            this.showDeleteDialog().then(doDelete);
+            this.showDeleteDialog()
+                .then(doDelete)
+                .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
         }
 
         /**
