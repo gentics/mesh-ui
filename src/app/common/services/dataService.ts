@@ -218,61 +218,12 @@ module meshAdminUi {
         }
 
         /**
-         *
-         */
-        public getChildFolders(projectName, parentNodeId, queryParams?):ng.IPromise<any> {
-            return this.getChildNodes(projectName, parentNodeId, queryParams)
-                .then(response => {
-                    return response.data.filter(node => node.hasOwnProperty('children'));
-                });
-        }
-
-        /**
-         *
-         */
-        public getChildContents(projectName, parentNodeId, queryParams?):ng.IPromise<any> {
-            return this.getChildNodes(projectName, parentNodeId, queryParams)
-                .then(response => {
-                    return response.data.filter(node => !node.hasOwnProperty('children'));
-                });
-        }
-
-        /**
          * Get a single node.
          */
         public getNode(projectName, uuid, queryParams?):ng.IPromise<any> {
             queryParams = queryParams || {};
             queryParams.lang = this.i18nService.languages.map(lang => lang.code).join(',');
             return this.meshGet(projectName + '/nodes/' + uuid, queryParams);
-        }
-
-        /**
-         */
-        public getTagFamilies(projectName, queryParams?):ng.IPromise<any> {
-            var url = projectName + '/tagFamilies/';
-            return this.meshGet(url, queryParams);
-        }
-
-        /**
-         *
-         */
-        public getTags(projectName, tagFamilyUuid, queryParams?):ng.IPromise<any> {
-            var url;
-            if (typeof tagFamilyUuid === 'undefined') {
-                url = projectName + '/tags/';
-            } else {
-                url = projectName + '/tagFamilies/' + tagFamilyUuid + '/tags/';
-            }
-            return this.meshGet(url, queryParams);
-        }
-
-        /**
-         * Get the contents of a given project, with optional parameters that specifies query string options.
-         */
-        public getContents(projectName, parentTagId, queryParams?): ng.IPromise<any> {
-            var url = projectName + '/tags/' + parentTagId + '/contents/';
-            return this.meshGet(url, queryParams)
-                .then(result => this.unwrapCurrentLanguage(result));
         }
 
         /**
@@ -296,9 +247,103 @@ module meshAdminUi {
         /**
          * Remove the content from the server.
          */
-        public deleteNode(projectName: string, node: INode):ng.IPromise<any> {
+        public deleteNode(projectName: string, node: INode|string): ng.IPromise<any> {
             this.clearCache('contents');
-            return this.meshDelete(projectName + '/nodes/' + node.uuid);
+            let uuid = this.toUuid(node);
+            return this.meshDelete(projectName + '/nodes/' + uuid);
+        }
+
+        /**
+         * Delete multiple nodes in sequence. Returns the node uuids that were deleted.
+         */
+        public deleteNodes(projectName: string, nodes: INode[]|string[]): ng.IPromise<string[]> {
+            let uuids = this.toUuids(nodes),
+                uuidsClone = uuids.slice(0);
+
+            return this.$q.when(this.deleteNext(projectName, uuids))
+                .then(() => uuidsClone);
+        }
+
+        /**
+         * Recursively deletes the selected content items as specified by the indices in the
+         * this.selectedItems array. Done recursively in order to allow each DELETE request to
+         * complete before sending the next. When done in parallel, deleting more than a few
+         * items at once causes server error.
+         */
+        private deleteNext(projectName: string, uuids: string[] = []): ng.IPromise<any> {
+            if (uuids.length === 0) {
+                return;
+            } else {
+                var uuid = uuids.pop();
+                return this.deleteNode(projectName, uuid)
+                    .then(() => this.deleteNext(projectName, uuids));
+            }
+        }
+
+        /**
+         * Move a node to be a child of another node given by uuid.
+         */
+        public moveNode(projectName: string, node: INode|string, destinationUuid: string): ng.IPromise<any> {
+            let uuid = this.toUuid(node);
+            return this.meshPut(projectName + '/nodes/' + uuid + '/moveTo/' + destinationUuid, {});
+        }
+
+        /**
+         * Recursively moves a list of nodes to the destination node given by uuid.
+         */
+        public moveNodes(projectName: string, nodes: (INode|string)[], destinationUuid: string): ng.IPromise<string[]> {
+            let uuids = this.toUuids(nodes),
+                uuidsClone = uuids.slice(0);
+
+            return this.$q.when(this.moveNext(projectName, destinationUuid, uuids))
+                .then(() => uuidsClone);
+        }
+
+        /**
+         * Recursively move nodes to a destination node.
+         */
+        private moveNext(projectName: string, destinationUuid: string, uuids: string[] = []): ng.IPromise<any> {
+            if (uuids.length === 0) {
+                return;
+            } else {
+                var uuid = uuids.pop();
+                return this.moveNode(projectName, uuid, destinationUuid)
+                    .then(() => this.moveNext(projectName, destinationUuid, uuids));
+            }
+        }
+
+        /**
+         * Takes an array of either uuid strings or nodes, and returns an array of uuid strings.
+         */
+        private toUuids(nodes: (INode|string)[]): string[] {
+            return nodes.map(node => this.toUuid(node))
+        }
+
+        /**
+         * Takes either a node or a uuid string, and returns a uuid string.
+         */
+        private toUuid(node: INode|string): string {
+            return (typeof node === 'string') ? node : node.uuid;
+        }
+
+        /**
+         */
+        public getTagFamilies(projectName, queryParams?):ng.IPromise<any> {
+            var url = projectName + '/tagFamilies/';
+            return this.meshGet(url, queryParams);
+        }
+
+        /**
+         *
+         */
+        public getTags(projectName, tagFamilyUuid, queryParams?):ng.IPromise<any> {
+            var url;
+            if (typeof tagFamilyUuid === 'undefined') {
+                url = projectName + '/tags/';
+            } else {
+                url = projectName + '/tagFamilies/' + tagFamilyUuid + '/tags/';
+            }
+            return this.meshGet(url, queryParams);
         }
 
         /**
