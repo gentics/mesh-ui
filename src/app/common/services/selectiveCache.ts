@@ -1,8 +1,5 @@
 module meshAdminUi {
 
-    angular.module('meshAdminUi.common')
-        .provider('selectiveCache', selectiveCacheProvider);
-
     function selectiveCacheProvider(): any {
 
         var baseUrl = '',
@@ -65,45 +62,43 @@ module meshAdminUi {
      * @param {Object.<String, RegExp>} cacheableGroups
      * @constructor
      */
-    function SelectiveCache($cacheFactory, baseUrl, cacheableGroups) {
+    export class SelectiveCache {
 
-        var ngCache = $cacheFactory('selectiveCache'),
-            cachedKeys = [],
-            cachableRegexps = objectValues(cacheableGroups);
+        private ngCache;
+        private cachedKeys: any[] = [];
+        private cachableRegexps;
 
-        // public API - matches that of $cacheFactory#cache
-        this.put = put;
-        this.get = get;
-        this.remove = remove;
-        this.removeAll = removeAll;
-        this.info = info;
+        constructor(private $cacheFactory: ng.ICacheFactoryService,
+                    private baseUrl: string,
+                    private cacheableGroups: any) {
 
-        // additional config methods
-        this.setBaseUrl = setBaseUrl;
+            this.ngCache = $cacheFactory('selectiveCache');
+            this.cachedKeys = [];
+            this.cachableRegexps = this.objectValues(cacheableGroups);
+        }
+
+
+
 
         /**
          * Put a key-value pair into the cache as long as the key matches
          * one of the allowed urls set in `cacheableUrls`.
-         * @param {String} key
-         * @param {*} value
          */
-        function put(key, value) {
-            var keyMinusBase = key.replace(baseUrl, '');
-            cachableRegexps.forEach(function (regexp) {
+        public put(key: string, value: any) {
+            var keyMinusBase = key.replace(this.baseUrl, '');
+            this.cachableRegexps.forEach(regexp => {
                 if (-1 < keyMinusBase.search(regexp)) {
-                    cachedKeys.push(key);
-                    return ngCache.put(key, value);
+                    this.cachedKeys.push(key);
+                    return this.ngCache.put(key, value);
                 }
             });
         }
 
         /**
          * Get the value associated with the key.
-         * @param {String} key
-         * @returns {*}
          */
-        function get(key) {
-            return ngCache.get(key);
+        public get(key) {
+            return this.ngCache.get(key);
         }
 
         /**
@@ -111,15 +106,13 @@ module meshAdminUi {
          * (see selectiveCacheProvider.setCacheableGroups()).
          * Throws an exception if the group was not already defined in the provider.
          * Returns the number of cache keys removed.
-         *
-         * @param {String} group
-         * @returns {number}
          */
-        function remove(group) {
-            if (cacheableGroups[group] instanceof RegExp) {
-                var keyRegexp = cacheableGroups[group],
-                    matching = cachedKeys.filter(matches(keyRegexp));
-                matching.forEach(removeFromCache);
+        public remove(group: string): number {
+            if (this.cacheableGroups[group] instanceof RegExp) {
+                var keyRegexp = this.cacheableGroups[group],
+                    filterFn =  this.matches(keyRegexp),
+                    matching = this.cachedKeys.filter(filterFn);
+                matching.forEach(match => this.removeFromCache(match));
 
                 return matching.length;
             }
@@ -128,67 +121,57 @@ module meshAdminUi {
         /**
          * Returns a filter function which matches each passed element against the
          * regex.
-         *
-         * @param {RegExp} regexp
-         * @returns {Function}
          */
-        function matches(regexp) {
-            return function (key) {
-                var keyMinusBase = key.replace(baseUrl, '');
+        private matches(regexp: RegExp): (key: string) => boolean {
+            return (key) => {
+                var keyMinusBase = key.replace(this.baseUrl, '');
                 return -1 < keyMinusBase.search(regexp);
             };
         }
 
         /**
          * Remove the key from the cache.
-         * @param {String} key
          */
-        function removeFromCache(key) {
-            ngCache.remove(key);
-            removeFromCachedKeys(key);
+        public removeFromCache(key: string) {
+            this.ngCache.remove(key);
+            this.removeFromCachedKeys(key);
         }
 
         /**
          * Remove the specified key from the cachedKeys array.
-         * @param key
          */
-        function removeFromCachedKeys(key) {
-            var index = cachedKeys.indexOf(key);
+        public removeFromCachedKeys(key: string) {
+            var index = this.cachedKeys.indexOf(key);
             if (index > -1) {
-                cachedKeys.splice(index, 1);
+                this.cachedKeys.splice(index, 1);
             }
         }
 
         /**
          * Delegate directly to Angular's cache method.
-         * @returns {void|*}
          */
-        function removeAll() {
-            return ngCache.removeAll();
+        public removeAll() {
+            return this.ngCache.removeAll();
         }
 
         /**
          * Delegate directly to Angular's cache method.
-         * @returns {void|*}
          */
-        function info() {
-            return ngCache.info();
+        public info() {
+            return this.ngCache.info();
         }
 
         /**
          * Duplicate of the selectiveCacheProvider#setBaseUrl()
-         * @param {String} value
          */
-        function setBaseUrl(value) {
-            baseUrl = value;
+        public setBaseUrl(value: string) {
+            this.baseUrl = value;
         }
 
         /**
          * Get the values from an object as an array;
-         * @param obj
-         * @returns {Array}
          */
-        function objectValues(obj) {
+        private objectValues(obj: any): any[] {
             var values = [];
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
@@ -198,4 +181,8 @@ module meshAdminUi {
             return values;
         }
     }
+
+    angular.module('meshAdminUi.common')
+           .provider('selectiveCache', selectiveCacheProvider);
+
 }
