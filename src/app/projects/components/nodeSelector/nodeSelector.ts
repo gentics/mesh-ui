@@ -1,5 +1,13 @@
 module meshAdminUi {
 
+    export interface INodeSelectOptions {
+        allow?: string[];
+        title?: string;
+        multiSelect?: boolean;
+        displayMode?: string;
+        containersOnly?: boolean;
+    }
+
     /**
      * The nodeSelector service is used to configure and display a node selector modal dialog.
      */
@@ -17,7 +25,9 @@ module meshAdminUi {
          * - multiSelect: bool, whether more than one node may be selected.
          * - displayMode: string, either 'list' or 'grid'
          */
-        public open(options) {
+        public open(options?: INodeSelectOptions) {
+
+            options = options || {};
 
             function nodeSelectDialogController($mdDialog: ng.material.IDialogService) {
                 var dialog = this;
@@ -40,6 +50,7 @@ module meshAdminUi {
                 controllerAs: 'dialog',
                 locals: {
                     allow: options.allow || [],
+                    containersOnly: options.containersOnly || false,
                     title: options.title || 'Select Node',
                     multiSelect: options.multiSelect || false,
                     displayMode: options.displayMode || 'list'
@@ -55,8 +66,9 @@ module meshAdminUi {
         private currentProject: IProject;
         private currentNode: INode;
         private selectedNodes;
-        private multiSelect;
-        private allowedSchemas;
+        private multiSelect: boolean;
+        private allowedSchemas: string[];
+        private containersOnly: boolean;
         private nodes;
         private breadcrumbs: any[];
 
@@ -148,7 +160,13 @@ module meshAdminUi {
         }
 
         private isAllowedSchemaOrFolder(node: INode) {
-            return this.isAllowedSchema(node) || node.container;
+            if (!this.isAllowedSchema(node)) {
+                return false;
+            }
+            if (this.containersOnly) {
+                return !!node.container;
+            }
+            return true;
         }
     }
 
@@ -164,7 +182,8 @@ module meshAdminUi {
                 selectedNodes: '=',
                 allowedSchemas: '=',
                 multiSelect: '=',
-                displayMode: '='
+                displayMode: '=',
+                containersOnly: '='
             }
         };
     }

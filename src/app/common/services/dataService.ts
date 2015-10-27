@@ -32,11 +32,12 @@ module meshAdminUi {
      */
     export class DataService {
 
-        constructor(private $http:ng.IHttpService,
-                    private $q:ng.IQService,
-                    private selectiveCache,
-                    private i18nService,
-                    private apiUrl) {
+        constructor(private $http: ng.IHttpService,
+                    private $q: ng.IQService,
+                    private selectiveCache: SelectiveCache,
+                    private i18nService: I18nService,
+                    private apiUrl: string) {
+
             selectiveCache.setBaseUrl(apiUrl);
             $http.defaults.cache = selectiveCache;
         }
@@ -284,6 +285,7 @@ module meshAdminUi {
          * Move a node to be a child of another node given by uuid.
          */
         public moveNode(projectName: string, node: INode|string, destinationUuid: string): ng.IPromise<any> {
+            this.clearCache('contents');
             let uuid = this.toUuid(node);
             return this.meshPut(projectName + '/nodes/' + uuid + '/moveTo/' + destinationUuid, {});
         }

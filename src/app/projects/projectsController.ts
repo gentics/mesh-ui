@@ -9,16 +9,16 @@ module meshAdminUi {
         private createPermission: boolean;
         private contents = [];
         private projectName: string;
+        private wipType: string = 'contents';
 
-        constructor(private $q: ng.IQService,
-                    private explorerContentsListService: ExplorerContentsListService,
+        constructor(private explorerContentsListService: ExplorerContentsListService,
                     private editorService: EditorService,
                     private confirmActionDialog: ConfirmActionDialog,
                     private dataService: DataService,
                     private contextService: ContextService,
                     private wipService: WipService,
                     private dispatcher: Dispatcher,
-                    private i18nService: I18nService,
+                    private nodeSelector: NodeSelector,
                     private notifyService: NotifyService) {
 
             this.projectName = contextService.getProject().name;
@@ -43,26 +43,38 @@ module meshAdminUi {
          * Open the selected content items for editing (i.e. add them to the wipService open items)
          */
         public openSelected() {
-            var selectedLangs = {};
-            selectedLangs[this.i18nService.getCurrentLang().code] = true;
             this.explorerContentsListService.getSelection().forEach(uuid => this.editorService.open(uuid));
             this.explorerContentsListService.clearSelection();
+        }
+
+        /**
+         * Show the node selector dialog and move selected nodes to that folder.
+         */
+        public moveSelected() {
+            let uuids = this.explorerContentsListService.getSelection();
+
+            this.nodeSelector.open({ containersOnly: true })
+                .then((selection: INode[]) => this.dataService.moveNodes(this.projectName, uuids, selection[0].uuid))
+                .then(movedUuids => this.notifyService.toast('Moved ' + movedUuids.length + ' nodes'))
+                .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
         }
 
         /**
          * Delete the selected content items
          */
         public deleteSelected() {
-            let deletedCount = this.explorerContentsListService.getSelection().length,
-                doDelete = () => {
-                    return this.$q.when(this.deleteNext())
-                        .then(() => {
-                            this.notifyService.toast('Deleted ' + deletedCount + ' contents');
-                        });
-                };
+            let uuids = this.explorerContentsListService.getSelection();
 
             this.showDeleteDialog()
-                .then(doDelete)
+                .then(() => this.dataService.deleteNodes(this.projectName, uuids))
+                .then(deletedUuids => {
+                    deletedUuids.forEach(uuid => {
+                        if (this.wipService.isOpen(this.wipType, uuid)) {
+                            this.wipService.closeItem(this.wipType, {uuid: uuid});
+                        }
+                    });
+                    this.notifyService.toast('Deleted ' + deletedUuids.length + ' nodes')
+                })
                 .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
         }
 
@@ -74,30 +86,6 @@ module meshAdminUi {
                 title: 'Delete Content?',
                 message: 'Are you sure you want to delete the selected contents?'
             });
-        }
-
-        /**
-         * Recursively deletes the selected content items as specified by the indices in the
-         * this.selectedItems array. Done recursively in order to allow each DELETE request to
-         * complete before sending the next. When done in parallel, deleting more than a few
-         * items at once causes server error.
-         */
-        private deleteNext(): ng.IPromise<any> {
-            let selection = this.explorerContentsListService.getSelection();
-            if (selection.length === 0) {
-                return;
-            } else {
-                var uuid = selection.pop();
-
-                return this.dataService.getNode(this.projectName, uuid)
-                    .then(item => this.dataService.deleteNode(this.projectName, item))
-                    .then(() => {
-                        if (this.wipService.getItem('contents', uuid)) {
-                            this.wipService.closeItem('contents', {uuid: uuid});
-                        }
-                        return this.deleteNext();
-                    });
-            }
         }
 
         public nodesSelected(): boolean {

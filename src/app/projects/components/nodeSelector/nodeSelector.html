@@ -11,19 +11,7 @@
     </div>
 
     <div layout="row">
-
-        <!--<div flex="20">
-            <div class="tag-list-container">
-                <ul class="tag-list">
-                    <li ng-repeat="folder in vm.folders track by $index" class="tag-item" ng-click="vm.openNode(folder.uuid)">
-                        <a href="#" class="a-plain">{{ folder.fields[folder.displayField] }}</a>
-                    </li>
-                </ul>
-            </div>
-        </div>-->
-
         <div flex>
-
             <table class="mh-table" ng-show="0 < vm.nodes.length" ng-if="vm.displayMode === 'list'">
                 <tbody>
                 <tr ng-repeat="node in vm.nodes track by node.uuid"
@@ -52,7 +40,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
 

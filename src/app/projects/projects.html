@@ -30,10 +30,13 @@
             </div>
             <div flex></div>
             <button class="btn btn-primary btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.openSelected()">
-                Edit Selected
+                Edit
+            </button>
+            <button class="btn btn-primary btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.moveSelected()">
+                Move
             </button>
             <button class="btn btn-warn btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.deleteSelected()">
-                Delete Selected
+                Delete
             </button>
         </div>
 
