@@ -2,9 +2,7 @@
      ng-switch="fieldModel.type"
      flex-sm="{{ flexAttrs.sm }}"
      flex-gt-sm="{{ flexAttrs.gtSm }}"
-     flex-gt-lg="{{ flexAttrs.gtLg }}"
-     ng-mouseenter="mouseEnter()"
-     ng-mouseleave="mouseLeave()">
+     flex-gt-lg="{{ flexAttrs.gtLg }}">
 
     <div ng-switch-when="string"><mh-string-widget field-model="fieldModel"></mh-string-widget></div>
     <div ng-switch-when="date"><mh-date-widget field-model="fieldModel"></mh-date-widget></div>

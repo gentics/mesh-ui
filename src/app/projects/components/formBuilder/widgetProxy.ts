@@ -14,24 +14,33 @@ module meshAdminUi {
         /**
          *
          */
-        function widgetProxyLinkFn(scope, element) {
+        function widgetProxyLinkFn(scope, element: JQuery) {
             let isTopElement = element.parent()[0].tagName === 'FORM';
-
+            const mouseEnter = () => {
+                if (isTopElement) {
+                    widgetHighlighterService.highlight(element[0]);
+                }
+            };
+            const mouseLeave = () => {
+                if (isTopElement) {
+                    widgetHighlighterService.hide();
+                }
+            };
 
             if (isTopElement) {
                 scope.flexAttrs = getFlexAttributes(scope.fieldModel.type);
             }
 
-            scope.mouseEnter = () => {
-                if (isTopElement) {
-                    widgetHighlighterService.highlight(element[0]);
-                }
-            };
-            scope.mouseLeave = () => {
-                if (isTopElement) {
-                    widgetHighlighterService.hide();
-                }
-            };
+            scope.mouseEnter = mouseEnter;
+            scope.mouseLeave = mouseLeave;
+
+            element.on('mouseenter', mouseEnter);
+            element.on('mouseleave', mouseLeave);
+
+            scope.$on('$destroy', () => {
+                element.off('mouseenter', mouseEnter);
+                element.off('mouseleave', mouseLeave);
+            })
         }
 
         /**
