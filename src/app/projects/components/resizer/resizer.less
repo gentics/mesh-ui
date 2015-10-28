@@ -1,3 +1,9 @@
+.resizer-container {
+  .responsive-max(@mq-sm, {
+    display: none;
+  });
+}
+
 .resize-bar, .drag-handle {
   cursor: col-resize;
   width: 10px;
@@ -19,9 +25,6 @@
       color: white;
     }
   }
-
-  .responsive-max(@mq-sm, {
-  });
 }
 
 .drag-handle {

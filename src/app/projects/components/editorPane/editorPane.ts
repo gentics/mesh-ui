@@ -119,44 +119,10 @@ module meshAdminUi {
                 });
         }
 
-        /**
-         * Close the node, displaying a dialog if it has been modified asking
-         * whether to keep or discard the changes.
-         */
-        public close(content) {
-            if (this.wipService.isModified(this.wipType, content)) {
-                this.showCloseDialog()
-                    .then(response => {
-                        if (response === 'save') {
-                            this.dataService.persistNode(this.projectName, content);
-                            this.notifyService.toast('SAVED_CHANGES');
-                        }
-                        this.closeWipAndClearPane(content);
-                    });
-            } else {
-                this.closeWipAndClearPane(content);
-            }
-        }
-
         private closeWipAndClearPane(node: INode) {
             this.editorService.close();
             this.wipService.closeItem(this.wipType, node);
             this.$location.search('edit', null);
-        }
-
-
-        /**
-         * Display the close confirmation dialog box. Returns a promise which is resolved
-         * to 'save', 'discard', or rejected if user cancels.
-         * TODO: figure out a way to decouple this from the wipTabs component without duplicating all the code.
-         * @return {ng.IPromise<String>}
-         */
-        public showCloseDialog() {
-            return this.$mdDialog.show({
-                templateUrl: 'common/components/wipTabs/wipTabsCloseDialog.html',
-                controller: 'wipTabsDialogController',
-                controllerAs: 'vm'
-            });
         }
 
         /**

@@ -12,3 +12,37 @@
 
 .project-body-container {
 }
+
+.explorer-pane {
+  .responsive-max(@mq-sm, {
+   /* max-width: 45% !important;
+    min-width: 45% !important;*/
+  });
+}
+
+.projects-sliding-container {
+  .responsive-max(@mq-sm, {
+    width: 90vw !important;
+    overflow-x: hidden;
+    overflow-y: visible;
+  });
+
+  .projects-sliding-frame {
+    .responsive-max(@mq-sm, {
+      width: 180vw !important;
+      transition: transform 0.3s;
+    &.edit-view {
+      transform: translateX(-90vw);
+    }
+    });
+  }
+
+  .go-to-editor {
+    z-index: 100;
+  }
+
+
+  .go-to-explorer {
+
+  }
+}

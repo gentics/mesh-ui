@@ -1,11 +1,15 @@
 .contents-list-container {
 
-  overflow-y: hidden;
+  .responsive-min(@mq-sm, {
+
+  });
+
+  overflow-y: auto;
   .contents-list {
     //margin-right: 17px;
   }
   &:hover {
-    overflow-y: auto;
+    //overflow-y: auto;
     .contents-list {
       //margin-right: 0;
     }

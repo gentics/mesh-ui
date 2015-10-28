@@ -5,13 +5,15 @@ module meshAdminUi {
      */
     class ProjectController {
 
+        public mobileEditView: boolean = false;
         private schemas: ISchema;
         private createPermission: boolean;
         private contents = [];
         private projectName: string;
         private wipType: string = 'contents';
 
-        constructor(private explorerContentsListService: ExplorerContentsListService,
+        constructor($scope: ng.IScope,
+                    private explorerContentsListService: ExplorerContentsListService,
                     private editorService: EditorService,
                     private confirmActionDialog: ConfirmActionDialog,
                     private dataService: DataService,
@@ -24,6 +26,20 @@ module meshAdminUi {
             this.projectName = contextService.getProject().name;
             this.createPermission = -1 < contextService.getCurrentNode().permissions.indexOf('create');
             this.populateSchemas();
+
+            const nodeOpenedHandler = () => {
+                this.mobileEditView = true;
+            };
+            const nodeClosedHandler = () => {
+                if (wipService.getOpenItems(this.wipType).length === 0) {
+                    this.mobileEditView = false;
+                }
+            };
+            dispatcher.subscribe(dispatcher.events.editorServiceNodeOpened, nodeOpenedHandler);
+            dispatcher.subscribe(dispatcher.events.editorServiceNodeClosed, nodeClosedHandler);
+            $scope.$on('$destroy', () => {
+                dispatcher.unsubscribeAll(nodeClosedHandler, nodeOpenedHandler);
+            })
         }
 
 
@@ -91,6 +107,10 @@ module meshAdminUi {
 
         public nodesSelected(): boolean {
             return 0 < this.explorerContentsListService.getSelection().length;
+        }
+
+        public getOpenWips() {
+            return this.wipService.getOpenItems(this.wipType);
         }
     }
 

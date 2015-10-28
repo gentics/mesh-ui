@@ -11,14 +11,14 @@
     display: block;
     content: '';
   }
-   span:before {
+  span:before {
     top: -10px;
   }
-   span:after {
+  span:after {
     bottom: -10px;
   }
 
-   span,  span:before,  span:after {
+  span,  span:before,  span:after {
     transition: all 200ms ease;
   }
   &.open span {
@@ -80,18 +80,21 @@
   .responsive-max(@mq-sm, {
     max-height: 0;
     transition: max-height 0.5s;
-    .menu ul li {
-      display: inline-block;
-      padding: 0 8px;
+  .menu {
+    width: auto;
+  }
+  .menu ul li {
+    display: inline-block;
+    padding: 0 8px;
 
-      &:first-child {
-        padding-left: 0;
-      }
+    &:first-child {
+      padding-left: 0;
     }
-    &.open {
-      max-height: 12rem;
-      width: 100vw;
-      padding-left: 5%;
-    }
+  }
+  &.open {
+    max-height: 12rem;
+    width: 100vw;
+    padding-left: 5%;
+  }
   });
 }

@@ -1,7 +1,7 @@
 @tab-bottom-color: @color-silver;
 @tab-border-color: lighten(@tab-bottom-color, 10%);
 @tab-bg-color: white;
-@status-modified-color: #1efb17;
+@status-modified-color: @color-highlight;
 
 .wip-tabs {
   transition: height 0.2s;
@@ -9,6 +9,7 @@
   margin-left: 10px;
   border-bottom: 1px solid @color-alto;
   margin-top: 3px;
+  position: relative;
   &.empty {
     border-bottom-color: transparent;
   }
@@ -41,9 +42,6 @@
 
       .label {
         border-bottom: 2px solid @color-primary;
-        .responsive-max(@mq-sm, {
-          border-bottom-width: 1px;
-        });
         &.modified {
           border-bottom-color: 2px solid @status-modified-color;
         }
@@ -84,13 +82,37 @@
     }
 
     .responsive-max(@mq-sm, {
-      .label {
-        max-width: 100%;
-        margin-right: 0;
-      }
+      position: initial;
+      max-width: 90%;
+    padding-top: 0;
+
+    .label {
+      max-width: 100%;
+      font-size: @font-size-title-2;
+      margin-right: 0;
+    }
+    .close {
+      display: none;
+    }
+    &.active {
       .close {
-        display: none;
+        display: inline-block;
+        top: -3px;
+        right: 0;
+        font-size: @font-size-title-1;
+        color: @color-boulder;
+        i {
+          cursor: pointer;
+          border-radius: 50%;
+        }
+        &:hover {
+          i {
+            color: white;
+            background-color: @color-silver;
+          }
+        }
       }
+    }
     });
   }
 }

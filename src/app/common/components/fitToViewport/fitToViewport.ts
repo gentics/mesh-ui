@@ -9,9 +9,8 @@ module meshAdminUi {
         function fitToViewportLinkFn(scope, element) {
 
             function setSize() {
-                var offsetTop = element[0].offsetTop,
+                var offsetTop = element[0].getBoundingClientRect().top,
                     windowHeight = $window.innerHeight;
-
                 element[0].style.height = (windowHeight - offsetTop) + 'px';
             }
 
