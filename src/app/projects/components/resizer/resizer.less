@@ -1,4 +1,4 @@
-.resize-bar {
+.resize-bar, .drag-handle {
   cursor: col-resize;
   width: 10px;
   border-right: 1px solid @color-silver;
@@ -19,4 +19,14 @@
       color: white;
     }
   }
+
+  .responsive-max(@mq-sm, {
+  });
+}
+
+.drag-handle {
+  position: absolute;
+  background-color: @color-highlight;
+  z-index: 100;
+  opacity: 0.5;
 }

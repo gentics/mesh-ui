@@ -1,3 +1,16 @@
-<div class="resize-bar" ng-mousedown="mouseDown($event)" layout="row" layout-align="center center">
-    <i class="icon-more-vert" flex></i>
+<div layout="row">
+    <div class="resize-bar"
+         ng-mousedown="mouseDown($event)"
+         layout="row"
+         layout-align="center center">
+        <i class="icon-more-vert" flex></i>
+    </div>
+
+    <div class="drag-handle"
+         layout="row"
+         layout-align="center center"
+         ng-show="ctrl.resizerMouseIsDown"
+         ng-style="ctrl.handleStyle">
+        <i class="icon-more-vert" flex></i>
+    </div>
 </div>
