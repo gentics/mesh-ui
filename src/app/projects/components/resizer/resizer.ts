@@ -30,14 +30,15 @@ module meshAdminUi {
             });
         }
 
-        public resizerMousedown(event: Event) {
+        public resizerMousedown(event: Event, barWidth: number) {
+            this.barWidth = barWidth;
             this.resizerMouseIsDown = true;
             event.preventDefault();
         }
 
         public resizerMouseup(event) {
             this.resizerMouseIsDown = false;
-            this.$element.css({ position: 'relative' });
+            //this.$element.css({ position: 'relative' });
             this.$scope.$apply(() => {
                 this.resizerStyle = {
                     'max-width': this.percentage + '%',
@@ -50,10 +51,11 @@ module meshAdminUi {
             if (this.resizerMouseIsDown) {
                 let minWidth = 20,
                     maxWidth = 80,
-                    mouseLeftOffset = event.clientX,
-                    containerWidth = event.currentTarget.offsetWidth,
-                    mouseContainerOffset = mouseLeftOffset - this.getContainerOffset(),
-                    percentage = mouseContainerOffset / containerWidth * 100;
+                    container = <HTMLElement>event.currentTarget,
+                    mouseLeftOffset = event.clientX - this.barWidth,
+                    containerWidth = container.offsetWidth,
+                    containerOffset = container.getBoundingClientRect().left,
+                    percentage = (mouseLeftOffset - containerOffset) / containerWidth * 100;
 
                 this.percentage = Math.max(Math.min(percentage, maxWidth), minWidth);
 
@@ -63,15 +65,11 @@ module meshAdminUi {
                 }
 
                 if (minWidth < percentage && percentage < maxWidth) {
-                    this.$scope.$apply(() => this.handleStyle.left = mouseContainerOffset + 'px');
+                    this.$scope.$apply(() => this.handleStyle.left = mouseLeftOffset + 'px');
                 }
                 event.preventDefault();
-                return mouseContainerOffset;
+                return mouseLeftOffset;
             }
-        }
-
-        public getContainerOffset() {
-            return this.$element[0].offsetLeft + this.barWidth / 2;
         }
 
     }
@@ -90,10 +88,12 @@ module meshAdminUi {
                 scope.ctrl = ctrl;
 
                 scope.mouseDown = (event) => {
-                    let resizeBar = <HTMLElement>document.querySelector('.resize-bar');
+                    let resizeBar = <HTMLElement>document.querySelector('.resize-bar'),
+                        barWidth = resizeBar.getBoundingClientRect().width;
+
                     ctrl.handleStyle.height = resizeBar.getBoundingClientRect().height + 'px';
-                    ctrl.handleStyle.left = (resizeBar.getBoundingClientRect().left - ctrl.getContainerOffset())+ 'px';
-                    ctrl.resizerMousedown(event);
+                    ctrl.handleStyle.left = (resizeBar.getBoundingClientRect().left - barWidth / 2)+ 'px';
+                    ctrl.resizerMousedown(event, barWidth);
                 };
             }
         };
