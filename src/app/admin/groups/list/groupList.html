@@ -1,0 +1,43 @@
+<div class="app-content">
+    <h1 class="page-title">Groups</h1>
+
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <h2 class="md-title" flex>Groups</h2>
+            <md-input-container flex>
+                <label>Filter Groups</label>
+                <input ng-model="vm.groupFilter">
+            </md-input-container>
+            <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.groups.create">
+                Create New Group
+            </button>
+        </div>
+    </md-toolbar>
+    <md-content layout-padding class="admin-content-block">
+
+        <table class="mh-table">
+            <tr ng-repeat="group in vm.groups | filter: vm.groupFilter track by group.uuid">
+                <td>
+                    <a ui-sref="admin.groups.detail({ uuid: group.uuid })">
+                        <strong>{{ group.name }}</strong><br>
+                    </a>
+                </td>
+                <td>
+                    <md-chips ng-model="group.roles" md-require-match md-on-append="vm.validateRole($chip, group)" layout-fill>
+                        <md-autocomplete
+                                md-selected-item="selectedItem"
+                                md-search-text="searchText"
+                                md-items="role in vm.filterBy(vm.roles, searchText)"
+                                md-item-text="group.name"
+                                placeholder="Add a role">
+                            <span md-highlight-text="searchText">{{ role.name }}</span>
+                        </md-autocomplete>
+                        <md-chip-template>
+                            <span>{{ vm.displayChipName($chip) }}</span>
+                        </md-chip-template>
+                    </md-chips>
+                </td>
+            </tr>
+        </table>
+    </md-content>
+</div>

@@ -45,6 +45,41 @@ module meshAdminUi {
                     }
                 }
             })
+
+            .state('admin.groups', {
+                abstract: true
+            })
+            .state('admin.groups.list', {
+                url: '/groups',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/groups/list/groupList.html',
+                        controller: 'GroupListController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('admin.groups.detail', {
+                url: '/groups/:uuid',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/groups/detail/groupDetail.html',
+                        controller: 'GroupDetailController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('admin.groups.create', {
+                url: '/groups/new',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/groups/detail/groupDetail.html',
+                        controller: 'GroupDetailController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+
             .state('admin.roles', {
                 abstract: true
             })

@@ -1,8 +1,8 @@
 module meshAdminUi {
 
-    class UserListController {
+    class GroupListController {
         private groups: IUserGroup[];
-        private users: IUser[];
+        private roles: IUserRole[];
 
         constructor(private $q: ng.IQService,
                     private $timeout: ng.ITimeoutService,
@@ -10,31 +10,23 @@ module meshAdminUi {
                     private dataService: DataService) {
             $q.all([
                 dataService.getGroups(),
-                dataService.getUsers()
+                dataService.getRoles()
             ])
                 .then((dataArray: any[]) => {
                     this.groups = dataArray[0].data;
-                    this.users = dataArray[1].data;
+                    this.roles = dataArray[1].data;
                 });
         }
 
-        public validateGroup(group, user: IUser) {
-            // TODO: user.groups will be a noderef rather than a string.
-            var userAlreadyInGroup = user.groups.map(group => group).indexOf(group.name) > -1;
+        public validateRole(role, group: IUserGroup) {
+            // TODO: group.roles will be a noderef rather than a string.
+            var groupAlreadyHasRole = group.roles.map(role => role).indexOf(role.name) > -1;
 
-            if (userAlreadyInGroup || !group.name) {
-                this.notifyService.toast(`User already in group "${group.name}"`);
-                this.$timeout(() => user.groups = user.groups.filter(group => typeof group !== 'undefined'));
+            if (groupAlreadyHasRole || !role.name) {
+                this.notifyService.toast(`Group already assigned to role "${role.name}"`);
+                this.$timeout(() => group.roles = group.roles.filter(role => typeof role !== 'undefined'));
             } else {
-                return group;
-            }
-        }
-
-        public userDisplayName(user: IUser): string {
-            if (user.firstname && user.lastname) {
-                return user.firstname + ' ' + user.lastname;
-            } else {
-                return user.username;
+                return role;
             }
         }
 
@@ -59,6 +51,6 @@ module meshAdminUi {
     }
 
     angular.module('meshAdminUi.admin')
-          .controller('UserListController', UserListController);
+          .controller('GroupListController', GroupListController);
 
 }

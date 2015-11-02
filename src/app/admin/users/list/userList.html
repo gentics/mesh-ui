@@ -18,10 +18,7 @@
 
 
         <table class="mh-table">
-            <tr ng-repeat="user in vm.users | filter:vm.userFilter track by user.uuid">
-                <td>
-                    <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select"></md-checkbox>
-                </td>
+            <tr ng-repeat="user in vm.users | filter: vm.userFilter track by user.uuid">
                 <td>
                     <a ui-sref="admin.users.detail({ uuid: user.uuid })">
                         <strong>{{ vm.userDisplayName(user) }}</strong><br>
@@ -29,7 +26,7 @@
                     </a>
                 </td>
                 <td>
-                    <md-chips ng-model="user.groups"  md-require-match md-on-append="vm.validateGroup($chip, user)">
+                    <md-chips ng-model="user.groups"  md-require-match="true" md-on-append="vm.validateGroup($chip, user)">
                         <md-autocomplete
                                 md-selected-item="selectedItem"
                                 md-search-text="searchText"
@@ -39,44 +36,11 @@
                             <span md-highlight-text="searchText">{{ group.name }}</span>
                         </md-autocomplete>
                         <md-chip-template>
-                            <span>{{$chip}}</span>
+                            <span>{{ vm.displayChipName($chip) }}</span>
                         </md-chip-template>
                     </md-chips>
-
-
                 </td>
             </tr>
         </table>
-    </md-content>
-
-
-    <md-toolbar class="admin-toolbar">
-        <div class="md-toolbar-tools">
-            <h2 flex >Groups</h2>
-            <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.users.create">
-                Create New Group
-            </button>
-        </div>
-    </md-toolbar>
-    <md-content layout-padding class="admin-content-block">
-
-        <md-list>
-            <md-list-item class="" ng-repeat="group in vm.groups track by $index" layout="column" layout-align="start start">
-                <h3>{{:: group.name}}</h3>
-                <md-chips ng-model="group.roles" md-require-match md-on-append="vm.validateRole($chip, group)" layout-fill>
-                    <md-autocomplete
-                            md-selected-item="selectedItem"
-                            md-search-text="searchText"
-                            md-items="role in vm.filterBy(vm.roles, searchText)"
-                            md-item-text="group.name"
-                            placeholder="Add a role">
-                        <span md-highlight-text="searchText">{{ role.name }}</span>
-                    </md-autocomplete>
-                    <md-chip-template>
-                        <span>{{$chip.name}}</span>
-                    </md-chip-template>
-                </md-chips>
-            </md-list-item>
-        </md-list>
     </md-content>
 </div>

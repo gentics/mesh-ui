@@ -237,6 +237,29 @@ module meshAdminUi {
             return this.meshGet('groups', queryParams);
         }
 
+        public getGroup(uuid: string, queryParams?: any) {
+            return this.meshGet('groups/' + uuid, queryParams);
+        }
+
+        public deleteGroup(uuid: string, queryParams?: any) {
+            this.clearCache('groups');
+            return this.meshDelete('groups/' + uuid, queryParams);
+        }
+        /**
+         * Persist the group back to the server.
+         */
+        public persistGroup(group: IUserGroup): ng.IPromise<IUserGroup> {
+            let isNew = !group.hasOwnProperty('created');
+            this.clearCache('users');
+            return isNew ? this.createGroup(group) : this.updateGroup(group);
+        }
+        private createGroup(group: IUserGroup): ng.IPromise<IUserGroup> {
+            return this.meshPost('groups', group);
+        }
+        private updateGroup(group: IUserGroup): ng.IPromise<IUserGroup> {
+            return this.meshPut('groups/' + group.uuid, group);
+        }
+
         /**
          * Get the child tags for the parentTag in the given project.
          */

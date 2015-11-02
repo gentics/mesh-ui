@@ -4,11 +4,11 @@ module meshAdminUi {
     /**
      *
      */
-    class UserDetailController {
+    class GroupDetailController {
 
         private isNew: boolean = false;
         private modified: boolean = false;
-        private user: IUser;
+        private group: IUserGroup;
 
         constructor(
             private $state: ng.ui.IStateService,
@@ -17,20 +17,20 @@ module meshAdminUi {
             private dataService: DataService,
             private notifyService: NotifyService) {
 
-            this.getUserData();
+            this.getGroupData();
         }
 
 
         /**
          * Persist the user data back to the server.
          */
-        public persist(user: IUser) {
-            this.dataService.persistUser(user)
+        public persist(group: IUserGroup) {
+            this.dataService.persistGroup(group)
                 .then((response: any) => {
                     if (this.isNew) {
-                        this.notifyService.toast('NEW_USER_CREATED');
+                        this.notifyService.toast('NEW_GROUP_CREATED');
                         this.isNew = false;
-                        this.$state.go('admin.users.detail', {uuid: response.uuid});
+                        this.$state.go('admin.groups.detail', {uuid: response.uuid});
                     } else {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.modified = false;
@@ -41,31 +41,27 @@ module meshAdminUi {
         /**
          * Delete the open content, displaying a confirmation dialog first before making the API call.
          */
-        public remove(user: IUser) {
-
-            this.showDeleteDialog()
-                .then(() => {
-                    return this.dataService.deleteUser(user);
-                })
+        public remove(group: IUserGroup) {
+            return this.showDeleteDialog()
+                .then(() => this.dataService.deleteGroup(group.uuid))
                 .then(() => {
                     this.notifyService.toast('Deleted');
-                    this.$state.go('admin.users.list');
+                    this.$state.go('admin.groups.list');
                 });
         }
 
         /**
-         * @returns {ng.IPromise}
          */
         private showDeleteDialog() {
             return this.confirmActionDialog.show({
-                title: 'Delete User?',
-                message: 'Are you sure you want to delete this user?'
+                title: 'Delete Group?',
+                message: 'Are you sure you want to delete this group?'
             });
         }
 
         public canDelete() {
-            if (this.user) {
-                return this.user.permissions && -1 < this.user.permissions.indexOf('delete') && !this.isNew;
+            if (this.group) {
+                return this.group.permissions && -1 < this.group.permissions.indexOf('delete') && !this.isNew;
             }
         }
 
@@ -73,13 +69,13 @@ module meshAdminUi {
          * Get the user data from the server, or in the case of a new user,
          * create an empty user object.
          */
-        private getUserData() {
-            var userId = this.$stateParams.uuid;
-            if (userId) {
-                return this.dataService.getUser(userId)
-                    .then(data => this.user = data);
+        private getGroupData() {
+            var uuid = this.$stateParams.uuid;
+            if (uuid && uuid !== 'new') {
+                return this.dataService.getGroup(uuid)
+                    .then(data => this.group = data);
             } else {
-                this.user = this.createEmptyUser();
+                this.group = this.createEmptyGroup();
                 this.isNew = true;
             }
         }
@@ -87,18 +83,14 @@ module meshAdminUi {
         /**
          * Create an empty user object.
          */
-        private createEmptyUser(): IUser {
+        private createEmptyGroup(): IUserGroup {
             return {
-                firstname: '',
-                lastname: '',
-                emailAddress: '',
-                username: '',
-                password: '',
-                groups: []
+                name: '',
+                roles: []
             };
         }
     }
 
     angular.module('meshAdminUi.admin')
-          .controller('UserDetailController', UserDetailController);
+          .controller('GroupDetailController', GroupDetailController);
 }
