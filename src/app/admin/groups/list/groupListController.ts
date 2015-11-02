@@ -26,8 +26,15 @@ module meshAdminUi {
                 this.notifyService.toast(`Group already assigned to role "${role.name}"`);
                 this.$timeout(() => group.roles = group.roles.filter(role => typeof role !== 'undefined'));
             } else {
+                this.dataService.addGroupToRole(group.uuid, role.uuid)
+                    .then(() => this.notifyService.toast(`Group ${group.name} added to role "${role.name}"`));
                 return role;
             }
+        }
+
+        public removeRole(role, group: IUserGroup) {
+            this.dataService.removeGroupFromRole(group.uuid, role.uuid)
+                .then(() => this.notifyService.toast(`Group ${group.name} removed from role "${role.name}"`));
         }
 
         public displayChipName(chip: any) {

@@ -23,7 +23,11 @@
                     </a>
                 </td>
                 <td>
-                    <md-chips ng-model="group.roles" md-require-match md-on-append="vm.validateRole($chip, group)" layout-fill>
+                    <md-chips ng-model="group.roles"
+                              md-require-match="true"
+                              md-on-append="vm.validateRole($chip, group)"
+                              md-on-remove="vm.removeRole($chip, group)">
+
                         <md-autocomplete
                                 md-selected-item="selectedItem"
                                 md-search-text="searchText"
@@ -32,10 +36,13 @@
                                 placeholder="Add a role">
                             <span md-highlight-text="searchText">{{ role.name }}</span>
                         </md-autocomplete>
+
                         <md-chip-template>
                             <span>{{ vm.displayChipName($chip) }}</span>
                         </md-chip-template>
+
                     </md-chips>
+
                 </td>
             </tr>
         </table>

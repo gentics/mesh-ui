@@ -227,7 +227,7 @@ module meshAdminUi {
         }
 
         public removeUserFromGroup(userId: string, groupId: string): ng.IPromise<any> {
-            return this.meshDelete('groups/' + groupId + '/users/' + userId, {});
+            return this.meshDelete('groups/' + groupId + '/users/' + userId);
         }
 
         /**
@@ -259,6 +259,14 @@ module meshAdminUi {
         private updateGroup(group: IUserGroup): ng.IPromise<IUserGroup> {
             return this.meshPut('groups/' + group.uuid, group);
         }
+
+        public addGroupToRole(groupUuid: string, roleUuid: string): ng.IPromise<any> {
+            return this.meshPut('groups/' + groupUuid + '/roles/' + roleUuid, {});
+        }
+        public removeGroupFromRole(groupUuid: string, roleUuid: string): ng.IPromise<any> {
+            return this.meshDelete('groups/' + groupUuid + '/roles/' + roleUuid);
+        }
+
 
         /**
          * Get the child tags for the parentTag in the given project.
