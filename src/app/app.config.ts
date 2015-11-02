@@ -8,16 +8,6 @@ module meshAdminUi {
 
     /**
      * App-wide config settings.
-     *
-     * @global meshConfig
-     *
-     * @param $stateProvider
-     * @param $locationProvider
-     * @param $urlRouterProvider
-     * @param $mdThemingProvider
-     * @param {dataServiceProvider} dataServiceProvider
-     * @param paginationTemplateProvider
-     * @param cfpLoadingBarProvider
      */
     function appConfig($stateProvider: ng.ui.IStateProvider,
                        $locationProvider: ng.ILocationProvider,

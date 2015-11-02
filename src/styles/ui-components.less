@@ -131,6 +131,23 @@ a.a-plain {
   }
 }
 
+/**
+  * Form elements
+  */
+md-input-container {
+  .md-input {
+    background-color: white;
+    border: 1px solid @color-alto;
+  }
+
+  &.md-input-focused {
+    .md-input {
+      border-width: 1px;
+      padding-bottom: 1px;
+    }
+  }
+}
+
 .noselect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

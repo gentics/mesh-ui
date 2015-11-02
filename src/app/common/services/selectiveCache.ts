@@ -77,9 +77,6 @@ module meshAdminUi {
             this.cachableRegexps = this.objectValues(cacheableGroups);
         }
 
-
-
-
         /**
          * Put a key-value pair into the cache as long as the key matches
          * one of the allowed urls set in `cacheableUrls`.
