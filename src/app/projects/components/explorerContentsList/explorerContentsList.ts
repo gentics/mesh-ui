@@ -16,6 +16,8 @@ module meshAdminUi {
             bindToController: true,
             scope: {
                 contents: '=',
+                itemsPerPage: '=',
+                onPageChange: '&'
             }
         };
     }
@@ -24,6 +26,7 @@ module meshAdminUi {
 
         public searchQuery: string = '';
         public filterNodes: Function;
+        private onPageChange: Function;
 
         constructor($scope: ng.IScope,
                     private $state: ng.ui.IStateService,
@@ -81,6 +84,10 @@ module meshAdminUi {
 
         public getBinaryRepresentation(item) {
             return item.path;
+        }
+
+        public pageChanged(newPageNumber: number, schemaUuid: string) {
+            this.onPageChange({ newPageNumber: newPageNumber, schemaUuid: schemaUuid });
         }
     }
 

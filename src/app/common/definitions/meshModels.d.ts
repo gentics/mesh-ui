@@ -49,6 +49,18 @@ declare module meshAdminUi {
         fields: INodeFields
     }
 
+    export interface IListMetaInfo {
+        currentPage: number;
+        pageCount: number;
+        perPage: number;
+        totalCount: number;
+    }
+
+    export interface IListResponse<T> {
+        _metainfo: IListMetaInfo,
+        data: T[];
+    }
+
     export interface ISchemaFieldDefinition {
         name: string;
         type: string;

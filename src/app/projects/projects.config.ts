@@ -26,7 +26,7 @@ module meshAdminUi {
                     }
                 },
                 resolve: {
-                    parentNode: updateContext
+                    currentNode: updateContext
                 }
             })
             .state('projectsList', {

@@ -1,6 +1,33 @@
 module meshAdminUi {
 
 
+    /**
+     * Interface used to specify which nodes to retrieve in each bundle.
+     */
+    export interface INodeBundleParams {
+        schema: INodeReference;
+        page: number;
+    }
+
+    export interface INodeBundleResponse {
+        schema: INodeReference;
+        _metainfo: IListMetaInfo;
+        data: INode[];
+    }
+
+    export interface ISearchQuery {
+        sort? : any;
+        query? : any;
+        filter? : any;
+    }
+
+    export interface INodeListQueryParams {
+        expand?: string;
+        page?: number;
+        perPage?: number;
+        orderBy?: string;
+    }
+
     angular.module('meshAdminUi.common')
         .config(dataServiceConfig)
         .provider('dataService', dataServiceProvider);
@@ -45,26 +72,26 @@ module meshAdminUi {
 
         private meshGet(url:string, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
-
             return this.$http.get(this.apiUrl + url, config)
-                .then(function (response) {
-                    return response.data;
-                });
+                .then(response => response.data);
         }
 
         private meshPut(url:string, data:any, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
-            return this.$http.put(this.apiUrl + url, data, config);
+            return this.$http.put(this.apiUrl + url, data, config)
+                .then(response => response.data);
         }
 
         private meshPost(url:string, data:any, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
-            return this.$http.post(this.apiUrl + url, data, config);
+            return this.$http.post(this.apiUrl + url, data, config)
+                .then(response => response.data);
         }
 
         private meshDelete(url:string, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
-            return this.$http.delete(this.apiUrl + url, config);
+            return this.$http.delete(this.apiUrl + url, config)
+                .then(response => response.data);
         }
 
         private makeConfigObject(params?:any, config?:any) {
@@ -208,7 +235,7 @@ module meshAdminUi {
         /**
          * Get the child tags for the parentTag in the given project.
          */
-        public getChildNodes(projectName: string, parentNodeId: string, queryParams?):ng.IPromise<any> {
+        public getChildNodes(projectName: string, parentNodeId: string, queryParams?): ng.IPromise<IListResponse<INode>> {
             var url = projectName + '/nodes/' + parentNodeId + '/children';
 
             return this.meshGet(url, queryParams)
@@ -216,6 +243,42 @@ module meshAdminUi {
                     result.data.sort(this.sortNodesBySchemaName);
                     return result;
                 });
+        }
+
+        /**
+         */
+        public getNodeBundles(projectName: string, nodeUuid: string, bundleParams: INodeBundleParams[], queryParams?: INodeListQueryParams): ng.IPromise<INodeBundleResponse[]> {
+            let promises = bundleParams.map(bundleParam => {
+                let query: ISearchQuery = {
+                    filter: {
+                        bool: {
+                            must: [
+                                { "term": { "project.name": projectName.toLowerCase() } },
+                                { "term": { "parentNode.uuid": nodeUuid } },
+                                { "term": { "schema.uuid": bundleParam.schema.uuid } }
+                            ]
+                        }
+                    },
+                    sort: [
+                        { "created": "asc" }
+                    ]
+                };
+                let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });
+                return this.searchNodes(query, bundleQueryParams);
+            });
+
+            return this.$q.all(promises)
+                .then(results => {
+                    return results
+                        .map((listResponse: IListResponse<INode>, index: number) => {
+                            return angular.extend(listResponse, { schema: bundleParams[index].schema });
+                        })
+                        .filter(bundle => 0 < bundle.data.length);
+                });
+        }
+
+        public searchNodes(query : ISearchQuery, queryParams?: INodeListQueryParams): ng.IPromise<IListResponse<INode>>  {
+            return this.meshPost('search/nodes', query, queryParams);
         }
 
         /**
@@ -349,16 +412,24 @@ module meshAdminUi {
         }
 
         /**
-         *
+         * Get all the schemas available in Mesh.
          */
-        public getSchemas(queryParams?):ng.IPromise<any> {
+        public getSchemas(queryParams?):ng.IPromise<IListResponse<ISchema>> {
             return this.meshGet('schemas', queryParams);
+        }
+
+        /**
+         * Get a list of schemas which are used by the children of a given node.
+         */
+        public getNodeChildrenSchemas(uuid: string): ng.IPromise<IListResponse<ISchema>> {
+            // TODO: there will be a proper Mesh API for this. for now just get all of them.
+            return this.getSchemas();
         }
 
         /**
          *
          */
-        public getSchema(uuid, queryParams?):ng.IPromise<any> {
+        public getSchema(uuid, queryParams?):ng.IPromise<ISchema> {
             return this.meshGet('schemas/' + uuid, queryParams);
         }
 
@@ -439,49 +510,6 @@ module meshAdminUi {
         private clearCache(groupName:string) {
             this.selectiveCache.remove(groupName);
         }
-
-        /**
-         * Normalize the response to remove the extra language properties
-         * and move the content of the currently-selected language up to
-         * the "properties" level.
-         *
-         * @param data
-         * @returns {*}
-         */
-        private unwrapCurrentLanguage(data) {
-            var lang = this.i18nService.getCurrentLang().code;
-
-            function extractCurrentLanguage(item) {
-                if (item.properties && item.properties[lang]) {
-                    item.properties = item.properties[lang];
-                }
-                return item;
-            }
-
-            if (data.constructor === Array) {
-                data.forEach(extractCurrentLanguage);
-            } else {
-                extractCurrentLanguage(data);
-            }
-
-            return data;
-        }
-
-        /**
-         * Re-wraps the object's "properties" in the current language, i.e. "properties" { ... }
-         * becomes "properties" { "en": ... }
-         * @param obj
-         */
-        private wrapCurrentLanguage(obj) {
-            var properties = angular.copy(obj.properties),
-                lang = this.i18nService.getCurrentLang().code;
-
-            obj.properties = {};
-            obj.properties[lang] = properties;
-            return obj;
-        }
-
-
     }
 
     /**
@@ -493,7 +521,6 @@ module meshAdminUi {
     function dataServiceConfig($httpProvider, selectiveCacheProvider) {
 
         $httpProvider.interceptors.push(languageRequestInterceptor);
-        $httpProvider.interceptors.push(listResponseInterceptor);
 
         // define the urls we wish to cache
         var projectName = '^[a-zA-Z\\-]*',
@@ -514,25 +541,6 @@ module meshAdminUi {
             'role': /^roles\/[a-z0-9]+/,
         };
         selectiveCacheProvider.setCacheableGroups(cacheable);
-    }
-
-    /**
-     * Extract the payload from the response, which is returned as the value of the "data" key.
-     *
-     * @param {Object} data
-     * @param {string} operation
-     * @returns {Object}
-     */
-    function listResponseInterceptor() {
-        return {
-            response: function (response) {
-                if (response.data._metainfo) {
-                    response.data.metadata = response.data._metainfo;
-                    delete response.data._metainfo;
-                }
-                return response;
-            }
-        };
     }
 
     function languageRequestInterceptor(i18nService) {

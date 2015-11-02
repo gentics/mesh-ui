@@ -6,7 +6,7 @@ module meshAdminUi {
     class ProjectController {
 
         public mobileEditView: boolean = false;
-        private schemas: ISchema;
+        private schemas: ISchema[];
         private createPermission: boolean;
         private contents = [];
         private projectName: string;

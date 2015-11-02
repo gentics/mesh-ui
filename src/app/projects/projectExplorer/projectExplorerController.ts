@@ -6,8 +6,8 @@ module meshAdminUi {
     class ProjectExplorerController {
 
         private totalItems: number = 0;
-        private itemsPerPage: number;
-        private currentPage: number;
+        private itemsPerPage: number = 3;
+        private currentPage: any;
         private createPermission: boolean;
         private contents = [];
         private projectName: string;
@@ -18,17 +18,14 @@ module meshAdminUi {
                      private dataService: DataService,
                      private contextService: ContextService,
                      private dispatcher: Dispatcher,
-                     private parentNode: INode) {
+                     private currentNode: INode) {
 
-            this.itemsPerPage = $location.search().per_page || 10;
-            this.currentPage = $location.search().page || 1;
+            this.currentPage = {};
             this.projectName = contextService.getProject().name;
-            this.createPermission = -1 < parentNode.permissions.indexOf('create');
+            this.createPermission = -1 < currentNode.permissions.indexOf('create');
 
             const updateContents = (pageNumber?) => {
-                pageNumber = pageNumber || this.currentPage;
-                this.updateContents(pageNumber, this.itemsPerPage);
-                this.populateChildNodes(pageNumber);
+                this.populateChildNodes();
             };
 
             $scope.$watch(() => $location.search().page, updateContents);
@@ -36,45 +33,55 @@ module meshAdminUi {
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents));
         }
 
-        /**
-         * Update the URL query params and vm values for
-         * current page and items per page. New content will be
-         * requested from the server via the watcher.
-         */
-        public updateContents(currentPage: number, itemsPerPage: number) {
-            this.currentPage = currentPage;
-            this.itemsPerPage = itemsPerPage;
-            this.$location.search('page', currentPage);
-            this.$location.search('per_page', itemsPerPage);
+        public goToPage() {
+
         }
 
         /**
          * Fill the vm with the child children of the current node.
          */
-        public populateChildNodes(page: number): ng.IPromise<any> {
+        public populateChildNodes(): ng.IPromise<any> {
             var projectName = this.contextService.getProject().name,
-                parentNodeId = this.parentNode.uuid,
-                queryParams = {
-                    page: page,
-                    per_page: this.itemsPerPage
+                nodeUuid = this.currentNode.uuid,
+                queryParams: INodeListQueryParams = {
+                    perPage: this.itemsPerPage
                 };
 
-            return this.dataService.getChildNodes(projectName, parentNodeId, queryParams)
+            return this.dataService.getNodeChildrenSchemas(nodeUuid)
                 .then(response => {
-                    var schemaGroups = {};
-                    response.data.forEach(node => {
-                        if (!schemaGroups[node.schema.name]) {
-                            schemaGroups[node.schema.name] = {schema: node.schema.name, nodes: []};
-                        }
-                        schemaGroups[node.schema.name].nodes.push(node);
+                    let bundleParams: INodeBundleParams[] = response.data.map(schema => {
+                        return {
+                            schema: {
+                                name: schema.name,
+                                uuid: schema.uuid
+                            },
+                            page: 1
+                        };
                     });
-                    this.contents.length = 0;
-                    for (var schemaName in schemaGroups) {
-                        this.contents.push(schemaGroups[schemaName]);
-                    }
-                    this.totalItems = response.metadata.totalCount;
+                    return this.dataService.getNodeBundles(projectName, nodeUuid, bundleParams, queryParams);
+                })
+                .then(response => {
+                    this.contents = response;
                     this.explorerContentsListService.init(this.totalItems, this.itemsPerPage);
                 });
+        }
+
+        public pageChanged(newPageNumber: number, schemaUuid: string) {
+            let bundleParams: INodeBundleParams[] = [{
+                schema: {
+                    name: '',
+                    uuid: schemaUuid
+                },
+                page: newPageNumber
+            }];
+
+            return this.dataService.getNodeBundles(this.projectName, this.currentNode.uuid, bundleParams, {
+                perPage: this.itemsPerPage
+            }).then(result => {
+                var index = this.contents.map(bundle => bundle.schema.uuid).indexOf(schemaUuid);
+                this.contents[index].data = result[0].data;
+                this.contents[index]._metainfo = result[0]._metainfo;
+            });
         }
     }
 
