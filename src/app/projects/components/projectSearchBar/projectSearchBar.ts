@@ -30,6 +30,10 @@ module meshAdminUi {
         public updateSearchTerm(event) {
             this.dispatcher.publish(this.dispatcher.events.explorerSearchTermChanged, event.target.value);
         }
+
+        public doSearch(term) {
+
+        }
     }
 
     /**

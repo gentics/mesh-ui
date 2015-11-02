@@ -5,32 +5,34 @@ module meshAdminUi {
      */
     class ProjectExplorerController {
 
-        private totalItems: number = 0;
-        private itemsPerPage: number = 3;
-        private currentPage: any;
+        private itemsPerPage: number = 10;
         private createPermission: boolean;
         private contents = [];
+        private childrenSchemas: ISchema[] = [];
         private projectName: string;
+        private searchParams: INodeSearchParams = {};
 
         constructor( private $scope: ng.IScope,
-                     private $location: ng.ILocationService,
-                     private explorerContentsListService: ExplorerContentsListService,
                      private dataService: DataService,
+                     private mu: MeshUtils,
                      private contextService: ContextService,
                      private dispatcher: Dispatcher,
                      private currentNode: INode) {
 
-            this.currentPage = {};
             this.projectName = contextService.getProject().name;
             this.createPermission = -1 < currentNode.permissions.indexOf('create');
 
-            const updateContents = (pageNumber?) => {
-                this.populateChildNodes();
+            const updateContents = () => this.populateChildNodes();
+            const searchTermHandler = (event, term: string) => {
+                this.searchParams.searchTerm = term;
+                mu.debounce(updateContents, 250)();
             };
 
-            $scope.$watch(() => $location.search().page, updateContents);
+            dispatcher.subscribe(dispatcher.events.explorerSearchTermChanged, searchTermHandler);
             dispatcher.subscribe(dispatcher.events.explorerContentsChanged, updateContents);
-            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents));
+            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents, searchTermHandler));
+
+            this.populateChildNodes();
         }
 
         public goToPage() {
@@ -49,33 +51,25 @@ module meshAdminUi {
 
             return this.dataService.getNodeChildrenSchemas(nodeUuid)
                 .then(response => {
+                    this.childrenSchemas = response.data;
                     let bundleParams: INodeBundleParams[] = response.data.map(schema => {
                         return {
-                            schema: {
-                                name: schema.name,
-                                uuid: schema.uuid
-                            },
+                            schema: schema,
                             page: 1
                         };
                     });
-                    return this.dataService.getNodeBundles(projectName, nodeUuid, bundleParams, queryParams);
+                    return this.dataService.getNodeBundles(projectName, nodeUuid, bundleParams, this.searchParams, queryParams);
                 })
-                .then(response => {
-                    this.contents = response;
-                    this.explorerContentsListService.init(this.totalItems, this.itemsPerPage);
-                });
+                .then(response => this.contents = response);
         }
 
         public pageChanged(newPageNumber: number, schemaUuid: string) {
             let bundleParams: INodeBundleParams[] = [{
-                schema: {
-                    name: '',
-                    uuid: schemaUuid
-                },
+                schema: this.childrenSchemas.filter(schema => schema.uuid === schemaUuid)[0],
                 page: newPageNumber
             }];
 
-            return this.dataService.getNodeBundles(this.projectName, this.currentNode.uuid, bundleParams, {
+            return this.dataService.getNodeBundles(this.projectName, this.currentNode.uuid, bundleParams, this.searchParams, {
                 perPage: this.itemsPerPage
             }).then(result => {
                 var index = this.contents.map(bundle => bundle.schema.uuid).indexOf(schemaUuid);

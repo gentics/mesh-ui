@@ -5,7 +5,7 @@ module meshAdminUi {
      * Interface used to specify which nodes to retrieve in each bundle.
      */
     export interface INodeBundleParams {
-        schema: INodeReference;
+        schema: ISchema;
         page: number;
     }
 
@@ -13,6 +13,11 @@ module meshAdminUi {
         schema: INodeReference;
         _metainfo: IListMetaInfo;
         data: INode[];
+    }
+
+    export interface INodeSearchParams {
+        searchTerm?: string;
+        tags?: string[]
     }
 
     export interface ISearchQuery {
@@ -247,7 +252,11 @@ module meshAdminUi {
 
         /**
          */
-        public getNodeBundles(projectName: string, nodeUuid: string, bundleParams: INodeBundleParams[], queryParams?: INodeListQueryParams): ng.IPromise<INodeBundleResponse[]> {
+        public getNodeBundles(projectName: string,
+                              nodeUuid: string,
+                              bundleParams: INodeBundleParams[],
+                              searchParams?: INodeSearchParams,
+                              queryParams?: INodeListQueryParams): ng.IPromise<INodeBundleResponse[]> {
             let promises = bundleParams.map(bundleParam => {
                 let query: ISearchQuery = {
                     filter: {
@@ -263,6 +272,14 @@ module meshAdminUi {
                         { "created": "asc" }
                     ]
                 };
+
+                if (searchParams.searchTerm) {
+                    let displayField = 'fields.' + bundleParam.schema.displayField;
+                    query.query = {
+                        "wildcard": { [displayField] : searchParams.searchTerm.toLowerCase() + '*' }
+                    };
+                }
+
                 let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });
                 return this.searchNodes(query, bundleQueryParams);
             });

@@ -14,10 +14,6 @@ module meshAdminUi {
         constructor() {
         }
 
-        public init(totalItems: number, itemsPerPage: number) {
-            this.totalItems = totalItems;
-        }
-
         /**
          * Toggle whether the items at index is selected.
          */
