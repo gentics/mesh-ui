@@ -26,7 +26,12 @@
                     </a>
                 </td>
                 <td>
-                    <md-chips ng-model="user.groups"  md-require-match="true" md-on-append="vm.validateGroup($chip, user)">
+
+                    <md-chips ng-model="user.groups"
+                              md-require-match="true"
+                              md-on-append="vm.validateGroup($chip, user)"
+                              md-on-remove="vm.removeGroup($chip, user)">
+
                         <md-autocomplete
                                 md-selected-item="selectedItem"
                                 md-search-text="searchText"
@@ -35,10 +40,13 @@
                                 placeholder="Add user to a group">
                             <span md-highlight-text="searchText">{{ group.name }}</span>
                         </md-autocomplete>
+
                         <md-chip-template>
                             <span>{{ vm.displayChipName($chip) }}</span>
                         </md-chip-template>
+
                     </md-chips>
+
                 </td>
             </tr>
         </table>

@@ -222,12 +222,12 @@ module meshAdminUi {
             return this.meshDelete('users/' + user.uuid);
         }
 
-        public addUserToGroup(userId, groupId):ng.IPromise<any> {
-            return this.meshPut('users/' + userId + '/groups/' + groupId, {});
+        public addUserToGroup(userId: string, groupId: string): ng.IPromise<any> {
+            return this.meshPut('groups/' + groupId + '/users/' + userId, {});
         }
 
-        public removeUserFromGroup(userId, groupId):ng.IPromise<any> {
-            return this.meshDelete('users/' + userId + '/groups/' + groupId, {});
+        public removeUserFromGroup(userId: string, groupId: string): ng.IPromise<any> {
+            return this.meshDelete('groups/' + groupId + '/users/' + userId, {});
         }
 
         /**
