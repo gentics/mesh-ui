@@ -1,103 +1,94 @@
-angular.module('meshAdminUi.admin')
-    .controller('ProjectDetailController', ProjectDetailController);
-
-/**
- *
- * @param {ng.ui.IStateService} $state
- * @param {ng.ui.IStateParamsService} $stateParams
- * @param {ConfirmActionDialog} confirmActionDialog
- * @param {DataService} dataService
- * @param {NotifyService} notifyService
- * @constructor
- */
-function ProjectDetailController($state, $stateParams, confirmActionDialog, dataService, notifyService) {
-    var vm = this;
-
-    vm.isNew = false;
-    vm.modified = false;
-    vm.persist = persist;
-    vm.remove = remove;
-    vm.canDelete = canDelete;
-
-    getProjectData();
+module meshAdminUi {
 
     /**
-     * Persist the project data back to the server.
      */
-    function persist() {
-        dataService.persistProject(vm.project)
-            .then(function(response) {
-                if (vm.isNew) {
-                    notifyService.toast('NEW_PROJECT_CREATED');
-                    vm.isNew = false;
-                    $state.go('admin.projects.detail', { uuid: response.uuid });
-                } else {
-                    notifyService.toast('SAVED_CHANGES');
-                    vm.modified = false;
-                }
-            });
-    }
+    class ProjectDetailController {
 
-    /**
-     * Delete the open content, displaying a confirmation dialog first before making the API call.
-     * @param project
-     */
-    function remove(project) {
+        private isNew: boolean = false;
+        private modified: boolean = false;
+        private project: IProject;
 
-        showDeleteDialog()
-            .then(function() {
-                return dataService.deleteProject(project);
-            })
-            .then(function() {
-                notifyService.toast('Deleted');
-                $state.go('admin.projects.list');
-            });
-    }
+        constructor(private $state: ng.ui.IStateService,
+                    private $stateParams: any,
+                    private confirmActionDialog: ConfirmActionDialog,
+                    private dataService: DataService,
+                    private notifyService: NotifyService) {
 
-    /**
-     * @returns {ng.IPromise}
-     */
-    function showDeleteDialog() {
-        return confirmActionDialog.show({
-            title: 'Delete Project?',
-            message: 'Are you sure you want to delete this project?'
-        });
-    }
-
-    function canDelete() {
-        if (vm.project) {
-            // TODO: reinstate once API returns permissions correctly, see https://jira.gentics.com/browse/CL-110
-            //return -1 < vm.project.perms.indexOf('delete') && !vm.isNew;
-            return !vm.isNew;
+            this.getProjectData();
         }
-    }
 
-    /**
-     * Get the project data from the server, or in the case of a new project,
-     * create an empty project object.
-     *
-     * @returns {ng.IPromise<Object>}
-     */
-    function getProjectData() {
-        var projectId = $stateParams.uuid;
-        if (projectId) {
-            return dataService.getProject($stateParams.uuid)
-                .then(function (data) {
-                    vm.project = data;
+        /**
+         * Persist the project data back to the server.
+         */
+        public persist() {
+            this.dataService.persistProject(this.project)
+                .then(response => {
+                    if (this.isNew) {
+                        this.notifyService.toast('NEW_PROJECT_CREATED');
+                        this.isNew = false;
+                        this.$state.go('admin.projects.detail', {uuid: response.uuid});
+                    } else {
+                        this.notifyService.toast('SAVED_CHANGES');
+                        this.modified = false;
+                    }
                 });
-        } else {
-            vm.project = createEmptyProject();
-            vm.isNew = true;
+        }
+
+        /**
+         * Delete the open content, displaying a confirmation dialog first before making the API call.
+         */
+        public remove(project: IProject) {
+
+            this.showDeleteDialog()
+                .then(() => this.dataService.deleteProject(project))
+                .then(() => {
+                    this.notifyService.toast('Deleted');
+                    this.$state.go('admin.projects.list');
+                });
+        }
+
+        /**
+         */
+        private showDeleteDialog(): ng.IPromise<any> {
+            return this.confirmActionDialog.show({
+                title: 'Delete Project?',
+                message: 'Are you sure you want to delete this project?'
+            });
+        }
+
+        public canDelete() {
+            if (this.project) {
+                return this.project.permissions && -1 < this.project.permissions.indexOf('delete') && !this.isNew;
+            }
+        }
+
+        /**
+         * Get the project data from the server, or in the case of a new project,
+         * create an empty project object.
+         */
+        private getProjectData(): ng.IPromise<any> {
+            var projectId = this.$stateParams.uuid;
+            if (projectId) {
+                return this.dataService.getProject(this.$stateParams.uuid)
+                    .then(response => this.project = response);
+            } else {
+                this.project = this.createEmptyProject();
+                this.isNew = true;
+            }
+        }
+
+        /**
+         * Create an empty project object.
+         */
+        private createEmptyProject(): IProject {
+            return {
+                name: '',
+                rootNodeUuid: ''
+            };
         }
     }
 
-    /**
-     * Create an empty project object.
-     * @returns {{name: string}}
-     */
-    function createEmptyProject() {
-        return {
-            name: ''
-        };
-    }
+    angular.module('meshAdminUi.admin')
+           .controller('ProjectDetailController', ProjectDetailController);
+
 }

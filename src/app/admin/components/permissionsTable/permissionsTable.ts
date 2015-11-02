@@ -23,7 +23,7 @@ function permissionsTableDirective(mu) {
          */
         var cancelItemsWatcher = $scope.$watch('vm.items', function(newVal) {
             if (newVal) {
-                vm.items = newVal.map(mu.rolePermissionsArrayToKeys);
+                vm.items = newVal.map(item => mu.rolePermissionsArrayToKeys(item));
                 cancelItemsWatcher();
             }
         });

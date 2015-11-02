@@ -1,11 +1,18 @@
-angular.module('meshAdminUi.admin')
-    .controller('ProjectListController', ProjectListController);
+module meshAdminUi {
 
-function ProjectListController(dataService) {
-    var vm = this;
+    class ProjectListController{
 
-    dataService.getProjects()
-        .then(function(data) {
-            vm.projects = data;
-        });
+        private projects: IProject[];
+
+        constructor(private dataService: DataService) {
+            dataService.getProjects()
+                        .then(response => this.projects = response.data);
+        }
+
+
+    }
+
+    angular.module('meshAdminUi.admin')
+            .controller('ProjectListController', ProjectListController);
+
 }

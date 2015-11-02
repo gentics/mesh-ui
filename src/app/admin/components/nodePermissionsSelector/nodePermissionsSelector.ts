@@ -2,8 +2,8 @@ module meshAdminUi {
 
     class NodePermissionsSelectorController {
 
-        private projectName: string = null;
-        private currentNodeId: string = null;
+        private currentProject: IProject = null;
+        private currentNode: INode = null;
         private breadcrumbsBase = [{
             name: 'Projects',
             uuid: null
@@ -28,10 +28,10 @@ module meshAdminUi {
             event.preventDefault();
 
             if (this.isProjectNode(node)) {
-                this.currentNodeId = node.rootNodeUuid;
-                this.projectName = node.name;
+                this.currentNode = <INode>{ uuid: node.rootNodeUuid};
+                this.currentProject = node;
             } else {
-                this.currentNodeId = node.uuid;
+                this.currentNode = node.uuid;
             }
             this.populateContents();
         }
@@ -39,7 +39,7 @@ module meshAdminUi {
         /**
          * Filter function for matching node names.
          */
-        public filterNodes(node: any): boolean {
+        public filterNodes = (node: any): boolean => {
             var name;
 
             if (this.filter !== '') {
@@ -52,20 +52,20 @@ module meshAdminUi {
             } else {
                 return true;
             }
-        }
+        };
 
         /**
          * Fetch the folders and contents which are children of the currentNodeId, and
          * concatenate into a single array, and populate the breadcrumbs.
          */
         private populateContents() {
-            if (this.currentNodeId === null) {
+            if (this.currentNode === null) {
                 this.loadProjects();
             } else {
-                this.dataService.getChildNodes(this.projectName, this.currentNodeId, this.queryParams)
+                this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid, this.queryParams)
                     .then(data => {
-                        this.items = data.data.map(node => this.mu.rolePermissionsArrayToKeys(node));
-                        return this.dataService.getBreadcrumb(this.projectName, this.currentNodeId);
+                        this.items = data.data.map(node => node => this.mu.rolePermissionsArrayToKeys(node));
+                        return this.dataService.getBreadcrumb(this.currentProject, this.currentNode);
                     })
                     .then(breadcrumbs => this.populateBreadcrumbs(breadcrumbs));
             }
@@ -99,7 +99,7 @@ module meshAdminUi {
          */
         private replaceRootnodeWithProjectName(item) {
             if (item.name === 'rootNode') {
-                item.name = this.projectName;
+                item.name = this.currentProject;
             }
             return item;
         }

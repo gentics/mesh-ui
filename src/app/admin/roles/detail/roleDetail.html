@@ -19,39 +19,62 @@
             <input type="text" ng-model="vm.role.name" ng-change="vm.modified = true">
         </md-input-container>
 
-        <node-permissions-selector
-                role-id="vm.roleId"></node-permissions-selector>
-        <tag-permissions-selector
-                role-id="vm.roleId"></tag-permissions-selector>
-        <permissions-table
-                root-name="Projects"
-                root-uuid=""
-                items="vm.projects"
-                item-name-field="item.name"></permissions-table>
-        <permissions-table
-                root-name="Schemas"
-                root-uuid=""
-                items="vm.schemas"
-                item-name-field="item.name"></permissions-table>
-        <permissions-table
-                root-name="Microschemas"
-                root-uuid=""
-                items="vm.microschemas"
-                item-name-field="item.name"></permissions-table>
-        <permissions-table
-                root-name="Users"
-                root-uuid=""
-                items="vm.users"
-                item-name-field="item.firstname + ' ' + item.lastname"></permissions-table>
-        <permissions-table
-                root-name="Groups"
-                root-uuid=""
-                items="vm.groups"
-                item-name-field="item.name"></permissions-table>
-        <permissions-table
-                root-name="Roles"
-                root-uuid=""
-                items="vm.roles"
-                item-name-field="item.name"></permissions-table>
+        <div ng-if="!vm.isNew">
+            <node-permissions-selector
+                    role-id="vm.roleId"></node-permissions-selector>
+            <tag-permissions-selector
+                    role-id="vm.roleId"></tag-permissions-selector>
+            <permissions-table
+                    root-name="Projects"
+                    root-uuid=""
+                    items="vm.projects"
+                    item-name-field="item.name"></permissions-table>
+            <permissions-table
+                    root-name="Schemas"
+                    root-uuid=""
+                    items="vm.schemas"
+                    item-name-field="item.name"></permissions-table>
+            <!--  <permissions-table
+                      root-name="Microschemas"
+                      root-uuid=""
+                      items="vm.microschemas"
+                      item-name-field="item.name"></permissions-table>-->
+            <permissions-table
+                    root-name="Users"
+                    root-uuid=""
+                    items="vm.users"
+                    item-name-field="item.username"></permissions-table>
+            <permissions-table
+                    root-name="Groups"
+                    root-uuid=""
+                    items="vm.groups"
+                    item-name-field="item.name"></permissions-table>
+            <permissions-table
+                    root-name="Roles"
+                    root-uuid=""
+                    items="vm.roles"
+                    item-name-field="item.name"></permissions-table>
+        </div>
+
+        <div layout="row" layout-align="center center" class="main-buttons">
+
+            <button class="btn btn-primary"
+                    ng-click="vm.persist(vm.role)"
+                    ng-disabled="!vm.modified"
+                    aria-label="save">
+                <i class="icon-save"></i>
+                <span ng-if="!vm.isNew" translate>UPDATE</span>
+                <span ng-if="vm.isNew" translate>CREATE</span>
+            </button>
+
+            <button class="btn btn-warn"
+                    ng-click="vm.remove(vm.role)"
+                    ng-disabled="!vm.canDelete()"
+                    aria-label="delete">
+                <i class="icon-delete"></i><span translate>DELETE</span>
+            </button>
+
+        </div>
+
     </form>
 </div>

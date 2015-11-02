@@ -1,44 +1,35 @@
-angular.module('meshAdminUi.admin')
-    .directive('tagPermissionsSelector', tagPermissionsSelectorDirective);
+module meshAdminUi {
 
-/**
- *
- * @param {ng.IQService} $q
- * @param {DataService} dataService
- * @param {meshUtils} mu
- * @returns {{}}
- */
-function tagPermissionsSelectorDirective($q, dataService, mu) {
+    class TagPermissionsSelectorController {
 
-    function tagPermissionsSelectorController() {
-        var vm = this,
-            queryParams = {
-                "role": vm.roleId
-            };
+        private queryParams;
+        private collapsed: boolean = true;
+        private filter: string = '';
+        private items = [];
+        private roleId: string;
+        private expand: string;
 
-        vm.filterTags = filterTags;
-        vm.toggleExpand = toggleExpand;
-        vm.collapsed = true;
-        vm.filter = '';
-        vm.items = [];
+        constructor(private $q: ng.IQService,
+                    private dataService: DataService,
+                    private mu: MeshUtils) {
 
-        populateItems();
+            this.queryParams = { "role": this.roleId };
+            this.populateItems();
+        }
 
         /**
          * Filter function for matching node names.
-         * @param {Object} item
-         * @returns {boolean}
          */
-        function filterTags(item) {
+        public filterTags = (item): boolean => {
             var name;
 
-            if (vm.filter !== '') {
+            if (this.filter !== '') {
                 if (item.name) {
                     name = item.name;
                 } else {
                     name = item.fields.name;
                 }
-                return name.toLowerCase().indexOf(vm.filter.toLowerCase()) > -1;
+                return name.toLowerCase().indexOf(this.filter.toLowerCase()) > -1;
             } else {
                 return true;
             }
@@ -46,68 +37,72 @@ function tagPermissionsSelectorDirective($q, dataService, mu) {
 
         /**
          * Toggle whether the tags in a tag family should be expanded.
-         * @param {Object} tagFamily
          */
-        function toggleExpand(tagFamily) {
+        public toggleExpand(tagFamily) {
             if (tagFamily.description) {
-                if (vm.expand === tagFamily.uuid) {
-                    vm.expand = '';
+                if (this.expand === tagFamily.uuid) {
+                    this.expand = '';
                 } else {
-                    vm.expand = tagFamily.uuid;
+                    this.expand = tagFamily.uuid;
                 }
             }
         }
 
         /**
-         * Populate the vm.items array by recursing through all projects/tagFamilies/tags and flattening the
+         * Populate the this.items array by recursing through all projects/tagFamilies/tags and flattening the
          * results into an array.
          *
          */
-        function populateItems() {
-            return dataService.getProjects(queryParams)
-                .then(function(projects) {
+        private populateItems() {
+            return this.dataService.getProjects(this.queryParams)
+                .then(response => {
                     var promises = [];
-                    projects.forEach(function(project) {
+                    response.data.forEach(project => {
                         promises.push(project);
-                        promises = promises.concat(populateTagFamilies(project));
+                        promises = promises.concat(this.populateTagFamilies(project));
                     });
-                    return $q.all(promises);
+                    return this.$q.all(promises);
                 })
-                .then(mu.flatten)
-                .then(function(items) {
-                    vm.items = items.map(mu.rolePermissionsArrayToKeys);
+                .then(result => this.mu.flatten(result))
+                .then(items => {
+                    this.items = items.map(item => this.mu.rolePermissionsArrayToKeys(item));
                 });
         }
 
         /**
          * Return an array of tagFamilies for the project with the tags of each tagFamily following the
          * tagFamily in the array.
-         *
-         * @param {Object} project
-         * @returns {IPromise<TResult>}
          */
-        function populateTagFamilies(project) {
-            return dataService.getTagFamilies(project.name, queryParams)
-                .then(function(tagFamilies) {
+        private populateTagFamilies(project: any): ng.IPromise<any> {
+            return this.dataService.getTagFamilies(project.name, this.queryParams)
+                .then(response => {
                     var promises = [];
-                    project.tagFamilies = tagFamilies;
-                    project.tagFamilies.forEach(function(tagFamily) {
-                        promises.push($q.when(tagFamily));
-                        promises = promises.concat(dataService.getTags(project.name, tagFamily.uuid, queryParams));
+                    project.tagFamilies = response.data;
+                    project.tagFamilies.forEach(tagFamily => {
+                        promises.push(this.$q.when(tagFamily));
+                        promises = promises.concat(this.dataService.getTags(project.name, tagFamily.uuid, this.queryParams));
                     });
-                    return $q.all(promises);
+                    return this.$q.all(promises);
                 });
         }
     }
 
-    return {
-        restrict: 'E',
-        templateUrl: 'admin/components/tagPermissionsSelector/tagPermissionsSelector.html',
-        controller: tagPermissionsSelectorController,
-        controllerAs: 'vm',
-        bindToController: true,
-        scope: {
-            roleId: '='
-        }
-    };
+    function tagPermissionsSelectorDirective() {
+
+        return {
+            restrict: 'E',
+            templateUrl: 'admin/components/tagPermissionsSelector/tagPermissionsSelector.html',
+            controller: 'TagPermissionsSelectorController',
+            controllerAs: 'vm',
+            bindToController: true,
+            scope: {
+                roleId: '='
+            }
+        };
+    }
+
+    angular.module('meshAdminUi.admin')
+        .directive('tagPermissionsSelector', tagPermissionsSelectorDirective)
+        .controller('TagPermissionsSelectorController', TagPermissionsSelectorController);
+
 }

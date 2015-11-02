@@ -28,6 +28,7 @@
                 <td>
 
                     <md-chips ng-model="user.groups"
+                              readonly="user.username === 'admin'"
                               md-require-match="true"
                               md-on-append="vm.validateGroup($chip, user)"
                               md-on-remove="vm.removeGroup($chip, user)">

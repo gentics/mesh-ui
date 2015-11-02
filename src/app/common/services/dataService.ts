@@ -77,26 +77,33 @@ module meshAdminUi {
 
         private meshGet(url:string, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
-            return this.$http.get(this.apiUrl + url, config)
+            return this.$http.get(this.makeFullUrl(url), config)
                 .then(response => response.data);
         }
 
         private meshPut(url:string, data:any, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
-            return this.$http.put(this.apiUrl + url, data, config)
+            return this.$http.put(this.makeFullUrl(url), data, config)
                 .then(response => response.data);
         }
 
         private meshPost(url:string, data:any, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
-            return this.$http.post(this.apiUrl + url, data, config)
+            return this.$http.post(this.makeFullUrl(url), data, config)
                 .then(response => response.data);
         }
 
         private meshDelete(url:string, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
-            return this.$http.delete(this.apiUrl + url, config)
+            return this.$http.delete(this.makeFullUrl(url), config)
                 .then(response => response.data);
+        }
+
+        /**
+         * Attach the given URL to the configured API URL and url-encode it.
+         */
+        private makeFullUrl(url: string): string {
+            return this.apiUrl + encodeURI(url);
         }
 
         private makeConfigObject(params?:any, config?:any) {
@@ -110,7 +117,7 @@ module meshAdminUi {
         /**
          * Get all projects as a list.
          */
-        public getProjects(queryParams?:any): ng.IPromise<any> {
+        public getProjects(queryParams?:any): ng.IPromise<IListResponse<IProject>> {
             return this.meshGet('projects', queryParams);
         }
 
@@ -210,11 +217,11 @@ module meshAdminUi {
         }
 
         private createUser(user: IUser): ng.IPromise<IUser> {
-            return this.meshPost('users', user).then(response => response.data);
+            return this.meshPost('users', user);
         }
 
         private updateUser(user: IUser): ng.IPromise<IUser> {
-            return this.meshPut('users/' + user.uuid, user).then(response => response.data);
+            return this.meshPut('users/' + user.uuid, user);
         }
 
         public deleteUser(user): ng.IPromise<any> {
@@ -441,7 +448,7 @@ module meshAdminUi {
 
         /**
          */
-        public getTagFamilies(projectName, queryParams?):ng.IPromise<any> {
+        public getTagFamilies(projectName, queryParams?):ng.IPromise<IListResponse<any>> {
             var url = projectName + '/tagFamilies/';
             return this.meshGet(url, queryParams);
         }
@@ -482,7 +489,7 @@ module meshAdminUi {
         }
 
         /**
-         *
+         * TODO: not yet implemented in Mesh.
          */
         public getMicroschemas(queryParams?):ng.IPromise<any> {
             return this.meshGet('microschemas', queryParams);
@@ -501,12 +508,22 @@ module meshAdminUi {
         public getRoles(queryParams?):ng.IPromise<any> {
             return this.meshGet('roles', queryParams);
         }
-
-        /**
-         *
-         */
         public getRole(uuid, queryParams?):ng.IPromise<any> {
             return this.meshGet('roles/' + uuid, queryParams);
+        }
+        public persistRole(role: IUserRole): ng.IPromise<IUserRole> {
+            let isNew = !role.hasOwnProperty('created');
+            this.clearCache('roles');
+            return isNew ? this.createRole(role) : this.updateRole(role);
+        }
+        private createRole(role: IUserRole): ng.IPromise<IUserRole> {
+            return this.meshPost('roles', role);
+        }
+        private updateRole(role: IUserRole): ng.IPromise<IUserRole> {
+            return this.meshPut('roles/' + role.uuid, role);
+        }
+        public deleteRole(role: IUserRole): ng.IPromise<any> {
+            return this.meshDelete('roles/' + role.uuid);
         }
 
         /**

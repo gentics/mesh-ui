@@ -24,6 +24,7 @@
                 </td>
                 <td>
                     <md-chips ng-model="group.roles"
+                              readonly="group.name === 'admin'"
                               md-require-match="true"
                               md-on-append="vm.validateRole($chip, group)"
                               md-on-remove="vm.removeRole($chip, group)">

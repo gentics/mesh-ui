@@ -6,7 +6,6 @@ module meshAdminUi {
         private modified: boolean;
         private role: IUserRole;
         private schemas: ISchema[];
-        private microschemas: any[];
         private projects: IProject[];
         private roles: IUserRole[];
         private groups: IUserGroup[];
@@ -14,36 +13,36 @@ module meshAdminUi {
 
         constructor(
             private $q: ng.IQService,
+            private $state: ng.ui.IStateService,
             private $stateParams: any,
+            private notifyService: NotifyService,
             private dataService: DataService) {
 
             this.roleId = $stateParams.uuid;
-            this.isNew = false;
+            this.isNew = this.roleId === 'new';
             this.modified = false;
 
-            this.getRoleData();
+            if (!this.isNew) {
+                this.getRoleData();
 
-            var queryParams = {
-                "role": $stateParams.uuid
-            };
-
-            $q.all([
-                dataService.getSchemas(queryParams),
-                dataService.getMicroschemas(queryParams),
-                dataService.getProjects(queryParams),
-                dataService.getRoles(queryParams),
-                dataService.getGroups(queryParams),
-                dataService.getUsers(queryParams)
-            ])
-                .then((dataArray: any[]) => {
-                    this.schemas = dataArray[0].data;
-                    this.microschemas = dataArray[1].data;
-                    this.projects = dataArray[2].data;
-                    this.roles = dataArray[3].data;
-                    this.groups = dataArray[4].data;
-                    this.users = dataArray[5].data;
-                });
-
+                var queryParams = {
+                    "role": $stateParams.uuid
+                };
+                $q.all([
+                        dataService.getSchemas(queryParams),
+                        dataService.getProjects(queryParams),
+                        dataService.getRoles(queryParams),
+                        dataService.getGroups(queryParams),
+                        dataService.getUsers(queryParams)
+                    ])
+                    .then((dataArray:any[]) => {
+                        this.schemas = dataArray[0].data;
+                        this.projects = dataArray[1].data;
+                        this.roles = dataArray[2].data;
+                        this.groups = dataArray[3].data;
+                        this.users = dataArray[4].data;
+                    });
+            }
         }
 
         /**
@@ -58,6 +57,20 @@ module meshAdminUi {
                 this.role = this.createEmptyRole();
                 this.isNew = true;
             }
+        }
+
+        public persist(role: IUserRole) {
+            this.dataService.persistRole(role)
+                .then(response => {
+                    if (this.isNew) {
+                        this.notifyService.toast('NEW_ROLE_CREATED');
+                        this.isNew = false;
+                        this.$state.go('admin.roles.detail', {uuid: response.uuid});
+                    } else {
+                        this.notifyService.toast('SAVED_CHANGES');
+                        this.modified = false;
+                    }
+                });
         }
 
         /**
