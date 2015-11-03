@@ -8,7 +8,7 @@ module meshAdminUi {
         private itemsPerPage: number = 10;
         private createPermission: boolean;
         private contents = [];
-        private childrenSchemas: ISchema[] = [];
+        private childrenSchemas: INodeReference[] = [];
         private projectName: string;
         private searchParams: INodeSearchParams = {};
 
@@ -49,17 +49,20 @@ module meshAdminUi {
                     perPage: this.itemsPerPage
                 };
 
-            return this.dataService.getNodeChildrenSchemas(nodeUuid)
-                .then(response => {
-                    this.childrenSchemas = response.data;
-                    let bundleParams: INodeBundleParams[] = response.data.map(schema => {
-                        return {
-                            schema: schema,
-                            page: 1
-                        };
-                    });
-                    return this.dataService.getNodeBundles(projectName, nodeUuid, bundleParams, this.searchParams, queryParams);
-                })
+            this.childrenSchemas = Object.keys(this.currentNode.childrenInfo).map((schemaName: string) => {
+                return {
+                    uuid: this.currentNode.childrenInfo[schemaName].schemaUuid,
+                    name: schemaName
+                };
+            });
+
+            let bundleParams: INodeBundleParams[] = this.childrenSchemas.map(schemaRef => {
+                return {
+                    schema: schemaRef,
+                    page: 1
+                };
+            });
+            return this.dataService.getNodeBundles(projectName, nodeUuid, bundleParams, this.searchParams, queryParams)
                 .then(response => this.contents = response);
         }
 

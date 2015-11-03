@@ -35,7 +35,12 @@ declare module meshAdminUi {
     }
 
     export interface INode extends IMeshBaseProps{
-        children?: string[];
+        childrenInfo?: {
+            [schemaName: string]: {
+                count: number;
+                schemaUuid: string;
+            };
+        };
         displayField?: string;
         language?: string;
         published?: boolean;

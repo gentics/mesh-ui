@@ -5,7 +5,7 @@ module meshAdminUi {
      * Interface used to specify which nodes to retrieve in each bundle.
      */
     export interface INodeBundleParams {
-        schema: ISchema;
+        schema: INodeReference;
         page: number;
     }
 
