@@ -1,0 +1,22 @@
+<div class="app-content">
+    <h1 class="page-title">Schemas</h1>
+
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <h2 class="md-title" flex >Schemas</h2>
+            <button class="btn btn-small btn-primary" aria-label="Create Schema" ui-sref="admin.schemas.create">
+                Create New Schema
+            </button>
+        </div>
+    </md-toolbar>
+
+    <md-content layout-padding class="admin-content-block">
+        <table class="mh-table">
+            <tr class="" ng-repeat="schema in vm.schemas track by $index">
+                <td>
+                    <a ui-sref="admin.schemas.detail({ uuid: schema.uuid })"><strong>{{:: schema.name}}</strong></a>
+                <td>
+            </tr>
+        </table>
+    </md-content>
+</div>

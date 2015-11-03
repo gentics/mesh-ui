@@ -82,14 +82,14 @@ declare module meshAdminUi {
     }
 
     export interface ISchema {
-        binary: boolean;
+        binary?: boolean;
         displayField: string;
         fields: ISchemaFieldDefinition[];
         folder: boolean;
-        meshVersion: string;
+        meshVersion?: string;
         name: string;
-        permissions: string[];
-        uuid: string;
+        permissions?: string[];
+        uuid?: string;
     }
 
     export interface INodeFieldModel extends ISchemaFieldDefinition{

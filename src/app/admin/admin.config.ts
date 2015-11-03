@@ -146,11 +146,37 @@ module meshAdminUi {
                     }
                 }
             })
+
             .state('admin.schemas', {
+                abstract: true
+            })
+            .state('admin.schemas.list', {
                 url: '/schemas',
                 views: {
                     'main@': {
-                        templateUrl: 'admin/schemas/schemas.html'
+                        templateUrl: 'admin/schemas/list/schemaList.html',
+                        controller: 'SchemaListController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('admin.schemas.detail', {
+                url: '/schemas/:uuid',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/schemas/detail/schemaDetail.html',
+                        controller: 'SchemaDetailController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('admin.schemas.create', {
+                url: '/schemas/new',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/schemas/detail/schemaDetail.html',
+                        controller: 'SchemaDetailController',
+                        controllerAs: 'vm'
                     }
                 }
             });

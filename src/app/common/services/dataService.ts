@@ -504,6 +504,24 @@ module meshAdminUi {
             return this.meshDelete('schemas/' + schemaUuid + '/projects/' + projectUuid);
         }
 
+        public persistSchema(schema: ISchema): ng.IPromise<ISchema> {
+            let isNew = !schema.hasOwnProperty('created');
+            this.clearCache('schemas');
+            return isNew ? this.createSchema(schema) : this.updateSchema(schema);
+
+        }
+        private createSchema(schema: ISchema): ng.IPromise<ISchema> {
+            return this.meshPost('schemas', schema);
+        }
+        private updateSchema(schema: ISchema): ng.IPromise<ISchema> {
+            return this.meshPut('schemas/' + schema.uuid, schema);
+        }
+
+        public deleteSchema(schema: ISchema): ng.IPromise<ISchema> {
+            return this.meshDelete('schemas/' + schema.uuid);
+        }
+
+
         /**
          * TODO: not yet implemented in Mesh.
          */
