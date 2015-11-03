@@ -1,21 +1,32 @@
 module meshAdminUi {
 
+    interface INodeWithEmbeddedProject extends INode {
+        name?: string;
+        project?: IProject;
+    }
+
     class NodePermissionsSelectorController {
 
         private currentProject: IProject = null;
-        private currentNode: INode = null;
-        private breadcrumbsBase = [{
+        private currentNode: any = null;
+        private breadcrumbsBase: any = [{
             name: 'Projects',
             uuid: null
         }];
         private queryParams;
         private collapsed: boolean = true;
         private filter: string = '';
-        private items: any[] = [];
+        private nodes: any[] = [];
+        private nodePermissions: {
+            [itemUuid: string]: any
+        } = {};
         private roleId: string;
         private breadcrumbs;
+        private onToggle: Function;
 
         constructor(private dataService: DataService,
+                    private $q: ng.IQService,
+                    private $timeout: ng.ITimeoutService,
                     private mu: MeshUtils) {
             this.queryParams = { 'role': this.roleId };
             this.populateContents();
@@ -28,10 +39,13 @@ module meshAdminUi {
             event.preventDefault();
 
             if (this.isProjectNode(node)) {
-                this.currentNode = <INode>{ uuid: node.rootNodeUuid};
                 this.currentProject = node;
+                this.currentNode = { uuid: node.rootNodeUuid };
+            } else if (node.project) {
+                this.currentProject = node.project;
+                this.currentNode = node;
             } else {
-                this.currentNode = node.uuid;
+                this.currentNode = node;
             }
             this.populateContents();
         }
@@ -59,12 +73,14 @@ module meshAdminUi {
          * concatenate into a single array, and populate the breadcrumbs.
          */
         private populateContents() {
-            if (this.currentNode === null) {
+            this.nodes.length = 0;
+            if (this.currentNode === null || this.currentNode.uuid === null) {
                 this.loadProjects();
             } else {
                 this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid, this.queryParams)
                     .then(data => {
-                        this.items = data.data.map(node => node => this.mu.rolePermissionsArrayToKeys(node));
+                        this.nodes = data.data;
+                        this.createNodePermissionsArray(this.nodes);
                         return this.dataService.getBreadcrumb(this.currentProject, this.currentNode);
                     })
                     .then(breadcrumbs => this.populateBreadcrumbs(breadcrumbs));
@@ -72,14 +88,38 @@ module meshAdminUi {
         }
 
         /**
-         * Fetch all projects and put them into the "items" array.
+         * Fetch all projects and then get the root node for each, and load the rootNodes into the nodes collection.
          */
         private loadProjects() {
+            let projects;
+
             this.dataService.getProjects(this.queryParams)
-                .then(data => {
-                    this.items = data.data.map(project => this.mu.rolePermissionsArrayToKeys(project));
+                .then(response => {
+                    projects = response.data;
+                    return this.$q.all(projects.map(project => {
+                        return this.dataService.getNode(project.name, project.rootNodeUuid, this.queryParams);
+                    }));
+                })
+                .then(nodes => {
+                    this.nodes = nodes;
+                    this.nodes.forEach((node: any, i: number) => {
+                        node.name = projects[i].name;
+                        node.project = projects[i];
+                    });
+                    this.createNodePermissionsArray(this.nodes);
                     this.breadcrumbs = this.breadcrumbsBase;
                 });
+        }
+
+        /**
+         * populate the NodePermissions object
+         * @param nodes
+         */
+        private createNodePermissionsArray(nodes) {
+            this.nodePermissions = {};
+            nodes.forEach(node => {
+                this.nodePermissions[node.uuid] = this.mu.rolePermissionsArrayToKeys(node);
+            });
         }
 
         /**
@@ -87,25 +127,42 @@ module meshAdminUi {
          *  the `breadcrumbBase` array.
          */
         private populateBreadcrumbs(data: any[]) {
-            this.breadcrumbs = this.breadcrumbsBase.concat(data.map(item => this.replaceRootnodeWithProjectName(item)));
+            let breadcrumbs = this.breadcrumbsBase.slice(0);
+            if (!this.currentNode.project) {
+                breadcrumbs = this.breadcrumbsBase.concat([this.currentProject]);
+            }
+            this.breadcrumbs = breadcrumbs.concat(data.map(item => this.replaceRootnodeWithProjectName(item)));
         }
 
         /**
          * Used to map over the breadcrumb array and replace the rootNode with the
          * current project name.
-         *
-         * @param {Object} item
-         * @returns {Object}
          */
         private replaceRootnodeWithProjectName(item) {
             if (item.name === 'rootNode') {
-                item.name = this.currentProject;
+                item.name = this.currentProject.name;
             }
             return item;
         }
 
         private isProjectNode(node) {
             return node.hasOwnProperty('rootNodeUuid');
+        }
+
+        /**
+         * Call the onToggle function with the required args. It is inside a $timeout() to ensure that the
+         * model has had a chance to update before making the call.
+         */
+        public toggle(node, recursive: boolean) {
+            this.$timeout(() => {
+                let permObject = this.nodePermissions[node.uuid],
+                    permsArray = Object.keys(permObject).filter(key => permObject[key] === true),
+                    permissions: IPermissionsRequest = {
+                        permissions: permsArray,
+                        recursive: recursive
+                    };
+                this.onToggle({ node: node, project: this.currentProject, permissions: permissions });
+            });
         }
     }
 
@@ -117,7 +174,9 @@ module meshAdminUi {
             controllerAs: 'vm',
             bindToController: true,
             scope: {
-                roleId: '='
+                isReadonly: '=',
+                roleId: '=',
+                onToggle: '&'
             }
         };
     }

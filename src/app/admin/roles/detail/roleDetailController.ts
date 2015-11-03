@@ -87,6 +87,10 @@ module meshAdminUi {
             return !this.role || this.role.name === 'admin' || -1 === this.role.permissions.indexOf('update');
         }
 
+        public setNodePermissions(node: INode, project:IProject, permissions: IPermissionsRequest) {
+            this.dataService.setNodePermissions(this.role.uuid, project.uuid, node.uuid, permissions)
+                .then(() => this.notifyService.toast(`Permissions set on node "${node.fields[node.displayField]}"`));
+        }
         public setProjectPermissions(project: IProject, permissions: IPermissionsRequest) {
             this.dataService.setProjectPermissions(this.role.uuid, project.uuid, permissions)
                 .then(() => this.notifyService.toast(`Permissions set on project "${project.name}"`));
