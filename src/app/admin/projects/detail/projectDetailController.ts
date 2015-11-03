@@ -48,6 +48,14 @@ module meshAdminUi {
         }
 
         /**
+         * The project name should not have any spaces in it.
+         */
+        public nameChanged() {
+            this.modified = true;
+            this.project.name = this.project.name.replace(/\s+/, '');
+        }
+
+        /**
          */
         private showDeleteDialog(): ng.IPromise<any> {
             return this.confirmActionDialog.show({
