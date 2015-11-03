@@ -83,11 +83,11 @@ module meshAdminUi {
         private getProjectData(): ng.IPromise<any> {
             var projectId = this.$stateParams.uuid;
             if (projectId) {
-                return this.$q.all([
+                return this.$q.all<any>([
                     this.dataService.getProject(this.$stateParams.uuid),
                     this.dataService.getSchemas()
                 ])
-                    .then(responses => {
+                    .then((responses: any[])=> {
                         this.project = responses[0];
                         this.schemas = responses[1].data;
                         return this.dataService.getProjectSchemas(this.project.name);

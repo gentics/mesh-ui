@@ -124,7 +124,7 @@ module meshAdminUi {
         /**
          * Get the details of a single project specified by uuid.
          */
-        public getProject(uuid:string, queryParams?:any):ng.IPromise<any> {
+        public getProject(uuid:string, queryParams?:any): ng.IPromise<IProject> {
             return this.meshGet('projects/' + uuid, queryParams);
         }
 

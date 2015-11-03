@@ -21,7 +21,7 @@ module meshAdminUi {
                     private $cookies) {
 
             this._isLoggedIn = $cookies.get('isLoggedIn') === 'true';
-            this.authString = $cookies.get('authString') === '';
+            this.authString = $cookies.get('authString') || '';
             this.onLogInCallbacks = [];
             this.onLogOutCallbacks = [];
         }
@@ -55,7 +55,7 @@ module meshAdminUi {
             $http.get('/api/v1/auth/me', config)
                 .then(response => {
                     if (response.status === 200) {
-                        this._currentUser = response.data;
+                        this._currentUser = <IUser>response.data;
                         this.authString = authHeaderValue;
                         this._isLoggedIn = true;
                         this.$cookies.put('isLoggedIn', 'true');
