@@ -473,6 +473,10 @@ module meshAdminUi {
             return this.meshGet('schemas', queryParams);
         }
 
+        public getProjectSchemas(projectName: string): ng.IPromise<IListResponse<ISchema>> {
+            return this.meshGet(projectName + '/schemas');
+        }
+
         /**
          * Get a list of schemas which are used by the children of a given node.
          */
@@ -486,6 +490,13 @@ module meshAdminUi {
          */
         public getSchema(uuid, queryParams?):ng.IPromise<ISchema> {
             return this.meshGet('schemas/' + uuid, queryParams);
+        }
+
+        public addSchemaToProject(schemaUuid: string, projectUuid: string): ng.IPromise<any> {
+            return this.meshPut('schemas/' + schemaUuid + '/projects/' + projectUuid, {});
+        }
+        public removeSchemaFromProject(schemaUuid: string, projectUuid: string): ng.IPromise<any> {
+            return this.meshDelete('schemas/' + schemaUuid + '/projects/' + projectUuid);
         }
 
         /**

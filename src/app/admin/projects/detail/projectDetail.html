@@ -18,6 +18,44 @@
             <label>Project Name</label>
             <input type="text" ng-model="vm.project.name" ng-change="vm.nameChanged()" >
         </md-input-container>
+
+        <div ng-if="!vm.isNew">
+
+            <md-toolbar class="admin-toolbar">
+                <div class="md-toolbar-tools">
+                    <h2 class="md-title" flex >
+                        Project Schemas
+                    </h2>
+                    <md-input-container flex>
+                        <label>Filter</label>
+                        <input ng-model="vm.filter">
+                    </md-input-container>
+                </div>
+            </md-toolbar>
+
+            <md-content layout-padding class="admin-content-block">
+
+                <div class="permissions-table">
+                    <table class="mh-table">
+                        <tbody>
+                        <tr ng-repeat="schema in vm.schemas | filter: vm.filter track by schema.uuid">
+                            <td>
+                                <md-checkbox md-no-ink aria-label="Add schema to project"
+                                             ng-model="vm.projectSchemas[schema.uuid]"
+                                             ng-change="vm.toggleSchema(schema)"></md-checkbox>
+                            </td>
+                            <td>
+                                {{:: schema.name }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </md-content>
+
+
+        </div>
+
     </form>
 
     <div layout="row" layout-align="center center" class="main-buttons">

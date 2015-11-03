@@ -10,9 +10,8 @@
     <table class="mh-table">
         <tr ng-repeat="project in vm.projects">
             <td>
-                <md-checkbox md-no-ink ng-checked="vm.isSelected($index)" aria-label="Select All"></md-checkbox>
+                <a ui-sref="admin.projects.detail({ uuid: project.uuid })"><strong>{{:: project.name }}</strong></a>
             </td>
-            <td ui-sref="admin.projects.detail({ uuid: project.uuid })">{{:: project.name }}</td>
         </tr>
     </table>
 </div>

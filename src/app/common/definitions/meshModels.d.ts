@@ -84,7 +84,6 @@ declare module meshAdminUi {
         meshVersion: string;
         name: string;
         permissions: string[];
-        projects: any[]
         uuid: string;
     }
 

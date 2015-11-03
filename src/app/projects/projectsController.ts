@@ -47,7 +47,7 @@ module meshAdminUi {
          * Fill the vm with all available schemas.
          */
         public populateSchemas() {
-            this.dataService.getSchemas()
+            this.dataService.getProjectSchemas(this.projectName)
                 .then(result => this.schemas = result.data);
         }
 

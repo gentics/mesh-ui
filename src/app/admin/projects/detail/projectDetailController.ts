@@ -1,5 +1,6 @@
 module meshAdminUi {
 
+    import IPromise = ng.IPromise;
     /**
      */
     class ProjectDetailController {
@@ -7,8 +8,13 @@ module meshAdminUi {
         private isNew: boolean = false;
         private modified: boolean = false;
         private project: IProject;
+        private schemas: ISchema[];
+        private projectSchemas: {
+            [uuid: string]: boolean
+        } = {};
 
-        constructor(private $state: ng.ui.IStateService,
+        constructor(private $q: ng.IQService,
+                    private $state: ng.ui.IStateService,
                     private $stateParams: any,
                     private confirmActionDialog: ConfirmActionDialog,
                     private dataService: DataService,
@@ -77,12 +83,39 @@ module meshAdminUi {
         private getProjectData(): ng.IPromise<any> {
             var projectId = this.$stateParams.uuid;
             if (projectId) {
-                return this.dataService.getProject(this.$stateParams.uuid)
-                    .then(response => this.project = response);
+                return this.$q.all([
+                    this.dataService.getProject(this.$stateParams.uuid),
+                    this.dataService.getSchemas()
+                ])
+                    .then(responses => {
+                        this.project = responses[0];
+                        this.schemas = responses[1].data;
+                        return this.dataService.getProjectSchemas(this.project.name);
+                    })
+                    .then(response => {
+                        let currentSchemaUuids = response.data.map(schema => schema.uuid);
+                        this.schemas.forEach(schema => {
+                            this.projectSchemas[schema.uuid] = -1 < currentSchemaUuids.indexOf(schema.uuid);
+                        });
+                    })
             } else {
                 this.project = this.createEmptyProject();
                 this.isNew = true;
             }
+        }
+
+        public toggleSchema(schema: ISchema) {
+            let add = this.projectSchemas[schema.uuid],
+                promise;
+            if (add) {
+                promise = this.dataService.addSchemaToProject(schema.uuid, this.project.uuid);
+            } else {
+                promise = this.dataService.removeSchemaFromProject(schema.uuid, this.project.uuid);
+            }
+            promise.then(() => {
+                let verb = add ? 'added to' : 'removed from';
+                this.notifyService.toast(`Schema "${schema.name}" was ${verb} this project`);
+            })
         }
 
         /**
