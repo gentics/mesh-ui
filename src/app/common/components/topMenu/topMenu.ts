@@ -1,56 +1,68 @@
-angular.module('meshAdminUi.common')
-    .directive('topMenu', topMenuDirective);
+module meshAdminUi {
 
-/**
- * Directive for the top menu bar which is present on every screen apart from the login.
- *
- * @param $state
- * @param authService
- * @param i18nService
- * @returns {ng.IDirective} Directive definition object
- */
-function topMenuDirective($state, authService, i18nService) {
 
-    /**
-     * Whether or not the current user is logged in.
-     * @type {boolean}
-     */
-    var isLoggedIn = authService.isLoggedIn();
+    class TopMenuController {
 
-    function topMenuController() {
-        var vm = this;
-        
-        vm.isLoggedIn = isLoggedIn;
-        vm.languages = i18nService.languages;
-        vm.lang = i18nService.getCurrentLang();
+        private isLoggedIn: boolean;
+        private languages: ILanguageInfo[];
+        private lang: ILanguageInfo;
+        private profileImage: string;
 
-        // TODO: get this data from the backend, not hard-coded
-        vm.userName = 'John Smith';
-        vm.profileImage = 'assets/images/example-profile-pic.jpg';
+        constructor(private $state: ng.ui.IStateService,
+                    private authService: AuthService,
+                    private i18nService: I18nService) {
 
-        vm.logout = function() {
-            authService.logOut();
+            this.isLoggedIn = authService.isLoggedIn();
+            this.languages = i18nService.languages;
+            this.lang = i18nService.getCurrentLang();
+            this.profileImage = 'assets/images/example-profile-pic.jpg';
+
+            authService.registerLogInHandler(() => {
+                this.isLoggedIn = true;
+            });
+
+            authService.registerLogOutHandler(() => {
+                this.isLoggedIn = false;
+            });
+        }
+
+        public getUserName() {
+            let currentUser = this.authService.getCurrentUser();
+            if (!currentUser) {
+                return;
+            }
+            if (currentUser.firstname && currentUser.lastname) {
+                return currentUser.firstname + ' ' + currentUser.lastname;
+            } else {
+                return currentUser.username;
+            }
+        }
+
+        public logout() {
+            this.authService.logOut();
+        }
+
+        public updateLanguage(lang) {
+            this.i18nService.setCurrentLang(lang);
+            this.lang = this.i18nService.getCurrentLang();
+            this.$state.reload();
         };
-
-        vm.updateLanguage = function(lang) {
-            i18nService.setCurrentLang(lang);
-            vm.lang = i18nService.getCurrentLang();
-            $state.reload();
-        };
-
-        authService.registerLogInHandler(function() {
-            vm.isLoggedIn = true;
-        });
-
-        authService.registerLogOutHandler(function() {
-            vm.isLoggedIn = false;
-        });
     }
 
-    return {
-        restrict: 'E',
-        templateUrl: 'common/components/topMenu/topMenu.html',
-        controller: topMenuController,
-        controllerAs: 'vm'
-    };
+    /**
+     * Directive for the top menu bar which is present on every screen apart from the login.
+     */
+    function topMenuDirective() {
+        return {
+            restrict: 'E',
+            templateUrl: 'common/components/topMenu/topMenu.html',
+            controller: 'TopMenuController',
+            controllerAs: 'vm'
+        };
+    }
+
+    angular.module('meshAdminUi.common')
+           .directive('topMenu', topMenuDirective)
+           .controller('TopMenuController', TopMenuController);
+
 }

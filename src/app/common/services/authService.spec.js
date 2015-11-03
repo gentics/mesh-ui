@@ -13,6 +13,7 @@ describe('authService', function() {
 
     function respondWithCode(code) {
         $httpBackend.whenGET(/\/api\/v1\/auth\/me.*/).respond(code, { data: {} });
+        $httpBackend.whenGET(/\/api\/v1\/auth\/logout.*/).respond(code, { data: {} });
     }
 
     afterEach(function() {

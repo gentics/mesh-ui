@@ -7,14 +7,17 @@ module meshAdminUi {
      */
     export class AuthService {
 
-        private _isLoggedIn;
-        private authString;
+        private _isLoggedIn: boolean;
+        private _currentUser: IUser;
+        private authString: string;
         private onLogInCallbacks;
         private onLogOutCallbacks;
         private AUTH_HEADER_NAME = 'Authorization';
         private CODE_RESPONSE_UNAUTHORIZED = 401;
 
         constructor(private $injector:ng.auto.IInjectorService,
+                    private $q: ng.IQService,
+                    private selectiveCache: SelectiveCache,
                     private $cookies) {
 
             this._isLoggedIn = $cookies.get('isLoggedIn') === 'true';
@@ -40,47 +43,73 @@ module meshAdminUi {
         public logIn(userName, password) {
             var authHeaderKey,
                 authHeaderValue,
-                $http = <ng.IHttpService>this.$injector.get("$http");
-
-
-            var config: ng.IRequestShortcutConfig = { headers: {} };
+                $http = <ng.IHttpService>this.$injector.get("$http"),
+                config: ng.IRequestShortcutConfig = { headers: {} },
+                deferred = this.$q.defer();
 
             authHeaderKey = this.AUTH_HEADER_NAME;
             authHeaderValue = "Basic " + btoa(userName + ":" + password);
             config.headers[authHeaderKey] = authHeaderValue;
 
             // TODO: replace url with config value.
-            return $http.get('/api/v1/auth/me', config)
+            $http.get('/api/v1/auth/me', config)
                 .then(response => {
                     if (response.status === 200) {
+                        this._currentUser = response.data;
                         this.authString = authHeaderValue;
                         this._isLoggedIn = true;
                         this.$cookies.put('isLoggedIn', 'true');
                         this.$cookies.put('authString', this.authString);
                         this.onLogInCallbacks.forEach(fn => fn());
+                        deferred.resolve(true);
                     } else {
                         console.log('Error, status: ' + response.status);
+                        deferred.reject();
                     }
                 },
                 response => {
                     if (response.status === this.CODE_RESPONSE_UNAUTHORIZED) {
                         //TODO: Display error message
                         console.log('not authorized: ' + response.status);
+                        deferred.reject()
                     }
                 });
+
+            return deferred.promise;
         }
 
         public getAuthValue() {
             return this.authString;
         }
 
+        public getCurrentUser(): IUser {
+            return this._currentUser;
+        }
+
         /**
          * Log the user out and persist that fact to the cookie.
          */
         public logOut() {
-            this._isLoggedIn = false;
-            this.$cookies.put('isLoggedIn', 'false');
-            this.onLogOutCallbacks.forEach(fn => fn());
+            let $http = <ng.IHttpService>this.$injector.get("$http"),
+                deferred = this.$q.defer();
+
+            $http.get("/api/v1/auth/logout").then(() => {
+                // TODO: need to actually invalidate the basic auth on the browser, see
+                // example solution here http://stackoverflow.com/a/492926/772859
+                this._isLoggedIn = false;
+                this._currentUser = null;
+                this.$cookies.put('isLoggedIn', 'false');
+                this.$cookies.put('authString', '');
+                this.authString = '';
+                this.onLogOutCallbacks.forEach(fn => fn());
+                this.selectiveCache.removeAll();
+
+                deferred.resolve(true);
+            }).catch(error => {
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
         }
 
         /**
@@ -109,7 +138,7 @@ module meshAdminUi {
     }
 
     function authInterceptor(authService: AuthService) {
-        var AUTH_HEADER_NAME = 'Authorization';
+        const AUTH_HEADER_NAME = 'Authorization';
         return {
             request: function (config) {
                 // TODO: need to read the API URL from the config file
