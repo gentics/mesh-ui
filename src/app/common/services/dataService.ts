@@ -33,6 +33,11 @@ module meshAdminUi {
         orderBy?: string;
     }
 
+    export interface IPermissionsRequest {
+        permissions: string[];
+        recursive?: boolean;
+    }
+
     angular.module('meshAdminUi.common')
         .config(dataServiceConfig)
         .provider('dataService', dataServiceProvider);
@@ -536,6 +541,31 @@ module meshAdminUi {
         public deleteRole(role: IUserRole): ng.IPromise<any> {
             return this.meshDelete('roles/' + role.uuid);
         }
+
+
+        /**
+         * Permissions setting methods
+         */
+        public setProjectPermissions(roleUuid: string, projectUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
+            return this.setPermissionsOnPath(roleUuid, 'projects/' + projectUuid, permissions);
+        }
+        public setSchemaPermissions(roleUuid: string, schemaUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
+            return this.setPermissionsOnPath(roleUuid, 'schemas/' + schemaUuid, permissions);
+        }
+        public setUserPermissions(roleUuid: string, userUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
+            return this.setPermissionsOnPath(roleUuid, 'users/' + userUuid, permissions);
+        }
+        public setGroupPermissions(roleUuid: string, groupUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
+            return this.setPermissionsOnPath(roleUuid, 'groups/' + groupUuid, permissions);
+        }
+        public setRolePermissions(roleUuid: string, targetRoleUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
+            return this.setPermissionsOnPath(roleUuid, 'roles/' + targetRoleUuid, permissions);
+        }
+        private setPermissionsOnPath(roleUuid: string, path: string, permissions: IPermissionsRequest): ng.IPromise<any> {
+            return this.meshPut('roles/' + roleUuid + '/permissions/' + path, permissions);
+        }
+
+
 
         /**
          *

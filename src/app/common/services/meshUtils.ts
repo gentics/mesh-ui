@@ -7,10 +7,10 @@ module meshAdminUi {
 
         /**
          * Given an object `item` with a `rolePerms` property of type ['create', 'read', 'update' 'delete'], this function
-         * will return a clone of the object with each permission as a key set to `true`.
+         * will return an object with each permission as a key set to `true`.
          */
-        public rolePermissionsArrayToKeys(original: any): any {
-            var item = this.clone(original),
+        public rolePermissionsArrayToKeys(item: any): any {
+            var permissions = {},
                 perms = ['create', 'read', 'update', 'delete'];
 
             if (!(item.hasOwnProperty('rolePerms') && item.rolePerms instanceof Array)) {
@@ -21,10 +21,10 @@ module meshAdminUi {
                 if (item.hasOwnProperty(perm)) {
                     throw new Error('meshUtils#rolePermissionsArrayToKeys: item already has a key "' + perm + '".');
                 } else {
-                    item[perm] = item.rolePerms.indexOf(perm) > -1;
+                    permissions[perm] = item.rolePerms.indexOf(perm) > -1;
                 }
             });
-            return item;
+            return permissions;
         }
 
         /**

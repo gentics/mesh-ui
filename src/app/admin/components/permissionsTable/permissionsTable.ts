@@ -1,73 +1,87 @@
-angular.module('meshAdminUi.admin')
-.directive('permissionsTable', permissionsTableDirective);
+module meshAdminUi {
 
-/**
- *
- * @param {meshUtils} mu
- * @returns {{restrict: string, templateUrl: string, controller: permissionsTableController, controllerAs: string, bindToController: boolean, scope: {rootName: string, rootUuid: string, items: string, itemNameField: string}}}
- */
-function permissionsTableDirective(mu) {
+    class PermissionsTableController {
 
-    function permissionsTableController($scope) {
-        var vm = this;
+        public collapsed: boolean = true;
+        public filter: string = '';
+        private items: any[];
+        private itemPermissions: {
+            [itemUuid: string]: any
+        } = {};
+        private itemNameField: string;
+        private onToggle: Function;
 
-        vm.collapsed = true;
-        vm.displayItemName = displayItemName;
-        vm.filter = '';
-        vm.itemNameFilter = itemNameFilter;
-
-        /**
-         * The `item` array will be populated async when the data arrives from the server call, so we
-         * need to watch it and once it is populated, process the array and cancel the watcher.
-         * @type {Function}
-         */
-        var cancelItemsWatcher = $scope.$watch('vm.items', function(newVal) {
-            if (newVal) {
-                vm.items = newVal.map(item => mu.rolePermissionsArrayToKeys(item));
-                cancelItemsWatcher();
-            }
-        });
+        constructor(private $scope: ng.IScope,
+                    private mu: MeshUtils) {
+            /**
+             * The `item` array will be populated async when the data arrives from the server call, so we
+             * need to watch it and once it is populated, process the array and cancel the watcher.
+             */
+            var cancelItemsWatcher = $scope.$watch(() => this.items, newVal => {
+                if (newVal) {
+                    this.items = newVal;
+                    this.items.forEach(item => {
+                        this.itemPermissions[item.uuid] = mu.rolePermissionsArrayToKeys(item);
+                    });
+                    cancelItemsWatcher();
+                }
+            });
+        }
 
         /**
          * Evaluate the expression provided in the `itemNameField` field against the provided
          * `item` object and return the result.
-         *
-         * @param {Object} item
-         * @returns {any}
          */
-        function displayItemName(item) {
-            return $scope.$eval(vm.itemNameField, {item: item});
+        public displayItemName(item) {
+            return this.$scope.$eval(this.itemNameField, {item: item});
         }
 
         /**
          * Filter by item name.
-         * @param {Object} item
-         * @returns {boolean}
          */
-        function itemNameFilter(item) {
+        public itemNameFilter = (item) => {
             var name;
 
-            if (vm.filter !== '') {
-                name = displayItemName(item);
-                return name.toLowerCase().indexOf(vm.filter.toLowerCase()) > -1;
+            if (this.filter !== '') {
+                name = this.displayItemName(item);
+                return name.toLowerCase().indexOf(this.filter.toLowerCase()) > -1;
             } else {
                 return true;
             }
-        }
+        };
 
+        public toggle(item) {
+            let permObject = this.itemPermissions[item.uuid],
+                permsArray = Object.keys(permObject).filter(key => permObject[key] === true),
+                permissions: IPermissionsRequest = {
+                    permissions: permsArray,
+                    recursive: false
+                };
+            this.onToggle({ item: item, permissions: permissions });
+        }
     }
 
-    return {
-        restrict: 'E',
-        templateUrl: 'admin/components/permissionsTable/permissionsTable.html',
-        controller: permissionsTableController,
-        controllerAs: 'vm',
-        bindToController: true,
-        scope: {
-            rootName: '@',
-            rootUuid: '=',
-            items: '=',
-            itemNameField: '@'
-        }
-    };
+    function permissionsTableDirective() {
+
+        return {
+            restrict: 'E',
+            templateUrl: 'admin/components/permissionsTable/permissionsTable.html',
+            controller: 'PermissionsTableController',
+            controllerAs: 'vm',
+            bindToController: true,
+            scope: {
+                isReadonly: '=',
+                rootName: '@',
+                rootUuid: '=',
+                items: '=',
+                itemNameField: '@',
+                onToggle: '&'
+            }
+        };
+    }
+
+    angular.module('meshAdminUi.admin')
+        .directive('permissionsTable', permissionsTableDirective)
+        .controller('PermissionsTableController', PermissionsTableController);
+
 }

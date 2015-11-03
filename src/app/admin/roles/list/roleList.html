@@ -11,10 +11,12 @@
     </md-toolbar>
 
     <md-content layout-padding class="admin-content-block">
-        <md-list>
-            <md-list-item class="" ng-repeat="role in vm.roles track by $index" layout="column" layout-align="start start">
-                <h3><a ui-sref="admin.roles.detail({ uuid: role.uuid })">{{:: role.name}}</a></h3>
-            </md-list-item>
-        </md-list>
+        <table class="mh-table">
+            <tr class="" ng-repeat="role in vm.roles track by $index">
+                <td>
+                    <a ui-sref="admin.roles.detail({ uuid: role.uuid })"><strong>{{:: role.name}}</strong></a>
+                <td>
+            </tr>
+        </table>
     </md-content>
 </div>

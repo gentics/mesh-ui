@@ -82,6 +82,31 @@ module meshAdminUi {
                 groups: []
             };
         }
+
+        public isReadonly() {
+            return !this.role || this.role.name === 'admin' || -1 === this.role.permissions.indexOf('update');
+        }
+
+        public setProjectPermissions(project: IProject, permissions: IPermissionsRequest) {
+            this.dataService.setProjectPermissions(this.role.uuid, project.uuid, permissions)
+                .then(() => this.notifyService.toast(`Permissions set on project "${project.name}"`));
+        }
+        public setSchemaPermissions(schema: ISchema, permissions: IPermissionsRequest) {
+            this.dataService.setSchemaPermissions(this.role.uuid, schema.uuid, permissions)
+                .then(() => this.notifyService.toast(`Permissions set on schema "${schema.name}"`));
+        }
+        public setUserPermissions(user: IUser, permissions: IPermissionsRequest) {
+            this.dataService.setUserPermissions(this.role.uuid, user.uuid, permissions)
+                .then(() => this.notifyService.toast(`Permissions set on user "${user.username}"`));
+        }
+        public setGroupPermissions(group: IUserGroup, permissions: IPermissionsRequest) {
+            this.dataService.setGroupPermissions(this.role.uuid, group.uuid, permissions)
+                .then(() => this.notifyService.toast(`Permissions set on group "${group.name}"`));
+        }
+        public setRolePermissions(role: IUserRole, permissions: IPermissionsRequest) {
+            this.dataService.setRolePermissions(this.role.uuid, role.uuid, permissions)
+                .then(() => this.notifyService.toast(`Permissions set on role "${role.name}"`));
+        }
     }
 
     angular.module('meshAdminUi.admin')

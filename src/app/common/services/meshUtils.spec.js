@@ -19,19 +19,10 @@ describe('meshUtils', function() {
 
         it('should convert valid perms to keys', function() {
             var item = { rolePerms: ['create', 'read', 'update', 'delete'] };
-            var expected = { 'create': true, 'read': true, 'update': true, 'delete': true, rolePerms: ['create', 'read', 'update', 'delete'] };
+            var expected = { 'create': true, 'read': true, 'update': true, 'delete': true };
             var result = mu.rolePermissionsArrayToKeys(item);
 
             expect(result).toEqual(expected);
-        });
-
-        it('should not overwrite existing keys', function() {
-            var item = { rolePerms: ['create', 'read', 'update', 'delete'], update: function() {} };
-            function run() {
-                return mu.rolePermissionsArrayToKeys(item);
-            }
-
-            expect(run).toThrow();
         });
 
         it('should not mutate the original object', function() {

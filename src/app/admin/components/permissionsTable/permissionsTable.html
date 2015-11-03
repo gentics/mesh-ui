@@ -42,22 +42,34 @@
                 <tr ng-repeat="item in vm.items | filter: vm.itemNameFilter track by item.uuid">
                     <td>{{:: vm.displayItemName(item) }}</td>
                     <td>
-                        <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']">
+                        <md-checkbox md-no-ink aria-label="Create"
+                                     ng-disabled="vm.isReadonly"
+                                     ng-model="vm.itemPermissions[item.uuid]['create']"
+                                     ng-change="vm.toggle(item)">
                             Create
                         </md-checkbox>
                     </td>
                     <td>
-                        <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']">
+                        <md-checkbox md-no-ink aria-label="Read"
+                                     ng-disabled="vm.isReadonly"
+                                     ng-model="vm.itemPermissions[item.uuid]['read']"
+                                     ng-change="vm.toggle(item)">
                             Read
                         </md-checkbox>
                     </td>
                     <td>
-                        <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']">
+                        <md-checkbox md-no-ink aria-label="Update"
+                                     ng-disabled="vm.isReadonly"
+                                     ng-model="vm.itemPermissions[item.uuid]['update']"
+                                     ng-change="vm.toggle(item)">
                             Update
                         </md-checkbox>
                     </td>
                     <td>
-                        <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']">
+                        <md-checkbox md-no-ink aria-label="Delete"
+                                     ng-disabled="vm.isReadonly"
+                                     ng-model="vm.itemPermissions[item.uuid]['delete']"
+                                     ng-change="vm.toggle(item)">
                             Delete
                         </md-checkbox>
                     </td>
