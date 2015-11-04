@@ -1,6 +1,0 @@
-{
-  "uuid" : "uuid_create_content_role",
-  "name" : "Create Content",
-  "perms" : [ "READ", "UPDATE", "DELETE", "CREATE" ],
-  "groups" : [ ]
-}
