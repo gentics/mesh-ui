@@ -5,7 +5,7 @@ module meshAdminUi {
         var baseUrl = '',
             cacheableGroups = {};
 
-        this.$get = function ($cacheFactory) {
+        this.$get =function ($cacheFactory) {
             return new SelectiveCache($cacheFactory, baseUrl, cacheableGroups);
         };
 
@@ -21,9 +21,9 @@ module meshAdminUi {
         /**
          * Set the urls which will have caching enabled. Should be a hash of { groupName: urlRegexp }:
          * {
-     *   'contents': /^\/contents.+/,
-     *   'users': /^\/users\/[0-9]{5}$/
-     * }
+         *   'contents': /^\/contents.+/,
+         *   'users': /^\/users\/[0-9]{5}$/
+         * }
          *
          * So in this case, requests to the "contents" or "users" urls (which would match
          * the regexp patterns defined above) would be cached. No other requests would be.
@@ -180,6 +180,6 @@ module meshAdminUi {
     }
 
     angular.module('meshAdminUi.common')
-           .provider('selectiveCache', selectiveCacheProvider);
+        .provider('selectiveCache', selectiveCacheProvider);
 
 }

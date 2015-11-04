@@ -37,14 +37,14 @@ describe('selectiveCache', function() {
         var selectiveCache,
             baseUrl;
 
-        beforeEach(inject(function($cacheFactory) {
+        beforeEach(inject(function($cacheFactory, $injector) {
             baseUrl = 'localhost/';
             provider.setCacheableGroups({
                 'routeOne': /^route\-one/,
                 'routeTwo': /^route\-two\/[0-9]*$/
             });
             provider.setBaseUrl(baseUrl);
-            selectiveCache = provider.$get($cacheFactory);
+            selectiveCache = $injector.invoke(provider.$get);
         }));
 
         it('should put a cachable url in cache', function() {

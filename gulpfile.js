@@ -45,24 +45,28 @@ function clean() {
     });
 }
 
+function compile_appScripts() {
+    return gulp.src([
+            'typings/**/*.ts',
+            'src/app/**/*.ts'
+        ])
+        /*.pipe(tslint())
+         .pipe(tslint.report('prose'))*/
+        .pipe(ts({
+            declarationFiles: true,
+            noExternalResolve: false,
+            target: 'ES5'
+        })).js
+        .pipe(angularFilesort())
+        .pipe(ngAnnotate())
+        .pipe(concat('app.js'));
+}
+
 function build_appScripts() {
     console.log('build_appScripts');
 
     return new Promise(function(resolve, reject) {
-        return gulp.src([
-            'typings/**/*.ts',
-            'src/app/**/*.ts'
-        ])
-            /*.pipe(tslint())
-             .pipe(tslint.report('prose'))*/
-            .pipe(ts({
-                declarationFiles: true,
-                noExternalResolve: false,
-                target: 'ES5'
-            })).js
-            //.pipe(ngAnnotate())
-            .pipe(angularFilesort())
-            .pipe(concat('app.js'))
+        return compile_appScripts()
             .pipe(gulp.dest('build/app'))
             .pipe(livereload())
             .on('end', resolve)
@@ -81,12 +85,16 @@ function build_vendorScripts() {
     });
 }
 
+function compile_Templates() {
+    return gulp.src('src/app/**/*.html')
+        .pipe(templateCache('templates.js', {module: 'meshAdminUi.templates', standalone: true}));
+}
+
 function build_appTemplates() {
     console.log('build_appTemplates');
 
     return new Promise(function(resolve, reject) {
-        return gulp.src('src/app/**/*.html')
-            .pipe(templateCache('templates.js', {module: 'meshAdminUi.templates', standalone: true}))
+        return compile_Templates()
             .pipe(gulp.dest('build/app/'))
             .pipe(livereload())
             .on('end', resolve)
@@ -126,20 +134,6 @@ function build_vendorStyles() {
     return new Promise(function(resolve, reject) {
         return gulp.src(VENDOR_STYLES)
             .pipe(gulp.dest('build/vendor/styles'))
-            .on('end', resolve)
-            .on('error', reject);
-    });
-}
-
-function build_mockBackend() {
-    console.log('build_mockBackend');
-
-    return new Promise(function(resolve, reject) {
-        return gulp.src([
-            'mesh-mock-backend*/**/*'
-        ])
-            .pipe(gulp.dest('build/'))
-            .pipe(livereload())
             .on('end', resolve)
             .on('error', reject);
     });
@@ -209,7 +203,6 @@ gulp.task('build', function() {
                 build_vendorScripts(),
                 build_appStyles(),
                 build_vendorStyles(),
-                build_mockBackend(),
                 build_staticAssets()
             ]);
         })
@@ -225,8 +218,7 @@ function dist_assets() {
 
     return new Promise(function(resolve, reject) {
         return gulp.src([
-            'src/assets**/**/*',
-            'mesh-mock-backend*/**/*'
+            'src/assets**/**/*'
         ])
             .pipe(gulp.dest('dist/'))
             .on('end', resolve)
@@ -258,16 +250,11 @@ function dist_js() {
     console.log('dist_js');
 
     return new Promise(function(resolve, reject) {
-        var vendorJs = gulp.src([
-            'vendor/**/angular.js',
-            'vendor/**/*.js'
-        ], {cwd: 'build/'});
+        var vendorJs = gulp.src(VENDOR_SCRIPTS);
+        var appTemplates = compile_Templates();
+        var appJs = compile_appScripts();
 
-        var appJs = gulp.src([
-            'app/**/*.js'
-        ], {cwd: 'build/'});
-
-        var js = merge(vendorJs, appJs);
+        var js = merge(vendorJs, appJs, appTemplates);
 
         return js
             .pipe(concat('app.js'))
@@ -312,7 +299,7 @@ function removeHtmlComments() {
     return replace(/<!--[\s\S]*?-->/g, '');
 }
 
-gulp.task('dist', ['karma-test', 'build'], function() {
+gulp.task('dist', ['karma-test'], function() {
     return Promise.all([
         dist_assets(),
         dist_css(),
@@ -336,7 +323,7 @@ gulp.task('karma-watch', ['karma-app-templates'], function() {
 /**
  * Single-run all the tests
  * */
-gulp.task('karma-test', ['karma-app-templates'], function() {
+gulp.task('karma-test', ['build'], function() {
     return new Promise(function(resolve, reject) {
         karma.start({
             configFile: __dirname + '/karma.conf.js',
