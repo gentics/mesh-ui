@@ -44,6 +44,7 @@
     "karma-junit-reporter": "^0.2.2",
     "karma-phantomjs-launcher": "^0.2.0",
     "merge-stream": "^0.1.7",
-    "phantomjs": "^1.9.17"
+    "phantomjs": "^1.9.17",
+    "tsd": "^0.6.5"
   }
 }
