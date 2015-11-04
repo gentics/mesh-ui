@@ -64,10 +64,10 @@ module meshAdminUi {
         /**
          * Transition to the contentEditor view for the given uuid
          */
-        public openNode(node, event: ng.IAngularEvent) {
+        public openNode(node: INode, event: ng.IAngularEvent) {
             event.preventDefault();
             event.stopPropagation();
-            if (node.hasOwnProperty('children')) {
+            if (node.container) {
                 this.explorerContentsListService.clearSelection();
                 this.$state.go('projects.node', {projectName: this.contextService.getProject().name, nodeId: node.uuid});
             }

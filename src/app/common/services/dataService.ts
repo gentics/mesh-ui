@@ -359,13 +359,11 @@ module meshAdminUi {
             return isNew ? this.createNode(projectName, node) : this.updateNode(projectName, node);
 
         }
-
         private createNode(projectName: string, node: INode): ng.IPromise<INode> {
-            return this.meshPost(projectName + '/nodes', node).then(response => response.data);
+            return this.meshPost(projectName + '/nodes', node);
         }
-
         private updateNode(projectName: string, node: INode): ng.IPromise<INode> {
-            return this.meshPut(projectName + '/nodes/' + node.uuid, node).then(response => response.data);
+            return this.meshPut(projectName + '/nodes/' + node.uuid, node);
         }
 
         /**
