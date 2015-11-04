@@ -14,14 +14,20 @@
 
     <form name="schemaDetailForm" class="admin-form">
 
-       <json-editor contents="vm.schema"></json-editor>
+        <md-input-container>
+            <label>Schema Name</label>
+            <input type="text" ng-model="vm.schema.name" ng-change="vm.modified = true">
+        </md-input-container>
+
+        <div ui-ace="{ useWrapMode : true, showGutter: true, mode: 'json', onLoad : vm.aceLoaded }"
+             ng-model="vm.schemaJson"></div>
 
     </form>
 
     <div layout="row" layout-align="center center" class="main-buttons">
 
         <button class="btn btn-primary"
-                ng-click="vm.persist(vm.group)"
+                ng-click="vm.persist(vm.schema)"
                 ng-disabled="!vm.modified"
                 aria-label="save">
             <i class="icon-save"></i>
@@ -30,7 +36,7 @@
         </button>
 
         <button class="btn btn-warn"
-                ng-click="vm.remove(vm.group)"
+                ng-click="vm.remove(vm.schema)"
                 ng-disabled="!vm.canDelete()"
                 aria-label="delete">
             <i class="icon-delete"></i><span translate>DELETE</span>

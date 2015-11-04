@@ -518,6 +518,7 @@ module meshAdminUi {
         }
 
         public deleteSchema(schema: ISchema): ng.IPromise<ISchema> {
+            this.clearCache('schemas');
             return this.meshDelete('schemas/' + schema.uuid);
         }
 

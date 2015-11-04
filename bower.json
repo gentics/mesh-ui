@@ -28,7 +28,7 @@
     "angular-local-storage": "~0.2.0",
     "angular-drag-and-drop-lists": "~1.2.0",
     "moment": "~2.10.6",
-    "Behave.js": "https://github.com/jakiestfu/Behave.js.git"
+    "angular-ui-ace": "bower"
   },
   "resolutions": {
     "angular": "~1.4.1"

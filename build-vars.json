@@ -13,7 +13,10 @@
       "bower_components/angular-loading-bar/build/loading-bar.js",
       "bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js",
       "bower_components/moment/moment.js",
-      "bower_components/Behave.js/behave.js"
+      "bower_components/ace-builds/src-min-noconflict/ace.js",
+      "bower_components/ace-builds/src-min-noconflict/mode-json.js",
+      "bower_components/ace-builds/src-min-noconflict/worker-json.js",
+      "bower_components/angular-ui-ace/ui-ace.js"
   ],
   "VENDOR_STYLES": [
       "bower_components/angular-material/angular-material.css",

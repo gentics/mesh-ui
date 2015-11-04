@@ -22,9 +22,19 @@ module meshAdminUi {
         /**
          * Display a toast (popup) message containing the specified text.
          */
-        public toast(text: string) {
+        public toast(message: string|string[]|{ [key: string] : any }) {
+            let parsedMessage;
+
+            if (typeof message === 'string') {
+                parsedMessage = message;
+            } else if (message instanceof Array) {
+                parsedMessage = message.join('<br>');
+            } else {
+                parsedMessage = JSON.stringify(message, null, '\t');
+            }
+
             var popup = this.$mdToast.simple()
-                .content(this.i18n(text))
+                .content(this.i18n(parsedMessage))
                 .position('top right');
             this.$mdToast.show(popup);
         }

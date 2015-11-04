@@ -8,7 +8,8 @@ module meshAdminUi {
 
         private isNew: boolean = false;
         private modified: boolean = false;
-        private schema: ISchema;
+        public schema: ISchema;
+        public schemaJson: string;
 
         constructor(
             private $state: ng.ui.IStateService,
@@ -25,17 +26,28 @@ module meshAdminUi {
          * Persist the user data back to the server.
          */
         public persist(schema: ISchema) {
-            this.dataService.persistSchema(schema)
-                .then((response: any) => {
-                    if (this.isNew) {
-                        this.notifyService.toast('NEW_SCHEMA_CREATED');
-                        this.isNew = false;
-                        this.$state.go('admin.schema.detail', {uuid: response.uuid});
-                    } else {
-                        this.notifyService.toast('SAVED_CHANGES');
-                        this.modified = false;
-                    }
-                });
+            this.extendSchemaWithJsonValues(this.schemaJson);
+
+            if (this.isNew) {
+                this.dataService.persistSchema(schema)
+                    .then((response: any) => {
+                        if (this.isNew) {
+                            this.notifyService.toast('NEW_SCHEMA_CREATED');
+                            this.isNew = false;
+                            this.$state.go('admin.schemas.detail', {uuid: response.uuid});
+                        } else {
+                            this.notifyService.toast('SAVED_CHANGES');
+                            this.modified = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.notifyService.toast(error.data);
+                    });
+            } else {
+                this.notifyService.toast('Sorry, updating of schemas is not yet implemented in the beta.');
+                this.modified = false;
+            }
         }
 
         /**
@@ -46,7 +58,7 @@ module meshAdminUi {
                 .then(() => this.dataService.deleteSchema(schema))
                 .then(() => {
                     this.notifyService.toast('Deleted');
-                    this.$state.go('admin.schema.list');
+                    this.$state.go('admin.schemas.list');
                 });
         }
 
@@ -73,12 +85,52 @@ module meshAdminUi {
             var uuid = this.$stateParams.uuid;
             if (uuid && uuid !== 'new') {
                 return this.dataService.getSchema(uuid)
-                    .then(data => this.schema = data);
+                    .then(data => {
+                        this.schema = data;
+                        this.schemaJson = this.schemaToJson(this.schema);
+                    });
             } else {
                 this.schema = this.createEmptySchema();
+                this.schemaJson = this.schemaToJson(this.schema);
                 this.isNew = true;
             }
         }
+
+        /**
+         * Converts the schema object into a json string to be used in the editor.
+         */
+        private schemaToJson(schema: ISchema): string {
+            let jsonObj = {
+                displayField: schema.displayField || '',
+                folder: schema.folder || false,
+                binary: schema.binary || false,
+                fields: schema.fields || []
+            };
+            return JSON.stringify(jsonObj, null, '\t');
+        }
+
+        /**
+         * Takes the code from the json editor and merges the values back with the original schema object.
+         */
+        private extendSchemaWithJsonValues(json: string) {
+            let jsonObject = JSON.parse(json);
+            angular.extend(this.schema, jsonObject);
+        }
+
+        public aceLoaded = (editor: AceAjax.Editor) => {
+            let session = editor.getSession(),
+                contentLoaded = false;
+
+            editor.setFontSize('14px');
+
+            session.on('change', (e) => {
+                if (!contentLoaded) {
+                    contentLoaded = true;
+                } else {
+                    this.modified = true
+                }
+            });
+        };
 
         /**
          * Create an empty user object.
