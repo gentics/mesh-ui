@@ -1,0 +1,41 @@
+@max-height: 400px;
+
+.binary-file-input {
+  margin-top: 10px;
+
+  .binary-preview-container {
+    min-height: 200px;
+    max-height: @max-height;
+    overflow:hidden;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .drop-box {
+    border: 3px dotted @color-alto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    &.dragover {
+      border-color: @color-primary;
+      background-color: fade(@color-primary, 30%);
+    }
+  }
+
+  .upload-preview-container, .current-file-container {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+
+    img, video {
+      flex-shrink:0;
+      min-width:100%;
+      min-height:100%;
+      max-height: @max-height;
+    }
+  }
+}

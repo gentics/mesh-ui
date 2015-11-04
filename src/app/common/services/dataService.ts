@@ -51,8 +51,8 @@ module meshAdminUi {
         var apiUrl;
 
         this.setApiUrl = setApiUrl;
-        this.$get = function ($http, $q, selectiveCache, i18nService) {
-            return new DataService($http, $q, selectiveCache, i18nService, apiUrl);
+        this.$get = function ($http, $q, Upload, selectiveCache, i18nService) {
+            return new DataService($http, $q, Upload, selectiveCache, i18nService, apiUrl);
         };
 
         /**
@@ -71,6 +71,7 @@ module meshAdminUi {
 
         constructor(private $http: ng.IHttpService,
                     private $q: ng.IQService,
+                    private Upload: any,
                     private selectiveCache: SelectiveCache,
                     private i18nService: I18nService,
                     private apiUrl: string) {
@@ -353,16 +354,31 @@ module meshAdminUi {
         /**
          * Create or update the node object on the server.
          */
-        public persistNode(projectName: string, node: INode): ng.IPromise<INode> {
+        public persistNode(projectName: string, node: INode, binaryFile?: File): ng.IPromise<INode> {
             let isNew = !node.hasOwnProperty('created');
             this.clearCache('contents');
-            return isNew ? this.createNode(projectName, node) : this.updateNode(projectName, node);
+            return isNew ? this.createNode(projectName, node, binaryFile) : this.updateNode(projectName, node, binaryFile);
 
         }
-        private createNode(projectName: string, node: INode): ng.IPromise<INode> {
-            return this.meshPost(projectName + '/nodes', node);
+        private createNode(projectName: string, node: INode, binaryFile?: File): ng.IPromise<INode> {
+            return this.meshPost(projectName + '/nodes', node)
+                .then(newNode => {
+                    if (typeof binaryFile !== 'undefined') {
+                        return this.Upload.upload({
+                                url: this.apiUrl + projectName + '/nodes/' + newNode.uuid + '/bin',
+                                data: {
+                                    file: binaryFile,
+                                    filename: binaryFile.name
+                                }
+                            })
+                            .then(() => {
+                                return newNode;
+                            })
+                    }
+                    return newNode;
+                });
         }
-        private updateNode(projectName: string, node: INode): ng.IPromise<INode> {
+        private updateNode(projectName: string, node: INode, binaryFile?: File): ng.IPromise<INode> {
             return this.meshPut(projectName + '/nodes/' + node.uuid, node);
         }
 

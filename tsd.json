@@ -6,10 +6,10 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "angularjs/angular.d.ts": {
-      "commit": "98d3168c2c570352a3a7393788e2ec9fbb08ade6"
+      "commit": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "jquery/jquery.d.ts": {
-      "commit": "98d3168c2c570352a3a7393788e2ec9fbb08ade6"
+      "commit": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "angular-ui-router/angular-ui-router.d.ts": {
       "commit": "98d3168c2c570352a3a7393788e2ec9fbb08ade6"
@@ -28,6 +28,9 @@
     },
     "ace/ace.d.ts": {
       "commit": "0dd29bf8253536ae24e61c109524e924ea510046"
+    },
+    "ng-file-upload/ng-file-upload.d.ts": {
+      "commit": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     }
   }
 }

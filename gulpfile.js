@@ -351,7 +351,6 @@ gulp.task('watch', ['default', 'karma-watch'], function() {
     gulp.watch('src/**/*.less', build_appStyles);
     gulp.watch('src/index.html', build_index);
     gulp.watch('src/assets/**/*.*', build_staticAssets);
-    gulp.watch('mesh-mock-backend/**/*.*', build_mockBackend);
 });
 
 gulp.task('default', ['build']);

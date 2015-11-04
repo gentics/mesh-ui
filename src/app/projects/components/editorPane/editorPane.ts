@@ -21,6 +21,7 @@ module meshAdminUi {
         private contentModified: boolean;
         private availableLangs: ILanguageInfo[];
         private node: INode;
+        private binaryFile: File;
         private selectedLangs: any;
         private isLoaded: boolean;
         private schema: ISchema;
@@ -77,7 +78,10 @@ module meshAdminUi {
          * Save the changes back to the server.
          */
         public persist(originalNode: INode) {
-            this.dataService.persistNode(this.projectName, originalNode)
+            if (typeof this.binaryFile !== 'undefined') {
+                console.log('gonna upload:', this.binaryFile);
+            }
+            this.dataService.persistNode(this.projectName, originalNode, this.binaryFile)
                 .then((node: INode) => {
                     if (this.isNew(originalNode)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
@@ -191,6 +195,10 @@ module meshAdminUi {
                         return schema;
                     });
             }
+        }
+
+        public getBinaryFileUrl(): string {
+            return meshConfig.apiUrl + this.projectName + '/nodes/' + this.node.uuid + '/bin';
         }
 
         /**

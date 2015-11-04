@@ -28,7 +28,8 @@
     "angular-local-storage": "~0.2.0",
     "angular-drag-and-drop-lists": "~1.2.0",
     "moment": "~2.10.6",
-    "angular-ui-ace": "bower"
+    "angular-ui-ace": "bower",
+    "ng-file-upload": "~9.1.2"
   },
   "resolutions": {
     "angular": "~1.4.1"
