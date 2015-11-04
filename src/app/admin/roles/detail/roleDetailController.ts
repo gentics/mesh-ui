@@ -1,5 +1,14 @@
 module meshAdminUi {
 
+    enum NodeType {
+        PROJECT,
+        SCHEMA,
+        GROUP,
+        USER,
+        ROLE,
+        NODE
+    }
+
     class RoleDetailController {
         private roleId: string;
         private isNew: boolean;
@@ -91,25 +100,64 @@ module meshAdminUi {
             this.dataService.setNodePermissions(this.role.uuid, project.uuid, node.uuid, permissions)
                 .then(() => this.notifyService.toast(`Permissions set on node "${node.fields[node.displayField]}"`));
         }
-        public setProjectPermissions(project: IProject, permissions: IPermissionsRequest) {
-            this.dataService.setProjectPermissions(this.role.uuid, project.uuid, permissions)
-                .then(() => this.notifyService.toast(`Permissions set on project "${project.name}"`));
+
+        public setProjectPermissions(permissions: IPermissionsRequest, project?: IProject) {
+           return this.executeSetPermissions(NodeType.PROJECT, permissions, project);
         }
-        public setSchemaPermissions(schema: ISchema, permissions: IPermissionsRequest) {
-            this.dataService.setSchemaPermissions(this.role.uuid, schema.uuid, permissions)
-                .then(() => this.notifyService.toast(`Permissions set on schema "${schema.name}"`));
+
+        public setSchemaPermissions(permissions: IPermissionsRequest, schema: ISchema) {
+            return this.executeSetPermissions(NodeType.SCHEMA, permissions, schema);
         }
-        public setUserPermissions(user: IUser, permissions: IPermissionsRequest) {
-            this.dataService.setUserPermissions(this.role.uuid, user.uuid, permissions)
-                .then(() => this.notifyService.toast(`Permissions set on user "${user.username}"`));
+
+        public setUserPermissions(permissions: IPermissionsRequest, user: IUser) {
+            return this.executeSetPermissions(NodeType.USER, permissions, user);
         }
-        public setGroupPermissions(group: IUserGroup, permissions: IPermissionsRequest) {
-            this.dataService.setGroupPermissions(this.role.uuid, group.uuid, permissions)
-                .then(() => this.notifyService.toast(`Permissions set on group "${group.name}"`));
+
+        public setGroupPermissions(permissions: IPermissionsRequest, group: IUserGroup) {
+            return this.executeSetPermissions(NodeType.GROUP, permissions, group);
         }
-        public setRolePermissions(role: IUserRole, permissions: IPermissionsRequest) {
-            this.dataService.setRolePermissions(this.role.uuid, role.uuid, permissions)
-                .then(() => this.notifyService.toast(`Permissions set on role "${role.name}"`));
+
+        public setRolePermissions(permissions: IPermissionsRequest, role: IUserRole) {
+            return this.executeSetPermissions(NodeType.ROLE, permissions, role);
+        }
+
+        public executeSetPermissions(type: NodeType, permissions: IPermissionsRequest, node?: any) {
+            let uuid = (typeof node === 'undefined') ? undefined : node.uuid,
+                name = (typeof node === 'undefined') ? undefined : node.name || node.username,
+                nodeType,
+                promise: ng.IPromise<any>;
+
+            switch (type) {
+                case NodeType.PROJECT:
+                    promise = this.dataService.setProjectPermissions(this.role.uuid, permissions, uuid);
+                    nodeType = 'project';
+                    break;
+                case NodeType.SCHEMA:
+                    promise = this.dataService.setSchemaPermissions(this.role.uuid, permissions, uuid);
+                    nodeType = 'schema';
+                    break;
+                case NodeType.USER:
+                    promise = this.dataService.setUserPermissions(this.role.uuid, permissions, uuid);
+                    nodeType = 'user';
+                    break;
+                case NodeType.GROUP:
+                    promise = this.dataService.setGroupPermissions(this.role.uuid, permissions, uuid);
+                    nodeType = 'group';
+                    break;
+                case NodeType.ROLE:
+                    promise = this.dataService.setRolePermissions(this.role.uuid, permissions, uuid);
+                    nodeType = 'role';
+                    break;
+                default:
+            }
+
+            return promise.then(this.notifyPermissionsSuccess(nodeType, name));
+        }
+
+        private notifyPermissionsSuccess(nodeType: string, name?: string) {
+            let message = `Permissions set on ${nodeType}`;
+            message += typeof name === 'undefined' ? 's' : ` "${name}"`;
+            this.notifyService.toast(message)
         }
     }
 

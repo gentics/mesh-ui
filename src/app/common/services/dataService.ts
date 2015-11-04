@@ -566,21 +566,34 @@ module meshAdminUi {
         public setNodePermissions(roleUuid: string, projectUuid: string, nodeUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
             return this.setPermissionsOnPath(roleUuid, 'projects/' + projectUuid + '/nodes/' + nodeUuid, permissions);
         }
-        public setProjectPermissions(roleUuid: string, projectUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
-            return this.setPermissionsOnPath(roleUuid, 'projects/' + projectUuid, permissions);
+        public setProjectPermissions(roleUuid: string, permissions: IPermissionsRequest, projectUuid?: string): ng.IPromise<any> {
+            return this.setPermissionsOnRootOrNode('projects', roleUuid, permissions, projectUuid);
         }
-        public setSchemaPermissions(roleUuid: string, schemaUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
-            return this.setPermissionsOnPath(roleUuid, 'schemas/' + schemaUuid, permissions);
+        public setSchemaPermissions(roleUuid: string, permissions: IPermissionsRequest, schemaUuid?: string): ng.IPromise<any> {
+            return this.setPermissionsOnRootOrNode('schemas', roleUuid, permissions, schemaUuid);
         }
-        public setUserPermissions(roleUuid: string, userUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
-            return this.setPermissionsOnPath(roleUuid, 'users/' + userUuid, permissions);
+        public setUserPermissions(roleUuid: string, permissions: IPermissionsRequest, userUuid?: string): ng.IPromise<any> {
+            return this.setPermissionsOnRootOrNode('users', roleUuid, permissions, userUuid);
         }
-        public setGroupPermissions(roleUuid: string, groupUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
-            return this.setPermissionsOnPath(roleUuid, 'groups/' + groupUuid, permissions);
+        public setGroupPermissions(roleUuid: string, permissions: IPermissionsRequest, groupUuid?: string): ng.IPromise<any> {
+            return this.setPermissionsOnRootOrNode('groups', roleUuid, permissions, groupUuid);
         }
-        public setRolePermissions(roleUuid: string, targetRoleUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
-            return this.setPermissionsOnPath(roleUuid, 'roles/' + targetRoleUuid, permissions);
+        public setRolePermissions(roleUuid: string, permissions: IPermissionsRequest, targetRoleUuid?: string): ng.IPromise<any> {
+            return this.setPermissionsOnRootOrNode('roles', roleUuid, permissions, targetRoleUuid);
         }
+
+        /**
+         * Sets the permissions on a particular node if specified by a uuid, else sets the permissions on the
+         * root (aggregation) node for that type as given by pathBase.
+         */
+        private setPermissionsOnRootOrNode(pathBase: string,
+                                           roleUuid: string,
+                                           permissions: IPermissionsRequest,
+                                           nodeUuid?: string): ng.IPromise<any> {
+            let path = nodeUuid ? `${pathBase}/${nodeUuid}` : pathBase;
+            return this.setPermissionsOnPath(roleUuid, path, permissions);
+        }
+
         private setPermissionsOnPath(roleUuid: string, path: string, permissions: IPermissionsRequest): ng.IPromise<any> {
             return this.meshPut('roles/' + roleUuid + '/permissions/' + path, permissions);
         }

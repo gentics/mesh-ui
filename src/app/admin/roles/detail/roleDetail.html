@@ -32,48 +32,42 @@
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Projects"
-                    root-uuid=""
                     items="vm.projects"
                     item-name-field="item.name"
-                    on-toggle="vm.setProjectPermissions(item, permissions)"></permissions-table>
+                    on-toggle="vm.setProjectPermissions(permissions, item)"></permissions-table>
 
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Schemas"
-                    root-uuid=""
                     items="vm.schemas"
                     item-name-field="item.name"
-                    on-toggle="vm.setSchemaPermissions(item, permissions)"></permissions-table>
+                    on-toggle="vm.setSchemaPermissions(permissions, item)"></permissions-table>
 
             <!--  <permissions-table
                       root-name="Microschemas"
-                      root-uuid=""
                       items="vm.microschemas"
                       item-name-field="item.name"></permissions-table>-->
 
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Users"
-                    root-uuid=""
                     items="vm.users"
                     item-name-field="item.username"
-                    on-toggle="vm.setUserPermissions(item, permissions)"></permissions-table>
+                    on-toggle="vm.setUserPermissions(permissions, item)"></permissions-table>
 
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Groups"
-                    root-uuid=""
                     items="vm.groups"
                     item-name-field="item.name"
-                    on-toggle="vm.setGroupPermissions(item, permissions)"></permissions-table>
+                    on-toggle="vm.setGroupPermissions(permissions, item)"></permissions-table>
 
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Roles"
-                    root-uuid=""
                     items="vm.roles"
                     item-name-field="item.name"
-                    on-toggle="vm.setRolePermissions(item, permissions)"></permissions-table>
+                    on-toggle="vm.setRolePermissions(permissions, item)"></permissions-table>
 
         </div>
 

@@ -11,12 +11,14 @@
                 <label>Filter {{:: vm.rootName }}</label>
                 <input ng-model="vm.filter">
             </md-input-container>
-            <div>
-                <md-checkbox md-no-ink aria-label="Create">
-                    Create
+            <div flex>
+                <md-checkbox md-no-ink aria-label="Create"
+                             ng-model="vm.rootPermissions['create']"
+                             ng-change="vm.toggleRootPerm()">
+                    Can create new {{:: vm.rootName }}
                 </md-checkbox>
             </div>
-            <div>
+            <!--<div>
                 <md-checkbox md-no-ink aria-label="Read">
                     Read
                 </md-checkbox>
@@ -30,7 +32,7 @@
                 <md-checkbox md-no-ink aria-label="Delete">
                     Delete
                 </md-checkbox>
-            </div>
+            </div>-->
         </div>
     </md-toolbar>
 

@@ -8,6 +8,7 @@ module meshAdminUi {
         private itemPermissions: {
             [itemUuid: string]: any
         } = {};
+        private rootPermissions: any = {};
         private itemNameField: string;
         private onToggle: Function;
 
@@ -57,7 +58,16 @@ module meshAdminUi {
                     permissions: permsArray,
                     recursive: false
                 };
-            this.onToggle({ item: item, permissions: permissions });
+            this.onToggle({ permissions: permissions, item: item });
+        }
+
+        public toggleRootPerm() {
+            let permsArray = Object.keys(this.rootPermissions).filter(key => this.rootPermissions[key] === true),
+                permissions: IPermissionsRequest = {
+                    permissions: permsArray,
+                    recursive: false
+                };
+            this.onToggle({ permissions: permissions });
         }
     }
 
@@ -72,7 +82,6 @@ module meshAdminUi {
             scope: {
                 isReadonly: '=',
                 rootName: '@',
-                rootUuid: '=',
                 items: '=',
                 itemNameField: '@',
                 onToggle: '&'
