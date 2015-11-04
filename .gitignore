@@ -21,3 +21,4 @@ verticles/admin-gui/bower_components
 npm-debug.log*
 /node
 /dist
+/typings
