@@ -164,6 +164,7 @@ module meshAdminUi {
                 contentLoaded = false;
 
             editor.setFontSize('14px');
+            editor.$blockScrolling = Infinity;
 
             session.on('change', (e) => {
                 if (!contentLoaded) {
