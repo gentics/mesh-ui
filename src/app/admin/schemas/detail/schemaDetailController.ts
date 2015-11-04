@@ -26,6 +26,9 @@ module meshAdminUi {
          * Persist the user data back to the server.
          */
         public persist(schema: ISchema) {
+            if (!this.validateJsonContent(this.schemaJson)) {
+                return;
+            }
             this.extendSchemaWithJsonValues(this.schemaJson);
 
             if (this.isNew) {
@@ -48,6 +51,45 @@ module meshAdminUi {
                 this.notifyService.toast('Sorry, updating of schemas is not yet implemented in the beta.');
                 this.modified = false;
             }
+        }
+
+        /**
+         * Some basic validation of the schema def.
+         * TODO: need much more robust and precise validation.
+         */
+        private validateJsonContent(json: string) {
+            let obj;
+            try{
+                obj = JSON.parse(json);
+            } catch(e) {
+                this.notifyService.toast('JSON is invalid.');
+                return false;
+            }
+            // ensure the displayField is set
+            if (typeof obj.displayField === 'undefined' || obj.displayField === '') {
+                this.notifyService.toast('Please specify a displayField.');
+                return false;
+            }
+            // ensure at least one field has been defined
+            if (!obj.fields || obj.fields.length === 0) {
+                this.notifyService.toast('Schema must have at least one field defined.');
+                return false;
+            }
+            // ensure displayField matches an actual field name
+            let fieldNames = obj.fields.map(field => field.name);
+            if (fieldNames.indexOf(obj.displayField) === -1) {
+                this.notifyService.toast(`displayField value "${obj.displayField}" does not match any fields.`);
+                return false;
+            }
+            // ensure each field has a name and type
+            let badFields = obj.fields.filter(field => {
+                return !field.name || !field.type;
+            });
+            if (0 < badFields.length) {
+                this.notifyService.toast(`All fields must have a "name" and "type" property.`);
+                return false;
+            }
+            return true;
         }
 
         /**

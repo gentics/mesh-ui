@@ -16,7 +16,7 @@
 
         <md-input-container>
             <label>Schema Name</label>
-            <input type="text" ng-model="vm.schema.name" ng-change="vm.modified = true">
+            <input type="text" ng-model="vm.schema.name" ng-change="vm.modified = true" required>
         </md-input-container>
 
         <div ui-ace="{ useWrapMode : true, showGutter: true, mode: 'json', onLoad : vm.aceLoaded }"

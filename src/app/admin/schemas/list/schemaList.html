@@ -4,6 +4,10 @@
     <md-toolbar class="admin-toolbar">
         <div class="md-toolbar-tools">
             <h2 class="md-title" flex >Schemas</h2>
+            <md-input-container flex>
+                <label>Filter Schemas</label>
+                <input ng-model="vm.schemaFilter">
+            </md-input-container>
             <button class="btn btn-small btn-primary" aria-label="Create Schema" ui-sref="admin.schemas.create">
                 Create New Schema
             </button>
@@ -12,7 +16,7 @@
 
     <md-content layout-padding class="admin-content-block">
         <table class="mh-table">
-            <tr class="" ng-repeat="schema in vm.schemas track by $index">
+            <tr class="" ng-repeat="schema in vm.schemas | filter: vm.schemaFilter track by schema.uuid">
                 <td>
                     <a ui-sref="admin.schemas.detail({ uuid: schema.uuid })"><strong>{{:: schema.name}}</strong></a>
                 <td>
