@@ -39,6 +39,18 @@ module meshAdminUi {
             }
         }
 
+        public getInitials() {
+            let currentUser = this.authService.getCurrentUser();
+            if (!currentUser) {
+                return;
+            }
+            if (currentUser.firstname && currentUser.lastname) {
+                return currentUser.firstname[0] + currentUser.lastname[0];
+            } else {
+                return currentUser.username.substr(0, 2);
+            }
+        }
+
         public logout() {
             this.authService.logOut();
         }

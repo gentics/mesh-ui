@@ -10,6 +10,7 @@ module meshAdminUi {
         private _isLoggedIn: boolean;
         private _currentUser: IUser;
         private authString: string;
+        private userRequestInFlight: ng.IPromise<IUser>;
         private onLogInCallbacks;
         private onLogOutCallbacks;
         private AUTH_HEADER_NAME = 'Authorization';
@@ -53,7 +54,7 @@ module meshAdminUi {
             config.headers[authHeaderKey] = authHeaderValue;
 
             // TODO: replace url with config value.
-            $http.get('/api/v1/auth/me', config)
+            this.userRequestInFlight = $http.get('/api/v1/auth/me', config)
                 .then(response => {
                     if (response.status === 200) {
                         this._currentUser = <IUser>response.data;
@@ -79,11 +80,35 @@ module meshAdminUi {
             return deferred.promise;
         }
 
+        /**
+         * If the browser is refreshed, then we will lose the "currentUser" data, so it needs
+         * to be re-fetched from Mesh.
+         */
+        private reFetchCurrentUser(): ng.IPromise<IUser> {
+            if (this.userRequestInFlight) {
+                return this.userRequestInFlight;
+            }
+            // need to re-fetch the current user data
+            let config: ng.IRequestShortcutConfig = {
+                headers: { [this.AUTH_HEADER_NAME]: this.authString }
+            };
+            this.userRequestInFlight = this.$injector.get("$http").get('/api/v1/auth/me', config)
+                .then(response => {
+                    this._currentUser = <IUser>response.data;
+                    this.userRequestInFlight = undefined;
+                    return this._currentUser;
+                });
+            return this.userRequestInFlight;
+        }
+
         public getAuthValue() {
             return this.authString;
         }
 
         public getCurrentUser(): IUser {
+            if (this._isLoggedIn && !this._currentUser) {
+                this.reFetchCurrentUser();
+            }
             return this._currentUser;
         }
 

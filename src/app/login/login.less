@@ -40,14 +40,20 @@
   margin-bottom: 2rem;
   height: 300px;
   width: 300px;
-  animation: logo-drop-in 3s 1s both;
+  animation: logo-drop-in 2s 1s both;
 
   .gtx-logo-main {
-    animation: logo-color-in 3s 1s both;
+    animation: logo-color-in 2s 1s both;
   }
   .gtx-logo-dot {
-    animation: logo-color-in 3s 1.3s both;
+    animation: logo-color-in 2s 1.3s both;
   }
+
+  .responsive-max(@mq-sm, {
+    margin-top: 3vh;
+    width: 90vw;
+    height: 90vw;
+  });
 }
 
 @keyframes logo-drop-in {

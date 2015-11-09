@@ -12,7 +12,7 @@
         </div>
 
         <div flex layout="row" layout-align="end center">
-            <div class="language-container">
+           <!-- <div class="language-container">
                 <mh-dropdown>
                     <mh-dropdown-label layout="row" layout-align="center center" class="language-select-label top-menu-label">
                         <i class="icon-language"></i>
@@ -31,14 +31,16 @@
                             </li>
                         </ul>
                     </mh-dropdown-body>
-                </mh-dropdown>
+                </mh-dropdown>-->
             </div>
 
-            <div class="user-container" layout="row">
+            <div class="user-container" layout="row" layout-align="end center">
                 <mh-dropdown>
                     <mh-dropdown-label layout="row" layout-align="center center" class="top-menu-label">
                         <div layout="row" layout-align="center center">
-                            <span class="profile-image" ng-style="{'background-image': 'url({{ vm.profileImage }})' }"></span>
+                            <span class="profile-image" layout="row" layout-align="center center">
+                                <span flex>{{ vm.getInitials() }}</span>
+                            </span>
                             <span class="user-name"><span class="hide-sm">{{ vm.getUserName() }}</span><i class="icon-arrow-drop-down"></i></span>
                         </div>
                     </mh-dropdown-label>

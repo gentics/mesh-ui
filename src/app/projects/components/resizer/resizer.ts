@@ -4,8 +4,8 @@ module meshAdminUi {
     class ResizerController {
 
         public resizerStyle = {
-            'max-width' : '50%',
-            'min-width' : '50%'
+            'max-width' : '',
+            'min-width' : ''
         };
         private barWidth = 10;
         private percentage: number;
