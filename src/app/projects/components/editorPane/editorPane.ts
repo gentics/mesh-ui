@@ -94,7 +94,7 @@ module meshAdminUi {
                     this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
                 })
                 .catch(error => {
-                    this.notifyService.toast(error.message || error);
+                    this.notifyService.toast(error.data.message || error.data);
                 })
         }
 

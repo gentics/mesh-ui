@@ -89,6 +89,10 @@ module meshAdminUi {
         public pageChanged(newPageNumber: number, schemaUuid: string) {
             this.onPageChange({ newPageNumber: newPageNumber, schemaUuid: schemaUuid });
         }
+
+        public isImageNode(node: INode): boolean {
+            return this.mu.isImageNode(node);
+        }
     }
 
 

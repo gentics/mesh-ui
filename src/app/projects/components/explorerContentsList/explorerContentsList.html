@@ -3,6 +3,7 @@
 
         <div ng-repeat="bundle in vm.contents" class="node-bundle">
             <div class="schema-name">{{:: bundle.schema.name }}</div>
+
             <div dir-paginate="node in bundle.data | filter: vm.filterNodes | itemsPerPage: vm.itemsPerPage track by node.uuid"
                  pagination-id="'bdl_' + bundle.schema.uuid"
                  total-items="bundle._metainfo.totalCount"
@@ -10,7 +11,11 @@
                  ng-class="{'selected' : vm.isSelected(node.uuid) }"
                  ng-click="vm.toggleSelect(node.uuid)"
                  layout="row">
+
                 <div flex>
+                    <span ng-if="node.fileName && node.fileName !== ''" class="binary-icon">
+                        <i ng-class="{ 'icon-insert-drive-file' : !vm.isImageNode(node), 'icon-image': vm.isImageNode(node) }"></i>
+                    </span>
                     <span class="node-title"
                           ng-class="{'container': node.container}"
                           ng-click="vm.openNode(node, $event)">{{:: node.fields[node.displayField] }}</span>

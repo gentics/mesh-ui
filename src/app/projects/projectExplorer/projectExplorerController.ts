@@ -22,7 +22,13 @@ module meshAdminUi {
             this.projectName = contextService.getProject().name;
             this.createPermission = -1 < currentNode.permissions.indexOf('create');
 
-            const updateContents = () => this.populateChildNodes();
+            const updateContents = () => {
+                dataService.getNode(contextService.getProject().name, currentNode.uuid)
+                    .then((node: INode) => {
+                        this.currentNode = node;
+                        this.populateChildNodes();
+                    });
+            };
             const searchTermHandler = (event, term: string) => {
                 this.searchParams.searchTerm = term;
                 mu.debounce(updateContents, 250)();
