@@ -1,17 +1,24 @@
 <div class="app-content">
     <h1 class="page-title">Projects</h1>
 
-    <div class="actions-bar" layout="row">
-        <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.projects.create">
-            Create New Project
-        </button>
-    </div>
-
-    <table class="mh-table">
-        <tr ng-repeat="project in vm.projects">
-            <td>
-                <a ui-sref="admin.projects.detail({ uuid: project.uuid })"><strong>{{:: project.name }}</strong></a>
-            </td>
-        </tr>
-    </table>
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <md-input-container flex>
+                <label>Filter Projects</label>
+                <input ng-model="vm.projectFilter">
+            </md-input-container>
+            <button class="btn btn-small btn-primary" aria-label="Create Project" ui-sref="admin.projects.create">
+                Create New Project
+            </button>
+        </div>
+    </md-toolbar>
+    <md-content layout-padding class="admin-content-block">
+        <table class="mh-table">
+            <tr ng-repeat="project in vm.projects | filter: vm.projectFilter track by project.uuid">
+                <td>
+                    <a ui-sref="admin.projects.detail({ uuid: project.uuid })"><strong>{{:: project.name }}</strong></a>
+                </td>
+            </tr>
+        </table>
+    </md-content>
 </div>

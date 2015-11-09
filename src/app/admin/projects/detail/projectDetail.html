@@ -14,10 +14,31 @@
 
     <form name="projectEditorForm" class="admin-form">
 
-        <md-input-container>
-            <label>Project Name</label>
-            <input type="text" ng-model="vm.project.name" ng-change="vm.nameChanged()" >
-        </md-input-container>
+
+        <div layout="row" layout-align="center center" class="main-buttons">
+
+            <md-input-container flex>
+                <label>Project Name</label>
+                <input type="text" ng-model="vm.project.name" ng-change="vm.nameChanged()" >
+            </md-input-container>
+
+            <button class="btn btn-primary"
+                    ng-click="vm.persist(vm.project)"
+                    ng-disabled="!vm.modified"
+                    aria-label="save">
+                <i class="icon-save"></i>
+                <span ng-if="!vm.isNew" translate>UPDATE</span>
+                <span ng-if="vm.isNew" translate>CREATE</span>
+            </button>
+
+            <button class="btn btn-warn"
+                    ng-click="vm.remove(vm.project)"
+                    ng-disabled="!vm.canDelete()"
+                    aria-label="delete">
+                <i class="icon-delete"></i><span translate>DELETE</span>
+            </button>
+
+        </div>
 
         <div ng-if="!vm.isNew">
 
@@ -57,24 +78,4 @@
         </div>
 
     </form>
-
-    <div layout="row" layout-align="center center" class="main-buttons">
-
-        <button class="btn btn-primary"
-                ng-click="vm.persist(vm.project)"
-                ng-disabled="!vm.modified"
-                aria-label="save">
-            <i class="icon-save"></i>
-            <span ng-if="!vm.isNew" translate>UPDATE</span>
-            <span ng-if="vm.isNew" translate>CREATE</span>
-        </button>
-
-        <button class="btn btn-warn"
-                ng-click="vm.remove(vm.project)"
-                ng-disabled="!vm.canDelete()"
-                aria-label="delete">
-            <i class="icon-delete"></i><span translate>DELETE</span>
-        </button>
-
-    </div>
 </div>
