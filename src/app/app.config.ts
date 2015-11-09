@@ -72,7 +72,7 @@ module meshAdminUi {
             }
             else if (toState.name === 'login' && authService.isLoggedIn()) {
                 event.preventDefault();
-                $state.go('projects.list');
+                $state.go('projectsList');
             }
         });
 

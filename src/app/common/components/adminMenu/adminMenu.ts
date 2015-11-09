@@ -6,7 +6,7 @@ module meshAdminUi {
      * @param adminMenuService
      * @returns {{restrict: string, templateUrl: string, controller: adminMenuController, controllerAs: string, scope: {}, replace: boolean}}
      */
-    function adminMenuDirective(adminMenuService) {
+    function adminMenuDirective(adminMenuService: AdminMenuService) {
 
         function adminMenuController() {
             var vm = this;
