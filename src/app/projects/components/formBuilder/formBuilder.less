@@ -22,9 +22,19 @@
 .editor-widget {
   position: relative;
 
-  &.display-field input {
+  &.display-field {
     font-size: @font-size-title-1;
-    height: inherit;
+    input {
+      height: inherit;
+    }
+    label {
+      transform: translate3d(0, 43px, 0) scale(1);
+    }
+
+    &.md-input-focused label:not(.md-no-float),
+    &.md-input-has-value label {
+      transform: translate3d(0, 29px, 0) scale(0.35) !important;
+    }
   }
 }
 

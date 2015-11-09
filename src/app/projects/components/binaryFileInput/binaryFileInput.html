@@ -5,13 +5,13 @@
          layout-align="center center">
 
         <div class="current-file-container" ng-if="!vm.model && vm.fileUrl !== ''">
-            <img ng-src="{{ vm.fileUrl }}" />
+            <binary-file-preview source-url="vm.fileUrl"
+                                 node="vm.node"></binary-file-preview>
         </div>
 
         <div class="upload-preview-container" ng-show="!vm.model.$error">
-            <img ngf-src="!vm.model.$error && vm.model">
-            <audio controls="" ngf-src="!vm.model.$error && vm.model"></audio>
-            <video controls="" ngf-src="!vm.model.$error && vm.model"></video>
+            <binary-file-preview source-file="vm.model"
+                                 node="vm.node"></binary-file-preview>
         </div>
 
         <div class="drop-box"

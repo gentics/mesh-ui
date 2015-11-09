@@ -68,4 +68,48 @@ describe('meshUtils', function() {
             expect(run).toThrow();
         });
     });
+
+    describe('isImageNode():', function() {
+
+        it('should return false for non-binary node', function() {
+            var node = {};
+            expect(mu.isImageNode(node)).toEqual(false);
+        });
+
+        it('should return false for binary node with non-image mime type', function() {
+            var node = {
+                binaryProperties: {
+                    mimeType: 'application/pdf'
+                }
+            };
+            expect(mu.isImageNode(node)).toEqual(false);
+        });
+
+        it('should return true for binary node with jpeg mime type', function() {
+            var node = {
+                binaryProperties: {
+                    mimeType: 'image/jpeg'
+                }
+            };
+            expect(mu.isImageNode(node)).toEqual(true);
+        });
+
+        it('should return true for binary node with gif mime type', function() {
+            var node = {
+                binaryProperties: {
+                    mimeType: 'image/gif'
+                }
+            };
+            expect(mu.isImageNode(node)).toEqual(true);
+        });
+
+        it('should return true for binary node with png mime type', function() {
+            var node = {
+                binaryProperties: {
+                    mimeType: 'image/png'
+                }
+            };
+            expect(mu.isImageNode(node)).toEqual(true);
+        });
+    });
 });

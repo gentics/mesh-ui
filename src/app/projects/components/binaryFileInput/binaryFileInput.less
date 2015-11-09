@@ -1,7 +1,6 @@
 @max-height: 400px;
 
 .binary-file-input {
-  margin-top: 10px;
   background-color: @color-concrete;
   .binary-preview-container {
     min-height: 200px;
@@ -46,6 +45,16 @@
       min-width:100%;
       min-height:100%;
       max-height: @max-height;
+    }
+  }
+}
+
+.binary-file-preview {
+  text-align: center;
+  .non-image-preview {
+    .file-preview {
+      font-size: @font-size-title-1;
+      color: @color-subdued;
     }
   }
 }

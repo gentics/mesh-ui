@@ -1,7 +1,15 @@
 <div class="content-editor-container" ng-show="vm.isLoaded">
 
     <div ng-if="vm.schema.binary">
-        <binary-file-input model="vm.binaryFile"
+        <div class="binary-label">
+            Binary File: {{ vm.node.fileName || vm.binaryFile.name }}
+            <span ng-if="vm.node.fileName">
+                <a ng-href="{{ vm.getBinaryFileUrl() }}">download</a>
+            </span>
+        </div>
+
+        <binary-file-input node="vm.node"
+                           model="vm.binaryFile"
                            file-url="vm.getBinaryFileUrl()"
                            on-change="vm.setAsModified()"></binary-file-input>
     </div>

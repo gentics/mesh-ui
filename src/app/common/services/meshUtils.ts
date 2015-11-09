@@ -28,6 +28,20 @@ module meshAdminUi {
         }
 
         /**
+         * Takes a node and returns true is that node is a binary node and the associated binary is an image file.
+         */
+        public isImageNode(node: INode): boolean {
+            if (typeof node.binaryProperties !== 'undefined') {
+                return this.isImageMimeType(node.binaryProperties.mimeType);
+            }
+            return false;
+        }
+
+        public isImageMimeType(mimeType: string): boolean {
+            return (/^image\//.test(mimeType));
+        }
+
+        /**
          * Deep clone an object, from http://stackoverflow.com/a/122190/772859
          * Note that this will not handle object containing circular references.
          *

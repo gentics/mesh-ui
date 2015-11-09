@@ -391,7 +391,8 @@ module meshAdminUi {
                     }
                 })
                 .then(() => {
-                    return node;
+                    // re-get the node as it will now contain the correct binaryProperties, fileName etc.
+                    return this.getNode(projectName, node.uuid);
                 });
         }
 

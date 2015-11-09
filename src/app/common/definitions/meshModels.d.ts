@@ -41,6 +41,11 @@ declare module meshAdminUi {
                 schemaUuid: string;
             };
         };
+        binaryProperties?: {
+            fileSize: number;
+            mimeType: string;
+            sha512sum: string;
+        };
         displayField?: string;
         language?: string;
         published?: boolean;
