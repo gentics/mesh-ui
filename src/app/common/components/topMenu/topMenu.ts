@@ -9,6 +9,7 @@ module meshAdminUi {
         private profileImage: string;
 
         constructor(private $state: ng.ui.IStateService,
+                    private dispatcher: Dispatcher,
                     private authService: AuthService,
                     private i18nService: I18nService) {
 
@@ -17,11 +18,11 @@ module meshAdminUi {
             this.lang = i18nService.getCurrentLang();
             this.profileImage = 'assets/images/example-profile-pic.jpg';
 
-            authService.registerLogInHandler(() => {
+            dispatcher.subscribe(dispatcher.events.loginSuccess, () => {
                 this.isLoggedIn = true;
             });
 
-            authService.registerLogOutHandler(() => {
+            dispatcher.subscribe(dispatcher.events.logoutSuccess, () => {
                 this.isLoggedIn = false;
             });
         }

@@ -60,40 +60,4 @@ describe('authService', function() {
         $httpBackend.flush();
         $scope.$apply();
     });
-
-    it('should invoke handlers on login', function() {
-        respondWithCode(200);
-        var handlerOne = jasmine.createSpy('handlerOne'),
-            handlerTwo = jasmine.createSpy('handlerTwo');
-
-        authService.registerLogInHandler(handlerOne);
-        authService.registerLogInHandler(handlerTwo);
-        authService.logIn('admin', 'admin')
-            .then(function() {
-                expect(handlerOne).toHaveBeenCalled();
-                expect(handlerTwo).toHaveBeenCalled();
-            });
-
-        $httpBackend.flush();
-        $scope.$apply();
-    });
-
-    it('should invoke handlers on logout', function() {
-        respondWithCode(200);
-        var handlerOne = jasmine.createSpy('handlerOne'),
-            handlerTwo = jasmine.createSpy('handlerTwo');
-
-        authService.registerLogOutHandler(handlerOne);
-        authService.registerLogOutHandler(handlerTwo);
-        authService.logIn('admin', 'admin')
-            .then(function() {
-                return authService.logOut();
-            })
-            .then(function() {
-                expect(handlerOne).toHaveBeenCalled();
-                expect(handlerTwo).toHaveBeenCalled();
-            });
-        $httpBackend.flush();
-        $scope.$apply();
-    });
 });

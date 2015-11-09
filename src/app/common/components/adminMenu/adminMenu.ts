@@ -53,14 +53,21 @@ module meshAdminUi {
     class AdminMenuService {
 
         private _isOpen: boolean;
-        private closeMenuHandler = event => this.closeAdminMenu(event);
+        private closeMenuHandler = event => {
+            this.closeAdminMenu(event);
+        };
 
         constructor(private $rootScope: ng.IRootScopeService,
                     private $document: ng.IDocumentService,
                     private $state: ng.ui.IStateService,
                     private contextService: ContextService) {
 
-            $rootScope.$on('$stateChangeSuccess', () => this.openIfAdminState());
+            $rootScope.$on('$stateChangeSuccess', () => {
+                this.openIfAdminState();
+                if (!this.isAdminState()) {
+                    this.$document.off('click', this.closeMenuHandler);
+                }
+            });
         }
 
         /**
@@ -116,10 +123,8 @@ module meshAdminUi {
         /**
          * Returns true is the current router state is one of the "admin" states as defined in
          * the admin.config.js state definitions.
-         *
-         * @returns {boolean}
          */
-        public isAdminState() {
+        public isAdminState(): boolean {
             return !!(this.$state.current.data && this.$state.current.data.isAdminState === true);
         }
     }

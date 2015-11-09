@@ -56,12 +56,11 @@ module meshAdminUi {
 
     /**
      * Tasks to be run when the app is bootstrapped.
-     *
-     * @param $rootScope
-     * @param $state
-     * @param authService
      */
-    function appRunBlock($rootScope, $state, authService) {
+    function appRunBlock($rootScope: ng.IRootScopeService,
+                         $state: ng.ui.IStateService,
+                         authService: AuthService,
+                         dispatcher: Dispatcher) {
         /**
          * Route unauthenticated users to the login page.
          */
@@ -80,9 +79,7 @@ module meshAdminUi {
          * Register a callback to redirect to the login screen whenever the user gets
          * logged out.
          */
-        authService.registerLogOutHandler(function () {
-            $state.go('login');
-        });
+        dispatcher.subscribe(dispatcher.events.logoutSuccess, () => $state.go('login'));
     }
 
 }

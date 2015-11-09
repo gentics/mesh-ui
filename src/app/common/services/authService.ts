@@ -17,6 +17,7 @@ module meshAdminUi {
 
         constructor(private $injector:ng.auto.IInjectorService,
                     private $q: ng.IQService,
+                    private dispatcher: Dispatcher,
                     private selectiveCache: SelectiveCache,
                     private $cookies) {
 
@@ -60,7 +61,7 @@ module meshAdminUi {
                         this._isLoggedIn = true;
                         this.$cookies.put('isLoggedIn', 'true');
                         this.$cookies.put('authString', this.authString);
-                        this.onLogInCallbacks.forEach(fn => fn());
+                        this.dispatcher.publish(this.dispatcher.events.loginSuccess);
                         deferred.resolve(true);
                     } else {
                         console.log('Error, status: ' + response.status);
@@ -101,7 +102,7 @@ module meshAdminUi {
                 this.$cookies.put('isLoggedIn', 'false');
                 this.$cookies.put('authString', '');
                 this.authString = '';
-                this.onLogOutCallbacks.forEach(fn => fn());
+                this.dispatcher.publish(this.dispatcher.events.logoutSuccess);
                 this.selectiveCache.removeAll();
 
                 deferred.resolve(true);
@@ -110,26 +111,6 @@ module meshAdminUi {
             });
 
             return deferred.promise;
-        }
-
-        /**
-         * Register a callback function to be run upon successful login. This is a more explicit
-         * flow than using an event-based approach as it creates a traceable path of callback
-         * registration from the point of use.
-         *
-         * @param {function()} callback
-         */
-        public registerLogInHandler(callback) {
-            this.onLogInCallbacks.push(callback);
-        }
-
-        /**
-         * Register a callback which will be executed when user logs out.
-         *
-         * @param {function()} callback
-         */
-        public registerLogOutHandler(callback) {
-            this.onLogOutCallbacks.push(callback);
         }
     }
 
