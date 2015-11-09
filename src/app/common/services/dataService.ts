@@ -364,22 +364,35 @@ module meshAdminUi {
             return this.meshPost(projectName + '/nodes', node)
                 .then(newNode => {
                     if (typeof binaryFile !== 'undefined') {
-                        return this.Upload.upload({
-                                url: this.apiUrl + projectName + '/nodes/' + newNode.uuid + '/bin',
-                                data: {
-                                    file: binaryFile,
-                                    filename: binaryFile.name
-                                }
-                            })
-                            .then(() => {
-                                return newNode;
-                            })
+                        return this.uploadBinaryFile(projectName, newNode, binaryFile, 'POST');
+                    } else {
+                        return newNode;
                     }
-                    return newNode;
                 });
         }
         private updateNode(projectName: string, node: INode, binaryFile?: File): ng.IPromise<INode> {
-            return this.meshPut(projectName + '/nodes/' + node.uuid, node);
+            return this.meshPut(projectName + '/nodes/' + node.uuid, node)
+                .then(newNode => {
+                    if (typeof binaryFile !== 'undefined') {
+                        return this.uploadBinaryFile(projectName, newNode, binaryFile, 'PUT');
+                    } else {
+                        return newNode;
+                    }
+                });
+        }
+
+        private uploadBinaryFile(projectName: string, node: INode, binaryFile: File, method: string = 'POST'): ng.IPromise<INode> {
+            return this.Upload.upload({
+                    url: this.apiUrl + projectName + '/nodes/' + node.uuid + '/bin',
+                    method: method,
+                    data: {
+                        file: binaryFile,
+                        filename: binaryFile.name
+                    }
+                })
+                .then(() => {
+                    return node;
+                });
         }
 
         /**

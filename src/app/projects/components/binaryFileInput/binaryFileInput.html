@@ -1,29 +1,31 @@
 <div class="binary-file-input">
 
- <div class="binary-preview-container"
-      layout="row"
-      layout-align="center center">
+    <div class="binary-preview-container"
+         layout="row"
+         layout-align="center center">
 
-  <div class="current-file-container">
-   <img ng-src="{{ vm.fileUrl }}" />
-  </div>
+        <div class="current-file-container" ng-if="!vm.model && vm.fileUrl !== ''">
+            <img ng-src="{{ vm.fileUrl }}" />
+        </div>
 
-  <div class="upload-preview-container" ng-show="!vm.model.$error">
-   <img ngf-src="!vm.model.$error && vm.model">
-   <audio controls="" ngf-src="!vm.model.$error && vm.model"></audio>
-   <video controls="" ngf-src="!vm.model.$error && vm.model"></video>
-  </div>
+        <div class="upload-preview-container" ng-show="!vm.model.$error">
+            <img ngf-src="!vm.model.$error && vm.model">
+            <audio controls="" ngf-src="!vm.model.$error && vm.model"></audio>
+            <video controls="" ngf-src="!vm.model.$error && vm.model"></video>
+        </div>
 
-  <div class="drop-box"
-       ng-model="vm.model"
-       ngf-select=""
-       ngf-drop=""
-       ngf-drag-over-class="dragover"
-       ngf-fix-orientation="false"
-       layout="row"
-       layout-align="center center">
-   <div ng-hide="vm.model && !vm.model.$error">Select or drop file...</div>
-  </div>
- </div>
+        <div class="drop-box"
+             ng-class="{ 'fadeout': vm.model.name || vm.fileUrl }"
+             ng-model="vm.model"
+             ngf-change="vm.fileChanged()"
+             ngf-select=""
+             ngf-drop=""
+             ngf-drag-over-class="dragover"
+             ngf-fix-orientation="false"
+             layout="row"
+             layout-align="center center">
+            <div ng-hide="vm.model && !vm.model.$error" class="hint">Select or drop file...</div>
+        </div>
+    </div>
 
 </div>

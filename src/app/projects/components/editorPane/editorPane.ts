@@ -1,5 +1,6 @@
 module meshAdminUi {
 
+    import Preferences = protractor.logging.Preferences;
     function editorPaneDirective() {
         return {
             restrict: 'E',
@@ -48,6 +49,7 @@ module meshAdminUi {
                 this.selectedLangs = {};
                 this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
                 this.isLoaded = false;
+                this.binaryFile = undefined;
 
                 this.getNodeData(schemaUuid, parentNodeUuid)
                     .then(data => this.populateSchema(data))
@@ -78,9 +80,6 @@ module meshAdminUi {
          * Save the changes back to the server.
          */
         public persist(originalNode: INode) {
-            if (typeof this.binaryFile !== 'undefined') {
-                console.log('gonna upload:', this.binaryFile);
-            }
             this.dataService.persistNode(this.projectName, originalNode, this.binaryFile)
                 .then((node: INode) => {
                     if (this.isNew(originalNode)) {
@@ -93,7 +92,10 @@ module meshAdminUi {
                         this.contentModified = false;
                     }
                     this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
-                });
+                })
+                .catch(error => {
+                    this.notifyService.toast(error.message || error);
+                })
         }
 
         private processNewNode(node: INode) {
@@ -198,7 +200,11 @@ module meshAdminUi {
         }
 
         public getBinaryFileUrl(): string {
-            return meshConfig.apiUrl + this.projectName + '/nodes/' + this.node.uuid + '/bin';
+            if (this.node && typeof this.node.created !== 'undefined') {
+                return meshConfig.apiUrl + this.projectName + '/nodes/' + this.node.uuid + '/bin';
+            } else {
+                return '';
+            }
         }
 
         /**

@@ -3,9 +3,13 @@ module meshAdminUi {
     class BinaryFileInputController {
 
         public node: INode;
+        public onChange: Function;
 
         constructor() {
+        }
 
+        public fileChanged() {
+            this.onChange();
         }
 
     }
@@ -21,7 +25,8 @@ module meshAdminUi {
             bindToController: true,
             scope: {
                 fileUrl: '=',
-                model: '='
+                model: '=',
+                onChange: '&'
             }
         };
     }

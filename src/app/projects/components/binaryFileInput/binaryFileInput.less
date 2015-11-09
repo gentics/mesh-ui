@@ -2,7 +2,7 @@
 
 .binary-file-input {
   margin-top: 10px;
-
+  background-color: @color-concrete;
   .binary-preview-container {
     min-height: 200px;
     max-height: @max-height;
@@ -12,15 +12,25 @@
   }
 
   .drop-box {
-    border: 3px dotted @color-alto;
+    background-color: fade(@color-primary, 10%);
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+    transition: opacity 0.3s, background 0.3s;
 
-    &.dragover {
-      border-color: @color-primary;
+    .hint {
+      background-color: @color-alto;
+      padding: 8px;
+      border-radius: 3px;
+    }
+    &.fadeout {
+      opacity: 0;
+    }
+
+    &:hover, &.dragover {
+      opacity: 1;
       background-color: fade(@color-primary, 30%);
     }
   }
