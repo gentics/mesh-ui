@@ -8,16 +8,17 @@ module meshAdminUi {
         private itemsPerPage: number = 10;
         private createPermission: boolean;
         private contents = [];
-        private childrenSchemas: INodeReference[] = [];
+        private childrenSchemas: ISchema[] = [];
         private projectName: string;
         private searchParams: INodeSearchParams = {};
 
-        constructor( private $scope: ng.IScope,
-                     private dataService: DataService,
-                     private mu: MeshUtils,
-                     private contextService: ContextService,
-                     private dispatcher: Dispatcher,
-                     private currentNode: INode) {
+        constructor(private $scope: ng.IScope,
+                    private $q: ng.IQService,
+                    private dataService: DataService,
+                    private mu: MeshUtils,
+                    private contextService: ContextService,
+                    private dispatcher: Dispatcher,
+                    private currentNode: INode) {
 
             this.projectName = contextService.getProject().name;
             this.createPermission = -1 < currentNode.permissions.indexOf('create');
@@ -26,23 +27,37 @@ module meshAdminUi {
                 dataService.getNode(contextService.getProject().name, currentNode.uuid)
                     .then((node: INode) => {
                         this.currentNode = node;
-                        this.populateChildNodes();
-                    });
+                        return this.getChildrenSchemas();
+                    })
+                    .then(() => this.populateChildNodes());
             };
+
             const searchTermHandler = (event, term: string) => {
                 this.searchParams.searchTerm = term;
-                mu.debounce(updateContents, 250)();
+                mu.debounce(() => this.populateChildNodes(), 250)();
             };
 
             dispatcher.subscribe(dispatcher.events.explorerSearchTermChanged, searchTermHandler);
             dispatcher.subscribe(dispatcher.events.explorerContentsChanged, updateContents);
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents, searchTermHandler));
 
-            this.populateChildNodes();
+            this.getChildrenSchemas()
+                .then(() => this.populateChildNodes());
         }
 
-        public goToPage() {
-
+        /**
+         * The node.childrenInfo property contains the name and uuid of the children's schemas, but we need the
+         * full schema object in order to do proper search queries, since we need to know the displayField of
+         * each child type.
+         */
+        private getChildrenSchemas() {
+            let promises = Object.keys(this.currentNode.childrenInfo).map((schemaName: string) => {
+                return this.dataService.getSchema(this.currentNode.childrenInfo[schemaName].schemaUuid);
+            });
+            return this.$q.all(promises)
+                .then(results => {
+                    this.childrenSchemas = results;
+                });
         }
 
         /**
@@ -50,17 +65,9 @@ module meshAdminUi {
          */
         public populateChildNodes(): ng.IPromise<any> {
             var projectName = this.contextService.getProject().name,
-                nodeUuid = this.currentNode.uuid,
                 queryParams: INodeListQueryParams = {
                     perPage: this.itemsPerPage
                 };
-
-            this.childrenSchemas = Object.keys(this.currentNode.childrenInfo).map((schemaName: string) => {
-                return {
-                    uuid: this.currentNode.childrenInfo[schemaName].schemaUuid,
-                    name: schemaName
-                };
-            });
 
             let bundleParams: INodeBundleParams[] = this.childrenSchemas.map(schemaRef => {
                 return {
@@ -68,7 +75,7 @@ module meshAdminUi {
                     page: 1
                 };
             });
-            return this.dataService.getNodeBundles(projectName, nodeUuid, bundleParams, this.searchParams, queryParams)
+            return this.dataService.getNodeBundles(projectName, this.currentNode, bundleParams, this.searchParams, queryParams)
                 .then(response => this.contents = response);
         }
 
@@ -78,7 +85,7 @@ module meshAdminUi {
                 page: newPageNumber
             }];
 
-            return this.dataService.getNodeBundles(this.projectName, this.currentNode.uuid, bundleParams, this.searchParams, {
+            return this.dataService.getNodeBundles(this.projectName, this.currentNode, bundleParams, this.searchParams, {
                 perPage: this.itemsPerPage
             }).then(result => {
                 var index = this.contents.map(bundle => bundle.schema.uuid).indexOf(schemaUuid);

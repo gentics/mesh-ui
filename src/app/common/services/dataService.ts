@@ -5,7 +5,7 @@ module meshAdminUi {
      * Interface used to specify which nodes to retrieve in each bundle.
      */
     export interface INodeBundleParams {
-        schema: INodeReference;
+        schema: ISchema;
         page: number;
     }
 
@@ -297,7 +297,7 @@ module meshAdminUi {
         /**
          */
         public getNodeBundles(projectName: string,
-                              nodeUuid: string,
+                              node: INode,
                               bundleParams: INodeBundleParams[],
                               searchParams?: INodeSearchParams,
                               queryParams?: INodeListQueryParams): ng.IPromise<INodeBundleResponse[]> {
@@ -307,7 +307,7 @@ module meshAdminUi {
                         bool: {
                             must: [
                                 { "term": { "project.name": projectName.toLowerCase() } },
-                                { "term": { "parentNode.uuid": nodeUuid } },
+                                { "term": { "parentNode.uuid": node.uuid } },
                                 { "term": { "schema.uuid": bundleParam.schema.uuid } }
                             ]
                         }
