@@ -258,7 +258,7 @@ function dist_js() {
 
         return js
             .pipe(concat('app.js'))
-            .pipe(uglify())
+//            .pipe(uglify())
             .pipe(gulp.dest('dist/app/'))
             .on('end', resolve)
             .on('error', reject);
@@ -354,3 +354,4 @@ gulp.task('watch', ['default', 'karma-watch'], function() {
 });
 
 gulp.task('default', ['build']);
+
