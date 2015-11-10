@@ -179,6 +179,40 @@ module meshAdminUi {
                         controllerAs: 'vm'
                     }
                 }
+            })
+            
+            .state('admin.tags', {
+                abstract: true
+            })
+            .state('admin.tags.list', {
+                url: '/tags',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/tags/list/tagList.html',
+                        controller: 'TagListController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('admin.tags.detail', {
+                url: '/tags/:uuid',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/tags/detail/tagDetail.html',
+                        controller: 'TagDetailController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('admin.tags.create', {
+                url: '/tags/new',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/tags/detail/tagDetail.html',
+                        controller: 'TagDetailController',
+                        controllerAs: 'vm'
+                    }
+                }
             });
     }
 }

@@ -41,8 +41,8 @@ module meshAdminUi {
 
     class TagsInputController {
 
-        public tagFamilies: ITagFamily[] = [];
-        public tags: ITag[] = [];
+        public tagFamilies: ITagFamily[];
+        public tags: ITag[];
         private tagSearch: string;
         private projectName: string;
         private onAdd: Function;
@@ -53,15 +53,21 @@ module meshAdminUi {
                     private contextService: ContextService) {
 
             this.projectName = contextService.getProject().name;
+            this.populateTags();
+        }
 
-            $q.all({
-                    tags: dataService.getTags(this.projectName),
-                    tagFamilies: dataService.getTagFamilies(this.projectName)
-                })
-                .then((result) => {
-                    this.tags = result.tags.data;
-                    this.tagFamilies = result.tagFamilies.data;
-                });
+        /**
+         * If the tags or tagFamilies have not been passed in, fetch them from the dataService.
+         */
+        private populateTags() {
+            if (!this.tags) {
+                this.dataService.getTags(this.projectName)
+                    .then(result => this.tags = result.data);
+            }
+            if (!this.tagFamilies) {
+                this.dataService.getTagFamilies(this.projectName)
+                    .then(result => this.tagFamilies = result.data);
+            }
         }
 
         public querySearch (query) {
@@ -145,7 +151,9 @@ module meshAdminUi {
             controllerAs: 'vm',
             bindToController: true,
             scope: {
-                onAdd: '&'
+                onAdd: '&',
+                tags: '=',
+                tagFamilies: '='
             }
         };
     }

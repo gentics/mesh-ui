@@ -1,0 +1,24 @@
+<md-dialog aria-label="Mango (Fruit)"  ng-cloak>
+    <form>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h2>{{:: vm.title }}</h2>
+
+                <md-input-container>
+                    <label>Tag Name</label>
+                    <input type="text" ng-model="vm.name" required>
+                </md-input-container>
+
+            </div>
+        </md-dialog-content>
+
+        <div class="md-actions">
+            <button ng-click="vm.create(vm.name)" class="btn btn-primary">
+                Okay
+            </button>
+            <button ng-click="vm.cancel()" class="btn">
+                Cancel
+            </button>
+        </div>
+    </form>
+</md-dialog>

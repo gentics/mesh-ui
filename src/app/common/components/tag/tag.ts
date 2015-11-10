@@ -13,7 +13,10 @@ module meshAdminUi {
             link: (scope) => {
                 scope.tagColor = () => {
                     return mu.stringToColor(scope.source.tagFamily.name);
-                }
+                };
+                scope.close = (event) => {
+                    scope.onClose({ $event: event });
+                };
             }
         };
     }

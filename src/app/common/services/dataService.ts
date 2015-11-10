@@ -516,7 +516,7 @@ module meshAdminUi {
         /**
          *
          */
-        public getTags(projectName, tagFamilyUuid?, queryParams?):ng.IPromise<any> {
+        public getTags(projectName, tagFamilyUuid?, queryParams?): ng.IPromise<IListResponse<ITag>> {
             var url;
             if (typeof tagFamilyUuid === 'undefined') {
                 url = projectName + '/tags/';
@@ -559,6 +559,10 @@ module meshAdminUi {
         }
         private updateTag(projectName: string, tag: ITag): ng.IPromise<ITag> {
             return this.meshPut(projectName + '/tags/' + tag.uuid, tag);
+        }
+
+        public deleteTag(projectName: string, tag: ITag): ng.IPromise<any> {
+            return this.meshDelete(projectName + '/tags/' + tag.uuid);
         }
 
         public addTagToNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {
