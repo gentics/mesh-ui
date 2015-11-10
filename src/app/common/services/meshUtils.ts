@@ -32,6 +32,10 @@ module meshAdminUi {
          */
         public nodeTagsObjectToArray(tagsObject: INodeTagsObject): ITag[] {
 
+            if (typeof tagsObject === 'undefined') {
+                return [];
+            }
+
             const makeSimpleTag = (item, tagsObject, familyName) => {
                 return {
                     uuid: item.uuid,

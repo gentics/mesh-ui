@@ -137,6 +137,16 @@ describe('meshUtils', function() {
                 };
             });
 
+            it('should return empty array for undefined object', function() {
+                var result = mu.nodeTagsObjectToArray(undefined);
+                expect(result).toEqual([]);
+            });
+
+            it('should return empty array for empty object', function() {
+                var result = mu.nodeTagsObjectToArray({});
+                expect(result).toEqual([]);
+            });
+
             it('should return an array', function() {
                 var result = mu.nodeTagsObjectToArray(tagsObject);
                 expect(result instanceof Array).toEqual(true);

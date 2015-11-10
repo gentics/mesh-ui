@@ -314,31 +314,34 @@ module meshAdminUi {
             let promises = bundleParams
                 .sort(sortByIsContainer)
                 .map(bundleParam => {
-                let query: ISearchQuery = {
-                    filter: {
-                        bool: {
-                            must: [
-                                { "term": { "project.name": projectName.toLowerCase() } },
-                                { "term": { "parentNode.uuid": node.uuid } },
-                                { "term": { "schema.uuid": bundleParam.schema.uuid } }
-                            ]
-                        }
-                    },
-                    sort: [
-                        { "created": "asc" }
-                    ]
-                };
-
-                if (searchParams.searchTerm) {
-                    let displayField = 'fields.' + bundleParam.schema.displayField;
-                    query.query = {
-                        "wildcard": { [displayField] : searchParams.searchTerm.toLowerCase() + '*' }
+                    let query: ISearchQuery = {
+                        filter: {
+                            bool: {
+                                must: [
+                                    { "term": { "project.name": projectName.toLowerCase() } },
+                                    { "term": { "parentNode.uuid": node.uuid } },
+                                    { "term": { "schema.uuid": bundleParam.schema.uuid } }
+                                ]
+                            }
+                        },
+                        sort: [
+                            { "created": "asc" }
+                        ]
                     };
-                }
 
-                let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });
-                return this.searchNodes(query, bundleQueryParams);
-            });
+                    if (searchParams.searchTerm) {
+                        let displayField = 'fields.' + bundleParam.schema.displayField;
+                        query.query = {
+                            /* "wildcard": { [displayField] : searchParams.searchTerm.toLowerCase() + '*' }*/
+                            "query_string": {
+                                "query": displayField + ":" + searchParams.searchTerm.toLowerCase() + '*'
+                            }
+                        };
+                    }
+
+                    let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });
+                    return this.searchNodes(query, bundleQueryParams);
+                });
 
             return this.$q.all(promises)
                 .then(results => {
@@ -508,7 +511,7 @@ module meshAdminUi {
         private updateTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<ITagFamily> {
             return this.meshPut(projectName + '/tagFamilies/' + tagFamily.uuid, tagFamily);
         }
-        
+
 
         /**
          *

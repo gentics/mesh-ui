@@ -8,7 +8,6 @@ module meshAdminUi {
 
         constructor($scope: ng.IScope,
                     private contextService: ContextService,
-                    private explorerContentsListService: ExplorerContentsListService,
                     private dispatcher: Dispatcher) {
             this.updateCurrentContext(contextService.getProject(), contextService.getCurrentNode());
 

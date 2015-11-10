@@ -7,7 +7,7 @@
             <div dir-paginate="node in bundle.data | filter: vm.filterNodes | itemsPerPage: vm.itemsPerPage track by node.uuid"
                  pagination-id="'bdl_' + bundle.schema.uuid"
                  total-items="bundle._metainfo.totalCount"
-                 class="bundle-item"
+                 class="bundle-item animate-item"
                  ng-class="{'selected' : vm.isSelected(node.uuid) }"
                  ng-click="vm.toggleSelect(node.uuid)"
                  layout="row">
