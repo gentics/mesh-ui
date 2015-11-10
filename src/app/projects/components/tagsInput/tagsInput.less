@@ -1,0 +1,33 @@
+.tags-input-label {
+}
+
+.tags-input-container {
+
+}
+
+.new-tag-text {
+  height: 20px;
+  padding: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0s;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .new-tag-link {
+    cursor: pointer;
+    color: @color-primary;
+    .noselect();
+  }
+}
+
+.autocomplete-template {
+  .family-name {
+    font-size: @font-size-smaller;
+    color: @color-dusty;
+  }
+}
+

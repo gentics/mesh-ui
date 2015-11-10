@@ -1,0 +1,34 @@
+<mh-dropdown>
+    <mh-dropdown-label layout="row" layout-align="end center" class="tags-input-label">
+        <button class="btn btn-small"><i class="icon-add-box"></i> add tag</button>
+    </mh-dropdown-label>
+    <mh-dropdown-body>
+
+        <div class="tags-input-container">
+            <div class="new-tag-text" ng-class="{ 'visible': matches.length === 0 && vm.tagSearch !== '' }">
+                <div class="new-tag-link" ng-click="vm.newTagDialog(vm.tagSearch)">Create a new tag</div>
+            </div>
+            <md-autocomplete
+                    md-selected-item="vm.selectedTag"
+                    md-search-text="vm.tagSearch"
+                    md-no-cache="true"
+                    md-items="tag in matches = vm.querySearch(vm.tagSearch)"
+                    md-selected-item-change="vm.addTag(vm.selectedTag)"
+                    md-item-text="tag.fields.name"
+                    md-min-length="0"
+                    placeholder="Select a tag">
+
+                <md-item-template>
+                    <div class="autocomplete-template" layout="row" layout-align="start center">
+                        <span class="family-name">{{ tag.tagFamily.name }}</span>
+                        <div class="tag-container">
+                            <tag source="tag" show-close="false"></tag>
+                        </div>
+                    </div>
+                </md-item-template>
+
+            </md-autocomplete>
+        </div>
+    </mh-dropdown-body>
+</mh-dropdown>
+

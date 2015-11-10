@@ -34,6 +34,13 @@ declare module meshAdminUi {
         [name: string]: any;
     }
 
+    export interface INodeTagsObject {
+        [tagFamilyName: string]: {
+            items: INodeReference[];
+            uuid: string;
+        };
+    }
+
     export interface INode extends IMeshBaseProps{
         childrenInfo?: {
             [schemaName: string]: {
@@ -49,7 +56,7 @@ declare module meshAdminUi {
         displayField?: string;
         language?: string;
         published?: boolean;
-        tags?: ITags;
+        tags?: INodeTagsObject;
         schema: INodeReference;
         container?: boolean;
         parentNodeUuid?: string;
@@ -95,6 +102,17 @@ declare module meshAdminUi {
         name: string;
         permissions?: string[];
         uuid?: string;
+    }
+
+    export interface ITag extends IMeshBaseProps {
+        tagFamily: INodeReference;
+        fields: {
+            name: string;
+        };
+    }
+
+    export interface ITagFamily extends IMeshBaseProps{
+        name: string;
     }
 
     export interface INodeFieldModel extends ISchemaFieldDefinition{

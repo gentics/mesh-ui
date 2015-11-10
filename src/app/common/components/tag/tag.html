@@ -1,0 +1,7 @@
+<div class="tag"
+     ng-style="{ 'background-color': tagColor() }"
+     layout="row"
+     layout-align="center center">
+    <span class="tag-name">{{ source.fields.name }}</span>
+    <span class="delete-tag" ng-if="showClose" ng-click="onClose()"><i class="icon-close"></i></span>
+</div>

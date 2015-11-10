@@ -22,6 +22,7 @@ module meshAdminUi {
         private contentModified: boolean;
         private availableLangs: ILanguageInfo[];
         private node: INode;
+        private tags: ITag[];
         private binaryFile: File;
         private selectedLangs: any;
         private isLoaded: boolean;
@@ -32,7 +33,7 @@ module meshAdminUi {
                     private editorService: EditorService,
                     private dispatcher: Dispatcher,
                     private confirmActionDialog: ConfirmActionDialog,
-                    private $mdDialog: ng.material.IDialogService,
+                    private mu: MeshUtils,
                     private contextService: ContextService,
                     private i18nService: I18nService,
                     private dataService: DataService,
@@ -46,6 +47,7 @@ module meshAdminUi {
                 this.contentModified = false;
                 this.availableLangs = i18nService.languages;
                 this.node = undefined;
+                this.tags = [];
                 this.selectedLangs = {};
                 this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
                 this.isLoaded = false;
@@ -105,6 +107,21 @@ module meshAdminUi {
                 projectName: this.projectName,
                 selectedLangs: this.selectedLangs
             });
+        }
+
+        public addTag(tag: ITag) {
+            if (!tag) {
+                return;
+            }
+            let tagIsDuplicate = -1 < this.tags.map(tag => tag.uuid).indexOf(tag.uuid);
+            if (!tagIsDuplicate) {
+                this.dataService.addTagToNode(this.projectName, this.node, tag)
+                    .then(node => {
+                        this.tags.push(tag);
+                        this.node.tags = node.tags;
+                        this.notifyService.toast(`Added tag "${tag.fields.name}"`)
+                    });
+            }
         }
 
         /**
@@ -178,6 +195,7 @@ module meshAdminUi {
                     return this.dataService.getNode(this.projectName, this.currentNodeId)
                         .then(data => {
                             this.node = data;
+                            this.tags = this.mu.nodeTagsObjectToArray(data.tags);
                             this.wipService.openItem(this.wipType, data, {
                                 projectName: this.projectName,
                                 selectedLangs: this.selectedLangs
@@ -215,6 +233,7 @@ module meshAdminUi {
         private populateFromWip(wipContent) {
             var wipMetadata = this.wipService.getMetadata(this.wipType, wipContent.uuid);
             this.node = wipContent;
+            this.tags = this.mu.nodeTagsObjectToArray(wipContent.tags);
             this.contentModified = this.wipService.isModified(this.wipType, this.node);
             this.selectedLangs = wipMetadata.selectedLangs;
             return this.dataService.getSchema(this.node.schema.uuid);

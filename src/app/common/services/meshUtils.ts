@@ -28,6 +28,36 @@ module meshAdminUi {
         }
 
         /**
+         * Transform the object found in the "tags" property of a node into an array of tag objects.
+         */
+        public nodeTagsObjectToArray(tagsObject: INodeTagsObject): ITag[] {
+
+            const makeSimpleTag = (item, tagsObject, familyName) => {
+                return {
+                    uuid: item.uuid,
+                    fields: { name: item.name },
+                    tagFamily: {
+                        name: familyName,
+                        uuid: tagsObject[familyName].uuid
+                    }
+                };
+            };
+
+            return Object.keys(tagsObject).reduce((prev, curr) => {
+                let familyTags = tagsObject[curr].items.map(item => makeSimpleTag(item, tagsObject, curr));
+                return prev.concat(familyTags);
+            }, []);
+        }
+
+        public stringToColor(input: string): string {
+            const safeColors = ['#D1D5FF', '#FFFBD1', '#EAE3FF', '#E3FFF3', '#E3EEFF', '#FFE3EA'];
+            let value = input.split('').reduce((prev, curr) => {
+                return prev + curr.charCodeAt(0);
+            }, 0);
+            return safeColors[value % safeColors.length];
+        }
+
+        /**
          * Takes a node and returns true is that node is a binary node and the associated binary is an image file.
          */
         public isImageNode(node: INode): boolean {

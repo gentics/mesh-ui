@@ -111,5 +111,64 @@ describe('meshUtils', function() {
             };
             expect(mu.isImageNode(node)).toEqual(true);
         });
+
+        describe('nodeTagsObjectToArray()', function() {
+
+            var tagsObject;
+
+            beforeEach(function() {
+                tagsObject = {
+                    colors: {
+                        items: [
+                            { name: 'red', uuid: 'red_uuid' },
+                            { name: 'green', uuid: 'green_uuid' },
+                            { name: 'blue', uuid: 'blue_uuid' }
+                        ],
+                        uuid: 'colors_uuid'
+                    },
+                    sizes: {
+                        items: [
+                            { name: 'small', uuid: 'small_uuid' },
+                            { name: 'medium', uuid: 'medium_uuid' },
+                            { name: 'large', uuid: 'large_uuid' }
+                        ],
+                        uuid: 'sizes_uuid'
+                    }
+                };
+            });
+
+            it('should return an array', function() {
+                var result = mu.nodeTagsObjectToArray(tagsObject);
+                expect(result instanceof Array).toEqual(true);
+            });
+
+            it('should return the correct number of items', function() {
+                var result = mu.nodeTagsObjectToArray(tagsObject);
+                expect(result.length).toEqual(6);
+            });
+
+            it('the items should all have the correct shape', function() {
+                var result = mu.nodeTagsObjectToArray(tagsObject);
+                var correctShape = result.filter(function(item) {
+                    return (item.uuid &&
+                    item.fields.name &&
+                    item.tagFamily.name &&
+                    item.tagFamily.uuid );
+                });
+                expect(correctShape.length).toBe(6);
+            });
+
+            it('the first item should have the correct properties', function() {
+                var result = mu.nodeTagsObjectToArray(tagsObject);
+                var expected = {
+                    uuid: 'red_uuid',
+                    fields: { name: 'red' },
+                    tagFamily: { name: 'colors', uuid: 'colors_uuid' }
+                };
+
+                expect(result[0]).toEqual(expected);
+            });
+
+        });
     });
 });

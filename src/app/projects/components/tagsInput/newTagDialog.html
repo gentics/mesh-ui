@@ -1,0 +1,37 @@
+<md-dialog aria-label="Mango (Fruit)"  ng-cloak>
+    <form>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h2>Create New Tag</h2>
+
+                <md-input-container>
+                    <label>Tag Name</label>
+                    <input type="text" ng-model="vm.tagName" required>
+                </md-input-container>
+
+                <md-autocomplete
+                        md-selected-item="vm.selectedTagFamily"
+                        md-search-text="vm.tagFamilySearch"
+                        md-items="tagFamily in vm.querySearch(vm.tagFamilySearch)"
+                        md-item-text="tagFamily.name"
+                        md-min-length="0"
+                        placeholder="Tag Family">
+
+                    <md-item-template>
+                        <span md-highlight-text="vm.tagSearch" md-highlight-flags="^i">{{tagFamily.name}}</span>
+                    </md-item-template>
+
+                </md-autocomplete>
+            </div>
+        </md-dialog-content>
+
+        <div class="md-actions">
+            <button ng-click="vm.create()" class="btn btn-primary">
+                Create
+            </button>
+            <button ng-click="vm.cancel()" class="btn">
+                Cancel
+            </button>
+        </div>
+    </form>
+</md-dialog>

@@ -282,7 +282,7 @@ module meshAdminUi {
 
 
         /**
-         * Get the child tags for the parentTag in the given project.
+         * Get the child nodes for the parent node in the given project.
          */
         public getChildNodes(projectName: string, parentNodeId: string, queryParams?): ng.IPromise<IListResponse<INode>> {
             var url = projectName + '/nodes/' + parentNodeId + '/children';
@@ -493,15 +493,27 @@ module meshAdminUi {
 
         /**
          */
-        public getTagFamilies(projectName, queryParams?):ng.IPromise<IListResponse<any>> {
-            var url = projectName + '/tagFamilies/';
+        public getTagFamilies(projectName, queryParams?): ng.IPromise<IListResponse<ITagFamily>> {
+            var url = projectName + '/tagFamilies';
             return this.meshGet(url, queryParams);
         }
+        public persistTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<ITagFamily> {
+            let isNew = !tagFamily.hasOwnProperty('created');
+            this.clearCache('tagFamilies');
+            return isNew ? this.createTagFamily(projectName, tagFamily) : this.updateTagFamily(projectName, tagFamily)
+        }
+        private createTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<ITagFamily> {
+            return this.meshPost(projectName + '/tagFamilies', tagFamily);
+        }
+        private updateTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<ITagFamily> {
+            return this.meshPut(projectName + '/tagFamilies/' + tagFamily.uuid, tagFamily);
+        }
+        
 
         /**
          *
          */
-        public getTags(projectName, tagFamilyUuid, queryParams?):ng.IPromise<any> {
+        public getTags(projectName, tagFamilyUuid?, queryParams?):ng.IPromise<any> {
             var url;
             if (typeof tagFamilyUuid === 'undefined') {
                 url = projectName + '/tags/';
@@ -509,6 +521,45 @@ module meshAdminUi {
                 url = projectName + '/tagFamilies/' + tagFamilyUuid + '/tags/';
             }
             return this.meshGet(url, queryParams);
+            // TODO: use the search code below one the elasticsearch index allows us to query tag.project.name
+            /*let query: ISearchQuery = {
+             filter: {
+             bool: {
+             must: [
+             { "term": { "project.name": projectName.toLowerCase() } }
+             ]
+             }
+             },
+             sort: [
+             { "tagFamily.name": "asc" },
+             { "fields.name": "asc" }
+             ]
+             };
+
+             if (tagFamilyUuid) {
+             query.filter.bool.must.push({ "term": { "tagFamily.uuid": tagFamilyUuid } });
+             }
+             return this.searchTags(query, queryParams);*/
+        }
+
+        public searchTags(query : ISearchQuery, queryParams?: INodeListQueryParams): ng.IPromise<IListResponse<ITag>>  {
+            return this.meshPost('search/tags', query, queryParams);
+        }
+
+        public persistTag(projectName: string, tag: ITag): ng.IPromise<ITag> {
+            let isNew = !tag.hasOwnProperty('created');
+            this.clearCache('tags');
+            return isNew ? this.createTag(projectName, tag) : this.updateTag(projectName, tag)
+        }
+        private createTag(projectName: string, tag: ITag): ng.IPromise<ITag> {
+            return this.meshPost(projectName + '/tags', tag);
+        }
+        private updateTag(projectName: string, tag: ITag): ng.IPromise<ITag> {
+            return this.meshPut(projectName + '/tags/' + tag.uuid, tag);
+        }
+
+        public addTagToNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {
+            return this.meshPut(projectName + '/nodes/' + node.uuid + '/tags/' + tag.uuid, {});
         }
 
         /**
