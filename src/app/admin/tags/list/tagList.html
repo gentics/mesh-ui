@@ -1,6 +1,15 @@
 <div class="app-content">
     <h1 class="page-title">Tags</h1>
 
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <md-input-container flex>
+                <label>Filter Tags</label>
+                <input ng-model="vm.tagFilter">
+            </md-input-container>
+        </div>
+    </md-toolbar>
+
     <md-content layout-padding class="admin-content-block">
         <table class="mh-table">
             <tr class="project-row" ng-repeat-start="group in vm.projectGroups track by group.project.uuid">
@@ -30,7 +39,7 @@
                          ng-click="vm.editTagDialog(group.project, tag)"
                          show-close="true"
                          on-close="vm.deleteTag($event, group.project, tag)"
-                         ng-repeat="tag in vm.getTagsByFamily(tagFamily) track by tag.uuid"></tag>
+                         ng-repeat="tag in vm.getTagsByFamily(tagFamily) | filter: { fields: { name: vm.tagFilter} } track by tag.uuid"></tag>
 
                     <button class="btn btn-small" ng-click="vm.addTagDialog(group.project, tagFamily)"><i class="icon-add"></i> add tag</button>
                 </td>
