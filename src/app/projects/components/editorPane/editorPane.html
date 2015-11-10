@@ -1,12 +1,12 @@
 <div class="content-editor-container" ng-show="vm.isLoaded">
 
     <div class="tags-list-container" layout="row" layout-align="start center">
-        <div>Tags</div>
-
         <tag ng-repeat="tag in vm.tags track by tag.uuid"
              show-close="true"
-             on-close=""
+             on-close="vm.removeTag(tag)"
              source="tag"></tag>
+
+        <div flex></div>
 
         <div class="tags-input-wrapper">
             <tags-input on-add="vm.addTag(tag)"></tags-input>

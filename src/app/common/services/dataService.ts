@@ -561,6 +561,9 @@ module meshAdminUi {
         public addTagToNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {
             return this.meshPut(projectName + '/nodes/' + node.uuid + '/tags/' + tag.uuid, {});
         }
+        public removeTagFromNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {
+            return this.meshDelete(projectName + '/nodes/' + node.uuid + '/tags/' + tag.uuid, {});
+        }
 
         /**
          * Get all the schemas available in Mesh.

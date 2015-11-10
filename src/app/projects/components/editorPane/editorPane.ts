@@ -124,6 +124,19 @@ module meshAdminUi {
             }
         }
 
+        public removeTag(tag: ITag) {
+            if (!tag) {
+                return;
+            }
+            this.dataService.removeTagFromNode(this.projectName, this.node, tag)
+                .then(node => {
+                    let index = this.tags.map(tag => tag.uuid).indexOf(tag.uuid);
+                    this.tags.splice(index, 1);
+                    this.node.tags = node.tags;
+                    this.notifyService.toast(`Removed tag "${tag.fields.name}"`)
+                });
+        }
+
         /**
          * Delete the open node, displaying a confirmation dialog first before making the API call.
          */
