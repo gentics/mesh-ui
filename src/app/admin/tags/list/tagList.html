@@ -1,29 +1,29 @@
 <div class="app-content">
     <h1 class="page-title">Tags</h1>
 
-    <md-toolbar class="admin-toolbar">
-        <div class="md-toolbar-tools">
-            <md-input-container flex>
-                <label>Filter Tags</label>
-                <input ng-model="vm.schemaFilter">
-            </md-input-container>
-            <button class="btn btn-small btn-primary" aria-label="Create Schema" ui-sref="admin.schemas.create">
-                Create New Tag Family
-            </button>
-        </div>
-    </md-toolbar>
-
     <md-content layout-padding class="admin-content-block">
         <table class="mh-table">
-            <tr class="" ng-repeat-start="group in vm.projectGroups track by group.project.uuid">
+            <tr class="project-row" ng-repeat-start="group in vm.projectGroups track by group.project.uuid">
                 <td>
                     <strong>Project: {{:: group.project.name}}</strong>
                 </td>
-                <td></td>
+                <td align="right">
+                    <button class="btn btn-small btn-primary"
+                            aria-label="Create Tag Family"
+                            ng-click="vm.addTagFamilyDialog(group.project)">Create New Tag Family</button>
+                </td>
             </tr>
             <tr class="sub-row-1" ng-repeat="tagFamily in group.tagFamilies track by tagFamily.uuid" ng-repeat-end>
-                <td>{{ tagFamily.name }}</td>
-                <td layout="row">
+                <td>
+                    <div class="tag-family" ng-click="vm.editTagFamilyDialog(group.project, tagFamily)">
+                        {{ tagFamily.name }}
+                        <span class="delete-button"
+                              ng-click="vm.deleteTagFamilyDialog($event, group.project, tagFamily)">
+                            <i class="icon-close"></i>
+                        </span>
+                    </div>
+                </td>
+                <td>
 
                     <tag source="tag"
                          class="editable-tag"
@@ -32,8 +32,7 @@
                          on-close="vm.deleteTag($event, group.project, tag)"
                          ng-repeat="tag in vm.getTagsByFamily(tagFamily) track by tag.uuid"></tag>
 
-                    <div flex></div>
-                    <button class="btn btn-small" ng-click="vm.addTagDialog(group.project, tagFamily)"><i class="icon-add-box"></i> add tag</button>
+                    <button class="btn btn-small" ng-click="vm.addTagDialog(group.project, tagFamily)"><i class="icon-add"></i> add tag</button>
                 </td>
             </tr>
         </table>

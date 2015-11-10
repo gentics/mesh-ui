@@ -1,3 +1,32 @@
 .editable-tag {
   cursor: pointer;
 }
+
+.tag-family {
+  cursor: pointer;
+  display: inline-block;
+  padding: 3px;
+  border-radius: 2px;
+  transition: background 0.3s;
+
+  .delete-button {
+    opacity: 0;
+    transition: opacity 0.3s;
+    &:hover {
+      color: @color-warn;
+    }
+  }
+
+  &:hover {
+    background-color: @color-silver;
+    .delete-button {
+      opacity: 1;
+    }
+  }
+}
+
+.project-row {
+  td {
+    background-color: @color-concrete;
+  }
+}

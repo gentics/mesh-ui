@@ -1,5 +1,6 @@
 module meshAdminUi {
 
+    import ITranscludeFunction = ng.ITranscludeFunction;
     class TagListController {
 
         private tags: ITag[] = [];
@@ -7,6 +8,7 @@ module meshAdminUi {
 
         constructor(private $q: ng.IQService,
                     private $mdDialog: ng.material.IDialogService,
+                    private confirmActionDialog: ConfirmActionDialog,
                     private notifyService: NotifyService,
                     private dataService: DataService) {
 
@@ -29,6 +31,61 @@ module meshAdminUi {
                         this.tags = this.tags.concat(item.tags.data);
                     });
                 });
+        }
+
+        public addTagFamilyDialog(project: IProject) {
+            this.showDialog('Create new tag family')
+                .then(name => {
+                    let tagFamily = { name: name };
+                    return this.dataService.persistTagFamily(project.name, tagFamily)
+                })
+                .then(tagFamily => {
+                    let index = this.projectGroups.map(group => group.project.uuid).indexOf(project.uuid);
+                    this.projectGroups[index].tagFamilies.push(tagFamily);
+                    this.notifyService.toast(`Created new tag family`);
+                })
+        }
+
+        public editTagFamilyDialog(project: IProject, tagFamily: ITagFamily) {
+            this.showDialog('Edit tag family', tagFamily.name)
+                .then(name => {
+                    tagFamily.name = name;
+                    return this.dataService.persistTagFamily(project.name, tagFamily);
+                })
+                .then(tagFamily => {
+                    let projectGroup = this.getProjectGroupIndex(project),
+                        index = projectGroup.tagFamilies.map(tf => tf.uuid).indexOf(tagFamily.uuid);
+                    projectGroup.tagFamilies[index] = tagFamily;
+                    this.notifyService.toast(`Updated tag family`);
+                })
+
+        }
+
+        public deleteTagFamilyDialog(event: Event, project: IProject, tagFamily: ITagFamily) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            this.confirmActionDialog.show({
+                    title: 'Delete tag family',
+                    message: 'Delete this tag family and all tags?'
+                })
+                .then(() => {
+                    return this.dataService.deleteTagFamily(project.name, tagFamily);
+                })
+                .then(() => {
+                    let projectGroup = this.getProjectGroupIndex(project),
+                        index = projectGroup.tagFamilies.map(tf => tf.uuid).indexOf(tagFamily.uuid);
+                    projectGroup.tagFamilies.splice(index, 1);
+                    this.notifyService.toast(`Deleted tag family`);
+                });
+        }
+
+        /**
+         * Get the projectgroup object at corresponding to the given project.
+         */
+        private getProjectGroupIndex(project: IProject): any {
+            let index = this.projectGroups.map(group => group.project.uuid).indexOf(project.uuid);
+            return this.projectGroups[index]
         }
 
         public addTagDialog(project: IProject, tagFamily: ITagFamily) {

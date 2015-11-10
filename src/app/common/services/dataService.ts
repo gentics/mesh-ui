@@ -512,6 +512,10 @@ module meshAdminUi {
             return this.meshPut(projectName + '/tagFamilies/' + tagFamily.uuid, tagFamily);
         }
 
+        public deleteTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<any> {
+            return this.meshDelete(projectName + '/tagFamilies/' + tagFamily.uuid);
+        }
+
 
         /**
          *

@@ -1,6 +1,6 @@
 <mh-dropdown>
     <mh-dropdown-label layout="row" layout-align="end center" class="tags-input-label">
-        <button class="btn btn-small"><i class="icon-add-box"></i> add tag</button>
+        <button class="btn btn-small"><i class="icon-add"></i> add tag</button>
     </mh-dropdown-label>
     <mh-dropdown-body>
 
@@ -21,9 +21,7 @@
                 <md-item-template>
                     <div class="autocomplete-template" layout="row" layout-align="start center">
                         <span class="family-name">{{ tag.tagFamily.name }}</span>
-                        <div class="tag-container">
-                            <tag source="tag" show-close="false"></tag>
-                        </div>
+                        <tag source="tag" show-close="false"></tag>
                     </div>
                 </md-item-template>
 
