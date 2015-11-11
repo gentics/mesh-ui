@@ -8,7 +8,7 @@
      */
     var meshConfig = {
         // The URL to the Mesh API
-        apiUrl: 'http://localhost/api/v1/'
+        apiUrl: 'http://localhost:8080/api/v1/'
     };
 
 
