@@ -613,7 +613,7 @@ module meshAdminUi {
         }
 
         public persistSchema(schema: ISchema): ng.IPromise<ISchema> {
-            let isNew = !schema.hasOwnProperty('created');
+            let isNew = !schema.hasOwnProperty('permissions');
             this.clearCache('schemas');
             return isNew ? this.createSchema(schema) : this.updateSchema(schema);
 

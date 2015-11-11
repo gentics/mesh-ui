@@ -39,6 +39,7 @@
 
                     <md-checkbox md-no-ink aria-label="Create"
                                  ng-if=":: item.rootNodeUuid"
+                                 ng-disabled="vm.isReadonly"
                                  ng-model="vm.rootPermissions[item.uuid]['create']"
                                  ng-change="vm.toggle(item, false, true)">
                         Can create new tag families

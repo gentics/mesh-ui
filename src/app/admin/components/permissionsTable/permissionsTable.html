@@ -13,6 +13,7 @@
             </md-input-container>
             <div flex>
                 <md-checkbox md-no-ink aria-label="Create"
+                             ng-disabled="vm.isReadonly"
                              ng-model="vm.rootPermissions['create']"
                              ng-change="vm.toggleRootPerm()">
                     Can create new {{:: vm.rootName }}

@@ -31,26 +31,21 @@ module meshAdminUi {
             }
             this.extendSchemaWithJsonValues(this.schemaJson);
 
-            if (this.isNew) {
-                this.dataService.persistSchema(schema)
-                    .then((response: any) => {
-                        if (this.isNew) {
-                            this.notifyService.toast('NEW_SCHEMA_CREATED');
-                            this.isNew = false;
-                            this.$state.go('admin.schemas.detail', {uuid: response.uuid});
-                        } else {
-                            this.notifyService.toast('SAVED_CHANGES');
-                            this.modified = false;
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.notifyService.toast(error.data);
-                    });
-            } else {
-                this.notifyService.toast('Sorry, updating of schemas is not yet implemented in the beta.');
-                this.modified = false;
-            }
+            this.dataService.persistSchema(schema)
+                .then((response: any) => {
+                    if (this.isNew) {
+                        this.notifyService.toast('NEW_SCHEMA_CREATED');
+                        this.isNew = false;
+                        this.$state.go('admin.schemas.detail', {uuid: response.uuid});
+                    } else {
+                        this.notifyService.toast('SAVED_CHANGES');
+                        this.modified = false;
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.notifyService.toast(error.data);
+                });
         }
 
         /**
