@@ -13,36 +13,42 @@ module meshAdminUi {
         private roleId: string;
         private isNew: boolean;
         private modified: boolean;
+        private queryParams;
         private role: IUserRole;
         private schemas: ISchema[];
         private projects: IProject[];
         private roles: IUserRole[];
         private groups: IUserGroup[];
         private users: IUser[];
+        private tagItems: any[];
+        private tagItemPermissions;
 
         constructor(
             private $q: ng.IQService,
             private $state: ng.ui.IStateService,
             private $stateParams: any,
+            private mu: MeshUtils,
             private notifyService: NotifyService,
             private dataService: DataService) {
 
             this.roleId = $stateParams.uuid;
             this.isNew = this.roleId === 'new';
             this.modified = false;
+            this.queryParams = {
+                "role": $stateParams.uuid
+            };
 
             if (!this.isNew) {
                 this.getRoleData();
 
-                var queryParams = {
-                    "role": $stateParams.uuid
-                };
+
                 $q.all([
-                        dataService.getSchemas(queryParams),
-                        dataService.getProjects(queryParams),
-                        dataService.getRoles(queryParams),
-                        dataService.getGroups(queryParams),
-                        dataService.getUsers(queryParams)
+                        dataService.getSchemas(this.queryParams),
+                        dataService.getProjects(this.queryParams),
+                        dataService.getRoles(this.queryParams),
+                        dataService.getGroups(this.queryParams),
+                        dataService.getUsers(this.queryParams),
+                        this.populateTagItems()
                     ])
                     .then((dataArray:any[]) => {
                         this.schemas = dataArray[0].data;
@@ -50,8 +56,52 @@ module meshAdminUi {
                         this.roles = dataArray[2].data;
                         this.groups = dataArray[3].data;
                         this.users = dataArray[4].data;
-                    });
+                        this.tagItems = dataArray[5];
+                    })
+                    .then(() => this.setTagItemPermissions());
             }
+        }
+
+        /**
+         * Populate the this.items array by recursing through all projects/tagFamilies/tags and flattening the
+         * results into an array.
+         *
+         */
+        private populateTagItems(): ng.IPromise<any[]> {
+            return this.dataService.getProjects(this.queryParams)
+                .then(response => {
+                    var promises = [];
+                    response.data.forEach(project => {
+                        promises.push(project);
+                        promises = promises.concat(this.populateTagFamilies(project));
+                    });
+                    return this.$q.all(promises);
+                })
+                .then(result => this.mu.flatten(result));
+        }
+
+        /**
+         * Return an array of tagFamilies for the project with the tags of each tagFamily following the
+         * tagFamily in the array.
+         */
+        private populateTagFamilies(project: any): ng.IPromise<any> {
+            return this.dataService.getTagFamilies(project.name, this.queryParams)
+                .then(response => {
+                    var promises = [];
+                    project.tagFamilies = response.data;
+                    project.tagFamilies.forEach(tagFamily => {
+                        promises.push(this.$q.when(tagFamily));
+                        promises = promises.concat([this.dataService.getTags(project.name, tagFamily.uuid, this.queryParams)
+                            .then(result => result.data)]);
+                    });
+                    return this.$q.all(promises);
+                });
+        }
+
+        private setTagItemPermissions() {
+            this.tagItems.forEach(item => {
+                this.tagItemPermissions[item.uuid] = this.mu.rolePermissionsArrayToKeys(item);
+            });
         }
 
         /**
@@ -94,6 +144,25 @@ module meshAdminUi {
 
         public isReadonly() {
             return !this.role || this.role.name === 'admin' || -1 === this.role.permissions.indexOf('update');
+        }
+
+        public setTagPermissions(project: IProject, permissions: IPermissionsRequest, tagOrFamily?: any) {
+            if (tagOrFamily && tagOrFamily.hasOwnProperty('fields')) {
+                // it is a tag
+                return this.dataService.setTagPermissions(this.role.uuid, project.uuid, permissions, tagOrFamily);
+            } else {
+                // it is a tagFamily
+                let uuid = tagOrFamily && tagOrFamily.uuid;
+                return this.dataService.setTagFamilyPermissions(this.role.uuid, project.uuid, permissions, uuid)
+                    .then(() => {
+                        if (permissions.recursive) {
+                            // we need to update the tags since they have been recursively changed.
+                            this.populateTagItems()
+                                .then(items => this.tagItems = items)
+                                .then(() => this.setTagItemPermissions());
+                        }
+                    })
+            }
         }
 
         public setNodePermissions(node: INode, project:IProject, permissions: IPermissionsRequest) {

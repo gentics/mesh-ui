@@ -6,15 +6,16 @@ module meshAdminUi {
         private collapsed: boolean = true;
         private filter: string = '';
         private items = [];
+        private itemPermissions: {
+            [itemUuid: string]: any
+        } = {};
+        private rootPermissions: any = {};
         private roleId: string;
         private expand: string;
+        private onToggle: Function;
 
-        constructor(private $q: ng.IQService,
-                    private dataService: DataService,
-                    private mu: MeshUtils) {
-
+        constructor(private $timeout: ng.ITimeoutService) {
             this.queryParams = { "role": this.roleId };
-            this.populateItems();
         }
 
         /**
@@ -33,13 +34,13 @@ module meshAdminUi {
             } else {
                 return true;
             }
-        }
+        };
 
         /**
          * Toggle whether the tags in a tag family should be expanded.
          */
         public toggleExpand(tagFamily) {
-            if (tagFamily.description) {
+            if (tagFamily.name && !tagFamily.rootNodeUuid) {
                 if (this.expand === tagFamily.uuid) {
                     this.expand = '';
                 } else {
@@ -48,42 +49,42 @@ module meshAdminUi {
             }
         }
 
-        /**
-         * Populate the this.items array by recursing through all projects/tagFamilies/tags and flattening the
-         * results into an array.
-         *
-         */
-        private populateItems() {
-            return this.dataService.getProjects(this.queryParams)
-                .then(response => {
-                    var promises = [];
-                    response.data.forEach(project => {
-                        promises.push(project);
-                        promises = promises.concat(this.populateTagFamilies(project));
-                    });
-                    return this.$q.all(promises);
-                })
-                .then(result => this.mu.flatten(result))
-                .then(items => {
-                    this.items = items.map(item => this.mu.rolePermissionsArrayToKeys(item));
-                });
+        public toggle(item, recursive: boolean = false) {
+            this.$timeout(() => {
+                let permObject = this.itemPermissions[item.uuid],
+                    permsArray = Object.keys(permObject).filter(key => permObject[key] === true),
+                    permissions:IPermissionsRequest = {
+                        permissions: permsArray,
+                        recursive: recursive
+                    };
+                let project = this.getItemProject(item);
+                this.onToggle({permissions: permissions, item: item, project: project});
+            });
+        }
+
+        public toggleRootPerm(project: IProject) {
+            let permsArray = Object.keys(this.rootPermissions).filter(key => this.rootPermissions[key] === true),
+                permissions: IPermissionsRequest = {
+                    permissions: permsArray,
+                    recursive: false
+                };
+            this.onToggle({ permissions: permissions, project: project });
         }
 
         /**
-         * Return an array of tagFamilies for the project with the tags of each tagFamily following the
-         * tagFamily in the array.
+         * Given a tag or tag family in the this.items array, return the project that it belongs to
+         * (which is equivalent to the closest preceding project in the array).
          */
-        private populateTagFamilies(project: any): ng.IPromise<any> {
-            return this.dataService.getTagFamilies(project.name, this.queryParams)
-                .then(response => {
-                    var promises = [];
-                    project.tagFamilies = response.data;
-                    project.tagFamilies.forEach(tagFamily => {
-                        promises.push(this.$q.when(tagFamily));
-                        promises = promises.concat(this.dataService.getTags(project.name, tagFamily.uuid, this.queryParams));
-                    });
-                    return this.$q.all(promises);
-                });
+        private getItemProject(item: any): IProject {
+            let itemIndex = this.items.map(item => item.uuid).indexOf(item.uuid);
+            let projectsIndexes =this.items.reduce((acc, curr, index) => {
+                if (curr.rootNodeUuid) {
+                    acc.push(index);
+                }
+                return acc;
+            }, []);
+            let projectIndex = projectsIndexes.filter(index => index < itemIndex).reverse()[0];
+            return this.items[projectIndex];
         }
     }
 
@@ -96,7 +97,11 @@ module meshAdminUi {
             controllerAs: 'vm',
             bindToController: true,
             scope: {
-                roleId: '='
+                items: '=',
+                itemPermissions: '=',
+                roleId: '=',
+                isReadonly: '=',
+                onToggle: '&'
             }
         };
     }

@@ -48,8 +48,12 @@
                     on-toggle="vm.setNodePermissions(node, project, permissions)"
                     is-readonly="vm.isReadonly()"></node-permissions-selector>
 
-            <!-- <tag-permissions-selector
-                     role-id="vm.roleId"></tag-permissions-selector>-->
+             <tag-permissions-selector
+                     items="vm.tagItems"
+                     item-permissions="vm.tagItemPermissions"
+                     is-readonly="vm.isReadonly()"
+                     on-toggle="vm.setTagPermissions(project, permissions, item)"
+                     role-id="vm.roleId"></tag-permissions-selector>
 
             <permissions-table
                     is-readonly="vm.isReadonly()"

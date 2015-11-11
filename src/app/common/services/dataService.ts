@@ -523,9 +523,9 @@ module meshAdminUi {
         public getTags(projectName, tagFamilyUuid?, queryParams?): ng.IPromise<IListResponse<ITag>> {
             var url;
             if (typeof tagFamilyUuid === 'undefined') {
-                url = projectName + '/tags/';
+                url = projectName + '/tags';
             } else {
-                url = projectName + '/tagFamilies/' + tagFamilyUuid + '/tags/';
+                url = projectName + '/tagFamilies/' + tagFamilyUuid + '/tags';
             }
             return this.meshGet(url, queryParams);
             // TODO: use the search code below one the elasticsearch index allows us to query tag.project.name
@@ -690,6 +690,15 @@ module meshAdminUi {
         }
         public setRolePermissions(roleUuid: string, permissions: IPermissionsRequest, targetRoleUuid?: string): ng.IPromise<any> {
             return this.setPermissionsOnRootOrNode('roles', roleUuid, permissions, targetRoleUuid);
+        }
+        public setTagPermissions(roleUuid: string, projectUuid: string, permissions: IPermissionsRequest, tag: ITag): ng.IPromise<any> {
+            let path = 'projects/' + projectUuid + /*'/tagFamilies/' + tag.tagFamily.uuid +*/ '/tags/' + tag.uuid;
+            return this.setPermissionsOnPath(roleUuid, path, permissions);
+        }
+        public setTagFamilyPermissions(roleUuid: string, projectUuid: string, permissions: IPermissionsRequest, tagFamilyUuid?: string): ng.IPromise<any> {
+            let pathBase = 'projects/' + projectUuid + '/tagFamilies';
+            let path = tagFamilyUuid ? `${pathBase}/${tagFamilyUuid}` : pathBase;
+            return this.setPermissionsOnPath(roleUuid, path, permissions);
         }
 
         /**

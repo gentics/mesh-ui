@@ -11,59 +11,102 @@
                 <label>Filter</label>
                 <input type="text" ng-model="vm.filter">
             </md-input-container>
-            <div>
-                <md-checkbox md-no-ink aria-label="Create">
-                    Create
-                </md-checkbox>
-            </div>
-            <div>
-                <md-checkbox md-no-ink aria-label="Read">
-                    Read
-                </md-checkbox>
-            </div>
-            <div>
-                <md-checkbox md-no-ink aria-label="Update">
-                    Update
-                </md-checkbox>
-            </div>
-            <div>
-                <md-checkbox md-no-ink aria-label="Delete">
-                    Delete
-                </md-checkbox>
+            <div flex>
+
             </div>
         </div>
     </md-toolbar>
     <md-content layout-padding class="admin-content-block" ng-class="{ 'collapsed': vm.collapsed }">
 
         <table class="mh-table permissions-table">
-            <tr ng-class="{'project': item.rootNodeUuid, 'tag-family': item.description, 'tag': item.fields }"
+            <tr ng-class=":: {'project': item.rootNodeUuid, 'tag-family': item.name && !item.rootNodeUuid, 'tag-row': item.fields }"
                 ng-repeat="item in vm.items | filter: vm.filterTags track by item.uuid"
                 ng-hide="!vm.filter && item.fields && item.tagFamily.uuid !== vm.expand">
 
                 <td ng-click="vm.toggleExpand(item)">
-                    <span ng-if="::item.description">Family: {{:: item.name }}</span>
+                    <span ng-if="::item.name && !item.rootNodeUuid">Family: {{:: item.name }}</span>
                     <span ng-if="::item.rootNodeUuid">Project: {{:: item.name }}</span>
-                    <span ng-if="::item.fields.name"><i class="icon-label-outline"></i> {{:: item.fields.name }}</span>
+                    <span ng-if="::item.fields.name"><tag source="item" show-close="false"></tag></span>
                 </td>
                 <td>
-                    <md-checkbox md-no-ink aria-label="Create" ng-model="item['create']" ng-if="::!item.rootNodeUuid">
+                    <md-checkbox md-no-ink aria-label="Create"
+                                 ng-if=":: item.fields.name"
+                                 ng-disabled="vm.isReadonly"
+                                 ng-model="vm.itemPermissions[item.uuid]['create']"
+                                 ng-change="vm.toggle(item)">
                         Create
                     </md-checkbox>
+
+                    <md-checkbox md-no-ink aria-label="Create"
+                                 ng-if=":: item.rootNodeUuid"
+                                 ng-model="vm.rootPermissions['create']"
+                                 ng-change="vm.toggleRootPerm(item)">
+                        Can create new tag families
+                    </md-checkbox>
+
+                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNodeUuid"
+                                               model="vm.itemPermissions[item.uuid]['create']"
+                                               label="Create"
+                                               ng-disabled="vm.isReadonly"
+                                               on-change="vm.toggle(item, false)"
+                                               on-recursive-click="vm.toggle(item, true)">
+                    </recursive-toggle-checkbox>
+
+
                 </td>
                 <td>
-                    <md-checkbox md-no-ink aria-label="Read" ng-model="item['read']" ng-if="::!item.rootNodeUuid">
+                    <md-checkbox md-no-ink aria-label="Read"
+                                 ng-if=":: item.fields.name"
+                                 ng-disabled="vm.isReadonly"
+                                 ng-model="vm.itemPermissions[item.uuid]['read']"
+                                 ng-change="vm.toggle(item)">
                         Read
                     </md-checkbox>
+
+
+                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNodeUuid"
+                                               model="vm.itemPermissions[item.uuid]['read']"
+                                               label="Read"
+                                               ng-disabled="vm.isReadonly"
+                                               on-change="vm.toggle(item, false)"
+                                               on-recursive-click="vm.toggle(item, true)">
+                    </recursive-toggle-checkbox>
                 </td>
                 <td>
-                    <md-checkbox md-no-ink aria-label="Update" ng-model="item['update']" ng-if="::!item.rootNodeUuid">
+                    <md-checkbox md-no-ink aria-label="Update"
+                                 ng-if=":: item.fields.name"
+                                 ng-disabled="vm.isReadonly"
+                                 ng-model="vm.itemPermissions[item.uuid]['update']"
+                                 ng-change="vm.toggle(item)">
                         Update
                     </md-checkbox>
+
+
+                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNodeUuid"
+                                               model="vm.itemPermissions[item.uuid]['update']"
+                                               label="Update"
+                                               ng-disabled="vm.isReadonly"
+                                               on-change="vm.toggle(item, false)"
+                                               on-recursive-click="vm.toggle(item, true)">
+                    </recursive-toggle-checkbox>
                 </td>
                 <td>
-                    <md-checkbox md-no-ink aria-label="Delete" ng-model="item['delete']" ng-if="::!item.rootNodeUuid">
+                    <md-checkbox md-no-ink aria-label="Delete"
+                                 ng-if=":: item.fields.name"
+                                 ng-disabled="vm.isReadonly"
+                                 ng-model="vm.itemPermissions[item.uuid]['delete']"
+                                 ng-change="vm.toggle(item)">
                         Delete
                     </md-checkbox>
+
+
+                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNodeUuid"
+                                               model="vm.itemPermissions[item.uuid]['delete']"
+                                               label="Delete"
+                                               ng-disabled="vm.isReadonly"
+                                               on-change="vm.toggle(item, false)"
+                                               on-recursive-click="vm.toggle(item, true)">
+                    </recursive-toggle-checkbox>
                 </td>
 
             </tr>
