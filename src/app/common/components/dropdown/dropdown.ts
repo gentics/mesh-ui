@@ -6,6 +6,7 @@ angular.module('meshAdminUi.common')
 
 /**
  * Controller for the mh-dropdown component. The component expects the following markup:
+ * TODO: needs refactoring to proper TypeScript form.
  *
  * <mh-dropdown>
  *    <mh-dropdown-label>
@@ -19,9 +20,10 @@ angular.module('meshAdminUi.common')
  *    </mh-dropdown-body>
  * </mh-dropdown>
  *
- * @param {ng.IScope} $scope
- * @param {ng.IElement} $element
- * @param {ng.IDocumentService} $document
+ * Options:
+ * =======
+ *
+ * sticky: boolean - if true, dropdown will not close unless clicked outside of.
  */
 function dropdownController($scope, $element, $document) {
     var vm = this,
@@ -30,11 +32,11 @@ function dropdownController($scope, $element, $document) {
 
     /**
      * Tracks the state of the dropdown
-     * @type {boolean}
      */
     vm.isOpen = false;
 
     vm.align = vm.align || 'left';
+    vm.sticky = vm.sticky || false;
 
 
     vm.toggle = toggle;
@@ -102,7 +104,9 @@ function dropdownDirective() {
         bindToController: true,
         transclude: true,
         replace: true,
-        scope: {}
+        scope: {
+            sticky: '='
+        }
     };
 }
 
@@ -134,44 +138,59 @@ function dropdownLabelDirective() {
  */
 function dropdownBodyDirective() {
     function linkFn(scope, element, attrs, dropdownCtrl) {
-        var container = element[0];
-
+        var container = <HTMLElement>element[0];
+        var parentContainer = container.parentElement.parentElement;
+        const clickHandler = (e: Event) => {
+            e.stopPropagation();
+            if (!dropdownCtrl.sticky) {
+                scope.$apply(function() {
+                    dropdownCtrl.toggle();
+                });
+            }
+        };
+        container.remove();
 
         scope.dropdown = dropdownCtrl;
-        scope.$watch('dropdown.isOpen', setHeight);
-
-        element.on('click', function(e) {
-            scope.$digest(function() {
-                dropdownCtrl.toggle();
-            });
+        scope.$watch('dropdown.isOpen', setPosition);
+        scope.$on('$destroy', () => {
+            element.off('click', clickHandler);
         });
+        element.on('click', clickHandler);
 
-        function setHeight(isOpen) {
+        function setPosition(isOpen) {
             var contentsHeight;
             if (isOpen) {
-                adjustPosition();
-                container.style.top = dropdownCtrl.getContentTop() + 'px';
-                contentsHeight = container.children[0].offsetHeight;
+                document.body.appendChild(container);
+                let parentBox = parentContainer.getBoundingClientRect();
+                let childBox = container.children[0].getBoundingClientRect();
+                let widthDelta = parentBox.width - childBox.width;
+                container.style.top = (dropdownCtrl.getContentTop() + parentBox.top) + 'px';
+                container.style.width = childBox.width + 'px';
+                contentsHeight = childBox.height;
                 container.style.height =  contentsHeight + 12 + 'px';
+
+                /**
+                 * Check to see if the dropdown body goes off the edge of the viewport,
+                 * and adjust it if so.
+                 */
+                if ((parentBox.left + widthDelta) < 0) {
+                    container.style.left = parentBox.left + 'px';
+                    container.style.right = 'auto';
+                    container.classList.remove('left');
+                    container.classList.add('right');
+                } else {
+                    container.style.left = (parentBox.left + widthDelta) + 'px';
+                }
+
                 container.classList.add('open');
             } else {
-                container.style.height = 0;
+                container.remove();
+                container.style.height = '0';
                 container.classList.remove('open');
             }
         }
 
-        /**
-         * Check to see if the dropdown body goes off the edge of the viewport,
-         * and adjust it if so.
-         */
-        function adjustPosition() {
-            if (container.getBoundingClientRect().left < 0) {
-                container.style.left = '0';
-                container.style.right = 'auto';
-                container.classList.remove('left');
-                container.classList.add('right');
-            }
-        }
+
     }
     return {
         restrict: 'AE',
