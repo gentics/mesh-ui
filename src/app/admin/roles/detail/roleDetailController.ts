@@ -73,11 +73,7 @@ module meshAdminUi {
                         result.forEach((result, index) => {
                             this.rootPermissions[types[index]] = mu.rolePermissionsArrayToKeys({ rolePerms: result.permissions });
                         });
-                        console.log('this.rootPermissions', this.rootPermissions);
                     });
-
-                // get root perms on tagFamilies
-
             }
         }
 
@@ -91,7 +87,6 @@ module meshAdminUi {
                     results.forEach((result: any, index: number) => {
                         this.tagItemRootPermissions[projects[index].uuid] = this.mu.rolePermissionsArrayToKeys({ rolePerms: result.permissions });
                     });
-                    console.log('this.tagItemRootPermissions', this.tagItemRootPermissions);
                 });
         }
 

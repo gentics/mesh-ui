@@ -320,7 +320,8 @@ module meshAdminUi {
                                 must: [
                                     { "term": { "project.name": projectName.toLowerCase() } },
                                     { "term": { "parentNode.uuid": node.uuid } },
-                                    { "term": { "schema.uuid": bundleParam.schema.uuid } }
+                                    { "term": { "schema.uuid": bundleParam.schema.uuid } },
+                                    { "term": { "language": this.i18nService.getCurrentLang().code.toLowerCase() } }
                                 ]
                             }
                         },

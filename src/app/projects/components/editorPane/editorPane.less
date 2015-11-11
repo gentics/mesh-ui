@@ -9,9 +9,7 @@ editor-pane {
   h1 {
     margin-top: 0;
     font-size: @font-size-title-1;
-    .responsive-max(@mq-sm, {
-      margin-right: 3rem;
-    })
+    .responsive-max(@mq-sm, { margin-right: 3rem; })
   }
   &.ng-hide-remove {
     opacity: 0;
@@ -23,56 +21,57 @@ editor-pane {
   .tags-input-wrapper {
     max-width: 200px;
   }
-}
 
-.close-content {
-  position: absolute;
-  right: 10px;
-  font-size: @font-size-title-1;
-  color: @color-boulder;
-  i {
-    cursor: pointer;
-    border-radius: 50%;
-  }
-  &:hover {
+  .close-content {
+    position: absolute;
+    right: 10px;
+    font-size: @font-size-title-1;
+    color: @color-boulder;
     i {
-      color: white;
-      background-color: @color-silver;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    &:hover {
+      i {
+        color: white;
+        background-color: @color-silver;
+      }
     }
   }
-}
 
-.language-selector {
-  md-checkbox:first-child {
-    margin-left: 0;
+  .main-buttons {
+    padding-top: 30px;
+    margin-bottom: 50px;
+    button {
+      margin: 0 10px;
+    }
   }
-}
 
-.content-editor-pane {
-}
+  .editor-top-bar {
+    min-height: 48px;
 
-.main-buttons {
-  padding-top: 30px;
-  margin-bottom: 50px;
-  button {
-    margin: 0 10px;
+    .tags-list-container {
+      margin-top: 10px;
+      padding-bottom: 4px;
+      border-bottom: 1px dotted @color-silver;
+    }
+
+    .language-indicator {
+      text-transform: uppercase;
+      color: @color-boulder;
+      margin-right: 10px;
+      padding-top: 6px;
+    }
   }
-}
 
-.tags-list-container {
-  margin-top: 10px;
-  padding-bottom: 4px;
-  border-bottom: 1px dotted @color-silver;
-}
+  .binary-label {
+    margin-top: 10px;
+    font-size: 1.06rem;
+    margin-left: 1px;
+    color: @color-form-label;
 
-
-.binary-label {
-  margin-top: 10px;
-  font-size: 1.06rem;
-  margin-left: 1px;
-  color: @color-form-label;
-
-  &.focused {
-    color: @color-primary;
+    &.focused {
+      color: @color-primary;
+    }
   }
 }
