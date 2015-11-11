@@ -13,7 +13,8 @@ module meshAdminUi {
             editorServiceNodeOpened: 'mesh:editorServiceNodeOpened',
             editorServiceNodeClosed: 'mesh:editorServiceNodeClosed',
             explorerSearchTermChanged: 'mesh:explorerSearchTermChanged',
-            explorerContentsChanged: 'mesh:explorerContentsChanged'
+            explorerContentsChanged: 'mesh:explorerContentsChanged',
+            explorerNodeTagsChanged: 'mesh:explorerNodeTagsChanged'
         };
 
         private callbacks: any[] = [];

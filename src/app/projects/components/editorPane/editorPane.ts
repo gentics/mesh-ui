@@ -119,7 +119,8 @@ module meshAdminUi {
                     .then(node => {
                         this.tags.push(tag);
                         this.node.tags = node.tags;
-                        this.notifyService.toast(`Added tag "${tag.fields.name}"`)
+                        this.notifyService.toast(`Added tag "${tag.fields.name}"`);
+                        this.dispatcher.publish(this.dispatcher.events.explorerNodeTagsChanged, node.uuid);
                     });
             }
         }
@@ -133,7 +134,8 @@ module meshAdminUi {
                     let index = this.tags.map(tag => tag.uuid).indexOf(tag.uuid);
                     this.tags.splice(index, 1);
                     this.node.tags = node.tags;
-                    this.notifyService.toast(`Removed tag "${tag.fields.name}"`)
+                    this.notifyService.toast(`Removed tag "${tag.fields.name}"`);
+                    this.dispatcher.publish(this.dispatcher.events.explorerNodeTagsChanged, node.uuid);
                 });
         }
 

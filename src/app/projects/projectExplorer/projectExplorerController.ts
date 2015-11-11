@@ -7,10 +7,11 @@ module meshAdminUi {
 
         private itemsPerPage: number = 10;
         private createPermission: boolean;
-        private contents = [];
+        private contents: INodeBundleResponse[] = [];
         private childrenSchemas: ISchema[] = [];
         private projectName: string;
         private searchParams: INodeSearchParams = {};
+        public tagsArray: { [nodeUuid: string]: ITag[] } = {};
 
         constructor(private $scope: ng.IScope,
                     private $q: ng.IQService,
@@ -32,6 +33,16 @@ module meshAdminUi {
                     .then(() => this.populateChildNodes());
             };
 
+            const updateNode = (event, nodeUuid: string) => {
+                dataService.getNode(contextService.getProject().name, nodeUuid)
+                .then(node => {
+                    let bundleIndex = this.contents.map(bundle => bundle.schema.uuid).indexOf(node.schema.uuid);
+                    let nodeIndex = this.contents[bundleIndex].data.map(node => node.uuid).indexOf(node.uuid);
+                    this.contents[bundleIndex].data[nodeIndex] = node;
+                    this.tagsArray[node.uuid] = mu.nodeTagsObjectToArray(node.tags);
+                })
+            };
+
             const searchTermHandler = (event, term: string) => {
                 this.searchParams.searchTerm = term;
                 mu.debounce(() => this.populateChildNodes(), 250)();
@@ -39,7 +50,8 @@ module meshAdminUi {
 
             dispatcher.subscribe(dispatcher.events.explorerSearchTermChanged, searchTermHandler);
             dispatcher.subscribe(dispatcher.events.explorerContentsChanged, updateContents);
-            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents, searchTermHandler));
+            dispatcher.subscribe(dispatcher.events.explorerNodeTagsChanged, updateNode);
+            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents, searchTermHandler, updateNode));
 
             this.getChildrenSchemas()
                 .then(() => this.populateChildNodes());
@@ -60,6 +72,19 @@ module meshAdminUi {
                 });
         }
 
+
+        /**
+         * Converts the tags object for each node in the bundle into an array
+         * and stores them in this.tagsArray[nodeUuid].
+         */
+        private populateTagsArray(bundles: INodeBundleResponse[]) {
+            return bundles.forEach(bundle => {
+                bundle.data.forEach(node => {
+                    this.tagsArray[node.uuid] = this.mu.nodeTagsObjectToArray(node.tags);
+                })
+            });
+        }
+
         /**
          * Fill the vm with the child children of the current node.
          */
@@ -76,7 +101,10 @@ module meshAdminUi {
                 };
             });
             return this.dataService.getNodeBundles(projectName, this.currentNode, bundleParams, this.searchParams, queryParams)
-                .then(response => this.contents = response);
+                .then(response => {
+                    this.contents = response;
+                    this.populateTagsArray(response);
+                });
         }
 
         public pageChanged(newPageNumber: number, schemaUuid: string) {

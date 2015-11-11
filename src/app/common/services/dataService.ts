@@ -371,7 +371,7 @@ module meshAdminUi {
          */
         public persistNode(projectName: string, node: INode, binaryFile?: File): ng.IPromise<INode> {
             let isNew = !node.hasOwnProperty('created');
-            this.clearCache('contents');
+            this.clearCache('nodes');
             return isNew ? this.createNode(projectName, node, binaryFile) : this.updateNode(projectName, node, binaryFile);
 
         }
@@ -415,7 +415,7 @@ module meshAdminUi {
          * Remove the content from the server.
          */
         public deleteNode(projectName: string, node: INode|string): ng.IPromise<any> {
-            this.clearCache('contents');
+            this.clearCache('nodes');
             let uuid = this.toUuid(node);
             return this.meshDelete(projectName + '/nodes/' + uuid);
         }
@@ -451,7 +451,7 @@ module meshAdminUi {
          * Move a node to be a child of another node given by uuid.
          */
         public moveNode(projectName: string, node: INode|string, destinationUuid: string): ng.IPromise<any> {
-            this.clearCache('contents');
+            this.clearCache('nodes');
             let uuid = this.toUuid(node);
             return this.meshPut(projectName + '/nodes/' + uuid + '/moveTo/' + destinationUuid, {});
         }
@@ -566,13 +566,16 @@ module meshAdminUi {
         }
 
         public deleteTag(projectName: string, tag: ITag): ng.IPromise<any> {
+            this.clearCache('tags');
             return this.meshDelete(projectName + '/tags/' + tag.uuid);
         }
 
         public addTagToNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {
+            this.clearCache('nodes');
             return this.meshPut(projectName + '/nodes/' + node.uuid + '/tags/' + tag.uuid, {});
         }
         public removeTagFromNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {
+            this.clearCache('nodes');
             return this.meshDelete(projectName + '/nodes/' + node.uuid + '/tags/' + tag.uuid, {});
         }
 
@@ -776,7 +779,7 @@ module meshAdminUi {
 
         var cacheable = {
             'projects': /^projects/,
-            'contents': new RegExp(projectName + _ + 'nodes\\/', 'gi'),
+            'nodes': new RegExp(projectName + _ + 'nodes\\/', 'gi'),
             'tags': new RegExp(projectNameTags + 'tags\\/', 'gi'),
             'tag': new RegExp(projectName + _ + 'tags' + _ + uuid, 'gi'),
             'schemas': /^schemas\??/,
