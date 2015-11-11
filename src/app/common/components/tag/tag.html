@@ -2,6 +2,9 @@
      ng-style="{ 'background-color': tagColor() }"
      layout="row"
      layout-align="center center">
+    <md-tooltip md-direction="top" md-delay="500">
+        {{:: source.tagFamily.name }}
+    </md-tooltip>
     <span class="tag-name">{{ source.fields.name }}</span>
     <span class="delete-tag" ng-if="showClose" ng-click="close($event)"><i class="icon-close"></i></span>
 </div>

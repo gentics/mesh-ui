@@ -18,7 +18,6 @@ module meshAdminUi {
         }
 
         public querySearch(query) {
-            console.log('tag families', this.tagFamilies);
             if (query === '') {
                 return this.tagFamilies;
             } else {
@@ -79,8 +78,6 @@ module meshAdminUi {
         }
 
         public newTagDialog(name) {
-            console.log('creating tag', name);
-
             this.$mdDialog.show({
                     controller: NewTagDialogController,
                     controllerAs: 'vm',
@@ -97,6 +94,10 @@ module meshAdminUi {
                     if (!response.tagFamilyRef && response.newTagFamilyName) {
                         let tagFamily = this.createEmptyTagFamily(response.newTagFamilyName);
                         getTagFamily = this.dataService.persistTagFamily(this.projectName, tagFamily)
+                            .then(tagFamily => {
+                                this.tagFamilies.push(tagFamily);
+                                return tagFamily;
+                            });
                     } else {
                         getTagFamily = this.$q.when(response.tagFamilyRef);
                     }

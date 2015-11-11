@@ -4,7 +4,7 @@
         <div ng-repeat="bundle in vm.contents" class="node-bundle">
             <div class="schema-name">{{:: bundle.schema.name }}</div>
 
-            <div dir-paginate="node in bundle.data | filter: vm.filterNodes | itemsPerPage: vm.itemsPerPage track by node.uuid"
+            <div dir-paginate="node in ::bundle.data | filter: vm.filterNodes | itemsPerPage: vm.itemsPerPage track by node.uuid"
                  pagination-id="'bdl_' + bundle.schema.uuid"
                  total-items="bundle._metainfo.totalCount"
                  class="bundle-item animate-item"
@@ -13,12 +13,19 @@
                  layout="row">
 
                 <div flex>
-                    <span ng-if="node.fileName && node.fileName !== ''" class="binary-icon">
-                        <i ng-class="{ 'icon-insert-drive-file' : !vm.isImageNode(node), 'icon-image': vm.isImageNode(node) }"></i>
+                    <span ng-if=":: node.fileName && node.fileName !== ''" class="node-icon">
+                        <i ng-class=":: { 'icon-insert-drive-file' : !vm.isImageNode(node), 'icon-image': vm.isImageNode(node) }"></i>
+                    </span>
+                    <span ng-if=":: node.container" class="node-icon">
+                        <i class="icon-folder-open"></i>
                     </span>
                     <span class="node-title"
                           ng-class="{'container': node.container}"
                           ng-click="vm.openNode(node, $event)">{{:: node.fields[node.displayField] }}</span>
+                </div>
+
+                <div flex="50">
+                    <expandable-tags-list tags="vm.tagsArray[node.uuid]"></expandable-tags-list>
                 </div>
 
                 <button class="btn btn-primary btn-small" ng-click="vm.editNode(node, $event)">edit</button>

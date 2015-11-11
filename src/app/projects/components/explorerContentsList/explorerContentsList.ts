@@ -27,6 +27,8 @@ module meshAdminUi {
         public searchQuery: string = '';
         public filterNodes: Function;
         private onPageChange: Function;
+        public tagsArray: { [nodeUuid: string]: ITag[] } = {};
+        private contents: INodeBundleResponse[];
 
         constructor($scope: ng.IScope,
                     private $state: ng.ui.IStateService,
@@ -42,10 +44,17 @@ module meshAdminUi {
             dispatcher.subscribe(dispatcher.events.explorerSearchTermChanged, searchTermHandler);
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(searchTermHandler));
 
-            this.filterNodes = (node: INode) => {
-                return mu.nodeFilterFn(node, this.searchQuery);
-            }
+            let unwatch = $scope.$watch(() => this.contents, val => {
+                if (typeof val !== 'undefined' && 0 < val.length) {
+                    this.contents.forEach(bundle => this.populateTagsArray(bundle));
+                    unwatch();
+                }
+            })
         }
+
+        public filterNodes = (node: INode) => {
+            return this.mu.nodeFilterFn(node, this.searchQuery);
+        };
 
         /**
          * Toggle whether the items at index is selected.
@@ -69,8 +78,20 @@ module meshAdminUi {
             event.stopPropagation();
             if (node.container) {
                 this.explorerContentsListService.clearSelection();
-                this.$state.go('projects.node', {projectName: this.contextService.getProject().name, nodeId: node.uuid});
+                this.$state.go('projects.node', {
+                    projectName: this.contextService.getProject().name, nodeId: node.uuid
+                });
             }
+        }
+
+        /**
+         * Converts the tags object for each node in the bundle into an array
+         * and stores them in this.tagsArray[nodeUuid].
+         */
+        private populateTagsArray(bundle: INodeBundleResponse) {
+            return bundle.data.forEach(node => {
+                this.tagsArray[node.uuid] = this.mu.nodeTagsObjectToArray(node.tags);
+            });
         }
 
         /**

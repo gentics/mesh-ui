@@ -22,7 +22,7 @@ function i18nConfig(i18nServiceProvider, $translateProvider, en, de) {
         'ar'
     ]);
 
-    i18nServiceProvider.setDefaultLanguage('de');
+    i18nServiceProvider.setDefaultLanguage('en');
 
     $translateProvider
         .translations('en', en)

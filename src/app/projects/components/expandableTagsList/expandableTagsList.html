@@ -1,0 +1,18 @@
+<div class="expandable-tags-list">
+    <tag ng-repeat="tag in vm.tags | limitTo: vm.tagsLimit track by tag.uuid"
+         source="tag"
+         show-close="false"></tag>
+    {{ tagsLimit }}
+
+    <span class="expand-tags"
+          ng-if="vm.tagsLimit < vm.tags.length"
+          ng-click="vm.toggle($event)">
+        +{{ vm.tags.length - vm.tagsLimit }}
+        <i class="icon-more-horiz"></i>
+    </span>
+    <span class="contract-tags"
+          ng-if="vm.tags.length < vm.tagsLimit"
+          ng-click="vm.toggle($event)">
+        <i class="icon-arrow-back"></i>
+    </span>
+</div>
