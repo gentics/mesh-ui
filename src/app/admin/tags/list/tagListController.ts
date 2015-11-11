@@ -23,7 +23,7 @@ module meshAdminUi {
                     }))
                 })
                 .then(result => {
-                    result.forEach(item => {
+                    result.forEach((item: any) => {
                         this.projectGroups.push({
                             project: item.project,
                             tagFamilies: item.tagFamilies.data

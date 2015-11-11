@@ -92,7 +92,8 @@ module meshAdminUi {
             let config: ng.IRequestShortcutConfig = {
                 headers: { [this.AUTH_HEADER_NAME]: this.authString }
             };
-            this.userRequestInFlight = this.$injector.get("$http").get('/api/v1/auth/me', config)
+            let $http = <ng.IHttpService>this.$injector.get("$http");
+            this.userRequestInFlight = $http.get('/api/v1/auth/me', config)
                 .then(response => {
                     this._currentUser = <IUser>response.data;
                     this.userRequestInFlight = undefined;

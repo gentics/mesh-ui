@@ -26,7 +26,6 @@ module meshAdminUi {
     class ExplorerContentsListController {
 
         public searchQuery: string = '';
-        public filterNodes: Function;
         private onPageChange: Function;
         public tagsArray: { [nodeUuid: string]: ITag[] } = {};
         private contents: INodeBundleResponse[];

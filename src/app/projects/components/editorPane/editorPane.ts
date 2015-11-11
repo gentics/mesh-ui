@@ -1,6 +1,7 @@
 module meshAdminUi {
 
-    import Preferences = protractor.logging.Preferences;
+    declare var meshConfig: any;
+
     function editorPaneDirective() {
         return {
             restrict: 'E',

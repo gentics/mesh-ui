@@ -69,7 +69,7 @@ module meshAdminUi {
                 let types = ['schemas', 'projects', 'roles', 'groups', 'users'];
                 let rootPermPromises = types.map(type => dataService.getPermissions(this.roleId, type));
                 $q.all(rootPermPromises)
-                    .then(result => {
+                    .then((result: any) => {
                         result.forEach((result, index) => {
                             this.rootPermissions[types[index]] = mu.rolePermissionsArrayToKeys({ rolePerms: result.permissions });
                         });
@@ -88,7 +88,7 @@ module meshAdminUi {
             });
             return this.$q.all(promises)
                 .then(results => {
-                    results.forEach((result, index) => {
+                    results.forEach((result: any, index: number) => {
                         this.tagItemRootPermissions[projects[index].uuid] = this.mu.rolePermissionsArrayToKeys({ rolePerms: result.permissions });
                     });
                     console.log('this.tagItemRootPermissions', this.tagItemRootPermissions);
@@ -253,7 +253,7 @@ module meshAdminUi {
                 default:
             }
 
-            return promise.then(this.notifyPermissionsSuccess(nodeType, name));
+            return promise.then(() => this.notifyPermissionsSuccess(nodeType, name));
         }
 
         private notifyPermissionsSuccess(nodeType: string, name?: string) {
