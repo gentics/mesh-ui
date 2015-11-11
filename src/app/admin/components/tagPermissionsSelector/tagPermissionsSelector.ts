@@ -49,26 +49,21 @@ module meshAdminUi {
             }
         }
 
-        public toggle(item, recursive: boolean = false) {
+        public toggle(item, recursive: boolean = false, isProjectRoot = false) {
             this.$timeout(() => {
-                let permObject = this.itemPermissions[item.uuid],
+                let permObject = isProjectRoot ? this.rootPermissions[item.uuid] : this.itemPermissions[item.uuid],
                     permsArray = Object.keys(permObject).filter(key => permObject[key] === true),
                     permissions:IPermissionsRequest = {
                         permissions: permsArray,
                         recursive: recursive
                     };
-                let project = this.getItemProject(item);
-                this.onToggle({permissions: permissions, item: item, project: project});
+                if (!isProjectRoot) {
+                    let project = this.getItemProject(item);
+                    this.onToggle({permissions: permissions, item: item, project: project});
+                } else {
+                    this.onToggle({permissions: permissions, project: item});
+                }
             });
-        }
-
-        public toggleRootPerm(project: IProject) {
-            let permsArray = Object.keys(this.rootPermissions).filter(key => this.rootPermissions[key] === true),
-                permissions: IPermissionsRequest = {
-                    permissions: permsArray,
-                    recursive: false
-                };
-            this.onToggle({ permissions: permissions, project: project });
         }
 
         /**
@@ -99,6 +94,7 @@ module meshAdminUi {
             scope: {
                 items: '=',
                 itemPermissions: '=',
+                rootPermissions: '=',
                 roleId: '=',
                 isReadonly: '=',
                 onToggle: '&'

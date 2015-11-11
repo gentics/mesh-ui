@@ -51,6 +51,7 @@
              <tag-permissions-selector
                      items="vm.tagItems"
                      item-permissions="vm.tagItemPermissions"
+                     root-permissions="vm.tagItemRootPermissions"
                      is-readonly="vm.isReadonly()"
                      on-toggle="vm.setTagPermissions(project, permissions, item)"
                      role-id="vm.roleId"></tag-permissions-selector>
@@ -58,6 +59,7 @@
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Projects"
+                    root-permissions="vm.rootPermissions.projects"
                     items="vm.projects"
                     item-name-field="item.name"
                     on-toggle="vm.setProjectPermissions(permissions, item)"></permissions-table>
@@ -65,6 +67,7 @@
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Schemas"
+                    root-permissions="vm.rootPermissions.schemas"
                     items="vm.schemas"
                     item-name-field="item.name"
                     on-toggle="vm.setSchemaPermissions(permissions, item)"></permissions-table>
@@ -77,6 +80,7 @@
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Users"
+                    root-permissions="vm.rootPermissions.users"
                     items="vm.users"
                     item-name-field="item.username"
                     on-toggle="vm.setUserPermissions(permissions, item)"></permissions-table>
@@ -84,6 +88,7 @@
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Groups"
+                    root-permissions="vm.rootPermissions.groups"
                     items="vm.groups"
                     item-name-field="item.name"
                     on-toggle="vm.setGroupPermissions(permissions, item)"></permissions-table>
@@ -91,6 +96,7 @@
             <permissions-table
                     is-readonly="vm.isReadonly()"
                     root-name="Roles"
+                    root-permissions="vm.rootPermissions.roles"
                     items="vm.roles"
                     item-name-field="item.name"
                     on-toggle="vm.setRolePermissions(permissions, item)"></permissions-table>

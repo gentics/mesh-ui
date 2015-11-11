@@ -671,8 +671,12 @@ module meshAdminUi {
 
 
         /**
-         * Permissions setting methods
+         * Permissions methods
          */
+        public getPermissions(roleUuid: string, path: string) {
+            return this.meshGet('roles/' + roleUuid + '/permissions/' + path);
+        }
+
         public setNodePermissions(roleUuid: string, projectUuid: string, nodeUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
             return this.setPermissionsOnPath(roleUuid, 'projects/' + projectUuid + '/nodes/' + nodeUuid, permissions);
         }

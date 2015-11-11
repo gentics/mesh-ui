@@ -20,8 +20,12 @@ module meshAdminUi {
         private roles: IUserRole[];
         private groups: IUserGroup[];
         private users: IUser[];
+        private rootPermissions: {
+            [type: string]: any
+        } = {};
         private tagItems: any[];
         private tagItemPermissions;
+        private tagItemRootPermissions = {};
 
         constructor(
             private $q: ng.IQService,
@@ -57,9 +61,38 @@ module meshAdminUi {
                         this.groups = dataArray[3].data;
                         this.users = dataArray[4].data;
                         this.tagItems = dataArray[5];
+
+                        this.getProjectTagFamilyRootPerms(this.projects);
                     })
                     .then(() => this.setTagItemPermissions());
+
+                let types = ['schemas', 'projects', 'roles', 'groups', 'users'];
+                let rootPermPromises = types.map(type => dataService.getPermissions(this.roleId, type));
+                $q.all(rootPermPromises)
+                    .then(result => {
+                        result.forEach((result, index) => {
+                            this.rootPermissions[types[index]] = mu.rolePermissionsArrayToKeys({ rolePerms: result.permissions });
+                        });
+                        console.log('this.rootPermissions', this.rootPermissions);
+                    });
+
+                // get root perms on tagFamilies
+
             }
+        }
+
+        private getProjectTagFamilyRootPerms(projects) {
+            let promises = projects.map(project => {
+                let path =`projects/${project.uuid}/tagFamilies`;
+                return this.dataService.getPermissions(this.roleId, path);
+            });
+            return this.$q.all(promises)
+                .then(results => {
+                    results.forEach((result, index) => {
+                        this.tagItemRootPermissions[projects[index].uuid] = this.mu.rolePermissionsArrayToKeys({ rolePerms: result.permissions });
+                    });
+                    console.log('this.tagItemRootPermissions', this.tagItemRootPermissions);
+                });
         }
 
         /**

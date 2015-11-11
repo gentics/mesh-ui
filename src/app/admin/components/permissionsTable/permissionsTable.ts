@@ -82,6 +82,7 @@ module meshAdminUi {
             scope: {
                 isReadonly: '=',
                 rootName: '@',
+                rootPermissions: '=',
                 items: '=',
                 itemNameField: '@',
                 onToggle: '&'
