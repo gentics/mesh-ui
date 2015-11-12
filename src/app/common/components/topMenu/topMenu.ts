@@ -25,6 +25,10 @@ module meshAdminUi {
             dispatcher.subscribe(dispatcher.events.logoutSuccess, () => {
                 this.isLoggedIn = false;
             });
+
+            dispatcher.subscribe(dispatcher.events.languageChanged, (event, lang: ILanguageInfo) => {
+                this.lang = lang;
+            });
         }
 
         public getUserName() {
@@ -55,9 +59,9 @@ module meshAdminUi {
             this.authService.logOut();
         }
 
-        public updateLanguage(lang) {
+        public updateLanguage(event: Event, lang) {
+            event.preventDefault();
             this.i18nService.setCurrentLang(lang);
-            this.lang = this.i18nService.getCurrentLang();
             this.$state.reload();
         };
     }

@@ -11,8 +11,8 @@ module meshAdminUi {
                 'de'
             ];
 
-        function getFn($translate) {
-            return new I18nService($translate, availableLangs, defaultLang);
+        function getFn($translate, dispatcher) {
+            return new I18nService($translate, dispatcher, availableLangs, defaultLang);
         }
 
         this.$get = getFn;
@@ -57,6 +57,7 @@ module meshAdminUi {
         private isoLangs: any;
 
         constructor(private $translate: ng.translate.ITranslateService,
+                    private dispatcher: Dispatcher,
                     private availableLangs: string[],
                     private defaultLang: string) {
 
@@ -87,10 +88,11 @@ module meshAdminUi {
             } else {
                 throw new Error('I18nService#setCurrentLang: ' + value + ' is not an available language.');
             }
+            this.dispatcher.publish(this.dispatcher.events.languageChanged, this.getCurrentLang());
         }
 
         /**
-         * Get the 2-character language code of the current language.
+         * Get the language info for the current language.
          */
         public getCurrentLang(): ILanguageInfo {
             return this.codeToFullInfo(this.currentLang, this.isoLangs);

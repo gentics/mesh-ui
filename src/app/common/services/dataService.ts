@@ -421,6 +421,11 @@ module meshAdminUi {
             return this.meshDelete(projectName + '/nodes/' + uuid);
         }
 
+        // deleteNodeLanguage
+        /**
+         * DELETE projectName/nodes/uuid/languages/en
+         */
+
         /**
          * Delete multiple nodes in sequence. Returns the node uuids that were deleted.
          */
@@ -788,20 +793,16 @@ module meshAdminUi {
         // define the urls we wish to cache
         var projectName = '^[a-zA-Z\\-]*',
             uuid = '[a-z0-9]{30,32}',
-            _ = '\\/',
-            projectNameTags = projectName + _ + 'tags' + _ + uuid + _;
+            _ = '\\/';
 
         var cacheable = {
             'projects': /^projects/,
             'nodes': new RegExp(projectName + _ + 'nodes\\/', 'gi'),
-            'tags': new RegExp(projectNameTags + 'tags\\/', 'gi'),
-            'tag': new RegExp(projectName + _ + 'tags' + _ + uuid, 'gi'),
-            'schemas': /^schemas\??/,
-            'schema': /^schemas\/[a-z0-9]+/,
+            'tags': new RegExp(projectName + _ + 'tags\\/?', 'gi'),
+            'tagFamilies': new RegExp(projectName + _ + 'tagFamilies\\/?', 'gi'),
+            'schemas': /\/?schemas\??/,
             'users': /^users\??/,
-            'user': /^users\/[a-z0-9]+/,
             'roles': /^roles\??/,
-            'role': /^roles\/[a-z0-9]+/,
         };
         selectiveCacheProvider.setCacheableGroups(cacheable);
     }

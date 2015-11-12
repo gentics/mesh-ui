@@ -1,0 +1,32 @@
+<div class="node-language-menu">
+<mh-dropdown>
+    <mh-dropdown-label layout="row" layout-align="center center" class="language-select-label top-menu-label">
+        <div class="language-indicator">
+            <i class="icon-language"></i>{{ vm.node.language }} <i class="icon-arrow-drop-down"></i>
+        </div>
+    </mh-dropdown-label>
+    <mh-dropdown-body>
+        <div class="node-language-menu menu-body">
+            <div ng-if="0 < vm.node.availableLanguages.length">
+                <div ng-repeat="code in vm.node.availableLanguages"
+                     class="available-btn"
+                     ng-if="code !== vm.node.language">
+                    <button class="btn btn-small btn-primary" ng-click="vm.goToTranslation(code)">
+                        Available in {{ code }}
+                    </button>
+                </div>
+            </div>
+            <div ng-if="0 < vm.unusedLangs.length">
+                <div ng-repeat="code in vm.unusedLangs" class="translate-btn">
+                    <button class="btn btn-small" ng-click="vm.translateClick(code)">
+                        Translate to {{ code }}
+                    </button>
+                </div>
+            </div>
+            <div ng-if="vm.unusedLangs.length === 0" class="save-notice">
+                Node must be saved before translating.
+            </div>
+        </div>
+    </mh-dropdown-body>
+</mh-dropdown>
+</div>

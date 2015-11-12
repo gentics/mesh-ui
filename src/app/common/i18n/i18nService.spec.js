@@ -35,10 +35,10 @@ describe('i18nService', function() {
 
         var i18nService;
 
-        beforeEach(inject(function($translate) {
+        beforeEach(inject(function($injector) {
             provider.setAvailableLanguages(['en', 'de', 'da']);
             provider.setDefaultLanguage('en');
-            i18nService = provider.$get($translate);
+            i18nService = $injector.invoke(provider.$get);
         }));
 
         it('should return default language', function() {

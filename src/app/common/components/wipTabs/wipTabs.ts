@@ -37,7 +37,7 @@ module meshAdminUi {
 
             this.lang = i18nService.getCurrentLang().code;
             this.dispatcher.subscribe(this.dispatcher.events.wipsChanged, changeHandler);
-            this.dispatcher.subscribe(this.dispatcher.events.editorServiceNodeOpened, openHandler);
+            this.dispatcher.subscribe(this.dispatcher.events.editorServiceNodeOpened, changeHandler);
             $scope.$on('$destroy', () => {
                 this.dispatcher.unsubscribeAll(changeHandler, openHandler);
             });

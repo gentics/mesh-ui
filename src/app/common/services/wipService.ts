@@ -21,9 +21,11 @@ module meshAdminUi {
         private modifiedWips = {};
 
         constructor(private $q: ng.IQService,
+                    private i18nService: I18nService,
                     private localStorageService,
                     private mu: MeshUtils,
                     private dispatcher: Dispatcher) {
+
             this.populateFromLocalStorage();
         }
 
@@ -45,15 +47,16 @@ module meshAdminUi {
          */
         public openItem(type: string, item: any, metadata?: any) {
             this.validateItem(item);
-            if (!this.wipStore[type]) {
-                this.wipStore[type] = {};
-                this.modifiedWips[type] = {};
+            let lang = this.i18nService.getCurrentLang().code;
+            if (!this.wipStore[lang][type]) {
+                this.wipStore[lang][type] = {};
+                this.modifiedWips[lang][type] = {};
             }
-            if (this.wipStore[type][item.uuid]) {
+            if (this.wipStore[lang][type][item.uuid]) {
                 throw new Error('wipStore#openItem: "' + type + '" with uuid "' +
                     item.uuid + '" is already open.');
             }
-            this.wipStore[type][item.uuid] = {
+            this.wipStore[lang][type][item.uuid] = {
                 item: item,
                 metadata: metadata || {}
             };
@@ -64,8 +67,9 @@ module meshAdminUi {
          * Set a key-value pair on the wip item's metadata object.
          */
         public setMetadata(type: string, uuid: string, key: string, value: any) {
-            if (this.wipStore[type] && this.wipStore[type][uuid]) {
-                this.wipStore[type][uuid].metadata[key] = value;
+            let lang = this.i18nService.getCurrentLang().code;
+            if (this.wipStore[lang][type] && this.wipStore[lang][type][uuid]) {
+                this.wipStore[lang][type][uuid].metadata[key] = value;
             }
         }
 
@@ -73,8 +77,9 @@ module meshAdminUi {
          * Get the metadata associated with the wip item.
          */
         public getMetadata(type: string, uuid: string): any {
+            let lang = this.i18nService.getCurrentLang().code;
             this.checkItemInWipStore(type, uuid);
-            return this.wipStore[type][uuid].metadata;
+            return this.wipStore[lang][type][uuid].metadata;
         }
 
         /**
@@ -82,9 +87,10 @@ module meshAdminUi {
          * which determines its behaviour on closing.
          */
         public setAsModified(type: string, item: any) {
+            let lang = this.i18nService.getCurrentLang().code;
             this.validateItem(item);
             this.checkItemInWipStore(type, item);
-            this.modifiedWips[type][item.uuid] = true;
+            this.modifiedWips[lang][type][item.uuid] = true;
             this.dispatcher.publish(this.dispatcher.events.wipsChanged);
         }
 
@@ -94,9 +100,10 @@ module meshAdminUi {
          * indicate that it is unmodified and okay to close.
          */
         public setAsUnmodified(type: string, item: any) {
+            let lang = this.i18nService.getCurrentLang().code;
             this.validateItem(item);
             this.checkItemInWipStore(type, item);
-            this.modifiedWips[type][item.uuid] = false;
+            this.modifiedWips[lang][type][item.uuid] = false;
             this.dispatcher.publish(this.dispatcher.events.wipsChanged);
         }
 
@@ -104,21 +111,23 @@ module meshAdminUi {
          * Checks to see if the item in the store has been modified.
          */
         public isModified(type: string, item: any): boolean {
+            let lang = this.i18nService.getCurrentLang().code;
             this.validateItem(item);
             this.checkItemInWipStore(type, item);
-            return this.modifiedWips[type][item.uuid] === true;
+            return this.modifiedWips[lang][type][item.uuid] === true;
         }
 
         /**
          * Remove an existing item of the specified type from the store.
          */
         public closeItem(type: string, item: any): ng.IPromise<any> {
-            var deferred = this.$q.defer();
+            let lang = this.i18nService.getCurrentLang().code;
+            let deferred = this.$q.defer();
 
             this.validateItem(item);
             this.checkItemInWipStore(type, item);
-            delete this.wipStore[type][item.uuid];
-            delete this.modifiedWips[type][item.uuid];
+            delete this.wipStore[lang][type][item.uuid];
+            delete this.modifiedWips[lang][type][item.uuid];
             deferred.resolve(item);
             this.dispatcher.publish(this.dispatcher.events.wipsChanged);
             return deferred.promise;
@@ -128,12 +137,13 @@ module meshAdminUi {
          * Get an array of all open items of the specified type.
          */
         public getOpenItems(type: string): any[] {
-            var itemsArray = [];
+            let lang = this.i18nService.getCurrentLang().code;
+            let itemsArray = [];
 
-            if (this.wipStore[type]) {
-                for (var key in this.wipStore[type]) {
-                    if (this.wipStore[type].hasOwnProperty(key)) {
-                        itemsArray.push(this.wipStore[type][key]);
+            if (this.wipStore[lang] && this.wipStore[lang][type]) {
+                for (var key in this.wipStore[lang][type]) {
+                    if (this.wipStore[lang][type].hasOwnProperty(key)) {
+                        itemsArray.push(this.wipStore[lang][type][key]);
                     }
                 }
             }
@@ -144,18 +154,20 @@ module meshAdminUi {
          * Is the item of the given type and UUID open in the wip store?
          */
         public isOpen(type: string, uuid: string): boolean {
-            return !!(this.wipStore[type] && this.wipStore[type].hasOwnProperty(uuid));
+            let lang = this.i18nService.getCurrentLang().code;
+            return !!(this.wipStore[lang][type] && this.wipStore[lang][type].hasOwnProperty(uuid));
         }
 
         /**
          * Get an array of uuids of each item of the specified type which has been modified.
          */
         public getModifiedItems(type: string): any[] {
-            var itemsArray = [];
+            let lang = this.i18nService.getCurrentLang().code;
+            let itemsArray = [];
 
-            if (this.modifiedWips[type]) {
-                for (var key in this.modifiedWips[type]) {
-                    if (this.modifiedWips[type].hasOwnProperty(key) && this.modifiedWips[type][key] === true) {
+            if (this.modifiedWips[lang] && this.modifiedWips[lang][type]) {
+                for (var key in this.modifiedWips[lang][type]) {
+                    if (this.modifiedWips[lang][type].hasOwnProperty(key) && this.modifiedWips[lang][type][key] === true) {
                         itemsArray.push(key);
                     }
                 }
@@ -165,13 +177,10 @@ module meshAdminUi {
 
         /**
          * Returns the wip content specified by the uuid if it exists in the contents store.
-         *
-         * @param {String} type
-         * @param {String} uuid
-         * @returns {*}
          */
         public getItem(type: string, uuid: string): any {
-            return this.wipStore[type] && this.wipStore[type][uuid] && this.wipStore[type][uuid].item;
+            let lang = this.i18nService.getCurrentLang().code;
+            return this.wipStore[lang][type] && this.wipStore[lang][type][uuid] && this.wipStore[lang][type][uuid].item;
         }
 
         /**
@@ -188,10 +197,11 @@ module meshAdminUi {
          * is thrown.
          */
         private checkItemInWipStore(type: string, itemOrUuid: any) {
-            var id = typeof itemOrUuid === 'string' ? itemOrUuid : itemOrUuid.uuid;
-            if (!this.wipStore[type]) {
+            let lang = this.i18nService.getCurrentLang().code;
+            let id = typeof itemOrUuid === 'string' ? itemOrUuid : itemOrUuid.uuid;
+            if (!this.wipStore[lang][type]) {
                 throw new Error('wipService: the wipStore does not contain any items of the type "' + type + '".');
-            } else if (!this.wipStore[type][id]) {
+            } else if (!this.wipStore[lang][type][id]) {
                 throw new Error('wipService: item of type "' + type + '" with uuid "' + id + '" not found.');
             }
         }
@@ -209,6 +219,15 @@ module meshAdminUi {
             if (localModifiedWips) {
                 this.modifiedWips = localModifiedWips;
             }
+
+            this.i18nService.getAvailableLanguages().forEach((lang: ILanguageInfo) => {
+                if (!this.wipStore[lang.code]) {
+                    this.wipStore[lang.code] = {};
+                }
+                if (!this.modifiedWips[lang.code]) {
+                    this.modifiedWips[lang.code] = {};
+                }
+            });
         }
 
         /**

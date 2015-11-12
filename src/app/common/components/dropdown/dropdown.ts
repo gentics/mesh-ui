@@ -138,8 +138,10 @@ function dropdownLabelDirective() {
  */
 function dropdownBodyDirective() {
     function linkFn(scope, element, attrs, dropdownCtrl) {
-        var container = <HTMLElement>element[0];
-        var parentContainer = container.parentElement.parentElement;
+
+        let container = <HTMLElement>element[0];
+        let parentContainer = container.parentElement.parentElement;
+
         const clickHandler = (e: Event) => {
             e.stopPropagation();
             if (!dropdownCtrl.sticky) {
@@ -158,16 +160,16 @@ function dropdownBodyDirective() {
         element.on('click', clickHandler);
 
         function setPosition(isOpen) {
-            var contentsHeight;
             if (isOpen) {
                 document.body.appendChild(container);
+                let containerChild = <HTMLElement>container.children[0];
                 let parentBox = parentContainer.getBoundingClientRect();
-                let childBox = container.children[0].getBoundingClientRect();
+                let childBox = containerChild.getBoundingClientRect();
                 let widthDelta = parentBox.width - childBox.width;
+
                 container.style.top = (dropdownCtrl.getContentTop() + parentBox.top) + 'px';
                 container.style.width = childBox.width + 'px';
-                contentsHeight = childBox.height;
-                container.style.height =  contentsHeight + 12 + 'px';
+                container.style.height =  containerChild.offsetHeight + 12 + 'px';
 
                 /**
                  * Check to see if the dropdown body goes off the edge of the viewport,

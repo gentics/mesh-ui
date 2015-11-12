@@ -21,7 +21,6 @@ module meshAdminUi {
         private wipType: string = 'contents';
         private projectName: string;
         private contentModified: boolean;
-        private availableLangs: ILanguageInfo[];
         private node: INode;
         private tags: ITag[];
         private binaryFile: File;
@@ -30,6 +29,8 @@ module meshAdminUi {
         private schema: ISchema;
 
         constructor(private $scope: ng.IScope,
+                    private $state: ng.ui.IStateService,
+                    private $timeout: ng.ITimeoutService,
                     private $location: ng.ILocationService,
                     private editorService: EditorService,
                     private dispatcher: Dispatcher,
@@ -46,7 +47,6 @@ module meshAdminUi {
                 this.projectName = contextService.getProject().name;
                 this.currentNodeId = nodeUuid;
                 this.contentModified = false;
-                this.availableLangs = i18nService.languages;
                 this.node = undefined;
                 this.tags = [];
                 this.selectedLangs = {};
@@ -82,8 +82,8 @@ module meshAdminUi {
         /**
          * Save the changes back to the server.
          */
-        public persist(originalNode: INode) {
-            this.dataService.persistNode(this.projectName, originalNode, this.binaryFile)
+        public persist(originalNode: INode): ng.IPromise<any> {
+            return this.dataService.persistNode(this.projectName, originalNode, this.binaryFile)
                 .then((node: INode) => {
                     if (this.isNew(originalNode)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
@@ -99,6 +99,30 @@ module meshAdminUi {
                 .catch(error => {
                     this.notifyService.toast(error.data.message || error.data);
                 })
+        }
+
+        public createTranslation(langCode: string, node: INode) {
+            let nodeClode = angular.copy(node);
+            nodeClode.language = langCode;
+            if (typeof node.fields[node.displayField] === 'string') {
+                nodeClode.fields[node.displayField] += ` (${langCode.toUpperCase()})`
+            }
+            this.persist(nodeClode)
+            .then(() => {
+                this.i18nService.setCurrentLang(langCode);
+                this.$state.reload();
+                this.$timeout(() => {
+                    this.editorService.open(node.uuid);
+                }, 200);
+            });
+        }
+
+        public openInLanguage(langCode: string, node: INode) {
+            this.i18nService.setCurrentLang(langCode);
+            this.$state.reload();
+            this.$timeout(() => {
+                this.editorService.open(node.uuid);
+            }, 200);
         }
 
         private processNewNode(node: INode) {

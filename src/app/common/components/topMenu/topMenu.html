@@ -26,7 +26,7 @@
                     <mh-dropdown-body>
                         <ul>
                             <li ng-repeat="language in vm.languages"
-                                ng-click="vm.updateLanguage(language.code)" >
+                                ng-click="vm.updateLanguage($event, language.code)" >
                                 <a href="#" class="a-plain">{{ language.nativeName | uppercase }}</a>
                             </li>
                         </ul>

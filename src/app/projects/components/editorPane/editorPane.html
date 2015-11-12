@@ -2,9 +2,12 @@
 
 
     <div layout="row" layout-align="center center" class="editor-top-bar">
-        <div class="language-indicator">
-            <i class="icon-language"></i>{{ vm.node.language }}
+        <div>
+            <node-language-menu node="vm.node"
+                                on-translate-click="vm.createTranslation(code, vm.node)"
+                                on-change-language="vm.openInLanguage(code, vm.node)"></node-language-menu>
         </div>
+
 
         <div flex>
             <div class="tags-list-container" layout="row" layout-align="start center" ng-if="!vm.isNew(vm.node)">
