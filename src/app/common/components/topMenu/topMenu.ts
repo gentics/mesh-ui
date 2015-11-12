@@ -9,6 +9,7 @@ module meshAdminUi {
         private profileImage: string;
 
         constructor(private $state: ng.ui.IStateService,
+                    private editorService: EditorService,
                     private dispatcher: Dispatcher,
                     private authService: AuthService,
                     private i18nService: I18nService) {
@@ -61,8 +62,11 @@ module meshAdminUi {
 
         public updateLanguage(event: Event, lang) {
             event.preventDefault();
-            this.i18nService.setCurrentLang(lang);
-            this.$state.reload();
+            if (lang !== this.i18nService.getCurrentLang().code) {
+                this.i18nService.setCurrentLang(lang);
+                this.editorService.closeAll();
+                this.$state.reload();
+            }
         };
     }
 

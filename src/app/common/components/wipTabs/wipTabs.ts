@@ -33,13 +33,12 @@ module meshAdminUi {
                     private notifyService: NotifyService) {
 
             const changeHandler = () => this.wipChangeHandler();
-            const openHandler = (event, uuid) => this.editorOpenHandler(uuid);
 
             this.lang = i18nService.getCurrentLang().code;
             this.dispatcher.subscribe(this.dispatcher.events.wipsChanged, changeHandler);
             this.dispatcher.subscribe(this.dispatcher.events.editorServiceNodeOpened, changeHandler);
             $scope.$on('$destroy', () => {
-                this.dispatcher.unsubscribeAll(changeHandler, openHandler);
+                this.dispatcher.unsubscribeAll(changeHandler);
             });
             window.addEventListener('beforeunload', () => this.persistOpenWipsLocally());
 
@@ -141,6 +140,9 @@ module meshAdminUi {
          * Get the index of a given WIP item in the collection by its uuid.
          */
         private indexByUuid(collection: any[], uuid: string): number {
+            if (collection.length === 0) {
+                return -1;
+            }
             return collection.map(wip => wip.item.uuid).indexOf(uuid);
         }
     }

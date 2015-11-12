@@ -11,8 +11,8 @@ module meshAdminUi {
                 'de'
             ];
 
-        function getFn($translate, dispatcher) {
-            return new I18nService($translate, dispatcher, availableLangs, defaultLang);
+        function getFn($translate, localStorageService,  dispatcher) {
+            return new I18nService($translate, localStorageService, dispatcher, availableLangs, defaultLang);
         }
 
         this.$get = getFn;
@@ -57,11 +57,12 @@ module meshAdminUi {
         private isoLangs: any;
 
         constructor(private $translate: ng.translate.ITranslateService,
+                    private localStorageService,
                     private dispatcher: Dispatcher,
                     private availableLangs: string[],
                     private defaultLang: string) {
 
-            this.currentLang = defaultLang;
+            this.currentLang = localStorageService.get('lang') || defaultLang;
             this.isoLangs = this.getIsoLangs();
         }
 
@@ -83,6 +84,7 @@ module meshAdminUi {
          */
         public setCurrentLang(value: string) {
             if (this.validateLanguageCode(value)) {
+                this.localStorageService.set('lang', value);
                 this.currentLang = value;
                 this.$translate.use(value);
                 this.dispatcher.publish(this.dispatcher.events.languageChanged, this.getCurrentLang());
