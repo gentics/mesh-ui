@@ -43,7 +43,6 @@ module meshAdminUi {
                     }
                 })
                 .catch(error => {
-                    console.log(error);
                     this.notifyService.toast(error.data);
                 });
         }

@@ -120,7 +120,6 @@ module meshAdminUi {
             nodes.forEach(node => {
                 this.nodePermissions[node.uuid] = this.mu.rolePermissionsArrayToKeys(node);
             });
-            console.log('nodePermissions', this.nodePermissions);
         }
 
         /**
