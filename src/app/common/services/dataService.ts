@@ -421,10 +421,11 @@ module meshAdminUi {
             return this.meshDelete(projectName + '/nodes/' + uuid);
         }
 
-        // deleteNodeLanguage
-        /**
-         * DELETE projectName/nodes/uuid/languages/en
-         */
+        public deleteNodeLanguage(projectName: string, node: INode|string, langCode: string): ng.IPromise<any> {
+            this.clearCache('nodes');
+            let uuid = this.toUuid(node);
+            return this.meshDelete(projectName + '/nodes/' + uuid + '/languages/' + langCode);
+        }
 
         /**
          * Delete multiple nodes in sequence. Returns the node uuids that were deleted.

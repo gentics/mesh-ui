@@ -82,13 +82,11 @@ module meshAdminUi {
          * availableLanguages array.
          */
         public setCurrentLang(value: string) {
-            if (-1 < this.availableLangs.indexOf(value)) {
+            if (this.validateLanguageCode(value)) {
                 this.currentLang = value;
                 this.$translate.use(value);
-            } else {
-                throw new Error('I18nService#setCurrentLang: ' + value + ' is not an available language.');
+                this.dispatcher.publish(this.dispatcher.events.languageChanged, this.getCurrentLang());
             }
-            this.dispatcher.publish(this.dispatcher.events.languageChanged, this.getCurrentLang());
         }
 
         /**
@@ -96,6 +94,20 @@ module meshAdminUi {
          */
         public getCurrentLang(): ILanguageInfo {
             return this.codeToFullInfo(this.currentLang, this.isoLangs);
+        }
+
+        public getLanguageInfo(code: string): ILanguageInfo {
+            if (this.validateLanguageCode(code)) {
+                return this.codeToFullInfo(code, this.isoLangs);
+            }
+        }
+
+        private validateLanguageCode(code: string): boolean {
+            if (-1 < this.availableLangs.indexOf(code)) {
+                return true;
+            } else {
+                throw new Error('I18nService#setCurrentLang: ' + code + ' is not an available language.');
+            }
         }
 
         /**

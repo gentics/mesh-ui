@@ -23,7 +23,7 @@
                     </button>
                 </div>
             </div>
-            <div ng-if="vm.unusedLangs.length === 0" class="save-notice">
+            <div ng-if="!vm.node.created" class="save-notice">
                 Node must be saved before translating.
             </div>
         </div>

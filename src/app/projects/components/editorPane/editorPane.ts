@@ -29,12 +29,13 @@ module meshAdminUi {
         private schema: ISchema;
 
         constructor(private $scope: ng.IScope,
+                    private $q: ng.IQService,
                     private $state: ng.ui.IStateService,
                     private $timeout: ng.ITimeoutService,
                     private $location: ng.ILocationService,
+                    private $mdDialog: ng.material.IDialogService,
                     private editorService: EditorService,
                     private dispatcher: Dispatcher,
-                    private confirmActionDialog: ConfirmActionDialog,
                     private mu: MeshUtils,
                     private contextService: ContextService,
                     private i18nService: I18nService,
@@ -102,19 +103,28 @@ module meshAdminUi {
         }
 
         public createTranslation(langCode: string, node: INode) {
-            let nodeClode = angular.copy(node);
-            nodeClode.language = langCode;
+            let nodeClone = angular.copy(node);
+            nodeClone.language = langCode;
             if (typeof node.fields[node.displayField] === 'string') {
-                nodeClode.fields[node.displayField] += ` (${langCode.toUpperCase()})`
+                nodeClone.fields[node.displayField] += ` (${langCode.toUpperCase()})`
             }
-            this.persist(nodeClode)
+            this.persist(nodeClone)
             .then(() => {
+                this.updateCurrentNodeAvailableLangs(node, langCode);
                 this.i18nService.setCurrentLang(langCode);
                 this.$state.reload();
                 this.$timeout(() => {
                     this.editorService.open(node.uuid);
-                }, 200);
+                }, 500);
             });
+        }
+
+        private updateCurrentNodeAvailableLangs(node: INode, langCode: string) {
+            if (node.availableLanguages instanceof Array) {
+                node.availableLanguages.push(langCode);
+            } else {
+                node.availableLanguages = [node.language, langCode];
+            }
         }
 
         public openInLanguage(langCode: string, node: INode) {
@@ -122,7 +132,7 @@ module meshAdminUi {
             this.$state.reload();
             this.$timeout(() => {
                 this.editorService.open(node.uuid);
-            }, 200);
+            }, 500);
         }
 
         private processNewNode(node: INode) {
@@ -168,11 +178,17 @@ module meshAdminUi {
          * Delete the open node, displaying a confirmation dialog first before making the API call.
          */
         public remove(node: INode) {
-
-            this.showDeleteDialog()
-                .then(() => {
+            this.showDeleteDialog(node)
+                .then((langs: string[]) => {
                     if (!this.isNew(node)) {
-                        return this.dataService.deleteNode(this.projectName, node)
+                        if (this.checkDeleteAll(langs, node)) {
+                            return this.dataService.deleteNode(this.projectName, node);
+                        } else {
+                            let promises = langs.map(code => {
+                                return this.dataService.deleteNodeLanguage(this.projectName, node, code);
+                            });
+                            return this.$q.all(promises);
+                        }
                     }
                 })
                 .then(() => {
@@ -180,6 +196,17 @@ module meshAdminUi {
                     this.closeWipAndClearPane(node);
                     this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
                 });
+        }
+
+        /**
+         * Did the user select to delete all available languages?
+         */
+        private checkDeleteAll(langs: string[], node: INode) {
+            if (!node.availableLanguages || node.availableLanguages.length < 2) {
+                return true;
+            }
+
+            return node.availableLanguages.length === langs.length;
         }
 
         private closeWipAndClearPane(node: INode) {
@@ -190,12 +217,16 @@ module meshAdminUi {
 
         /**
          * Display a confirmation dialog for the delete action.
-         * @returns {angular.IPromise<any>|any|void}
          */
-        public showDeleteDialog() {
-            return this.confirmActionDialog.show({
-                title: 'Delete Content?',
-                message: 'Are you sure you want to delete the selected node?'
+        public showDeleteDialog(node: INode) {
+            return this.$mdDialog.show({
+                controller: 'ConfirmDeleteDialogController',
+                controllerAs: 'vm',
+                bindToController: true,
+                templateUrl: 'projects/components/editorPane/confirmDeleteDialog.html',
+                locals: {
+                    node: node
+                }
             });
         }
 
