@@ -1,5 +1,4 @@
-<div class="html-container editor-widget">
-    <label ng-class="{ focused: isFocused }">{{ field.label || field.name }}</label>
-    <div options='{"placeholder": ""}' class="htmlField" ng-readonly="!formBuilder.canUpdate()">
-    </div>
-</div>
+<md-input-container class="editor-widget" ng-class="{ 'display-field' : vm.fieldModel.isDisplayField }">
+    <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
+    <textarea ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate"></textarea>
+</md-input-container>

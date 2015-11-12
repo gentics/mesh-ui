@@ -40,6 +40,11 @@ module meshAdminUi {
      * Input for html field types
      */
     function htmlWidgetDirective() {
+        return makeStandardWidgetDDO('html');
+    }
+    /*
+        This is the Aloha Editor implementation.
+    function htmlWidgetDirective() {
 
         var activeAlohaPlugins = [
             'common/ui',
@@ -148,10 +153,10 @@ module meshAdminUi {
                 loadScript('assets/vendor/aloha-editor/lib/aloha-full.min.js', initAloha);
             }
 
-            /**
+            /!**
              * @param scope
              * @param element
-             */
+             *!/
             return function htmlWidgetLinkFn(scope, element) {
 
                 var htmlField = element[0].querySelector('.htmlField');
@@ -162,13 +167,13 @@ module meshAdminUi {
                     callbacks.push(registerBindings);
                 }
 
-                /**
+                /!**
                  * We need a way to let the widget know when the inner htmlField (content editable div)
                  * is focused. We have no direct access to that information, so we need to set up
                  * event listeners on the native "focus" and "blur" events and use them to update
                  * the scope.
                  * @type {HTMLElement}
-                 */
+                 *!/
                 scope.isFocused = false;
 
                 // initialize the content.
@@ -177,9 +182,9 @@ module meshAdminUi {
                 function registerBindings() {
                     var $ = Aloha.jQuery;
 
-                    /**
+                    /!**
                      * View -> Model data binding
-                     */
+                     *!/
                     Aloha.bind('aloha-smart-content-changed', function (jQueryEvent, alohaEditable) {
                         if (eventTargetIsThisElement(alohaEditable)) {
                             scope.$apply(function () {
@@ -189,9 +194,9 @@ module meshAdminUi {
                         }
                     });
 
-                    /**
+                    /!**
                      * Model -> data binding
-                     */
+                     *!/
                     scope.$watch('model[path]', function (val) {
                         if (typeof val !== 'undefined') {
                             syncView();
@@ -229,20 +234,20 @@ module meshAdminUi {
             };
         }
 
-        /**
+        /!**
          * Create the Aloha editable areas and run any callbacks that have
          * been registered.
-         */
+         *!/
         function initAloha() {
             callbacks.forEach(function (fn) {
                 fn();
             });
         }
 
-        /**
+        /!**
          * this function will work cross-browser for loading scripts asynchronously
          * Based on http://stackoverflow.com/a/7719185/772859
-         */
+         *!/
         function loadScript(src, callback) {
             var s,
                 r,
@@ -269,7 +274,7 @@ module meshAdminUi {
             templateUrl: 'projects/components/formBuilder/standardWidgets/htmlWidget.html',
             scope: true
         };
-    }
+    }*/
 
     /**
      * Input for number field types
@@ -705,7 +710,7 @@ module meshAdminUi {
     angular.module('meshAdminUi.projects.formBuilder')
         .directive('mhStringWidget', stringWidgetDirective)
         // TODO: update the aloha-based HTML input to work with the new API
-        .directive('mhHtmlWidget', stringWidgetDirective)
+        .directive('mhHtmlWidget', htmlWidgetDirective)
         .directive('mhNumberWidget', numberWidgetDirective)
         .directive('mhBooleanWidget', booleanWidgetDirective)
         .directive('mhDateWidget', dateWidgetDirective)
