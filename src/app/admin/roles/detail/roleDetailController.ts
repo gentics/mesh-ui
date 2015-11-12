@@ -36,7 +36,7 @@ module meshAdminUi {
             private dataService: DataService) {
 
             this.roleId = $stateParams.uuid;
-            this.isNew = this.roleId === 'new';
+            this.isNew = typeof this.roleId === 'undefined';
             this.modified = false;
             this.queryParams = {
                 "role": $stateParams.uuid

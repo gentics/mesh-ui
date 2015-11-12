@@ -63,6 +63,20 @@ module meshAdminUi {
             de: 'Sekunden'
         },
 
+        /* Admin Area */
+        'NEW_USER_CREATED': {
+            en: 'New user created',
+            de: 'Neuer Benutzer erstellt'
+        },
+        'NEW_GROUP_CREATED': {
+            en: 'New group created',
+            de: 'Neue Gruppe erstellt'
+        },
+        'NEW_ROLE_CREATED': {
+            en: 'New role created',
+            de: 'Neue Rolle erstellt'
+        },
+
         /* Other */
         'SEARCH': {
             en: 'Search',

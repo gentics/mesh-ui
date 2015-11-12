@@ -67,7 +67,7 @@
                                  md-no-ink aria-label="Create"
                                  ng-disabled="vm.isReadonly"
                                  ng-change="vm.toggle(node, false)"
-                                 ng-model="node['create']">
+                                 ng-model="vm.nodePermissions[node.uuid]['create']">
                         Create
                     </md-checkbox>
                 </td>
@@ -83,7 +83,7 @@
                                  md-no-ink aria-label="Read"
                                  ng-disabled="vm.isReadonly"
                                  ng-change="vm.toggle(node, false)"
-                                 ng-model="node['read']">
+                                 ng-model="vm.nodePermissions[node.uuid]['read']">
                         Read
                     </md-checkbox>
                 </td>
@@ -99,7 +99,7 @@
                                  md-no-ink aria-label="Update"
                                  ng-disabled="vm.isReadonly"
                                  ng-change="vm.toggle(node, false)"
-                                 ng-model="node['update']">
+                                 ng-model="vm.nodePermissions[node.uuid]['update']">
                         Update
                     </md-checkbox>
                 </td>
@@ -115,7 +115,7 @@
                                  md-no-ink aria-label="Delete"
                                  ng-disabled="vm.isReadonly"
                                  ng-change="vm.toggle(node, false)"
-                                 ng-model="node['delete']">
+                                 ng-model="vm.nodePermissions[node.uuid]['delete']">
                         Delete
                     </md-checkbox>
                 </td>
