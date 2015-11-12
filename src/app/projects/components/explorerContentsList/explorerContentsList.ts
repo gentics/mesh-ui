@@ -43,6 +43,10 @@ module meshAdminUi {
             };
             dispatcher.subscribe(dispatcher.events.explorerSearchTermChanged, searchTermHandler);
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(searchTermHandler));
+
+            if (editorService.getOpenNodeId()) {
+                editorService.open(editorService.getOpenNodeId());
+            }
         }
 
         public filterNodes = (node: INode) => {
