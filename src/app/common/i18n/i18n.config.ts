@@ -10,8 +10,7 @@ module meshAdminUi {
 
         i18nServiceProvider.setAvailableLanguages([
             'en',
-            'de',
-            'ar'
+            'de'
         ]);
 
         i18nServiceProvider.setDefaultLanguage('en');
