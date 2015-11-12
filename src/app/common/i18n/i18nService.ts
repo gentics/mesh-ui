@@ -62,8 +62,9 @@ module meshAdminUi {
                     private availableLangs: string[],
                     private defaultLang: string) {
 
-            this.currentLang = localStorageService.get('lang') || defaultLang;
             this.isoLangs = this.getIsoLangs();
+            let currentLang = localStorageService.get('lang') || defaultLang;
+            this.setCurrentLang(currentLang);
         }
 
 

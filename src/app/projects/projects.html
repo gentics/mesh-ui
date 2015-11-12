@@ -15,7 +15,7 @@
                         <mh-dropdown>
                             <mh-dropdown-label>
                                 <button class="btn btn-primary btn-small" aria-label="Create Tag">
-                                    Create Node
+                                    <span translate>CREATE_NODE</span>
                                 </button>
                             </mh-dropdown-label>
                             <mh-dropdown-body>
@@ -31,13 +31,13 @@
                     </div>
                     <div flex></div>
                     <button class="btn btn-primary btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.openSelected()">
-                        Edit
+                        <span translate>EDIT</span>
                     </button>
                     <button class="btn btn-primary btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.moveSelected()">
-                        Move
+                        <span translate>MOVE</span>
                     </button>
                     <button class="btn btn-warn btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.deleteSelected()">
-                        Delete
+                        <span translate>DELETE</span>
                     </button>
                 </div>
 

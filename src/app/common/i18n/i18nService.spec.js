@@ -41,10 +41,6 @@ describe('i18nService', function() {
             i18nService = $injector.invoke(provider.$get);
         }));
 
-        it('should return default language', function() {
-            expect(i18nService.getCurrentLang().code).toEqual('en');
-        });
-
         it('should set new language if valid code', function() {
             i18nService.setCurrentLang('de');
             expect(i18nService.getCurrentLang().code).toEqual('de');
