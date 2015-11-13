@@ -118,7 +118,7 @@ module meshAdminUi {
         },
         'CONTENT_MODIFIED_HOW_TO_PROCEED': {
             en: 'This content has been modified. How would you like to proceed?',
-            en: 'Dieser Inhalt wurde geändert. Wie möchten Sie vorgehen?'
+            de: 'Dieser Inhalt wurde geändert. Wie möchten Sie vorgehen?'
         },
         'SAVED_CHANGES': {
             en: 'Saved changes',
@@ -166,7 +166,7 @@ module meshAdminUi {
         },
         'ERR_CHECK_LOGIN_DETAILS': {
             en: 'Please check your login details and try again.',
-            en: 'Überprüfen Sie bitte Ihre Daten ein und versuchen Sie es erneut.'
+            de: 'Überprüfen Sie bitte Ihre Daten ein und versuchen Sie es erneut.'
         }
     };
 
