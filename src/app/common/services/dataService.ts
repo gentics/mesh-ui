@@ -437,11 +437,11 @@ module meshAdminUi {
         /**
          * Delete multiple nodes in sequence. Returns the node uuids that were deleted.
          */
-        public deleteNodes(projectName: string, nodes: INode[]|string[]): ng.IPromise<string[]> {
+        public deleteNodes(projectName: string, nodes: INode[]|string[], deleteAllLanguages: boolean = false): ng.IPromise<string[]> {
             let uuids = this.toUuids(nodes),
                 uuidsClone = uuids.slice(0);
 
-            return this.$q.when(this.deleteNext(projectName, uuids))
+            return this.$q.when(this.deleteNext(projectName, uuids, deleteAllLanguages))
                 .then(() => uuidsClone);
         }
 
@@ -451,13 +451,19 @@ module meshAdminUi {
          * complete before sending the next. When done in parallel, deleting more than a few
          * items at once causes server error.
          */
-        private deleteNext(projectName: string, uuids: string[] = []): ng.IPromise<any> {
+        private deleteNext(projectName: string, uuids: string[] = [], deleteAllLanguages?: boolean): ng.IPromise<any> {
             if (uuids.length === 0) {
                 return;
             } else {
-                var uuid = uuids.pop();
-                return this.deleteNode(projectName, uuid)
-                    .then(() => this.deleteNext(projectName, uuids));
+                let uuid = uuids.pop();
+                let deleteOperation;
+
+                if (deleteAllLanguages === true) {
+                    deleteOperation = () => this.deleteNode(projectName, uuid);
+                } else {
+                    deleteOperation = () => this.deleteNodeLanguage(projectName, uuid, this.i18nService.getCurrentLang().code);
+                }
+                return deleteOperation().then(() => this.deleteNext(projectName, uuids, deleteAllLanguages));
             }
         }
 

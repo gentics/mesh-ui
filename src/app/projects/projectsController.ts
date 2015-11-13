@@ -16,7 +16,7 @@ module meshAdminUi {
         constructor($scope: ng.IScope,
                     private explorerContentsListService: ExplorerContentsListService,
                     private editorService: EditorService,
-                    private confirmActionDialog: ConfirmActionDialog,
+                    private deleteNodeDialog: DeleteNodeDialog,
                     private dataService: DataService,
                     private contextService: ContextService,
                     private wipService: WipService,
@@ -89,8 +89,12 @@ module meshAdminUi {
         public deleteSelected() {
             let uuids = this.explorerContentsListService.getSelection();
 
-            this.showDeleteDialog()
-                .then(() => this.dataService.deleteNodes(this.projectName, uuids))
+            this.deleteNodeDialog.showMulti()
+                .then(result => {
+                    let deleteAllLanguages = !!result.deleteAllLangs;
+                    console.log('deleteAllLanguages', deleteAllLanguages);
+                    return this.dataService.deleteNodes(this.projectName, uuids, deleteAllLanguages);
+                })
                 .then(deletedUuids => {
                     deletedUuids.forEach(uuid => {
                         if (this.wipService.isOpen(this.wipType, uuid)) {
@@ -100,16 +104,6 @@ module meshAdminUi {
                     this.notifyService.toast('Deleted ' + deletedUuids.length + ' nodes')
                 })
                 .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
-        }
-
-        /**
-         * Display a confirmation dialog for the group delete action
-         */
-        private showDeleteDialog(): ng.IPromise<any> {
-            return this.confirmActionDialog.show({
-                title: 'Delete Content?',
-                message: 'Are you sure you want to delete the selected contents?'
-            });
         }
 
         public nodesSelected(): boolean {

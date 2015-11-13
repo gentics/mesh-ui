@@ -33,7 +33,7 @@ module meshAdminUi {
                     private $state: ng.ui.IStateService,
                     private $timeout: ng.ITimeoutService,
                     private $location: ng.ILocationService,
-                    private $mdDialog: ng.material.IDialogService,
+                    private deleteNodeDialog: DeleteNodeDialog,
                     private editorService: EditorService,
                     private dispatcher: Dispatcher,
                     private mu: MeshUtils,
@@ -178,7 +178,7 @@ module meshAdminUi {
          * Delete the open node, displaying a confirmation dialog first before making the API call.
          */
         public remove(node: INode) {
-            this.showDeleteDialog(node)
+            this.deleteNodeDialog.show(node)
                 .then((langs: string[]) => {
                     if (!this.isNew(node)) {
                         if (this.checkDeleteAll(langs, node)) {
@@ -213,21 +213,6 @@ module meshAdminUi {
             this.editorService.close();
             this.wipService.closeItem(this.wipType, node);
             this.$location.search('edit', null);
-        }
-
-        /**
-         * Display a confirmation dialog for the delete action.
-         */
-        public showDeleteDialog(node: INode) {
-            return this.$mdDialog.show({
-                controller: 'ConfirmDeleteDialogController',
-                controllerAs: 'vm',
-                bindToController: true,
-                templateUrl: 'projects/components/editorPane/confirmDeleteDialog.html',
-                locals: {
-                    node: node
-                }
-            });
         }
 
         /**
