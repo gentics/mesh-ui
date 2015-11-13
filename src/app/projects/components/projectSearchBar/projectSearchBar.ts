@@ -4,7 +4,7 @@ module meshAdminUi {
 
         public currentProject: IProject;
         public currentNode: INode;
-        public availableTags: ITag[] = [];
+        public availableTags: ITag[];
         public selectedTags: ITag[] = [];
         public searchTerm: string;
         public searchAll: boolean = false;
@@ -16,6 +16,8 @@ module meshAdminUi {
                     private contextService: ContextService,
                     private searchService: SearchService,
                     private dispatcher: Dispatcher) {
+
+            this.availableTags = this.availableTags || [];
 
             this.updateCurrentContext(contextService.getProject(), contextService.getCurrentNode());
             this.debouncedPublish = mu.debounce(() => this.publishSearchParameters(), 250);

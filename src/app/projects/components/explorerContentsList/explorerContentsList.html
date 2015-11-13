@@ -4,7 +4,7 @@
         <div ng-repeat="bundle in vm.contents" class="node-bundle">
             <div class="schema-name">{{:: bundle.schema.name }}</div>
 
-            <div dir-paginate="node in bundle.data | filter: vm.filterNodes | itemsPerPage: vm.itemsPerPage track by node.uuid"
+            <div dir-paginate="node in bundle.data | itemsPerPage: vm.itemsPerPage track by node.uuid"
                  pagination-id="'bdl_' + bundle.schema.uuid"
                  total-items="bundle._metainfo.totalCount"
                  class="bundle-item"

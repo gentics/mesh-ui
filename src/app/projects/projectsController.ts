@@ -92,7 +92,6 @@ module meshAdminUi {
             this.deleteNodeDialog.showMulti()
                 .then(result => {
                     let deleteAllLanguages = !!result.deleteAllLangs;
-                    console.log('deleteAllLanguages', deleteAllLanguages);
                     return this.dataService.deleteNodes(this.projectName, uuids, deleteAllLanguages);
                 })
                 .then(deletedUuids => {
