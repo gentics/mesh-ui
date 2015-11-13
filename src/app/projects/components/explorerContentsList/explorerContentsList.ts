@@ -34,6 +34,7 @@ module meshAdminUi {
                     private $state: ng.ui.IStateService,
                     private dispatcher: Dispatcher,
                     private mu: MeshUtils,
+                    private searchService: SearchService,
                     private explorerContentsListService: ExplorerContentsListService,
                     private contextService: ContextService,
                     private editorService: EditorService) {
@@ -73,7 +74,7 @@ module meshAdminUi {
         public openNode(node: INode, event: ng.IAngularEvent) {
             event.preventDefault();
             event.stopPropagation();
-            if (node.container) {
+            if (node.container || node.hasOwnProperty('displayName')) {
                 this.explorerContentsListService.clearSelection();
                 this.$state.go('projects.node', {
                     projectName: this.contextService.getProject().name, nodeId: node.uuid
@@ -92,6 +93,10 @@ module meshAdminUi {
 
         public getBinaryRepresentation(item) {
             return item.path;
+        }
+
+        public isGlobal(): boolean {
+            return this.searchService.getParams().searchAll;
         }
 
         public pageChanged(newPageNumber: number, schemaUuid: string) {

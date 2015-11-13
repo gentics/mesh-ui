@@ -7,12 +7,18 @@
             <div dir-paginate="node in bundle.data | filter: vm.filterNodes | itemsPerPage: vm.itemsPerPage track by node.uuid"
                  pagination-id="'bdl_' + bundle.schema.uuid"
                  total-items="bundle._metainfo.totalCount"
-                 class="bundle-item animate-item"
+                 class="bundle-item"
                  ng-class="{'selected' : vm.isSelected(node.uuid) }"
                  ng-click="vm.toggleSelect(node.uuid)"
                  layout="row">
 
                 <div flex>
+                    <span class="parent-node-title container"
+                          ng-if=":: vm.isGlobal() && node.parentNode.displayName"
+                          ng-click=":: vm.openNode(node.parentNode, $event)">
+                        {{:: node.parentNode.displayName}}
+                    </span>
+
                     <span ng-if=":: node.fileName && node.fileName !== ''" class="node-icon">
                         <i ng-class=":: { 'icon-insert-drive-file' : !vm.isImageNode(node), 'icon-image': vm.isImageNode(node) }"></i>
                     </span>
@@ -21,7 +27,9 @@
                     </span>
                     <span class="node-title"
                           ng-class="{'container': node.container}"
-                          ng-click="vm.openNode(node, $event)">{{:: node.fields[node.displayField] || 'Untitled (' + node.uuid + ')' }}</span>
+                          ng-click="vm.openNode(node, $event)">
+                        {{:: node.fields[node.displayField] || 'Untitled (' + node.uuid + ')' }}
+                    </span>
                 </div>
 
                 <div flex="50">

@@ -21,10 +21,13 @@ module meshAdminUi {
             this.debouncedPublish = mu.debounce(() => this.publishSearchParameters(), 250);
 
             const changeHandler = (event, project: IProject, node: INode) => {
+                this.searchAll = false;
+                this.searchTerm = '';
                 this.updateCurrentContext(project, node);
             };
             dispatcher.subscribe(dispatcher.events.contextChanged, changeHandler);
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(changeHandler));
+            $scope.$watch(() => this.searchAll, () => this.publishSearchParameters());
         }
 
         public getPlaceholderText() {
@@ -72,7 +75,7 @@ module meshAdminUi {
             let params: INodeSearchParams = {
                 searchTerm: this.searchTerm,
                 tagFilters: this.selectedTags,
-                searchAll: false
+                searchAll: this.searchAll
             };
             this.searchService.setParams(params);
             this.dispatcher.publish(this.dispatcher.events.explorerSearchParamsChanged, params);

@@ -23,12 +23,18 @@
       color: @color-dusty;
       margin-bottom: 10px;
     }
-    .node-title {
+    .node-title, .parent-node-title {
       .noselect();
       &.container {
         cursor: pointer;
         color: @color-primary;
       }
+    }
+    .parent-node-title:after {
+      content: '/';
+      margin: 0;
+      cursor: default;
+      color: @color-subdued;
     }
     .bundle-item {
       padding: 10px;

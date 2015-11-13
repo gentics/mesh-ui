@@ -294,7 +294,7 @@ module meshAdminUi {
         public getNodeBundles(projectName: string,
                               node: INode,
                               bundleParams: INodeBundleParams[],
-                              searchParams?: INodeSearchParams,
+                              searchParams: INodeSearchParams,
                               queryParams?: INodeListQueryParams): ng.IPromise<INodeBundleResponse[]> {
 
             const sortByIsContainer = (a: INodeBundleParams, b: INodeBundleParams): number => {
@@ -306,52 +306,26 @@ module meshAdminUi {
                 return 0;
             };
 
-            let promises = bundleParams
-                .sort(sortByIsContainer)
-                .map(bundleParam => {
-                    let query: ISearchQuery = {
-                        filter: {
-                            bool: {
-                                must: [
-                                    { "term": { "project.name": projectName.toLowerCase() } },
-                                    { "term": { "schema.uuid": bundleParam.schema.uuid } },
-                                    { "term": { "language": this.i18nService.getCurrentLang().code.toLowerCase() } }
-                                ]
-                            }
-                        },
-                        sort: [
-                            { "created": "asc" }
-                        ]
-                    };
+            let searchOperation;
 
-                    if (!searchParams.searchAll) {
-                        query.filter.bool.must.push({ "term": { "parentNode.uuid": node.uuid } });
-                    }
-
-                    if (searchParams.searchTerm && searchParams.searchTerm !== '') {
-                        let displayField = 'fields.' + bundleParam.schema.displayField;
-                        query.query = {
-                            /* "wildcard": { [displayField] : searchParams.searchTerm.toLowerCase() + '*' }*/
-                            "query_string": {
-                                "query": displayField + ":" + searchParams.searchTerm.toLowerCase() + '*'
-                            }
-                        };
-                    }
-
-                    if (searchParams.tagFilters && 0 < searchParams.tagFilters.length) {
-                        query.filter.bool.must.push({
-                            "terms" : {
-                                "tags.name" : searchParams.tagFilters.map((tag: ITag) => tag.fields.name.toLowerCase()),
-                                "execution" : "and"
-                            }
-                        });
-                    }
-
-                    let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });
+            if (searchParams.searchAll) {
+                const searchAll = () => {
+                    let query = this.createNodeSearchQuery(projectName, node, searchParams);
+                    let bundleQueryParams = angular.extend(queryParams, { page: bundleParams[0].page });
                     return this.searchNodes(query, bundleQueryParams);
-                });
+                };
+                searchOperation = [searchAll()];
+            } else {
+                searchOperation = bundleParams
+                    .sort(sortByIsContainer)
+                    .map(bundleParam => {
+                        let query = this.createNodeSearchQuery(projectName, node, searchParams, bundleParam);
+                        let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });
+                        return this.searchNodes(query, bundleQueryParams);
+                    });
+            }
 
-            return this.$q.all(promises)
+            return this.$q.all(searchOperation)
                 .then(results => {
                     return results
                         .map((listResponse: IListResponse<INode>, index: number) => {
@@ -359,6 +333,54 @@ module meshAdminUi {
                         })
                         .filter(bundle => 0 < bundle.data.length);
                 });
+        }
+
+        private createNodeSearchQuery(projectName: string,
+                                      node: INode,
+                                      searchParams: INodeSearchParams,
+                                      bundleParam?: INodeBundleParams): ISearchQuery {
+            let query: ISearchQuery = {
+                filter: {
+                    bool: {
+                        must: [
+                            { "term": { "project.name": projectName.toLowerCase() } },
+                            { "term": { "language": this.i18nService.getCurrentLang().code.toLowerCase() } }
+                        ]
+                    }
+                },
+                sort: [
+                    { "created": "asc" }
+                ]
+            };
+
+            if (bundleParam && bundleParam.schema) {
+                query.filter.bool.must.push({ "term": { "schema.uuid": bundleParam.schema.uuid } });
+            }
+
+            if (!searchParams.searchAll) {
+                query.filter.bool.must.push({ "term": { "parentNode.uuid": node.uuid } });
+            }
+
+            if (searchParams.searchTerm && searchParams.searchTerm !== '') {
+                //let displayField = 'fields.' + bundleParam.schema.displayField;
+                query.query = {
+                    /* "wildcard": { [displayField] : searchParams.searchTerm.toLowerCase() + '*' }*/
+                    "query_string": {
+                        "query": 'displayField.value' + ":" + searchParams.searchTerm.toLowerCase() + '*'
+                    }
+                };
+            }
+
+            if (searchParams.tagFilters && 0 < searchParams.tagFilters.length) {
+                query.filter.bool.must.push({
+                    "terms" : {
+                        "tags.name" : searchParams.tagFilters.map((tag: ITag) => tag.fields.name.toLowerCase()),
+                        "execution" : "and"
+                    }
+                });
+            }
+
+            return query;
         }
 
         public searchNodes(query : ISearchQuery, queryParams?: INodeListQueryParams): ng.IPromise<IListResponse<INode>>  {

@@ -6,6 +6,7 @@ module meshAdminUi {
 
         constructor($scope: ng.IScope,
                     private dataService: DataService,
+                    private searchService: SearchService,
                     private dispatcher: Dispatcher) {
 
             const changeHandler = (event, project: IProject, node: INode) => {
@@ -14,6 +15,10 @@ module meshAdminUi {
 
             dispatcher.subscribe(dispatcher.events.contextChanged, changeHandler);
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(changeHandler))
+        }
+
+        public isGlobal(): boolean {
+            return this.searchService.getParams().searchAll;
         }
 
         /**

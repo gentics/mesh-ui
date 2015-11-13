@@ -4,7 +4,13 @@
             <span>
                 <a href="" ui-sref="projectsList" ng-click="vm.clearProject()">Projects</a>
             </span>
-        </li><li ng-repeat="label in vm.breadcrumbs" ng-if="label.name">
+        </li>
+        <li ng-if="vm.projectName && vm.isGlobal()">
+            <span>
+                {{ vm.projectName }} - Global
+            </span>
+        </li>
+        <li ng-if="!vm.isGlobal() && label.name" ng-repeat="label in vm.breadcrumbs">
             <span>
                 <a href="" ui-sref="projects.node({ projectName: vm.projectName, nodeId: label.uuid })">{{ label.name }}</a>
             </span>
