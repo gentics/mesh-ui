@@ -15,11 +15,6 @@ module meshAdminUi {
         data: INode[];
     }
 
-    export interface INodeSearchParams {
-        searchTerm?: string;
-        tags?: string[]
-    }
-
     export interface ISearchQuery {
         sort? : any;
         query? : any;
@@ -319,7 +314,6 @@ module meshAdminUi {
                             bool: {
                                 must: [
                                     { "term": { "project.name": projectName.toLowerCase() } },
-                                    { "term": { "parentNode.uuid": node.uuid } },
                                     { "term": { "schema.uuid": bundleParam.schema.uuid } },
                                     { "term": { "language": this.i18nService.getCurrentLang().code.toLowerCase() } }
                                 ]
@@ -330,7 +324,11 @@ module meshAdminUi {
                         ]
                     };
 
-                    if (searchParams.searchTerm) {
+                    if (!searchParams.searchAll) {
+                        query.filter.bool.must.push({ "term": { "parentNode.uuid": node.uuid } });
+                    }
+
+                    if (searchParams.searchTerm && searchParams.searchTerm !== '') {
                         let displayField = 'fields.' + bundleParam.schema.displayField;
                         query.query = {
                             /* "wildcard": { [displayField] : searchParams.searchTerm.toLowerCase() + '*' }*/
@@ -338,6 +336,15 @@ module meshAdminUi {
                                 "query": displayField + ":" + searchParams.searchTerm.toLowerCase() + '*'
                             }
                         };
+                    }
+
+                    if (searchParams.tagFilters && 0 < searchParams.tagFilters.length) {
+                        query.filter.bool.must.push({
+                            "terms" : {
+                                "tags.name" : searchParams.tagFilters.map((tag: ITag) => tag.fields.name),
+                                "execution" : "and"
+                            }
+                        });
                     }
 
                     let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });

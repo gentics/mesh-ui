@@ -7,6 +7,7 @@ module meshAdminUi {
 
         public mobileEditView: boolean = false;
         private schemas: ISchema[];
+        private tags: ITag[];
         private createPermission: boolean;
         private contents = [];
         private projectName: string;
@@ -26,6 +27,7 @@ module meshAdminUi {
             this.projectName = contextService.getProject().name;
             this.createPermission = -1 < contextService.getCurrentNode().permissions.indexOf('create');
             this.populateSchemas();
+            this.populateTags();
 
             const nodeOpenedHandler = () => {
                 this.mobileEditView = true;
@@ -49,6 +51,11 @@ module meshAdminUi {
         public populateSchemas() {
             this.dataService.getProjectSchemas(this.projectName)
                 .then(result => this.schemas = result.data);
+        }
+
+        public populateTags() {
+            this.dataService.getTags(this.projectName)
+                .then(result => this.tags = result.data);
         }
 
         public createNewNode(schemaUuid: string) {

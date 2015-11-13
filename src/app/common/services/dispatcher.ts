@@ -12,7 +12,7 @@ module meshAdminUi {
             contextChanged: 'mesh:contextChanged',
             editorServiceNodeOpened: 'mesh:editorServiceNodeOpened',
             editorServiceNodeClosed: 'mesh:editorServiceNodeClosed',
-            explorerSearchTermChanged: 'mesh:explorerSearchTermChanged',
+            explorerSearchParamsChanged: 'mesh:explorerSearchParamsChanged',
             explorerContentsChanged: 'mesh:explorerContentsChanged',
             explorerNodeTagsChanged: 'mesh:explorerNodeTagsChanged',
             languageChanged: 'mesh:languageChanged'

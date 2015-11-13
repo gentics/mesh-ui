@@ -4,18 +4,37 @@ module meshAdminUi {
 
         public currentProject: IProject;
         public currentNode: INode;
+        public availableTags: ITag[] = [];
+        public selectedTags: ITag[] = [];
         public searchTerm: string;
+        public searchAll: boolean = false;
+        private debouncedPublish: Function;
 
         constructor($scope: ng.IScope,
+                    private i18n: I18nFilter,
+                    private mu: MeshUtils,
                     private contextService: ContextService,
+                    private searchService: SearchService,
                     private dispatcher: Dispatcher) {
+
             this.updateCurrentContext(contextService.getProject(), contextService.getCurrentNode());
+            this.debouncedPublish = mu.debounce(() => this.publishSearchParameters(), 250);
 
             const changeHandler = (event, project: IProject, node: INode) => {
                 this.updateCurrentContext(project, node);
             };
             dispatcher.subscribe(dispatcher.events.contextChanged, changeHandler);
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(changeHandler));
+        }
+
+        public getPlaceholderText() {
+            let text = this.i18n('SEARCH_IN') + ' ';
+            if (this.searchAll) {
+                text += this.i18n('WHOLE_PROJECT');
+            } else {
+                text += this.currentNode.fields[this.currentNode.displayField] || this.currentProject.name;
+            }
+            return text + ', # to filter by tag';
         }
 
         /**
@@ -26,12 +45,48 @@ module meshAdminUi {
             this.currentNode = currentNode;
         }
 
-        public updateSearchTerm(event) {
-            this.dispatcher.publish(this.dispatcher.events.explorerSearchTermChanged, event.target.value);
+        public searchTextChanged(term) {
+            if (!/^#/.test(term)) {
+                this.debouncedPublish();
+            }
         }
 
-        public doSearch(term) {
+        public addTagFilter(tag: ITag) {
+            if (!tag || !tag.uuid) {
+                return;
+            }
+            if (this.selectedTags.indexOf(tag) === -1) {
+                this.selectedTags.push(tag);
+                this.searchTerm = '';
+                this.publishSearchParameters();
+            }
+        }
 
+        public removeTagFilter(tag: ITag) {
+            let index = this.selectedTags.indexOf(tag);
+            this.selectedTags.splice(index, 1);
+            this.publishSearchParameters();
+        }
+
+        private publishSearchParameters() {
+            let params: INodeSearchParams = {
+                searchTerm: this.searchTerm,
+                tagFilters: this.selectedTags,
+                searchAll: false
+            };
+            this.searchService.setParams(params);
+            this.dispatcher.publish(this.dispatcher.events.explorerSearchParamsChanged, params);
+        }
+
+        public getTagMatches(query) {
+            if (/^#/.test(query)) {
+                let tagQuery = query.match(/^#(\S*)/)[1];
+                if (/^#\b/.test(tagQuery)) {
+                    return this.availableTags;
+                } else {
+                    return this.availableTags.filter((tag: ITag) => -1 < tag.fields.name.indexOf(tagQuery));
+                }
+            }
         }
     }
 
@@ -45,7 +100,10 @@ module meshAdminUi {
             templateUrl: 'projects/components/projectSearchBar/projectSearchBar.html',
             controller: 'projectSearchBarController',
             controllerAs: 'vm',
-            scope: {}
+            bindToController: true,
+            scope: {
+                availableTags: '='
+            }
         };
     }
 

@@ -9,7 +9,10 @@
 
         <div layout="row" >
             <div flex ng-style="explorerPaneStyle" class="explorer-pane">
-                <project-search-bar flex></project-search-bar>
+
+                <project-search-bar flex
+                                    available-tags="vm.tags"></project-search-bar>
+
                 <div class="actions-bar" layout="row" layout-align="end">
                     <div>
                         <mh-dropdown>
@@ -48,9 +51,13 @@
             <resizer></resizer>
 
             <div flex class="editor-container">
+
                 <wip-tabs></wip-tabs>
+
                 <div fit-to-viewport style="overflow-y: auto">
+
                     <editor-pane></editor-pane>
+
                 </div>
             </div>
         </div>

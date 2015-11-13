@@ -38,10 +38,10 @@ module meshAdminUi {
                     private contextService: ContextService,
                     private editorService: EditorService) {
 
-            const searchTermHandler = (event, term: string) => {
-                this.searchQuery = term;
+            const searchTermHandler = (event, params: INodeSearchParams) => {
+                this.searchQuery = params.searchTerm;
             };
-            dispatcher.subscribe(dispatcher.events.explorerSearchTermChanged, searchTermHandler);
+            dispatcher.subscribe(dispatcher.events.explorerSearchParamsChanged, searchTermHandler);
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(searchTermHandler));
 
             if (editorService.getOpenNodeId()) {

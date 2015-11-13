@@ -10,12 +10,12 @@ module meshAdminUi {
         private contents: INodeBundleResponse[] = [];
         private childrenSchemas: ISchema[] = [];
         private projectName: string;
-        private searchParams: INodeSearchParams = {};
         public tagsArray: { [nodeUuid: string]: ITag[] } = {};
 
         constructor(private $scope: ng.IScope,
                     private $q: ng.IQService,
                     private dataService: DataService,
+                    private searchService: SearchService,
                     private mu: MeshUtils,
                     private contextService: ContextService,
                     private dispatcher: Dispatcher,
@@ -43,15 +43,12 @@ module meshAdminUi {
                 })
             };
 
-            const searchTermHandler = (event, term: string) => {
-                this.searchParams.searchTerm = term;
-                mu.debounce(() => this.populateChildNodes(), 250)();
-            };
+            const searchParamsHandler = () => this.populateChildNodes();
 
-            dispatcher.subscribe(dispatcher.events.explorerSearchTermChanged, searchTermHandler);
+            dispatcher.subscribe(dispatcher.events.explorerSearchParamsChanged, searchParamsHandler);
             dispatcher.subscribe(dispatcher.events.explorerContentsChanged, updateContents);
             dispatcher.subscribe(dispatcher.events.explorerNodeTagsChanged, updateNode);
-            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents, searchTermHandler, updateNode));
+            $scope.$on('$destroy', () => dispatcher.unsubscribeAll(updateContents, searchParamsHandler, updateNode));
 
             this.getChildrenSchemas()
                 .then(() => this.populateChildNodes());
@@ -89,7 +86,8 @@ module meshAdminUi {
          * Fill the vm with the child children of the current node.
          */
         public populateChildNodes(): ng.IPromise<any> {
-            var projectName = this.contextService.getProject().name,
+            let projectName = this.contextService.getProject().name,
+                searchParams = this.searchService.getParams(),
                 queryParams: INodeListQueryParams = {
                     perPage: this.itemsPerPage
                 };
@@ -100,20 +98,24 @@ module meshAdminUi {
                     page: 1
                 };
             });
-            return this.dataService.getNodeBundles(projectName, this.currentNode, bundleParams, this.searchParams, queryParams)
+            return this.dataService.getNodeBundles(projectName, this.currentNode, bundleParams, searchParams, queryParams)
                 .then(response => {
                     this.contents = response;
                     this.populateTagsArray(response);
                 });
         }
 
+        /**
+         * Reload a single bundle with a new page of data and update the contents list.
+         */
         public pageChanged(newPageNumber: number, schemaUuid: string) {
             let bundleParams: INodeBundleParams[] = [{
                 schema: this.childrenSchemas.filter(schema => schema.uuid === schemaUuid)[0],
                 page: newPageNumber
             }];
+            let searchParams = this.searchService.getParams();
 
-            return this.dataService.getNodeBundles(this.projectName, this.currentNode, bundleParams, this.searchParams, {
+            return this.dataService.getNodeBundles(this.projectName, this.currentNode, bundleParams, searchParams, {
                 perPage: this.itemsPerPage
             }).then(result => {
                 var index = this.contents.map(bundle => bundle.schema.uuid).indexOf(schemaUuid);

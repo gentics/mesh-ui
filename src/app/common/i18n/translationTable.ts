@@ -24,6 +24,10 @@ module meshAdminUi {
         },
 
         /* Projects */
+        'WHOLE_PROJECT': {
+            en: 'whole project',
+            de: 'ganze Projekt'
+        },
         'PROJECTS': {
             en: 'Projects',
             de: 'Projekte'
@@ -78,9 +82,9 @@ module meshAdminUi {
         },
 
         /* Other */
-        'SEARCH': {
-            en: 'Search',
-            de: 'Suche'
+        'SEARCH_IN': {
+            en: 'Search in',
+            de: 'Suche in'
         },
         'UPDATE': {
             en: 'Update',
