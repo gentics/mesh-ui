@@ -21,7 +21,7 @@
                     </span>
                     <span class="node-title"
                           ng-class="{'container': node.container}"
-                          ng-click="vm.openNode(node, $event)">{{:: node.fields[node.displayField] }}</span>
+                          ng-click="vm.openNode(node, $event)">{{:: node.fields[node.displayField] || 'Untitled (' + node.uuid + ')' }}</span>
                 </div>
 
                 <div flex="50">
