@@ -648,9 +648,11 @@ module meshAdminUi {
         }
 
         public addSchemaToProject(schemaUuid: string, projectUuid: string): ng.IPromise<any> {
+            this.clearCache('schemas');
             return this.meshPut('schemas/' + schemaUuid + '/projects/' + projectUuid, {});
         }
         public removeSchemaFromProject(schemaUuid: string, projectUuid: string): ng.IPromise<any> {
+            this.clearCache('schemas');
             return this.meshDelete('schemas/' + schemaUuid + '/projects/' + projectUuid);
         }
 

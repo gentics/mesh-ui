@@ -28,6 +28,9 @@
                                         ng-click="vm.createNewNode(schema.uuid)">
                                         {{::schema.name}}
                                     </li>
+                                    <li class="schema-warning" ng-if="vm.schemas.length === 0">
+                                        No schemas are enabled for this project.
+                                    </li>
                                 </ul>
                             </mh-dropdown-body>
                         </mh-dropdown>
