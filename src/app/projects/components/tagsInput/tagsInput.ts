@@ -69,11 +69,12 @@ module meshAdminUi {
             }
         }
 
-        public querySearch (query) {
+        public querySearch (query: string) {
             if (query === '') {
                 return this.tags;
             } else {
-                return this.tags.filter((tag: ITag) => -1 < tag.fields.name.indexOf(query));
+                const filterName = (tag: ITag) => -1 < tag.fields.name.toLowerCase().indexOf(query.toLowerCase());
+                return this.tags.filter(filterName);
             }
         }
 

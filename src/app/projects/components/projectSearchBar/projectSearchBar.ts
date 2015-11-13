@@ -81,10 +81,11 @@ module meshAdminUi {
         public getTagMatches(query) {
             if (/^#/.test(query)) {
                 let tagQuery = query.match(/^#(\S*)/)[1];
-                if (/^#\b/.test(tagQuery)) {
+                if (tagQuery === '') {
                     return this.availableTags;
                 } else {
-                    return this.availableTags.filter((tag: ITag) => -1 < tag.fields.name.indexOf(tagQuery));
+                    const filterName = (tag: ITag) => -1 < tag.fields.name.toLowerCase().indexOf(tagQuery);
+                    return this.availableTags.filter(filterName);
                 }
             }
         }

@@ -341,7 +341,7 @@ module meshAdminUi {
                     if (searchParams.tagFilters && 0 < searchParams.tagFilters.length) {
                         query.filter.bool.must.push({
                             "terms" : {
-                                "tags.name" : searchParams.tagFilters.map((tag: ITag) => tag.fields.name),
+                                "tags.name" : searchParams.tagFilters.map((tag: ITag) => tag.fields.name.toLowerCase()),
                                 "execution" : "and"
                             }
                         });
