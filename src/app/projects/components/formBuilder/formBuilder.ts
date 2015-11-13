@@ -34,10 +34,13 @@ module meshAdminUi {
         private fields: INodeFields;
         private schema: ISchemaFieldDefinition[];
         private onChange: Function;
-        private perms: string[] = [];
+        private perms: string[];
         private displayField: string;
 
         constructor($scope: ng.IScope, private mu: MeshUtils) {
+            if (!this.perms) {
+                this.perms = [];
+            }
             $scope.$watch(() => this.schema, val => {
                 if (val) {
                     this.nodeFieldModelCollection = this.createNodeFieldsModel(this.fields, this.schema);
@@ -65,7 +68,6 @@ module meshAdminUi {
          */
         private makeUpdateFunction(path): (value: any) => any {
             return (value) => {
-                //console.log('updating', path, 'with value', value);
                 this.onChange();
                 this.updateAtPath(this.fields, path, value);
             }
