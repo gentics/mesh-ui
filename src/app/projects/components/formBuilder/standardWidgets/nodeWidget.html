@@ -1,6 +1,11 @@
 <div class="editor-widget node-container">
     <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
+
+    <div class="node-ref-thumb" ng-if="vm.fieldModel.value.binaryProperties">
+        <binary-thumbnail src-node="vm.fieldModel.value"></binary-thumbnail>
+    </div>
+
     <span ng-show="vm.fieldModel.value.uuid"><i class="icon-link"></i></span>
-    <span>{{ vm.fieldModel.value.uuid || 'None selected' }}</span> |
+    <span>{{ vm.fieldModel.value.fields[vm.fieldModel.value.displayField] || vm.fieldModel.value.uuid || 'None selected' }}</span> |
     <span class="select-link"><a href="" ng-click="vm.showDialog($event)">Select node...</a></span>
 </div>

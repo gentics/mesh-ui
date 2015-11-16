@@ -19,6 +19,17 @@
     }
   }
 
+  .node-name {
+    .noselect();
+    &.link {
+      cursor: pointer;
+      color: @color-primary;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
   .node-selector-table {
     td:first-child {
       width: 50px;
@@ -26,6 +37,7 @@
   }
 
   .grid-item {
+    text-align: center;
     width: 150px;
     height: 150px;
     overflow: hidden;

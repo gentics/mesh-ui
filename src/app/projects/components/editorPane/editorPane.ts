@@ -56,7 +56,6 @@ module meshAdminUi {
                 this.binaryFile = undefined;
 
                 this.getNodeData(schemaUuid, parentNodeUuid)
-                    .then(data => this.populateSchema(data))
                     .then(() => this.isLoaded = true)
                     .then(() => $location.search('edit', this.node.uuid));
             };
@@ -84,7 +83,8 @@ module meshAdminUi {
          * Save the changes back to the server.
          */
         public persist(originalNode: INode): ng.IPromise<any> {
-            return this.dataService.persistNode(this.projectName, originalNode, this.binaryFile)
+            let expandArgs = this.createExpandParam(this.schema);
+            return this.dataService.persistNode(this.projectName, originalNode, this.binaryFile, expandArgs)
                 .then((node: INode) => {
                     if (this.isNew(originalNode)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
@@ -241,6 +241,9 @@ module meshAdminUi {
          */
         private getNodeData(schemaUuid?: string, parentNodeUuid?: string): ng.IPromise<any> {
 
+            let tempNode: INode,
+                tempSchema: ISchema;
+
             if (this.currentNodeId) {
                 // loading existing node
                 var wipContent = this.wipService.getItem(this.wipType, this.currentNodeId);
@@ -249,14 +252,22 @@ module meshAdminUi {
                     return this.populateFromWip(wipContent);
                 } else {
                     return this.dataService.getNode(this.projectName, this.currentNodeId)
+                        .then(node => {
+                            tempNode = node;
+                            return this.dataService.getSchema(tempNode.schema.uuid);
+                        })
+                        .then(schema => {
+                            tempSchema = schema;
+                            return this.expandNodeReferenceFields(schema, tempNode)
+                        })
                         .then(data => {
                             this.node = data;
+                            this.schema = tempSchema;
                             this.tags = this.mu.nodeTagsObjectToArray(data.tags);
                             this.wipService.openItem(this.wipType, data, {
                                 projectName: this.projectName,
                                 selectedLangs: this.selectedLangs
                             });
-                            return this.dataService.getSchema(data.schema.uuid);
                         });
                 }
             } else if (schemaUuid) {
@@ -273,9 +284,29 @@ module meshAdminUi {
             }
         }
 
+        /**
+         * Expand any node reference fields and put the data in the field model.
+         */
+        private expandNodeReferenceFields(schema: ISchema, node: INode): ng.IPromise<INode>|INode {
+            let expandArgs = this.createExpandParam(schema);
+
+            if (expandArgs.expand !== '') {
+                return this.dataService.getNode(this.projectName, node.uuid, expandArgs);
+            } else {
+                return node;
+            }
+        }
+
+        private createExpandParam(schema: ISchema): INodeQueryParams {
+            let expandArgs = schema.fields.filter((field: ISchemaFieldDefinition) => {
+                return field.type === 'node';
+            }).map(field => field.name);
+            return {expand: expandArgs.join(',')};
+        }
+
         public getBinaryFileUrl(): string {
             if (this.node && typeof this.node.created !== 'undefined') {
-                return meshConfig.apiUrl + this.projectName + '/nodes/' + this.node.uuid + '/bin';
+                return this.mu.getBinaryFileUrl(this.projectName, this.node);
             } else {
                 return '';
             }
@@ -283,16 +314,15 @@ module meshAdminUi {
 
         /**
          * Populate the vm based on the node item retrieved from the wipService.
-         * @param {Object} wipContent
-         * @returns {ng.IPromise}
          */
-        private populateFromWip(wipContent) {
+        private populateFromWip(wipContent): ng.IPromise<any> {
             var wipMetadata = this.wipService.getMetadata(this.wipType, wipContent.uuid);
             this.node = wipContent;
             this.tags = this.mu.nodeTagsObjectToArray(wipContent.tags);
             this.contentModified = this.wipService.isModified(this.wipType, this.node);
             this.selectedLangs = wipMetadata.selectedLangs;
-            return this.dataService.getSchema(this.node.schema.uuid);
+            return this.dataService.getSchema(this.node.schema.uuid)
+                .then(schema => this.schema = schema);
         }
 
         /**
@@ -311,14 +341,6 @@ module meshAdminUi {
                 },
                 fields: {}
             };
-        }
-
-        /**
-         * Load the schema data into the this.
-         * @param {Object} data
-         */
-        private populateSchema(data) {
-            this.schema = data;
         }
 
         /**

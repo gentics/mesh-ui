@@ -54,6 +54,7 @@ declare module meshAdminUi {
             mimeType: string;
             sha512sum: string;
         };
+        fileName?: string;
         displayField?: string;
         language?: string;
         published?: boolean;

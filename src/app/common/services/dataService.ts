@@ -21,8 +21,12 @@ module meshAdminUi {
         filter? : any;
     }
 
-    export interface INodeListQueryParams {
+    export interface INodeQueryParams {
         expand?: string;
+        lang?: string;
+    }
+
+    export interface INodeListQueryParams extends INodeQueryParams {
         page?: number;
         perPage?: number;
         orderBy?: string;
@@ -390,7 +394,7 @@ module meshAdminUi {
         /**
          * Get a single node.
          */
-        public getNode(projectName, uuid, queryParams?):ng.IPromise<any> {
+        public getNode(projectName, uuid, queryParams?: INodeQueryParams):ng.IPromise<any> {
             queryParams = queryParams || {};
             queryParams.lang = this.i18nService.languages.map(lang => lang.code).join(',');
             return this.meshGet(projectName + '/nodes/' + uuid, queryParams);
@@ -399,14 +403,14 @@ module meshAdminUi {
         /**
          * Create or update the node object on the server.
          */
-        public persistNode(projectName: string, node: INode, binaryFile?: File): ng.IPromise<INode> {
+        public persistNode(projectName: string, node: INode, binaryFile?: File, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             let isNew = !node.hasOwnProperty('created');
             this.clearCache('nodes');
-            return isNew ? this.createNode(projectName, node, binaryFile) : this.updateNode(projectName, node, binaryFile);
+            return isNew ? this.createNode(projectName, node, binaryFile, queryParams) : this.updateNode(projectName, node, binaryFile, queryParams);
 
         }
-        private createNode(projectName: string, node: INode, binaryFile?: File): ng.IPromise<INode> {
-            return this.meshPost(projectName + '/nodes', node)
+        private createNode(projectName: string, node: INode, binaryFile?: File, queryParams?: INodeQueryParams): ng.IPromise<INode> {
+            return this.meshPost(projectName + '/nodes', node, queryParams)
                 .then(newNode => {
                     if (typeof binaryFile !== 'undefined') {
                         return this.uploadBinaryFile(projectName, newNode, binaryFile, 'POST');
@@ -415,8 +419,8 @@ module meshAdminUi {
                     }
                 });
         }
-        private updateNode(projectName: string, node: INode, binaryFile?: File): ng.IPromise<INode> {
-            return this.meshPut(projectName + '/nodes/' + node.uuid, node)
+        private updateNode(projectName: string, node: INode, binaryFile?: File, queryParams?: INodeQueryParams): ng.IPromise<INode> {
+            return this.meshPut(projectName + '/nodes/' + node.uuid, node, queryParams)
                 .then(newNode => {
                     if (typeof binaryFile !== 'undefined') {
                         return this.uploadBinaryFile(projectName, newNode, binaryFile, 'PUT');

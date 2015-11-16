@@ -1,25 +1,8 @@
 <div class="binary-file-preview">
     <div ng-if="sourceUrl && sourceUrl !== ''">
-        <img ng-if="isImageNode()" ng-src="{{ sourceUrl }}" />
-
-        <div ng-if="!isImageNode()" class="non-image-preview">
-            <div class="file-preview">
-                <i class="icon-insert-drive-file"></i>
-                {{ getFileExt(node.fileName) }}
-            </div>
-            {{ node.fileName }}
-        </div>
-
+        <binary-thumbnail src-node="node"></binary-thumbnail>
     </div>
     <div ng-if="!sourceUrl && sourceFile">
-        <img ng-if="isImageFile()" ngf-src="!sourceFile.$error && sourceFile">
-
-        <div ng-if="!isImageFile()" class="non-image-preview">
-            <div class="file-preview">
-                <i class="icon-insert-drive-file"></i>
-                {{ getFileExt(sourceFile.name) }}
-            </div>
-            {{ sourceFile.name }}
-        </div>
+        <binary-thumbnail src-file="sourceFile"></binary-thumbnail>
     </div>
 </div>

@@ -61,6 +61,14 @@ module meshAdminUi {
             return safeColors[value % safeColors.length];
         }
 
+        public  getBinaryFileUrl(projectName: string, node: INode) {
+            if (node.binaryProperties) {
+                return meshConfig.apiUrl + projectName + '/nodes/' + node.uuid + '/bin';
+            } else {
+                return '';
+            }
+        }
+
         /**
          * Takes a node and returns true is that node is a binary node and the associated binary is an image file.
          */

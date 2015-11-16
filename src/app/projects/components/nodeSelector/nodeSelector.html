@@ -4,15 +4,15 @@
         <ul>
             <li ng-repeat="label in vm.breadcrumbs">
                <span>
-                    <a href="" ng-click="vm.openNode(label.uuid, $event)">{{ label.name }}</a>
+                    <a href="" ng-click="vm.openNode(label, $event)">{{ label.name }}</a>
                </span>
             </li>
         </ul>
     </div>
 
     <md-input-container>
-      <label>Filter</label>
-      <input type="text" ng-model="vm.q">
+        <label>Filter</label>
+        <input type="text" ng-model="vm.q">
     </md-input-container>
 
     <div layout="row">
@@ -29,7 +29,11 @@
                                      ng-checked="vm.isSelected(node)"
                                      aria-label="Select All"></md-checkbox>
                     </td>
-                    <td><a href="" ng-click="vm.openNode(node.uuid, $event)">{{:: node.fields[node.displayField] }}</a></td>
+                    <td>
+                        <span ng-click="vm.openNode(node, $event)" class="node-name" ng-class="::{ 'link': node.container }">
+                            {{:: node.fields[node.displayField] }}
+                        </span>
+                    </td>
                     <td>{{:: node.schema.name }}</td>
                 </tr>
                 </tbody>
@@ -38,11 +42,15 @@
             <div class="node-grid" ng-if="vm.displayMode === 'grid'" layout="row" layout-wrap>
                 <div class="grid-item"
                      layout="column" layout-align="space-around center"
-                     ng-repeat="content in vm.nodes track by content.uuid"
-                     ng-class="{ selected: vm.isSelected(content) }"
-                     ng-click="vm.toggleSelect(content)">
-                    <img ng-src="{{:: content.path }}">
-                    <div>{{:: content.fields[content.displayField] }}</div>
+                     ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid"
+                     ng-class="{ selected: vm.isSelected(node) }"
+                     ng-click="vm.toggleSelect(node)">
+                    <binary-thumbnail src-node="node"></binary-thumbnail>
+                    <div>
+                        <span ng-click="vm.openNode(node, $event)"  class="node-name" ng-class="::{ 'link': node.container }">
+                            {{:: node.fields[node.displayField] }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

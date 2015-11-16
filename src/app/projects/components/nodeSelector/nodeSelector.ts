@@ -65,7 +65,7 @@ module meshAdminUi {
         private selectedNodesHash;
         private currentProject: IProject;
         private currentNode: INode;
-        private selectedNodes;
+        private selectedNodes: INode[];
         private multiSelect: boolean;
         private allowedSchemas: string[];
         private containersOnly: boolean;
@@ -124,13 +124,15 @@ module meshAdminUi {
             }
         }
 
-        public openNode(nodeUuid: string, event: ng.IAngularEvent) {
-            event.stopPropagation();
-            this.dataService.getNode(this.currentProject.name, nodeUuid)
-                .then(node => {
-                    this.currentNode = node;
-                    this.populateContents();
-                });
+        public openNode(node: INode, event: ng.IAngularEvent) {
+            if (node.container !== false) {
+                event.stopPropagation();
+                this.dataService.getNode(this.currentProject.name, node.uuid)
+                    .then(node => {
+                        this.currentNode = node;
+                        this.populateContents();
+                    });
+            }
         }
 
         private populateContents() {
@@ -166,7 +168,7 @@ module meshAdminUi {
         }
 
         private isAllowedSchemaOrFolder(node: INode) {
-            if (!this.isAllowedSchema(node)) {
+            if (!this.isAllowedSchema(node) && !node.container) {
                 return false;
             }
             if (this.containersOnly) {

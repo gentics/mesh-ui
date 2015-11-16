@@ -484,7 +484,11 @@ module meshAdminUi {
         }
 
         public showDialog(event: ng.IAngularEvent) {
+            //let displayMode = this.fieldModel.value && this.fieldModel.value.hasOwnProperty('binaryProperties') ? 'grid' : 'list';
+            // TODO: smarter way of deciding whether to use the grid or list view.
+            let displayMode = 'grid';
             var options = {
+                displayMode: displayMode,
                 allow: this.fieldModel.allow || []
             };
             event.preventDefault();
@@ -497,11 +501,13 @@ module meshAdminUi {
         }
 
         private maskNode(node: INode) {
-            return {
+           /* return {
                 uuid: node.uuid,
                 displayField: node.displayField,
                 fields: node.fields
-            };
+            };*/
+            // TODO: figure out the reason for this method, and delete if possible.
+            return node;
         }
     }
 
