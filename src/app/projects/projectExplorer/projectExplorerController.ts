@@ -37,9 +37,11 @@ module meshAdminUi {
                 dataService.getNode(contextService.getProject().name, nodeUuid)
                 .then(node => {
                     let bundleIndex = this.contents.map(bundle => bundle.schema.uuid).indexOf(node.schema.uuid);
-                    let nodeIndex = this.contents[bundleIndex].data.map(node => node.uuid).indexOf(node.uuid);
-                    this.contents[bundleIndex].data[nodeIndex] = node;
-                    this.tagsArray[node.uuid] = mu.nodeTagsObjectToArray(node.tags);
+                    if (-1 < bundleIndex) {
+                        let nodeIndex = this.contents[bundleIndex].data.map(node => node.uuid).indexOf(node.uuid);
+                        this.contents[bundleIndex].data[nodeIndex] = node;
+                        this.tagsArray[node.uuid] = mu.nodeTagsObjectToArray(node.tags);
+                    }
                 })
             };
 
