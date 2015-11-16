@@ -16,9 +16,9 @@
 	</properties>
 
 	<scm>
-		<connection>scm:git:git@github.com:gentics/mesh.git</connection>
-		<developerConnection>scm:git:git@github.com:gentics/mesh.git</developerConnection>
-		<url>https://github.com/gentics/mesh</url>
+		<connection>scm:git:git@github.com:gentics/mesh-admin-ui.git</connection>
+		<developerConnection>scm:git:git@github.com:gentics/mesh-admin-ui.git</developerConnection>
+		<url>https://github.com/gentics/mesh-admin-ui</url>
 	  <tag>HEAD</tag>
   </scm>
 
