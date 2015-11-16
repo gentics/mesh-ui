@@ -17,6 +17,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<scm>
+		<connection>scm:git:git@github.com:gentics/mesh.git</connection>
+		<developerConnection>scm:git:git@github.com:gentics/mesh.git</developerConnection>
+		<url>https://github.com/gentics/mesh</url>
+	</scm>
+
 	<build>
 		<plugins>
 			<plugin>
