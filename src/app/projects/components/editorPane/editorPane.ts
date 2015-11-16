@@ -287,6 +287,7 @@ module meshAdminUi {
 
         /**
          * Expand any node reference fields and put the data in the field model.
+         * TODO: refactor this to use the new 'expandAll' parameter.
          */
         private expandNodeReferenceFields(schema: ISchema, node: INode): ng.IPromise<INode>|INode {
             let expandArgs = this.createExpandParam(schema);

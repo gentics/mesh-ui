@@ -83,20 +83,25 @@ module meshAdminUi {
             this.currentNode = contextService.getCurrentNode();
             this.selectedNodes = this.selectedNodes instanceof Array ? this.selectedNodes : [];
 
-            this.populateContents();
+            dataService.getNode(this.currentProject.name, this.currentProject.rootNodeUuid)
+                .then(node => this.currentNode = node)
+                .then(() => this.populateContents());
+
             this.filterNodes = (node: INode) => {
                 return mu.nodeFilterFn(node, this.q);
             }
         }
 
 
-        public toggleSelect(node) {
+        public toggleSelect(node: INode, event: Event) {
             if (this.isAllowedSchema(node)) {
                 if (this.isSelected(node)) {
                     this.deselectNode(node);
                 } else {
                     this.selectNode(node);
                 }
+            } else {
+                this.openNode(node, event);
             }
         }
 
@@ -124,7 +129,7 @@ module meshAdminUi {
             }
         }
 
-        public openNode(node: INode, event: ng.IAngularEvent) {
+        public openNode(node: INode, event: Event) {
             if (node.container !== false) {
                 event.stopPropagation();
                 this.dataService.getNode(this.currentProject.name, node.uuid)

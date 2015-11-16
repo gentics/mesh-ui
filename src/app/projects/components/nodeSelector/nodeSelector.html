@@ -22,7 +22,7 @@
                 <tr ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid"
                     class="node-selector-table"
                     ng-class="{ selected: vm.isSelected(node) }"
-                    ng-click="vm.toggleSelect(node)">
+                    ng-click="vm.toggleSelect(node, $event)">
                     <td>
                         <md-checkbox ng-show="vm.isAllowedSchema(node)"
                                      md-no-ink
@@ -44,7 +44,7 @@
                      layout="column" layout-align="space-around center"
                      ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid"
                      ng-class="{ selected: vm.isSelected(node) }"
-                     ng-click="vm.toggleSelect(node)">
+                     ng-click="vm.toggleSelect(node, $event)">
                     <binary-thumbnail src-node="node"></binary-thumbnail>
                     <div>
                         <span ng-click="vm.openNode(node, $event)"  class="node-name" ng-class="::{ 'link': node.container }">
