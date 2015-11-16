@@ -54,7 +54,6 @@ module meshAdminUi {
                 this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
                 this.isLoaded = false;
                 this.binaryFile = undefined;
-
                 this.getNodeData(schemaUuid, parentNodeUuid)
                     .then(() => this.isLoaded = true)
                     .then(() => $location.search('edit', this.node.uuid));
@@ -102,6 +101,8 @@ module meshAdminUi {
                 })
         }
 
+
+
         public createTranslation(langCode: string, node: INode) {
             let nodeClone = angular.copy(node);
             nodeClone.language = langCode;
@@ -109,14 +110,14 @@ module meshAdminUi {
                 nodeClone.fields[node.displayField] += ` (${langCode.toUpperCase()})`
             }
             this.persist(nodeClone)
-            .then(() => {
-                this.updateCurrentNodeAvailableLangs(node, langCode);
-                this.i18nService.setCurrentLang(langCode);
-                this.$state.reload();
-                this.$timeout(() => {
-                    this.editorService.open(node.uuid);
-                }, 500);
-            });
+                .then(() => {
+                    this.updateCurrentNodeAvailableLangs(node, langCode);
+                    this.i18nService.setCurrentLang(langCode);
+                    this.$state.reload();
+                    this.$timeout(() => {
+                        //this.editorService.open(node.uuid);
+                    }, 500);
+                });
         }
 
         private updateCurrentNodeAvailableLangs(node: INode, langCode: string) {
