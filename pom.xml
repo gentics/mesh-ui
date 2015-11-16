@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-							 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.gentics.mesh</groupId>
 	<artifactId>mesh-admin-ui</artifactId>
-	<version>1.0.0-beta-SNAPSHOT</version>
+	<version>1.0.0-beta-rc1</version>
 
 	<packaging>pom</packaging>
 	<name>Mesh - Admin UI</name>
@@ -21,7 +19,8 @@
 		<connection>scm:git:git@github.com:gentics/mesh.git</connection>
 		<developerConnection>scm:git:git@github.com:gentics/mesh.git</developerConnection>
 		<url>https://github.com/gentics/mesh</url>
-	</scm>
+	  <tag>mesh-admin-ui-1.0.0-beta-rc1</tag>
+  </scm>
 
 	<build>
 		<plugins>
