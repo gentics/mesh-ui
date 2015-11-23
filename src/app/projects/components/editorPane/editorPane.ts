@@ -16,7 +16,7 @@ module meshAdminUi {
      * Controller for the node edit/create form.
      */
     class EditorPaneController {
-        
+
         private currentNodeId: string;
         private wipType: string = 'contents';
         private projectName: string;
@@ -44,19 +44,28 @@ module meshAdminUi {
                     private notifyService: NotifyService) {
 
             const init = (event: ng.IAngularEvent, nodeUuid: string, schemaUuid?: string, parentNodeUuid?: string) => {
-
-                this.projectName = contextService.getProject().name;
-                this.currentNodeId = nodeUuid;
-                this.contentModified = false;
-                this.node = undefined;
-                this.tags = [];
-                this.selectedLangs = {};
-                this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
-                this.isLoaded = false;
-                this.binaryFile = undefined;
-                this.getNodeData(schemaUuid, parentNodeUuid)
-                    .then(() => this.isLoaded = true)
-                    .then(() => $location.search('edit', this.node.uuid));
+                /**
+                 * When a new node is created, this init function will first be called when the editorService.create()
+                 * is invoked and publishes the editorServiceNodeOpened event. Next, the url will change to the new
+                 * temp id of the new node. This will trigger a watcher in the editorService which then opens
+                 * that temp id, triggering a new editorServiceNodeOpened event. In order to prevent this init function
+                 * being called twice, we will ignore the case then the nodeUuid is a temp id (= contains hyphens).
+                 */
+                const isTempId = (uuid: string) => -1 < uuid.indexOf('-');
+                if (!nodeUuid || !isTempId(nodeUuid)) {
+                    this.projectName = contextService.getProject().name;
+                    this.currentNodeId = nodeUuid;
+                    this.contentModified = false;
+                    this.node = undefined;
+                    this.tags = [];
+                    this.selectedLangs = {};
+                    this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
+                    this.isLoaded = false;
+                    this.binaryFile = undefined;
+                    this.getNodeData(schemaUuid, parentNodeUuid)
+                        .then(() => this.isLoaded = true)
+                        .then(() => $location.search('edit', this.node.uuid));
+                }
             };
 
             const empty = () => {
@@ -82,8 +91,7 @@ module meshAdminUi {
          * Save the changes back to the server.
          */
         public persist(originalNode: INode): ng.IPromise<any> {
-            let expandArgs = this.createExpandParam(this.schema);
-            return this.dataService.persistNode(this.projectName, originalNode, this.binaryFile, expandArgs)
+            return this.dataService.persistNode(this.projectName, originalNode, this.binaryFile, { expandAll: true })
                 .then((node: INode) => {
                     if (this.isNew(originalNode)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
@@ -139,10 +147,7 @@ module meshAdminUi {
         private processNewNode(node: INode) {
             this.node = node;
             this.$location.search('edit', node.uuid);
-            this.wipService.openItem(this.wipType, node, {
-                projectName: this.projectName,
-                selectedLangs: this.selectedLangs
-            });
+            this.openInWipService(node);
         }
 
         public addTag(tag: ITag) {
@@ -241,10 +246,6 @@ module meshAdminUi {
          * wipService if it exists there.
          */
         private getNodeData(schemaUuid?: string, parentNodeUuid?: string): ng.IPromise<any> {
-
-            let tempNode: INode,
-                tempSchema: ISchema;
-
             if (this.currentNodeId) {
                 // loading existing node
                 var wipContent = this.wipService.getItem(this.wipType, this.currentNodeId);
@@ -252,58 +253,31 @@ module meshAdminUi {
                 if (wipContent) {
                     return this.populateFromWip(wipContent);
                 } else {
-                    return this.dataService.getNode(this.projectName, this.currentNodeId)
+                    return this.dataService.getNode(this.projectName, this.currentNodeId, { expandAll: true })
                         .then(node => {
-                            tempNode = node;
-                            return this.dataService.getSchema(tempNode.schema.uuid);
+                            this.node = node;
+                            this.tags = this.mu.nodeTagsObjectToArray(node.tags);
+                            this.openInWipService(this.node);
+                            return this.dataService.getSchema(node.schema.uuid);
                         })
-                        .then(schema => {
-                            tempSchema = schema;
-                            return this.expandNodeReferenceFields(schema, tempNode)
-                        })
-                        .then(data => {
-                            this.node = data;
-                            this.schema = tempSchema;
-                            this.tags = this.mu.nodeTagsObjectToArray(data.tags);
-                            this.wipService.openItem(this.wipType, data, {
-                                projectName: this.projectName,
-                                selectedLangs: this.selectedLangs
-                            });
-                        });
+                        .then(schema => this.schema = schema);
                 }
             } else if (schemaUuid) {
                 // creating new node
                 return this.dataService.getSchema(schemaUuid)
                     .then((schema: ISchema) => {
                         this.node = this.createEmptyContent(schema, parentNodeUuid);
-                        this.wipService.openItem(this.wipType, this.node, {
-                            projectName: this.projectName,
-                            selectedLangs: this.selectedLangs
-                        });
-                        return schema;
+                        this.openInWipService(this.node);
+                        this.schema = schema;
                     });
             }
         }
 
-        /**
-         * Expand any node reference fields and put the data in the field model.
-         * TODO: refactor this to use the new 'expandAll' parameter.
-         */
-        private expandNodeReferenceFields(schema: ISchema, node: INode): ng.IPromise<INode>|INode {
-            let expandArgs = this.createExpandParam(schema);
-
-            if (expandArgs.expand !== '') {
-                return this.dataService.getNode(this.projectName, node.uuid, expandArgs);
-            } else {
-                return node;
-            }
-        }
-
-        private createExpandParam(schema: ISchema): INodeQueryParams {
-            let expandArgs = schema.fields.filter((field: ISchemaFieldDefinition) => {
-                return field.type === 'node';
-            }).map(field => field.name);
-            return {expand: expandArgs.join(',')};
+        private openInWipService(node: INode) {
+            this.wipService.openItem(this.wipType, node, {
+                projectName: this.projectName,
+                selectedLangs: this.selectedLangs
+            });
         }
 
         public getBinaryFileUrl(): string {

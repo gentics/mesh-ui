@@ -23,7 +23,9 @@ module meshAdminUi {
 
     export interface INodeQueryParams {
         expand?: string;
+        expandAll?: boolean;
         lang?: string;
+        role?: string;
     }
 
     export interface INodeListQueryParams extends INodeQueryParams {
