@@ -159,16 +159,19 @@ module meshAdminUi {
      */
     function widgetHighlighterDirective(widgetHighlighterService) {
 
-        var leftMargin = 8;
+        let leftMargin = 8;
+        let editorPaneContainer = <HTMLElement>document.querySelector('.editor-pane-container');
+        let containerTop = editorPaneContainer.getBoundingClientRect().top;
 
         function widgetHighlighterLinkFn(scope, element) {
             widgetHighlighterService.registerChangeHandler(function (pos) {
-                element.css({
+                let style = {
                     height: pos.height + 'px',
-                    top: pos.top + 'px',
+                    top: (pos.top - containerTop + editorPaneContainer.scrollTop) + 'px',
                     left: (pos.left - leftMargin) + 'px',
                     opacity: pos.opacity
-                });
+                };
+                element.css(style);
             });
         }
 
