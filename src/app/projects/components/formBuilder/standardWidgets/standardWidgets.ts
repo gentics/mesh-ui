@@ -94,6 +94,7 @@ module meshAdminUi {
             private repositionToolbar() {
                 this.alohaToolbar = <HTMLElement>document.querySelector('.aloha-ui-toolbar');
                 this.alohaToolbar.remove();
+                this.toolbarContainer.appendChild(this.alohaToolbar);
             }
 
             private registerBindings() {
@@ -130,7 +131,7 @@ module meshAdminUi {
                         this.$scope.$apply(() => {
                             this.isFocused = true;
                             if (this.toolbarContainer) {
-                                this.toolbarContainer.style.height = 95 + 'px';
+                                this.toolbarContainer.classList.add('open');
                                 setTimeout(() => this.widgetHighlighterService.highlight(), 0);
                             }
                         });
@@ -143,7 +144,7 @@ module meshAdminUi {
                         this.$scope.$apply(() => {
                             this.isFocused = false;
                             if (this.toolbarContainer) {
-                                this.toolbarContainer.style.height = 0 + 'px';
+                                this.toolbarContainer.classList.remove('open');
                                 setTimeout(() => this.widgetHighlighterService.highlight(), 0);
                             }
                         });
