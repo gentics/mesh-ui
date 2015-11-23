@@ -14,6 +14,12 @@ module meshAdminUi {
                         controller: 'projectController',
                         controllerAs: 'vm'
                     }
+                },
+                onEnter: () => {
+                    document.body.classList.add('project-module');
+                },
+                onExit: () => {
+                    document.body.classList.remove('project-module');
                 }
             })
             .state('projects.node', {

@@ -36,25 +36,133 @@ module meshAdminUi {
         return makeStandardWidgetDDO('string');
     }
 
-    /**
-     * Input for html field types
-     */
-    function htmlWidgetDirective() {
-        return makeStandardWidgetDDO('html');
-    }
-    /*
-        This is the Aloha Editor implementation.
-    function htmlWidgetDirective() {
+    declare var Aloha: any;
 
-        var activeAlohaPlugins = [
+    /**
+     * This is the Aloha Editor implementation.
+     */
+    function htmlWidgetDirective(i18nService: I18nService) {
+
+        // an array of functions that will be called when Aloha has loaded.
+        let callbacks = [];
+        const activeAlohaPlugins = [
             'common/ui',
             'common/format',
             'common/table',
             'common/highlighteditables',
             'common/link'
         ];
-        // an array of functions that will be called when Aloha has loaded.
-        var callbacks = [];
+
+        class HtmlWidgetController {
+
+            private fieldModel: INodeFieldModel;
+            private htmlField: HTMLElement;
+            private isFocused: boolean;
+            private lastContent: string;
+            private toolbarContainer: HTMLElement;
+            private alohaToolbar: HTMLElement;
+
+            constructor(private $scope: ng.IScope,
+                        private $element: ng.IAugmentedJQuery,
+                        private widgetHighlighterService: WidgetHighlighterService) {
+
+                /**
+                 * We need a way to let the widget know when the inner htmlField (content editable div)
+                 * is focused. We have no direct access to that information, so we need to set up
+                 * event listeners on the native "focus" and "blur" events and use them to update
+                 * the scope.
+                 */
+                this.isFocused = false;
+                this.htmlField = <HTMLElement>$element[0].querySelector('.htmlField');
+                this.toolbarContainer = <HTMLElement>this.$element[0].querySelector('.toolbar-container');
+                this.lastContent = this.fieldModel.value;
+
+                if (Aloha.ready) {
+                    this.registerBindings();
+                } else {
+                    callbacks.push(() => this.registerBindings());
+                }
+
+                // initialize the content.
+                this.syncView();
+            }
+
+            /**
+             * Pull out the Aloha toolbar from the top level of the DOM, and put it above the html input area so
+             * we can style it to be the correct width.
+             */
+            private repositionToolbar() {
+                this.alohaToolbar = <HTMLElement>document.querySelector('.aloha-ui-toolbar');
+                this.alohaToolbar.remove();
+            }
+
+            private registerBindings() {
+                var $ = Aloha.jQuery;
+
+                /**
+                 * View -> Model data binding
+                 */
+                Aloha.bind('aloha-smart-content-changed', (jQueryEvent, alohaEditable) => {
+                    if (this.eventTargetIsThisElement(alohaEditable)) {
+                        let currentContent = alohaEditable.editable.getContents();
+                        if (currentContent !== this.lastContent) {
+                            this.$scope.$apply(() => {
+                                this.fieldModel.update(currentContent);
+                                this.lastContent = currentContent;
+                            });
+                        }
+                    }
+                });
+
+                /**
+                 * Model -> data binding
+                 */
+                this.$scope.$watch(() => this.fieldModel.value, (val) => {
+                    if (typeof val !== 'undefined') {
+                        this.syncView();
+                    }
+                });
+
+                Aloha.bind('aloha-editable-activated', (jQueryEvent, alohaEditable) => {
+                    if (this.eventTargetIsThisElement(alohaEditable)) {
+                        this.repositionToolbar();
+                        this.alohaToolbar.classList.remove('hidden');
+                        this.$scope.$apply(() => {
+                            this.isFocused = true;
+                            if (this.toolbarContainer) {
+                                this.toolbarContainer.style.height = 95 + 'px';
+                                setTimeout(() => this.widgetHighlighterService.highlight(), 0);
+                            }
+                        });
+                    }
+                });
+
+                Aloha.bind('aloha-editable-deactivated', (jQueryEvent, alohaEditable) => {
+                    if (this.eventTargetIsThisElement(alohaEditable)) {
+                        this.alohaToolbar.classList.add('hidden');
+                        this.$scope.$apply(() => {
+                            this.isFocused = false;
+                            if (this.toolbarContainer) {
+                                this.toolbarContainer.style.height = 0 + 'px';
+                                setTimeout(() => this.widgetHighlighterService.highlight(), 0);
+                            }
+                        });
+                    }
+                });
+
+                Aloha.ready(() => {
+                    $('.htmlField').aloha();
+                });
+            }
+
+            private eventTargetIsThisElement(alohaEditable) {
+                return this.htmlField.getAttribute('id') === alohaEditable.editable.getId();
+            }
+
+            private syncView() {
+                this.htmlField.innerHTML = this.fieldModel.value;
+            }
+        }
 
         function htmlWidgetCompileFn() {
             if (!window['Aloha']) {
@@ -63,6 +171,9 @@ module meshAdminUi {
                 window['Aloha'].settings = {
                     "sidebar": {
                         "disabled": true
+                    },
+                    "floatingmenu": {
+                        draggable: false
                     },
                     "plugins": {
                         "formatlesspaste": {
@@ -101,9 +212,9 @@ module meshAdminUi {
                         }
                     },
                     "i18n": {
-                        "current": "de"
+                        "current": i18nService.getCurrentLang().code
                     },
-                    "locale": "de",
+                    "locale": i18nService.getCurrentLang().code,
                     "logLevels": {
                         "error": true
                     },
@@ -152,102 +263,22 @@ module meshAdminUi {
 
                 loadScript('assets/vendor/aloha-editor/lib/aloha-full.min.js', initAloha);
             }
-
-            /!**
-             * @param scope
-             * @param element
-             *!/
-            return function htmlWidgetLinkFn(scope, element) {
-
-                var htmlField = element[0].querySelector('.htmlField');
-
-                if (Aloha.ready) {
-                    registerBindings();
-                } else {
-                    callbacks.push(registerBindings);
-                }
-
-                /!**
-                 * We need a way to let the widget know when the inner htmlField (content editable div)
-                 * is focused. We have no direct access to that information, so we need to set up
-                 * event listeners on the native "focus" and "blur" events and use them to update
-                 * the scope.
-                 * @type {HTMLElement}
-                 *!/
-                scope.isFocused = false;
-
-                // initialize the content.
-                syncView();
-
-                function registerBindings() {
-                    var $ = Aloha.jQuery;
-
-                    /!**
-                     * View -> Model data binding
-                     *!/
-                    Aloha.bind('aloha-smart-content-changed', function (jQueryEvent, alohaEditable) {
-                        if (eventTargetIsThisElement(alohaEditable)) {
-                            scope.$apply(function () {
-                                scope.model[scope.path] = alohaEditable.editable.getContents();
-                                scope.formBuilder.modified = true;
-                            });
-                        }
-                    });
-
-                    /!**
-                     * Model -> data binding
-                     *!/
-                    scope.$watch('model[path]', function (val) {
-                        if (typeof val !== 'undefined') {
-                            syncView();
-                        }
-                    });
-
-                    Aloha.bind('aloha-editable-activated', function (jQueryEvent, alohaEditable) {
-                        if (eventTargetIsThisElement(alohaEditable)) {
-                            scope.$apply(function () {
-                                scope.isFocused = true;
-                            });
-                        }
-                    });
-
-                    Aloha.bind('aloha-editable-deactivated', function (jQueryEvent, alohaEditable) {
-                        if (eventTargetIsThisElement(alohaEditable)) {
-                            scope.$apply(function () {
-                                scope.isFocused = false;
-                            });
-                        }
-                    });
-
-                    Aloha.ready(function () {
-                        $('.htmlField').aloha();
-                    });
-                }
-
-                function eventTargetIsThisElement(alohaEditable) {
-                    return htmlField.getAttribute('id') === alohaEditable.editable.getId();
-                }
-
-                function syncView() {
-                    htmlField.innerHTML = scope.model[scope.path];
-                }
-            };
         }
 
-        /!**
+        /**
          * Create the Aloha editable areas and run any callbacks that have
          * been registered.
-         *!/
+         */
         function initAloha() {
             callbacks.forEach(function (fn) {
                 fn();
             });
         }
 
-        /!**
+        /**
          * this function will work cross-browser for loading scripts asynchronously
          * Based on http://stackoverflow.com/a/7719185/772859
-         *!/
+         */
         function loadScript(src, callback) {
             var s,
                 r,
@@ -272,9 +303,14 @@ module meshAdminUi {
             restrict: 'E',
             compile: htmlWidgetCompileFn,
             templateUrl: 'projects/components/formBuilder/standardWidgets/htmlWidget.html',
-            scope: true
+            controller: HtmlWidgetController,
+            controllerAs: 'vm',
+            bindToController: true,
+            scope: {
+                fieldModel: '='
+            }
         };
-    }*/
+    }
 
     /**
      * Input for number field types
@@ -501,11 +537,11 @@ module meshAdminUi {
         }
 
         private maskNode(node: INode) {
-           /* return {
-                uuid: node.uuid,
-                displayField: node.displayField,
-                fields: node.fields
-            };*/
+            /* return {
+             uuid: node.uuid,
+             displayField: node.displayField,
+             fields: node.fields
+             };*/
             // TODO: figure out the reason for this method, and delete if possible.
             return node;
         }

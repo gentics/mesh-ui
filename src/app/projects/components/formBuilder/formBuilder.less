@@ -51,14 +51,21 @@
     }
   }
 
+  .toolbar-container {
+    position: relative;
+    perspective: 400px;
+    height: 0;
+  }
+
   .htmlField {
-    border-bottom: 1px solid @color-alto;
-    padding: 0 2px 1px 2px;
-    min-height: 100px;
+    padding: 0 2px 5px 2px;
+    margin-bottom: 18px;
+    min-height: 50px;
+    background-color: white;
+    border: 1px solid #d9d9d9;
 
     &.aloha-editable-active {
-      border-bottom: 2px solid @color-primary;
-      padding-bottom: 0;
+      border-color: @color-primary;
     }
   }
 }
