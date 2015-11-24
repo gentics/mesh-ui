@@ -48,6 +48,7 @@ function clean() {
 function compile_appScripts() {
     return gulp.src([
             'typings/**/*.ts',
+            '!src/app/common/aloha/**/*.ts',
             'src/app/**/*.ts'
         ])
         /*.pipe(tslint())
@@ -60,6 +61,24 @@ function compile_appScripts() {
         .pipe(angularFilesort())
         .pipe(ngAnnotate())
         .pipe(concat('app.js'));
+}
+
+function compile_aloha_plugins() {
+    console.log('compile_aloha_plugins');
+    return new Promise(function(resolve, reject) {
+        gulp.src([
+                'src/app/common/aloha/**/*.ts'
+            ])
+            .pipe(ts({
+                declarationFiles: true,
+                noExternalResolve: false,
+                target: 'ES5'
+            })).js
+            .pipe(gulp.dest('build/assets/vendor/aloha-editor/plugins/mesh'))
+            .pipe(livereload())
+            .on('end', resolve)
+            .on('error', reject);
+    });
 }
 
 function build_appScripts() {
@@ -199,6 +218,7 @@ gulp.task('build', function() {
         .then(function() {
             return Promise.all([
                 build_appScripts(),
+                compile_aloha_plugins(),
                 build_appTemplates(),
                 build_vendorScripts(),
                 build_appStyles(),
@@ -346,7 +366,8 @@ gulp.task('e2e', function() {
 
 gulp.task('watch', ['default', 'karma-watch'], function() {
     livereload.listen({ quiet: true });
-    gulp.watch(['src/app/**/*.js', 'src/app/**/*.ts'], build_appScripts);
+    gulp.watch(['src/app/**/*.js', 'src/app/**/*.ts', '!src/app/common/aloha/**/*.ts'], build_appScripts);
+    gulp.watch('src/app/common/aloha/**/*.ts', compile_aloha_plugins);
     gulp.watch('src/app/**/*.html', build_appTemplates);
     gulp.watch('src/**/*.less', build_appStyles);
     gulp.watch('src/index.html', build_index);

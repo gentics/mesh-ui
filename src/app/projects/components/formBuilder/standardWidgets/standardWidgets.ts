@@ -41,7 +41,7 @@ module meshAdminUi {
     /**
      * This is the Aloha Editor implementation.
      */
-    function htmlWidgetDirective(i18nService: I18nService) {
+    function htmlWidgetDirective(i18nService: I18nService, nodeSelector: NodeSelector) {
 
         // an array of functions that will be called when Aloha has loaded.
         let callbacks = [];
@@ -50,7 +50,7 @@ module meshAdminUi {
             'common/format',
             'common/table',
             'common/highlighteditables',
-            'common/link'
+            'mesh/mesh-link'
         ];
 
         class HtmlWidgetController {
@@ -210,6 +210,11 @@ module meshAdminUi {
                                     "classes": []
                                 }
                             }
+                        },
+                        "mesh-link": {
+                            "selectNodeClick": () => {
+                                return nodeSelector.open();
+                            }
                         }
                     },
                     "i18n": {
@@ -228,7 +233,7 @@ module meshAdminUi {
                             "components": [["gcnArena"]]
                         }, {
                             "label": "tab.link.label",
-                            "components": ["editLink", "removeLink", "linkBrowser", "gcnLinkBrowser", "gcnFileUpload"]
+                            "components": ["editLink", "removeLink", "selectNode", "selectedNode"]
                         }]
                     },
                     "bundles": {
@@ -262,7 +267,7 @@ module meshAdminUi {
                     }
                 };
 
-                loadScript('assets/vendor/aloha-editor/lib/aloha-full.min.js', initAloha);
+                loadScript('assets/vendor/aloha-editor/lib/aloha-full.js', initAloha);
             }
         }
 
