@@ -41,7 +41,10 @@ module meshAdminUi {
     /**
      * This is the Aloha Editor implementation.
      */
-    function htmlWidgetDirective(i18nService: I18nService, nodeSelector: NodeSelector) {
+    function htmlWidgetDirective(i18nService: I18nService,
+                                 nodeSelector: NodeSelector,
+                                 contextService: ContextService,
+                                 dataService: DataService) {
 
         // an array of functions that will be called when Aloha has loaded.
         let callbacks = [];
@@ -128,7 +131,7 @@ module meshAdminUi {
                     if (this.eventTargetIsThisElement(alohaEditable)) {
                         this.repositionToolbar();
                         this.alohaToolbar.classList.remove('hidden');
-                        this.$scope.$apply(() => {
+                        this.$scope.$applyAsync(() => {
                             this.isFocused = true;
                             if (this.toolbarContainer) {
                                 this.toolbarContainer.classList.add('open');
@@ -214,6 +217,9 @@ module meshAdminUi {
                         "mesh-link": {
                             "selectNodeClick": () => {
                                 return nodeSelector.open();
+                            },
+                            "resolveNodeName": (uuid: string): ng.IPromise<INode> => {
+                                return dataService.getNode(contextService.getProject().name, uuid);
                             }
                         }
                     },

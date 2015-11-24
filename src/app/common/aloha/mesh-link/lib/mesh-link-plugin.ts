@@ -146,6 +146,7 @@ define([
          * Function to ge invoked when the selectNode button is clicked.
          */
         selectNodeClick: () => {},
+        resolveNodeName: () => {},
         selectedNode: <string>undefined,
         targetElement: <HTMLElement>undefined,
 
@@ -242,6 +243,9 @@ define([
 
 			if ('undefined' !== typeof this.settings.selectNodeClick) {
 				this.selectNodeClick = this.settings.selectNodeClick;
+			}
+			if ('undefined' !== typeof this.settings.resolveNodeName) {
+				this.resolveNodeName = this.settings.resolveNodeName;
 			}
 			if ('undefined' !== typeof this.settings.title) {
 				this.title = this.settings.title;
@@ -545,12 +549,20 @@ define([
 				icon: "aloha-mesh-icon-select-node",
 				scope: 'Aloha.continuoustext',
 				click: function() {
-					console.log('gonna select node!');
+					let activeEditable = Aloha.getActiveEditable();
+					let range = Aloha.Selection.getRangeObject();
+
                     that.selectNodeClick()
                     .then((result: meshAdminUi.INode[]) => {
                         let nodeUuid = result[0].uuid;
                         that.selectedNode = nodeUuid;
+
                         that.hrefChange();
+
+						// when the modal pops up, the editable is no longer selected,
+						// so we now need to restore the selection.
+						Aloha.activateEditable(activeEditable);
+						range.select();
                     });
 				}
 			});
@@ -905,13 +917,16 @@ define([
 
 				// now we are ready to set the target object
 				foundMarkup.setAttribute('data-ignore-auto-values', 'true');
-				//that.hrefField.setTargetObject(foundMarkup, 'href');
+                //that.hrefField.setTargetObject(foundMarkup, 'href');
                 that.targetElement = foundMarkup;
                 console.log('this.targetSelector', foundMarkup);
                 if (that.targetElement.getAttribute('data-mesh-uuid')) {
                     that.selectedNode = that.targetElement.getAttribute('data-mesh-uuid');
-                    that._selectedNodeLabel.setValue('node: ' + that.selectedNode);
                     that.hrefField.setValue('');
+                    that.resolveNodeName(that.selectedNode)
+                        .then(node => {
+                            that._selectedNodeLabel.setValue('node: ' + (node.fields[node.displayField] || node.uuid));
+                        });
                 } else {
                     that.selectedNode = undefined;
                     that.hrefField.setValue(that.targetElement.getAttribute('href'));
@@ -937,7 +952,6 @@ define([
 						if (jQuery( '#' + that.hrefField.getInputId()).length > 0) { // the object was finally created
 							that.hrefField.setTargetObject(foundMarkup, 'href');
 							that.hrefChange();
-
 							clearInterval(that.hrefUpdateInt);
 						}
 					}, 200);
