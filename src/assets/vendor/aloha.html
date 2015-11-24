@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        Aloha = {}; Aloha.settings = {
+
+            "sidebar": {
+                "disabled": true
+            },
+            "plugins" : {
+                "formatlesspaste" : {
+                    "config" : {
+                        "strippedElements" : [ "a", "em", "strong", "small", "s", "cite", "q", "dfn", "abbr", "time", "code", "var", "samp", "kbd", "sub", "sup", "i", "b", "u", "mark", "ruby", "rt", "rp", "bdi", "bdo", "ins", "del" ],
+                        "button" : "False",
+                        "formatlessPasteOption" : "1"
+                    }
+                },
+                "block" : {
+                    "dragdrop" : "1",
+                    "dropzones" : [ ".dropzone > div" ],
+                    "config" : {
+                        "toggleDragdropGlobal" : "true"
+                    }
+                },
+                "image" : {
+                    "minHeight" : "5",
+                    "minWidth" : "5",
+                    "fixedAspectRatio" : "true",
+                    "maxHeight" : "786",
+                    "maxWidth" : "1024"
+                },
+                "list" : {
+                    "templates" : {
+                        "ul" : {
+                            "classes" : [ ]
+                        },
+                        "dl" : {
+                            "classes" : [ ]
+                        },
+                        "ol" : {
+                            "classes" : [ ]
+                        }
+                    }
+                }
+            },
+            "i18n" : {
+                "current" : "de"
+            },
+            "locale" : "de",
+            "logLevels" : {
+                "error" : true
+            },
+            "readonly" : false,
+            "toolbar" : {
+                "tabs" : [ {
+                    "label" : "tab.format.label"
+                }, {
+                    "label" : "tab.insert.label",
+                    "components" : [ [ "gcnArena" ] ]
+                }, {
+                    "label" : "tab.link.label",
+                    "components" : [ "editLink", "removeLink", "linkBrowser", "gcnLinkBrowser", "gcnFileUpload" ]
+                } ]
+            },
+            "bundles" : {
+                "custom" : "/custom"
+            },
+            "contentHandler" : {
+                "insertHtml" : [ "gcn-tagcopy", "word", "generic", "block", "formatless" ],
+                "getContents" : [ "blockelement", "basic" ],
+                "initEditable" : [ "blockelement" ]
+            },
+            "sanitizeCharacters" : {
+                "ï" : "i",
+                "î" : "i",
+                " " : "_",
+                "ë" : "e",
+                "ê" : "e",
+                "é" : "e",
+                "è" : "e",
+                "Ä" : "Ae",
+                "ä" : "ae",
+                "â" : "a",
+                "à" : "a",
+                "Ü" : "Ue",
+                "ü" : "ue",
+                "ß" : "ss",
+                "û" : "u",
+                "ù" : "u",
+                "ö" : "oe",
+                "Ö" : "Oe",
+                "ô" : "o"
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="../src/assets/vendor/aloha-editor/css/aloha.css"/>
+    <script src="../src/assets/vendor/aloha-editor/lib/aloha-full.min.js" data-aloha-plugins="common/ui,common/format,common/highlighteditables,common/link"></script>
+    <script type="text/javascript">
+        Aloha.ready( function() {
+            var $ = Aloha.jQuery;
+            $('.editor').aloha();
+        });
+    </script>
+</head>
+<body>
+
+<div class="editor">
+    <p>Hello World.</p>
+</div>
+
+
+<!-- configure Aloha Plugin Settings -->
+<script type="text/javascript">
+
+    <!-- turn elements into editable Aloha coninous text -->
+    /*document.addEventListener('load', function() {
+     var $ = Aloha.jQuery;
+     $('.editor').aloha();
+     });*/
+</script>
+
+</body>
+</html>
