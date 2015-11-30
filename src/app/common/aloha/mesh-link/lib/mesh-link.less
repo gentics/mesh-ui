@@ -1,8 +1,27 @@
 
 
 .aloha-mesh-icon-select-node {
-  background-color: #0eff7e;
+  background-image : url('../assets/images/aloha-icons/custom-aloha-icons.png');
+  background-position: -466px 0;
   width: 30px;
   height: 30px;
   display: inline-block;
+}
+
+.mesh-link-node-label {
+  text-transform: none;
+  margin-right: 8px;
+  cursor: pointer;
+  color: @color-primary;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.aloha-link-href-field {
+  margin-left: 9px;
+  display: inline-block !important;
+  &.hidden {
+    display: none !important;
+  }
 }

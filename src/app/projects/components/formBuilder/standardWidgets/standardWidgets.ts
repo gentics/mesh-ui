@@ -43,6 +43,7 @@ module meshAdminUi {
      */
     function htmlWidgetDirective(i18nService: I18nService,
                                  nodeSelector: NodeSelector,
+                                 editorService: EditorService,
                                  contextService: ContextService,
                                  dataService: DataService) {
 
@@ -53,6 +54,7 @@ module meshAdminUi {
             'common/format',
             'common/table',
             'common/highlighteditables',
+            'common/list',
             'mesh/mesh-link'
         ];
 
@@ -103,30 +105,6 @@ module meshAdminUi {
             private registerBindings() {
                 var $ = Aloha.jQuery;
 
-                /**
-                 * View -> Model data binding
-                 */
-                Aloha.bind('aloha-smart-content-changed', (jQueryEvent, alohaEditable) => {
-                    if (this.eventTargetIsThisElement(alohaEditable)) {
-                        let currentContent = alohaEditable.editable.getContents();
-                        if (currentContent !== this.lastContent) {
-                            this.$scope.$apply(() => {
-                                this.fieldModel.update(currentContent);
-                                this.lastContent = currentContent;
-                            });
-                        }
-                    }
-                });
-
-                /**
-                 * Model -> data binding
-                 */
-                this.$scope.$watch(() => this.fieldModel.value, (val) => {
-                    if (typeof val !== 'undefined') {
-                        this.syncView();
-                    }
-                });
-
                 Aloha.bind('aloha-editable-activated', (jQueryEvent, alohaEditable) => {
                     if (this.eventTargetIsThisElement(alohaEditable)) {
                         this.repositionToolbar();
@@ -145,12 +123,30 @@ module meshAdminUi {
                     if (this.eventTargetIsThisElement(alohaEditable)) {
                         this.alohaToolbar.classList.add('hidden');
                         this.$scope.$apply(() => {
+                            // handle the highlighting of the element
                             this.isFocused = false;
                             if (this.toolbarContainer) {
                                 this.toolbarContainer.classList.remove('open');
                                 setTimeout(() => this.widgetHighlighterService.highlight(), 0);
                             }
+                            /**
+                             * View -> Model data binding
+                             */
+                            let currentContent = alohaEditable.editable.getContents();
+                            if (currentContent !== this.lastContent) {
+                                this.fieldModel.update(currentContent);
+                                this.lastContent = currentContent;
+                            }
                         });
+                    }
+                });
+
+                /**
+                 * Model -> data binding
+                 */
+                this.$scope.$watch(() => this.fieldModel.value, (val) => {
+                    if (typeof val !== 'undefined') {
+                        this.syncView();
                     }
                 });
 
@@ -220,6 +216,9 @@ module meshAdminUi {
                             },
                             "resolveNodeName": (uuid: string): ng.IPromise<INode> => {
                                 return dataService.getNode(contextService.getProject().name, uuid);
+                            },
+                            "previewNodeClick": (uuid: string) => {
+                                editorService.open(uuid);
                             }
                         }
                     },
@@ -239,7 +238,7 @@ module meshAdminUi {
                             "components": [["gcnArena"]]
                         }, {
                             "label": "tab.link.label",
-                            "components": ["editLink", "removeLink", "selectNode", "selectedNode"]
+                            "components": ["selectNode", "selectedNode", "editLink", "removeLink"]
                         }]
                     },
                     "bundles": {

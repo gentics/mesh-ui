@@ -1,19 +1,3 @@
-/* link-plugin.js is part of the Aloha Editor project http://aloha-editor.org
- *
- * Aloha Editor is a WYSIWYG HTML5 inline editing library and editor.
- * Copyright (c) 2010-2014 Gentics Software GmbH, Vienna, Austria.
- * Contributors http://aloha-editor.org/contribution.php
- * License http://aloha-editor.org/license.php
- */
-/* Aloha Link Plugin
- * -----------------
- * This plugin provides an interface to allow the user to insert, edit and
- * remove links within an active editable.
- * It presents its user interface in the Toolbar, in a Sidebar panel.
- * Clicking on any links inside the editable activates the this plugin's
- * floating menu scope.
- */
-
 declare var define: any;
 
 define([
@@ -65,7 +49,7 @@ define([
 	var Label = Component.extend({
 		init: function () {
 			this._super();
-			this.element = jQuery("<span>");
+			this.element = jQuery("<span class='mesh-link-node-label'>");
 		},
 		setValue: function(value) { this.element.text(value); },
 		getValue: function() { this.element.text(); }
@@ -146,6 +130,7 @@ define([
          * Function to ge invoked when the selectNode button is clicked.
          */
         selectNodeClick: () => {},
+        previewNodeClick: () => {},
         resolveNodeName: () => {},
         selectedNode: <string>undefined,
         targetElement: <HTMLElement>undefined,
@@ -243,6 +228,9 @@ define([
 
 			if ('undefined' !== typeof this.settings.selectNodeClick) {
 				this.selectNodeClick = this.settings.selectNodeClick;
+			}
+			if ('undefined' !== typeof this.settings.previewNodeClick) {
+				this.previewNodeClick = this.settings.previewNodeClick;
 			}
 			if ('undefined' !== typeof this.settings.resolveNodeName) {
 				this.resolveNodeName = this.settings.resolveNodeName;
@@ -365,6 +353,9 @@ define([
 			});
 
 			PubSub.sub('aloha.selection.context-change', function (message) {
+				if (message.event && message.event.hasOwnProperty('preventDefault')) {
+					message.event.preventDefault();
+				}
 				if (!Aloha.activeEditable) {
 					plugin.lastActiveLink = false;
 					return;
@@ -522,6 +513,15 @@ define([
 			});
 
             this._selectedNodeLabel = Ui.adopt("selectedNode", Label);
+            jQuery(this._selectedNodeLabel.element).on('click', () => {
+                if (this.selectedNode && this.selectedNode !== '') {
+
+                    Aloha.trigger('aloha-editable-deactivated', {
+                        editable: Aloha.getActiveEditable()
+                    });
+                    setTimeout(() => this.previewNodeClick(this.selectedNode));
+                }
+            });
 
 			this.hrefField = AttributeField({
 				name: 'editLink',
@@ -850,8 +850,10 @@ define([
             if (typeof this.selectedNode !== 'undefined') {
                 href = `{{ mesh.link('${this.selectedNode}') }}`;
                 that.targetElement.setAttribute('data-mesh-uuid', this.selectedNode);
-                that._selectedNodeLabel.setValue('node: ' + that.selectedNode);
+                that._selectedNodeLabel.setValue('Linked to node: ' + that.selectedNode);
+				that.hrefField.getInputElem().classList.add('hidden');
             } else {
+				that.hrefField.getInputElem().classList.remove('hidden');
                 // No need to check setAutoValues here, since the title will not be
                 // changed anyway once a custom title has been set.
                 this.automaticallySetTitle(
@@ -864,7 +866,9 @@ define([
                 that._selectedNodeLabel.setValue('');
             }
 
-            that.targetElement.setAttribute('href', href);
+			if (that.targetElement) {
+				that.targetElement.setAttribute('href', href);
+			}
 
 			if ( typeof this.onHrefChange == 'function' ) {
 				this.onHrefChange.call(
@@ -919,13 +923,12 @@ define([
 				foundMarkup.setAttribute('data-ignore-auto-values', 'true');
                 //that.hrefField.setTargetObject(foundMarkup, 'href');
                 that.targetElement = foundMarkup;
-                console.log('this.targetSelector', foundMarkup);
                 if (that.targetElement.getAttribute('data-mesh-uuid')) {
                     that.selectedNode = that.targetElement.getAttribute('data-mesh-uuid');
                     that.hrefField.setValue('');
                     that.resolveNodeName(that.selectedNode)
                         .then(node => {
-                            that._selectedNodeLabel.setValue('node: ' + (node.fields[node.displayField] || node.uuid));
+                            that._selectedNodeLabel.setValue('Linked to node: ' + (node.fields[node.displayField] || node.uuid));
                         });
                 } else {
                     that.selectedNode = undefined;
