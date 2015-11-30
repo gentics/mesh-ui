@@ -52,10 +52,12 @@
   }
 
   .toolbar-container {
-    position: relative;
+    position: fixed;
     perspective: 400px;
     height: 0;
+    z-index: 10;
     overflow: hidden;
+    padding-left: 4px;
 
     &.open {
       height: 95px;

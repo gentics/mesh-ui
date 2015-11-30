@@ -103,9 +103,29 @@ module meshAdminUi {
             }
 
             private registerBindings() {
-                var $ = Aloha.jQuery;
+                let $ = Aloha.jQuery;
+                let $editorPane = $('.editor-pane-container');
+                let $toolbarContainer = $('.toolbar-container');
+
+                const positionToolbar = () => {
+                    let containerHeight = 95;
+                    let $editable: JQuery = $('.aloha-editable');
+                    let paneTop = $editorPane[0].getBoundingClientRect().top;
+
+                    $toolbarContainer.css({ width: $editable.width() });
+
+                    if ($editable.offset().top - containerHeight < paneTop) {
+                        // float it
+                        $toolbarContainer.css({ top: paneTop });
+                    } else {
+                        $toolbarContainer.css({ top: $editable.offset().top - containerHeight - 1 });
+                    }
+                };
 
                 Aloha.bind('aloha-editable-activated', (jQueryEvent, alohaEditable) => {
+                    positionToolbar();
+                    $editorPane.on('scroll', positionToolbar);
+
                     if (this.eventTargetIsThisElement(alohaEditable)) {
                         this.repositionToolbar();
                         this.alohaToolbar.classList.remove('hidden');
@@ -120,6 +140,9 @@ module meshAdminUi {
                 });
 
                 Aloha.bind('aloha-editable-deactivated', (jQueryEvent, alohaEditable) => {
+
+                    $editorPane.off('scroll', positionToolbar);
+
                     if (this.eventTargetIsThisElement(alohaEditable)) {
                         this.alohaToolbar.classList.add('hidden');
                         this.$scope.$apply(() => {
