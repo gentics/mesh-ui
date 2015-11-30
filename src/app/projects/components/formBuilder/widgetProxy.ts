@@ -153,6 +153,7 @@ module meshAdminUi {
     }
 
     /**
+     * TODO: Consider getting rid of this feature. UX is questionable and adds complexity to the code.
      * This directive generates the colored highlight bar that appears to the left of the widget form.
      * @param {WidgetHighlighterService} widgetHighlighterService
      * @returns {{restrict: string, link: widgetHighlighterLinkFn, replace: boolean, template: string}}
