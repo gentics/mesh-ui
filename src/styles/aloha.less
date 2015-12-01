@@ -61,6 +61,7 @@
   min-width : 130px;
   border : 0;
   background : transparent;
+  overflow-x: hidden;
 }
 .aloha .aloha-ui-toolbar .ui-widget-header {
   padding-right : 30px;
@@ -372,13 +373,6 @@
   text-indent : -99999px;
   overflow : hidden;
   background-repeat : no-repeat;
-}
-.ui-widget-overlay {
-  position : absolute;
-  top : 0;
-  left : 0;
-  width : 100%;
-  height : 100%;
 }
 .ui-resizable {
   position : relative;
@@ -1853,7 +1847,7 @@ button.ui-button-icons-only {
   line-height : 1.4;
 }
 .aloha .ui-button-text-only .ui-button-text {
-  padding : 0.4em 1em;
+  padding : 0 5px;
 }
 .aloha .ui-button-icon-only .ui-button-text, .aloha .ui-button-icons-only .ui-button-text {
   padding : 0.4em;
@@ -2159,6 +2153,7 @@ input.ui-button {
 }
 .aloha.ui-dialog .ui-dialog-title {
   float : left;
+  font-size: 21px;
   margin : 0.1em 16px 0.1em 0;
 }
 .aloha.ui-dialog .ui-dialog-titlebar-close {
@@ -2169,6 +2164,7 @@ input.ui-button {
   margin : -10px 0 0 0;
   padding : 1px;
   height : 18px;
+  display: none;
 }
 .aloha.ui-dialog .ui-dialog-titlebar-close span {
   display : block;
@@ -2195,8 +2191,7 @@ input.ui-button {
   float : right;
 }
 .aloha.ui-dialog .ui-dialog-buttonpane button {
-  margin : 0.5em 0.4em 0.5em 0;
-  cursor : pointer;
+  .btn();
 }
 .aloha.ui-dialog .ui-resizable-se {
   width : 14px;
@@ -2230,7 +2225,7 @@ input.ui-button {
   left : 0;
   width : 100%;
   height : 100%;
-  background : #aaa;
+  background : rgba(33,33,33, .48);
 }
 .aloha .ui-state-default .aloha-icon-tree {
   background-image : url("@{aloha-path}plugins/common/ui/img/tree.png");
@@ -2313,12 +2308,6 @@ input.ui-button {
 .aloha .ui-state-default .aloha-icon-code {
   background-image : url("@{aloha-path}plugins/common/ui/img/code.png");
 }
-.aloha .ui-state-default .aloha-icon-indent {
-  background : url("{@{aloha-path}text_indent.png") no-repeat center center;
-}
-.aloha .ui-state-default .aloha-icon-outdent {
-  background : url("{@{aloha-path}text_indent_remove.png") no-repeat center center;
-}
 .aloha .ui-button-icon-only .aloha-ui-inline-icon-container {
   width : 18px;
   height : 18px;
@@ -2364,10 +2353,10 @@ input.ui-button {
   background-position : -364px 0%;
 }
 .aloha .aloha-multisplit-active {
-  border : 1px solid #aaa !important ;
+  border : 1px solid @color-dusty !important ;
 }
 .aloha .aloha-button-active {
-  border : 1px solid #aaa !important ;
+  border : 1px solid @color-dusty !important ;
   background : #fff !important ;
 }
 .aloha .ui-state-default .aloha-jqueryui-icon {
@@ -2384,22 +2373,30 @@ input.ui-button {
 }
 .aloha .aloha-multisplit {
   position : relative;
-  width : 260px;
-  height : 50px;
+  width: 245px;
+  max-height : 50px;
   overflow : hidden;
   margin : 0 auto;
 }
 .aloha .aloha-multisplit-open {
   overflow : visible;
+  max-height: 200px;
 }
+
 .aloha .aloha-multisplit-content {
   text-align : left;
   position : relative;
-  width : 245px;
+  width: 230px;
+  border: 1px solid transparent;
 }
-.aloha .aloha-multisplit-open .aloha-multisplit-content {
-  background : #ccc;
+
+.aloha-multisplit-open .aloha-multisplit-content {
+  background : @color-almost-white;
+  box-shadow: @mh-box-shadow;
+  border: 1px solid @color-alto;
+  transition: box-shadow 0.3s, border 0.3s;
 }
+
 .aloha .aloha-multisplit .aloha-multisplit-toggle {
   position : absolute;
   top : 0;
@@ -2431,9 +2428,9 @@ input.ui-button {
 .aloha .aloha-multisplit .aloha-ui-multisplit-fullwidth {
   display : block;
   width : 100%;
-  background : #f0f0f0 url("@{aloha-path}plugins/common/ui/img/removeformat.png") no-repeat 6px 3px;
-  border : 1px solid #bbb;
-  padding-left : 18px;
+  background: #f0f0f0 url("../assets/images/aloha-icons/eraser.png") no-repeat 3px center;
+  border: 1px solid #bbb;
+  padding: 3px 3px 3px 18px;
   text-align : left;
 }
 .aloha .aloha-multisplit .aloha-ui-multisplit-fullwidth:hover {
@@ -2441,13 +2438,19 @@ input.ui-button {
 }
 .aloha .aloha-ui-component-group {
   float : left;
-  //border : 1px solid #e0e0e0;
   padding : 2px 12px 2px 8px;
   min-height: 54px;
   margin : 2px;
   vertical-align : top;
-
-  border-right: 1px solid @color-alto;
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    height: 54px;
+    top: 0;
+    right: 0;
+    border-right: 1px solid #d9d9d9;
+  }
 }
 
 .aloha .aloha-ui-clear {
@@ -2455,11 +2458,13 @@ input.ui-button {
   clear : both;
 }
 .aloha.aloha-dialog {
-  padding : 0 2px 2px;
-  border : 1px solid #999;
-  background : #f0f0f0;
-  color : #555;
-  font-size : 12px;
+  padding : 24px;
+  border : none;
+  border-radius: 4px;
+  background : white;
+  color : @color-mineshaft;
+  box-shadow: @md-box-shadow;
+  font-size : 14px;
   text-align : left;
 }
 .aloha.aloha-dialog .ui-dialog-titlebar {
@@ -3224,6 +3229,7 @@ input.aloha-wai-red {
 
 /*
  * Custom Aloha Editor theme for Mesh
+ ====================================
  */
 
 .aloha div, .aloha span, .aloha button, .aloha a, .aloha img, .aloha ol, .aloha ul, .aloha li, .aloha label {
@@ -3242,7 +3248,6 @@ input.aloha-wai-red {
   text-align : left;
   width : 100%;
   height: 95px;
-  overflow: hidden;
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
@@ -3263,82 +3268,100 @@ input.aloha-wai-red {
   .ui-state-default .aloha-icon:not(.aloha-large-icon):not(.aloha-icon-definitionlist) {
     background-image : url('../assets/images/aloha-icons/custom-aloha-icons.png');
   }
+  .aloha-icon-indent {
+    background: url("../assets/images/aloha-icons/format_indent_increase.png") no-repeat center center !important;
+  }
+  .aloha-icon-outdent {
+    background: url("../assets/images/aloha-icons/format_indent_decrease.png") no-repeat center center !important;
+  }
+  // reposition some icons
+  .aloha-icon-mergecells {
+    background-position: -385px 0;
+  }
+  .aloha-icon-splitcells {
+    background-position: -401px 0;
+  }
+  .aloha-icon-table-caption {
+    background-position: -321px 0;
+  }
+  .aloha-icon-deletetable {
+    background-position: -450px 0;
+  }
 
+
+  // styling of the paragraph style selector
   .paragraph-styles {
-    font-size: 14px;
-    width: 40px;
+    font-size: 12px;
+    width: 75px;
     text-align: center;
     display: inline-block;
-    position: absolute;
-    left: 0;
     text-indent: 0;
   }
 
-  .aloha-multisplit {
-    width: 185px;
-  }
-
-  .aloha-multisplit-content {
-    width: 172px;
-  }
-
   .aloha-large-button {
-    width: 40px !important;
-    height: 25px !important;
+    width: 75px !important;
+    height: 48px !important;
   }
 
   .aloha-large-icon {
     background: none;
     color: @color-boulder;
-    height: 20px;
-    width: 40px;
-    margin-left: -21px !important;
-    margin-top: -12px !important;
+    width: 75px !important;
+    height: 48px !important;
+    margin-left: -38px !important;
+    margin-top: -23px !important;
+    display: flex;
+    align-items: center;
 
     &.aloha-large-icon-p::after {
-      content: "<p>";
+      content: "Paragraph";
       .paragraph-styles();
       font-weight: lighter;
     }
     &.aloha-large-icon-h1::after {
-      content: "<h1>";
+      content: "Heading 1";
       .paragraph-styles();
       font-weight: bold;
+      font-size: 15px;
     }
     &.aloha-large-icon-h2::after {
-      content: "<h2>";
+      content: "Heading 2";
       .paragraph-styles();
       font-weight: bold;
+      font-size: 14px;
     }
     &.aloha-large-icon-h3::after {
-      content: "<h3>";
+      content: "Heading 3";
       .paragraph-styles();
       font-weight: bold;
     }
     &.aloha-large-icon-h4::after {
-      content: "<h4>";
+      content: "Heading 4";
       .paragraph-styles();
       font-weight: normal;
     }
     &.aloha-large-icon-h5::after {
-      content: "<h5>";
+      content: "Heading 5";
       .paragraph-styles();
       font-weight: normal;
+      font-size: 11px;
     }
     &.aloha-large-icon-h6::after {
-      content: "<h6>";
+      content: "Heading 6";
       .paragraph-styles();
       font-weight: normal;
+      font-size: 10px;
     }
     &.aloha-large-icon-pre::after {
-      content: "<pre>";
+      content: "Preformatted";
       .paragraph-styles();
       font-family: "Courier New", Courier, Consolas;
+      font-size: 10px;
     }
   }
   .aloha-multisplit .ui-button-icon-only.aloha-multisplit-active {
     background: transparent;
-    border: 1px solid @color-primary !important;
+    border: 1px solid @color-dusty !important;
   }
   .ui-button-icon-only.aloha-multisplit-active {
     .aloha-large-icon {
@@ -3364,7 +3387,7 @@ input.aloha-wai-red {
 }
 .aloha .aloha-ui-toolbar .ui-button-icon-only {
   background-color : transparent;
-  border: 1px transparent;
+  border: 1px solid transparent;
 }
 .aloha .aloha-ui-toolbar .ui-button-icon-only:hover {
   outline : 0;
