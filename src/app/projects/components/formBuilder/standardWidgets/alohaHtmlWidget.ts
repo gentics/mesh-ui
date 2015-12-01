@@ -1,6 +1,7 @@
 module meshAdminUi {
 
     declare var Aloha: any;
+    declare var meshConfig: any;
 
     /**
      * This is the Aloha Editor implementation.
@@ -13,14 +14,24 @@ module meshAdminUi {
 
         // an array of functions that will be called when Aloha has loaded.
         let callbacks = [];
-        const activeAlohaPlugins = [
+        let alohaPlugins = [];
+        const defaultAlohaPlugins = [
             'common/ui',
             'common/format',
             'common/table',
             'common/highlighteditables',
-            'common/list',
-            'mesh/mesh-link'
+            'common/list'
         ];
+        // we store a reference to the toolbar element as it is re-used by all
+        // editable instances in the app, so we only need to get it once.
+        let alohaToolbar: HTMLElement;
+
+        if (meshConfig.alohaPlugins && meshConfig.alohaPlugins instanceof Array && 0 < meshConfig.alohaPlugins.length) {
+            alohaPlugins = meshConfig.alohaPlugins;
+        } else {
+            alohaPlugins = defaultAlohaPlugins;
+        }
+        alohaPlugins.push('mesh/mesh-link');
 
         class HtmlWidgetController {
 
@@ -60,57 +71,55 @@ module meshAdminUi {
              * Pull out the Aloha toolbar from the top level of the DOM, and put it above the html input area so
              * we can style it to be the correct width.
              */
-            private repositionToolbar() {
-                this.alohaToolbar = <HTMLElement>document.querySelector('.aloha-ui-toolbar');
-                this.alohaToolbar.remove();
-                this.toolbarContainer.appendChild(this.alohaToolbar);
+            private getAlohaToolbarElement() {
+                if (!alohaToolbar) {
+                    alohaToolbar = <HTMLElement>document.querySelector('.aloha-ui-toolbar');
+                    alohaToolbar.remove();
+                }
+                this.toolbarContainer.appendChild(alohaToolbar);
             }
 
             private registerBindings() {
                 let $ = Aloha.jQuery;
                 let $editorPane = $('.editor-pane-container');
-                let $toolbarContainer = $('.toolbar-container');
+                let $toolbarContainer = $(this.toolbarContainer);
 
-                const positionToolbar = () => {
+                const positionToolbarContainer = () => {
                     let containerHeight = 95;
-                    let $editable: JQuery = $('.aloha-editable');
+                    let $editable: JQuery = $(this.htmlField);
                     let paneTop = $editorPane[0].getBoundingClientRect().top;
 
                     $toolbarContainer.css({ width: $editable.width() });
-
                     if ($editable.offset().top - containerHeight < paneTop) {
-                        // float it
                         $toolbarContainer.css({ top: paneTop });
                     } else {
                         $toolbarContainer.css({ top: $editable.offset().top - containerHeight - 1 });
                     }
                 };
 
-                Aloha.bind('aloha-editable-activated', (jQueryEvent, alohaEditable) => {
-                    positionToolbar();
-                    $editorPane.on('scroll', positionToolbar);
-                    $(window).on('resize', positionToolbar);
-
+                const alohaActivated = (jQueryEvent, alohaEditable) => {
                     if (this.eventTargetIsThisElement(alohaEditable)) {
-                        this.repositionToolbar();
-                        this.alohaToolbar.classList.remove('hidden');
+                        this.getAlohaToolbarElement();
+                        positionToolbarContainer();
+                        $editorPane.on('scroll', positionToolbarContainer);
+                        $(window).on('resize', positionToolbarContainer);
+                        alohaToolbar.classList.remove('hidden');
                         this.$scope.$applyAsync(() => {
                             this.isFocused = true;
                             if (this.toolbarContainer) {
                                 this.toolbarContainer.classList.add('open');
-                                setTimeout(() => this.widgetHighlighterService.highlight(), 0);
                             }
                         });
                     }
-                });
+                };
 
-                Aloha.bind('aloha-editable-deactivated', (jQueryEvent, alohaEditable) => {
-
-                    $editorPane.off('scroll', positionToolbar);
-                    $(window).off('resize', positionToolbar);
+                const alohaDeactivated = (jQueryEvent, alohaEditable) => {
 
                     if (this.eventTargetIsThisElement(alohaEditable)) {
-                        this.alohaToolbar.classList.add('hidden');
+                        $editorPane.off('scroll', positionToolbarContainer);
+                        $(window).off('resize', positionToolbarContainer);
+                        alohaToolbar.classList.add('hidden');
+                        alohaToolbar.remove();
                         this.$scope.$apply(() => {
                             // handle the highlighting of the element
                             this.isFocused = false;
@@ -128,7 +137,11 @@ module meshAdminUi {
                             }
                         });
                     }
-                });
+                };
+
+                $(this.htmlField).aloha();
+                Aloha.bind('aloha-editable-activated', alohaActivated);
+                Aloha.bind('aloha-editable-deactivated', alohaDeactivated);
 
                 /**
                  * Model -> data binding
@@ -139,8 +152,10 @@ module meshAdminUi {
                     }
                 });
 
-                Aloha.ready(() => {
-                    $('.htmlField').aloha();
+                this.$scope.$on('$destroy', () => {
+                    Aloha.unbind('aloha-editable-activated', alohaActivated);
+                    Aloha.unbind('aloha-editable-deactivated', alohaDeactivated);
+                    $(this.htmlField).mahalo();
                 });
             }
 
@@ -155,15 +170,8 @@ module meshAdminUi {
 
         function htmlWidgetCompileFn() {
             if (!window['Aloha']) {
-                // configure Aloha editor
-                window['Aloha'] = {};
-                window['Aloha'].settings = {
-                    "sidebar": {
-                        "disabled": true
-                    },
-                    "floatingmenu": {
-                        draggable: false
-                    },
+                let activeSettings;
+                const defaultAlohaSettings = {
                     "plugins": {
                         "formatlesspaste": {
                             "config": {
@@ -188,23 +196,8 @@ module meshAdminUi {
                                     "classes": []
                                 }
                             }
-                        },
-                        "mesh-link": {
-                            "selectNodeClick": () => {
-                                return nodeSelector.open();
-                            },
-                            "resolveNodeName": (uuid: string): ng.IPromise<INode> => {
-                                return dataService.getNode(contextService.getProject().name, uuid);
-                            },
-                            "previewNodeClick": (uuid: string) => {
-                                editorService.open(uuid);
-                            }
                         }
                     },
-                    "i18n": {
-                        "current": i18nService.getCurrentLang().code
-                    },
-                    "locale": i18nService.getCurrentLang().code,
                     "logLevels": {
                         "error": true
                     },
@@ -251,6 +244,42 @@ module meshAdminUi {
                     }
                 };
 
+                const requiredAlohaSettings= {
+                    "sidebar": {
+                        "disabled": true
+                    },
+                    "floatingmenu": {
+                        draggable: false
+                    },
+                    "plugins" : {
+                        "mesh-link": {
+                            "selectNodeClick": () => {
+                                return nodeSelector.open();
+                            },
+                            "resolveNodeName": (uuid: string): ng.IPromise<INode> => {
+                                return dataService.getNode(contextService.getProject().name, uuid);
+                            },
+                            "previewNodeClick": (uuid: string) => {
+                                editorService.open(uuid);
+                            }
+                        }
+                    },
+                    "i18n": {
+                        "current": i18nService.getCurrentLang().code
+                    },
+                    "locale": i18nService.getCurrentLang().code
+                };
+
+
+                if (meshConfig.alohaSettings && 0 < Object.keys(meshConfig.alohaSettings).length) {
+                    activeSettings = angular.merge({}, meshConfig.alohaSettings, requiredAlohaSettings);
+                } else {
+                    activeSettings = angular.merge({}, defaultAlohaSettings, requiredAlohaSettings);
+                }
+                // configure Aloha editor
+                window['Aloha'] = {};
+                window['Aloha'].settings = activeSettings;
+
                 loadScript('assets/vendor/aloha-editor/lib/aloha-full.js', initAloha);
             }
         }
@@ -277,7 +306,7 @@ module meshAdminUi {
             s = document.createElement('script');
             s.type = 'text/javascript';
             s.src = src;
-            s.setAttribute('data-aloha-plugins', activeAlohaPlugins.join(','));
+            s.setAttribute('data-aloha-plugins', alohaPlugins.join(','));
             s.onload = s.onreadystatechange = function () {
                 //console.log( this.readyState ); //uncomment this line to see which ready states are called.
                 if (!r && (!this.readyState || this.readyState == 'complete')) {
@@ -303,5 +332,5 @@ module meshAdminUi {
     }
 
     angular.module('meshAdminUi.projects.formBuilder')
-           .directive('mhHtmlWidget', htmlWidgetDirective);
+        .directive('mhHtmlWidget', htmlWidgetDirective);
 }
