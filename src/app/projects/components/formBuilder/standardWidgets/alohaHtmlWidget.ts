@@ -261,13 +261,14 @@ module meshAdminUi {
                             },
                             "previewNodeClick": (uuid: string) => {
                                 editorService.open(uuid);
-                            }
+                            },
+                            "getLanguageCode": () => i18nService.getCurrentLang().code
                         }
                     },
                     "i18n": {
-                        "current": i18nService.getCurrentLang().code
+                        "current": 'en'
                     },
-                    "locale": i18nService.getCurrentLang().code
+                    "locale": 'en'
                 };
 
 

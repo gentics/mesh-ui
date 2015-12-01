@@ -134,6 +134,7 @@ define([
         resolveNodeName: () => {},
         selectedNode: <string>undefined,
         targetElement: <HTMLElement>undefined,
+		getLanguageCode: () => {},
 
 		/**
 		 * Default configuration allows links everywhere
@@ -234,6 +235,9 @@ define([
 			}
 			if ('undefined' !== typeof this.settings.resolveNodeName) {
 				this.resolveNodeName = this.settings.resolveNodeName;
+			}
+			if ('undefined' !== typeof this.settings.getLanguageCode) {
+				this.getLanguageCode = this.settings.getLanguageCode;
 			}
 			if ('undefined' !== typeof this.settings.title) {
 				this.title = this.settings.title;
@@ -850,6 +854,7 @@ define([
             if (typeof this.selectedNode !== 'undefined') {
                 href = `{{ mesh.link('${this.selectedNode}') }}`;
                 that.targetElement.setAttribute('data-mesh-uuid', this.selectedNode);
+                that.targetElement.setAttribute('data-mesh-lang', this.getLanguageCode());
                 that._selectedNodeLabel.setValue('Linked to node: ' + that.selectedNode);
 				that.hrefField.getInputElem().classList.add('hidden');
             } else {
@@ -859,12 +864,12 @@ define([
                 this.automaticallySetTitle(
                     this.hrefField,
                     this.title,
-                    this.titleregex
-                );
+					this.titleregex
+				);
 
-                href = that.hrefField.getValue();
-                that._selectedNodeLabel.setValue('');
-            }
+				href = that.hrefField.getValue();
+				that._selectedNodeLabel.setValue('');
+			}
 
 			if (that.targetElement) {
 				that.targetElement.setAttribute('href', href);
