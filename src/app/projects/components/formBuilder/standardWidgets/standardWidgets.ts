@@ -240,7 +240,9 @@ module meshAdminUi {
         public fieldModel: INodeFieldModel;
         public value: any;
 
-        constructor(private nodeSelector: NodeSelector) {
+        constructor(private nodeSelector: NodeSelector,
+                    private contextService: ContextService,
+                    private mu: MeshUtils) {
         }
 
         public showDialog(event: ng.IAngularEvent) {
@@ -254,20 +256,14 @@ module meshAdminUi {
             event.preventDefault();
             this.nodeSelector.open(options)
                 .then(nodes => {
-                    let newVal = this.maskNode(nodes[0]);
+                    let newVal = nodes[0];
                     this.fieldModel.value = newVal;
                     this.fieldModel.update(newVal);
                 });
         }
 
-        private maskNode(node: INode) {
-            /* return {
-             uuid: node.uuid,
-             displayField: node.displayField,
-             fields: node.fields
-             };*/
-            // TODO: figure out the reason for this method, and delete if possible.
-            return node;
+        public getBinaryUrl() {
+            return this.mu.getBinaryFileUrl(this.contextService.getProject().name, this.fieldModel.value);
         }
     }
 

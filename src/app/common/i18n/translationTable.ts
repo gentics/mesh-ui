@@ -128,6 +128,10 @@ module meshAdminUi {
             en: 'New content created',
             de: 'Neue Inhalt erstellt'
         },
+        'EDIT_IMAGE': {
+            en: 'Edit Image',
+            de: 'Bild Bearbeiten'
+        },
 
         /* Common buttons */
         'SAVE_CHANGES': {

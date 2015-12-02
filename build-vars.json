@@ -17,10 +17,14 @@
       "bower_components/ace-builds/src-min-noconflict/mode-json.js",
       "bower_components/ace-builds/src-min-noconflict/worker-json.js",
       "bower_components/angular-ui-ace/ui-ace.js",
-      "bower_components/ng-file-upload/ng-file-upload.js"
+      "bower_components/ng-file-upload/ng-file-upload.js",
+      "bower_components/cropperjs/dist/cropper.js",
+      "bower_components/angularjs-slider/dist/rzslider.js"
   ],
   "VENDOR_STYLES": [
       "bower_components/angular-material/angular-material.css",
-      "bower_components/angular-loading-bar/build/loading-bar.css"
+      "bower_components/angular-loading-bar/build/loading-bar.css",
+      "bower_components/cropperjs/dist/cropper.css",
+      "bower_components/angularjs-slider/dist/rzslider.css"
   ]
 }

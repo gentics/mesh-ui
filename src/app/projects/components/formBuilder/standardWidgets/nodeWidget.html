@@ -2,6 +2,7 @@
     <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
 
     <div class="node-ref-thumb" ng-if="vm.fieldModel.value.binaryProperties">
+        <editable-image src="vm.getBinaryUrl()"></editable-image>
         <binary-thumbnail src-node="vm.fieldModel.value"></binary-thumbnail>
     </div>
 

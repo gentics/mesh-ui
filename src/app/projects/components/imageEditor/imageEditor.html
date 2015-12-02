@@ -1,0 +1,54 @@
+<md-dialog flex="90" class="image-editor-dialog">
+    <md-dialog-content class="md-dialog-content">
+
+        <md-tabs md-dynamic-height md-no-ink md-no-ink-bar>
+            <md-tab id="crop">
+                <md-tab-label>Crop Image</md-tab-label>
+                <md-tab-body>
+                    <div class="crop-wrapper">
+                        <img id="mesh-image-editor-subject" ng-src="{{ vm.src }}">
+                    </div>
+                </md-tab-body>
+            </md-tab>
+            <md-tab id="resize">
+                <md-tab-label>Resize Image</md-tab-label>
+                <md-tab-body>
+                    <div class="resize-wrapper" layout="column">
+
+                        <div class="resize-area" flex layout="row" layout-align="center center">
+                            <div class="resize-container" ng-style="vm.resizeContainerStyle">
+                                <img ng-src="{{ vm.src }}" class="resize-image"
+                                     ng-style="vm.resizeImageStyle">
+                            </div>
+                        </div>
+
+                        <div class="resize-controls" flex="20" layout="row">
+                            <rzslider rz-slider-model="vm.scale" rz-slider-options="vm.sliderOptions" flex></rzslider>
+
+                            <md-input-container flex="10">
+                                <label>Width</label>
+                                <input type="number" min="0" step="1" ng-model="vm.scaleWidth" ng-change="vm.changeScaleWidth()">
+                            </md-input-container>
+
+                            <md-input-container flex="10">
+                                <label>Height</label>
+                                <input type="number" min="0" step="1" ng-model="vm.scaleHeight" ng-change="vm.changeScaleHeight()">
+                            </md-input-container>
+                        </div>
+
+                    </div>
+                </md-tab-body>
+            </md-tab>
+        </md-tabs>
+
+    </md-dialog-content>
+
+    <div class="md-actions">
+        <button ng-click="vm.save()" class="btn btn-primary">
+            <span translate>SAVE_CHANGES</span>
+        </button>
+        <button ng-click="vm.cancel()" class="btn">
+            <span translate>CANCEL</span>
+        </button>
+    </div>
+</md-dialog>

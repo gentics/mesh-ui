@@ -29,7 +29,9 @@
     "angular-drag-and-drop-lists": "~1.2.0",
     "moment": "~2.10.6",
     "angular-ui-ace": "bower",
-    "ng-file-upload": "~9.1.2"
+    "ng-file-upload": "~9.1.2",
+    "cropperjs": "~0.4.0",
+    "angularjs-slider": "~2.1.0"
   },
   "resolutions": {
     "angular": "~1.4.1"

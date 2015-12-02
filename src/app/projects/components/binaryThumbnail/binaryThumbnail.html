@@ -1,5 +1,5 @@
 <div class="binary-thumbnail" layout="row" layout-align="center center">
-    <img ng-if="vm.srcNode && vm.isImage()" ng-src="{{ vm.getFileUrl() }}" />
+    <img ng-if="vm.srcNode && vm.isImage()" ng-src="{{ vm.getFileUrl() }}"/>
     <img ng-if="vm.srcFile && vm.isImage()" ngf-src="!vm.srcFile.$error && vm.srcFile" />
 
     <div ng-if="vm.srcNode && !vm.srcNode.binaryProperties && vm.srcNode.container" class="non-image-preview">
