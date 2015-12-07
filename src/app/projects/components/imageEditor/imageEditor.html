@@ -15,25 +15,42 @@
                 <md-tab-body>
                     <div class="resize-wrapper" layout="column">
 
-                        <div class="resize-area" flex layout="row" layout-align="center center">
-                            <div class="resize-container" ng-style="vm.resizeContainerStyle">
+                        <div class="resize-area" flex>
+
+                            <div class="resize-container"
+                                 ng-style="vm.resizeContainerStyle">
                                 <img ng-src="{{ vm.src }}" class="resize-image"
                                      ng-style="vm.resizeImageStyle">
                             </div>
+
                         </div>
 
-                        <div class="resize-controls" flex="20" layout="row">
-                            <rzslider rz-slider-model="vm.scale" rz-slider-options="vm.sliderOptions" flex></rzslider>
+                        <div class="resize-controls" flex="20" layout="column">
 
-                            <md-input-container flex="10">
-                                <label>Width</label>
-                                <input type="number" min="0" step="1" ng-model="vm.scaleWidth" ng-change="vm.changeScaleWidth()">
-                            </md-input-container>
+                            <div class="slider-container">
+                                <rzslider rz-slider-model="vm.scale" rz-slider-options="vm.sliderOptions"></rzslider>
+                            </div>
 
-                            <md-input-container flex="10">
-                                <label>Height</label>
-                                <input type="number" min="0" step="1" ng-model="vm.scaleHeight" ng-change="vm.changeScaleHeight()">
-                            </md-input-container>
+                            <div layout="row">
+
+                                <div class="button-container">
+                                    <button class="btn" ng-click="vm.resetScale()" ng-disabled="vm.scale === 1">
+                                        <i class="icon-undo"></i> Reset to original size
+                                    </button>
+                                </div>
+
+                                <md-input-container flex="10">
+                                    <label>Width</label>
+                                    <input type="number" min="0" step="1" ng-model="vm.scaleWidth" ng-change="vm.changeScaleWidth()">
+                                </md-input-container>
+
+                                <md-input-container flex="10">
+                                    <label>Height</label>
+                                    <input type="number" min="0" step="1" ng-model="vm.scaleHeight" ng-change="vm.changeScaleHeight()">
+                                </md-input-container>
+
+                                <div flex></div>
+                            </div>
                         </div>
 
                     </div>

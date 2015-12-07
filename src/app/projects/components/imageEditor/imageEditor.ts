@@ -16,12 +16,14 @@ module meshAdminUi {
             height: string;
             'margin-left': string;
             'margin-top': string;
-            transform: string;
-        } = {};
+        };
         private resizeContainerStyle: {
             width: string;
             height: string;
-        } = {};
+        };
+        private resizeContainerClicked: boolean = false;
+        private resizePos = { x: 0, y: 0 };
+
 
         constructor(private $mdDialog: ng.material.IDialogService,
                     private $scope: ng.IScope,
@@ -29,12 +31,13 @@ module meshAdminUi {
 
             this.initCropper();
 
+            this.initResizePreview();
+
             this.sliderOptions = {
                 floor: 0.1,
                 ceil: 2,
                 step: 0.01,
                 precision: 2,
-                showTicks: true,
                 onChange: () => this.updateScaleDimensions()
             };
         }
@@ -59,9 +62,76 @@ module meshAdminUi {
                     }
                 });
                 this.cropper.zoomTo(1);
+
+                this.resizePos.x = window.innerWidth / 2;
+                this.resizePos.y = (<HTMLElement>document.querySelector('.resize-area')).offsetHeight / 2;
             });
         }
 
+        /**
+         * Position the resize preview container in the center, and register the event handlers for moving
+         * it around.
+         */
+        private initResizePreview() {
+            const getEventProp = (event: MouseEvent|TouchEvent, prop: string) => {
+                return (event instanceof TouchEvent) ? event.touches[0][prop] : event[prop];
+            };
+            const getClientX = event => getEventProp(event, 'clientX');
+            const getClientY = event => getEventProp(event, 'clientY');
+            const setContainerTransform = (container: HTMLElement, dx, dy): number[] => {
+                let data = this.cropper.getData();
+                let x = dx + this.resizePos.x - data.width * this.scale / 2;
+                let y = dy + this.resizePos.y - data.height * this.scale / 2;
+                container.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+                return [x, y];
+            };
+
+            setTimeout(() => {
+                let moving = false;
+                let $previewContainer = angular.element(document.querySelector('.resize-container'));
+                let ox, oy; // origin coordinates of drag
+                let lx, ly; // last coordinates set
+                let dx = 0;
+                let dy = 0;
+                setContainerTransform($previewContainer[0], 0, 0);
+
+                const move = (event: MouseEvent|TouchEvent) => {
+                    event.preventDefault();
+                    dx = getClientX(event) - ox;
+                    dy = getClientY(event) - oy;
+                    [lx, ly] = setContainerTransform($previewContainer[0], dx, dy);
+                };
+
+                const endMove = (event: MouseEvent|TouchEvent) => {
+                    event.preventDefault();
+                    moving = false;
+                    ox = lx;
+                    oy = ly;
+                    let data = this.cropper.getData();
+                    this.resizePos.x = ox + data.width * this.scale / 2;
+                    this.resizePos.y = oy + data.height * this.scale / 2;
+                    $previewContainer.off('mousemove touchmove', move);
+                    $previewContainer.off('mouseup touchend mouseleave', endMove)
+                };
+
+                const startMove = (event: MouseEvent|TouchEvent) => {
+                    event.preventDefault();
+                    ox = getClientX(event);
+                    oy = getClientY(event);
+                    moving = true;
+                    $previewContainer.on('mousemove touchmove', move);
+                    $previewContainer.on('mouseup touchend mouseleave', endMove)
+                };
+
+
+                $previewContainer.on('mousedown touchstart', startMove);
+            });
+        }
+
+        public resetScale() {
+            this.scale = 1;
+            this.updateScaleDimensions();
+        }
         public changeScaleWidth() {
             this.scale = this.scaleWidth / this.cropData.width;
             this.updateScaleDimensions();
@@ -73,23 +143,38 @@ module meshAdminUi {
 
 
         public setImageResizeStyles() {
+            const scale = (val: number) => val * this.scale;
             let data = this.cropper.getData();
             let imageData = this.cropper.getImageData();
-            let previewWidth = data.width;
-            let imageScaledRatio = data.width / previewWidth;
 
             this.resizeImageStyle = {
-                width: imageData.naturalWidth / imageScaledRatio * this.scale + 'px',
-                height: imageData.naturalHeight / imageScaledRatio * this.scale + 'px',
-                'margin-left': -data.x / imageScaledRatio * this.scale + 'px',
-                'margin-top': -data.y / imageScaledRatio * this.scale + 'px',
-                transform: `scale(1, 1)`
-                //transform: `scale(${this.scale}, ${this.scale})`
+                width: scale(imageData.naturalWidth) + 'px',
+                height: scale(imageData.naturalHeight) + 'px',
+                'margin-left': -scale(data.x) + 'px',
+                'margin-top': -scale(data.y) + 'px'
             };
+
+            let translateX = this.resizePos.x - data.width * this.scale / 2;
+            let translateY = this.resizePos.y - data.height * this.scale / 2;
             this.resizeContainerStyle = {
-                width: data.width * this.scale + 'px',
-                height: data.height * this.scale + 'px',
+                width: scale(data.width) + 'px',
+                height: scale(data.height) + 'px',
+                transform: `translate3d(${translateX}px, ${translateY}px, 0)`
             }
+        }
+
+        public mouseDown(event: MouseEvent) {
+            this.resizeContainerClicked = true;
+        }
+
+        public mouseMove(event: MouseEvent) {
+            if (this.resizeContainerClicked) {
+
+            }
+        }
+
+        public mouseUp(event: MouseEvent) {
+
         }
 
 

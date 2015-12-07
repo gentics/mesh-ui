@@ -18,16 +18,30 @@
 
   }
   .resize-container {
+    cursor: move;
     overflow: hidden;
-    outline: 1px solid blue;
+    position: absolute;
+    box-shadow: @md-box-shadow;
 
     .resize-image {
-      outline: 1px solid red;
       display: block;
       min-width: 0;
       min-height: 0;
       max-width: none;
       max-height: none;
+    }
+  }
+
+  .resize-controls {
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.7);
+
+    .button-container {
+      padding-top: 20px;
+    }
+
+    .slider-container {
+      padding: 0 20px;
     }
   }
 }
