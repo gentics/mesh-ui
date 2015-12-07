@@ -7,6 +7,17 @@
                 <md-tab-body>
                     <div class="crop-wrapper">
                         <img id="mesh-image-editor-subject" ng-src="{{ vm.src }}">
+
+
+                        <div class="crop-controls">
+                            <h3>Aspect Ratio <small>{{ vm.cropperOptions.aspectRatio }}</small></h3>
+                            <md-radio-group ng-model="vm.cropperOptions.aspectRatio"
+                                            ng-change="vm.setAspectRatio(vm.cropperOptions.aspectRatio)">
+                                <md-radio-button value="original" class="md-primary">Original</md-radio-button>
+                                <md-radio-button value="square">Square</md-radio-button>
+                                <md-radio-button value="free">Free</md-radio-button>
+                            </md-radio-group>
+                        </div>
                     </div>
                 </md-tab-body>
             </md-tab>

@@ -7,32 +7,22 @@ module meshAdminUi {
         public scale: number = 1;
         public scaleWidth: number;
         public scaleHeight: number;
+        public cropperOptions;
+        public sliderOptions;
 
+        // Stores the object returned by the Cropper#getData() method.
         private cropData;
         private cropper;
-        private sliderOptions;
-        private resizeImageStyle: {
-            width: string;
-            height: string;
-            'margin-left': string;
-            'margin-top': string;
-        };
-        private resizeContainerStyle: {
-            width: string;
-            height: string;
-        };
-        private resizeContainerClicked: boolean = false;
+        private resizeImageStyle: any = {};
+        private resizeContainerStyle: any = {};
         private resizePos = { x: 0, y: 0 };
-
 
         constructor(private $mdDialog: ng.material.IDialogService,
                     private $scope: ng.IScope,
                     private src: string) {
 
             this.initCropper();
-
             this.initResizePreview();
-
             this.sliderOptions = {
                 floor: 0.1,
                 ceil: 2,
@@ -40,14 +30,15 @@ module meshAdminUi {
                 precision: 2,
                 onChange: () => this.updateScaleDimensions()
             };
+            this.cropperOptions = {
+                aspectRatio: 'free'
+            };
         }
 
-        private updateScaleDimensions() {
-            this.scaleWidth = Math.round(this.cropData.width * this.scale);
-            this.scaleHeight = Math.round(this.cropData.height * this.scale);
-            this.setImageResizeStyles();
-        }
-
+        /**
+         * Initialize the Cropper plugin. A setTimeout is required to allow Angular to
+         * create and append the DOM nodes needed to init the cropper.
+         */
         private initCropper() {
             setTimeout(() => {
                 let image = document.querySelector('#mesh-image-editor-subject');
@@ -55,16 +46,14 @@ module meshAdminUi {
                     dragMode: 'move',
                     toggleDragModeOnDblclick: false,
                     rotatable: false,
+                    autoCropArea: 1,
                     crop: data => {
                         this.cropData = data;
-                        this.$scope.$apply(() => this.setImageResizeStyles());
+                        this.$scope.$applyAsync(() => this.setImageResizeStyles());
                         this.updateScaleDimensions();
                     }
                 });
                 this.cropper.zoomTo(1);
-
-                this.resizePos.x = window.innerWidth / 2;
-                this.resizePos.y = (<HTMLElement>document.querySelector('.resize-area')).offsetHeight / 2;
             });
         }
 
@@ -78,38 +67,27 @@ module meshAdminUi {
             };
             const getClientX = event => getEventProp(event, 'clientX');
             const getClientY = event => getEventProp(event, 'clientY');
-            const setContainerTransform = (container: HTMLElement, dx, dy): number[] => {
-                let data = this.cropper.getData();
-                let x = dx + this.resizePos.x - data.width * this.scale / 2;
-                let y = dy + this.resizePos.y - data.height * this.scale / 2;
-                container.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-                return [x, y];
-            };
 
             setTimeout(() => {
-                let moving = false;
+                this.resizePos.x = window.innerWidth / 2;
+                this.resizePos.y = (<HTMLElement>document.querySelector('.resize-area')).offsetHeight / 2;
                 let $previewContainer = angular.element(document.querySelector('.resize-container'));
                 let ox, oy; // origin coordinates of drag
-                let lx, ly; // last coordinates set
                 let dx = 0;
                 let dy = 0;
-                setContainerTransform($previewContainer[0], 0, 0);
+                this.resizeContainerStyle.transform = this.makeTransformString(0, 0);
 
                 const move = (event: MouseEvent|TouchEvent) => {
                     event.preventDefault();
                     dx = getClientX(event) - ox;
                     dy = getClientY(event) - oy;
-                    [lx, ly] = setContainerTransform($previewContainer[0], dx, dy);
+                    this.$scope.$apply(() => this.resizeContainerStyle.transform = this.makeTransformString(dx, dy));
                 };
 
                 const endMove = (event: MouseEvent|TouchEvent) => {
                     event.preventDefault();
-                    moving = false;
-                    ox = lx;
-                    oy = ly;
-                    let data = this.cropper.getData();
-                    this.resizePos.x = ox + data.width * this.scale / 2;
-                    this.resizePos.y = oy + data.height * this.scale / 2;
+                    this.resizePos.x += dx;
+                    this.resizePos.y += dy;
                     $previewContainer.off('mousemove touchmove', move);
                     $previewContainer.off('mouseup touchend mouseleave', endMove)
                 };
@@ -118,68 +96,100 @@ module meshAdminUi {
                     event.preventDefault();
                     ox = getClientX(event);
                     oy = getClientY(event);
-                    moving = true;
                     $previewContainer.on('mousemove touchmove', move);
                     $previewContainer.on('mouseup touchend mouseleave', endMove)
                 };
-
 
                 $previewContainer.on('mousedown touchstart', startMove);
             });
         }
 
+        /**
+         * Create a string representing the CSS "transform" property for positioning the
+         * scale preview container.
+         * @param dx - an x delta to offset the position by
+         * @param dy - a y delta to offset the position by
+         */
+        private makeTransformString(dx = 0, dy = 0): string {
+            let data = this.cropper.getData();
+            let x = dx + this.resizePos.x - data.width * this.scale / 2;
+            let y = dy + this.resizePos.y - data.height * this.scale / 2;
+            return `translate3d(${x}px, ${y}px, 0)`;
+        }
+
+        /**
+         * Set the aspect ratio of the crop box.
+         * @param mode - either 'original', 'square', or 'free'
+         */
+        public setAspectRatio(mode: string) {
+            let ratio = null;
+            if (mode === 'original') {
+                ratio = this.cropper.getImageData().aspectRatio;
+            } else if (mode === 'square') {
+                ratio = 1;
+            }
+            this.cropper.setAspectRatio(ratio);
+        }
+
+        /**
+         * Set the scale back to 1.
+         */
         public resetScale() {
             this.scale = 1;
             this.updateScaleDimensions();
         }
+
+        /**
+         * Set the scale based on a change to the width value
+         */
         public changeScaleWidth() {
             this.scale = this.scaleWidth / this.cropData.width;
             this.updateScaleDimensions();
         }
+
+        /**
+         * Set the scale based on a change to the height value
+         */
         public changeScaleHeight() {
             this.scale = this.scaleHeight / this.cropData.height;
             this.updateScaleDimensions();
         }
 
+        /**
+         * Update the dimensions of the resize preview.
+         */
+        private updateScaleDimensions() {
+            this.scaleWidth = Math.round(this.cropData.width * this.scale);
+            this.scaleHeight = Math.round(this.cropData.height * this.scale);
+            this.setImageResizeStyles();
+        }
 
+        /**
+         * Calculate and set values for the objects which are bound to the resize preview DOM CSS.
+         */
         public setImageResizeStyles() {
             const scale = (val: number) => val * this.scale;
-            let data = this.cropper.getData();
             let imageData = this.cropper.getImageData();
 
             this.resizeImageStyle = {
                 width: scale(imageData.naturalWidth) + 'px',
                 height: scale(imageData.naturalHeight) + 'px',
-                'margin-left': -scale(data.x) + 'px',
-                'margin-top': -scale(data.y) + 'px'
+                'margin-left': -scale(this.cropData.x) + 'px',
+                'margin-top': -scale(this.cropData.y) + 'px'
             };
 
-            let translateX = this.resizePos.x - data.width * this.scale / 2;
-            let translateY = this.resizePos.y - data.height * this.scale / 2;
             this.resizeContainerStyle = {
-                width: scale(data.width) + 'px',
-                height: scale(data.height) + 'px',
-                transform: `translate3d(${translateX}px, ${translateY}px, 0)`
-            }
+                width: scale(this.cropData.width) + 'px',
+                height: scale(this.cropData.height) + 'px',
+                transform: this.makeTransformString()
+            };
         }
-
-        public mouseDown(event: MouseEvent) {
-            this.resizeContainerClicked = true;
-        }
-
-        public mouseMove(event: MouseEvent) {
-            if (this.resizeContainerClicked) {
-
-            }
-        }
-
-        public mouseUp(event: MouseEvent) {
-
-        }
-
 
         public save() {
-            this.$mdDialog.hide();
+            let returnData = this.cropData;
+            returnData.scaleX = this.scale;
+            returnData.scaleY = this.scale;
+            this.$mdDialog.hide(returnData);
         }
 
         public cancel() {
@@ -187,6 +197,10 @@ module meshAdminUi {
         }
     }
 
+    /**
+     * This controller is responsible for creating and opening the modal window which
+     * contains the image editor component.
+     */
     class EditableImageController {
         private src: string;
 
@@ -196,14 +210,15 @@ module meshAdminUi {
         public editImage() {
             console.log('gonna edit', this.src);
             return this.$mdDialog.show({
-                templateUrl: 'projects/components/imageEditor/imageEditor.html',
-                controller: 'ImageEditorController',
-                controllerAs: 'vm',
-                locals: {
-                    src: this.src
-                },
-                bindToController: true
-            });
+                    templateUrl: 'projects/components/imageEditor/imageEditor.html',
+                    controller: 'ImageEditorController',
+                    controllerAs: 'vm',
+                    locals: {
+                        src: this.src
+                    },
+                    bindToController: true
+                })
+                .then(result => console.log(result));
         }
     }
 

@@ -3,14 +3,31 @@
   width: 98%;
   max-width: 98%;
 
+  @controls-bg: rgba(255, 255, 255, 0.7);
+
   .crop-wrapper {
     width: 100%;
-    height: 80vh;
+    height: 75vh;
     max-height: 80vh;
   }
 
+  .crop-controls {
+    z-index: 10;
+    padding: 10px;
+    background-color: white;
+    position: absolute;
+    left: 0;
+    bottom: -118px;
+    opacity: 0.6;
+    transition: opacity 0.3s, bottom 0.3s;
+    &:hover {
+      opacity: 1;
+      bottom: 0;
+    }
+  }
+
   .resize-wrapper {
-    height: 80vh;
+    height: 75vh;
     max-height: 80vh;
   }
 
@@ -30,11 +47,15 @@
       max-width: none;
       max-height: none;
     }
+
+    &:hover {
+      outline: 1px solid @color-primary;
+    }
   }
 
   .resize-controls {
     z-index: 10;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: @controls-bg;
 
     .button-container {
       padding-top: 20px;
