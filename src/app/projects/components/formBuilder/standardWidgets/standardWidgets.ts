@@ -282,9 +282,7 @@ module meshAdminUi {
         private listFieldModels: INodeFieldModel[] = [];
 
         constructor(private $scope: ng.IScope,
-                    private $element: ng.IAugmentedJQuery,
                     private dataService: DataService,
-                    private widgetHighlighterService: WidgetHighlighterService,
                     private mu: MeshUtils) {
             super($scope);
 
@@ -345,7 +343,6 @@ module meshAdminUi {
                 .then(newMicroschemaObject => {
                     this.fieldModel.value.push(newMicroschemaObject);
                     this.fieldModel.update(this.fieldModel.value);
-                    this.reHighlight();
                 });
         }
 
@@ -353,10 +350,12 @@ module meshAdminUi {
          * Add a new primitive-type item to the list
          */
         public addItem() {
-            var defaultValue = this.getDefaultValue(this.fieldModel.type);
+            var defaultValue = this.getDefaultValue(this.fieldModel);
+            if (typeof this.fieldModel.value === 'undefined') {
+                this.fieldModel.value = [];
+            }
             this.fieldModel.value.push(defaultValue);
             this.fieldModel.update(this.fieldModel.value);
-            this.reHighlight();
         }
 
         /**
@@ -365,7 +364,6 @@ module meshAdminUi {
         public removeItem(index: number) {
             this.fieldModel.value.splice(index, 1);
             this.fieldModel.update(this.fieldModel.value);
-            this.reHighlight();
         }
 
         /**
@@ -393,17 +391,6 @@ module meshAdminUi {
         }
 
         /**
-         * Re-apply the widget highlighting, since the height of the list
-         * would have changed after adding or removing an item. The timeout is there to allow the
-         * new dimensions to take effect (i.e. the DOM to update) before re-calculating the highlight height.
-         */
-        private reHighlight() {
-            setTimeout(() => {
-                this.widgetHighlighterService.highlight(this.$element.children()[0]);
-            }, 500);
-        }
-
-        /**
          * Create an empty microschema instance, populated with default values.
          */
         private createEmptyMicroschemaObject(microschema) {
@@ -415,8 +402,8 @@ module meshAdminUi {
                 "fields": {}
             };
 
-            microschema.fields.forEach(function (fieldObject) {
-                newMicroschemaObject.fields[fieldObject.name] = this.getDefaultValue(fieldObject);
+            microschema.fields.forEach(fieldModel => {
+                newMicroschemaObject.fields[fieldModel.name] = this.getDefaultValue(fieldModel);
             });
 
             return newMicroschemaObject;
@@ -425,36 +412,37 @@ module meshAdminUi {
         /**
          * Returns the correct default value for a field definition object.
          */
-        private getDefaultValue(fieldObject): any {
-            var defaultValue = null;
+        private getDefaultValue(fieldModel: INodeFieldModel): any {
+            let defaultValue = null;
+            let type = fieldModel.listType || fieldModel.type;
 
-            if (typeof fieldObject.defaultValue !== 'undefined') {
-                defaultValue = fieldObject.defaultValue;
+            if (typeof fieldModel.defaultValue !== 'undefined') {
+                defaultValue = fieldModel.defaultValue;
 
-            } else if (fieldObject.type === 'number') {
+            } else if (type === 'number') {
 
-                if (typeof fieldObject.min !== 'undefined') {
-                    if (typeof fieldObject.max !== 'undefined') {
-                        defaultValue = Math.round((fieldObject.min + fieldObject.max) / 2);
+                if (typeof fieldModel.min !== 'undefined') {
+                    if (typeof fieldModel.max !== 'undefined') {
+                        defaultValue = Math.round((fieldModel.min + fieldModel.max) / 2);
                     } else {
-                        defaultValue = fieldObject.min;
+                        defaultValue = fieldModel.min;
                     }
                 } else {
                     defaultValue = 0;
                 }
-            } else if (fieldObject.type === 'string' || fieldObject.type === 'html') {
+            } else if (type === 'string' || type === 'html') {
                 defaultValue = '';
-            } else if (fieldObject.type === 'boolean') {
+            } else if (type === 'boolean') {
                 defaultValue = false;
-            } else if (fieldObject.type === 'date') {
+            } else if (type === 'date') {
                 defaultValue = Math.floor(Date.now() / 1000);
-            } else if (fieldObject.type === 'select') {
-                defaultValue = fieldObject.options[0] || "";
-            } else if (fieldObject.type === 'list') {
+            } else if (type === 'select') {
+                defaultValue = fieldModel.options[0] || "";
+            } else if (type === 'list') {
                 defaultValue = {
                     items: []
                 };
-            } else if (fieldObject.type === 'node') {
+            } else if (type === 'node') {
                 defaultValue = {};
             }
 

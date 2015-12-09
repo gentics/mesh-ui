@@ -334,10 +334,14 @@ gulp.task('karma-app-templates', function() {
     return build_appTemplates();
 });
 
-gulp.task('karma-watch', ['karma-app-templates'], function() {
+function karmaWatch() {
     karma.start({
         configFile: __dirname + '/karma.conf.js'
     });
+}
+
+gulp.task('karma-watch', ['karma-app-templates'], function() {
+    karmaWatch();
 });
 
 /**
@@ -364,7 +368,8 @@ gulp.task('e2e', function() {
     }, 1000);
 });
 
-gulp.task('watch', ['default', 'karma-watch'], function() {
+gulp.task('watch', ['default'], function() {
+    karmaWatch();
     livereload.listen({ quiet: true });
     gulp.watch(['src/app/**/*.js', 'src/app/**/*.ts', '!src/app/common/aloha/**/*.ts'], build_appScripts);
     gulp.watch('src/app/common/aloha/**/*.ts', compile_aloha_plugins);

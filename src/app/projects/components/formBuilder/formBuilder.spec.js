@@ -1,12 +1,11 @@
-xdescribe('formBuilder Module', function() {
+describe('formBuilder Module', function() {
 
     var $compile,
         $scope,
         $timeout,
         containingElement;
 
-    beforeEach(module('meshAdminUi.projects.formBuilder'));
-    beforeEach(module('meshAdminUi.common'));
+    beforeEach(module('meshAdminUi'));
     beforeEach(module('ngMaterial'));
     beforeEach(module('meshAdminUi.templates'));
 
@@ -17,16 +16,23 @@ xdescribe('formBuilder Module', function() {
         containingElement = document.createElement('div');
     }));
 
-    function compileElement(fields, model) {
+    function compileElement(fields, schemaFields) {
         var html;
         $scope.fields = fields;
-        $scope.model = model;
+        $scope.schemaFields = schemaFields;
         $scope.perms = ["read", "create", "update", "delete"];
         $scope.state = {
             modified: false
         };
+        $scope.onChangeCallback = function() {};
 
-        html = '<form-builder model="model" fields="fields" modified-flag="state.modified" perms="perms"></form-builder>';
+        spyOn($scope, 'onChangeCallback');
+
+        html = '<form-builder fields="fields" ' +
+            'schema="schemaFields" ' +
+            'display-field="vm.schema.displayField" ' +
+            'on-change="onChangeCallback()" ' +
+            'perms="perms"></form-builder>';
 
         angular.element(containingElement).append($compile(html)($scope));
         $scope.$apply();
@@ -35,17 +41,17 @@ xdescribe('formBuilder Module', function() {
     describe('common input properties', function() {
 
         beforeEach(function() {
-            var fields = [{
+            var schemaFields = [{
                 "name": "myInput",
                 "label": "An Input Field",
                 "type": "string"
             }];
 
-            var model = {
+            var fields = {
                 "myInput": "foo"
             };
 
-            compileElement(fields, model);
+            compileElement(fields, schemaFields);
         });
 
         it('should populate with correct value', function() {
@@ -56,148 +62,148 @@ xdescribe('formBuilder Module', function() {
             expect(containingElement.querySelector('label').innerHTML).toEqual('An Input Field');
         });
 
-        it('should set modified flat when modified', function() {
+        it('should invoke onChange callback when changed', function() {
             var input = angular.element(containingElement.querySelector('input[type="text"]'));
 
-            expect($scope.state.modified).toEqual(false);
+            expect($scope.onChangeCallback).not.toHaveBeenCalled();
             $scope.$apply(function() {
                 input.val('bar');
                 input.triggerHandler('change');
             });
-            expect($scope.state.modified).toEqual(true);
+            expect($scope.onChangeCallback).toHaveBeenCalled();
         });
     });
 
     it('should generate a html type field', function() {
-        var fields = [{
+        var schemaFields = [{
             "name": "html",
             "label": "HTML Type",
             "type": "html"
         }];
 
-        var model = {
+        var fields = {
             "html": "<p>hello</p>"
         };
 
-        compileElement(fields, model);
+        compileElement(fields, schemaFields);
         expect(containingElement.querySelector('.htmlField').innerHTML).toEqual('<p>hello</p>');
     });
 
     it('should generate a number type field', function() {
-        var fields = [{
+        var schemaFields = [{
             "name": "number",
             "label": "Number Type",
             "type": "number"
         }];
 
-        var model = {
+        var fields = {
             "number": 42
         };
 
-        compileElement(fields, model);
+        compileElement(fields, schemaFields);
         expect(containingElement.querySelector('input[type="number"]').value).toEqual('42');
     });
 
     it('should generate a boolean type field', function() {
-        var fields = [{
+        var schemaFields = [{
             "name": "boolean",
             "label": "Boolean Type",
             "type": "boolean"
         }];
 
-        var model = {
+        var fields = {
             "boolean": true
         };
 
-        compileElement(fields, model);
+        compileElement(fields, schemaFields);
         expect(containingElement.querySelector('md-checkbox').classList).toContain('md-checked');
     });
 
     it('should generate a date type field', function() {
         var timestamp = 1433336633;
-        var fields = [{
+        var schemaFields = [{
             "name": "date",
             "label": "Date Type",
             "type": "date"
         }];
 
-        var model = {
+        var fields = {
             "date": timestamp
         };
 
-        compileElement(fields, model);
+        compileElement(fields, schemaFields);
         expect(containingElement.querySelector('input[type="date"]').value).toEqual(getDateString(timestamp));
 
     });
 
     it('should generate a select type field', function() {
-        var fields = [{
+        var schemaFields = [{
             "name": "select",
             "label": "Select Type",
             "type": "select",
             "options": ["foo", "bar", "baz"]
         }];
 
-        var model = {
+        var fields = {
             "select": "bar"
         };
 
-        compileElement(fields, model);
+        compileElement(fields, schemaFields);
         expect(containingElement.querySelector('md-select').innerHTML).toContain('bar');
     });
 
     it('should generate a list type field', function() {
-        var fields = [{
+        var schemaFields = [{
             "name": "list",
             "label": "List Type",
             "type": "list",
             "listType": "string"
         }];
 
-        var model = {
-            "list": { items: ["do", "re", "mi"] }
+        var fields = {
+            "list": ["do", "re", "mi"]
         };
 
-        compileElement(fields, model);
+        compileElement(fields, schemaFields);
         expect(containingElement.querySelectorAll('ul li').length).toEqual(3);
         expect(containingElement.querySelectorAll('ul li')[1].innerHTML).toContain('re');
     });
 
     describe('list functions', function() {
         var listContainer,
-            listScope;
+            listController;
 
-        function compileListField(fields, model) {
-            fields = fields || [{
-                "name": "list",
-                "label": "List Type",
-                "type": "list",
-                "listType": "string"
-            }];
+        function compileListField(fields, schemaFields) {
+            schemaFields = schemaFields || [{
+                    "name": "list",
+                    "label": "List Type",
+                    "type": "list",
+                    "listType": "string"
+                }];
 
-            model = model || {
-                "list": { items: ["do", "re", "mi"] }
-            };
+            fields = fields || {
+                    "list": ["do", "re", "mi"]
+                };
 
-            compileElement(fields, model);
+            compileElement(fields, schemaFields);
 
-            listContainer = containingElement.querySelector('.list-container'),
-                listScope = angular.element(listContainer).scope();
+            listContainer = containingElement.querySelector('.list-container');
+            listController = angular.element(listContainer).scope().vm;
         }
 
         it('addItem() should add a new item', function() {
             compileListField();
-            listScope.addItem();
+            listController.addItem();
 
-            expect($scope.model.list.items.length).toEqual(4);
-            expect($scope.model.list.items[3]).toEqual('');
+            expect($scope.fields.list.length).toEqual(4);
+            expect($scope.fields.list[3]).toEqual('');
         });
 
         it('removeItem() should remove an item', function() {
             compileListField();
-            listScope.removeItem(0);
+            listController.removeItem(0);
 
-            expect($scope.model.list.items).toEqual(['re', 'mi']);
+            expect($scope.fields.list).toEqual(['re', 'mi']);
         });
 
         describe('microschema instance creation with addWidget()', function() {
@@ -246,22 +252,21 @@ xdescribe('formBuilder Module', function() {
                 });
             }));
             beforeEach(function() {
-                var fields = [{
+                var schemaFields = [{
                         "name": "list",
                         "label": "List Type",
                         "type": "list",
                         "listType": "microschema",
                         "allow": ["test"]
                     }],
-                    model = {
-                        "list": {
-                            "items": []
-                        }
+                    fields = {
+                        "list": []
                     };
-                compileListField(fields, model);
-                listScope.addWidget('test');
+                compileListField(fields, schemaFields);
+                listController.addWidget('test');
+                debugger;
                 $scope.$apply();
-                scopeListObject = $scope.model.list.items[0];
+                scopeListObject = $scope.fields.list[0];
             });
 
             it('should create "microschema" property', function() {

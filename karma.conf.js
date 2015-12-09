@@ -3,6 +3,7 @@
 
 var vars = require('./build-vars.json'),
     filesArray = vars.VENDOR_SCRIPTS.concat([
+        'build/meshConfig.js',
         'bower_components/angular-mocks/angular-mocks.js',
         'build/app/templates.js',
         'build/app/app.js',
