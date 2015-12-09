@@ -53,7 +53,7 @@ module meshAdminUi {
             return schemaFields.map(schemaField => {
                 let model: INodeFieldModel = <INodeFieldModel>angular.copy(schemaField);
                 model.id = this.mu.generateGuid();
-                model.value = nodeFields[schemaField.name];
+                model.value = angular.copy(nodeFields[schemaField.name]);
                 model.path = [schemaField.name];
                 model.canUpdate = canUpdate;
                 model.isDisplayField = schemaField.name === this.displayField;
