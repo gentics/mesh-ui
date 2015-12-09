@@ -4,6 +4,10 @@
   text-transform: uppercase;
   padding-bottom: 4rem;
 
+  .responsive-max(@mq-sm, {
+    padding-bottom: 0;
+  });
+
   a:link, a:visited {
     color: @color-boulder;
     transition: color 0.2s;

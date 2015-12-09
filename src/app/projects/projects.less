@@ -18,26 +18,28 @@ body.project-module {
 }
 
 .explorer-pane {
-  .responsive-max(@mq-sm, {
-   /* max-width: 45% !important;
-    min-width: 45% !important;*/
+  .responsive-max(@mq-md, {
+    max-width: none !important;
+    min-width: 0 !important;
+    padding-left: 8px;
   });
 }
 
 .projects-sliding-container {
-  .responsive-max(@mq-sm, {
-    width: 90vw !important;
+  .responsive-max(@mq-md, {
+    width: 100vw !important;
     overflow-x: hidden;
     overflow-y: visible;
+    padding-top: 22px;
   });
 
   .projects-sliding-frame {
-    .responsive-max(@mq-sm, {
-      width: 180vw !important;
+    .responsive-max(@mq-md, {
+      width: 198vw !important;
       transition: transform 0.3s;
-    &.edit-view {
-      transform: translateX(-90vw);
-    }
+      &.edit-view {
+        transform: translateX(-100vw);
+      }
     });
   }
 
