@@ -172,7 +172,8 @@ module meshAdminUi {
          * the properties of each touch.
          */
         private getEventProp(event: MouseEvent|TouchEvent, prop: string): any {
-            return (event instanceof TouchEvent) ? event.touches[0][prop] : event[prop];
+            let isTouchEvent = typeof TouchEvent !== 'undefined' && event instanceof TouchEvent;
+            return isTouchEvent ? (<TouchEvent>event).touches[0][prop] : event[prop];
         }
 
     }

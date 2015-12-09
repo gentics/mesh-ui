@@ -75,6 +75,16 @@ module meshAdminUi {
             }
         });
 
+        // Polyfill for HTMLElement#remove()
+        // https://developer.mozilla.org/en-US/docs/Web/API/ChildNode/remove#Polyfill
+        if (!('remove' in Element.prototype)) {
+            Element.prototype.remove = function() {
+                if (this.parentNode) {
+                    this.parentNode.removeChild(this);
+                }
+            };
+        }
+
         /**
          * Register a callback to redirect to the login screen whenever the user gets
          * logged out.
