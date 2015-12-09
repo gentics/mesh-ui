@@ -43,29 +43,38 @@ module meshAdminUi {
                     private wipService: WipService,
                     private notifyService: NotifyService) {
 
+            let ignoreNext = false;
+
             const init = (event: ng.IAngularEvent, nodeUuid: string, schemaUuid?: string, parentNodeUuid?: string) => {
                 /**
                  * When a new node is created, this init function will first be called when the editorService.create()
-                 * is invoked and publishes the editorServiceNodeOpened event. Next, the url will change to the new
-                 * temp id of the new node. This will trigger a watcher in the editorService which then opens
-                 * that temp id, triggering a new editorServiceNodeOpened event. In order to prevent this init function
-                 * being called twice, we will ignore the case then the nodeUuid is a temp id (= contains hyphens).
+                 * is invoked and publishes the editorServiceNodeOpened event. In this case, nodeUuid is undefined.
+                 *
+                 * Next, the url will change to the new  temp id of the new node. This will trigger a watcher in the
+                 * editorService which then opens that temp id, triggering a new editorServiceNodeOpened event.
+                 * In order to prevent this init function being called twice, we set the `ignoreNext` value to
+                 * true (at the bottom of this function), and then the next call to init() will set it
+                 * back to false and return.
                  */
-                const isTempId = (uuid: string) => -1 < uuid.indexOf('-');
-                if (!nodeUuid || !isTempId(nodeUuid)) {
-                    this.projectName = contextService.getProject().name;
-                    this.currentNodeId = nodeUuid;
-                    this.contentModified = false;
-                    this.node = undefined;
-                    this.tags = [];
-                    this.selectedLangs = {};
-                    this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
-                    this.isLoaded = false;
-                    this.binaryFile = undefined;
-                    this.getNodeData(schemaUuid, parentNodeUuid)
-                        .then(() => this.isLoaded = true)
-                        .then(() => $location.search('edit', this.node.uuid));
+                if (ignoreNext) {
+                    ignoreNext = false;
+                    return;
                 }
+
+                this.projectName = contextService.getProject().name;
+                this.currentNodeId = nodeUuid;
+                this.contentModified = false;
+                this.node = undefined;
+                this.tags = [];
+                this.selectedLangs = {};
+                this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
+                this.isLoaded = false;
+                this.binaryFile = undefined;
+                this.getNodeData(schemaUuid, parentNodeUuid)
+                    .then(() => this.isLoaded = true)
+                    .then(() => $location.search('edit', this.node.uuid));
+
+                ignoreNext = (typeof nodeUuid === 'undefined');
             };
 
             const empty = () => {
