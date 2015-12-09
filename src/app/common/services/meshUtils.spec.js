@@ -112,73 +112,103 @@ describe('meshUtils', function() {
             expect(mu.isImageNode(node)).toEqual(true);
         });
 
-        describe('nodeTagsObjectToArray()', function() {
+    });
 
-            var tagsObject;
+    describe('nodeTagsObjectToArray()', function() {
 
-            beforeEach(function() {
-                tagsObject = {
-                    colors: {
-                        items: [
-                            { name: 'red', uuid: 'red_uuid' },
-                            { name: 'green', uuid: 'green_uuid' },
-                            { name: 'blue', uuid: 'blue_uuid' }
-                        ],
-                        uuid: 'colors_uuid'
-                    },
-                    sizes: {
-                        items: [
-                            { name: 'small', uuid: 'small_uuid' },
-                            { name: 'medium', uuid: 'medium_uuid' },
-                            { name: 'large', uuid: 'large_uuid' }
-                        ],
-                        uuid: 'sizes_uuid'
-                    }
-                };
+        var tagsObject;
+
+        beforeEach(function() {
+            tagsObject = {
+                colors: {
+                    items: [
+                        { name: 'red', uuid: 'red_uuid' },
+                        { name: 'green', uuid: 'green_uuid' },
+                        { name: 'blue', uuid: 'blue_uuid' }
+                    ],
+                    uuid: 'colors_uuid'
+                },
+                sizes: {
+                    items: [
+                        { name: 'small', uuid: 'small_uuid' },
+                        { name: 'medium', uuid: 'medium_uuid' },
+                        { name: 'large', uuid: 'large_uuid' }
+                    ],
+                    uuid: 'sizes_uuid'
+                }
+            };
+        });
+
+        it('should return empty array for undefined object', function() {
+            var result = mu.nodeTagsObjectToArray(undefined);
+            expect(result).toEqual([]);
+        });
+
+        it('should return empty array for empty object', function() {
+            var result = mu.nodeTagsObjectToArray({});
+            expect(result).toEqual([]);
+        });
+
+        it('should return an array', function() {
+            var result = mu.nodeTagsObjectToArray(tagsObject);
+            expect(result instanceof Array).toEqual(true);
+        });
+
+        it('should return the correct number of items', function() {
+            var result = mu.nodeTagsObjectToArray(tagsObject);
+            expect(result.length).toEqual(6);
+        });
+
+        it('the items should all have the correct shape', function() {
+            var result = mu.nodeTagsObjectToArray(tagsObject);
+            var correctShape = result.filter(function(item) {
+                return (item.uuid &&
+                item.fields.name &&
+                item.tagFamily.name &&
+                item.tagFamily.uuid );
             });
+            expect(correctShape.length).toBe(6);
+        });
 
-            it('should return empty array for undefined object', function() {
-                var result = mu.nodeTagsObjectToArray(undefined);
-                expect(result).toEqual([]);
-            });
+        it('the first item should have the correct properties', function() {
+            var result = mu.nodeTagsObjectToArray(tagsObject);
+            var expected = {
+                uuid: 'red_uuid',
+                fields: { name: 'red' },
+                tagFamily: { name: 'colors', uuid: 'colors_uuid' }
+            };
 
-            it('should return empty array for empty object', function() {
-                var result = mu.nodeTagsObjectToArray({});
-                expect(result).toEqual([]);
-            });
+            expect(result[0]).toEqual(expected);
+        });
 
-            it('should return an array', function() {
-                var result = mu.nodeTagsObjectToArray(tagsObject);
-                expect(result instanceof Array).toEqual(true);
-            });
+    });
 
-            it('should return the correct number of items', function() {
-                var result = mu.nodeTagsObjectToArray(tagsObject);
-                expect(result.length).toEqual(6);
-            });
+    describe('clone() method', function() {
 
-            it('the items should all have the correct shape', function() {
-                var result = mu.nodeTagsObjectToArray(tagsObject);
-                var correctShape = result.filter(function(item) {
-                    return (item.uuid &&
-                    item.fields.name &&
-                    item.tagFamily.name &&
-                    item.tagFamily.uuid );
-                });
-                expect(correctShape.length).toBe(6);
-            });
+        it('should handle primitives', function() {
+            expect(mu.clone(1)).toEqual(1);
+            expect(mu.clone('a')).toEqual('a');
+        });
 
-            it('the first item should have the correct properties', function() {
-                var result = mu.nodeTagsObjectToArray(tagsObject);
-                var expected = {
-                    uuid: 'red_uuid',
-                    fields: { name: 'red' },
-                    tagFamily: { name: 'colors', uuid: 'colors_uuid' }
-                };
+        it('should handle arrays', function() {
+            expect(mu.clone([1,2,3])).toEqual([1,2,3]);
+        });
 
-                expect(result[0]).toEqual(expected);
-            });
+        it('should handle objects', function() {
+            expect(mu.clone({foo: 'bar'})).toEqual({foo: 'bar'});
+        });
 
+        it('should actually create a new object, not a reference', function() {
+            var obj = {foo: 'bar'};
+            expect(mu.clone(obj)).not.toBe(obj);
+        });
+
+        it('changes to original should not affect clone', function() {
+            var obj1 = {foo: 'bar'};
+            var obj2 = mu.clone(obj1);
+
+            obj1.foo = 'baz';
+            expect(obj2.foo).toBe('bar');
         });
     });
 });
