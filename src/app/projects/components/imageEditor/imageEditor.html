@@ -5,66 +5,15 @@
             <md-tab id="crop">
                 <md-tab-label>Crop Image</md-tab-label>
                 <md-tab-body>
-                    <div class="crop-wrapper">
-                        <img id="mesh-image-editor-subject" ng-src="{{ vm.src }}">
-
-
-                        <div class="crop-controls">
-                            <h3>Aspect Ratio <small>{{ vm.cropperOptions.aspectRatio }}</small></h3>
-                            <md-radio-group ng-model="vm.cropperOptions.aspectRatio"
-                                            ng-change="vm.setAspectRatio(vm.cropperOptions.aspectRatio)">
-                                <md-radio-button value="original" class="md-primary">Original</md-radio-button>
-                                <md-radio-button value="square">Square</md-radio-button>
-                                <md-radio-button value="free">Free</md-radio-button>
-                            </md-radio-group>
-                        </div>
-                    </div>
+                    <image-editor-cropper params="vm.transformParams"
+                                          on-crop="vm.updateTransformParams(params)"></image-editor-cropper>
                 </md-tab-body>
             </md-tab>
-            <md-tab id="resize">
+            <md-tab id="resize" md-on-select="vm.resizeTabSelected()">
                 <md-tab-label>Resize Image</md-tab-label>
                 <md-tab-body>
-                    <div class="resize-wrapper" layout="column">
-
-                        <div class="resize-area" flex>
-
-                            <div class="resize-container"
-                                 ng-style="vm.resizeContainerStyle">
-                                <img ng-src="{{ vm.src }}" class="resize-image"
-                                     ng-style="vm.resizeImageStyle">
-                            </div>
-
-                        </div>
-
-                        <div class="resize-controls" flex="20" layout="column">
-
-                            <div class="slider-container">
-                                <rzslider rz-slider-model="vm.scale" rz-slider-options="vm.sliderOptions"></rzslider>
-                            </div>
-
-                            <div layout="row">
-
-                                <div class="button-container">
-                                    <button class="btn" ng-click="vm.resetScale()" ng-disabled="vm.scale === 1">
-                                        <i class="icon-undo"></i> Reset to original size
-                                    </button>
-                                </div>
-
-                                <md-input-container flex="10">
-                                    <label>Width</label>
-                                    <input type="number" min="0" step="1" ng-model="vm.scaleWidth" ng-change="vm.changeScaleWidth()">
-                                </md-input-container>
-
-                                <md-input-container flex="10">
-                                    <label>Height</label>
-                                    <input type="number" min="0" step="1" ng-model="vm.scaleHeight" ng-change="vm.changeScaleHeight()">
-                                </md-input-container>
-
-                                <div flex></div>
-                            </div>
-                        </div>
-
-                    </div>
+                    <image-editor-resizer params="vm.transformParams"
+                                          on-resize="vm.updateTransformParams(params)"></image-editor-resizer>
                 </md-tab-body>
             </md-tab>
         </md-tabs>
