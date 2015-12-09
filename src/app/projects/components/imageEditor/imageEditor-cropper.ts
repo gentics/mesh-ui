@@ -9,12 +9,14 @@ module meshAdminUi {
         private cropper;
         private onCrop: Function;
 
-        constructor() {
+        constructor($scope: ng.IScope) {
             this.cropperOptions = {
                 aspectRatio: 'free'
             };
 
             this.initCropper();
+
+            $scope.$on('$destroy', () => this.cropper.destroy());
         }
 
         /**
@@ -38,13 +40,20 @@ module meshAdminUi {
                         };
                         this.onCrop({ params: params });
                         this.updateParams();
+
+                        // set the image to 100%
+                        this.cropper.zoomTo(1);
+                        // setting aspect ratio to null forces the crop area to match image dimensions
+                        this.cropper.setAspectRatio(null);
                     },
                     cropend: () => this.updateParams()
                 });
-                this.cropper.zoomTo(1);
             });
         }
 
+        /**
+         * Invoke the onCrop callback, passing the current crop parameters.
+         */
         private updateParams() {
             let data = this.cropper.getData();
             let params = {
@@ -68,6 +77,7 @@ module meshAdminUi {
                 ratio = 1;
             }
             this.cropper.setAspectRatio(ratio);
+            this.updateParams();
         }
 
     }

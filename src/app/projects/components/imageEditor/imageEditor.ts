@@ -14,9 +14,13 @@ module meshAdminUi {
     class ImageEditorController {
 
         public transformParams: IImageTransformParams;
+        // used to hide the contents which the cropper is initializing to
+        // prevent some layout thrashing.
+        public loaded: boolean = false;
 
         constructor(private $mdDialog: ng.material.IDialogService,
                     private $scope: ng.IScope,
+                    $timeout: ng.ITimeoutService,
                     private src: string) {
 
             this.transformParams = {
@@ -29,6 +33,8 @@ module meshAdminUi {
                 cropHeight: 0,
                 scale: 1
             };
+
+            $timeout(() => this.loaded = true, 500);
         }
 
         /**
@@ -80,17 +86,16 @@ module meshAdminUi {
         constructor(private $mdDialog: ng.material.IDialogService) {
         }
 
-        public editImage() {
+        public editImage(): ng.IPromise<IImageTransformParams> {
             return this.$mdDialog.show({
-                    templateUrl: 'projects/components/imageEditor/imageEditor.html',
-                    controller: 'ImageEditorController',
-                    controllerAs: 'vm',
-                    locals: {
-                        src: this.src
-                    },
-                    bindToController: true
-                })
-                .then(result => console.log(result));
+                templateUrl: 'projects/components/imageEditor/imageEditor.html',
+                controller: 'ImageEditorController',
+                controllerAs: 'vm',
+                locals: {
+                    src: this.src
+                },
+                bindToController: true
+            });
         }
     }
 
@@ -100,12 +105,16 @@ module meshAdminUi {
     function editableImageDirective() {
         return {
             restrict: 'E',
-            template: `<div class="editable-image-button">
-                            <button type="button" ng-click="vm.editImage()">EDIT</button>
+            template: `<div class="editable-image-container">
+                            <div class="edit-image-button" ng-click="vm.editImage()">
+                                <i class="icon-crop"></i> <span translate>EDIT</span>
+                            </div>
+                            <ng-transclude></ng-transclude>
                        </div>`,
             controller: 'EditableImageController',
             controllerAs: 'vm',
             bindToController: true,
+            transclude: true,
             scope: {
                 src: '='
             },

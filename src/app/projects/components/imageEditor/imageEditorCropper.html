@@ -1,9 +1,13 @@
-<div class="crop-wrapper">
-    <img id="mesh-image-editor-subject" ng-src="{{ vm.params.src }}">
+<div class="crop-wrapper" layout="column">
 
-    <div class="crop-controls">
-        <h3>Aspect Ratio <small>{{ vm.cropperOptions.aspectRatio }}</small></h3>
-        <md-radio-group ng-model="vm.cropperOptions.aspectRatio"
+    <div class="cropper-area" flex>
+        <img id="mesh-image-editor-subject" ng-src="{{ vm.params.src }}">
+    </div>
+
+    <div class="crop-controls" layout="row">
+        <h3>Aspect Ratio</h3>
+        <md-radio-group layout="row"
+                        ng-model="vm.cropperOptions.aspectRatio"
                         ng-change="vm.setAspectRatio(vm.cropperOptions.aspectRatio)">
             <md-radio-button value="original" class="md-primary">Original</md-radio-button>
             <md-radio-button value="square">Square</md-radio-button>

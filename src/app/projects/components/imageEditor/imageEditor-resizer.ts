@@ -82,8 +82,8 @@ module meshAdminUi {
          */
         private endMove = (event: MouseEvent|TouchEvent) => {
             event.preventDefault();
-            this.resizePos.x += this.dx;
-            this.resizePos.y += this.dy;
+            this.resizePos.x += isNaN(this.dx) ? 0 : this.dx;
+            this.resizePos.y += isNaN(this.dy) ? 0 : this.dy;
             this.$previewContainer.off('mousemove touchmove', this.move);
             this.$previewContainer.off('mouseup touchend mouseleave', this.endMove)
         };
