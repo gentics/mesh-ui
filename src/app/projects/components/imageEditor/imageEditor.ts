@@ -51,6 +51,9 @@ module meshAdminUi {
                         this.cropData = data;
                         this.$scope.$applyAsync(() => this.setImageResizeStyles());
                         this.updateScaleDimensions();
+                        // the reCalcViewDimensions event is required by the rzSlider directive to
+                        // ensure the resize slider has the correct width.
+                        this.$scope.$broadcast('reCalcViewDimensions');
                     }
                 });
                 this.cropper.zoomTo(1);

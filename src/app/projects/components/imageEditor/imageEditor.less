@@ -5,10 +5,16 @@
 
   @controls-bg: rgba(255, 255, 255, 0.7);
 
-  .crop-wrapper {
+  .crop-wrapper, .resize-wrapper {
     width: 100%;
-    height: 75vh;
-    max-height: 80vh;
+    height: 70vh;
+
+    @media only screen and (min-height: 800px) {
+      height: 78vh;
+    }
+    @media only screen and (min-height: 900px) {
+      height: 81vh;
+    }
   }
 
   .crop-controls {
@@ -24,11 +30,6 @@
       opacity: 1;
       bottom: 0;
     }
-  }
-
-  .resize-wrapper {
-    height: 75vh;
-    max-height: 80vh;
   }
 
   .resize-area {
