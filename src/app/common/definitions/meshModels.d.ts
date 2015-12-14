@@ -131,8 +131,10 @@ declare module meshAdminUi {
         path: (string|number)[];
         canUpdate: boolean;
         isDisplayField: boolean;
+        onChange: Function;
         update: (value: any) => void;
         updateFnFactory: (path: any[]) => (value: any) => void;
+        createChild: (nodeFields: INodeFields, schemaField: ISchemaFieldDefinition, path: any[]) => INodeFieldModel;
     }
 
     export interface IUser extends IMeshBaseProps {

@@ -1,61 +1,92 @@
-angular.module('meshAdminUi.projects.formBuilder')
-    .directive('microschemaFormBuilder', microschemaFormBuilderDirective);
+module meshAdminUi {
 
-/**
- * Directive that takes a microschema { name, uuid } and the fields object for it,
- * and either dispatches to a custom widget (if one exists) or builds the form
- * for it from the standard set of widgets.
- */
-function microschemaFormBuilderDirective($injector, $compile, dataService) {
+    /**
+     * Directive that takes a microschema { name, uuid } and the fields object for it,
+     * and either dispatches to a custom widget (if one exists) or builds the form
+     * for it from the standard set of widgets.
+     */
+    function microschemaFormBuilderDirective($injector, $compile, dataService, formBuilderService) {
 
-    var defaultTemplate = '<div class="microschema-container editor-widget">' +
-                              '<label class="microschema-label">{{:: field.label || field.name  }}</label>' +
-                              '<div ng-repeat="field in microschemaFields">' +
-                              '<widget-proxy field="field" model="microschemaModel" path="field.name"></widget-proxy>' +
-                          '</div></div>';
+        const defaultTemplate = '<div class="microschema-container editor-widget">' +
+                                    '<label class="microschema-label">{{:: fieldModel.label || fieldModel.name  }}</label>' +
+                                    '<div ng-repeat="field in micronodeFieldModels">' +
+                                        '<widget-proxy field-model="field"></widget-proxy>' +
+                                    '</div>' +
+                                '</div>';
 
-    function microschemaProxyLinkFn(scope, element) {
-        var model = scope.model[scope.path];
-        scope.microschemaName = model.microschema.name;
+        function microschemaProxyLinkFn(scope, element) {
+            let fieldModel: INodeFieldModel = scope.fieldModel;
+            let activeMicroschemaName = getActiveMicroschema(fieldModel);
+            const renderMicroschema = (microschema: IMicroschema) => {
+                var template = defaultTemplate;
 
+                /* if (customWidgetExistsFor(fieldModel.value.microschema.name)) {
+                 template = getCustomWidgetTemplate(fieldModel.value.microschema.name);
+                 } else {
+                 template = defaultTemplate;
+                 }*/
+                let nodeFields = fieldModel.value || createEmptyMicronodeField(microschema.name);
 
-        dataService.getMicroschema(model.microschema.name).then(renderMicroschema);
+                scope.micronodeFieldModels = microschema.fields.map((field: ISchemaFieldDefinition) => {
+                    return fieldModel.createChild(nodeFields, field, fieldModel.path.concat('fields'));
+                });
 
-        function renderMicroschema(microschema) {
-            var template;
+                var compiledDom = $compile(template)(scope);
+                element.append(compiledDom);
+            };
 
-            if (customWidgetExistsFor(model.microschema.name)) {
-               template = getCustomWidgetTemplate(model.microschema.name);
-            } else {
-                template = defaultTemplate;
-            }
-
-            scope.microschemaFields = microschema.fields;
-            scope.microschemaModel = model.fields;
-
-            var compiledDom = $compile(template)(scope);
-            element.append(compiledDom);
+            scope.microschemaName = activeMicroschemaName;
+            dataService.getMicroschemaByName(activeMicroschemaName).then(renderMicroschema);
         }
+
+        /**
+         * Returns the currently-used microschema when a value is set. If no value is set but only one
+         * type is allowed, return that.
+         */
+        function getActiveMicroschema(fieldModel: INodeFieldModel): string {
+            if (fieldModel.value) {
+                return fieldModel.value.microschema.name;
+            }
+            return fieldModel.allow[0];
+        }
+
+        /**
+         *
+         */
+        function createEmptyMicronodeField(microschemaName: string) {
+            return {
+                microschema: {
+                    name: microschemaName
+                },
+                fields: {}
+            };
+        }
+
+        function getCustomWidgetTemplate(microschemaName) {
+            var normalizedName = microschemaName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
+                template = '<' + normalizedName + '-widget></' + microschemaName + '-widget>';
+
+            return '<div class="microschema-container editor-widget">' +
+                '<label class="microschema-label">{{:: field.label || field.name  }}</label>' +
+                template +
+                '</div>';
+        }
+
+        function customWidgetExistsFor(microschemaName) {
+            var directiveName = microschemaName + 'WidgetDirective';
+            return $injector.has(directiveName);
+        }
+
+        return {
+            restrict: 'E',
+            link: microschemaProxyLinkFn,
+            scope: {
+                fieldModel: '='
+            }
+        };
     }
 
-    function getCustomWidgetTemplate(microschemaName) {
-        var normalizedName =  microschemaName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
-            template = '<' + normalizedName + '-widget></' + microschemaName + '-widget>';
+    angular.module('meshAdminUi.projects.formBuilder')
+         .directive('microschemaFormBuilder', microschemaFormBuilderDirective);
 
-        return '<div class="microschema-container editor-widget">' +
-                    '<label class="microschema-label">{{:: field.label || field.name  }}</label>' +
-                    template +
-               '</div>';
-    }
-
-    function customWidgetExistsFor(microschemaName) {
-        var directiveName = microschemaName + 'WidgetDirective';
-        return $injector.has(directiveName);
-    }
-
-    return {
-        restrict: 'EA',
-        link: microschemaProxyLinkFn,
-        scope: true
-    };
 }

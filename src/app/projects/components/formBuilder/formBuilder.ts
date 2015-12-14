@@ -30,59 +30,24 @@ module meshAdminUi {
 
     class FormBuilderController {
 
-        public nodeFieldModelCollection: INodeFieldModel[];
+        public nodeFieldModels: INodeFieldModel[];
         private fields: INodeFields;
         private schema: ISchemaFieldDefinition[];
         private onChange: Function;
         private perms: string[];
         private displayField: string;
 
-        constructor($scope: ng.IScope, private mu: MeshUtils) {
+        constructor($scope: ng.IScope,
+                    private formBuilderService: FormBuilderService) {
             if (!this.perms) {
                 this.perms = [];
             }
             $scope.$watch(() => this.schema, val => {
                 if (val) {
-                    this.nodeFieldModelCollection = this.createNodeFieldsModel(this.fields, this.schema);
+                    let canUpdate = -1 < this.perms.indexOf('update');
+                    this.nodeFieldModels = formBuilderService.createNodeFieldModels(this.fields, this.schema, canUpdate, this.onChange, this.displayField);
                 }
             });
-        }
-
-        private createNodeFieldsModel(nodeFields: INodeFields, schemaFields: ISchemaFieldDefinition[]): INodeFieldModel[] {
-            let canUpdate =  -1 < this.perms.indexOf('update');
-            return schemaFields.map(schemaField => {
-                let model: INodeFieldModel = <INodeFieldModel>angular.copy(schemaField);
-                model.id = this.mu.generateGuid();
-                model.value = angular.copy(nodeFields[schemaField.name]);
-                model.path = [schemaField.name];
-                model.canUpdate = canUpdate;
-                model.isDisplayField = schemaField.name === this.displayField;
-                model.update = this.makeUpdateFunction(model.path);
-                model.updateFnFactory = (path) => this.makeUpdateFunction(path);
-                return model;
-            });
-        }
-
-        /**
-         * Returns a pre-configured function that will update the node field specified by a path array.
-         */
-        private makeUpdateFunction(path): (value: any) => any {
-            return (value) => {
-                this.onChange();
-                this.updateAtPath(this.fields, path, value);
-            }
-        }
-
-        /**
-         * Given an object, update the value specified by the `path` array with the given value.
-         */
-        private updateAtPath(object: any, path: any[], value: any): any {
-            let pointer = object;
-            for (let i = 0; i < path.length - 1; i ++) {
-                let key = path[i];
-                pointer = pointer[key];
-            }
-            return pointer[path[path.length - 1]] = value;
         }
     }
 

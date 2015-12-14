@@ -156,14 +156,11 @@ module meshAdminUi {
         };
 
         /**
-         * Create an empty user object.
+         * Create an empty microschema object.
          */
         private createEmptyMicroschema(): IMicroschema {
             return {
-                binary: false,
-                displayField: '',
                 fields: [],
-                folder: false,
                 name: ''
             };
         }

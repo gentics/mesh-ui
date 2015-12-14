@@ -676,12 +676,17 @@ module meshAdminUi {
         /**
          * Microschema methods
          */
-        public getMicroschemas(queryParams?):ng.IPromise<any> {
+        public getMicroschemas(queryParams?): ng.IPromise<IListResponse<IMicroschema>> {
             return this.meshGet('microschemas', queryParams);
         }
 
-        public getMicroschema(nameOrUuid: string, queryParams?):ng.IPromise<IMicroschema> {
-            return this.meshGet('microschemas/' + nameOrUuid, queryParams);
+        public getMicroschema(uuid: string, queryParams?):ng.IPromise<IMicroschema> {
+            return this.meshGet('microschemas/' + uuid, queryParams);
+        }
+
+        public getMicroschemaByName(name: string, queryParams?): ng.IPromise<IMicroschema> {
+            return this.getMicroschemas(queryParams)
+                .then(response => response.data.filter(microschema => microschema.name === name)[0]);
         }
 
         public persistMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
@@ -852,6 +857,7 @@ module meshAdminUi {
             'tags': new RegExp(projectName + _ + 'tags\\/?', 'gi'),
             'tagFamilies': new RegExp(projectName + _ + 'tagFamilies\\/?', 'gi'),
             'schemas': /\/?schemas\??/,
+            'microschemas': /^microschemas\??/,
             'users': /^users\??/,
             'roles': /^roles\??/,
         };

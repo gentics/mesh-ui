@@ -235,6 +235,7 @@ module meshAdminUi {
          */
         public setAsModified() {
             this.contentModified = true;
+            console.log('updated', this.node);
             this.wipService.setAsModified(this.wipType, this.node);
 
         }

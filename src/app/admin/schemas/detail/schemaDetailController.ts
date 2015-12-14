@@ -143,6 +143,7 @@ module meshAdminUi {
         private schemaToJson(schema: ISchema): string {
             let jsonObj = {
                 displayField: schema.displayField || '',
+                segmentField: schema.segmentField || '',
                 folder: schema.folder || false,
                 binary: schema.binary || false,
                 fields: schema.fields || []
