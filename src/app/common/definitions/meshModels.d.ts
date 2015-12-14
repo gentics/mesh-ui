@@ -92,7 +92,6 @@ declare module meshAdminUi {
         options?: string[];
         allow?: string[];
         listType?: string;
-        microschemaType?: string;
     }
 
     export interface ISchema {
@@ -133,8 +132,7 @@ declare module meshAdminUi {
         isDisplayField: boolean;
         onChange: Function;
         update: (value: any) => void;
-        updateFnFactory: (path: any[]) => (value: any) => void;
-        createChild: (nodeFields: INodeFields, schemaField: ISchemaFieldDefinition, path: any[]) => INodeFieldModel;
+        createChild: (nodeFields: INodeFields, schemaField: ISchemaFieldDefinition, path?: any[]) => INodeFieldModel;
     }
 
     export interface IUser extends IMeshBaseProps {

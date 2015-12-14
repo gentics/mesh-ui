@@ -212,7 +212,7 @@ describe('formBuilder Module', function() {
 
             beforeEach(inject(function($q, dataService) {
                 // return a mock microschema is dataService.getMicroschema() is called
-                spyOn(dataService, "getMicroschema").and.callFake(function() {
+                spyOn(dataService, "getMicroschemaByName").and.callFake(function() {
                     return $q.when({
                         "name": "testMicroschema",
                         "uuid": "uuid_test_microschema",
@@ -243,6 +243,11 @@ describe('formBuilder Module', function() {
                                 "max": 100
                             },
                             {
+                                "name": "people",
+                                "type": "list",
+                                "listType": "string"
+                            },
+                            {
                                 "name": "date",
                                 "label": "Today's Date",
                                 "type": "date"
@@ -264,7 +269,6 @@ describe('formBuilder Module', function() {
                     };
                 compileListField(fields, schemaFields);
                 listController.addWidget('test');
-                debugger;
                 $scope.$apply();
                 scopeListObject = $scope.fields.list[0];
             });
@@ -275,7 +279,7 @@ describe('formBuilder Module', function() {
             });
 
             it('should create correct number of fields', function() {
-                expect(Object.keys(scopeListObject.fields)).toEqual(['title', 'greeting', 'age', 'volume', 'date']);
+                expect(Object.keys(scopeListObject.fields)).toEqual(['title', 'greeting', 'age', 'volume', 'people', 'date']);
             });
 
             it('should create empty string when no defaultValue set', function() {
@@ -288,6 +292,11 @@ describe('formBuilder Module', function() {
 
             it('should create correct default for number with range', function() {
                 expect(scopeListObject.fields.volume).toEqual(50);
+            });
+
+            it('should create correct default for list', function() {
+                console.log('yolo');
+                expect(scopeListObject.fields.people).toEqual([]);
             });
 
             it('should create correct default for number with only lower bound', function() {

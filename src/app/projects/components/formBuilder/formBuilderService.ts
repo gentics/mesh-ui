@@ -30,7 +30,7 @@ module meshAdminUi {
          * Creates and returns a NodeFieldModel object, which is used to generate
          * a single field in the node editor form.
          */
-        private createNodeFieldModel(nodeFields:INodeFields,
+        public createNodeFieldModel(nodeFields:INodeFields,
                                      schemaField:ISchemaFieldDefinition,
                                      canUpdate: boolean,
                                      onChange: Function,
@@ -38,7 +38,9 @@ module meshAdminUi {
                                      pathPrefix: any[] = []): INodeFieldModel {
             let model:INodeFieldModel = <INodeFieldModel>angular.copy(schemaField);
             let path = pathPrefix.slice(0);
-            path.push(schemaField.name);
+            if (schemaField.name) {
+                path.push(schemaField.name);
+            }
 
             nodeFields = this.ensureNodeFieldsExist(nodeFields, pathPrefix, schemaField);
 
@@ -49,10 +51,6 @@ module meshAdminUi {
             model.isDisplayField = schemaField.name === displayField;
             model.onChange = onChange;
             model.update = this.makeUpdateFunction(model.path, nodeFields, onChange);
-            // we need to include this factory function in order to dynamically generate update functions
-            // for lists, where we cannot assume the path index ahead of time (as it may be changed by the user).
-            // See the implementation of the ListWidget for usage.
-            model.updateFnFactory = (path) => this.makeUpdateFunction(path, nodeFields, onChange);
             model.createChild = this.makeCreateChildFunction(nodeFields, canUpdate, onChange, displayField);
             return model;
         }
@@ -99,9 +97,11 @@ module meshAdminUi {
          * from the current one.
          */
         private makeCreateChildFunction(nodeFields: INodeFields, canUpdate: boolean, onChange: Function, displayField: string) {
-            return (childFields: INodeFields, childSchemaField: ISchemaFieldDefinition, path: any[]) => {
+            return (childFields: INodeFields, childSchemaField: ISchemaFieldDefinition, path?: any[]) => {
                 let fields = nodeFields;
-                fields[path[0]] = childFields;
+                if (!fields[path[0]]) {
+                    fields[path[0]] = childFields;
+                }
                 return this.createNodeFieldModel(fields, childSchemaField, canUpdate, onChange, displayField, path);
             };
         }

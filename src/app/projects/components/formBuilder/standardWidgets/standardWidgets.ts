@@ -283,11 +283,14 @@ module meshAdminUi {
 
         constructor(private $scope: ng.IScope,
                     private dataService: DataService,
+                    private formBuilderService: FormBuilderService,
                     private mu: MeshUtils) {
             super($scope);
 
             $scope.$watchCollection(() => this.fieldModel.value, list => {
-                this.updateListFieldModels(list);
+                if (list) {
+                    this.updateListFieldModels(list);
+                }
             });
         }
 
@@ -314,14 +317,14 @@ module meshAdminUi {
             let path = angular.copy(this.fieldModel.path),
                 model: INodeFieldModel = <INodeFieldModel>{};
 
-            path.push(index);
-            model.id = this.mu.generateGuid();
-            model.type = type;
-            model.value = value;
-            model.path = path;
-            model.canUpdate = this.fieldModel.canUpdate;
-            model.isDisplayField = false;
-            model.update = this.fieldModel.updateFnFactory(path);
+            path.push(index)
+            let schemaDef: any = {
+                type: type
+            };
+            if (value.microschema) {
+                schemaDef.allow = [value.microschema.name];
+            }
+            model = this.fieldModel.createChild(value, schemaDef, path);
             return model;
         }
 
@@ -338,9 +341,12 @@ module meshAdminUi {
          * Add a new, empty microschema widget to the list.
          */
         public addWidget(microschemaName: string) {
-            this.dataService.getMicroschema(microschemaName)
+            this.dataService.getMicroschemaByName(microschemaName)
                 .then(microschema => this.createEmptyMicroschemaObject(microschema))
                 .then(newMicroschemaObject => {
+                    if (!this.fieldModel.value) {
+                        this.fieldModel.value = []
+                    }
                     this.fieldModel.value.push(newMicroschemaObject);
                     this.fieldModel.update(this.fieldModel.value);
                 });
@@ -350,7 +356,7 @@ module meshAdminUi {
          * Add a new primitive-type item to the list
          */
         public addItem() {
-            var defaultValue = this.getDefaultValue(this.fieldModel);
+            var defaultValue = this.getDefaultValue(this.fieldModel.listType, this.fieldModel);
             if (typeof this.fieldModel.value === 'undefined') {
                 this.fieldModel.value = [];
             }
@@ -403,7 +409,7 @@ module meshAdminUi {
             };
 
             microschema.fields.forEach(fieldModel => {
-                newMicroschemaObject.fields[fieldModel.name] = this.getDefaultValue(fieldModel);
+                newMicroschemaObject.fields[fieldModel.name] = this.getDefaultValue(fieldModel.type, fieldModel);
             });
 
             return newMicroschemaObject;
@@ -412,9 +418,8 @@ module meshAdminUi {
         /**
          * Returns the correct default value for a field definition object.
          */
-        private getDefaultValue(fieldModel: INodeFieldModel): any {
+        private getDefaultValue(type: string, fieldModel: INodeFieldModel): any {
             let defaultValue = null;
-            let type = fieldModel.listType || fieldModel.type;
 
             if (typeof fieldModel.defaultValue !== 'undefined') {
                 defaultValue = fieldModel.defaultValue;
@@ -439,9 +444,7 @@ module meshAdminUi {
             } else if (type === 'select') {
                 defaultValue = fieldModel.options[0] || "";
             } else if (type === 'list') {
-                defaultValue = {
-                    items: []
-                };
+                defaultValue = [];
             } else if (type === 'node') {
                 defaultValue = {};
             }

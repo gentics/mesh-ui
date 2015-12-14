@@ -34,14 +34,14 @@
         </ul>
 
         <div layout="row" class="add-item-row">
-            <div ng-if="vm.fieldModel.listType !== 'microschema'">
+            <div ng-if="vm.fieldModel.listType !== 'micronode'">
                 <div class="add-item list-icon-btn" ng-click="vm.addItem()" ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" title="Add item to list">
                     <i class="icon-add">
                     </i>
                 </div>
             </div>
 
-            <div ng-if="vm.fieldModel.listType === 'microschema'">
+            <div ng-if="vm.fieldModel.listType === 'micronode'">
                 <mh-dropdown>
                     <mh-dropdown-label>
                         <div class="add-item list-icon-btn"  ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" aria-label="Add Item">
@@ -50,7 +50,7 @@
                     </mh-dropdown-label>
                     <mh-dropdown-body>
                         <ul class="create-options">
-                            <li ng-repeat="microschema in vm.fieldModel.allow"  ng-click="vm.addWidget(microschema)"><a href="#" class="a-plain">{{:: microschema }}</a></li>
+                            <li ng-repeat="microschema in vm.fieldModel.allowed"  ng-click="vm.addWidget(microschema)"><a class="a-plain">{{:: microschema }}</a></li>
                         </ul>
                     </mh-dropdown-body>
                 </mh-dropdown>
