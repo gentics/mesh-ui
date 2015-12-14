@@ -98,10 +98,18 @@ declare module meshAdminUi {
     export interface ISchema {
         binary?: boolean;
         displayField: string;
+        segmentField: string;
         fields: ISchemaFieldDefinition[];
         folder: boolean;
         meshVersion?: string;
         name: string;
+        permissions?: string[];
+        uuid?: string;
+    }
+
+    export interface IMicroschema {
+        name: string;
+        fields: ISchemaFieldDefinition[];
         permissions?: string[];
         uuid?: string;
     }

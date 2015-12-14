@@ -1,0 +1,25 @@
+<div class="app-content">
+    <h1 class="page-title">Microschemas</h1>
+
+    <md-toolbar class="admin-toolbar">
+        <div class="md-toolbar-tools">
+            <md-input-container flex>
+                <label>Filter Microschemas</label>
+                <input ng-model="vm.microschemaFilter">
+            </md-input-container>
+            <button class="btn btn-small btn-primary" aria-label="Create Microschema" ui-sref="admin.microschemas.create">
+                Create New Microschema
+            </button>
+        </div>
+    </md-toolbar>
+
+    <md-content layout-padding class="admin-content-block">
+        <table class="mh-table">
+            <tr class="" ng-repeat="microschema in vm.microschemas | filter: vm.microschemaFilter track by microschema.uuid">
+                <td>
+                    <a ui-sref="admin.microschemas.detail({ uuid: microschema.uuid })"><strong>{{:: microschema.name}}</strong></a>
+                <td>
+            </tr>
+        </table>
+    </md-content>
+</div>

@@ -639,17 +639,9 @@ module meshAdminUi {
         }
 
         /**
-         * Get a list of schemas which are used by the children of a given node.
-         */
-        public getNodeChildrenSchemas(uuid: string): ng.IPromise<IListResponse<ISchema>> {
-            // TODO: there will be a proper Mesh API for this. for now just get all of them.
-            return this.getSchemas();
-        }
-
-        /**
          *
          */
-        public getSchema(uuid, queryParams?):ng.IPromise<ISchema> {
+        public getSchema(uuid: string, queryParams?):ng.IPromise<ISchema> {
             return this.meshGet('schemas/' + uuid, queryParams);
         }
 
@@ -682,17 +674,32 @@ module meshAdminUi {
 
 
         /**
-         * TODO: not yet implemented in Mesh.
+         * Microschema methods
          */
         public getMicroschemas(queryParams?):ng.IPromise<any> {
             return this.meshGet('microschemas', queryParams);
         }
 
-        /**
-         * Get a microschema by name
-         */
-        public getMicroschema(name, queryParams?):ng.IPromise<any> {
-            return this.meshGet('microschemas/' + name, queryParams);
+        public getMicroschema(nameOrUuid: string, queryParams?):ng.IPromise<IMicroschema> {
+            return this.meshGet('microschemas/' + nameOrUuid, queryParams);
+        }
+
+        public persistMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+            let isNew = !microschema.hasOwnProperty('permissions');
+            this.clearCache('microschemas');
+            return isNew ? this.createMicroschema(microschema) : this.updateMicroschema(microschema);
+
+        }
+        private createMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+            return this.meshPost('microschemas', microschema);
+        }
+        private updateMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+            return this.meshPut('microschemas/' + microschema.uuid, microschema);
+        }
+
+        public deleteMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+            this.clearCache('microschemas');
+            return this.meshDelete('microschemas/' + microschema.uuid);
         }
 
         /**

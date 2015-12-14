@@ -180,6 +180,40 @@ module meshAdminUi {
                     }
                 }
             })
+
+            .state('admin.microschemas', {
+                abstract: true
+            })
+            .state('admin.microschemas.list', {
+                url: '/microschemas',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/microschemas/list/microschemaList.html',
+                        controller: 'MicroschemaListController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('admin.microschemas.detail', {
+                url: '/microschemas/:uuid',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/microschemas/detail/microschemaDetail.html',
+                        controller: 'MicroschemaDetailController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('admin.microschemas.create', {
+                url: '/microschemas/new',
+                views: {
+                    'main@': {
+                        templateUrl: 'admin/microschemas/detail/microschemaDetail.html',
+                        controller: 'MicroschemaDetailController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
             
             .state('admin.tags', {
                 abstract: true

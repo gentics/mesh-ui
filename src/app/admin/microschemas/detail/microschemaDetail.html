@@ -1,0 +1,46 @@
+<div class="app-content">
+    <div class="breadcrumbs">
+        <ul>
+            <li>
+                <span>
+                    <a href="#" ui-sref="admin.microschemas.list">Microschemas</a>
+                </span>
+            </li><li><span>
+                    {{ vm.microschema.name }}
+                </span>
+        </li>
+        </ul>
+    </div>
+
+    <form name="microschemaDetailForm" class="admin-form">
+
+        <md-input-container>
+            <label>Microschema Name</label>
+            <input type="text" ng-model="vm.microschema.name" ng-change="vm.modified = true" required>
+        </md-input-container>
+
+        <div ui-ace="{ useWrapMode : true, showGutter: true, mode: 'json', onLoad : vm.aceLoaded }"
+             ng-model="vm.microschemaJson"></div>
+
+    </form>
+
+    <div layout="row" layout-align="center center" class="main-buttons">
+
+        <button class="btn btn-primary"
+                ng-click="vm.persist(vm.microschema)"
+                ng-disabled="!vm.modified"
+                aria-label="save">
+            <i class="icon-save"></i>
+            <span ng-if="!vm.isNew" translate>UPDATE</span>
+            <span ng-if="vm.isNew" translate>CREATE</span>
+        </button>
+
+        <button class="btn btn-warn"
+                ng-click="vm.remove(vm.microschema)"
+                ng-disabled="!vm.canDelete()"
+                aria-label="delete">
+            <i class="icon-delete"></i><span translate>DELETE</span>
+        </button>
+
+    </div>
+</div>
