@@ -136,9 +136,13 @@ a.a-plain {
  */
 md-input-container {
   display: block;
-  .md-input {
+  .md-input, .md-input.ng-dirty{
     background-color: white;
     border: 1px solid @color-alto;
+
+    &.ng-invalid {
+      border: 1px solid @color-warn;
+    }
   }
 
   &.md-input-focused {

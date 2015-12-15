@@ -60,9 +60,12 @@ module meshAdminUi {
          * in the nodeFields object. If not, create a null placeholder property.
          */
         private ensureNodeFieldsExist(nodeFields: INodeFields, path: any[], schemaField: ISchemaFieldDefinition): INodeFields {
+            if (!schemaField.name) {
+                return nodeFields;
+            }
             let pointer = this.getPointerByPath(nodeFields, path);
             if (0 < path.length) {
-                if (!pointer[path[path.length - 1]][schemaField.name]) {
+                if (pointer[path[path.length - 1]][schemaField.name] === undefined) {
                     pointer[path[path.length - 1]][schemaField.name] = null;
                 }
             } else {

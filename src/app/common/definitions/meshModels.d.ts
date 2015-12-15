@@ -111,6 +111,11 @@ declare module meshAdminUi {
         fields: ISchemaFieldDefinition[];
         permissions?: string[];
         uuid?: string;
+        /**
+         * Used when creating a new micronode in order to allow efficient change
+         * tracking before the node has been created in Mesh and assigned a real uuid.
+         */
+        tempId: string;
     }
 
     export interface ITag extends IMeshBaseProps {

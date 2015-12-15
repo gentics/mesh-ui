@@ -299,8 +299,17 @@ module meshAdminUi {
                 let type = this.fieldModel.listType;
 
                 this.listFieldModels.length = list.length;
+
                 list.forEach((value: any, i: number) => {
-                    if (this.listFieldModels[i]) {
+                    let target = this.listFieldModels[i];
+                    let exists = !!target;
+                    let isPrimitiveValue = angular.isString(value) || angular.isNumber(value);
+                    let micronodeIdsMatch = exists && this.idsMatch(target.value, value);
+                    if (exists && (micronodeIdsMatch || isPrimitiveValue)) {
+                        // if this is the same micronode, then we just update the value. Likewise if it is a
+                        // primitive value (number or string). This allows us to maintain the same object
+                        // reference which means the ng-repeat can operate more efficiently and also
+                        // mitigates issues to do with inputs losing focus.
                         this.listFieldModels[i].value = value;
                     } else {
                         this.listFieldModels[i] = this.createListItemFieldModel(type, value, i);
@@ -310,12 +319,24 @@ module meshAdminUi {
         }
 
         /**
+         * Returns true if the uuid or tempId of the two micronodes match.
+         */
+        private idsMatch(existingNode: IMicroschema, newNode: IMicroschema): boolean {
+            if (existingNode.uuid && newNode.uuid && existingNode.uuid === newNode.uuid) {
+                return true;
+            }
+            if (existingNode.tempId && newNode.tempId && existingNode.tempId === newNode.tempId) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
          * Each item in the list needs its own NodeFieldModel object which can then be passed into the
          * widgetProxy and generate the sub-widgets.
          */
         private createListItemFieldModel(type: string, value: any, index: number): INodeFieldModel {
-            let path = angular.copy(this.fieldModel.path),
-                model: INodeFieldModel = <INodeFieldModel>{};
+            let path = angular.copy(this.fieldModel.path);
 
             path.push(index)
             let schemaDef: any = {
@@ -324,7 +345,7 @@ module meshAdminUi {
             if (value.microschema) {
                 schemaDef.allow = [value.microschema.name];
             }
-            model = this.fieldModel.createChild(value, schemaDef, path);
+            let model = this.fieldModel.createChild(value, schemaDef, path);
             return model;
         }
 
@@ -405,7 +426,8 @@ module meshAdminUi {
                     "name": microschema.name,
                     "uuid": microschema.uuid
                 },
-                "fields": {}
+                "fields": {},
+                "tempId": this.mu.generateGuid()
             };
 
             microschema.fields.forEach(fieldModel => {
