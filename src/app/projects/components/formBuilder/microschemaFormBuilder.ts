@@ -7,12 +7,13 @@ module meshAdminUi {
      */
     function microschemaFormBuilderDirective($injector, $compile, dataService, formBuilderService) {
 
-        const defaultTemplate = '<div class="microschema-container editor-widget">' +
-                                    '<label class="microschema-label">{{:: fieldModel.label || fieldModel.name  }}</label>' +
-                                    '<div ng-repeat="field in micronodeFieldModels">' +
-                                        '<widget-proxy field-model="field"></widget-proxy>' +
-                                    '</div>' +
-                                '</div>';
+        const defaultTemplate = '<div>' +
+            '<label class="micronode-label">{{:: fieldModel.label || fieldModel.name  }}</label>' +
+            '<div class="micronode-container editor-widget">' +
+            '<div ng-repeat="field in micronodeFieldModels">' +
+            '<widget-proxy field-model="field"></widget-proxy>' +
+            '</div>' +
+            '</div></div>';
 
         function microschemaProxyLinkFn(scope, element) {
             let fieldModel: INodeFieldModel = scope.fieldModel;

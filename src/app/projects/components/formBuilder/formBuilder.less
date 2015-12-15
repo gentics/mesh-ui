@@ -140,8 +140,16 @@
     color: @color-form-label;
   }
 
+  & > div {
+    //border-left: 2px solid @color-alto;
+  }
+
+  & > div > ul > li {
+    padding-left: 16px;
+  }
+
   &:hover > label {
-    color: @color-primary;
+    //color: @color-primary;
   }
 
   ul {
@@ -230,8 +238,11 @@
   }
 
 
-  .microschema-container label:not(.microschema-label) {
-    display: block;
+  .micronode-container {
+    margin-bottom: 0;
+    & label:not(.micronode-label) {
+      display: block;
+    }
   }
 }
 
@@ -277,7 +288,17 @@
   }
 }
 
-.microschema-container {
+.micronode-container {
+  border: 1px solid @color-alto;
+  padding: 10px;
+  background-color: @color-almost-white;
+  margin-bottom: 20px;
+  transition: border 0.3s;
+
+  &:hover {
+    border-color: @color-silver;
+  }
+
   & > label {
     color: @color-form-label;
   }

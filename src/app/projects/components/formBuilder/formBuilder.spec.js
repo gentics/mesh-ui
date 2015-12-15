@@ -295,7 +295,6 @@ describe('formBuilder Module', function() {
             });
 
             it('should create correct default for list', function() {
-                console.log('yolo');
                 expect(scopeListObject.fields.people).toEqual([]);
             });
 
