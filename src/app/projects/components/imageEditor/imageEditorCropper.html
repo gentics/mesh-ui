@@ -5,6 +5,13 @@
     </div>
 
     <div class="crop-controls" layout="row">
+
+        <div class="button-container">
+            <button class="btn" ng-click="vm.fitToImage()">
+                <i class="icon-crop"></i> Fit to image
+            </button>
+        </div>
+
         <h3>Aspect Ratio</h3>
         <md-radio-group layout="row"
                         ng-model="vm.cropperOptions.aspectRatio"

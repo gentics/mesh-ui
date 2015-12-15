@@ -116,7 +116,6 @@
   padding-bottom: 26px;
 
   label {
-    font-size: 1.06rem;
     margin-left: 1px;
     color: @color-form-label;
     display: block;
@@ -130,6 +129,13 @@
     width: 200px;
     height: 150px;
   }
+
+  .node-content {
+    border: 1px solid @color-alto;
+    padding: 10px;
+    background-color: @color-almost-white;
+    display: inline-block;
+  }
 }
 
 .list-container {
@@ -138,6 +144,7 @@
 
   & > label {
     color: @color-form-label;
+    font-size: inherit;
   }
 
   & > div {

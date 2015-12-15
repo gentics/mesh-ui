@@ -39,16 +39,38 @@ module meshAdminUi {
                             imageHeight: imageData.naturalHeight,
                         };
                         this.onCrop({ params: params });
-                        this.updateParams();
-
                         // set the image to 100%
                         this.cropper.zoomTo(1);
-                        // setting aspect ratio to null forces the crop area to match image dimensions
-                        this.cropper.setAspectRatio(null);
+                        this.setAspectRatioAndFitToImage(null);
+
+                        this.updateParams();
                     },
                     cropend: () => this.updateParams()
                 });
             });
+        }
+
+        /**
+         * Set the Cropper aspect ratio and ensure that the crop area is not taking
+         * up the entire container.
+         */
+        private setAspectRatioAndFitToImage(ratio: number) {
+            // setting aspect ratio to null forces the crop area to match image dimensions
+            this.cropper.setAspectRatio(ratio);
+            let cropBox = this.cropper.getCropBoxData();
+            const PAD = 5;
+
+            if (cropBox.left === 0 && cropBox.top === 0) {
+                // when the cropBox completely fills the container, it is hard to see
+                // and interact with. In this case, we make it a bit smaller.
+                let container = this.cropper.getContainerData();
+                this.cropper.setCropBoxData({
+                    top: PAD,
+                    left: PAD,
+                    width: container.width - 2 * PAD,
+                    height: container.height - 2 * PAD
+                });
+            }
         }
 
         /**
@@ -76,8 +98,15 @@ module meshAdminUi {
             } else if (mode === 'square') {
                 ratio = 1;
             }
-            this.cropper.setAspectRatio(ratio);
+            this.setAspectRatioAndFitToImage(ratio);
             this.updateParams();
+        }
+
+        /**
+         * Fit the crop area to the image.
+         */
+        public fitToImage() {
+            this.setAspectRatio(this.cropperOptions.aspectRatio);
         }
 
     }
