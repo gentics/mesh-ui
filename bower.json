@@ -31,7 +31,8 @@
     "angular-ui-ace": "bower",
     "ng-file-upload": "~9.1.2",
     "cropperjs": "~0.4.0",
-    "angularjs-slider": "~2.1.0"
+    "angularjs-slider": "~2.1.0",
+    "headjs": "~1.0.3"
   },
   "resolutions": {
     "angular": "~1.4.1"

@@ -3,12 +3,16 @@
     /**
      * Settings which can be configured per app instance, without requiring the app be re-built from
      * source.
-     *
-     * @name meshConfig
      */
     var meshConfig = {
         // The URL to the Mesh API
         apiUrl: '/api/v1/',
+
+        // A microschema component is a custom form component which can be used to render a
+        // specific microschema, in place of the default form generator.
+        microschemaControls: [
+            "geolocation/geolocationControl"
+        ],
 
         // List any plugins to be loaded and made available to the Aloha editor.
         // (For available plugins see http://www.alohaeditor.org/guides/plugins.html)

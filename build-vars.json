@@ -19,7 +19,8 @@
       "bower_components/angular-ui-ace/ui-ace.js",
       "bower_components/ng-file-upload/ng-file-upload.js",
       "bower_components/cropperjs/dist/cropper.js",
-      "bower_components/angularjs-slider/dist/rzslider.js"
+      "bower_components/angularjs-slider/dist/rzslider.js",
+      "bower_components/headjs/dist/1.0.0/head.load.js"
   ],
   "VENDOR_STYLES": [
       "bower_components/angular-material/angular-material.css",

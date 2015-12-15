@@ -81,6 +81,40 @@ function compile_aloha_plugins() {
     });
 }
 
+function compile_microschema_controls() {
+    console.log('compile_microschema_controls');
+    return new Promise(function(resolve, reject) {
+        gulp.src([
+                'src/microschemaControls/**/*.ts'
+            ])
+            .pipe(ts({
+                declarationFiles: true,
+                noExternalResolve: false,
+                target: 'ES5'
+            })).js
+            .pipe(gulp.dest('build/microschemaControls'))
+            .pipe(livereload())
+            .on('end', resolve)
+            .on('error', reject);
+    });
+}
+
+function copy_microschema_controls() {
+    console.log('copy_microschema_controls');
+    return new Promise(function(resolve, reject) {
+        compile_microschema_controls()
+            .then(function() {
+                gulp.src([
+                        '!src/microschemaControls/**/*.ts',
+                        'src/microschemaControls/**/*.*'
+                    ])
+                    .pipe(gulp.dest('build/microschemaControls'))
+                    .on('end', resolve)
+                    .on('error', reject);
+            });
+    });
+}
+
 function build_appScripts() {
     console.log('build_appScripts');
 
@@ -219,6 +253,7 @@ gulp.task('build', function() {
             return Promise.all([
                 build_appScripts(),
                 compile_aloha_plugins(),
+                copy_microschema_controls(),
                 build_appTemplates(),
                 build_vendorScripts(),
                 build_appStyles(),
@@ -373,6 +408,7 @@ gulp.task('watch', ['default'], function() {
     livereload.listen({ quiet: true });
     gulp.watch(['src/app/**/*.js', 'src/app/**/*.ts', '!src/app/common/aloha/**/*.ts'], build_appScripts);
     gulp.watch('src/app/common/aloha/**/*.ts', compile_aloha_plugins);
+    gulp.watch('src/microschemaControls/**/*.*', copy_microschema_controls);
     gulp.watch('src/app/**/*.html', build_appTemplates);
     gulp.watch('src/**/*.less', build_appStyles);
     gulp.watch('src/index.html', build_index);

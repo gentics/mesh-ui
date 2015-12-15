@@ -9,11 +9,12 @@ describe('formBuilder Module', function() {
     beforeEach(module('ngMaterial'));
     beforeEach(module('meshAdminUi.templates'));
 
-    beforeEach(inject(function($rootScope, _$compile_, _$timeout_) {
+    beforeEach(inject(function($rootScope, _$compile_, _$timeout_, $httpBackend) {
         $compile = _$compile_;
         $timeout = _$timeout_;
         $scope = $rootScope.$new();
         containingElement = document.createElement('div');
+        $httpBackend.whenGET(/microschemaControls\/.*/).respond(200);
     }));
 
     function compileElement(fields, schemaFields) {

@@ -5,18 +5,25 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
 
 (function(register) {
 
+    console.log('loaded geolocation code');
+
     // TODO: remove for production
     var GOOGLE_MAPS_API_KEY = "AIzaSyCKxhBHUymQG7L57NeRhJRdzlvO4kcymXU";
 
     /**
-     * Custom input widget for geolocation microschema. Just a demo.
+     * Custom input widget for geolocation microschema. Jus
      *
-     * @returns {ng.IDirective} Directive definition object
+     * @returns {ng.IDirective} Directive definition objecton object
      */
     function geolocationWidgetDirective() {
 
+        console.log('executed geolocation directive fn!');
+
         function geolocationWidgetLinkFn(scope, element) {
             var map;
+
+            console.log('executed geolocation link fn!');
+
 
             prependScriptNode(element, initMap);
 
@@ -86,11 +93,11 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
             restrict: 'E',
             replace: true,
             link: geolocationWidgetLinkFn,
-            templateUrl: 'projects/components/formBuilder/customWidgets/geolocationWidget.html',
+            templateUrl: '../microschemaControls/geolocation/geolocationControl.html',
             scope: true
         };
     }
 
-    register.geolocation
+    register.geolocation = geolocationWidgetDirective;
 
 }(meshMicroschemaControls));

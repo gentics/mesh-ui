@@ -21,11 +21,11 @@ module meshAdminUi {
             const renderMicroschema = (microschema: IMicroschema) => {
                 var template = defaultTemplate;
 
-                /* if (customWidgetExistsFor(fieldModel.value.microschema.name)) {
-                 template = getCustomWidgetTemplate(fieldModel.value.microschema.name);
-                 } else {
-                 template = defaultTemplate;
-                 }*/
+                if (customWidgetExistsFor(fieldModel.value.microschema.name)) {
+                    template = getCustomWidgetTemplate(fieldModel.value.microschema.name);
+                } else {
+                    template = defaultTemplate;
+                }
                 let nodeFields = fieldModel.value || createEmptyMicronodeField(microschema.name);
 
                 scope.micronodeFieldModels = microschema.fields.map((field: ISchemaFieldDefinition) => {
@@ -64,8 +64,8 @@ module meshAdminUi {
         }
 
         function getCustomWidgetTemplate(microschemaName) {
-            var normalizedName = microschemaName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
-                template = '<' + normalizedName + '-widget></' + microschemaName + '-widget>';
+            var normalizedName = 'custom-control-' + microschemaName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
+                template = `<${normalizedName}></${normalizedName}>`;
 
             return '<div class="microschema-container editor-widget">' +
                 '<label class="microschema-label">{{:: field.label || field.name  }}</label>' +
@@ -73,8 +73,11 @@ module meshAdminUi {
                 '</div>';
         }
 
-        function customWidgetExistsFor(microschemaName) {
-            var directiveName = microschemaName + 'WidgetDirective';
+        function customWidgetExistsFor(controlName) {
+            const capitalizeFirst = (str) => {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            };
+            var directiveName = 'customControl' + capitalizeFirst(controlName) + 'Directive';
             return $injector.has(directiveName);
         }
 
@@ -88,6 +91,6 @@ module meshAdminUi {
     }
 
     angular.module('meshAdminUi.projects.formBuilder')
-         .directive('microschemaFormBuilder', microschemaFormBuilderDirective);
+        .directive('microschemaFormBuilder', microschemaFormBuilderDirective);
 
 }
