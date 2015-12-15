@@ -5,7 +5,7 @@ module meshAdminUi {
      * and either dispatches to a custom widget (if one exists) or builds the form
      * for it from the standard set of widgets.
      */
-    function microschemaFormBuilderDirective($injector, $compile, dataService, formBuilderService) {
+    function microschemaFormBuilderDirective($injector, $compile, dataService) {
 
         const defaultTemplate = '<div>' +
             '<label class="micronode-label">{{:: fieldModel.label || fieldModel.name  }}</label>' +
@@ -19,17 +19,20 @@ module meshAdminUi {
             let fieldModel: INodeFieldModel = scope.fieldModel;
             let activeMicroschemaName = getActiveMicroschema(fieldModel);
             const renderMicroschema = (microschema: IMicroschema) => {
-                var template = defaultTemplate;
+                let template = defaultTemplate;
 
-                if (customWidgetExistsFor(fieldModel.value.microschema.name)) {
-                    template = getCustomWidgetTemplate(fieldModel.value.microschema.name);
+                if (customWidgetExistsFor(microschema.name)) {
+                    template = getCustomWidgetTemplate(microschema.name);
                 } else {
                     template = defaultTemplate;
                 }
                 let nodeFields = fieldModel.value || createEmptyMicronodeField(microschema.name);
 
+                scope.fields = {};
                 scope.micronodeFieldModels = microschema.fields.map((field: ISchemaFieldDefinition) => {
-                    return fieldModel.createChild(nodeFields, field, fieldModel.path.concat('fields'));
+                    let fm = fieldModel.createChild(nodeFields, field, fieldModel.path.concat('fields'));
+                    scope.fields[field.name] = fm;
+                    return fm;
                 });
 
                 var compiledDom = $compile(template)(scope);
@@ -52,7 +55,7 @@ module meshAdminUi {
         }
 
         /**
-         *
+         * Creates an empty field value for a micronode.
          */
         function createEmptyMicronodeField(microschemaName: string) {
             return {
@@ -63,17 +66,24 @@ module meshAdminUi {
             };
         }
 
-        function getCustomWidgetTemplate(microschemaName) {
+        /**
+         * Creates a wrapper template for the custom control for the microschema.
+         */
+        function getCustomWidgetTemplate(microschemaName: string): string {
             var normalizedName = 'custom-control-' + microschemaName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
                 template = `<${normalizedName}></${normalizedName}>`;
 
-            return '<div class="microschema-container editor-widget">' +
+            return `<div class="microschema-container editor-widget ${normalizedName}">` +
                 '<label class="microschema-label">{{:: field.label || field.name  }}</label>' +
                 template +
                 '</div>';
         }
 
-        function customWidgetExistsFor(controlName) {
+        /**
+         * Returns true if the AngularJS $injector has a custom directive registered for the given
+         * microschema name.
+         */
+        function customWidgetExistsFor(controlName: string): boolean {
             const capitalizeFirst = (str) => {
                 return str.charAt(0).toUpperCase() + str.slice(1);
             };

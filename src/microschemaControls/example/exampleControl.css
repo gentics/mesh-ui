@@ -1,0 +1,9 @@
+/*
+ * A wrapper class named "custom-control-[name]" is automatically
+ * created to encapsulate the control. You should make all custom
+ * styles descendants of this class, in order to avoid conflicts with
+ * other global styles
+ */
+.custom-control-example {
+
+}

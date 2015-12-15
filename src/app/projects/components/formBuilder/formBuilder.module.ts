@@ -1,11 +1,19 @@
 module meshAdminUi {
 
-    // headjs
+    // headjs is used to lazy-load the js and css for any custom microschema
+    // controls defined in meshConfig.json.
     declare var head: any;
 
     let controls = meshConfig.microschemaControls;
 
-    function customControlsLoader($compileProvider: ng.ICompileProvider) {
+    /**
+     * This function loads the .js and .css files associated with any custom microschema controls
+     * defined in the meshConfig.microschemaControls array. The .js files should be AngularJS
+     * directives which are then lazily registered with the app under the naming convention:
+     *
+     * "foo" -> "customControlFoo"
+     */
+    function customControlsResourceLoader($compileProvider: ng.ICompileProvider) {
         const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
 
         if (controls) {
@@ -20,7 +28,6 @@ module meshAdminUi {
                         if (meshMicroschemaControls.hasOwnProperty(controlName)) {
                             let name = 'customControl' + capitalizeFirst(controlName);
                             let fn = meshMicroschemaControls[controlName];
-                            console.log('registering directive', name);
                             $compileProvider.directive(name, fn);
                         }
                     }
@@ -29,17 +36,18 @@ module meshAdminUi {
         }
     }
 
-    function customTemplatesLoader($templateRequest: ng.ITemplateRequestService) {
+    /**
+     * Loads the template .html files for each registered microschema custom control via XHR and puts it
+     * into the AngularJS template cache.
+     */
+    function customControlsTemplateLoader($templateRequest: ng.ITemplateRequestService) {
         if (controls) {
             controls.map(name => `../microschemaControls/${name}.html`)
-                .forEach(url => {
-                    console.log('$templateRequest getting', url);
-                    $templateRequest(url);
-                });
+                .forEach(url => $templateRequest(url));
         }
     }
 
     angular.module('meshAdminUi.projects.formBuilder', ['dndLists'])
-        .config(customControlsLoader)
-        .run(customTemplatesLoader);
+        .config(customControlsResourceLoader)
+        .run(customControlsTemplateLoader);
 }

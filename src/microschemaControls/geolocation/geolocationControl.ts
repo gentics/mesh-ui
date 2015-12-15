@@ -11,9 +11,7 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
     var GOOGLE_MAPS_API_KEY = "AIzaSyCKxhBHUymQG7L57NeRhJRdzlvO4kcymXU";
 
     /**
-     * Custom input widget for geolocation microschema. Jus
-     *
-     * @returns {ng.IDirective} Directive definition objecton object
+     * Custom input widget for geolocation microschema.
      */
     function geolocationWidgetDirective() {
 
@@ -22,7 +20,7 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
         function geolocationWidgetLinkFn(scope, element) {
             var map;
 
-            console.log('executed geolocation link fn!');
+            console.log('executed geolocation link fn!', scope);
 
 
             prependScriptNode(element, initMap);
@@ -32,40 +30,40 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
                 var mapCanvas = element[0].querySelector('.map-container');
                 var mapOptions = {
                     center: {
-                        lat: parseFloat(scope.microschemaModel.latitude),
-                        lng: parseFloat(scope.microschemaModel.longitude)
+                        lat: parseFloat(scope.fields.latitude.value || 0),
+                        lng: parseFloat(scope.fields.longitude.value || 0)
                     },
                     zoom: 12,
                     scrollwheel: false
                 };
                 map = new google.maps.Map(mapCanvas, mapOptions);
 
-                google.maps.event.addListener(map, 'center_changed', function () {
+                google.maps.event.addListener(map, 'dragend', function () {
                     setTimeout(updateValues, 0);
                 });
 
             }
 
-            scope.$watchCollection('microschemaModel', updateMapSrc);
-
             function updateValues() {
                 var center = map.getCenter();
                 scope.$apply(function () {
-                    scope.microschemaModel.latitude = center.lat();
-                    scope.microschemaModel.longitude = center.lng();
+                    scope.fields.latitude.value = center.lat();
+                    scope.fields.longitude.value = center.lng();
+                    scope.fields.latitude.update(center.lat());
+                    scope.fields.longitude.update(center.lng());
                 });
             }
 
-            function updateMapSrc() {
+            scope.updateMapSrc = () => {
                 if (map) {
-                    if (scope.microschemaModel.latitude && scope.microschemaModel.longitude) {
+                    if (scope.fields.latitude && scope.fields.longitude) {
                         map.panTo({
-                            lat: parseFloat(scope.microschemaModel.latitude),
-                            lng: parseFloat(scope.microschemaModel.longitude)
+                            lat: parseFloat(scope.fields.latitude.value || 0),
+                            lng: parseFloat(scope.fields.longitude.value || 0)
                         });
                     }
                 }
-            }
+            };
 
         }
 
