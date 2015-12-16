@@ -26,7 +26,7 @@ module meshAdminUi {
          * Persist the user data back to the server.
          */
         public persist(schema: ISchema) {
-            if (!this.validateJsonContent(this.schemaJson)) {
+            if (!this.validateSchemaJson(this.schemaJson)) {
                 return;
             }
             this.extendSchemaWithJsonValues(this.schemaJson);
@@ -49,16 +49,28 @@ module meshAdminUi {
 
         /**
          * Some basic validation of the schema def.
-         * TODO: need much more robust and precise validation.
          */
-        private validateJsonContent(json: string) {
+        private validateSchemaJson(json: string) {
             let obj;
             try{
                 obj = <ISchema>JSON.parse(json);
             } catch(e) {
+                // JSON must be well-formed.
                 this.notifyService.toast('JSON is invalid.');
                 return false;
             }
+            const validTypes = [
+                'string',
+                'number',
+                'html',
+                'boolean',
+                'date',
+                'list',
+                'select',
+                'node',
+                'micronode'
+            ];
+
             // ensure the displayField is set
             if (typeof obj.displayField === 'undefined' || obj.displayField === '') {
                 this.notifyService.toast('Please specify a displayField.');
@@ -88,6 +100,24 @@ module meshAdminUi {
                 this.notifyService.toast(`All fields must have a "name" and "type" property.`);
                 return false;
             }
+            // ensure only valid field types are used
+            let badFieldTypes = obj.fields.filter(field => -1 === validTypes.indexOf(field.type));
+            if (0 < badFieldTypes.length) {
+                let names = badFieldTypes.map(field => `[${field.name} : ${field.type}]`).join(', ');
+                this.notifyService.toast(`The following fields have invalid types ${names}`);
+                return false;
+            }
+            // ensure a list type has listType set to a valid type
+            let listFields = obj.fields.filter(field => field.type === 'list');
+            if (0 < listFields.length) {
+                let badListFields = listFields.filter(field => -1 === validTypes.indexOf(field.listType));
+                if (0 < badListFields.length) {
+                    let names = badListFields.map(field => `[${field.name} : ${field.listType}]`).join(', ');
+                    this.notifyService.toast(`The following list fields have an invalid listType ${names}`);
+                    return false;
+                }
+            }
+
             return true;
         }
 
