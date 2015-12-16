@@ -23,11 +23,15 @@ module meshAdminUi {
             }, []);
 
             head.load(resources, () => {
-                let meshMicroschemaControls = meshMicroschemaControls || {};
-                for(let controlName in meshMicroschemaControls) {
-                    if (meshMicroschemaControls.hasOwnProperty(controlName)) {
+                // the following expression is overly-complex because the phantomjs karma test runner
+                // does not like me trying to access the value of an undefined variable (meshMicroschemaControls)
+                // and causes an error which stops the unit tests. Doing `typeof` on it works ok though.
+                var customControls = typeof meshMicroschemaControls === 'undefined' ?  {} : meshMicroschemaControls;
+
+                for(let controlName in customControls) {
+                    if (customControls.hasOwnProperty(controlName)) {
                         let name = 'customControl' + capitalizeFirst(controlName);
-                        let fn = meshMicroschemaControls[controlName];
+                        let fn = customControls[controlName];
                         $compileProvider.directive(name, fn);
                     }
                 }
