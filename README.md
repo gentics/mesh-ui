@@ -7,6 +7,7 @@ Browser-based client app for the Mesh CMS REST API.
 ```Shell
 npm install
 bower install
+tsd install
 ```
 
 ### Configure paths
@@ -19,7 +20,7 @@ The dev build leaves the source files intact and does not concatenate or minify 
 to `/build`
 
 ```
-gulp
+gulp build
 # or
 gulp watch
 ```
@@ -44,12 +45,14 @@ src/                        // the source files for the app
  |  |   |-components/       // common UI components (directives)
  |  |   |-services/         // common services
  |  |
- |  |-login/                // specific parts of the app, e.g. login, projetcs, users etc.
+ |  |-login/                // specific parts of the app, e.g. login, projects, admin etc.
  |  |- etc...
  |
  |-assets/                  // static assets
  |  |-fonts
- |  |-images/           
+ |  |-images/        
+ |
+ |-microschemaControls/     // source files for custom microschema controls
  |
  |-styles/                  // app-wide styles. Styles specific to a component or section should reside with that component/section.
  
@@ -73,7 +76,7 @@ Each new module must be declared in it's own file following the pattern `moduleN
 
 An angular module declaration should not be mixed in with a controller or directive (etc.) definition.
 
-In development, the dependency graph is manages by the gulp plugin [gulp-angular-filesort](https://github.com/klei/gulp-angular-filesort). 
+In development, the dependency graph is managed by the gulp plugin [gulp-angular-filesort](https://github.com/klei/gulp-angular-filesort). 
 This will ensure the .js files are ordered correctly in the index.html file so as to prevent "module undefined" errors.
 
 In production, all JavaScript will be concatenated into a single file anyway so order of loading will not be an issue.
