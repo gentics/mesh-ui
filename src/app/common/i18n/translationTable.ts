@@ -122,7 +122,7 @@ module meshAdminUi {
         },
         'SAVED_CHANGES': {
             en: 'Saved changes',
-            de: 'Geschpeichert'
+            de: 'Gespeichert'
         },
         'NEW_CONTENT_CREATED': {
             en: 'New content created',
@@ -152,7 +152,7 @@ module meshAdminUi {
         },
         'CANCEL': {
             en: 'Cancel',
-            de: 'Stornieren'
+            de: 'Abbrechen'
         },
         'DELETE': {
             en: 'Delete',
