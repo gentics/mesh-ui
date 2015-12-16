@@ -557,7 +557,7 @@ define([
 					let range = Aloha.Selection.getRangeObject();
 
                     that.selectNodeClick()
-                    .then((result: meshAdminUi.INode[]) => {
+                    .then(result => {
                         let nodeUuid = result[0].uuid;
                         that.selectedNode = nodeUuid;
 

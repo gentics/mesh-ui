@@ -1,5 +1,7 @@
 module meshAdminUi {
 
+    declare var meshConfig: any;
+
     /**
      * Used to log a user in & out, and keep track of that fact.
      * Currently a mock service which will eventually use OAuth 2 once it has
@@ -10,7 +12,7 @@ module meshAdminUi {
         private _isLoggedIn: boolean;
         private _currentUser: IUser;
         private authString: string;
-        private userRequestInFlight: ng.IPromise<IUser>;
+        private userRequestInFlight: ng.IPromise<any>;
         private onLogInCallbacks;
         private onLogOutCallbacks;
         private AUTH_HEADER_NAME = 'Authorization';
@@ -53,8 +55,7 @@ module meshAdminUi {
             authHeaderValue = "Basic " + btoa(userName + ":" + password);
             config.headers[authHeaderKey] = authHeaderValue;
 
-            // TODO: replace url with config value.
-            this.userRequestInFlight = $http.get('/api/v1/auth/me', config)
+            this.userRequestInFlight = $http.get(meshConfig.apiUrl + 'auth/me', config)
                 .then(response => {
                     if (response.status === 200) {
                         this._currentUser = <IUser>response.data;
@@ -93,7 +94,7 @@ module meshAdminUi {
                 headers: { [this.AUTH_HEADER_NAME]: this.authString }
             };
             let $http = <ng.IHttpService>this.$injector.get("$http");
-            this.userRequestInFlight = $http.get('/api/v1/auth/me', config)
+            this.userRequestInFlight = $http.get(meshConfig.apiUrl + 'auth/me', config)
                 .then(response => {
                     this._currentUser = <IUser>response.data;
                     this.userRequestInFlight = undefined;
@@ -120,7 +121,7 @@ module meshAdminUi {
             let $http = <ng.IHttpService>this.$injector.get("$http"),
                 deferred = this.$q.defer();
 
-            $http.get("/api/v1/auth/logout").then(() => {
+            $http.get(meshConfig.apiUrl + 'auth/logout').then(() => {
                 // TODO: need to actually invalidate the basic auth on the browser, see
                 // example solution here http://stackoverflow.com/a/492926/772859
                 this._isLoggedIn = false;

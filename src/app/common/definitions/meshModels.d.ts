@@ -119,7 +119,7 @@ declare module meshAdminUi {
     }
 
     export interface ITag extends IMeshBaseProps {
-        tagFamily: INodeReference;
+        tagFamily: ITagFamily;
         fields: {
             name: string;
         };

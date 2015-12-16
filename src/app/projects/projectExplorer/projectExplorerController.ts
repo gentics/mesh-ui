@@ -66,7 +66,7 @@ module meshAdminUi {
                 return this.dataService.getSchema(this.currentNode.childrenInfo[schemaName].schemaUuid);
             });
             return this.$q.all(promises)
-                .then(results => {
+                .then((results: ISchema[]) => {
                     this.childrenSchemas = results;
                 });
         }

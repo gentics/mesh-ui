@@ -283,6 +283,9 @@ module meshAdminUi {
 
                 loadScript('assets/vendor/aloha-editor/lib/aloha-full.js', initAloha);
             }
+
+            // satisfy the TypeScript compiler.
+            return {};
         }
 
         /**

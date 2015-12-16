@@ -16,7 +16,7 @@ module meshAdminUi {
                 .then(response => {
                     return $q.all(response.data.map(project => {
                         return $q.all({
-                            project: project,
+                            project: $q.when(project),
                             tagFamilies: dataService.getTagFamilies(project.name),
                             tags: dataService.getTags(project.name)
                         });
@@ -91,7 +91,7 @@ module meshAdminUi {
         public addTagDialog(project: IProject, tagFamily: ITagFamily) {
             this.showDialog('Create new tag')
                 .then(name => {
-                    let tag = {
+                    let tag: ITag = {
                         fields: { name: name },
                         tagFamily: tagFamily
                     };

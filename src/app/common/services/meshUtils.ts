@@ -1,5 +1,8 @@
 module meshAdminUi {
 
+    // the global meshConfig as defined in meshConfig.js
+    declare var meshConfig: any;
+
     /**
      * A collection of static utility methods for use throughout the app.
      */

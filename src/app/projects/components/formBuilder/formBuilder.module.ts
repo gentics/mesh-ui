@@ -4,6 +4,11 @@ module meshAdminUi {
     // controls defined in meshConfig.json.
     declare var head: any;
 
+    // this module relies on a couple of global variables, so this is just
+    // to stop the TypeScript compiler complaining.
+    declare var meshConfig: any;
+    declare var meshMicroschemaControls: any;
+
     let controls = meshConfig.microschemaControls;
 
     /**
