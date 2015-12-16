@@ -1,4 +1,4 @@
-# Authoring Custom Widgets
+# Authoring Custom Widgets [deprecated - see `/microschemaControls` folder]
 
 (**Name?** Widget / component / block / other? I'll use "widget" for now for lack of another term.)
 

@@ -23,13 +23,12 @@ module meshAdminUi {
             }, []);
 
             head.load(resources, () => {
-                if (meshMicroschemaControls) {
-                    for(let controlName in meshMicroschemaControls) {
-                        if (meshMicroschemaControls.hasOwnProperty(controlName)) {
-                            let name = 'customControl' + capitalizeFirst(controlName);
-                            let fn = meshMicroschemaControls[controlName];
-                            $compileProvider.directive(name, fn);
-                        }
+                let meshMicroschemaControls = meshMicroschemaControls || {};
+                for(let controlName in meshMicroschemaControls) {
+                    if (meshMicroschemaControls.hasOwnProperty(controlName)) {
+                        let name = 'customControl' + capitalizeFirst(controlName);
+                        let fn = meshMicroschemaControls[controlName];
+                        $compileProvider.directive(name, fn);
                     }
                 }
             });

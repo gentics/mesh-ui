@@ -3,27 +3,29 @@ declare var google: any;
 
 var meshMicroschemaControls = meshMicroschemaControls || {};
 
-(function(register) {
-
-    console.log('loaded geolocation code');
+(function(meshMicroschemaControls) {
 
     // TODO: remove for production
     var GOOGLE_MAPS_API_KEY = "AIzaSyCKxhBHUymQG7L57NeRhJRdzlvO4kcymXU";
 
     /**
-     * Custom input widget for geolocation microschema.
+     * Custom Google Maps-based control for the geolocation microschema.
      */
-    function geolocationWidgetDirective() {
+    function geolocationControlDirective() {
 
-        console.log('executed geolocation directive fn!');
-
-        function geolocationWidgetLinkFn(scope, element) {
+        function geolocationControlLinkFn(scope, element) {
             var map;
 
-            console.log('executed geolocation link fn!', scope);
-
-
             prependScriptNode(element, initMap);
+
+            scope.updateMapSrc = () => {
+                if (map && scope.fields.latitude && scope.fields.longitude) {
+                    map.panTo({
+                        lat: parseFloat(scope.fields.latitude.value || 0),
+                        lng: parseFloat(scope.fields.longitude.value || 0)
+                    });
+                }
+            };
 
             function initMap() {
                 delete window['_googleMapsIsLoading'];
@@ -37,11 +39,9 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
                     scrollwheel: false
                 };
                 map = new google.maps.Map(mapCanvas, mapOptions);
-
                 google.maps.event.addListener(map, 'dragend', function () {
                     setTimeout(updateValues, 0);
                 });
-
             }
 
             function updateValues() {
@@ -53,18 +53,6 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
                     scope.fields.longitude.update(center.lng());
                 });
             }
-
-            scope.updateMapSrc = () => {
-                if (map) {
-                    if (scope.fields.latitude && scope.fields.longitude) {
-                        map.panTo({
-                            lat: parseFloat(scope.fields.latitude.value || 0),
-                            lng: parseFloat(scope.fields.longitude.value || 0)
-                        });
-                    }
-                }
-            };
-
         }
 
         function prependScriptNode(element, callback) {
@@ -90,12 +78,12 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
         return {
             restrict: 'E',
             replace: true,
-            link: geolocationWidgetLinkFn,
+            link: geolocationControlLinkFn,
             templateUrl: '../microschemaControls/geolocation/geolocationControl.html',
             scope: true
         };
     }
 
-    register.geolocation = geolocationWidgetDirective;
+    meshMicroschemaControls.geolocation = geolocationControlDirective;
 
 }(meshMicroschemaControls));
