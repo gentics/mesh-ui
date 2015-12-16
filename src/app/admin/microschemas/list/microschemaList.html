@@ -15,7 +15,7 @@
 
     <md-content layout-padding class="admin-content-block">
         <table class="mh-table">
-            <tr class="" ng-repeat="microschema in vm.microschemas | filter: vm.microschemaFilter track by microschema.uuid">
+            <tr class="" ng-repeat="microschema in vm.microschemas | filter: vm.filterFn track by microschema.uuid">
                 <td>
                     <a ui-sref="admin.microschemas.detail({ uuid: microschema.uuid })"><strong>{{:: microschema.name}}</strong></a>
                 <td>

@@ -17,7 +17,7 @@
 
 
         <table class="mh-table">
-            <tr ng-repeat="user in vm.users | filter: vm.userFilter track by user.uuid">
+            <tr ng-repeat="user in vm.users | filter: vm.filterFn track by user.uuid">
                 <td>
                     <a ui-sref="admin.users.detail({ uuid: user.uuid })">
                         <strong>{{ vm.userDisplayName(user) }}</strong><br>

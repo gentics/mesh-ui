@@ -211,4 +211,63 @@ describe('meshUtils', function() {
             expect(obj2.foo).toBe('bar');
         });
     });
+
+    describe('matchProps()', function() {
+
+        var obj;
+
+        beforeEach(function() {
+            obj = {
+                foo: 'hello',
+                bar: 'hi',
+                quux: 'wassup'
+            };
+        });
+
+        it('should return true for empty filter text', function() {
+            var result = mu.matchProps(obj, ['foo'], '');
+            expect(result).toBe(true);
+        });
+
+        it('should return true for null filter text', function() {
+            var result = mu.matchProps(obj, ['foo'], null);
+            expect(result).toBe(true);
+        });
+
+        it('should return true for undefined filter text', function() {
+            var result = mu.matchProps(obj, ['foo'], undefined);
+            expect(result).toBe(true);
+        });
+
+        it('should filter on specified properties', function() {
+            var result = mu.matchProps(obj, ['foo'], 'h');
+            expect(result).toBe(true);
+        });
+
+        it('should not filter on unspecified properties', function() {
+            var result = mu.matchProps(obj, ['quux'], 'h');
+            expect(result).toBe(false);
+        });
+
+        it('should match anywhere in string', function() {
+            var result = mu.matchProps(obj, ['foo'], 'lo');
+            expect(result).toBe(true);
+        });
+
+        it('should not throw on unexpected data types', function() {
+            var otherObj = { foo: 42, bar: new Date(), baz: true, quux: [1, 2, 3] };
+            var result;
+            function run() {
+                result = mu.matchProps(otherObj, ['foo', 'bar', 'baz', 'quux'], 'test');
+            }
+
+            expect(run).not.toThrow();
+            expect(result).toBe(false);
+        });
+
+        it('should match in a case-insensitive fashion', function() {
+            var result = mu.matchProps(obj, ['foo'], 'H');
+            expect(result).toBe(true);
+        });
+    });
 });

@@ -15,7 +15,7 @@
     <md-content layout-padding class="admin-content-block">
 
         <table class="mh-table">
-            <tr ng-repeat="group in vm.groups | filter: vm.groupFilter track by group.uuid">
+            <tr ng-repeat="group in vm.groups | filter: vm.filterFn track by group.uuid">
                 <td>
                     <a ui-sref="admin.groups.detail({ uuid: group.uuid })">
                         <strong>{{ group.name }}</strong><br>

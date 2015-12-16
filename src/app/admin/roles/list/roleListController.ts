@@ -2,18 +2,23 @@ module meshAdminUi {
 
     class RoleListController {
 
-        private roles: IUserRole[];
+        public roles: IUserRole[];
+        public rolesFilter: string;
 
-        constructor(private dataService: DataService) {
-            dataService.getRoles()
-                .then(data => {
-                    this.roles = data.data;
-                });
+        constructor(private dataService: DataService,
+                    private mu: MeshUtils) {
+            // TODO: implement paging
+            dataService.getRoles({ perPage: 10000 })
+                .then(data => this.roles = data.data);
         }
+
+        public filterFn = (value: IUser) => {
+            return this.mu.matchProps(value, ['name'], this.rolesFilter);
+        };
 
     }
 
     angular.module('meshAdminUi.admin')
-            .controller('RoleListController', RoleListController);
+        .controller('RoleListController', RoleListController);
 
 }

@@ -1,22 +1,29 @@
 module meshAdminUi {
 
     class GroupListController {
-        private groups: IUserGroup[];
-        private roles: IUserRole[];
+        public groups: IUserGroup[];
+        public roles: IUserRole[];
+        public groupFilter: string;
 
         constructor(private $q: ng.IQService,
                     private $timeout: ng.ITimeoutService,
                     private notifyService: NotifyService,
+                    private mu: MeshUtils,
                     private dataService: DataService) {
             $q.all([
-                dataService.getGroups(),
-                dataService.getRoles()
-            ])
+                    // TODO: implement paging
+                    dataService.getGroups({ perPage: 10000 }),
+                    dataService.getRoles({ perPage: 10000 })
+                ])
                 .then((dataArray: any[]) => {
                     this.groups = dataArray[0].data;
                     this.roles = dataArray[1].data;
                 });
         }
+
+        public filterFn = (value: IUser) => {
+            return this.mu.matchProps(value, ['name'], this.groupFilter);
+        };
 
         public validateRole(role, group: IUserGroup) {
             // TODO: group.roles will be a noderef rather than a string.
@@ -58,6 +65,6 @@ module meshAdminUi {
     }
 
     angular.module('meshAdminUi.admin')
-          .controller('GroupListController', GroupListController);
+        .controller('GroupListController', GroupListController);
 
 }

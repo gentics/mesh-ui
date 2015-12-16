@@ -203,7 +203,7 @@ module meshAdminUi {
         /**
          *
          */
-        public getUsers(queryParams?): ng.IPromise<any> {
+        public getUsers(queryParams?: INodeListQueryParams): ng.IPromise<any> {
             return this.meshGet('users', queryParams);
         }
 
@@ -247,7 +247,7 @@ module meshAdminUi {
         /**
          *
          */
-        public getGroups(queryParams?):ng.IPromise<any> {
+        public getGroups(queryParams?: INodeListQueryParams):ng.IPromise<any> {
             return this.meshGet('groups', queryParams);
         }
 
@@ -630,7 +630,7 @@ module meshAdminUi {
         /**
          * Get all the schemas available in Mesh.
          */
-        public getSchemas(queryParams?):ng.IPromise<IListResponse<ISchema>> {
+        public getSchemas(queryParams?: INodeListQueryParams):ng.IPromise<IListResponse<ISchema>> {
             return this.meshGet('schemas', queryParams);
         }
 
@@ -710,7 +710,7 @@ module meshAdminUi {
         /**
          *
          */
-        public getRoles(queryParams?):ng.IPromise<any> {
+        public getRoles(queryParams?: INodeListQueryParams):ng.IPromise<any> {
             return this.meshGet('roles', queryParams);
         }
         public getRole(uuid, queryParams?):ng.IPromise<any> {

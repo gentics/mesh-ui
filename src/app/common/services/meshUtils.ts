@@ -154,22 +154,56 @@ module meshAdminUi {
          * From http://davidwalsh.name/javascript-debounce-function
          */
         public debounce(func: Function, wait: number, immediate?: boolean): Function {
-        	var timeout;
-        	return function() {
-        		var context = this, args = arguments;
-        		var later = function() {
-        			timeout = null;
-        			if (!immediate) func.apply(context, args);
-        		};
-        		var callNow = immediate && !timeout;
-        		clearTimeout(timeout);
-        		timeout = setTimeout(later, wait);
-        		if (callNow) func.apply(context, args);
-        	};
-        };
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        }
+
+        /**
+         * Returns a function which can be used to generate predicate functions to be used with the
+         * AngularJS "filter" filter: https://docs.angularjs.org/api/ng/filter/filter.
+         *
+         * By default, using the `item in collection | filter: query` expression will make Angular check
+         * *all* properties of the `item` object. If we want to only filter by selected properties, we need to
+         * write our own predicate function. The following function abstracts this step away and would be used like so:
+         *
+         * ```
+         * // controller
+         * public filterString: string; // data-bound to some UI input
+         *
+         * public myFilter = (value) => {
+         *   return this.mu.matchProps(value, ['foo', 'bar'], this.filterString);
+         * }
+         * ```
+         */
+        public matchProps(obj: any, properties: string[], filterText: string): boolean {
+            if (filterText === null || filterText === undefined) {
+                return true;
+            }
+            for (let property of properties) {
+                if (obj[property]) {
+                    if (typeof obj[property] === 'string') {
+                        let match = -1 < obj[property].toLowerCase().indexOf(filterText.toLowerCase());
+                        if (match) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
     }
 
     angular.module('meshAdminUi.common')
-           .service('mu', MeshUtils);
+        .service('mu', MeshUtils);
 
 }

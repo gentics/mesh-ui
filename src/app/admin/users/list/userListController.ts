@@ -1,16 +1,19 @@
 module meshAdminUi {
 
     class UserListController {
-        private groups: IUserGroup[];
-        private users: IUser[];
+        public groups: IUserGroup[];
+        public users: IUser[];
+        public userFilter: string;
 
         constructor(private $q: ng.IQService,
                     private $timeout: ng.ITimeoutService,
                     private notifyService: NotifyService,
+                    private mu: MeshUtils,
                     private dataService: DataService) {
             $q.all([
-                dataService.getGroups(),
-                dataService.getUsers()
+                // TODO: implement paging
+                dataService.getGroups({ perPage: 10000 }),
+                dataService.getUsers({ perPage: 10000 })
             ])
                 .then((dataArray: any[]) => {
                     this.groups = dataArray[0].data;
@@ -18,8 +21,12 @@ module meshAdminUi {
                 });
         }
 
+        public filterFn = (value: IUser) => {
+            let filterProps = ['username', 'firstname', 'lastname', 'emailAddress'];
+            return this.mu.matchProps(value, filterProps, this.userFilter);
+        };
+
         public validateGroup(group, user: IUser) {
-            // TODO: user.groups will be a noderef rather than a string.
             var userAlreadyInGroup = user.groups.map(group => group).indexOf(group.name) > -1;
 
             if (userAlreadyInGroup || !group.name) {

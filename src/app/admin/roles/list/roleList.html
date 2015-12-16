@@ -15,7 +15,7 @@
 
     <md-content layout-padding class="admin-content-block">
         <table class="mh-table">
-            <tr class="" ng-repeat="role in vm.roles | filter: vm.rolesFilter track by role.uuid">
+            <tr class="" ng-repeat="role in vm.roles | filter: vm.filterFn track by role.uuid">
                 <td>
                     <a ui-sref="admin.roles.detail({ uuid: role.uuid })"><strong>{{:: role.name}}</strong></a>
                 <td>

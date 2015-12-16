@@ -2,12 +2,18 @@ module meshAdminUi {
 
     class MicroschemaListController {
 
-        private microschemas: IMicroschema[];
+        public microschemas: IMicroschema[];
+        public microschemaFilter: string;
 
-        constructor(private dataService: DataService) {
+        constructor(private dataService: DataService,
+                    private mu: MeshUtils) {
             dataService.getMicroschemas()
                 .then(response => this.microschemas = response.data);
         }
+
+        public filterFn = (value: IUser) => {
+            return this.mu.matchProps(value, ['name'], this.microschemaFilter);
+        };
 
     }
 

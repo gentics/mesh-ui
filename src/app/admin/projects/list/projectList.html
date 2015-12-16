@@ -14,7 +14,7 @@
     </md-toolbar>
     <md-content layout-padding class="admin-content-block">
         <table class="mh-table">
-            <tr ng-repeat="project in vm.projects | filter: vm.projectFilter track by project.uuid">
+            <tr ng-repeat="project in vm.projects | filter: vm.filterFn track by project.uuid">
                 <td>
                     <a ui-sref="admin.projects.detail({ uuid: project.uuid })"><strong>{{:: project.name }}</strong></a>
                 </td>
