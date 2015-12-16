@@ -83,6 +83,8 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
              *      update: (value: any) => void;
              * }
              */
+
+            // TODO: complete a working example.
         }
 
         return {
