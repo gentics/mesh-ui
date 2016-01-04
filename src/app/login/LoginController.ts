@@ -30,17 +30,23 @@ module meshAdminUi {
         private showErrorDialog() {
             return this.$mdDialog.show({
                 templateUrl: 'login/loginErrorDialog.html',
-                controller: function ($mdDialog) {
-                    this.cancel = function () {
-                        $mdDialog.cancel();
-                    };
-                },
+                controller: 'LoginDialogController',
                 controllerAs: 'vm'
             });
         }
     }
 
+    class LoginDialogController {
+
+        constructor(private $mdDialog: ng.material.IDialogService) {}
+
+        cancel() {
+            this.$mdDialog.cancel();
+        }
+    }
+
     angular.module('meshAdminUi.login')
+        .controller('LoginDialogController', LoginDialogController)
         .controller('LoginController', LoginController);
 
 }

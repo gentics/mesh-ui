@@ -1,6 +1,7 @@
 module meshAdminUi {
 
     import ITranscludeFunction = ng.ITranscludeFunction;
+
     class TagListController {
 
         private tags: ITag[] = [];
@@ -134,23 +135,7 @@ module meshAdminUi {
 
         private showDialog(title: string, currentName?: string) {
             return this.$mdDialog.show({
-                controller: class {
-                    private name: string;
-
-                    constructor(private $mdDialog: ng.material.IDialogService,
-                                private title: string,
-                                private currentName: string) {
-                        this.name = currentName;
-                    }
-
-                    public create(name) {
-                        this.$mdDialog.hide(name);
-                    }
-
-                    public cancel() {
-                        this.$mdDialog.cancel();
-                    }
-                },
+                controller: 'TagListDialogController',
                 controllerAs: 'vm',
                 templateUrl: 'admin/tags/list/tagEditDialog.html',
                 locals: {
@@ -159,10 +144,28 @@ module meshAdminUi {
                 }
             });
         }
+    }
 
+    class TagListDialogController {
+        private name: string;
+
+        constructor(private $mdDialog: ng.material.IDialogService,
+                    private title: string,
+                    private currentName: string) {
+            this.name = currentName;
+        }
+
+        public create(name) {
+            this.$mdDialog.hide(name);
+        }
+
+        public cancel() {
+            this.$mdDialog.cancel();
+        }
     }
 
     angular.module('meshAdminUi.admin')
+        .controller('TagListDialogController', TagListDialogController)
         .controller('TagListController', TagListController);
 
 }

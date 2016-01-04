@@ -42,6 +42,7 @@ module meshAdminUi {
             private toolbarContainer: HTMLElement;
             private alohaToolbar: HTMLElement;
 
+            static $inject = ['$scope', '$element'];
             constructor(private $scope: ng.IScope,
                         private $element: ng.IAugmentedJQuery) {
 
@@ -279,7 +280,7 @@ module meshAdminUi {
                 window['Aloha'] = {};
                 window['Aloha'].settings = activeSettings;
 
-                loadScript('assets/vendor/aloha-editor/lib/aloha-full.min.js', initAloha);
+                loadScript('assets/vendor/aloha-editor/lib/aloha-full.js', initAloha);
             }
 
             // satisfy the TypeScript compiler.

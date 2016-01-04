@@ -29,24 +29,9 @@ module meshAdminUi {
 
             options = options || {};
 
-            function nodeSelectDialogController($mdDialog: ng.material.IDialogService) {
-                var dialog = this;
-                dialog.select = select;
-                dialog.cancel = cancel;
-                dialog.selectedNodes = [];
-
-                function select() {
-                    $mdDialog.hide(dialog.selectedNodes);
-                }
-
-                function cancel() {
-                    $mdDialog.cancel();
-                }
-            }
-
             return this.$mdDialog.show({
                 templateUrl: 'projects/components/nodeSelector/nodeSelectorDialog.html',
-                controller: nodeSelectDialogController,
+                controller: 'NodeSelectDialogController',
                 controllerAs: 'dialog',
                 locals: {
                     allow: options.allow || [],
@@ -57,6 +42,22 @@ module meshAdminUi {
                 },
                 bindToController: true
             });
+        }
+    }
+
+    class NodeSelectDialogController {
+
+        private selectedNodes = [];
+
+        constructor(private $mdDialog: ng.material.IDialogService) {}
+
+
+        public select() {
+            this.$mdDialog.hide(this.selectedNodes);
+        }
+
+        public cancel() {
+            this.$mdDialog.cancel();
         }
     }
 
@@ -203,6 +204,7 @@ module meshAdminUi {
 
     angular.module('meshAdminUi.projects')
            .service('nodeSelector', NodeSelector)
+           .controller('NodeSelectDialogController', NodeSelectDialogController)
            .controller('nodeSelectorController', NodeSelectorController)
            .directive('nodeSelector', nodeSelectorDirective);
 

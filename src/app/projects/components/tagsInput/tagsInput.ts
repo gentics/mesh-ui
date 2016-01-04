@@ -80,7 +80,7 @@ module meshAdminUi {
 
         public newTagDialog(name) {
             this.$mdDialog.show({
-                    controller: NewTagDialogController,
+                    controller: 'NewTagDialogController',
                     controllerAs: 'vm',
                     bindToController: true,
                     templateUrl: 'projects/components/tagsInput/newTagDialog.html',
@@ -149,7 +149,7 @@ module meshAdminUi {
         return {
             restrict: 'E',
             templateUrl: 'projects/components/tagsInput/tagsInput.html',
-            controller: 'tagsInputController',
+            controller: 'TagsInputController',
             controllerAs: 'vm',
             bindToController: true,
             scope: {
@@ -162,5 +162,6 @@ module meshAdminUi {
 
     angular.module('meshAdminUi.projects')
         .directive('tagsInput', tagsInputDirective)
-        .controller('tagsInputController', TagsInputController);
+        .controller('NewTagDialogController', NewTagDialogController)
+        .controller('TagsInputController', TagsInputController);
 }

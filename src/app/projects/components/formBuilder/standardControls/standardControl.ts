@@ -2,7 +2,7 @@ module meshAdminUi {
 
     declare var Aloha: any;
 
-    class StandardController {
+    class DefaultControlController {
 
         public fieldModel: INodeFieldModel;
         public value: any;
@@ -12,18 +12,15 @@ module meshAdminUi {
                 this.value = angular.copy(val);
             });
         }
-
-        // required because ng-annotate fails on this dep for some reason.
-        static $inject = ['$scope'];
     }
 
-    function makeStandardDDO(type, controller?) {
+    function makeStandardDDO(type, controller?: string) {
 
-        controller = controller || StandardController;
+        var controllerName = controller || 'DefaultControlController';
         return {
             restrict: 'E',
             templateUrl: `projects/components/formBuilder/standardControls/${type}Control.html`,
-            controller: controller,
+            controller: controllerName,
             controllerAs: 'vm',
             bindToController: true,
             scope: {
@@ -60,9 +57,6 @@ module meshAdminUi {
         private valueMoment: moment.Moment;
         public focussed: string = '';
         public time = { h: null, m: null, s: null};
-
-        // required because ng-annotate fails on this dep for some reason.
-        static $inject = ['$scope', '$element'];
 
         constructor(private $scope: any, private $element: any) {
 
@@ -223,7 +217,7 @@ module meshAdminUi {
      * Input for number field types
      */
     function dateDirective() {
-        return makeStandardDDO('date', DateController);
+        return makeStandardDDO('date', 'DateController');
     }
 
     /**
@@ -244,9 +238,6 @@ module meshAdminUi {
 
         public fieldModel: INodeFieldModel;
         public value: any;
-
-        // required because ng-annotate fails on this dep for some reason.
-        static $inject = ['nodeSelector', 'contextService', 'mu'];
 
         constructor(private nodeSelector: NodeSelector,
                     private contextService: ContextService,
@@ -279,18 +270,15 @@ module meshAdminUi {
      * Input for node field types
      */
     function nodeDirective() {
-        return makeStandardDDO('node', NodeController);
+        return makeStandardDDO('node', 'NodeController');
     }
 
 
-    class ListController extends StandardController {
+    class ListController extends DefaultControlController {
 
 
         private dragStartIndex: number;
         private listFieldModels: INodeFieldModel[] = [];
-
-        // required because ng-annotate fails on this dep for some reason.
-        static $inject = ['$scope', 'dataService', 'formBuilderService', 'mu'];
 
         constructor(private $scope: ng.IScope,
                     private dataService: DataService,
@@ -490,10 +478,16 @@ module meshAdminUi {
      * Input for list field types
      */
     function listDirective() {
-        return makeStandardDDO('list', ListController);
+        return makeStandardDDO('list', 'ListController');
     }
 
     angular.module('meshAdminUi.projects.formBuilder')
+
+        .controller('DefaultControlController', DefaultControlController)
+        .controller('ListController', ListController)
+        .controller('DateController', DateController)
+        .controller('NodeController', NodeController)
+
         .directive('mhStringControl', stringDirective)
         .directive('mhNumberControl', numberDirective)
         .directive('mhBooleanControl', booleanDirective)
