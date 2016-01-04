@@ -188,25 +188,29 @@ function build_appTemplates() {
     });
 }
 
+/**
+ * Dynamically injects @import statements into the main app.less file, allowing
+ * .less files to be placed around the app structure with the component
+ * or page they apply to.
+ */
+function build_app_less() {
+    return gulp.src('src/styles/app.less')
+        .pipe(inject(gulp.src(['../**/*.less'], {read: false, cwd: 'src/styles/'}), {
+            starttag: '/* inject:imports */',
+            endtag: '/* endinject */',
+            transform: function (filepath) {
+                return '@import ".' + filepath + '";';
+            }
+        }))
+        .pipe(less())
+        .pipe(autoprefix());
+}
+
 function build_appStyles() {
     log('build_appStyles');
 
     return new Promise(function(resolve, reject) {
-        /**
-         * Dynamically injects @import statements into the main app.less file, allowing
-         * .less files to be placed around the app structure with the component
-         * or page they apply to.
-         */
-        return gulp.src('src/styles/app.less')
-            .pipe(inject(gulp.src(['../**/*.less'], {read: false, cwd: 'src/styles/'}), {
-                starttag: '/* inject:imports */',
-                endtag: '/* endinject */',
-                transform: function (filepath) {
-                    return '@import ".' + filepath + '";';
-                }
-            }))
-            .pipe(less())
-            .pipe(autoprefix())
+        build_app_less()
             .pipe(gulp.dest('build/styles'))
             .pipe(livereload())
             .on('end', resolve)
@@ -318,11 +322,10 @@ function dist_css() {
     log('dist_css');
 
     return new Promise(function(resolve, reject) {
-        return gulp.src([
-                '**/angular-material.css',
-                '**/loading-bar.css',
-                'styles/app.css'
-            ], {cwd: 'build/'})
+        var vendorCss = gulp.src(VENDOR_STYLES);
+        var appCss = build_app_less();
+
+        return merge(vendorCss, appCss)
             .pipe(concat('app.css'))
             // piping through the less plugin forces the font @imports to the top of the file.
             .pipe(less())
