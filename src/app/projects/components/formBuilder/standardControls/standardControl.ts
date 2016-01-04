@@ -12,6 +12,9 @@ module meshAdminUi {
                 this.value = angular.copy(val);
             });
         }
+
+        // required because ng-annotate fails on this dep for some reason.
+        static $inject = ['$scope'];
     }
 
     function makeStandardDDO(type, controller?) {
@@ -58,6 +61,8 @@ module meshAdminUi {
         public focussed: string = '';
         public time = { h: null, m: null, s: null};
 
+        // required because ng-annotate fails on this dep for some reason.
+        static $inject = ['$scope', '$element'];
 
         constructor(private $scope: any, private $element: any) {
 
@@ -240,6 +245,9 @@ module meshAdminUi {
         public fieldModel: INodeFieldModel;
         public value: any;
 
+        // required because ng-annotate fails on this dep for some reason.
+        static $inject = ['nodeSelector', 'contextService', 'mu'];
+
         constructor(private nodeSelector: NodeSelector,
                     private contextService: ContextService,
                     private mu: MeshUtils) {
@@ -280,6 +288,9 @@ module meshAdminUi {
 
         private dragStartIndex: number;
         private listFieldModels: INodeFieldModel[] = [];
+
+        // required because ng-annotate fails on this dep for some reason.
+        static $inject = ['$scope', 'dataService', 'formBuilderService', 'mu'];
 
         constructor(private $scope: ng.IScope,
                     private dataService: DataService,
@@ -378,7 +389,7 @@ module meshAdminUi {
          */
         public addItem() {
             var defaultValue = this.getDefaultValue(this.fieldModel.listType, this.fieldModel);
-            if (typeof this.fieldModel.value === 'undefined') {
+            if (!this.fieldModel.value) {
                 this.fieldModel.value = [];
             }
             this.fieldModel.value.push(defaultValue);
