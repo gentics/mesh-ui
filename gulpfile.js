@@ -63,17 +63,21 @@ function compile_appScripts() {
         .pipe(concat('app.js'));
 }
 
-function compile_aloha_plugins() {
-    console.log('compile_aloha_plugins');
+function transpile_aloha_plugins() {
+    return gulp.src([
+            'src/app/common/aloha/**/*.ts'
+        ])
+        .pipe(ts({
+            declarationFiles: true,
+            noExternalResolve: false,
+            target: 'ES5'
+        })).js;
+}
+
+function build_aloha_plugins() {
+    console.log('build_aloha_plugins');
     return new Promise(function(resolve, reject) {
-        gulp.src([
-                'src/app/common/aloha/**/*.ts'
-            ])
-            .pipe(ts({
-                declarationFiles: true,
-                noExternalResolve: false,
-                target: 'ES5'
-            })).js
+        transpile_aloha_plugins()
             .pipe(gulp.dest('build/assets/vendor/aloha-editor/plugins/mesh'))
             .pipe(livereload())
             .on('end', resolve)
@@ -81,7 +85,17 @@ function compile_aloha_plugins() {
     });
 }
 
-function compile_microschema_controls() {
+function dist_aloha_plugins() {
+    console.log('dist_aloha_plugins');
+    return new Promise(function(resolve, reject) {
+        transpile_aloha_plugins()
+            .pipe(gulp.dest('dist/assets/vendor/aloha-editor/plugins/mesh'))
+            .on('end', resolve)
+            .on('error', reject);
+    });
+}
+
+function compile_microschema_controls(dest) {
     console.log('compile_microschema_controls');
     return new Promise(function(resolve, reject) {
         gulp.src([
@@ -92,23 +106,24 @@ function compile_microschema_controls() {
                 noExternalResolve: false,
                 target: 'ES5'
             })).js
-            .pipe(gulp.dest('build/microschemaControls'))
+            .pipe(gulp.dest(dest + '/microschemaControls'))
             .pipe(livereload())
             .on('end', resolve)
             .on('error', reject);
     });
 }
 
-function copy_microschema_controls() {
+function copy_microschema_controls(dest) {
     console.log('copy_microschema_controls');
+    dest = dest || 'build'
     return new Promise(function(resolve, reject) {
-        compile_microschema_controls()
+        compile_microschema_controls(dest)
             .then(function() {
                 gulp.src([
                         '!src/microschemaControls/**/*.ts',
                         'src/microschemaControls/**/*.*'
                     ])
-                    .pipe(gulp.dest('build/microschemaControls'))
+                    .pipe(gulp.dest(dest + '/microschemaControls'))
                     .on('end', resolve)
                     .on('error', reject);
             });
@@ -252,8 +267,8 @@ gulp.task('build', function() {
         .then(function() {
             return Promise.all([
                 build_appScripts(),
-                compile_aloha_plugins(),
-                copy_microschema_controls(),
+                build_aloha_plugins(),
+                copy_microschema_controls('build'),
                 build_appTemplates(),
                 build_vendorScripts(),
                 build_appStyles(),
@@ -358,7 +373,9 @@ gulp.task('dist', ['karma-test'], function() {
     return Promise.all([
         dist_assets(),
         dist_css(),
-        dist_js()
+        dist_js(),
+        dist_aloha_plugins(),
+        copy_microschema_controls('dist')
     ])
         .then(dist_index);
 });
@@ -407,7 +424,7 @@ gulp.task('watch', ['default'], function() {
     karmaWatch();
     livereload.listen({ quiet: true });
     gulp.watch(['src/app/**/*.js', 'src/app/**/*.ts', '!src/app/common/aloha/**/*.ts'], build_appScripts);
-    gulp.watch('src/app/common/aloha/**/*.ts', compile_aloha_plugins);
+    gulp.watch('src/app/common/aloha/**/*.ts', build_aloha_plugins);
     gulp.watch('src/microschemaControls/**/*.*', copy_microschema_controls);
     gulp.watch('src/app/**/*.html', build_appTemplates);
     gulp.watch('src/**/*.less', build_appStyles);
