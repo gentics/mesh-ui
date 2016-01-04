@@ -1,7 +1,7 @@
-<div class="list-container editor-widget">
+<div class="list-container editor-control">
 
-    <script type="text/ng-template" id="widget-proxy-recursion-safe.html">
-        <widget-proxy field-model="item"></widget-proxy>
+    <script type="text/ng-template" id="control-proxy-recursion-safe.html">
+        <control-proxy field-model="item"></control-proxy>
     </script>
 
     <label>{{:: vm.fieldModel.label || vm.fieldModel.name }}</label>
@@ -17,7 +17,7 @@
                 dnd-dragstart="vm.startDrag($index)"
                 dnd-type="vm.fieldModel.listType">
 
-                <div flex ng-include="'widget-proxy-recursion-safe.html'"></div>
+                <div flex ng-include="'control-proxy-recursion-safe.html'"></div>
 
                 <div>
                     <div class="remove-item list-icon-btn" ng-click="vm.removeItem($index)">
@@ -50,7 +50,7 @@
                     </mh-dropdown-label>
                     <mh-dropdown-body>
                         <ul class="create-options">
-                            <li ng-repeat="microschema in vm.fieldModel.allowed"  ng-click="vm.addWidget(microschema)"><a class="a-plain">{{:: microschema }}</a></li>
+                            <li ng-repeat="microschema in vm.fieldModel.allowed"  ng-click="vm.addcontrol(microschema)"><a class="a-plain">{{:: microschema }}</a></li>
                         </ul>
                     </mh-dropdown-body>
                 </mh-dropdown>

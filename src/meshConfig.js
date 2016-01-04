@@ -12,7 +12,7 @@
         // specific microschema, in place of the default form generator.
         microschemaControls: [
             "geolocation/geolocationControl",
-            "example/example"
+            "example/exampleControl"
         ],
 
         // List any plugins to be loaded and made available to the Aloha editor.

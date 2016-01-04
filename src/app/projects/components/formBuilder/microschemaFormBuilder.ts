@@ -2,16 +2,16 @@ module meshAdminUi {
 
     /**
      * Directive that takes a microschema { name, uuid } and the fields object for it,
-     * and either dispatches to a custom widget (if one exists) or builds the form
-     * for it from the standard set of widgets.
+     * and either dispatches to a custom control (if one exists) or builds the form
+     * for it from the standard set of controls.
      */
     function microschemaFormBuilderDirective($injector, $compile, dataService) {
 
         const defaultTemplate = '<div>' +
             '<label class="micronode-label">{{:: fieldModel.label || fieldModel.name  }}</label>' +
-            '<div class="micronode-container editor-widget">' +
+            '<div class="micronode-container editor-control">' +
             '<div ng-repeat="field in micronodeFieldModels">' +
-            '<widget-proxy field-model="field"></widget-proxy>' +
+            '<control-proxy field-model="field"></control-proxy>' +
             '</div>' +
             '</div></div>';
 
@@ -21,8 +21,8 @@ module meshAdminUi {
             const renderMicroschema = (microschema: IMicroschema) => {
                 let template = defaultTemplate;
 
-                if (customWidgetExistsFor(microschema.name)) {
-                    template = getCustomWidgetTemplate(microschema.name);
+                if (customControlExistsFor(microschema.name)) {
+                    template = getCustomControlTemplate(microschema.name);
                 } else {
                     template = defaultTemplate;
                 }
@@ -69,11 +69,11 @@ module meshAdminUi {
         /**
          * Creates a wrapper template for the custom control for the microschema.
          */
-        function getCustomWidgetTemplate(microschemaName: string): string {
+        function getCustomControlTemplate(microschemaName: string): string {
             var normalizedName = 'custom-control-' + microschemaName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
                 template = `<${normalizedName}></${normalizedName}>`;
 
-            return `<div class="microschema-container editor-widget ${normalizedName}">` +
+            return `<div class="microschema-container editor-control ${normalizedName}">` +
                 '<label class="microschema-label">{{:: field.label || field.name  }}</label>' +
                 template +
                 '</div>';
@@ -83,7 +83,7 @@ module meshAdminUi {
          * Returns true if the AngularJS $injector has a custom directive registered for the given
          * microschema name.
          */
-        function customWidgetExistsFor(controlName: string): boolean {
+        function customControlExistsFor(controlName: string): boolean {
             const capitalizeFirst = (str) => {
                 return str.charAt(0).toUpperCase() + str.slice(1);
             };

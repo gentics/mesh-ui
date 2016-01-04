@@ -6,7 +6,7 @@ module meshAdminUi {
     /**
      * This is the Aloha Editor implementation.
      */
-    function htmlWidgetDirective(i18nService: I18nService,
+    function htmlControlDirective(i18nService: I18nService,
                                  nodeSelector: NodeSelector,
                                  editorService: EditorService,
                                  contextService: ContextService,
@@ -33,7 +33,7 @@ module meshAdminUi {
         }
         alohaPlugins.push('mesh/mesh-link');
 
-        class HtmlWidgetController {
+        class HtmlControlController {
 
             private fieldModel: INodeFieldModel;
             private htmlField: HTMLElement;
@@ -43,11 +43,10 @@ module meshAdminUi {
             private alohaToolbar: HTMLElement;
 
             constructor(private $scope: ng.IScope,
-                        private $element: ng.IAugmentedJQuery,
-                        private widgetHighlighterService: WidgetHighlighterService) {
+                        private $element: ng.IAugmentedJQuery) {
 
                 /**
-                 * We need a way to let the widget know when the inner htmlField (content editable div)
+                 * We need a way to let the control know when the inner htmlField (content editable div)
                  * is focused. We have no direct access to that information, so we need to set up
                  * event listeners on the native "focus" and "blur" events and use them to update
                  * the scope.
@@ -125,7 +124,6 @@ module meshAdminUi {
                             this.isFocused = false;
                             if (this.toolbarContainer) {
                                 this.toolbarContainer.classList.remove('open');
-                                setTimeout(() => this.widgetHighlighterService.highlight(), 0);
                             }
                             /**
                              * View -> Model data binding
@@ -168,7 +166,7 @@ module meshAdminUi {
             }
         }
 
-        function htmlWidgetCompileFn() {
+        function htmlControlCompileFn() {
             if (!window['Aloha']) {
                 let activeSettings;
                 const defaultAlohaSettings = {
@@ -324,9 +322,9 @@ module meshAdminUi {
 
         return {
             restrict: 'E',
-            compile: htmlWidgetCompileFn,
-            templateUrl: 'projects/components/formBuilder/standardWidgets/htmlWidget.html',
-            controller: HtmlWidgetController,
+            compile: htmlControlCompileFn,
+            templateUrl: 'projects/components/formBuilder/standardControls/htmlControl.html',
+            controller: HtmlControlController,
             controllerAs: 'vm',
             bindToController: true,
             scope: {
@@ -336,5 +334,5 @@ module meshAdminUi {
     }
 
     angular.module('meshAdminUi.projects.formBuilder')
-        .directive('mhHtmlWidget', htmlWidgetDirective);
+        .directive('mhHtmlControl', htmlControlDirective);
 }

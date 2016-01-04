@@ -2,7 +2,7 @@ module meshAdminUi {
 
     /**
      * This service is responsible for creating the INodeFieldModel objects which are used by the
-     * formBuilder and widgets to generate the form for editing a node.
+     * formBuilder and controls to generate the form for editing a node.
      */
     export class FormBuilderService {
 

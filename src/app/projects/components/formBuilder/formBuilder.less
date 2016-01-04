@@ -12,14 +12,14 @@
   overflow-y: scroll;
 }
 
-.widget-container {
+.control-container {
   margin-bottom: 26px;
   md-input-container {
     padding-bottom: 0 !important;
   }
 }
 
-.editor-widget {
+.editor-control {
   position: relative;
 
   &.display-field {
@@ -226,21 +226,21 @@
     }
   }
 
-  // Widgets that are contained in a list should have certain
+  // controls that are contained in a list should have certain
   // styling modified:
   md-input-container {
     margin: 14px 0;
   }
 
-  // widgets inside lists should always be the same width
-  .editor-widget {
+  // controls inside lists should always be the same width
+  .editor-control {
     flex: 0 0 90% !important;
     max-width: 90% !important;
   }
 
   // labels should be removed, since the overall label is displayed
   // at the top of the list
-  .editor-widget label {
+  .editor-control label {
     display: none;
   }
 
@@ -311,7 +311,7 @@
   }
 }
 
-.widget-highlighter {
+.control-highlighter {
   .responsive-max(@mq-sm, {
   display: none;
   });

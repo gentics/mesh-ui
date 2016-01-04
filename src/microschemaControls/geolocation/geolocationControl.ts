@@ -66,10 +66,10 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
                     }
                 })();
             } else {
-                window['geolocationWidgetCallback'] = callback;
+                window['geolocationControlCallback'] = callback;
                 window['_googleMapsIsLoading'] = true;
                 var mapScriptNode = document.createElement('script');
-                mapScriptNode.src = "https://maps.googleapis.com/maps/api/js?v=3.exp&callback=geolocationWidgetCallback&key=" + GOOGLE_MAPS_API_KEY;
+                mapScriptNode.src = "https://maps.googleapis.com/maps/api/js?v=3.exp&callback=geolocationControlCallback&key=" + GOOGLE_MAPS_API_KEY;
                 mapScriptNode.type = 'text/javascript';
                 element.prepend(mapScriptNode);
             }

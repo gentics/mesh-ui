@@ -207,7 +207,7 @@ describe('formBuilder Module', function() {
             expect($scope.fields.list).toEqual(['re', 'mi']);
         });
 
-        describe('microschema instance creation with addWidget()', function() {
+        describe('microschema instance creation with addControl()', function() {
 
             var scopeListObject;
 
@@ -269,7 +269,7 @@ describe('formBuilder Module', function() {
                         "list": []
                     };
                 compileListField(fields, schemaFields);
-                listController.addWidget('test');
+                listController.addControl('test');
                 $scope.$apply();
                 scopeListObject = $scope.fields.list[0];
             });

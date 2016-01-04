@@ -2,7 +2,7 @@ module meshAdminUi {
 
     declare var Aloha: any;
 
-    class StandardWidgetController {
+    class StandardController {
 
         public fieldModel: INodeFieldModel;
         public value: any;
@@ -14,12 +14,12 @@ module meshAdminUi {
         }
     }
 
-    function makeStandardWidgetDDO(type, controller?) {
+    function makeStandardDDO(type, controller?) {
 
-        controller = controller || StandardWidgetController;
+        controller = controller || StandardController;
         return {
             restrict: 'E',
-            templateUrl: `projects/components/formBuilder/standardWidgets/${type}Widget.html`,
+            templateUrl: `projects/components/formBuilder/standardControls/${type}Control.html`,
             controller: controller,
             controllerAs: 'vm',
             bindToController: true,
@@ -32,15 +32,15 @@ module meshAdminUi {
     /**
      * Input for string field types
      */
-    function stringWidgetDirective() {
-        return makeStandardWidgetDDO('string');
+    function stringDirective() {
+        return makeStandardDDO('string');
     }
 
     /**
      * Input for number field types
      */
-    function numberWidgetDirective() {
-        return makeStandardWidgetDDO('number');
+    function numberDirective() {
+        return makeStandardDDO('number');
     }
 
     declare var moment: moment.MomentStatic;
@@ -50,7 +50,7 @@ module meshAdminUi {
      * Since the input[type="date"] directive requires a Date object, we need to convert the
      * timestamp into a Date object and bind to that.
      */
-    class DateWidgetController {
+    class DateController {
 
         public fieldModel: INodeFieldModel;
         public value: Date;
@@ -62,7 +62,7 @@ module meshAdminUi {
         constructor(private $scope: any, private $element: any) {
 
             // this flag prevents the update callback from firing as soon as the
-            // widget loads and performs a mutation of the value to a Date object.
+            // control loads and performs a mutation of the value to a Date object.
             let initialDateConversionDone = false;
 
             if (0 < this.fieldModel.value) {
@@ -217,25 +217,25 @@ module meshAdminUi {
     /**
      * Input for number field types
      */
-    function dateWidgetDirective() {
-        return makeStandardWidgetDDO('date', DateWidgetController);
+    function dateDirective() {
+        return makeStandardDDO('date', DateController);
     }
 
     /**
      * Input for boolean field types
      */
-    function booleanWidgetDirective() {
-        return makeStandardWidgetDDO('boolean');
+    function booleanDirective() {
+        return makeStandardDDO('boolean');
     }
 
     /**
      * Input for select field types
      */
-    function selectWidgetDirective() {
-        return makeStandardWidgetDDO('select');
+    function selectDirective() {
+        return makeStandardDDO('select');
     }
 
-    class NodeWidgetController  {
+    class NodeController  {
 
         public fieldModel: INodeFieldModel;
         public value: any;
@@ -270,12 +270,12 @@ module meshAdminUi {
     /**
      * Input for node field types
      */
-    function nodeWidgetDirective() {
-        return makeStandardWidgetDDO('node', NodeWidgetController);
+    function nodeDirective() {
+        return makeStandardDDO('node', NodeController);
     }
 
 
-    class ListWidgetController extends StandardWidgetController {
+    class ListController extends StandardController {
 
 
         private dragStartIndex: number;
@@ -333,7 +333,7 @@ module meshAdminUi {
 
         /**
          * Each item in the list needs its own NodeFieldModel object which can then be passed into the
-         * widgetProxy and generate the sub-widgets.
+         * Proxy and generate the sub-s.
          */
         private createListItemFieldModel(type: string, value: any, index: number): INodeFieldModel {
             let path = angular.copy(this.fieldModel.path);
@@ -359,9 +359,9 @@ module meshAdminUi {
         }
 
         /**
-         * Add a new, empty microschema widget to the list.
+         * Add a new, empty microschema control to the list.
          */
-        public addWidget(microschemaName: string) {
+        public addControl(microschemaName: string) {
             this.dataService.getMicroschemaByName(microschemaName)
                 .then(microschema => this.createEmptyMicroschemaObject(microschema))
                 .then(newMicroschemaObject => {
@@ -478,16 +478,16 @@ module meshAdminUi {
     /**
      * Input for list field types
      */
-    function listWidgetDirective() {
-        return makeStandardWidgetDDO('list', ListWidgetController);
+    function listDirective() {
+        return makeStandardDDO('list', ListController);
     }
 
     angular.module('meshAdminUi.projects.formBuilder')
-        .directive('mhStringWidget', stringWidgetDirective)
-        .directive('mhNumberWidget', numberWidgetDirective)
-        .directive('mhBooleanWidget', booleanWidgetDirective)
-        .directive('mhDateWidget', dateWidgetDirective)
-        .directive('mhSelectWidget', selectWidgetDirective)
-        .directive('mhNodeWidget', nodeWidgetDirective)
-        .directive('mhListWidget', listWidgetDirective);
+        .directive('mhStringControl', stringDirective)
+        .directive('mhNumberControl', numberDirective)
+        .directive('mhBooleanControl', booleanDirective)
+        .directive('mhDateControl', dateDirective)
+        .directive('mhSelectControl', selectDirective)
+        .directive('mhNodeControl', nodeDirective)
+        .directive('mhListControl', listDirective);
 }
