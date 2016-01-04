@@ -11,7 +11,8 @@
         // A microschema component is a custom form component which can be used to render a
         // specific microschema, in place of the default form generator.
         microschemaControls: [
-            "geolocation/geolocationControl"
+            "geolocation/geolocationControl",
+            "example/example"
         ],
 
         // List any plugins to be loaded and made available to the Aloha editor.

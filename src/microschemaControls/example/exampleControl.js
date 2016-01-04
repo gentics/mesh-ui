@@ -60,6 +60,9 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
              * ```
              * interface INodeFieldModel {
              *      // the following are as defined in the microschema definition object.
+             *
+             *      // The following properties are all taken directly from the field
+             *      // definition in the microschema.
              *      name: string;
              *      type: string;
              *      label?: string;
@@ -71,11 +74,14 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
              *      options?: string[];
              *      allow?: string[];
              *      listType?: string;
+             *
              *      // this is the actual value of the field. This is what you will be binding
              *      // to in your template.
              *      value: any;
+             *
              *      // If canUpdate is false, your custom control inputs should be read only.
              *      canUpdate: boolean;
+             *
              *      // The update function is used to update the value of this field in the editor component.
              *      // That is to say, simply updating the `value` will only change the local value, and will
              *      // not update the node itself. When a change is made, you must explicitly call the
@@ -84,7 +90,42 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
              * }
              */
 
-            // TODO: complete a working example.
+
+            /**
+             * Here is the actual logic for the example control. All it does is convert the file size in bytes
+             * into a value in MB (mebibytes) which is then displayed to the user. Then the value is changed, we convert
+             * back to bytes in order to update the real value of the field.
+             */
+            var FACTOR = 1024 * 1024;
+
+            /**
+             * Converts a number in bytes to the equivalent in mebibytes (MiB), rounded to 2 decimal places.
+             */
+            function bytesToMB(bytes) {
+                return +(bytes / FACTOR).toFixed(2);
+            }
+
+            scope.sizeInMiB = bytesToMB(scope.fields.size.value);
+
+            /**
+             * A generic update function which should be used when no special conversion logiv is needed - it simply
+             * delegates to the `update()` method of the NodeFieldModel.
+             *
+             * @param {INodeFieldModel} field - the field to be updated
+             */
+            scope.update = function(field) {
+                field.update(field.value);
+            };
+
+            /**
+             * This is an example of a custom update function, whereby we perform a conversion from MiB to bytes and
+             * pass the result to the sizeField's update() method.
+             * @param {INodeFieldModel} sizeField
+             * @param {number} sizeInMiB
+             */
+            scope.updateSize = function(sizeField, sizeInMiB) {
+                sizeField.update(sizeInMiB * FACTOR);
+            };
         }
 
         return {

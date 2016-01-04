@@ -1,4 +1,10 @@
-<div>
-    <input ng-model="fields.filename.value" ng-change="update(fields.filename)" />
-    <input ng-model="fields.size.value" ng-change="update(fields.size)" />
+<div class="micronode-container">
+    <!-- Example microschema control. This is intended to demonstrate functionality rather than styling. -->
+    <label>File Name
+        <input ng-model="fields.filename.value" ng-change="update(fields.filename)" />
+    </label>
+
+    <label>File Size (MiB)
+        <input ng-model="sizeInMiB" ng-change="updateSize(fields.size, sizeInMiB)" type="number" step="0.01" min="0" />
+    </label>
 </div>

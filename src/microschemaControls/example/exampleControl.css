@@ -4,6 +4,6 @@
  * styles descendants of this class, in order to avoid conflicts with
  * other global styles
  */
-.custom-control-example {
-
+.custom-control-example .micronode-container {
+    background-color: yellow;
 }
