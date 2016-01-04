@@ -353,6 +353,23 @@ function dist_js() {
     });
 }
 
+/**
+ * The ACE code editor (used to edit the schema JSON) uses some kind of lazy-loading to start up a web worker
+ * thread. Just including the worker-json.js file in the dist bundle therefore does not work. We need to make
+ * it available as a standalone file in the dist build, and point to it wherever we use the ui-ace directive.
+ * See https://github.com/angular-ui/ui-ace#support-for-concatenated-bundles
+ */
+function dist_ace_worker() {
+    log('dist_ace_worker');
+
+    return new Promise(function(resolve, reject) {
+        return gulp.src('bower_components/ace-builds/src-min-noconflict/worker-json.js')
+            .pipe(gulp.dest('dist/vendor/scripts'))
+            .on('end', resolve)
+            .on('error', reject);
+    });
+}
+
 function dist_index() {
     log('dist_index');
 
@@ -375,7 +392,6 @@ function dist_index() {
                 starttag: '<!-- inject:appjs -->',
                 endtag: '<!-- endinject -->'
             }))
-            //.pipe(minifyHtml({loose: true}))
             .pipe(removeHtmlComments())
             .pipe(gulp.dest('dist/'))
             .on('end', resolve)
@@ -393,6 +409,7 @@ gulp.task('dist', ['karma-test'], function() {
             dist_css(),
             dist_js(),
             dist_aloha_plugins(),
+            dist_ace_worker(),
             copy_microschema_controls('dist')
         ])
         .then(dist_index)
