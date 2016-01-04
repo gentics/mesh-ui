@@ -13,7 +13,6 @@ var gulp = require('gulp'),
     ngAnnotate = require('gulp-ng-annotate'),
     tslint = require('gulp-tslint'),
     uglify = require('gulp-uglify'),
-    wrap = require('gulp-wrap'),
     concat = require('gulp-concat'),
     inject = require('gulp-inject'),
     templateCache = require('gulp-angular-templatecache'),
@@ -22,6 +21,7 @@ var gulp = require('gulp'),
     minifyCss = require('gulp-minify-css'),
     autoprefix = require('gulp-autoprefixer'),
     merge = require('merge-stream'),
+    gulpif = require('gulp-if'),
     replace = require('gulp-replace'),
     livereload = require('gulp-livereload'),
     karma = require('karma').server,
@@ -101,6 +101,7 @@ function dist_aloha_plugins() {
     log('dist_aloha_plugins');
     return new Promise(function(resolve, reject) {
         transpile_aloha_plugins()
+            .pipe(uglify())
             .pipe(gulp.dest('dist/assets/vendor/aloha-editor/plugins/mesh'))
             .on('end', resolve)
             .on('error', reject);
@@ -110,14 +111,18 @@ function dist_aloha_plugins() {
 function compile_microschema_controls(dest) {
     log('compile_microschema_controls');
     return new Promise(function(resolve, reject) {
-        gulp.src([
-                'src/microschemaControls/**/*.ts'
-            ])
+
+        var tsFiles = gulp.src(['src/microschemaControls/**/*.ts'])
             .pipe(ts({
                 declarationFiles: true,
                 noExternalResolve: false,
                 target: 'ES5'
-            })).js
+            })).js;
+
+        var jsFiles = gulp.src('src/microschemaControls/**/*.js');
+
+        return merge(tsFiles, jsFiles)
+            .pipe(gulpif(dest === 'dist', uglify()))
             .pipe(gulp.dest(dest + '/microschemaControls'))
             .pipe(livereload())
             .on('end', resolve)
@@ -127,12 +132,13 @@ function compile_microschema_controls(dest) {
 
 function copy_microschema_controls(dest) {
     log('copy_microschema_controls');
-    dest = dest || 'build'
+    dest = dest || 'build';
     return new Promise(function(resolve, reject) {
         compile_microschema_controls(dest)
             .then(function() {
                 gulp.src([
                         '!src/microschemaControls/**/*.ts',
+                        '!src/microschemaControls/**/*.js',
                         'src/microschemaControls/**/*.*'
                     ])
                     .pipe(gulp.dest(dest + '/microschemaControls'))
@@ -321,7 +327,7 @@ function dist_css() {
             // piping through the less plugin forces the font @imports to the top of the file.
             .pipe(less())
             // TODO: clean-css is breaking the icon font definition - investigate a fix and then enable
-            //.pipe(minifyCss({ processImport: false, keepBreaks: true }))
+            .pipe(minifyCss({ processImport: false, keepBreaks: true }))
             .pipe(gulp.dest('dist/app/'))
             .on('end', resolve)
             .on('error', reject);

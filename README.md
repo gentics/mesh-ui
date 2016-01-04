@@ -10,14 +10,10 @@ bower install
 tsd install
 ```
 
-### Configure paths
-
-Set the base paths of your dev & distribution builds in the build-vars.json file, under the "BASE_HREF"
-
 ### Dev build
 
 The dev build leaves the source files intact and does not concatenate or minify anything. Outputs
-to `/build`
+to `/build`.
 
 ```
 gulp build
@@ -27,7 +23,7 @@ gulp watch
 
 ### Distribution build
 
-The distribution build minifies and concatenates all js and css, outputs to `/dist`/
+The distribution build minifies and concatenates all js and css, outputs to `/dist`.
 
 ```
 gulp dist

@@ -279,7 +279,7 @@ module meshAdminUi {
                 window['Aloha'] = {};
                 window['Aloha'].settings = activeSettings;
 
-                loadScript('assets/vendor/aloha-editor/lib/aloha-full.js', initAloha);
+                loadScript('assets/vendor/aloha-editor/lib/aloha-full.min.js', initAloha);
             }
 
             // satisfy the TypeScript compiler.
