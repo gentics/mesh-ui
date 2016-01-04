@@ -35,22 +35,25 @@
 
         <div layout="row" class="add-item-row">
             <div ng-if="vm.fieldModel.listType !== 'micronode'">
-                <div class="add-item list-icon-btn" ng-click="vm.addItem()" ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" title="Add item to list">
-                    <i class="icon-add">
-                    </i>
+                <div class="add-item" ng-click="vm.addItem()" ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" title="Add item to list">
+                    <button type="button" class="btn btn-small">
+                        <i class="icon-add"></i> <span translate>ADD_ITEM_TO</span> {{ vm.fieldModel.name }}
+                    </button>
                 </div>
             </div>
 
             <div ng-if="vm.fieldModel.listType === 'micronode'">
                 <mh-dropdown>
                     <mh-dropdown-label>
-                        <div class="add-item list-icon-btn"  ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" aria-label="Add Item">
-                            <i class="icon-add"></i> <i class="icon-arrow-drop-down"></i>
+                        <div class="add-item"  ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" aria-label="Add Item">
+                            <button type="button" class="btn btn-small">
+                                <i class="icon-add"></i> <span translate>ADD_ITEM_TO</span> {{ vm.fieldModel.name }} <i class="icon-arrow-drop-down"></i>
+                            </button>
                         </div>
                     </mh-dropdown-label>
                     <mh-dropdown-body>
                         <ul class="create-options">
-                            <li ng-repeat="microschema in vm.fieldModel.allowed"  ng-click="vm.addcontrol(microschema)"><a class="a-plain">{{:: microschema }}</a></li>
+                            <li ng-repeat="microschema in vm.fieldModel.allowed"  ng-click="vm.addControl(microschema)"><a class="a-plain">{{:: microschema }}</a></li>
                         </ul>
                     </mh-dropdown-body>
                 </mh-dropdown>

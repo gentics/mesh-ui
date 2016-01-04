@@ -66,6 +66,10 @@ module meshAdminUi {
             en: 'Seconds',
             de: 'Sekunden'
         },
+        'ADD_ITEM_TO': {
+            en: 'Add item to',
+            de: 'Hinzufügen zu'
+        },
 
         /* Admin Area */
         'NEW_USER_CREATED': {
@@ -161,6 +165,10 @@ module meshAdminUi {
         'CREATE': {
             en: 'Create',
             de: 'Speichern'
+        },
+        'ADD': {
+            en: 'Add',
+            de: 'Hinzufügen'
         },
 
         /* Error messages */
