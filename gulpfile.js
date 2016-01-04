@@ -29,13 +29,25 @@ var gulp = require('gulp'),
 
     vars = require('./build-vars.json'),
     VENDOR_SCRIPTS = vars.VENDOR_SCRIPTS,
-    VENDOR_STYLES = vars.VENDOR_STYLES;
+    VENDOR_STYLES = vars.VENDOR_STYLES,
+    KARMA_FILES_BUILD = VENDOR_SCRIPTS.concat(vars.KARMA_FILES_BUILD),
+    KARMA_FILES_DIST = vars.KARMA_FILES_DIST;
+
+/**
+ * Log to console with current time.
+ * @param {string} message
+ */
+function log(message) {
+    var now = new Date();
+    var timeString = now.toTimeString().split(' ')[0];
+    console.log('[' + timeString + '] ' +message);
+}
 
 /**
  * Completely remove the build/ and /dist folders
  */
 function clean() {
-    console.log('cleaning build & dist folders');
+    log('cleaning build & dist folders');
 
     return new Promise(function(resolve) {
         del([
@@ -75,7 +87,7 @@ function transpile_aloha_plugins() {
 }
 
 function build_aloha_plugins() {
-    console.log('build_aloha_plugins');
+    log('build_aloha_plugins');
     return new Promise(function(resolve, reject) {
         transpile_aloha_plugins()
             .pipe(gulp.dest('build/assets/vendor/aloha-editor/plugins/mesh'))
@@ -86,7 +98,7 @@ function build_aloha_plugins() {
 }
 
 function dist_aloha_plugins() {
-    console.log('dist_aloha_plugins');
+    log('dist_aloha_plugins');
     return new Promise(function(resolve, reject) {
         transpile_aloha_plugins()
             .pipe(gulp.dest('dist/assets/vendor/aloha-editor/plugins/mesh'))
@@ -96,7 +108,7 @@ function dist_aloha_plugins() {
 }
 
 function compile_microschema_controls(dest) {
-    console.log('compile_microschema_controls');
+    log('compile_microschema_controls');
     return new Promise(function(resolve, reject) {
         gulp.src([
                 'src/microschemaControls/**/*.ts'
@@ -114,7 +126,7 @@ function compile_microschema_controls(dest) {
 }
 
 function copy_microschema_controls(dest) {
-    console.log('copy_microschema_controls');
+    log('copy_microschema_controls');
     dest = dest || 'build'
     return new Promise(function(resolve, reject) {
         compile_microschema_controls(dest)
@@ -131,7 +143,7 @@ function copy_microschema_controls(dest) {
 }
 
 function build_appScripts() {
-    console.log('build_appScripts');
+    log('build_appScripts');
 
     return new Promise(function(resolve, reject) {
         return compile_appScripts()
@@ -143,7 +155,7 @@ function build_appScripts() {
 }
 
 function build_vendorScripts() {
-    console.log('build_vendorScripts');
+    log('build_vendorScripts');
 
     return new Promise(function(resolve, reject) {
         return gulp.src(VENDOR_SCRIPTS)
@@ -159,7 +171,7 @@ function compile_Templates() {
 }
 
 function build_appTemplates() {
-    console.log('build_appTemplates');
+    log('build_appTemplates');
 
     return new Promise(function(resolve, reject) {
         return compile_Templates()
@@ -171,7 +183,7 @@ function build_appTemplates() {
 }
 
 function build_appStyles() {
-    console.log('build_appStyles');
+    log('build_appStyles');
 
     return new Promise(function(resolve, reject) {
         /**
@@ -197,7 +209,7 @@ function build_appStyles() {
 }
 
 function build_vendorStyles() {
-    console.log('build_vendorStyles');
+    log('build_vendorStyles');
 
     return new Promise(function(resolve, reject) {
         return gulp.src(VENDOR_STYLES)
@@ -208,12 +220,12 @@ function build_vendorStyles() {
 }
 
 function build_staticAssets() {
-    console.log('build_staticAssets');
+    log('build_staticAssets');
 
     return new Promise(function(resolve, reject) {
         return gulp.src([
-            'src/assets**/**/*'
-        ])
+                'src/assets**/**/*'
+            ])
             .pipe(gulp.dest('build/'))
             .pipe(livereload())
             .on('end', resolve)
@@ -222,7 +234,7 @@ function build_staticAssets() {
 }
 
 function build_index() {
-    console.log('build_index');
+    log('build_index');
 
     return new Promise(function(resolve, reject) {
 
@@ -278,18 +290,18 @@ gulp.task('build', function() {
         })
         .then(build_index)
         .catch(function(err) {
-            console.log(err);
+            log(err);
         });
 });
 
 
 function dist_assets() {
-    console.log('dist_assets');
+    log('dist_assets');
 
     return new Promise(function(resolve, reject) {
         return gulp.src([
-            'src/assets**/**/*'
-        ])
+                'src/assets**/**/*'
+            ])
             .pipe(gulp.dest('dist/'))
             .on('end', resolve)
             .on('error', reject);
@@ -297,14 +309,14 @@ function dist_assets() {
 }
 
 function dist_css() {
-    console.log('dist_css');
+    log('dist_css');
 
     return new Promise(function(resolve, reject) {
         return gulp.src([
-            '**/angular-material.css',
-            '**/loading-bar.css',
-            'styles/app.css'
-        ], {cwd: 'build/'})
+                '**/angular-material.css',
+                '**/loading-bar.css',
+                'styles/app.css'
+            ], {cwd: 'build/'})
             .pipe(concat('app.css'))
             // piping through the less plugin forces the font @imports to the top of the file.
             .pipe(less())
@@ -317,7 +329,7 @@ function dist_css() {
 }
 
 function dist_js() {
-    console.log('dist_js');
+    log('dist_js');
 
     return new Promise(function(resolve, reject) {
         var vendorJs = gulp.src(VENDOR_SCRIPTS);
@@ -328,7 +340,7 @@ function dist_js() {
 
         return js
             .pipe(concat('app.js'))
-//            .pipe(uglify())
+            .pipe(uglify({}))
             .pipe(gulp.dest('dist/app/'))
             .on('end', resolve)
             .on('error', reject);
@@ -336,7 +348,7 @@ function dist_js() {
 }
 
 function dist_index() {
-    console.log('dist_index');
+    log('dist_index');
 
     return new Promise(function(resolve, reject) {
         var css = gulp.src('app/app.css', {cwd: 'dist'});
@@ -371,13 +383,14 @@ function removeHtmlComments() {
 
 gulp.task('dist', ['karma-test'], function() {
     return Promise.all([
-        dist_assets(),
-        dist_css(),
-        dist_js(),
-        dist_aloha_plugins(),
-        copy_microschema_controls('dist')
-    ])
-        .then(dist_index);
+            dist_assets(),
+            dist_css(),
+            dist_js(),
+            dist_aloha_plugins(),
+            copy_microschema_controls('dist')
+        ])
+        .then(dist_index)
+        .then(karma_dist);
 });
 
 
@@ -388,7 +401,9 @@ gulp.task('karma-app-templates', function() {
 
 function karmaWatch() {
     karma.start({
-        configFile: __dirname + '/karma.conf.js'
+        configFile: __dirname + '/karma.conf.js',
+        files: KARMA_FILES_BUILD,
+        junitReporter: { outputFile: 'build/junit.xml' }
     });
 }
 
@@ -397,15 +412,36 @@ gulp.task('karma-watch', ['karma-app-templates'], function() {
 });
 
 /**
- * Single-run all the tests
+ * Single-run all the tests on the dev version of the scripts
  * */
 gulp.task('karma-test', ['build'], function() {
+    log('running tests against development build code...');
     return new Promise(function(resolve, reject) {
         karma.start({
             configFile: __dirname + '/karma.conf.js',
-            singleRun: true
+            singleRun: true,
+            files: KARMA_FILES_BUILD,
+            junitReporter: { outputFile: 'build/junit.xml' }
         }, resolve);
     });
+});
+
+/**
+ * Single-run all the tests on the production, minified version of the scripts
+ * */
+function karma_dist() {
+    log('running tests against minified production code...');
+    return new Promise(function(resolve, reject) {
+        karma.start({
+            configFile: __dirname + '/karma.conf.js',
+            singleRun: true,
+            files: KARMA_FILES_DIST,
+            reporters: ['progress']
+        }, resolve);
+    });
+}
+gulp.task('karma-dist', function() {
+    return karma_dist();
 });
 
 gulp.task('e2e', function() {
@@ -414,8 +450,8 @@ gulp.task('e2e', function() {
     setTimeout(function() {
         child_process.exec('protractor e2e/protractor.conf.js', function (err, stdout, stderr) {
             selenium.kill();
-            console.log(stdout);
-            console.log(stderr);
+            log(stdout);
+            log(stderr);
         });
     }, 1000);
 });

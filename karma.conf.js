@@ -1,14 +1,6 @@
 // Karma configuration
 // Generated on Tue Mar 31 2015 14:42:52 GMT+0200 (W. Europe Daylight Time)
 
-var vars = require('./build-vars.json'),
-    filesArray = vars.VENDOR_SCRIPTS.concat([
-        'build/meshConfig.js',
-        'bower_components/angular-mocks/angular-mocks.js',
-        'build/app/templates.js',
-        'build/app/app.js',
-        'src/app/**/*.spec.js'
-    ]);
 
 module.exports = function(config) {
     config.set({
@@ -21,8 +13,8 @@ module.exports = function(config) {
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
         frameworks: ['jasmine', 'angular-filesort'],
 
-        // list of files / patterns to load in the browser
-        files: filesArray,
+        // This is set in the gulpfile.
+        files: [],
 
         angularFilesort: {
             whitelist: [
