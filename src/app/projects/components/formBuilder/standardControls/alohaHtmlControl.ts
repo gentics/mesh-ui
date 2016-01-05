@@ -58,7 +58,7 @@ module meshAdminUi {
                 this.lastContent = this.fieldModel.value;
 
                 if (Aloha.ready) {
-                    this.registerBindings();
+                    Aloha.ready(() => this.registerBindings());
                 } else {
                     callbacks.push(() => this.registerBindings());
                 }
@@ -114,8 +114,7 @@ module meshAdminUi {
                 };
 
                 const alohaDeactivated = (jQueryEvent, alohaEditable) => {
-
-                    if (this.eventTargetIsThisElement(alohaEditable)) {
+                    if (alohaEditable !== undefined && this.eventTargetIsThisElement(alohaEditable)) {
                         $editorPane.off('scroll', positionToolbarContainer);
                         $(window).off('resize', positionToolbarContainer);
                         alohaToolbar.classList.add('hidden');
@@ -139,8 +138,8 @@ module meshAdminUi {
                 };
 
                 $(this.htmlField).aloha();
-                Aloha.bind('aloha-editable-activated', alohaActivated);
-                Aloha.bind('aloha-editable-deactivated', alohaDeactivated);
+                $(Aloha).bind('aloha-editable-activated', alohaActivated);
+                $(Aloha).bind('aloha-editable-deactivated', alohaDeactivated);
 
                 /**
                  * Model -> data binding
@@ -152,18 +151,20 @@ module meshAdminUi {
                 });
 
                 this.$scope.$on('$destroy', () => {
-                    Aloha.unbind('aloha-editable-activated', alohaActivated);
-                    Aloha.unbind('aloha-editable-deactivated', alohaDeactivated);
+                    $(Aloha).unbind('aloha-editable-activated', alohaActivated);
+                    $(Aloha).unbind('aloha-editable-deactivated', alohaDeactivated);
                     $(this.htmlField).mahalo();
                 });
             }
 
-            private eventTargetIsThisElement(alohaEditable) {
+            private eventTargetIsThisElement(alohaEditable): boolean {
                 return this.htmlField.getAttribute('id') === alohaEditable.editable.getId();
             }
 
             private syncView() {
-                this.htmlField.innerHTML = this.fieldModel.value;
+                if (this.fieldModel.value) {
+                    this.htmlField.innerHTML = this.fieldModel.value;
+                }
             }
         }
 
