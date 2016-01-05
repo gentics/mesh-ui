@@ -34,6 +34,9 @@ body.project-module {
   });
 
   .projects-sliding-frame {
+    // required to provide a consistent positioning context for fixed-position
+    // descendants. See http://stackoverflow.com/q/15194313/772859
+    transform: translateX(0);
     .responsive-max(@mq-md, {
       width: 198vw !important;
       transition: transform 0.3s;

@@ -58,10 +58,16 @@
     z-index: 10;
     padding-left: 4px;
     overflow-x: hidden;
+    opacity: 1;
+    transition: opacity 0.3s;
 
     &.open {
       height: 95px;
       overflow: visible;
+    }
+
+    &.hidden {
+      opacity: 0;
     }
   }
 

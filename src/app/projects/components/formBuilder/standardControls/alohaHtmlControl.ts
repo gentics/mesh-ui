@@ -84,16 +84,37 @@ module meshAdminUi {
                 let $editorPane = $('.editor-pane-container');
                 let $toolbarContainer = $(this.toolbarContainer);
 
+                /**
+                 * This function controls how the Aloha toolbar gets positioned. It can be either stuck to the top
+                 * edge of the editable area, or if the editable area is long and "goes off the top" of the editorPane,
+                 * the Aloha toolbar then floats at the top. If the editable region is totally off the screen, we fade
+                 * out the toolbar.
+                 */
                 const positionToolbarContainer = () => {
                     let containerHeight = 95;
+                    let wipTabHeight = 33;
+                    let labelHeight = 20;
                     let $editable: JQuery = $(this.htmlField);
+                    let controlOffsetTop = $editable.closest('.html-container')[0].getBoundingClientRect().top;
                     let paneTop = $editorPane[0].getBoundingClientRect().top;
+                    let editableBottom = $editable[0].getBoundingClientRect().bottom;
+
+                    let editableIsObscured = $editable.offset().top - containerHeight < paneTop;
+                    let editableIsOffScreen = editableBottom < paneTop + containerHeight;
 
                     $toolbarContainer.css({ width: $editable.width() });
-                    if ($editable.offset().top - containerHeight < paneTop) {
-                        $toolbarContainer.css({ top: paneTop });
+
+                    if (editableIsOffScreen) {
+                        // toolbar is stuck to the bottom of the text area
+                        $toolbarContainer.addClass('hidden');
+                    } else if (editableIsObscured) {
+                        // toolbar is "floating"
+                        $toolbarContainer.css({ top: wipTabHeight });
+                        $toolbarContainer.removeClass('hidden');
                     } else {
-                        $toolbarContainer.css({ top: $editable.offset().top - containerHeight - 1 });
+                        // toolbar is stuck to the top of the text area
+                        $toolbarContainer.css({ top: controlOffsetTop - paneTop - containerHeight + wipTabHeight + labelHeight });
+                        $toolbarContainer.removeClass('hidden');
                     }
                 };
 
