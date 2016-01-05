@@ -2371,9 +2371,12 @@ input.ui-button {
 .aloha .ui-icon-gripsmall-diagonal-se {
   background : url("@{aloha-path}plugins/common/ui/img/jqueryui/ui-icons_222222_256x240.png") no-repeat;
 }
+
+
+@multisplit-btn-width: 75px;
 .aloha .aloha-multisplit {
   position : relative;
-  width: 245px;
+  width: @multisplit-btn-width * 3 + 20;
   max-height : 50px;
   overflow : hidden;
   margin : 0 auto;
@@ -2382,11 +2385,10 @@ input.ui-button {
   overflow : visible;
   max-height: 200px;
 }
-
 .aloha .aloha-multisplit-content {
   text-align : left;
   position : relative;
-  width: 230px;
+  width: @multisplit-btn-width * 3 + 5;
   border: 1px solid transparent;
 }
 
@@ -3242,6 +3244,14 @@ input.aloha-wai-red {
   list-style : none;
 }
 
+.open .aloha-ui-toolbar {
+  animation: slide-down 0.3s both;
+}
+
+.aloha .aloha-ui-toolbar.hidden {
+  animation: slide-down 0.3s reverse both;
+}
+
 .aloha .aloha-ui-toolbar {
   font-family: @detail-font;
   text-transform: uppercase;
@@ -3254,11 +3264,6 @@ input.aloha-wai-red {
   background-color: @color-concrete;
   border: 1px solid @color-primary;
   border-bottom-color: @color-alto;
-  animation: slide-down 0.3s both;
-
-  &.hidden {
-    animation: slide-down 0.3s reverse both;
-  }
 
   .ui-tabs-panel {
     min-width: 500px;
@@ -3292,21 +3297,22 @@ input.aloha-wai-red {
   // styling of the paragraph style selector
   .paragraph-styles {
     font-size: 12px;
-    width: 75px;
+    width: @multisplit-btn-width;
     text-align: center;
+    text-transform: none;
     display: inline-block;
     text-indent: 0;
   }
 
   .aloha-large-button {
-    width: 75px !important;
+    width: @multisplit-btn-width !important;
     height: 48px !important;
   }
 
   .aloha-large-icon {
     background: none;
     color: @color-boulder;
-    width: 75px !important;
+    width: @multisplit-btn-width !important;
     height: 48px !important;
     margin-left: -38px !important;
     margin-top: -23px !important;
