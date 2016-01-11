@@ -14,8 +14,14 @@
         // (e.g. using JSON.parse())
         previewUrl: '',
 
-        // A microschema component is a custom form component which can be used to render a
-        // specific microschema, in place of the default form generator.
+        // A microschema control is a custom form component which can be used to render a
+        // specific microschema, in place of the default form generator. For full documentation, please
+        // see the example in `/microschemaControls/example/exampleControl.js`
+        //
+        // The `microschemaControlsLocation` may point to any location on the current server or even on
+        // another server. Note that if serving microschema controls from a different server or port, you
+        // must take CORS into consideration and set the Access-Control-Allow-Origin headers accordingly.
+        microschemaControlsLocation: '/microschemaControls',
         microschemaControls: [
             "geolocation/geolocationControl",
             "example/exampleControl"

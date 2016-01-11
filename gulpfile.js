@@ -132,7 +132,7 @@ function compile_microschema_controls(dest) {
 
 function copy_microschema_controls(dest) {
     log('copy_microschema_controls');
-    dest = dest || 'build';
+    dest = typeof dest === 'string' ? dest : 'build';
     return new Promise(function(resolve, reject) {
         compile_microschema_controls(dest)
             .then(function() {

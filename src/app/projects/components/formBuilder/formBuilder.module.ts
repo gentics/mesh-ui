@@ -10,6 +10,7 @@ module meshAdminUi {
     declare var meshMicroschemaControls: any;
 
     let controls = meshConfig.microschemaControls;
+    let controlsLocation = meshConfig.microschemaControlsLocation;
 
     /**
      * This function loads the .js and .css files associated with any custom microschema controls
@@ -23,7 +24,7 @@ module meshAdminUi {
 
         if (controls) {
             let resources = controls.reduce((prev, curr) => {
-                let files = ['js', 'css'].map(ext => `microschemaControls/${curr}.${ext}`);
+                let files = ['js', 'css'].map(ext => `${controlsLocation}/${curr}.${ext}`);
                 return prev.concat(files);
             }, []);
 
@@ -48,10 +49,10 @@ module meshAdminUi {
      * Loads the template .html files for each registered microschema custom control via XHR and puts it
      * into the AngularJS template cache.
      */
-    function customControlsTemplateLoader($templateRequest: ng.ITemplateRequestService) {
+    function customControlsTemplateLoader($templateRequest: ng.ITemplateRequestService, $sce: ng.ISCEService) {
         if (controls) {
-            controls.map(name => `../microschemaControls/${name}.html`)
-                .forEach(url => $templateRequest(url));
+            controls.map(name => `${controlsLocation}/${name}.html`)
+                .forEach(url => $templateRequest($sce.trustAsResourceUrl(url)));
         }
     }
 

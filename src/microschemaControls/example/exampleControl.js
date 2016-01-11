@@ -137,7 +137,7 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
             // The templateUrl *must* follow this form, i.e. it must start with the string
             // "../microschemaControls/", followed by the path defined in meshConfig, followed
             // by the ".html" extension.
-            templateUrl: '../microschemaControls/example/exampleControl.html',
+            templateUrl: meshConfig.microschemaControlsLocation + '/example/exampleControl.html',
             // do not use an isolated scope in this case. The proxy directive does this for
             // you, so doing so here will prevent this directive from having access to the
             // field values.
