@@ -46,7 +46,7 @@ html {
   font-family: @copy-font;
 
   .responsive-max(@mq-sm, {
-    font-size: 55%;
+    //font-size: 55%;
   })
 }
 @font-size-title-1: 3.2rem;
@@ -63,9 +63,12 @@ html {
 }
 
 .page-title {
-  margin-top: 4rem;
-  font-size: @font-size-title-2;
-  font-family: @title-font;
-  text-transform: uppercase;
-  font-weight: normal;
+	margin-top: 2rem;
+	.responsive-min(@mq-md, {
+		margin-top: 4rem;
+	});
+	font-size: @font-size-title-2;
+	font-family: @title-font;
+	text-transform: uppercase;
+	font-weight: normal;
 }

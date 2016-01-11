@@ -57,7 +57,10 @@
 
     .user-container {
       padding-left: 20px;
-      min-width: 150px;
+
+      .responsive-min(@mq-md, {
+        min-width: 150px;
+      });
 
       .profile-image {
         margin-right: 5px;

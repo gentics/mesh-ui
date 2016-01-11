@@ -1,10 +1,13 @@
 .breadcrumbs {
+  @font-size-mobile-breadcrumbs: 1.8rem;
+
   font-size: @font-size-title-2;
   font-family: @title-font;
   text-transform: uppercase;
   padding-bottom: 4rem;
 
   .responsive-max(@mq-sm, {
+    font-size: @font-size-mobile-breadcrumbs;
     padding-bottom: 0;
   });
 
@@ -43,12 +46,14 @@
     span {
       position: relative;
       display: inline-block;
+      padding-right: 0.3em;
 
       .page-title();
       margin-top: 0;
 
-      .responsive-min(@mq-sm, {
-        padding-right: 0.3em;
+      .responsive-max(@mq-sm, {
+        font-size: @font-size-mobile-breadcrumbs;
+        padding-right: 0;
       });
     }
   }
