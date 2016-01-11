@@ -1,6 +1,9 @@
 module meshAdminUi {
 
 
+    /**
+     * This class defines the behaviour of the pane resize control.
+     */
     class ResizerController {
 
         public resizerStyle = {
@@ -65,11 +68,21 @@ module meshAdminUi {
                 }
 
                 if (minWidth < percentage && percentage < maxWidth) {
-                    this.$scope.$apply(() => this.handleStyle.left = mouseLeftOffset + 'px');
+                    this.$scope.$apply(() => this.handleStyle.left = this.adjustOffsetLeft(mouseLeftOffset) + 'px');
                 }
                 event.preventDefault();
                 return mouseLeftOffset;
             }
+        }
+
+        /**
+         * Since the .projects-sliding-frame class includes the `transform` CSS property, it causes a new position
+         * context to be created. This will throw off the calculation of the `left` position of the resize bar,
+         * so we need to compensate for this.
+         */
+        public adjustOffsetLeft(leftVal: number): number {
+            let positionContextElement = <HTMLElement>document.querySelector('.projects-sliding-frame');
+            return leftVal - positionContextElement.offsetLeft;
         }
 
     }
@@ -92,7 +105,7 @@ module meshAdminUi {
                         barWidth = resizeBar.getBoundingClientRect().width;
 
                     ctrl.handleStyle.height = resizeBar.getBoundingClientRect().height + 'px';
-                    ctrl.handleStyle.left = (resizeBar.getBoundingClientRect().left - barWidth / 2)+ 'px';
+                    ctrl.handleStyle.left = (ctrl.adjustOffsetLeft(resizeBar.offsetLeft) - barWidth / 2)+ 'px';
                     ctrl.resizerMousedown(event, barWidth);
                 };
             }

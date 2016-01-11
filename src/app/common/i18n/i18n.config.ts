@@ -15,6 +15,7 @@ module meshAdminUi {
 
         i18nServiceProvider.setDefaultLanguage('en');
         $translateProvider
+            .useSanitizeValueStrategy('escapeParameters')
             .translations('en', translationTable.getLanguage('en'))
             .translations('de', translationTable.getLanguage('de'))
             .preferredLanguage('en')

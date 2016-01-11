@@ -3,11 +3,6 @@
         <div class="content" layout="row" layout-align="end" >
             <div flex layout="row">
 
-                <!-- <md-input-container flex class="search-term">
-                     <label><span translate>SEARCH</span> in {{ vm.currentNode.fields[vm.currentNode.displayField] || vm.currentProject.name }}</label>
-                     <input type="text" ng-model="vm.searchTerm" ng-keyup="vm.updateSearchTerm($event)">
-                 </md-input-container>-->
-
                 <md-autocomplete flex md-selected-item="vm.selectedTag"
                                  placeholder="{{ vm.getPlaceholderText() }}"
                                  md-search-text="vm.searchTerm"
@@ -26,8 +21,8 @@
 
                 </md-autocomplete>
 
-                <div>
-                    <md-checkbox md-no-ink aria-label="Global Search" ng-model="vm.searchAll">
+                <div layout="row" layout-align="centre centre">
+                    <md-checkbox md-no-ink aria-label="Global Search" ng-model="vm.searchAll" class="global-checkbox">
                         Global
                     </md-checkbox>
                 </div>
