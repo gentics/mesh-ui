@@ -166,6 +166,10 @@ module meshAdminUi {
             en: 'Create',
             de: 'Speichern'
         },
+        'PREVIEW': {
+            en: 'Preview',
+            de: 'Vorschau'
+        },
         'ADD': {
             en: 'Add',
             de: 'Hinzufügen'

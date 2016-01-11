@@ -490,7 +490,7 @@ gulp.task('watch', ['default'], function() {
     gulp.watch('src/microschemaControls/**/*.*', copy_microschema_controls);
     gulp.watch('src/app/**/*.html', build_appTemplates);
     gulp.watch('src/**/*.less', build_appStyles);
-    gulp.watch('src/index.html', build_index);
+    gulp.watch(['src/index.html', 'src/meshConfig.js'], build_index);
     gulp.watch('src/assets/**/*.*', build_staticAssets);
 });
 

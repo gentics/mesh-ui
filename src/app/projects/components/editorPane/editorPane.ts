@@ -30,6 +30,7 @@ module meshAdminUi {
 
         constructor(private $scope: ng.IScope,
                     private $q: ng.IQService,
+                    private $http: ng.IHttpService,
                     private $state: ng.ui.IStateService,
                     private $timeout: ng.ITimeoutService,
                     private $location: ng.ILocationService,
@@ -249,6 +250,33 @@ module meshAdminUi {
             }
         }
 
+        /**
+         * Returns true if a previewUrl has been provided in the meshConfig file.
+         */
+        public canPreview(): boolean {
+            let url = meshConfig.previewUrl;
+            return !!(url && url !== '');
+        }
+
+        /**
+         * If a previewUrl has been set in the meshConfig.js file, this method can be used to open that URL
+         * and POST the current node data to it, for the purpose of rendering a preview.
+         */
+        public preview(node: INode) {
+            let form = <HTMLFormElement>document.createElement("form");
+            form.action = meshConfig.previewUrl;
+            form.method = 'POST';
+            form.target = '_blank';
+
+            let input = document.createElement("textarea");
+            input.name = 'node';
+            input.value = JSON.stringify(node);
+            form.appendChild(input);
+            form.style.display = 'none';
+            document.body.appendChild(form);
+            form.submit();
+            form.remove();
+        }
 
         /**
          * Get the node object either from the server if this is being newly opened, or from the

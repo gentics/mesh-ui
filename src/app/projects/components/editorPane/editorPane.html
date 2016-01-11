@@ -64,7 +64,14 @@
                 ng-click="vm.remove(vm.node)"
                 ng-disabled="!vm.canDelete(vm.node)"
                 aria-label="delete">
-            <i class="icon-delete"></i><span translate>DELETE</span>
+            <i class="icon-delete"></i> <span translate>DELETE</span>
+        </button>
+
+        <button class="btn"
+                ng-click="vm.preview(vm.node)"
+                ng-if="vm.canPreview()"
+                aria-label="preview">
+            <i class="icon-remove-red-eye"></i> <span translate>PREVIEW</span>
         </button>
     </div>
 
