@@ -6,12 +6,13 @@
 
     <label>{{:: vm.fieldModel.label || vm.fieldModel.name }}</label>
     <div>
-        <ul dnd-list="vm.fieldModel.value"
+        <ul class="mh-sortable-list"
+            dnd-list="vm.fieldModel.value"
             dnd-drop="vm.endDrag(item, index, vm.fieldModel.value)"
             dnd-allowed-types="[vm.fieldModel.listType]">
 
             <li flex ng-repeat="item in vm.listFieldModels track by vm.tracker(item, $id, $index)"
-                class="list-item"
+                class="mh-list-item"
                 layout="row"
                 dnd-draggable="item"
                 dnd-dragstart="vm.startDrag($index)"

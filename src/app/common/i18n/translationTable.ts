@@ -84,6 +84,10 @@ module meshAdminUi {
             en: 'New role created',
             de: 'Neue Rolle erstellt'
         },
+        'ADD_NEW_FIELD': {
+            en: 'Add new field',
+            de: 'Neues Feld hinzufügen'
+        },
 
         /* Other */
         'SEARCH_IN': {

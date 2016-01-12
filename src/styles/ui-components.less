@@ -116,6 +116,67 @@
   .custom-button(warn, @color-warn);
 }
 
+// A drag-and-drop-able list
+.mh-sortable-list {
+
+  .mh-list-item {
+    padding: 2px;
+    margin: 2px 0;
+    transition: background-color 0.3s;
+    &:hover {
+      background-color: rgba(200, 200, 200, 0.2);
+    }
+  }
+
+  .dndDraggingSource {
+    opacity: 0.4;
+    outline: 1px dashed @color-boulder;
+  }
+
+  .dndPlaceholder {
+    display: block;
+    background-color: @color-primary;
+    outline: 1px solid @color-primary;
+  }
+
+  .list-icon-btn {
+    color: @color-dusty;
+    font-size: @font-size-title-2;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  &:hover {
+    .list-icon-btn {
+      color: @color-subdued;
+    }
+  }
+
+  .remove-item {
+    margin-right: 10px;
+    &:hover {
+      color: @color-warn;
+    }
+  }
+
+  .sort-handle {
+    color: @color-alto;
+    text-shadow: 1px 1px 0 rgba(150, 150, 150, 0.5);
+    cursor: move;
+    touch-action: none;
+  }
+
+  &:hover {
+    .sort-handle {
+      color: @color-alto;
+      &:hover {
+        text-shadow: 1px 1px 0 rgba(150, 150, 150, 1);
+        color: @color-alto;
+      }
+    }
+  }
+}
+
 // some links should not be styled with the default link styles,
 // but we still want to use an <a> tag rather than, say, a <span>
 // because we want the browser to provide the behavioural properties
@@ -136,12 +197,20 @@ a.a-plain {
  */
 md-input-container {
   display: block;
-  .md-input, .md-input.ng-dirty{
+  .md-input, .md-input.ng-dirty, md-select{
     background-color: white;
     border: 1px solid @color-alto;
 
     &.ng-invalid {
       border: 1px solid @color-warn;
+    }
+  }
+
+  md-select {
+    .md-select-value {
+      align-items: baseline;
+      border-bottom-width: 0;
+      min-height: 25px;
     }
   }
 
@@ -151,6 +220,32 @@ md-input-container {
       padding-bottom: 1px;
     }
   }
+
+  // larger input used for titles etc.
+  &.display-field {
+    font-size: @font-size-title-1;
+    margin-bottom: 0;
+    input {
+      height: inherit;
+    }
+    label {
+      transform: translate3d(4px, 43px, 0) scale(1) !important;
+    }
+
+    &.md-input-focused label:not(.md-no-float),
+    &.md-input-has-value label {
+      transform: translate3d(0, 29px, 0) scale(0.35) !important;
+    }
+  }
+
+  .strong {
+    font-weight: bold;
+  }
+}
+
+// when a checkbox needs to horizontally align with other md-inputs
+.checkbox-horizonal-align {
+  margin-top: 24px;
 }
 
 .noselect {

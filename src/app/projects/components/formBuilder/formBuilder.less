@@ -21,21 +21,6 @@
 
 .editor-control {
   position: relative;
-
-  &.display-field {
-    font-size: @font-size-title-1;
-    input {
-      height: inherit;
-    }
-    label {
-      transform: translate3d(4px, 43px, 0) scale(1) !important;
-    }
-
-    &.md-input-focused label:not(.md-no-float),
-    &.md-input-has-value label {
-      transform: translate3d(0, 29px, 0) scale(0.35) !important;
-    }
-  }
 }
 
 .html-container {
@@ -179,56 +164,9 @@
     }
   }
 
-  .dndDraggingSource {
-    opacity: 0.4;
-    outline: 1px dashed @color-boulder;
-  }
-
-  .dndPlaceholder {
-    display: block;
-    background-color: @color-primary;
-    outline: 1px solid @color-primary;
-  }
-
-  .list-icon-btn {
-    color: @color-dusty;
-    font-size: @font-size-title-2;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-
-  &:hover {
-    .list-icon-btn {
-      color: @color-subdued;
-    }
-  }
-
-  .remove-item {
-    margin-right: 10px;
-    &:hover {
-      color: @color-warn;
-    }
-  }
-
   .add-item {
     &:hover {
       color: @color-primary;
-    }
-  }
-
-  .sort-handle {
-    color: @color-alto;
-    text-shadow: 1px 1px 0 rgba(150, 150, 150, 0.5);
-    cursor: move;
-    touch-action: none;
-  }
-  &:hover {
-    .sort-handle {
-      color: @color-alto;
-      &:hover {
-        text-shadow: 1px 1px 0 rgba(150, 150, 150, 1);
-        color: @color-alto;
-      }
     }
   }
 

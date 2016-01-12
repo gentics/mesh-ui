@@ -1,0 +1,128 @@
+<div class="schema-field mh-list-item">
+
+    <div layout="row">
+
+        <div class="field-icon">
+            <i class="{{ vm.getTypeIcon(vm.field) }}"></i>
+        </div>
+
+        <md-input-container>
+            <label>Name</label>
+            <input type="text" ng-model="vm.field.name" required ng-change="vm.onChange()" class="strong">
+        </md-input-container>
+
+        <md-input-container flex="20">
+            <label>Type</label>
+            <md-select ng-model="vm.field.type" ng-change="vm.onChange()">
+                <md-option ng-value="type.name" ng-repeat="type in :: vm.types">{{ type.name }}</md-option>
+            </md-select>
+        </md-input-container>
+
+        <md-input-container>
+            <label>Label</label>
+            <input type="text" ng-model="vm.field.label" ng-change="vm.onChange()">
+        </md-input-container>
+
+        <div flex="5"></div>
+
+        <div>
+            <md-checkbox md-no-ink class="checkbox-horizonal-align"
+                         ng-model="vm.field.required"
+                         aria-label="Required" ng-change="vm.onChange()">
+                Required
+            </md-checkbox>
+        </div>
+
+        <div flex layout="row" layout-align="end start">
+            <div>
+                <div class="remove-item list-icon-btn" ng-click="vm.onDelete()">
+                    <i class="icon-close" title="Remove field"></i>
+                </div>
+            </div>
+            <div class="sort-handle list-icon-btn" dnd-handle>
+                <div class="">
+                    <i class="icon-more-vert" title="Drag to sort"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div layout="row">
+        <!-- optional settings depending on field type -->
+
+        <div class="spacer"></div>
+
+        <div ng-if="vm.field.type === 'list'">
+            <md-input-container>
+                <label>List Type</label>
+                <md-select required
+                           ng-model="vm.field.listType"
+                           ng-change="vm.onChange()">
+                    <md-option ng-value="type.name" ng-repeat="type in :: vm.types">
+                        <i class="{{ type.icon }}"></i> {{ type.name }}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+
+        <div ng-if="vm.field.type === 'micronode'">
+            <md-input-container>
+                <label>Allowed Microschema</label>
+                <md-select required
+                           ng-model="vm.field.allowed"
+                           ng-change="vm.onChange()">
+                    <md-option ng-value="microschema.name" ng-repeat="microschema in vm.microschemas">
+                        {{ microschema.name }}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+
+        <div ng-if="vm.field.listType === 'micronode'">
+            <md-input-container>
+                <label>Allowed Microschemas</label>
+                <md-select required
+                           multiple
+                           ng-model="vm.field.allowed"
+                           ng-change="vm.onChange()">
+                    <md-option ng-value="microschema.name" ng-repeat="microschema in vm.microschemas">
+                        {{ microschema.name }}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+
+        <div ng-if="vm.field.type === 'node' || field.listType === 'node'">
+            <md-input-container>
+                <label>Allowed Schemas</label>
+                <md-select multiple
+                           ng-model="vm.field.allow"
+                           ng-change="vm.onChange()">
+                    <md-option ng-value="schema.name" ng-repeat="schema in vm.schemas">
+                        {{ schema.name }}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+
+        <div ng-if="vm.field.type === 'number' || field.listType === 'number'" layout="row">
+
+            <md-input-container flex-gt-sm="10">
+                <label>Min</label>
+                <input type="number" ng-model="vm.field.min" ng-change="vm.onChange()">
+            </md-input-container>
+
+            <md-input-container flex-gt-sm="10">
+                <label>Max</label>
+                <input type="number" ng-model="vm.field.max" ng-change="vm.onChange()">
+            </md-input-container>
+
+            <md-input-container flex-gt-sm="10">
+                <label>Step</label>
+                <input type="number" ng-model="vm.field.step" ng-change="vm.onChange()">
+            </md-input-container>
+
+        </div>
+    </div>
+</div>

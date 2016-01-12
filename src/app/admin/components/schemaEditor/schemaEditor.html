@@ -1,0 +1,60 @@
+<div class="schema-editor-container">
+
+    <div layout="row">
+        <div layout="row" layout-align="space-between" flex-gt-sm="60">
+            <md-input-container class="display-field" flex flex-gt-sm="70">
+                <label>Name</label>
+                <input type="text" ng-model="vm.schema.name" required ng-change="vm.schemaChanged()">
+            </md-input-container>
+
+            <div flex flex-gt-sm="20">
+                <md-checkbox class="checkbox-horizonal-align"
+                             ng-model="vm.schema.folder"
+                             aria-label="Folder"
+                             ng-change="vm.schemaChanged()">
+                    Folder
+                </md-checkbox>
+            </div>
+        </div>
+    </div>
+
+
+    <div layout="row">
+        <md-input-container flex flex-gt-sm="30">
+            <label>Display Field</label>
+            <md-select ng-model="vm.schema.displayField" ng-change="vm.schemaChanged()">
+                <md-option ng-value="fieldName" ng-repeat="fieldName in vm.getTextFields()">{{ fieldName }}</md-option>
+            </md-select>
+        </md-input-container>
+
+        <md-input-container flex flex-gt-sm="30">
+            <label>Segment Field</label>
+            <md-select ng-model="vm.schema.segmentField" ng-change="vm.schemaChanged()">
+                <md-option ng-value="fieldName" ng-repeat="fieldName in vm.getTextFields()">{{ fieldName }}</md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+
+
+    <h3>Fields</h3>
+
+    <div class="schema-field-container mh-sortable-list"
+         dnd-list="vm.fieldModel.value"
+         dnd-drop="vm.endDrag(item, index, vm.schema.fields)">
+
+        <schema-field field="field"
+                      schemas="vm.schemas"
+                      microschemas="vm.microschemas"
+                      on-change="vm.schemaChanged()"
+                      on-delete="vm.removeField($index)"
+                      ng-repeat="field in vm.schema.fields"
+                      dnd-draggable="field"
+                      dnd-dragstart="vm.startDrag($index)"></schema-field>
+    </div>
+
+    <button class="btn" ng-click="vm.addField()">
+        <i class="icon-add"></i> <span translate>ADD_NEW_FIELD</span>
+    </button>
+
+
+</div>

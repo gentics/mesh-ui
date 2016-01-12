@@ -12,15 +12,18 @@
         </ul>
     </div>
 
+    <div layout="row">
+    <schema-editor flex flex-gt-md="70"
+                    schema="vm.schema"
+                   schemas="vm.schemas"
+                   microschemas="vm.microschemas"
+                   on-change="vm.schemaChanged(schema)"></schema-editor>
+    </div>
+
     <form name="schemaDetailForm" class="admin-form">
 
-        <md-input-container>
-            <label>Schema Name</label>
-            <input type="text" ng-model="vm.schema.name" ng-change="vm.modified = true" required>
-        </md-input-container>
-
-        <div ui-ace="{ useWrapMode : true, showGutter: true, mode: 'json', onLoad : vm.aceLoaded, workerPath: 'vendor/scripts' }"
-             ng-model="vm.schemaJson"></div>
+        <!--<div ui-ace="{ useWrapMode : true, showGutter: true, mode: 'json', onLoad : vm.aceLoaded, workerPath: 'vendor/scripts' }"
+             ng-model="vm.schemaJson"></div>-->
 
     </form>
 
