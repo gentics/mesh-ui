@@ -5,6 +5,8 @@ module meshAdminUi {
      */
     class SchemaFieldController {
 
+        public field: ISchemaFieldDefinition;
+        public onChange: Function;
         public types = [
             { name: 'string', icon: 'icon-type' },
             { name: 'number', icon: 'icon-hash' },
@@ -16,11 +18,29 @@ module meshAdminUi {
             { name: 'micronode', icon: 'icon-view-quilt' }
         ];
 
-        constructor() {
+        public micronodeAllow: string = '';
+
+        constructor($scope: ng.IScope) {
+            $scope.$watch(() => this.field.allow, () => {
+                if (this.field.type === 'micronode' && this.field.allow instanceof Array) {
+                    this.micronodeAllow = this.field.allow[0];
+                }
+            });
         }
 
         public getTypeIcon(field: ISchemaFieldDefinition): string {
             return this.types.filter(type => type.name === field.type)[0].icon;
+        }
+
+        /**
+         * We cannot use ng-model to directly bind to the "allow" property of a 'micronode', since
+         * it would update the "allow" with a string value rather than an array.
+         * Therefore we manually create an array with a single string element.
+         */
+        public updateMicronodeAllow(value: string) {
+            this.field.allow = [value];
+            console.log('this.field.allow', this.field.allow);
+            this.onChange();
         }
 
     }

@@ -12,26 +12,45 @@
         </ul>
     </div>
 
-    <div layout="row">
-    <schema-editor flex flex-gt-md="70"
-                    schema="vm.schema"
-                   schemas="vm.schemas"
-                   microschemas="vm.microschemas"
-                   on-change="vm.schemaChanged(schema)"></schema-editor>
+    <md-tabs md-dynamic-height md-border-bottom md-no-ink>
+        <md-tab label="Schema Builder">
+            <md-content class="md-padding">
+                <div layout="row">
+                    <schema-editor flex flex-gt-md="70"
+                                   schema="vm.schema"
+                                   schemas="vm.schemas"
+                                   microschemas="vm.microschemas"
+                                   on-change="vm.schemaChanged(schema)"></schema-editor>
+                </div>
+            </md-content>
+        </md-tab>
+        <md-tab label="JSON Editor"
+                md-on-deselect="vm.deselectJsonTab()">
+            <md-content class="md-padding">
+                <form name="schemaDetailForm" class="admin-form">
+
+                    <div ui-ace="{ useWrapMode : true,
+                                       showGutter: true,
+                                       mode: 'json',
+                                       onLoad : vm.aceLoaded,
+                                       onChange: vm.aceChanged,
+                                       workerPath: 'vendor/scripts'}"
+                         ng-model="vm.schemaJson"></div>
+
+                </form>
+            </md-content>
+        </md-tab>
+    </md-tabs>
+
+    <div class="mh-error-alert" ng-if="vm.lastError" layout="row" layout-align="center center">
+        <i class="icon-error"></i> {{ vm.lastError }}
     </div>
 
-    <form name="schemaDetailForm" class="admin-form">
-
-        <!--<div ui-ace="{ useWrapMode : true, showGutter: true, mode: 'json', onLoad : vm.aceLoaded, workerPath: 'vendor/scripts' }"
-             ng-model="vm.schemaJson"></div>-->
-
-    </form>
-
-    <div layout="row" layout-align="center center" class="main-buttons">
+    <div layout="row" layout-align="center center" class="mh-main-buttons">
 
         <button class="btn btn-primary"
                 ng-click="vm.persist(vm.schema)"
-                ng-disabled="!vm.modified"
+                ng-disabled="!vm.modified || !vm.isValid"
                 aria-label="save">
             <i class="icon-save"></i>
             <span ng-if="!vm.isNew" translate>UPDATE</span>

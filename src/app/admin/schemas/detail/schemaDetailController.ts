@@ -7,7 +7,11 @@ module meshAdminUi {
     class SchemaDetailController {
 
         private isNew: boolean = false;
+        private isValid: boolean = true;
         private modified: boolean = false;
+        private contentLoaded: boolean = false;
+
+        public lastError: string = '';
         public schema: ISchema;
         public schemaJson: string;
         public microschemas: IMicroschema[] = [];
@@ -16,6 +20,7 @@ module meshAdminUi {
         constructor(
             private $state: ng.ui.IStateService,
             private $stateParams: any,
+            private schemaValidatorService: SchemaValidatorService,
             private confirmActionDialog: ConfirmActionDialog,
             private dataService: DataService,
             private notifyService: NotifyService) {
@@ -33,6 +38,8 @@ module meshAdminUi {
          * Persist the user data back to the server.
          */
         public persist(schema: ISchema) {
+            this.extendSchemaWithJsonValues(this.schemaJson);
+
             this.dataService.persistSchema(schema)
                 .then((response: any) => {
                     if (this.isNew) {
@@ -77,8 +84,8 @@ module meshAdminUi {
         }
 
         public schemaChanged(schema) {
-            console.log('schema changed', schema);
             this.schema = schema;
+            this.schemaJson = this.schemaToJson(this.schema);
             this.modified = true;
         }
 
@@ -90,9 +97,14 @@ module meshAdminUi {
             var uuid = this.$stateParams.uuid;
             if (uuid && uuid !== 'new') {
                 return this.dataService.getSchema(uuid)
-                    .then(data => this.schema = data);
+                    .then(data => {
+                        this.schema = data;
+                        this.schemaJson = this.schemaToJson(this.schema);
+                        this.checkErrors();
+                    });
             } else {
                 this.schema = this.createEmptySchema();
+                this.schemaJson = this.schemaToJson(this.schema);
                 this.isNew = true;
             }
         }
@@ -101,15 +113,65 @@ module meshAdminUi {
          * Converts the schema object into a json string to be used in the editor.
          */
         private schemaToJson(schema: ISchema): string {
+            const removeHashKey = (f: any) => {
+                delete f.$$hashKey;
+                return f;
+            };
+
             let jsonObj = {
                 name: schema.name || '',
                 displayField: schema.displayField || '',
                 segmentField: schema.segmentField || '',
                 folder: schema.folder || false,
                 binary: schema.binary || false,
-                fields: schema.fields || []
+                fields: schema.fields.map(removeHashKey) || []
             };
             return JSON.stringify(jsonObj, null, '\t');
+        }
+
+        /**
+         * Takes the code from the json editor and merges the values back with the original schema object.
+         */
+        private extendSchemaWithJsonValues(json: string) {
+            let jsonObject = JSON.parse(json);
+            angular.extend(this.schema, jsonObject);
+        }
+
+        /**
+         * Set up the ACE editor.
+         */
+        public aceLoaded = (editor: AceAjax.Editor) => {
+            editor.setFontSize('14px');
+            editor.$blockScrolling = Infinity;
+        };
+
+        /**
+         * Handle data-binding from the ACE editor instance.
+         */
+        public aceChanged = (args) => {
+            if (!this.contentLoaded) {
+                this.contentLoaded = true;
+                return;
+            }
+            this.modified = true;
+            this.checkErrors();
+        };
+
+        private checkErrors() {
+            this.lastError = '';
+            const setLastError = message => this.lastError = message;
+            this.isValid = this.schemaValidatorService.validateSchemaJson(this.schemaJson, setLastError);
+        }
+
+        public deselectJsonTab() {
+            const displayErrors = message => {
+                this.notifyService.toast(message);
+            };
+            if (!this.isValid) {
+                this.schemaValidatorService.validateSchemaJson(this.schemaJson, displayErrors);
+            } else {
+                this.extendSchemaWithJsonValues(this.schemaJson);
+            }
         }
 
         /**
@@ -128,5 +190,5 @@ module meshAdminUi {
     }
 
     angular.module('meshAdminUi.admin')
-          .controller('SchemaDetailController', SchemaDetailController);
+        .controller('SchemaDetailController', SchemaDetailController);
 }

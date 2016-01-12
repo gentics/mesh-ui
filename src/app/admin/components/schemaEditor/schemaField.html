@@ -70,8 +70,8 @@
             <md-input-container>
                 <label>Allowed Microschema</label>
                 <md-select required
-                           ng-model="vm.field.allowed"
-                           ng-change="vm.onChange()">
+                           ng-model="vm.micronodeAllow"
+                           ng-change="vm.updateMicronodeAllow(vm.micronodeAllow)">
                     <md-option ng-value="microschema.name" ng-repeat="microschema in vm.microschemas">
                         {{ microschema.name }}
                     </md-option>

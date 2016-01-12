@@ -48,9 +48,6 @@ module meshAdminUi {
             if (field.type !== 'list') {
                 delete field.listType;
             }
-            if (field.type !== 'node' && field.listType !== 'node') {
-                delete field.allow;
-            }
             if (field.type !== 'micronode' && field.listType !== 'micronode' &&
                 field.type !== 'node' && field.listType !== 'node') {
                 delete field.allow;
