@@ -624,7 +624,7 @@ module meshAdminUi {
             return this.meshPost(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags`, tag);
         }
         private updateTag(projectName: string, tag: ITag): ng.IPromise<ITag> {
-            return this.meshPut(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags`, tag);
+            return this.meshPut(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags/${tag.uuid}`, tag);
         }
 
         public deleteTag(projectName: string, tag: ITag): ng.IPromise<any> {
