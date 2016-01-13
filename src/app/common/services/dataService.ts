@@ -566,9 +566,23 @@ module meshAdminUi {
 
 
         /**
-         *
+         * Get all tags in a given project.
          */
-        public getTags(projectName, tagFamilyUuid?, queryParams?): ng.IPromise<IListResponse<ITag>> {
+        public getProjectTags(projectName: string, queryParams?): ng.IPromise<ITag[]> {
+            return this.getTagFamilies(projectName, queryParams)
+                .then(response => {
+                    let promises = response.data.map((tagFamily: ITagFamily) => {
+                        return this.getTagFamilyTags(projectName, tagFamily.uuid);
+                    });
+                    return this.$q.all(promises)
+                        .then(responses => {
+                            const flatten = arr => arr.reduce((arr, t) => arr.concat(t), []);
+                            return flatten(responses.map((res: any) => res.data));
+                        });
+                });
+        }
+
+        public getTagFamilyTags(projectName: string, tagFamilyUuid: string, queryParams?): ng.IPromise<IListResponse<ITag>> {
             var url;
             if (typeof tagFamilyUuid === 'undefined') {
                 url = projectName + '/tags';
@@ -607,15 +621,15 @@ module meshAdminUi {
             return isNew ? this.createTag(projectName, tag) : this.updateTag(projectName, tag)
         }
         private createTag(projectName: string, tag: ITag): ng.IPromise<ITag> {
-            return this.meshPost(projectName + '/tags', tag);
+            return this.meshPost(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags`, tag);
         }
         private updateTag(projectName: string, tag: ITag): ng.IPromise<ITag> {
-            return this.meshPut(projectName + '/tags/' + tag.uuid, tag);
+            return this.meshPut(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags`, tag);
         }
 
         public deleteTag(projectName: string, tag: ITag): ng.IPromise<any> {
             this.clearCache('tags');
-            return this.meshDelete(projectName + '/tags/' + tag.uuid);
+            return this.meshDelete(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags/${tag.uuid}`);
         }
 
         public addTagToNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {

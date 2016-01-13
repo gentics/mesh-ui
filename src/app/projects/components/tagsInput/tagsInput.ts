@@ -60,8 +60,8 @@ module meshAdminUi {
          */
         private populateTags() {
             if (!this.tags) {
-                this.dataService.getTags(this.projectName)
-                    .then(result => this.tags = result.data);
+                this.dataService.getProjectTags(this.projectName)
+                    .then(tags => this.tags = tags);
             }
             if (!this.tagFamilies) {
                 this.dataService.getTagFamilies(this.projectName)

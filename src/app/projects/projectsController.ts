@@ -54,8 +54,8 @@ module meshAdminUi {
         }
 
         public populateTags() {
-            this.dataService.getTags(this.projectName)
-                .then(result => this.tags = result.data);
+            this.dataService.getProjectTags(this.projectName)
+                .then(tags => this.tags = tags);
         }
 
         public createNewNode(schemaUuid: string) {

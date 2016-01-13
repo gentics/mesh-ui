@@ -19,7 +19,7 @@ module meshAdminUi {
                         return $q.all({
                             project: $q.when(project),
                             tagFamilies: dataService.getTagFamilies(project.name),
-                            tags: dataService.getTags(project.name)
+                            tags: dataService.getProjectTags(project.name)
                         });
                     }))
                 })
@@ -29,7 +29,8 @@ module meshAdminUi {
                             project: item.project,
                             tagFamilies: item.tagFamilies.data
                         });
-                        this.tags = this.tags.concat(item.tags.data);
+                        const flatten = arr => arr.reduce((arr, t) => arr.concat(t), []);
+                        this.tags = this.tags.concat(flatten(item.tags));
                     });
                 });
         }

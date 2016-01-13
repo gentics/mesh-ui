@@ -119,7 +119,7 @@ module meshAdminUi {
                     project.tagFamilies = response.data;
                     project.tagFamilies.forEach(tagFamily => {
                         promises.push(this.$q.when(tagFamily));
-                        promises = promises.concat([this.dataService.getTags(project.name, tagFamily.uuid, this.queryParams)
+                        promises = promises.concat([this.dataService.getTagFamilyTags(project.name, tagFamily.uuid, this.queryParams)
                             .then(result => result.data)]);
                     });
                     return this.$q.all(promises);
