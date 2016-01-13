@@ -83,7 +83,10 @@ module meshAdminUi {
             }
         }
 
-        public schemaChanged(schema) {
+        /**
+         * Callback invoked by the schemaEditor component when changes are made.
+         */
+        public schemaChanged(schema: ISchema) {
             this.schema = schema;
             this.schemaJson = this.schemaToJson(this.schema);
             this.modified = true;
@@ -148,7 +151,7 @@ module meshAdminUi {
         /**
          * Handle data-binding from the ACE editor instance.
          */
-        public aceChanged = (args) => {
+        public aceChanged = () => {
             if (!this.contentLoaded) {
                 this.contentLoaded = true;
                 return;
@@ -157,12 +160,19 @@ module meshAdminUi {
             this.checkErrors();
         };
 
+        /**
+         * Run validation on the schema and set the error message and isValid status accordingly
+         */
         private checkErrors() {
             this.lastError = '';
             const setLastError = message => this.lastError = message;
             this.isValid = this.schemaValidatorService.validateSchemaJson(this.schemaJson, setLastError);
         }
 
+        /**
+         * When the tab containing the ACE JSON editor is deselected, run validation and display
+         * a toast message on any errors.
+         */
         public deselectJsonTab() {
             const displayErrors = message => {
                 this.notifyService.toast(message);

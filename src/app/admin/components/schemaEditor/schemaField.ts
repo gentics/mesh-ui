@@ -45,6 +45,15 @@ module meshAdminUi {
 
     }
 
+    class MicroschemaFieldController extends SchemaFieldController {
+
+        constructor($scope: ng.IScope) {
+            super($scope);
+            // micronodes are not a valid type in a microschema field.
+            this.types = this.types.filter(type => type.name !== 'micronode');
+        }
+    }
+
     function schemaFieldDirective() {
         return {
             restrict: 'E',
@@ -62,7 +71,25 @@ module meshAdminUi {
         }
     }
 
+    function microschemaFieldDirective() {
+        return {
+            restrict: 'E',
+            templateUrl: 'admin/components/schemaEditor/schemaField.html',
+            controller: 'MicroschemaFieldController',
+            controllerAs: 'vm',
+            bindToController: true,
+            scope: {
+                field: '=',
+                schemas: '=',
+                onChange: '&',
+                onDelete: '&'
+            }
+        }
+    }
+
     angular.module('meshAdminUi.admin')
         .directive('schemaField', schemaFieldDirective)
-        .controller('SchemaFieldController', SchemaFieldController);
+        .directive('microschemaField', microschemaFieldDirective)
+        .controller('SchemaFieldController', SchemaFieldController)
+        .controller('MicroschemaFieldController', MicroschemaFieldController);
 }

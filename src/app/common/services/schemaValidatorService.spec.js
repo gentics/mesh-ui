@@ -30,6 +30,12 @@ describe('SchemaValidatorService', function() {
                     name: 'widget',
                     type: 'micronode',
                     allow: ['myWidget']
+                },
+                {
+                    name: 'widgetList',
+                    type: 'list',
+                    listType: 'micronode',
+                    allow: ['myWidget']
                 }
             ]
         };
@@ -156,7 +162,16 @@ describe('SchemaValidatorService', function() {
 
             it('should display correct error for micronode type without allow property', function() {
                 delete validSchema.fields[3].allow;
-                testErrorMessage(validSchema, 'The following micronode fields must have an "allow" property defined: [widget].');
+                delete validSchema.fields[4].allow;
+                testErrorMessage(validSchema, 'The following micronode fields must have an "allow" property defined: [widget], [widgetList].');
+            });
+
+            it('should display correct error duplicate field names', function() {
+                validSchema.fields.push({
+                    name: 'title',
+                    type: 'string'
+                });
+                testErrorMessage(validSchema, 'Fields must have unique names - duplicate field detected: [title].');
             });
         });
     });

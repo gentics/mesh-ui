@@ -1,0 +1,33 @@
+<div class="schema-editor-container">
+
+    <div layout="row">
+        <div layout="row" layout-align="space-between" flex-gt-sm="60">
+            <md-input-container class="display-field" flex flex-gt-sm="70">
+                <label>Name</label>
+                <input type="text" ng-model="vm.baseSchema.name" required ng-change="vm.schemaChanged()">
+            </md-input-container>
+        </div>
+    </div>
+
+    <h3>Fields</h3>
+
+    <div class="schema-field-container mh-sortable-list"
+         dnd-list="vm.fieldModel.value"
+         dnd-drop="vm.endDrag(item, index, vm.baseSchema.fields)">
+
+        <microschema-field field="field"
+                      schemas="vm.schemas"
+                      on-change="vm.schemaChanged()"
+                      on-delete="vm.removeField($index)"
+                      ng-repeat="field in vm.baseSchema.fields"
+                      dnd-draggable="field"
+                      dnd-dragstart="vm.startDrag($index)"></microschema-field>
+    </div>
+
+    <div layout="row" layout-align="center center">
+        <button class="btn add-field-btn" ng-click="vm.addField()">
+            <i class="icon-add"></i> <span translate>ADD_NEW_FIELD</span>
+        </button>
+    </div>
+
+</div>

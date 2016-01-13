@@ -1,22 +1,20 @@
 module meshAdminUi {
 
-    class SchemaEditorController {
+    /**
+     * A common controller for both the schemaEditor and microschemaEditor. Most of the functionality is shared, except
+     * that in the case of microschemas, certain fields are not needed.
+     */
+    class SchemaEditorBaseController {
 
-        public schema: ISchema;
-        public schemas: ISchema[];
-        public microschemas: IMicroschema[];
+        public baseSchema: ISchema | IMicroschema;
         public onChange: Function;
         private dragStartIndex: number;
-
-        constructor() {
-            this.schema = angular.copy(this.schema);
-        }
 
         /**
          * Add a new empty field and update the schema.
          */
         public addField() {
-            this.schema.fields.push({
+            this.baseSchema.fields.push({
                 name: '',
                 label: '',
                 type: 'string',
@@ -29,7 +27,7 @@ module meshAdminUi {
          * Remove the field at index from the schema
          */
         public removeField(index: number) {
-            this.schema.fields.splice(index, 1);
+            this.baseSchema.fields.splice(index, 1);
             this.schemaChanged();
         }
 
@@ -37,8 +35,8 @@ module meshAdminUi {
          * Invoke the onChange callback and pass it the updated schema.
          */
         public schemaChanged() {
-            this.schema.fields = this.schema.fields.map(this.cleanFields);
-            this.onChange({ schema: this.schema });
+            this.baseSchema.fields = this.baseSchema.fields.map(this.cleanFields);
+            this.onChange({ schema: this.baseSchema });
         }
 
         /**
@@ -65,7 +63,7 @@ module meshAdminUi {
          * which may be used as the value of the `displayName` or `segmentName` property.
          */
         public getTextFields(): string[] {
-            if (!this.schema || !(this.schema.fields instanceof Array)) {
+            if (!this.baseSchema || !(this.baseSchema.fields instanceof Array)) {
                 return [];
             }
             const textFields = (field: ISchemaFieldDefinition) => {
@@ -73,7 +71,7 @@ module meshAdminUi {
             };
             const fieldName = (field: ISchemaFieldDefinition) => field.name;
 
-            return this.schema.fields.filter(textFields).map(fieldName);
+            return this.baseSchema.fields.filter(textFields).map(fieldName);
         }
 
         /**
@@ -101,6 +99,38 @@ module meshAdminUi {
             list.splice(indexToSplice, 1); // remove the old position
             this.schemaChanged();
         }
+    }
+
+    class SchemaEditorController extends SchemaEditorBaseController {
+
+        private schema: ISchema;
+        public schemas: ISchema[];
+        public microschemas: IMicroschema[];
+
+        constructor($scope: ng.IScope) {
+            super();
+            let unwatch = $scope.$watch(() => this.schema, val => {
+                if (val !== undefined) {
+                    this.baseSchema = val;
+                    unwatch();
+                }
+            });
+        }
+    }
+
+    class MicroschemaEditorController extends SchemaEditorBaseController {
+
+        public microschema: IMicroschema;
+
+        constructor($scope: ng.IScope) {
+            super();
+            let unwatch = $scope.$watch(() => this.microschema, val => {
+                if (val !== undefined) {
+                    this.baseSchema = val;
+                    unwatch();
+                }
+            });
+        }
 
     }
 
@@ -116,11 +146,29 @@ module meshAdminUi {
                 schemas: '=',
                 microschemas: '=',
                 onChange: '&'
+
+            }
+        }
+    }
+
+    function microschemaEditorDirective() {
+        return {
+            restrict: 'E',
+            templateUrl: 'admin/components/schemaEditor/microschemaEditor.html',
+            controller: 'MicroschemaEditorController',
+            controllerAs: 'vm',
+            bindToController: true,
+            scope: {
+                microschema: '=',
+                schemas: '=',
+                onChange: '&'
             }
         }
     }
 
     angular.module('meshAdminUi.admin')
         .directive('schemaEditor', schemaEditorDirective)
-        .controller('SchemaEditorController', SchemaEditorController);
+        .directive('microschemaEditor', microschemaEditorDirective)
+        .controller('SchemaEditorController', SchemaEditorController)
+        .controller('MicroschemaEditorController', MicroschemaEditorController);
 }
