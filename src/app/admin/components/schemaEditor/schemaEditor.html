@@ -23,14 +23,14 @@
         <md-input-container flex flex-gt-sm="30">
             <label>Display Field</label>
             <md-select ng-model="vm.schema.displayField" ng-change="vm.schemaChanged()">
-                <md-option ng-value="fieldName" ng-repeat="fieldName in vm.getTextFields()">{{ fieldName }}</md-option>
+                <md-option ng-value="fieldName" ng-repeat="fieldName in vm.getTextFields() track by $index">{{ fieldName || 'name property not set' }}</md-option>
             </md-select>
         </md-input-container>
 
         <md-input-container flex flex-gt-sm="30">
             <label>Segment Field</label>
             <md-select ng-model="vm.schema.segmentField" ng-change="vm.schemaChanged()">
-                <md-option ng-value="fieldName" ng-repeat="fieldName in vm.getTextFields()">{{ fieldName }}</md-option>
+                <md-option ng-value="fieldName" ng-repeat="fieldName in vm.getTextFields() track by $index">{{ fieldName || 'name property not set' }}</md-option>
             </md-select>
         </md-input-container>
     </div>
@@ -52,9 +52,11 @@
                       dnd-dragstart="vm.startDrag($index)"></schema-field>
     </div>
 
-    <button class="btn" ng-click="vm.addField()">
-        <i class="icon-add"></i> <span translate>ADD_NEW_FIELD</span>
-    </button>
+    <div layout="row" layout-align="center center">
+        <button class="btn add-field-btn" ng-click="vm.addField()">
+            <i class="icon-add"></i> <span translate>ADD_NEW_FIELD</span>
+        </button>
+    </div>
 
 
 </div>

@@ -69,7 +69,7 @@ module meshAdminUi {
                 return [];
             }
             const textFields = (field: ISchemaFieldDefinition) => {
-                return field.type === 'string' || field.type === 'html';
+                return (field.type === 'string' || field.type === 'html');
             };
             const fieldName = (field: ISchemaFieldDefinition) => field.name;
 
