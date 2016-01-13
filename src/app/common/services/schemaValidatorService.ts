@@ -7,10 +7,18 @@ module meshAdminUi {
          * Some basic validation of the schema def.
          */
         public validateSchemaJson(json: string, onError?: (message: string) => void ): boolean {
+            // conditionally invoke the onError callback if defined, passing the error message.
             const error = (message: string) => {
                 if (onError !== undefined) {
                     onError(message);
                 }
+            };
+            // returns a string of type `[fieldName, fieldType], ...` for use in error messages.
+            const fieldPropString = (fields: ISchemaFieldDefinition[], ...props: string[]): string => {
+                // get the first valid (truthy) value of the props passed in.
+                let propVal = field => props.map(prop => field[prop]).filter(x => !!x)[0];
+                let templateMap = 0 < props.length ? f => `[${f.name} : ${propVal(f)}]` : f => `[${f.name}]`;
+                return fields.map(templateMap).join(', ');
             };
             let obj;
             try{
@@ -69,8 +77,8 @@ module meshAdminUi {
             // ensure only valid field types are used
             let badFieldTypes = obj.fields.filter(field => -1 === validTypes.indexOf(field.type));
             if (0 < badFieldTypes.length) {
-                let names = badFieldTypes.map(field => `[${field.name} : ${field.type}]`).join(', ');
-                error(`The following fields have invalid types ${names}`);
+                let names = fieldPropString(badFieldTypes, 'type');
+                error(`The following fields have invalid types ${names}.`);
                 return false;
             }
             // ensure a list type has listType set to a valid type
@@ -78,17 +86,28 @@ module meshAdminUi {
             if (0 < listFields.length) {
                 let badListFields = listFields.filter(field => -1 === validTypes.indexOf(field.listType));
                 if (0 < badListFields.length) {
-                    let names = badListFields.map(field => `[${field.name} : ${field.listType}]`).join(', ');
-                    error(`The following list fields have an invalid listType ${names}`);
+                    let names = fieldPropString(badListFields, 'listType');
+                    error(`The following list fields have an invalid listType ${names}.`);
                     return false;
                 }
             }
-
+            // ensure any micronode types or listTypes have an allow property defined.
+            let micronodeFields = obj.fields.filter(field => field.type === 'micronode' || field.listType === 'micronode');
+            if (0 < micronodeFields.length) {
+                const isArray = x => x instanceof Array;
+                const isUndefined = x => typeof x === undefined;
+                let badMicronodeFields = micronodeFields.filter(field => isUndefined(field.allow) || !isArray(field.allow));
+                if (0 < badMicronodeFields.length) {
+                    let names = fieldPropString(badMicronodeFields);
+                    error(`The following micronode fields must have an "allow" property defined: ${names}.`);
+                    return false;
+                }
+            }
             return true;
         }
 
     }
 
-    angular.module('meshAdminUi.admin')
+    angular.module('meshAdminUi.common')
         .service('schemaValidatorService', SchemaValidatorService);
 }
