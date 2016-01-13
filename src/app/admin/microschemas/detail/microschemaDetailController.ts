@@ -114,9 +114,14 @@ module meshAdminUi {
          * Converts the microschema object into a json string to be used in the editor.
          */
         private microschemaToJson(microschema: IMicroschema): string {
+            const removeHashKey = (f: any) => {
+                delete f.$$hashKey;
+                return f;
+            };
+
             let jsonObj = {
                 name: microschema.name || '',
-                fields: microschema.fields || []
+                fields: microschema.fields.map(removeHashKey) || []
             };
             return JSON.stringify(jsonObj, null, '\t');
         }
