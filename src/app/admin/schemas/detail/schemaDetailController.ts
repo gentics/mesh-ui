@@ -125,7 +125,7 @@ module meshAdminUi {
                 name: schema.name || '',
                 displayField: schema.displayField || '',
                 segmentField: schema.segmentField || '',
-                folder: schema.folder || false,
+                container: schema.container || false,
                 binary: schema.binary || false,
                 fields: schema.fields.map(removeHashKey) || []
             };
@@ -193,7 +193,7 @@ module meshAdminUi {
                 displayField: '',
                 segmentField: '',
                 fields: [],
-                folder: false,
+                container: false,
                 name: ''
             };
         }

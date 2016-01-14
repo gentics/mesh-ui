@@ -304,9 +304,9 @@ module meshAdminUi {
                               queryParams?: INodeListQueryParams): ng.IPromise<INodeBundleResponse[]> {
 
             const sortByIsContainer = (a: INodeBundleParams, b: INodeBundleParams): number => {
-                if (a.schema.folder === true && b.schema.folder === false) {
+                if (a.schema.container === true && b.schema.container === false) {
                     return -1;
-                } else if (a.schema.folder === false && b.schema.folder === true) {
+                } else if (a.schema.container === false && b.schema.container === true) {
                     return 1;
                 }
                 return 0;

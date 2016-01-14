@@ -105,7 +105,7 @@ declare module meshAdminUi {
         displayField: string;
         segmentField: string;
         fields: ISchemaFieldDefinition[];
-        folder: boolean;
+        container: boolean;
         meshVersion?: string;
         name: string;
         permissions?: string[];
