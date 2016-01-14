@@ -23,7 +23,8 @@ module meshAdminUi {
         'list',
         'select',
         'node',
-        'micronode'
+        'micronode',
+        'binary'
     ];
 
     // ensure the displayField is set

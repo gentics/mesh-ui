@@ -4,18 +4,17 @@
          layout="row"
          layout-align="center center">
 
-        <div class="current-file-container" ng-if="!vm.model && vm.fileUrl !== ''">
-            <binary-file-preview source-url="vm.fileUrl"
-                                 node="vm.node"></binary-file-preview>
+        <div class="current-file-container" ng-if="!vm.model && vm.srcUrl !== ''">
+            <binary-file-preview src-url="vm.srcUrl"
+                                 src-field="vm.srcField"></binary-file-preview>
         </div>
 
         <div class="upload-preview-container" ng-show="!vm.model.$error">
-            <binary-file-preview source-file="vm.model"
-                                 node="vm.node"></binary-file-preview>
+            <binary-file-preview src-file="vm.model"></binary-file-preview>
         </div>
 
         <div class="drop-box"
-             ng-class="{ 'fadeout': vm.model.name || vm.fileUrl }"
+             ng-class="{ 'fadeout': vm.model.name || vm.srcUrl }"
              ng-model="vm.model"
              ngf-change="vm.fileChanged()"
              ngf-select=""

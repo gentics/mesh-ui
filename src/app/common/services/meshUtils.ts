@@ -64,20 +64,22 @@ module meshAdminUi {
             return safeColors[value % safeColors.length];
         }
 
-        public  getBinaryFileUrl(projectName: string, node: INode) {
-            if (node.binaryProperties) {
-                return meshConfig.apiUrl + projectName + '/nodes/' + node.uuid + '/bin';
-            } else {
-                return '';
+        public getBinaryFileUrl(projectName: string, nodeUuid: string, languageCode: string, fieldName: string, imageOptions?: IImageOptions) {
+            let queryParams = '';
+            if (imageOptions !== undefined) {
+                queryParams = Object.keys(imageOptions).reduce((queryString, key) => {
+                    return queryString + `${key}=${imageOptions[key]}&`;
+                }, '?');
             }
+            return meshConfig.apiUrl + projectName + `/nodes/${nodeUuid}/languages/${languageCode}/fields/${fieldName + queryParams}`;
         }
 
         /**
-         * Takes a node and returns true is that node is a binary node and the associated binary is an image file.
+         * Reads the mime type of a binary field and returns true if it is an image.
          */
-        public isImageNode(node: INode): boolean {
-            if (typeof node.binaryProperties !== 'undefined') {
-                return this.isImageMimeType(node.binaryProperties.mimeType);
+        public isImageField(field: IBinaryField): boolean {
+            if (field.mimeType !== undefined) {
+                return this.isImageMimeType(field.mimeType);
             }
             return false;
         }

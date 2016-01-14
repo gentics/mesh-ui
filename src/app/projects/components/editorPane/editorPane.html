@@ -28,7 +28,8 @@
     </div>
 
 
-    <div ng-if="vm.schema.binary">
+   <!-- TODO: remove once binary fields implemented
+   <div ng-if="vm.schema.binary">
         <div class="binary-label">
             Binary File: {{ vm.node.fileName || vm.binaryFile.name }}
             <span ng-if="vm.node.fileName">
@@ -40,11 +41,13 @@
                            model="vm.binaryFile"
                            file-url="vm.getBinaryFileUrl()"
                            on-change="vm.setAsModified()"></binary-file-input>
-    </div>
+    </div>-->
 
 
     <form-builder fields="vm.node.fields"
                   schema="vm.schema.fields"
+                  project-name="vm.projectName"
+                  node="vm.node"
                   display-field="vm.schema.displayField"
                   on-change="vm.setAsModified()"
                   perms="vm.node.permissions"></form-builder>

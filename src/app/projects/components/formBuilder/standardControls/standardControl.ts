@@ -240,7 +240,7 @@ module meshAdminUi {
         public value: any;
 
         constructor(private nodeSelector: NodeSelector,
-                    private contextService: ContextService,
+                    private i18nService: I18nService,
                     private mu: MeshUtils) {
         }
 
@@ -262,7 +262,7 @@ module meshAdminUi {
         }
 
         public getBinaryUrl() {
-            return this.mu.getBinaryFileUrl(this.contextService.getProject().name, this.fieldModel.value);
+            return this.mu.getBinaryFileUrl(this.fieldModel.projectName, this.fieldModel.node.uuid, this.i18nService.getCurrentLang().code, this.fieldModel.name);
         }
     }
 
@@ -481,12 +481,39 @@ module meshAdminUi {
         return makeStandardDDO('list', 'ListController');
     }
 
+    class BinaryController {
+
+        public fieldModel: INodeFieldModel;
+        public value: any;
+
+        constructor($scope: ng.IScope,
+                    private i18nService: I18nService,
+                    private mu: MeshUtils) {
+            $scope.$watch(() => this.fieldModel.value, val => {
+                this.value = angular.copy(val);
+            });
+        }
+
+        public getBinaryFileUrl(): string {
+            if (this.fieldModel.value && typeof this.fieldModel.value.sha512sum !== 'undefined') {
+                return this.mu.getBinaryFileUrl(this.fieldModel.projectName, this.fieldModel.node.uuid, this.i18nService.getCurrentLang().code, this.fieldModel.name);
+            } else {
+                return '';
+            }
+        }
+    }
+
+    function binaryDirective() {
+        return makeStandardDDO('binary', 'BinaryController');
+    }
+
     angular.module('meshAdminUi.projects.formBuilder')
 
         .controller('DefaultControlController', DefaultControlController)
         .controller('ListController', ListController)
         .controller('DateController', DateController)
         .controller('NodeController', NodeController)
+        .controller('BinaryController', BinaryController)
 
         .directive('mhStringControl', stringDirective)
         .directive('mhNumberControl', numberDirective)
@@ -494,5 +521,6 @@ module meshAdminUi {
         .directive('mhDateControl', dateDirective)
         .directive('mhSelectControl', selectDirective)
         .directive('mhNodeControl', nodeDirective)
-        .directive('mhListControl', listDirective);
+        .directive('mhListControl', listDirective)
+        .directive('mhBinaryControl', binaryDirective);
 }

@@ -23,7 +23,9 @@ module meshAdminUi {
                 schema: '=',
                 onChange: '&',
                 perms: '=',
-                displayField: '='
+                displayField: '=',
+                projectName: '=',
+                node: '='
             }
         };
     }
@@ -36,6 +38,8 @@ module meshAdminUi {
         private onChange: Function;
         private perms: string[];
         private displayField: string;
+        private projectName: string;
+        private node: INode;
 
         constructor($scope: ng.IScope,
                     private formBuilderService: FormBuilderService) {
@@ -45,7 +49,16 @@ module meshAdminUi {
             $scope.$watch(() => this.schema, val => {
                 if (val) {
                     let canUpdate = -1 < this.perms.indexOf('update');
-                    this.nodeFieldModels = formBuilderService.createNodeFieldModels(this.fields, this.schema, canUpdate, this.onChange, this.displayField);
+                    let config: INodeFieldModelConfig = {
+                        nodeFields: this.fields,
+                        schemaFields: this.schema,
+                        canUpdate: canUpdate,
+                        onChange: this.onChange,
+                        displayField: this.displayField,
+                        projectName: this.projectName,
+                        node: this.node
+                    };
+                    this.nodeFieldModels = formBuilderService.createNodeFieldModels(config);
                 }
             });
         }

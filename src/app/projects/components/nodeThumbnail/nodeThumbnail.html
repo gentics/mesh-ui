@@ -1,0 +1,19 @@
+<div class="node-thumbnail" layout="row" layout-align="center center">
+
+    <img ng-if="!vm.node.container && vm.hasBinaryField && vm.binaryProperties.isImage" ng-src="{{ vm.getFileUrl() }}"/>
+
+    <div ng-if="!vm.node.container && vm.hasBinaryField && !vm.binaryProperties.isImage" class="non-image-preview">
+        <div class="file-preview">
+            <i class="icon-insert-drive-file"></i>
+            {{ vm.getFileExt() }}
+        </div>
+        {{ vm.getFileName() }}
+    </div>
+
+    <div ng-if="vm.node.container" class="non-image-preview">
+        <div class="file-preview">
+            <i class="icon-folder-open"></i>
+        </div>
+    </div>
+
+</div>

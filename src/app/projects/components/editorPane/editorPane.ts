@@ -101,7 +101,7 @@ module meshAdminUi {
          * Save the changes back to the server.
          */
         public persist(originalNode: INode): ng.IPromise<any> {
-            return this.dataService.persistNode(this.projectName, originalNode, this.binaryFile, { expandAll: true })
+            return this.dataService.persistNode(this.projectName, originalNode, { expandAll: true })
                 .then((node: INode) => {
                     if (this.isNew(originalNode)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
@@ -116,7 +116,7 @@ module meshAdminUi {
                 })
                 .catch(error => {
                     this.notifyService.toast(error.data.message || error.data);
-                })
+                });
         }
 
 
@@ -237,7 +237,6 @@ module meshAdminUi {
         public setAsModified() {
             this.contentModified = true;
             this.wipService.setAsModified(this.wipType, this.node);
-
         }
 
         public saveWipMetadata() {
@@ -315,14 +314,6 @@ module meshAdminUi {
                 projectName: this.projectName,
                 selectedLangs: this.selectedLangs
             });
-        }
-
-        public getBinaryFileUrl(): string {
-            if (this.node && typeof this.node.created !== 'undefined') {
-                return this.mu.getBinaryFileUrl(this.projectName, this.node);
-            } else {
-                return '';
-            }
         }
 
         /**

@@ -15,7 +15,8 @@ module meshAdminUi {
             { name: 'date', icon: 'icon-event' },
             { name: 'node', icon: 'icon-link' },
             { name: 'list', icon: 'icon-list' },
-            { name: 'micronode', icon: 'icon-view-quilt' }
+            { name: 'micronode', icon: 'icon-view-quilt' },
+            { name: 'binary', icon: 'icon-attach-file' }
         ];
 
         public micronodeAllow: string = '';

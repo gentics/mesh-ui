@@ -69,47 +69,39 @@ describe('meshUtils', function() {
         });
     });
 
-    describe('isImageNode():', function() {
+    describe('isImageField():', function() {
 
-        it('should return false for non-binary node', function() {
-            var node = {};
-            expect(mu.isImageNode(node)).toEqual(false);
+        it('should return false for non-binary field', function() {
+            var field = {};
+            expect(mu.isImageField(field)).toEqual(false);
         });
 
-        it('should return false for binary node with non-image mime type', function() {
-            var node = {
-                binaryProperties: {
-                    mimeType: 'application/pdf'
-                }
+        it('should return false for binary field with non-image mime type', function() {
+            var field = {
+                mimeType: 'application/pdf'
             };
-            expect(mu.isImageNode(node)).toEqual(false);
+            expect(mu.isImageField(field)).toEqual(false);
         });
 
-        it('should return true for binary node with jpeg mime type', function() {
-            var node = {
-                binaryProperties: {
-                    mimeType: 'image/jpeg'
-                }
+        it('should return true for binary field with jpeg mime type', function() {
+            var field = {
+                mimeType: 'image/jpeg'
             };
-            expect(mu.isImageNode(node)).toEqual(true);
+            expect(mu.isImageField(field)).toEqual(true);
         });
 
-        it('should return true for binary node with gif mime type', function() {
-            var node = {
-                binaryProperties: {
-                    mimeType: 'image/gif'
-                }
+        it('should return true for binary field with gif mime type', function() {
+            var field = {
+                mimeType: 'image/gif'
             };
-            expect(mu.isImageNode(node)).toEqual(true);
+            expect(mu.isImageField(field)).toEqual(true);
         });
 
-        it('should return true for binary node with png mime type', function() {
-            var node = {
-                binaryProperties: {
-                    mimeType: 'image/png'
-                }
+        it('should return true for binary field with png mime type', function() {
+            var field = {
+                mimeType: 'image/png'
             };
-            expect(mu.isImageNode(node)).toEqual(true);
+            expect(mu.isImageField(field)).toEqual(true);
         });
 
     });

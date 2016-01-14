@@ -1,42 +1,42 @@
 module meshAdminUi {
 
     class BinaryThumbnailController {
-        private srcNode: INode;
+        private srcUrl: string;
+        private srcField: IBinaryField;
         private srcFile: File;
 
-        constructor(private mu: MeshUtils,
-                    private contextService: ContextService) {
-            if (!this.srcNode && !this.srcFile) {
-                throw new Error('BinaryThumbnailController: Please specify either src-node or src-file.');
+        constructor(private mu: MeshUtils) {
+            if (!(this.srcUrl && this.srcField) && !this.srcFile) {
+                throw new Error('BinaryThumbnailController: Please specify either src-url & src-field, or src-file.');
             }
         }
 
         public isImage() {
-            if (this.srcNode) {
-                return this.mu.isImageNode(this.srcNode);
+            if (this.srcField) {
+                return this.mu.isImageField(this.srcField);
             } else {
                 return this.mu.isImageMimeType(this.srcFile.type);
             }
         }
 
         public getFileUrl() {
-            if (this.srcNode) {
-                return this.mu.getBinaryFileUrl(this.contextService.getProject().name, this.srcNode);
+            if (this.srcUrl) {
+                return this.srcUrl;
             } else {
                 return this.srcFile.name;
             }
         }
 
         public getFileName() {
-            if (this.srcNode) {
-                return this.srcNode.fileName;
+            if (this.srcField) {
+                return this.srcField.fileName;
             } else {
                 return this.srcFile.name;
             }
         }
 
         public getFileExt(): string {
-            let filename = this.srcNode ? this.srcNode.fileName : this.srcFile.name;
+            let filename = this.srcField ? this.srcField.fileName : this.srcFile.name;
             if (filename) {
                 let parts = filename.split('.');
                 return parts[parts.length - 1];
@@ -52,7 +52,8 @@ module meshAdminUi {
             controllerAs: 'vm',
             bindToController: true,
             scope: {
-                srcNode: '=',
+                srcUrl: '=',
+                srcField: '=',
                 srcFile: '='
             }
         }

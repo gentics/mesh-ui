@@ -405,46 +405,80 @@ module meshAdminUi {
         /**
          * Create or update the node object on the server.
          */
-        public persistNode(projectName: string, node: INode, binaryFile?: File, queryParams?: INodeQueryParams): ng.IPromise<INode> {
+        public persistNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             let isNew = !node.hasOwnProperty('created');
             this.clearCache('nodes');
-            return isNew ? this.createNode(projectName, node, binaryFile, queryParams) : this.updateNode(projectName, node, binaryFile, queryParams);
+            return isNew ? this.createNode(projectName, node, queryParams) : this.updateNode(projectName, node, queryParams);
 
         }
-        private createNode(projectName: string, node: INode, binaryFile?: File, queryParams?: INodeQueryParams): ng.IPromise<INode> {
+        private createNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             return this.meshPost(projectName + '/nodes', node, queryParams)
                 .then(newNode => {
-                    if (typeof binaryFile !== 'undefined') {
-                        return this.uploadBinaryFile(projectName, newNode, binaryFile, 'POST');
-                    } else {
-                        return newNode;
-                    }
+                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, 'POST')
+                        .then(result => {
+                            if (result === false) {
+                                // no uploads were required
+                                return newNode;
+                            } else {
+                                return result;
+                            }
+                        })
                 });
         }
-        private updateNode(projectName: string, node: INode, binaryFile?: File, queryParams?: INodeQueryParams): ng.IPromise<INode> {
+        private updateNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             return this.meshPut(projectName + '/nodes/' + node.uuid, node, queryParams)
                 .then(newNode => {
-                    if (typeof binaryFile !== 'undefined') {
-                        return this.uploadBinaryFile(projectName, newNode, binaryFile, 'PUT');
-                    } else {
-                        return newNode;
-                    }
+                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, 'PUT')
+                        .then(result => {
+                            if (result === false) {
+                                // no uploads were required
+                                return newNode;
+                            } else {
+                                return result;
+                            }
+                        })
                 });
         }
 
-        private uploadBinaryFile(projectName: string, node: INode, binaryFile: File, method: string = 'POST'): ng.IPromise<INode> {
-            return this.Upload.upload({
-                    url: this.apiUrl + projectName + '/nodes/' + node.uuid + '/bin',
-                    method: method,
-                    data: {
-                        file: binaryFile,
-                        filename: binaryFile.name
-                    }
-                })
-                .then(() => {
-                    // re-get the node as it will now contain the correct binaryProperties, fileName etc.
-                    return this.getNode(projectName, node.uuid);
+        /**
+         * Given a node, inspect each field for any that have a File value. This means a file has been selected
+         * in the editor for upload.
+         */
+        private uploadBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string, method: string): ng.IPromise<any> {
+            let binaryFields = Object.keys(fields)
+                .filter(key => fields[key] instanceof File)
+                .map(key => {
+                    return {
+                        name: key,
+                        file: fields[key]
+                    };
                 });
+
+            if (0 < binaryFields.length) {
+                let uploads = binaryFields
+                    .map(field => this.uploadBinaryFile(projectName, nodeUuid, field.name, field.file, method));
+
+                return this.$q.all(uploads)
+                    // re-get the node as it will now contain the correct binary field properties.
+                    .then(() => this.getNode(projectName, nodeUuid));
+            } else {
+                return this.$q.when(false);
+            }
+        }
+
+        /**
+         * Uploads a binary file to a specified field of a node.
+         */
+        private uploadBinaryFile(projectName: string, nodeUuid: string, fieldName: string, binaryFile: File, method: string = 'POST'): ng.IPromise<INode> {
+            let lang = this.i18nService.getCurrentLang().code;
+            return this.Upload.upload({
+                url: this.apiUrl + projectName + `/nodes/${nodeUuid}/languages/${lang}/fields/${fieldName}`,
+                method: method,
+                data: {
+                    file: binaryFile,
+                    filename: binaryFile.name
+                }
+            });
         }
 
         /**

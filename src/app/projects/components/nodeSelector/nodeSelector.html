@@ -45,7 +45,9 @@
                      ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid"
                      ng-class="{ selected: vm.isSelected(node) }"
                      ng-click="vm.toggleSelect(node, $event)">
-                    <binary-thumbnail src-node="node"></binary-thumbnail>
+
+                    <node-thumbnail node="node"></node-thumbnail>
+
                     <div>
                         <span ng-click="vm.openNode(node, $event)"  class="node-name" ng-class="::{ 'link': node.container }">
                             {{:: node.fields[node.displayField] }}

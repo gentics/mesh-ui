@@ -24,8 +24,8 @@ module meshAdminUi {
             controllerAs: 'vm',
             bindToController: true,
             scope: {
-                node: '=',
-                fileUrl: '=',
+                srcUrl: '=',
+                srcField: '=',
                 model: '=',
                 onChange: '&'
             }
@@ -38,16 +38,16 @@ module meshAdminUi {
             restrict: 'E',
             templateUrl: 'projects/components/binaryFileInput/binaryFilePreview.html',
             scope: {
-                node: '=',
-                sourceUrl: '=',
-                sourceFile: '=',
+                srcUrl: '=',
+                srcField: '=',
+                srcFile: '=',
             },
             link: (scope: any) => {
                 scope.isImageNode = () => {
-                    return mu.isImageNode(scope.node);
+                    return mu.isImageField(scope.field);
                 };
                 scope.isImageFile = () => {
-                    return mu.isImageMimeType(scope.sourceFile.type);
+                    return mu.isImageMimeType(scope.srcFile.type);
                 };
                 scope.getFileExt = (filename: string): string => {
                     if (filename) {

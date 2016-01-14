@@ -1,0 +1,13 @@
+<div class="editor-control">
+    <div class="binary-label">
+        {{ vm.fieldModel.label || vm.fieldModel.name }}
+           <span ng-if="vm.node.fileName">
+               <a ng-href="{{ vm.getBinaryFileUrl() }}">download</a>
+           </span>
+    </div>
+
+    <binary-file-input src-field="vm.fieldModel.value"
+                       src-url="vm.getBinaryFileUrl()"
+                       model="vm.fileToUpload"
+                       on-change="vm.fieldModel.update(vm.fileToUpload)"></binary-file-input>
+</div>

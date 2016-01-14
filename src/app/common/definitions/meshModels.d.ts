@@ -34,6 +34,17 @@ declare module meshAdminUi {
         [name: string]: any;
     }
 
+    export interface IBinaryField {
+        fileName: string;
+        fileSize: number;
+        mimeType: string;
+        sha512sum: string;
+        type: string;
+        dpi?: number;
+        height?: number;
+        width?: number;
+    }
+
     export interface INodeTagsObject {
         [tagFamilyName: string]: {
             items: INodeReference[];
@@ -48,11 +59,6 @@ declare module meshAdminUi {
                 count: number;
                 schemaUuid: string;
             };
-        };
-        binaryProperties?: {
-            fileSize: number;
-            mimeType: string;
-            sha512sum: string;
         };
         fileName?: string;
         displayField?: string;
@@ -135,6 +141,8 @@ declare module meshAdminUi {
         path: (string|number)[];
         canUpdate: boolean;
         isDisplayField: boolean;
+        projectName: string;
+        node: INode;
         onChange: Function;
         update: (value: any) => void;
         createChild: (nodeFields: INodeFields, schemaField: ISchemaFieldDefinition, path?: any[]) => INodeFieldModel;
@@ -161,6 +169,14 @@ declare module meshAdminUi {
     export interface IUserRole extends IMeshBaseProps {
         name: string;
         groups: any[];
+    }
+
+    /**
+     * Params that can be passed to the Mesg image API
+     */
+    export interface IImageOptions {
+        width?: number;
+        height?: number;
     }
 
 }

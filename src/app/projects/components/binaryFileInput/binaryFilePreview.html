@@ -1,8 +1,8 @@
 <div class="binary-file-preview">
-    <div ng-if="sourceUrl && sourceUrl !== ''">
-        <binary-thumbnail src-node="node"></binary-thumbnail>
+    <div ng-if="srcUrl && srcUrl !== ''">
+        <binary-thumbnail src-url="srcUrl" src-field="srcField" ></binary-thumbnail>
     </div>
-    <div ng-if="!sourceUrl && sourceFile">
-        <binary-thumbnail src-file="sourceFile"></binary-thumbnail>
+    <div ng-if="!srcUrl && srcFile">
+        <binary-thumbnail src-file="srcFile"></binary-thumbnail>
     </div>
 </div>
