@@ -69,6 +69,59 @@ describe('meshUtils', function() {
         });
     });
 
+    describe('getFirstBinaryField():', function() {
+
+        var binaryNode;
+
+        beforeEach(function() {
+            binaryNode = {
+                uuid: 'binary_node_uuid',
+                fields: {
+                    name: 'foo',
+                    image: {
+                        type: 'binary',
+                        fileName: 'image.jpg',
+                        fileSize: 4200,
+                        mimeType: 'image/jpeg',
+                        sha512sum: '1243123123123'
+                    },
+                    document: {
+                        type: 'binary',
+                        fileName: 'doc.pdf',
+                        fileSize: 333,
+                        mimeType: 'application/pdf',
+                        sha512sum: '441515151515'
+                    }
+                }
+            };
+        });
+
+        it('should return undefined if no binary fields', function() {
+            var node = {
+                uuid: 'some_uuid',
+                fields: {
+                    name: 'foo'
+                }
+            };
+            var result = mu.getFirstBinaryField(node);
+
+            expect(result.key).toBeUndefined();
+            expect(result.value).toBeUndefined();
+        });
+
+        it('should return first binary field key', function() {
+            var result = mu.getFirstBinaryField(binaryNode);
+
+            expect(result.key).toBe('image');
+        });
+
+        it('should return first binary field value', function() {
+            var result = mu.getFirstBinaryField(binaryNode);
+
+            expect(result.value).toEqual(binaryNode.fields.image);
+        });
+    });
+
     describe('isImageField():', function() {
 
         it('should return false for non-binary field', function() {

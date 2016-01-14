@@ -19,7 +19,7 @@
                         {{:: node.parentNode.displayName}}
                     </span>
 
-                    <span ng-if=":: node.fileName && node.fileName !== ''" class="node-icon">
+                    <span ng-if=":: vm.hasBinaryField(node)" class="node-icon">
                         <i ng-class=":: { 'icon-insert-drive-file' : !vm.isImageNode(node), 'icon-image': vm.isImageNode(node) }"></i>
                     </span>
                     <span ng-if=":: node.container" class="node-icon">

@@ -32,16 +32,13 @@ module meshAdminUi {
          * and populate the various component vars.
          */
         private checkForBinaryFields(node: INode) {
-            for(let key in node.fields) {
-                let field = node.fields[key];
-                if (field && field.type && field.type === 'binary') {
-                    if (this.binaryProperties.binaryField === undefined) {
-                        this.hasBinaryField = true;
-                        this.binaryProperties.isImage = this.mu.isImageField(field);
-                        this.binaryProperties.fieldName = key;
-                        this.binaryProperties.binaryField = field;
-                    }
-                }
+            let firstBinaryField = this.mu.getFirstBinaryField(node);
+            if (firstBinaryField.key !== undefined) {
+                this.hasBinaryField = true;
+                this.binaryProperties.isImage = this.mu.isImageField(firstBinaryField.value);
+                this.binaryProperties.fieldName = firstBinaryField.key;
+                this.binaryProperties.binaryField = firstBinaryField.value;
+
             }
         }
 

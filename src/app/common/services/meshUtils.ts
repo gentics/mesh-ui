@@ -75,6 +75,30 @@ module meshAdminUi {
         }
 
         /**
+         * Given a node, check for any binary fields if one if found, return the first
+         * in an object with key (field name) and value (binary field properties).
+         */
+        public getFirstBinaryField(node: INode): { key: string; value: IBinaryField } {
+            let binaryFieldKey;
+            let binaryFieldValue;
+
+            for(let key in node.fields) {
+                let field = node.fields[key];
+                if (field && field.type && field.type === 'binary') {
+                    if (binaryFieldValue === undefined) {
+                        binaryFieldKey = key;
+                        binaryFieldValue = field;
+                    }
+                }
+            }
+
+            return {
+                key: binaryFieldKey,
+                value: binaryFieldValue
+            };
+        }
+
+        /**
          * Reads the mime type of a binary field and returns true if it is an image.
          */
         public isImageField(field: IBinaryField): boolean {

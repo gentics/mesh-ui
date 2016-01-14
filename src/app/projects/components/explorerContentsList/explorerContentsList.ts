@@ -103,8 +103,22 @@ module meshAdminUi {
             this.onPageChange({ newPageNumber: newPageNumber, schemaUuid: schemaUuid });
         }
 
+        /**
+         * Returns true if the node has at least one binary field.
+         */
+        public hasBinaryField(node: INode): boolean {
+            return !!this.mu.getFirstBinaryField(node).value;
+        }
+
+        /**
+         * Returns true is the node has a binary field and that field is an image type.
+         */
         public isImageNode(node: INode): boolean {
-            return this.mu.isImageNode(node);
+            let binaryField = this.mu.getFirstBinaryField(node);
+            if (binaryField.value) {
+                return this.mu.isImageField(binaryField.value);
+            }
+            return false;
         }
     }
 
