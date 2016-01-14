@@ -1,8 +1,8 @@
 <div class="editor-control">
     <div class="binary-label">
         {{ vm.fieldModel.label || vm.fieldModel.name }}
-           <span ng-if="vm.node.fileName">
-               <a ng-href="{{ vm.getBinaryFileUrl() }}">download</a>
+           <span ng-if="!vm.fileToUpload" class="download">
+               <a ng-href="{{ vm.getBinaryFileUrl() }}"><i class="icon-file-download"></i> download</a>
            </span>
     </div>
 
