@@ -327,10 +327,13 @@ function dist_css() {
 
         return merge(vendorCss, appCss)
             .pipe(concat('app.css'))
+                // TODO: this has been disabled due to this bug introduced by the latest version
+                // of angular-material: https://github.com/angular/material/issues/6304
+                // Should be re-enabled once bug is fixed.
             // piping through the less plugin forces the font @imports to the top of the file.
-            .pipe(less())
+            //.pipe(less())
             // TODO: clean-css is breaking the icon font definition - investigate a fix and then enable
-            .pipe(minifyCss({ processImport: false, keepBreaks: true }))
+            //.pipe(minifyCss({ processImport: false, keepBreaks: true }))
             .pipe(gulp.dest('dist/app/'))
             .on('end', resolve)
             .on('error', reject);
