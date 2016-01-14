@@ -261,8 +261,14 @@ module meshAdminUi {
                 });
         }
 
-        public getBinaryUrl() {
-            return this.mu.getBinaryFileUrl(this.fieldModel.projectName, this.fieldModel.node.uuid, this.i18nService.getCurrentLang().code, this.fieldModel.name);
+        public getBinaryUrl(): string {
+            let linkedNode = this.fieldModel.value;
+            let nodeBinaryField = this.mu.getFirstBinaryField(linkedNode);
+            return this.mu.getBinaryFileUrl(this.fieldModel.projectName, linkedNode.uuid, this.i18nService.getCurrentLang().code, nodeBinaryField.key);
+        }
+
+        public hasBinaryField(): boolean {
+            return !!this.mu.getFirstBinaryField(this.fieldModel.value).value;
         }
     }
 

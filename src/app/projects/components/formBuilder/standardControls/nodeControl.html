@@ -2,9 +2,9 @@
     <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
 
     <div class="node-content">
-        <div class="node-ref-thumb" ng-if="vm.fieldModel.value.binaryProperties">
+        <div class="node-ref-thumb" ng-if="vm.hasBinaryField()">
             <editable-image src="vm.getBinaryUrl()">
-                <binary-thumbnail src-node="vm.fieldModel.value"></binary-thumbnail>
+                <node-thumbnail node="vm.fieldModel.value"></node-thumbnail>
             </editable-image>
         </div>
 
