@@ -10,6 +10,18 @@
             <button class="btn btn-small btn-primary" aria-label="Create Microschema" ui-sref="admin.microschemas.create">
                 Create New Microschema
             </button>
+            <button ngf-select="vm.processImport($files)"
+                    ng-model="vm.microschemaJsonFiles"
+                    ngf-accept="'.json'"
+                    ngf-pattern="'.json'"
+                    ngf-multiple="true"
+                    class="btn btn-small"
+                    aria-label="Import Schemas">
+                <i class="icon-file-upload"></i> Import Microschemas...
+            </button>
+            <button class="btn btn-small" ng-disabled="vm.selectionEmpty()" ng-click="vm.exportSelected()">
+                <i class="icon-file-download"></i> Export Microschemas
+            </button>
         </div>
     </md-toolbar>
 
@@ -19,6 +31,12 @@
                 <td>
                     <a ui-sref="admin.microschemas.detail({ uuid: microschema.uuid })"><strong>{{:: microschema.name}}</strong></a>
                 <td>
+                <td>
+                    <md-checkbox ng-model="vm.selected[microschema.uuid]"
+                                 md-no-ink
+                                 aria-label="Select microschema">
+                    </md-checkbox>
+                </td>
             </tr>
         </table>
     </md-content>
