@@ -1,7 +1,11 @@
 <div class="content-editor-container" ng-show="vm.isLoaded">
 
 
-    <div layout="row" layout-align="center center" class="editor-top-bar">
+    <div layout="row" layout-align="center start" class="editor-top-bar">
+        <div>
+            <preview-selector node="vm.node"></preview-selector>
+        </div>
+
         <div>
             <node-language-menu node="vm.node"
                                 on-translate-click="vm.createTranslation(code, vm.node)"
@@ -26,23 +30,6 @@
             </div>
         </div>
     </div>
-
-
-   <!-- TODO: remove once binary fields implemented
-   <div ng-if="vm.schema.binary">
-        <div class="binary-label">
-            Binary File: {{ vm.node.fileName || vm.binaryFile.name }}
-            <span ng-if="vm.node.fileName">
-                <a ng-href="{{ vm.getBinaryFileUrl() }}">download</a>
-            </span>
-        </div>
-
-        <binary-file-input node="vm.node"
-                           model="vm.binaryFile"
-                           file-url="vm.getBinaryFileUrl()"
-                           on-change="vm.setAsModified()"></binary-file-input>
-    </div>-->
-
 
     <form-builder fields="vm.node.fields"
                   schema="vm.schema.fields"
@@ -70,12 +57,6 @@
             <i class="icon-delete"></i> <span translate>DELETE</span>
         </button>
 
-        <button class="btn"
-                ng-click="vm.preview(vm.node)"
-                ng-if="vm.canPreview()"
-                aria-label="preview">
-            <i class="icon-remove-red-eye"></i> <span translate>PREVIEW</span>
-        </button>
     </div>
 
 </div>

@@ -577,6 +577,14 @@ module meshAdminUi {
         }
 
         /**
+         * Given a string, this method sends it to the Mesh Link Resolver
+         * utility endpoint and returns the text with rendered links.
+         */
+        public renderLinksInText(contents: string, resolveMode: string): ng.IPromise<string> {
+            return this.meshPost(`utilities/linkResolver?resolveLinks=${resolveMode.toUpperCase()}`, contents);
+        }
+
+        /**
          */
         public getTagFamilies(projectName, queryParams?): ng.IPromise<IListResponse<ITagFamily>> {
             var url = projectName + '/tagFamilies';

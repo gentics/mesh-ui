@@ -852,7 +852,7 @@ define([
             let href;
 
             if (typeof this.selectedNode !== 'undefined') {
-                href = `{{ mesh.link('${this.selectedNode}') }}`;
+                href = `{{mesh.link('${this.selectedNode}')}}`;
                 that.targetElement.setAttribute('data-mesh-uuid', this.selectedNode);
                 that.targetElement.setAttribute('data-mesh-lang', this.getLanguageCode());
                 that._selectedNodeLabel.setValue('Linked to node: ' + that.selectedNode);

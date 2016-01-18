@@ -1,0 +1,30 @@
+<div class="preview-selector-container">
+    <mh-dropdown sticky="true" ng-if="vm.canPreview()">
+        <mh-dropdown-label layout="row" layout-align="end center" class="preview-button">
+            <i class="icon-remove-red-eye"></i> <span translate>PREVIEW</span><i class="icon-arrow-drop-down"></i>
+        </mh-dropdown-label>
+        <mh-dropdown-body>
+
+            <div class="preview-selector-dropdown">
+                <md-input-container>
+                    <label>Preview URL</label>
+                    <md-select md-container-class="preview-selector-select" ng-model="vm.previewUrl">
+                        <md-option ng-value=":: preview.url" ng-repeat="preview in :: vm.getPreviewUrls()">{{ :: preview.label }}</md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container>
+                    <label>Link Rendering</label>
+                    <md-select md-container-class="preview-selector-select" ng-model="vm.linkRenderingMode">
+                        <md-option ng-value=":: mode" ng-repeat="mode in :: vm.linkRenderingModes">{{ :: mode }}</md-option>
+                    </md-select>
+                </md-input-container>
+
+                <button class="btn btn-primary" ng-click="vm.preview(vm.previewUrl, vm.linkRenderingMode, vm.node)">
+                    <i class="icon-open-in-new"></i> <span translate>PREVIEW</span>
+                </button>
+
+            </div>
+        </mh-dropdown-body>
+    </mh-dropdown>
+</div>
