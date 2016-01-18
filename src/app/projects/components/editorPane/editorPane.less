@@ -1,5 +1,10 @@
 editor-pane {
   overflow-y: auto;
+  /**
+   * The following line is REQUIRED to prevent a strange bug in
+   * the Aloha plugin, see https://jira.gentics.com/browse/CL-234
+   */
+  position: inherit !important;
 }
 
 .content-editor-container {
