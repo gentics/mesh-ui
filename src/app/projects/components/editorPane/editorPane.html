@@ -2,6 +2,11 @@
 
 
     <div layout="row" layout-align="center start" class="editor-top-bar">
+        <div class="published-toggle">
+            <md-checkbox ng-model="vm.node.published" ng-change="vm.setAsModified()" aria-label="Published" md-no-ink>
+              <span translate>PUBLISHED</span>
+            </md-checkbox>
+        </div>
         <div>
             <preview-selector node="vm.node"></preview-selector>
         </div>
@@ -24,8 +29,10 @@
 
                 <div flex></div>
 
+                <div>
                 <div class="tags-input-wrapper">
                     <tags-input on-add="vm.addTag(tag)" tags="vm.availableTags"></tags-input>
+                </div>
                 </div>
             </div>
         </div>

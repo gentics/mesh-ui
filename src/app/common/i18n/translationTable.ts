@@ -70,6 +70,10 @@ module meshAdminUi {
             en: 'Add item to',
             de: 'Hinzufügen zu'
         },
+        'PUBLISHED': {
+            en: 'Published',
+            de: 'Veröffentlich'
+        },
 
         /* Admin Area */
         'NEW_USER_CREATED': {

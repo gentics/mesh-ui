@@ -304,12 +304,13 @@ module meshAdminUi {
         /**
          * Create an empty node object which is pre-configured according to the arguments passed.
          */
-        private createEmptyContent(schema: ISchema, parentNodeUuid: string) {
+        private createEmptyContent(schema: ISchema, parentNodeUuid: string): INode {
             return {
                 permissions: ['read', 'create', 'update', 'delete'],
                 uuid: this.wipService.generateTempId(),
                 parentNodeUuid: parentNodeUuid,
                 displayField: schema.displayField,
+                published: false,
                 language : this.i18nService.getCurrentLang().code,
                 schema: {
                     uuid: schema.uuid,
