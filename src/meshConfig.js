@@ -11,19 +11,23 @@
         // Provide an array or URLs for previewing nodes, in the following format:
         //
         // ```
-        // [
-        //   // label: url
-        //   { somePreview: 'http://some/url' },
-        //   { otherPreview: 'http://someother/url' }
-        // ]
+        // {
+        //   projectName: [
+        //     // label: url
+        //     { somePreview: 'http://some/url' },
+        //     { otherPreview: 'http://someother/url' }
+        //  ]
+        // }
         // ```
         // When this option is used, a "preview" button will be available
         // in the node editor pane. Click it will POST the node data to the specified URL. The node will be
         // encoded as form data under the key "node", and its value will need to be de-serialized back into JSON
-        // (e.g. using JSON.parse())
-        previewUrls: [
-            { default: 'https://httpbin.org/post'}
-        ],
+        // (e.g. using JSON.parse()). The "default" key will make the URls available to all projects.
+        previewUrls: {
+            default: [
+                { default: 'https://httpbin.org/post' }
+            ]
+        },
 
         // A microschema control is a custom form component which can be used to render a
         // specific microschema, in place of the default form generator. For full documentation, please

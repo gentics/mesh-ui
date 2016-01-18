@@ -10,14 +10,21 @@ module meshAdminUi {
         private linkRenderingModes: string[] = ['off', 'full', 'medium', 'short'];
         private node: INode;
 
-        constructor(private dataService: DataService) {
+        constructor(private dataService: DataService, contextService: ContextService) {
 
             if (this.canPreview()) {
-                this.previewUrls = meshConfig.previewUrls.map(obj => {
-                    let label = Object.keys(obj)[0];
-                    let url = obj[label];
-                    return {label, url};
-                });
+                let projectName = contextService.getProject().name;
+
+                for (let name in meshConfig.previewUrls) {
+                    if (name === 'default' || name === projectName) {
+                        let urls = meshConfig.previewUrls[name].map(obj => {
+                            let label = Object.keys(obj)[0];
+                            let url = obj[label];
+                            return {label, url};
+                        });
+                        this.previewUrls = this.previewUrls.concat(urls);
+                    }
+                }
                 this.previewUrl = this.previewUrls[0].url;
             }
         }
