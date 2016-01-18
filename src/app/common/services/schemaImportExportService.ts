@@ -12,6 +12,9 @@ module meshAdminUi {
         Microschema
     }
 
+    /**
+     * Service used to import and export schemas and microschemas in .json format.
+     */
     export class SchemaImportExportService {
 
         constructor(private dataService: DataService,
