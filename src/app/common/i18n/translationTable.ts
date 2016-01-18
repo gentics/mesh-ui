@@ -72,7 +72,7 @@ module meshAdminUi {
         },
         'PUBLISHED': {
             en: 'Published',
-            de: 'Veröffentlich'
+            de: 'Veröffentlicht'
         },
 
         /* Admin Area */
