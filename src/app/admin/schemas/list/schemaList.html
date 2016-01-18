@@ -19,6 +19,9 @@
                     aria-label="Import Schemas">
                 <i class="icon-file-upload"></i> Import Schemas...
             </button>
+            <button class="btn btn-small" ng-disabled="vm.selectionEmpty()" ng-click="vm.exportSelected()">
+                <i class="icon-file-download"></i> Export Schemas
+            </button>
         </div>
     </md-toolbar>
 
@@ -28,6 +31,12 @@
                 <td>
                     <a ui-sref="admin.schemas.detail({ uuid: schema.uuid })"><strong>{{:: schema.name}}</strong></a>
                 <td>
+                <td>
+                    <md-checkbox ng-model="vm.selected[schema.uuid]"
+                                 md-no-ink
+                                 aria-label="Select schema">
+                    </md-checkbox>
+                </td>
             </tr>
         </table>
     </md-content>

@@ -9,6 +9,7 @@ module meshAdminUi {
 
         public schemas: ISchema[];
         public schemaFilter: string;
+        public selected: any = {};
 
         constructor(private dataService: DataService,
                     private $q: ng.IQService,
@@ -24,6 +25,43 @@ module meshAdminUi {
             return this.mu.matchProps(value, ['name'], this.schemaFilter);
         };
 
+        /**
+         * Returns false if at least one schema is selected.
+         */
+        public selectionEmpty(): boolean {
+            return 0 === Object.keys(this.selected).filter(key => this.selected[key]).length;
+        }
+
+        /**
+         * Download each of the selected schemas as a .json file.
+         */
+        public exportSelected() {
+            this.schemas.filter(schema => {
+                return this.selected[schema.uuid];
+            }).forEach(schema => {
+                this.downloadFile(schema.name + '.json', JSON.stringify(schema, null, 4));
+            })
+        }
+
+        /**
+         * Trigger a browser download of arbitrary text content, from http://stackoverflow.com/a/18197341/772859
+         */
+        private downloadFile(filename: string, text: string) {
+          var element = document.createElement('a');
+          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+          element.setAttribute('download', filename);
+
+          element.style.display = 'none';
+          document.body.appendChild(element);
+
+          element.click();
+
+          document.body.removeChild(element);
+        }
+
+        /**
+         * Get the content of the selected files, validate it as a valid schema, and then POST to Mesh.
+         */
         public processImport(files: File[]) {
             this.getFileTextContents(files)
                 .then(results => this.validateImports(results))
