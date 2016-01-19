@@ -48,6 +48,11 @@ module meshAdminUi {
             en: 'Create node',
             de: 'Node erstellen'
         },
+        'CLOSE_ALL_TABS': {
+            en: 'Close all tabs',
+            de: 'Alle Tabs schließen'
+        },
+
 
         /* Content Editor */
         'EDIT_LOCALIZED_VERSION': {

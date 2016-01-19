@@ -48,7 +48,7 @@ module meshAdminUi {
             }
             $scope.$watch(() => this.schema, val => {
                 if (val) {
-                    let canUpdate = -1 < this.perms.indexOf('update');
+                    let canUpdate = this.perms && (-1 < this.perms.indexOf('update'));
                     let config: INodeFieldModelConfig = {
                         nodeFields: this.fields,
                         schemaFields: this.schema,

@@ -30,7 +30,6 @@ module meshAdminUi {
 
         constructor(private $scope: ng.IScope,
                     private $q: ng.IQService,
-                    private $http: ng.IHttpService,
                     private $state: ng.ui.IStateService,
                     private $timeout: ng.ITimeoutService,
                     private $location: ng.ILocationService,

@@ -24,6 +24,7 @@ module meshAdminUi {
 
         constructor($scope: ng.IScope,
                     private $q: ng.IQService,
+                    private $timeout: ng.ITimeoutService,
                     private $mdDialog: ng.material.IDialogService,
                     private dispatcher: Dispatcher,
                     private editorService: EditorService,
@@ -61,17 +62,19 @@ module meshAdminUi {
          * Close a WIP tab and remove the WIP item from the wipService,
          * automatically switching to another tab or the list view.
          */
-        public closeWip(event: Event, index: number) {
+        public closeWip(index: number, event?: Event) {
             var wip = this.wips[index].item,
                 projectName = this.wips[index].metadata.projectName,
                 action;
 
-            event.stopPropagation();
-            event.preventDefault();
+            if (event !== undefined) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
             this.lastIndex = this.selectedIndex;
 
             if (this.wipService.isModified(this.wipType, wip)) {
-                action = this.showDialog().then(response => {
+                action = this.showDialog(wip).then(response => {
                     if (response === 'save') {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.dataService.persistNode(projectName, wip)
@@ -82,21 +85,38 @@ module meshAdminUi {
                 action = this.$q.when();
             }
 
-            action.then(() => {
+            return action.then(() => {
                 this.wipService.closeItem(this.wipType, wip);
                 this.transitionIfCurrentTabClosed(index);
             });
         }
 
         /**
+         * Close all open WIP tabs.
+         */
+        public closeAllWips() {
+            if (0 < this.wips.length) {
+                return this.closeWip(0)
+                    .then(() => {
+                        // $timeout is used to guard against race conditions where watchers may
+                        // be trying to access removed object properties.
+                        return this.$timeout(() => this.closeAllWips(), 0);
+                    });
+            }
+        }
+
+        /**
          * Display the close confirmation dialog box. Returns a promise which is resolved
          * to 'save', 'discard', or rejected if user cancels.
          */
-        public showDialog(): ng.IPromise<string> {
+        public showDialog(wip: INode): ng.IPromise<string> {
             return this.$mdDialog.show({
                 templateUrl: 'common/components/wipTabs/wipTabsCloseDialog.html',
                 controller: 'wipTabsDialogController',
-                controllerAs: 'vm'
+                controllerAs: 'vm',
+                locals: {
+                    node: wip
+                }
             });
         }
 
@@ -152,7 +172,7 @@ module meshAdminUi {
      */
     class WipTabsDialogController {
 
-        constructor(private $mdDialog: ng.material.IDialogService) {}
+        constructor(private $mdDialog: ng.material.IDialogService, private node: INode) {}
 
         public save() {
             this.$mdDialog.hide('save');
