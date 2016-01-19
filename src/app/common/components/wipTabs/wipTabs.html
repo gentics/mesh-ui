@@ -10,7 +10,7 @@
         <a href="" ng-click="vm.closeWip($index, $event)" class="a-plain close"><i class="icon-close"></i></a>
 
     </div>
-    <div flex class="wip-menu">
+    <div flex class="wip-menu" ng-if="0 < vm.wips.length">
         <mh-dropdown sticky="false">
             <mh-dropdown-label layout="row" layout-align="end center" class="tags-input-label">
                 <div class="wip-tabs-menu">
