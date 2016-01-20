@@ -81,7 +81,7 @@
       }
     }
 
-    .responsive-max(@mq-sm, {
+    .responsive-max(@mq-md, {
       position: static;
       max-width: 90%;
       padding-top: 0;
@@ -113,6 +113,12 @@
         }
       }
     }
+    });
+  }
+
+  .wip-menu {
+    .responsive-max(@mq-md, {
+      display: none;
     });
   }
 
