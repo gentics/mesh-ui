@@ -64,12 +64,12 @@ module meshAdminUi {
             return safeColors[value % safeColors.length];
         }
 
-        public getBinaryFileUrl(projectName: string, nodeUuid: string, languageCode: string, fieldName: string, imageOptions?: IImageOptions) {
-            let queryParams = '';
+        public getBinaryFileUrl(projectName: string, nodeUuid: string, languageCode: string, fieldName: string, sha512sum: string, imageOptions?: IImageOptions) {
+            let queryParams = `?cs=${sha512sum.substring(0, 8).toLowerCase()}`;
             if (imageOptions !== undefined) {
                 queryParams = Object.keys(imageOptions).reduce((queryString, key) => {
-                    return queryString + `${key}=${imageOptions[key]}&`;
-                }, '?');
+                    return queryString + `&${key}=${imageOptions[key]}`;
+                }, queryParams);
             }
             return meshConfig.apiUrl + projectName + `/nodes/${nodeUuid}/languages/${languageCode}/fields/${fieldName + queryParams}`;
         }

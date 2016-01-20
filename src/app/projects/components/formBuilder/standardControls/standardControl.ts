@@ -264,7 +264,12 @@ module meshAdminUi {
         public getBinaryUrl(): string {
             let linkedNode = this.fieldModel.value;
             let nodeBinaryField = this.mu.getFirstBinaryField(linkedNode);
-            return this.mu.getBinaryFileUrl(this.fieldModel.projectName, linkedNode.uuid, this.i18nService.getCurrentLang().code, nodeBinaryField.key);
+            return this.mu.getBinaryFileUrl(
+                this.fieldModel.projectName,
+                linkedNode.uuid,
+                this.i18nService.getCurrentLang().code,
+                nodeBinaryField.key,
+                this.fieldModel.value.sha512sum);
         }
 
         public hasBinaryField(): boolean {
@@ -502,7 +507,13 @@ module meshAdminUi {
 
         public getBinaryFileUrl(): string {
             if (this.fieldModel.value && typeof this.fieldModel.value.sha512sum !== 'undefined') {
-                return this.mu.getBinaryFileUrl(this.fieldModel.projectName, this.fieldModel.node.uuid, this.i18nService.getCurrentLang().code, this.fieldModel.name);
+                return this.mu.getBinaryFileUrl(
+                    this.fieldModel.projectName,
+                    this.fieldModel.node.uuid,
+                    this.i18nService.getCurrentLang().code,
+                    this.fieldModel.name,
+                    this.fieldModel.value.sha512sum
+                );
             } else {
                 return '';
             }
