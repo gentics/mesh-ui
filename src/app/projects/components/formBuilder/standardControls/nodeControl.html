@@ -3,9 +3,7 @@
 
     <div class="node-content">
         <div class="node-ref-thumb" ng-if="vm.hasBinaryField()">
-            <editable-image src="vm.getBinaryUrl()">
-                <node-thumbnail node="vm.fieldModel.value"></node-thumbnail>
-            </editable-image>
+            <node-thumbnail node="vm.fieldModel.value"></node-thumbnail>
         </div>
 
         <span ng-show="vm.fieldModel.value.uuid"><i class="icon-link"></i></span>

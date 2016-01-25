@@ -2,12 +2,12 @@ module meshAdminUi {
 
     export interface IImageTransformParams {
         src?: string;
-        imageWidth?: number;
-        imageHeight?: number;
-        cropX?: number;
-        cropY?: number;
-        cropWidth?: number;
-        cropHeight?: number;
+        width?: number;
+        height?: number;
+        cropx?: number;
+        cropy?: number;
+        cropw?: number;
+        croph?: number;
         scale?: number;
     }
 
@@ -25,12 +25,12 @@ module meshAdminUi {
 
             this.transformParams = {
                 src: this.src,
-                imageWidth: 0,
-                imageHeight: 0,
-                cropX: 0,
-                cropY: 0,
-                cropWidth: 0,
-                cropHeight: 0,
+                width: 0,
+                height: 0,
+                cropx: 0,
+                cropy: 0,
+                cropw: 0,
+                croph: 0,
                 scale: 1
             };
 
@@ -82,6 +82,7 @@ module meshAdminUi {
      */
     class EditableImageController {
         private src: string;
+        private onEdit: Function;
 
         constructor(private $mdDialog: ng.material.IDialogService) {
         }
@@ -95,12 +96,17 @@ module meshAdminUi {
                     src: this.src
                 },
                 bindToController: true
-            });
+            })
+            .then((result: IImageTransformParams) => this.onEdit({ transform: result }));
         }
     }
 
     /**
      * Creates an overlay button which adds a link to open the image editor modal.
+     *
+     * Accepts the following attributes:
+     * src: The source URL of the image to be edited.
+     * onEdit: A function that will be invoked with a `transform` argument when an image is edited.
      */
     function editableImageDirective() {
         return {
@@ -116,7 +122,8 @@ module meshAdminUi {
             bindToController: true,
             transclude: true,
             scope: {
-                src: '='
+                src: '=',
+                onEdit: '&'
             },
         }
     }

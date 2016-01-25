@@ -4,8 +4,12 @@ module meshAdminUi {
         private srcUrl: string;
         private srcField: IBinaryField;
         private srcFile: File;
+        // used to style image transforms (crop, scale etc)
+        private styles = { content: {}, container: {} };
+        private transform: IImageTransformParams;
 
-        constructor(private mu: MeshUtils) {
+        constructor(private mu: MeshUtils,
+                    private $element: JQuery) {
             if (!(this.srcUrl && this.srcField) && !this.srcFile) {
                 throw new Error('BinaryThumbnailController: Please specify either src-url & src-field, or src-file.');
             }
@@ -42,6 +46,38 @@ module meshAdminUi {
                 return parts[parts.length - 1];
             }
         }
+
+        /**
+         * Calculate and set values for the objects which are bound to the resize preview DOM CSS.
+         */
+        private getResizeStyles() {
+            let widthParent = <HTMLElement>document.querySelector('.binary-container');
+            let previewScale = widthParent.offsetWidth / this.transform.width;
+            const scale = (val: number) => val * previewScale;
+
+            this.styles.content = {
+                width: scale(this.transform.width) + 'px',
+                height: scale(this.transform.height) + 'px',
+                'margin-left': -scale(this.transform.cropx) + 'px',
+                'margin-top': -scale(this.transform.cropy) + 'px'
+            };
+            this.styles.container = {
+                width: scale(this.transform.cropw) + 'px',
+                height: scale(this.transform.croph) + 'px',
+                /*transform: this.makeTransformString(this.transform)*/
+            };
+            return this.styles;
+        }
+
+        /**
+         * Create a string representing the CSS "transform" property for positioning the
+         * scale preview container.
+         */
+        private makeTransformString(transform: IImageTransformParams): string {
+            let x = transform.cropw * transform.scale / 2;
+            let y = transform.croph * transform.scale / 2;
+            return `translate3d(${x}px, ${y}px, 0)`;
+        }
     }
 
     function binaryThumbnailDirective() {
@@ -54,7 +90,8 @@ module meshAdminUi {
             scope: {
                 srcUrl: '=',
                 srcField: '=',
-                srcFile: '='
+                srcFile: '=',
+                transform: '='
             }
         }
     }

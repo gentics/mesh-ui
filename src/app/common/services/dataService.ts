@@ -482,6 +482,14 @@ module meshAdminUi {
         }
 
         /**
+         * Send a POST request to a binary field's `transform` endpoint.
+         */
+        public transformBinary(projectName: string, nodeUuid: string, fieldName: string, transformParams: IImageTransformParams): ng.IPromise<any> {
+            let lang = this.i18nService.getCurrentLang().code;
+            return this.meshPost(projectName + `/nodes/${nodeUuid}/languages/${lang}/fields/${fieldName}/transform`, transformParams);
+        }
+
+        /**
          * Remove the content from the server.
          */
         public deleteNode(projectName: string, node: INode|string): ng.IPromise<any> {

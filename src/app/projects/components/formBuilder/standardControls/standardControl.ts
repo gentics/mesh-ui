@@ -269,7 +269,7 @@ module meshAdminUi {
                 linkedNode.uuid,
                 this.i18nService.getCurrentLang().code,
                 nodeBinaryField.key,
-                this.fieldModel.value.sha512sum);
+                nodeBinaryField.value.sha512sum);
         }
 
         public hasBinaryField(): boolean {
@@ -496,6 +496,7 @@ module meshAdminUi {
 
         public fieldModel: INodeFieldModel;
         public value: any;
+        private transform: IImageTransformParams = {};
 
         constructor($scope: ng.IScope,
                     private i18nService: I18nService,
@@ -517,6 +518,11 @@ module meshAdminUi {
             } else {
                 return '';
             }
+        }
+
+        public editImage(transform: IImageTransformParams) {
+            this.transform = transform;
+            //this.fieldModel.update(transform);
         }
     }
 

@@ -35,8 +35,8 @@ module meshAdminUi {
                         // set the image natural dimensions
                         let imageData = this.cropper.getImageData();
                         let params = {
-                            imageWidth: imageData.naturalWidth,
-                            imageHeight: imageData.naturalHeight,
+                            width: imageData.naturalWidth,
+                            height: imageData.naturalHeight,
                         };
                         this.onCrop({ params: params });
                         // set the image to 100%
@@ -79,10 +79,10 @@ module meshAdminUi {
         private updateParams() {
             let data = this.cropper.getData();
             let params = {
-                cropX: data.x,
-                cropY: data.y,
-                cropWidth: data.width,
-                cropHeight: data.height
+                cropx: data.x,
+                cropy: data.y,
+                cropw: data.width,
+                croph: data.height
             };
             this.onCrop({ params: params });
         }

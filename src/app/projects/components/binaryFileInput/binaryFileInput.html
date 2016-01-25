@@ -6,6 +6,7 @@
 
         <div class="current-file-container" ng-if="!vm.model && vm.srcUrl !== ''">
             <binary-file-preview src-url="vm.srcUrl"
+                                 transform="vm.transform"
                                  src-field="vm.srcField"></binary-file-preview>
         </div>
 

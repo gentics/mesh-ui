@@ -143,6 +143,7 @@ declare module meshAdminUi {
         isDisplayField: boolean;
         projectName: string;
         node: INode;
+        transform: IImageTransformParams;
         onChange: Function;
         update: (value: any) => void;
         createChild: (nodeFields: INodeFields, schemaField: ISchemaFieldDefinition, path?: any[]) => INodeFieldModel;

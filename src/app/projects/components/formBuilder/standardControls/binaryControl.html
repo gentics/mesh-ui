@@ -1,13 +1,15 @@
-<div class="editor-control">
+<div class="binary-container">
     <div class="binary-label">
         {{ vm.fieldModel.label || vm.fieldModel.name }}
            <span ng-if="!vm.fileToUpload" class="download">
                <a ng-href="{{ vm.getBinaryFileUrl() }}"><i class="icon-file-download"></i> download</a>
            </span>
     </div>
-
-    <binary-file-input src-field="vm.fieldModel.value"
-                       src-url="vm.getBinaryFileUrl()"
-                       model="vm.fileToUpload"
-                       on-change="vm.fieldModel.update(vm.fileToUpload)"></binary-file-input>
+    <editable-image src="vm.getBinaryFileUrl()" on-edit="vm.editImage(transform)">
+        <binary-file-input src-field="vm.fieldModel.value"
+                           src-url="vm.getBinaryFileUrl()"
+                           model="vm.fileToUpload"
+                           transform="vm.transform"
+                           on-change="vm.fieldModel.update(vm.fileToUpload)"></binary-file-input>
+    </editable-image>
 </div>

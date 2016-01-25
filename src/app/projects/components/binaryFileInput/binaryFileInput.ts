@@ -27,7 +27,8 @@ module meshAdminUi {
                 srcUrl: '=',
                 srcField: '=',
                 model: '=',
-                onChange: '&'
+                onChange: '&',
+                transform: '='
             }
         };
     }
@@ -41,6 +42,7 @@ module meshAdminUi {
                 srcUrl: '=',
                 srcField: '=',
                 srcFile: '=',
+                transform: '='
             },
             link: (scope: any) => {
                 scope.isImageNode = () => {
