@@ -30,7 +30,7 @@
     "moment": "~2.10.6",
     "angular-ui-ace": "bower",
     "ng-file-upload": "~9.1.2",
-    "cropperjs": "~0.4.0",
+    "cropperjs": "~0.5.6",
     "angularjs-slider": "~2.1.0",
     "headjs": "~1.0.3"
   },
