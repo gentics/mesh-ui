@@ -124,7 +124,7 @@ module meshAdminUi {
         return {
             restrict: 'E',
             template: `<div class="editable-image-container">
-                            <div class="edit-image-button" ng-click="vm.editImage()">
+                            <div class="edit-image-button" ng-click="vm.editImage()" ng-if="vm.src !== ''">
                                 <i class="icon-crop"></i> <span translate>EDIT</span>
                             </div>
                             <ng-transclude></ng-transclude>

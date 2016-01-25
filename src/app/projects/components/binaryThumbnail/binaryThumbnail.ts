@@ -55,7 +55,6 @@ module meshAdminUi {
          * Calculate and set values for the objects which are bound to the resize preview DOM CSS.
          */
         public calculateStyles() {
-            console.log('calculateStyles');
             if (!this.transform || !this.transform.cropx) {
                 this.styles.content = {
                     position: 'relative'
