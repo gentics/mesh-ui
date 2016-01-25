@@ -1,16 +1,17 @@
 <div class="binary-thumbnail" layout="row" layout-align="center center">
 
     <div class="resize-container"
-         ng-style="vm.getResizeStyles().container">
+         ng-style="vm.styles.container">
 
         <img ng-if="vm.srcField && vm.isImage()"
              ng-src="{{ vm.getFileUrl() }}"
              class="resize-content"
-             ng-style="vm.getResizeStyles().content" />
+             ng-style="vm.styles.content" />
 
         <img ng-if="vm.srcFile && vm.isImage()"
              ngf-src="!vm.srcFile.$error && vm.srcFile"
-             ng-style="vm.getResizeStyles().content" />
+             class="resize-content"
+             ng-style="vm.styles.content" />
 
     </div>
 

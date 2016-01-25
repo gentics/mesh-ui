@@ -509,7 +509,9 @@ module meshAdminUi {
         }
 
         public getBinaryFileUrl(): string {
-            if (this.fieldModel.value && typeof this.fieldModel.value.sha512sum !== 'undefined') {
+            if (this.fileToUpload && this.fileToUpload.hasOwnProperty('$ngfBlobUrl')) {
+                return this.fileToUpload.$ngfBlobUrl;
+            } else if (this.fieldModel.value && typeof this.fieldModel.value.sha512sum !== 'undefined') {
                 return this.mu.getBinaryFileUrl(
                     this.fieldModel.projectName,
                     this.fieldModel.node.uuid,
@@ -517,8 +519,6 @@ module meshAdminUi {
                     this.fieldModel.name,
                     this.fieldModel.value.sha512sum
                 );
-            } else if (this.fileToUpload && this.fileToUpload.hasOwnProperty('$ngfBlobUrl')) {
-                return this.fileToUpload.$ngfBlobUrl;
             } else {
                 return '';
             }

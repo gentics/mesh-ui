@@ -3,7 +3,7 @@
   background-color: @color-concrete;
   min-height: 100px;
   min-width: 125px;
-  max-width: 100%;
+  width: 100%;
   text-align: center;
   .non-image-preview {
     .file-preview {
@@ -18,9 +18,10 @@
   }
 
   .resize-container {
-    cursor: move;
     overflow: hidden;
     background-color: white;
+    position: relative;
+    width: 100%;
 
     .resize-content {
       display: block;

@@ -9,10 +9,14 @@ module meshAdminUi {
         private transform: IImageTransformParams;
 
         constructor(private mu: MeshUtils,
-                    private $element: JQuery) {
+                    private $scope: ng.IScope) {
             if (!(this.srcUrl && this.srcField) && !this.srcFile) {
                 throw new Error('BinaryThumbnailController: Please specify either src-url & src-field, or src-file.');
             }
+
+            this.$scope.$watchCollection(() => this.transform, () => {
+                this.calculateStyles();
+            });
         }
 
         public isImage() {
@@ -50,25 +54,28 @@ module meshAdminUi {
         /**
          * Calculate and set values for the objects which are bound to the resize preview DOM CSS.
          */
-        public getResizeStyles() {
-            if (!this.transform) {
-                return;
-            }
-            let widthParent = <HTMLElement>document.querySelector('.binary-container');
-            let previewScale = widthParent.offsetWidth / this.transform.width;
-            const scale = (val: number) => val * previewScale;
+        public calculateStyles() {
+            console.log('calculateStyles');
+            if (!this.transform || !this.transform.cropx) {
+                this.styles.content = {
+                    position: 'relative'
+                };
+            } else {
+                const scaleX = (val:number) => val * 100 / this.transform.cropw;
+                const scaleY = (val:number) => val * 100 / this.transform.croph;
 
-            this.styles.content = {
-                width: scale(this.transform.width) + 'px',
-                height: scale(this.transform.height) + 'px',
-                'margin-left': -scale(this.transform.cropx) + 'px',
-                'margin-top': -scale(this.transform.cropy) + 'px'
-            };
-            this.styles.container = {
-                width: scale(this.transform.cropw) + 'px',
-                height: scale(this.transform.croph) + 'px'
-            };
-            return this.styles;
+                this.styles.content = {
+                    position: 'absolute',
+                    width: scaleX(this.transform.width) + '%',
+                    height: scaleY(this.transform.height) + '%',
+                    'left': -scaleX(this.transform.cropx) + '%',
+                    'top': -scaleY(this.transform.cropy) + '%'
+                };
+                this.styles.container = {
+                    width: scaleX(this.transform.cropw) + '%',
+                    'padding-bottom': scaleX(this.transform.croph) + '%'
+                };
+            }
         }
     }
 

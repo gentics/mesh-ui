@@ -495,9 +495,10 @@ module meshAdminUi {
          */
         private transformBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string): ng.IPromise<any> {
             const isBinary = obj => obj.type === 'binary' || obj instanceof File;
+            const hasTransform = obj => obj.hasOwnProperty('transform') && 0 < Object.keys(obj.transform).length;
 
             let binaryFieldsWithTransform = Object.keys(fields)
-                .filter(key => fields[key] && isBinary(fields[key]) && fields[key].hasOwnProperty('transform'))
+                .filter(key => fields[key] && isBinary(fields[key]) && hasTransform(fields[key]))
                 .map(key => {
                     return {
                         name: key,
