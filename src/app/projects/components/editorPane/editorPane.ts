@@ -225,8 +225,8 @@ module meshAdminUi {
         }
 
         private closeWipAndClearPane(node: INode) {
-            this.editorService.close();
             this.wipService.closeItem(this.wipType, node);
+            this.editorService.close();
             this.$location.search('edit', null);
         }
 
