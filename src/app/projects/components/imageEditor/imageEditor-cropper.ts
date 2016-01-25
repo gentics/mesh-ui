@@ -28,6 +28,7 @@ module meshAdminUi {
                 let image = document.querySelector('#mesh-image-editor-subject');
                 this.cropper = new Cropper(image, {
                     dragMode: 'move',
+                    strict: true,
                     toggleDragModeOnDblclick: false,
                     rotatable: false,
                     autoCropArea: 1,
@@ -50,11 +51,7 @@ module meshAdminUi {
                                 height: this.params.croph
                             });
                         } else {
-
-                            // set the image to 100%
-                            this.cropper.zoomTo(1);
                             this.setAspectRatioAndFitToImage(null);
-
                             this.updateParams();
                         }
 

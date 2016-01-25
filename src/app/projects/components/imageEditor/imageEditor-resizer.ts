@@ -46,7 +46,7 @@ module meshAdminUi {
          */
         private initResizePreview() {
             setTimeout(() => {
-                this.$previewContainer = angular.element(document.querySelector('.resize-container'));
+                this.$previewContainer = angular.element(document.querySelector('.resize-area .resize-container'));
                 this.resizePos.x = window.innerWidth / 2;
                 this.resizePos.y = (<HTMLElement>document.querySelector('.resize-area')).offsetHeight / 2;
                 this.resizeContainerStyle.transform = this.makeTransformString(0, 0);
