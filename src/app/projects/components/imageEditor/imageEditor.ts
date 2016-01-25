@@ -13,7 +13,7 @@ module meshAdminUi {
 
     class ImageEditorController {
 
-        public transformParams: IImageTransformParams;
+        public transformParams: IImageTransformParams = {};
         // used to hide the contents which the cropper is initializing to
         // prevent some layout thrashing.
         public loaded: boolean = false;
@@ -21,9 +21,10 @@ module meshAdminUi {
         constructor(private $mdDialog: ng.material.IDialogService,
                     private $scope: ng.IScope,
                     $timeout: ng.ITimeoutService,
-                    private src: string) {
+                    private src: string,
+                    private initialTransform: IImageTransformParams) {
 
-            this.transformParams = {
+            const defaultParams = {
                 src: this.src,
                 width: 0,
                 height: 0,
@@ -33,6 +34,12 @@ module meshAdminUi {
                 croph: 0,
                 scale: 1
             };
+
+            // if any transform params have been passed in via initialTransform, use them instead
+            // of the default value.
+            for (let key in defaultParams) {
+                this.transformParams[key] = this.initialTransform[key] || defaultParams[key];
+            }
 
             $timeout(() => this.loaded = true, 500);
         }
@@ -58,7 +65,7 @@ module meshAdminUi {
          * recalculation of its dimensions.
          */
         public resizeTabSelected() {
-                this.$scope.$broadcast('reCalcViewDimensions');
+            this.$scope.$broadcast('reCalcViewDimensions');
         }
 
         /**
@@ -83,21 +90,23 @@ module meshAdminUi {
     class EditableImageController {
         private src: string;
         private onEdit: Function;
+        private initialTransform: IImageTransformParams;
 
         constructor(private $mdDialog: ng.material.IDialogService) {
         }
 
         public editImage(): ng.IPromise<IImageTransformParams> {
             return this.$mdDialog.show({
-                templateUrl: 'projects/components/imageEditor/imageEditor.html',
-                controller: 'ImageEditorController',
-                controllerAs: 'vm',
-                locals: {
-                    src: this.src
-                },
-                bindToController: true
-            })
-            .then((result: IImageTransformParams) => this.onEdit({ transform: result }));
+                    templateUrl: 'projects/components/imageEditor/imageEditor.html',
+                    controller: 'ImageEditorController',
+                    controllerAs: 'vm',
+                    locals: {
+                        src: this.src,
+                        initialTransform: this.initialTransform,
+                    },
+                    bindToController: true
+                })
+                .then((result: IImageTransformParams) => this.onEdit({ transform: result }));
         }
     }
 
@@ -106,6 +115,7 @@ module meshAdminUi {
      *
      * Accepts the following attributes:
      * src: The source URL of the image to be edited.
+     * initialTransform: The initial transform to apply to the image.
      * onEdit: A function that will be invoked with a `transform` argument when an image is edited.
      */
     function editableImageDirective() {
@@ -123,6 +133,7 @@ module meshAdminUi {
             transclude: true,
             scope: {
                 src: '=',
+                initialTransform: '=',
                 onEdit: '&'
             },
         }

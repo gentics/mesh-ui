@@ -39,11 +39,23 @@ module meshAdminUi {
                             height: imageData.naturalHeight,
                         };
                         this.onCrop({ params: params });
-                        // set the image to 100%
-                        this.cropper.zoomTo(1);
-                        this.setAspectRatioAndFitToImage(null);
 
-                        this.updateParams();
+                        if (this.params.cropw && this.params.croph) {
+                            this.cropper.setData({
+                                y: this.params.cropy,
+                                x: this.params.cropx,
+                                width: this.params.cropw,
+                                height: this.params.croph
+                            });
+                        } else {
+
+                            // set the image to 100%
+                            this.cropper.zoomTo(1);
+                            this.setAspectRatioAndFitToImage(null);
+
+                            this.updateParams();
+                        }
+
                     },
                     cropend: () => this.updateParams()
                 });
