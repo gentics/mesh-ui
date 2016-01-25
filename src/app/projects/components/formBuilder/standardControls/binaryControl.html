@@ -5,11 +5,11 @@
                <a ng-href="{{ vm.getBinaryFileUrl() }}"><i class="icon-file-download"></i> download</a>
            </span>
     </div>
-    <editable-image src="vm.getBinaryFileUrl()" initial-transform="vm.transform" on-edit="vm.editImage(transform)">
+    <editable-image src="vm.getBinaryFileUrl()" initial-transform="vm.transform" on-edit="vm.updateTransform(transform)">
         <binary-file-input src-field="vm.fieldModel.value"
                            src-url="vm.getBinaryFileUrl()"
                            model="vm.fileToUpload"
                            transform="vm.transform"
-                           on-change="vm.fieldModel.update(vm.fileToUpload)"></binary-file-input>
+                           on-change="vm.updateValue()"></binary-file-input>
     </editable-image>
 </div>

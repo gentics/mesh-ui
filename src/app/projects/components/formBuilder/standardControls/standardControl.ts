@@ -273,7 +273,8 @@ module meshAdminUi {
         }
 
         public hasBinaryField(): boolean {
-            return !!this.mu.getFirstBinaryField(this.fieldModel.value).value;
+            let firstBinaryField = this.mu.getFirstBinaryField(this.fieldModel.value);
+            return !!(firstBinaryField && firstBinaryField.value);
         }
     }
 
@@ -495,6 +496,7 @@ module meshAdminUi {
     class BinaryController {
 
         public fieldModel: INodeFieldModel;
+        public fileToUpload;
         public value: any;
         private transform: IImageTransformParams = {};
 
@@ -515,14 +517,22 @@ module meshAdminUi {
                     this.fieldModel.name,
                     this.fieldModel.value.sha512sum
                 );
+            } else if (this.fileToUpload && this.fileToUpload.hasOwnProperty('$ngfBlobUrl')) {
+                return this.fileToUpload.$ngfBlobUrl;
             } else {
                 return '';
             }
         }
 
-        public editImage(transform: IImageTransformParams) {
+        public updateTransform(transform?: IImageTransformParams) {
             this.transform = transform;
-            //this.fieldModel.update(transform);
+            this.updateValue();
+        }
+
+        public updateValue() {
+            let newValue = this.fileToUpload || this.fieldModel.value || {};
+            newValue.transform = angular.copy(this.transform);
+            this.fieldModel.update(newValue);
         }
     }
 

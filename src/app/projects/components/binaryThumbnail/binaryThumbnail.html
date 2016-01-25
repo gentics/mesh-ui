@@ -8,9 +8,11 @@
              class="resize-content"
              ng-style="vm.getResizeStyles().content" />
 
-    </div>
+        <img ng-if="vm.srcFile && vm.isImage()"
+             ngf-src="!vm.srcFile.$error && vm.srcFile"
+             ng-style="vm.getResizeStyles().content" />
 
-    <img ng-if="vm.srcFile && vm.isImage()" ngf-src="!vm.srcFile.$error && vm.srcFile" />
+    </div>
 
     <div ng-if="!vm.isImage() && vm.srcField" class="non-image-preview">
         <div class="file-preview">

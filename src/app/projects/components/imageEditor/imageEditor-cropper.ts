@@ -41,6 +41,8 @@ module meshAdminUi {
                         this.onCrop({ params: params });
 
                         if (this.params.cropw && this.params.croph) {
+                            // The transform params were pre-specified via the intialTransform attribute on the
+                            // image editor component.
                             this.cropper.setData({
                                 y: this.params.cropy,
                                 x: this.params.cropx,

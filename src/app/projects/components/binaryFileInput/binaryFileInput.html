@@ -11,7 +11,8 @@
         </div>
 
         <div class="upload-preview-container" ng-show="!vm.model.$error">
-            <binary-file-preview src-file="vm.model"></binary-file-preview>
+            <binary-file-preview src-file="vm.model"
+                                 transform="vm.transform"></binary-file-preview>
         </div>
 
         <div class="drop-box"

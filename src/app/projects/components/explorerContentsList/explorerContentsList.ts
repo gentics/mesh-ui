@@ -107,7 +107,8 @@ module meshAdminUi {
          * Returns true if the node has at least one binary field.
          */
         public hasBinaryField(node: INode): boolean {
-            return !!this.mu.getFirstBinaryField(node).value;
+            let firstBinaryField = this.mu.getFirstBinaryField(node);
+            return !!(firstBinaryField && firstBinaryField.value);
         }
 
         /**

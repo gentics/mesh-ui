@@ -50,7 +50,10 @@ module meshAdminUi {
         /**
          * Calculate and set values for the objects which are bound to the resize preview DOM CSS.
          */
-        private getResizeStyles() {
+        public getResizeStyles() {
+            if (!this.transform) {
+                return;
+            }
             let widthParent = <HTMLElement>document.querySelector('.binary-container');
             let previewScale = widthParent.offsetWidth / this.transform.width;
             const scale = (val: number) => val * previewScale;
@@ -63,20 +66,9 @@ module meshAdminUi {
             };
             this.styles.container = {
                 width: scale(this.transform.cropw) + 'px',
-                height: scale(this.transform.croph) + 'px',
-                /*transform: this.makeTransformString(this.transform)*/
+                height: scale(this.transform.croph) + 'px'
             };
             return this.styles;
-        }
-
-        /**
-         * Create a string representing the CSS "transform" property for positioning the
-         * scale preview container.
-         */
-        private makeTransformString(transform: IImageTransformParams): string {
-            let x = transform.cropw * transform.scale / 2;
-            let y = transform.croph * transform.scale / 2;
-            return `translate3d(${x}px, ${y}px, 0)`;
         }
     }
 

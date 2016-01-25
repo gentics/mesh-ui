@@ -423,6 +423,10 @@ module meshAdminUi {
                                 return result;
                             }
                         })
+                        .then(newNode => {
+                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid)
+                                .then(() => newNode);
+                        });
                 });
         }
         private updateNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
@@ -437,6 +441,10 @@ module meshAdminUi {
                                 return result;
                             }
                         })
+                        .then(newNode => {
+                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid)
+                                .then(() => newNode);
+                        });
                 });
         }
 
@@ -482,11 +490,43 @@ module meshAdminUi {
         }
 
         /**
+         * Check for any binary fields that have a `transform` property, and make a binary transform request
+         * for any found.
+         */
+        private transformBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string): ng.IPromise<any> {
+            const isBinary = obj => obj.type === 'binary' || obj instanceof File;
+
+            let binaryFieldsWithTransform = Object.keys(fields)
+                .filter(key => fields[key] && isBinary(fields[key]) && fields[key].hasOwnProperty('transform'))
+                .map(key => {
+                    return {
+                        name: key,
+                        value: fields[key]
+                    };
+                });
+
+            if (0 < binaryFieldsWithTransform.length) {
+                let promises = binaryFieldsWithTransform
+                    .map(field => this.transformBinary(projectName, nodeUuid, field.name, field.value.transform));
+
+                return this.$q.all(promises);
+            } else {
+                return this.$q.when(false);
+            }
+        }
+
+        /**
          * Send a POST request to a binary field's `transform` endpoint.
          */
         public transformBinary(projectName: string, nodeUuid: string, fieldName: string, transformParams: IImageTransformParams): ng.IPromise<any> {
             let lang = this.i18nService.getCurrentLang().code;
-            return this.meshPost(projectName + `/nodes/${nodeUuid}/languages/${lang}/fields/${fieldName}/transform`, transformParams);
+            let params = angular.copy(transformParams);
+            // set the width and height of the image in pixels according to
+            // the crop and scale data.
+            params.width = params.cropw * params.scale;
+            params.height = params.croph * params.scale;
+
+            return this.meshPost(projectName + `/nodes/${nodeUuid}/languages/${lang}/fields/${fieldName}/transform`, params);
         }
 
         /**

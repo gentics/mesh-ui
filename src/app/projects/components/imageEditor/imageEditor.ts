@@ -95,7 +95,7 @@ module meshAdminUi {
         constructor(private $mdDialog: ng.material.IDialogService) {
         }
 
-        public editImage(): ng.IPromise<IImageTransformParams> {
+        public editImage(): ng.IPromise<void> {
             return this.$mdDialog.show({
                     templateUrl: 'projects/components/imageEditor/imageEditor.html',
                     controller: 'ImageEditorController',
@@ -106,7 +106,9 @@ module meshAdminUi {
                     },
                     bindToController: true
                 })
-                .then((result: IImageTransformParams) => this.onEdit({ transform: result }));
+                .then((result: IImageTransformParams) => {
+                    this.onEdit({ transform: result })
+                });
         }
     }
 

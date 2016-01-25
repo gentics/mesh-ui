@@ -82,20 +82,22 @@ module meshAdminUi {
             let binaryFieldKey;
             let binaryFieldValue;
 
-            for(let key in node.fields) {
-                let field = node.fields[key];
-                if (field && field.type && field.type === 'binary') {
-                    if (binaryFieldValue === undefined) {
-                        binaryFieldKey = key;
-                        binaryFieldValue = field;
+            if (node) {
+                for (let key in node.fields) {
+                    let field = node.fields[key];
+                    if (field && field.type && field.type === 'binary') {
+                        if (binaryFieldValue === undefined) {
+                            binaryFieldKey = key;
+                            binaryFieldValue = field;
+                        }
                     }
                 }
-            }
 
-            return {
-                key: binaryFieldKey,
-                value: binaryFieldValue
-            };
+                return {
+                    key: binaryFieldKey,
+                    value: binaryFieldValue
+                };
+            }
         }
 
         /**
