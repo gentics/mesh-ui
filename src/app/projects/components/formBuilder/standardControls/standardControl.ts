@@ -67,7 +67,9 @@ module meshAdminUi {
             if (0 < this.fieldModel.value) {
                 this.valueMoment = moment.unix(this.fieldModel.value);
             } else {
+                // if the value is not yet set, default it to the current timestamp
                 this.valueMoment = moment();
+                this.fieldModel.update(this.valueMoment.unix());
             }
             this.value = this.valueMoment.toDate();
             this.setTimeFields(this.valueMoment);

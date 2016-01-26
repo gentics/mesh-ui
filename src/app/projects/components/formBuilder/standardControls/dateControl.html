@@ -15,10 +15,5 @@
         <input type="text" placeholder="ss" class="second"
                ng-model="vm.time.s" pattern="[0-9]{0,2}" maxlength="2" ng-model-options="{ 'updateOn': 'blur' }"
                ng-keydown="vm.keydown($event)" ng-focus="vm.focus($event, 's')" ng-blur="vm.blur($event)">
-       <!-- <div class="time-input-tooltip">
-            <span translate ng-show="vm.focussed === 'h'">TIMEPICKER_HOURS</span>
-            <span translate ng-show="vm.focussed === 'm'">TIMEPICKER_MINUTES</span>
-            <span translate ng-show="vm.focussed === 's'">TIMEPICKER_SECONDS</span>
-        </div>-->
     </div>
 </div>
