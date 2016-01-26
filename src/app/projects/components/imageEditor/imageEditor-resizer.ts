@@ -29,10 +29,11 @@ module meshAdminUi {
                 step: 0.01,
                 precision: 2,
                 onChange: () => {
-                    this.onResize({ params: { scale: this.scale }})
+                    this.onResize({ params: { scale: this.scale }});
                 }
             };
 
+            this.scale = this.params.scale;
             $scope.$watchCollection(() => this.params, () => this.updateScaleDimensions());
 
             // remove the drag event handler when this scope is destroyed.
@@ -128,6 +129,7 @@ module meshAdminUi {
          * Calculate and update the scaled dimensions of the image.
          */
         private updateScaleDimensions() {
+            this.onResize({ params: { scale: this.scale }})
             this.scaleWidth = Math.round(this.params.cropw * this.scale);
             this.scaleHeight = Math.round(this.params.croph * this.scale);
             this.setImageResizeStyles();

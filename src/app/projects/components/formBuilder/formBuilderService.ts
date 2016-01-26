@@ -60,7 +60,6 @@ module meshAdminUi {
             model.isDisplayField = config.schemaField.name === config.displayField;
             model.projectName = config.projectName;
             model.node = config.node;
-            model.transform = {};
             model.onChange = config.onChange;
             model.update = this.makeUpdateFunction(model.path, config.nodeFields, config.onChange);
             model.createChild = this.makeCreateChildFunction(config);

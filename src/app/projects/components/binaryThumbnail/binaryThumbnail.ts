@@ -9,6 +9,7 @@ module meshAdminUi {
         private transform: IImageTransformParams;
 
         constructor(private mu: MeshUtils,
+                    private $element: JQuery,
                     private $scope: ng.IScope) {
             if (!(this.srcUrl && this.srcField) && !this.srcFile) {
                 throw new Error('BinaryThumbnailController: Please specify either src-url & src-field, or src-file.');
@@ -55,25 +56,42 @@ module meshAdminUi {
          * Calculate and set values for the objects which are bound to the resize preview DOM CSS.
          */
         public calculateStyles() {
-            if (!this.transform || !this.transform.cropx) {
+            const container = this.$element[0].getBoundingClientRect();
+            const isSmallerThanContainer = this.transform.cropw * this.transform.scale < container.width;
+
+            if (!this.transform || !this.transform.cropw) {
                 this.styles.content = {
                     position: 'relative'
                 };
             } else {
-                const scaleX = (val:number) => val * 100 / this.transform.cropw;
-                const scaleY = (val:number) => val * 100 / this.transform.croph;
+                const scale = this.transform.scale;
+                const cropWidth = this.transform.cropw * scale;
+                const cropHeight = this.transform.croph * scale;
+                const scaleX = (val:number) => val * 100 / cropWidth * scale;
+                const scaleY = (val:number) => val * 100 / cropHeight * scale;
 
                 this.styles.content = {
                     position: 'absolute',
                     width: scaleX(this.transform.width) + '%',
                     height: scaleY(this.transform.height) + '%',
-                    'left': -scaleX(this.transform.cropx) + '%',
-                    'top': -scaleY(this.transform.cropy) + '%'
+                    left: -scaleX(this.transform.cropx) + '%',
+                    top: -scaleY(this.transform.cropy) + '%'
                 };
-                this.styles.container = {
-                    width: scaleX(this.transform.cropw) + '%',
-                    'padding-bottom': scaleX(this.transform.croph) + '%'
-                };
+
+                if (isSmallerThanContainer) {
+                    // when the cropped / resized image is less wide than its container,
+                    // we need to use absolute pixel values rather than percentages for the
+                    // container.
+                    this.styles.container = {
+                        width: cropWidth + 'px',
+                        'padding-bottom': cropHeight + 'px',
+                    };
+                } else {
+                    this.styles.container = {
+                        width: '100%',
+                        'padding-bottom': scaleX(this.transform.croph) + '%',
+                    };
+                }
             }
         }
     }

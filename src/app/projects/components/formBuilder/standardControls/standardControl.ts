@@ -524,12 +524,23 @@ module meshAdminUi {
             }
         }
 
+        /**
+         * Update the transform parameters after the image has been edited in the edit dialog.
+         */
         public updateTransform(transform?: IImageTransformParams) {
             this.transform = transform;
             this.updateValue();
         }
 
-        public updateValue() {
+        /**
+         * A new binary file has been selected, so reset the transform params.
+         */
+        public updateImageSource() {
+            this.transform = {};
+            this.updateValue();
+        }
+
+        private updateValue() {
             let newValue = this.fileToUpload || this.fieldModel.value || {};
             newValue.transform = angular.copy(this.transform);
             this.fieldModel.update(newValue);

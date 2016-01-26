@@ -40,6 +40,8 @@ module meshAdminUi {
             for (let key in defaultParams) {
                 this.transformParams[key] = this.initialTransform[key] || defaultParams[key];
             }
+            // ensure we always use an up-to-date source string.
+            this.transformParams.src = src;
 
             $timeout(() => this.loaded = true, 500);
         }
