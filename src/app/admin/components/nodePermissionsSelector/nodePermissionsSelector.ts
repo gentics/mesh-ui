@@ -155,13 +155,14 @@ module meshAdminUi {
          */
         public toggle(node, recursive: boolean) {
             this.$timeout(() => {
-                let permObject = this.nodePermissions[node.uuid],
-                    permsArray = Object.keys(permObject).filter(key => permObject[key] === true),
-                    permissions: IPermissionsRequest = {
-                        permissions: permsArray,
-                        recursive: recursive
-                    };
-                this.onToggle({ node: node, project: this.currentProject, permissions: permissions });
+                let permObject = this.nodePermissions[node.uuid];
+                let permsArray = Object.keys(permObject).filter(key => permObject[key] === true);
+                let permissions: IPermissionsRequest = {
+                    permissions: permsArray,
+                    recursive: recursive
+                };
+                let project = (node.project) ? node.project : this.currentProject;
+                this.onToggle({ node: node, project: project, permissions: permissions });
             });
         }
     }

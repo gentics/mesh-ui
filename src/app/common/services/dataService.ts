@@ -845,6 +845,7 @@ module meshAdminUi {
         }
 
         public setNodePermissions(roleUuid: string, projectUuid: string, nodeUuid: string, permissions: IPermissionsRequest): ng.IPromise<any> {
+            this.clearCache('nodes');
             return this.setPermissionsOnPath(roleUuid, 'projects/' + projectUuid + '/nodes/' + nodeUuid, permissions);
         }
         public setProjectPermissions(roleUuid: string, permissions: IPermissionsRequest, projectUuid?: string): ng.IPromise<any> {
@@ -863,10 +864,12 @@ module meshAdminUi {
             return this.setPermissionsOnRootOrNode('roles', roleUuid, permissions, targetRoleUuid);
         }
         public setTagPermissions(roleUuid: string, projectUuid: string, permissions: IPermissionsRequest, tag: ITag): ng.IPromise<any> {
-            let path = 'projects/' + projectUuid + /*'/tagFamilies/' + tag.tagFamily.uuid +*/ '/tags/' + tag.uuid;
+            this.clearCache('tags');
+            let path = 'projects/' + projectUuid + '/tagFamilies/' + tag.tagFamily.uuid + '/tags/' + tag.uuid;
             return this.setPermissionsOnPath(roleUuid, path, permissions);
         }
         public setTagFamilyPermissions(roleUuid: string, projectUuid: string, permissions: IPermissionsRequest, tagFamilyUuid?: string): ng.IPromise<any> {
+            this.clearCache('tags');
             let pathBase = 'projects/' + projectUuid + '/tagFamilies';
             let path = tagFamilyUuid ? `${pathBase}/${tagFamilyUuid}` : pathBase;
             return this.setPermissionsOnPath(roleUuid, path, permissions);
@@ -959,8 +962,7 @@ module meshAdminUi {
         var cacheable = {
             'projects': /^projects/,
             'nodes': new RegExp(projectName + _ + 'nodes\\/', 'gi'),
-            'tags': new RegExp(projectName + _ + 'tags\\/?', 'gi'),
-            'tagFamilies': new RegExp(projectName + _ + 'tagFamilies\\/?', 'gi'),
+            'tags': new RegExp(projectName + _ + 'tagFamilies\\/?', 'gi'),
             'schemas': /\/?schemas\??/,
             'microschemas': /^microschemas\??/,
             'users': /^users\??/,
