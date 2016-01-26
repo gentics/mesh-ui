@@ -68,6 +68,13 @@ module meshAdminUi {
             }
 
             /**
+             * Convert the path array into a string for use as a unique ID.
+             */
+            public getPathName(): string {
+                return this.fieldModel.path.join('_');
+            }
+
+            /**
              * Pull out the Aloha toolbar from the top level of the DOM, and put it above the html input area so
              * we can style it to be the correct width.
              */
@@ -93,7 +100,7 @@ module meshAdminUi {
                 const positionToolbarContainer = () => {
                     let containerHeight = 95;
                     let wipTabHeight = 33;
-                    let labelHeight = 20;
+                    let labelHeight = (<HTMLElement>this.htmlField.previousElementSibling).offsetHeight + 1;
                     let $editable: JQuery = $(this.htmlField);
                     let controlOffsetTop = $editable.closest('.html-container')[0].getBoundingClientRect().top;
                     let paneTop = $editorPane[0].getBoundingClientRect().top;

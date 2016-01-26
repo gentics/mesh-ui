@@ -62,15 +62,11 @@ module meshAdminUi {
          * Close a WIP tab and remove the WIP item from the wipService,
          * automatically switching to another tab or the list view.
          */
-        public closeWip(index: number, event?: Event) {
+        public closeWip(index: number) {
             var wip = this.wips[index].item,
                 projectName = this.wips[index].metadata.projectName,
                 action;
 
-            if (event !== undefined) {
-                event.stopPropagation();
-                event.preventDefault();
-            }
             this.lastIndex = this.selectedIndex;
 
             if (this.wipService.isModified(this.wipType, wip)) {
