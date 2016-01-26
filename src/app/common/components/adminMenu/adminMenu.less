@@ -37,11 +37,14 @@
   }
 }
 
+admin-menu {
+  background-color: fade(black, 70%);
+  box-shadow: inset -9px 8px 17px -10px rgba(0,0,0,0.75);
+}
+
 .admin-menu-container {
   font-size: @font-size-standard;
   color: @color-almost-white;
-  background-color: fade(black, 70%);
-  box-shadow: inset -9px 8px 17px -10px rgba(0,0,0,0.75);
   overflow: hidden;
   width: 0;
   padding-left: 0;
@@ -80,21 +83,23 @@
   .responsive-max(@mq-md, {
     max-height: 0;
     transition: max-height 0.5s;
-  .menu {
-    width: auto;
-  }
-  .menu ul li {
-    display: inline-block;
-    padding: 0 8px;
+    .menu {
+      width: auto;
+      margin-left: 5%;
+    }
+    .menu ul li {
+      display: inline-block;
+      padding: 0 8px;
 
-    &:first-child {
+      &:first-child {
+        padding-left: 0;
+      }
+    }
+    &.open {
+      width: 100%;
+      flex: 1;
+      max-height: 12rem;
       padding-left: 0;
     }
-  }
-  &.open {
-    max-height: 12rem;
-    width: 100vw;
-    padding-left: 5%;
-  }
   });
 }

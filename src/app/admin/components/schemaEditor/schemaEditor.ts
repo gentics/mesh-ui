@@ -78,7 +78,6 @@ module meshAdminUi {
          * Record the index of the item that is being dragged.
          */
         public startDrag(index: number) {
-            console.log('starting drag at index ', index);
             this.dragStartIndex = index;
         }
 
@@ -86,7 +85,6 @@ module meshAdminUi {
          * Remove the original dragged item from the list.
          */
         public endDrag(item: ISchemaFieldDefinition, dragEndIndex: number, list: any[]) {
-            console.log('ending drag at index ', dragEndIndex);
             var indexToSplice;
 
             if (dragEndIndex < this.dragStartIndex) {

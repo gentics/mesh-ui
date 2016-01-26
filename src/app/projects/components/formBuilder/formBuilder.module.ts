@@ -56,7 +56,7 @@ module meshAdminUi {
         }
     }
 
-    angular.module('meshAdminUi.projects.formBuilder', ['dndLists'])
+    angular.module('meshAdminUi.projects.formBuilder', [])
         .config(customControlsResourceLoader)
         .run(customControlsTemplateLoader);
 }

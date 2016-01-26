@@ -17,5 +17,6 @@ angular.module('meshAdminUi', [
     'ngMaterial',
     'angularUtils.directives.dirPagination',
     'angular-loading-bar',
-    'ngFileUpload'
+    'ngFileUpload',
+    'dndLists'
 ]);

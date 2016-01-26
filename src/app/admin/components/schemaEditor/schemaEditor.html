@@ -38,19 +38,21 @@
 
     <h3>Fields</h3>
 
-    <div class="schema-field-container mh-sortable-list"
-         dnd-list="vm.fieldModel.value"
-         dnd-drop="vm.endDrag(item, index, vm.schema.fields)">
+    <ul class="schema-field-container mh-sortable-list"
+        dnd-list="vm.schema.fields"
+        dnd-drop="vm.endDrag(item, index, vm.schema.fields)">
 
-        <schema-field field="field"
-                      schemas="vm.schemas"
-                      microschemas="vm.microschemas"
-                      on-change="vm.schemaChanged()"
-                      on-delete="vm.removeField($index)"
-                      ng-repeat="field in vm.schema.fields"
-                      dnd-draggable="field"
-                      dnd-dragstart="vm.startDrag($index)"></schema-field>
-    </div>
+        <li dnd-draggable="field"
+            ng-repeat="field in vm.schema.fields"
+            dnd-dragstart="vm.startDrag($index)">
+            <schema-field field="field"
+                          schemas="vm.schemas"
+                          microschemas="vm.microschemas"
+                          on-change="vm.schemaChanged()"
+                          on-delete="vm.removeField($index)"></schema-field>
+        </li>
+
+    </ul>
 
     <div layout="row" layout-align="center center">
         <button class="btn add-field-btn" ng-click="vm.addField()">

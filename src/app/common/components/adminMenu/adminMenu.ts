@@ -18,8 +18,7 @@ module meshAdminUi {
             templateUrl: 'common/components/adminMenu/adminMenu.html',
             controller: adminMenuController,
             controllerAs: 'vm',
-            scope: {},
-            replace: true
+            scope: {}
         };
     }
 
