@@ -28,7 +28,7 @@ angular.module('meshAdminUi.common')
 function dropdownController($scope, $element, $document, $window) {
     var vm = this,
         labelElement,
-        caretHeight = 12;
+        caretHeight = 15;
 
     /**
      * Tracks the state of the dropdown
@@ -73,14 +73,12 @@ function dropdownController($scope, $element, $document, $window) {
     }
 
     function handleClick(event) {
-        console.log('handleClick');
         var target = event.target;
         if (!$element[0].contains(target)) {
             closeDropdown();
         }
     }
     function handleResizeScroll() {
-        console.log('handleResize');
         closeDropdown();
     }
 
@@ -149,7 +147,7 @@ function dropdownBodyDirective() {
 
         const arrowGutter = 15;
         let container = <HTMLElement>element[0];
-        let parentContainer = container.parentElement.parentElement;
+        let parentContainer = container.parentElement;
 
         const clickHandler = (e: Event) => {
             e.stopPropagation();
@@ -176,7 +174,7 @@ function dropdownBodyDirective() {
                 let childBox = containerChild.getBoundingClientRect();
                 let widthDelta = parentBox.width - childBox.width;
 
-                let bodyTop = dropdownCtrl.getContentTop() + parentBox.top;
+                let bodyTop = dropdownCtrl.getContentTop() + parentBox.top + window.scrollY + 7;
                 let bodyHeight = containerChild.offsetHeight + arrowGutter * 2;
                 let bodyWidth = childBox.width + arrowGutter * 2;
 
@@ -199,7 +197,7 @@ function dropdownBodyDirective() {
                  * Check to see if the dropdown body goes off the bottom of the viewport,
                  * and adjust it if so.
                  */
-                if (window.innerHeight <= bodyTop + bodyHeight) {
+                if (window.innerHeight + window.scrollY <= bodyTop + bodyHeight) {
                     console.log('Adjusting body', bodyTop + bodyHeight);
                     bodyTop = bodyTop - bodyHeight;
                     container.classList.remove('top');
