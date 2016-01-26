@@ -25,7 +25,7 @@ angular.module('meshAdminUi.common')
  *
  * sticky: boolean - if true, dropdown will not close unless clicked outside of.
  */
-function dropdownController($scope, $element, $document) {
+function dropdownController($scope, $element, $document, $window) {
     var vm = this,
         labelElement,
         caretHeight = 12;
@@ -50,7 +50,8 @@ function dropdownController($scope, $element, $document) {
     function toggle() {
         vm.isOpen = !vm.isOpen;
         if (vm.isOpen) {
-            $document.on('click', closeDropdown);
+            $document.on('click', handleClick);
+            angular.element($window).on('scroll resize', handleResizeScroll);
         }
     }
 
@@ -66,24 +67,31 @@ function dropdownController($scope, $element, $document) {
     /**
      * Get the top position of the content div, which is based on the
      * height of the label element.
-     * @returns {number}
      */
-    function getContentTop() {
+    function getContentTop(): number {
         return labelElement.offsetHeight - caretHeight;
     }
 
-    /**
-     * Close the dropdown and de-register the global click handler.
-     * @param {Event} event
-     */
-    function closeDropdown(event) {
+    function handleClick(event) {
+        console.log('handleClick');
         var target = event.target;
         if (!$element[0].contains(target)) {
-            vm.isOpen = false;
-            $scope.$digest(function() {
-                $document.off('click', closeDropdown);
-            });
+            closeDropdown();
         }
+    }
+    function handleResizeScroll() {
+        console.log('handleResize');
+        closeDropdown();
+    }
+
+    /**
+     * Close the dropdown and de-register the global event handlers.
+     */
+    function closeDropdown() {
+        vm.isOpen = false;
+        $document.off('click', handleClick);
+        angular.element($window).off('scroll resize', handleResizeScroll);
+        $scope.$digest();
     }
 }
 
@@ -139,6 +147,7 @@ function dropdownLabelDirective() {
 function dropdownBodyDirective() {
     function linkFn(scope, element, attrs, dropdownCtrl) {
 
+        const arrowGutter = 15;
         let container = <HTMLElement>element[0];
         let parentContainer = container.parentElement.parentElement;
 
@@ -167,23 +176,40 @@ function dropdownBodyDirective() {
                 let childBox = containerChild.getBoundingClientRect();
                 let widthDelta = parentBox.width - childBox.width;
 
-                container.style.top = (dropdownCtrl.getContentTop() + parentBox.top) + 'px';
-                container.style.width = childBox.width + 'px';
-                container.style.height =  containerChild.offsetHeight + 12 + 'px';
+                let bodyTop = dropdownCtrl.getContentTop() + parentBox.top;
+                let bodyHeight = containerChild.offsetHeight + arrowGutter * 2;
+                let bodyWidth = childBox.width + arrowGutter * 2;
+
+                container.style.width = bodyWidth + 'px';
+                container.style.height =  bodyHeight + 'px';
 
                 /**
                  * Check to see if the dropdown body goes off the edge of the viewport,
                  * and adjust it if so.
                  */
                 if ((parentBox.left + widthDelta) < 0) {
-                    container.style.left = parentBox.left + 'px';
+                    container.style.left = parentBox.left - arrowGutter + 'px';
                     container.style.right = 'auto';
                     container.classList.remove('left');
                     container.classList.add('right');
                 } else {
-                    container.style.left = (parentBox.left + widthDelta) + 'px';
+                    container.style.left = (parentBox.left + widthDelta - arrowGutter) + 'px';
+                }
+                /**
+                 * Check to see if the dropdown body goes off the bottom of the viewport,
+                 * and adjust it if so.
+                 */
+                if (window.innerHeight <= bodyTop + bodyHeight) {
+                    console.log('Adjusting body', bodyTop + bodyHeight);
+                    bodyTop = bodyTop - bodyHeight;
+                    container.classList.remove('top');
+                    container.classList.add('bottom');
+                } else {
+                    container.classList.remove('bottom');
+                    container.classList.add('top');
                 }
 
+                container.style.top = bodyTop + 'px';
                 container.classList.add('open');
             } else {
                 container.remove();
