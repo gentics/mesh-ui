@@ -32,6 +32,7 @@ module meshAdminUi {
             private $state: ng.ui.IStateService,
             private $stateParams: any,
             private mu: MeshUtils,
+            private confirmActionDialog: ConfirmActionDialog,
             private notifyService: NotifyService,
             private dataService: DataService) {
 
@@ -172,6 +173,35 @@ module meshAdminUi {
 
         public isReadonly() {
             return !this.role || this.role.name === 'admin' || -1 === this.role.permissions.indexOf('update');
+        }
+
+        /**
+         * Can the current user delete this role?
+         */
+        public canDelete(): boolean {
+            return !!(this.role && this.role.permissions && -1 < this.role.permissions.indexOf('delete'));
+        }
+
+        /**
+         * Delete the role
+         */
+        public remove(role: IUserRole) {
+            this.showDeleteDialog()
+                .then(() => this.dataService.deleteRole(role))
+                .then(() => {
+                    this.notifyService.toast('Deleted');
+                    this.$state.go('admin.roles.list');
+                });
+        }
+
+        /**
+         * Confirm deletion of the role
+         */
+        private showDeleteDialog(): ng.IPromise<any> {
+            return this.confirmActionDialog.show({
+                title: 'Delete Role?',
+                message: 'Are you sure you want to delete this role?'
+            });
         }
 
         public setTagPermissions(project: IProject, permissions: IPermissionsRequest, tagOrFamily?: any) {

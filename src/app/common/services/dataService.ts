@@ -833,6 +833,7 @@ module meshAdminUi {
             return this.meshPut('roles/' + role.uuid, role);
         }
         public deleteRole(role: IUserRole): ng.IPromise<any> {
+            this.clearCache('roles');
             return this.meshDelete('roles/' + role.uuid);
         }
 
