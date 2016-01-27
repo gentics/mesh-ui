@@ -89,7 +89,9 @@ function dropdownController($scope, $element, $document, $window) {
         vm.isOpen = false;
         $document.off('click', handleClick);
         angular.element($window).off('scroll resize', handleResizeScroll);
-        $scope.$digest();
+        if (!$scope.$root.$$phase) {
+            $scope.$digest();
+        }
     }
 }
 

@@ -10,18 +10,13 @@
             <button class="btn btn-small btn-primary" aria-label="Create Schema" ui-sref="admin.schemas.create">
                 Create New Schema
             </button>
-            <button ngf-select="vm.processImport($files)"
-                    ng-model="vm.schemaJsonFiles"
-                    ngf-accept="'.json'"
-                    ngf-pattern="'.json'"
-                    ngf-multiple="true"
-                    class="btn btn-small"
-                    aria-label="Import Schemas">
-                <i class="icon-file-upload"></i> Import Schemas...
-            </button>
-            <button class="btn btn-small" ng-disabled="vm.selectionEmpty()" ng-click="vm.exportSelected()">
-                <i class="icon-file-download"></i> Export Schemas
-            </button>
+
+            <schema-import-button type="schema" on-import="vm.populateSchemas()"></schema-import-button>
+
+            <schema-export-button schemas="vm.schemas"
+                                  selected="vm.selected"
+                                  disabled="vm.selectionEmpty()"
+                                  on-export="vm.clearSelection()"></schema-export-button>
         </div>
     </md-toolbar>
 

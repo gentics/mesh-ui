@@ -10,28 +10,20 @@ module meshAdminUi {
                     private notifyService: NotifyService,
                     private schemaImportExportService: SchemaImportExportService,
                     private mu: MeshUtils) {
-            dataService.getMicroschemas()
-                .then(response => this.microschemas = response.data);
+            this.populateMicroschemas();
         }
 
         public filterFn = (value: IUser) => {
             return this.mu.matchProps(value, ['name'], this.microschemaFilter);
         };
 
-        public exportSelected() {
-            this.schemaImportExportService.exportSelected(this.microschemas, this.selected);
+        public populateMicroschemas() {
+            this.dataService.getMicroschemas()
+                           .then(response => this.microschemas = response.data);
         }
 
-        public processImport(files: File[]) {
-            const onErrors = errors => this.notifyService.toast(errors);
-
-            this.schemaImportExportService.importMicroschemas(files, onErrors)
-                .then(results => {
-                    this.notifyService.toast(`Imported ${results.length} microschemas.`);
-
-                    return this.dataService.getMicroschemas({ perPage: 10000 });
-                })
-                .then(response => this.microschemas = response.data);
+        public clearSelection() {
+            this.selected = {};
         }
 
         /**

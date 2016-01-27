@@ -1,0 +1,22 @@
+<mh-dropdown sticky="true">
+    <mh-dropdown-label>
+
+        <button class="btn btn-small" ng-disabled="vm.disabled">
+            <i class="icon-file-download"></i> Export... <i class="icon-arrow-drop-down"></i>
+        </button>
+
+    </mh-dropdown-label>
+    <mh-dropdown-body>
+        <div class="schema-export-button-body">
+
+            <md-input-container>
+                <label>Filename</label>
+                <input type="text" ng-model="vm.filename">
+            </md-input-container>
+
+            <button class="btn btn-primary" ng-click="vm.export()" ng-disabled="vm.disabled">
+                Export
+            </button>
+        </div>
+    </mh-dropdown-body>
+</mh-dropdown>

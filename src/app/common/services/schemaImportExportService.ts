@@ -4,6 +4,7 @@ module meshAdminUi {
 
     interface IImportResult {
         fileName: string;
+        schemaName: string;
         content: string;
     }
 
@@ -19,25 +20,46 @@ module meshAdminUi {
 
         constructor(private dataService: DataService,
                     private $q: ng.IQService,
+                    private mu: MeshUtils,
                     private schemaValidatorService: SchemaValidatorService) {
         }
 
         /**
-         * Download each of the selected schemas as a .json file.
+         * Download each of the selected schemas as a .json bundle.
          */
-        public exportSelected(schemas: (ISchema|IMicroschema)[], selected: any) {
-            schemas.filter(schema => {
-                    return selected[schema.uuid];
-                })
+        public exportSelected(filename: string,
+                              schemas: Array<ISchema|IMicroschema>,
+                              selected: { [uuid: string]: boolean }) {
+            let bundle = schemas
+                .filter(schema => selected[schema.uuid])
                 .map(schema => {
                     let schemaClone = angular.copy(schema);
                     delete schemaClone.uuid;
                     delete schemaClone.permissions;
                     return schemaClone;
                 })
-                .forEach(schema => {
-                    this.downloadFile(schema.name + '.json', JSON.stringify(schema, null, 4));
-                })
+                .reduce((arr: ISchema[], schema: ISchema) => {
+                    arr.push(schema);
+                    return arr;
+                }, []);
+
+            // sort by schema name
+            bundle.sort((a, b) => {
+                if (a.name < b.name) {
+                    return -1;
+                }
+                if (a.name > b.name) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            // if there is only a single schema in the bundle, extract it from the array
+            if (bundle.length === 1) {
+                bundle = bundle[0];
+            }
+
+            this.downloadFile(filename + '.json', JSON.stringify(bundle, null, 4));
         }
 
         /**
@@ -86,20 +108,37 @@ module meshAdminUi {
             if (!files || files.length === 0) {
                 return this.$q.when([]);
             }
+
             let promises = files.map(file => {
-                let deferred = this.$q.defer();
                 let reader = new FileReader();
+                let deferred = this.$q.defer();
+
                 reader.onload = () => {
-                    deferred.resolve({
-                        content: reader.result,
-                        fileName: file.name
-                    });
+                    let schemas = this.fileContentsToSchemaArray(reader.result);
+                    deferred.resolve(schemas.map(s => {
+                        return {
+                            content: JSON.stringify(s),
+                            schemaName: s.name,
+                            fileName: file.name
+                        };
+                    }));
                 };
                 reader.readAsText(file);
+
                 return deferred.promise;
             });
 
-            return this.$q.all(promises);
+            return this.$q.all(promises)
+                .then(arrays => this.mu.flatten(arrays));
+        }
+
+        /**
+         * Accepts a JSON string representation of either a single Schema or an array of Schemas, and returns an
+         * array of Schemas.
+         */
+        private fileContentsToSchemaArray(contents: string): Array<ISchema|IMicroschema> {
+            let jsObj = JSON.parse(contents);
+            return (jsObj instanceof Array) ? jsObj : [jsObj];
         }
 
         /**
@@ -120,11 +159,11 @@ module meshAdminUi {
                 let isValid = true;
 
                 if (result.fileName.indexOf('.json') === -1) {
-                    errors.push(result.fileName + ': File must be have .json extension');
+                    errors.push(`${result.fileName}: File must be have .json extension`);
                     return false;
                 }
                 validateFn(result.content, (msg) => {
-                    errors.push(result.fileName + ': ' + msg);
+                    errors.push(`${result.fileName}: [${result.schemaName}] ${msg}`);
                     isValid = false;
                 });
                 return isValid;
