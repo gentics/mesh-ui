@@ -30,7 +30,7 @@ module meshAdminUi {
         public exportSelected(filename: string,
                               schemas: Array<ISchema|IMicroschema>,
                               selected: { [uuid: string]: boolean }) {
-            let bundle = schemas
+            let bundle: any[] = schemas
                 .filter(schema => selected[schema.uuid])
                 .map(schema => {
                     let schemaClone = angular.copy(schema);
@@ -78,21 +78,22 @@ module meshAdminUi {
             document.body.removeChild(element);
         }
 
-        public importSchemas(files: File[], onErrors: (errors: string[]) => any): ng.IPromise<any> {
-            return this.processImport(Type.Schema, files, onErrors);
+        public importSchemas(files: File[], currentSchemas: ISchema[], onErrors: (errors: string[]) => any): ng.IPromise<any> {
+            return this.processImport(Type.Schema, files, currentSchemas, onErrors);
         }
 
-        public importMicroschemas(files: File[], onErrors: (errors: string[]) => any): ng.IPromise<any> {
-            return this.processImport(Type.Microschema, files, onErrors);
+        public importMicroschemas(files: File[], currentMicroschemas: IMicroschema[], onErrors: (errors: string[]) => any): ng.IPromise<any> {
+            return this.processImport(Type.Microschema, files, currentMicroschemas, onErrors);
         }
 
         /**
          * Get the content of the selected files, validate it as a valid schema, and then POST to Mesh.
          */
-        private processImport(type: Type, files: File[], onErrors: (errors: string[]) => any): ng.IPromise<any> {
+        private processImport(type: Type, files: File[], currentSchemas: Array<ISchema|IMicroschema>, onErrors: (errors: string[]) => any): ng.IPromise<any> {
 
             return this.getFileTextContents(files)
                 .then(results => this.validateImports(type, results, onErrors))
+                .then(results => this.renameDuplicates(results, currentSchemas))
                 .then(validResults => {
                     let promises = validResults.map(result => {
                         return this.persistToMesh(type, result.content);
@@ -173,6 +174,32 @@ module meshAdminUi {
                 onErrors(errors);
             }
             return valid;
+        }
+
+        /**
+         * Check for any duplicate schema names and rename any duplicates found with a trailing number.
+         */
+        private renameDuplicates(results: IImportResult[], currentSchemas: Array<ISchema|IMicroschema>): IImportResult[] {
+            let existingNames = currentSchemas.map(s => s.name);
+            const renameIfDuplicate = (name) => {
+                const numberSuffixRe = /\((\d+)\)$/;
+                while (-1 < existingNames.indexOf(name)) {
+                    if (!numberSuffixRe.test(name)){
+                        name += '(1)';
+                    }
+                    name = name.replace(numberSuffixRe, (match, n) => `(${++n})`);
+                }
+                existingNames.push(name);
+                return name;
+            };
+
+            return results.map(result => {
+                let schema = JSON.parse(result.content);
+                schema.name = renameIfDuplicate(schema.name);
+                result.content = JSON.stringify(schema);
+                result.schemaName = schema.name;
+                return result;
+            });
         }
 
         private persistToMesh(type: Type, json: string): ng.IPromise<any> {

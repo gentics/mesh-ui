@@ -11,7 +11,9 @@
                 Create New Schema
             </button>
 
-            <schema-import-button type="schema" on-import="vm.populateSchemas()"></schema-import-button>
+            <schema-import-button type="schema"
+                                  current-schemas="vm.schemas"
+                                  on-import="vm.populateSchemas()"></schema-import-button>
 
             <schema-export-button schemas="vm.schemas"
                                   selected="vm.selected"

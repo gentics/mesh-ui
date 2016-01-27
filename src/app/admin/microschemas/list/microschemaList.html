@@ -11,7 +11,9 @@
                 Create New Microschema
             </button>
 
-            <schema-import-button type="microschema" on-import="vm.populateMicroschemas()"></schema-import-button>
+            <schema-import-button type="microschema"
+                                  current-schemas="vm.microschemas"
+                                  on-import="vm.populateMicroschemas()"></schema-import-button>
 
             <schema-export-button schemas="vm.microschemas"
                                   selected="vm.selected"

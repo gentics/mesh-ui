@@ -8,6 +8,7 @@ module meshAdminUi {
          * the directive which endpoint to send the imported json to.
          */
         private type: string;
+        private currentSchemas: Array<ISchema|IMicroschema>;
 
         constructor(private schemaImportExportService: SchemaImportExportService,
                     private notifyService: NotifyService) {
@@ -21,9 +22,9 @@ module meshAdminUi {
 
             const importFn = () => {
                 if (this.type === 'microschema') {
-                    return this.schemaImportExportService.importMicroschemas(files, onErrors);
+                    return this.schemaImportExportService.importMicroschemas(files, this.currentSchemas, onErrors);
                 } else {
-                    this.schemaImportExportService.importSchemas(files, onErrors);
+                    return this.schemaImportExportService.importSchemas(files, <ISchema[]>this.currentSchemas, onErrors);
                 }
             };
 
@@ -47,6 +48,7 @@ module meshAdminUi {
             bindToController: true,
             scope: {
                 onImport: '&',
+                currentSchemas: '=',
                 type: '@'
             }
         }
