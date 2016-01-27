@@ -19,12 +19,25 @@ module meshAdminUi {
             { name: 'binary', icon: 'icon-attach-file' }
         ];
 
-        public micronodeAllow: string = '';
+        public microschemaAllow: string = '';
+        public microschemasAllow: string[] = [];
+        public schemasAllow: string[] = [];
 
         constructor($scope: ng.IScope) {
             $scope.$watch(() => this.field.allow, () => {
-                if (this.field.type === 'micronode' && this.field.allow instanceof Array) {
-                    this.micronodeAllow = this.field.allow[0];
+                const isMicronode = this.field.type === 'micronode';
+                const isMicronodeList = this.field.listType && this.field.listType === 'micronode';
+                const isNodeOrNodeList = this.field.type === 'node' || (this.field.listType && this.field.listType === 'node');
+                const allowIsArray = this.field.allow instanceof Array;
+
+                if (isMicronode && allowIsArray) {
+                    this.microschemaAllow = this.field.allow[0];
+                }
+                if (isMicronodeList && allowIsArray) {
+                    this.microschemasAllow = this.field.allow;
+                }
+                if (isNodeOrNodeList && allowIsArray) {
+                    this.schemasAllow = this.field.allow;
                 }
             });
         }
@@ -40,7 +53,15 @@ module meshAdminUi {
          */
         public updateMicronodeAllow(value: string) {
             this.field.allow = [value];
-            console.log('this.field.allow', this.field.allow);
+            this.onChange();
+        }
+
+        /**
+         * Update the `allow` array, limiting the values only to those that are in the available selection.
+         */
+        public updateAllowArray(values: string[], available: any[]) {
+            let availableNames = available.map(s => s.name);
+            this.field.allow = values.filter(name => -1 < availableNames.indexOf(name));
             this.onChange();
         }
 

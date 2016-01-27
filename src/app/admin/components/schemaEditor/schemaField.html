@@ -70,8 +70,8 @@
             <md-input-container>
                 <label>Allowed Microschema</label>
                 <md-select required
-                           ng-model="vm.micronodeAllow"
-                           ng-change="vm.updateMicronodeAllow(vm.micronodeAllow)">
+                           ng-model="vm.microschemaAllow"
+                           ng-change="vm.updateMicronodeAllow(vm.microschemaAllow)">
                     <md-option ng-value="microschema.name" ng-repeat="microschema in vm.microschemas">
                         {{ microschema.name }}
                     </md-option>
@@ -84,8 +84,8 @@
                 <label>Allowed Microschemas</label>
                 <md-select required
                            multiple
-                           ng-model="vm.field.allow"
-                           ng-change="vm.onChange()">
+                           ng-model="vm.microschemasAllow"
+                           ng-change="vm.updateAllowArray(vm.microschemasAllow, vm.microschemas)">
                     <md-option ng-value="microschema.name" ng-repeat="microschema in vm.microschemas">
                         {{ microschema.name }}
                     </md-option>
@@ -93,12 +93,12 @@
             </md-input-container>
         </div>
 
-        <div ng-if="vm.field.type === 'node' || field.listType === 'node'">
+        <div ng-if="vm.field.type === 'node' || vm.field.listType === 'node'">
             <md-input-container>
                 <label>Allowed Schemas</label>
                 <md-select multiple
-                           ng-model="vm.field.allow"
-                           ng-change="vm.onChange()">
+                           ng-model="vm.schemasAllow"
+                           ng-change="vm.updateAllowArray(vm.schemasAllow, vm.schemas)">
                     <md-option ng-value="schema.name" ng-repeat="schema in vm.schemas">
                         {{ schema.name }}
                     </md-option>
