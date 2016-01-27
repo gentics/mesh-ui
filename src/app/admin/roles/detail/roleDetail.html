@@ -16,9 +16,9 @@
 
     <form name="roleEditorForm" class="admin-form">
 
-        <div layout="row" layout-align="center center" class="mh-main-buttons">
+        <div layout="row" layout-align="center center" class="aligned-button-bar">
 
-            <md-input-container flex class="role-name">
+            <md-input-container flex class="large">
                 <label>Role Name</label>
                 <input type="text" ng-model="vm.role.name" ng-change="vm.modified = true" ng-disabled="vm.isAdminRole()">
             </md-input-container>
