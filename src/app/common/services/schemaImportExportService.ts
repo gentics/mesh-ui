@@ -193,7 +193,7 @@ module meshAdminUi {
                 return name;
             };
 
-            return results.map(result => {
+            return results.map((result: any) => {
                 let schema = JSON.parse(result.content);
                 schema.name = renameIfDuplicate(schema.name);
                 result.content = JSON.stringify(schema);
