@@ -31957,7 +31957,8 @@ define('aloha/selection',[
 					'del': true,
 					'ins': true,
 					'u': true,
-					'a': true
+					'a': true,
+                    'table': true
 				},
 				'tr': {
 					'td': true,
@@ -72224,9 +72225,20 @@ define('table/table-plugin',[
 				TablePlugin.leaveTableScopes();
 				return;
 			}
+			
+			// A simplified version of Aloha.Selection.mayInsertTag('table'). We are no longer using mayInsertTag()
+			// because that function makes a recursive search up the DOM tree, which is not necessary in this case. 
+			// If for example there is a UL element somewhere in the range.unmodifiableMarkupAtStart array, 
+			// the mayInsertTag() will return "undefined" which will prevent the createTableButton from being displayed.
+			function mayInsertTable() {
+				if (typeof range.unmodifiableMarkupAtStart !== 'object') {
+					return true;
+				}
+				return Aloha.Selection.canTag1WrapTag2(range.unmodifiableMarkupAtStart[0].nodeName, 'table')
+			}
 
 			// show hide buttons regarding configuration and DOM position
-			if (configurations[Aloha.activeEditable.getId()] && Aloha.Selection.mayInsertTag('table') ) {
+			if (configurations[Aloha.activeEditable.getId()] && mayInsertTable()) {
 				that._createTableButton.show();
 			} else {
 				that._createTableButton.hide();

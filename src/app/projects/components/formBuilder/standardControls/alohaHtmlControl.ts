@@ -7,10 +7,10 @@ module meshAdminUi {
      * This is the Aloha Editor implementation.
      */
     function htmlControlDirective(i18nService: I18nService,
-                                 nodeSelector: NodeSelector,
-                                 editorService: EditorService,
-                                 contextService: ContextService,
-                                 dataService: DataService) {
+                                  nodeSelector: NodeSelector,
+                                  editorService: EditorService,
+                                  contextService: ContextService,
+                                  dataService: DataService) {
 
         // an array of functions that will be called when Aloha has loaded.
         let callbacks = [];
@@ -98,10 +98,13 @@ module meshAdminUi {
                  * out the toolbar.
                  */
                 const positionToolbarContainer = () => {
-                    let containerHeight = 95;
+
+                    let $editable: JQuery = $(this.htmlField);
+                    $toolbarContainer.css({ width: $editable.width() });
+                    let toolbarHeight = Math.floor(alohaToolbar.getBoundingClientRect().height);
+                    let containerHeight = 95 <= toolbarHeight ? toolbarHeight : 95;
                     let wipTabHeight = 33;
                     let labelHeight = (<HTMLElement>this.htmlField.previousElementSibling).offsetHeight + 1;
-                    let $editable: JQuery = $(this.htmlField);
                     let controlOffsetTop = $editable.closest('.html-container')[0].getBoundingClientRect().top;
                     let paneTop = $editorPane[0].getBoundingClientRect().top;
                     let editableBottom = $editable[0].getBoundingClientRect().bottom;
@@ -109,7 +112,6 @@ module meshAdminUi {
                     let editableIsObscured = $editable.offset().top - containerHeight < paneTop;
                     let editableIsOffScreen = editableBottom < paneTop + containerHeight;
 
-                    $toolbarContainer.css({ width: $editable.width() });
 
                     if (editableIsOffScreen) {
                         // toolbar is stuck to the bottom of the text area
@@ -123,15 +125,16 @@ module meshAdminUi {
                         $toolbarContainer.css({ top: controlOffsetTop - paneTop - containerHeight + wipTabHeight + labelHeight });
                         $toolbarContainer.removeClass('hidden');
                     }
+
                 };
 
                 const alohaActivated = (jQueryEvent, alohaEditable) => {
                     if (this.eventTargetIsThisElement(alohaEditable)) {
                         this.getAlohaToolbarElement();
+                        alohaToolbar.classList.remove('hidden');
                         positionToolbarContainer();
                         $editorPane.on('scroll', positionToolbarContainer);
                         $(window).on('resize', positionToolbarContainer);
-                        alohaToolbar.classList.remove('hidden');
                         this.$scope.$applyAsync(() => {
                             this.isFocused = true;
                             if (this.toolbarContainer) {
@@ -230,17 +233,6 @@ module meshAdminUi {
                         "error": true
                     },
                     "readonly": false,
-                    "toolbar": {
-                        "tabs": [{
-                            "label": "tab.format.label"
-                        }, {
-                            "label": "tab.insert.label",
-                            "components": [["gcnArena"]]
-                        }, {
-                            "label": "tab.link.label",
-                            "components": ["selectNode", "selectedNode", "editLink", "removeLink"]
-                        }]
-                    },
                     "bundles": {
                         "custom": "/custom"
                     },
@@ -292,6 +284,17 @@ module meshAdminUi {
                             },
                             "getLanguageCode": () => i18nService.getCurrentLang().code
                         }
+                    },
+                    "toolbar": {
+                        "tabs": [{
+                            "label": "tab.format.label"
+                        }, {
+                            "label": "tab.insert.label",
+                            "components": [["gcnArena"]]
+                        }, {
+                            "label": "tab.link.label",
+                            "components": ["selectNode", "selectedNode", "editLink", "removeLink"]
+                        }]
                     },
                     "i18n": {
                         "current": 'en'
