@@ -167,8 +167,9 @@ module meshAdminUi {
                         });
                     }
                 };
-
-                $(this.htmlField).aloha();
+                // in a setTimeout so that the editable "id" attribute has a chance to get
+                // interpolated by Angular into the correct string value.
+                setTimeout(() => $(this.htmlField).aloha());
                 $(Aloha).bind('aloha-editable-activated', alohaActivated);
                 $(Aloha).bind('aloha-editable-deactivated', alohaDeactivated);
 
