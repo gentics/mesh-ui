@@ -6,7 +6,7 @@
 
     <label>{{:: vm.fieldModel.label || vm.fieldModel.name }}</label>
     <div>
-        <ul class="mh-sortable-list"
+        <ul class="mh-sortable-list list-control"
             dnd-list="vm.fieldModel.value"
             dnd-drop="vm.endDrag(item, index, vm.fieldModel.value)"
             dnd-allowed-types="[vm.fieldModel.listType]">
