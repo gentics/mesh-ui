@@ -60,7 +60,7 @@ module meshAdminUi {
             return this.showDeleteDialog()
                 .then(() => this.dataService.deleteMicroschema(microschema))
                 .then(() => {
-                    this.notifyService.toast('Deleted');
+                    this.notifyService.toast('DELETED');
                     this.$state.go('admin.microschemas.list');
                 });
         }
@@ -69,8 +69,8 @@ module meshAdminUi {
          */
         private showDeleteDialog() {
             return this.confirmActionDialog.show({
-                title: 'Delete Microschema?',
-                message: 'Are you sure you want to delete this microschema?'
+                title: 'CONFIRM_DELETE_MICROSCHEMA_TITLE',
+                message: 'CONFIRM_DELETE_MICROSCHEMA_MESSAGE'
             });
         }
 

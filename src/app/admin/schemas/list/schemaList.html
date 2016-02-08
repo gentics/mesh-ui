@@ -4,11 +4,11 @@
     <md-toolbar class="admin-toolbar">
         <div class="md-toolbar-tools">
             <md-input-container flex>
-                <label>Filter Schemas</label>
+                <label translate>FILTER_SCHEMAS</label>
                 <input ng-model="vm.schemaFilter">
             </md-input-container>
             <button class="btn btn-small btn-primary" aria-label="Create Schema" ui-sref="admin.schemas.create">
-                Create New Schema
+                <span translate>CREATE_NEW_SCHEMA</span>
             </button>
 
             <schema-import-button type="schema"

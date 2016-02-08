@@ -36,7 +36,7 @@ module meshAdminUi {
         }
 
         public addTagFamilyDialog(project: IProject) {
-            this.showDialog('Create new tag family')
+            this.showDialog('CREATE_NEW_TAG_FAMILY')
                 .then(name => {
                     let tagFamily = { name: name };
                     return this.dataService.persistTagFamily(project.name, tagFamily)
@@ -44,12 +44,12 @@ module meshAdminUi {
                 .then(tagFamily => {
                     let index = this.projectGroups.map(group => group.project.uuid).indexOf(project.uuid);
                     this.projectGroups[index].tagFamilies.push(tagFamily);
-                    this.notifyService.toast(`Created new tag family`);
+                    this.notifyService.toast('TAG_FAMILY_CREATED');
                 })
         }
 
         public editTagFamilyDialog(project: IProject, tagFamily: ITagFamily) {
-            this.showDialog('Edit tag family', tagFamily.name)
+            this.showDialog('EDIT_TAG_FAMILY', tagFamily.name)
                 .then(name => {
                     tagFamily.name = name;
                     return this.dataService.persistTagFamily(project.name, tagFamily);
@@ -58,7 +58,7 @@ module meshAdminUi {
                     let projectGroup = this.getProjectGroupIndex(project),
                         index = projectGroup.tagFamilies.map(tf => tf.uuid).indexOf(tagFamily.uuid);
                     projectGroup.tagFamilies[index] = tagFamily;
-                    this.notifyService.toast(`Updated tag family`);
+                    this.notifyService.toast('TAG_FAMILY_UPDATED');
                 })
 
         }
@@ -68,8 +68,8 @@ module meshAdminUi {
             event.preventDefault();
 
             this.confirmActionDialog.show({
-                    title: 'Delete tag family',
-                    message: 'Delete this tag family and all tags?'
+                    title: 'DELETE_TAG_FAMILY',
+                    message: 'DELETE_TAG_FAMILY_AND_ALL_TAGS'
                 })
                 .then(() => {
                     return this.dataService.deleteTagFamily(project.name, tagFamily);
@@ -78,7 +78,7 @@ module meshAdminUi {
                     let projectGroup = this.getProjectGroupIndex(project),
                         index = projectGroup.tagFamilies.map(tf => tf.uuid).indexOf(tagFamily.uuid);
                     projectGroup.tagFamilies.splice(index, 1);
-                    this.notifyService.toast(`Deleted tag family`);
+                    this.notifyService.toast(`TAG_FAMILY_DELETED`);
                 });
         }
 
@@ -91,7 +91,7 @@ module meshAdminUi {
         }
 
         public addTagDialog(project: IProject, tagFamily: ITagFamily) {
-            this.showDialog('Create new tag')
+            this.showDialog('ADD_TAG')
                 .then(name => {
                     let tag: ITag = {
                         fields: { name: name },
@@ -101,12 +101,12 @@ module meshAdminUi {
                 })
                 .then(tag => {
                     this.tags.push(tag);
-                    this.notifyService.toast(`Created new tag`);
+                    this.notifyService.toast('NEW_TAG_CREATED');
                 })
         }
 
         public editTagDialog(project: IProject, tag: ITag) {
-            this.showDialog('Edit tag', tag.fields.name)
+            this.showDialog('EDIT_TAG', tag.fields.name)
                 .then(name => {
                     tag.fields.name = name;
                     return this.dataService.persistTag(project.name, tag);
@@ -114,7 +114,7 @@ module meshAdminUi {
                 .then(newTag => {
                     let index = this.tags.map(tag => tag.uuid).indexOf(newTag.uuid);
                     this.tags[index] = newTag;
-                    this.notifyService.toast(`Updated tag`);
+                    this.notifyService.toast(`UPDATED_TAG`);
                 })
         }
 
@@ -126,7 +126,7 @@ module meshAdminUi {
                 .then(newTag => {
                     let index = this.tags.map(tag => tag.uuid).indexOf(newTag.uuid);
                     this.tags.splice(index, 1);
-                    this.notifyService.toast(`Deleted tag`);
+                    this.notifyService.toast(`DELETED_TAG`);
                 });
         }
 

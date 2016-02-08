@@ -30,18 +30,18 @@ module meshAdminUi {
             var groupAlreadyHasRole = group.roles.map(role => role).indexOf(role.name) > -1;
 
             if (groupAlreadyHasRole || !role.name) {
-                this.notifyService.toast(`Group already assigned to role "${role.name}"`);
+                this.notifyService.toast('GROUP_ALREADY_ASSIGNED_TO_ROLE', { name: role.name });
                 this.$timeout(() => group.roles = group.roles.filter(role => typeof role !== 'undefined'));
             } else {
                 this.dataService.addGroupToRole(group.uuid, role.uuid)
-                    .then(() => this.notifyService.toast(`Group ${group.name} added to role "${role.name}"`));
+                    .then(() => this.notifyService.toast('GROUP_ADDED_TO_ROLE', { groupName: group.name, roleName: role.name }));
                 return role;
             }
         }
 
         public removeRole(role, group: IUserGroup) {
             this.dataService.removeGroupFromRole(group.uuid, role.uuid)
-                .then(() => this.notifyService.toast(`Group ${group.name} removed from role "${role.name}"`));
+                .then(() => this.notifyService.toast('GROUP_REMOVED_FROM_ROLE', { groupName: group.name, roleName: role.name }));
         }
 
         public displayChipName(chip: any) {

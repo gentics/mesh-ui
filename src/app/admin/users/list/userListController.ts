@@ -30,19 +30,19 @@ module meshAdminUi {
             var userAlreadyInGroup = user.groups.map(group => group).indexOf(group.name) > -1;
 
             if (userAlreadyInGroup || !group.name) {
-                this.notifyService.toast(`User already in group "${group.name}"`);
+                this.notifyService.toast('USER_ALREADY_IN_GROUP', { name: group.name });
                 this.$timeout(() => user.groups = user.groups.filter(group => typeof group !== 'undefined'));
             } else {
                 // group is valid, so add the user to this group.
                 this.dataService.addUserToGroup(user.uuid, group.uuid)
-                    .then(() => this.notifyService.toast(`User ${this.userDisplayName(user)} added to group "${group.name}"`));
+                    .then(() => this.notifyService.toast('USER_ADDED_TO_GROUP', { userName: this.userDisplayName(user), groupName: group.name }));
                 return group;
             }
         }
 
         public removeGroup(group, user: IUser) {
             this.dataService.removeUserFromGroup(user.uuid, group.uuid)
-                .then(() => this.notifyService.toast(`User ${this.userDisplayName(user)} removed from group "${group.name}"`));
+                .then(() => this.notifyService.toast('USER_REMOVED_FROM_GROUP', { userName: this.userDisplayName(user), groupName: group.name }));
         }
 
         public userDisplayName(user: IUser): string {

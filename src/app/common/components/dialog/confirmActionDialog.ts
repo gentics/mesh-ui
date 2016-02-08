@@ -24,8 +24,8 @@ module meshAdminUi {
          */
         public show(options: IConfirmActionDialogOptions) {
             let locals = {
-                title: options.title || 'Delete?',
-                message: options.message || 'Do you want to delete this object?',
+                title: options.title || 'CONFIRM_DELETE_TITLE',
+                message: options.message || 'CONFIRM_DELETE_MESSAGE',
                 confirmLabel:  options.confirmLabel || 'DELETE',
                 cancelLabel: options.cancelLabel || 'CANCEL',
                 confirmButtonClass:  options.confirmButtonClass || 'btn-warn'

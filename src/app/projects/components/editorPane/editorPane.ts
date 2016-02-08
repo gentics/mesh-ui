@@ -169,7 +169,7 @@ module meshAdminUi {
                     .then(node => {
                         this.tags.push(tag);
                         this.node.tags = node.tags;
-                        this.notifyService.toast(`Added tag "${tag.fields.name}"`);
+                        this.notifyService.toast('ADDED_TAG', { name: tag.fields.name });
                         this.dispatcher.publish(this.dispatcher.events.explorerNodeTagsChanged, node.uuid);
                     });
             }
@@ -184,7 +184,7 @@ module meshAdminUi {
                     let index = this.tags.map(tag => tag.uuid).indexOf(tag.uuid);
                     this.tags.splice(index, 1);
                     this.node.tags = node.tags;
-                    this.notifyService.toast(`Removed tag "${tag.fields.name}"`);
+                    this.notifyService.toast('REMOVED_TAG', { name: tag.fields.name });
                     this.dispatcher.publish(this.dispatcher.events.explorerNodeTagsChanged, node.uuid);
                 });
         }
@@ -207,7 +207,7 @@ module meshAdminUi {
                     }
                 })
                 .then(() => {
-                    this.notifyService.toast('Deleted');
+                    this.notifyService.toast('DELETED');
                     this.closeWipAndClearPane(node);
                     this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
                 });

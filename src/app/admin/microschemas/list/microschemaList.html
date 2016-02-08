@@ -4,11 +4,11 @@
     <md-toolbar class="admin-toolbar">
         <div class="md-toolbar-tools">
             <md-input-container flex>
-                <label>Filter Microschemas</label>
+                <label translate>FILTER_MICROSCHEMAS</label>
                 <input ng-model="vm.microschemaFilter">
             </md-input-container>
             <button class="btn btn-small btn-primary" aria-label="Create Microschema" ui-sref="admin.microschemas.create">
-                Create New Microschema
+                <span translate>CREATE_NEW_MICROSCHEMA</span>
             </button>
 
             <schema-import-button type="microschema"

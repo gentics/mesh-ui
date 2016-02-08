@@ -37,7 +37,7 @@ module meshAdminUi {
                 locals: {
                     allow: options.allow || [],
                     containersOnly: options.containersOnly || false,
-                    title: options.title || 'Select Node',
+                    title: options.title || 'SELECT_NODE',
                     multiSelect: options.multiSelect || false,
                     displayMode: options.displayMode || 'list',
                     includeRootNode: !!options.includeRootNode,

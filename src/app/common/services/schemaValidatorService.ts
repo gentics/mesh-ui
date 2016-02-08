@@ -30,7 +30,7 @@ module meshAdminUi {
     // ensure the displayField is set
     function displayFieldIsSet(obj: any, error: Function): boolean {
         if (obj.displayField === undefined || obj.displayField === '') {
-            error('Please specify a displayField.');
+            error('ERR_SCHEMA_PLEASE_SPECIFY_DISPLAY_FIELD');
             return false;
         }
         return true;
@@ -39,7 +39,7 @@ module meshAdminUi {
     // ensure the segmentField is set
     function segmentFieldIsSet(obj: any, error: Function): boolean {
         if (obj.segmentField === undefined || obj.segmentField === '') {
-            error('Please specify a segmentField.');
+            error('ERR_SCHEMA_PLEASE_SPECIFY_SEGMENT_FIELD');
             return false;
         }
         return true;
@@ -48,7 +48,7 @@ module meshAdminUi {
     // ensure at least one field has been defined
     function fieldsIsNotEmpty(obj: any, error: Function): boolean {
         if (!obj.fields || obj.fields.length === 0) {
-            error('Schema must have at least one field defined.');
+            error('ERR_SCHEMA_MUST_HAVE_AT_LEAST_ONE_FIELD');
             return false;
         }
         return true;
@@ -58,7 +58,7 @@ module meshAdminUi {
     function displayFieldMatchesFieldName(obj: any, error: Function): boolean {
         let fieldNames = obj.fields.map(field => field.name);
         if (fieldNames.indexOf(obj.displayField) === -1) {
-            error(`displayField value "${obj.displayField}" does not match any fields.`);
+            error('ERR_SCHEMA_DISPLAY_FIELD_DOES_NOT_MATCH', { value: obj.displayField });
             return false;
         }
         return true;
@@ -68,7 +68,7 @@ module meshAdminUi {
     function segmentFieldMatchesFieldName(obj: any, error: Function): boolean {
         let fieldNames = obj.fields.map(field => field.name);
         if (fieldNames.indexOf(obj.segmentField) === -1) {
-            error(`segmentField value "${obj.segmentField}" does not match any fields.`);
+            error('ERR_SCHEMA_SEGMENT_FIELD_DOES_NOT_MATCH', { value: obj.segmentField });
             return false;
         }
         return true;
@@ -76,9 +76,9 @@ module meshAdminUi {
 
     // ensure each field has a name and type
     function fieldsHaveNameAndType(obj: any, error: Function): boolean {
-        let badFields = obj.fields.filter(field => !field.name || !field.type);
+        let badFields = obj.fields.filter((field: any) => !field.name || !field.type);
         if (0 < badFields.length) {
-            error(`All fields must have a "name" and "type" property.`);
+            error('ERR_SCHEMA_REQUIRE_NAME_AND_TYPE');
             return false;
         }
         return true;
@@ -86,10 +86,10 @@ module meshAdminUi {
 
     // ensure only valid field types are used
     function allFieldTypesValid(obj: any, error: Function): boolean {
-        let badFieldTypes = obj.fields.filter(field => -1 === validTypes.indexOf(field.type));
+        let badFieldTypes = obj.fields.filter((field: any) => -1 === validTypes.indexOf(field.type));
         if (0 < badFieldTypes.length) {
             let names = fieldPropString(badFieldTypes, 'type');
-            error(`The following fields have invalid types ${names}.`);
+            error('ERR_SCHEMA_INVALID_TYPES', { names });
             return false;
         }
         return true;
@@ -109,7 +109,7 @@ module meshAdminUi {
             }, []);
         if (0 < duplicateNames.length) {
             let names = duplicateNames.map(n => `[${n}]`).join(', ');
-            error(`Fields must have unique names - duplicate field detected: ${names}.`);
+            error('ERR_SCHEMA_DUPLICATE_FIELD_NAMES', { names });
             return false;
         }
         return true;
@@ -117,12 +117,12 @@ module meshAdminUi {
 
     // ensure a list type has listType set to a valid type
     function listTypesAreValid(obj: any, error: Function): boolean {
-        let listFields = obj.fields.filter(field => field.type === 'list');
+        let listFields = obj.fields.filter((field: any) => field.type === 'list');
         if (0 < listFields.length) {
-            let badListFields = listFields.filter(field => -1 === validTypes.indexOf(field.listType));
+            let badListFields = listFields.filter((field: any) => -1 === validTypes.indexOf(field.listType));
             if (0 < badListFields.length) {
                 let names = fieldPropString(badListFields, 'listType');
-                error(`The following list fields have an invalid listType ${names}.`);
+                error('ERR_SCHEMA_INVALID_LIST_TYPE', { names });
                 return false;
             }
         }
@@ -131,13 +131,13 @@ module meshAdminUi {
 
     // ensure any micronode types or listTypes have an allow property defined.
     function micronodesHaveAllowProperty(obj: any, error: Function): boolean {
-        let micronodeFields = obj.fields.filter(field => field.type === 'micronode' || field.listType === 'micronode');
+        let micronodeFields = obj.fields.filter((field: any) => field.type === 'micronode' || field.listType === 'micronode');
         if (0 < micronodeFields.length) {
             const isArray = x => x instanceof Array;
-            let badMicronodeFields = micronodeFields.filter(field => field.allow === undefined || !isArray(field.allow));
+            let badMicronodeFields = micronodeFields.filter((field: any) => field.allow === undefined || !isArray(field.allow));
             if (0 < badMicronodeFields.length) {
                 let names = fieldPropString(badMicronodeFields);
-                error(`The following micronode fields must have an "allow" property defined: ${names}.`);
+                error('ERR_SCHEMA_ALLOW_PROPERTY_MISSING', { names });
                 return false;
             }
         }
@@ -145,6 +145,8 @@ module meshAdminUi {
     }
 
     export class SchemaValidatorService {
+
+        constructor(private i18n: I18nFilter) {}
 
         /**
          * Validate the json of a schema
@@ -190,7 +192,7 @@ module meshAdminUi {
                 schema.fields = [];
             }
             validators.forEach(validator => {
-                if (!validator(schema, onError)) {
+                if (!validator(schema, errorFn)) {
                     isValid = false;
                 }
             });
@@ -201,9 +203,10 @@ module meshAdminUi {
          * Returns a function which invokes the passed onError function only if it is defined.
          */
         private createErrorFn(onError: Function): IValidationErrorFn {
-            return (message: string) => {
+            return (message: string, values?: any) => {
                 if (onError !== undefined) {
-                    onError(message);
+                    let translated = this.i18n(message, values);
+                    onError(translated);
                 }
             };
         }
@@ -217,7 +220,7 @@ module meshAdminUi {
                 obj = <ISchema>JSON.parse(json);
             } catch(e) {
                 // JSON must be well-formed.
-                error('JSON is invalid.');
+                error('JSON_IS_INVALID');
             }
             return obj;
         }

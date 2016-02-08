@@ -45,7 +45,7 @@ module meshAdminUi {
             return this.showDeleteDialog()
                 .then(() => this.dataService.deleteGroup(group.uuid))
                 .then(() => {
-                    this.notifyService.toast('Deleted');
+                    this.notifyService.toast('DELETED');
                     this.$state.go('admin.groups.list');
                 });
         }
@@ -54,8 +54,8 @@ module meshAdminUi {
          */
         private showDeleteDialog() {
             return this.confirmActionDialog.show({
-                title: 'Delete Group?',
-                message: 'Are you sure you want to delete this group?'
+                title: 'CONFIRM_DELETE_GROUP_TITLE',
+                message: 'CONFIRM_DELETE_GROUP_MESSAGE'
             });
         }
 

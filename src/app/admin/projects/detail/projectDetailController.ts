@@ -51,7 +51,7 @@ module meshAdminUi {
             this.showDeleteDialog()
                 .then(() => this.dataService.deleteProject(project))
                 .then(() => {
-                    this.notifyService.toast('Deleted');
+                    this.notifyService.toast('DELETED');
                     this.$state.go('admin.projects.list');
                 });
         }
@@ -68,8 +68,8 @@ module meshAdminUi {
          */
         private showDeleteDialog(): ng.IPromise<any> {
             return this.confirmActionDialog.show({
-                title: 'Delete Project?',
-                message: 'Are you sure you want to delete this project?'
+                title: 'CONFIRM_DELETE_PROJECT_TITLE',
+                message: 'CONFIRM_DELETE_PROJECT_MESSAGE'
             });
         }
 
@@ -116,9 +116,9 @@ module meshAdminUi {
                 promise = this.dataService.removeSchemaFromProject(schema.uuid, this.project.uuid);
             }
             promise.then(() => {
-                let verb = add ? 'added to' : 'removed from';
-                this.notifyService.toast(`Schema "${schema.name}" was ${verb} this project`);
-            })
+                let token = add ? 'SCHEMA_ADDED_TO_PROJECT' : 'SCHEMA_REMOVED_FROM_PROJECT';
+                this.notifyService.toast(token, { name: schema.name });
+            });
         }
 
         /**

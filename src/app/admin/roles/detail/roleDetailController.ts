@@ -189,7 +189,7 @@ module meshAdminUi {
             this.showDeleteDialog()
                 .then(() => this.dataService.deleteRole(role))
                 .then(() => {
-                    this.notifyService.toast('Deleted');
+                    this.notifyService.toast('DELETED');
                     this.$state.go('admin.roles.list');
                 });
         }
@@ -199,8 +199,8 @@ module meshAdminUi {
          */
         private showDeleteDialog(): ng.IPromise<any> {
             return this.confirmActionDialog.show({
-                title: 'Delete Role?',
-                message: 'Are you sure you want to delete this role?'
+                title: 'CONFIRM_DELETE_ROLE_TITLE',
+                message: 'CONFIRM_DELETE_ROLE_MESSAGE'
             });
         }
 
@@ -225,7 +225,7 @@ module meshAdminUi {
 
         public setNodePermissions(node: INode, project:IProject, permissions: IPermissionsRequest) {
             this.dataService.setNodePermissions(this.role.uuid, project.uuid, node.uuid, permissions)
-                .then(() => this.notifyService.toast(`Permissions set on node "${node.fields[node.displayField]}"`));
+                .then(() => this.notifyService.toast('PERMISSIONS_SET_ON_NODE', { name: node.fields[node.displayField] }));
         }
 
         public setProjectPermissions(permissions: IPermissionsRequest, project?: IProject) {
@@ -282,9 +282,7 @@ module meshAdminUi {
         }
 
         private notifyPermissionsSuccess(nodeType: string, name?: string) {
-            let message = `Permissions set on ${nodeType}`;
-            message += typeof name === 'undefined' ? 's' : ` "${name}"`;
-            this.notifyService.toast(message)
+            this.notifyService.toast('PERMISSIONS_SET_ON_TYPE', { type: nodeType, name })
         }
     }
 

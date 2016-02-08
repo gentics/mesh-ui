@@ -1,7 +1,5 @@
 module meshAdminUi {
 
-    declare var Aloha: any;
-
     class DefaultControlController {
 
         public fieldModel: INodeFieldModel;
@@ -243,6 +241,7 @@ module meshAdminUi {
 
         constructor(private nodeSelector: NodeSelector,
                     private i18nService: I18nService,
+                    private i18n: I18nFilter,
                     private mu: MeshUtils) {
         }
 
@@ -261,6 +260,17 @@ module meshAdminUi {
                     this.fieldModel.value = newVal;
                     this.fieldModel.update(newVal);
                 });
+        }
+
+        /**
+         * Returns a string representation of the selected node.
+         */
+        public getNodeName(): string {
+            let node = this.fieldModel.value;
+            let displayName = node && node.fields && node.fields[node.displayField];
+            let uuid = node && node.uuid;
+            let noneSelected = this.i18n('NO_NODE_SELECTED');
+            return displayName || uuid || noneSelected;
         }
 
         public getBinaryUrl(): string {

@@ -78,11 +78,11 @@ module meshAdminUi {
 
             this.nodeSelector.open({ containersOnly: true, includeRootNode: true })
                 .then((selection: INode[]) => this.dataService.moveNodes(this.projectName, uuids, selection[0].uuid))
-                .then(movedUuids => this.notifyService.toast('Moved ' + movedUuids.length + ' nodes'))
+                .then(movedUuids => this.notifyService.toast('MOVED_NODES', { count: movedUuids.length }))
                 .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged))
                 .catch(response => {
                     if (response) {
-                        this.notifyService.toast('Error: ' + response.data.message)
+                        this.notifyService.toast(response.data.message)
                     }
                 });
         }
@@ -104,7 +104,7 @@ module meshAdminUi {
                             this.wipService.closeItem(this.wipType, {uuid: uuid});
                         }
                     });
-                    this.notifyService.toast('Deleted ' + deletedUuids.length + ' nodes')
+                    this.notifyService.toast('DELETED_NODES', { count: deletedUuids.length });
                 })
                 .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
         }

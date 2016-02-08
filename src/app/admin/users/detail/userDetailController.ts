@@ -48,7 +48,7 @@ module meshAdminUi {
                     return this.dataService.deleteUser(user);
                 })
                 .then(() => {
-                    this.notifyService.toast('Deleted');
+                    this.notifyService.toast('DELETED');
                     this.$state.go('admin.users.list');
                 });
         }

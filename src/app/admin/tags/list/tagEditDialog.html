@@ -2,7 +2,7 @@
     <form>
         <md-dialog-content>
             <div class="md-dialog-content">
-                <h2>{{:: vm.title }}</h2>
+                <h2 translate>{{:: vm.title }}</h2>
 
                 <md-input-container>
                     <label>Name</label>
@@ -14,10 +14,10 @@
 
         <md-dialog-actions>
             <button ng-click="vm.create(vm.name)" class="btn btn-primary">
-                Okay
+                <span translate>OKAY</span>
             </button>
             <button ng-click="vm.cancel()" class="btn">
-                Cancel
+                <span translate>CANCEL</span>
             </button>
         </md-dialog-actions>
     </form>

@@ -21,20 +21,23 @@ module meshAdminUi {
 
         /**
          * Display a toast (popup) message containing the specified text.
+         *
+         * @param message - the string message or translation token to display
+         * @param values {Object} - interpolation object for translation.
          */
-        public toast(message: string|string[]|{ [key: string] : any }) {
+        public toast(message: string|string[]|{ [key: string] : any }, values: any = {}) {
             let parsedMessage;
 
             if (typeof message === 'string') {
-                parsedMessage = message;
+                parsedMessage = this.i18n(message, values);
             } else if (message instanceof Array) {
-                parsedMessage = message.join('<br>');
+                parsedMessage = message.map(m => this.i18n(m, values)).join('<br>');
             } else {
                 parsedMessage = JSON.stringify(message, null, '\t');
             }
 
             var popup = this.$mdToast.simple()
-                .content(this.i18n(parsedMessage))
+                .content(parsedMessage)
                 .position('top right');
             this.$mdToast.show(popup);
         }

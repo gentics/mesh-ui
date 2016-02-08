@@ -63,7 +63,7 @@ module meshAdminUi {
             return this.showDeleteDialog()
                 .then(() => this.dataService.deleteSchema(schema))
                 .then(() => {
-                    this.notifyService.toast('Deleted');
+                    this.notifyService.toast('DELETED');
                     this.$state.go('admin.schemas.list');
                 });
         }
@@ -72,8 +72,8 @@ module meshAdminUi {
          */
         private showDeleteDialog() {
             return this.confirmActionDialog.show({
-                title: 'Delete Schema?',
-                message: 'Are you sure you want to delete this schema?'
+                title: 'CONFIRM_DELETE_SCHEMA_TITLE',
+                message: 'CONFIRM_DELETE_SCHEMA_MESSAGE'
             });
         }
 

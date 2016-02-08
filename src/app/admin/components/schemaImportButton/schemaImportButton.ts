@@ -29,7 +29,7 @@ module meshAdminUi {
             };
 
             importFn().then(results => {
-                this.notifyService.toast(`Imported ${results.length} schemas.`);
+                this.notifyService.toast('IMPORTED_SCHEMAS', { count: results.length });
 
                 if (this.onImport) {
                     this.onImport();

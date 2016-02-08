@@ -4,7 +4,7 @@
     <md-toolbar class="admin-toolbar">
         <div class="md-toolbar-tools">
             <md-input-container flex>
-                <label>Filter Tags</label>
+                <label translate>FILTER_TAGS</label>
                 <input ng-model="vm.tagFilter">
             </md-input-container>
         </div>
@@ -19,7 +19,9 @@
                 <td align="right">
                     <button class="btn btn-small btn-primary"
                             aria-label="Create Tag Family"
-                            ng-click="vm.addTagFamilyDialog(group.project)">Create New Tag Family</button>
+                            ng-click="vm.addTagFamilyDialog(group.project)">
+                        <span translate>CREATE_NEW_TAG_FAMILY</span>
+                    </button>
                 </td>
             </tr>
             <tr class="sub-row-1" ng-repeat="tagFamily in group.tagFamilies track by tagFamily.uuid" ng-repeat-end>
@@ -41,7 +43,7 @@
                          on-close="vm.deleteTag($event, group.project, tag)"
                          ng-repeat="tag in vm.getTagsByFamily(tagFamily) | filter: { fields: { name: vm.tagFilter} } track by tag.uuid"></tag>
 
-                    <button class="btn btn-small" ng-click="vm.addTagDialog(group.project, tagFamily)"><i class="icon-add"></i> add tag</button>
+                    <button class="btn btn-small" ng-click="vm.addTagDialog(group.project, tagFamily)"><i class="icon-add"></i> <span translate>ADD_TAG</span></button>
                 </td>
             </tr>
         </table>

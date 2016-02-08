@@ -1,12 +1,14 @@
 <mh-dropdown sticky="true">
     <mh-dropdown-label layout="row" layout-align="end center" class="tags-input-label">
-        <button class="btn btn-small"><i class="icon-add"></i> add tag</button>
+        <button class="btn btn-small"><i class="icon-add"></i> <span translate>ADD_TAG</span></button>
     </mh-dropdown-label>
     <mh-dropdown-body>
 
         <div class="tags-input-container">
             <div class="new-tag-text">
-                <div class="new-tag-link" ng-click="vm.newTagDialog(vm.tagSearch)">Create a new tag</div>
+                <div class="new-tag-link" ng-click="vm.newTagDialog(vm.tagSearch)">
+                    <span translate>CREATE_NEW_TAG</span>
+                </div>
             </div>
             <md-autocomplete
                     md-selected-item="vm.selectedTag"
@@ -16,7 +18,7 @@
                     md-selected-item-change="vm.addTag(vm.selectedTag)"
                     md-item-text="tag.fields.name"
                     md-min-length="0"
-                    placeholder="Select a tag">
+                    placeholder="{{ 'SELECT_A_TAG' | translate }}">
 
                 <md-item-template>
                     <div class="autocomplete-template" layout="row" layout-align="start center">

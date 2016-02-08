@@ -21,7 +21,7 @@ module meshAdminUi {
          * Make a default filename suggestion based on the selected schema(s)
          */
         private makeFilename(): string {
-            const isSchema = this.schemas[0].hasOwnProperty('displayField');
+            const isSchema = this.schemas[0] && this.schemas[0].hasOwnProperty('displayField');
             const prefix = isSchema ? 'mesh-schema-' : 'mesh-microschema-';
             const d = new Date();
             const dateSuffix = `-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
