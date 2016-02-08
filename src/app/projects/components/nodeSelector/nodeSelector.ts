@@ -6,6 +6,7 @@ module meshAdminUi {
         multiSelect?: boolean;
         displayMode?: string;
         containersOnly?: boolean;
+        includeRootNode?: boolean;
     }
 
     /**
@@ -38,7 +39,8 @@ module meshAdminUi {
                     containersOnly: options.containersOnly || false,
                     title: options.title || 'Select Node',
                     multiSelect: options.multiSelect || false,
-                    displayMode: options.displayMode || 'list'
+                    displayMode: options.displayMode || 'list',
+                    includeRootNode: !!options.includeRootNode,
                 },
                 bindToController: true
             });
@@ -70,6 +72,7 @@ module meshAdminUi {
         private multiSelect: boolean;
         private allowedSchemas: string[];
         private containersOnly: boolean;
+        private includeRootNode: boolean;
         private nodes;
         private breadcrumbs: any[];
         private filterNodes;
@@ -145,6 +148,9 @@ module meshAdminUi {
             this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid)
                 .then(response => {
                     this.nodes = response.data.filter(node => this.isAllowedSchemaOrFolder(node));
+                    if (this.includeRootNode) {
+                       this.addRootNode();
+                    }
                     return this.dataService.getBreadcrumb(this.currentProject, this.currentNode);
                 })
                 .then(breadcrumbs => {
@@ -163,6 +169,19 @@ module meshAdminUi {
 
                     this.breadcrumbs = breadcrumbLabels.reverse();
                 });
+        }
+
+        /**
+         * If we are in the rootNode, add it to the start of the nodes array.
+         */
+        private addRootNode() {
+            if (this.currentProject.rootNodeUuid === this.currentNode.uuid) {
+                let rootNode = angular.copy(this.currentNode);
+                rootNode.fields['name'] = "Root Node";
+                rootNode.displayField = 'name';
+                rootNode.schema.name = "rootNode";
+                this.nodes.unshift(rootNode);
+            }
         }
 
         public isAllowedSchema(node: INode) {
@@ -197,7 +216,8 @@ module meshAdminUi {
                 allowedSchemas: '=',
                 multiSelect: '=',
                 displayMode: '=',
-                containersOnly: '='
+                containersOnly: '=',
+                includeRootNode: '='
             }
         };
     }

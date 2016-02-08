@@ -76,11 +76,15 @@ module meshAdminUi {
         public moveSelected() {
             let uuids = this.explorerContentsListService.getSelection();
 
-            this.nodeSelector.open({ containersOnly: true })
+            this.nodeSelector.open({ containersOnly: true, includeRootNode: true })
                 .then((selection: INode[]) => this.dataService.moveNodes(this.projectName, uuids, selection[0].uuid))
                 .then(movedUuids => this.notifyService.toast('Moved ' + movedUuids.length + ' nodes'))
                 .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged))
-                .catch(response => this.notifyService.toast('Error: ' + response.data.message));
+                .catch(response => {
+                    if (response) {
+                        this.notifyService.toast('Error: ' + response.data.message)
+                    }
+                });
         }
 
         /**
