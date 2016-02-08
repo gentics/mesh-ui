@@ -21,6 +21,7 @@ module meshAdminUi {
             private $state: ng.ui.IStateService,
             private $stateParams: any,
             private schemaValidatorService: SchemaValidatorService,
+            private schemaUpdateService: SchemaUpdateService,
             private confirmActionDialog: ConfirmActionDialog,
             private dataService: DataService,
             private notifyService: NotifyService) {
@@ -40,20 +41,24 @@ module meshAdminUi {
         public persist(schema: ISchema) {
             this.extendSchemaWithJsonValues(this.schemaJson);
 
-            this.dataService.persistSchema(schema)
-                .then((response: any) => {
-                    if (this.isNew) {
+            if (this.isNew) {
+                this.dataService.createSchema(schema)
+                    .then((response: any) => {
                         this.notifyService.toast('NEW_SCHEMA_CREATED');
                         this.isNew = false;
-                        this.$state.go('admin.schemas.detail', {uuid: response.uuid});
-                    } else {
+                        this.$state.go('admin.schemas.detail', { uuid: response.uuid });
+                    })
+                    .catch(error => this.notifyService.toast([error.data.message, error.data.internalMessage]));
+            } else {
+                this.dataService.diffSchema(schema)
+                    .then(changeset => this.schemaUpdateService.openDialog(schema, changeset))
+                    .then(changeset => this.dataService.applySchemaChangeset(schema, changeset))
+                    .then(() => {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.modified = false;
-                    }
-                })
-                .catch(error => {
-                    this.notifyService.toast(error.data);
-                });
+                    })
+                    .catch(error => this.notifyService.toast([error.data.message, error.data.internalMessage]));
+            }
         }
 
         /**

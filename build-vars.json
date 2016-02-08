@@ -16,6 +16,8 @@
     "bower_components/ace-builds/src-min-noconflict/ace.js",
     "bower_components/ace-builds/src-min-noconflict/mode-json.js",
     "bower_components/ace-builds/src-min-noconflict/worker-json.js",
+    "bower_components/ace-builds/src-min-noconflict/mode-javascript.js",
+    "bower_components/ace-builds/src-min-noconflict/worker-javascript.js",
     "bower_components/angular-ui-ace/ui-ace.js",
     "bower_components/ng-file-upload/ng-file-upload.js",
     "bower_components/cropperjs/dist/cropper.js",

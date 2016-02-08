@@ -1,0 +1,22 @@
+<md-dialog flex="90" class="node-selector-dialog">
+  <md-dialog-content class="md-dialog-content">
+      <h2>Update Schema</h2>
+
+      <div class="schema-update-container">
+        <schema-update-form changeset="dialog.changeset"></schema-update-form>
+      </div>
+
+  </md-dialog-content>
+
+  <md-dialog-actions>
+
+    <button ng-click="dialog.update()" class="btn btn-primary">
+        <span translate>Apply Changes</span>
+    </button>
+
+    <button ng-click="dialog.cancel()" class="btn">
+        <span translate>CANCEL</span>
+    </button>
+
+  </md-dialog-actions>
+</md-dialog>

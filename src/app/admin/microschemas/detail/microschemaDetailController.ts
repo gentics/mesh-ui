@@ -21,6 +21,7 @@ module meshAdminUi {
             private $stateParams: any,
             private schemaValidatorService: SchemaValidatorService,
             private confirmActionDialog: ConfirmActionDialog,
+            private schemaUpdateService: SchemaUpdateService,
             private dataService: DataService,
             private notifyService: NotifyService) {
 
@@ -37,20 +38,24 @@ module meshAdminUi {
         public persist(microschema: IMicroschema) {
             this.extendMicroschemaWithJsonValues(this.microschemaJson);
 
-            this.dataService.persistMicroschema(microschema)
-                .then((response: any) => {
-                    if (this.isNew) {
+            if (this.isNew) {
+                this.dataService.createMicroschema(microschema)
+                    .then((response: any) => {
                         this.notifyService.toast('NEW_MICROSCHEMA_CREATED');
                         this.isNew = false;
-                        this.$state.go('admin.microschemas.detail', {uuid: response.uuid});
-                    } else {
+                        this.$state.go('admin.microschemas.detail', { uuid: response.uuid });
+                    })
+                    .catch(error => this.notifyService.toast([error.data.message, error.data.internalMessage]));
+            } else {
+                this.dataService.diffMicroschema(microschema)
+                    .then(changeset => this.schemaUpdateService.openDialog(microschema, changeset))
+                    .then(changeset => this.dataService.applyMicroschemaChangeset(microschema, changeset))
+                    .then(() => {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.modified = false;
-                    }
-                })
-                .catch(error => {
-                    this.notifyService.toast(error.data);
-                });
+                    })
+                    .catch(error => this.notifyService.toast([error.data.message, error.data.internalMessage]));
+            }
         }
 
         /**
