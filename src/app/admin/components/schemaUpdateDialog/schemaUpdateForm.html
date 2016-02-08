@@ -1,0 +1,26 @@
+<div class="schema-update-form">
+    <h3>The following changes will be applied:</h3>
+    <div ng-repeat="change in vm.changeset.changes" class="change-row">
+
+        <div layout="row" layout-align="start center">
+            <h4 flex>{{:: $index + 1 }}.
+                <span ng-class="vm.getChangeClass(change)">{{:: vm.describeChange(change) }}</span>
+            </h4>
+
+            <div>
+                <button class="btn btn-small" ng-click="showScript = !showScript">
+                    <span translate>EDIT_MIGRATION_SCRIPT</span>
+                    <i class="icon-arrow-drop-down"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="migration-script-wrapper" ng-class="{ open: showScript }">
+            <div ui-ace="{ useWrapMode : true,
+                       showGutter: true,
+                       mode: 'javascript',
+                       workerPath: 'vendor/scripts'}"
+                 ng-model="change.migrationScript"></div>
+        </div>
+    </div>
+</div>

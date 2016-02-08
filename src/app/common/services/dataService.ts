@@ -759,16 +759,23 @@ module meshAdminUi {
             return this.meshDelete('schemas/' + schemaUuid + '/projects/' + projectUuid);
         }
 
-        public persistSchema(schema: ISchema): ng.IPromise<ISchema> {
-            let isNew = !schema.hasOwnProperty('permissions');
-            this.clearCache('schemas');
-            return isNew ? this.createSchema(schema) : this.updateSchema(schema);
-
+        public diffSchema(schema: ISchema): ng.IPromise<ISchemaChangeset> {
+            return this.meshPost(`schemas/${schema.uuid}/diff`, schema);
         }
-        private createSchema(schema: ISchema): ng.IPromise<ISchema> {
+
+        public applySchemaChangeset(schema: ISchema, changeset: ISchemaChangeset): ng.IPromise<any> {
+            // TODO: API not yet implemented
+            console.warn('Not yet implemented in API');
+            return this.meshPost(`schemas/${schema.uuid}/changes`, changeset);
+        }
+        public createSchema(schema: ISchema): ng.IPromise<ISchema> {
             return this.meshPost('schemas', schema);
         }
-        private updateSchema(schema: ISchema): ng.IPromise<ISchema> {
+
+        /**
+         * Forces a schema update without doing a migration. Dangerous as data can be lost or corrupted.
+         */
+        private forceSchemaUpdate(schema: ISchema): ng.IPromise<ISchema> {
             return this.meshPut('schemas/' + schema.uuid, schema);
         }
 
@@ -794,16 +801,24 @@ module meshAdminUi {
                 .then(response => response.data.filter(microschema => microschema.name === name)[0]);
         }
 
-        public persistMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
-            let isNew = !microschema.hasOwnProperty('permissions');
-            this.clearCache('microschemas');
-            return isNew ? this.createMicroschema(microschema) : this.updateMicroschema(microschema);
 
+        public diffMicroschema(microschema: IMicroschema): ng.IPromise<ISchemaChangeset> {
+            return this.meshPost(`microschemas/${microschema.uuid}/diff`, microschema);
         }
-        private createMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+
+        public applyMicroschemaChangeset(microschema: IMicroschema, changeset: ISchemaChangeset): ng.IPromise<any> {
+            // TODO: API not yet implemented
+            console.warn('Not yet implemented in API');
+            return this.meshPost(`microschemas/${microschema.uuid}/changes`, changeset);
+        }
+
+        public createMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
             return this.meshPost('microschemas', microschema);
         }
-        private updateMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+        /**
+         * Forces a microschema update without doing a migration. Dangerous as data can be lost or corrupted.
+         */
+        private forceMicroschemaUpdate(microschema: IMicroschema): ng.IPromise<IMicroschema> {
             return this.meshPut('microschemas/' + microschema.uuid, microschema);
         }
 

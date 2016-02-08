@@ -204,9 +204,9 @@ module meshAdminUi {
 
         private persistToMesh(type: Type, json: string): ng.IPromise<any> {
             if (type === Type.Schema) {
-                return this.dataService.persistSchema(JSON.parse(json));
+                return this.dataService.createSchema(JSON.parse(json));
             } else {
-                return this.dataService.persistMicroschema(JSON.parse(json));
+                return this.dataService.createMicroschema(JSON.parse(json));
             }
         }
     }

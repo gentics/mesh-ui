@@ -2,7 +2,7 @@ module meshAdminUi {
 
 
     export interface I18nFilter {
-        (value: string): string;
+        (value: string, values?: any): string;
     }
 
     /**

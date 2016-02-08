@@ -1,0 +1,28 @@
+.schema-update-form {
+  .change-row {
+    border-bottom: 1px solid @color-silver;
+  }
+  .change-add {
+    color: #18a039;
+  }
+  .change-remove {
+    color: #8d201c;
+  }
+  .change-update {
+    color: #908700;
+  }
+
+  .migration-script-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s;
+
+    &.open {
+      max-height: 200px;
+    }
+  }
+
+  .ace_editor {
+    height: 180px;
+  }
+}

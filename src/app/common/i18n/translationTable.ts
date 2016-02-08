@@ -93,6 +93,30 @@ module meshAdminUi {
         'ADD_NEW_FIELD': {
             en: 'Add new field',
             de: 'Neues Feld hinzufügen'
+        },
+        'EDIT_MIGRATION_SCRIPT': {
+            en: 'Edit migration script',
+            de: 'Migration Script bearbeiten',
+        },
+        'ADD_SCHEMA_FIELD_NAMED': {
+            en: 'Add a field named "{{ fieldName }}"',
+            de: 'Neues Feld "{{ fieldName }}" hinzufügen',
+        },
+        'REMOVE_SCHEMA_FIELD': {
+            en: 'Remove field "{{ fieldName }}"',
+            de: 'Das Feld "{{ fieldName }}" löschen',
+        },
+        'CHANGE_SCHEMA_FIELD_TYPE': {
+            en: 'Change field "{{ fieldName }}" to type "{{ type }}"',
+            de: 'Change field "{{ fieldName }}" to type "{{ type }}"'
+        },
+        'UPDATE_SCHEMA_PROPERTY': {
+            en: 'Update schema property "{{ key }}" to "{{ value }}"',
+            de: 'Change field "{{ fieldName }}" to type "{{ type }}"'
+        },
+        'SCHEMA_OPERATION_NOT_RECOGNIZED': {
+            en: 'Operation "{{ name }}" not recognized',
+            de: 'Operation "{{ name }}" not recognized',
         }
     };
 
