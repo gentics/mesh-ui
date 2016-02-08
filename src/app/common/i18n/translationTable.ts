@@ -1,7 +1,6 @@
 module meshAdminUi {
 
-    const translations = {
-        /* User auth */
+    const userAuth = {
         'LOG_IN': {
             en: 'Log In',
             de: 'Einloggen'
@@ -21,9 +20,10 @@ module meshAdminUi {
         'PROFILE': {
             en: 'Profile',
             de: 'Profil'
-        },
+        }
+    };
 
-        /* Projects */
+    const projectsArea = {
         'WHOLE_PROJECT': {
             en: 'whole project',
             de: 'ganze Projekt'
@@ -36,14 +36,6 @@ module meshAdminUi {
             en: 'All Projects',
             de: 'Alle Projekte'
         },
-
-        /* Tags */
-        'CREATE_NEW_TAG': {
-            en: 'Create new tag',
-            de: 'Neuen Tag erstellen'
-        },
-
-        /* Explorer View */
         'CREATE_NODE': {
             en: 'Create node',
             de: 'Node erstellen'
@@ -51,10 +43,10 @@ module meshAdminUi {
         'CLOSE_ALL_TABS': {
             en: 'Close all tabs',
             de: 'Alle Tabs schließen'
-        },
+        }
+    };
 
-
-        /* Content Editor */
+    const editorPane = {
         'EDIT_LOCALIZED_VERSION': {
             en: 'Edit localized version:',
             de: 'Lokalisierte Version bearbeiten:'
@@ -78,9 +70,14 @@ module meshAdminUi {
         'PUBLISHED': {
             en: 'Published',
             de: 'Veröffentlicht'
-        },
+        }
+    };
 
-        /* Admin Area */
+    const adminArea = {
+        'CREATE_NEW_TAG': {
+            en: 'Create new tag',
+            de: 'Neuen Tag erstellen'
+        },
         'NEW_USER_CREATED': {
             en: 'New user created',
             de: 'Neuer Benutzer erstellt'
@@ -96,9 +93,10 @@ module meshAdminUi {
         'ADD_NEW_FIELD': {
             en: 'Add new field',
             de: 'Neues Feld hinzufügen'
-        },
+        }
+    };
 
-        /* Other */
+    const common = {
         'SEARCH_IN': {
             en: 'Search in',
             de: 'Suche in'
@@ -127,30 +125,6 @@ module meshAdminUi {
             en: 'Items per page',
             de: 'Artikel pro Seite'
         },
-
-        /* Dialogs */
-        'CONTENT_MODIFIED': {
-            en: 'Content Modified',
-            de: 'Inhalt geändert'
-        },
-        'CONTENT_MODIFIED_HOW_TO_PROCEED': {
-            en: 'This content has been modified. How would you like to proceed?',
-            de: 'Dieser Inhalt wurde geändert. Wie möchten Sie vorgehen?'
-        },
-        'SAVED_CHANGES': {
-            en: 'Saved changes',
-            de: 'Gespeichert'
-        },
-        'NEW_CONTENT_CREATED': {
-            en: 'New content created',
-            de: 'Neue Inhalt erstellt'
-        },
-        'EDIT_IMAGE': {
-            en: 'Edit Image',
-            de: 'Bild Bearbeiten'
-        },
-
-        /* Common buttons */
         'SAVE_CHANGES': {
             en: 'Save Changes',
             de: 'Speichern'
@@ -187,8 +161,32 @@ module meshAdminUi {
             en: 'Add',
             de: 'Hinzufügen'
         },
+    };
 
-        /* Error messages */
+    const dialogs = {
+        'CONTENT_MODIFIED': {
+            en: 'Content Modified',
+            de: 'Inhalt geändert'
+        },
+        'CONTENT_MODIFIED_HOW_TO_PROCEED': {
+            en: 'This content has been modified. How would you like to proceed?',
+            de: 'Dieser Inhalt wurde geändert. Wie möchten Sie vorgehen?'
+        },
+        'SAVED_CHANGES': {
+            en: 'Saved changes',
+            de: 'Gespeichert'
+        },
+        'NEW_CONTENT_CREATED': {
+            en: 'New content created',
+            de: 'Neue Inhalt erstellt'
+        },
+        'EDIT_IMAGE': {
+            en: 'Edit Image',
+            de: 'Bild Bearbeiten'
+        }
+    };
+
+    const errors = {
         'ERROR': {
             en: 'Error',
             de: 'Fehler'
@@ -198,6 +196,8 @@ module meshAdminUi {
             de: 'Überprüfen Sie bitte Ihre Daten ein und versuchen Sie es erneut.'
         }
     };
+
+    const translations = angular.merge({}, userAuth, projectsArea, editorPane, adminArea, common, dialogs, errors);
 
     export const TranslationTable = {
 
