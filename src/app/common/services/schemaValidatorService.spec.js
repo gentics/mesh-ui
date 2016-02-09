@@ -86,7 +86,7 @@ describe('SchemaValidatorService', function() {
 
             it('should display correct error for missing displayField', function() {
                 delete validSchema.displayField;
-                testErrorMessage(validSchema, 'Please specify a displayField.');
+                testErrorMessage(validSchema, 'Please specify a displayField');
             });
 
             it('should display correct error for empty string displayField', function() {
@@ -96,74 +96,74 @@ describe('SchemaValidatorService', function() {
 
             it('should display correct error for non-existent displayField', function() {
                 validSchema.displayField = 'foo';
-                testErrorMessage(validSchema, 'displayField value "foo" does not match any fields.');
+                testErrorMessage(validSchema, 'displayField value "foo" does not match any fields');
             });
 
             it('should display correct error for wrong data type displayField', function() {
                 validSchema.displayField = 42;
-                testErrorMessage(validSchema, 'displayField value "42" does not match any fields.');
+                testErrorMessage(validSchema, 'displayField value "42" does not match any fields');
             });
 
             it('should display correct error for missing segmentField', function() {
                 delete validSchema.segmentField;
-                testErrorMessage(validSchema, 'Please specify a segmentField.');
+                testErrorMessage(validSchema, 'Please specify a segmentField');
             });
 
             it('should display correct error for empty string segmentField', function() {
                 validSchema.segmentField = '';
-                testErrorMessage(validSchema, 'Please specify a segmentField.');
+                testErrorMessage(validSchema, 'Please specify a segmentField');
             });
 
             it('should display correct error for non-existent segmentField', function() {
                 validSchema.segmentField = 'foo';
-                testErrorMessage(validSchema, 'segmentField value "foo" does not match any fields.');
+                testErrorMessage(validSchema, 'segmentField value "foo" does not match any fields');
             });
 
             it('should display correct error for wrong data type segmentField', function() {
                 validSchema.segmentField = 42;
-                testErrorMessage(validSchema, 'segmentField value "42" does not match any fields.');
+                testErrorMessage(validSchema, 'segmentField value "42" does not match any fields');
             });
 
             it('should display correct error for empty fields array', function() {
                 validSchema.fields = [];
-                testErrorMessage(validSchema, 'Schema must have at least one field defined.');
+                testErrorMessage(validSchema, 'Schema must have at least one field defined');
             });
 
             it('should display correct error for missing fields array', function() {
                 delete validSchema.fields;
-                testErrorMessage(validSchema, 'Schema must have at least one field defined.');
+                testErrorMessage(validSchema, 'Schema must have at least one field defined');
             });
 
             it('should display correct error for malformed field (missing name)', function() {
                 delete validSchema.fields[1].name;
-                testErrorMessage(validSchema, 'All fields must have a "name" and "type" property.');
+                testErrorMessage(validSchema, 'All fields must have a "name" and "type" property');
             });
 
             it('should display correct error for malformed field (missing type)', function() {
                 delete validSchema.fields[1].type;
-                testErrorMessage(validSchema, 'All fields must have a "name" and "type" property.');
+                testErrorMessage(validSchema, 'All fields must have a "name" and "type" property');
             });
 
             it('should display correct error for malformed field (invalid type)', function() {
                 validSchema.fields[1].type = 'foo';
-                testErrorMessage(validSchema, 'The following fields have invalid types [members : foo].');
+                testErrorMessage(validSchema, 'The following fields have invalid types [members : foo]');
             });
 
             it('should display correct error for malformed fields (2 x invalid type)', function() {
                 validSchema.fields[1].type = 'foo';
                 validSchema.fields[2].type = 'bar';
-                testErrorMessage(validSchema, 'The following fields have invalid types [members : foo], [reference : bar].');
+                testErrorMessage(validSchema, 'The following fields have invalid types [members : foo], [reference : bar]');
             });
 
             it('should display correct error for invalid listType', function() {
                 validSchema.fields[1].listType = 'foo';
-                testErrorMessage(validSchema, 'The following list fields have an invalid listType [members : foo].');
+                testErrorMessage(validSchema, 'The following list fields have an invalid listType [members : foo]');
             });
 
             it('should display correct error for micronode type without allow property', function() {
                 delete validSchema.fields[3].allow;
                 delete validSchema.fields[4].allow;
-                testErrorMessage(validSchema, 'The following micronode fields must have an "allow" property defined: [widget], [widgetList].');
+                testErrorMessage(validSchema, 'The following micronode fields must have an "allow" property defined: [widget], [widgetList]');
             });
 
             it('should display correct error duplicate field names', function() {
@@ -171,7 +171,7 @@ describe('SchemaValidatorService', function() {
                     name: 'title',
                     type: 'string'
                 });
-                testErrorMessage(validSchema, 'Fields must have unique names - duplicate field detected: [title].');
+                testErrorMessage(validSchema, 'Fields must have unique names - duplicate field detected: [title]');
             });
         });
     });

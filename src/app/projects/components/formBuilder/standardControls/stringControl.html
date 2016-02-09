@@ -1,4 +1,17 @@
-<md-input-container class="editor-control" ng-class="{ 'display-field' : vm.fieldModel.isDisplayField }">
-    <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
-    <input type="text" ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate">
-</md-input-container>
+<div class="editor-control string-container">
+
+    <md-input-container ng-if="0 < vm.fieldModel.allow.length"
+                        ng-class="{ 'display-field' : vm.fieldModel.isDisplayField }">
+        <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
+        <md-select ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate" md-no-ink>
+            <md-option ng-value="opt" ng-repeat="opt in vm.fieldModel.allow">{{ opt }}</md-option>
+        </md-select>
+    </md-input-container>
+
+    <md-input-container class="editor-control"
+                        ng-if="!vm.fieldModel.allow || 0 === vm.fieldModel.allow.length"
+                        ng-class="{ 'display-field' : vm.fieldModel.isDisplayField }">
+        <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
+        <input type="text" ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate">
+    </md-input-container>
+</div>

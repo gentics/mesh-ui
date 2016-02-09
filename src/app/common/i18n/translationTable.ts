@@ -322,6 +322,10 @@ module meshAdminUi {
             en: 'Remove field "{{ fieldName }}"',
             de: 'Das Feld "{{ fieldName }}" löschen',
         },
+        'UPDATE_SCHEMA_FIELD': {
+            en: 'Update field "{{ fieldName }}", setting keys [{{ keys }}] to values [{{ values }}]',
+            de: 'Das Feld "{{ fieldName }}" aktualisieren, keys [{{ keys }}], values [{{ values }}]',
+        },
         'CHANGE_SCHEMA_FIELD_TYPE': {
             en: 'Change field "{{ fieldName }}" to type "{{ type }}"',
             de: 'Change field "{{ fieldName }}" to type "{{ type }}"'

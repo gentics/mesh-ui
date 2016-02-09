@@ -106,6 +106,15 @@
             </md-input-container>
         </div>
 
+        <div ng-if="vm.field.type === 'string' || vm.field.listType === 'string'">
+            <md-input-container>
+                <label>Allowed Values</label>
+                <input type="text"
+                       ng-model="vm.stringsAllow"
+                       ng-change="vm.updateStringAllow(vm.stringsAllow)">
+            </md-input-container>
+        </div>
+
         <div ng-if="vm.field.type === 'number' || field.listType === 'number'" layout="row">
 
             <md-input-container flex-gt-sm="10">

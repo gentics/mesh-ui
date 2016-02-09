@@ -22,22 +22,30 @@ module meshAdminUi {
         public microschemaAllow: string = '';
         public microschemasAllow: string[] = [];
         public schemasAllow: string[] = [];
+        public stringsAllow: string = '';
 
         constructor($scope: ng.IScope) {
             $scope.$watch(() => this.field.allow, () => {
-                const isMicronode = this.field.type === 'micronode';
-                const isMicronodeList = this.field.listType && this.field.listType === 'micronode';
-                const isNodeOrNodeList = this.field.type === 'node' || (this.field.listType && this.field.listType === 'node');
-                const allowIsArray = this.field.allow instanceof Array;
+                const f = this.field;
+                const isMicronode = f.type === 'micronode';
+                const isMicronodeList = f.listType && f.listType === 'micronode';
+                const isNodeOrNodeList = f.type === 'node' || (f.listType && f.listType === 'node');
+                const isStringOrStringList = f.type === 'string' || (f.listType && f.listType === 'string');
+                const allowIsArray = f.allow instanceof Array;
 
                 if (isMicronode && allowIsArray) {
-                    this.microschemaAllow = this.field.allow[0];
+                    this.microschemaAllow = f.allow[0];
                 }
                 if (isMicronodeList && allowIsArray) {
-                    this.microschemasAllow = this.field.allow;
+                    this.microschemasAllow = f.allow;
                 }
                 if (isNodeOrNodeList && allowIsArray) {
-                    this.schemasAllow = this.field.allow;
+                    this.schemasAllow = f.allow;
+                }
+                if (isStringOrStringList && allowIsArray) {
+                    if (this.stringsAllow.split(',').length !== f.allow.length) {
+                        this.stringsAllow = f.allow.join(', ');
+                    }
                 }
             });
         }
@@ -62,6 +70,11 @@ module meshAdminUi {
         public updateAllowArray(values: string[], available: any[]) {
             let availableNames = available.map(s => s.name);
             this.field.allow = values.filter(name => -1 < availableNames.indexOf(name));
+            this.onChange();
+        }
+
+        public updateStringAllow(value: string) {
+            this.field.allow = value.split(',').map(s => s.trim());
             this.onChange();
         }
 
