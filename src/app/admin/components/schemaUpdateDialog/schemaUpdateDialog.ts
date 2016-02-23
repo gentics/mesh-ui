@@ -67,6 +67,11 @@ module meshAdminUi {
                 case 'REMOVEFIELD':
                     description = this.i18n('REMOVE_SCHEMA_FIELD', { fieldName: props.field });
                     break;
+                case 'UPDATEFIELD':
+                    let keys = Object.keys(props).filter(k => k !== 'field');
+                    let values = keys.map(k => `"${props[k].toString()}"`);
+                    description = this.i18n('UPDATE_SCHEMA_FIELD', { fieldName: props.field, keys: keys.join(', '), values: values.join(', ') });
+                    break;
                 case 'CHANGEFIELDTYPE':
                     description = this.i18n('CHANGE_SCHEMA_FIELD_TYPE', { fieldName: props.field, type: props.newType });
                     break;
@@ -92,6 +97,7 @@ module meshAdminUi {
                     return 'change-remove';
                 case 'CHANGEFIELDTYPE':
                 case 'UPDATESCHEMA':
+                case 'UPDATEFIELD':
                     return 'change-update';
                 default:
                     return '';

@@ -57,7 +57,11 @@ module meshAdminUi {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.modified = false;
                     })
-                    .catch(error => this.notifyService.toast([error.data.message, error.data.internalMessage]));
+                    .catch(error => {
+                        if (error) {
+                            this.notifyService.toast([error.data.message, error.data.internalMessage]);
+                        }
+                    });
             }
         }
 
