@@ -63,7 +63,7 @@ module meshAdminUi {
          * Returns an array of strings representing the names of string or html fields,
          * which may be used as the value of the `displayName` or `segmentName` property.
          */
-        public getTextFields(): string[] {
+        public getTextFields(): ISchemaFieldDefinition[] {
             if (!this.baseSchema || !(this.baseSchema.fields instanceof Array)) {
                 return [];
             }
@@ -72,7 +72,7 @@ module meshAdminUi {
             };
             const fieldName = (field: ISchemaFieldDefinition) => field.name;
 
-            return this.baseSchema.fields.filter(textFields).map(fieldName);
+            return this.baseSchema.fields.filter(textFields);
         }
 
         /**
@@ -105,15 +105,30 @@ module meshAdminUi {
         private schema: ISchema;
         public schemas: ISchema[];
         public microschemas: IMicroschema[];
+        public displayFieldValue: ISchemaFieldDefinition;
+        public segmentFieldValue: ISchemaFieldDefinition;
 
         constructor($scope: ng.IScope) {
             super();
             let unwatch = $scope.$watch(() => this.schema, val => {
                 if (val !== undefined) {
                     this.baseSchema = val;
+                    this.displayFieldValue = this.schema.fields.filter(f => f.name === this.schema.displayField)[0];
+                    this.segmentFieldValue = this.schema.fields.filter(f => f.name === this.schema.segmentField)[0];
                     unwatch();
                 }
             });
+        }
+
+        public updateDisplayField() {
+            this.schema.displayField = this.displayFieldValue.name;
+            this.schemaChanged();
+
+        }
+
+        public updateSegmentField() {
+            this.schema.segmentField = this.segmentFieldValue.name;
+            this.schemaChanged();
         }
     }
 
