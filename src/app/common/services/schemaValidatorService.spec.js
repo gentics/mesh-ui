@@ -81,7 +81,7 @@ describe('SchemaValidatorService', function() {
 
 
             it('should display correct error for invalid JSON', function() {
-                testErrorMessage('{ 1 }', 'JSON is invalid.');
+                testErrorMessage('{ 1 }', 'JSON is invalid');
             });
 
             it('should display correct error for missing displayField', function() {
@@ -91,7 +91,7 @@ describe('SchemaValidatorService', function() {
 
             it('should display correct error for empty string displayField', function() {
                 validSchema.displayField = '';
-                testErrorMessage(validSchema, 'Please specify a displayField.');
+                testErrorMessage(validSchema, 'Please specify a displayField');
             });
 
             it('should display correct error for non-existent displayField', function() {
@@ -157,7 +157,7 @@ describe('SchemaValidatorService', function() {
 
             it('should display correct error for invalid listType', function() {
                 validSchema.fields[1].listType = 'foo';
-                testErrorMessage(validSchema, 'The following list fields have an invalid listType [members : foo]');
+                testErrorMessage(validSchema, 'The following list fields have an invalid listType: [members : foo]');
             });
 
             it('should display correct error for micronode type without allow property', function() {
