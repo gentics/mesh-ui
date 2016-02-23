@@ -50,9 +50,9 @@ module meshAdminUi {
                     })
                     .catch(error => this.notifyService.toast([error.data.message, error.data.internalMessage]));
             } else {
-                this.dataService.diffSchema(schema)
-                    .then(changeset => this.schemaUpdateService.openDialog(schema, changeset))
-                    .then(changeset => this.dataService.applySchemaChangeset(schema, changeset))
+                this.dataService.forceSchemaUpdate(schema)
+                   /* .then(changeset => this.schemaUpdateService.openDialog(schema, changeset))
+                    .then(changeset => this.dataService.applySchemaChangeset(schema, changeset))*/
                     .then(() => {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.modified = false;

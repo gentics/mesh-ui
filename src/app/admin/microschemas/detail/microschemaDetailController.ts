@@ -47,9 +47,9 @@ module meshAdminUi {
                     })
                     .catch(error => this.notifyService.toast([error.data.message, error.data.internalMessage]));
             } else {
-                this.dataService.diffMicroschema(microschema)
-                    .then(changeset => this.schemaUpdateService.openDialog(microschema, changeset))
-                    .then(changeset => this.dataService.applyMicroschemaChangeset(microschema, changeset))
+                this.dataService.forceMicroschemaUpdate(microschema)
+                   /* .then(changeset => this.schemaUpdateService.openDialog(microschema, changeset))
+                    .then(changeset => this.dataService.applyMicroschemaChangeset(microschema, changeset))*/
                     .then(() => {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.modified = false;

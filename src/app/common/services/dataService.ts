@@ -760,12 +760,10 @@ module meshAdminUi {
         }
 
         public diffSchema(schema: ISchema): ng.IPromise<ISchemaChangeset> {
-            return this.meshPost(`schemas/${schema.uuid}/diff`, schema);
+            return this.meshPost(`schemas/${schema.uuid}`, schema);
         }
 
         public applySchemaChangeset(schema: ISchema, changeset: ISchemaChangeset): ng.IPromise<any> {
-            // TODO: API not yet implemented
-            console.warn('Not yet implemented in API');
             return this.meshPost(`schemas/${schema.uuid}/changes`, changeset);
         }
         public createSchema(schema: ISchema): ng.IPromise<ISchema> {
@@ -775,7 +773,8 @@ module meshAdminUi {
         /**
          * Forces a schema update without doing a migration. Dangerous as data can be lost or corrupted.
          */
-        private forceSchemaUpdate(schema: ISchema): ng.IPromise<ISchema> {
+        public forceSchemaUpdate(schema: ISchema): ng.IPromise<ISchema> {
+            this.clearCache('schemas');
             return this.meshPut('schemas/' + schema.uuid, schema);
         }
 
@@ -818,7 +817,8 @@ module meshAdminUi {
         /**
          * Forces a microschema update without doing a migration. Dangerous as data can be lost or corrupted.
          */
-        private forceMicroschemaUpdate(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+        public forceMicroschemaUpdate(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+            this.clearCache('microschemas');
             return this.meshPut('microschemas/' + microschema.uuid, microschema);
         }
 

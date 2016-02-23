@@ -290,6 +290,10 @@ module meshAdminUi {
             en: 'Create new schema',
             de: 'Neues Schema erstellen'
         },
+        'NEW_SCHEMA_CREATED': {
+            en: 'New schema created',
+            de: 'Neues Schema Erstellt'
+        },
         'FILTER_SCHEMAS': {
             en: 'Filter schemas',
             de: 'Schemas durchsuchen'
@@ -301,6 +305,10 @@ module meshAdminUi {
         'CREATE_NEW_MICROSCHEMA': {
             en: 'Create new microschema',
             de: 'Neues microschema erstellen'
+        },
+        'NEW_MICROSCHEMA_CREATED': {
+            en: 'New microschema created',
+            de: 'Neues microschema erstellt'
         },
         'IMPORTED_SCHEMAS': {
             en: 'Imported {{ count }} schemas',
