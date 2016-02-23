@@ -38,8 +38,8 @@
         // must take CORS into consideration and set the Access-Control-Allow-Origin headers accordingly.
         microschemaControlsLocation: '/microschemaControls',
         microschemaControls: [
-            "geolocation/geolocationControl",
-            "example/exampleControl"
+            // "geolocation/geolocationControl",
+            // "example/exampleControl"
         ],
 
         // List any plugins to be loaded and made available to the Aloha editor.
