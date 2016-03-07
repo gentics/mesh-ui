@@ -90,6 +90,12 @@ module meshAdminUi {
          * logged out.
          */
         dispatcher.subscribe(dispatcher.events.logoutSuccess, () => $state.go('login'));
+
+        /**
+         * Dynamically insert the version here via the gulp-replace plugin during build.
+         * The build task uses a regex to find and replace the comment below, so don't change it.
+         */
+        /*injectCurrentVersion*/
     }
 
 }

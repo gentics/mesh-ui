@@ -26,6 +26,8 @@ var gulp = require('gulp'),
     livereload = require('gulp-livereload'),
     karma = require('karma').server,
     child_process = require('child_process'),
+    bump = require('gulp-bump'),
+    tap = require('gulp-tap'),
 
     vars = require('./build-vars.json'),
     VENDOR_SCRIPTS = vars.VENDOR_SCRIPTS,
@@ -57,19 +59,18 @@ function clean() {
     });
 }
 
-function compile_appScripts() {
+function compile_appScripts(uiVersion) {
     return gulp.src([
             'typings/**/*.ts',
             '!src/app/common/aloha/**/*.ts',
             'src/app/**/*.ts'
         ])
-        /*.pipe(tslint())
-         .pipe(tslint.report('prose'))*/
         .pipe(ts({
             declarationFiles: true,
             noExternalResolve: false,
             target: 'ES5'
         })).js
+        .pipe(replace('/*injectCurrentVersion*/', 'window.meshUiVersion = "' + uiVersion + '";'))
         .pipe(angularFilesort())
         .pipe(ngAnnotate())
         .pipe(concat('app.js'));
@@ -151,13 +152,16 @@ function copy_microschema_controls(dest) {
 function build_appScripts() {
     log('build_appScripts');
 
-    return new Promise(function(resolve, reject) {
-        return compile_appScripts()
-            .pipe(gulp.dest('build/app'))
-            .pipe(livereload())
-            .on('end', resolve)
-            .on('error', reject);
-    });
+    getUiVersion(false)
+        .then(function(version) {
+            return new Promise(function(resolve, reject) {
+                return compile_appScripts(version)
+                    .pipe(gulp.dest('build/app'))
+                    .pipe(livereload())
+                    .on('end', resolve)
+                    .on('error', reject);
+            });
+        });
 }
 
 function build_vendorScripts() {
@@ -283,6 +287,33 @@ function build_index() {
     });
 }
 
+/**
+ * Returns a promise resolving to the current version of the MeshUI. If `bumpPatch` is true, then the
+ * version patch will be incremented first and then the new value returned.
+ */
+function getUiVersion(bumpPatch){
+    bumpPatch = bumpPatch === undefined ? false : bumpPatch;
+    var uiVersion;
+
+    return new Promise(function(resolve, reject) {
+        if (bumpPatch) {
+            return gulp.src('./build-vars.json')
+                .pipe(bump({key: 'VERSION'}))
+                .pipe(gulp.dest('./'))
+                .pipe(tap(function (file) {
+                    var json = JSON.parse(String(file.contents));
+                    uiVersion = json.VERSION;
+                }))
+                .on('end', function() {
+                    resolve(uiVersion)
+                })
+                .on('error', reject);
+        } else {
+            resolve(vars.VERSION);
+        }
+    });
+}
+
 gulp.task('build', function() {
 
     return clean()
@@ -343,19 +374,22 @@ function dist_css() {
 function dist_js() {
     log('dist_js');
 
-    return new Promise(function(resolve, reject) {
-        var vendorJs = gulp.src(VENDOR_SCRIPTS);
-        var appTemplates = compile_Templates();
-        var appJs = compile_appScripts();
+    getUiVersion(false)
+        .then(function(uiVersion) {
+            return new Promise(function(resolve, reject) {
+                var vendorJs = gulp.src(VENDOR_SCRIPTS);
+                var appTemplates = compile_Templates();
+                var appJs = compile_appScripts(uiVersion);
 
-        var js = merge(vendorJs, appJs, appTemplates);
+                var js = merge(vendorJs, appJs, appTemplates);
 
-        return js
-            .pipe(concat('app.js'))
-            .pipe(uglify({}))
-            .pipe(gulp.dest('dist/app/'))
-            .on('end', resolve)
-            .on('error', reject);
+                return js
+                    .pipe(concat('app.js'))
+                    .pipe(uglify({}))
+                    .pipe(gulp.dest('dist/app/'))
+                    .on('end', resolve)
+                    .on('error', reject);
+            });
     });
 }
 
