@@ -812,6 +812,7 @@ module meshAdminUi {
         }
 
         public createMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
+            this.clearCache('microschemas');
             return this.meshPost('microschemas', microschema);
         }
         /**
