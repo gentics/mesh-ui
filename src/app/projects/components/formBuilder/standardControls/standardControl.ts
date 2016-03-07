@@ -306,15 +306,20 @@ module meshAdminUi {
 
         constructor(private $scope: ng.IScope,
                     private dataService: DataService,
-                    private formBuilderService: FormBuilderService,
                     private mu: MeshUtils) {
             super($scope);
 
-            $scope.$watchCollection(() => this.fieldModel.value, list => {
+            /**
+             * This watcher uses the expensive "deep object comparison" mode (third arg "true") in order to
+             * ensure it fires the handler whenever a micronode field value changes. If a shallow comparison
+             * (or $watchCollection) is used, changes to a micronode field value will not trigger an update
+             * of the local fieldModel, leading to data being lost when re-ordering items.
+             */
+            $scope.$watch(() => this.fieldModel.value, list => {
                 if (list) {
                     this.updateListFieldModels(list);
                 }
-            });
+            }, true);
         }
 
         private updateListFieldModels(list) {
