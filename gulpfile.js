@@ -456,6 +456,12 @@ gulp.task('dist', ['karma-test'], function() {
         .then(karma_dist);
 });
 
+/**
+ * Bumps the version patch number in the build-vars.json file. Should be run after each feature is added / bug fixed.
+ */
+gulp.task('bump-version', function() {
+    return getUiVersion(true);
+});
 
 
 gulp.task('karma-app-templates', function() {
