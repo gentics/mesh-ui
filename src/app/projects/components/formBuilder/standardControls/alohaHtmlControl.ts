@@ -20,7 +20,9 @@ module meshAdminUi {
             'common/format',
             'common/table',
             'common/highlighteditables',
-            'common/list'
+            'common/list',
+            'common/contenthandler',
+            'common/paste'
         ];
         // we store a reference to the toolbar element as it is re-used by all
         // editable instances in the app, so we only need to get it once.
@@ -238,7 +240,7 @@ module meshAdminUi {
                         "custom": "/custom"
                     },
                     "contentHandler": {
-                        "insertHtml": ["gcn-tagcopy", "word", "generic", "block", "formatless"],
+                        "insertHtml": ["word", "generic", "oembed", "sanitize"],
                         "getContents": ["blockelement", "basic"],
                         "initEditable": ["blockelement"]
                     },

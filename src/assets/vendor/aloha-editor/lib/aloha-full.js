@@ -72231,7 +72231,7 @@ define('table/table-plugin',[
 			// If for example there is a UL element somewhere in the range.unmodifiableMarkupAtStart array, 
 			// the mayInsertTag() will return "undefined" which will prevent the createTableButton from being displayed.
 			function mayInsertTable() {
-				if (typeof range.unmodifiableMarkupAtStart !== 'object') {
+				if (typeof range.unmodifiableMarkupAtStart !== 'object' || range.unmodifiableMarkupAtStart.length === 0) {
 					return true;
 				}
 				return Aloha.Selection.canTag1WrapTag2(range.unmodifiableMarkupAtStart[0].nodeName, 'table')
