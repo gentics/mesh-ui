@@ -767,6 +767,7 @@ module meshAdminUi {
             return this.meshPost(`schemas/${schema.uuid}/changes`, changeset);
         }
         public createSchema(schema: ISchema): ng.IPromise<ISchema> {
+            this.clearCache('schemas');
             return this.meshPost('schemas', schema);
         }
 
