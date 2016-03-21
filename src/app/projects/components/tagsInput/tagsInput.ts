@@ -155,7 +155,7 @@ module meshAdminUi {
             scope: {
                 onAdd: '&',
                 tags: '=',
-                tagFamilies: '='
+                tagFamilies: '=?'
             }
         };
     }

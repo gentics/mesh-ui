@@ -113,7 +113,7 @@ function dropdownDirective() {
         transclude: true,
         replace: true,
         scope: {
-            sticky: '='
+            sticky: '=?'
         }
     };
 }
