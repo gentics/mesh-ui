@@ -45,10 +45,14 @@
         // List any plugins to be loaded and made available to the Aloha editor.
         // (For available plugins see http://www.alohaeditor.org/guides/plugins.html)
         // If left empty, the following default plugins will be used:
-        // 'common/ui',
-        // 'common/format',
-        // 'common/table',
-        // 'common/highlighteditables'
+        //  'common/autoparagraph',
+        //  'common/contenthandler',
+        //  'common/format',
+        //  'common/highlighteditables',
+        //  'common/list',
+        //  'common/paste',
+        //  'common/table',
+        //  'common/ui'
         // plus a custom link plugin (mesh/mesh-link) for linking to other Mesh nodes.
         alohaPlugins: [],
 

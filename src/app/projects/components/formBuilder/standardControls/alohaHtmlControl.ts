@@ -16,13 +16,14 @@ module meshAdminUi {
         let callbacks = [];
         let alohaPlugins = [];
         const defaultAlohaPlugins = [
-            'common/ui',
+            'common/autoparagraph',
+            'common/contenthandler',
             'common/format',
-            'common/table',
             'common/highlighteditables',
             'common/list',
-            'common/contenthandler',
-            'common/paste'
+            'common/paste',
+            'common/table',
+            'common/ui'
         ];
         // we store a reference to the toolbar element as it is re-used by all
         // editable instances in the app, so we only need to get it once.
