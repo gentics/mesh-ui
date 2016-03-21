@@ -21,7 +21,8 @@ module meshAdminUi {
             if (query === '') {
                 return this.tagFamilies;
             } else {
-                return this.tagFamilies.filter((tagFamilies: ITagFamily) => -1 < tagFamilies.name.indexOf(query));
+                return this.tagFamilies &&
+                    this.tagFamilies.filter((tagFamilies: ITagFamily) => -1 < tagFamilies.name.indexOf(query));
             }
         }
 
@@ -48,6 +49,7 @@ module meshAdminUi {
 
         constructor(private $q: ng.IQService,
                     private $mdDialog: ng.material.IDialogService,
+                    private notifyService: NotifyService,
                     private dataService: DataService,
                     private contextService: ContextService) {
 
@@ -111,6 +113,11 @@ module meshAdminUi {
                         this.tags.push(tag);
                         this.addTag(tag);
                         this.tagSearch = '';
+                    })
+                    .catch(error => {
+                        if (error && error.data && error.data.message) {
+                            this.notifyService.toast(error.data.message);
+                        }
                     });
 
                 });
