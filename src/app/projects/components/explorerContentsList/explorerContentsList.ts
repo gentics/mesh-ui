@@ -79,6 +79,8 @@ module meshAdminUi {
                 this.$state.go('projects.node', {
                     projectName: this.contextService.getProject().name, nodeId: node.uuid
                 });
+            } else {
+                this.editNode(node, event);
             }
         }
 
