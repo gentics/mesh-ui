@@ -26,7 +26,7 @@
     "angular-translate": "~2.8.1",
     "angular-loading-bar": "~0.7.1",
     "angular-local-storage": "~0.2.0",
-    "angular-drag-and-drop-lists": "~1.2.0",
+    "angular-drag-and-drop-lists": "~1.4.0",
     "moment": "~2.10.6",
     "angular-ui-ace": "bower",
     "ng-file-upload": "~9.1.2",

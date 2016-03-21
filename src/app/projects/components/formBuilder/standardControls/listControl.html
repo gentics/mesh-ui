@@ -13,24 +13,23 @@
 
             <li flex ng-repeat="item in vm.listFieldModels track by vm.tracker(item, $id, $index)"
                 class="mh-list-item"
-                layout="row"
                 dnd-draggable="item"
                 dnd-dragstart="vm.startDrag($index)"
                 dnd-type="vm.fieldModel.listType">
+                <dnd-nodrag layout="row">
+                    <div flex ng-include="'control-proxy-recursion-safe.html'"></div>
 
-                <div flex ng-include="'control-proxy-recursion-safe.html'"></div>
-
-                <div>
-                    <div class="remove-item list-icon-btn" ng-click="vm.removeItem($index)">
-                       <i class="icon-close" title="Remove from list"></i>
+                    <div>
+                        <div class="remove-item list-icon-btn" ng-click="vm.removeItem($index)">
+                            <i class="icon-close" title="Remove from list"></i>
+                        </div>
                     </div>
-                </div>
-                <div class="sort-handle list-icon-btn" dnd-handle>
-                    <div class="">
-                        <i class="icon-more-vert" title="Drag to sort"></i>
+                    <div class="sort-handle list-icon-btn" dnd-handle>
+                        <div class="">
+                            <i class="icon-more-vert" title="Drag to sort"></i>
+                        </div>
                     </div>
-                </div>
-
+                </dnd-nodrag>
             </li>
         </ul>
 
