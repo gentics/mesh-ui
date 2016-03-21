@@ -11,17 +11,19 @@
 
     </div>
     <div flex class="wip-menu" ng-if="0 < vm.wips.length">
-        <mh-dropdown sticky="false">
-            <mh-dropdown-label layout="row" layout-align="end center" class="tags-input-label">
-                <div class="wip-tabs-menu">
-                    <i class="icon-menu"></i>
-                </div>
-            </mh-dropdown-label>
-            <mh-dropdown-body>
-                <ul>
-                    <li translate ng-click="vm.closeAllWips()">CLOSE_ALL_TABS</li>
-                </ul>
-            </mh-dropdown-body>
-        </mh-dropdown>
+        <div class="wip-menu-content">
+            <mh-dropdown sticky="false">
+                <mh-dropdown-label layout="row" layout-align="end center" class="tags-input-label">
+                    <div class="wip-tabs-menu">
+                        <i class="icon-menu"></i>
+                    </div>
+                </mh-dropdown-label>
+                <mh-dropdown-body>
+                    <ul>
+                        <li translate ng-click="vm.closeAllWips()">CLOSE_ALL_TABS</li>
+                    </ul>
+                </mh-dropdown-body>
+            </mh-dropdown>
+        </div>
     </div>
 </div>

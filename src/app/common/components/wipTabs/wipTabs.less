@@ -1,13 +1,14 @@
 @tab-bottom-color: @color-silver;
 @tab-border-color: lighten(@tab-bottom-color, 10%);
+@tab-active-border-color: @tab-bottom-color;
 @tab-bg-color: white;
 @status-modified-color: @color-highlight;
 
 .wip-tabs {
   transition: height 0.2s;
   height: 30px;
-  margin-left: 10px;
-  border-bottom: 1px solid @color-alto;
+  padding-left: 10px;
+  border-bottom: 1px solid @tab-bottom-color;
   margin-top: 3px;
   position: relative;
   &.empty {
@@ -18,26 +19,38 @@
     visibility: hidden;
   }
 
+  div.active + div {
+    border-left: 1px solid @tab-active-border-color;
+  }
+
   .wip-tab {
     cursor: pointer;
     overflow: hidden;
     max-width: 200px;
-    padding: 4px 6px 5px 0;
-    border-bottom: none;
+    padding: 4px 6px 5px 10px;
+    border: 1px solid @tab-border-color;
+    background-color: @color-concrete;
+    border-right: none;
+    border-bottom-color: @tab-bottom-color;
     font-size: @font-size-smaller;
     font-family: @detail-font;
     text-transform: uppercase;
-    color: lighten(@color-boulder, 20%);
+    color: @color-boulder;
     position: relative;
+    box-sizing: border-box;
+    height: 30px;
 
     &:hover {
       .label {
-        border-bottom: 2px solid @color-silver;
+        border-bottom: 2px solid @tab-border-color;
       }
     }
 
     &.active {
       color: @color-mineshaft;
+      background-color: @color-almost-white;
+      border-color: @tab-active-border-color;
+      border-bottom-color: @color-almost-white;
       overflow-x: hidden;
 
       .label {
@@ -117,9 +130,11 @@
   }
 
   .wip-menu {
-    .responsive-max(@mq-md, {
-      display: none;
-    });
+    border-left: 1px solid @tab-border-color;
+    min-width: 36px;
+    .wip-menu-content {
+      .responsive-max(@mq-md, { display: none; });
+    }
   }
 
   .wip-tabs-menu {
