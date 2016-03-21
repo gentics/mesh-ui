@@ -50,7 +50,7 @@
 
         <button class="btn btn-primary"
                 ng-click="vm.persist(vm.node)"
-                ng-disabled="!vm.contentModified"
+                ng-disabled="!vm.formIsValid()"
                 aria-label="save">
             <i class="icon-save"></i>
             <span ng-if="!vm.isNew(vm.node)" translate>UPDATE</span>

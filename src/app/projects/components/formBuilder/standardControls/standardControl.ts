@@ -288,6 +288,18 @@ module meshAdminUi {
             let firstBinaryField = this.mu.getFirstBinaryField(this.fieldModel.value);
             return !!(firstBinaryField && firstBinaryField.value);
         }
+
+        /**
+         * Returns true if the value is valid according to the "required" property.
+         */
+        public valueIsValid(): boolean {
+            if (this.fieldModel.required) {
+                if (!this.fieldModel.value) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     /**
@@ -561,6 +573,16 @@ module meshAdminUi {
             let newValue = this.fileToUpload || this.fieldModel.value || {};
             newValue.transform = angular.copy(this.transform);
             this.fieldModel.update(newValue);
+        }
+
+        /**
+         * Returns true if the value is valid according to the "required" property.
+         */
+        public valueIsValid(): boolean {
+            if (this.fieldModel.required) {
+                return this.getBinaryFileUrl() !== '';
+            }
+            return true;
         }
     }
 

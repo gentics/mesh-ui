@@ -12,6 +12,10 @@
                         ng-if="!vm.fieldModel.allow || 0 === vm.fieldModel.allow.length"
                         ng-class="{ 'display-field' : vm.fieldModel.isDisplayField }">
         <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
-        <input type="text" ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate">
+        <input type="text"
+               ng-model="vm.value"
+               ng-change="vm.fieldModel.update(vm.value)"
+               ng-readonly="!vm.fieldModel.canUpdate"
+               ng-required="vm.fieldModel.required">
     </md-input-container>
 </div>

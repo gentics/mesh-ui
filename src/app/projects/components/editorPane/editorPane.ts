@@ -249,6 +249,47 @@ module meshAdminUi {
         }
 
         /**
+         * Returns true if the form has changed (contentModified) and all
+         * required fields have a non-empty value.
+         */
+        public formIsValid(): boolean {
+            if (!this.contentModified) {
+                return false;
+            }
+
+            const checkEmptyReducer = (valid: boolean, field: ISchemaFieldDefinition) => {
+                if (field.required) {
+                    let nodeField = this.node.fields[field.name];
+                    if (this.fieldIsEmpty(nodeField, field)) {
+                        return false;
+                    }
+                }
+                return valid;
+            };
+
+            if (this.schema && this.schema.fields instanceof Array) {
+                return this.schema.fields.reduce(checkEmptyReducer, true);
+            }
+        }
+
+        /**
+         * Returns true if the field has an "empty" value - definition of which varies according to the
+         * field type.
+         */
+        private fieldIsEmpty(field: any, fieldDef: ISchemaFieldDefinition): boolean {
+            if (fieldDef.type === 'binary') {
+                // binary fields have a special check for "emptiness"
+                if (!(field instanceof File) && !field.hasOwnProperty('sha512sum')) {
+                    return true;
+                }
+            }
+            if (!field || field === '') {
+                return true;
+            }
+            return false;
+        }
+
+        /**
          * Get the node object either from the server if this is being newly opened, or from the
          * wipService if it exists there.
          */

@@ -1,5 +1,9 @@
 <div class="html-container editor-control">
     <div class="toolbar-container aloha"></div>
     <label ng-class="{ focused: vm.isFocused }">{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
-    <div options='{"placeholder": ""}' class="htmlField" ng-readonly="!vm.fieldModel.canUpdate" id="{{ vm.getPathName() }}"></div>
+    <div options='{"placeholder": ""}'
+         class="htmlField"
+         ng-class="{ 'ng-invalid': !vm.valueIsValid() }"
+         ng-readonly="!vm.fieldModel.canUpdate"
+         id="{{ vm.getPathName() }}"></div>
 </div>

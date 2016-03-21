@@ -78,6 +78,18 @@ module meshAdminUi {
             }
 
             /**
+             * Returns true if the value is valid according to the "required" property.
+             */
+            public valueIsValid(): boolean {
+                if (this.fieldModel.required) {
+                    if (!this.lastContent || this.lastContent.trim() === '') {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            /**
              * Pull out the Aloha toolbar from the top level of the DOM, and put it above the html input area so
              * we can style it to be the correct width.
              */

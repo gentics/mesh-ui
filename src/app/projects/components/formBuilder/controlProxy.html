@@ -1,5 +1,6 @@
 <div class="control-proxy"
      ng-switch="fieldModel.type"
+     ng-class="{ 'required': fieldModel.required === true }"
      flex-xs="{{ flexAttrs.sm }}"
      flex-gt-xs="{{ flexAttrs.gtSm }}"
      flex-gt-lg="{{ flexAttrs.gtLg }}">

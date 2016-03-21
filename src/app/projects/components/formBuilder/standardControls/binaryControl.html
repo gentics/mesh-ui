@@ -1,4 +1,5 @@
-<div class="binary-container">
+<div class="binary-container"
+     ng-class="{ 'ng-invalid': !vm.valueIsValid() }">
     <div class="binary-label">
         {{ vm.fieldModel.label || vm.fieldModel.name }}
            <span ng-if="!vm.fileToUpload" class="download">

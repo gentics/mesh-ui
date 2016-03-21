@@ -12,6 +12,20 @@
   overflow-y: scroll;
 }
 
+.control-proxy {
+  padding-left: 5px;
+  margin-bottom: 5px;
+
+ /* &.required {
+    border-left: 2px solid @color-warn;
+  }*/
+
+  md-input-container {
+    margin-bottom: 0;
+  }
+}
+
+// Micronodes
 .control-container {
   margin-bottom: 26px;
   md-input-container {
@@ -67,6 +81,10 @@
     &.aloha-editable-active {
       border-color: @color-primary;
     }
+
+    &.ng-invalid {
+      border-color: @color-warn;
+    }
   }
 }
 
@@ -119,7 +137,7 @@
 
   .node-ref-thumb {
     width: 200px;
-   // height: 150px;
+    // height: 150px;
   }
 
   .node-content {
@@ -127,6 +145,10 @@
     padding: 10px;
     background-color: @color-almost-white;
     display: inline-block;
+
+    &.ng-invalid {
+      border-color: @color-warn;
+    }
   }
 }
 
@@ -175,7 +197,7 @@
   // controls that are contained in a list should have certain
   // styling modified:
   md-input-container {
-    margin: 14px 0;
+    margin: 5px 0 0 0;
   }
 
   // controls inside lists should always be the same width
@@ -259,7 +281,7 @@
 
 .control-highlighter {
   .responsive-max(@mq-sm, {
-  display: none;
+    display: none;
   });
   background-color: fade(@color-gentics-blue, 30%);
   width: 3px;
@@ -269,4 +291,7 @@
 
 .binary-container {
 
+  &.ng-invalid {
+    border: 1px solid @color-warn;
+  }
 }

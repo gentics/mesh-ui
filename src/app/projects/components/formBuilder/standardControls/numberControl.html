@@ -1,6 +1,8 @@
 <md-input-container class="editor-control">
     <label>{{:: vm.fieldModel.label || vm.fieldModel.name }}</label>
-    <input type="number" ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate"
+    <input type="number" ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)"
+           ng-required="vm.fieldModel.required"
+           ng-readonly="!vm.fieldModel.canUpdate"
            step="{{:: vm.fieldModel.step }}"
            min="{{:: vm.fieldModel.min }}"
            max="{{:: vm.fieldModel.max }}">
