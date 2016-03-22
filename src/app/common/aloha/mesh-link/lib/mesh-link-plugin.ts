@@ -782,6 +782,11 @@ define([
 
 			PubSub.pub('aloha.link.insert', {range: apiRange});
 			this.hrefChange();
+
+			// Set focus on the URL field rather than the selected "New Link" text.
+			setTimeout(() => {
+				this.hrefField.getInputElem().focus();
+			}, 50);
 		},
 
 		/**
