@@ -279,7 +279,7 @@ module meshAdminUi {
         private fieldIsEmpty(field: any, fieldDef: ISchemaFieldDefinition): boolean {
             if (fieldDef.type === 'binary') {
                 // binary fields have a special check for "emptiness"
-                if (!(field instanceof File) && !field.hasOwnProperty('sha512sum')) {
+                if (field && !(field instanceof File) && !field.hasOwnProperty('sha512sum')) {
                     return true;
                 }
             }
