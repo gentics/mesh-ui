@@ -49,6 +49,7 @@ module meshAdminUi {
 
         constructor(private $q: ng.IQService,
                     private $mdDialog: ng.material.IDialogService,
+                    private $mdUtil: any,
                     private notifyService: NotifyService,
                     private dataService: DataService,
                     private contextService: ContextService) {
@@ -126,6 +127,15 @@ module meshAdminUi {
         public addTag(tag: ITag) {
             this.onAdd({ tag: tag });
             this.tagSearch = '';
+
+            // HACK ALERT: strange issue in Firefox where the div.md-scroll-mask element
+            // created by the angular-material autocomplete component remains after the
+            // tag has been selected. We will brute-force remove any lingering scroll
+            // masks from the DOM.
+            // See https://github.com/angular/material/issues/3287#issuecomment-192345556
+            setTimeout(() => {
+                this.$mdUtil.enableScrolling();
+            }, 50);
         }
 
         private createEmptyTagFamily(name: string): ITagFamily {

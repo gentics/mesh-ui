@@ -1,5 +1,5 @@
 {
-  "VERSION": "0.5.13",
+  "VERSION": "0.5.14",
   "VENDOR_SCRIPTS": [
     "bower_components/angular/angular.js",
     "bower_components/angular-animate/angular-animate.js",
