@@ -176,7 +176,7 @@ function dropdownBodyDirective() {
                 let childBox = containerChild.getBoundingClientRect();
                 let widthDelta = parentBox.width - childBox.width;
 
-                let bodyTop = dropdownCtrl.getContentTop() + parentBox.top + window.scrollY + 7;
+                let bodyTop = dropdownCtrl.getContentTop() + parentBox.top + window.pageYOffset + 7;
                 let bodyHeight = containerChild.offsetHeight + arrowGutter * 2;
                 let bodyWidth = childBox.width + arrowGutter * 2;
 
