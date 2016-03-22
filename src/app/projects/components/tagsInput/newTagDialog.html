@@ -1,5 +1,5 @@
 <md-dialog ng-cloak>
-    <form>
+    <form name="tagForm">
         <md-dialog-content>
             <div class="md-dialog-content">
                 <h2 translate>CREATE_NEW_TAG</h2>
@@ -10,11 +10,13 @@
                 </md-input-container>
 
                 <md-autocomplete
+                        required
                         md-selected-item="vm.selectedTagFamily"
                         md-search-text="vm.tagFamilySearch"
                         md-items="tagFamily in vm.querySearch(vm.tagFamilySearch)"
                         md-item-text="tagFamily.name"
                         md-min-length="0"
+                        md-no-cache
                         placeholder="Tag Family">
 
                     <md-item-template>
@@ -26,7 +28,7 @@
         </md-dialog-content>
 
         <md-dialog-actions>
-            <button ng-click="vm.create()" class="btn btn-primary">
+            <button ng-click="vm.create()" class="btn btn-primary" ng-disabled="!tagForm.$valid">
                 <span translate>CREATE</span>
             </button>
             <button ng-click="vm.cancel()" class="btn">

@@ -96,12 +96,17 @@ module meshAdminUi {
                     let getTagFamily: ng.IPromise<ITagFamily>;
 
                     if (!response.tagFamilyRef && response.newTagFamilyName) {
-                        let tagFamily = this.createEmptyTagFamily(response.newTagFamilyName);
-                        getTagFamily = this.dataService.persistTagFamily(this.projectName, tagFamily)
-                            .then(tagFamily => {
-                                this.tagFamilies.push(tagFamily);
-                                return tagFamily;
-                            });
+                        let existingTagFamily = this.checkExistingTagFamily(response.newTagFamilyName);
+                        if (existingTagFamily) {
+                            getTagFamily = this.$q.when(existingTagFamily);
+                        } else {
+                            let tagFamily = this.createEmptyTagFamily(response.newTagFamilyName);
+                            getTagFamily = this.dataService.persistTagFamily(this.projectName, tagFamily)
+                                .then(tagFamily => {
+                                    this.tagFamilies.push(tagFamily);
+                                    return tagFamily;
+                                });
+                        }
                     } else {
                         getTagFamily = this.$q.when(response.tagFamilyRef);
                     }
@@ -122,6 +127,20 @@ module meshAdminUi {
                     });
 
                 });
+        }
+
+        /**
+         * Given a tag family name, checks the existing tag families to see if it matches an
+         * existing tag family, and returns that tag family if so.
+         */
+        private checkExistingTagFamily(name: string): ITagFamily {
+            let matches = this.tagFamilies.filter((tf: ITagFamily) => {
+                return tf.name.toLowerCase() === name.toLowerCase();
+            });
+
+            if (0 < matches.length) {
+                return matches[0];
+            }
         }
 
         public addTag(tag: ITag) {
