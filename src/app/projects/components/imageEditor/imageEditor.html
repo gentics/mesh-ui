@@ -1,23 +1,21 @@
 <md-dialog flex="90" class="image-editor-dialog">
     <md-dialog-content class="md-dialog-content content" ng-class="{ visible: vm.loaded }">
 
-        <md-tabs md-no-ink md-no-ink-bar class="tabs-container">
-            <md-tab id="crop">
-                <md-tab-label>Crop Image</md-tab-label>
-                <md-tab-body>
-                    <image-editor-cropper params="vm.transformParams"
-                                          on-crop="vm.updateTransformParams(params)"></image-editor-cropper>
-                </md-tab-body>
-            </md-tab>
-            <md-tab id="resize" md-on-select="vm.resizeTabSelected()">
-                <md-tab-label>Resize Image</md-tab-label>
-                <md-tab-body>
-                    <image-editor-resizer params="vm.transformParams"
-                                          layout="column"
-                                          on-resize="vm.updateTransformParams(params)"></image-editor-resizer>
-                </md-tab-body>
-            </md-tab>
-        </md-tabs>
+        <div class="tabs-container">
+            <div class="tab-links">
+                <span ng-click="vm.selectedTab = 'crop'" ng-class="{ 'active': vm.selectedTab === 'crop' }">Crop</span>
+                <span ng-click="vm.resizeTabSelected()" ng-class="{ 'active': vm.selectedTab === 'resize' }">Resize</span>
+            </div>
+            <div class="tab-body" ng-class="{ 'visible': vm.selectedTab === 'crop' }">
+                <image-editor-cropper params="vm.transformParams"
+                                      on-crop="vm.updateTransformParams(params)"></image-editor-cropper>
+            </div>
+            <div class="tab-body" ng-class="{ 'visible': vm.selectedTab === 'resize' }">
+                <image-editor-resizer params="vm.transformParams"
+                                      layout="column"
+                                      on-resize="vm.updateTransformParams(params)"></image-editor-resizer>
+            </div>
+        </div>
 
     </md-dialog-content>
 

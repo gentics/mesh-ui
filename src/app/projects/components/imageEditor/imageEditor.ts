@@ -17,6 +17,7 @@ module meshAdminUi {
         // used to hide the contents which the cropper is initializing to
         // prevent some layout thrashing.
         public loaded: boolean = false;
+        public selectedTab: string = 'crop';
 
         constructor(private $mdDialog: ng.material.IDialogService,
                     private $scope: ng.IScope,
@@ -68,6 +69,7 @@ module meshAdminUi {
          */
         public resizeTabSelected() {
             this.$scope.$broadcast('reCalcViewDimensions');
+            this.selectedTab = 'resize';
         }
 
         /**

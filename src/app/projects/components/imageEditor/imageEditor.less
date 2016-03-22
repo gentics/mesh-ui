@@ -29,9 +29,9 @@
 }
 
 .image-editor-dialog {
-  height: 98%;
-  width: 98%;
-  max-width: 98%;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
 
   .tabs-container {
     height: 80vh;
@@ -43,9 +43,41 @@
     }
   }
 
+  .tab-links {
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.7);
+
+    span {
+      cursor: pointer;
+      display: inline-block;
+      margin: 10px 20px 10px 3px;
+      padding: 2px;
+      border-bottom: 2px solid transparent;
+      transition: border 0.3s;
+
+      &.active {
+        border-bottom-color: @color-primary;
+      }
+    }
+  }
+
+  .tab-body {
+    visibility: hidden;
+    &.visible {
+      visibility: visible;
+    }
+  }
+
   .crop-wrapper, .resize-wrapper {
-    width: 100%;
     height: 70vh;
+    overflow: hidden;
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 70px;
+
 
     @media only screen and (min-height: 800px) {
       height: 77vh;
@@ -82,7 +114,6 @@
   .resize-container {
     cursor: move;
     overflow: hidden;
-    position: absolute;
     box-shadow: @md-box-shadow;
     outline: 1px solid transparent;
     transition: outline 0.3s;
@@ -102,7 +133,7 @@
 
   .resize-controls {
     z-index: 10;
-    background-color: rgba(255, 255, 255, 0.7);;
+    background-color: rgba(255, 255, 255, 0.7);
 
     .button-container {
       padding-top: 20px;
