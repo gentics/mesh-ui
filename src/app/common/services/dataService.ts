@@ -629,7 +629,7 @@ module meshAdminUi {
          * Given a string, this method sends it to the Mesh Link Resolver
          * utility endpoint and returns the text with rendered links.
          */
-        public renderLinksInText(contents: string, resolveMode: string): ng.IPromise<string> {
+        public renderLinksInText(contents: string, resolveMode: string): ng.IPromise<INodeFields> {
             return this.meshPost(`utilities/linkResolver?resolveLinks=${resolveMode.toUpperCase()}`, contents);
         }
 
