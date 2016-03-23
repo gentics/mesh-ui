@@ -93,40 +93,51 @@ module meshAdminUi {
                     }
                 })
                 .then((response: INewTagDialogResponse) => {
-                    let getTagFamily: ng.IPromise<ITagFamily>;
 
-                    if (!response.tagFamilyRef && response.newTagFamilyName) {
-                        let existingTagFamily = this.checkExistingTagFamily(response.newTagFamilyName);
-                        if (existingTagFamily) {
-                            getTagFamily = this.$q.when(existingTagFamily);
-                        } else {
-                            let tagFamily = this.createEmptyTagFamily(response.newTagFamilyName);
-                            getTagFamily = this.dataService.persistTagFamily(this.projectName, tagFamily)
-                                .then(tagFamily => {
-                                    this.tagFamilies.push(tagFamily);
-                                    return tagFamily;
-                                });
-                        }
-                    } else {
-                        getTagFamily = this.$q.when(response.tagFamilyRef);
-                    }
-
-                    getTagFamily.then(tagFamily => {
-                        let tag = this.createEmptyTag(response.tagName, tagFamily);
-                        return this.dataService.persistTag(this.projectName, tag);
-                    })
-                    .then(tag => {
-                        this.tags.push(tag);
-                        this.addTag(tag);
-                        this.tagSearch = '';
-                    })
-                    .catch(error => {
-                        if (error && error.data && error.data.message) {
-                            this.notifyService.toast(error.data.message);
-                        }
-                    });
+                    this.responseToTagFamilyPromise(response)
+                        .then(tagFamily => {
+                            let tag = this.createEmptyTag(response.tagName, tagFamily);
+                            return this.dataService.persistTag(this.projectName, tag);
+                        })
+                        .then(tag => {
+                            this.tags.push(tag);
+                            this.addTag(tag);
+                            this.tagSearch = '';
+                        })
+                        .catch(error => {
+                            if (error && error.data && error.data.message) {
+                                this.notifyService.toast(error.data.message);
+                            }
+                        });
 
                 });
+        }
+
+        /**
+         * Given a response object from the new tag dialog, this method figures out whether a new tag
+         * family needs to be created, or whether an existing one should be used.
+         *
+         * In either case a promise is returned which resolves to a tag family node.
+         */
+        private responseToTagFamilyPromise(response: INewTagDialogResponse): ng.IPromise<ITagFamily> {
+            let getTagFamily: ng.IPromise<ITagFamily>;
+
+            if (!response.tagFamilyRef && response.newTagFamilyName) {
+                let existingTagFamily = this.checkExistingTagFamily(response.newTagFamilyName);
+                if (existingTagFamily) {
+                    getTagFamily = this.$q.when(existingTagFamily);
+                } else {
+                    let tagFamily = this.createEmptyTagFamily(response.newTagFamilyName);
+                    getTagFamily = this.dataService.persistTagFamily(this.projectName, tagFamily)
+                        .then(tagFamily => {
+                            this.tagFamilies.push(tagFamily);
+                            return tagFamily;
+                        });
+                }
+            } else {
+                getTagFamily = this.$q.when(response.tagFamilyRef);
+            }
+            return getTagFamily;
         }
 
         /**
