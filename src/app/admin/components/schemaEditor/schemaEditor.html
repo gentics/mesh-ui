@@ -22,15 +22,15 @@
     <div layout="row">
         <md-input-container flex flex-gt-sm="30">
             <label>Display Field</label>
-            <md-select ng-model="vm.displayFieldValue" ng-change="vm.updateDisplayField()">
-                <md-option ng-value="field" ng-repeat="field in vm.getTextFields() track by $index">{{ field.name || 'name property not set' }}</md-option>
+            <md-select ng-model="vm.displayFieldValue" ng-change="vm.updateDisplayField()" ng-model-options="{ trackBy: '$value.name'}">
+                <md-option ng-value="field" ng-repeat="field in vm.baseSchema.fields | filter: vm.textFields">{{ field.name || 'name property not set' }}</md-option>
             </md-select>
         </md-input-container>
 
         <md-input-container flex flex-gt-sm="30">
             <label>Segment Field</label>
-            <md-select ng-model="vm.segmentFieldValue" ng-change="vm.updateSegmentField()">
-                <md-option ng-value="field" ng-repeat="field in vm.getTextFields() track by $index">{{ field.name || 'name property not set' }}</md-option>
+            <md-select ng-model="vm.segmentFieldValue" ng-change="vm.updateSegmentField()" ng-model-options="{ trackBy: '$value.name'}">
+                <md-option ng-value="field" ng-repeat="field in vm.baseSchema.fields | filter: vm.textFields">{{ field.name || 'name property not set' }}</md-option>
             </md-select>
         </md-input-container>
     </div>

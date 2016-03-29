@@ -257,10 +257,13 @@ module meshAdminUi {
                 return false;
             }
 
-            const checkEmptyReducer = (valid: boolean, field: ISchemaFieldDefinition) => {
+            const fieldIsValidReducer = (valid: boolean, field: ISchemaFieldDefinition) => {
                 if (field.required) {
                     let nodeField = this.node.fields[field.name];
                     if (this.fieldIsEmpty(nodeField, field)) {
+                        return false;
+                    }
+                    if (this.numberFieldIsInvalid(nodeField, field)) {
                         return false;
                     }
                 }
@@ -268,7 +271,7 @@ module meshAdminUi {
             };
 
             if (this.schema && this.schema.fields instanceof Array) {
-                return this.schema.fields.reduce(checkEmptyReducer, true);
+                return this.schema.fields.reduce(fieldIsValidReducer, true);
             }
         }
 
@@ -285,6 +288,19 @@ module meshAdminUi {
             }
             if (!field || field === '') {
                 return true;
+            }
+            return false;
+        }
+
+        /**
+         * Returns true if the value of a number field is within any specified `min` and `max` limits.
+         */
+        private numberFieldIsInvalid(field: any, fieldDef: ISchemaFieldDefinition): boolean {
+            if (fieldDef.type === 'number') {
+                if (fieldDef.min && field < fieldDef.min ||
+                        fieldDef.max && fieldDef.max < field) {
+                    return false;
+                }
             }
             return false;
         }

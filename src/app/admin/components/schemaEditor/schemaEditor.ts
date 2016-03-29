@@ -35,7 +35,7 @@ module meshAdminUi {
          * Invoke the onChange callback and pass it the updated schema.
          */
         public schemaChanged() {
-            this.baseSchema.fields = this.baseSchema.fields.map(this.cleanFields);
+            this.baseSchema.fields.forEach(this.cleanFields);
             this.onChange({ schema: this.baseSchema });
         }
 
@@ -56,23 +56,18 @@ module meshAdminUi {
                 delete field.max;
                 delete field.step;
             }
+            if (field.hasOwnProperty('$$mdSelectId')) {
+                delete field['$$mdSelectId'];
+            }
             return field;
         };
 
         /**
-         * Returns an array of strings representing the names of string or html fields,
+         * Filter for string or html fields,
          * which may be used as the value of the `displayName` or `segmentName` property.
          */
-        public getTextFields(): ISchemaFieldDefinition[] {
-            if (!this.baseSchema || !(this.baseSchema.fields instanceof Array)) {
-                return [];
-            }
-            const textFields = (field: ISchemaFieldDefinition) => {
-                return (field.type === 'string' || field.type === 'html');
-            };
-            const fieldName = (field: ISchemaFieldDefinition) => field.name;
-
-            return this.baseSchema.fields.filter(textFields);
+        public textFields(field: ISchemaFieldDefinition) {
+            return (field.type === 'string' || field.type === 'html');
         }
 
         /**
@@ -112,6 +107,7 @@ module meshAdminUi {
             super();
             let unwatch = $scope.$watch(() => this.schema, val => {
                 if (val !== undefined) {
+                    console.log('setting schema fields', val);
                     this.baseSchema = val;
                     this.displayFieldValue = this.schema.fields.filter(f => f.name === this.schema.displayField)[0];
                     this.segmentFieldValue = this.schema.fields.filter(f => f.name === this.schema.segmentField)[0];
@@ -123,7 +119,6 @@ module meshAdminUi {
         public updateDisplayField() {
             this.schema.displayField = this.displayFieldValue.name;
             this.schemaChanged();
-
         }
 
         public updateSegmentField() {
