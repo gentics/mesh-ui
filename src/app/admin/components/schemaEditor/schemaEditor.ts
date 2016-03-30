@@ -107,7 +107,6 @@ module meshAdminUi {
             super();
             let unwatch = $scope.$watch(() => this.schema, val => {
                 if (val !== undefined) {
-                    console.log('setting schema fields', val);
                     this.baseSchema = val;
                     this.displayFieldValue = this.schema.fields.filter(f => f.name === this.schema.displayField)[0];
                     this.segmentFieldValue = this.schema.fields.filter(f => f.name === this.schema.segmentField)[0];
