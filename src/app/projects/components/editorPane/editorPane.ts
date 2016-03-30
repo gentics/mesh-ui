@@ -128,7 +128,8 @@ module meshAdminUi {
         }
 
 
-
+        // TODO: This logic will largely be replaced by a dedicated translation endpoint.
+        // See https://jira.gentics.com/browse/CL-396
         public createTranslation(langCode: string, node: INode) {
             let nodeClone = angular.copy(node);
             let displayField = this.schema.displayField;
@@ -142,7 +143,18 @@ module meshAdminUi {
                 if (typeof node.fields[segmentField] === 'string') {
                     nodeClone.fields[segmentField] = this.addLangCodeToString(nodeClone.fields[segmentField], langCode);
                 }
+                if (node.fields[segmentField].type === 'binary') {
+                    nodeClone.fields[segmentField].fileName = this.addLangCodeToString(node.fields[segmentField].fileName, langCode);
+                }
             }
+
+            // Display a warning if there are any binary fields - these cannot be handled properly
+            // until the dedicated translation endpoint is implemented in Mesh.
+            let firstBinaryField = this.mu.getFirstBinaryField(node);
+            if (firstBinaryField.key !== undefined) {
+                console.warn(`Note: binary fields cannot yet be copied to translated version.`);
+            }
+
             this.persist(nodeClone)
                 .then(() => {
                     this.updateCurrentNodeAvailableLangs(node, langCode);
