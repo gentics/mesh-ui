@@ -131,9 +131,17 @@ module meshAdminUi {
 
         public createTranslation(langCode: string, node: INode) {
             let nodeClone = angular.copy(node);
+            let displayField = this.schema.displayField;
+            let segmentField = this.schema.segmentField;
+
             nodeClone.language = langCode;
-            if (typeof node.fields[node.displayField] === 'string') {
-                nodeClone.fields[node.displayField] += ` (${langCode.toUpperCase()})`
+            if (typeof node.fields[displayField] === 'string') {
+                nodeClone.fields[displayField] += ` (${langCode.toUpperCase()})`
+            }
+            if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
+                if (typeof node.fields[segmentField] === 'string') {
+                    nodeClone.fields[segmentField] = this.addLangCodeToString(nodeClone.fields[segmentField], langCode);
+                }
             }
             this.persist(nodeClone)
                 .then(() => {
@@ -144,6 +152,24 @@ module meshAdminUi {
                         this.editorService.open(node.uuid);
                     }, 500);
                 });
+        }
+
+        /**
+         * Given a string value, append the langcode to the end.
+         * If the value has periods in it (as in a file name), then insert
+         * the langCode before the file extension:
+         *
+         * foo => foo_de
+         * foo.html => foo.de.html
+         */
+        private addLangCodeToString(value: string, langCode: string): string {
+            let parts = value.split('.');
+            if (1 < parts.length) {
+                parts.splice(-1, 0, langCode);
+                return parts.join('.');
+            } else {
+                return value + '_' + langCode;
+            }
         }
 
         private updateCurrentNodeAvailableLangs(node: INode, langCode: string) {
