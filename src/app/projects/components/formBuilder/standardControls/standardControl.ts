@@ -94,18 +94,20 @@ module meshAdminUi {
         }
 
         public keydown(event: any) {
-            var input = <HTMLInputElement>event.target,
-                key = {
-                    leftArrow: 37,
-                    rightArrow: 39,
-                    upArrow: 38,
-                    downArrow: 40
-                },
-                char = String.fromCharCode(event.which),
-                isNumeric = /[0-9]/.test(char),
-                isAlpha = /[a-zA-Z]/.test(char);
+            // Number pad keyCodes do not work with String.fromCharCode(). See http://stackoverflow.com/a/4793913/772859
+            const isNumPadNumber = (keyCode: number): boolean => (96 <= event.which && event.which <= 105);
+            let input = <HTMLInputElement>event.target;
+            let key = {
+                leftArrow: 37,
+                rightArrow: 39,
+                upArrow: 38,
+                downArrow: 40
+            };
+            let char = String.fromCharCode(event.which);
+            let isNumeric = /[0-9]/.test(char) || isNumPadNumber(event.which);
+            let isAlpha = /[a-zA-Z]/.test(char) && !isNumPadNumber(event.which);
 
-            if (isAlpha) {
+            if (isAlpha && !isNumeric) {
                 event.preventDefault();
                 return;
             }
