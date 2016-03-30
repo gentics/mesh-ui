@@ -16,8 +16,7 @@ module meshAdminUi {
 
         constructor($scope: ng.IScope,
                     private mu: MeshUtils,
-                    private contextService: ContextService,
-                    private i18nService: I18nService) {
+                    private contextService: ContextService) {
 
             let unwatch = $scope.$watch(() => this.node, val => {
                 if (val !== undefined) {
@@ -44,12 +43,11 @@ module meshAdminUi {
 
         public getFileUrl(): string {
             let projectName = this.contextService.getProject().name;
-            let lang = this.i18nService.getCurrentLang().code;
             let imageOptions = { width: 128 };
             return this.mu.getBinaryFileUrl(
                 projectName,
                 this.node.uuid,
-                lang,
+                this.node.language,
                 this.binaryProperties.fieldName,
                 this.binaryProperties.binaryField.sha512sum,
                 imageOptions);
