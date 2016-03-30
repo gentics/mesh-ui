@@ -261,6 +261,7 @@ module meshAdminUi {
                 .then(() => {
                     this.notifyService.toast('DELETED');
                     this.closeWipAndClearPane(node);
+                    this.editorService.closeAll();
                     this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
                 });
         }
