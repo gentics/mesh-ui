@@ -74,6 +74,40 @@ describe('wipService', function() {
         expect(wipService.isOpen(itemType, testItem.uuid)).toBe(true);
     });
 
+    it('updateItem() should merge new fields into existing item', function() {
+        wipService.openItem(itemType, testItem);
+        wipService.updateItem(itemType, {
+            uuid: 'some_uuid',
+            name: 'Item One Modified'
+        });
+
+        expect(wipService.getItem(itemType, testItem.uuid).name).toBe('Item One Modified');
+    });
+
+    it('updateItem() should preserve the object reference', function() {
+        wipService.openItem(itemType, testItem);
+        wipService.updateItem(itemType, {
+            uuid: 'some_uuid',
+            name: 'Item One Modified'
+        });
+
+        var modifiedItem = wipService.getItem(itemType, testItem.uuid);
+        expect(modifiedItem === testItem).toBe(true);
+    });
+
+    it('updateItem() should throw if item uuid does not match', function() {
+        wipService.openItem(itemType, testItem);
+
+        function doUpdate() {
+            wipService.updateItem(itemType, {
+                uuid: 'bad_uuid',
+                name: 'Item One Modified'
+            });
+        }
+
+        expect(doUpdate).toThrow();
+    });
+
     describe('change tracking', function() {
 
         beforeEach(function() {

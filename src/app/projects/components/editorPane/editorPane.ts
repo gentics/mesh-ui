@@ -364,16 +364,23 @@ module meshAdminUi {
         private getNodeData(schemaUuid?: string, parentNodeUuid?: string): ng.IPromise<any> {
             if (this.currentNodeId) {
                 // loading existing node
-                var wipContent = this.wipService.getItem(this.wipType, this.currentNodeId);
+                let wipContent = this.wipService.getItem(this.wipType, this.currentNodeId);
+                let wipIsModified = wipContent && this.wipService.isModified(this.wipType, wipContent);
 
-                if (wipContent) {
+                if (wipContent && wipIsModified) {
                     return this.populateFromWip(wipContent);
                 } else {
                     return this.dataService.getNode(this.projectName, this.currentNodeId, { expandAll: true })
                         .then(node => {
                             this.node = node;
                             this.tags = this.mu.nodeTagsObjectToArray(node.tags);
-                            this.openInWipService(this.node);
+                            if (!wipContent) {
+                                this.openInWipService(this.node);
+                            } else {
+                                // the node is already open as a wip, but is not modified. Therefore we use the
+                                // newly-fetched data to update that wip.
+                                this.wipService.updateItem(this.wipType, node);
+                            }
                             return this.dataService.getSchema(node.schema.uuid);
                         })
                         .then(schema => this.schema = schema);

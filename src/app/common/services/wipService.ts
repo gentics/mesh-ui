@@ -64,6 +64,20 @@ module meshAdminUi {
         }
 
         /**
+         * Updates an open wip item by extending it with the properties of the new object.
+         * Preserves the object reference.
+         */
+        public updateItem(type: string, item: any) {
+            this.validateItem(item);
+            if (!this.isOpen(type, item.uuid)) {
+                throw new Error('wipStore#updateItem: "' + type + '" with uuid "' +
+                    item.uuid + '" is not open in the wipStore.');
+            }
+
+            angular.extend(this.getItem(type, item.uuid), item);
+        }
+
+        /**
          * Set a key-value pair on the wip item's metadata object.
          */
         public setMetadata(type: string, uuid: string, key: string, value: any) {
@@ -110,7 +124,7 @@ module meshAdminUi {
         /**
          * Checks to see if the item in the store has been modified.
          */
-        public isModified(type: string, item: any): boolean {
+        public isModified(type: string, item: INode): boolean {
             let lang = this.i18nService.getCurrentLang().code;
             this.validateItem(item);
             this.checkItemInWipStore(type, item);
