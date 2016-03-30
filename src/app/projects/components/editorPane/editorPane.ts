@@ -87,12 +87,21 @@ module meshAdminUi {
                 }
             };
 
-            dispatcher.subscribe(dispatcher.events.editorServiceNodeOpened, init);
-            dispatcher.subscribe(dispatcher.events.editorServiceNodeClosed, empty);
-            dispatcher.subscribe(dispatcher.events.explorerContentsChanged, emptyIfOpenNodeDeleted);
+            // Wrapped in a setTimeout to prevent a race condition when switching langauges, where
+            // this constructor is invoked before the $destroy() handler has a chance to
+            // clean up the dispatcher subscriptions, causing init() to be called twice on the
+            // newly-opened node.
+            setTimeout(() => {
+                dispatcher.subscribe(dispatcher.events.editorServiceNodeOpened, init);
+                dispatcher.subscribe(dispatcher.events.editorServiceNodeClosed, empty);
+                dispatcher.subscribe(dispatcher.events.explorerContentsChanged, emptyIfOpenNodeDeleted);
+            });
+
             $scope.$on('$destroy', () => {
+                if (this.node !== undefined) {
+                    this.saveWipMetadata();
+                }
                 dispatcher.unsubscribeAll(init, empty, emptyIfOpenNodeDeleted);
-                this.saveWipMetadata()
             });
         }
 
@@ -132,7 +141,7 @@ module meshAdminUi {
                     this.i18nService.setCurrentLang(langCode);
                     this.$state.reload();
                     this.$timeout(() => {
-                        //this.editorService.open(node.uuid);
+                        this.editorService.open(node.uuid);
                     }, 500);
                 });
         }
