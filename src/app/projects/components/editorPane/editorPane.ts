@@ -45,6 +45,12 @@ module meshAdminUi {
 
             let ignoreNext = false;
 
+            // Save a copy of the current language name to prevent a race condition when switching languages, where
+            // this constructor is invoked before the $destroy() handler has a chance to
+            // clean up the dispatcher subscriptions, causing init() to be called twice on the
+            // newly-opened node.
+            let currentLangName = i18nService.getCurrentLang().name;
+
             const init = (event: ng.IAngularEvent, nodeUuid: string, schemaUuid?: string, parentNodeUuid?: string) => {
                 /**
                  * When a new node is created, this init function will first be called when the editorService.create()
@@ -58,6 +64,11 @@ module meshAdminUi {
                  */
                 if (ignoreNext) {
                     ignoreNext = false;
+                    return;
+                }
+
+                // see note above at declaration of currentLangName
+                if (currentLangName !== i18nService.getCurrentLang().name) {
                     return;
                 }
 
@@ -87,15 +98,9 @@ module meshAdminUi {
                 }
             };
 
-            // Wrapped in a setTimeout to prevent a race condition when switching langauges, where
-            // this constructor is invoked before the $destroy() handler has a chance to
-            // clean up the dispatcher subscriptions, causing init() to be called twice on the
-            // newly-opened node.
-            setTimeout(() => {
-                dispatcher.subscribe(dispatcher.events.editorServiceNodeOpened, init);
-                dispatcher.subscribe(dispatcher.events.editorServiceNodeClosed, empty);
-                dispatcher.subscribe(dispatcher.events.explorerContentsChanged, emptyIfOpenNodeDeleted);
-            });
+            dispatcher.subscribe(dispatcher.events.editorServiceNodeOpened, init);
+            dispatcher.subscribe(dispatcher.events.editorServiceNodeClosed, empty);
+            dispatcher.subscribe(dispatcher.events.explorerContentsChanged, emptyIfOpenNodeDeleted);
 
             $scope.$on('$destroy', () => {
                 if (this.node !== undefined) {
@@ -345,7 +350,7 @@ module meshAdminUi {
         private numberFieldIsInvalid(field: any, fieldDef: ISchemaFieldDefinition): boolean {
             if (fieldDef.type === 'number') {
                 if (fieldDef.min && field < fieldDef.min ||
-                        fieldDef.max && fieldDef.max < field) {
+                    fieldDef.max && fieldDef.max < field) {
                     return false;
                 }
             }
