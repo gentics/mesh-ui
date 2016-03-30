@@ -65,7 +65,7 @@ module meshAdminUi {
         }
 
         public getBinaryFileUrl(projectName: string, nodeUuid: string, languageCode: string, fieldName: string, sha512sum: string, imageOptions?: IImageOptions) {
-            let queryParams = `?cs=${sha512sum.substring(0, 8).toLowerCase()}`;
+            let queryParams = `?cs=${sha512sum && sha512sum.substring(0, 8).toLowerCase()}`;
             if (imageOptions !== undefined) {
                 queryParams = Object.keys(imageOptions).reduce((queryString, key) => {
                     return queryString + `&${key}=${imageOptions[key]}`;
