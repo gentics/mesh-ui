@@ -1,6 +1,6 @@
 module meshAdminUi {
 
-    declare var meshConfig: any;
+    declare var meshUiConfig: any;
 
     class PreviewSelectorController {
 
@@ -15,9 +15,9 @@ module meshAdminUi {
             if (this.canPreview()) {
                 let projectName = contextService.getProject().name;
 
-                for (let name in meshConfig.previewUrls) {
+                for (let name in meshUiConfig.previewUrls) {
                     if (name === 'default' || name === projectName) {
-                        let urls = meshConfig.previewUrls[name].map(obj => {
+                        let urls = meshUiConfig.previewUrls[name].map(obj => {
                             let label = Object.keys(obj)[0];
                             let url = obj[label];
                             return {label, url};
@@ -30,10 +30,10 @@ module meshAdminUi {
         }
 
         /**
-         * Returns true if a previewUrl has been provided in the meshConfig file.
+         * Returns true if a previewUrl has been provided in the mesh-ui-config.js file.
          */
         public canPreview(): boolean {
-            let url = meshConfig.previewUrls;
+            let url = meshUiConfig.previewUrls;
             return !!(url && url !== '');
         }
 
@@ -42,7 +42,7 @@ module meshAdminUi {
         }
 
         /**
-         * If a previewUrl has been set in the meshConfig.js file, this method can be used to open that URL
+         * If a previewUrl has been set in the mesh-ui-config.js file, this method can be used to open that URL
          * and POST the current node data to it, for the purpose of rendering a preview.
          */
         public preview(previewUrl: string, linkRenderMode: string, node: INode) {

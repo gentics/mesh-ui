@@ -1,6 +1,6 @@
 module meshAdminUi {
 
-    declare var meshConfig: any;
+    declare var meshUiConfig: any;
 
     /**
      * Used to log a user in & out, and keep track of that fact.
@@ -55,7 +55,7 @@ module meshAdminUi {
             authHeaderValue = "Basic " + btoa(userName + ":" + password);
             config.headers[authHeaderKey] = authHeaderValue;
 
-            this.userRequestInFlight = $http.get(meshConfig.apiUrl + 'auth/me', config)
+            this.userRequestInFlight = $http.get(meshUiConfig.apiUrl + 'auth/me', config)
                 .then(response => {
                     if (response.status === 200) {
                         this._currentUser = <IUser>response.data;
@@ -94,7 +94,7 @@ module meshAdminUi {
                 headers: { [this.AUTH_HEADER_NAME]: this.authString }
             };
             let $http = <ng.IHttpService>this.$injector.get("$http");
-            this.userRequestInFlight = $http.get(meshConfig.apiUrl + 'auth/me', config)
+            this.userRequestInFlight = $http.get(meshUiConfig.apiUrl + 'auth/me', config)
                 .then(response => {
                     this._currentUser = <IUser>response.data;
                     this.userRequestInFlight = undefined;
@@ -121,7 +121,7 @@ module meshAdminUi {
             let $http = <ng.IHttpService>this.$injector.get("$http"),
                 deferred = this.$q.defer();
 
-            $http.get(meshConfig.apiUrl + 'auth/logout').then(() => {
+            $http.get(meshUiConfig.apiUrl + 'auth/logout').then(() => {
                 // TODO: need to actually invalidate the basic auth on the browser, see
                 // example solution here http://stackoverflow.com/a/492926/772859
                 this._isLoggedIn = false;

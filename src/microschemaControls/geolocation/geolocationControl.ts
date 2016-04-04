@@ -1,6 +1,6 @@
 declare var meshMicroschemaControls: any;
 declare var google: any;
-declare var meshConfig: any;
+declare var meshUiConfig: any;
 
 var meshMicroschemaControls = meshMicroschemaControls || {};
 
@@ -80,7 +80,7 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
             restrict: 'E',
             replace: true,
             link: geolocationControlLinkFn,
-            templateUrl: meshConfig.microschemaControlsLocation + '/geolocation/geolocationControl.html',
+            templateUrl: meshUiConfig.microschemaControlsLocation + '/geolocation/geolocationControl.html',
             scope: true
         };
     }

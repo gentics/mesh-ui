@@ -268,7 +268,7 @@ function build_index() {
             '**/*.css'
         ], {cwd: 'build/'});
 
-        return gulp.src(['src/index.html', 'src/meshConfig.js'])
+        return gulp.src(['src/index.html', 'src/mesh-ui-config.js'])
             .pipe(inject(css, {addRootSlash: false}))
             .pipe(inject(vendorJs, {
                 addRootSlash: false,
@@ -418,7 +418,7 @@ function dist_index() {
         var js = gulp.src('app/app.js', {cwd: 'dist'});
         var empty = gulp.src('');
 
-        return gulp.src(['src/index.html', 'src/meshConfig.js'])
+        return gulp.src(['src/index.html', 'src/mesh-ui-config.js'])
             .pipe(inject(css, {
                 addRootSlash: false
             }))
@@ -533,7 +533,7 @@ gulp.task('watch', ['default'], function() {
     gulp.watch('src/microschemaControls/**/*.*', copy_microschema_controls);
     gulp.watch('src/app/**/*.html', build_appTemplates);
     gulp.watch('src/**/*.less', build_appStyles);
-    gulp.watch(['src/index.html', 'src/meshConfig.js'], build_index);
+    gulp.watch(['src/index.html', 'src/mesh-ui-config.js'], build_index);
     gulp.watch('src/assets/**/*.*', build_staticAssets);
 });
 

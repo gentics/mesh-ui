@@ -24,7 +24,7 @@
  * }
  * ```
  *
- * And in meshConfig.js we have:
+ * And in mesh-ui-config.js we have:
  *
  * ```
  * microschemaControls: ["example/exampleControl"]
@@ -135,9 +135,9 @@ var meshMicroschemaControls = meshMicroschemaControls || {};
             // combination of link, compile and controller as you wish.
             link: exampleLinkFn,
             // The templateUrl *must* follow this form, i.e. it must start with the string
-            // "../microschemaControls/", followed by the path defined in meshConfig, followed
+            // "../microschemaControls/", followed by the path defined in meshUiConfig, followed
             // by the ".html" extension.
-            templateUrl: meshConfig.microschemaControlsLocation + '/example/exampleControl.html',
+            templateUrl: meshUiConfig.microschemaControlsLocation + '/example/exampleControl.html',
             // do not use an isolated scope in this case. The proxy directive does this for
             // you, so doing so here will prevent this directive from having access to the
             // field values.

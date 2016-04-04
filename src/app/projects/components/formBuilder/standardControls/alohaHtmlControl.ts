@@ -1,7 +1,7 @@
 module meshAdminUi {
 
     declare var Aloha: any;
-    declare var meshConfig: any;
+    declare var meshUiConfig: any;
 
     /**
      * This is the Aloha Editor implementation.
@@ -29,8 +29,8 @@ module meshAdminUi {
         // editable instances in the app, so we only need to get it once.
         let alohaToolbar: HTMLElement;
 
-        if (meshConfig.alohaPlugins && meshConfig.alohaPlugins instanceof Array && 0 < meshConfig.alohaPlugins.length) {
-            alohaPlugins = meshConfig.alohaPlugins;
+        if (meshUiConfig.alohaPlugins && meshUiConfig.alohaPlugins instanceof Array && 0 < meshUiConfig.alohaPlugins.length) {
+            alohaPlugins = meshUiConfig.alohaPlugins;
         } else {
             alohaPlugins = defaultAlohaPlugins;
         }
@@ -319,8 +319,8 @@ module meshAdminUi {
                 };
 
 
-                if (meshConfig.alohaSettings && 0 < Object.keys(meshConfig.alohaSettings).length) {
-                    activeSettings = angular.merge({}, meshConfig.alohaSettings, requiredAlohaSettings);
+                if (meshUiConfig.alohaSettings && 0 < Object.keys(meshUiConfig.alohaSettings).length) {
+                    activeSettings = angular.merge({}, meshUiConfig.alohaSettings, requiredAlohaSettings);
                 } else {
                     activeSettings = angular.merge({}, defaultAlohaSettings, requiredAlohaSettings);
                 }

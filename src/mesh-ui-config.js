@@ -4,7 +4,7 @@
      * Settings which can be configured per app instance, without requiring the app be re-built from
      * source.
      */
-    var meshConfig = {
+    var meshUiConfig = {
         // The URL to the Mesh API
         apiUrl: '/api/v1/',
 
@@ -62,6 +62,6 @@
     };
 
 
-    window.meshConfig = meshConfig;
+    window.meshUiConfig = meshUiConfig;
 
 })(window, document);

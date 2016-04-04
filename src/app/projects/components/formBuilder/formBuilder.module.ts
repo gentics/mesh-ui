@@ -1,20 +1,20 @@
 module meshAdminUi {
 
     // headjs is used to lazy-load the js and css for any custom microschema
-    // controls defined in meshConfig.json.
+    // controls defined in mesh-ui-config.json.
     declare var head: any;
 
     // this module relies on a couple of global variables, so this is just
     // to stop the TypeScript compiler complaining.
-    declare var meshConfig: any;
+    declare var meshUiConfig: any;
     declare var meshMicroschemaControls: any;
 
-    let controls = meshConfig.microschemaControls;
-    let controlsLocation = meshConfig.microschemaControlsLocation;
+    let controls = meshUiConfig.microschemaControls;
+    let controlsLocation = meshUiConfig.microschemaControlsLocation;
 
     /**
      * This function loads the .js and .css files associated with any custom microschema controls
-     * defined in the meshConfig.microschemaControls array. The .js files should be AngularJS
+     * defined in the meshUiConfig.microschemaControls array. The .js files should be AngularJS
      * directives which are then lazily registered with the app under the naming convention:
      *
      * "foo" -> "customControlFoo"

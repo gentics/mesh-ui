@@ -1,5 +1,5 @@
 {
-  "VERSION": "0.5.24",
+  "VERSION": "0.5.25",
   "VENDOR_SCRIPTS": [
     "bower_components/angular/angular.js",
     "bower_components/angular-animate/angular-animate.js",
@@ -32,14 +32,14 @@
     "bower_components/angularjs-slider/dist/rzslider.css"
   ],
   "KARMA_FILES_BUILD": [
-    "build/meshConfig.js",
+    "build/mesh-ui-config.js",
     "bower_components/angular-mocks/angular-mocks.js",
     "build/app/templates.js",
     "build/app/app.js",
     "src/app/**/*.spec.js"
   ],
   "KARMA_FILES_DIST": [
-    "dist/meshConfig.js",
+    "dist/mesh-ui-config.js",
     "dist/app/app.js",
     "bower_components/angular-mocks/angular-mocks.js",
     "src/app/**/*.spec.js"

@@ -1,7 +1,7 @@
 module meshAdminUi {
 
-    // the global meshConfig as defined in meshConfig.js
-    declare var meshConfig: any;
+    // the global meshUiConfig as defined in mesh-ui-config.js
+    declare var meshUiConfig: any;
 
     /**
      * A collection of static utility methods for use throughout the app.
@@ -71,7 +71,7 @@ module meshAdminUi {
                     return queryString + `&${key}=${imageOptions[key]}`;
                 }, queryParams);
             }
-            return meshConfig.apiUrl + projectName + `/nodes/${nodeUuid}/languages/${languageCode}/fields/${fieldName + queryParams}`;
+            return meshUiConfig.apiUrl + projectName + `/nodes/${nodeUuid}/languages/${languageCode}/fields/${fieldName + queryParams}`;
         }
 
         /**

@@ -1,7 +1,5 @@
 module meshAdminUi {
 
-    declare var meshConfig: any;
-
     function editorPaneDirective() {
         return {
             restrict: 'E',
@@ -141,11 +139,11 @@ module meshAdminUi {
             let segmentField = this.schema.segmentField;
 
             nodeClone.language = langCode;
-            if (typeof node.fields[displayField] === 'string') {
+            if (node.fields[segmentField] !== undefined) {
                 nodeClone.fields[displayField] += ` (${langCode.toUpperCase()})`
             }
             if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
-                if (typeof node.fields[segmentField] === 'string') {
+                if (node.fields[segmentField] !== undefined) {
                     nodeClone.fields[segmentField] = this.addLangCodeToString(nodeClone.fields[segmentField], langCode);
                 }
                 if (node.fields[segmentField].type === 'binary') {

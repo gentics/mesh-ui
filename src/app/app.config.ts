@@ -4,7 +4,7 @@ module meshAdminUi {
         .config(appConfig)
         .run(appRunBlock);
 
-    declare var meshConfig:any;
+    declare var meshUiConfig:any;
 
     /**
      * App-wide config settings.
@@ -28,7 +28,7 @@ module meshAdminUi {
             .primaryPalette('light-blue')
             .accentPalette('blue');
 
-        dataServiceProvider.setApiUrl(meshConfig.apiUrl);
+        dataServiceProvider.setApiUrl(meshUiConfig.apiUrl);
 
         paginationTemplateProvider.setPath('common/components/pagination/pagination.html');
 
