@@ -103,6 +103,9 @@ module meshAdminUi {
                         if (this.wipService.isOpen(this.wipType, uuid)) {
                             this.wipService.closeItem(this.wipType, {uuid: uuid});
                         }
+                        if (this.explorerContentsListService.isSelected(uuid)) {
+                            this.explorerContentsListService.toggleSelect(uuid);
+                        }
                     });
                     this.notifyService.toast('DELETED_NODES', { count: deletedUuids.length });
                 })
