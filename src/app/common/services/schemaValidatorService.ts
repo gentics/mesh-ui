@@ -67,7 +67,7 @@ module meshAdminUi {
     // ensure segmentField matches an actual field name
     function segmentFieldMatchesFieldName(obj: any, error: Function): boolean {
         let fieldNames = obj.fields.map(field => field.name);
-        if (fieldNames.indexOf(obj.segmentField) === -1) {
+        if (obj.segmentField && obj.segmentField !== '' && fieldNames.indexOf(obj.segmentField) === -1) {
             error('ERR_SCHEMA_SEGMENT_FIELD_DOES_NOT_MATCH', { value: obj.segmentField });
             return false;
         }
@@ -154,7 +154,6 @@ module meshAdminUi {
         public validateSchemaJson(json: string, onError?: IValidationErrorFn): boolean {
             const validatorFns = [
                 displayFieldIsSet,
-                segmentFieldIsSet,
                 fieldsIsNotEmpty,
                 displayFieldMatchesFieldName,
                 segmentFieldMatchesFieldName,

@@ -147,6 +147,9 @@ module meshAdminUi {
         private extendSchemaWithJsonValues(json: string) {
             let jsonObject = JSON.parse(json);
             angular.extend(this.schema, jsonObject);
+            if (this.schema.segmentField === '' || this.schema.segmentField === null) {
+                delete this.schema.segmentField;
+            }
         }
 
         /**

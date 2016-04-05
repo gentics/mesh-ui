@@ -68,7 +68,7 @@ module meshAdminUi {
          *
          * TODO: allow other field types: https://jira.gentics.com/browse/CL-408
          */
-        public validDisplayFields(field: ISchemaFieldDefinition) {
+        public validDisplayFieldsFilter(field: ISchemaFieldDefinition) {
             const validTypes = ['string'];
             return -1 < validTypes.indexOf(field.type);
         }
@@ -79,7 +79,7 @@ module meshAdminUi {
          *
          * TODO: allow other field types: https://jira.gentics.com/browse/CL-408
          */
-        public validSegmentFields(field: ISchemaFieldDefinition) {
+        public validSegmentFieldsFilter(field: ISchemaFieldDefinition) {
             const validTypes = ['string', 'binary'];
             return -1 < validTypes.indexOf(field.type);
         }

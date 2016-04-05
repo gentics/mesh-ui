@@ -69,6 +69,20 @@ describe('SchemaValidatorService', function() {
             expect(result).toBe(false);
         });
 
+        it('should allow a missing segmentField', function() {
+            delete validSchema.segmentField;
+            var result = service.validateSchemaJson(JSON.stringify(validSchema));
+
+            expect(result).toBe(true);
+        });
+
+        it('should allow an empty segmentField', function() {
+            validSchema.segmentField = '';
+            var result = service.validateSchemaJson(JSON.stringify(validSchema));
+
+            expect(result).toBe(true);
+        });
+ 
         describe('error conditions', function() {
 
             function testErrorMessage(badSchema, expectedMessage) {
@@ -102,16 +116,6 @@ describe('SchemaValidatorService', function() {
             it('should display correct error for wrong data type displayField', function() {
                 validSchema.displayField = 42;
                 testErrorMessage(validSchema, 'displayField value "42" does not match any fields');
-            });
-
-            it('should display correct error for missing segmentField', function() {
-                delete validSchema.segmentField;
-                testErrorMessage(validSchema, 'Please specify a segmentField');
-            });
-
-            it('should display correct error for empty string segmentField', function() {
-                validSchema.segmentField = '';
-                testErrorMessage(validSchema, 'Please specify a segmentField');
             });
 
             it('should display correct error for non-existent segmentField', function() {
