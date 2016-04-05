@@ -63,11 +63,25 @@ module meshAdminUi {
         };
 
         /**
-         * Filter for string or html fields,
+         * Filter for fields which are valid displayField values,
          * which may be used as the value of the `displayName` or `segmentName` property.
+         *
+         * TODO: allow other field types: https://jira.gentics.com/browse/CL-408
          */
-        public textFields(field: ISchemaFieldDefinition) {
-            return (field.type === 'string' || field.type === 'html');
+        public validDisplayFields(field: ISchemaFieldDefinition) {
+            const validTypes = ['string'];
+            return -1 < validTypes.indexOf(field.type);
+        }
+
+        /**
+         * Filter for fields which are valid displayField values,
+         * which may be used as the value of the `displayName` or `segmentName` property.
+         *
+         * TODO: allow other field types: https://jira.gentics.com/browse/CL-408
+         */
+        public validSegmentFields(field: ISchemaFieldDefinition) {
+            const validTypes = ['string', 'binary'];
+            return -1 < validTypes.indexOf(field.type);
         }
 
         /**
