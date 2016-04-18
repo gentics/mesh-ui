@@ -1,5 +1,6 @@
 module meshAdminUi {
 
+    declare var meshUiConfig: any;
 
     /**
      * Interface used to specify which nodes to retrieve in each bundle.
@@ -24,7 +25,8 @@ module meshAdminUi {
     export interface INodeQueryParams {
         expand?: string;
         expandAll?: boolean;
-        lang?: string;
+        // can be set to "false" to omit the language parameter.
+        lang?: string|boolean;
         role?: string;
     }
 
@@ -113,9 +115,11 @@ module meshAdminUi {
             return this.apiUrl + encodeURI(url);
         }
 
-        private makeConfigObject(params?:any, config?:any) {
+        private makeConfigObject(params?: any, config?:any) {
             params = params || {};
-            params.lang = params.lang || this.i18nService.getCurrentLang().code;
+            if (params.lang !== false) {
+                params.lang = params.lang || this.i18nService.getCurrentLang().code;
+            }
             config = config || {};
             config.params = params;
             return config;
@@ -349,8 +353,7 @@ module meshAdminUi {
                 filter: {
                     bool: {
                         must: [
-                            { "term": { "project.name": projectName.toLowerCase() } },
-                            { "term": { "language": this.i18nService.getCurrentLang().code.toLowerCase() } }
+                            { "term": { "project.name": projectName.toLowerCase() } }
                         ]
                     }
                 },
@@ -390,6 +393,7 @@ module meshAdminUi {
         }
 
         public searchNodes(query : ISearchQuery, queryParams?: INodeListQueryParams): ng.IPromise<IListResponse<INode>>  {
+            queryParams.lang = false;
             return this.meshPost('search/nodes', query, queryParams);
         }
 
@@ -1012,10 +1016,14 @@ module meshAdminUi {
     function languageRequestInterceptor(i18nService) {
         return {
             request: function (config) {
-                // TODO: need to read the API URL from the config file
-                if (config.url.indexOf('/api') > -1) {
+                config = angular.copy(config);
+                if (config.url.indexOf(meshUiConfig.apiUrl) > -1) {
                     config.params = config.params || {};
-                    config.params.lang = i18nService.getCurrentLang().code;
+                    if (config.params.lang === false) {
+                        delete config.params.lang;
+                    } else {
+                        config.params.lang = i18nService.getCurrentLang().code;
+                    }
                 }
                 return config;
             }
