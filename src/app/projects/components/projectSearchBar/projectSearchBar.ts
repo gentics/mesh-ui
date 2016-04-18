@@ -6,7 +6,7 @@ module meshAdminUi {
         public currentNode: INode;
         public availableTags: ITag[];
         public selectedTags: ITag[] = [];
-        public searchTerm: string;
+        public searchTerm: string = '';
         public searchAll: boolean = false;
         private debouncedPublish: Function;
 
@@ -29,7 +29,11 @@ module meshAdminUi {
             };
             dispatcher.subscribe(dispatcher.events.contextChanged, changeHandler);
             $scope.$on('$destroy', () => dispatcher.unsubscribeAll(changeHandler));
-            $scope.$watch(() => this.searchAll, () => this.publishSearchParameters());
+            $scope.$watch(() => this.searchAll, (oldVal, newVal) => {
+                if (oldVal !== newVal) {
+                    this.publishSearchParameters()
+                }
+            });
         }
 
         public getPlaceholderText() {
