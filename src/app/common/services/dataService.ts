@@ -407,9 +407,9 @@ module meshAdminUi {
          */
         public persistNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             let isNew = !node.hasOwnProperty('created');
+            let sanitizedNode = this.sanitizeFields(node);
             this.clearCache('nodes');
-            return isNew ? this.createNode(projectName, node, queryParams) : this.updateNode(projectName, node, queryParams);
-
+            return isNew ? this.createNode(projectName, sanitizedNode, queryParams) : this.updateNode(projectName, sanitizedNode, queryParams);
         }
         private createNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             return this.meshPost(projectName + '/nodes', node, queryParams)
@@ -446,6 +446,26 @@ module meshAdminUi {
                                 .then(() => newNode);
                         });
                 });
+        }
+
+        /**
+         * Perform any needed clean-up of fields before sending the object to Mesh.
+         */
+        private sanitizeFields(node: INode): INode {
+            let clone = angular.copy(node);
+            // Returns true if obj is an object with no properties.
+            const isEmptyObject = (obj) => typeof obj === 'object' && Object.keys(obj).length === 0;
+
+            for (let fieldName in clone.fields) {
+                let fieldVal = clone.fields[fieldName];
+                if (fieldVal instanceof Array) {
+                    // Mesh errors if a list of nodes contains an empty object, so filter
+                    // any of these out.
+                    clone.fields[fieldName] = fieldVal.filter(item => !isEmptyObject(item));
+                }
+            }
+
+            return clone;
         }
 
         /**
