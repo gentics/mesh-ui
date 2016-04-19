@@ -25,7 +25,8 @@ module meshAdminUi {
     export interface INodeQueryParams {
         expand?: string;
         expandAll?: boolean;
-        // can be set to "false" to omit the language parameter.
+        // can be set to "false" to omit the language parameter,
+        // or "*" to set lang parameter to all available languages.
         lang?: string|boolean;
         role?: string;
     }
@@ -393,8 +394,62 @@ module meshAdminUi {
         }
 
         public searchNodes(query : ISearchQuery, queryParams?: INodeListQueryParams): ng.IPromise<IListResponse<INode>>  {
-            queryParams.lang = false;
-            return this.meshPost('search/nodes', query, queryParams);
+            queryParams.lang = '*';
+            return this.meshPost('search/nodes', query, queryParams)
+                .then((response: IListResponse<INode>) => {
+                    // because we are search for all languages (*), Mesh will return multiple nodes of the same
+                    // UUID if it exists in more than one language. In this case we need to filter out all but one
+                    // language version so as to not list multiple versions on the same node.
+                    let currentLang = this.i18nService.getCurrentLang().code;
+                    let defaultLang = this.i18nService.getDefaultLang().code;
+                    response.data = this.filterNodesByLanguage(response.data, currentLang, defaultLang);
+                    
+                    return response;
+                })
+        }
+
+        /**
+         * Given an array of Nodes, this method will look for any duplicated uuids and ensure there that only
+         * one of them is returned. The rule on which one to pick is as follows:
+         * 1. If the node exists in the current language, keep that one.
+         * 2. Else if the node exists in the default language, keep that one.
+         * 3. Else return the node whose language code comes first alphabetically.
+         * 
+         */
+        private filterNodesByLanguage(nodes: INode[], currentLang: string, defaultLang: string): INode[] {
+            // return an array of nodes with the given UUID.
+            const nodesWithUuid = (uuid: string) => nodes.filter(node => node.uuid === uuid);
+            // an array of unique uuids
+            const uuids = nodes
+                .map(node => node.uuid)
+                .filter((uuid, i, uuids) => uuids.indexOf(uuid) === i);
+
+            let filtered: INode[] = [];
+            uuids.forEach(uuid => {
+                let instances = nodesWithUuid(uuid);
+                let node;
+
+                if (instances.length === 1) {
+                    node = instances;
+                } else {
+                    let availableLangs = instances.map(node => node.language);
+
+                    if (-1 < availableLangs.indexOf(currentLang)) {
+                        // use the current lang
+                        node = instances[availableLangs.indexOf(currentLang)];
+                    } else if (-1 < availableLangs.indexOf(defaultLang)) {
+                        // use the default lang
+                        node = instances[availableLangs.indexOf(defaultLang)];
+                    } else {
+                        // use the alphabetical first lang
+                        let alphabeticalFirstIndex = availableLangs.indexOf(availableLangs.sort()[0]);
+                        node = instances[alphabeticalFirstIndex];
+                    }
+                }
+                filtered = filtered.concat(node);
+            });
+
+            return filtered;
         }
 
         /**
@@ -402,7 +457,19 @@ module meshAdminUi {
          */
         public getNode(projectName, uuid, queryParams?: INodeQueryParams):ng.IPromise<any> {
             queryParams = queryParams || {};
-            queryParams.lang = this.i18nService.languages.map(lang => lang.code).join(',');
+
+            // Get all available languages, but list the current language first
+            const currLangCode = this.i18nService.getCurrentLang().code;
+            const sortCurrentLangFirst = (a: string, b: string) => {
+                if (a === currLangCode) {
+                    return -1;
+                }
+                return a < b ? -1 : 1;
+            };
+            queryParams.lang = this.i18nService.languages
+                .map(lang => lang.code)
+                .sort(sortCurrentLangFirst)
+                .join(',');
             return this.meshGet(projectName + '/nodes/' + uuid, queryParams);
         }
 
@@ -1013,16 +1080,25 @@ module meshAdminUi {
         selectiveCacheProvider.setCacheableGroups(cacheable);
     }
 
-    function languageRequestInterceptor(i18nService) {
+    function languageRequestInterceptor(i18nService: I18nService) {
         return {
             request: function (config) {
                 config = angular.copy(config);
                 if (config.url.indexOf(meshUiConfig.apiUrl) > -1) {
                     config.params = config.params || {};
-                    if (config.params.lang === false) {
-                        delete config.params.lang;
-                    } else {
-                        config.params.lang = i18nService.getCurrentLang().code;
+
+                    switch (config.params.lang) {
+                        case false:
+                            delete config.params.lang;
+                            break;
+                        case '*':
+                            config.params.lang = i18nService.getAvailableLanguages().map(lang => lang.code).join(',');
+                            break;
+                        case undefined:
+                            config.params.lang = i18nService.getCurrentLang().code;
+                            break;
+                        default:
+                            // leave as-is
                     }
                 }
                 return config;

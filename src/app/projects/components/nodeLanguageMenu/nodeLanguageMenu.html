@@ -8,18 +8,17 @@
     <mh-dropdown-body>
         <div class="node-language-menu menu-body">
             <div ng-if="0 < vm.node.availableLanguages.length">
-                <div ng-repeat="code in vm.node.availableLanguages"
-                     class="available-btn"
-                     ng-if="code !== vm.node.language">
-                    <button class="btn btn-small btn-primary" ng-click="vm.goToTranslation(code)">
-                        Available in {{ code }}
+                <div ng-repeat="lang in vm.getAvailableLanguages(vm.node)"
+                     class="available-btn">
+                    <button class="btn btn-small btn-primary" ng-click="vm.goToTranslation(lang.code)">
+                        <span translate translate-values="{ lang: lang.name }">AVAILABLE_IN</span>
                     </button>
                 </div>
             </div>
-            <div ng-if="0 < vm.unusedLangs.length">
-                <div ng-repeat="code in vm.unusedLangs" class="translate-btn">
-                    <button class="btn btn-small" ng-click="vm.translateClick(code)">
-                        Translate to {{ code }}
+            <div ng-if="vm.showTranslateButton !== 'false' && 0 < vm.unusedLangs.length">
+                <div ng-repeat="lang in vm.unusedLangs" class="translate-btn">
+                    <button class="btn btn-small" ng-click="vm.translateClick(lang.code)">
+                        <span translate translate-values="{ lang: lang.name }">TRANSLATE_TO</span>
                     </button>
                 </div>
             </div>

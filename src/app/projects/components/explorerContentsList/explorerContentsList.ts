@@ -37,8 +37,13 @@ module meshAdminUi {
                     private searchService: SearchService,
                     private explorerContentsListService: ExplorerContentsListService,
                     private contextService: ContextService,
-                    private editorService: EditorService) {
+                    private editorService: EditorService,
+                    private i18nService: I18nService,
+                    private i18n: I18nFilter,
+                    private $timeout: ng.ITimeoutService,
+                    private confirmActionDialog: ConfirmActionDialog) {
 
+            explorerContentsListService.clearSelection();
             const searchTermHandler = (event, params: INodeSearchParams) => {
                 this.searchQuery = params.searchTerm;
             };
@@ -57,8 +62,10 @@ module meshAdminUi {
         /**
          * Toggle whether the items at index is selected.
          */
-        public toggleSelect(uuid: string) {
-            this.explorerContentsListService.toggleSelect(uuid);
+        public toggleSelect(node: INode) {
+            if (this.isAvailableInCurrentLang(node)) {
+                this.explorerContentsListService.toggleSelect(node.uuid);
+            }
         }
 
         /**
@@ -69,19 +76,42 @@ module meshAdminUi {
         }
 
         /**
+         * Returns true if the node is available in the current language.
+         */
+        public isAvailableInCurrentLang(node: INode): boolean {
+            return 0 < node.availableLanguages.filter(lang => this.i18nService.getCurrentLang().code === lang).length;
+        }
+
+        /**
          * Transition to the contentEditor view for the given uuid
          */
         public openNode(node: INode, event: ng.IAngularEvent) {
             event.preventDefault();
             event.stopPropagation();
             if (node.container || node.hasOwnProperty('displayName')) {
-                this.explorerContentsListService.clearSelection();
                 this.$state.go('projects.node', {
                     projectName: this.contextService.getProject().name, nodeId: node.uuid
                 });
             } else {
                 this.editNode(node, event);
             }
+        }
+        
+        public openNodeInLanguage(code: string, node: INode) {
+            let languageName = this.i18nService.getLanguageInfo(code).name;
+            this.confirmActionDialog.show({
+                title: this.i18n('SWITCH_LANGUAGE_AND_OPEN_TITLE', { lang: `${languageName} (${code})`}),
+                message: this.i18n('SWITCH_LANGUAGE_AND_OPEN_MESSAGE', { lang: languageName }),
+                confirmLabel: 'OKAY',
+                cancelLabel: 'CANCEL',
+                confirmButtonClass: 'btn-primary'
+            }).then(() => {
+                this.i18nService.setCurrentLang(code);
+                this.$state.reload();
+                this.$timeout(() => {
+                    this.editorService.open(node.uuid);
+                }, 500);
+            })
         }
 
         /**

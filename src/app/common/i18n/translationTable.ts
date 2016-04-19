@@ -51,6 +51,22 @@ module meshAdminUi {
         'DELETED_NODES': {
             en: 'Deleted {{ count }} nodes',
             de: '{{ count }} nodes gelöscht'
+        },
+        'AVAILABLE_IN': {
+            en: 'Available in {{ lang }}',
+            de: 'In {{ lang }} verfügbar'
+        },
+        'TRANSLATE_TO': {
+            en: 'Translate to {{ lang }}',
+            de: 'In {{ lang }} übersetzen'
+        },
+        'SWITCH_LANGUAGE_AND_OPEN_TITLE': {
+            en: 'Switch Language to {{ lang }}?',
+            de: 'Auf {{ lang }} ändern?'
+        },
+        'SWITCH_LANGUAGE_AND_OPEN_MESSAGE': {
+            en: 'In order to open this node in {{ lang }}, the user interface language will be set to {{ lang }}',
+            de: 'Um diesen Node zu öffnen, muss das Benutzeroberfläche zu {{ lang }} geändert werden'
         }
     };
 

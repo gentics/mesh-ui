@@ -3,7 +3,9 @@ module meshAdminUi {
     class NodeLanguageMenuController {
 
         public node: INode;
-        public unusedLangs: string[] = [];
+        private omitCurrentLanguage: any = false;
+        private showTranslateButton: any = true;
+        public unusedLangs: ILanguageInfo[] = [];
         private onTranslateClick: Function;
         private onChangeLanguage: Function;
 
@@ -17,14 +19,24 @@ module meshAdminUi {
             });
         }
 
-        private getUnusedLangs() {
-            let available = this.i18nService.getAvailableLanguages().map(lang => lang.code);
+        private getUnusedLangs(): ILanguageInfo[] {
+            let available = this.i18nService.getAvailableLanguages();
             if (!this.node.availableLanguages) {
                 return [];
             }
-            return available.filter(code => {
-                return this.node.availableLanguages.indexOf(code) == -1;
+            return available.filter(lang => {
+                return this.node.availableLanguages.indexOf(lang.code) == -1;
             });
+        }
+
+        public getAvailableLanguages(node: INode): ILanguageInfo[] {
+            let langCodes;
+            if (this.omitCurrentLanguage !== false && this.omitCurrentLanguage !== 'false') {
+                langCodes = node.availableLanguages.filter(lang => lang !== node.language);
+            } else {
+                langCodes = node.availableLanguages;
+            }
+            return langCodes.map(code => this.i18nService.getLanguageInfo(code));
         }
 
         public translateClick(code: string) {
@@ -45,6 +57,8 @@ module meshAdminUi {
             bindToController: true,
             scope: {
                 node: '=',
+                omitCurrentLanguage: '@',
+                showTranslateButton: '@',
                 onTranslateClick: '&',
                 onChangeLanguage: '&'
             }

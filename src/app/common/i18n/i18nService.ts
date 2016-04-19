@@ -55,6 +55,7 @@ module meshAdminUi {
     export class I18nService {
         private currentLang: string;
         private isoLangs: any;
+        private languageInfoCache: any = {};
 
         constructor(private $translate: ng.translate.ITranslateService,
                     private localStorageService,
@@ -99,6 +100,13 @@ module meshAdminUi {
             return this.codeToFullInfo(this.currentLang, this.isoLangs);
         }
 
+        /**
+         * Returns the default language.
+         */
+        public getDefaultLang(): ILanguageInfo {
+            return this.codeToFullInfo(this.defaultLang, this.isoLangs);
+        }
+
         public getLanguageInfo(code: string): ILanguageInfo {
             if (this.validateLanguageCode(code)) {
                 return this.codeToFullInfo(code, this.isoLangs);
@@ -114,13 +122,17 @@ module meshAdminUi {
         }
 
         /**
+         * Given an ISO language code, returns a ILanguageInfo object.
          */
         private codeToFullInfo(code, isoLangs): ILanguageInfo {
-            return {
-                code: code,
-                name: isoLangs[code].name,
-                nativeName: isoLangs[code].nativeName
-            };
+            if (!this.languageInfoCache.hasOwnProperty(code)) {
+                this.languageInfoCache[code] = {
+                    code: code,
+                    name: isoLangs[code].name,
+                    nativeName: isoLangs[code].nativeName
+                };
+            }
+            return this.languageInfoCache[code];
         }
 
         /**

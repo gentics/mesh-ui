@@ -8,8 +8,11 @@
                  pagination-id="'bdl_' + bundle.schema.uuid"
                  total-items="bundle._metainfo.totalCount"
                  class="bundle-item"
-                 ng-class="{'selected' : vm.isSelected(node.uuid) }"
-                 ng-click="vm.toggleSelect(node.uuid)"
+                 ng-class="{
+                    'selected' : vm.isSelected(node.uuid),
+                    'untranslated': !vm.isAvailableInCurrentLang(node)
+                 }"
+                 ng-click="vm.toggleSelect(node)"
                  layout="row">
 
                 <div flex layout="row" layout-align="start center">
@@ -37,9 +40,17 @@
                 </div>
 
                 <div>
-                    <button class="btn btn-primary btn-small edit-button" ng-click="vm.editNode(node, $event)">
+                    <button class="btn btn-primary btn-small edit-button"
+                            ng-if=":: vm.isAvailableInCurrentLang(node)"
+                            ng-click="vm.editNode(node, $event)">
                         <span translate>EDIT</span>
                     </button>
+                    <div ng-if=":: !vm.isAvailableInCurrentLang(node)">
+                        <node-language-menu node="node"
+                                            omit-current-language="false"
+                                            show-translate-button="false"
+                                            on-change-language="vm.openNodeInLanguage(code, node)"></node-language-menu>
+                    </div>
                 </div>
 
             </div>
