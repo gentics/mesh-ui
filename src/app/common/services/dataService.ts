@@ -29,6 +29,7 @@ module meshAdminUi {
         // or "*" to set lang parameter to all available languages.
         lang?: string|boolean;
         role?: string;
+        resolveLinks?: string;
     }
 
     export interface INodeListQueryParams extends INodeQueryParams {

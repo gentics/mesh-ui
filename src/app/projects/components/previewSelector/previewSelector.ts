@@ -10,7 +10,9 @@ module meshAdminUi {
         private linkRenderingModes: string[] = ['off', 'full', 'medium', 'short'];
         private node: INode;
 
-        constructor(private dataService: DataService, contextService: ContextService) {
+        constructor(private $q: ng.IQService,
+                    private dataService: DataService,
+                    private contextService: ContextService) {
 
             if (this.canPreview()) {
                 let projectName = contextService.getProject().name;
@@ -48,10 +50,17 @@ module meshAdminUi {
         public preview(previewUrl: string, linkRenderMode: string, node: INode) {
 
             let stringFields = JSON.stringify(node.fields);
-            this.dataService.renderLinksInText(stringFields, linkRenderMode)
+            let projectName = this.contextService.getProject().name;
+
+            // We need to get the node with the `resolveLinks` param in order to
+            // get the `languagePaths` property, which may be needed for the preview.
+            let nodeResponse = this.dataService.getNode(projectName, node.uuid, { resolveLinks: linkRenderMode });
+            let fieldsResponse = this.dataService.renderLinksInText(stringFields, linkRenderMode);
+
+            this.$q.all([nodeResponse, fieldsResponse])
                 .then(result => {
-                    let nodeClone = angular.copy(node);
-                    nodeClone.fields = result;
+                    let nodeClone = <INode>result[0];
+                    nodeClone.fields = result[1];
                     this.postNodeToUrl(nodeClone, previewUrl);
                 })
         }

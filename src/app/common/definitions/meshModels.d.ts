@@ -63,6 +63,9 @@ declare module meshAdminUi {
         fileName?: string;
         displayField?: string;
         language?: string;
+        languagePaths?: {
+            [lang: string]: string;
+        };
         published?: boolean;
         tags?: INodeTagsObject;
         schema: INodeReference;
