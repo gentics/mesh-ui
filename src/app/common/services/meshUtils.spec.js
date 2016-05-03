@@ -315,4 +315,56 @@ describe('meshUtils', function() {
             expect(result).toBe(true);
         });
     });
+
+    describe('sortLanguages:', function() {
+
+        var availableLangs = [
+            {
+                code: 'ps',
+                name: "Pashto, Pushto",
+                nativeName: "پښتو"
+            },
+            {
+                code: 'am',
+                name: "Amharic",
+                nativeName: "አማርኛ"
+            },
+            {
+                code: 'lo',
+                name: "Lao",
+                nativeName: "ພາສາລາວ"
+            },
+            {
+                code: 'eo',
+                name: "Esperanto",
+                nativeName: "Esperanto"
+            }
+        ];
+
+        it('should sort strings into alphabetical order', function() {
+            var langStrings = availableLangs.map(function(l) { return l.code; });
+            var result = mu.sortLanguages(langStrings);
+
+            expect(result).toEqual(['am', 'eo', 'lo', 'ps']);
+        });
+
+        it('should sort ILanguageInfo objects into alphabetical order', function() {
+            var result = mu.sortLanguages(availableLangs);
+
+            expect(result).toEqual(['am', 'eo', 'lo', 'ps']);
+        });
+
+        it('should put currentLang first with strings', function() {
+            var langStrings = availableLangs.map(function(l) { return l.code; });
+            var result = mu.sortLanguages(langStrings, 'eo');
+
+            expect(result).toEqual(['eo', 'am', 'lo', 'ps']);
+        });
+
+        it('should put currentLang first with ILanguageInfo objects', function() {
+            var result = mu.sortLanguages(availableLangs, 'eo');
+
+            expect(result).toEqual(['eo', 'am', 'lo', 'ps']);
+        });
+    });
 });

@@ -21,7 +21,11 @@
                 <tbody>
                 <tr ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid"
                     class="node-selector-table"
-                    ng-class="{ selected: vm.isSelected(node), 'root-node': node.uuid === vm.currentProject.rootNodeUuid }"
+                    ng-class="{
+                        selected: vm.isSelected(node),
+                        'root-node': node.uuid === vm.currentProject.rootNodeUuid,
+                        untranslated: vm.isUntranslated(node)
+                    }"
                     ng-click="vm.toggleSelect(node, $event)">
                     <td>
                         <md-checkbox ng-show="vm.isAllowedSchema(node)"
@@ -33,7 +37,7 @@
                         <span ng-click="vm.openNode(node, $event)"
                               class="node-name"
                               ng-class="::{ 'link': node.container && node.schema.name !== 'rootNode'  }">
-                            {{:: node.fields[node.displayField] }}
+                            {{:: vm.getDisplayName(node) }}
                         </span>
                     </td>
                     <td>{{:: node.schema.name }}</td>
@@ -45,7 +49,10 @@
                 <div class="grid-item"
                      layout="column" layout-align="space-around center"
                      ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid"
-                     ng-class="{ selected: vm.isSelected(node) }"
+                     ng-class="{
+                        selected: vm.isSelected(node),
+                        untranslated: vm.isUntranslated(node)
+                     }"
                      ng-click="vm.toggleSelect(node, $event)">
 
                     <node-thumbnail node="node"></node-thumbnail>
@@ -54,7 +61,7 @@
                         <span ng-click="vm.openNode(node, $event)"
                               class="node-name"
                               ng-class="::{ 'link': node.container && node.schema.name !== 'rootNode' }">
-                            {{:: node.fields[node.displayField] }}
+                            {{:: vm.getDisplayName(node) }}
                         </span>
                     </div>
                 </div>

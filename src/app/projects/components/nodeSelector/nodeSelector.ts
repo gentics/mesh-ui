@@ -79,6 +79,7 @@ module meshAdminUi {
         private q: string;
 
         constructor(private dataService: DataService,
+                    private i18nService: I18nService,
                     mu: MeshUtils,
                     private contextService: ContextService) {
 
@@ -182,6 +183,20 @@ module meshAdminUi {
                 rootNode.schema.name = "rootNode";
                 this.nodes.unshift(rootNode);
             }
+        }
+        
+        /**
+         * Returns true if the node is not available in the current language
+         */
+        public isUntranslated(node: INode): boolean {
+            return node.language !== this.i18nService.getCurrentLang().code;
+        }
+        
+        public getDisplayName(node: INode): string {
+            let displayName = node.fields[node.displayField];
+            let langCode = node.language && node.language.toUpperCase();
+            let langString = this.isUntranslated(node) ? ` (${langCode})` : '';
+            return displayName + langString;
         }
 
         public isAllowedSchema(node: INode) {

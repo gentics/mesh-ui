@@ -232,6 +232,23 @@ module meshAdminUi {
             }
             return false;
         }
+
+        /**
+         * Given an array of language codes (['de', 'fr', 'en', 'az']), sort them
+         * alphabetically, placing the currentLang first if given.
+         */
+        sortLanguages(availableLangs: (string|ILanguageInfo)[], currentLang?: string): string[] {
+            const sortCurrentLangFirst = (a: string, b: string) => {
+                if (a === currentLang) {
+                    return -1;
+                }
+                return a < b ? -1 : 1;
+            };
+            const indentity = (x: string): string => x;
+            const extractCode = (lang: ILanguageInfo): string => lang.code;
+            const mapFn = typeof availableLangs[0] === 'string' ? indentity : extractCode;
+            return availableLangs.map(mapFn).sort(sortCurrentLangFirst)
+        }
     }
 
     angular.module('meshAdminUi.common')

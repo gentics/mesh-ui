@@ -56,8 +56,8 @@ module meshAdminUi {
         var apiUrl;
 
         this.setApiUrl = setApiUrl;
-        this.$get = function ($http, $q, Upload, selectiveCache, i18nService) {
-            return new DataService($http, $q, Upload, selectiveCache, i18nService, apiUrl);
+        this.$get = function ($http, $q, Upload, selectiveCache, i18nService, mu) {
+            return new DataService($http, $q, Upload, selectiveCache, i18nService, mu, apiUrl);
         };
 
         /**
@@ -79,6 +79,7 @@ module meshAdminUi {
                     private Upload: any,
                     private selectiveCache: SelectiveCache,
                     private i18nService: I18nService,
+                    private mu: MeshUtils,
                     private apiUrl: string) {
 
             selectiveCache.setBaseUrl(apiUrl);
@@ -291,8 +292,14 @@ module meshAdminUi {
         /**
          * Get the child nodes for the parent node in the given project.
          */
-        public getChildNodes(projectName: string, parentNodeId: string, queryParams?): ng.IPromise<IListResponse<INode>> {
-            var url = projectName + '/nodes/' + parentNodeId + '/children';
+        public getChildNodes(projectName: string,
+                             parentNodeId: string,
+                             queryParams: INodeQueryParams = {}): ng.IPromise<IListResponse<INode>> {
+
+            let url = projectName + '/nodes/' + parentNodeId + '/children';
+            const currLangCode = this.i18nService.getCurrentLang().code;
+            const availableLangs = this.i18nService.getAvailableLanguages();
+            queryParams.lang = this.mu.sortLanguages(availableLangs, currLangCode).join(',');
 
             return this.meshGet(url, queryParams)
                 .then(result => {
@@ -459,18 +466,9 @@ module meshAdminUi {
         public getNode(projectName, uuid, queryParams?: INodeQueryParams):ng.IPromise<any> {
             queryParams = queryParams || {};
 
-            // Get all available languages, but list the current language first
             const currLangCode = this.i18nService.getCurrentLang().code;
-            const sortCurrentLangFirst = (a: string, b: string) => {
-                if (a === currLangCode) {
-                    return -1;
-                }
-                return a < b ? -1 : 1;
-            };
-            queryParams.lang = this.i18nService.languages
-                .map(lang => lang.code)
-                .sort(sortCurrentLangFirst)
-                .join(',');
+            const availableLangs = this.i18nService.getAvailableLanguages();
+            queryParams.lang = this.mu.sortLanguages(availableLangs, currLangCode).join(',');
             return this.meshGet(projectName + '/nodes/' + uuid, queryParams);
         }
 
