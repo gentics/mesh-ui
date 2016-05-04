@@ -6,6 +6,6 @@ node('dockerSlave') {
    stage 'Build'
    sshagent(['601b6ce9-37f7-439a-ac0b-8e368947d98d']) {
      sh "${mvnHome}/bin/mvn -B -Dmaven.test.failure.ignore clean install"
-     step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+     step([$class: 'JUnitResultArchiver', testResults: '**/junit.xml'])
    }
 }
