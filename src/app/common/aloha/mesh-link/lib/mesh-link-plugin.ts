@@ -117,6 +117,7 @@ define([
 				e.stopPropagation();
 				return false;
 			}
+			return false;
 		});
 	}
 
@@ -478,7 +479,7 @@ define([
 
 			// follow link on ctrl or meta + click
 			jQuery( link ).click( function ( e:any ) {
-				if ( e.metaKey ) {
+				if (e.metaKey || e.ctrlKey) {
 					// blur current editable. user is waiting for the link to load
 					Aloha.activeEditable.blur();
 					// hack to guarantee a browser history entry
@@ -486,9 +487,8 @@ define([
 						location.href = e.target;
 					}, 0 );
 					e.stopPropagation();
-
-					return false;
 				}
+				return false;
 			} );
 		},
 
