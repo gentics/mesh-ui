@@ -579,11 +579,6 @@ define([
 		bindInteractions: function () {
 			var that = this;
 
-			this.hrefField.addListener('item-change', function() {
-				// because 'hrefChange()' references 'this' object.
-				that.hrefChange();
-			});
-
 			// update link object when src changes
 			this.hrefField.addListener( 'keyup', function ( event ) {
 				if (Keys.getToken(event.keyCode) === 'escape') {

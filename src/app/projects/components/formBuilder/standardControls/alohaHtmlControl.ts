@@ -43,7 +43,6 @@ module meshAdminUi {
             private isFocused: boolean;
             private lastContent: string;
             private toolbarContainer: HTMLElement;
-            private alohaToolbar: HTMLElement;
 
             static $inject = ['$scope', '$element'];
             constructor(private $scope: ng.IScope,
