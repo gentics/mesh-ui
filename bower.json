@@ -29,7 +29,7 @@
     "angular-drag-and-drop-lists": "~1.4.0",
     "moment": "~2.10.6",
     "angular-ui-ace": "bower",
-    "ng-file-upload": "~9.1.2",
+    "ng-file-upload": "~12.0.4",
     "cropperjs": "~0.5.6",
     "angularjs-slider": "~2.1.0",
     "headjs": "~1.0.3"

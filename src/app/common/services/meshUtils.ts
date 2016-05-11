@@ -115,27 +115,51 @@ module meshAdminUi {
         }
 
         /**
-         * Deep clone an object, from http://stackoverflow.com/a/122190/772859
-         * Note that this will not handle object containing circular references.
+         * Deep clone an object, but leave any File objects intact since they
+         * cannot be copied.
          *
-         * @param obj
-         * @returns {*}
+         * Based on http://stackoverflow.com/a/728694/772859
+         * Note that this will not handle object containing circular references.
          */
-        private clone(obj) {
-            if (obj === null || typeof(obj) !== 'object' || 'isActiveClone' in obj)
-                return obj;
+        public safeClone(obj: any): any {
+            let copy;
 
-            var temp = obj.constructor();
+            // Handle the 3 simple types, and null or undefined
+            if (null == obj || "object" != typeof obj) return obj;
 
-            for (var key in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                    obj.isActiveClone = null;
-                    temp[key] = this.clone(obj[key]);
-                    delete obj.isActiveClone;
-                }
+            // Handle Date
+            if (obj instanceof Date) {
+                copy = new Date();
+                copy.setTime(obj.getTime());
+                return copy;
             }
 
-            return temp;
+            // Handle Array
+            if (obj instanceof Array) {
+                copy = [];
+                for (let i = 0, len = obj.length; i < len; i++) {
+                    copy[i] = this.safeClone(obj[i]);
+                }
+                return copy;
+            }
+
+            // File objects cannot be copied - so just return it.
+            if (obj instanceof File) {
+                return obj;
+            }
+
+            // Handle Object
+            if (obj instanceof Object) {
+                copy = {};
+                for (let attr in obj) {
+                    if (obj.hasOwnProperty(attr)) {
+                        copy[attr] = this.safeClone(obj[attr]);
+                    }
+                }
+                return copy;
+            }
+
+            throw new Error("MeshUtils#safeClone(): Unable to copy obj! Its type isn't supported.");
         }
 
         /**

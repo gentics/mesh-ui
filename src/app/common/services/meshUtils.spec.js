@@ -228,29 +228,39 @@ describe('meshUtils', function() {
 
     });
 
-    describe('clone() method', function() {
+    describe('safeClone() method', function() {
 
         it('should handle primitives', function() {
-            expect(mu.clone(1)).toEqual(1);
-            expect(mu.clone('a')).toEqual('a');
+            expect(mu.safeClone(1)).toEqual(1);
+            expect(mu.safeClone('a')).toEqual('a');
         });
 
         it('should handle arrays', function() {
-            expect(mu.clone([1,2,3])).toEqual([1,2,3]);
+            expect(mu.safeClone([1,2,3])).toEqual([1,2,3]);
         });
 
         it('should handle objects', function() {
-            expect(mu.clone({foo: 'bar'})).toEqual({foo: 'bar'});
+            expect(mu.safeClone({foo: 'bar'})).toEqual({foo: 'bar'});
+        });
+
+        it('should handle native Blob object', function() {
+            var blob = new Blob(['foo']);
+            var clone;
+            function doClone() {
+                clone = mu.safeClone(blob);
+            }
+            expect(doClone).not.toThrow();
+            expect(clone.size).toBe(3);
         });
 
         it('should actually create a new object, not a reference', function() {
             var obj = {foo: 'bar'};
-            expect(mu.clone(obj)).not.toBe(obj);
+            expect(mu.safeClone(obj)).not.toBe(obj);
         });
 
-        it('changes to original should not affect clone', function() {
+        it('changes to original should not affect safeClone', function() {
             var obj1 = {foo: 'bar'};
-            var obj2 = mu.clone(obj1);
+            var obj2 = mu.safeClone(obj1);
 
             obj1.foo = 'baz';
             expect(obj2.foo).toBe('bar');

@@ -522,20 +522,19 @@ module meshAdminUi {
          * Perform any needed clean-up of fields before sending the object to Mesh.
          */
         private sanitizeFields(node: INode): INode {
-            let clone = angular.copy(node);
             // Returns true if obj is an object with no properties.
             const isEmptyObject = (obj) => typeof obj === 'object' && Object.keys(obj).length === 0;
 
-            for (let fieldName in clone.fields) {
-                let fieldVal = clone.fields[fieldName];
+            for (let fieldName in node.fields) {
+                let fieldVal = node.fields[fieldName];
                 if (fieldVal instanceof Array) {
                     // Mesh errors if a list of nodes contains an empty object, so filter
                     // any of these out.
-                    clone.fields[fieldName] = fieldVal.filter(item => !isEmptyObject(item));
+                    node.fields[fieldName] = fieldVal.filter(item => !isEmptyObject(item));
                 }
             }
 
-            return clone;
+            return node;
         }
 
         /**
@@ -1079,10 +1078,10 @@ module meshAdminUi {
         selectiveCacheProvider.setCacheableGroups(cacheable);
     }
 
-    function languageRequestInterceptor(i18nService: I18nService) {
+    function languageRequestInterceptor(i18nService: I18nService, mu: MeshUtils) {
         return {
             request: function (config) {
-                config = angular.copy(config);
+                config = mu.safeClone(config);
                 if (config.url.indexOf(meshUiConfig.apiUrl) > -1) {
                     config.params = config.params || {};
 
