@@ -126,6 +126,10 @@ module meshAdminUi {
         'SELECT_NODE': {
             en: 'Select node',
             de: 'Node auswählen'
+        },
+        'REMOVE_NODE': {
+            en: 'Remove node',
+            de: 'Node löschen'
         }
     };
 
