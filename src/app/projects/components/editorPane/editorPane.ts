@@ -143,11 +143,10 @@ module meshAdminUi {
                 nodeClone.fields[displayField] += ` (${langCode.toUpperCase()})`
             }
             if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
-                if (node.fields[segmentField] !== undefined) {
-                    nodeClone.fields[segmentField] = this.addLangCodeToString(nodeClone.fields[segmentField], langCode);
-                }
                 if (node.fields[segmentField].type === 'binary') {
                     nodeClone.fields[segmentField].fileName = this.addLangCodeToString(node.fields[segmentField].fileName, langCode);
+                } else if (node.fields[segmentField] !== undefined) {
+                    nodeClone.fields[segmentField] = this.addLangCodeToString(nodeClone.fields[segmentField], langCode);
                 }
             }
 
