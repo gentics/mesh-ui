@@ -1000,6 +1000,9 @@ module meshAdminUi {
                                            permissions: IPermissionsRequest,
                                            nodeUuid?: string): ng.IPromise<any> {
             let path = nodeUuid ? `${pathBase}/${nodeUuid}` : pathBase;
+            if (!nodeUuid) {
+                this.clearCache('roles');
+            }
             return this.setPermissionsOnPath(roleUuid, path, permissions);
         }
 
