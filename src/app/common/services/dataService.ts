@@ -956,18 +956,27 @@ module meshAdminUi {
             return this.setPermissionsOnPath(roleUuid, 'projects/' + projectUuid + '/nodes/' + nodeUuid, permissions);
         }
         public setProjectPermissions(roleUuid: string, permissions: IPermissionsRequest, projectUuid?: string): ng.IPromise<any> {
+            this.clearCache('projects');
             return this.setPermissionsOnRootOrNode('projects', roleUuid, permissions, projectUuid);
         }
         public setSchemaPermissions(roleUuid: string, permissions: IPermissionsRequest, schemaUuid?: string): ng.IPromise<any> {
+            this.clearCache('schemas');
             return this.setPermissionsOnRootOrNode('schemas', roleUuid, permissions, schemaUuid);
         }
+        public setMicroschemaPermissions(roleUuid: string, permissions: IPermissionsRequest, microschemaUuid?: string): ng.IPromise<any> {
+            this.clearCache('microschemas');
+            return this.setPermissionsOnRootOrNode('microschemas', roleUuid, permissions, microschemaUuid);
+        }
         public setUserPermissions(roleUuid: string, permissions: IPermissionsRequest, userUuid?: string): ng.IPromise<any> {
+            this.clearCache('users');
             return this.setPermissionsOnRootOrNode('users', roleUuid, permissions, userUuid);
         }
         public setGroupPermissions(roleUuid: string, permissions: IPermissionsRequest, groupUuid?: string): ng.IPromise<any> {
+            this.clearCache('groups');
             return this.setPermissionsOnRootOrNode('groups', roleUuid, permissions, groupUuid);
         }
         public setRolePermissions(roleUuid: string, permissions: IPermissionsRequest, targetRoleUuid?: string): ng.IPromise<any> {
+            this.clearCache('roles');
             return this.setPermissionsOnRootOrNode('roles', roleUuid, permissions, targetRoleUuid);
         }
         public setTagPermissions(roleUuid: string, projectUuid: string, permissions: IPermissionsRequest, tag: ITag): ng.IPromise<any> {
@@ -1074,6 +1083,7 @@ module meshAdminUi {
             'microschemas': /^microschemas\??/,
             'users': /^users\??/,
             'roles': /^roles\??/,
+            'groups': /^groups\??/
         };
         selectiveCacheProvider.setCacheableGroups(cacheable);
     }

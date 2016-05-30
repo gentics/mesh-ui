@@ -5,7 +5,7 @@ module meshAdminUi {
         private queryParams;
         private collapsed: boolean = true;
         private filter: string = '';
-        private items = [];
+        private items;
         private itemPermissions: {
             [itemUuid: string]: any
         } = {};
@@ -16,6 +16,7 @@ module meshAdminUi {
 
         constructor(private $timeout: ng.ITimeoutService) {
             this.queryParams = { "role": this.roleId };
+            this.items = this.items || [];
         }
 
         /**
