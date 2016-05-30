@@ -7,7 +7,7 @@
                 <i class="icon-expand-more" ng-show="vm.collapsed" ng-click="vm.collapsed = false"></i>
                 <i class="icon-expand-less" ng-show="!vm.collapsed" ng-click="vm.collapsed = true"></i>
             </h2>
-            <md-input-container flex>
+            <md-input-container flex class="no-errors-spacer">
                 <label>Filter {{:: vm.rootName }}</label>
                 <input ng-model="vm.filter">
             </md-input-container>
