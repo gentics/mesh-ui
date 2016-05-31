@@ -46,11 +46,11 @@ module meshAdminUi {
         },
         'MOVED_NODES': {
             en: 'Moved {{ count }} nodes',
-            de: '{{ count }} Nodes verschoeben'
+            de: '{{ count }} Nodes verschoben'
         },
         'DELETED_NODES': {
             en: 'Deleted {{ count }} nodes',
-            de: '{{ count }} nodes gelöscht'
+            de: '{{ count }} Nodes gelöscht'
         },
         'AVAILABLE_IN': {
             en: 'Available in {{ lang }}',
@@ -66,7 +66,7 @@ module meshAdminUi {
         },
         'SWITCH_LANGUAGE_AND_OPEN_MESSAGE': {
             en: 'In order to open this node in {{ lang }}, the user interface language will be set to {{ lang }}',
-            de: 'Um diesen Node zu öffnen, muss das Benutzeroberfläche zu {{ lang }} geändert werden'
+            de: 'Um diesen Node zu öffnen, muss die Benutzeroberfläche zu {{ lang }} geändert werden'
         }
     };
 
@@ -117,11 +117,11 @@ module meshAdminUi {
         },
         'NODE_MUST_BE_SAVED_BEFORE_TRANSLATING': {
             en: 'Node must be saved before translating',
-            de: 'Node muss vor der Übersetztung gespeichert werden'
+            de: 'Node muss vor der Übersetzung gespeichert werden'
         },
         'NO_NODE_SELECTED': {
             en: 'No node selected',
-            de: 'Kein Node ausgewählt'
+            de: 'Keinen Node ausgewählt'
         },
         'SELECT_NODE': {
             en: 'Select node',
@@ -140,31 +140,31 @@ module meshAdminUi {
         },
         'CREATE_NEW_TAG_FAMILY': {
             en: 'Create new tag family',
-            de: 'Neue Tag Familie erstellen'
+            de: 'Neue Tag-Familie erstellen'
         },
         'EDIT_TAG_FAMILY': {
             en: 'Edit tag family',
-            de: 'Tag Familie bearbeiten'
+            de: 'Tag-Familie bearbeiten'
         },
         'DELETE_TAG_FAMILY': {
             en: 'Delete tag family',
-            de: 'Tag Familie löschen'
+            de: 'Tag-Familie löschen'
         },
         'DELETE_TAG_FAMILY_AND_ALL_TAGS': {
             en: 'Delete this tag family and all tags?',
-            de: 'Diese Tag Familie und all ihre Tags löschen?'
+            de: 'Diese Tag-Familie und all ihre Tags löschen?'
         },
         'TAG_FAMILY_CREATED': {
             en: 'Tag family created',
-            de: 'Tag Familie erstellt'
+            de: 'Tag-Familie erstellt'
         },
         'TAG_FAMILY_UPDATED': {
             en: 'Tag family updated',
-            de: 'Tag Familie aktualisiert'
+            de: 'Tag-Familie aktualisiert'
         },
         'TAG_FAMILY_DELETED': {
             en: 'Tag family deleted',
-            de: 'Tag Familie gelöscht'
+            de: 'Tag-Familie gelöscht'
         },
         'ADD_TAG': {
             en: 'Add tag',
@@ -212,7 +212,7 @@ module meshAdminUi {
         },
         'EMAIL_ADDRESS': {
             en: 'Email address',
-            de: 'Email Addresse'
+            de: 'E-Mail-Adresse'
         },
         'USER_ALREADY_IN_GROUP': {
             en: 'User already in group "{{ name }}"',
@@ -240,7 +240,7 @@ module meshAdminUi {
         },
         'GROUP_NAME': {
             en: 'Group name',
-            de: 'Gruppen name'
+            de: 'Gruppenname'
         },
         'GROUP_ALREADY_ASSIGNED_TO_ROLE': {
             en: 'Group already assigned to role {{ name }}"',
@@ -252,7 +252,7 @@ module meshAdminUi {
         },
         'GROUP_REMOVED_FROM_ROLE': {
             en: 'Group {{ groupName }} removed from role "{{ roleName }}"',
-            de: 'Die Gruppe {{ groupName }} removed from role "{{ roleName }}"'
+            de: 'Die Gruppe {{ groupName }} wurde von der Rolle "{{ roleName }}" entfernt'
         },
         'FILTER_ROLES': {
             en: 'Filter roles',
@@ -268,15 +268,15 @@ module meshAdminUi {
         },
         'ROLE_NAME': {
             en: 'Role name',
-            de: 'Rollen Name'
+            de: 'Rollenname'
         },
         'NODE_PERMISSIONS': {
             en: 'Node permissions',
-            de: 'Node Berechtigungen'
+            de: 'Node-Berechtigungen'
         },
         'PERMISSIONS_SET_ON_NODE': {
             en: 'Permissions set on node "{{ name }}"',
-            de: 'Berechtigungen zu Node "{{ name }}" zuweisen'
+            de: 'Berechtigungen wurden "{{ name }}" zugewiesen'
         },
         'PERMISSIONS_SET_ON_TYPE': {
             en: 'Permissions set on {{ type }} "{{ name }}"',
@@ -284,7 +284,7 @@ module meshAdminUi {
         },
         'TAG_PERMISSIONS': {
             en: 'Tag permissions',
-            de: 'Tag Berechtigungen'
+            de: 'Tag-Berechtigungen'
         },
         'FILTER_PROJECTS': {
             en: 'Filter projects',
@@ -304,7 +304,7 @@ module meshAdminUi {
         },
         'PROJECT_NAME': {
             en: 'Project name',
-            de: 'Projekt name'
+            de: 'Projektname'
         },
         'CREATE_NEW_SCHEMA': {
             en: 'Create new schema',
@@ -312,7 +312,7 @@ module meshAdminUi {
         },
         'NEW_SCHEMA_CREATED': {
             en: 'New schema created',
-            de: 'Neues Schema Erstellt'
+            de: 'Neues Schema erstellt'
         },
         'FILTER_SCHEMAS': {
             en: 'Filter schemas',
@@ -324,11 +324,11 @@ module meshAdminUi {
         },
         'CREATE_NEW_MICROSCHEMA': {
             en: 'Create new microschema',
-            de: 'Neues microschema erstellen'
+            de: 'Neues Microschema erstellen'
         },
         'NEW_MICROSCHEMA_CREATED': {
             en: 'New microschema created',
-            de: 'Neues microschema erstellt'
+            de: 'Neues Microschema erstellt'
         },
         'IMPORTED_SCHEMAS': {
             en: 'Imported {{ count }} schemas',
@@ -340,7 +340,7 @@ module meshAdminUi {
         },
         'EDIT_MIGRATION_SCRIPT': {
             en: 'Edit migration script',
-            de: 'Migrations Skript bearbeiten',
+            de: 'Migrationsskript bearbeiten',
         },
         'ADD_SCHEMA_FIELD_NAMED': {
             en: 'Add a field named "{{ fieldName }}"',
@@ -395,7 +395,7 @@ module meshAdminUi {
         },
         'ITEMS_PER_PAGE': {
             en: 'Items per page',
-            de: 'Artikel pro Seite'
+            de: 'Einträge pro Seite'
         },
         'SAVE_CHANGES': {
             en: 'Save Changes',
@@ -403,7 +403,7 @@ module meshAdminUi {
         },
         'DISCARD_CHANGES': {
             en: 'Discard Changes',
-            de: 'Wegwerfen'
+            de: 'Verwerfen'
         },
         'EDIT': {
             en: 'Edit',
@@ -431,7 +431,7 @@ module meshAdminUi {
         },
         'CREATE': {
             en: 'Create',
-            de: 'Speichern'
+            de: 'Erstellen'
         },
         'PREVIEW': {
             en: 'Preview',
@@ -470,7 +470,7 @@ module meshAdminUi {
         },
         'NEW_CONTENT_CREATED': {
             en: 'New content created',
-            de: 'Neue Inhalt erstellt'
+            de: 'Neuen Inhalt erstellt'
         },
         'EDIT_IMAGE': {
             en: 'Edit Image',
@@ -478,7 +478,7 @@ module meshAdminUi {
         },
         'USE_SELECTED_NODE': {
             en: 'Use selected node',
-            de: 'Benutze ausgewählten node'
+            de: 'Benutze ausgewählten Node'
         },
         'CONFIRM_DELETE_TITLE': {
             en: 'Delete?',
@@ -486,7 +486,7 @@ module meshAdminUi {
         },
         'CONFIRM_DELETE_MESSAGE': {
             en: 'Are you sure you want to delete this object?',
-            de: 'Sind Sie sicher das Sie dieses Objekt löschen wollen?'
+            de: 'Sind Sie sicher, dass Sie dieses Objekt löschen wollen?'
         },
         'CONFIRM_DELETE_GROUP_TITLE': {
             en: 'Delete Group?',
@@ -494,7 +494,7 @@ module meshAdminUi {
         },
         'CONFIRM_DELETE_GROUP_MESSAGE': {
             en: 'Are you sure you want to delete this group?',
-            de: 'Sind Sie sicher das Sie diese Gruppe löschen wollen?'
+            de: 'Sind Sie sicher, dass Sie diese Gruppe löschen wollen?'
         },
         'CONFIRM_DELETE_MICROSCHEMA_TITLE': {
             en: 'Delete Microschema?',
@@ -502,7 +502,7 @@ module meshAdminUi {
         },
         'CONFIRM_DELETE_MICROSCHEMA_MESSAGE': {
             en: 'Are you sure you want to delete this microschema?',
-            de: 'Sind Sie sicher das Sie dieses Microschema löschen wollen?'
+            de: 'Sind Sie sicher, dass Sie dieses Microschema löschen wollen?'
         },
         'CONFIRM_DELETE_PROJECT_TITLE': {
             en: 'Delete Project?',
@@ -510,7 +510,7 @@ module meshAdminUi {
         },
         'CONFIRM_DELETE_PROJECT_MESSAGE': {
             en: 'Are you sure you want to delete this project?',
-            de: 'Sind Sie sicher das Sie dieses Projekt löschen wollen?'
+            de: 'Sind Sie sicher, dass Sie dieses Projekt löschen wollen?'
         },
         'CONFIRM_DELETE_ROLE_TITLE': {
             en: 'Delete Role?',
@@ -518,7 +518,7 @@ module meshAdminUi {
         },
         'CONFIRM_DELETE_ROLE_MESSAGE': {
             en: 'Are you sure you want to delete this role?',
-            de: 'Sind Sie sicher das Sie diese Rolle löschen wollen?'
+            de: 'Sind Sie sicher, dass Sie diese Rolle löschen wollen?'
         },
         'CONFIRM_DELETE_SCHEMA_TITLE': {
             en: 'Delete Schema?',
@@ -526,7 +526,7 @@ module meshAdminUi {
         },
         'CONFIRM_DELETE_SCHEMA_MESSAGE': {
             en: 'Are you sure you want to delete this schema?',
-            de: 'Sind Sie sicher das Sie dieses Schema löschen wollen?'
+            de: 'Sind Sie sicher, dass Sie dieses Schema löschen wollen?'
         }
     };
 
@@ -537,7 +537,7 @@ module meshAdminUi {
         },
         'ERR_CHECK_LOGIN_DETAILS': {
             en: 'Please check your login details and try again.',
-            de: 'Überprüfen Sie bitte Ihre Daten ein und versuchen Sie es erneut.'
+            de: 'Überprüfen Sie bitte Ihre Daten und versuchen Sie es erneut.'
         },
         'JSON_IS_INVALID': {
             en: 'JSON is invalid',
@@ -545,11 +545,11 @@ module meshAdminUi {
         },
         'ERR_SCHEMA_PLEASE_SPECIFY_DISPLAY_FIELD': {
             en: 'Please specify a displayField',
-            de: 'Bitte geben Sie ein displayField an'
+            de: 'Bitte geben Sie ein Display-Field an'
         },
         'ERR_SCHEMA_PLEASE_SPECIFY_SEGMENT_FIELD': {
             en: 'Please specify a segmentField',
-            de: 'Bitte geben Sie ein segmentField an'
+            de: 'Bitte geben Sie ein Segment-Field an'
         },
         'ERR_SCHEMA_MUST_HAVE_AT_LEAST_ONE_FIELD': {
             en: 'Schema must have at least one field defined',
@@ -557,19 +557,19 @@ module meshAdminUi {
         },
         'ERR_SCHEMA_DISPLAY_FIELD_DOES_NOT_MATCH': {
             en: 'displayField value "{{ value }}" does not match any fields',
-            de: 'Der displayField Wert "{{ value }}" entspricht keinem Feld'
+            de: 'Der Display-Field-Wert "{{ value }}" entspricht keinem Feld'
         },
         'ERR_SCHEMA_SEGMENT_FIELD_DOES_NOT_MATCH': {
             en: 'segmentField value "{{ value }}" does not match any fields',
-            de: 'Der segmentField Wert "{{ value }}" entspricht keinem Feld'
+            de: 'Der Segment-Field-Wert "{{ value }}" entspricht keinem Feld'
         },
         'ERR_SCHEMA_REQUIRE_NAME_AND_TYPE': {
             en: 'All fields must have a "name" and "type" property',
-            de: 'Alle Felder müssen mindestens einen "name" und "type" Attribut besitzen.'
+            de: 'Alle Felder müssen mindestens ein "name"- und "type"-Attribut besitzen.'
         },
         'ERR_SCHEMA_INVALID_TYPES': {
-            en: 'The following fields have invalid types {{ names }}',
-            de: 'Die folgenden Felder haben einen ungültigen Typ {{ names }}'
+            en: 'The following fields have invalid types: {{ names }}',
+            de: 'Die folgenden Felder haben einen ungültigen Typ: {{ names }}'
         },
         'ERR_SCHEMA_DUPLICATE_FIELD_NAMES': {
             en: 'Fields must have unique names - duplicate field detected: {{ names }}',
@@ -577,11 +577,11 @@ module meshAdminUi {
         },
         'ERR_SCHEMA_INVALID_LIST_TYPE': {
             en: 'The following list fields have an invalid listType: {{ names }}',
-            de: 'Die folgenden List Felder haben einen ungültigen List Typ: {{ names }}'
+            de: 'Die folgenden List Felder haben einen ungültigen List-Typ: {{ names }}'
         },
         'ERR_SCHEMA_ALLOW_PROPERTY_MISSING': {
             en: 'The following micronode fields must have an "allow" property defined: {{ names }}',
-            de: 'Die folgenden Micronode Felder müssen ein "allow" Attribut angeben: {{ names }}'
+            de: 'Die folgenden Micronode-Felder müssen ein "allow" Attribut angeben: {{ names }}'
         }
     };
 
