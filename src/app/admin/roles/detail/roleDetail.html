@@ -48,13 +48,13 @@
                     on-toggle="vm.setNodePermissions(node, project, permissions)"
                     is-readonly="vm.isReadonly()"></node-permissions-selector>
 
-             <tag-permissions-selector
-                     items="vm.tagItems"
-                     item-permissions="vm.tagItemPermissions"
-                     root-permissions="vm.tagItemRootPermissions"
-                     is-readonly="vm.isReadonly()"
-                     on-toggle="vm.setTagPermissions(project, permissions, item)"
-                     role-id="vm.roleId"></tag-permissions-selector>
+            <tag-permissions-selector
+                    items="vm.tagItems"
+                    item-permissions="vm.tagItemPermissions"
+                    root-permissions="vm.tagItemRootPermissions"
+                    is-readonly="vm.isReadonly()"
+                    on-toggle="vm.setTagPermissions(project, permissions, item)"
+                    role-id="vm.roleId"></tag-permissions-selector>
 
             <permissions-table
                     is-readonly="vm.isReadonly()"
@@ -72,10 +72,13 @@
                     item-name-field="item.name"
                     on-toggle="vm.setSchemaPermissions(permissions, item)"></permissions-table>
 
-            <!--  <permissions-table
-                      root-name="Microschemas"
-                      items="vm.microschemas"
-                      item-name-field="item.name"></permissions-table>-->
+            <permissions-table
+                    is-readonly="vm.isReadonly()"
+                    root-name="Microschemas"
+                    root-permissions="vm.rootPermissions.microschemas"
+                    items="vm.microschemas"
+                    item-name-field="item.name"
+                    on-toggle="vm.setMicroschemaPermissions(permissions, item)"></permissions-table>
 
             <permissions-table
                     is-readonly="vm.isReadonly()"

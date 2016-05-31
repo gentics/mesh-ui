@@ -8,7 +8,7 @@ module meshAdminUi {
         private itemPermissions: {
             [itemUuid: string]: any
         } = {};
-        private rootPermissions: any = {};
+        private rootPermissions: any;
         private itemNameField: string;
         private onToggle: Function;
 
@@ -27,6 +27,8 @@ module meshAdminUi {
                     cancelItemsWatcher();
                 }
             });
+
+            this.rootPermissions = this.rootPermissions || {};
         }
 
         /**

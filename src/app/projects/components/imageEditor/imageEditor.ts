@@ -93,10 +93,28 @@ module meshAdminUi {
      */
     class EditableImageController {
         private src: string;
+        private offsetRight: number = -500;
         private onEdit: Function;
         private initialTransform: IImageTransformParams;
 
-        constructor(private $mdDialog: ng.material.IDialogService) {
+        constructor($timeout: ng.ITimeoutService,
+                    $scope: ng.IScope,
+                    $element: JQuery,
+                    private $mdDialog: ng.material.IDialogService) {
+            
+            // since the edit image button has varying width depending on the 
+            // length of the word "edit" in different languages, we need to set 
+            // the right offset dynamically.
+            let unwatch = $scope.$watch(() => this.src, (val) => {
+                if (val) {
+                    $timeout(() => {
+                        let el = <HTMLElement>$element[0].querySelector('.edit-image-button');
+                        let iconWidth = 35;
+                        this.offsetRight = iconWidth - el.offsetWidth;
+                    });
+                    unwatch();
+                }
+            });
         }
 
         public editImage(): ng.IPromise<void> {
@@ -128,7 +146,10 @@ module meshAdminUi {
         return {
             restrict: 'E',
             template: `<div class="editable-image-container">
-                            <div class="edit-image-button" ng-click="vm.editImage()" ng-if="vm.src !== ''">
+                            <div class="edit-image-button" 
+                                ng-style="{ right: vm.offsetRight + 'px' }"
+                                ng-click="vm.editImage()" 
+                                ng-if="vm.src !== ''">
                                 <i class="icon-crop"></i> <span translate>EDIT</span>
                             </div>
                             <ng-transclude></ng-transclude>
@@ -141,7 +162,7 @@ module meshAdminUi {
                 src: '=',
                 initialTransform: '=',
                 onEdit: '&'
-            },
+            }
         }
     }
 

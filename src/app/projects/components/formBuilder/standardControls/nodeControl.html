@@ -6,9 +6,18 @@
         <div class="node-ref-thumb" ng-if="vm.hasBinaryField()">
             <node-thumbnail node="vm.fieldModel.value"></node-thumbnail>
         </div>
-
         <span ng-show="vm.fieldModel.value.uuid"><i class="icon-link"></i></span>
-        <span>{{ vm.getNodeName() }}</span> |
-        <span class="select-link"><a href="" ng-click="vm.showDialog($event)"><span translate>SELECT_NODE</span>...</a></span>
+        <span>{{ vm.getNodeName() }}</span>
+        <div class="node-actions" layout="row">
+            <span flex><a href="" ng-click="vm.showDialog($event)">
+                <span translate>SELECT_NODE</span>...</a>
+            </span>
+            <span ng-show="vm.fieldModel.value.uuid">
+                <a href="" ng-click="vm.removeNode($event)" class="a-plain">
+                    <i class="icon-cancel" title="{{ 'REMOVE_NODE' | translate }}"></i>
+                </a>
+            </span>
+        </div>
     </div>
+
 </div>

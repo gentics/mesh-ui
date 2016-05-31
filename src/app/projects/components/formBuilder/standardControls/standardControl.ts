@@ -265,6 +265,15 @@ module meshAdminUi {
         }
 
         /**
+         * Remove a node by setting it to null.
+         * TODO: currently not working in Mesh, see https://jira.gentics.com/browse/CL-434 (comments)
+         */
+        public removeNode() {
+            this.fieldModel.value = null;
+            this.fieldModel.update(null);
+        }
+
+        /**
          * Returns a string representation of the selected node.
          */
         public getNodeName(): string {

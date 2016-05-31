@@ -3,6 +3,7 @@ module meshAdminUi {
     enum NodeType {
         PROJECT,
         SCHEMA,
+        MICROSCHEMA,
         GROUP,
         USER,
         ROLE,
@@ -16,6 +17,7 @@ module meshAdminUi {
         private queryParams;
         private role: IUserRole;
         private schemas: ISchema[];
+        private microschemas: IMicroschema[];
         private projects: IProject[];
         private roles: IUserRole[];
         private groups: IUserGroup[];
@@ -24,7 +26,7 @@ module meshAdminUi {
             [type: string]: any
         } = {};
         private tagItems: any[];
-        private tagItemPermissions;
+        private tagItemPermissions = {};
         private tagItemRootPermissions = {};
 
         constructor(
@@ -49,6 +51,7 @@ module meshAdminUi {
 
                 $q.all([
                         dataService.getSchemas(this.queryParams),
+                        dataService.getMicroschemas(this.queryParams),
                         dataService.getProjects(this.queryParams),
                         dataService.getRoles(this.queryParams),
                         dataService.getGroups(this.queryParams),
@@ -57,17 +60,18 @@ module meshAdminUi {
                     ])
                     .then((dataArray:any[]) => {
                         this.schemas = dataArray[0].data;
-                        this.projects = dataArray[1].data;
-                        this.roles = dataArray[2].data;
-                        this.groups = dataArray[3].data;
-                        this.users = dataArray[4].data;
-                        this.tagItems = dataArray[5];
+                        this.microschemas = dataArray[1].data;
+                        this.projects = dataArray[2].data;
+                        this.roles = dataArray[3].data;
+                        this.groups = dataArray[4].data;
+                        this.users = dataArray[5].data;
+                        this.tagItems = dataArray[6];
 
                         this.getProjectTagFamilyRootPerms(this.projects);
                     })
                     .then(() => this.setTagItemPermissions());
 
-                let types = ['schemas', 'projects', 'roles', 'groups', 'users'];
+                let types = ['schemas', 'microschemas', 'projects', 'roles', 'groups', 'users'];
                 let rootPermPromises = types.map(type => dataService.getPermissions(this.roleId, type));
                 $q.all(rootPermPromises)
                     .then((result: any) => {
@@ -106,7 +110,7 @@ module meshAdminUi {
                     });
                     return this.$q.all(promises);
                 })
-                .then(result => this.mu.flatten(result));
+                .then((result: any[]) => this.mu.flatten(result));
         }
 
         /**
@@ -229,11 +233,15 @@ module meshAdminUi {
         }
 
         public setProjectPermissions(permissions: IPermissionsRequest, project?: IProject) {
-           return this.executeSetPermissions(NodeType.PROJECT, permissions, project);
+            return this.executeSetPermissions(NodeType.PROJECT, permissions, project);
         }
 
         public setSchemaPermissions(permissions: IPermissionsRequest, schema: ISchema) {
             return this.executeSetPermissions(NodeType.SCHEMA, permissions, schema);
+        }
+
+        public setMicroschemaPermissions(permissions: IPermissionsRequest, microschema: IMicroschema) {
+            return this.executeSetPermissions(NodeType.MICROSCHEMA, permissions, microschema);
         }
 
         public setUserPermissions(permissions: IPermissionsRequest, user: IUser) {
@@ -262,6 +270,10 @@ module meshAdminUi {
                 case NodeType.SCHEMA:
                     promise = this.dataService.setSchemaPermissions(this.role.uuid, permissions, uuid);
                     nodeType = 'schema';
+                    break;
+                case NodeType.MICROSCHEMA:
+                    promise = this.dataService.setMicroschemaPermissions(this.role.uuid, permissions, uuid);
+                    nodeType = 'microschema';
                     break;
                 case NodeType.USER:
                     promise = this.dataService.setUserPermissions(this.role.uuid, permissions, uuid);
