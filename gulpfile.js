@@ -491,7 +491,9 @@ gulp.task('karma-test', ['build'], function() {
             singleRun: true,
             files: KARMA_FILES_BUILD,
             junitReporter: { outputFile: 'build/junit.xml' }
-        }, resolve);
+        }, function(exitCode) {
+            handleKarmaExitCode(exitCode, resolve, reject);
+        });
     });
 });
 
@@ -506,12 +508,25 @@ function karma_dist() {
             singleRun: true,
             files: KARMA_FILES_DIST,
             reporters: ['progress']
-        }, resolve);
+        }, function(exitCode) {
+            handleKarmaExitCode(exitCode, resolve, reject);
+        });
     });
 }
 gulp.task('karma-dist', function() {
     return karma_dist();
 });
+
+/**
+ * Ensure that the build fails if any tests do not pass.
+ */
+function handleKarmaExitCode(exitCode, resolve, reject) {
+    if (exitCode === 0) {
+        resolve(0);
+    } else {
+        reject(exitCode);
+    }
+}
 
 gulp.task('e2e', function() {
     var selenium = child_process.exec('webdriver-manager start');
