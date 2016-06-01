@@ -150,13 +150,13 @@ describe('SchemaValidatorService', function() {
 
             it('should display correct error for malformed field (invalid type)', function() {
                 validSchema.fields[1].type = 'foo';
-                testErrorMessage(validSchema, 'The following fields have invalid types [members : foo]');
+                testErrorMessage(validSchema, 'The following fields have invalid types: [members : foo]');
             });
 
             it('should display correct error for malformed fields (2 x invalid type)', function() {
                 validSchema.fields[1].type = 'foo';
                 validSchema.fields[2].type = 'bar';
-                testErrorMessage(validSchema, 'The following fields have invalid types [members : foo], [reference : bar]');
+                testErrorMessage(validSchema, 'The following fields have invalid types: [members : foo], [reference : bar]');
             });
 
             it('should display correct error for invalid listType', function() {
