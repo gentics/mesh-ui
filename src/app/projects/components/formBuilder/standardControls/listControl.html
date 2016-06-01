@@ -37,7 +37,7 @@
             <div ng-if="vm.fieldModel.listType !== 'micronode'">
                 <div class="add-item" ng-click="vm.addItem()" ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" title="Add item to list">
                     <button type="button" class="btn btn-small">
-                        <i class="icon-add"></i> <span translate>ADD_ITEM_TO</span> {{ vm.fieldModel.name }}
+                        <i class="icon-add"></i> <span translate>ADD_ITEM_TO</span> {{:: vm.fieldModel.label || vm.fieldModel.name }}
                     </button>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                     <mh-dropdown-label>
                         <div class="add-item"  ng-hide="vm.fieldModel.value.length >= vm.fieldModel.max" aria-label="Add Item">
                             <button type="button" class="btn btn-small">
-                                <i class="icon-add"></i> <span translate>ADD_ITEM_TO</span> {{ vm.fieldModel.name }} <i class="icon-arrow-drop-down"></i>
+                                <i class="icon-add"></i> <span translate>ADD_ITEM_TO</span> {{:: vm.fieldModel.label || vm.fieldModel.name }} <i class="icon-arrow-drop-down"></i>
                             </button>
                         </div>
                     </mh-dropdown-label>
