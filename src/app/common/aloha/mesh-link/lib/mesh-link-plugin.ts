@@ -387,6 +387,7 @@ define([
 			// the editable and thereby deactivates the editable, the link scope
 			// will remain active
 			PubSub.sub('aloha.editable.deactivated', function (message) {
+				checkAndHandleEmailAddresses(plugin.targetElement);
 				if (plugin.lastActiveLink !== false) {
 					// Leave the link scope lazily to avoid flickering when
 					// switching between anchor element editables
@@ -977,5 +978,39 @@ define([
 
 		that.ignoreNextSelectionChangedEvent = false;
 		return enteredLinkScope ? foundMarkup : false;
+	}
+
+	/**
+	 * Returns true is the value matches a regular expression designed to detect valid email addresses.
+	 * Taken from http://stackoverflow.com/a/1373724/772859
+     */
+	function isEmailAddress(value: string): boolean {
+		// return false is has an http(s) scheme
+		if (/^http[s]?:\/\/.*/.test(value)) {
+			return false;
+		}
+		let emailRe = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+		return emailRe.test(value);
+	}
+
+	/**
+	 * Returns the scheme of the URL (mailto:, http(s)://)
+	 */
+	function hasMailtoScheme(url: string): boolean {
+		return /^mailto:.*/.test(url);
+	}
+
+
+	/**
+	 * If the targetElement href value looks like an email address, ensure it has the correct
+	 * "mailto:" scheme prepended.
+     */
+	function checkAndHandleEmailAddresses(targetElement: any): void {
+		if (targetElement) {
+			let href= targetElement.getAttribute('href');
+			if (isEmailAddress(href) && !hasMailtoScheme(href)) {
+				targetElement.setAttribute('href', `mailto:${href}`);
+			}
+		}
 	}
 } );
