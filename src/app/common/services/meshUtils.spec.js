@@ -326,7 +326,7 @@ describe('meshUtils', function() {
         });
     });
 
-    describe('sortLanguages:', function() {
+    describe('sortLanguages()', function() {
 
         var availableLangs = [
             {
@@ -375,6 +375,90 @@ describe('meshUtils', function() {
             var result = mu.sortLanguages(availableLangs, 'eo');
 
             expect(result).toEqual(['eo', 'am', 'lo', 'ps']);
+        });
+    });
+
+    describe('addSuffixToString()', function() {
+
+        it('should add suffix to string without period', function() {
+            var result = mu.addSuffixToString('foo', 'bar');
+
+            expect(result).toBe('foo_bar');
+        });
+
+        it('should add suffix to string with period', function() {
+            var result = mu.addSuffixToString('foo.ext', 'bar');
+
+            expect(result).toBe('foo.bar.ext');
+        });
+
+        it('should work with a custom delimiter', function() {
+            var result = mu.addSuffixToString('foo', 'bar', '!');
+
+            expect(result).toBe('foo!bar');
+        });
+    });
+
+    describe('safeCloneNode()', function() {
+        var originalNode;
+        var schema;
+
+        beforeEach(function() {
+            originalNode = {
+                fields: {
+                    name: 'foo',
+                    fileName: 'foo.txt',
+                    other: 'bar',
+                    image: {
+                        fileName: 'image.jpg',
+                        type: 'binary'
+                    }
+                }
+            };
+
+            schema = {
+                displayField: 'name',
+                segmentField: 'fileName',
+                fields: [
+                    { name: 'name', type: 'string'},
+                    { name: 'fileName', type: 'string'},
+                    { name: 'other', type: 'string'},
+                    { name: 'image', type: 'binary'}
+                ]
+            };
+        });
+
+
+        it('should return a copy of the node', function() {
+            var result = mu.safeCloneNode(originalNode, schema, 'suffix');
+            expect(result === originalNode).toBe(false);
+        });
+
+        it('should rename the displayField', function() {
+            var result = mu.safeCloneNode(originalNode, schema, 'suffix');
+            expect(result.fields.name).toBe('foo (suffix)');
+        });
+
+        it('should rename the displayField when segmentField is undefined', function() {
+            delete schema.segmentField;
+            var result = mu.safeCloneNode(originalNode, schema, 'suffix');
+            expect(result.fields.name).toBe('foo (suffix)');
+        });
+
+        it('should rename the segmentField', function() {
+            var result = mu.safeCloneNode(originalNode, schema, 'suffix');
+            expect(result.fields.fileName).toBe('foo.suffix.txt');
+        });
+
+        it('should leave other fields unchanged', function() {
+            var result = mu.safeCloneNode(originalNode, schema, 'suffix');
+            expect(result.fields.other).toBe('bar');
+        });
+
+        it('should rename fileName of a binary segmentField', function() {
+            schema.segmentField = 'image';
+            var result = mu.safeCloneNode(originalNode, schema, 'suffix');
+            expect(result.fields.image.fileName).toBe('image.suffix.jpg');
         });
     });
 });

@@ -134,21 +134,8 @@ module meshAdminUi {
         // TODO: This logic will largely be replaced by a dedicated translation endpoint.
         // See https://jira.gentics.com/browse/CL-396
         public createTranslation(langCode: string, node: INode) {
-            let nodeClone = angular.copy(node);
-            let displayField = this.schema.displayField;
-            let segmentField = this.schema.segmentField;
-
+            let nodeClone = this.mu.safeCloneNode(node, this.schema, langCode.toUpperCase());
             nodeClone.language = langCode;
-            if (node.fields[segmentField] !== undefined) {
-                nodeClone.fields[displayField] += ` (${langCode.toUpperCase()})`
-            }
-            if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
-                if (node.fields[segmentField].type === 'binary') {
-                    nodeClone.fields[segmentField].fileName = this.addLangCodeToString(node.fields[segmentField].fileName, langCode);
-                } else if (node.fields[segmentField] !== undefined) {
-                    nodeClone.fields[segmentField] = this.addLangCodeToString(nodeClone.fields[segmentField], langCode);
-                }
-            }
 
             // Display a warning if there are any binary fields - these cannot be handled properly
             // until the dedicated translation endpoint is implemented in Mesh.
@@ -166,24 +153,6 @@ module meshAdminUi {
                         this.editorService.open(node.uuid);
                     }, 500);
                 });
-        }
-
-        /**
-         * Given a string value, append the langcode to the end.
-         * If the value has periods in it (as in a file name), then insert
-         * the langCode before the file extension:
-         *
-         * foo => foo_de
-         * foo.html => foo.de.html
-         */
-        private addLangCodeToString(value: string, langCode: string): string {
-            let parts = value.split('.');
-            if (1 < parts.length) {
-                parts.splice(-1, 0, langCode);
-                return parts.join('.');
-            } else {
-                return value + '_' + langCode;
-            }
         }
 
         private updateCurrentNodeAvailableLangs(node: INode, langCode: string) {

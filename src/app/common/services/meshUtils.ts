@@ -273,6 +273,56 @@ module meshAdminUi {
             const mapFn = typeof availableLangs[0] === 'string' ? indentity : extractCode;
             return availableLangs.map(mapFn).sort(sortCurrentLangFirst)
         }
+
+        /**
+         * Given a string value, append the suffix to the end.
+         * If the value has periods in it (as in a file name), then insert
+         * the suffix before the file extension:
+         *
+         * foo => foo_de
+         * foo.html => foo.de.html
+         */
+        addSuffixToString(value: string, suffix: string, delimiter: string = '_'): string {
+            let parts = value.split('.');
+            if (1 < parts.length) {
+                parts.splice(-1, 0, suffix);
+                return parts.join('.');
+            } else {
+                return value + delimiter + suffix;
+            }
+        }
+
+        /**
+         * Clones a node and changes the fields which should be unique in a given parentNode (i.e. displayField,
+         * segmentField) by adding a suffix.
+         *
+         * Returns a copy of the node passed in.
+         */
+        safeCloneNode(node: INode, schema: ISchema, suffix: string): INode {
+            let nodeClone = angular.copy(node);
+            let displayField = schema.displayField;
+            let segmentField = schema.segmentField;
+
+            if (node.fields[displayField] !== undefined) {
+                nodeClone.fields[displayField] += ` (${suffix})`
+            }
+            if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
+                if (node.fields[segmentField].type === 'binary') {
+                    nodeClone.fields[segmentField].fileName = this.addSuffixToString(node.fields[segmentField].fileName, suffix);
+                } else if (node.fields[segmentField] !== undefined) {
+                    nodeClone.fields[segmentField] = this.addSuffixToString(nodeClone.fields[segmentField], suffix);
+                }
+            }
+ 
+            // Display a warning if there are any binary fields - these cannot be handled properly
+            // until the dedicated translation endpoint is implemented in Mesh.
+            let firstBinaryField = this.getFirstBinaryField(node);
+            if (firstBinaryField.key !== undefined) {
+                console.warn(`Note: binary fields cannot yet be copied to translated version.`);
+            }
+
+            return nodeClone;
+        }
     }
 
     angular.module('meshAdminUi.common')
