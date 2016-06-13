@@ -1,24 +1,25 @@
 <md-dialog flex="90" class="node-selector-dialog">
-  <md-dialog-content class="md-dialog-content">
-      <h2 translate>{{:: dialog.title }}</h2>
+    <md-dialog-content class="md-dialog-content">
+        <h2 translate>{{:: dialog.title }}</h2>
 
-      <div class="node-select-container">
-          <node-selector
-                  selected-nodes="dialog.selectedNodes"
-                  allowed-schemas="dialog.allow"
-                  multi-select="dialog.multiSelect"
-                  containers-only="dialog.containersOnly"
-                  display-mode="dialog.displayMode"
-                  include-root-node="dialog.includeRootNode"></node-selector>
-      </div>
-  </md-dialog-content>
+        <div class="node-select-container">
+            <node-selector
+                    selected-nodes="dialog.selectedNodes"
+                    allowed-schemas="dialog.allow"
+                    multi-select="dialog.multiSelect"
+                    containers-only="dialog.containersOnly"
+                    display-mode="dialog.displayMode"
+                    include-root-node="dialog.includeRootNode"
+                    starting-node-uuid="dialog.startingNodeUuid"></node-selector>
+        </div>
+    </md-dialog-content>
 
-  <md-dialog-actions>
-    <button ng-click="dialog.select()" class="btn btn-primary" ng-disabled="dialog.selectedNodes.length === 0">
-        <span translate>USE_SELECTED_NODE</span>
-    </button>
-    <button ng-click="dialog.cancel()" class="btn">
-        <span translate>CANCEL</span>
-    </button>
-  </md-dialog-actions>
+    <md-dialog-actions>
+        <button ng-click="dialog.select()" class="btn btn-primary" ng-disabled="dialog.selectedNodes.length === 0">
+            <span translate>USE_SELECTED_NODE</span>
+        </button>
+        <button ng-click="dialog.cancel()" class="btn">
+            <span translate>CANCEL</span>
+        </button>
+    </md-dialog-actions>
 </md-dialog>

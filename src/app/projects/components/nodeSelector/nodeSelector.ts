@@ -7,6 +7,7 @@ module meshAdminUi {
         displayMode?: string;
         containersOnly?: boolean;
         includeRootNode?: boolean;
+        startingNodeUuid?: string;
     }
 
     /**
@@ -41,6 +42,7 @@ module meshAdminUi {
                     multiSelect: options.multiSelect || false,
                     displayMode: options.displayMode || 'list',
                     includeRootNode: !!options.includeRootNode,
+                    startingNodeUuid: options.startingNodeUuid
                 },
                 bindToController: true
             });
@@ -73,6 +75,7 @@ module meshAdminUi {
         private allowedSchemas: string[];
         private containersOnly: boolean;
         private includeRootNode: boolean;
+        private startingNodeUuid: string;
         private nodes;
         private breadcrumbs: any[];
         private filterNodes;
@@ -88,7 +91,18 @@ module meshAdminUi {
             this.currentNode = contextService.getCurrentNode();
             this.selectedNodes = this.selectedNodes instanceof Array ? this.selectedNodes : [];
 
-            dataService.getNode(this.currentProject.name, this.currentProject.rootNodeUuid)
+            let initialUuid = this.startingNodeUuid || this.currentProject.rootNodeUuid;
+
+            dataService.getNode(this.currentProject.name, initialUuid)
+                .then((node: INode) => {
+                    if (this.startingNodeUuid && node.parentNode) {
+                        // if the startingNodeUuid was specified, we want to go up a level
+                        // in the tree so that it can be selected.
+                        return dataService.getNode(this.currentProject.name, node.parentNode.uuid);
+                    } else {
+                        return node;
+                    }
+                })
                 .then(node => this.currentNode = node)
                 .then(() => this.populateContents());
 
@@ -195,7 +209,7 @@ module meshAdminUi {
         public getDisplayName(node: INode): string {
             let displayName = node.fields[node.displayField];
             let langCode = node.language && node.language.toUpperCase();
-            let langString = this.isUntranslated(node) ? ` (${langCode})` : '';
+            let langString = this.isUntranslated(node) && langCode ? ` (${langCode})` : '';
             return displayName + langString;
         }
 
@@ -232,7 +246,8 @@ module meshAdminUi {
                 multiSelect: '=',
                 displayMode: '=',
                 containersOnly: '=',
-                includeRootNode: '='
+                includeRootNode: '=',
+                startingNodeUuid: '=',
             }
         };
     }
