@@ -2,10 +2,10 @@
     <form>
         <md-dialog-content>
             <div class="md-dialog-content">
-                <h2>Delete Content?</h2>
+                <h2 translate>CONFIRM_DELETE_TITLE</h2>
 
                 <div ng-if="1 < vm.node.availableLanguages.length">
-                    This content exists in the following languages. Check the ones you with to delete:
+                    <span translate>CONFIRM_DELETE_NODE_MESSAGE</span>
 
                     <div ng-repeat="code in vm.node.availableLanguages">
                         <md-checkbox ng-model="vm.langsToDelete[code]" md-no-ink
@@ -20,10 +20,10 @@
 
         <md-dialog-actions>
             <button ng-click="vm.deleteNode()" class="btn btn-warn">
-                Delete
+                <span translate>DELETE</span>
             </button>
             <button ng-click="vm.cancel()" class="btn">
-                Cancel
+                <span translate>CANCEL</span>
             </button>
         </md-dialog-actions>
     </form>

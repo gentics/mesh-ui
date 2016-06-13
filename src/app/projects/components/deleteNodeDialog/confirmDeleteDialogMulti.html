@@ -2,18 +2,18 @@
     <form>
         <md-dialog-content>
             <div class="md-dialog-content">
-                <h2>Delete Content?</h2>
+                <h2 translate>CONFIRM_DELETE_TITLE</h2>
 
-                The selected nodes may exist in more than one language.
+                <span translate>CONFIRM_DELETE_NODE_MULTI_MESSAGE</span>
 
                 <md-radio-group ng-model="vm.deleteAllLangs">
                     <md-radio-button ng-value="false"
                                      aria-label="Delete only current language version">
-                        Delete current language version only ({{:: vm.currentLangInfo.nativeName }})
+                        <span translate>CONFIRM_DELETE_NODE_MULTI_CURRENT_MESSAGE</span> ({{:: vm.currentLangInfo.nativeName }})
                     </md-radio-button>
                     <md-radio-button ng-value="true"
                                      aria-label="Delete all language versions">
-                        Delete <strong>all</strong> language versions
+                        <span translate>CONFIRM_DELETE_NODE_MULTI_ALL_MESSAGE</span>
                     </md-radio-button>
                 </md-radio-group>
 

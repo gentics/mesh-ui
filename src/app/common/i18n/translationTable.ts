@@ -409,6 +409,10 @@ module meshAdminUi {
             en: 'Edit',
             de: 'Bearbeiten'
         },
+        'COPY': {
+            en: 'Copy',
+            de: 'Kopieren'
+        },
         'MOVE': {
             en: 'Move',
             de: 'Verschieben'
@@ -483,6 +487,22 @@ module meshAdminUi {
         'CONFIRM_DELETE_TITLE': {
             en: 'Delete?',
             de: 'Löschen?'
+        },
+        'CONFIRM_DELETE_NODE_MESSAGE': {
+            en: 'This node exists in the following languages. Check the ones you wish to delete:',
+            de: 'Dieser Node existiert in folgenden Sprachen. Wählen Sie die zu löschenden Versionen:'
+        },
+        'CONFIRM_DELETE_NODE_MULTI_MESSAGE': {
+            en: 'The selected nodes may exist in more than one language.',
+            de: 'Die ausgewählten Nodes könnten in mehreren Sprachen existieren.'
+        },
+        'CONFIRM_DELETE_NODE_MULTI_CURRENT_MESSAGE': {
+            en: 'Delete current language version only.',
+            de: 'Nur derzeitige Sprachversion löschen.'
+        },
+        'CONFIRM_DELETE_NODE_MULTI_ALL_MESSAGE': {
+            en: 'Delete all language versions.',
+            de: 'Alle Sprachversionen löschen.'
         },
         'CONFIRM_DELETE_MESSAGE': {
             en: 'Are you sure you want to delete this object?',
