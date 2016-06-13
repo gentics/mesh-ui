@@ -463,7 +463,7 @@ module meshAdminUi {
         /**
          * Get a single node.
          */
-        public getNode(projectName, uuid, queryParams?: INodeQueryParams):ng.IPromise<any> {
+        public getNode(projectName, uuid, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             queryParams = queryParams || {};
 
             const currLangCode = this.i18nService.getCurrentLang().code;

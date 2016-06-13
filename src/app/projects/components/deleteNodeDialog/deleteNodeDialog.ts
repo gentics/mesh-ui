@@ -5,7 +5,7 @@ module meshAdminUi {
         constructor(private $mdDialog: ng.material.IDialogService) {
         }
 
-        public show(node: INode) {
+        public show(node: INode): ng.IPromise<string[]> {
             return this.$mdDialog.show({
                 controller: 'ConfirmDeleteDialogController',
                 controllerAs: 'vm',
@@ -17,7 +17,7 @@ module meshAdminUi {
             });
         }
 
-        public showMulti() {
+        public showMulti(): ng.IPromise<{ deleteAllLangs: boolean }> {
             return this.$mdDialog.show({
                 controller: 'ConfirmDeleteDialogController',
                 controllerAs: 'vm',
