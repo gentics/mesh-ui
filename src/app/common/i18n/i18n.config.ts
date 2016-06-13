@@ -1,5 +1,7 @@
 module meshAdminUi {
 
+    declare var meshUiConfig:any;
+
     /**
      * Configures the languages available to the app and also the translation objects
      * to be used with those languages.
@@ -8,18 +10,20 @@ module meshAdminUi {
      */
     function i18nConfig(i18nServiceProvider, $translateProvider, translationTable) {
 
-        i18nServiceProvider.setAvailableLanguages([
-            'en',
-            'de'
-        ]);
+        const availableLanguages = meshUiConfig.availableLanguages.map(s => s.toLowerCase());
+        const defaultLanguage = meshUiConfig.defaultLanguage.toLowerCase();
 
-        i18nServiceProvider.setDefaultLanguage('en');
+        i18nServiceProvider.setAvailableLanguages(meshUiConfig.availableLanguages);
+        i18nServiceProvider.setDefaultLanguage(defaultLanguage);
+
         $translateProvider
             .useSanitizeValueStrategy('escapeParameters')
-            .translations('en', translationTable.getLanguage('en'))
-            .translations('de', translationTable.getLanguage('de'))
-            .preferredLanguage('en')
-            .fallbackLanguage('en');
+            .preferredLanguage(defaultLanguage)
+            .fallbackLanguage(defaultLanguage);
+
+        angular.forEach(availableLanguages, (langCode: string) => {
+            $translateProvider.translations(langCode, translationTable.getLanguage(langCode));
+        });
     }
 
     angular.module('meshAdminUi.common.i18n', [
