@@ -12,7 +12,7 @@
                     'selected' : vm.isSelected(node.uuid),
                     'untranslated': !vm.isAvailableInCurrentLang(node)
                  }"
-                 ng-click="vm.toggleSelect(node)"
+                 ng-click="vm.toggleSelect(node, $event)"
                  layout="row">
 
                 <div flex layout="row" layout-align="start center">
@@ -39,19 +39,40 @@
                     <expandable-tags-list tags="vm.tagsArray[node.uuid]"></expandable-tags-list>
                 </div>
 
-                <div>
-                    <button class="btn btn-primary btn-small edit-button"
-                            ng-if=":: vm.isAvailableInCurrentLang(node)"
-                            ng-click="vm.editNode(node, $event)">
-                        <span translate>EDIT</span>
-                    </button>
-                    <div ng-if=":: !vm.isAvailableInCurrentLang(node)">
-                        <node-language-menu node="node"
-                                            omit-current-language="false"
-                                            show-translate-button="false"
-                                            on-change-language="vm.openNodeInLanguage(code, node)"></node-language-menu>
+                <div layout="row" ng-if=":: vm.isAvailableInCurrentLang(node)">
+                    <div>
+                        <button class="btn btn-primary btn-small edit-button"
+                                ng-click="vm.editNode(node, $event)">
+                            <span translate>EDIT</span>
+                        </button>
                     </div>
+                    <mh-dropdown>
+                        <mh-dropdown-label>
+                            <i class="icon-more-vert node-item-menu-icon"></i>
+                        </mh-dropdown-label>
+                        <mh-dropdown-body>
+                            <ul>
+                                <li ng-click="vm.copyNode(node, bundle.schema, $event)">
+                                    <a href="#" class="a-plain" translate>COPY</a>
+                                </li>
+                                <li ng-click="vm.moveNode(node, $event)">
+                                    <a href="#" class="a-plain" translate>MOVE</a>
+                                </li>
+                                <li ng-click="vm.deleteNode(node, $event)" class="warn">
+                                    <a href="#" class="a-plain" translate>DELETE</a>
+                                </li>
+                            </ul>
+                        </mh-dropdown-body>
+                    </mh-dropdown>
                 </div>
+
+                <div ng-if=":: !vm.isAvailableInCurrentLang(node)">
+                    <node-language-menu node="node"
+                                        omit-current-language="false"
+                                        show-translate-button="false"
+                                        on-change-language="vm.openNodeInLanguage(code, node)"></node-language-menu>
+                </div>
+
 
             </div>
 

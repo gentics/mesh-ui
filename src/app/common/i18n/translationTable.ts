@@ -48,6 +48,10 @@ module meshAdminUi {
             en: 'Moved {{ count }} nodes',
             de: '{{ count }} Nodes verschoben'
         },
+        'COPIED_NODE': {
+            en: 'Copied node',
+            de: 'Node kopiert'
+        },
         'DELETED_NODES': {
             en: 'Deleted {{ count }} nodes',
             de: '{{ count }} Nodes gelöscht'
@@ -67,6 +71,10 @@ module meshAdminUi {
         'SWITCH_LANGUAGE_AND_OPEN_MESSAGE': {
             en: 'In order to open this node in {{ lang }}, the user interface language will be set to {{ lang }}',
             de: 'Um diesen Node zu öffnen, muss die Benutzeroberfläche zu {{ lang }} geändert werden'
+        },
+        'SELECT_DESTINATION': {
+            en: 'Select destination',
+            de: 'Zielort auswählen'
         }
     };
 
