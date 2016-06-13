@@ -16,7 +16,7 @@ module meshAdminUi {
             event.stopPropagation();
             event.preventDefault();
             this.isExpanded = !this.isExpanded;
-            this.tagsLimit = this.isExpanded ? Number.MAX_SAFE_INTEGER : tagDisplayLimit;
+            this.tagsLimit = this.isExpanded ? 99999999 : tagDisplayLimit;
         }
 
     }
