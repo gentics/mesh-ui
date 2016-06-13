@@ -63,7 +63,12 @@
 
         // Custom settings object for the Aloha editor. If left empty, the default configuration
         // will be used.
-        alohaSettings: {}
+        alohaSettings: {},
+
+        // Sets the maximum number of tags which will be displayed in the contents list. If a node has
+        // more tags than the limit, the rest will be hidden by default, but may be viewed by clicking
+        // the "more" icon. To always show all tags, set this to Infinity.
+        tagDisplayLimit: 3
     };
 
 

@@ -1,8 +1,12 @@
 module meshAdminUi {
 
+    declare var meshUiConfig: any;
+
+    const tagDisplayLimit = meshUiConfig.tagDisplayLimit || 3;
+
     class ExpandableTagsListController {
 
-        public tagsLimit: number = 3;
+        public tagsLimit: number = tagDisplayLimit;
         public isExpanded: boolean = false;
 
         constructor() {
@@ -12,7 +16,7 @@ module meshAdminUi {
             event.stopPropagation();
             event.preventDefault();
             this.isExpanded = !this.isExpanded;
-            this.tagsLimit = this.isExpanded ? 1000 : 3;
+            this.tagsLimit = this.isExpanded ? Number.MAX_SAFE_INTEGER : tagDisplayLimit;
         }
 
     }
