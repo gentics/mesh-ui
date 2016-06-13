@@ -53,8 +53,15 @@
       border-left: @mh-dropdown-color-border;
     }
     &:not(:last-child) {
-        border-bottom: 1px solid @color-concrete;
+      border-bottom: 1px solid @color-concrete;
+    }
+
+    &.warn {
+      color: darken(@color-warn, 10%);
+      &:hover {
+        border-left: 2px solid @color-warn;
       }
+    }
   }
 
 
