@@ -303,7 +303,7 @@ module meshAdminUi {
             let displayField = schema.displayField;
             let segmentField = schema.segmentField;
 
-            if (node.fields[displayField] !== undefined) {
+            if (typeof node.fields[displayField] === 'string') {
                 nodeClone.fields[displayField] += ` (${suffix})`
             }
             if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
@@ -318,7 +318,7 @@ module meshAdminUi {
             // until the dedicated translation endpoint is implemented in Mesh.
             let firstBinaryField = this.getFirstBinaryField(node);
             if (firstBinaryField.key !== undefined) {
-                console.warn(`Note: binary fields cannot yet be copied to translated version.`);
+                console.warn(`Note: binary fields cannot yet be copied.`);
             }
 
             return nodeClone;
