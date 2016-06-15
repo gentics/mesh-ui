@@ -9,7 +9,7 @@ if (!Boolean.valueOf(release)) {
 		def mvnHome = tool 'M3'
 		checkout scm
 		sh "${mvnHome}/bin/mvn -B clean test -Dmaven.test.failure.ignore"
-		step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/*.xml'])
+		step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
 	}
 } else {
 	node('dockerSlave') {
