@@ -4,7 +4,7 @@
 
 	<groupId>com.gentics.mesh</groupId>
 	<artifactId>mesh-admin-ui</artifactId>
-	<version>0.6.11-SNAPSHOT</version>
+	<version>0.6.12-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 	<name>Mesh - Admin UI</name>
@@ -32,6 +32,11 @@
 					<skip>true</skip>
 					<skipDeploy>true</skipDeploy>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.2</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
