@@ -10,10 +10,10 @@ module meshAdminUi {
      */
     function i18nConfig(i18nServiceProvider, $translateProvider, translationTable) {
 
-        const availableLanguages = meshUiConfig.availableLanguages.map(s => s.toLowerCase());
-        const defaultLanguage = meshUiConfig.defaultLanguage.toLowerCase();
+        const availableLanguages = (meshUiConfig.availableLanguages || ['en']).map(s => s.toLowerCase());
+        const defaultLanguage = (meshUiConfig.defaultLanguage || 'en').toLowerCase();
 
-        i18nServiceProvider.setAvailableLanguages(meshUiConfig.availableLanguages);
+        i18nServiceProvider.setAvailableLanguages(availableLanguages);
         i18nServiceProvider.setDefaultLanguage(defaultLanguage);
 
         $translateProvider
