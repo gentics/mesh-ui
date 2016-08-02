@@ -265,6 +265,8 @@ module meshAdminUi {
             const sortCurrentLangFirst = (a: string, b: string) => {
                 if (a === currentLang) {
                     return -1;
+                } else if (b === currentLang) {
+                    return 1;
                 }
                 return a < b ? -1 : 1;
             };
