@@ -168,9 +168,9 @@
 	</build>
 	<distributionManagement>
 		<repository>
-			<id>lan.releases.staging.mesh</id>
+			<id>lan.releases</id>
 			<name>Gentics Releases Repository</name>
-			<url>http://artifactory.office/repository/lan.releases.staging.mesh</url>
+			<url>http://artifactory.office/repository/lan.releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>lan.snapshots</id>
