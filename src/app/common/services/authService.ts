@@ -25,7 +25,6 @@ module meshAdminUi {
                     private $cookies) {
 
             this._isLoggedIn = $cookies.get('isLoggedIn') === 'true';
-            this.authString = $cookies.get('authString') || '';
             this.onLogInCallbacks = [];
             this.onLogOutCallbacks = [];
         }
@@ -45,15 +44,13 @@ module meshAdminUi {
          * @returns {boolean}
          */
         public logIn(userName, password) {
-            var authHeaderKey,
-                authHeaderValue,
+            let authHeaderValue,
                 $http = <ng.IHttpService>this.$injector.get("$http"),
                 config: ng.IRequestShortcutConfig = { headers: {} },
                 deferred = this.$q.defer();
 
-            authHeaderKey = this.AUTH_HEADER_NAME;
             authHeaderValue = "Basic " + btoa(userName + ":" + password);
-            config.headers[authHeaderKey] = authHeaderValue;
+            config.headers[this.AUTH_HEADER_NAME] = authHeaderValue;
 
             this.userRequestInFlight = $http.get(meshUiConfig.apiUrl + 'auth/me', config)
                 .then(response => {
@@ -62,7 +59,6 @@ module meshAdminUi {
                         this.authString = authHeaderValue;
                         this._isLoggedIn = true;
                         this.$cookies.put('isLoggedIn', 'true');
-                        this.$cookies.put('authString', this.authString);
                         this.dispatcher.publish(this.dispatcher.events.loginSuccess);
                         deferred.resolve(true);
                     } else {
@@ -141,29 +137,6 @@ module meshAdminUi {
         }
     }
 
-    function authInterceptorConfig($httpProvider: ng.IHttpProvider) {
-        $httpProvider.interceptors.push(authInterceptor);
-    }
-
-    function authInterceptor(authService: AuthService) {
-        const AUTH_HEADER_NAME = 'Authorization';
-        return {
-            request: function (config) {
-                // TODO: need to read the API URL from the config file
-                if (config.url.indexOf('api/') > -1 && !config.headers.hasOwnProperty(AUTH_HEADER_NAME)) {
-                    if (authService.isLoggedIn()) {
-                        config.headers[AUTH_HEADER_NAME] = authService.getAuthValue();
-                    } else {
-                        console.log('not authorized!');
-                    }
-                }
-
-                return config;
-            }
-        };
-    }
-
     angular.module('meshAdminUi.common')
-            .config(authInterceptorConfig)
             .service('authService', AuthService);
 }
