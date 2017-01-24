@@ -91,6 +91,7 @@
     "http-server": "^0.9.0",
     "ie-shim": "^0.1.0",
     "jasmine-core": "^2.5.2",
+    "ng2-translate": "^5.0.0",
     "reflect-metadata": "^0.1.9",
     "rxjs": "~5.0.2",
     "zone.js": "~0.7.4"
@@ -157,7 +158,8 @@
     "webpack-dev-server": "2.2.0",
     "webpack-dll-bundles-plugin": "^1.0.0-beta.5",
     "webpack-md5-hash": "^0.0.5",
-    "webpack-merge": "~2.4.0"
+    "webpack-merge": "~2.4.0",
+    "yaml-loader": "^0.4.0"
   },
   "repository": {
     "type": "git",

@@ -11,7 +11,7 @@
  * file for our client, when we run test, it will compile and bundle them
  * all here! Crazy huh. So we need to do some setup
  */
-Error.stackTraceLimit = Infinity;
+Error.stackTraceLimit = 10;
 
 require('core-js/es6');
 require('core-js/es7/reflect');

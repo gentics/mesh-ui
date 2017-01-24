@@ -4,7 +4,6 @@ import {HttpModule} from '@angular/http';
 import {NgModule, ApplicationRef} from '@angular/core';
 import {removeNgStyles, createNewHosts, createInputTransfer} from '@angularclass/hmr';
 import {RouterModule, PreloadAllModules} from '@angular/router';
-import {GenticsUICoreModule} from 'gentics-ui-core';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -18,6 +17,7 @@ import {AppState, InternalStateType} from './app.service';
 
 import '../styles/main.scss';
 import {SharedModule} from './shared/shared.module';
+import {I18nService} from './shared/providers/i18n/i18n.service';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -44,7 +44,6 @@ type StoreType = {
         FormsModule,
         HttpModule,
         RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
-        GenticsUICoreModule,
         SharedModule
     ],
     providers: [
@@ -55,7 +54,10 @@ type StoreType = {
 export class AppModule {
 
     constructor(public appRef: ApplicationRef,
-                public appState: AppState) {}
+                public i18nService: I18nService,
+                public appState: AppState) {
+        i18nService.setLanguage('en');
+    }
 
     public hmrOnInit(store: StoreType) {
         if (!store || !store.state) {

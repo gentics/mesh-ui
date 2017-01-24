@@ -164,6 +164,10 @@ module.exports = function (options) {
                     use: 'file-loader'
                 },
 
+                /* Yaml loader is used for loading the translation files
+                 */
+                { test: /\.yml/, loader: 'json-loader!yaml-loader' },
+
             ],
 
         },

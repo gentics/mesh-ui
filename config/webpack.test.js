@@ -80,7 +80,8 @@ module.exports = function (options) {
                     exclude: [
                         // these packages have problems with their sourcemaps
                         helpers.root('node_modules/rxjs'),
-                        helpers.root('node_modules/@angular')
+                        helpers.root('node_modules/@angular'),
+                        helpers.root('node_modules/gentics-ui-core')
                     ]
                 },
 
@@ -135,6 +136,12 @@ module.exports = function (options) {
                     exclude: [helpers.root('src/index.html')]
                 },
 
+                {
+                    test: /\.scss$/,
+                    use: ['to-string-loader', 'css-loader', 'sass-loader'],
+                    exclude: [helpers.root('src', 'styles')]
+                },
+
                 /**
                  * Raw loader support for *.html
                  * Returns file content as string
@@ -146,6 +153,10 @@ module.exports = function (options) {
                     loader: 'raw-loader',
                     exclude: [helpers.root('src/index.html')]
                 },
+
+                /* Yaml loader is used for loading the translation files
+                 */
+                { test: /\.yml/, loader: 'json-loader!yaml-loader' },
 
                 /**
                  * Instruments JS files with Istanbul for subsequent code coverage reporting.
