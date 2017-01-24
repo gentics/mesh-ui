@@ -8,7 +8,7 @@ import { bootloader } from '@angularclass/hmr';
  * App Module
  * our top level module that holds all of our components
  */
-import { AppModule } from './app';
+import { AppModule } from './app/app.module';
 
 /*
  * Bootstrap our Angular app with a top level NgModule

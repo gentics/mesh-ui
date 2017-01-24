@@ -1,0 +1,18 @@
+//
+// Override any Gentics UI Core variables with custom values for this project.
+//
+
+// adjust media query break points
+$small-screen-up: 801px;
+$medium-screen-up: 1201px;
+$large-screen-up: 1601px;
+$small-screen: 800px;
+$medium-screen: 1200px;
+$large-screen: 1600px;
+
+// color overrides
+$gtx-color-primary: #0096DC;
+$gtx-color-secondary: #d8d7cb;
+$gtx-color-success: #449d44;
+$gtx-color-warning: #ec971f;
+$gtx-color-alert: #c9302c;
