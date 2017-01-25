@@ -9,10 +9,10 @@ import { AppState } from '../../../state/providers/app-state.service';
 })
 export class LoginComponent {
 
-    constructor(private state: AppState, private router: Router) {}
-
     username = '';
     password = '';
+
+    constructor(private state: AppState, private router: Router) {}
 
     onSubmit(e: Event): void {
         e.preventDefault();

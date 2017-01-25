@@ -1,8 +1,11 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, TestBed, ComponentFixture } from '@angular/core/testing';
+import { Router } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
+import { AppState } from './state/providers/app-state.service';
+import { Observable } from 'rxjs';
 
 describe(`App`, () => {
     let comp: AppComponent;
@@ -12,9 +15,12 @@ describe(`App`, () => {
         TestBed.configureTestingModule({
             imports: [SharedModule],
             declarations: [AppComponent],
+            providers: [
+                AppState,
+                { provide: Router, useClass: MockRouter }
+            ],
             schemas: [NO_ERRORS_SCHEMA]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -30,3 +36,7 @@ describe(`App`, () => {
     });
 
 });
+
+class MockRouter {
+    events = Observable.never();
+}

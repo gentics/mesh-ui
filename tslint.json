@@ -44,6 +44,7 @@
             160
         ],
         "no-string-literal": false,
+        "no-shadowed-variable": false,
         "no-use-before-declare": true,
         "object-literal-sort-keys": false,
         "ordered-imports": false,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from 'ng2-translate/ng2-translate';
-import { FALLBACK_LANGUAGE, UI_LANGUAGES } from '../../config/config';
+import { FALLBACK_LANGUAGE, UI_LANGUAGES } from '../../../common/config/config';
 
 export type UILanguage = 'en' | 'de';
 

@@ -1,5 +1,5 @@
 import { I18nService } from './i18n.service';
-import { FALLBACK_LANGUAGE } from '../../config/config';
+import { FALLBACK_LANGUAGE } from '../../../common/config/config';
 
 describe('I18nService', () => {
 

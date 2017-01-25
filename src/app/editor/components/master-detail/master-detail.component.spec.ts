@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MasterDetailComponent } from './master-detail.component';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('MasterDetailComponent:', () => {
 
@@ -8,6 +9,7 @@ describe('MasterDetailComponent:', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [SharedModule],
             declarations: [MasterDetailComponent]
         })
         .compileComponents();
@@ -19,7 +21,6 @@ describe('MasterDetailComponent:', () => {
 
         fixture.detectChanges();
     });
-
 
     it(`should be initialized`, () => {
         expect(fixture).toBeDefined();
