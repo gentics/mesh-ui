@@ -1,5 +1,5 @@
-import {I18nService} from './i18n.service';
-import {FALLBACK_LANGUAGE} from '../../config/config';
+import { I18nService } from './i18n.service';
+import { FALLBACK_LANGUAGE } from '../../config/config';
 
 describe('I18nService', () => {
 
@@ -26,7 +26,7 @@ describe('I18nService', () => {
     describe('inferUserLanguage()', () => {
 
         let originalNavigator: Navigator;
-        let mockNavigator: { language: string; languages: string[] };
+        let mockNavigator: { language: string; languages: string[] | undefined };
         beforeEach(() => {
             originalNavigator = window.navigator;
             mockNavigator = {

@@ -2,11 +2,11 @@
 import {
   enableDebugTools,
   disableDebugTools
-} from '@angular/platform-browser';
+ } from '@angular/platform-browser';
 import {
   ApplicationRef,
   enableProdMode
-} from '@angular/core';
+ } from '@angular/core';
 // Environment Providers
 let PROVIDERS: any[] = [
   // common env directives

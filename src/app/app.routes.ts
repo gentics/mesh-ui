@@ -1,9 +1,12 @@
-import { Routes, RouterModule } from '@angular/router';
-
+import { Routes } from '@angular/router';
+import { AuthGuard } from './auth-guard';
 import { NoContentComponent } from './shared/components/no-content/no-content.component';
 
-import { DataResolver } from './app.resolver';
-
 export const ROUTES: Routes = [
-  { path: '**',    component: NoContentComponent },
+    { path: 'login', loadChildren: './login/login.module#LoginModule' },
+    /*{ path: '**',    component: NoContentComponent },*/
+    { path: '', canActivate: [AuthGuard], children: [
+        { path: '', loadChildren: './editor/editor.module#EditorModule' },
+        { path: 'admin', loadChildren: './admin/admin.module#AdminModule' }
+    ] },
 ];

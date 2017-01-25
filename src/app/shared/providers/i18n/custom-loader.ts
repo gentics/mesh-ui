@@ -1,5 +1,5 @@
-import {TranslateLoader} from 'ng2-translate';
-import {Observable} from 'rxjs';
+import { TranslateLoader } from 'ng2-translate';
+import { Observable } from 'rxjs';
 
 // Parse the yaml files into a JS object.
 const translations: any = {

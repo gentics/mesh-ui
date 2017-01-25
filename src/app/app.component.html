@@ -1,5 +1,16 @@
-<gtx-top-bar>
+<gtx-top-bar *ngIf="loggedIn$ | async">
+    <gtx-button size="small"
+                flat
+                type="secondary"
+                *ngIf="!(adminMode$ | async)"
+                [routerLink]="['/admin']">Admin Mode</gtx-button>
+    <gtx-button size="small"
+                flat
+                type="secondary"
+                *ngIf="adminMode$ | async"
+                [routerLink]="['/']">Editor Mode</gtx-button>
     <h5>Mesh UI</h5>
     <p>{{ 'common.welcome_to_mesh' | i18n }}</p>
+    <gtx-button size="small" flat type="secondary" (click)="logOut()">Log Out</gtx-button>
 </gtx-top-bar>
 <router-outlet></router-outlet>

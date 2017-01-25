@@ -1,8 +1,8 @@
-import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {async, TestBed, ComponentFixture} from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { async, TestBed, ComponentFixture } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
-import {SharedModule} from './shared/shared.module';
+import { SharedModule } from './shared/shared.module';
 
 describe(`App`, () => {
     let comp: AppComponent;

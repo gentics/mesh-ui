@@ -1,3 +1,5 @@
-<gtx-input placeholder="username"></gtx-input>
-<gtx-input placeholder="password" type="password"></gtx-input>
-<gtx-button>Log In</gtx-button>
+<form class="login-form">
+    <gtx-input placeholder="username" [(ngModel)]="username" name="username"></gtx-input>
+    <gtx-input placeholder="password" type="password" [(ngModel)]="password" name="password"></gtx-input>
+    <gtx-button submit (click)="onSubmit($event)">Log In</gtx-button>
+</form>

@@ -1,8 +1,22 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AppState } from '../../../state/providers/app-state.service';
 
 @Component({
     selector: 'login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.scss']
 })
-export class LoginComponent {}
+export class LoginComponent {
+
+    constructor(private state: AppState, private router: Router) {}
+
+    username = '';
+    password = '';
+
+    onSubmit(e: Event): void {
+        e.preventDefault();
+        this.state.set('loggedIn', true);
+        this.router.navigate(['/']);
+    }
+}

@@ -1,28 +1,31 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
-import {NgModule, ApplicationRef} from '@angular/core';
-import {removeNgStyles, createNewHosts, createInputTransfer} from '@angularclass/hmr';
-import {RouterModule, PreloadAllModules} from '@angular/router';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { NgModule, ApplicationRef } from '@angular/core';
+import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
+import { RouterModule, PreloadAllModules, Router } from '@angular/router';
 
 /*
  * Platform and Environment providers/directives/pipes
  */
-import {ENV_PROVIDERS} from './environment';
-import {ROUTES} from './app.routes';
+import { ENV_PROVIDERS } from './environment';
+import { ROUTES } from './app.routes';
 // App is our top level component
-import {AppComponent} from './app.component';
-import {APP_RESOLVER_PROVIDERS} from './app.resolver';
-import {AppState, InternalStateType} from './app.service';
+import { AppComponent } from './app.component';
+import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 
+import { SharedModule } from './shared/shared.module';
+import { I18nService } from './shared/providers/i18n/i18n.service';
+import { StateModule } from './state/state.module';
 import '../styles/main.scss';
-import {SharedModule} from './shared/shared.module';
-import {I18nService} from './shared/providers/i18n/i18n.service';
+import { AppState, InternalStateType } from './state/providers/app-state.service';
+import { AuthGuard } from './auth-guard';
 
 // Application wide providers
 const APP_PROVIDERS = [
     ...APP_RESOLVER_PROVIDERS,
-    AppState
+    AppState,
+    AuthGuard
 ];
 
 type StoreType = {
@@ -44,7 +47,8 @@ type StoreType = {
         FormsModule,
         HttpModule,
         RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
-        SharedModule
+        SharedModule,
+        StateModule
     ],
     providers: [
         ENV_PROVIDERS,
@@ -55,8 +59,10 @@ export class AppModule {
 
     constructor(public appRef: ApplicationRef,
                 public i18nService: I18nService,
+                private router: Router,
                 public appState: AppState) {
         i18nService.setLanguage('en');
+        router.events.subscribe(event => console.log(event));
     }
 
     public hmrOnInit(store: StoreType) {
@@ -65,7 +71,7 @@ export class AppModule {
         }
         console.log('HMR store', JSON.stringify(store, null, 2));
         // set state
-        this.appState._state = store.state;
+        this.appState.restore(store.state);
         // set input values
         if ('restoreInputValues' in store) {
             let restoreInputValues = store.restoreInputValues;

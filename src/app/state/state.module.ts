@@ -1,7 +1,8 @@
-import {NgModule} from '@angular/core';
+import { NgModule } from '@angular/core';
+import { AppState } from './providers/app-state.service';
 
 @NgModule({
-  providers: []
+  providers: [AppState]
 })
 export class StateModule {
 }

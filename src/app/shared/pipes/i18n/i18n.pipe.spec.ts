@@ -1,5 +1,5 @@
-import {EventEmitter} from '@angular/core';
-import {I18nPipe} from './i18n.pipe';
+import { EventEmitter } from '@angular/core';
+import { I18nPipe } from './i18n.pipe';
 
 describe('I18nPipe', () => {
 

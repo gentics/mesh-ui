@@ -1,6 +1,6 @@
-import {Injectable, Pipe, ChangeDetectorRef, PipeTransform, OnDestroy} from '@angular/core';
-import {TranslateService, TranslatePipe} from 'ng2-translate';
-import {Subscription} from 'rxjs/Subscription';
+import { Injectable, Pipe, ChangeDetectorRef, PipeTransform, OnDestroy } from '@angular/core';
+import { TranslateService, TranslatePipe } from 'ng2-translate';
+import { Subscription } from 'rxjs/Subscription';
 
 /**
  * A wrapper around the ng2-translate TranslatePipe. Adds some convenience shortcuts to allow
@@ -47,9 +47,9 @@ export class I18nPipe implements PipeTransform, OnDestroy {
 
     translatePipe: TranslatePipe;
 
-    _lastValue: string;
+    _lastValue: string | undefined;
     _lastParams: any;
-    _lastResult: string;
+    _lastResult: string | undefined;
     subscription: Subscription;
 
     constructor(private translate: TranslateService,
@@ -65,7 +65,7 @@ export class I18nPipe implements PipeTransform, OnDestroy {
         });
     }
 
-    transform(value: string, params: { [key: string]: any }): string {
+    transform(value: string, params: { [key: string]: any }): string | undefined {
         if (value && value === this._lastValue && params === this._lastParams) {
             return this._lastResult;
         }

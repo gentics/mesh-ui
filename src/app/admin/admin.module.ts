@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { routes } from './editor.routes';
+import { routes } from './admin.routes';
 import { SharedModule } from '../shared/shared.module';
-import { MasterDetailComponent } from './components/master-detail/master-detail.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 @NgModule({
     declarations: [
-        MasterDetailComponent
+        DashboardComponent
     ],
     imports: [
         SharedModule,
         RouterModule.forChild(routes),
     ],
 })
-export class EditorModule {
+export class AdminModule {
     public static routes = routes;
 }
