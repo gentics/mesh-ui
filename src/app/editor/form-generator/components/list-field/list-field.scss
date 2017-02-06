@@ -1,0 +1,33 @@
+@import "variables";
+
+:host {
+    border: 1px solid grey;
+    padding: 10px;
+    display: block;
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+
+    /deep/ micronode-field,
+    /deep/ number-field,
+    /deep/ html-field,
+    /deep/ string-field {
+        flex-grow: 1;
+    }
+}
+
+.new-item {
+    cursor: pointer;
+    display: flex;
+    background-color: $gtx-color-off-white;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid $gtx-color-very-light-gray;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: $gtx-color-very-light-gray;
+    }
+}

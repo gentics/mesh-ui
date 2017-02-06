@@ -1,0 +1,14 @@
+<label>{{ field.label || field.name }} (list)</label>
+<div class="list-container">
+    <gtx-sortable-list (dragEnd)="reorderList($event)">
+         <gtx-sortable-item *ngFor="let item of value">
+             <div class="item-row">
+                 <div #listItem class="list-item"></div>
+                 <gtx-drag-handle></gtx-drag-handle>
+             </div>
+         </gtx-sortable-item>
+     </gtx-sortable-list>
+    <div class="new-item" (click)="addItem()">
+        <icon>add</icon>
+    </div>
+</div>
