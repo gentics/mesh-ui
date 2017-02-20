@@ -138,7 +138,12 @@ module.exports = function (options) {
 
                 {
                     test: /\.scss$/,
-                    use: ['to-string-loader', 'css-loader', 'sass-loader'],
+                    use: ['to-string-loader', 'css-loader', {
+                        loader: 'sass-loader',
+                        options: {
+                            includePaths: ['node_modules', path.join('src', 'styles')]
+                        }
+                    }],
                     exclude: [helpers.root('src', 'styles')]
                 },
 
