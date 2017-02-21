@@ -23,9 +23,11 @@
     </gtx-dropdown-list>
 </div>
 
-<div class="list-container">
-    <gtx-sortable-list (dragEnd)="reorderList($event)">
-         <gtx-sortable-item *ngFor="let item of value">
+<div class="list-container"
+     [class.updating]="updating"
+     [style.height]="listHeight">
+    <gtx-sortable-list (dragEnd)="reorderList($event)" #listContainer>
+         <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">
              <div class="item-row">
                  <div #listItem class="list-item"></div>
                  <gtx-drag-handle></gtx-drag-handle>

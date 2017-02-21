@@ -16,10 +16,6 @@ export class AppState {
     };
     public changes$ = new BehaviorSubject(this._state);
 
-    constructor() {
-        console.log(`foo`);
-    }
-
     // already return a clone of the current state
     public get state() {
         return this._state = this._clone(this._state);

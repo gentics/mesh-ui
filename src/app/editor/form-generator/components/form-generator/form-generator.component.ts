@@ -6,6 +6,7 @@ import { Schema, SchemaField } from '../../../../common/models/schema.model';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
+import { FieldControlGroup, FieldControlGroupService } from '../../providers/field-control-group/field-control-group.service';
 
 export type SchemaFieldPath = Array<string | number>;
 
@@ -30,7 +31,9 @@ export class FormGeneratorComponent implements OnChanges {
     private componentRefs: Array<ComponentRef<SchemaFieldControl>> = [];
     private fieldGenerator: FieldGenerator;
 
-    constructor(viewContainerRef: ViewContainerRef, fieldGeneratorService: FieldGeneratorService) {
+    constructor(viewContainerRef: ViewContainerRef,
+                fieldGeneratorService: FieldGeneratorService,
+                private fieldControlGroupService: FieldControlGroupService) {
         const updateFn = (path: string[], value: NodeFieldType) => {
             this.onChange(path, value);
         };
@@ -48,6 +51,8 @@ export class FormGeneratorComponent implements OnChanges {
         this.componentRefs.forEach(componentRef => componentRef.hostView.destroy());
         this.componentRefs = [];
 
+        this.fieldControlGroupService.init();
+
         this.schema.fields.forEach(field => {
             const value = this.node.fields[field.name];
             const controlType = getControlType(field.type);
@@ -56,23 +61,24 @@ export class FormGeneratorComponent implements OnChanges {
                 if (componentRef) {
                     this.componentRefs.push(componentRef);
                 }
+                this.fieldControlGroupService.addControl(field, value, componentRef.instance);
             }
         });
     }
 
     private onChange(path: string[], value: any): void {
-        const clone: MeshNode = JSON.parse(JSON.stringify(this.node));
-        console.log(`updating:`, path, 'with value:', value);
-        this.updateAtPath(clone.fields, path, value);
-        console.log(`new node.fields value:`, clone.fields);
+        this.updateAtPath(this.node.fields, path, value);
+        console.log(`updating:`, path, 'with value:', value, this.node.fields);
+        this.fieldControlGroupService.checkValue(this.node.fields);
     }
 
     /**
      * Given an object, update the value specified by the `path` array with the given value.
+     * Note: this method mutates the object passed in.
      */
     private updateAtPath(object: any, path: any[], value: any): any {
         let pointer = this.getPointerByPath(object, path);
-        return pointer[path[path.length - 1]] = value;
+        return pointer[path[path.length - 1]] = this.clone(value);
     }
 
     /**
@@ -89,5 +95,9 @@ export class FormGeneratorComponent implements OnChanges {
             pointer = pointer[key];
         }
         return pointer;
+    }
+
+    private clone<T>(value: T): T {
+        return JSON.parse(JSON.stringify(value));
     }
 }

@@ -18,16 +18,12 @@
     }
 }
 
-.new-item {
-    cursor: pointer;
-    display: flex;
-    background-color: $gtx-color-off-white;
-    justify-content: center;
-    padding: 10px;
-    border: 1px solid $gtx-color-very-light-gray;
-    transition: background-color 0.2s;
-
-    &:hover {
-        background-color: $gtx-color-very-light-gray;
+.list-container {
+    transition: opacity 0.2s;
+    will-change: opacity;
+    &.updating {
+        opacity: 0.2;
+        transition: opacity 0s;
     }
 }
+

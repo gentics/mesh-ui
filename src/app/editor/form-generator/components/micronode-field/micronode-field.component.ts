@@ -5,6 +5,7 @@ import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/nod
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { mockGetMicroschemaByUuid } from '../../common/mock-get-microschema';
+import { FieldControlGroupService } from '../../providers/field-control-group/field-control-group.service';
 
 @Component({
     selector: 'micronode-field',
@@ -22,7 +23,8 @@ export class MicronodeFieldComponent implements SchemaFieldControl, AfterViewIni
     private update: UpdateFunction;
     private fieldGenerator: FieldGenerator;
 
-    constructor(private fieldGeneratorService: FieldGeneratorService) {}
+    constructor(private fieldGeneratorService: FieldGeneratorService,
+                private fieldControlGroupService: FieldControlGroupService) {}
 
     initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldMicronode, update: UpdateFunction): void {
         this.value = value;
@@ -41,22 +43,28 @@ export class MicronodeFieldComponent implements SchemaFieldControl, AfterViewIni
 
     valueChange(value: NodeFieldMicronode): void {
         this.value = value;
-        this.createDefaultMicronodeComponent();
+        // this.createDefaultMicronodeComponent();
     }
 
     createDefaultMicronodeComponent(): void {
+        const controlContainer = this.fieldControlGroupService.getControlContainerAtPath(this.path);
+
         mockGetMicroschemaByUuid(this.value.microschema.uuid)
             .subscribe(microschema => {
                 microschema.fields.forEach(field => {
                     const value = this.value.fields[field.name];
                     const controlType = getControlType(field.type);
                     if (controlType) {
-                        this.fieldGenerator.attachField(
+                        const newContainer = controlContainer.addMicronodeItemControl(field, value);
+
+                        const componentRef = this.fieldGenerator.attachField(
                             this.path.concat(['fields', field.name]),
                             field,
                             value,
                             controlType
                         );
+
+                        newContainer.registerControlInstance(componentRef.instance);
                     }
                 });
             });

@@ -7,6 +7,10 @@ type OnChangeFunction = {
     (path: SchemaFieldPath, value: NodeFieldType): void;
 };
 
+/**
+ * This class is instantiated by the FieldGeneratorService, and is responsible for creating an instance of a SchemaFieldControl
+ * in the correct place in the DOM.
+ */
 export class FieldGenerator {
 
     constructor(private resolver: ComponentFactoryResolver,
@@ -24,18 +28,14 @@ export class FieldGenerator {
         const update = (path: SchemaFieldPath, val: NodeFieldType) => {
             this.onChange(path, val);
         };
-        componentRef.instance.initialize(path, this.clone(field), this.clone(value), update);
+        componentRef.instance.initialize(path, field, value, update);
         return componentRef;
-    }
-
-    /**
-     * Simple deep-clone of an object.
-     */
-    private clone<T>(obj: T): T {
-        return JSON.parse(JSON.stringify(obj));
     }
 }
 
+/**
+ * A factory service for creating new instances of FieldGenerator.
+ */
 @Injectable()
 export class FieldGeneratorService {
 
@@ -44,5 +44,4 @@ export class FieldGeneratorService {
     create(viewContainerRef: ViewContainerRef, onChange: OnChangeFunction): FieldGenerator {
         return new FieldGenerator(this.resolver, viewContainerRef, onChange);
     }
-
 }
