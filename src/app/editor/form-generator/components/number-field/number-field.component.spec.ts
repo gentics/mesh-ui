@@ -1,5 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NumberFieldComponent} from './number-field.component';
+import { GenticsUICoreModule } from 'gentics-ui-core';
 
 describe('NumberFieldComponent:', () => {
 
@@ -8,21 +9,10 @@ describe('NumberFieldComponent:', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [GenticsUICoreModule],
             declarations: [NumberFieldComponent]
         })
         .compileComponents();
     }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(NumberFieldComponent);
-        comp = fixture.componentInstance;
-
-        fixture.detectChanges();
-    });
-  
-
-    it(`should be initialized`, () => {
-        expect(fixture).toBeDefined();
-        expect(comp).toBeDefined();
-    });
 });

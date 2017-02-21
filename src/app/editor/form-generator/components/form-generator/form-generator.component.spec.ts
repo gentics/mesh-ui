@@ -1,5 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormGeneratorComponent} from './form-generator.component';
+import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 
 describe('FormGeneratorComponent:', () => {
 
@@ -8,7 +9,8 @@ describe('FormGeneratorComponent:', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [FormGeneratorComponent]
+            declarations: [FormGeneratorComponent],
+            providers: [FieldGeneratorService]
         })
         .compileComponents();
     }));
@@ -19,7 +21,6 @@ describe('FormGeneratorComponent:', () => {
 
         fixture.detectChanges();
     });
-  
 
     it(`should be initialized`, () => {
         expect(fixture).toBeDefined();

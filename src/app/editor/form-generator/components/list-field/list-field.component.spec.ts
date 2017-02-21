@@ -1,5 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ListFieldComponent} from './list-field.component';
+import { GenticsUICoreModule } from 'gentics-ui-core';
+import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 
 describe('ListFieldComponent:', () => {
 
@@ -8,21 +10,11 @@ describe('ListFieldComponent:', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ListFieldComponent]
+            imports: [GenticsUICoreModule],
+            declarations: [ListFieldComponent],
+            providers: [FieldGeneratorService]
         })
         .compileComponents();
     }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(ListFieldComponent);
-        comp = fixture.componentInstance;
-
-        fixture.detectChanges();
-    });
-  
-
-    it(`should be initialized`, () => {
-        expect(fixture).toBeDefined();
-        expect(comp).toBeDefined();
-    });
 });

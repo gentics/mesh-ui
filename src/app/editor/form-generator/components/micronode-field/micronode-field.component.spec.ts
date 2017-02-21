@@ -1,25 +1,26 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {ListFieldComponent} from './micronode-field.component';
+import { MicronodeFieldComponent } from './micronode-field.component';
+import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 
-describe('ListFieldComponent:', () => {
+describe('MicronodeFieldComponent:', () => {
 
-    let comp: ListFieldComponent;
-    let fixture: ComponentFixture<ListFieldComponent>;
+    let comp: MicronodeFieldComponent;
+    let fixture: ComponentFixture<MicronodeFieldComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ListFieldComponent]
+            declarations: [MicronodeFieldComponent],
+            providers: [FieldGeneratorService]
         })
         .compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ListFieldComponent);
+        fixture = TestBed.createComponent(MicronodeFieldComponent);
         comp = fixture.componentInstance;
 
         fixture.detectChanges();
     });
-
 
     it(`should be initialized`, () => {
         expect(fixture).toBeDefined();

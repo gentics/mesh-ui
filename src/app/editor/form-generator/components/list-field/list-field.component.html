@@ -1,4 +1,28 @@
 <label>{{ field.label || field.name }} (list)</label>
+
+<div class="add-item-button">
+    <gtx-button *ngIf="field.listType !== 'micronode'"
+                size="small"
+                flat
+                (click)="addItem()">
+        <icon left>add</icon>Add Item
+    </gtx-button>
+
+    <gtx-dropdown-list *ngIf="field.listType === 'micronode'">
+        <gtx-dropdown-trigger>
+            <gtx-button size="small" flat>
+                <icon left>add</icon>Add Item...
+            </gtx-button>
+        </gtx-dropdown-trigger>
+        <gtx-dropdown-content>
+            <gtx-dropdown-item *ngFor="let schemaName of field.allow"
+                               (click)="addItem(schemaName)">
+                {{ schemaName }}
+            </gtx-dropdown-item>
+        </gtx-dropdown-content>
+    </gtx-dropdown-list>
+</div>
+
 <div class="list-container">
     <gtx-sortable-list (dragEnd)="reorderList($event)">
          <gtx-sortable-item *ngFor="let item of value">
@@ -8,7 +32,4 @@
              </div>
          </gtx-sortable-item>
      </gtx-sortable-list>
-    <div class="new-item" (click)="addItem()">
-        <icon>add</icon>
-    </div>
 </div>

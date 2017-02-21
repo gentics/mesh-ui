@@ -5,7 +5,7 @@ import { SchemaFieldControl, SchemaFieldPath } from '../../components/form-gener
 
 type OnChangeFunction = {
     (path: SchemaFieldPath, value: NodeFieldType): void;
-}
+};
 
 export class FieldGenerator {
 
@@ -14,8 +14,10 @@ export class FieldGenerator {
                 private onChange: OnChangeFunction) {}
 
     attachField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>): ComponentRef<T>;
-    attachField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>, viewContainerRef: ViewContainerRef): ComponentRef<T>;
-    attachField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>, viewContainerRef?: ViewContainerRef): ComponentRef<T> {
+    attachField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
+                                              viewContainerRef: ViewContainerRef): ComponentRef<T>;
+    attachField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
+                                              viewContainerRef?: ViewContainerRef): ComponentRef<T> {
         const _viewContainerRef = viewContainerRef || this.viewContainerRef;
         const factory = this.resolver.resolveComponentFactory(fieldComponent);
         const componentRef = _viewContainerRef.createComponent(factory);
@@ -23,18 +25,6 @@ export class FieldGenerator {
             this.onChange(path, val);
         };
         componentRef.instance.initialize(path, this.clone(field), this.clone(value), update);
-
-        return componentRef;
-    }
-
-    generateField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>): ComponentRef<T> {
-        const factory = this.resolver.resolveComponentFactory(fieldComponent);
-        const componentRef = factory.create(this.viewContainerRef.injector);
-        const update = (path: SchemaFieldPath, val: NodeFieldType) => {
-            this.onChange(path, val);
-        };
-        componentRef.instance.initialize(path, this.clone(field), this.clone(value), update);
-
         return componentRef;
     }
 

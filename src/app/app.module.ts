@@ -4,7 +4,6 @@ import { HttpModule } from '@angular/http';
 import { NgModule, ApplicationRef } from '@angular/core';
 import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
 import { RouterModule, PreloadAllModules, Router } from '@angular/router';
-import { GenticsUICoreModule } from 'gentics-ui-core';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -57,7 +56,6 @@ const appSubModules = [
     imports: [
         BrowserModule,
         FormsModule,
-        GenticsUICoreModule,
         HttpModule,
         RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
         SharedModule,

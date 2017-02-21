@@ -1,3 +1,4 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MasterDetailComponent } from './master-detail.component';
 import { SharedModule } from '../../../shared/shared.module';
@@ -10,7 +11,8 @@ describe('MasterDetailComponent:', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [SharedModule],
-            declarations: [MasterDetailComponent]
+            declarations: [MasterDetailComponent],
+            schemas: [NO_ERRORS_SCHEMA]
         })
         .compileComponents();
     }));

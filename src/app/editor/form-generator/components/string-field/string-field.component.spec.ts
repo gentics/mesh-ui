@@ -1,5 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StringFieldComponent} from './string-field.component';
+import { GenticsUICoreModule } from 'gentics-ui-core';
 
 describe('StringFieldComponent:', () => {
 
@@ -8,21 +9,10 @@ describe('StringFieldComponent:', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [GenticsUICoreModule],
             declarations: [StringFieldComponent]
         })
         .compileComponents();
     }));
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(StringFieldComponent);
-        comp = fixture.componentInstance;
-
-        fixture.detectChanges();
-    });
-  
-
-    it(`should be initialized`, () => {
-        expect(fixture).toBeDefined();
-        expect(comp).toBeDefined();
-    });
 });

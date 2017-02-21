@@ -11,7 +11,7 @@ export type SchemaFieldPath = Array<string | number>;
 
 export type UpdateFunction = {
     (path: SchemaFieldPath, value: NodeFieldType): void;
-}
+};
 
 export interface SchemaFieldControl {
     initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void;
@@ -27,7 +27,7 @@ export class FormGeneratorComponent implements OnChanges {
     @Input() schema: Schema;
     @Input() node: MeshNode;
 
-    private componentRefs: ComponentRef<SchemaFieldControl>[] = [];
+    private componentRefs: Array<ComponentRef<SchemaFieldControl>> = [];
     private fieldGenerator: FieldGenerator;
 
     constructor(viewContainerRef: ViewContainerRef, fieldGeneratorService: FieldGeneratorService) {
@@ -66,7 +66,6 @@ export class FormGeneratorComponent implements OnChanges {
         this.updateAtPath(clone.fields, path, value);
         console.log(`new node.fields value:`, clone.fields);
     }
-
 
     /**
      * Given an object, update the value specified by the `path` array with the given value.

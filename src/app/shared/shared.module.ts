@@ -24,6 +24,7 @@ const SHARED_PIPES = [
     imports: [
         CommonModule,
         FormsModule,
+        GenticsUICoreModule,
         TranslateModule.forRoot({
             provide: TranslateLoader,
             useClass: CustomLoader
