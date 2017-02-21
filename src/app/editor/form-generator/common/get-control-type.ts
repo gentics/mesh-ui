@@ -7,6 +7,7 @@ import { HtmlFieldComponent } from '../components/html-field/html-field.componen
 import { SchemaFieldControl } from '../components/form-generator/form-generator.component';
 import { StringFieldComponent } from '../components/string-field/string-field.component';
 import { MicronodeFieldComponent } from '../components/micronode-field/micronode-field.component';
+import { BooleanFieldComponent } from '../components/boolean-field/boolean-field.component';
 
 type TypeComponentMap = {
     [P in SchemaFieldType]: Type<SchemaFieldControl> | null;
@@ -14,7 +15,7 @@ type TypeComponentMap = {
 
 const typeComponentMap: TypeComponentMap = {
     binary: null,
-    boolean: null,
+    boolean: BooleanFieldComponent,
     date: null,
     html: HtmlFieldComponent,
     list: ListFieldComponent,
