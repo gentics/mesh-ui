@@ -12,7 +12,7 @@ import { FormGeneratorModule } from './form-generator/form-generator.module';
     ],
     imports: [
         SharedModule,
-        RouterModule.forChild(routes),
+        // RouterModule.forChild(routes),
         FormGeneratorModule
     ],
 })
