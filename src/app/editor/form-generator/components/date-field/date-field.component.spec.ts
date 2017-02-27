@@ -1,16 +1,16 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import { BooleanFieldComponent } from './boolean-field.component';
+import { DateFieldComponent } from './date-field.component';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
-describe('StringFieldComponent:', () => {
+describe('HtmlFieldComponent:', () => {
 
-    let comp: BooleanFieldComponent;
-    let fixture: ComponentFixture<BooleanFieldComponent>;
+    let comp: DateFieldComponent;
+    let fixture: ComponentFixture<DateFieldComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [GenticsUICoreModule],
-            declarations: [BooleanFieldComponent]
+            declarations: [DateFieldComponent]
         })
         .compileComponents();
     }));

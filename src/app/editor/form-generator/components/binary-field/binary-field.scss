@@ -1,0 +1,9 @@
+@import "variables";
+
+.property-list {
+    background-color: $gtx-color-very-light-gray;
+    li {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

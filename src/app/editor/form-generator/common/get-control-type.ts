@@ -8,19 +8,22 @@ import { SchemaFieldControl } from '../components/form-generator/form-generator.
 import { StringFieldComponent } from '../components/string-field/string-field.component';
 import { MicronodeFieldComponent } from '../components/micronode-field/micronode-field.component';
 import { BooleanFieldComponent } from '../components/boolean-field/boolean-field.component';
+import { DateFieldComponent } from '../components/date-field/date-field.component';
+import { NodeFieldComponent } from '../components/node-field/node-field.component';
+import { BinaryFieldComponent } from '../components/binary-field/binary-field.component';
 
 type TypeComponentMap = {
     [P in SchemaFieldType]: Type<SchemaFieldControl> | null;
 };
 
 const typeComponentMap: TypeComponentMap = {
-    binary: null,
+    binary: BinaryFieldComponent,
     boolean: BooleanFieldComponent,
-    date: null,
+    date: DateFieldComponent,
     html: HtmlFieldComponent,
     list: ListFieldComponent,
     micronode: MicronodeFieldComponent,
-    node: null,
+    node: NodeFieldComponent,
     number: NumberFieldComponent,
     string: StringFieldComponent
 };

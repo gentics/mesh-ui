@@ -86,9 +86,7 @@ export class FieldControlGroup {
 
     getControlContainerAtPath(path: SchemaFieldPath): FieldControlContainer {
         let pointer: FieldControlContainer | FieldControlGroup = this;
-        for (let i = 0; i < path.length; i++) {
-            let key = path[i];
-
+        for (let key of path) {
             if (pointer instanceof FieldControlGroup) {
                 if (!pointer.controls[key]) {
                     throw new Error(`Path [${path.join(', ')}] not valid`);

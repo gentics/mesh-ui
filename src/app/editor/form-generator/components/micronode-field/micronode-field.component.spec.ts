@@ -1,6 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import { MicronodeFieldComponent } from './micronode-field.component';
 import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
+import { FieldControlGroupService } from '../../providers/field-control-group/field-control-group.service';
 
 describe('MicronodeFieldComponent:', () => {
 
@@ -10,7 +11,7 @@ describe('MicronodeFieldComponent:', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [MicronodeFieldComponent],
-            providers: [FieldGeneratorService]
+            providers: [FieldGeneratorService, FieldControlGroupService]
         })
         .compileComponents();
     }));
@@ -20,10 +21,5 @@ describe('MicronodeFieldComponent:', () => {
         comp = fixture.componentInstance;
 
         fixture.detectChanges();
-    });
-
-    it(`should be initialized`, () => {
-        expect(fixture).toBeDefined();
-        expect(comp).toBeDefined();
     });
 });
