@@ -1,18 +1,18 @@
 import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { SchemaFieldControl, SchemaFieldPath, UpdateFunction } from '../form-generator/form-generator.component';
+import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { mockGetMicroschemaByUuid } from '../../common/mock-get-microschema';
-import { FieldControlGroupService } from '../../providers/field-control-group/field-control-group.service';
+import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
 
 @Component({
     selector: 'micronode-field',
     templateUrl: 'micronode-field.component.html',
     styleUrls: ['micronode-field.scss']
 })
-export class MicronodeFieldComponent implements SchemaFieldControl, AfterViewInit {
+export class MicronodeFieldComponent implements MeshFieldComponent, AfterViewInit {
 
     path: SchemaFieldPath;
     field: SchemaField;
@@ -24,7 +24,7 @@ export class MicronodeFieldComponent implements SchemaFieldControl, AfterViewIni
     private fieldGenerator: FieldGenerator;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private fieldControlGroupService: FieldControlGroupService) {}
+                private fieldControlGroupService: MeshControlGroup) {}
 
     initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldMicronode, update: UpdateFunction): void {
         this.value = value;
@@ -43,11 +43,10 @@ export class MicronodeFieldComponent implements SchemaFieldControl, AfterViewIni
 
     valueChange(value: NodeFieldMicronode): void {
         this.value = value;
-        // this.createDefaultMicronodeComponent();
     }
 
     createDefaultMicronodeComponent(): void {
-        const controlContainer = this.fieldControlGroupService.getControlContainerAtPath(this.path);
+        const meshControl = this.fieldControlGroupService.getMeshControlAtPath(this.path);
 
         mockGetMicroschemaByUuid(this.value.microschema.uuid)
             .subscribe(microschema => {
@@ -55,16 +54,14 @@ export class MicronodeFieldComponent implements SchemaFieldControl, AfterViewIni
                     const value = this.value.fields[field.name];
                     const controlType = getControlType(field.type);
                     if (controlType) {
-                        const newContainer = controlContainer.addMicronodeItemControl(field, value);
-
+                        const newContainer = meshControl.addChild(field, value);
                         const componentRef = this.fieldGenerator.attachField(
                             this.path.concat(['fields', field.name]),
                             field,
                             value,
                             controlType
                         );
-
-                        newContainer.registerControlInstance(componentRef.instance);
+                        newContainer.registerMeshFieldInstance(componentRef.instance);
                     }
                 });
             });

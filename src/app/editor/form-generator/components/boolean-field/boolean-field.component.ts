@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SchemaFieldControl, SchemaFieldPath, UpdateFunction } from '../form-generator/form-generator.component';
+import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 
@@ -8,7 +8,7 @@ import { NodeFieldType } from '../../../../common/models/node.model';
     templateUrl: 'boolean-field.component.html',
     styleUrls: ['boolean-field.scss']
 })
-export class BooleanFieldComponent implements SchemaFieldControl {
+export class BooleanFieldComponent implements MeshFieldComponent {
 
     field: SchemaField;
     value: NodeFieldType;

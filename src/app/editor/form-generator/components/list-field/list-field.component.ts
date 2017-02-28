@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ComponentRef, ElementRef, OnDestroy, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { ISortableEvent } from 'gentics-ui-core';
-import { SchemaFieldControl, SchemaFieldPath, UpdateFunction } from '../form-generator/form-generator.component';
+import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { Microschema } from '../../../../common/models/microschema.model';
 import { ListableNodeFieldType, NodeFieldList, NodeFieldType } from '../../../../common/models/node.model';
@@ -9,14 +9,14 @@ import { getControlType } from '../../common/get-control-type';
 import { initializeListValue } from '../../common/initialize-list-value';
 import { mockGetMicroschemaByName } from '../../common/mock-get-microschema';
 import { Observable, Subscription } from 'rxjs';
-import { FieldControlGroupService } from '../../providers/field-control-group/field-control-group.service';
+import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
 
 @Component({
     selector: 'list-field',
     templateUrl: './list-field.component.html',
     styleUrls: ['./list-field.scss']
 })
-export class ListFieldComponent implements SchemaFieldControl, AfterViewInit, OnDestroy {
+export class ListFieldComponent implements MeshFieldComponent, AfterViewInit, OnDestroy {
 
     path: SchemaFieldPath;
     field: SchemaField;
@@ -28,13 +28,13 @@ export class ListFieldComponent implements SchemaFieldControl, AfterViewInit, On
     listHeight: string = 'auto';
     updating: boolean = false;
 
-    private componentRefs: Array<ComponentRef<SchemaFieldControl>> = [];
+    private componentRefs: Array<ComponentRef<MeshFieldComponent>> = [];
     private update: UpdateFunction;
     private fieldGenerator: FieldGenerator;
     private subscription: Subscription;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private fieldControlGroupService: FieldControlGroupService,
+                private fieldControlGroupService: MeshControlGroup,
                 private viewContainerRef: ViewContainerRef) {}
 
     ngAfterViewInit(): void {
@@ -107,8 +107,8 @@ export class ListFieldComponent implements SchemaFieldControl, AfterViewInit, On
         this.componentRefs = [];
         const fieldType = this.field.listType as any;
         const controlType = getControlType(fieldType);
-        const controlContainer = this.fieldControlGroupService.getControlContainerAtPath(this.path);
-        controlContainer.clearListItems();
+        const meshControl = this.fieldControlGroupService.getMeshControlAtPath(this.path);
+        meshControl.clearChildren();
 
         if (controlType && this.fieldGenerator && this.listItems) {
             console.log(`creating list items`);
@@ -118,7 +118,7 @@ export class ListFieldComponent implements SchemaFieldControl, AfterViewInit, On
                     type: fieldType
                 };
                 const value = this.value[index];
-                const newContainer = controlContainer.addListItemControl(pseudoField, value);
+                const newContainer = meshControl.addChild(pseudoField, value);
                 const componentRef = this.fieldGenerator.attachField(
                     this.path.concat(index),
                     pseudoField,
@@ -127,7 +127,7 @@ export class ListFieldComponent implements SchemaFieldControl, AfterViewInit, On
                     viewContainerRef
                 );
 
-                newContainer.registerControlInstance(componentRef.instance);
+                newContainer.registerMeshFieldInstance(componentRef.instance);
                 this.componentRefs.push(componentRef);
             });
         }

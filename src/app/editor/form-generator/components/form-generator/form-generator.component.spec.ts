@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormGeneratorComponent} from './form-generator.component';
 import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
-import { FieldControlGroupService } from '../../providers/field-control-group/field-control-group.service';
+import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
 
 describe('FormGeneratorComponent:', () => {
 
@@ -11,7 +11,7 @@ describe('FormGeneratorComponent:', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [FormGeneratorComponent],
-            providers: [FieldGeneratorService, FieldControlGroupService]
+            providers: [FieldGeneratorService, MeshControlGroup]
         })
         .compileComponents();
     }));

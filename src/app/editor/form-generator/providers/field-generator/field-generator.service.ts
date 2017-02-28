@@ -1,7 +1,7 @@
 import { Injectable, ComponentRef, ViewContainerRef, ComponentFactoryResolver, Type } from '@angular/core';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
-import { SchemaFieldControl, SchemaFieldPath } from '../../components/form-generator/form-generator.component';
+import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 
 type OnChangeFunction = {
     (path: SchemaFieldPath, value: NodeFieldType): void;
@@ -17,10 +17,10 @@ export class FieldGenerator {
                 private viewContainerRef: ViewContainerRef,
                 private onChange: OnChangeFunction) {}
 
-    attachField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>): ComponentRef<T>;
-    attachField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
+    attachField<T extends MeshFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>): ComponentRef<T>;
+    attachField<T extends MeshFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
                                               viewContainerRef: ViewContainerRef): ComponentRef<T>;
-    attachField<T extends SchemaFieldControl>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
+    attachField<T extends MeshFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
                                               viewContainerRef?: ViewContainerRef): ComponentRef<T> {
         const _viewContainerRef = viewContainerRef || this.viewContainerRef;
         const factory = this.resolver.resolveComponentFactory(fieldComponent);

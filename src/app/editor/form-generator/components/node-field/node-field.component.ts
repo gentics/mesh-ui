@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SchemaFieldControl, SchemaFieldPath, UpdateFunction } from '../form-generator/form-generator.component';
+import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldNode, NodeFieldType } from '../../../../common/models/node.model';
 
@@ -8,7 +8,7 @@ import { NodeFieldNode, NodeFieldType } from '../../../../common/models/node.mod
     templateUrl: './node-field.component.html',
     styleUrls: ['./node-field.scss']
 })
-export class NodeFieldComponent implements SchemaFieldControl {
+export class NodeFieldComponent implements MeshFieldComponent {
     value: NodeFieldType;
     field: SchemaField;
     userValue: string;

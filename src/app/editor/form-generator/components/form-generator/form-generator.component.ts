@@ -1,45 +1,30 @@
 import {
     Component, Input, ViewContainerRef, OnChanges, SimpleChanges,
-    ComponentRef
+    ComponentRef, ViewChild, AfterViewInit
 } from '@angular/core';
-import { Schema, SchemaField } from '../../../../common/models/schema.model';
+import { Schema } from '../../../../common/models/schema.model';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
-import { FieldControlGroup, FieldControlGroupService } from '../../providers/field-control-group/field-control-group.service';
-
-export type SchemaFieldPath = Array<string | number>;
-
-export type UpdateFunction = {
-    (path: SchemaFieldPath, value: NodeFieldType): void;
-};
-
-export interface SchemaFieldControl {
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void;
-    valueChange(value: NodeFieldType): void;
-}
+import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
+import { MeshFieldComponent } from '../../common/form-generator-models';
 
 @Component({
     selector: 'form-generator',
     templateUrl: 'form-generator.component.html',
     styleUrls: ['form-generator.scss']
 })
-export class FormGeneratorComponent implements OnChanges {
+export class FormGeneratorComponent implements OnChanges, AfterViewInit {
     @Input() schema: Schema;
     @Input() node: MeshNode;
 
-    private componentRefs: Array<ComponentRef<SchemaFieldControl>> = [];
+    @ViewChild('formRoot', { read: ViewContainerRef })
+    private formRoot: ViewContainerRef;
+    private componentRefs: Array<ComponentRef<MeshFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
 
-    constructor(viewContainerRef: ViewContainerRef,
-                fieldGeneratorService: FieldGeneratorService,
-                private fieldControlGroupService: FieldControlGroupService) {
-        const updateFn = (path: string[], value: NodeFieldType) => {
-            this.onChange(path, value);
-        };
-
-        this.fieldGenerator = fieldGeneratorService.create(viewContainerRef, updateFn);
-    }
+    constructor(private fieldGeneratorService: FieldGeneratorService,
+                private meshControlGroup: MeshControlGroup) {}
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['schema']) {
@@ -47,29 +32,39 @@ export class FormGeneratorComponent implements OnChanges {
         }
     }
 
+    ngAfterViewInit(): void {
+        const updateFn = (path: string[], value: NodeFieldType) => {
+            this.onChange(path, value);
+        };
+        this.fieldGenerator = this.fieldGeneratorService.create(this.formRoot, updateFn);
+        this.generateForm();
+    }
+
     generateForm(): void {
-        this.componentRefs.forEach(componentRef => componentRef.hostView.destroy());
-        this.componentRefs = [];
+        if (this.fieldGenerator) {
+            this.componentRefs.forEach(componentRef => componentRef.hostView.destroy());
+            this.componentRefs = [];
 
-        this.fieldControlGroupService.init();
+            this.meshControlGroup.init();
 
-        this.schema.fields.forEach(field => {
-            const value = this.node.fields[field.name];
-            const controlType = getControlType(field.type);
-            if (controlType) {
-                const componentRef = this.fieldGenerator.attachField([field.name], field, value, controlType);
-                if (componentRef) {
-                    this.componentRefs.push(componentRef);
+            this.schema.fields.forEach(field => {
+                const value = this.node.fields[field.name];
+                const controlType = getControlType(field.type);
+                if (controlType) {
+                    const componentRef = this.fieldGenerator.attachField([field.name], field, value, controlType);
+                    if (componentRef) {
+                        this.componentRefs.push(componentRef);
+                    }
+                    this.meshControlGroup.addControl(field, value, componentRef.instance);
                 }
-                this.fieldControlGroupService.addControl(field, value, componentRef.instance);
-            }
-        });
+            });
+        }
     }
 
     private onChange(path: string[], value: any): void {
         this.updateAtPath(this.node.fields, path, value);
         console.log(`updating:`, path, 'with value:', value, this.node.fields);
-        this.fieldControlGroupService.checkValue(this.node.fields);
+        this.meshControlGroup.checkValue(this.node.fields);
     }
 
     /**
