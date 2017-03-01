@@ -1,20 +1,22 @@
 @import "variables";
 
 :host {
-    border: 1px solid grey;
-    padding: 10px;
     display: block;
     margin: 20px 0;
+    width: 100%;
 }
 
 .item-row {
     display: flex;
     align-items: center;
+    margin: -1px 0;
+    padding: 0 6px;
+    border: 1px solid $gtx-color-very-light-gray;
 
-    /deep/ micronode-field,
-    /deep/ number-field,
-    /deep/ html-field,
-    /deep/ string-field {
+    /deep/ & > micronode-field,
+    /deep/ & > number-field,
+    /deep/ & > html-field,
+    /deep/ & > string-field {
         flex-grow: 1;
     }
 }

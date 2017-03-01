@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldNode, NodeFieldType } from '../../../../common/models/node.model';
+import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
     selector: 'node-field',
     templateUrl: './node-field.component.html',
     styleUrls: ['./node-field.scss']
 })
-export class NodeFieldComponent implements MeshFieldComponent {
+export class NodeFieldComponent extends BaseFieldComponent {
     value: NodeFieldType;
     field: SchemaField;
     userValue: string;

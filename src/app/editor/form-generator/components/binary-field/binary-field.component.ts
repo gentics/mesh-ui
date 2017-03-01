@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
+import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
     selector: 'binary-field',
     templateUrl: './binary-field.component.html',
     styleUrls: ['./binary-field.scss']
 })
-export class BinaryFieldComponent implements MeshFieldComponent {
+export class BinaryFieldComponent extends BaseFieldComponent {
     field: SchemaField;
     binaryProperties: Array<{ key: string; value: any }> = [];
     private path: SchemaFieldPath;

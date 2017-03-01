@@ -6,13 +6,14 @@ import { FieldGenerator, FieldGeneratorService } from '../../providers/field-gen
 import { getControlType } from '../../common/get-control-type';
 import { mockGetMicroschemaByUuid } from '../../common/mock-get-microschema';
 import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
+import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
     selector: 'micronode-field',
     templateUrl: 'micronode-field.component.html',
     styleUrls: ['micronode-field.scss']
 })
-export class MicronodeFieldComponent implements MeshFieldComponent, AfterViewInit {
+export class MicronodeFieldComponent extends BaseFieldComponent implements MeshFieldComponent, AfterViewInit {
 
     path: SchemaFieldPath;
     field: SchemaField;
@@ -24,7 +25,9 @@ export class MicronodeFieldComponent implements MeshFieldComponent, AfterViewIni
     private fieldGenerator: FieldGenerator;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private fieldControlGroupService: MeshControlGroup) {}
+                private fieldControlGroupService: MeshControlGroup) {
+        super();
+    }
 
     initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldMicronode, update: UpdateFunction): void {
         this.value = value;

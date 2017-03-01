@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
+import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
     selector: 'boolean-field',
     templateUrl: 'boolean-field.component.html',
     styleUrls: ['boolean-field.scss']
 })
-export class BooleanFieldComponent implements MeshFieldComponent {
+export class BooleanFieldComponent extends BaseFieldComponent {
 
     field: SchemaField;
     value: NodeFieldType;

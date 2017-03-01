@@ -1,4 +1,5 @@
 <gtx-textarea [required]="field.required"
               [value]="value"
+              [label]="field.label || field.name"
               (change)="onChange($event)"></gtx-textarea>
 

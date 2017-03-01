@@ -10,13 +10,14 @@ import { initializeListValue } from '../../common/initialize-list-value';
 import { mockGetMicroschemaByName } from '../../common/mock-get-microschema';
 import { Observable, Subscription } from 'rxjs';
 import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
+import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
     selector: 'list-field',
     templateUrl: './list-field.component.html',
     styleUrls: ['./list-field.scss']
 })
-export class ListFieldComponent implements MeshFieldComponent, AfterViewInit, OnDestroy {
+export class ListFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy  {
 
     path: SchemaFieldPath;
     field: SchemaField;
@@ -35,7 +36,9 @@ export class ListFieldComponent implements MeshFieldComponent, AfterViewInit, On
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
                 private fieldControlGroupService: MeshControlGroup,
-                private viewContainerRef: ViewContainerRef) {}
+                private viewContainerRef: ViewContainerRef) {
+        super();
+    }
 
     ngAfterViewInit(): void {
         const updateFn = (path: SchemaFieldPath, value: NodeFieldType) => this.update(path, value);
@@ -114,7 +117,7 @@ export class ListFieldComponent implements MeshFieldComponent, AfterViewInit, On
             console.log(`creating list items`);
             this.listItems.toArray().forEach((viewContainerRef, index) => {
                 const pseudoField = {
-                    name: `${this.field.name} ${index}`,
+                    name: ``,
                     type: fieldType
                 };
                 const value = this.value[index];

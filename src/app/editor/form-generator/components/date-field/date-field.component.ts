@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldDate } from '../../../../common/models/node.model';
+import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
     selector: 'date-field',
     templateUrl: './date-field.component.html',
     styleUrls: ['./date-field.scss']
 })
-export class DateFieldComponent implements MeshFieldComponent {
+export class DateFieldComponent extends BaseFieldComponent {
     field: SchemaField;
     timestampValue: number;
     private path: SchemaFieldPath;
