@@ -8,6 +8,7 @@ export const ROOT_NAME = 'root';
 class RootFieldDefinition {
     type = ROOT_TYPE;
     name = ROOT_NAME;
+    required = false;
 }
 
 /**
@@ -21,6 +22,14 @@ export class MeshControl {
     children = new Map<string | number, MeshControl>();
     fieldDef: SchemaField | RootFieldDefinition;
     private lastValue;
+
+    get isValid(): boolean {
+        const required = this.fieldDef.required === true;
+        const selfValid = !required || (required && !!this.lastValue);
+        const childrenValid = Array.from(this.children.values())
+            .reduce((valid, control) => !valid ? false : control.isValid, true);
+        return selfValid && childrenValid;
+    }
 
     constructor();
     constructor(fieldDef: SchemaField, initialValue: any, meshFieldInstance?: MeshFieldComponent);

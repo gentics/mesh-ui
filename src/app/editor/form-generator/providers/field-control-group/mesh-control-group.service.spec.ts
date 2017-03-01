@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { MeshControlGroup } from './mesh-control-group.service';
-import { MeshControl, ROOT_TYPE } from './mesh-control.class';
+import { MeshControl } from './mesh-control.class';
 import createSpy = jasmine.createSpy;
 
 describe('MeshControlGroup', () => {
 
     let meshControlGroup: MeshControlGroup;
+    const INIT_ERROR = 'No rootControl was set. Did you forget to call MeshControlGroup.init()?';
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -15,19 +16,26 @@ describe('MeshControlGroup', () => {
         meshControlGroup = TestBed.get(MeshControlGroup);
     });
 
-    it('init() sets the _rootControl to a root MeshControl', () => {
-        expect(meshControlGroup._rootControl).toBeUndefined();
+    it('calling addControl() before init() throws an exception', () => {
+        expect(() => meshControlGroup.addControl(1 as any, 2 as any, 3 as any)).toThrowError(INIT_ERROR);
+    });
 
-        meshControlGroup.init();
+    it('calling checkValue() before init() throws an exception', () => {
+        expect(() => meshControlGroup.checkValue({})).toThrowError(INIT_ERROR);
+    });
 
-        expect(meshControlGroup._rootControl).toBeDefined();
-        expect(meshControlGroup._rootControl.fieldDef.type).toBe(ROOT_TYPE);
+    it('calling getMeshControlAtPath() before init() throws an exception', () => {
+        expect(() => meshControlGroup.getMeshControlAtPath([])).toThrowError(INIT_ERROR);
+    });
+
+    it('accessing isValid before init() returns false', () => {
+        expect(meshControlGroup.isValid).toBe(false);
     });
 
     it('addControl() adds a control with named key to the _rootControl', () => {
         meshControlGroup.init();
 
-        expect(meshControlGroup._rootControl.children.size).toBe(0);
+        expect(meshControlGroup.getMeshControlAtPath([]).children.size).toBe(0);
 
         const mockMeshField: any = {};
         const mockFieldDef: any = {
@@ -36,8 +44,8 @@ describe('MeshControlGroup', () => {
         };
         meshControlGroup.addControl(mockFieldDef, 'foo', mockMeshField);
 
-        expect(meshControlGroup._rootControl.children.size).toBe(1);
-        const meshControl = meshControlGroup._rootControl.children.get('test') as MeshControl;
+        expect(meshControlGroup.getMeshControlAtPath([]).children.size).toBe(1);
+        const meshControl = meshControlGroup.getMeshControlAtPath([]).children.get('test') as MeshControl;
         expect(meshControl.meshField).toBe(mockMeshField);
     });
 
@@ -49,14 +57,14 @@ describe('MeshControlGroup', () => {
         beforeEach(() => {
             meshControlGroup.init();
 
-            expect(meshControlGroup._rootControl.children.size).toBe(0);
+            expect(meshControlGroup.getMeshControlAtPath([]).children.size).toBe(0);
 
             const mockMeshField: any = {};
             meshControlGroup.addControl({ name: 'test1', type: 'string' }, 'foo', mockMeshField);
             meshControlGroup.addControl({ name: 'test2', type: 'string' }, 'bar', mockMeshField);
 
             function getChildControl(name: string): MeshControl {
-                return meshControlGroup._rootControl.children.get(name) as MeshControl;
+                return meshControlGroup.getMeshControlAtPath([]).children.get(name) as MeshControl;
             }
 
             test1Control = getChildControl('test1');
@@ -89,7 +97,7 @@ describe('MeshControlGroup', () => {
 
     it('getMeshControlAtPath() invokes _rootControl.getMeshControlAtPath()', () => {
         meshControlGroup.init();
-        const spy = spyOn(meshControlGroup._rootControl, 'getMeshControlAtPath');
+        const spy = spyOn(meshControlGroup.getMeshControlAtPath([]), 'getMeshControlAtPath');
         const path = ['foo'];
         meshControlGroup.getMeshControlAtPath(path);
 

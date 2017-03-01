@@ -46,6 +46,34 @@ describe('MeshControl class', () => {
         expect(meshControl.meshField).toBe(meshField);
     });
 
+    it('addChild() adds a new meshControl to the children map', () => {
+        const fieldDef: SchemaField = {
+            name: 'test',
+            type: 'list',
+            listType: 'string'
+        };
+        const initialValue = ['foo'];
+        const meshField = new MockMeshField();
+        meshField.valueChange = createSpy('valueChange');
+        const meshControl = new MeshControl(fieldDef, initialValue, meshField);
+
+        expect(meshControl.children.size).toBe(0);
+
+        const childField = new MockMeshField();
+        const pseudoField: SchemaField = {
+            name: 'child',
+            type: 'string'
+        };
+        childField.valueChange = createSpy('valueChange');
+        meshControl.addChild(pseudoField, 'childValue', childField);
+
+        expect(meshControl.children.size).toBe(1);
+        expect(meshControl.children.has(0)).toBe(true);
+        const childMeshControl = meshControl.children.get(0) as MeshControl;
+        expect(childMeshControl instanceof MeshControl).toBe(true);
+        expect(childMeshControl.meshField).toBe(childField);
+    });
+
     describe('checkValue() with primitives', () => {
 
         let meshField: MockMeshField;
@@ -121,34 +149,6 @@ describe('MeshControl class', () => {
             expect(meshField.valueChange).not.toHaveBeenCalled();
         });
 
-    });
-
-    it('addChild() adds a new meshControl to the children map', () => {
-        const fieldDef: SchemaField = {
-            name: 'test',
-            type: 'list',
-            listType: 'string'
-        };
-        const initialValue = ['foo'];
-        const meshField = new MockMeshField();
-        meshField.valueChange = createSpy('valueChange');
-        const meshControl = new MeshControl(fieldDef, initialValue, meshField);
-
-        expect(meshControl.children.size).toBe(0);
-
-        const childField = new MockMeshField();
-        const pseudoField: SchemaField = {
-            name: 'child',
-            type: 'string'
-        };
-        childField.valueChange = createSpy('valueChange');
-        meshControl.addChild(pseudoField, 'childValue', childField);
-
-        expect(meshControl.children.size).toBe(1);
-        expect(meshControl.children.has(0)).toBe(true);
-        const childMeshControl = meshControl.children.get(0) as MeshControl;
-        expect(childMeshControl instanceof MeshControl).toBe(true);
-        expect(childMeshControl.meshField).toBe(childField);
     });
 
     describe('list type', () => {
@@ -344,6 +344,105 @@ describe('MeshControl class', () => {
                 .toBe(childControls['0.names.1']);
         });
     });
+
+    describe('validation', () => {
+
+        it('isValid == true when there are no own validation errors', () => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'string',
+                required: true
+            };
+            const meshControl = new MeshControl(fieldDef, 'foo');
+            expect(meshControl.isValid).toBe(true);
+        });
+
+        it('isValid == false when there is own validation error', () => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'string',
+                required: true
+            };
+            const meshControl = new MeshControl(fieldDef, '');
+            expect(meshControl.isValid).toBe(false);
+        });
+
+        it('isValid == true when there are no own or child validation errors', () => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'micronode'
+            };
+            const initialValue = { child: '' };
+            const meshControl = new MeshControl(fieldDef, initialValue);
+
+            expect(meshControl.children.size).toBe(0);
+
+            const pseudoField: SchemaField = {
+                name: 'child',
+                type: 'string',
+                required: true
+            };
+            meshControl.addChild(pseudoField, 'childValue');
+
+            expect(meshControl.isValid).toBe(true);
+        });
+
+        it('isValid == false when there is a child validation error', () => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'micronode'
+            };
+            const initialValue = { child: '' };
+            const meshControl = new MeshControl(fieldDef, initialValue);
+
+            expect(meshControl.children.size).toBe(0);
+
+            const pseudoField1: SchemaField = {
+                name: 'child1',
+                type: 'string',
+                required: true
+            };
+            meshControl.addChild(pseudoField1, '');
+            const pseudoField2: SchemaField = {
+                name: 'child2',
+                type: 'string',
+                required: true
+            };
+            meshControl.addChild(pseudoField2, 'okay');
+
+            expect(meshControl.isValid).toBe(false);
+        });
+
+        it('isValid == false when there is a child validation error 2 levels deep', () => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'micronode'
+            };
+            const initialValue = { child: '' };
+            const meshControl = new MeshControl(fieldDef, initialValue);
+
+            expect(meshControl.children.size).toBe(0);
+
+            const listField: SchemaField = {
+                name: 'child1',
+                type: 'list',
+                listType: 'string'
+            };
+            const listControl = meshControl.addChild(listField, '');
+
+            const stringField: SchemaField = {
+                name: 'child2',
+                type: 'string',
+                required: true
+            };
+            listControl.addChild(stringField, 'okay');
+
+            expect(meshControl.isValid).toBe(true);
+            listControl.checkValue('');
+            expect(meshControl.isValid).toBe(false);
+        });
+    });
+
 });
 
 /* tslint:disable */

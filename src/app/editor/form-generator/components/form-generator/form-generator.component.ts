@@ -40,8 +40,12 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
         this.generateForm();
     }
 
+    formIsValid(): boolean {
+        return this.meshControlGroup.isValid;
+    }
+
     generateForm(): void {
-        if (this.fieldGenerator) {
+        if (this.fieldGenerator && this.schema && this.node) {
             this.componentRefs.forEach(componentRef => componentRef.hostView.destroy());
             this.componentRefs = [];
 
