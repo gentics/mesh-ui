@@ -11,7 +11,7 @@ import { SharedModule } from '../shared/shared.module';
     ],
     imports: [
         SharedModule,
-        RouterModule.forChild(routes),
+        // RouterModule.forChild(routes),
     ],
 })
 export class LoginModule {

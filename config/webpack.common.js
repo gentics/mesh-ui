@@ -142,7 +142,12 @@ module.exports = function (options) {
                  */
                 {
                     test: /\.scss$/,
-                    use: ['to-string-loader', 'css-loader', 'sass-loader'],
+                    use: ['to-string-loader', 'css-loader', {
+                        loader: 'sass-loader',
+                        options: {
+                            includePaths: ['node_modules', path.join('src', 'styles')]
+                        }
+                    }],
                     exclude: [helpers.root('src', 'styles')]
                 },
 
@@ -304,13 +309,7 @@ module.exports = function (options) {
              */
             new LoaderOptionsPlugin({
                 options: {
-                    context: __dirname,
-                    sassLoader: {
-                        includePaths: [
-                            path.join(__dirname, 'node_modules'),
-                            path.join(__dirname, 'src', 'styles')
-                        ]
-                    },
+                    context: __dirname
                 }
             }),
 

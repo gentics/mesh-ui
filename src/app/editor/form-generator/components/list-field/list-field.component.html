@@ -1,0 +1,53 @@
+<label>{{ field.label || field.name }} (list)</label>
+
+<div class="add-item-button">
+    <gtx-button *ngIf="field.listType !== 'micronode'"
+                size="small"
+                flat
+                (click)="addItem()">
+        <icon left>add</icon>Add Item
+    </gtx-button>
+
+    <gtx-dropdown-list *ngIf="field.listType === 'micronode'">
+        <gtx-dropdown-trigger>
+            <gtx-button size="small" flat>
+                <icon left>add</icon>Add Item...
+            </gtx-button>
+        </gtx-dropdown-trigger>
+        <gtx-dropdown-content>
+            <gtx-dropdown-item *ngFor="let schemaName of field.allow"
+                               (click)="addItem(schemaName)">
+                {{ schemaName }}
+            </gtx-dropdown-item>
+        </gtx-dropdown-content>
+    </gtx-dropdown-list>
+</div>
+
+<div class="list-container"
+     [class.updating]="updating"
+     [style.height]="listHeight">
+    <gtx-sortable-list #listContainer
+                       (dragEnd)="dragEnd($event)"
+                       (dragStart)="dragStart()"
+                       [onMove]="onMove"
+                       [group]="mainGroup">
+        <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">
+            <div class="item-row">
+                <div #listItem class="list-item"></div>
+                <gtx-drag-handle></gtx-drag-handle>
+            </div>
+        </gtx-sortable-item>
+    </gtx-sortable-list>
+
+    <div class="remove-area-wrapper"
+         [class.visible]="displayRemoveArea"
+         [class.hovered]="hoverRemoveArea">
+        <icon>delete</icon>
+        <gtx-sortable-list (addItem)="deleteItem($event)"
+                           [group]="{ name: removeGroupId, put: [groupId] }"
+                           class="remove-area">
+        </gtx-sortable-list>
+    </div>
+</div>
+
+

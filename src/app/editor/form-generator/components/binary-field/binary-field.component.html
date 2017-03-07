@@ -1,0 +1,10 @@
+<label>{{ field.label || field.name }}</label>
+<ul class="property-list">
+    <li *ngFor="let prop of binaryProperties">
+        {{ prop.key }}: {{ prop.value }}
+    </li>
+</ul>
+<gtx-file-picker (fileSelect)="onFilesSelected($event)"
+                 [multiple]="false">
+    Pick a file
+</gtx-file-picker>

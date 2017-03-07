@@ -1,0 +1,22 @@
+.form-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px 0;
+    overflow: hidden;
+    justify-content: space-between;
+
+    /deep/ & > .mesh-field {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    // The first mesh-field should be bigger, since it can be considered the title of the node.
+    /deep/ & > .mesh-field:nth-child(2) {
+        width: 100%;
+
+        gtx-input input {
+            font-size: 24px;
+            height: 3.2rem;
+        }
+    }
+}

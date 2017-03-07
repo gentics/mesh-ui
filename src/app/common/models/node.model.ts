@@ -37,13 +37,16 @@ export type NodeFieldBinary = {
     height?: number;
     width?: number;
 };
+export type NodeFieldNode = {
+    uuid: string;
+};
 export type NodeFieldMicronode = {
     uuid: string;
     microschema: MicroschemaReference;
     fields: { [fieldName: string]: MicronodeFieldType; };
 };
 
-export type CommonNodeFieldType = NodeFieldString | NodeFieldHTML | NodeFieldNumber | NodeFieldBoolean | NodeFieldDate;
+export type CommonNodeFieldType = NodeFieldString | NodeFieldHTML | NodeFieldNumber | NodeFieldBoolean | NodeFieldDate | NodeFieldNode;
 export type NodeFieldType = CommonNodeFieldType | NodeFieldBinary | NodeFieldMicronode | NodeFieldList<ListableNodeFieldType>;
 export type ListableNodeFieldType = CommonNodeFieldType | NodeFieldBinary | NodeFieldMicronode;
 export type MicronodeFieldType = CommonNodeFieldType | NodeFieldBinary;

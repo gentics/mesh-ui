@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { routes } from './editor.routes';
 import { SharedModule } from '../shared/shared.module';
 import { MasterDetailComponent } from './components/master-detail/master-detail.component';
+import { FormGeneratorModule } from './form-generator/form-generator.module';
 
 @NgModule({
     declarations: [
@@ -11,7 +12,8 @@ import { MasterDetailComponent } from './components/master-detail/master-detail.
     ],
     imports: [
         SharedModule,
-        RouterModule.forChild(routes),
+        // RouterModule.forChild(routes),
+        FormGeneratorModule
     ],
 })
 export class EditorModule {

@@ -1,14 +1,17 @@
-<h4>Editor Master Detail View</h4>
-<gtx-split-view-container class="split-view-container">
+<h5>Editor Master Detail View</h5>
+<gtx-split-view-container class="split-view-container"
+                          focusedPanel="right"
+                          [rightPanelVisible]="true">
 
-     <div class="list-pane" left>
-         <!-- Left panel contents -->
-         list view
-     </div>
+    <div class="list-pane" left>
+        <!-- Left panel contents -->
+        list view
+    </div>
 
-     <div class="content-pane" right>
-         <!-- Right panel contents -->
-         node editor
-     </div>
+    <div class="content-pane" right>
+        <!-- Right panel contents -->
+        <form-generator [schema]="schema"
+                        [node]="node"></form-generator>
+    </div>
 
- </gtx-split-view-container>
+</gtx-split-view-container>

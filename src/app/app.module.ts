@@ -20,6 +20,9 @@ import { StateModule } from './state/state.module';
 import '../styles/main.scss';
 import { AppState, InternalStateType } from './state/providers/app-state.service';
 import { AuthGuard } from './auth-guard';
+import { LoginModule } from './login/login.module';
+import { AdminModule } from './admin/admin.module';
+import { EditorModule } from './editor/editor.module';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -33,6 +36,14 @@ type StoreType = {
     restoreInputValues: () => void,
     disposeOldHosts: () => void
 };
+
+// TODO: re-enable lazy-loading of sub-modules once this issue is fixed:
+// https://github.com/angular/angular/issues/12869#issuecomment-274202183
+const appSubModules = [
+    LoginModule,
+    AdminModule,
+    EditorModule
+];
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
@@ -48,7 +59,8 @@ type StoreType = {
         HttpModule,
         RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
         SharedModule,
-        StateModule
+        StateModule,
+        ...appSubModules
     ],
     providers: [
         ENV_PROVIDERS,
@@ -62,7 +74,7 @@ export class AppModule {
                 private router: Router,
                 public appState: AppState) {
         i18nService.setLanguage('en');
-        router.events.subscribe(event => console.log(event));
+        // router.events.subscribe(event => console.log(event));
     }
 
     public hmrOnInit(store: StoreType) {
