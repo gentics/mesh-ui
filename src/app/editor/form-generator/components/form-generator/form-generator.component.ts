@@ -1,7 +1,4 @@
-import {
-    Component, Input, ViewContainerRef, OnChanges, SimpleChanges,
-    ComponentRef, ViewChild, AfterViewInit
-} from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, Input, OnChanges, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { Schema } from '../../../../common/models/schema.model';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
@@ -67,7 +64,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
 
     private onChange(path: string[], value: any): void {
         this.updateAtPath(this.node.fields, path, value);
-        console.log(`updating:`, path, 'with value:', value, this.node.fields);
+        console.log(`updating:`, path, 'with value:', value);
         this.meshControlGroup.checkValue(this.node.fields);
     }
 

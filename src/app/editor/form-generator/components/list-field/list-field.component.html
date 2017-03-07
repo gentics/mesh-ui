@@ -26,12 +26,28 @@
 <div class="list-container"
      [class.updating]="updating"
      [style.height]="listHeight">
-    <gtx-sortable-list (dragEnd)="reorderList($event)" #listContainer>
-         <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">
-             <div class="item-row">
-                 <div #listItem class="list-item"></div>
-                 <gtx-drag-handle></gtx-drag-handle>
-             </div>
-         </gtx-sortable-item>
-     </gtx-sortable-list>
+    <gtx-sortable-list #listContainer
+                       (dragEnd)="dragEnd($event)"
+                       (dragStart)="dragStart()"
+                       [onMove]="onMove"
+                       [group]="mainGroup">
+        <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">
+            <div class="item-row">
+                <div #listItem class="list-item"></div>
+                <gtx-drag-handle></gtx-drag-handle>
+            </div>
+        </gtx-sortable-item>
+    </gtx-sortable-list>
+
+    <div class="remove-area-wrapper"
+         [class.visible]="displayRemoveArea"
+         [class.hovered]="hoverRemoveArea">
+        <icon>delete</icon>
+        <gtx-sortable-list (addItem)="deleteItem($event)"
+                           [group]="{ name: removeGroupId, put: [groupId] }"
+                           class="remove-area">
+        </gtx-sortable-list>
+    </div>
 </div>
+
+

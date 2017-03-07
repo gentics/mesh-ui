@@ -47,7 +47,6 @@ export class MeshControl {
 
     checkValue(value: NodeFieldType) {
         if (value !== this.lastValue) {
-            console.log(`running valueChange() on field ${this.fieldDef.name}`);
             if (this.meshField) {
                 this.meshField.valueChange(value);
             }
@@ -56,10 +55,12 @@ export class MeshControl {
 
         if (0 < this.children.size) {
             const isMicronode = this.fieldDef.type === 'micronode';
-            const valueContainer = isMicronode && value.hasOwnProperty('fields') ? (value as NodeFieldMicronode).fields : value;
-            this.children.forEach((meshControl, key) => {
-                meshControl.checkValue(valueContainer[key]);
-            });
+            const valueContainer = isMicronode && value && value.hasOwnProperty('fields') ? (value as NodeFieldMicronode).fields : value;
+            if (valueContainer) {
+                this.children.forEach((meshControl, key) => {
+                    meshControl.checkValue(valueContainer[key]);
+                });
+            }
         }
     }
 

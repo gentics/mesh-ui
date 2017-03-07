@@ -428,7 +428,7 @@ describe('MeshControl class', () => {
                 type: 'list',
                 listType: 'string'
             };
-            const listControl = meshControl.addChild(listField, '');
+            const listControl = meshControl.addChild(listField, []);
 
             const stringField: SchemaField = {
                 name: 'child2',
@@ -438,7 +438,7 @@ describe('MeshControl class', () => {
             listControl.addChild(stringField, 'okay');
 
             expect(meshControl.isValid).toBe(true);
-            listControl.checkValue('');
+            listControl.checkValue(['']);
             expect(meshControl.isValid).toBe(false);
         });
     });

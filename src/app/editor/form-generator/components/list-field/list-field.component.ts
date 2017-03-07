@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ComponentRef, ElementRef, OnDestroy, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
-import { ISortableEvent } from 'gentics-ui-core';
+import { ISortableEvent, ISortableGroupOptions } from 'gentics-ui-core';
 import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { Microschema } from '../../../../common/models/microschema.model';
@@ -11,6 +11,10 @@ import { mockGetMicroschemaByName } from '../../common/mock-get-microschema';
 import { Observable, Subscription } from 'rxjs';
 import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
 import { BaseFieldComponent } from '../base-field/base-field.component';
+
+function randomId(): string {
+    return Math.random().toString(36).substring(5);
+}
 
 @Component({
     selector: 'list-field',
@@ -28,6 +32,16 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     listContainer: ElementRef;
     listHeight: string = 'auto';
     updating: boolean = false;
+    groupId: string = randomId();
+    removeGroupId: string = randomId();
+    displayRemoveArea: boolean = false;
+    hoverRemoveArea: boolean = false;
+    mainGroup: ISortableGroupOptions = {
+        name: this.groupId,
+        pull: (e) => e.options.group.name === this.removeGroupId ? 'clone' : true,
+        put: false,
+        revertClone: false
+    };
 
     private componentRefs: Array<ComponentRef<MeshFieldComponent>> = [];
     private update: UpdateFunction;
@@ -46,7 +60,6 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         // Instantiating the dynamic child components inside the ngAfterViewInit hook will lead to
         // change detection errors, hence the setTimeout. See https://github.com/angular/angular/issues/10131
         this.subscription = this.listItems.changes.subscribe((val) => {
-            console.log(`listItems.changes`, val.toArray());
             setTimeout(() => {
                 this.createListItems();
                 setTimeout(() => {
@@ -64,6 +77,11 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         this.componentRefs.forEach(componentRef => componentRef.destroy());
     }
 
+    onMove = (e): boolean => {
+        this.hoverRemoveArea = e.to.classList.contains('remove-area');
+        return true;
+    }
+
     trackByFn(index): number {
         return index;
     }
@@ -76,7 +94,6 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     valueChange(value: NodeFieldList<ListableNodeFieldType>): void {
-        console.log(`listField valueChange()`);
         this.listHeight = this.listContainer.nativeElement.offsetHeight + 'px';
         this.updating = true;
         this.value = Array.from(Array(0).keys()) as any;
@@ -86,9 +103,21 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         });
     }
 
-    reorderList(e: ISortableEvent): void {
-        const sorted = e.sort(this.value);
-        this.update(this.path, sorted);
+    dragStart(): void {
+        this.displayRemoveArea = true;
+    }
+
+    dragEnd(e: ISortableEvent): void {
+        this.displayRemoveArea = false;
+        if (!this.updating) {
+            this.reorderList(e);
+        }
+    }
+
+    deleteItem(e: ISortableEvent): void {
+        const spliced = this.value.slice(0);
+        spliced.splice(e.oldIndex, 1);
+        this.update(this.path, spliced);
     }
 
     addItem(microschemaName: string): void {
@@ -111,10 +140,10 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         const fieldType = this.field.listType as any;
         const controlType = getControlType(fieldType);
         const meshControl = this.fieldControlGroupService.getMeshControlAtPath(this.path);
+        this.removeSortableGeneratedItems();
         meshControl.clearChildren();
 
         if (controlType && this.fieldGenerator && this.listItems) {
-            console.log(`creating list items`);
             this.listItems.toArray().forEach((viewContainerRef, index) => {
                 const pseudoField = {
                     name: ``,
@@ -134,5 +163,26 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                 this.componentRefs.push(componentRef);
             });
         }
+    }
+
+    private reorderList(e: ISortableEvent): void {
+        if (!this.updating) {
+            const sorted = e.sort(this.value);
+            this.update(this.path, sorted);
+        }
+    }
+
+    /**
+     * When deleting an item, Sortablejs will clone the list item back into the list asyncronously, so that when we update from the
+     * actual model, there is this unwanted clone in the DOM. In this method we look for any of these items and remove them.
+     */
+    private removeSortableGeneratedItems(): void {
+        const listContainer = this.listContainer.nativeElement as HTMLElement;
+        const addedBySortable = Array.from(listContainer.querySelectorAll('[draggable]'));
+        addedBySortable.forEach((el: HTMLElement) => {
+            if (el.parentElement) {
+                el.parentElement.removeChild(el);
+            }
+        });
     }
 }
