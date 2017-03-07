@@ -47,7 +47,7 @@ module meshAdminUi {
 
                         breadcrumbLabels.push({
                             name: currentProject.name,
-                            uuid: currentProject.rootNodeUuid
+                            uuid: currentProject.rootNode.uuid
                         });
 
                         this.breadcrumbs = breadcrumbLabels.reverse();

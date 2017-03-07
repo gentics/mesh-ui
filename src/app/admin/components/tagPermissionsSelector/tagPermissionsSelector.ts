@@ -41,7 +41,7 @@ module meshAdminUi {
          * Toggle whether the tags in a tag family should be expanded.
          */
         public toggleExpand(tagFamily) {
-            if (tagFamily.name && !tagFamily.rootNodeUuid) {
+            if (tagFamily.name && !tagFamily.rootNode.uuid) {
                 if (this.expand === tagFamily.uuid) {
                     this.expand = '';
                 } else {
@@ -74,7 +74,7 @@ module meshAdminUi {
         private getItemProject(item: any): IProject {
             let itemIndex = this.items.map(item => item.uuid).indexOf(item.uuid);
             let projectsIndexes =this.items.reduce((acc, curr, index) => {
-                if (curr.rootNodeUuid) {
+                if (curr.rootNode.uuid) {
                     acc.push(index);
                 }
                 return acc;

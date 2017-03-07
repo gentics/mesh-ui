@@ -180,8 +180,9 @@ module meshAdminUi {
         /**
          * Get the root tag uuid of the specified project.
          */
-        public getProjectRootNodeId(projectName):ng.IPromise<string> {
-            return this.getProjectProperty(projectName, 'rootNodeUuid');
+        public getProjectRootNodeId(projectName): ng.IPromise<string> {
+            return this.getProjectProperty(projectName, 'rootNode')
+                .then(rootNode => rootNode.uuid);
         }
 
         /**
@@ -189,7 +190,7 @@ module meshAdminUi {
          * projectName. If no matching project is found, the promise is
          * rejected.
          */
-        public getProjectProperty(projectName, propertyName):ng.IPromise<any> {
+        public getProjectProperty(projectName, propertyName): ng.IPromise<any> {
             var deferred = this.$q.defer();
 
             this.getProjects().then(function (projects) {
@@ -1027,7 +1028,7 @@ module meshAdminUi {
                 let complete = breadcrumbs;
                 breadcrumbs.push(currentNode);
 
-                if (currentNode.parentNode && currentNode.parentNode.uuid !== project.rootNodeUuid) {
+                if (currentNode.parentNode && currentNode.parentNode.uuid !== project.rootNode.uuid) {
                     complete = this.getNode(project.name, currentNode.parentNode.uuid)
                         .then(node => getBreadcrumbs(project, node, breadcrumbs));
                 }

@@ -184,7 +184,7 @@ module meshAdminUi {
             })
                 .then((selection:INode[]) => {
                     destinationNode = selection[0];
-                    nodeClone.parentNodeUuid = destinationNode.uuid;
+                    nodeClone.parentNode.uuid = destinationNode.uuid;
                     return this.dataService.persistNode(projectName, nodeClone);
                 })
                 .then(() => {

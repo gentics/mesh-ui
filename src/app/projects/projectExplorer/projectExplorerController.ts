@@ -22,7 +22,7 @@ module meshAdminUi {
                     private currentNode: INode) {
 
             this.projectName = contextService.getProject().name;
-            this.createPermission = -1 < currentNode.permissions.indexOf('create');
+            this.createPermission = currentNode.permissions.create;
 
             const updateContents = () => {
                 dataService.getNode(contextService.getProject().name, currentNode.uuid)
@@ -65,7 +65,7 @@ module meshAdminUi {
             let promises = Object.keys(this.currentNode.childrenInfo).map((schemaName: string) => {
                 return this.dataService.getSchema(this.currentNode.childrenInfo[schemaName].schemaUuid);
             });
-            return this.$q.all(promises)
+            return this.$q.all<ISchema>(promises)
                 .then((results: ISchema[]) => {
                     this.childrenSchemas = results;
                 });

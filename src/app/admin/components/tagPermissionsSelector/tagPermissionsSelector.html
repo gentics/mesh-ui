@@ -19,13 +19,13 @@
     <md-content layout-padding class="admin-content-block" ng-class="{ 'collapsed': vm.collapsed }">
 
         <table class="mh-table permissions-table">
-            <tr ng-class=":: {'project': item.rootNodeUuid, 'tag-family': item.name && !item.rootNodeUuid, 'tag-row': item.fields }"
+            <tr ng-class=":: {'project': item.rootNode, 'tag-family': item.name && !item.rootNodeUuid, 'tag-row': item.fields }"
                 ng-repeat="item in vm.items | filter: vm.filterTags track by item.uuid"
                 ng-hide="!vm.filter && item.fields && item.tagFamily.uuid !== vm.expand">
 
                 <td ng-click="vm.toggleExpand(item)">
-                    <span ng-if="::item.name && !item.rootNodeUuid">Family: {{:: item.name }}</span>
-                    <span ng-if="::item.rootNodeUuid">Project: {{:: item.name }}</span>
+                    <span ng-if="::item.name && !item.rootNode">Family: {{:: item.name }}</span>
+                    <span ng-if="::item.rootNode">Project: {{:: item.name }}</span>
                     <span ng-if="::item.fields.name"><tag source="item" show-close="false"></tag></span>
                 </td>
                 <td>
@@ -38,14 +38,14 @@
                     </md-checkbox>
 
                     <md-checkbox md-no-ink aria-label="Create"
-                                 ng-if=":: item.rootNodeUuid"
+                                 ng-if=":: item.rootNode"
                                  ng-disabled="vm.isReadonly"
                                  ng-model="vm.rootPermissions[item.uuid]['create']"
                                  ng-change="vm.toggle(item, false, true)">
                         Can create new tag families
                     </md-checkbox>
 
-                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNodeUuid"
+                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNode"
                                                model="vm.itemPermissions[item.uuid]['create']"
                                                label="Create"
                                                ng-disabled="vm.isReadonly"
@@ -65,7 +65,7 @@
                     </md-checkbox>
 
 
-                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNodeUuid"
+                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNode"
                                                model="vm.itemPermissions[item.uuid]['read']"
                                                label="Read"
                                                ng-disabled="vm.isReadonly"
@@ -83,7 +83,7 @@
                     </md-checkbox>
 
 
-                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNodeUuid"
+                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNode"
                                                model="vm.itemPermissions[item.uuid]['update']"
                                                label="Update"
                                                ng-disabled="vm.isReadonly"
@@ -101,7 +101,7 @@
                     </md-checkbox>
 
 
-                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNodeUuid"
+                    <recursive-toggle-checkbox ng-if="::item.name && !item.rootNode"
                                                model="vm.itemPermissions[item.uuid]['delete']"
                                                label="Delete"
                                                ng-disabled="vm.isReadonly"

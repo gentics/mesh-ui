@@ -1,5 +1,14 @@
 declare module meshAdminUi {
 
+    interface IPermissions {
+        create: boolean;
+        read: boolean;
+        update: boolean;
+        delete: boolean;
+        publish: boolean;
+        readPublished: boolean;
+    }
+
     // properties common to all Mesh nodes
     interface IMeshBaseProps {
         uuid?: string;
@@ -7,17 +16,26 @@ declare module meshAdminUi {
         created?: number;
         editor?: INodeReference;
         edited?: number;
-        permissions?: string[];
+        permissions?: IPermissions;
     }
 
-    export interface IProject extends IMeshBaseProps{
+    export interface IProject extends IMeshBaseProps {
         name: string;
-        rootNodeUuid: string;
+        rootNode: IExtendedNodeReference;
     }
 
     export interface INodeReference {
         name: string;
         uuid: string;
+    }
+
+    export interface IExtendedNodeReference {
+        uuid: string;
+        projectName?: string;
+        schema?: {
+            name: string;
+            uuid: string;
+        }
     }
 
     export interface ITags {
@@ -70,10 +88,7 @@ declare module meshAdminUi {
         tags?: INodeTagsObject;
         schema: INodeReference;
         container?: boolean;
-        parentNodeUuid?: string;
-        parentNode?: {
-            uuid: string;
-        };
+        parentNode?: IExtendedNodeReference;
         fields: INodeFields
     }
 
@@ -111,14 +126,14 @@ declare module meshAdminUi {
         container: boolean;
         meshVersion?: string;
         name: string;
-        permissions?: string[];
+        permissions?: IPermissions;
         uuid?: string;
     }
 
     export interface IMicroschema {
         name: string;
         fields: ISchemaFieldDefinition[];
-        permissions?: string[];
+        permissions?: IPermissions;
         uuid?: string;
         /**
          * Used when creating a new micronode in order to allow efficient change

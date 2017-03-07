@@ -263,7 +263,7 @@ module meshAdminUi {
 
         public canDelete(node: INode) {
             if (node) {
-                return -1 < node.permissions.indexOf('delete');
+                return node.permissions.delete;
             }
         }
 
@@ -388,9 +388,18 @@ module meshAdminUi {
          */
         private createEmptyContent(schema: ISchema, parentNodeUuid: string): INode {
             return {
-                permissions: ['read', 'create', 'update', 'delete'],
+                permissions: {
+                    read: true,
+                    create: true,
+                    update: true,
+                    delete: true,
+                    readPublished: true,
+                    publish: true
+                },
                 uuid: this.wipService.generateTempId(),
-                parentNodeUuid: parentNodeUuid,
+                parentNode: {
+                    uuid: parentNodeUuid
+                },
                 displayField: schema.displayField,
                 published: false,
                 language : this.i18nService.getCurrentLang().code,

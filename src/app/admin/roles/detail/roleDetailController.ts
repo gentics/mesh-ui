@@ -76,7 +76,7 @@ module meshAdminUi {
                 $q.all(rootPermPromises)
                     .then((result: any) => {
                         result.forEach((result, index) => {
-                            this.rootPermissions[types[index]] = mu.rolePermissionsArrayToKeys({ rolePerms: result.permissions });
+                            this.rootPermissions[types[index]] = result.permissions;
                         });
                     });
             }
@@ -90,7 +90,7 @@ module meshAdminUi {
             return this.$q.all(promises)
                 .then(results => {
                     results.forEach((result: any, index: number) => {
-                        this.tagItemRootPermissions[projects[index].uuid] = this.mu.rolePermissionsArrayToKeys({ rolePerms: result.permissions });
+                        this.tagItemRootPermissions[projects[index].uuid] = result.permissions;
                     });
                 });
         }
@@ -176,14 +176,14 @@ module meshAdminUi {
         }
 
         public isReadonly() {
-            return !this.role || this.role.name === 'admin' || -1 === this.role.permissions.indexOf('update');
+            return !this.role || this.role.name === 'admin' || !this.role.permissions.update;
         }
 
         /**
          * Can the current user delete this role?
          */
         public canDelete(): boolean {
-            return !!(this.role && this.role.permissions && -1 < this.role.permissions.indexOf('delete'));
+            return !!(this.role && this.role.permissions && this.role.permissions.delete);
         }
 
         /**

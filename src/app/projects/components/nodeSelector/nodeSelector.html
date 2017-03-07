@@ -23,7 +23,7 @@
                     class="node-selector-table"
                     ng-class="{
                         selected: vm.isSelected(node),
-                        'root-node': node.uuid === vm.currentProject.rootNodeUuid,
+                        'root-node': node.uuid === vm.currentProject.rootNode.uuid,
                         untranslated: vm.isUntranslated(node)
                     }"
                     ng-click="vm.toggleSelect(node, $event)">

@@ -91,7 +91,7 @@ module meshAdminUi {
             this.currentNode = contextService.getCurrentNode();
             this.selectedNodes = this.selectedNodes instanceof Array ? this.selectedNodes : [];
 
-            let initialUuid = this.startingNodeUuid || this.currentProject.rootNodeUuid;
+            let initialUuid = this.startingNodeUuid || this.currentProject.rootNode.uuid;
 
             dataService.getNode(this.currentProject.name, initialUuid)
                 .then((node: INode) => {
@@ -179,7 +179,7 @@ module meshAdminUi {
 
                     breadcrumbLabels.push({
                         name: this.currentProject.name,
-                        uuid: this.currentProject.rootNodeUuid
+                        uuid: this.currentProject.rootNode.uuid
                     });
 
                     this.breadcrumbs = breadcrumbLabels.reverse();
@@ -190,7 +190,7 @@ module meshAdminUi {
          * If we are in the rootNode, add it to the start of the nodes array.
          */
         private addRootNode() {
-            if (this.currentProject.rootNodeUuid === this.currentNode.uuid) {
+            if (this.currentProject.rootNode.uuid === this.currentNode.uuid) {
                 let rootNode = angular.copy(this.currentNode);
                 rootNode.fields['name'] = "Root Node";
                 rootNode.displayField = 'name';

@@ -40,7 +40,7 @@ module meshAdminUi {
 
             if (this.isProjectNode(node)) {
                 this.currentProject = node;
-                this.currentNode = { uuid: node.rootNodeUuid };
+                this.currentNode = { uuid: node.rootNode.uuid };
             } else if (node.project) {
                 this.currentProject = node.project;
                 this.currentNode = node;
@@ -97,7 +97,7 @@ module meshAdminUi {
                 .then(response => {
                     projects = response.data;
                     return this.$q.all(projects.map(project => {
-                        return this.dataService.getNode(project.name, project.rootNodeUuid, this.queryParams);
+                        return this.dataService.getNode(project.name, project.rootNode.uuid, this.queryParams);
                     }));
                 })
                 .then(nodes => {
@@ -146,7 +146,7 @@ module meshAdminUi {
         }
 
         private isProjectNode(node) {
-            return node.hasOwnProperty('rootNodeUuid');
+            return node.hasOwnProperty('rootNode');
         }
 
         /**

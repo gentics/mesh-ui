@@ -25,7 +25,7 @@ module meshAdminUi {
                     private notifyService: NotifyService) {
 
             this.projectName = contextService.getProject().name;
-            this.createPermission = -1 < contextService.getCurrentNode().permissions.indexOf('create');
+            this.createPermission = contextService.getCurrentNode().permissions.create;
             this.populateSchemas();
             this.populateTags();
 
@@ -80,7 +80,7 @@ module meshAdminUi {
                 containersOnly: true, 
                 includeRootNode: true, 
                 title: 'SELECT_DESTINATION',
-                startingNodeUuid: this.contextService.getCurrentNode().parentNodeUuid
+                startingNodeUuid: this.contextService.getCurrentNode().parentNode.uuid
             })
                 .then((selection: INode[]) => this.dataService.moveNodes(this.projectName, uuids, selection[0].uuid))
                 .then(movedUuids => this.notifyService.toast('MOVED_NODES', { count: movedUuids.length }))
