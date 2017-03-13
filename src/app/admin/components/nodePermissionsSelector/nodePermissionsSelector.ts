@@ -115,10 +115,10 @@ module meshAdminUi {
          * populate the NodePermissions object
          * @param nodes
          */
-        private createNodePermissionsArray(nodes) {
+        private createNodePermissionsArray(nodes: INode[]) {
             this.nodePermissions = {};
             nodes.forEach(node => {
-                this.nodePermissions[node.uuid] = this.mu.rolePermissionsArrayToKeys(node);
+                this.nodePermissions[node.uuid] = node.permissions;
             });
         }
 
@@ -156,9 +156,8 @@ module meshAdminUi {
         public toggle(node, recursive: boolean) {
             this.$timeout(() => {
                 let permObject = this.nodePermissions[node.uuid];
-                let permsArray = Object.keys(permObject).filter(key => permObject[key] === true);
                 let permissions: IPermissionsRequest = {
-                    permissions: permsArray,
+                    permissions: permObject,
                     recursive: recursive
                 };
                 let project = (node.project) ? node.project : this.currentProject;

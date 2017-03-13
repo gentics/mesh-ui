@@ -39,7 +39,7 @@ module meshAdminUi {
     }
 
     export interface IPermissionsRequest {
-        permissions: string[];
+        permissions: IPermissions;
         recursive?: boolean;
     }
 
@@ -150,12 +150,12 @@ module meshAdminUi {
         /**
          * Persist the project back to the server.
          */
-        public persistProject(project):ng.IPromise<any> {
+        public persistProject(project: IProject):ng.IPromise<any> {
             this.clearCache('projects');
             this.clearCache('tags');
-            if (project.hasOwnProperty('save')) {
-                // this is a Restangular object
-                return this.meshPost('projects', project);
+            if (project.uuid) {
+                // this is an existing project
+                return this.meshPost('projects/' + project.uuid, project);
             } else {
                 // this is a plain object (newly-created)
                 return this.meshPost('projects', project);
@@ -245,10 +245,12 @@ module meshAdminUi {
         }
 
         public addUserToGroup(userId: string, groupId: string): ng.IPromise<any> {
+            this.clearCache('users');
             return this.meshPost('groups/' + groupId + '/users/' + userId, {});
         }
 
         public removeUserFromGroup(userId: string, groupId: string): ng.IPromise<any> {
+            this.clearCache('users');
             return this.meshDelete('groups/' + groupId + '/users/' + userId);
         }
 
@@ -273,6 +275,7 @@ module meshAdminUi {
         public persistGroup(group: IUserGroup): ng.IPromise<IUserGroup> {
             let isNew = !group.hasOwnProperty('created');
             this.clearCache('users');
+            this.clearCache('groups');
             return isNew ? this.createGroup(group) : this.updateGroup(group);
         }
         private createGroup(group: IUserGroup): ng.IPromise<IUserGroup> {
@@ -283,9 +286,13 @@ module meshAdminUi {
         }
 
         public addGroupToRole(groupUuid: string, roleUuid: string): ng.IPromise<any> {
+            this.clearCache('groups');
+            this.clearCache('roles');
             return this.meshPost('groups/' + groupUuid + '/roles/' + roleUuid, {});
         }
         public removeGroupFromRole(groupUuid: string, roleUuid: string): ng.IPromise<any> {
+            this.clearCache('groups');
+            this.clearCache('roles');
             return this.meshDelete('groups/' + groupUuid + '/roles/' + roleUuid);
         }
 
@@ -379,11 +386,9 @@ module meshAdminUi {
             }
 
             if (searchParams.searchTerm && searchParams.searchTerm !== '') {
-                //let displayField = 'fields.' + bundleParam.schema.displayField;
                 query.query = {
-                    /* "wildcard": { [displayField] : searchParams.searchTerm.toLowerCase() + '*' }*/
                     "query_string": {
-                        "query": 'displayField.value' + ":" + searchParams.searchTerm.toLowerCase() + '*'
+                        "query": 'displayField.value' + ":" + searchParams.searchTerm + '*'
                     }
                 };
             }
@@ -736,7 +741,6 @@ module meshAdminUi {
         }
         public persistTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<ITagFamily> {
             let isNew = !tagFamily.hasOwnProperty('created');
-            this.clearCache('tagFamilies');
             return isNew ? this.createTagFamily(projectName, tagFamily) : this.updateTagFamily(projectName, tagFamily)
         }
         private createTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<ITagFamily> {
@@ -949,7 +953,7 @@ module meshAdminUi {
         /**
          * Permissions methods
          */
-        public getPermissions(roleUuid: string, path: string) {
+        public getPermissions(roleUuid: string, path: string): ng.IPromise<IPermissions> {
             return this.meshGet('roles/' + roleUuid + '/permissions/' + path);
         }
 
@@ -988,6 +992,7 @@ module meshAdminUi {
         }
         public setTagFamilyPermissions(roleUuid: string, projectUuid: string, permissions: IPermissionsRequest, tagFamilyUuid?: string): ng.IPromise<any> {
             this.clearCache('tags');
+            this.clearCache('roles');
             let pathBase = 'projects/' + projectUuid + '/tagFamilies';
             let path = tagFamilyUuid ? `${pathBase}/${tagFamilyUuid}` : pathBase;
             return this.setPermissionsOnPath(roleUuid, path, permissions);
@@ -1060,7 +1065,7 @@ module meshAdminUi {
          * match a groupName registered with the `selectiveCacheProvider.setCacheableGroups()`
          * config method.
          */
-        private clearCache(groupName: string) {
+        private clearCache(groupName: CachableGroupKey) {
             this.selectiveCache.remove(groupName);
         }
     }

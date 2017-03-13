@@ -21,12 +21,12 @@
         <table class="mh-table permissions-table">
             <tr ng-class=":: {'project': item.rootNode, 'tag-family': item.name && !item.rootNodeUuid, 'tag-row': item.fields }"
                 ng-repeat="item in vm.items | filter: vm.filterTags track by item.uuid"
-                ng-hide="!vm.filter && item.fields && item.tagFamily.uuid !== vm.expand">
+                ng-hide="!vm.filter && item.tagFamily && item.tagFamily.uuid !== vm.expand">
 
                 <td ng-click="vm.toggleExpand(item)">
-                    <span ng-if="::item.name && !item.rootNode">Family: {{:: item.name }}</span>
+                    <span ng-if="::!item.tagFamily && !item.rootNode">Family: {{:: item.name }}</span>
                     <span ng-if="::item.rootNode">Project: {{:: item.name }}</span>
-                    <span ng-if="::item.fields.name"><tag source="item" show-close="false"></tag></span>
+                    <span ng-if="::item.tagFamily"><tag source="item" show-close="false"></tag></span>
                 </td>
                 <td>
                     <md-checkbox md-no-ink aria-label="Create"

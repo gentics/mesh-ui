@@ -17,6 +17,7 @@ declare module meshAdminUi {
         editor?: INodeReference;
         edited?: number;
         permissions?: IPermissions;
+        rolePerms?: IPermissions;
     }
 
     export interface IProject extends IMeshBaseProps {

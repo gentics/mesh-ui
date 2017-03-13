@@ -90,13 +90,13 @@ module meshAdminUi {
             return this.$q.all(promises)
                 .then(results => {
                     results.forEach((result: any, index: number) => {
-                        this.tagItemRootPermissions[projects[index].uuid] = result.permissions;
+                        this.tagItemRootPermissions[projects[index].uuid] = result;
                     });
                 });
         }
 
         /**
-         * Populate the this.items array by recursing through all projects/tagFamilies/tags and flattening the
+         * Populate the this.items array by recur sing through all projects/tagFamilies/tags and flattening the
          * results into an array.
          *
          */
@@ -133,7 +133,7 @@ module meshAdminUi {
 
         private setTagItemPermissions() {
             this.tagItems.forEach(item => {
-                this.tagItemPermissions[item.uuid] = this.mu.rolePermissionsArrayToKeys(item);
+                this.tagItemPermissions[item.uuid] = item.rolePerms;
             });
         }
 
@@ -208,10 +208,10 @@ module meshAdminUi {
             });
         }
 
-        public setTagPermissions(project: IProject, permissions: IPermissionsRequest, tagOrFamily?: any) {
-            if (tagOrFamily && tagOrFamily.hasOwnProperty('fields')) {
+        public setTagPermissions(project: IProject, permissions: IPermissionsRequest, tagOrFamily?: ITag | ITagFamily) {
+            if (tagOrFamily && (tagOrFamily as ITag).tagFamily) {
                 // it is a tag
-                return this.dataService.setTagPermissions(this.role.uuid, project.uuid, permissions, tagOrFamily);
+                return this.dataService.setTagPermissions(this.role.uuid, project.uuid, permissions, tagOrFamily as ITag);
             } else {
                 // it is a tagFamily
                 let uuid = tagOrFamily && tagOrFamily.uuid;

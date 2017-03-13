@@ -126,8 +126,8 @@ module meshAdminUi {
             event.preventDefault();
 
             return this.dataService.deleteTag(project.name, tag)
-                .then(newTag => {
-                    let index = this.tags.map(tag => tag.uuid).indexOf(newTag.uuid);
+                .then(() => {
+                    let index = this.tags.map(t => t.uuid).indexOf(tag.uuid);
                     this.tags.splice(index, 1);
                     this.notifyService.toast(`DELETED_TAG`);
                 });

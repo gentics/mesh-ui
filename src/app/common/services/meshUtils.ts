@@ -11,6 +11,7 @@ module meshAdminUi {
         /**
          * Given an object `item` with a `rolePerms` property of type ['create', 'read', 'update' 'delete'], this function
          * will return an object with each permission as a key set to `true`.
+         * TODO: rendered redundant due to change in Mesh API. Remove once refactored out of all app code.
          */
         public rolePermissionsArrayToKeys(item: any): any {
             var permissions = {},

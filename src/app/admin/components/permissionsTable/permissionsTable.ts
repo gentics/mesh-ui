@@ -4,10 +4,8 @@ module meshAdminUi {
 
         public collapsed: boolean = true;
         public filter: string = '';
-        private items: any[];
-        private itemPermissions: {
-            [itemUuid: string]: any
-        } = {};
+        private items: IMeshBaseProps[];
+        private itemPermissions: { [itemUuid: string]: IPermissions } = {};
         private rootPermissions: any;
         private itemNameField: string;
         private onToggle: Function;
@@ -22,7 +20,7 @@ module meshAdminUi {
                 if (newVal) {
                     this.items = newVal;
                     this.items.forEach(item => {
-                        this.itemPermissions[item.uuid] = mu.rolePermissionsArrayToKeys(item);
+                        this.itemPermissions[item.uuid] = item.rolePerms;
                     });
                     cancelItemsWatcher();
                 }
@@ -55,20 +53,18 @@ module meshAdminUi {
 
         public toggle(item) {
             let permObject = this.itemPermissions[item.uuid],
-                permsArray = Object.keys(permObject).filter(key => permObject[key] === true),
                 permissions: IPermissionsRequest = {
-                    permissions: permsArray,
+                    permissions: permObject,
                     recursive: false
                 };
             this.onToggle({ permissions: permissions, item: item });
         }
 
         public toggleRootPerm() {
-            let permsArray = Object.keys(this.rootPermissions).filter(key => this.rootPermissions[key] === true),
-                permissions: IPermissionsRequest = {
-                    permissions: permsArray,
-                    recursive: false
-                };
+            let permissions: IPermissionsRequest = {
+                permissions: this.rootPermissions,
+                recursive: false
+            };
             this.onToggle({ permissions: permissions });
         }
     }
