@@ -39,9 +39,11 @@ describe('authService', function() {
 
     it('should not log in with incorrect credentials', function() {
         respondWithCode(401);
+        var logSpy = spyOn(console, 'log');
         authService.logIn('incorrect', 'credentials')
             .then(function() {
                 expect(authService.isLoggedIn()).toBe(false);
+                expect(logSpy).toHaveBennCalled();
             });
 
         $httpBackend.flush();

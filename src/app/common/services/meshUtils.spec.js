@@ -426,6 +426,9 @@ describe('meshUtils', function() {
                     { name: 'image', type: 'binary'}
                 ]
             };
+
+            // suppress warnings from testing output
+            spyOn(console, 'warn');
         });
 
 
