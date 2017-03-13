@@ -12,7 +12,8 @@ module meshAdminUi {
             },
             link: (scope) => {
                 scope.tagColor = () => {
-                    return mu.stringToColor(scope.source.tagFamily.name);
+                    const tagFamilyName = typeof scope.source.tagFamily === 'string' ? scope.source.tagFamily : scope.source.tagFamily.name;
+                    return mu.stringToColor(tagFamilyName);
                 };
                 scope.close = (event) => {
                     scope.onClose({ $event: event });

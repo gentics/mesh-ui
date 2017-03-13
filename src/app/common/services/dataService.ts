@@ -155,7 +155,7 @@ module meshAdminUi {
             this.clearCache('tags');
             if (project.hasOwnProperty('save')) {
                 // this is a Restangular object
-                return this.meshPut('projects', project);
+                return this.meshPost('projects', project);
             } else {
                 // this is a plain object (newly-created)
                 return this.meshPost('projects', project);
@@ -236,7 +236,7 @@ module meshAdminUi {
         }
 
         private updateUser(user: IUser): ng.IPromise<IUser> {
-            return this.meshPut('users/' + user.uuid, user);
+            return this.meshPost('users/' + user.uuid, user);
         }
 
         public deleteUser(user): ng.IPromise<any> {
@@ -245,7 +245,7 @@ module meshAdminUi {
         }
 
         public addUserToGroup(userId: string, groupId: string): ng.IPromise<any> {
-            return this.meshPut('groups/' + groupId + '/users/' + userId, {});
+            return this.meshPost('groups/' + groupId + '/users/' + userId, {});
         }
 
         public removeUserFromGroup(userId: string, groupId: string): ng.IPromise<any> {
@@ -279,11 +279,11 @@ module meshAdminUi {
             return this.meshPost('groups', group);
         }
         private updateGroup(group: IUserGroup): ng.IPromise<IUserGroup> {
-            return this.meshPut('groups/' + group.uuid, group);
+            return this.meshPost('groups/' + group.uuid, group);
         }
 
         public addGroupToRole(groupUuid: string, roleUuid: string): ng.IPromise<any> {
-            return this.meshPut('groups/' + groupUuid + '/roles/' + roleUuid, {});
+            return this.meshPost('groups/' + groupUuid + '/roles/' + roleUuid, {});
         }
         public removeGroupFromRole(groupUuid: string, roleUuid: string): ng.IPromise<any> {
             return this.meshDelete('groups/' + groupUuid + '/roles/' + roleUuid);
@@ -332,7 +332,7 @@ module meshAdminUi {
                 const searchAll = () => {
                     let query = this.createNodeSearchQuery(projectName, node, searchParams);
                     let bundleQueryParams = angular.extend(queryParams, { page: bundleParams[0].page });
-                    return this.searchNodes(query, bundleQueryParams);
+                    return this.searchNodes(query, projectName, bundleQueryParams);
                 };
                 searchOperation = [searchAll()];
             } else {
@@ -341,7 +341,7 @@ module meshAdminUi {
                     .map(bundleParam => {
                         let query = this.createNodeSearchQuery(projectName, node, searchParams, bundleParam);
                         let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });
-                        return this.searchNodes(query, bundleQueryParams);
+                        return this.searchNodes(query, projectName, bundleQueryParams);
                     });
             }
 
@@ -362,9 +362,7 @@ module meshAdminUi {
             let query: ISearchQuery = {
                 filter: {
                     bool: {
-                        must: [
-                            { "term": { "project.name": projectName.toLowerCase() } }
-                        ]
+                        must: []
                     }
                 },
                 sort: [
@@ -393,7 +391,7 @@ module meshAdminUi {
             if (searchParams.tagFilters && 0 < searchParams.tagFilters.length) {
                 query.filter.bool.must.push({
                     "terms" : {
-                        "tags.name" : searchParams.tagFilters.map((tag: ITag) => tag.fields.name.toLowerCase()),
+                        "tags.name" : searchParams.tagFilters.map((tag: ITag) => tag.name.toLowerCase()),
                         "execution" : "and"
                     }
                 });
@@ -402,9 +400,16 @@ module meshAdminUi {
             return query;
         }
 
-        public searchNodes(query : ISearchQuery, queryParams?: INodeListQueryParams): ng.IPromise<IListResponse<INode>>  {
+        /**
+         * Search for nodes matching the given query.
+         * If the projectName is specified, the search will be limited
+         * @param query
+         * @param queryParams
+         */
+        public searchNodes(query: ISearchQuery, projectName: string, queryParams?: INodeListQueryParams): ng.IPromise<IListResponse<INode>> {
             queryParams.lang = '*';
-            return this.meshPost('search/nodes', query, queryParams)
+            const url = `${projectName}/search/nodes`;
+            return this.meshPost(url, query, queryParams)
                 .then((response: IListResponse<INode>) => {
                     // because we are search for all languages (*), Mesh will return multiple nodes of the same
                     // UUID if it exists in more than one language. In this case we need to filter out all but one
@@ -501,7 +506,7 @@ module meshAdminUi {
                 });
         }
         private updateNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
-            return this.meshPut(projectName + '/nodes/' + node.uuid, node, queryParams)
+            return this.meshPost(projectName + '/nodes/' + node.uuid, node, queryParams)
                 .then(newNode => {
                     return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, 'PUT')
                         .then(result => {
@@ -674,7 +679,7 @@ module meshAdminUi {
         public moveNode(projectName: string, node: INode|string, destinationUuid: string): ng.IPromise<any> {
             this.clearCache('nodes');
             let uuid = this.toUuid(node);
-            return this.meshPut(projectName + '/nodes/' + uuid + '/moveTo/' + destinationUuid, {});
+            return this.meshPost(projectName + '/nodes/' + uuid + '/moveTo/' + destinationUuid, {});
         }
 
         /**
@@ -738,7 +743,7 @@ module meshAdminUi {
             return this.meshPost(projectName + '/tagFamilies', tagFamily);
         }
         private updateTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<ITagFamily> {
-            return this.meshPut(projectName + '/tagFamilies/' + tagFamily.uuid, tagFamily);
+            return this.meshPost(projectName + '/tagFamilies/' + tagFamily.uuid, tagFamily);
         }
 
         public deleteTagFamily(projectName: string, tagFamily: ITagFamily): ng.IPromise<any> {
@@ -805,21 +810,16 @@ module meshAdminUi {
             return this.meshPost(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags`, tag);
         }
         private updateTag(projectName: string, tag: ITag): ng.IPromise<ITag> {
-            return this.meshPut(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags/${tag.uuid}`, tag);
+            return this.meshPost(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags/${tag.uuid}`, tag);
         }
 
         public deleteTag(projectName: string, tag: ITag): ng.IPromise<any> {
             this.clearCache('tags');
             return this.meshDelete(`${projectName}/tagFamilies/${tag.tagFamily.uuid}/tags/${tag.uuid}`);
         }
-
-        public addTagToNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {
+        public updateNodeTags(projectName: string, node: INode, tags: ITagReference[]): ng.IPromise<IListResponse<ITag[]>> {
             this.clearCache('nodes');
-            return this.meshPut(projectName + '/nodes/' + node.uuid + '/tags/' + tag.uuid, {});
-        }
-        public removeTagFromNode(projectName: string, node: INode, tag: ITag): ng.IPromise<any> {
-            this.clearCache('nodes');
-            return this.meshDelete(projectName + '/nodes/' + node.uuid + '/tags/' + tag.uuid, {});
+            return this.meshPost(projectName + '/nodes/' + node.uuid + '/tags', { tags });
         }
 
         /**
@@ -833,6 +833,7 @@ module meshAdminUi {
             return this.meshGet(projectName + '/schemas');
         }
 
+
         /**
          *
          */
@@ -842,7 +843,7 @@ module meshAdminUi {
 
         public addSchemaToProject(schemaUuid: string, projectUuid: string): ng.IPromise<any> {
             this.clearCache('schemas');
-            return this.meshPut('schemas/' + schemaUuid + '/projects/' + projectUuid, {});
+            return this.meshPost('schemas/' + schemaUuid + '/projects/' + projectUuid, {});
         }
         public removeSchemaFromProject(schemaUuid: string, projectUuid: string): ng.IPromise<any> {
             this.clearCache('schemas');
@@ -866,7 +867,7 @@ module meshAdminUi {
          */
         public forceSchemaUpdate(schema: ISchema): ng.IPromise<ISchema> {
             this.clearCache('schemas');
-            return this.meshPut('schemas/' + schema.uuid, schema);
+            return this.meshPost('schemas/' + schema.uuid, schema);
         }
 
         public deleteSchema(schema: ISchema): ng.IPromise<ISchema> {
@@ -911,7 +912,7 @@ module meshAdminUi {
          */
         public forceMicroschemaUpdate(microschema: IMicroschema): ng.IPromise<IMicroschema> {
             this.clearCache('microschemas');
-            return this.meshPut('microschemas/' + microschema.uuid, microschema);
+            return this.meshPost('microschemas/' + microschema.uuid, microschema);
         }
 
         public deleteMicroschema(microschema: IMicroschema): ng.IPromise<IMicroschema> {
@@ -937,7 +938,7 @@ module meshAdminUi {
             return this.meshPost('roles', role);
         }
         private updateRole(role: IUserRole): ng.IPromise<IUserRole> {
-            return this.meshPut('roles/' + role.uuid, role);
+            return this.meshPost('roles/' + role.uuid, role);
         }
         public deleteRole(role: IUserRole): ng.IPromise<any> {
             this.clearCache('roles');
@@ -1008,7 +1009,7 @@ module meshAdminUi {
         }
 
         private setPermissionsOnPath(roleUuid: string, path: string, permissions: IPermissionsRequest): ng.IPromise<any> {
-            return this.meshPut('roles/' + roleUuid + '/permissions/' + path, permissions);
+            return this.meshPost('roles/' + roleUuid + '/permissions/' + path, permissions);
         }
 
 
@@ -1059,7 +1060,7 @@ module meshAdminUi {
          * match a groupName registered with the `selectiveCacheProvider.setCacheableGroups()`
          * config method.
          */
-        private clearCache(groupName:string) {
+        private clearCache(groupName: string) {
             this.selectiveCache.remove(groupName);
         }
     }

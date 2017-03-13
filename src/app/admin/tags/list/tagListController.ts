@@ -94,8 +94,11 @@ module meshAdminUi {
             this.showDialog('ADD_TAG')
                 .then(name => {
                     let tag: ITag = {
-                        fields: { name: name },
-                        tagFamily: tagFamily
+                        name,
+                        tagFamily: {
+                            name: tagFamily.name,
+                            uuid: tagFamily.uuid
+                        }
                     };
                     return this.dataService.persistTag(project.name, tag)
                 })
@@ -106,9 +109,9 @@ module meshAdminUi {
         }
 
         public editTagDialog(project: IProject, tag: ITag) {
-            this.showDialog('EDIT_TAG', tag.fields.name)
+            this.showDialog('EDIT_TAG', tag.name)
                 .then(name => {
-                    tag.fields.name = name;
+                    tag.name = name;
                     return this.dataService.persistTag(project.name, tag);
                 })
                 .then(newTag => {

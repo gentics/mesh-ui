@@ -22,7 +22,7 @@
         <div flex>
             <div class="tags-list-container" layout="row" layout-align="start center" ng-if="!vm.isNew(vm.node)">
                 <div>
-                    <tag ng-repeat="tag in vm.tags track by tag.uuid"
+                    <tag ng-repeat="tag in vm.node.tags track by tag.uuid"
                          show-close="true"
                          on-close="vm.removeTag(tag)"
                          source="tag"></tag>

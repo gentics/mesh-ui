@@ -29,6 +29,14 @@ declare module meshAdminUi {
         uuid: string;
     }
 
+    export interface ITagFamilyReference extends INodeReference {}
+
+    export interface ITagReference {
+        name: string;
+        tagFamily: string;
+        uuid: string;
+    }
+
     export interface IExtendedNodeReference {
         uuid: string;
         projectName?: string;
@@ -36,16 +44,6 @@ declare module meshAdminUi {
             name: string;
             uuid: string;
         }
-    }
-
-    export interface ITags {
-        [tagFamily: string]: {
-            uuid: string;
-            items: Array<{
-                name: string;
-                uuid: string;
-            }>;
-        };
     }
 
     export interface INodeFields {
@@ -85,7 +83,7 @@ declare module meshAdminUi {
             [lang: string]: string;
         };
         published?: boolean;
-        tags?: INodeTagsObject;
+        tags?: ITagReference[];
         schema: INodeReference;
         container?: boolean;
         parentNode?: IExtendedNodeReference;
@@ -143,13 +141,11 @@ declare module meshAdminUi {
     }
 
     export interface ITag extends IMeshBaseProps {
-        tagFamily: ITagFamily;
-        fields: {
-            name: string;
-        };
+        tagFamily: ITagFamilyReference;
+        name: string;
     }
 
-    export interface ITagFamily extends IMeshBaseProps{
+    export interface ITagFamily extends IMeshBaseProps {
         name: string;
     }
 

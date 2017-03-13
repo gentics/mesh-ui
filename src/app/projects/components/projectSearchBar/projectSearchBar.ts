@@ -93,7 +93,7 @@ module meshAdminUi {
                 if (tagQuery === '') {
                     return this.availableTags;
                 } else {
-                    const filterName = (tag: ITag) => -1 < tag.fields.name.toLowerCase().indexOf(tagQuery);
+                    const filterName = (tag: ITag) => -1 < tag.name.toLowerCase().indexOf(tagQuery);
                     return this.availableTags.filter(filterName);
                 }
             }
