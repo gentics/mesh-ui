@@ -394,12 +394,23 @@ module meshAdminUi {
             }
 
             if (searchParams.tagFilters && 0 < searchParams.tagFilters.length) {
-                query.filter.bool.must.push({
-                    "terms" : {
-                        "tags.name" : searchParams.tagFilters.map((tag: ITag) => tag.name.toLowerCase()),
-                        "execution" : "and"
-                    }
-                });
+                query.filter.bool.must.push(
+                    {
+                        "nested": {
+                            "path": "tags",
+                            "query": {
+                                "bool": {
+                                    "must": searchParams.tagFilters.map((tag: ITag) => {
+                                        return {
+                                            "term": {
+                                                "tags.name.raw": tag.name,
+                                            }
+                                        };
+                                    })
+                                }
+                            }
+                        }
+                    });
             }
 
             return query;
