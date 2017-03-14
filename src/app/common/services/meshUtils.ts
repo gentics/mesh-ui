@@ -72,7 +72,7 @@ module meshAdminUi {
                     return queryString + `&${key}=${imageOptions[key]}`;
                 }, queryParams);
             }
-            return meshUiConfig.apiUrl + projectName + `/nodes/${nodeUuid}/languages/${languageCode}/fields/${fieldName + queryParams}`;
+            return meshUiConfig.apiUrl + projectName + `/nodes/${nodeUuid}/binary/${fieldName + queryParams}`;
         }
 
         /**
@@ -86,7 +86,7 @@ module meshAdminUi {
             if (node) {
                 for (let key in node.fields) {
                     let field = node.fields[key];
-                    if (field && field.type && field.type === 'binary') {
+                    if (field && field.fileSize) {
                         if (binaryFieldValue === undefined) {
                             binaryFieldKey = key;
                             binaryFieldValue = field;

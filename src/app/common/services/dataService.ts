@@ -525,8 +525,8 @@ module meshAdminUi {
         }
         private createNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             return this.meshPost(projectName + '/nodes', node, queryParams)
-                .then(newNode => {
-                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, 'POST')
+                .then((newNode: INode) => {
+                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number, 'POST')
                         .then(result => {
                             if (result === false) {
                                 // no uploads were required
@@ -536,15 +536,15 @@ module meshAdminUi {
                             }
                         })
                         .then(newNode => {
-                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid)
+                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number)
                                 .then(() => newNode);
                         });
                 });
         }
         private updateNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             return this.meshPost(projectName + '/nodes/' + node.uuid, node, queryParams)
-                .then(newNode => {
-                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, 'PUT')
+                .then((newNode: INode) => {
+                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number, 'PUT')
                         .then(result => {
                             if (result === false) {
                                 // no uploads were required
@@ -554,7 +554,7 @@ module meshAdminUi {
                             }
                         })
                         .then(newNode => {
-                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid)
+                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number)
                                 .then(() => newNode);
                         });
                 });
@@ -583,7 +583,7 @@ module meshAdminUi {
          * Given a node, inspect each field for any that have a File value. This means a file has been selected
          * in the editor for upload.
          */
-        private uploadBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string, method: string): ng.IPromise<any> {
+        private uploadBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string, versionNumber: string, method: string): ng.IPromise<any> {
             let binaryFields = Object.keys(fields)
                 .filter(key => fields[key] instanceof File)
                 .map(key => {
@@ -595,7 +595,7 @@ module meshAdminUi {
 
             if (0 < binaryFields.length) {
                 let uploads = binaryFields
-                    .map(field => this.uploadBinaryFile(projectName, nodeUuid, field.name, field.file, method));
+                    .map(field => this.uploadBinaryFile(projectName, nodeUuid, field.name, field.file, versionNumber, method));
 
                 return this.$q.all(uploads)
                     // re-get the node as it will now contain the correct binary field properties.
@@ -608,14 +608,16 @@ module meshAdminUi {
         /**
          * Uploads a binary file to a specified field of a node.
          */
-        private uploadBinaryFile(projectName: string, nodeUuid: string, fieldName: string, binaryFile: File, method: string = 'POST'): ng.IPromise<INode> {
+        private uploadBinaryFile(projectName: string, nodeUuid: string, fieldName: string, binaryFile: File, versionNumber: string, method: string = 'POST'): ng.IPromise<INode> {
             let lang = this.i18nService.getCurrentLang().code;
             return this.Upload.upload({
-                url: this.apiUrl + projectName + `/nodes/${nodeUuid}/languages/${lang}/fields/${fieldName}`,
+                url: this.apiUrl + projectName + `/nodes/${nodeUuid}/binary/${fieldName}`,
                 method: method,
                 data: {
                     file: binaryFile,
-                    filename: binaryFile.name
+                    filename: binaryFile.name,
+                    language: lang,
+                    version: versionNumber
                 }
             });
         }
@@ -624,8 +626,8 @@ module meshAdminUi {
          * Check for any binary fields that have a `transform` property, and make a binary transform request
          * for any found.
          */
-        private transformBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string): ng.IPromise<any> {
-            const isBinary = obj => obj.type === 'binary' || obj instanceof File;
+        private transformBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string, version: string): ng.IPromise<any> {
+            const isBinary = obj => obj.hasOwnProperty('fileSize') || obj instanceof File;
             const hasTransform = obj => obj.hasOwnProperty('transform') && 0 < Object.keys(obj.transform).length;
 
             let binaryFieldsWithTransform = Object.keys(fields)
@@ -639,7 +641,7 @@ module meshAdminUi {
 
             if (0 < binaryFieldsWithTransform.length) {
                 let promises = binaryFieldsWithTransform
-                    .map(field => this.transformBinary(projectName, nodeUuid, field.name, field.value.transform));
+                    .map(field => this.transformBinary(projectName, nodeUuid, field.name, field.value.transform, version));
 
                 return this.$q.all(promises);
             } else {
@@ -650,15 +652,21 @@ module meshAdminUi {
         /**
          * Send a POST request to a binary field's `transform` endpoint.
          */
-        public transformBinary(projectName: string, nodeUuid: string, fieldName: string, transformParams: IImageTransformParams): ng.IPromise<any> {
+        public transformBinary(projectName: string,
+                               nodeUuid: string,
+                               fieldName: string,
+                               transformParams: IImageTransformParams,
+                               version: string): ng.IPromise<any> {
             let lang = this.i18nService.getCurrentLang().code;
             let params = angular.copy(transformParams);
             // set the width and height of the image in pixels according to
             // the crop and scale data.
             params.width = params.cropw * params.scale;
             params.height = params.croph * params.scale;
+            params.language = lang;
+            params.version = { number: version };
 
-            return this.meshPost(projectName + `/nodes/${nodeUuid}/languages/${lang}/fields/${fieldName}/transform`, params);
+            return this.meshPost(projectName + `/nodes/${nodeUuid}/binaryTransform/${fieldName}`, params);
         }
 
         /**

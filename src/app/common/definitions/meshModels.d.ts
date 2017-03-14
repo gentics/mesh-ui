@@ -88,7 +88,11 @@ declare module meshAdminUi {
         schema: INodeReference;
         container?: boolean;
         parentNode?: IExtendedNodeReference;
-        fields: INodeFields
+        fields: INodeFields;
+        version?: {
+            number: string;
+            uuid: string;
+        }
     }
 
     export interface IListMetaInfo {
