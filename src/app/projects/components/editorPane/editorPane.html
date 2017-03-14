@@ -50,6 +50,7 @@
     <div layout="row" layout-align="center center" class="mh-main-buttons">
 
         <button class="btn btn-primary"
+                ng-if="vm.node.permissions.update"
                 ng-click="vm.persist(vm.node)"
                 ng-disabled="!vm.formIsValid()"
                 aria-label="save">
@@ -59,6 +60,7 @@
         </button>
 
         <button class="btn btn-publish"
+                ng-if="vm.node.permissions.publish"
                 ng-click="vm.publish(vm.node)"
                 ng-disabled="!vm.readyToPublish()"
                 aria-label="publish">
@@ -68,6 +70,7 @@
         </button>
 
         <button class="btn btn-warn"
+                ng-if="vm.node.permissions.delete"
                 ng-click="vm.remove(vm.node)"
                 ng-disabled="!vm.canDelete(vm.node)"
                 aria-label="delete">

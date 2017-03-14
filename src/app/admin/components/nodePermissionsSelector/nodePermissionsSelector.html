@@ -99,6 +99,38 @@
                         Delete
                     </md-checkbox>
                 </td>
+                <td>
+                    <recursive-toggle-checkbox ng-if=":: node.container || node.rootNode"
+                                               model="vm.nodePermissions[node.uuid]['publish']"
+                                               label="Publish"
+                                               ng-disabled="vm.isReadonly"
+                                               on-change="vm.toggle(node, false)"
+                                               on-recursive-click="vm.toggle(node, true)">
+                    </recursive-toggle-checkbox>
+                    <md-checkbox ng-if=":: !(node.container || node.rootNode)"
+                                 md-no-ink aria-label="Publish"
+                                 ng-disabled="vm.isReadonly"
+                                 ng-change="vm.toggle(node, false)"
+                                 ng-model="vm.nodePermissions[node.uuid]['publish']">
+                        Publish
+                    </md-checkbox>
+                </td>
+                <td>
+                    <recursive-toggle-checkbox ng-if=":: node.container || node.rootNode"
+                                               model="vm.nodePermissions[node.uuid]['readPublished']"
+                                               label="Read Published"
+                                               ng-disabled="vm.isReadonly"
+                                               on-change="vm.toggle(node, false)"
+                                               on-recursive-click="vm.toggle(node, true)">
+                    </recursive-toggle-checkbox>
+                    <md-checkbox ng-if=":: !(node.container || node.rootNode)"
+                                 md-no-ink aria-label="Read Published"
+                                 ng-disabled="vm.isReadonly"
+                                 ng-change="vm.toggle(node, false)"
+                                 ng-model="vm.nodePermissions[node.uuid]['readPublished']">
+                        Read Published
+                    </md-checkbox>
+                </td>
             </tr>
         </table>
     </md-content>

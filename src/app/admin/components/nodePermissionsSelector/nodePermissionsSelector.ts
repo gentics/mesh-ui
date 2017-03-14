@@ -118,7 +118,7 @@ module meshAdminUi {
         private createNodePermissionsArray(nodes: INode[]) {
             this.nodePermissions = {};
             nodes.forEach(node => {
-                this.nodePermissions[node.uuid] = node.permissions;
+                this.nodePermissions[node.uuid] = node.rolePerms;
             });
         }
 
