@@ -108,6 +108,43 @@ module meshAdminUi {
             });
         }
 
+        public isPublished(): boolean {
+            return this.node && this.node.version && this.node.version.number.substr(-2) === '.0';
+        }
+
+        public readyToPublish(): boolean {
+            const isPublished = this.isPublished();
+            return !isPublished || (isPublished && this.contentModified || this.tagsModified);
+        }
+
+        /**
+         * Save any changes and then publish the node
+         */
+        public publish(): void {
+            let savePromise: ng.IPromise<any>;
+            let savingNode: boolean = false;
+            if (this.contentModified || this.tagsModified) {
+                savePromise = this.persist(this.node);
+                savingNode = true;
+            } else {
+                savePromise = this.$q.when();
+            }
+            savePromise.then(() => {
+                this.dataService.publishNode(this.projectName, this.node)
+                    .then(data => {
+                        const newVersionInfo = data.availableLanguages[this.node.language];
+                        if (newVersionInfo) {
+                            this.node.version = newVersionInfo.version;
+                            this.wipService.updateItem(this.wipType, this.node);
+                            this.notifyService.toast('PUBLISHED');
+                            if (!savingNode){
+                                this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
+                            }
+                        }
+                    });
+            });
+        }
+
         /**
          * Save the changes back to the server.
          */
@@ -128,6 +165,7 @@ module meshAdminUi {
             return this.$q.all<INode>(promises)
                 .then((result) => {
                     const node = result[0];
+                    this.node = node;
                     if (this.isNew(originalNode)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
                         this.wipService.closeItem(this.wipType, originalNode);
@@ -190,7 +228,6 @@ module meshAdminUi {
         }
 
         private processNewNode(node: INode) {
-            this.node = node;
             this.$location.search('edit', node.uuid);
             this.openInWipService(node);
         }
@@ -413,7 +450,6 @@ module meshAdminUi {
                     uuid: parentNodeUuid
                 },
                 displayField: schema.displayField,
-                published: false,
                 language : this.i18nService.getCurrentLang().code,
                 schema: {
                     uuid: schema.uuid,

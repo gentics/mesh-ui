@@ -123,6 +123,22 @@ module meshAdminUi {
             en: 'Published',
             de: 'Veröffentlicht'
         },
+        'DRAFT': {
+            en: 'Draft',
+            de: 'Entwurf'
+        },
+        'SAVE_DRAFT': {
+            en: 'Save Draft',
+            de: 'Entwurf Speichern'
+        },
+        'PUBLISH': {
+            en: 'Publish',
+            de: 'Veröffentlichen'
+        },
+        'SAVE_AND_PUBLISH': {
+            en: 'Save & publish',
+            de: 'Aktualisieren & Veröffentlichen'
+        },
         'NODE_MUST_BE_SAVED_BEFORE_TRANSLATING': {
             en: 'Node must be saved before translating',
             de: 'Node muss vor der Übersetzung gespeichert werden'

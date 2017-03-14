@@ -559,6 +559,10 @@ module meshAdminUi {
                         });
                 });
         }
+        public publishNode(projectName: string, node: INode): ng.IPromise<IPublishedResponse> {
+            this.clearCache('nodes');
+            return this.meshPost(projectName + '/nodes/' + node.uuid + '/published', {});
+        }
 
         /**
          * Perform any needed clean-up of fields before sending the object to Mesh.

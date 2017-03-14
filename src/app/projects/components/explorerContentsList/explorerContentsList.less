@@ -26,6 +26,19 @@
         color: @color-primary;
       }
     }
+    .version-label {
+      margin-left: 7px;
+      margin-top: 2px;
+      font-size: 1rem;
+      // border: 1px solid @color-silver;
+      opacity: 0.8;
+      padding: 1px 4px;
+      border-radius: 2px;
+      color: @color-draft;
+      &.published {
+        color: @color-published;
+      }
+    }
     .parent-node-title:after {
       content: '/';
       margin: 0;

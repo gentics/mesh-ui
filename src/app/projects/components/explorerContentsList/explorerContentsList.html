@@ -41,6 +41,9 @@
 
                 <div layout="row" ng-if=":: vm.isAvailableInCurrentLang(node)">
                     <div>
+                        <span class="version-label" ng-class="{ 'published' : vm.isPublished(node) }">
+                            v{{:: node.version.number }}
+                        </span>
                         <button class="btn btn-primary btn-small edit-button"
                                 ng-click="vm.editNode(node, $event)">
                             <span translate>EDIT</span>

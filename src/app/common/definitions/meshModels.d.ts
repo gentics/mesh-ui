@@ -12,12 +12,16 @@ declare module meshAdminUi {
     // properties common to all Mesh nodes
     interface IMeshBaseProps {
         uuid?: string;
-        creator?: INodeReference;
+        creator?: IReference;
         created?: number;
-        editor?: INodeReference;
+        editor?: IReference;
         edited?: number;
         permissions?: IPermissions;
         rolePerms?: IPermissions;
+    }
+
+    export interface IReference {
+        uuid: string;
     }
 
     export interface IProject extends IMeshBaseProps {
@@ -25,9 +29,8 @@ declare module meshAdminUi {
         rootNode: IExtendedNodeReference;
     }
 
-    export interface INodeReference {
+    export interface INodeReference extends IReference{
         name: string;
-        uuid: string;
     }
 
     export interface ITagFamilyReference extends INodeReference {}
@@ -69,6 +72,11 @@ declare module meshAdminUi {
         };
     }
 
+    export interface IVersionInfo {
+        number: string;
+        uuid: string;
+    }
+
     export interface INode extends IMeshBaseProps{
         availableLanguages?: string[];
         childrenInfo?: {
@@ -83,15 +91,22 @@ declare module meshAdminUi {
         languagePaths?: {
             [lang: string]: string;
         };
-        published?: boolean;
         tags?: ITagReference[];
         schema: INodeReference;
         container?: boolean;
         parentNode?: IExtendedNodeReference;
         fields: INodeFields;
-        version?: {
-            number: string;
-            uuid: string;
+        version?: IVersionInfo;
+    }
+
+    export interface IPublishedResponse {
+        availableLanguages: {
+            [languageCode: string]: {
+                publishDate: string;
+                published: boolean;
+                publisher: IReference;
+                version: IVersionInfo;
+            }
         }
     }
 
