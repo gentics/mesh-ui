@@ -126,6 +126,8 @@ module meshAdminUi {
                 console.warn(`Session has expired, logging out`);
                 this.authService.setAsLoggedOut();
                 return {};
+            } else {
+                throw err;
             }
         };
 
@@ -543,21 +545,32 @@ module meshAdminUi {
         }
         private updateNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             return this.meshPost(projectName + '/nodes/' + node.uuid, node, queryParams)
-                .then((newNode: INode) => {
-                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number, 'PUT')
-                        .then(result => {
-                            if (result === false) {
-                                // no uploads were required
-                                return newNode;
-                            } else {
-                                return result;
-                            }
-                        })
-                        .then(newNode => {
-                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number)
-                                .then(() => newNode);
-                        });
-                });
+                .then(
+                    (newNode: INode) => {
+                        return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number, 'PUT')
+                            .then(result => {
+                                if (result === false) {
+                                    // no uploads were required
+                                    return newNode;
+                                } else {
+                                    return result;
+                                }
+                            })
+                            .then(newNode => {
+                                return this.transformBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number)
+                                    .then(() => newNode);
+                            });
+                    },
+                    (err: ng.IHttpPromiseCallbackArg<any>) => {
+                        if (err.status === 409) {
+                            // a conflict occurred, so we will brute-force update the node by simply setting the version
+                            // to the latest version and re-posting.
+                            console.warn(`Version conflict detected, forcing update to this version`, err.data);
+                            node.version.number = err.data.properties.newVersion;
+                            return this.updateNode(projectName, node, queryParams);
+                        }
+                    }
+                );
         }
         public publishNode(projectName: string, node: INode): ng.IPromise<IPublishedResponse> {
             this.clearCache('nodes');
