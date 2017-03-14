@@ -567,6 +567,10 @@ module meshAdminUi {
             en: 'Please check your login details and try again.',
             de: 'Überprüfen Sie bitte Ihre Daten und versuchen Sie es erneut.'
         },
+        'ERR_SESSION_EXPIRED': {
+            en: 'Session has expired. Please log in again.',
+            de: 'Die Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
+        },
         'JSON_IS_INVALID': {
             en: 'JSON is invalid',
             de: 'JSON ist ungültig'

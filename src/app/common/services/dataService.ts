@@ -56,8 +56,8 @@ module meshAdminUi {
         var apiUrl;
 
         this.setApiUrl = setApiUrl;
-        this.$get = function ($http, $q, Upload, selectiveCache, i18nService, mu) {
-            return new DataService($http, $q, Upload, selectiveCache, i18nService, mu, apiUrl);
+        this.$get = function ($http, $q, Upload, selectiveCache, i18nService, authService, mu) {
+            return new DataService($http, $q, Upload, selectiveCache, i18nService, authService, mu, apiUrl);
         };
 
         /**
@@ -79,6 +79,7 @@ module meshAdminUi {
                     private Upload: any,
                     private selectiveCache: SelectiveCache,
                     private i18nService: I18nService,
+                    private authService: AuthService,
                     private mu: MeshUtils,
                     private apiUrl: string) {
 
@@ -90,26 +91,43 @@ module meshAdminUi {
         private meshGet(url:string, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
             return this.$http.get(this.makeFullUrl(url), config)
-                .then(response => response.data);
+                .then(this.successHandler, this.errorHandler);
         }
 
         private meshPut(url:string, data:any, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
             return this.$http.put(this.makeFullUrl(url), data, config)
-                .then(response => response.data);
+                .then(this.successHandler, this.errorHandler);
         }
 
         private meshPost(url:string, data:any, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
             return this.$http.post(this.makeFullUrl(url), data, config)
-                .then(response => response.data);
+                .then(this.successHandler, this.errorHandler);
         }
 
         private meshDelete(url:string, params?:any, config?:any):ng.IPromise<any> {
             config = this.makeConfigObject(params, config);
             return this.$http.delete(this.makeFullUrl(url), config)
-                .then(response => response.data);
+                .then(this.successHandler, this.errorHandler);
         }
+
+        successHandler = (response: ng.IHttpPromiseCallbackArg<{ message: string }>): any => {
+            if (response && response.data) {
+                return response.data;
+            } else {
+                return response;
+            }
+        };
+
+        errorHandler = (err: ng.IHttpPromiseCallbackArg<{ message: string }>): any => {
+            if (err.status === 401) {
+                // user is not authorized - log out and return to login
+                console.warn(`Session has expired, logging out`);
+                this.authService.setAsLoggedOut();
+                return {};
+            }
+        };
 
         /**
          * Attach the given URL to the configured API URL and url-encode it.
@@ -144,7 +162,9 @@ module meshAdminUi {
 
         public getProjectByName(name: string, queryParams?): ng.IPromise<IProject> {
             return this.getProjects(queryParams)
-                .then(response => response.data.filter(project => project.name === name)[0]);
+                .then(response => {
+                    return response.data.filter(project => project.name === name)[0]
+                });
         }
 
         /**
