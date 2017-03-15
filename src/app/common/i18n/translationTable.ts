@@ -591,6 +591,14 @@ module meshAdminUi {
             en: 'JSON is invalid',
             de: 'JSON ist ungültig'
         },
+        'ERR_SCHEMA_NAME_INVALID': {
+            en: 'Schema name may contain only letters, numbers and underscores, and may not start with a number.',
+            de: 'Der Schema Name darf nur Burchstaben, Nummern und Unterstriche enthalten und darf nicht mit einer Nummer beginnen.'
+        },
+        'ERR_SCHEMA_NAME_EMPTY': {
+            en: 'Please specify a schema name',
+            de: 'Bitte geben Sie einen Schema Name an'
+        },
         'ERR_SCHEMA_PLEASE_SPECIFY_DISPLAY_FIELD': {
             en: 'Please specify a displayField',
             de: 'Bitte geben Sie ein Display-Field an'
