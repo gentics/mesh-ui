@@ -19,6 +19,20 @@
     }
   }
 
+  md-input-container {
+    margin-bottom: 0;
+    .md-errors-spacer {
+      height: 0;
+      min-height: 0;
+    }
+  }
+
+  .display-mode-toggle {
+    button {
+      margin-top: 21px;
+    }
+  }
+
   .node-name {
     .noselect();
     &.link {
@@ -64,6 +78,11 @@
       background-color: @color-concrete;
       border-color: @color-primary;
       box-shadow: @mh-box-shadow;
+    }
+
+    node-thumbnail {
+      max-height: 100px;
+      overflow: hidden;
     }
 
     img {

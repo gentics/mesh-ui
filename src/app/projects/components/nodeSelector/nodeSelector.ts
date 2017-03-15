@@ -80,6 +80,8 @@ module meshAdminUi {
         private breadcrumbs: any[];
         private filterNodes;
         private q: string;
+        private itemsPerPage = 20;
+        private currentPage = 1;
 
         constructor(private dataService: DataService,
                     private i18nService: I18nService,
@@ -160,7 +162,7 @@ module meshAdminUi {
         }
 
         private populateContents() {
-            this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid)
+            this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid, { perPage: 9999999 })
                 .then(response => {
                     this.nodes = response.data.filter(node => this.isAllowedSchemaOrFolder(node));
                     if (this.includeRootNode) {
@@ -184,6 +186,10 @@ module meshAdminUi {
 
                     this.breadcrumbs = breadcrumbLabels.reverse();
                 });
+        }
+
+        public pageChanged(pageNumber): void {
+            this.currentPage = pageNumber;
         }
 
         /**

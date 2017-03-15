@@ -324,7 +324,7 @@ module meshAdminUi {
          */
         public getChildNodes(projectName: string,
                              parentNodeId: string,
-                             queryParams: INodeQueryParams = {}): ng.IPromise<IListResponse<INode>> {
+                             queryParams: INodeListQueryParams = {}): ng.IPromise<IListResponse<INode>> {
 
             let url = projectName + '/nodes/' + parentNodeId + '/children';
             const currLangCode = this.i18nService.getCurrentLang().code;
