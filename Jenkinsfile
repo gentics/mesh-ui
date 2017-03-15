@@ -5,14 +5,14 @@ if (!Boolean.valueOf(release)) {
 	
 	stage 'Build'
 	echo "Building " + env.BRANCH_NAME
-	node('dockerSlave') {
+	node('mesh') {
 		def mvnHome = tool 'M3'
 		checkout scm
 		sh "${mvnHome}/bin/mvn -B clean test -Dmaven.test.failure.ignore"
 		step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
 	}
 } else {
-	node('dockerSlave') {
+	node('mesh') {
 	    def mvnHome = tool 'M3'
 	    
 	    sh "rm -rf *"
