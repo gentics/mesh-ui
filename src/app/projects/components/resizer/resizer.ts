@@ -105,7 +105,7 @@ module meshAdminUi {
                         barWidth = resizeBar.getBoundingClientRect().width;
 
                     ctrl.handleStyle.height = resizeBar.getBoundingClientRect().height + 'px';
-                    ctrl.handleStyle.left = (ctrl.adjustOffsetLeft(resizeBar.offsetLeft) - barWidth / 2)+ 'px';
+                    ctrl.handleStyle.left = (resizeBar.offsetLeft - barWidth / 2)+ 'px';
                     ctrl.resizerMousedown(event, barWidth);
                 };
             }
