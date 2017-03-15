@@ -28,11 +28,11 @@
                     <span ng-if=":: node.container" class="node-icon">
                         <i class="icon-folder-open"></i>
                     </span>
-                    <span class="node-title"
+                    <a class="node-title" href=""
                           ng-class="{'container': node.container}"
                           ng-click="vm.openNode(node, $event)">
                         {{:: node.fields[node.displayField] || 'Untitled (' + node.uuid + ')' }}
-                    </span>
+                    </a>
                 </div>
 
                 <div flex="50">
