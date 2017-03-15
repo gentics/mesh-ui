@@ -122,10 +122,8 @@
 						</goals>
 						<phase>initialize</phase>
 						<configuration>
-							<!-- 0.10.33 -->
-							<nodeVersion>v0.12.2</nodeVersion>
-							<!-- 1.4.28 -->
-							<npmVersion>2.7.6</npmVersion>
+							<nodeVersion>v6.3.0</nodeVersion>
+							<npmVersion>3.5.2</npmVersion>
 						</configuration>
 					</execution>
 
