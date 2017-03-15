@@ -85,7 +85,7 @@ module meshAdminUi {
 
         public canDelete() {
             if (this.microschema) {
-                return this.microschema.permissions && -1 < this.microschema.permissions.indexOf('delete') && !this.isNew;
+                return this.microschema.permissions && this.microschema.permissions.delete && !this.isNew;
             }
         }
 

@@ -146,6 +146,10 @@ module meshAdminUi {
             this.onPageChange({ newPageNumber: newPageNumber, schemaUuid: schemaUuid });
         }
 
+        public isPublished(node: INode): boolean {
+            return node.version && node.version.number.substr(-2) === '.0';
+        }
+
         /**
          * Returns true if the node has at least one binary field.
          */
@@ -184,7 +188,7 @@ module meshAdminUi {
             })
                 .then((selection:INode[]) => {
                     destinationNode = selection[0];
-                    nodeClone.parentNodeUuid = destinationNode.uuid;
+                    nodeClone.parentNode.uuid = destinationNode.uuid;
                     return this.dataService.persistNode(projectName, nodeClone);
                 })
                 .then(() => {

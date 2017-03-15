@@ -22,6 +22,7 @@ module meshAdminUi {
                     private $q: ng.IQService,
                     private dispatcher: Dispatcher,
                     private selectiveCache: SelectiveCache,
+                    private notifyService: NotifyService,
                     private $cookies) {
 
             this._isLoggedIn = $cookies.get('isLoggedIn') === 'true';
@@ -52,27 +53,31 @@ module meshAdminUi {
             authHeaderValue = "Basic " + btoa(userName + ":" + password);
             config.headers[this.AUTH_HEADER_NAME] = authHeaderValue;
 
-            this.userRequestInFlight = $http.get(meshUiConfig.apiUrl + 'auth/me', config)
+            this.userRequestInFlight = $http.get(meshUiConfig.apiUrl + 'auth/login', config)
                 .then(response => {
-                    if (response.status === 200) {
-                        this._currentUser = <IUser>response.data;
-                        this.authString = authHeaderValue;
-                        this._isLoggedIn = true;
-                        this.$cookies.put('isLoggedIn', 'true');
-                        this.dispatcher.publish(this.dispatcher.events.loginSuccess);
-                        deferred.resolve(true);
-                    } else {
-                        console.log('Error, status: ' + response.status);
-                        deferred.reject();
-                    }
-                },
-                response => {
-                    if (response.status === this.CODE_RESPONSE_UNAUTHORIZED) {
-                        //TODO: Display error message
-                        console.log('not authorized: ' + response.status);
-                        deferred.reject()
-                    }
-                });
+                    return $http.get(meshUiConfig.apiUrl + 'auth/me');
+                })
+                .then(
+                    response => {
+                        if (response.status === 200) {
+                            this._currentUser = <IUser>response.data;
+                            this.authString = authHeaderValue;
+                            this._isLoggedIn = true;
+                            this.$cookies.put('isLoggedIn', 'true');
+                            this.dispatcher.publish(this.dispatcher.events.loginSuccess);
+                            deferred.resolve(true);
+                        } else {
+                            console.log('Error, status: ' + response.status);
+                            deferred.reject();
+                        }
+                    },
+                    response => {
+                        if (response.status === this.CODE_RESPONSE_UNAUTHORIZED) {
+                            //TODO: Display error message
+                            console.log('not authorized: ' + response.status);
+                            deferred.reject()
+                        }
+                    });
 
             return deferred.promise;
         }
@@ -118,22 +123,35 @@ module meshAdminUi {
                 deferred = this.$q.defer();
 
             $http.get(meshUiConfig.apiUrl + 'auth/logout').then(() => {
-                // TODO: need to actually invalidate the basic auth on the browser, see
-                // example solution here http://stackoverflow.com/a/492926/772859
-                this._isLoggedIn = false;
-                this._currentUser = null;
-                this.$cookies.put('isLoggedIn', 'false');
-                this.$cookies.put('authString', '');
-                this.authString = '';
-                this.dispatcher.publish(this.dispatcher.events.logoutSuccess);
-                this.selectiveCache.removeAll();
-
+                this.doLogoutHousekeeping();
                 deferred.resolve(true);
             }).catch(error => {
                 deferred.reject(error);
             });
 
             return deferred.promise;
+        }
+
+        /**
+         * If the user is currently logged in, but interaction with the API indicated an unauthorized state (i.e. a 401 is
+         * returned from a request), then we need to simply run the logout housekeeping which will get the UI state
+         * back in sync with the API.
+         */
+        public setAsLoggedOut() {
+            this.notifyService.toast('ERR_SESSION_EXPIRED');
+            this.doLogoutHousekeeping();
+        }
+
+        private doLogoutHousekeeping() {
+            // TODO: need to actually invalidate the basic auth on the browser, see
+            // example solution here http://stackoverflow.com/a/492926/772859
+            this._isLoggedIn = false;
+            this._currentUser = null;
+            this.$cookies.put('isLoggedIn', 'false');
+            this.$cookies.put('authString', '');
+            this.authString = '';
+            this.dispatcher.publish(this.dispatcher.events.logoutSuccess);
+            this.selectiveCache.removeAll();
         }
     }
 

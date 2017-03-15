@@ -28,6 +28,7 @@ var gulp = require('gulp'),
     child_process = require('child_process'),
     bump = require('gulp-bump'),
     tap = require('gulp-tap'),
+    sourcemaps = require('gulp-sourcemaps'),
 
     vars = require('./build-vars.json'),
     VENDOR_SCRIPTS = vars.VENDOR_SCRIPTS,
@@ -65,6 +66,7 @@ function compile_appScripts(uiVersion) {
             '!src/app/common/aloha/**/*.ts',
             'src/app/**/*.ts'
         ])
+        .pipe(sourcemaps.init())
         .pipe(ts({
             declarationFiles: true,
             noExternalResolve: false,
@@ -73,7 +75,8 @@ function compile_appScripts(uiVersion) {
         .pipe(replace('/*injectCurrentVersion*/', 'window.meshUiVersion = "' + uiVersion + '";'))
         .pipe(angularFilesort())
         .pipe(ngAnnotate())
-        .pipe(concat('app.js'));
+        .pipe(concat('app.js'))
+        .pipe(sourcemaps.write('.'))
 }
 
 function transpile_aloha_plugins() {

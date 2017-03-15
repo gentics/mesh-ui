@@ -13,6 +13,7 @@ describe('authService', function() {
 
     function respondWithCode(code) {
         $httpBackend.whenGET(/\/api\/v1\/auth\/me.*/).respond(code, { data: {} });
+        $httpBackend.whenGET(/\/api\/v1\/auth\/login.*/).respond(code, { data: {} });
         $httpBackend.whenGET(/\/api\/v1\/auth\/logout.*/).respond(code, { data: {} });
     }
 
@@ -38,9 +39,11 @@ describe('authService', function() {
 
     it('should not log in with incorrect credentials', function() {
         respondWithCode(401);
+        var logSpy = spyOn(console, 'log');
         authService.logIn('incorrect', 'credentials')
             .then(function() {
                 expect(authService.isLoggedIn()).toBe(false);
+                expect(logSpy).toHaveBennCalled();
             });
 
         $httpBackend.flush();

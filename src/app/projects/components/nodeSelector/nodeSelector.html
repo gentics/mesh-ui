@@ -10,20 +10,31 @@
         </ul>
     </div>
 
-    <md-input-container>
-        <label>Filter</label>
-        <input type="text" ng-model="vm.q">
-    </md-input-container>
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Filter</label>
+            <input type="text" ng-model="vm.q">
+        </md-input-container>
+        <div class="display-mode-toggle">
+            <button class="btn btn-small" ng-if="vm.displayMode == 'list'" ng-click="vm.displayMode = 'grid'">
+                <i class="icon-view-module"></i> Show Grid
+            </button>
+            <button class="btn btn-small" ng-if="vm.displayMode == 'grid'" ng-click="vm.displayMode = 'list'">
+                <i class="icon-view-list"></i> Show List
+            </button>
+        </div>
+    </div>
+
 
     <div layout="row">
         <div flex>
             <table class="mh-table" ng-show="0 < vm.nodes.length" ng-if="vm.displayMode === 'list'">
                 <tbody>
-                <tr ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid"
+                <tr dir-paginate="node in vm.nodes | filter: vm.filterNodes | itemsPerPage: vm.itemsPerPage track by node.uuid"
                     class="node-selector-table"
                     ng-class="{
                         selected: vm.isSelected(node),
-                        'root-node': node.uuid === vm.currentProject.rootNodeUuid,
+                        'root-node': node.uuid === vm.currentProject.rootNode.uuid,
                         untranslated: vm.isUntranslated(node)
                     }"
                     ng-click="vm.toggleSelect(node, $event)">
@@ -48,7 +59,7 @@
             <div class="node-grid" ng-if="vm.displayMode === 'grid'" layout="row" layout-wrap>
                 <div class="grid-item"
                      layout="column" layout-align="space-around center"
-                     ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid"
+                     dir-paginate="node in vm.nodes | filter: vm.filterNodes | itemsPerPage: vm.itemsPerPage track by node.uuid"
                      ng-class="{
                         selected: vm.isSelected(node),
                         untranslated: vm.isUntranslated(node)
@@ -68,6 +79,8 @@
             </div>
         </div>
     </div>
+
+    <dir-pagination-controls on-page-change="vm.pageChanged(newPageNumber)"></dir-pagination-controls>
 
 
 </div>

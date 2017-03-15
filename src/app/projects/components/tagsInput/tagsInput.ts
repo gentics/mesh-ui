@@ -76,7 +76,7 @@ module meshAdminUi {
             if (query === '') {
                 return this.tags;
             } else {
-                const filterName = (tag: ITag) => -1 < tag.fields.name.toLowerCase().indexOf(query.toLowerCase());
+                const filterName = (tag: ITag) => -1 < tag.name.toLowerCase().indexOf(query.toLowerCase());
                 return this.tags.filter(filterName);
             }
         }
@@ -180,9 +180,7 @@ module meshAdminUi {
                     name: tagFamily.name,
                     uuid: tagFamily.uuid
                 },
-                fields: {
-                    name: name
-                }
+                name
             };
         }
 

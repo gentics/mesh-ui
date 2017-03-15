@@ -9,6 +9,10 @@ module meshAdminUi {
         cropw?: number;
         croph?: number;
         scale?: number;
+        language?: string;
+        version?: {
+            number: string;
+        }
     }
 
     class ImageEditorController {

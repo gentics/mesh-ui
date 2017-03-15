@@ -26,11 +26,20 @@ editor-pane {
     }
   }
 
-  .published-toggle {
-    margin-top: 13px;
+  .published-status {
+    margin-top: 14px;
     text-transform: uppercase;
     margin-right: 15px;
     color: @color-boulder;
+    .published {
+      color: @color-published;
+    }
+    .draft {
+      color: @color-draft
+    }
+    .version {
+      font-size: 1.1rem;
+    }
   }
 
   .tags-input-wrapper {

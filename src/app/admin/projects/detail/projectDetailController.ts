@@ -75,7 +75,7 @@ module meshAdminUi {
 
         public canDelete() {
             if (this.project) {
-                return this.project.permissions && -1 < this.project.permissions.indexOf('delete') && !this.isNew;
+                return this.project.permissions && this.project.permissions.delete && !this.isNew;
             }
         }
 
@@ -127,7 +127,9 @@ module meshAdminUi {
         private createEmptyProject(): IProject {
             return {
                 name: '',
-                rootNodeUuid: ''
+                rootNode: {
+                    uuid: ''
+                }
             };
         }
     }

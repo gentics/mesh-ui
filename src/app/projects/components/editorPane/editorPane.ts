@@ -19,8 +19,8 @@ module meshAdminUi {
         private wipType: string = 'contents';
         private projectName: string;
         private contentModified: boolean;
+        private tagsModified: boolean;
         private node: INode;
-        private tags: ITag[];
         private binaryFile: File;
         private selectedLangs: any;
         private isLoaded: boolean;
@@ -73,8 +73,8 @@ module meshAdminUi {
                 this.projectName = contextService.getProject().name;
                 this.currentNodeId = nodeUuid;
                 this.contentModified = false;
+                this.tagsModified = false;
                 this.node = undefined;
-                this.tags = [];
                 this.selectedLangs = {};
                 this.selectedLangs[i18nService.getCurrentLang().code] = true; // set the default language
                 this.isLoaded = false;
@@ -108,12 +108,67 @@ module meshAdminUi {
             });
         }
 
+        public isPublished(): boolean {
+            return this.node && this.node.version && this.node.version.number.substr(-2) === '.0';
+        }
+
+        public readyToPublish(): boolean {
+            const isPublished = this.isPublished();
+            return !isPublished || (isPublished && this.contentModified || this.tagsModified);
+        }
+
+        /**
+         * Save any changes and then publish the node
+         */
+        public publish(): void {
+            let savePromise: ng.IPromise<any>;
+            let savingNode: boolean = false;
+            if (this.contentModified || this.tagsModified) {
+                savePromise = this.persist(this.node);
+                savingNode = true;
+            } else {
+                savePromise = this.$q.when();
+            }
+            savePromise.then(() => {
+                this.dataService.publishNode(this.projectName, this.node)
+                    .then(data => {
+                        const newVersionInfo = data.availableLanguages[this.node.language];
+                        if (newVersionInfo) {
+                            this.node.version = newVersionInfo.version;
+                            this.wipService.updateItem(this.wipType, this.node);
+                            this.notifyService.toast('PUBLISHED');
+                            if (!savingNode){
+                                this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
+                            }
+                        }
+                    });
+            });
+        }
+
         /**
          * Save the changes back to the server.
          */
         public persist(originalNode: INode): ng.IPromise<any> {
-            return this.dataService.persistNode(this.projectName, originalNode, { expandAll: true })
-                .then((node: INode) => {
+            const promises: ng.IPromise<INode>[] = [];
+            if (this.contentModified) {
+                promises.push(
+                    this.dataService.persistNode(this.projectName, originalNode, { expandAll: true })
+                );
+            } else {
+                promises.push(this.$q.when(originalNode));
+            }
+
+            if (this.tagsModified) {
+                promises.push(
+                    this.dataService.updateNodeTags(this.projectName, this.node, this.node.tags)
+                        .then(() => originalNode)
+                )
+            }
+
+            return this.$q.all<INode>(promises)
+                .then((result) => {
+                    const node = result[0];
+                    this.node = node;
                     if (this.isNew(originalNode)) {
                         this.notifyService.toast('NEW_CONTENT_CREATED');
                         this.wipService.closeItem(this.wipType, originalNode);
@@ -121,8 +176,12 @@ module meshAdminUi {
                     } else {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.wipService.setAsUnmodified(this.wipType, this.node);
-                        this.contentModified = false;
                     }
+                    if (this.tagsModified) {
+                        this.dispatcher.publish(this.dispatcher.events.explorerNodeTagsChanged, this.node.uuid);
+                    }
+                    this.contentModified = false;
+                    this.tagsModified = false;
                     this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
                 })
                 .catch(error => {
@@ -172,7 +231,6 @@ module meshAdminUi {
         }
 
         private processNewNode(node: INode) {
-            this.node = node;
             this.$location.search('edit', node.uuid);
             this.openInWipService(node);
         }
@@ -181,30 +239,26 @@ module meshAdminUi {
             if (!tag) {
                 return;
             }
-            let tagIsDuplicate = -1 < this.tags.map(tag => tag.uuid).indexOf(tag.uuid);
+            let tagIsDuplicate = -1 < this.node.tags.map(tag => tag.uuid).indexOf(tag.uuid);
             if (!tagIsDuplicate) {
-                this.dataService.addTagToNode(this.projectName, this.node, tag)
-                    .then(node => {
-                        this.tags.push(tag);
-                        this.node.tags = node.tags;
-                        this.notifyService.toast('ADDED_TAG', { name: tag.fields.name });
-                        this.dispatcher.publish(this.dispatcher.events.explorerNodeTagsChanged, node.uuid);
-                    });
+                this.tagsModified = true;
+                this.wipService.setAsModified(this.wipType, this.node);
+                this.node.tags.push({
+                    name: tag.name,
+                    uuid: tag.uuid,
+                    tagFamily: tag.tagFamily.name
+                });
             }
         }
 
-        public removeTag(tag: ITag) {
+        public removeTag(tag: ITagReference) {
             if (!tag) {
                 return;
             }
-            this.dataService.removeTagFromNode(this.projectName, this.node, tag)
-                .then(node => {
-                    let index = this.tags.map(tag => tag.uuid).indexOf(tag.uuid);
-                    this.tags.splice(index, 1);
-                    this.node.tags = node.tags;
-                    this.notifyService.toast('REMOVED_TAG', { name: tag.fields.name });
-                    this.dispatcher.publish(this.dispatcher.events.explorerNodeTagsChanged, node.uuid);
-                });
+            this.tagsModified = true;
+            this.wipService.setAsModified(this.wipType, this.node);
+            let index = this.node.tags.map(tag => tag.uuid).indexOf(tag.uuid);
+            this.node.tags.splice(index, 1);
         }
 
         /**
@@ -263,7 +317,7 @@ module meshAdminUi {
 
         public canDelete(node: INode) {
             if (node) {
-                return -1 < node.permissions.indexOf('delete');
+                return node.permissions.delete;
             }
         }
 
@@ -272,7 +326,7 @@ module meshAdminUi {
          * required fields have a non-empty value.
          */
         public formIsValid(): boolean {
-            if (!this.contentModified) {
+            if (!this.contentModified && !this.tagsModified) {
                 return false;
             }
 
@@ -340,7 +394,6 @@ module meshAdminUi {
                     return this.dataService.getNode(this.projectName, this.currentNodeId, { expandAll: true })
                         .then(node => {
                             this.node = node;
-                            this.tags = this.mu.nodeTagsObjectToArray(node.tags);
                             if (!wipContent) {
                                 this.openInWipService(this.node);
                             } else {
@@ -376,7 +429,6 @@ module meshAdminUi {
         private populateFromWip(wipContent): ng.IPromise<any> {
             var wipMetadata = this.wipService.getMetadata(this.wipType, wipContent.uuid);
             this.node = wipContent;
-            this.tags = this.mu.nodeTagsObjectToArray(wipContent.tags);
             this.contentModified = this.wipService.isModified(this.wipType, this.node);
             this.selectedLangs = wipMetadata.selectedLangs;
             return this.dataService.getSchema(this.node.schema.uuid)
@@ -388,11 +440,19 @@ module meshAdminUi {
          */
         private createEmptyContent(schema: ISchema, parentNodeUuid: string): INode {
             return {
-                permissions: ['read', 'create', 'update', 'delete'],
+                permissions: {
+                    read: true,
+                    create: true,
+                    update: true,
+                    delete: true,
+                    readPublished: true,
+                    publish: true
+                },
                 uuid: this.wipService.generateTempId(),
-                parentNodeUuid: parentNodeUuid,
+                parentNode: {
+                    uuid: parentNodeUuid
+                },
                 displayField: schema.displayField,
-                published: false,
                 language : this.i18nService.getCurrentLang().code,
                 schema: {
                     uuid: schema.uuid,

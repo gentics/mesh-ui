@@ -36,7 +36,7 @@ module meshAdminUi {
         private fields: INodeFields;
         private schema: ISchemaFieldDefinition[];
         private onChange: Function;
-        private perms: string[];
+        private perms: IPermissions;
         private displayField: string;
         private projectName: string;
         private node: INode;
@@ -44,11 +44,11 @@ module meshAdminUi {
         constructor($scope: ng.IScope,
                     private formBuilderService: FormBuilderService) {
             if (!this.perms) {
-                this.perms = [];
+                this.perms = {} as IPermissions;
             }
             $scope.$watch(() => this.schema, val => {
                 if (val) {
-                    let canUpdate = this.perms && (-1 < this.perms.indexOf('update'));
+                    let canUpdate = this.perms && this.perms.update;
                     let config: INodeFieldModelConfig = {
                         nodeFields: this.fields,
                         schemaFields: this.schema,

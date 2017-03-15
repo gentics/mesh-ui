@@ -123,6 +123,22 @@ module meshAdminUi {
             en: 'Published',
             de: 'Veröffentlicht'
         },
+        'DRAFT': {
+            en: 'Draft',
+            de: 'Entwurf'
+        },
+        'SAVE_DRAFT': {
+            en: 'Save Draft',
+            de: 'Entwurf Speichern'
+        },
+        'PUBLISH': {
+            en: 'Publish',
+            de: 'Veröffentlichen'
+        },
+        'SAVE_AND_PUBLISH': {
+            en: 'Save & publish',
+            de: 'Aktualisieren & Veröffentlichen'
+        },
         'NODE_MUST_BE_SAVED_BEFORE_TRANSLATING': {
             en: 'Node must be saved before translating',
             de: 'Node muss vor der Übersetzung gespeichert werden'
@@ -567,9 +583,21 @@ module meshAdminUi {
             en: 'Please check your login details and try again.',
             de: 'Überprüfen Sie bitte Ihre Daten und versuchen Sie es erneut.'
         },
+        'ERR_SESSION_EXPIRED': {
+            en: 'Session has expired. Please log in again.',
+            de: 'Die Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.'
+        },
         'JSON_IS_INVALID': {
             en: 'JSON is invalid',
             de: 'JSON ist ungültig'
+        },
+        'ERR_SCHEMA_NAME_INVALID': {
+            en: 'Schema name may contain only letters, numbers and underscores, and may not start with a number.',
+            de: 'Der Schema Name darf nur Burchstaben, Nummern und Unterstriche enthalten und darf nicht mit einer Nummer beginnen.'
+        },
+        'ERR_SCHEMA_NAME_EMPTY': {
+            en: 'Please specify a schema name',
+            de: 'Bitte geben Sie einen Schema Name an'
         },
         'ERR_SCHEMA_PLEASE_SPECIFY_DISPLAY_FIELD': {
             en: 'Please specify a displayField',

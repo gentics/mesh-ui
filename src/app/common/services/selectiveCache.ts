@@ -1,5 +1,7 @@
 module meshAdminUi {
 
+    export type CachableGroupKey = 'projects' | 'nodes' | 'tags' | 'schemas' | 'microschemas' | 'users' | 'roles' | 'groups';
+
     function selectiveCacheProvider(): any {
 
         var baseUrl = '',

@@ -2,10 +2,10 @@
 
 
     <div layout="row" layout-align="center start" class="editor-top-bar">
-        <div class="published-toggle">
-            <md-checkbox ng-model="vm.node.published" ng-change="vm.setAsModified()" aria-label="Published" md-no-ink>
-              <span translate>PUBLISHED</span>
-            </md-checkbox>
+        <div class="published-status">
+            <span class="published" ng-if="vm.isPublished()"><span translate>PUBLISHED</span></span>
+            <span class="draft" ng-if="!vm.isPublished()" ><span translate>DRAFT</span></span>
+            <span class="version">v{{ vm.node.version.number }}</span>
         </div>
         <div>
             <preview-selector node="vm.node"></preview-selector>
@@ -22,7 +22,7 @@
         <div flex>
             <div class="tags-list-container" layout="row" layout-align="start center" ng-if="!vm.isNew(vm.node)">
                 <div>
-                    <tag ng-repeat="tag in vm.tags track by tag.uuid"
+                    <tag ng-repeat="tag in vm.node.tags track by tag.uuid"
                          show-close="true"
                          on-close="vm.removeTag(tag)"
                          source="tag"></tag>
@@ -50,15 +50,27 @@
     <div layout="row" layout-align="center center" class="mh-main-buttons">
 
         <button class="btn btn-primary"
+                ng-if="vm.node.permissions.update"
                 ng-click="vm.persist(vm.node)"
                 ng-disabled="!vm.formIsValid()"
                 aria-label="save">
-            <i class="icon-save"></i>
-            <span ng-if="!vm.isNew(vm.node)" translate>UPDATE</span>
+            <i class="icon-check"></i>
+            <span ng-if="!vm.isNew(vm.node)" translate>SAVE_DRAFT</span>
             <span ng-if="vm.isNew(vm.node)" translate>CREATE</span>
         </button>
 
+        <button class="btn btn-publish"
+                ng-if="vm.node.permissions.publish"
+                ng-click="vm.publish(vm.node)"
+                ng-disabled="!vm.readyToPublish()"
+                aria-label="publish">
+            <i class="icon-publish"></i>
+            <span translate ng-if="!vm.formIsValid()">PUBLISH</span>
+            <span translate ng-if="vm.formIsValid()">SAVE_AND_PUBLISH</span>
+        </button>
+
         <button class="btn btn-warn"
+                ng-if="vm.node.permissions.delete"
                 ng-click="vm.remove(vm.node)"
                 ng-disabled="!vm.canDelete(vm.node)"
                 aria-label="delete">

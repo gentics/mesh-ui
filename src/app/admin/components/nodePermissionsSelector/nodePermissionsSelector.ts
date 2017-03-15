@@ -40,7 +40,7 @@ module meshAdminUi {
 
             if (this.isProjectNode(node)) {
                 this.currentProject = node;
-                this.currentNode = { uuid: node.rootNodeUuid };
+                this.currentNode = { uuid: node.rootNode.uuid };
             } else if (node.project) {
                 this.currentProject = node.project;
                 this.currentNode = node;
@@ -97,7 +97,7 @@ module meshAdminUi {
                 .then(response => {
                     projects = response.data;
                     return this.$q.all(projects.map(project => {
-                        return this.dataService.getNode(project.name, project.rootNodeUuid, this.queryParams);
+                        return this.dataService.getNode(project.name, project.rootNode.uuid, this.queryParams);
                     }));
                 })
                 .then(nodes => {
@@ -115,10 +115,10 @@ module meshAdminUi {
          * populate the NodePermissions object
          * @param nodes
          */
-        private createNodePermissionsArray(nodes) {
+        private createNodePermissionsArray(nodes: INode[]) {
             this.nodePermissions = {};
             nodes.forEach(node => {
-                this.nodePermissions[node.uuid] = this.mu.rolePermissionsArrayToKeys(node);
+                this.nodePermissions[node.uuid] = node.rolePerms;
             });
         }
 
@@ -146,7 +146,7 @@ module meshAdminUi {
         }
 
         private isProjectNode(node) {
-            return node.hasOwnProperty('rootNodeUuid');
+            return node.hasOwnProperty('rootNode');
         }
 
         /**
@@ -156,9 +156,8 @@ module meshAdminUi {
         public toggle(node, recursive: boolean) {
             this.$timeout(() => {
                 let permObject = this.nodePermissions[node.uuid];
-                let permsArray = Object.keys(permObject).filter(key => permObject[key] === true);
                 let permissions: IPermissionsRequest = {
-                    permissions: permsArray,
+                    permissions: permObject,
                     recursive: recursive
                 };
                 let project = (node.project) ? node.project : this.currentProject;

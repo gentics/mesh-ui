@@ -4,8 +4,16 @@ ul.pagination {
 
   li {
     display: inline-block;
+    cursor: pointer;
     margin: 5px;
     padding: 5px 8px;
+    border-bottom: 2px solid transparent;
+    transition: border 0.2s;
+    .noselect();
+
+    &:hover {
+      border-bottom: 2px solid @color-alto;
+    }
 
     &.active {
       border-bottom: 2px solid @color-denim;

@@ -27,6 +27,25 @@ module meshAdminUi {
         'binary'
     ];
 
+    // ensure the schema name is set
+    function schemaNameIsSet(obj: any, error: Function): boolean {
+        if (!obj.name || obj.name.trim() === '') {
+            error('ERR_SCHEMA_NAME_EMPTY');
+            return false;
+        }
+        return true;
+    }
+
+    // ensure the schema name is valid
+    function schemaNameIsValid(obj: any, error: Function): boolean {
+        const validNameRe = /^[_a-zA-Z][_a-zA-Z0-9]*$/;
+        if (obj.name && !validNameRe.test(obj.name)) {
+            error('ERR_SCHEMA_NAME_INVALID');
+            return false;
+        }
+        return true;
+    }
+
     // ensure the displayField is set
     function displayFieldIsSet(obj: any, error: Function): boolean {
         if (obj.displayField === undefined || obj.displayField === '') {
@@ -153,6 +172,8 @@ module meshAdminUi {
          */
         public validateSchemaJson(json: string, onError?: IValidationErrorFn): boolean {
             const validatorFns = [
+                schemaNameIsSet,
+                schemaNameIsValid,
                 displayFieldIsSet,
                 fieldsIsNotEmpty,
                 displayFieldMatchesFieldName,
@@ -171,6 +192,8 @@ module meshAdminUi {
          */
         public validateMichroschemaJson(json: string, onError?: IValidationErrorFn) {
             const validatorFns = [
+                schemaNameIsSet,
+                schemaNameIsValid,
                 fieldsIsNotEmpty,
                 fieldsHaveNameAndType,
                 allFieldTypesValid,

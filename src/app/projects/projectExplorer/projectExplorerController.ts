@@ -10,7 +10,7 @@ module meshAdminUi {
         private contents: INodeBundleResponse[] = [];
         private childrenSchemas: ISchema[] = [];
         private projectName: string;
-        public tagsArray: { [nodeUuid: string]: ITag[] } = {};
+        public tagsArray: { [nodeUuid: string]: ITagReference[] } = {};
 
         constructor(private $scope: ng.IScope,
                     private $q: ng.IQService,
@@ -22,7 +22,7 @@ module meshAdminUi {
                     private currentNode: INode) {
 
             this.projectName = contextService.getProject().name;
-            this.createPermission = -1 < currentNode.permissions.indexOf('create');
+            this.createPermission = currentNode.permissions.create;
 
             const updateContents = () => {
                 dataService.getNode(contextService.getProject().name, currentNode.uuid)
@@ -40,7 +40,7 @@ module meshAdminUi {
                     if (-1 < bundleIndex) {
                         let nodeIndex = this.contents[bundleIndex].data.map(node => node.uuid).indexOf(node.uuid);
                         this.contents[bundleIndex].data[nodeIndex] = node;
-                        this.tagsArray[node.uuid] = mu.nodeTagsObjectToArray(node.tags);
+                        this.tagsArray[node.uuid] = node.tags;
                     }
                 })
             };
@@ -65,7 +65,7 @@ module meshAdminUi {
             let promises = Object.keys(this.currentNode.childrenInfo).map((schemaName: string) => {
                 return this.dataService.getSchema(this.currentNode.childrenInfo[schemaName].schemaUuid);
             });
-            return this.$q.all(promises)
+            return this.$q.all<ISchema>(promises)
                 .then((results: ISchema[]) => {
                     this.childrenSchemas = results;
                 });
@@ -79,7 +79,7 @@ module meshAdminUi {
         private populateTagsArray(bundles: INodeBundleResponse[]) {
             return bundles.forEach(bundle => {
                 bundle.data.forEach(node => {
-                    this.tagsArray[node.uuid] = this.mu.nodeTagsObjectToArray(node.tags);
+                    this.tagsArray[node.uuid] = node.tags;
                 })
             });
         }

@@ -67,7 +67,7 @@ module meshAdminUi {
          * Updates an open wip item by extending it with the properties of the new object.
          * Preserves the object reference.
          */
-        public updateItem(type: string, item: any) {
+        public updateItem<T extends IMeshBaseProps>(type: string, item: T) {
             this.validateItem(item);
             if (!this.isOpen(type, item.uuid)) {
                 throw new Error('wipStore#updateItem: "' + type + '" with uuid "' +

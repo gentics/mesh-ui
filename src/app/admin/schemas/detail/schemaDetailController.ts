@@ -88,7 +88,7 @@ module meshAdminUi {
 
         public canDelete() {
             if (this.schema) {
-                return this.schema.permissions && -1 < this.schema.permissions.indexOf('delete') && !this.isNew;
+                return this.schema.permissions && this.schema.permissions.delete && !this.isNew;
             }
         }
 

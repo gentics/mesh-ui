@@ -248,9 +248,7 @@ module meshAdminUi {
         }
 
         public showDialog(event: ng.IAngularEvent) {
-            //let displayMode = this.fieldModel.value && this.fieldModel.value.hasOwnProperty('binaryProperties') ? 'grid' : 'list';
-            // TODO: smarter way of deciding whether to use the grid or list view.
-            let displayMode = 'grid';
+            let displayMode = 'list';
             var options = {
                 displayMode: displayMode,
                 allow: this.fieldModel.allow || []

@@ -63,7 +63,7 @@ module meshAdminUi {
          * automatically switching to another tab or the list view.
          */
         public closeWip(index: number) {
-            var wip = this.wips[index].item,
+            var wip: INode = this.wips[index].item,
                 projectName = this.wips[index].metadata.projectName,
                 action;
 
@@ -74,6 +74,7 @@ module meshAdminUi {
                     if (response === 'save') {
                         this.notifyService.toast('SAVED_CHANGES');
                         this.dataService.persistNode(projectName, wip)
+                            .then(() => this.dataService.updateNodeTags(projectName, wip, wip.tags))
                             .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
                     }
                 });

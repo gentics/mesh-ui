@@ -80,6 +80,8 @@ module meshAdminUi {
         private breadcrumbs: any[];
         private filterNodes;
         private q: string;
+        private itemsPerPage = 20;
+        private currentPage = 1;
 
         constructor(private dataService: DataService,
                     private i18nService: I18nService,
@@ -91,7 +93,7 @@ module meshAdminUi {
             this.currentNode = contextService.getCurrentNode();
             this.selectedNodes = this.selectedNodes instanceof Array ? this.selectedNodes : [];
 
-            let initialUuid = this.startingNodeUuid || this.currentProject.rootNodeUuid;
+            let initialUuid = this.startingNodeUuid || this.currentProject.rootNode.uuid;
 
             dataService.getNode(this.currentProject.name, initialUuid)
                 .then((node: INode) => {
@@ -160,7 +162,7 @@ module meshAdminUi {
         }
 
         private populateContents() {
-            this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid)
+            this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid, { perPage: 9999999 })
                 .then(response => {
                     this.nodes = response.data.filter(node => this.isAllowedSchemaOrFolder(node));
                     if (this.includeRootNode) {
@@ -179,18 +181,22 @@ module meshAdminUi {
 
                     breadcrumbLabels.push({
                         name: this.currentProject.name,
-                        uuid: this.currentProject.rootNodeUuid
+                        uuid: this.currentProject.rootNode.uuid
                     });
 
                     this.breadcrumbs = breadcrumbLabels.reverse();
                 });
         }
 
+        public pageChanged(pageNumber): void {
+            this.currentPage = pageNumber;
+        }
+
         /**
          * If we are in the rootNode, add it to the start of the nodes array.
          */
         private addRootNode() {
-            if (this.currentProject.rootNodeUuid === this.currentNode.uuid) {
+            if (this.currentProject.rootNode.uuid === this.currentNode.uuid) {
                 let rootNode = angular.copy(this.currentNode);
                 rootNode.fields['name'] = "Root Node";
                 rootNode.displayField = 'name';

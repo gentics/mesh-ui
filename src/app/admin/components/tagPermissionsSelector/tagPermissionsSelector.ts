@@ -5,7 +5,7 @@ module meshAdminUi {
         private queryParams;
         private collapsed: boolean = true;
         private filter: string = '';
-        private items;
+        private items: Array<IProject | ITagFamily | ITag>;
         private itemPermissions: {
             [itemUuid: string]: any
         } = {};
@@ -40,12 +40,12 @@ module meshAdminUi {
         /**
          * Toggle whether the tags in a tag family should be expanded.
          */
-        public toggleExpand(tagFamily) {
-            if (tagFamily.name && !tagFamily.rootNodeUuid) {
-                if (this.expand === tagFamily.uuid) {
+        public toggleExpand(item: IProject | ITagFamily | ITag) {
+            if (!(item as IProject).rootNode && !(item as ITag).tagFamily) {
+                if (this.expand === item.uuid) {
                     this.expand = '';
                 } else {
-                    this.expand = tagFamily.uuid;
+                    this.expand = item.uuid;
                 }
             }
         }
@@ -53,9 +53,8 @@ module meshAdminUi {
         public toggle(item, recursive: boolean = false, isProjectRoot = false) {
             this.$timeout(() => {
                 let permObject = isProjectRoot ? this.rootPermissions[item.uuid] : this.itemPermissions[item.uuid],
-                    permsArray = Object.keys(permObject).filter(key => permObject[key] === true),
                     permissions:IPermissionsRequest = {
-                        permissions: permsArray,
+                        permissions: permObject,
                         recursive: recursive
                     };
                 if (!isProjectRoot) {
@@ -71,16 +70,16 @@ module meshAdminUi {
          * Given a tag or tag family in the this.items array, return the project that it belongs to
          * (which is equivalent to the closest preceding project in the array).
          */
-        private getItemProject(item: any): IProject {
+        private getItemProject(item: ITagFamily | ITag): IProject {
             let itemIndex = this.items.map(item => item.uuid).indexOf(item.uuid);
-            let projectsIndexes =this.items.reduce((acc, curr, index) => {
-                if (curr.rootNodeUuid) {
+            let projectsIndexes =this.items.reduce((acc, curr: IProject, index) => {
+                if (curr.rootNode && curr.rootNode.uuid) {
                     acc.push(index);
                 }
                 return acc;
             }, []);
             let projectIndex = projectsIndexes.filter(index => index < itemIndex).reverse()[0];
-            return this.items[projectIndex];
+            return this.items[projectIndex] as IProject;
         }
     }
 

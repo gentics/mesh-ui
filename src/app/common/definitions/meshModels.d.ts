@@ -1,33 +1,53 @@
 declare module meshAdminUi {
 
+    interface IPermissions {
+        create: boolean;
+        read: boolean;
+        update: boolean;
+        delete: boolean;
+        publish: boolean;
+        readPublished: boolean;
+    }
+
     // properties common to all Mesh nodes
     interface IMeshBaseProps {
         uuid?: string;
-        creator?: INodeReference;
+        creator?: IReference;
         created?: number;
-        editor?: INodeReference;
+        editor?: IReference;
         edited?: number;
-        permissions?: string[];
+        permissions?: IPermissions;
+        rolePerms?: IPermissions;
     }
 
-    export interface IProject extends IMeshBaseProps{
-        name: string;
-        rootNodeUuid: string;
-    }
-
-    export interface INodeReference {
-        name: string;
+    export interface IReference {
         uuid: string;
     }
 
-    export interface ITags {
-        [tagFamily: string]: {
+    export interface IProject extends IMeshBaseProps {
+        name: string;
+        rootNode: IExtendedNodeReference;
+    }
+
+    export interface INodeReference extends IReference{
+        name: string;
+    }
+
+    export interface ITagFamilyReference extends INodeReference {}
+
+    export interface ITagReference {
+        name: string;
+        tagFamily: string;
+        uuid: string;
+    }
+
+    export interface IExtendedNodeReference {
+        uuid: string;
+        projectName?: string;
+        schema?: {
+            name: string;
             uuid: string;
-            items: Array<{
-                name: string;
-                uuid: string;
-            }>;
-        };
+        }
     }
 
     export interface INodeFields {
@@ -52,6 +72,11 @@ declare module meshAdminUi {
         };
     }
 
+    export interface IVersionInfo {
+        number: string;
+        uuid: string;
+    }
+
     export interface INode extends IMeshBaseProps{
         availableLanguages?: string[];
         childrenInfo?: {
@@ -66,15 +91,23 @@ declare module meshAdminUi {
         languagePaths?: {
             [lang: string]: string;
         };
-        published?: boolean;
-        tags?: INodeTagsObject;
+        tags?: ITagReference[];
         schema: INodeReference;
         container?: boolean;
-        parentNodeUuid?: string;
-        parentNode?: {
-            uuid: string;
-        };
-        fields: INodeFields
+        parentNode?: IExtendedNodeReference;
+        fields: INodeFields;
+        version?: IVersionInfo;
+    }
+
+    export interface IPublishedResponse {
+        availableLanguages: {
+            [languageCode: string]: {
+                publishDate: string;
+                published: boolean;
+                publisher: IReference;
+                version: IVersionInfo;
+            }
+        }
     }
 
     export interface IListMetaInfo {
@@ -111,14 +144,14 @@ declare module meshAdminUi {
         container: boolean;
         meshVersion?: string;
         name: string;
-        permissions?: string[];
+        permissions?: IPermissions;
         uuid?: string;
     }
 
     export interface IMicroschema {
         name: string;
         fields: ISchemaFieldDefinition[];
-        permissions?: string[];
+        permissions?: IPermissions;
         uuid?: string;
         /**
          * Used when creating a new micronode in order to allow efficient change
@@ -128,13 +161,11 @@ declare module meshAdminUi {
     }
 
     export interface ITag extends IMeshBaseProps {
-        tagFamily: ITagFamily;
-        fields: {
-            name: string;
-        };
+        tagFamily: ITagFamilyReference;
+        name: string;
     }
 
-    export interface ITagFamily extends IMeshBaseProps{
+    export interface ITagFamily extends IMeshBaseProps {
         name: string;
     }
 
