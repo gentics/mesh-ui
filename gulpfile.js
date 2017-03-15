@@ -24,7 +24,7 @@ var gulp = require('gulp'),
     gulpif = require('gulp-if'),
     replace = require('gulp-replace'),
     livereload = require('gulp-livereload'),
-    karma = require('karma').server,
+    KarmaServer = require('karma').Server,
     child_process = require('child_process'),
     bump = require('gulp-bump'),
     tap = require('gulp-tap'),
@@ -472,11 +472,12 @@ gulp.task('karma-app-templates', function() {
 });
 
 function karmaWatch() {
-    karma.start({
+    var server = new KarmaServer({
         configFile: __dirname + '/karma.conf.js',
         files: KARMA_FILES_BUILD,
         junitReporter: { outputFile: 'build/junit.xml' }
     });
+    server.start();
 }
 
 gulp.task('karma-watch', ['karma-app-templates'], function() {
@@ -489,7 +490,7 @@ gulp.task('karma-watch', ['karma-app-templates'], function() {
 gulp.task('karma-test', ['build'], function() {
     log('running tests against development build code...');
     return new Promise(function(resolve, reject) {
-        karma.start({
+        var server = new KarmaServer({
             configFile: __dirname + '/karma.conf.js',
             singleRun: true,
             files: KARMA_FILES_BUILD,
@@ -497,6 +498,7 @@ gulp.task('karma-test', ['build'], function() {
         }, function(exitCode) {
             handleKarmaExitCode(exitCode, resolve, reject);
         });
+        server.start();
     });
 });
 
@@ -506,7 +508,7 @@ gulp.task('karma-test', ['build'], function() {
 function karma_dist() {
     log('running tests against minified production code...');
     return new Promise(function(resolve, reject) {
-        karma.start({
+        var server = new KarmaServer({
             configFile: __dirname + '/karma.conf.js',
             singleRun: true,
             files: KARMA_FILES_DIST,
@@ -514,6 +516,7 @@ function karma_dist() {
         }, function(exitCode) {
             handleKarmaExitCode(exitCode, resolve, reject);
         });
+        server.start();
     });
 }
 gulp.task('karma-dist', function() {
