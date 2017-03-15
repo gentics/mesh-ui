@@ -154,7 +154,10 @@ module meshAdminUi {
                 promises.push(
                     this.dataService.persistNode(this.projectName, originalNode, { expandAll: true })
                 );
+            } else {
+                promises.push(this.$q.when(originalNode));
             }
+
             if (this.tagsModified) {
                 promises.push(
                     this.dataService.updateNodeTags(this.projectName, this.node, this.node.tags)
