@@ -29,6 +29,8 @@ var gulp = require('gulp'),
     bump = require('gulp-bump'),
     tap = require('gulp-tap'),
     sourcemaps = require('gulp-sourcemaps'),
+    filter = require('gulp-filter'),
+    debug = require('gulp-debug'),
 
     vars = require('./build-vars.json'),
     VENDOR_SCRIPTS = vars.VENDOR_SCRIPTS,
@@ -377,7 +379,7 @@ function dist_css() {
 function dist_js() {
     log('dist_js');
 
-    getUiVersion(false)
+    return getUiVersion(false)
         .then(function(uiVersion) {
             return new Promise(function(resolve, reject) {
                 var vendorJs = gulp.src(VENDOR_SCRIPTS);
@@ -387,8 +389,12 @@ function dist_js() {
                 var js = merge(vendorJs, appJs, appTemplates);
 
                 return js
-                    .pipe(concat('app.js'))
-                    .pipe(uglify({}))
+                    .pipe(filter(['**/*.js']))
+                    .pipe(concat('./app.js'))
+                    .pipe(uglify({}).on('error', function(err) {
+                        console.error(err.toString());
+                        this.emit('end');
+                    }))
                     .pipe(gulp.dest('dist/app/'))
                     .on('end', resolve)
                     .on('error', reject);
@@ -559,4 +565,7 @@ gulp.task('watch', ['default'], function() {
 });
 
 gulp.task('default', ['build']);
+gulp.task('test', function() {
+    return dist_js();
+});
 
