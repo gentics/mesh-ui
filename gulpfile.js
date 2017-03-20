@@ -565,7 +565,3 @@ gulp.task('watch', ['default'], function() {
 });
 
 gulp.task('default', ['build']);
-gulp.task('test', function() {
-    return dist_js();
-});
-

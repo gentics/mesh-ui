@@ -46,8 +46,9 @@ module meshAdminUi {
             if (!this.perms) {
                 this.perms = {} as IPermissions;
             }
-            $scope.$watch(() => this.schema, val => {
-                if (val) {
+
+            const createNodeFields = () => {
+                if (this.schema && this.fields) {
                     let canUpdate = this.perms && this.perms.update;
                     let config: INodeFieldModelConfig = {
                         nodeFields: this.fields,
@@ -60,7 +61,9 @@ module meshAdminUi {
                     };
                     this.nodeFieldModels = formBuilderService.createNodeFieldModels(config);
                 }
-            });
+            };
+            $scope.$watch(() => this.schema, createNodeFields);
+            $scope.$watch(() => this.node, createNodeFields);
         }
     }
 
