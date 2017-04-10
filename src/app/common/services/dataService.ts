@@ -901,13 +901,13 @@ module meshAdminUi {
             return this.meshGet('schemas/' + uuid, queryParams);
         }
 
-        public addSchemaToProject(schemaUuid: string, projectUuid: string): ng.IPromise<any> {
+        public addSchemaToProject(schemaUuid: string, projectName: string): ng.IPromise<any> {
             this.clearCache('schemas');
-            return this.meshPost('schemas/' + schemaUuid + '/projects/' + projectUuid, {});
+            return this.meshPost(projectName + '/schemas/' + schemaUuid, {});
         }
-        public removeSchemaFromProject(schemaUuid: string, projectUuid: string): ng.IPromise<any> {
+        public removeSchemaFromProject(schemaUuid: string, projectName: string): ng.IPromise<any> {
             this.clearCache('schemas');
-            return this.meshDelete('schemas/' + schemaUuid + '/projects/' + projectUuid);
+            return this.meshDelete(projectName + '/schemas/' + schemaUuid);
         }
 
         public diffSchema(schema: ISchema): ng.IPromise<ISchemaChangeset> {

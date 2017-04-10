@@ -111,9 +111,9 @@ module meshAdminUi {
             let add = this.projectSchemas[schema.uuid],
                 promise;
             if (add) {
-                promise = this.dataService.addSchemaToProject(schema.uuid, this.project.uuid);
+                promise = this.dataService.addSchemaToProject(schema.uuid, this.project.name);
             } else {
-                promise = this.dataService.removeSchemaFromProject(schema.uuid, this.project.uuid);
+                promise = this.dataService.removeSchemaFromProject(schema.uuid, this.project.name);
             }
             promise.then(() => {
                 let token = add ? 'SCHEMA_ADDED_TO_PROJECT' : 'SCHEMA_REMOVED_FROM_PROJECT';
