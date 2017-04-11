@@ -4,7 +4,7 @@
 
 	<groupId>com.gentics.mesh</groupId>
 	<artifactId>mesh-admin-ui</artifactId>
-	<version>0.6.19-SNAPSHOT</version>
+	<version>0.6.19</version>
 
 	<packaging>pom</packaging>
 	<name>Mesh - Admin UI</name>
@@ -19,7 +19,7 @@
 		<connection>scm:git:git@github.com:gentics/mesh-admin-ui.git</connection>
 		<developerConnection>scm:git:git@github.com:gentics/mesh-admin-ui.git</developerConnection>
 		<url>https://github.com/gentics/mesh-admin-ui</url>
-	  <tag>HEAD</tag>
+	  <tag>mesh-admin-ui-0.6.19</tag>
   </scm>
 
 	<build>
