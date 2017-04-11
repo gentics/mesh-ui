@@ -334,6 +334,10 @@ module meshAdminUi {
             en: 'Create new schema',
             de: 'Neues Schema erstellen'
         },
+        'NEW_PROJECT_CREATED': {
+            en: 'New project created',
+            de: 'Neues Projekt erstellt'
+        },
         'NEW_SCHEMA_CREATED': {
             en: 'New schema created',
             de: 'Neues Schema erstellt'

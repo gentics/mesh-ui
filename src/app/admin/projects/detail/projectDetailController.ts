@@ -84,8 +84,8 @@ module meshAdminUi {
          * create an empty project object.
          */
         private getProjectData(): ng.IPromise<any> {
-            var projectId = this.$stateParams.uuid;
-            if (projectId) {
+            const projectId = this.$stateParams.uuid;
+            if (projectId && projectId !== 'new') {
                 return this.$q.all<any>([
                     this.dataService.getProject(this.$stateParams.uuid),
                     this.dataService.getSchemas()
@@ -124,11 +124,14 @@ module meshAdminUi {
         /**
          * Create an empty project object.
          */
-        private createEmptyProject(): IProject {
+        private createEmptyProject(): IProject & { schema: { name: string }; } {
             return {
                 name: '',
                 rootNode: {
                     uuid: ''
+                },
+                schema: {
+                    name: 'folder'
                 }
             };
         }
