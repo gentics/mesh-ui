@@ -12,5 +12,5 @@ export abstract class BaseFieldComponent implements MeshFieldComponent {
     readonly isMeshField = true;
 
     abstract initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void;
-    abstract valueChange(value: NodeFieldType): void ;
+    abstract valueChange(value: NodeFieldType): void;
 }
