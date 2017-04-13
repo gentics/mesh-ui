@@ -3,6 +3,7 @@
 ## Version 0.6.1 (2017-04-13)
 
 #### Fixes
+* Fix project creation
 * Fix error when attempting to translate a node
 * Fix incorrect search query
 * Display error when attempting to publish a node with an unpublished ancestor
