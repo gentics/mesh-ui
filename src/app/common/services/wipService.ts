@@ -53,7 +53,7 @@ module meshAdminUi {
                 this.modifiedWips[lang][type] = {};
             }
             if (this.wipStore[lang][type][item.uuid]) {
-                throw new Error('wipStore#openItem: "' + type + '" with uuid "' +
+                console.warn('wipStore#openItem: "' + type + '" with uuid "' +
                     item.uuid + '" is already open.');
             }
             this.wipStore[lang][type][item.uuid] = {

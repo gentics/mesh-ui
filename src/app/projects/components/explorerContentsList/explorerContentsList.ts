@@ -103,9 +103,10 @@ module meshAdminUi {
                 this.$state.go('projects.node', {
                     projectName: this.contextService.getProject().name, nodeId: node.uuid
                 });
-            } else {
+            } else if (this.isAvailableInCurrentLang(node)) {
                 this.editNode(node, event);
             }
+
         }
 
         public openNodeInLanguage(code: string, node: INode) {

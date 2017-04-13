@@ -148,9 +148,9 @@ module meshAdminUi {
         /**
          * Save the changes back to the server.
          */
-        public persist(originalNode: INode): ng.IPromise<any> {
+        public persist(originalNode: INode, forceApiCall: boolean = false): ng.IPromise<any> {
             const promises: ng.IPromise<INode>[] = [];
-            if (this.contentModified) {
+            if (this.contentModified || forceApiCall) {
                 promises.push(
                     this.dataService.persistNode(this.projectName, originalNode, { expandAll: true })
                 );
@@ -203,7 +203,7 @@ module meshAdminUi {
                 console.warn(`Note: binary fields cannot yet be copied to translated version.`);
             }
 
-            this.persist(nodeClone)
+            this.persist(nodeClone, true)
                 .then(() => {
                     this.updateCurrentNodeAvailableLangs(node, langCode);
                     this.i18nService.setCurrentLang(langCode);
