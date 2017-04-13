@@ -1,7 +1,8 @@
-import { Injectable, ComponentRef, ViewContainerRef, ComponentFactoryResolver, Type } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
-import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 
 type OnChangeFunction = {
     (path: SchemaFieldPath, value: NodeFieldType): void;
@@ -17,10 +18,10 @@ export class FieldGenerator {
                 private viewContainerRef: ViewContainerRef,
                 private onChange: OnChangeFunction) {}
 
-    attachField<T extends MeshFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>): ComponentRef<T>;
-    attachField<T extends MeshFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
+    attachField<T extends BaseFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>): ComponentRef<T>;
+    attachField<T extends BaseFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
                                               viewContainerRef: ViewContainerRef): ComponentRef<T>;
-    attachField<T extends MeshFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
+    attachField<T extends BaseFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
                                               viewContainerRef?: ViewContainerRef): ComponentRef<T> {
         const _viewContainerRef = viewContainerRef || this.viewContainerRef;
         const factory = this.resolver.resolveComponentFactory(fieldComponent);
@@ -28,7 +29,25 @@ export class FieldGenerator {
         const update = (path: SchemaFieldPath, val: NodeFieldType) => {
             this.onChange(path, val);
         };
-        componentRef.instance.initialize(path, field, value, update);
+        const instance = componentRef.instance;
+        const meshControlFieldInstance: MeshFieldControlApi = {
+            path,
+            field,
+            getValue() { return value; },
+            update(value: any, pathOverride?: SchemaFieldPath) {
+                update(pathOverride || path, value);
+            },
+            onValueChange(cb) {
+                instance.valueChange = cb.bind(instance);
+            },
+            setHeight(value: string) {
+                instance.setHeight(value);
+            },
+            setWidth(value: string) {
+                instance.setWidth(value);
+            }
+        };
+        componentRef.instance.init(meshControlFieldInstance);
         return componentRef;
     }
 }

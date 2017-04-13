@@ -1,16 +1,35 @@
-import { Component, HostBinding, Injector } from '@angular/core';
-import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { Component, HostBinding } from '@angular/core';
+import { MeshFieldComponent, MeshFieldControlApi, ValueChangeCallback } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
-import { SchemaField } from '../../../../common/models/schema.model';
-import { NgForm } from '@angular/forms';
 
+/**
+ * This is the base class which all of the built-in MeshFieldComponents (form controls) inherit from.
+ */
 @Component({
     selector: 'base-field'
 })
 export abstract class BaseFieldComponent implements MeshFieldComponent {
     @HostBinding('class.mesh-field')
     readonly isMeshField = true;
+    @HostBinding('style.width')
+    width: string;
+    @HostBinding('style.height')
+    height: string;
 
-    abstract initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void;
-    abstract valueChange(value: NodeFieldType): void;
+    abstract init(api: MeshFieldControlApi): void;
+    abstract valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void;
+
+    /**
+     * Sets the css width of the host component. Intended for use by custom controls.
+     */
+    setWidth(value: string) {
+        this.width = value;
+    }
+
+    /**
+     * Sets the css height of the host component. Intended for use by custom controls.
+     */
+    setHeight(value: string) {
+        this.height = value;
+    }
 }

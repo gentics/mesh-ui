@@ -1,6 +1,7 @@
 import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
 import { MeshFieldComponent, SchemaFieldPath } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
+import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 
 export const ROOT_TYPE = 'root';
 export const ROOT_NAME = 'root';
@@ -45,29 +46,36 @@ export class MeshControl {
         this.meshField = meshFieldInstance;
     }
 
-    checkValue(value: NodeFieldType) {
-        if (value !== this.lastValue) {
-            if (this.meshField) {
-                this.meshField.valueChange(value);
-            }
-            this.lastValue = value;
+    /**
+     * Runs the `valueChange()` function for this control's MeshFieldComponent, and optionally checks recursively for all descendants.
+     */
+    checkValue(value: NodeFieldType, recursive: boolean = false) {
+        if (this.meshField) {
+            (this.meshField as BaseFieldComponent).valueChange(value, this.lastValue);
         }
+        this.lastValue = value;
 
-        if (0 < this.children.size) {
+        if (recursive && 0 < this.children.size) {
             const isMicronode = this.fieldDef.type === 'micronode';
             const valueContainer = isMicronode && value && value.hasOwnProperty('fields') ? (value as NodeFieldMicronode).fields : value;
             if (valueContainer) {
                 this.children.forEach((meshControl, key) => {
-                    meshControl.checkValue(valueContainer[key]);
+                    meshControl.checkValue(valueContainer[key], true);
                 });
             }
         }
     }
 
+    /**
+     * Remove all child MeshControls.
+     */
     clearChildren(): void {
         this.children.clear();
     }
 
+    /**
+     * Adds a new MeshControl as a child of this one.
+     */
     addChild(field: SchemaField, initialValue: any, control?: MeshFieldComponent): MeshControl {
         const useStringIndex = this.fieldDef.type === 'micronode' || this.fieldDef.type === ROOT_TYPE;
         const meshControl = new MeshControl(field, initialValue, control);
@@ -76,23 +84,31 @@ export class MeshControl {
         return meshControl;
     }
 
-    getMeshControlAtPath(path: SchemaFieldPath): MeshControl {
-        let pointer: MeshControl = this;
+    /**
+     * Given a path (e.g. ['locations', 0, 'longitude']), returns the associated MeshControl if one exists.
+     */
+    getMeshControlAtPath(path: SchemaFieldPath): MeshControl | undefined {
+        let pointer: MeshControl | undefined = this;
         const isMicronode = (control: MeshControl): boolean => control.fieldDef.type === 'micronode';
 
-        for (let key of path) {
-            if (isMicronode(pointer)) {
-                // skip the "fields" key, since it simply refers to the contents of the micronode group.
-                if (key !== 'fields') {
-                    if (!pointer.children.get(key)) {
-                        throw new Error(`Path [${path.join(', ')}] not valid`);
+        path.forEach((key, index) => {
+            if (pointer) {
+                if (isMicronode(pointer)) {
+                    // skip the "fields" key, since it simply refers to the contents of the micronode group.
+                    if (key !== 'fields') {
+                        if (!pointer.children.get(key)) {
+                            pointer = undefined;
+                        } else {
+                            pointer = pointer.children.get(key);
+                        }
+                    } else if (index === path.length - 1) {
+                        pointer = undefined;
                     }
-                    pointer = pointer.children.get(key) as MeshControl;
+                } else {
+                    pointer = pointer.children.get(key);
                 }
-            } else {
-                pointer = pointer.children.get(key) as MeshControl;
             }
-        }
-        return pointer as MeshControl;
+        });
+        return pointer;
     }
 }

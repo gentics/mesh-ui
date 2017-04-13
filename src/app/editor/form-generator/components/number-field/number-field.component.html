@@ -1,8 +1,8 @@
 <gtx-input type="number"
            [value]="value"
-           [label]="field.label || field.name"
-           [min]="field.min"
-           [max]="field.max"
-           [step]="field.step"
+           [label]="api.field.label || api.field.name"
+           [min]="api.field.min"
+           [max]="api.field.max"
+           [step]="api.field.step"
            (change)="onChange($event)"></gtx-input>
 

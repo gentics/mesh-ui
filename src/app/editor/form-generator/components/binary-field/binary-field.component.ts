@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
@@ -12,14 +12,12 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
 export class BinaryFieldComponent extends BaseFieldComponent {
     field: SchemaField;
     binaryProperties: Array<{ key: string; value: any }> = [];
-    private path: SchemaFieldPath;
-    private update: UpdateFunction;
+    api: MeshFieldControlApi;
 
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void {
-        this.update = update;
-        this.field = field;
-        this.path = path;
-        this.valueChange(value);
+    init(api: MeshFieldControlApi): void {
+        this.api = api;
+        this.valueChange(api.getValue());
+        api.onValueChange(this.valueChange);
     }
 
     valueChange(value: NodeFieldType): void {
@@ -27,6 +25,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     onFilesSelected(files: any[]): void {
-        this.update(this.path, files[0]);
+        this.api.update(files[0]);
     }
 }

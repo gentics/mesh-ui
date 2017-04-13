@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
-import { SchemaField } from '../../../../common/models/schema.model';
-import { NodeFieldType } from '../../../../common/models/node.model';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
@@ -11,24 +9,21 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
 })
 export class BooleanFieldComponent extends BaseFieldComponent {
 
-    field: SchemaField;
-    value: NodeFieldType;
-    path: SchemaFieldPath;
-    private update: UpdateFunction;
+    api: MeshFieldControlApi;
+    value: boolean;
 
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void {
-        this.value = value;
-        this.update = update;
-        this.field = field;
-        this.path = path;
+    init(api: MeshFieldControlApi): void {
+        this.api = api;
+        this.value = api.getValue();
+        api.onValueChange(this.valueChange);
     }
 
-    valueChange(value: NodeFieldType): void {
+    valueChange(value: boolean): void {
         this.value = value;
     }
 
     onChange(value: string): void {
-        this.update(this.path, value);
+        this.api.update(value);
     }
 
 }

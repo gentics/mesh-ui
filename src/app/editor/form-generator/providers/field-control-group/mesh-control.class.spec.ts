@@ -1,5 +1,5 @@
 import { MeshControl, ROOT_NAME, ROOT_TYPE } from './mesh-control.class';
-import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { MeshFieldComponent, MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import createSpy = jasmine.createSpy;
@@ -89,33 +89,15 @@ describe('MeshControl class', () => {
             meshControl = new MeshControl(fieldDef, 'foo', meshField);
         });
 
-        it('invokes meshField.valueChange() when the value has changed', () => {
+        it('invokes meshField.valueChange() when the value has changed with the new value and old value', () => {
             meshControl.checkValue('bar');
-            expect(meshField.valueChange).toHaveBeenCalledWith('bar');
+            expect(meshField.valueChange).toHaveBeenCalledWith('bar', 'foo');
         });
 
-        it('does not invoke meshField.valueChange() when the value is identical', () => {
+        it('invokes meshField.valueChange() when the value is identical', () => {
             meshControl.checkValue('foo');
-            expect(meshField.valueChange).not.toHaveBeenCalled();
+            expect(meshField.valueChange).toHaveBeenCalledWith('foo', 'foo');
         });
-
-        it('handles multiple calls with occasionally changing value', () => {
-            meshControl.checkValue('foo');
-            expect(meshField.valueChange).toHaveBeenCalledTimes(0);
-            meshControl.checkValue('bar');
-            expect(meshField.valueChange).toHaveBeenCalledTimes(1);
-            meshControl.checkValue('bar');
-            expect(meshField.valueChange).toHaveBeenCalledTimes(1);
-            meshControl.checkValue('baz');
-            expect(meshField.valueChange).toHaveBeenCalledTimes(2);
-            meshControl.checkValue('baz');
-            expect(meshField.valueChange).toHaveBeenCalledTimes(2);
-            meshControl.checkValue('baz');
-            expect(meshField.valueChange).toHaveBeenCalledTimes(2);
-            meshControl.checkValue('foo');
-            expect(meshField.valueChange).toHaveBeenCalledTimes(3);
-        });
-
     });
 
     describe('checkValue() with objects', () => {
@@ -139,14 +121,14 @@ describe('MeshControl class', () => {
         it('invokes meshField.valueChange() when the object reference changes', () => {
             let newValue = initialValue.slice(0);
             meshControl.checkValue(newValue);
-            expect(meshField.valueChange).toHaveBeenCalledWith(newValue);
+            expect(meshField.valueChange).toHaveBeenCalledWith(newValue, initialValue);
         });
 
-        it('does not invoke meshField.valueChange() when the object is mutated', () => {
+        it('invokes meshField.valueChange() when the object is mutated', () => {
             const newValue = initialValue;
             newValue.push('quux');
             meshControl.checkValue(newValue);
-            expect(meshField.valueChange).not.toHaveBeenCalled();
+            expect(meshField.valueChange).toHaveBeenCalledWith(newValue, initialValue);
         });
 
     });
@@ -200,13 +182,22 @@ describe('MeshControl class', () => {
             expect(meshControl.children.size).toBe(0);
         });
 
-        it('checkValue() on parent invokes checkValue() on children', () => {
+        it('checkValue() on parent invokes checkValue() on children when recursive == true', () => {
             const spies = childMeshControls.map(control => spyOn(control, 'checkValue').and.callThrough());
-            meshControl.checkValue(['quux', 'duux', 'muux']);
+            meshControl.checkValue(['quux', 'duux', 'muux'], true);
 
-            expect(spies[0]).toHaveBeenCalledWith('quux');
-            expect(spies[1]).toHaveBeenCalledWith('duux');
-            expect(spies[2]).toHaveBeenCalledWith('muux');
+            expect(spies[0]).toHaveBeenCalledWith('quux', true);
+            expect(spies[1]).toHaveBeenCalledWith('duux', true);
+            expect(spies[2]).toHaveBeenCalledWith('muux', true);
+        });
+
+        it('checkValue() on parent does not invoke checkValue() on children when recursive == false', () => {
+            const spies = childMeshControls.map(control => spyOn(control, 'checkValue').and.callThrough());
+            meshControl.checkValue(['quux', 'duux', 'muux'], false);
+
+            expect(spies[0]).not.toHaveBeenCalled();
+            expect(spies[1]).not.toHaveBeenCalled();
+            expect(spies[2]).not.toHaveBeenCalled();
         });
 
     });
@@ -268,14 +259,24 @@ describe('MeshControl class', () => {
             expect(meshControl.children.size).toBe(0);
         });
 
-        it('checkValue() on parent invokes checkValue() on children', () => {
+        it('checkValue() on parent invokes checkValue() on children when recursive == true', () => {
             const spies = childMeshControls.map(control => spyOn(control, 'checkValue').and.callThrough());
             initialValue.fields.name = 'pete';
             initialValue.fields.age = 42;
-            meshControl.checkValue(initialValue);
+            meshControl.checkValue(initialValue, true);
 
-            expect(spies[0]).toHaveBeenCalledWith('pete');
-            expect(spies[1]).toHaveBeenCalledWith(42);
+            expect(spies[0]).toHaveBeenCalledWith('pete', true);
+            expect(spies[1]).toHaveBeenCalledWith(42, true);
+        });
+
+        it('checkValue() on parent does not invoke checkValue() on children when recursive == false', () => {
+            const spies = childMeshControls.map(control => spyOn(control, 'checkValue').and.callThrough());
+            initialValue.fields.name = 'pete';
+            initialValue.fields.age = 42;
+            meshControl.checkValue(initialValue, false);
+
+            expect(spies[0]).not.toHaveBeenCalled();
+            expect(spies[1]).not.toHaveBeenCalled();
         });
     });
 
@@ -303,6 +304,7 @@ describe('MeshControl class', () => {
             }
             childControls['0']              = addChild(rootControl, '0', 'micronode', {});
             childControls['1']              = addChild(rootControl, '1', 'micronode', {});
+            childControls['2']              = addChild(rootControl, '2', 'micronode', {});
 
             childControls['0.latitude']     = addChild(childControls['0'], 'latitude', 'number', 0);
             childControls['0.longitude']    = addChild(childControls['0'], 'longitude', 'number', 0);
@@ -343,6 +345,27 @@ describe('MeshControl class', () => {
             expect(rootControl.getMeshControlAtPath([0, 'fields', 'names', 1]))
                 .toBe(childControls['0.names.1']);
         });
+
+        it('returns undefined for a top-level path which has no control', () => {
+            expect(rootControl.getMeshControlAtPath(['nonexitent']))
+                .toBe(undefined);
+        });
+
+        it('returns undefined for a micronode field which has no control', () => {
+            expect(rootControl.getMeshControlAtPath([0, 'fields', 'nonexistent']))
+                .toBe(undefined);
+        });
+
+        it('returns undefined for a leaf of a path which has no control', () => {
+            expect(rootControl.getMeshControlAtPath([0, 'fields', 'names', 1, 'nonexistent']))
+                .toBe(undefined);
+        });
+
+        it('returns undefined for a "fields" path of a micronode with no children', () => {
+            expect(rootControl.getMeshControlAtPath([2, 'fields']))
+                .toBe(undefined);
+        });
+
     });
 
     describe('validation', () => {
@@ -438,16 +461,14 @@ describe('MeshControl class', () => {
             listControl.addChild(stringField, 'okay');
 
             expect(meshControl.isValid).toBe(true);
-            listControl.checkValue(['']);
+            listControl.checkValue([''], true);
             expect(meshControl.isValid).toBe(false);
         });
     });
 
 });
 
-/* tslint:disable */
 class MockMeshField implements MeshFieldComponent {
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void {}
+    init(api: MeshFieldControlApi): void {}
     valueChange(value: NodeFieldType): void {}
 }
-/* tslint:enable */

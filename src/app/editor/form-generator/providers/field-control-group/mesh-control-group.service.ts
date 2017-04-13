@@ -31,15 +31,32 @@ export class MeshControlGroup {
         this.rootControl.addChild(field, initialValue, meshField);
     }
 
-    checkValue(values: { [p: string]: NodeFieldType }): void {
-        this.rootControl.children.forEach((meshControl, key) => {
-            if (values.hasOwnProperty(key)) {
-                meshControl.checkValue(values[key]);
-            }
-        });
+    checkValue(values: { [p: string]: NodeFieldType }, propertyChanged?: SchemaFieldPath): void {
+        if (propertyChanged) {
+            const path = propertyChanged.slice();
+            let value = values as any;
+            let pathToTarget: SchemaFieldPath = [];
+            do {
+                let nextKey = path.shift();
+                if (nextKey !== undefined) {
+                    value = value[nextKey];
+                    pathToTarget.push(nextKey);
+                    const meshControl = this.getMeshControlAtPath(pathToTarget);
+                    if (meshControl) {
+                        meshControl.checkValue(value, false);
+                    }
+                }
+            } while (0 < path.length);
+        } else {
+            this.rootControl.children.forEach((meshControl, key) => {
+                if (values.hasOwnProperty(key)) {
+                    meshControl.checkValue(values[key], true);
+                }
+            });
+        }
     }
 
-    getMeshControlAtPath(path: SchemaFieldPath): MeshControl {
+    getMeshControlAtPath(path: SchemaFieldPath): MeshControl | undefined {
         return this.rootControl.getMeshControlAtPath(path);
     }
 }

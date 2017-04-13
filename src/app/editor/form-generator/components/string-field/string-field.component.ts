@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
-import { SchemaField } from '../../../../common/models/schema.model';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
@@ -10,17 +9,13 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
     styleUrls: ['./string-field.scss']
 })
 export class StringFieldComponent extends BaseFieldComponent {
-
-    field: SchemaField;
+    api: MeshFieldControlApi;
     value: NodeFieldType;
-    path: SchemaFieldPath;
-    private update: UpdateFunction;
 
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void {
-        this.value = value;
-        this.update = update;
-        this.field = field;
-        this.path = path;
+    init(api: MeshFieldControlApi): void {
+        this.value = api.getValue();
+        this.api = api;
+        api.onValueChange(this.valueChange);
     }
 
     valueChange(value: NodeFieldType): void {
@@ -28,7 +23,7 @@ export class StringFieldComponent extends BaseFieldComponent {
     }
 
     onChange(value: string): void {
-        this.update(this.path, value);
+        this.api.update(value);
     }
 
 }

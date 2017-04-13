@@ -4,7 +4,7 @@ import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
-import { MeshFieldComponent } from '../../common/form-generator-models';
+import { MeshFieldComponent, SchemaFieldPath } from '../../common/form-generator-models';
 
 @Component({
     selector: 'form-generator',
@@ -50,7 +50,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
 
             this.schema.fields.forEach(field => {
                 const value = this.node.fields[field.name];
-                const controlType = getControlType(field.type);
+                const controlType = getControlType(field);
                 if (controlType) {
                     const componentRef = this.fieldGenerator.attachField([field.name], field, value, controlType);
                     if (componentRef) {
@@ -62,10 +62,10 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
         }
     }
 
-    private onChange(path: string[], value: any): void {
+    private onChange(path: SchemaFieldPath, value: any): void {
         this.updateAtPath(this.node.fields, path, value);
         console.log(`updating:`, path, 'with value:', value);
-        this.meshControlGroup.checkValue(this.node.fields);
+        this.meshControlGroup.checkValue(this.node.fields, path);
     }
 
     /**
