@@ -409,8 +409,8 @@ module meshAdminUi {
 
             if (searchParams.searchTerm && searchParams.searchTerm !== '') {
                 query.query = {
-                    "query_string": {
-                        "query": 'displayField.value' + ":" + searchParams.searchTerm + '*'
+                    match_phrase: {
+                        'displayField.value': searchParams.searchTerm
                     }
                 };
             }

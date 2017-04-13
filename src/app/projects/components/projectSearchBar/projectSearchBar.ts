@@ -25,6 +25,7 @@ module meshAdminUi {
             const changeHandler = (event, project: IProject, node: INode) => {
                 this.searchAll = false;
                 this.searchTerm = '';
+                this.publishSearchParameters();
                 this.updateCurrentContext(project, node);
             };
             dispatcher.subscribe(dispatcher.events.contextChanged, changeHandler);

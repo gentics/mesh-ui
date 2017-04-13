@@ -1,5 +1,12 @@
 # MeshAdminUI Changelog
 
+## Version 0.6.1 (2017-04-13)
+
+#### Fixes
+* Fix error when attempting to translate a node
+* Fix incorrect search query
+
+
 ## Version 0.6.0 (2017-03-15)
 
 #### Features
