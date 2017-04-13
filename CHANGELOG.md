@@ -5,7 +5,7 @@
 #### Fixes
 * Fix error when attempting to translate a node
 * Fix incorrect search query
-
+* Display error when attempting to publish a node with an unpublished ancestor
 
 ## Version 0.6.0 (2017-03-15)
 

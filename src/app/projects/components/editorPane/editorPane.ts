@@ -138,10 +138,13 @@ module meshAdminUi {
                             this.wipService.updateItem(this.wipType, this.node);
                             this.notifyService.toast('PUBLISHED');
                             if (!savingNode){
-                                this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
+                                return this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
                             }
                         }
-                    });
+                    })
+                    .catch(error => {
+                       this.notifyService.toast(error.data.message || error.data);
+                   });
             });
         }
 
