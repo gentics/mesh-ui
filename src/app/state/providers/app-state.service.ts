@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export type InternalStateType = {
     loggedIn: boolean;
+    currentLanguage: string;
 };
 
 /**
@@ -12,7 +13,8 @@ export type InternalStateType = {
 export class AppState {
 
     public _state: InternalStateType = {
-        loggedIn: false
+        loggedIn: false,
+        currentLanguage: 'en'
     };
     public changes$ = new BehaviorSubject(this._state);
 

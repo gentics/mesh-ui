@@ -23,6 +23,7 @@ import { AuthGuard } from './auth-guard';
 import { LoginModule } from './login/login.module';
 import { AdminModule } from './admin/admin.module';
 import { EditorModule } from './editor/editor.module';
+import { TopBarModule } from './top-bar/top-bar.module';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -42,7 +43,8 @@ type StoreType = {
 const appSubModules = [
     LoginModule,
     AdminModule,
-    EditorModule
+    EditorModule,
+    TopBarModule
 ];
 
 /**

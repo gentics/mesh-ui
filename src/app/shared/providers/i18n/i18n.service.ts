@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FALLBACK_LANGUAGE, UI_LANGUAGES } from '../../../common/config/config';
 
-export type UILanguage = 'en' | 'de';
+export type UILanguageCode = 'en' | 'de';
+export interface UILanguage {
+    code: string;
+    name: string;
+}
 
 @Injectable()
 export class I18nService {
@@ -14,7 +18,7 @@ export class I18nService {
     /**
      * Set the UI language
      */
-    setLanguage(language: UILanguage): void {
+    setLanguage(language: UILanguageCode): void {
         this.ngxTranslate.use(language);
     }
 
@@ -29,16 +33,17 @@ export class I18nService {
      * Attempt to infer the user language from the browser's navigator object. If the result is not
      * amongst the valid UI languages, default to the fallback language instead.
      */
-    inferUserLanguage(): UILanguage {
+    inferUserLanguage(): UILanguageCode {
+        const availableLanguageCodes = UI_LANGUAGES.map(it => it.code);
         const browserLanguage = navigator.language.split('-')[0];
-        if (UI_LANGUAGES.indexOf(browserLanguage) >= 0) {
+        if (availableLanguageCodes.indexOf(browserLanguage) >= 0) {
             return browserLanguage as any;
         }
 
         if ((<any> navigator).languages) {
             const languages: string[] = (<any> navigator).languages;
             for (let lang of languages.map(l => l.split('-')[0])) {
-                if (UI_LANGUAGES.indexOf(lang) >= 0) {
+                if (availableLanguageCodes.indexOf(lang) >= 0) {
                     return lang as any;
                 }
             }
