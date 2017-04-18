@@ -36,7 +36,7 @@ describe('HtmlFieldComponent:', () => {
         fixture.detectChanges();
 
         expect(api.setValue).not.toHaveBeenCalled();
-        insertText(fixture, 0, 'foo')
+        insertText(fixture, 0, 'foo');
         expect(api.setValue).toHaveBeenCalledWith('<p>foo</p>');
     });
 
@@ -59,7 +59,7 @@ describe('HtmlFieldComponent:', () => {
             fixture.detectChanges();
             expect(api.setValid).toHaveBeenCalledWith(false);
 
-            insertText(fixture, 0, 'foo')
+            insertText(fixture, 0, 'foo');
             expect(api.setValid).toHaveBeenCalledWith(true);
         });
 
@@ -80,7 +80,7 @@ describe('HtmlFieldComponent:', () => {
             fixture.detectChanges();
             expect(api.setValid).toHaveBeenCalledWith(true);
 
-            insertText(fixture, 0, 'foo')
+            insertText(fixture, 0, 'foo');
             expect(api.setValid).toHaveBeenCalledWith(true);
         });
     });

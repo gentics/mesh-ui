@@ -28,7 +28,8 @@ export class MeshControl {
      * Returns true if this MeshControl and all of its children are valid
      */
     get isValid(): boolean {
-        const selfValid = !!this.meshField && this.meshField.isValid;
+        const isRootControl = this.fieldDef.type === ROOT_TYPE;
+        const selfValid = isRootControl || !!this.meshField && this.meshField.isValid;
         const childrenValid = Array.from(this.children.values())
             .reduce((valid, control) => !valid ? false : control.isValid, true);
         return selfValid && childrenValid;

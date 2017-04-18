@@ -54,7 +54,7 @@ describe('NumberFieldComponent:', () => {
             api.field.required = true;
             api.getValue = createSpy('getValue').and.returnValue(0);
             instance.init(api);
-            expect(api.setValid.calls.argsFor(0)[0]).toBe(true)
+            expect(api.setValid.calls.argsFor(0)[0]).toBe(true);
         });
 
         it('correctly sets validity when required == true for a value of NaN', () => {

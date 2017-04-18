@@ -7,6 +7,9 @@ import { MeshControlGroup } from '../../providers/field-control-group/mesh-contr
 import { SchemaFieldPath } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
+/**
+ * Generates a form based on a schema and populates with data from the node.
+ */
 @Component({
     selector: 'form-generator',
     templateUrl: 'form-generator.component.html',
@@ -16,10 +19,25 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
     @Input() schema: Schema;
     @Input() node: MeshNode;
 
+    /**
+     * True if all form controls are valid.
+     */
+    get isValid(): boolean {
+        return this.meshControlGroup.isValid;
+    }
+
+    /**
+     * Becomes true once a change is made to one of the form controls.
+     */
+    get isDirty(): boolean {
+        return this._isDirty;
+    }
+
     @ViewChild('formRoot', { read: ViewContainerRef })
     private formRoot: ViewContainerRef;
     private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
+    private _isDirty: boolean = false;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
                 private meshControlGroup: MeshControlGroup) {}
@@ -36,10 +54,6 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
         };
         this.fieldGenerator = this.fieldGeneratorService.create(this.formRoot, updateFn);
         this.generateForm();
-    }
-
-    formIsValid(): boolean {
-        return this.meshControlGroup.isValid;
     }
 
     generateForm(): void {
@@ -63,10 +77,17 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
         }
     }
 
+    /**
+     * Resets the isDirty state of the component.
+     */
+    setPristine(): void {
+        this._isDirty = false;
+    }
+
     private onChange(path: SchemaFieldPath, value: any): void {
         this.updateAtPath(this.node.fields, path, value);
-        console.log(`updating:`, path, 'with value:', value);
         this.meshControlGroup.checkValue(this.node.fields, path);
+        this._isDirty = true;
     }
 
     /**
