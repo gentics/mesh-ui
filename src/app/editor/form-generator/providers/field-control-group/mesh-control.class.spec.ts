@@ -1,8 +1,9 @@
 import { MeshControl, ROOT_NAME, ROOT_TYPE } from './mesh-control.class';
-import { MeshFieldComponent, MeshFieldControlApi } from '../../common/form-generator-models';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import createSpy = jasmine.createSpy;
+import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 
 describe('MeshControl class', () => {
 
@@ -137,7 +138,7 @@ describe('MeshControl class', () => {
 
         let meshField: MockMeshField;
         let meshControl: MeshControl;
-        let childMeshFields: MeshFieldComponent[];
+        let childMeshFields: BaseFieldComponent[];
         let childMeshControls: MeshControl[];
         let initialValue: string[];
 
@@ -206,7 +207,7 @@ describe('MeshControl class', () => {
 
         let meshField: MockMeshField;
         let meshControl: MeshControl;
-        let childMeshFields: MeshFieldComponent[];
+        let childMeshFields: BaseFieldComponent[];
         let childMeshControls: MeshControl[];
         let initialValue: any;
 
@@ -468,7 +469,8 @@ describe('MeshControl class', () => {
 
 });
 
-class MockMeshField implements MeshFieldComponent {
+/* tslint:disable:no-empty */
+class MockMeshField extends BaseFieldComponent {
     init(api: MeshFieldControlApi): void {}
     valueChange(value: NodeFieldType): void {}
 }

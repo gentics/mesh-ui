@@ -49,11 +49,3 @@ export interface MeshFieldControlApi {
      */
     setHeight: (width: string) => void;
 }
-
-/**
- * All UI components for the various field types (string, list, date etc.) must implement this interface.
- * Custom components should also use this interface in order to communicate back to this app.
- */
-export interface MeshFieldComponent {
-    init(api: MeshFieldControlApi): void;
-}

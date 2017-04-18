@@ -17,7 +17,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     init(api: MeshFieldControlApi): void {
         this.api = api;
         this.valueChange(api.getValue());
-        api.onValueChange(this.valueChange);
     }
 
     valueChange(value: NodeFieldType): void {

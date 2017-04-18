@@ -61,7 +61,7 @@ describe('MeshControlGroup', () => {
 
             expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl).children.size).toBe(0);
 
-            const mockMeshField: any = { valueChange() {} };
+            const mockMeshField: any = { valueChange: () => undefined };
             meshControlGroup.addControl({ name: 'name', type: 'string' }, 'joe', mockMeshField);
             meshControlGroup.addControl({ name: 'friends', type: 'list', listType: 'string' }, ['peter', 'susan'], mockMeshField);
 
@@ -106,7 +106,6 @@ describe('MeshControlGroup', () => {
             expect(friend1Control.checkValue).toHaveBeenCalledTimes(0);
             expect(friend2Control.checkValue).toHaveBeenCalledTimes(1);
         });
-
 
         it('ignores non-matching keys', () => {
             meshControlGroup.checkValue({ nonMatching: 'quux', test5: 'bar' });

@@ -10,7 +10,6 @@ import { BooleanFieldComponent } from '../components/boolean-field/boolean-field
 import { DateFieldComponent } from '../components/date-field/date-field.component';
 import { NodeFieldComponent } from '../components/node-field/node-field.component';
 import { BinaryFieldComponent } from '../components/binary-field/binary-field.component';
-import { MeshFieldComponent } from './form-generator-models';
 import { CustomFieldComponent } from '../components/custom-field/custom-field.component';
 import { BaseFieldComponent } from '../components/base-field/base-field.component';
 

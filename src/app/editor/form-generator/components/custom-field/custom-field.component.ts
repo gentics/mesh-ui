@@ -38,7 +38,7 @@ export class CustomFieldComponent extends BaseFieldComponent implements AfterVie
     }
 
     valueChange(value: NodeFieldType): void {
-        // handled by the custom control directly
+        // handled by the custom control directly via MeshFieldControlApi.onValueChange()
     }
 
     onChange(value: string): void {

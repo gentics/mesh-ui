@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { MeshFieldComponent, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
@@ -12,7 +12,7 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
     templateUrl: 'micronode-field.component.html',
     styleUrls: ['micronode-field.scss']
 })
-export class MicronodeFieldComponent extends BaseFieldComponent implements MeshFieldComponent, AfterViewInit {
+export class MicronodeFieldComponent extends BaseFieldComponent implements AfterViewInit {
 
     api: MeshFieldControlApi;
     value: NodeFieldMicronode;
@@ -29,7 +29,6 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements MeshF
     init(api: MeshFieldControlApi): void {
         this.value = api.getValue();
         this.api = api;
-        api.onValueChange(this.valueChange);
     }
 
     ngAfterViewInit(): void {

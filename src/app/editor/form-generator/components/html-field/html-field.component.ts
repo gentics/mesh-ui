@@ -40,7 +40,6 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     init(api: MeshFieldControlApi): void {
         this.api = api;
         this.value = api.getValue();
-        api.onValueChange(this.valueChange);
     }
 
     valueChange(value: NodeFieldType): void {

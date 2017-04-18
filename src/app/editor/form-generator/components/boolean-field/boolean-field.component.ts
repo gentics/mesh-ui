@@ -15,7 +15,6 @@ export class BooleanFieldComponent extends BaseFieldComponent {
     init(api: MeshFieldControlApi): void {
         this.api = api;
         this.value = api.getValue();
-        api.onValueChange(this.valueChange);
     }
 
     valueChange(value: boolean): void {

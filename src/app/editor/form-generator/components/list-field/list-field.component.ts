@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ComponentRef, ElementRef, OnDestroy, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { ISortableEvent, ISortableGroupOptions } from 'gentics-ui-core';
-import { MeshFieldComponent, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { ListTypeFieldType, SchemaField } from '../../../../common/models/schema.model';
 import { Microschema } from '../../../../common/models/microschema.model';
 import { ListableNodeFieldType, NodeFieldList, NodeFieldType } from '../../../../common/models/node.model';
@@ -43,7 +43,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         revertClone: false
     };
 
-    private componentRefs: Array<ComponentRef<MeshFieldComponent>> = [];
+    private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
     private subscription: Subscription;
 
@@ -89,7 +89,6 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         this.value = api.getValue() as NodeFieldList<ListableNodeFieldType>;
         this.api = api;
         this.field = api.field;
-        api.onValueChange(this.valueChange);
     }
 
     valueChange(newValue: NodeFieldList<ListableNodeFieldType>, oldValue: NodeFieldList<ListableNodeFieldType>): void {

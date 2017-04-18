@@ -4,7 +4,8 @@ import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
-import { MeshFieldComponent, SchemaFieldPath } from '../../common/form-generator-models';
+import { SchemaFieldPath } from '../../common/form-generator-models';
+import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
     selector: 'form-generator',
@@ -17,7 +18,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
 
     @ViewChild('formRoot', { read: ViewContainerRef })
     private formRoot: ViewContainerRef;
-    private componentRefs: Array<ComponentRef<MeshFieldComponent>> = [];
+    private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,

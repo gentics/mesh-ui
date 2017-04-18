@@ -1,5 +1,5 @@
 import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
-import { MeshFieldComponent, SchemaFieldPath } from '../../common/form-generator-models';
+import { SchemaFieldPath } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 
@@ -19,7 +19,7 @@ class RootFieldDefinition {
  * micronodes.
  */
 export class MeshControl {
-    meshField: MeshFieldComponent;
+    meshField: BaseFieldComponent;
     children = new Map<string | number, MeshControl>();
     fieldDef: SchemaField | RootFieldDefinition;
     private lastValue;
@@ -33,8 +33,8 @@ export class MeshControl {
     }
 
     constructor();
-    constructor(fieldDef: SchemaField, initialValue: any, meshFieldInstance?: MeshFieldComponent);
-    constructor(fieldDef?: SchemaField, initialValue?: any, meshFieldInstance?: MeshFieldComponent) {
+    constructor(fieldDef: SchemaField, initialValue: any, meshFieldInstance?: BaseFieldComponent);
+    constructor(fieldDef?: SchemaField, initialValue?: any, meshFieldInstance?: BaseFieldComponent) {
         this.lastValue = initialValue;
         this.fieldDef = fieldDef === undefined ? new RootFieldDefinition() : fieldDef;
         if (meshFieldInstance) {
@@ -42,7 +42,7 @@ export class MeshControl {
         }
     }
 
-    registerMeshFieldInstance(meshFieldInstance: MeshFieldComponent): void {
+    registerMeshFieldInstance(meshFieldInstance: BaseFieldComponent): void {
         this.meshField = meshFieldInstance;
     }
 
@@ -76,7 +76,7 @@ export class MeshControl {
     /**
      * Adds a new MeshControl as a child of this one.
      */
-    addChild(field: SchemaField, initialValue: any, control?: MeshFieldComponent): MeshControl {
+    addChild(field: SchemaField, initialValue: any, control?: BaseFieldComponent): MeshControl {
         const useStringIndex = this.fieldDef.type === 'micronode' || this.fieldDef.type === ROOT_TYPE;
         const meshControl = new MeshControl(field, initialValue, control);
         const key = useStringIndex ? field.name : this.children.size;

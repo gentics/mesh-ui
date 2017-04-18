@@ -17,7 +17,6 @@ export class NumberFieldComponent extends BaseFieldComponent {
     init(api: MeshFieldControlApi): void {
         this.value = api.getValue();
         this.api = api;
-        api.onValueChange(this.valueChange);
     }
 
     valueChange(value: NodeFieldType): void {

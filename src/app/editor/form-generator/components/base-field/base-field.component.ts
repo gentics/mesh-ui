@@ -1,5 +1,5 @@
 import { Component, HostBinding } from '@angular/core';
-import { MeshFieldComponent, MeshFieldControlApi, ValueChangeCallback } from '../../common/form-generator-models';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
 
 /**
@@ -8,7 +8,7 @@ import { NodeFieldType } from '../../../../common/models/node.model';
 @Component({
     selector: 'base-field'
 })
-export abstract class BaseFieldComponent implements MeshFieldComponent {
+export abstract class BaseFieldComponent  {
     @HostBinding('class.mesh-field')
     readonly isMeshField = true;
     @HostBinding('style.width')

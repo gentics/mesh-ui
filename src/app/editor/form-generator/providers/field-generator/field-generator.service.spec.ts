@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ComponentRef, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -49,7 +49,7 @@ describe('FieldGeneratorService', () => {
                 name: 'mockField',
                 label: 'Mock Field',
                 type: 'string'
-            }
+            };
             const mockValue = 'bar';
 
             it('inserts the FieldComponent into the DOM as a sibling of the ViewContainerRef passed to the .create() method', () => {
@@ -129,7 +129,7 @@ describe('FieldGeneratorService', () => {
     selector: 'test-component',
     template: '<div class="test-component" #insertionPoint></div>'
 })
-class TestComponent {
+class TestComponent implements AfterViewInit {
     fieldGenerator: FieldGenerator;
     onChangeFn = createSpy('onChangeFn');
     @ViewChild('insertionPoint', { read: ViewContainerRef })
@@ -142,23 +142,23 @@ class TestComponent {
     }
 }
 
+/* tslint:disable:no-empty */
 @Component({
     selector: 'mock-field-component',
     template: '<div class="mock-field-component"></div>'
 })
 class MockFieldComponent extends BaseFieldComponent {
-    init(api: MeshFieldControlApi): void {};
-    valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void {}
     api: MeshFieldControlApi;
-
     constructor() {
         super();
         this.init = createSpy('init').and.callFake((api) => {
             this.api = api;
-        })
+        });
         this.setWidth = createSpy('setWidth');
         this.setHeight = createSpy('setHeight');
-    }
+    };
+    init(api: MeshFieldControlApi): void {};
+    valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void {}
 }
 
 @NgModule({
