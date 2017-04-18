@@ -1,8 +1,0 @@
-<gtx-dropdown-list width="trigger">
-     <gtx-dropdown-trigger>
-         <gtx-button>{{ (currentLanguage | async).name }}</gtx-button>
-     </gtx-dropdown-trigger>
-     <gtx-dropdown-content>
-          <gtx-dropdown-item *ngFor="let language of availableLanguages" (click)="onChange(language)">{{ language.name }}</gtx-dropdown-item>
-     </gtx-dropdown-content>
- </gtx-dropdown-list>

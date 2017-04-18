@@ -7,9 +7,11 @@ import { I18nService } from './providers/i18n/i18n.service';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { CustomLoader } from './providers/i18n/custom-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 
 const SHARED_COMPONENTS = [
-    NoContentComponent
+    NoContentComponent,
+    LanguageSwitcherComponent
 ];
 
 const SHARED_PIPES = [
