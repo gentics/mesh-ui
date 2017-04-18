@@ -85,6 +85,21 @@ export const testNode: any = {
         vehicleImage: {
             uuid: '4d1cabf1382e41ea9cabf1382ef1ea7c'
         },
+        location: {
+            uuid: '1324jnfo9u0923rhjo9que9q293hr',
+            microschema: {
+                name: 'geolocation',
+                uuid: '95b6cbb75638477fb6cbb75638b77f96'
+            },
+            fields: {
+                latitude: 48.21343332544704,
+                longitude: 16.36980152130125,
+                addresses: [
+                    'Gonzagagasse'
+                ]
+            },
+            type: 'micronode'
+        },
         locations: [
             {
                 uuid: '2f26db6facc047c7a6db6facc027c76b',
@@ -161,13 +176,19 @@ export const testSchema: any = {
             name: 'weight',
             label: 'Weight',
             required: false,
-            type: 'number'
+            type: 'number',
+            config: {
+                formControl: 'test'
+            }
         },
         {
             name: 'in_stock',
             label: 'In Stock',
             required: false,
-            type: 'boolean'
+            type: 'boolean',
+            config: {
+                formControl: 'vue-checkbox'
+            }
         },
         {
             name: 'price',
@@ -204,6 +225,15 @@ export const testSchema: any = {
             allow: [
                 'vehicleImage'
             ]
+        },
+        {
+            name: 'location',
+            label: 'Location',
+            type: 'micronode',
+            allow: ['geolocation'],
+            config: {
+                formControl: 'geolocation'
+            }
         },
         {
             name: 'locations',

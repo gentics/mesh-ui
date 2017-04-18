@@ -11,17 +11,45 @@ import { SchemaField } from '../../../common/models/schema.model';
 export type SchemaFieldPath = Array<string | number>;
 
 /**
- * The function used to send an updated value of a field back up to the FormGenerator.
+ * A callback function invoked by the onValueChange() method.
  */
-export type UpdateFunction = {
-    (path: SchemaFieldPath, value: NodeFieldType): void;
-};
+export type ValueChangeCallback = (newValue: NodeFieldType, oldValue?: NodeFieldType) => void;
 
-/**
- * All UI components for the various field types (string, list, date etc.) must implement this interface.
- * Custom microschema components should also use this interface in order to communicate back to this app.
- */
-export interface MeshFieldComponent {
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void;
-    valueChange(value: NodeFieldType): void;
+export interface MeshFieldControlApi {
+    /**
+     * The object path to this field in the schema.
+     */
+    path: SchemaFieldPath;
+    /**
+     * The field definition object as defined in the schema.
+     */
+    field: SchemaField;
+    /**
+     * Returns the current value of the field.
+     */
+    getValue: () => any;
+    /**
+     * The function used to send an updated value of a field back up to the FormGenerator.
+     * By default, the path will be pre-configured and is not required, but can be specified to override
+     * the pre-configured value. This is really intended to be used for container types i.e. list and
+     * micronode.
+     */
+    setValue: (value: NodeFieldType, path?: SchemaFieldPath) => void;
+    /**
+     * Sets the validity of the control.
+     */
+    setValid: (isValid: boolean) => void;
+    /**
+     * Takes a callback function which will be invoked whenever the field value or the value of a
+     * descendant field changes.
+     */
+    onValueChange: (callback: ValueChangeCallback) => void;
+    /**
+     * Sets the css width of the host component.
+     */
+    setWidth: (width: string) => void;
+    /**
+     * Sets the css height of the host component.
+     */
+    setHeight: (width: string) => void;
 }

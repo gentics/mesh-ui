@@ -4,8 +4,12 @@ import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
-import { MeshFieldComponent } from '../../common/form-generator-models';
+import { SchemaFieldPath } from '../../common/form-generator-models';
+import { BaseFieldComponent } from '../base-field/base-field.component';
 
+/**
+ * Generates a form based on a schema and populates with data from the node.
+ */
 @Component({
     selector: 'form-generator',
     templateUrl: 'form-generator.component.html',
@@ -15,10 +19,25 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
     @Input() schema: Schema;
     @Input() node: MeshNode;
 
+    /**
+     * True if all form controls are valid.
+     */
+    get isValid(): boolean {
+        return this.meshControlGroup.isValid;
+    }
+
+    /**
+     * Becomes true once a change is made to one of the form controls.
+     */
+    get isDirty(): boolean {
+        return this._isDirty;
+    }
+
     @ViewChild('formRoot', { read: ViewContainerRef })
     private formRoot: ViewContainerRef;
-    private componentRefs: Array<ComponentRef<MeshFieldComponent>> = [];
+    private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
+    private _isDirty: boolean = false;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
                 private meshControlGroup: MeshControlGroup) {}
@@ -37,10 +56,6 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
         this.generateForm();
     }
 
-    formIsValid(): boolean {
-        return this.meshControlGroup.isValid;
-    }
-
     generateForm(): void {
         if (this.fieldGenerator && this.schema && this.node) {
             this.componentRefs.forEach(componentRef => componentRef.hostView.destroy());
@@ -50,7 +65,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
 
             this.schema.fields.forEach(field => {
                 const value = this.node.fields[field.name];
-                const controlType = getControlType(field.type);
+                const controlType = getControlType(field);
                 if (controlType) {
                     const componentRef = this.fieldGenerator.attachField([field.name], field, value, controlType);
                     if (componentRef) {
@@ -62,10 +77,17 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
         }
     }
 
-    private onChange(path: string[], value: any): void {
+    /**
+     * Resets the isDirty state of the component.
+     */
+    setPristine(): void {
+        this._isDirty = false;
+    }
+
+    private onChange(path: SchemaFieldPath, value: any): void {
         this.updateAtPath(this.node.fields, path, value);
-        console.log(`updating:`, path, 'with value:', value);
-        this.meshControlGroup.checkValue(this.node.fields);
+        this.meshControlGroup.checkValue(this.node.fields, path);
+        this._isDirty = true;
     }
 
     /**
@@ -74,6 +96,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
      */
     private updateAtPath(object: any, path: any[], value: any): any {
         let pointer = this.getPointerByPath(object, path);
+        console.log(`updating`, path, value);
         return pointer[path[path.length - 1]] = this.clone(value);
     }
 

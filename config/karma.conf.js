@@ -21,7 +21,7 @@ module.exports = function (config) {
         exclude: [],
 
         client: {
-            captureConsole: false
+            captureConsole: true
         },
 
         /*
@@ -79,6 +79,10 @@ module.exports = function (config) {
          * available reporters: https://npmjs.org/browse/keyword/karma-reporter
          */
         reporters: ['mocha', 'coverage', 'remap-coverage'],
+
+        mochaReporter: {
+            output: 'minimal'
+        },
 
         // web server port
         port: 9876,

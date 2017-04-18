@@ -1,6 +1,6 @@
-import { Component, ViewChild, ElementRef, ViewEncapsulation, HostBinding, AfterViewInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as Quill from 'quill';
-import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
@@ -13,14 +13,13 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
 })
 export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy {
     field: SchemaField;
+    api: MeshFieldControlApi;
     value: NodeFieldType;
     @HostBinding('class.focus')
     focus: boolean = false;
     @ViewChild('editor')
     private editorRef: ElementRef;
     private editor: Quill.Quill;
-    private path: SchemaFieldPath;
-    private update: UpdateFunction;
 
     ngAfterViewInit(): void {
         const editorElement = this.editorRef.nativeElement;
@@ -38,11 +37,10 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         this.editor.off('selection-change', this.onSelectionChangeHandler);
     }
 
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, update: UpdateFunction): void {
-        this.value = value;
-        this.field = field;
-        this.update = update;
-        this.path = path;
+    init(api: MeshFieldControlApi): void {
+        this.api = api;
+        this.value = api.getValue();
+        this.setValidity(this.value);
     }
 
     valueChange(value: NodeFieldType): void {
@@ -53,17 +51,22 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         this.editor.focus();
     }
 
-    onChange(value: string): void {
-        if (typeof value === 'string') {
-            this.update(this.path, value);
-        }
-    }
-
     private onTextChangeHandler = () => {
-        this.update(this.path, this.editorRef.nativeElement.querySelector('.ql-editor').innerHTML);
+        const value = this.editorRef.nativeElement.querySelector('.ql-editor').innerHTML;
+        this.api.setValue(value);
+        this.setValidity(value);
     }
 
     private onSelectionChangeHandler = range => {
         this.focus = range !== null;
+    }
+
+    /**
+     * Mark as invalid if field is required and has a falsy value
+     */
+    private setValidity(value: any): void {
+        const quillEmptyValue = '<p><br></p>';
+        const isValid = !this.api.field.required || (!!value && value !== quillEmptyValue);
+        this.api.setValid(isValid);
     }
 }

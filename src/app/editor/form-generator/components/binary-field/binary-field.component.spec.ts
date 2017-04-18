@@ -1,18 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BinaryFieldComponent } from './binary-field.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
+import { BinaryFieldComponent } from './binary-field.component';
+import createSpy = jasmine.createSpy;
 
-describe('NumberFieldComponent:', () => {
+describe('BinaryFieldComponent:', () => {
 
-    let comp: BinaryFieldComponent ;
-    let fixture: ComponentFixture<BinaryFieldComponent >;
+    let fixture: ComponentFixture<BinaryFieldComponent>;
+    let instance: BinaryFieldComponent;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [GenticsUICoreModule],
-            declarations: [BinaryFieldComponent ]
-        })
-        .compileComponents();
-    }));
-
+            imports: [GenticsUICoreModule, FormsModule],
+            declarations: [BinaryFieldComponent]
+        });
+        fixture = TestBed.createComponent(BinaryFieldComponent);
+        instance = fixture.componentInstance;
+    });
 });

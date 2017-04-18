@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue Checkbox Custom Control</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <ui-checkbox v-model="value" v-bind:label="label" v-bind:name="name" v-on:input="onChange"></ui-checkbox>
+    <small>(demo Vue.js component)</small>
+</div>
+
+<script>
+    /**
+     * This example demonstrates how the developer can use any kind of JavaScript technology or framework to implement
+     * a custom form control. In this case, we use Vue.js to implement a simple checkbox component.
+     */
+    Vue.component('ui-checkbox', {
+        template: '<div><input type="hidden" :name="name" :value="+value"> \
+                 <input type="checkbox" :checked="value" @change="$emit(\'input\', $event.target.checked)" class="hidden"> \
+                 <label v-if="label">{{label}}</label></div>',
+        props: ['name', 'label', 'value']
+    })
+
+    window.initMeshControl = (api) => {
+        let value = api.getValue();
+        const name = api.field.name;
+        const label = api.field.label || api.field.name;
+        const data = {
+            value,
+            name,
+            label,
+            onChange(value) {
+                api.setValue(value);
+            }
+        };
+
+        api.onValueChange(val => {
+            data.value = val;
+        });
+
+        new Vue({ el: '#app', data });
+    };
+</script>
+</body>
+</html>

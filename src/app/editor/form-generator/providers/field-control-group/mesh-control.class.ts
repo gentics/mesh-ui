@@ -1,6 +1,7 @@
 import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
-import { MeshFieldComponent, SchemaFieldPath } from '../../common/form-generator-models';
+import { SchemaFieldPath } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
+import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 
 export const ROOT_TYPE = 'root';
 export const ROOT_NAME = 'root';
@@ -12,28 +13,31 @@ class RootFieldDefinition {
 }
 
 /**
- * A MeshControl is a wrapper around a MeshFieldComponent, and is responsible for propagating calls to the
- * MeshFieldComponent.valueChange() method whenever the associated value changes. MeshControls can be nested
+ * A MeshControl is a wrapper around a BaseFieldComponent, and is responsible for propagating calls to the
+ * BaseFieldComponent.valueChange() method whenever the associated value changes. MeshControls can be nested
  * by use of the addChild() method, which allows the implementation of complex types such as lists and
  * micronodes.
  */
 export class MeshControl {
-    meshField: MeshFieldComponent;
+    meshField: BaseFieldComponent;
     children = new Map<string | number, MeshControl>();
     fieldDef: SchemaField | RootFieldDefinition;
     private lastValue;
 
+    /**
+     * Returns true if this MeshControl and all of its children are valid
+     */
     get isValid(): boolean {
-        const required = this.fieldDef.required === true;
-        const selfValid = !required || (required && !!this.lastValue);
+        const isRootControl = this.fieldDef.type === ROOT_TYPE;
+        const selfValid = isRootControl || !!this.meshField && this.meshField.isValid;
         const childrenValid = Array.from(this.children.values())
             .reduce((valid, control) => !valid ? false : control.isValid, true);
         return selfValid && childrenValid;
     }
 
     constructor();
-    constructor(fieldDef: SchemaField, initialValue: any, meshFieldInstance?: MeshFieldComponent);
-    constructor(fieldDef?: SchemaField, initialValue?: any, meshFieldInstance?: MeshFieldComponent) {
+    constructor(fieldDef: SchemaField, initialValue: any, meshFieldInstance?: BaseFieldComponent);
+    constructor(fieldDef?: SchemaField, initialValue?: any, meshFieldInstance?: BaseFieldComponent) {
         this.lastValue = initialValue;
         this.fieldDef = fieldDef === undefined ? new RootFieldDefinition() : fieldDef;
         if (meshFieldInstance) {
@@ -41,34 +45,41 @@ export class MeshControl {
         }
     }
 
-    registerMeshFieldInstance(meshFieldInstance: MeshFieldComponent): void {
+    registerMeshFieldInstance(meshFieldInstance: BaseFieldComponent): void {
         this.meshField = meshFieldInstance;
     }
 
-    checkValue(value: NodeFieldType) {
-        if (value !== this.lastValue) {
-            if (this.meshField) {
-                this.meshField.valueChange(value);
-            }
-            this.lastValue = value;
+    /**
+     * Runs the `valueChange()` function for this control's BaseFieldComponent, and optionally checks recursively for all descendants.
+     */
+    checkValue(value: NodeFieldType, recursive: boolean = false) {
+        if (this.meshField) {
+            (this.meshField as BaseFieldComponent).valueChange(value, this.lastValue);
         }
+        this.lastValue = value;
 
-        if (0 < this.children.size) {
+        if (recursive && 0 < this.children.size) {
             const isMicronode = this.fieldDef.type === 'micronode';
             const valueContainer = isMicronode && value && value.hasOwnProperty('fields') ? (value as NodeFieldMicronode).fields : value;
             if (valueContainer) {
                 this.children.forEach((meshControl, key) => {
-                    meshControl.checkValue(valueContainer[key]);
+                    meshControl.checkValue(valueContainer[key], true);
                 });
             }
         }
     }
 
+    /**
+     * Remove all child MeshControls.
+     */
     clearChildren(): void {
         this.children.clear();
     }
 
-    addChild(field: SchemaField, initialValue: any, control?: MeshFieldComponent): MeshControl {
+    /**
+     * Adds a new MeshControl as a child of this one.
+     */
+    addChild(field: SchemaField, initialValue: any, control?: BaseFieldComponent): MeshControl {
         const useStringIndex = this.fieldDef.type === 'micronode' || this.fieldDef.type === ROOT_TYPE;
         const meshControl = new MeshControl(field, initialValue, control);
         const key = useStringIndex ? field.name : this.children.size;
@@ -76,23 +87,31 @@ export class MeshControl {
         return meshControl;
     }
 
-    getMeshControlAtPath(path: SchemaFieldPath): MeshControl {
-        let pointer: MeshControl = this;
+    /**
+     * Given a path (e.g. ['locations', 0, 'longitude']), returns the associated MeshControl if one exists.
+     */
+    getMeshControlAtPath(path: SchemaFieldPath): MeshControl | undefined {
+        let pointer: MeshControl | undefined = this;
         const isMicronode = (control: MeshControl): boolean => control.fieldDef.type === 'micronode';
 
-        for (let key of path) {
-            if (isMicronode(pointer)) {
-                // skip the "fields" key, since it simply refers to the contents of the micronode group.
-                if (key !== 'fields') {
-                    if (!pointer.children.get(key)) {
-                        throw new Error(`Path [${path.join(', ')}] not valid`);
+        path.forEach((key, index) => {
+            if (pointer) {
+                if (isMicronode(pointer)) {
+                    // skip the "fields" key, since it simply refers to the contents of the micronode group.
+                    if (key !== 'fields') {
+                        if (!pointer.children.get(key)) {
+                            pointer = undefined;
+                        } else {
+                            pointer = pointer.children.get(key);
+                        }
+                    } else if (index === path.length - 1) {
+                        pointer = undefined;
                     }
-                    pointer = pointer.children.get(key) as MeshControl;
+                } else {
+                    pointer = pointer.children.get(key);
                 }
-            } else {
-                pointer = pointer.children.get(key) as MeshControl;
             }
-        }
-        return pointer as MeshControl;
+        });
+        return pointer;
     }
 }

@@ -1,6 +1,6 @@
 import { Type } from '@angular/core';
 
-import { SchemaFieldType } from '../../../common/models/schema.model';
+import { SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
 import { NumberFieldComponent } from '../components/number-field/number-field.component';
 import { ListFieldComponent } from '../components/list-field/list-field.component';
 import { HtmlFieldComponent } from '../components/html-field/html-field.component';
@@ -10,13 +10,14 @@ import { BooleanFieldComponent } from '../components/boolean-field/boolean-field
 import { DateFieldComponent } from '../components/date-field/date-field.component';
 import { NodeFieldComponent } from '../components/node-field/node-field.component';
 import { BinaryFieldComponent } from '../components/binary-field/binary-field.component';
-import { MeshFieldComponent } from './form-generator-models';
+import { CustomFieldComponent } from '../components/custom-field/custom-field.component';
+import { BaseFieldComponent } from '../components/base-field/base-field.component';
 
 type TypeComponentMap = {
-    [P in SchemaFieldType]: Type<MeshFieldComponent> | null;
+    [P in SchemaFieldType]: Type<BaseFieldComponent> | null;
 };
 
-const typeComponentMap: TypeComponentMap = {
+const defaultTypeComponentMap: TypeComponentMap = {
     binary: BinaryFieldComponent,
     boolean: BooleanFieldComponent,
     date: DateFieldComponent,
@@ -28,9 +29,18 @@ const typeComponentMap: TypeComponentMap = {
     string: StringFieldComponent
 };
 
-export function getControlType(type: SchemaFieldType): Type<MeshFieldComponent> | undefined {
-    const fieldType = typeComponentMap[type];
-    if (fieldType) {
-        return fieldType;
+/**
+ * Given a schema field definition, returns the component which should be used to render it.
+ */
+export function getControlType(field: SchemaField): Type<BaseFieldComponent> | undefined {
+    const defaultFieldType = defaultTypeComponentMap[field.type];
+    if (field.config && field.config.formControl) {
+        // TODO: check for built-in variants
+        // ...
+
+        return CustomFieldComponent;
+    }
+    if (defaultFieldType) {
+        return defaultFieldType;
     }
 }

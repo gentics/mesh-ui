@@ -245,6 +245,7 @@ module.exports = function (options) {
              */
             new CopyWebpackPlugin([
                 { from: 'src/assets', to: 'assets' },
+                { from: 'src/custom-controls', to: 'custom-controls' },
                 { from: 'node_modules/gentics-ui-core/dist/fonts', to: 'assets/fonts' },
             ]),
 

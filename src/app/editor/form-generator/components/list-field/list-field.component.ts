@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ComponentRef, ElementRef, OnDestroy, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { ISortableEvent, ISortableGroupOptions } from 'gentics-ui-core';
-import { MeshFieldComponent, SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
-import { SchemaField } from '../../../../common/models/schema.model';
+import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { ListTypeFieldType, SchemaField } from '../../../../common/models/schema.model';
 import { Microschema } from '../../../../common/models/microschema.model';
 import { ListableNodeFieldType, NodeFieldList, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
@@ -23,7 +23,7 @@ function randomId(): string {
 })
 export class ListFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy  {
 
-    path: SchemaFieldPath;
+    api: MeshFieldControlApi;
     field: SchemaField;
     value: NodeFieldList<ListableNodeFieldType>;
     @ViewChildren('listItem', { read: ViewContainerRef })
@@ -43,19 +43,18 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         revertClone: false
     };
 
-    private componentRefs: Array<ComponentRef<MeshFieldComponent>> = [];
-    private update: UpdateFunction;
+    private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
     private subscription: Subscription;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private fieldControlGroupService: MeshControlGroup,
+                private meshControlGroup: MeshControlGroup,
                 private viewContainerRef: ViewContainerRef) {
         super();
     }
 
     ngAfterViewInit(): void {
-        const updateFn = (path: SchemaFieldPath, value: NodeFieldType) => this.update(path, value);
+        const updateFn = (path: SchemaFieldPath, value: NodeFieldType) => this.api.setValue(value, path);
         this.fieldGenerator = this.fieldGeneratorService.create(this.viewContainerRef, updateFn);
         // Instantiating the dynamic child components inside the ngAfterViewInit hook will lead to
         // change detection errors, hence the setTimeout. See https://github.com/angular/angular/issues/10131
@@ -86,21 +85,22 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         return index;
     }
 
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldList<ListableNodeFieldType>, update: UpdateFunction): void {
-        this.value = value;
-        this.update = update;
-        this.field = field;
-        this.path = path;
+    init(api: MeshFieldControlApi): void {
+        this.value = api.getValue() as NodeFieldList<ListableNodeFieldType>;
+        this.api = api;
+        this.field = api.field;
     }
 
-    valueChange(value: NodeFieldList<ListableNodeFieldType>): void {
-        this.listHeight = this.listContainer.nativeElement.offsetHeight + 'px';
-        this.updating = true;
-        this.value = Array.from(Array(0).keys()) as any;
+    valueChange(newValue: NodeFieldList<ListableNodeFieldType>, oldValue: NodeFieldList<ListableNodeFieldType>): void {
+        if (newValue !== oldValue) {
+            this.listHeight = this.listContainer.nativeElement.offsetHeight + 'px';
+            this.updating = true;
+            this.value = Array.from(Array(0).keys()) as any;
 
-        setTimeout(() => {
-            this.value = value;
-        });
+            setTimeout(() => {
+                this.value = newValue;
+            });
+        }
     }
 
     dragStart(): void {
@@ -117,7 +117,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     deleteItem(e: ISortableEvent): void {
         const spliced = this.value.slice(0);
         spliced.splice(e.oldIndex, 1);
-        this.update(this.path, spliced);
+        this.api.setValue(spliced);
     }
 
     addItem(microschemaName: string): void {
@@ -130,45 +130,47 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
         lookup.take(1).subscribe(result => {
             const newItem = initializeListValue(this.field, result);
-            this.update(this.path, this.value.concat(newItem));
+            this.api.setValue(this.value.concat(newItem));
         });
     }
 
     createListItems(): void {
         this.componentRefs.forEach(componentRef => componentRef.destroy());
         this.componentRefs = [];
-        const fieldType = this.field.listType as any;
-        const controlType = getControlType(fieldType);
-        const meshControl = this.fieldControlGroupService.getMeshControlAtPath(this.path);
-        this.removeSortableGeneratedItems();
-        meshControl.clearChildren();
+        const fieldType = this.field.listType as ListTypeFieldType;
+        const controlType = getControlType({ type: fieldType } as any);
+        const meshControl = this.meshControlGroup.getMeshControlAtPath(this.api.path);
+        if (meshControl) {
+            this.removeSortableGeneratedItems();
+            meshControl.clearChildren();
 
-        if (controlType && this.fieldGenerator && this.listItems) {
-            this.listItems.toArray().forEach((viewContainerRef, index) => {
-                const pseudoField = {
-                    name: ``,
-                    type: fieldType
-                };
-                const value = this.value[index];
-                const newContainer = meshControl.addChild(pseudoField, value);
-                const componentRef = this.fieldGenerator.attachField(
-                    this.path.concat(index),
-                    pseudoField,
-                    value,
-                    controlType,
-                    viewContainerRef
-                );
+            if (controlType && this.fieldGenerator && this.listItems) {
+                this.listItems.toArray().forEach((viewContainerRef, index) => {
+                    const pseudoField = {
+                        name: ``,
+                        type: fieldType
+                    };
+                    const value = this.value[index];
+                    const newContainer = meshControl.addChild(pseudoField, value);
+                    const componentRef = this.fieldGenerator.attachField(
+                        this.api.path.concat(index),
+                        pseudoField,
+                        value,
+                        controlType,
+                        viewContainerRef
+                    );
 
-                newContainer.registerMeshFieldInstance(componentRef.instance);
-                this.componentRefs.push(componentRef);
-            });
+                    newContainer.registerMeshFieldInstance(componentRef.instance);
+                    this.componentRefs.push(componentRef);
+                });
+            }
         }
     }
 
     private reorderList(e: ISortableEvent): void {
         if (!this.updating) {
             const sorted = e.sort(this.value);
-            this.update(this.path, sorted);
+            this.api.setValue(sorted);
         }
     }
 

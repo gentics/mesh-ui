@@ -1,7 +1,2 @@
-<!--<gtx-textarea [required]="field.required"
-              [value]="value"
-              [label]="field.label || field.name"
-              (change)="onChange($event)"></gtx-textarea>-->
-
-<label (click)="focusEditor()">{{ field.label || field.name }}</label>
+<label (click)="focusEditor()">{{ api.field.label || api.field.name }}</label>
 <div #editor></div>

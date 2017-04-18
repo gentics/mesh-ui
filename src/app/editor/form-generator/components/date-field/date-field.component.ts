@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { SchemaFieldPath, UpdateFunction } from '../../common/form-generator-models';
-import { SchemaField } from '../../../../common/models/schema.model';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldDate } from '../../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
@@ -10,16 +9,12 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
     styleUrls: ['./date-field.scss']
 })
 export class DateFieldComponent extends BaseFieldComponent {
-    field: SchemaField;
+    api: MeshFieldControlApi;
     timestampValue: number;
-    private path: SchemaFieldPath;
-    private update: UpdateFunction;
 
-    initialize(path: SchemaFieldPath, field: SchemaField, value: NodeFieldDate, update: UpdateFunction): void {
-        this.field = field;
-        this.update = update;
-        this.path = path;
-        this.valueChange(value);
+    init(api: MeshFieldControlApi): void {
+        this.api = api;
+        this.valueChange(api.getValue());
     }
 
     valueChange(value: NodeFieldDate): void {
@@ -27,10 +22,10 @@ export class DateFieldComponent extends BaseFieldComponent {
         this.timestampValue = date.getTime() / 1000;
     }
 
-    onChange(value: number): void {
-        if (typeof value === 'number') {
-            const date = new Date(value * 1000);
-            this.update(this.path, date.toISOString());
+    onChange(timestamp: number): void {
+        if (typeof timestamp === 'number') {
+            const date = new Date(timestamp * 1000);
+            this.api.setValue(date.toISOString());
         }
     }
 }
