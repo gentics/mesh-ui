@@ -22,7 +22,7 @@ export class BooleanFieldComponent extends BaseFieldComponent {
     }
 
     onChange(value: string): void {
-        this.api.update(value);
+        this.api.setValue(value);
     }
 
 }

@@ -42,7 +42,7 @@ export class CustomFieldComponent extends BaseFieldComponent implements AfterVie
     }
 
     onChange(value: string): void {
-        this.api.update(value);
+        this.api.setValue(value);
     }
 
 }

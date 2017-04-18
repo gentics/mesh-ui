@@ -25,7 +25,7 @@ export class DateFieldComponent extends BaseFieldComponent {
     onChange(value: number): void {
         if (typeof value === 'number') {
             const date = new Date(value * 1000);
-            this.api.update(date.toISOString());
+            this.api.setValue(date.toISOString());
         }
     }
 }

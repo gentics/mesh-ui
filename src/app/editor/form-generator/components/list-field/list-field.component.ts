@@ -54,7 +54,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     ngAfterViewInit(): void {
-        const updateFn = (path: SchemaFieldPath, value: NodeFieldType) => this.api.update(value, path);
+        const updateFn = (path: SchemaFieldPath, value: NodeFieldType) => this.api.setValue(value, path);
         this.fieldGenerator = this.fieldGeneratorService.create(this.viewContainerRef, updateFn);
         // Instantiating the dynamic child components inside the ngAfterViewInit hook will lead to
         // change detection errors, hence the setTimeout. See https://github.com/angular/angular/issues/10131
@@ -117,7 +117,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     deleteItem(e: ISortableEvent): void {
         const spliced = this.value.slice(0);
         spliced.splice(e.oldIndex, 1);
-        this.api.update(spliced);
+        this.api.setValue(spliced);
     }
 
     addItem(microschemaName: string): void {
@@ -130,7 +130,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
         lookup.take(1).subscribe(result => {
             const newItem = initializeListValue(this.field, result);
-            this.api.update(this.value.concat(newItem));
+            this.api.setValue(this.value.concat(newItem));
         });
     }
 
@@ -170,7 +170,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     private reorderList(e: ISortableEvent): void {
         if (!this.updating) {
             const sorted = e.sort(this.value);
-            this.api.update(sorted);
+            this.api.setValue(sorted);
         }
     }
 

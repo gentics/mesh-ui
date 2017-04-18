@@ -24,6 +24,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     onFilesSelected(files: any[]): void {
-        this.api.update(files[0]);
+        this.api.setValue(files[0]);
     }
 }

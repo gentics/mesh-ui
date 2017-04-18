@@ -52,12 +52,12 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
 
     onChange(value: string): void {
         if (typeof value === 'string') {
-            this.api.update(value);
+            this.api.setValue(value);
         }
     }
 
     private onTextChangeHandler = () => {
-        this.api.update(this.editorRef.nativeElement.querySelector('.ql-editor').innerHTML);
+        this.api.setValue(this.editorRef.nativeElement.querySelector('.ql-editor').innerHTML);
     }
 
     private onSelectionChangeHandler = range => {

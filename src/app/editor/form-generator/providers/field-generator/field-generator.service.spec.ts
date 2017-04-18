@@ -75,23 +75,23 @@ describe('FieldGeneratorService', () => {
                 expect(api.getValue()).toBe(mockValue);
             });
 
-            it('invokes the onChange function when the api.update() method is invoked', () => {
+            it('invokes the onChange function when the api.setValue() method is invoked', () => {
                 const result = fieldGenerator.attachField(mockPath, mockField, mockValue, MockFieldComponent);
                 const api = result.instance.api;
 
                 expect(fixture.componentInstance.onChangeFn).not.toHaveBeenCalled();
 
-                api.update('foo');
+                api.setValue('foo');
                 expect(fixture.componentInstance.onChangeFn).toHaveBeenCalledWith(mockPath, 'foo');
             });
 
-            it('api.update() allows overriding of the path argument', () => {
+            it('api.setValue() allows overriding of the path argument', () => {
                 const result = fieldGenerator.attachField(mockPath, mockField, mockValue, MockFieldComponent);
                 const api = result.instance.api;
                 const customPath = ['my', 'custom', 'path'];
                 expect(fixture.componentInstance.onChangeFn).not.toHaveBeenCalled();
 
-                api.update('foo', customPath);
+                api.setValue('foo', customPath);
                 expect(fixture.componentInstance.onChangeFn).toHaveBeenCalledWith(customPath, 'foo');
             });
 

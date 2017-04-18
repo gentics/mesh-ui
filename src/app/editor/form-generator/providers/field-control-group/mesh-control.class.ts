@@ -13,8 +13,8 @@ class RootFieldDefinition {
 }
 
 /**
- * A MeshControl is a wrapper around a MeshFieldComponent, and is responsible for propagating calls to the
- * MeshFieldComponent.valueChange() method whenever the associated value changes. MeshControls can be nested
+ * A MeshControl is a wrapper around a BaseFieldComponent, and is responsible for propagating calls to the
+ * BaseFieldComponent.valueChange() method whenever the associated value changes. MeshControls can be nested
  * by use of the addChild() method, which allows the implementation of complex types such as lists and
  * micronodes.
  */
@@ -47,7 +47,7 @@ export class MeshControl {
     }
 
     /**
-     * Runs the `valueChange()` function for this control's MeshFieldComponent, and optionally checks recursively for all descendants.
+     * Runs the `valueChange()` function for this control's BaseFieldComponent, and optionally checks recursively for all descendants.
      */
     checkValue(value: NodeFieldType, recursive: boolean = false) {
         if (this.meshField) {

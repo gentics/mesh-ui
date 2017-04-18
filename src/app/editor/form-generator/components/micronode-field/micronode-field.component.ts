@@ -32,7 +32,7 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     }
 
     ngAfterViewInit(): void {
-        const updateFn = (path: SchemaFieldPath, value: NodeFieldType) => this.api.update(value, path);
+        const updateFn = (path: SchemaFieldPath, value: NodeFieldType) => this.api.setValue(value, path);
         this.fieldGenerator = this.fieldGeneratorService.create(this.micronodeControlAnchor, updateFn);
         // Instantiating the dynamic child components inside the ngAfterViewInit hook will lead to
         // change detection errors, hence the setTimeout. See https://github.com/angular/angular/issues/10131

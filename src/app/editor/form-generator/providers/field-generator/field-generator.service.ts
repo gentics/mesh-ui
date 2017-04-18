@@ -34,7 +34,7 @@ export class FieldGenerator {
             path,
             field,
             getValue() { return value; },
-            update(value: any, pathOverride?: SchemaFieldPath) {
+            setValue(value: any, pathOverride?: SchemaFieldPath) {
                 update(pathOverride || path, value);
             },
             onValueChange(cb) {

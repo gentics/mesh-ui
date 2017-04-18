@@ -3,7 +3,7 @@ import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
 
 /**
- * This is the base class which all of the built-in MeshFieldComponents (form controls) inherit from.
+ * This is the base class from which all of the built-in form controls inherit.
  */
 @Component({
     selector: 'base-field'

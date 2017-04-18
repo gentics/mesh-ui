@@ -34,7 +34,7 @@ export interface MeshFieldControlApi {
      * the pre-configured value. This is really intended to be used for container types i.e. list and
      * micronode.
      */
-    update: (value: NodeFieldType, path?: SchemaFieldPath) => void;
+    setValue: (value: NodeFieldType, path?: SchemaFieldPath) => void;
     /**
      * Takes a callback function which will be invoked whenever the field value or the value of a
      * descendant field changes.

@@ -29,6 +29,6 @@ export class NodeFieldComponent extends BaseFieldComponent {
     }
 
     doUpdate(): void {
-        this.api.update({ uuid: this.userValue });
+        this.api.setValue({ uuid: this.userValue });
     }
 }
