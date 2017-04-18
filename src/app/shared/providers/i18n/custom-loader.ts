@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 
 // Parse the yaml files into a JS object.
 const translations: any = {
-    common: require('./translations/common.translations.yml')
+    common: require('./translations/common.translations.yml'),
+    lang: require('./translations/lang.translations.yml')
 };
 
 /**
