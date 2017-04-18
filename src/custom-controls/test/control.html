@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Custom Control</title>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<label>
+    <span id="label"></span>:
+    <span id="value"></span><br>
+    <input type="range" id="input">
+</label><br>
+<small>(demo plain js component)</small>
+
+<script>
+    /**
+     * This is an example of the most simple custom control - plain ES5 JavaScript which implements a range slider for a
+     * number field.
+     */
+    var input = document.querySelector('#input');
+    var label = document.querySelector('#label');
+    var valueLabel = document.querySelector('#value');
+
+    window.initMeshControl = function(api) {
+        input.setAttribute('min', api.field.min || 0);
+        input.setAttribute('max', api.field.max || api.getValue() * 2);
+        input.setAttribute('step', api.field.step || 1);
+        input.value = api.getValue();
+        label.innerHTML = api.field.label || api.field.name;
+        valueLabel.innerHTML = api.getValue().toString();
+
+        input.addEventListener('input', function(e) {
+            api.setValue(e.target.value);
+        });
+
+        api.onValueChange(function(value) {
+            input.value = value;
+            valueLabel.innerHTML = value.toString();
+        });
+
+        api.setHeight(document.body.offsetHeight + 'px');
+    };
+
+</script>
+
+</body>
+</html>

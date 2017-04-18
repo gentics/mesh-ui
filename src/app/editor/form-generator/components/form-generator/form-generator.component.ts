@@ -96,6 +96,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
      */
     private updateAtPath(object: any, path: any[], value: any): any {
         let pointer = this.getPointerByPath(object, path);
+        console.log(`updating`, path, value);
         return pointer[path[path.length - 1]] = this.clone(value);
     }
 

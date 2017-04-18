@@ -10,7 +10,19 @@
 
     <div class="content-pane" right>
         <!-- Right panel contents -->
-        <form-generator [schema]="schema"
+        <div class="form-info">
+            <div>
+                Valid: {{ formGenerator.isValid }}
+            </div>
+            <div>
+                Dirty: {{ formGenerator.isDirty }}
+            </div>
+            <div>
+                <gtx-button size="small" flat (click)="formGenerator.setPristine()" [disabled]="!formGenerator.isDirty">set pristine</gtx-button>
+            </div>
+        </div>
+        <form-generator #formGenerator
+                        [schema]="schema"
                         [node]="node"></form-generator>
     </div>
 
