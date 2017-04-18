@@ -85,6 +85,14 @@ describe('FieldGeneratorService', () => {
                 expect(fixture.componentInstance.onChangeFn).toHaveBeenCalledWith(mockPath, 'foo');
             });
 
+            it('invokes the setValid function when the api.setValid() method is invoked', () => {
+                const result = fieldGenerator.attachField(mockPath, mockField, mockValue, MockFieldComponent);
+                const api = result.instance.api;
+
+                api.setValid(false);
+                expect(result.instance.setValid).toHaveBeenCalledWith(false);
+            });
+
             it('api.setValue() allows overriding of the path argument', () => {
                 const result = fieldGenerator.attachField(mockPath, mockField, mockValue, MockFieldComponent);
                 const api = result.instance.api;
@@ -156,6 +164,7 @@ class MockFieldComponent extends BaseFieldComponent {
         });
         this.setWidth = createSpy('setWidth');
         this.setHeight = createSpy('setHeight');
+        this.setValid = createSpy('setValid');
     };
     init(api: MeshFieldControlApi): void {};
     valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void {}

@@ -24,9 +24,11 @@ export class MeshControl {
     fieldDef: SchemaField | RootFieldDefinition;
     private lastValue;
 
+    /**
+     * Returns true if this MeshControl and all of its children are valid
+     */
     get isValid(): boolean {
-        const required = this.fieldDef.required === true;
-        const selfValid = !required || (required && !!this.lastValue);
+        const selfValid = !!this.meshField && this.meshField.isValid;
         const childrenValid = Array.from(this.children.values())
             .reduce((valid, control) => !valid ? false : control.isValid, true);
         return selfValid && childrenValid;

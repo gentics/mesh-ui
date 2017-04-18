@@ -22,7 +22,7 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     private fieldGenerator: FieldGenerator;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private fieldControlGroupService: MeshControlGroup) {
+                private meshControlGroup: MeshControlGroup) {
         super();
     }
 
@@ -44,7 +44,7 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     }
 
     createDefaultMicronodeComponent(): void {
-        const meshControl = this.fieldControlGroupService.getMeshControlAtPath(this.api.path);
+        const meshControl = this.meshControlGroup.getMeshControlAtPath(this.api.path);
 
         if (meshControl) {
             mockGetMicroschemaByUuid(this.value.microschema.uuid)

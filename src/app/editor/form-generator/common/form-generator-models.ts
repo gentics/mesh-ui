@@ -36,6 +36,10 @@ export interface MeshFieldControlApi {
      */
     setValue: (value: NodeFieldType, path?: SchemaFieldPath) => void;
     /**
+     * Sets the validity of the control.
+     */
+    setValid: (isValid: boolean) => void;
+    /**
      * Takes a callback function which will be invoked whenever the field value or the value of a
      * descendant field changes.
      */

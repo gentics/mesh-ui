@@ -22,9 +22,9 @@ export class DateFieldComponent extends BaseFieldComponent {
         this.timestampValue = date.getTime() / 1000;
     }
 
-    onChange(value: number): void {
-        if (typeof value === 'number') {
-            const date = new Date(value * 1000);
+    onChange(timestamp: number): void {
+        if (typeof timestamp === 'number') {
+            const date = new Date(timestamp * 1000);
             this.api.setValue(date.toISOString());
         }
     }

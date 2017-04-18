@@ -15,6 +15,7 @@ export class StringFieldComponent extends BaseFieldComponent {
     init(api: MeshFieldControlApi): void {
         this.value = api.getValue();
         this.api = api;
+        this.setValidity(this.value);
     }
 
     valueChange(value: NodeFieldType): void {
@@ -23,6 +24,15 @@ export class StringFieldComponent extends BaseFieldComponent {
 
     onChange(value: string): void {
         this.api.setValue(value);
+        this.setValidity(value);
+    }
+
+    /**
+     * Mark as invalid if field is required and has a falsy value
+     */
+    private setValidity(value: any): void {
+        const isValid = !this.api.field.required || !!value;
+        this.api.setValid(isValid);
     }
 
 }

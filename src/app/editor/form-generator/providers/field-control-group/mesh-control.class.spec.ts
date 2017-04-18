@@ -371,23 +371,32 @@ describe('MeshControl class', () => {
 
     describe('validation', () => {
 
+        it('isValid == false when no BaseMeshField has been registered', () => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'string'
+            };
+            const meshControl = new MeshControl(fieldDef, 'foo');
+            expect(meshControl.isValid).toBe(false);
+        });
+
         it('isValid == true when there are no own validation errors', () => {
             const fieldDef: SchemaField = {
                 name: 'test',
-                type: 'string',
-                required: true
+                type: 'string'
             };
-            const meshControl = new MeshControl(fieldDef, 'foo');
+            const meshControl = new MeshControl(fieldDef, 'foo', new MockMeshField());
             expect(meshControl.isValid).toBe(true);
         });
 
         it('isValid == false when there is own validation error', () => {
             const fieldDef: SchemaField = {
                 name: 'test',
-                type: 'string',
-                required: true
+                type: 'string'
             };
-            const meshControl = new MeshControl(fieldDef, '');
+            const mockMeshField = new MockMeshField();
+            mockMeshField.setValid(false);
+            const meshControl = new MeshControl(fieldDef, '', mockMeshField);
             expect(meshControl.isValid).toBe(false);
         });
 
@@ -397,16 +406,15 @@ describe('MeshControl class', () => {
                 type: 'micronode'
             };
             const initialValue = { child: '' };
-            const meshControl = new MeshControl(fieldDef, initialValue);
+            const meshControl = new MeshControl(fieldDef, initialValue, new MockMeshField());
 
             expect(meshControl.children.size).toBe(0);
 
             const pseudoField: SchemaField = {
                 name: 'child',
-                type: 'string',
-                required: true
+                type: 'string'
             };
-            meshControl.addChild(pseudoField, 'childValue');
+            meshControl.addChild(pseudoField, 'childValue', new MockMeshField());
 
             expect(meshControl.isValid).toBe(true);
         });
@@ -423,16 +431,16 @@ describe('MeshControl class', () => {
 
             const pseudoField1: SchemaField = {
                 name: 'child1',
-                type: 'string',
-                required: true
+                type: 'string'
             };
-            meshControl.addChild(pseudoField1, '');
+            const mockChildField = new MockMeshField();
+            mockChildField.setValid(false);
+            meshControl.addChild(pseudoField1, '', mockChildField);
             const pseudoField2: SchemaField = {
                 name: 'child2',
-                type: 'string',
-                required: true
+                type: 'string'
             };
-            meshControl.addChild(pseudoField2, 'okay');
+            meshControl.addChild(pseudoField2, 'okay', new MockMeshField());
 
             expect(meshControl.isValid).toBe(false);
         });
@@ -443,7 +451,7 @@ describe('MeshControl class', () => {
                 type: 'micronode'
             };
             const initialValue = { child: '' };
-            const meshControl = new MeshControl(fieldDef, initialValue);
+            const meshControl = new MeshControl(fieldDef, initialValue, new MockMeshField());
 
             expect(meshControl.children.size).toBe(0);
 
@@ -452,17 +460,17 @@ describe('MeshControl class', () => {
                 type: 'list',
                 listType: 'string'
             };
-            const listControl = meshControl.addChild(listField, []);
+            const listControl = meshControl.addChild(listField, [], new MockMeshField());
 
+            const mockChildField = new MockMeshField();
             const stringField: SchemaField = {
                 name: 'child2',
-                type: 'string',
-                required: true
+                type: 'string'
             };
-            listControl.addChild(stringField, 'okay');
+            listControl.addChild(stringField, 'okay', mockChildField);
 
             expect(meshControl.isValid).toBe(true);
-            listControl.checkValue([''], true);
+            mockChildField.setValid(false);
             expect(meshControl.isValid).toBe(false);
         });
     });

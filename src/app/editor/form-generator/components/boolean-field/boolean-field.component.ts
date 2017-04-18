@@ -21,7 +21,7 @@ export class BooleanFieldComponent extends BaseFieldComponent {
         this.value = value;
     }
 
-    onChange(value: string): void {
+    onChange(value: boolean): void {
         this.api.setValue(value);
     }
 

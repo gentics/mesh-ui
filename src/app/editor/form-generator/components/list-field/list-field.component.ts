@@ -48,7 +48,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     private subscription: Subscription;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private fieldControlGroupService: MeshControlGroup,
+                private meshControlGroup: MeshControlGroup,
                 private viewContainerRef: ViewContainerRef) {
         super();
     }
@@ -139,7 +139,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         this.componentRefs = [];
         const fieldType = this.field.listType as ListTypeFieldType;
         const controlType = getControlType({ type: fieldType } as any);
-        const meshControl = this.fieldControlGroupService.getMeshControlAtPath(this.api.path);
+        const meshControl = this.meshControlGroup.getMeshControlAtPath(this.api.path);
         if (meshControl) {
             this.removeSortableGeneratedItems();
             meshControl.clearChildren();

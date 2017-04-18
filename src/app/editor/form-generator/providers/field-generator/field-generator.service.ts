@@ -23,6 +23,7 @@ export class FieldGenerator {
                                               viewContainerRef: ViewContainerRef): ComponentRef<T>;
     attachField<T extends BaseFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
                                               viewContainerRef?: ViewContainerRef): ComponentRef<T> {
+
         const _viewContainerRef = viewContainerRef || this.viewContainerRef;
         const factory = this.resolver.resolveComponentFactory(fieldComponent);
         const componentRef = _viewContainerRef.createComponent(factory);
@@ -36,6 +37,9 @@ export class FieldGenerator {
             getValue() { return value; },
             setValue(value: any, pathOverride?: SchemaFieldPath) {
                 update(pathOverride || path, value);
+            },
+            setValid(isValid: boolean) {
+                instance.setValid(isValid);
             },
             onValueChange(cb) {
                 instance.valueChange = cb.bind(instance);

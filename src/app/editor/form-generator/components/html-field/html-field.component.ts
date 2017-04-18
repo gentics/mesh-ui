@@ -40,6 +40,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     init(api: MeshFieldControlApi): void {
         this.api = api;
         this.value = api.getValue();
+        this.setValidity(this.value);
     }
 
     valueChange(value: NodeFieldType): void {
@@ -50,17 +51,22 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         this.editor.focus();
     }
 
-    onChange(value: string): void {
-        if (typeof value === 'string') {
-            this.api.setValue(value);
-        }
-    }
-
     private onTextChangeHandler = () => {
-        this.api.setValue(this.editorRef.nativeElement.querySelector('.ql-editor').innerHTML);
+        const value = this.editorRef.nativeElement.querySelector('.ql-editor').innerHTML;
+        this.api.setValue(value);
+        this.setValidity(value);
     }
 
     private onSelectionChangeHandler = range => {
         this.focus = range !== null;
+    }
+
+    /**
+     * Mark as invalid if field is required and has a falsy value
+     */
+    private setValidity(value: any): void {
+        const quillEmptyValue = '<p><br></p>';
+        const isValid = !this.api.field.required || (!!value && value !== quillEmptyValue);
+        this.api.setValid(isValid);
     }
 }
