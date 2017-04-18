@@ -1,9 +1,9 @@
 import { Injectable, Pipe, ChangeDetectorRef, PipeTransform, OnDestroy } from '@angular/core';
-import { TranslateService, TranslatePipe } from 'ng2-translate';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 
 /**
- * A wrapper around the ng2-translate TranslatePipe. Adds some convenience shortcuts to allow
+ * A wrapper around the ngx-translate TranslatePipe. Adds some convenience shortcuts to allow
  * easier translation of certain common properties:
  *
  * Shortcut Translations
