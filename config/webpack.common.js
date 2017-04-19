@@ -173,6 +173,12 @@ module.exports = function (options) {
                  */
                 { test: /\.yml/, loader: 'json-loader!yaml-loader' },
 
+
+                {
+                    test: /\.(eot|svg|ttf|woff|woff2)$/,
+                    loader: 'file-loader?name=public/fonts/[name].[ext]'
+                }
+
             ],
 
         },
