@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { TranslateService } from '@ngx-translate/core';
 import { FALLBACK_LANGUAGE, UI_LANGUAGES } from '../../../common/config/config';
 
 export type UILanguage = 'en' | 'de';
@@ -7,22 +7,22 @@ export type UILanguage = 'en' | 'de';
 @Injectable()
 export class I18nService {
 
-    constructor(private ng2Translate: TranslateService) {
-        ng2Translate.setDefaultLang(FALLBACK_LANGUAGE);
+    constructor(private ngxTranslate: TranslateService) {
+        ngxTranslate.setDefaultLang(FALLBACK_LANGUAGE);
     }
 
     /**
      * Set the UI language
      */
     setLanguage(language: UILanguage): void {
-        this.ng2Translate.use(language);
+        this.ngxTranslate.use(language);
     }
 
     /**
      * Translate the given key.
      */
     translate(key: string | string[], params?: any): string {
-        return this.ng2Translate.instant(key, params);
+        return this.ngxTranslate.instant(key, params);
     }
 
     /**
