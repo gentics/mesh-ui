@@ -10,7 +10,6 @@ import { AppState } from '../../../state/providers/app-state.service';
 })
 export class LanguageSwitcherComponent {
 
-
     availableLanguages: string[];
     currentLanguage: Observable<UILanguage>;
 
@@ -22,7 +21,9 @@ export class LanguageSwitcherComponent {
 
     onChange(language: UILanguage): void {
         // TODO: Create state action which handles this
-        this.appState.set('currentLanguage', language);
-        this.i18n.setLanguage(language);
+        if (this.appState.get('currentLanguage') !== language) {
+            this.appState.set('currentLanguage', language);
+            this.i18n.setLanguage(language);
+        }
     }
 }
