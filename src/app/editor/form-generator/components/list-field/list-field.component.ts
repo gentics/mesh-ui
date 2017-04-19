@@ -103,6 +103,18 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         }
     }
 
+    formWidthChange(widthInPixels: number): void {
+        if (this.field.listType === 'micronode') {
+            this.setWidth('100%');
+        } else {
+            if (widthInPixels < 800) {
+                this.setWidth('100%');
+            } else {
+                this.setWidth('42%');
+            }
+        }
+    }
+
     dragStart(): void {
         this.displayRemoveArea = true;
     }

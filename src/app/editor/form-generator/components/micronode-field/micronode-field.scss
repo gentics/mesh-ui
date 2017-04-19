@@ -1,8 +1,7 @@
 :host {
-    border: 1px solid darkolivegreen;
+    box-shadow: 0 1px 5px 0 rgba(0,0,0,0.44);
     margin: 5px;
     padding: 5px;
-    width: 100%;
 }
 
 .micronode-control-wrapper {
@@ -10,6 +9,7 @@
     flex-wrap: wrap;
     padding: 20px 0;
     overflow: hidden;
+    justify-content: space-between;
 
     /deep/ & > .mesh-field {
         margin-left: 20px;

@@ -3,7 +3,6 @@
 :host {
     display: block;
     margin: 20px 0;
-    width: 100%;
 }
 
 .item-row {
@@ -28,6 +27,10 @@
     &.updating {
         opacity: 0.2;
         transition: opacity 0s;
+    }
+
+    gtx-drag-handle {
+        color: $gtx-color-dark-gray;
     }
 
     .remove-area-wrapper {

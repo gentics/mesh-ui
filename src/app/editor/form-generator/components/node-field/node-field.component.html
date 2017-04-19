@@ -2,5 +2,6 @@
     <gtx-input [(ngModel)]="userValue"
                [label]="api.field.label || api.field.name"></gtx-input>
     <gtx-button [disabled]="!isValidUuid()"
+                flat="true"
                 (click)="doUpdate()">Set</gtx-button>
 </div>

@@ -42,6 +42,11 @@ export abstract class BaseFieldComponent  {
      */
     formWidthChange(widthInPixels: number): void {
         // no-op, implement as necessary in individual subclasses
+        if (widthInPixels < 800) {
+            this.setWidth('100%');
+        } else {
+            this.setWidth('42%');
+        }
     }
 
     /**

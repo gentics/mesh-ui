@@ -41,6 +41,10 @@ export class CustomFieldComponent extends BaseFieldComponent implements AfterVie
         // handled by the custom control directly via MeshFieldControlApi.onValueChange()
     }
 
+    formWidthChange(): void {
+        // handled by the custom control directly via MeshFieldControlApi.onFormWidthChange()
+    }
+
     onChange(value: string): void {
         this.api.setValue(value);
     }

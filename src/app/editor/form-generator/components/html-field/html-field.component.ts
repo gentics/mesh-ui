@@ -47,6 +47,10 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         this.value = value;
     }
 
+    formWidthChange(): void {
+        this.setWidth('100%');
+    }
+
     focusEditor(): void {
         this.editor.focus();
     }

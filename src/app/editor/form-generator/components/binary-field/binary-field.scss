@@ -1,7 +1,13 @@
 @import "variables";
 
+:host {
+    margin-top: 20px;
+}
+
 .property-list {
+    font-size: $gtx-font-size-small;
     background-color: $gtx-color-very-light-gray;
+    margin-top: 0;
     li {
         overflow: hidden;
         text-overflow: ellipsis;
