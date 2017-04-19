@@ -20,7 +20,7 @@ export class AppComponent {
         this.loggedIn$ = state.changes$.map(state => state.loggedIn);
         this.adminMode$ = this.router.events
             .filter(event => event instanceof NavigationEnd)
-            .map(event => /^\/admin/.test(event.url));
+            .map((event: NavigationEnd) => /^\/admin/.test(event.url));
     }
 
     logOut(): void {

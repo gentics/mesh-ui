@@ -119,7 +119,7 @@ describe('MeshControlGroup', () => {
 
     it('getMeshControlAtPath() invokes _rootControl.getMeshControlAtPath()', () => {
         meshControlGroup.init();
-        const spy = spyOn(meshControlGroup.getMeshControlAtPath([]), 'getMeshControlAtPath');
+        const spy = spyOn(meshControlGroup.getMeshControlAtPath([]) as MeshControl, 'getMeshControlAtPath');
         const path = ['foo'];
         meshControlGroup.getMeshControlAtPath(path);
 

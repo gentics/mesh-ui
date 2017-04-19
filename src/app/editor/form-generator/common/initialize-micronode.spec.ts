@@ -26,7 +26,7 @@ describe('initializeMicronode()', () => {
             ]
         } as any;
 
-        expect(initializeMicronode(microschema).fields).toEqual({
+        expect<any>(initializeMicronode(microschema).fields).toEqual({
             field1: '',
             field2: [false],
             field3: ''
