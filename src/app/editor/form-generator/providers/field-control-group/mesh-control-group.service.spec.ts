@@ -117,6 +117,16 @@ describe('MeshControlGroup', () => {
 
     });
 
+    it('formWidthChanged() invokes formWidthChanged() on root MeshControl', () => {
+        meshControlGroup.init();
+        const rootControl = meshControlGroup.getMeshControlAtPath([]) as MeshControl;
+        rootControl.formWidthChanged = createSpy('formWidthChanged');
+
+        meshControlGroup.formWidthChanged(123);
+
+        expect(rootControl.formWidthChanged).toHaveBeenCalledWith(123);
+    });
+
     it('getMeshControlAtPath() invokes _rootControl.getMeshControlAtPath()', () => {
         meshControlGroup.init();
         const spy = spyOn(meshControlGroup.getMeshControlAtPath([]) as MeshControl, 'getMeshControlAtPath');

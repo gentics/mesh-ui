@@ -26,8 +26,23 @@ export abstract class BaseFieldComponent  {
     }
     private _isValid: boolean = true;
 
+    /**
+     * Initializes the field, providing it with the api object which gives access to properties
+     * necessary for rendering the field.
+     */
     abstract init(api: MeshFieldControlApi): void;
+
+    /**
+     * This method will be invoked whenever the field's value might have changed.
+     */
     abstract valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void;
+
+    /**
+     * This method is invoked whenever the containing form's width changes.
+     */
+    formWidthChange(widthInPixels: number): void {
+        // no-op, implement as necessary in individual subclasses
+    }
 
     /**
      * Sets the css width of the host component. Intended for use by custom controls.

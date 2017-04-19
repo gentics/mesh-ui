@@ -24,14 +24,26 @@ export class MeshControlGroup {
 
     private _rootControl: MeshControl;
 
+    /**
+     * Creates a new MeshControl as the root control for the group. This method must be invoked before attempting
+     * to use the other class methods.
+     */
     init(): void {
         this._rootControl = new MeshControl();
     }
 
+    /**
+     * Add a control to the root of the group.
+     */
     addControl(field: SchemaField, initialValue: any, meshField: BaseFieldComponent): void {
         this.rootControl.addChild(field, initialValue, meshField);
     }
 
+    /**
+     * Initiates a check of the values for the MeshControls in the group.
+     * If the `propertyChanged` path is specified, then only the controls along that path will be checked.
+     * Otherwise all controls in the group will be checked.
+     */
     checkValue(values: { [p: string]: NodeFieldType }, propertyChanged?: SchemaFieldPath): void {
         if (propertyChanged) {
             const path = propertyChanged.slice();
@@ -57,6 +69,16 @@ export class MeshControlGroup {
         }
     }
 
+    /**
+     * Causes the `formWidthChanged()` method to be invoked for all controls in the group.
+     */
+    formWidthChanged(widthInPixels: number): void {
+        this.rootControl.formWidthChanged(widthInPixels);
+    }
+
+    /**
+     * Returns the MeshControl at the given path in the tree.
+     */
     getMeshControlAtPath(path: SchemaFieldPath): MeshControl | undefined {
         return this.rootControl.getMeshControlAtPath(path);
     }

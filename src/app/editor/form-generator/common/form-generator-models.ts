@@ -15,6 +15,8 @@ export type SchemaFieldPath = Array<string | number>;
  */
 export type ValueChangeCallback = (newValue: NodeFieldType, oldValue?: NodeFieldType) => void;
 
+export type FormWidthChangeCallback = (widthInPixels: number) => void;
+
 export interface MeshFieldControlApi {
     /**
      * The object path to this field in the schema.
@@ -52,4 +54,8 @@ export interface MeshFieldControlApi {
      * Sets the css height of the host component.
      */
     setHeight: (width: string) => void;
+    /**
+     * Takes a callback function which will be invoked whenever the width of the form changes.
+     */
+    onFormWidthChange: (callback: FormWidthChangeCallback) => void;
 }

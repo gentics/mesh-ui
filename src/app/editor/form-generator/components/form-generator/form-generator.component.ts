@@ -1,4 +1,18 @@
-import { AfterViewInit, Component, ComponentRef, Input, OnChanges, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ComponentRef,
+    ElementRef,
+    HostListener,
+    Input,
+    OnChanges,
+    OnDestroy,
+    Optional,
+    SimpleChanges,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
+import { SplitViewContainer } from 'gentics-ui-core';
 import { Schema } from '../../../../common/models/schema.model';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
@@ -6,6 +20,8 @@ import { getControlType } from '../../common/get-control-type';
 import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
 import { SchemaFieldPath } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 
 /**
  * Generates a form based on a schema and populates with data from the node.
@@ -15,7 +31,7 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
     templateUrl: 'form-generator.component.html',
     styleUrls: ['form-generator.scss']
 })
-export class FormGeneratorComponent implements OnChanges, AfterViewInit {
+export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestroy {
     @Input() schema: Schema;
     @Input() node: MeshNode;
 
@@ -33,14 +49,19 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
         return this._isDirty;
     }
 
+    @ViewChild('formContainer', { read: ElementRef })
+    private formContainer: ElementRef;
     @ViewChild('formRoot', { read: ViewContainerRef })
     private formRoot: ViewContainerRef;
     private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
     private _isDirty: boolean = false;
+    private windowResize$ = new Subject<void>();
+    private containerResizeSub: Subscription;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private meshControlGroup: MeshControlGroup) {}
+                private meshControlGroup: MeshControlGroup,
+                @Optional() private splitViewContainer: SplitViewContainer) {}
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['schema']) {
@@ -54,6 +75,26 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit {
         };
         this.fieldGenerator = this.fieldGeneratorService.create(this.formRoot, updateFn);
         this.generateForm();
+
+        this.containerResizeSub = this.windowResize$
+            .merge(this.splitViewContainer && this.splitViewContainer.splitDragEnd || [])
+            .startWith(true)
+            .debounceTime(500)
+            .map(() => this.formContainer.nativeElement.offsetWidth)
+            .subscribe(widthInPixels => {
+                this.meshControlGroup.formWidthChanged(widthInPixels);
+            });
+    }
+
+    ngOnDestroy(): void {
+        if (this.containerResizeSub) {
+            this.containerResizeSub.unsubscribe();
+        }
+    }
+
+    @HostListener('window:resize')
+    resizeHandler(): void {
+        this.windowResize$.next();
     }
 
     generateForm(): void {

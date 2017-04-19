@@ -127,6 +127,16 @@ describe('FieldGeneratorService', () => {
                 expect(valueChangeSpy).toHaveBeenCalledWith('foo', 'bar');
             });
 
+            it('api.onFormWidthChange() callback is invoked with formWidthChange()', () => {
+                const result = fieldGenerator.attachField(mockPath, mockField, mockValue, MockFieldComponent);
+                const api = result.instance.api;
+                const formWidthChangeSpy = createSpy('formWidthChange');
+                api.onFormWidthChange(formWidthChangeSpy);
+
+                result.instance.formWidthChange(123);
+                expect(formWidthChangeSpy).toHaveBeenCalledWith(123);
+            });
+
         });
 
     });

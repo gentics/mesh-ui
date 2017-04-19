@@ -134,6 +134,42 @@ describe('MeshControl class', () => {
 
     });
 
+    describe('formWidthChanged()', () => {
+        let meshFieldParent: MockMeshField;
+        let meshFieldChild: MockMeshField;
+        let meshControl: MeshControl;
+        let initialValue: string[];
+
+        beforeEach(() => {
+            const fieldDefList: SchemaField = {
+                name: 'parent',
+                type: 'list',
+                listType: 'string'
+            };
+            const fieldDefString: SchemaField = {
+                name: 'chil',
+                type: 'string',
+            };
+            initialValue = ['foo', 'bar', 'baz'];
+            meshFieldParent = new MockMeshField();
+            meshFieldParent.formWidthChange = createSpy('formWidthChange');
+            meshControl = new MeshControl(fieldDefList, initialValue, meshFieldParent);
+            meshFieldChild = new MockMeshField();
+            meshFieldChild.formWidthChange = createSpy('formWidthChange');
+            meshControl.addChild(fieldDefString, 'foo', meshFieldChild);
+        });
+
+        it('invokes meshField.formWidthChange()', () => {
+            meshControl.formWidthChanged(123);
+            expect(meshFieldParent.formWidthChange).toHaveBeenCalledWith(123);
+        });
+
+        it('invokes meshField.formWidthChange() on children', () => {
+            meshControl.formWidthChanged(345);
+            expect(meshFieldChild.formWidthChange).toHaveBeenCalledWith(345);
+        });
+    });
+
     describe('list type', () => {
 
         let meshField: MockMeshField;

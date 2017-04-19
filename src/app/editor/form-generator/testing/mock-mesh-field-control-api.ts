@@ -15,4 +15,5 @@ export class MockMeshFieldControlApi {
     setHeight = createSpy('setHeight');
     setWidth = createSpy('setWidth');
     setValid = createSpy('setValid');
+    onFormWidthChange = createSpy('onFormWidthChange');
 }

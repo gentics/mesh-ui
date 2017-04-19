@@ -49,6 +49,9 @@ export class FieldGenerator {
             },
             setWidth(value: string) {
                 instance.setWidth(value);
+            },
+            onFormWidthChange(cb) {
+                instance.formWidthChange = cb.bind(instance);
             }
         };
         componentRef.instance.init(meshControlFieldInstance);

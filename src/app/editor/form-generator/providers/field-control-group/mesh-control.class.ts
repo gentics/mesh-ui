@@ -14,7 +14,7 @@ class RootFieldDefinition {
 
 /**
  * A MeshControl is a wrapper around a BaseFieldComponent, and is responsible for propagating calls to the
- * BaseFieldComponent.valueChange() method whenever the associated value changes. MeshControls can be nested
+ * BaseFieldComponent.valueChange() and BaseFieldComponent.formWidthChange() methods. MeshControls can be nested
  * by use of the addChild() method, which allows the implementation of complex types such as lists and
  * micronodes.
  */
@@ -45,6 +45,10 @@ export class MeshControl {
         }
     }
 
+    /**
+     * In some circumstances we cannot set this.meshField during construction, in which case this method is used
+     * to set it later.
+     */
     registerMeshFieldInstance(meshFieldInstance: BaseFieldComponent): void {
         this.meshField = meshFieldInstance;
     }
@@ -54,7 +58,7 @@ export class MeshControl {
      */
     checkValue(value: NodeFieldType, recursive: boolean = false) {
         if (this.meshField) {
-            (this.meshField as BaseFieldComponent).valueChange(value, this.lastValue);
+            this.meshField.valueChange(value, this.lastValue);
         }
         this.lastValue = value;
 
@@ -66,6 +70,20 @@ export class MeshControl {
                     meshControl.checkValue(valueContainer[key], true);
                 });
             }
+        }
+    }
+
+    /**
+     * Runs the `formWidthChanged()` function for this control's BaseFieldComponent and recursively for all the control's descendants.
+     */
+    formWidthChanged(widthInPixels: number): void {
+        if (this.meshField) {
+            this.meshField.formWidthChange(widthInPixels);
+        }
+        if (0 < this.children.size) {
+            this.children.forEach(meshControl => {
+                meshControl.formWidthChanged(widthInPixels);
+            });
         }
     }
 
