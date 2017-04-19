@@ -1,3 +1,46 @@
-:host {
+@import "~quill/dist/quill.snow.css";
+@import "variables";
+
+html-field {
     width: 100%;
+    padding-bottom: 77px;
+
+    label {
+        transition: color 0.2s;
+    }
+
+    .ql-snow.ql-toolbar button:focus {
+        outline: 1px solid transparentize($gtx-color-primary, 0.7);
+    }
+
+    .ql-toolbar.ql-snow {
+        border: 2px solid $gtx-color-light-gray;
+        border-bottom-width: 1px;
+        border-radius: 3px 3px 0 0;
+        transition: border 0.2s;
+    }
+    .ql-snow.ql-container {
+        border: 2px solid $gtx-color-light-gray;
+        border-top-width: 1px;
+        border-radius: 0 0 3px 3px;
+        transition: border 0.2s;
+    }
+
+    strong {
+        font-weight: bold;
+    }
+
+    &.focus {
+        label {
+            color: $gtx-color-primary;
+        }
+        .ql-toolbar.ql-snow {
+            border-color: $gtx-color-primary;
+            border-bottom-color: $gtx-color-light-gray;
+        }
+        .ql-snow.ql-container {
+            border-color: $gtx-color-primary;
+            border-top-color: $gtx-color-light-gray;
+        }
+    }
 }

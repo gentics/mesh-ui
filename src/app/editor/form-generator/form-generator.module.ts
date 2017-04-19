@@ -15,10 +15,12 @@ import { DateFieldComponent } from './components/date-field/date-field.component
 import { FormsModule } from '@angular/forms';
 import { NodeFieldComponent } from './components/node-field/node-field.component';
 import { BinaryFieldComponent } from './components/binary-field/binary-field.component';
+import { CustomFieldComponent } from './components/custom-field/custom-field.component';
 
 const ENTRY_COMPONENTS = [
     BinaryFieldComponent,
     BooleanFieldComponent,
+    CustomFieldComponent,
     DateFieldComponent,
     HtmlFieldComponent,
     ListFieldComponent,
