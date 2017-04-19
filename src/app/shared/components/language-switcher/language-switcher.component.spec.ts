@@ -3,11 +3,10 @@ import { StateModule } from '../../../state/state.module';
 import { LanguageSwitcherComponent } from './language-switcher.component';
 import { SharedModule } from '../../shared.module';
 import { AppState } from '../../../state/providers/app-state.service';
+import { componentTest } from '../../../../testing/component-test';
 
 describe('LanguageSwitcherComponent:', () => {
 
-    let comp: LanguageSwitcherComponent;
-    let fixture: ComponentFixture<LanguageSwitcherComponent>;
     let appState: AppState;
 
     beforeEach(async(() => {
@@ -21,28 +20,19 @@ describe('LanguageSwitcherComponent:', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(LanguageSwitcherComponent);
-        comp = fixture.componentInstance;
-        appState = fixture.debugElement.injector.get(AppState);
+        appState = TestBed.get(AppState);
         spyOn(appState, 'set');
-
-        fixture.detectChanges();
     });
 
-    it(`should be initialized`, () => {
-        expect(fixture).toBeDefined();
-        expect(comp).toBeDefined();
-    });
-
-    it(`should change state if language is changed`, () => {
+    it(`should change state if language is changed`, componentTest(() => LanguageSwitcherComponent, (fixture, comp) => {
         // Default language is english
-        comp.onChange('de');
+        comp.changeLanguage('de');
         expect(appState.set).toHaveBeenCalled();
-    });
+    }));
 
-    it(`should NOT change state if same language is selected`, () => {
+    it(`should NOT change state if same language is selected`, componentTest(() => LanguageSwitcherComponent, (fixture, comp) => {
         // Since default language is english, setting it to english should do nothing
-        comp.onChange('en');
+        comp.changeLanguage('en');
         expect(appState.set).not.toHaveBeenCalled();
-    });
+    }));
 });
