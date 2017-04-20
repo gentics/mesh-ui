@@ -25,6 +25,10 @@
         "no-forward-ref": true,
         "no-input-rename": true,
         "no-output-rename": true,
+        "only-arrow-functions": [
+            true,
+            "allow-named-functions"
+        ],
         "pipe-naming": [true, "camelCase"],
 
         "templates-use-public": true,

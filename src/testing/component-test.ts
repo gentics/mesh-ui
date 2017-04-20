@@ -1,4 +1,4 @@
-import {ComponentFixture, fakeAsync, TestBed, getTestBed} from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, getTestBed } from '@angular/core/testing';
 
 /**
  * Use to test a component in one consistent way. The passed callback

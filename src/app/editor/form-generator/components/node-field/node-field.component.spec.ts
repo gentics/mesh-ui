@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NodeFieldComponent } from './node-field.component';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 

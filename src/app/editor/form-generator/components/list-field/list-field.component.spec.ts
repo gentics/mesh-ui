@@ -1,6 +1,7 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {ListFieldComponent} from './list-field.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GenticsUICoreModule } from 'gentics-ui-core';
+
+import { ListFieldComponent } from './list-field.component';
 import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 
 describe('ListFieldComponent:', () => {

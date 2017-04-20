@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MicronodeFieldComponent } from './micronode-field.component';
 import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';

@@ -1,8 +1,8 @@
-import {Observable, Subscription} from 'rxjs';
-import {TrackedMethodCall} from 'immutablets';
+import { Observable, Subscription } from 'rxjs';
+import { TrackedMethodCall } from 'immutablets';
 
-import {ApplicationStateService} from '../providers/application-state.service';
-import {AppState} from '../models/app-state.model';
+import { ApplicationStateService } from '../providers/application-state.service';
+import { AppState } from '../models/app-state.model';
 
 
 /** Only available in testing. A partial type that can be used to mock application state. */
@@ -36,24 +36,26 @@ export class TestApplicationState extends ApplicationStateService {
             const observable = super.select(selector);
             const originalSubscribe = observable.subscribe;
             const self = this;
-            observable.subscribe = jasmine.createSpy('subscribe').and.callFake(function (...args: any[]): any {
-                subscriptionList.push(selector);
+            observable.subscribe = jasmine.createSpy('subscribe')
+                .and.callFake(function fakeSubscribe(...args: any[]): any {
+                    subscriptionList.push(selector);
 
-                const subscription: Subscription = originalSubscribe.call(this, ...args);
-                const originalUnsubscribe = subscription.unsubscribe;
-                let unsubscribed = false;
+                    const subscription: Subscription = originalSubscribe.call(this, ...args);
+                    const originalUnsubscribe = subscription.unsubscribe;
+                    let unsubscribed = false;
 
-                subscription.unsubscribe = jasmine.createSpy('unsubscribe').and.callFake(function (): void {
-                    const index = subscriptionList.indexOf(selector);
-                    if (!unsubscribed && index >= 0) {
-                        subscriptionList.splice(index, 1);
-                        unsubscribed = true;
-                    }
-                    return originalUnsubscribe.call(this);
+                    subscription.unsubscribe = jasmine.createSpy('unsubscribe')
+                        .and.callFake(function fakeUnsubscribe(): void {
+                            const index = subscriptionList.indexOf(selector);
+                            if (!unsubscribed && index >= 0) {
+                                subscriptionList.splice(index, 1);
+                                unsubscribed = true;
+                            }
+                            return originalUnsubscribe.call(this);
+                        });
+
+                    return subscription;
                 });
-
-                return subscription;
-            });
             return observable;
         });
 
