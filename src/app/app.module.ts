@@ -17,8 +17,11 @@ import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { SharedModule } from './shared/shared.module';
 import { I18nService } from './shared/providers/i18n/i18n.service';
 import { StateModule } from './state/state.module';
+import { AppState } from './state/models/app-state.model';
+import { ApplicationStateService } from './state/providers/application-state.service';
+
 import '../styles/main.scss';
-import { AppState, InternalStateType } from './state/providers/app-state.service';
+
 import { AuthGuard } from './auth-guard';
 import { LoginModule } from './login/login.module';
 import { AdminModule } from './admin/admin.module';
@@ -27,17 +30,18 @@ import { EditorModule } from './editor/editor.module';
 // Application wide providers
 const APP_PROVIDERS = [
     ...APP_RESOLVER_PROVIDERS,
-    AppState,
+    ApplicationStateService,
     AuthGuard
 ];
 
-type StoreType = {
-    state: InternalStateType,
-    restoreInputValues: () => void,
-    disposeOldHosts: () => void
+// Data type for saving and restoring application state with hot module reloading
+interface HmrStore {
+    state: AppState;
+    restoreInputValues(): void;
+    disposeOldHosts(): void;
 };
 
-// TODO: re-enable lazy-loading of sub-modules once this issue is fixed:
+// TODO: re-enable lazy-loading of sub-modules after upgrading to Angular 4:
 // https://github.com/angular/angular/issues/12869#issuecomment-274202183
 const appSubModules = [
     LoginModule,
@@ -72,12 +76,12 @@ export class AppModule {
     constructor(public appRef: ApplicationRef,
                 public i18nService: I18nService,
                 private router: Router,
-                public appState: AppState) {
+                public appState: ApplicationStateService) {
         i18nService.setLanguage('en');
         // router.events.subscribe(event => console.log(event));
     }
 
-    public hmrOnInit(store: StoreType) {
+    public hmrOnInit(store: HmrStore) {
         if (!store || !store.state) {
             return;
         }
@@ -95,11 +99,10 @@ export class AppModule {
         delete store.restoreInputValues;
     }
 
-    public hmrOnDestroy(store: StoreType) {
+    public hmrOnDestroy(store: HmrStore) {
         const cmpLocation = this.appRef.components.map((cmp) => cmp.location.nativeElement);
         // save state
-        const state = this.appState._state;
-        store.state = state;
+        store.state = this.appState.now;
         // recreate root elements
         store.disposeOldHosts = createNewHosts(cmpLocation);
         // save input values
@@ -108,7 +111,7 @@ export class AppModule {
         removeNgStyles();
     }
 
-    public hmrAfterDestroy(store: StoreType) {
+    public hmrAfterDestroy(store: HmrStore) {
         // display new elements
         store.disposeOldHosts();
         delete store.disposeOldHosts;

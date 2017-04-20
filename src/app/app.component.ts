@@ -1,8 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { AppState } from './state/providers/app-state.service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
 import { Router, NavigationEnd } from '@angular/router';
+import { Observable } from 'rxjs';
+
+import { ApplicationStateService } from './state/providers/application-state.service';
 
 @Component({
   selector: 'app',
@@ -14,17 +14,20 @@ export class AppComponent {
     loggedIn$: Observable<boolean>;
     adminMode$: Observable<boolean>;
 
-    constructor(public state: AppState,
+    constructor(public state: ApplicationStateService,
                 private router: Router) {
 
-        this.loggedIn$ = state.changes$.map(state => state.loggedIn);
+        this.loggedIn$ = state.select(state => state.auth.loggedIn);
         this.adminMode$ = this.router.events
             .filter(event => event instanceof NavigationEnd)
             .map((event: NavigationEnd) => /^\/admin/.test(event.url));
     }
 
     logOut(): void {
-        this.state.set('loggedIn', false);
+        // TODO: actually log out
+        this.state.actions.auth.logoutStart();
+        this.state.actions.auth.logoutSuccess();
+
         this.router.navigate(['/login']);
     }
 }

@@ -1,11 +1,11 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, TestBed, ComponentFixture } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 import { AppComponent } from './app.component';
+import { ApplicationStateService } from './state/providers/application-state.service';
 import { SharedModule } from './shared/shared.module';
-import { AppState } from './state/providers/app-state.service';
-import { Observable } from 'rxjs';
 
 describe(`App`, () => {
     let comp: AppComponent;
@@ -16,7 +16,7 @@ describe(`App`, () => {
             imports: [SharedModule],
             declarations: [AppComponent],
             providers: [
-                AppState,
+                ApplicationStateService,
                 { provide: Router, useClass: MockRouter }
             ],
             schemas: [NO_ERRORS_SCHEMA]

@@ -93,6 +93,7 @@
     "gentics-ui-core": "git+ssh://git@git.gentics.com:psc/gentics-ui-core-npm-package.git#v4.0.0",
     "http-server": "^0.9.0",
     "ie-shim": "^0.1.0",
+    "immutablets": "^0.10.0",
     "jasmine-core": "^2.5.2",
     "quill": "^1.2.3",
     "reflect-metadata": "^0.1.9",
