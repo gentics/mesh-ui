@@ -3,6 +3,7 @@ import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
 import { AppState } from '../models/app-state.model';
 import { UIState } from '../models/ui-state.model';
+import { UILanguage } from '../../shared/providers/i18n/i18n.service';
 
 
 @Injectable()
@@ -21,7 +22,7 @@ export class UIStateActions extends StateActionBranch<AppState> {
         });
     }
 
-    setLanguage(newUiLanguage: string): void {
+    setLanguage(newUiLanguage: UILanguage): void {
         this.ui.currentLanguage = newUiLanguage;
     }
 }
