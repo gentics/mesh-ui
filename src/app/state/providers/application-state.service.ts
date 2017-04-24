@@ -6,12 +6,14 @@ import { AppState } from '../models/app-state.model';
 import { AuthStateActions } from './auth-state-actions';
 import { UIStateActions } from './ui-state-actions';
 import { EditorStateActions } from './editor-state-actions';
-
+import { EntityState } from '../models/entity-state.model';
+import { EntityStateActions } from './entitiy-state-actions';
 
 type ActionBranches = {
     auth: AuthStateActions;
     editor: EditorStateActions;
     ui: UIStateActions;
+    entity: EntityStateActions;
 };
 
 @Injectable()
@@ -32,6 +34,7 @@ export class ApplicationStateService {
     constructor() {
         this.store = new ImmutableStateStore<AppState, ActionBranches>({
             auth: new AuthStateActions(),
+            entity: new EntityStateActions(),
             editor: new EditorStateActions(),
             ui: new UIStateActions()
         });
