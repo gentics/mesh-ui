@@ -42,7 +42,7 @@ describe('LanguageSwitcherComponent:', () => {
         componentTest(() => TestComponent, fixture => {
             fixture.detectChanges();
             const buttonText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(buttonText).toBe('English');
+            expect(buttonText).toBe('en');
         })
     );
 
@@ -76,7 +76,7 @@ describe('LanguageSwitcherComponent:', () => {
             // Select german
             const dropdownItems = fixture.debugElement.queryAll(By.directive(DropdownItem));
             const germanButton = dropdownItems
-                .filter(item => item.nativeElement.textContent.trim() === 'German')[0];
+                .filter(item => item.nativeElement.textContent.trim() === 'Deutsch')[0];
             expect(germanButton).toBeDefined('german button not found');
             germanButton.triggerEventHandler('click', {});
 
@@ -88,11 +88,24 @@ describe('LanguageSwitcherComponent:', () => {
         })
     );
 
-    xit(`changes the active label when the langauge is changed in the state`,
+    it(`changes the active label when the langauge is changed in the state`,
         componentTest(() => TestComponent, fixture => {
-            // change language
-            // label should update
-            expect('Philipp has done this').toBe('true');
+            // English at first
+            fixture.detectChanges();
+            const buttonText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
+            expect(buttonText).toBe('en');
+
+            // Change state
+            appState.mockState({
+                ui: {
+                    currentLanguage: 'de'
+                }
+            });
+
+            // Label shows German now
+            fixture.detectChanges();
+            const buttonTextAfter: string = fixture.nativeElement.querySelector('gtx-button').innerText;
+            expect(buttonTextAfter).toBe('de');
         })
     );
 
