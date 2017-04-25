@@ -15,7 +15,9 @@ export class AuthStateActions extends StateActionBranch<AppState> {
             uses: ['auth'],
             initialState: {
                 auth: {
-                    loggedIn: false,
+                    // TODO: set to false. True for now to speed up development time in absence of
+                    // persistent logged-in state.
+                    loggedIn: true,
                     loggingIn: false,
                     loggingOut: false
                 }
