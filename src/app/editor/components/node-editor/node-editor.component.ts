@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { testNode, testSchema } from './mock-data';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 
 @Component({

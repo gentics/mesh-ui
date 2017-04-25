@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'search-bar',
@@ -6,10 +6,6 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./search-bar.scss']
 })
 
-export class SearchBarComponent implements OnInit {
-    constructor() {
-    }
+export class SearchBarComponent {
 
-    ngOnInit() {
-    }
 }

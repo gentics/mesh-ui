@@ -5,5 +5,5 @@ export interface EditorState {
         uuid: string;
         projectName: string;
         language: string;
-    }
+    };
 }

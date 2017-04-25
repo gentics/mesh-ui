@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 

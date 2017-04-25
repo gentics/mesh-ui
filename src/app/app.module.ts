@@ -78,7 +78,7 @@ export class AppModule {
                 private router: Router,
                 public appState: ApplicationStateService) {
         i18nService.setLanguage('en');
-        router.events.subscribe(event => console.log(event));
+        // router.events.subscribe(event => console.log(event));
     }
 
     public hmrOnInit(store: HmrStore) {

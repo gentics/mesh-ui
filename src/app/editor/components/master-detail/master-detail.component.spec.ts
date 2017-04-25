@@ -23,9 +23,4 @@ describe('MasterDetailComponent:', () => {
 
         fixture.detectChanges();
     });
-
-    it(`should be initialized`, () => {
-        expect(fixture).toBeDefined();
-        expect(comp).toBeDefined();
-    });
 });

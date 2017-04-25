@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Observable } from 'rxjs/Observable';
-import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 
 @Component({
