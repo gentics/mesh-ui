@@ -4,6 +4,7 @@ import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 import { AppState } from '../models/app-state.model';
 import { UIState } from '../models/ui-state.model';
 import { UILanguage } from '../../shared/providers/i18n/i18n.service';
+import { Project } from '../../common/models/project.model';
 
 
 @Injectable()
@@ -16,7 +17,8 @@ export class UIStateActions extends StateActionBranch<AppState> {
             uses: ['ui'],
             initialState: {
                 ui: {
-                    currentLanguage: 'en'
+                    currentLanguage: 'en',
+                    currentProject: '55f6a4666eb8467ab6a4666eb8867a84'
                 }
             }
         });
@@ -24,5 +26,9 @@ export class UIStateActions extends StateActionBranch<AppState> {
 
     setLanguage(newUiLanguage: UILanguage): void {
         this.ui.currentLanguage = newUiLanguage;
+    }
+
+    setProject(newProjectUuid: string): void {
+        this.ui.currentProject = newProjectUuid;
     }
 }

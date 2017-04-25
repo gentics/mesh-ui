@@ -1,0 +1,3 @@
+<gtx-select [value]="currentProject$ | async" (change)="changeProject($event)">
+    <gtx-option *ngFor="let project of projects$ | async" [value]="project">{{ project.name }}</gtx-option>
+</gtx-select>

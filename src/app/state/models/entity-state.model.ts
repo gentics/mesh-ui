@@ -1,4 +1,4 @@
-import { Project } from './Mesh/project.model';
+import { Project } from '../../common/models/project.model';
 
 export interface EntityState {
     projects: { [uuid: string]: Project };

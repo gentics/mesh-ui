@@ -11,11 +11,12 @@ import { LanguageSwitcherComponent } from './components/language-switcher/langua
 import { NavigationService } from './providers/navigation/navigation.service';
 import { ProjectOverviewComponent } from './components/project-overview/project-overview.component';
 import { RouterModule } from '@angular/router';
+import { ProjectSwitcherComponent } from './components/project-switcher/project-switcher.component';
 
 const SHARED_COMPONENTS = [
     NoContentComponent,
     LanguageSwitcherComponent,
-    ProjectOverviewComponent
+    ProjectSwitcherComponent
 ];
 
 const SHARED_PIPES = [

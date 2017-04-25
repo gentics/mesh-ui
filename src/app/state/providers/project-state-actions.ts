@@ -10,16 +10,7 @@ export class ProjectStateActions extends StateActionBranch<EntityState> {
         super({
             uses: ['projects'],
             initialState: {
-                projects: {
-                    'uuid1': {
-                        uuid: 'uuid1',
-                        name: 'demo'
-                    },
-                    'uuid2': {
-                        uuid: 'uuid2',
-                        name: 'TVC'
-                    },
-                }
+                projects: {}
             }
         });
     }
