@@ -1,6 +1,10 @@
 <gtx-dropdown-list width="trigger">
     <gtx-dropdown-trigger>
-        <gtx-button>{{ currentLanguage$ | async }}</gtx-button>
+        <gtx-button flat size="small" type="secondary">
+            <icon left>language</icon>
+            {{ currentLanguage$ | async | i18n }}
+            <icon right>arrow_drop_down</icon>
+        </gtx-button>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
         <gtx-dropdown-item

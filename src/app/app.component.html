@@ -8,9 +8,12 @@
                 flat
                 type="secondary"
                 *ngIf="adminMode$ | async"
-                [routerLink]="['/']">Editor Mode</gtx-button>
-    <language-switcher></language-switcher>
-    <gtx-button size="small" flat type="secondary" (click)="logOut()">Log Out</gtx-button>
+                [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
+
+    <div class="gtx-top-bar-right">
+        <language-switcher></language-switcher>
+        <gtx-button size="small" flat type="secondary" (click)="logOut()">Log Out</gtx-button>
+    </div>
 </gtx-top-bar>
 <router-outlet></router-outlet>
 <gtx-overlay-host></gtx-overlay-host>
