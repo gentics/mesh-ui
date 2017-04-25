@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { testNode, testSchema } from './mock-data';
+import { EditorEffectsService } from '../../providers/editor-effects.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'node-editor',
@@ -7,9 +9,34 @@ import { testNode, testSchema } from './mock-data';
     styleUrls: ['./node-editor.scss']
 })
 
-export class NodeEditorComponent implements OnInit {
+export class NodeEditorComponent implements OnInit, OnDestroy {
     node = testNode;
     schema = testSchema;
 
-    ngOnInit(): void {}
+    constructor(private editorEffects: EditorEffectsService,
+                private router: Router,
+                private route: ActivatedRoute
+    ) {}
+
+    ngOnInit(): void {
+        this.route.paramMap.subscribe(paramMap => {
+            const projectName = paramMap.get('projectName');
+            const nodeUuid = paramMap.get('nodeUuid');
+            if (projectName && nodeUuid) {
+                this.editorEffects.openNode(projectName, nodeUuid);
+            }
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.editorEffects.closeEditor();
+    }
+
+    closeEditor(): void {
+        this.router.navigate(['/editor', 'project', {
+            outlets: {
+                detail: null
+            }
+        }]);
+    }
 }

@@ -11,7 +11,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     ],
     imports: [
         SharedModule,
-        // RouterModule.forChild(routes),
+        RouterModule.forChild(routes),
     ],
 })
 export class AdminModule {

@@ -1,7 +1,10 @@
 <breadcrumbs></breadcrumbs>
 <gtx-split-view-container class="split-view-container"
-                          focusedPanel="right"
-                          [rightPanelVisible]="true">
+                          [class.rightPanelFocused]="editorFocused$ | async"
+                          [initialSplit]="35"
+                          [rightPanelVisible]="editorOpen$ | async"
+                          [focusedPanel]="(editorFocused$ | async) ? 'right' : 'left'"
+                          (focusedPanelChange)="setSplitFocus($event)">
 
     <div class="list-pane" left>
         <router-outlet name="list"></router-outlet>

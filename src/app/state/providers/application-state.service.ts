@@ -5,10 +5,12 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AppState } from '../models/app-state.model';
 import { AuthStateActions } from './auth-state-actions';
 import { UIStateActions } from './ui-state-actions';
+import { EditorStateActions } from './editor-state-actions';
 
 
 type ActionBranches = {
     auth: AuthStateActions;
+    editor: EditorStateActions;
     ui: UIStateActions;
 };
 
@@ -30,6 +32,7 @@ export class ApplicationStateService {
     constructor() {
         this.store = new ImmutableStateStore<AppState, ActionBranches>({
             auth: new AuthStateActions(),
+            editor: new EditorStateActions(),
             ui: new UIStateActions()
         });
 

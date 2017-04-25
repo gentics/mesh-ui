@@ -1,4 +1,4 @@
-<div class="form-info">
+<div class="editor-header">
     <div>
         <small>[debug]</small>
     </div>
@@ -11,7 +11,12 @@
     <div>
         <gtx-button size="small" flat (click)="formGenerator.setPristine()" [disabled]="!formGenerator.isDirty">set pristine</gtx-button>
     </div>
+    <div class="close-button">
+        <gtx-button icon type="secondary" (click)="closeEditor()"><icon>close</icon></gtx-button>
+    </div>
 </div>
-<form-generator #formGenerator
-                [schema]="schema"
-                [node]="node"></form-generator>
+<div class="editor-body">
+    <form-generator #formGenerator
+                    [schema]="schema"
+                    [node]="node"></form-generator>
+</div>

@@ -9,11 +9,12 @@ import { NodeEditorComponent } from './components/node-editor/node-editor.compon
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
+import { EditorEffectsService } from './providers/editor-effects.service';
 
 @NgModule({
     imports: [
         SharedModule,
-        RouterModule.forChild([]),
+        RouterModule.forChild(routes),
         FormGeneratorModule
     ],
     declarations: [
@@ -22,6 +23,9 @@ import { ContainerContentsComponent } from './components/container-contents/cont
         NodeEditorComponent,
         BreadcrumbsComponent,
         SearchBarComponent
+    ],
+    providers: [
+        EditorEffectsService
     ]
 })
 export class EditorModule {

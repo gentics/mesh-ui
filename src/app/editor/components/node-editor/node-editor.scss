@@ -1,9 +1,27 @@
-.form-info {
+:host {
     display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.editor-header {
+    flex-shrink: 1;
+    position: relative;
     background-color: rgba(3, 100, 15, 0.2);
     padding: 5px;
-    z-index: 10;
+    height: 40px;
     > div {
+        display: inline-block;
         margin: 0 10px;
     }
+
+    .close-button {
+        position: absolute;
+        right: 0;
+        top: 6px;
+    }
+}
+.editor-body {
+    overflow-y: auto;
+    flex-grow: 1;
 }

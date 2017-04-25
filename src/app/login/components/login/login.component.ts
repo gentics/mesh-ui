@@ -24,6 +24,6 @@ export class LoginComponent {
         this.state.actions.auth.loginStart();
         this.state.actions.auth.loginSuccess();
 
-        this.router.navigate(['/']);
+        this.router.navigate(['/editor', 'project']);
     }
 }

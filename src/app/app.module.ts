@@ -22,7 +22,7 @@ import { ApplicationStateService } from './state/providers/application-state.ser
 
 import '../styles/main.scss';
 
-import { AuthGuard } from './auth-guard';
+import { AuthGuard } from './shared/providers/guards/auth-guard';
 import { LoginModule } from './login/login.module';
 import { AdminModule } from './admin/admin.module';
 import { EditorModule } from './editor/editor.module';
@@ -78,7 +78,7 @@ export class AppModule {
                 private router: Router,
                 public appState: ApplicationStateService) {
         i18nService.setLanguage('en');
-        // router.events.subscribe(event => console.log(event));
+        router.events.subscribe(event => console.log(event));
     }
 
     public hmrOnInit(store: HmrStore) {
