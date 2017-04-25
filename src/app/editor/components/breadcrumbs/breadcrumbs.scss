@@ -1,0 +1,13 @@
+@import "variables";
+
+:host {
+    display: block;
+    width: 100%;
+    height: 40px;
+    background-color: $gtx-color-light-gray;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 32px;
+    color: $gtx-color-mid-gray;
+    margin: 5px 0;
+}

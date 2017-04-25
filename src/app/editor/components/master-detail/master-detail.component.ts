@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { testNode, testSchema } from './mock-data';
 
 @Component({
     selector: 'master-detail',
@@ -7,6 +6,4 @@ import { testNode, testSchema } from './mock-data';
     styleUrls: ['./master-detail.scss']
 })
 export class MasterDetailComponent {
-    node = testNode;
-    schema = testSchema;
 }

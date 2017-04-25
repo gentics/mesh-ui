@@ -9,8 +9,6 @@
                 type="secondary"
                 *ngIf="adminMode$ | async"
                 [routerLink]="['/']">Editor Mode</gtx-button>
-    <h5>Mesh UI</h5>
-    <p>{{ 'common.welcome_to_mesh' | i18n }}</p>
     <language-switcher></language-switcher>
     <gtx-button size="small" flat type="secondary" (click)="logOut()">Log Out</gtx-button>
 </gtx-top-bar>
