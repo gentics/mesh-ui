@@ -1,0 +1,96 @@
+import { Injectable } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
+
+interface NavigationInstruction {
+    list?: {
+        projectName: string;
+        containerUuid: string;
+    };
+    detail?: {
+        projectName: string;
+        nodeUuid: string;
+    } | null;
+}
+
+export interface InstructionActions {
+    navigate(extras?: NavigationExtras): Promise<boolean>;
+    commands(): any[];
+}
+
+/**
+ * A wrapper around the Angular router which provides a type-safe method of navigating the UI router states for the editor list/detail outlets.
+ */
+@Injectable()
+export class NavigationService {
+
+    constructor(private router: Router) { }
+
+    /**
+     * Navigate to a container in the list outlet.
+     */
+    list(projectName: string, containerUuid: string): InstructionActions {
+        return this.instruction({
+            list: {
+                projectName,
+                containerUuid
+            }
+        });
+    }
+
+    /**
+     * Open a node for editing in the detail outlet.
+     */
+    detail(projectName: string, nodeUuid: string): InstructionActions {
+        return this.instruction({
+            detail: {
+                projectName,
+                nodeUuid
+            }
+        });
+    }
+
+    /**
+     * Close the node in the detail outlet.
+     */
+    clearDetail(): InstructionActions {
+        return this.instruction({
+            detail: null
+        });
+    }
+
+    /**
+     * This is the generic method for generating commands based on the NavigationInstruction config object.
+     */
+    private instruction(instruction: NavigationInstruction): InstructionActions {
+        const commands = this.commands(instruction);
+
+        return {
+            navigate: (extras?: NavigationExtras) => {
+                return this.router.navigate(commands, extras);
+            },
+            commands: () => {
+                return commands;
+            }
+        };
+    }
+
+    /**
+     * Converts the NavigationInstruction object into a router commands array.
+     */
+    private commands(instruction: NavigationInstruction): any[] {
+        const outlets = {} as any;
+        if (instruction.detail === null) {
+            outlets.detail = null;
+        }
+        if (instruction.detail) {
+            const { projectName, nodeUuid } = instruction.detail;
+            outlets.detail = [projectName, nodeUuid];
+        }
+        if (instruction.list) {
+            const { projectName, containerUuid } = instruction.list;
+            outlets.list = [projectName, containerUuid];
+        }
+        return ['/editor', 'project', { outlets }];
+    }
+
+}

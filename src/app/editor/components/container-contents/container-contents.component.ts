@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 
 @Component({
     selector: 'container-contents',
@@ -12,7 +13,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 export class ContainerContentsComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
-                private router: Router,
+                private navigationService: NavigationService,
                 private state: ApplicationStateService,
                 private editorEffects: EditorEffectsService) {
     }
@@ -34,8 +35,6 @@ export class ContainerContentsComponent implements OnInit {
     }
 
     openNode(): void {
-        this.router.navigate(['/editor', 'project', { outlets: {
-            detail: ['demo', 'node_uuid']
-        }}]);
+        this.navigationService.detail('demo', 'node_uuid').navigate();
     }
 }

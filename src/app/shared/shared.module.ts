@@ -8,6 +8,7 @@ import { GenticsUICoreModule } from 'gentics-ui-core';
 import { CustomLoader } from './providers/i18n/custom-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
+import { NavigationService } from './providers/navigation/navigation.service';
 
 const SHARED_COMPONENTS = [
     NoContentComponent,
@@ -40,6 +41,7 @@ const SHARED_PIPES = [
     ],
     providers: [
         I18nService,
+        NavigationService
     ],
     exports: [
         ...SHARED_COMPONENTS,
