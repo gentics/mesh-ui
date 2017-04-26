@@ -1,8 +1,12 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
 import { SchemaField } from '../../../../common/models/schema.model';
-import { NodeFieldType } from '../../../../common/models/node.model';
-import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
+import {
+    FormWidthChangeCallback, GetNodeValueFunction, GetNodeValueReturnType, MeshFieldControlApi, NodeChangeCallback, SchemaFieldPath,
+    ValueChangeCallback
+} from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
+import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
 
 type OnChangeFunction = {
     (path: SchemaFieldPath, value: NodeFieldType): void;
@@ -16,41 +20,54 @@ export class FieldGenerator {
 
     constructor(private resolver: ComponentFactoryResolver,
                 private viewContainerRef: ViewContainerRef,
-                private onChange: OnChangeFunction) {}
+                private onChange: OnChangeFunction,
+                private getNodeFn: GetNodeValueFunction) {}
 
-    attachField<T extends BaseFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>): ComponentRef<T>;
-    attachField<T extends BaseFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
-                                              viewContainerRef: ViewContainerRef): ComponentRef<T>;
-    attachField<T extends BaseFieldComponent>(path: SchemaFieldPath, field: SchemaField, value: NodeFieldType, fieldComponent: Type<T>,
-                                              viewContainerRef?: ViewContainerRef): ComponentRef<T> {
+    attachField<T extends BaseFieldComponent>(
+        fieldConfig: {
+            path: SchemaFieldPath;
+            field: SchemaField;
+            value: NodeFieldType;
+            fieldComponent: Type<T>;
+            viewContainerRef?: ViewContainerRef;
+        }): ComponentRef<T> {
 
-        const _viewContainerRef = viewContainerRef || this.viewContainerRef;
-        const factory = this.resolver.resolveComponentFactory(fieldComponent);
+        const _viewContainerRef = fieldConfig.viewContainerRef || this.viewContainerRef;
+        const factory = this.resolver.resolveComponentFactory(fieldConfig.fieldComponent);
         const componentRef = _viewContainerRef.createComponent(factory);
         const update = (path: SchemaFieldPath, val: NodeFieldType) => {
             this.onChange(path, val);
         };
+        const getNodeValue = (path?: SchemaFieldPath) => this.getNodeFn(path);
         const instance = componentRef.instance;
         const meshControlFieldInstance: MeshFieldControlApi = {
-            path,
-            field,
-            getValue() { return value; },
-            setValue(value: any, pathOverride?: SchemaFieldPath) {
-                update(pathOverride || path, value);
+            path: fieldConfig.path,
+            field: fieldConfig.field,
+            getValue(): any {
+                return fieldConfig.value;
             },
-            setValid(isValid: boolean) {
+            setValue(value: any, pathOverride?: SchemaFieldPath): void {
+                update(pathOverride || fieldConfig.path, value);
+            },
+            setValid(isValid: boolean): void {
                 instance.setValid(isValid);
             },
-            onValueChange(cb) {
+            onValueChange(cb: ValueChangeCallback): void {
                 instance.valueChange = cb.bind(instance);
             },
-            setHeight(value: string) {
+            getNodeValue(path?: SchemaFieldPath): GetNodeValueReturnType {
+                return getNodeValue(path);
+            },
+            onNodeChange(cb: NodeChangeCallback): void {
+                instance.nodeFieldChange = cb.bind(instance);
+            },
+            setHeight(value: string): void {
                 instance.setHeight(value);
             },
-            setWidth(value: string) {
+            setWidth(value: string): void {
                 instance.setWidth(value);
             },
-            onFormWidthChange(cb) {
+            onFormWidthChange(cb: FormWidthChangeCallback): void {
                 instance.formWidthChange = cb.bind(instance);
             }
         };
@@ -65,9 +82,11 @@ export class FieldGenerator {
 @Injectable()
 export class FieldGeneratorService {
 
-    constructor(private resolver: ComponentFactoryResolver) {}
+    constructor(private resolver: ComponentFactoryResolver,
+                private meshControlGroup: MeshControlGroupService) {}
 
     create(viewContainerRef: ViewContainerRef, onChange: OnChangeFunction): FieldGenerator {
-        return new FieldGenerator(this.resolver, viewContainerRef, onChange);
+        const getNode = (path?: SchemaFieldPath) => this.meshControlGroup.getNodeValue(path);
+        return new FieldGenerator(this.resolver, viewContainerRef, onChange, getNode);
     }
 }

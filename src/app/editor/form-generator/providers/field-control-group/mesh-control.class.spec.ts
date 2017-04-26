@@ -4,8 +4,11 @@ import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import createSpy = jasmine.createSpy;
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
+import { MeshControlGroupService } from './mesh-control-group.service';
 
 describe('MeshControl class', () => {
+
+    const mockControlGroup = new MeshControlGroupService();
 
     it('creates a root control when constructed with no arguments', () => {
         const meshControl = new MeshControl();
@@ -22,14 +25,15 @@ describe('MeshControl class', () => {
         expect(meshControl.fieldDef).toBe(fieldDef);
     });
 
-    it('constructor with fieldDef, initialValue and meshFieldInstance', () => {
+    it('constructor with fieldDef, initialValue, group and meshFieldInstance', () => {
         const fieldDef: SchemaField = {
             name: 'test',
             type: 'string'
         };
         const meshField = new MockMeshField();
-        const meshControl = new MeshControl(fieldDef, 'foo', meshField);
+        const meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, meshField);
         expect(meshControl.fieldDef).toBe(fieldDef);
+        expect(meshControl.group).toBe(mockControlGroup);
         expect(meshControl.meshField).toBe(meshField);
     });
 
@@ -56,7 +60,7 @@ describe('MeshControl class', () => {
         const initialValue = ['foo'];
         const meshField = new MockMeshField();
         meshField.valueChange = createSpy('valueChange');
-        const meshControl = new MeshControl(fieldDef, initialValue, meshField);
+        const meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, meshField);
 
         expect(meshControl.children.size).toBe(0);
 
@@ -87,7 +91,7 @@ describe('MeshControl class', () => {
             };
             meshField = new MockMeshField();
             meshField.valueChange = createSpy('valueChange');
-            meshControl = new MeshControl(fieldDef, 'foo', meshField);
+            meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, meshField);
         });
 
         it('invokes meshField.valueChange() when the value has changed with the new value and old value', () => {
@@ -116,7 +120,7 @@ describe('MeshControl class', () => {
             initialValue = ['foo', 'bar', 'baz'];
             meshField = new MockMeshField();
             meshField.valueChange = createSpy('valueChange');
-            meshControl = new MeshControl(fieldDef, initialValue, meshField);
+            meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, meshField);
         });
 
         it('invokes meshField.valueChange() when the object reference changes', () => {
@@ -132,6 +136,30 @@ describe('MeshControl class', () => {
             expect(meshField.valueChange).toHaveBeenCalledWith(newValue, initialValue);
         });
 
+    });
+
+    describe('nodeChange()', () => {
+
+        let meshField: MockMeshField;
+        let meshControl: MeshControl;
+
+        beforeEach(() => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'string'
+            };
+            meshField = new MockMeshField();
+            meshField.nodeFieldChange = createSpy('nodeFieldChange');
+            meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, meshField);
+        });
+
+        it('invokes meshField.nodeFieldChange()', () => {
+            const path = ['foo'];
+            const value = 'bar';
+            const node = {} as any;
+            meshControl.nodeChanged(path, value, node);
+            expect(meshField.nodeFieldChange).toHaveBeenCalledWith(path, value, node);
+        });
     });
 
     describe('formWidthChanged()', () => {
@@ -153,7 +181,7 @@ describe('MeshControl class', () => {
             initialValue = ['foo', 'bar', 'baz'];
             meshFieldParent = new MockMeshField();
             meshFieldParent.formWidthChange = createSpy('formWidthChange');
-            meshControl = new MeshControl(fieldDefList, initialValue, meshFieldParent);
+            meshControl = new MeshControl(fieldDefList, initialValue, mockControlGroup, meshFieldParent);
             meshFieldChild = new MockMeshField();
             meshFieldChild.formWidthChange = createSpy('formWidthChange');
             meshControl.addChild(fieldDefString, 'foo', meshFieldChild);
@@ -189,7 +217,7 @@ describe('MeshControl class', () => {
             initialValue = ['foo', 'bar', 'baz'];
             meshField = new MockMeshField();
             meshField.valueChange = createSpy('valueChange');
-            meshControl = new MeshControl(fieldDef, initialValue, meshField);
+            meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, meshField);
 
             initialValue.forEach((value, index) => {
                 const childField = new MockMeshField();
@@ -211,6 +239,12 @@ describe('MeshControl class', () => {
             expect(meshControl.children.has(1)).toBe(true);
             expect(meshControl.children.has(2)).toBe(true);
             expect(meshControl.children.has(3)).toBe(false);
+        });
+
+        it('child control has access to MeshControlGroup', () => {
+            expect((meshControl.children.get(0) as MeshControl).group).toBe(mockControlGroup);
+            expect((meshControl.children.get(1) as MeshControl).group).toBe(mockControlGroup);
+            expect((meshControl.children.get(2) as MeshControl).group).toBe(mockControlGroup);
         });
 
         it('clearChildren() empties the children map', () => {
@@ -235,6 +269,17 @@ describe('MeshControl class', () => {
             expect(spies[0]).not.toHaveBeenCalled();
             expect(spies[1]).not.toHaveBeenCalled();
             expect(spies[2]).not.toHaveBeenCalled();
+        });
+
+        it('nodeChanged() on parent invokes meshField.nodeChanged() on children', () => {
+            const spies = childMeshControls.map(control => spyOn(control, 'nodeChanged').and.callThrough());
+            const path = ['foo'];
+            const value = 'bar';
+            const node = {} as any;
+            meshControl.nodeChanged(path, value, node);
+            expect(spies[0]).toHaveBeenCalledWith(path, value, node);
+            expect(spies[1]).toHaveBeenCalledWith(path, value, node);
+            expect(spies[2]).toHaveBeenCalledWith(path, value, node);
         });
 
     });
@@ -267,7 +312,7 @@ describe('MeshControl class', () => {
             };
             meshField = new MockMeshField();
             meshField.valueChange = createSpy('valueChange');
-            meshControl = new MeshControl(fieldDef, initialValue, meshField);
+            meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, meshField);
 
             function addChild(name: string, type: 'string' | 'number', value: any) {
                 const childField = new MockMeshField();
@@ -288,6 +333,11 @@ describe('MeshControl class', () => {
             expect(meshControl.children.has('name')).toBe(true);
             expect(meshControl.children.has('age')).toBe(true);
             expect(meshControl.children.has(0)).toBe(false);
+        });
+
+        it('child control has access to MeshControlGroup', () => {
+            expect((meshControl.children.get('name') as MeshControl).group).toBe(mockControlGroup);
+            expect((meshControl.children.get('age') as MeshControl).group).toBe(mockControlGroup);
         });
 
         it('clearChildren() empties the children map', () => {
@@ -315,6 +365,16 @@ describe('MeshControl class', () => {
             expect(spies[0]).not.toHaveBeenCalled();
             expect(spies[1]).not.toHaveBeenCalled();
         });
+
+        it('nodeChanged() on parent invokes meshField.nodeChanged() on children', () => {
+            const spies = childMeshControls.map(control => spyOn(control, 'nodeChanged').and.callThrough());
+            const path = ['foo'];
+            const value = 'bar';
+            const node = {} as any;
+            meshControl.nodeChanged(path, value, node);
+            expect(spies[0]).toHaveBeenCalledWith(path, value, node);
+            expect(spies[1]).toHaveBeenCalledWith(path, value, node);
+        });
     });
 
     describe('getMeshControlAtPath()', () => {
@@ -331,7 +391,7 @@ describe('MeshControl class', () => {
                 listType: 'micronode'
             };
             meshField = new MockMeshField();
-            rootControl = new MeshControl(fieldDef, {}, meshField);
+            rootControl = new MeshControl(fieldDef, {}, mockControlGroup, meshField);
 
             function addChild(parent: MeshControl, name: string, type: any, value: any): MeshControl {
                 const childField = new MockMeshField();
@@ -421,7 +481,7 @@ describe('MeshControl class', () => {
                 name: 'test',
                 type: 'string'
             };
-            const meshControl = new MeshControl(fieldDef, 'foo', new MockMeshField());
+            const meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, new MockMeshField());
             expect(meshControl.isValid).toBe(true);
         });
 
@@ -432,7 +492,7 @@ describe('MeshControl class', () => {
             };
             const mockMeshField = new MockMeshField();
             mockMeshField.setValid(false);
-            const meshControl = new MeshControl(fieldDef, '', mockMeshField);
+            const meshControl = new MeshControl(fieldDef, '', mockControlGroup, mockMeshField);
             expect(meshControl.isValid).toBe(false);
         });
 
@@ -442,7 +502,7 @@ describe('MeshControl class', () => {
                 type: 'micronode'
             };
             const initialValue = { child: '' };
-            const meshControl = new MeshControl(fieldDef, initialValue, new MockMeshField());
+            const meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, new MockMeshField());
 
             expect(meshControl.children.size).toBe(0);
 
@@ -487,7 +547,7 @@ describe('MeshControl class', () => {
                 type: 'micronode'
             };
             const initialValue = { child: '' };
-            const meshControl = new MeshControl(fieldDef, initialValue, new MockMeshField());
+            const meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, new MockMeshField());
 
             expect(meshControl.children.size).toBe(0);
 

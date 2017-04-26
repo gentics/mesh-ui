@@ -1,6 +1,6 @@
 import { Component, HostBinding } from '@angular/core';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
-import { NodeFieldType } from '../../../../common/models/node.model';
+import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 
 /**
  * This is the base class from which all of the built-in form controls inherit.
@@ -33,15 +33,24 @@ export abstract class BaseFieldComponent  {
     abstract init(api: MeshFieldControlApi): void;
 
     /**
-     * This method will be invoked whenever the field's value might have changed.
+     * This method will be invoked whenever the field's value might have changed. "Might have" because it is
+     * also invoked when a child field has changed, e.g. when a list item is changed, `valueChange()` is called
+     * on the list item *and* the list.
      */
     abstract valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void;
+
+    /**
+     * This method will be invoked whenever then value of another field in the node is changed.
+     */
+    nodeFieldChange(path: SchemaFieldPath, value: any, node: MeshNode): void {
+        // no-op, can be optionally implemented by subclasses. Primary use-case it to enable the
+        // `onNodeChange()` method of the MeshFieldControlApi.
+    }
 
     /**
      * This method is invoked whenever the containing form's width changes.
      */
     formWidthChange(widthInPixels: number): void {
-        // no-op, implement as necessary in individual subclasses
         if (widthInPixels < 800) {
             this.setWidth('100%');
         } else {

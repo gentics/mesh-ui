@@ -1,19 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-import { MeshControlGroup } from './mesh-control-group.service';
+import { MeshControlGroupService } from './mesh-control-group.service';
 import { MeshControl } from './mesh-control.class';
 import createSpy = jasmine.createSpy;
+import Spy = jasmine.Spy;
 
-describe('MeshControlGroup', () => {
+describe('MeshControlGroupService', () => {
 
-    let meshControlGroup: MeshControlGroup;
+    let meshControlGroup: MeshControlGroupService;
+    let mockGetNodeFn: Spy;
     const INIT_ERROR = 'No rootControl was set. Did you forget to call MeshControlGroup.init()?';
+    const INIT_ERROR_GET_NODE = 'No getNodeFn was set. Did you forget to call MeshControlGroup.init()?';
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [MeshControlGroup]
+            providers: [MeshControlGroupService]
         });
 
-        meshControlGroup = TestBed.get(MeshControlGroup);
+        meshControlGroup = TestBed.get(MeshControlGroupService);
+        mockGetNodeFn = createSpy('getNodeFn');
     });
 
     it('calling addControl() before init() throws an exception', () => {
@@ -28,12 +32,16 @@ describe('MeshControlGroup', () => {
         expect(() => meshControlGroup.getMeshControlAtPath([])).toThrowError(INIT_ERROR);
     });
 
+    it('calling getNode() before init() throws an exception', () => {
+        expect(() => meshControlGroup.getNodeValue()).toThrowError(INIT_ERROR_GET_NODE);
+    });
+
     it('accessing isValid before init() returns false', () => {
         expect(meshControlGroup.isValid).toBe(false);
     });
 
     it('addControl() adds a control with named key to the _rootControl', () => {
-        meshControlGroup.init();
+        meshControlGroup.init(mockGetNodeFn);
 
         expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl).children.size).toBe(0);
 
@@ -57,7 +65,7 @@ describe('MeshControlGroup', () => {
         let friend2Control: MeshControl;
 
         beforeEach(() => {
-            meshControlGroup.init();
+            meshControlGroup.init(mockGetNodeFn);
 
             expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl).children.size).toBe(0);
 
@@ -117,8 +125,36 @@ describe('MeshControlGroup', () => {
 
     });
 
+    describe('getNodeValue()', () => {
+
+        it('invokes the getNodeFn registered in the init() method', () => {
+            const path = ['foo'];
+            meshControlGroup.init(mockGetNodeFn);
+            expect(mockGetNodeFn).not.toHaveBeenCalled();
+            meshControlGroup.getNodeValue(path);
+            expect(mockGetNodeFn).toHaveBeenCalledTimes(1);
+            expect(mockGetNodeFn).toHaveBeenCalledWith(path);
+        });
+    });
+
+    describe('nodeChanged()', () => {
+
+        it('invokes nodeChanged() on the root MeshControl', () => {
+            const path = ['foo'];
+            const value = 'bar';
+            const node = {} as any;
+            meshControlGroup.init(mockGetNodeFn);
+            const rootControl = meshControlGroup.getMeshControlAtPath([]) as MeshControl;
+            rootControl.nodeChanged = createSpy('nodeChanged');
+
+            meshControlGroup.nodeChanged(path, value, node);
+            expect(rootControl.nodeChanged).toHaveBeenCalledWith(path, value, node);
+        });
+
+    });
+
     it('formWidthChanged() invokes formWidthChanged() on root MeshControl', () => {
-        meshControlGroup.init();
+        meshControlGroup.init(mockGetNodeFn);
         const rootControl = meshControlGroup.getMeshControlAtPath([]) as MeshControl;
         rootControl.formWidthChanged = createSpy('formWidthChanged');
 
@@ -128,7 +164,7 @@ describe('MeshControlGroup', () => {
     });
 
     it('getMeshControlAtPath() invokes _rootControl.getMeshControlAtPath()', () => {
-        meshControlGroup.init();
+        meshControlGroup.init(mockGetNodeFn);
         const spy = spyOn(meshControlGroup.getMeshControlAtPath([]) as MeshControl, 'getMeshControlAtPath');
         const path = ['foo'];
         meshControlGroup.getMeshControlAtPath(path);

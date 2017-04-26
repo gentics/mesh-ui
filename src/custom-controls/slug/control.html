@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Slug Control</title>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<label>
+    <span id="label"></span>
+    <input type="text" id="input">
+</label><br>
+<small>(demo node-aware control)</small>
+
+<script>
+    /**
+     * This is an example of the most simple custom control - plain ES5 JavaScript which implements a range slider for a
+     * number field.
+     */
+    var input = document.querySelector('#input');
+    var label = document.querySelector('#label');
+
+    window.initMeshControl = function(api) {
+        var target = api.field.control.config.target;
+        var ext = api.field.control.config.extension || '.html';
+        debugger;
+        var initVal = api.getValue() || api.getNodeValue(target);
+        input.value = nameToSlug(initVal, ext);
+        label.innerHTML = api.field.label || api.field.name;
+
+        input.addEventListener('input', function(e) {
+            api.setValue(e.target.value);
+        });
+
+        api.onValueChange(function(value) {
+            input.value = value;
+        });
+
+        api.onNodeChange(function(path, value, node) {
+            console.log(`Node change`, path, value, node);
+            if (path.join() === target.join()) {
+                input.value = nameToSlug(value, ext);
+            }
+        });
+
+        api.setHeight(document.body.offsetHeight + 'px');
+    };
+
+    function nameToSlug(name, ext) {
+        return name.toString().toLowerCase()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+            .replace(/^-+/, '')             // Trim - from start of text
+            .replace(/-+$/, '')             // Trim - from end of text
+            + ext;
+    }
+
+</script>
+
+</body>
+</html>

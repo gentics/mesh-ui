@@ -23,13 +23,13 @@ export class CustomFieldComponent extends BaseFieldComponent implements AfterVie
     ngAfterViewInit(): void {
         const iframe = this.iframe.nativeElement as HTMLIFrameElement;
         const iframeWindow = iframe.contentWindow as CustomControlWindow;
-        if (this.api.field.config) {
+        if (this.api.field.control) {
             iframe.addEventListener('load', () => {
                 if (typeof iframeWindow.initMeshControl === 'function') {
                     iframeWindow.initMeshControl(this.api);
                 }
             });
-            iframe.src = CUSTOM_COMPONENT_ROOT + this.api.field.config.formControl + '/control.html';
+            iframe.src = CUSTOM_COMPONENT_ROOT + this.api.field.control.use + '/control.html';
         }
     }
 

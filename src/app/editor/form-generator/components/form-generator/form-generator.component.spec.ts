@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGeneratorComponent } from './form-generator.component';
 import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
-import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
+import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { MeshNode } from '../../../../common/models/node.model';
 import { Schema } from '../../../../common/models/schema.model';
 import { NgModule, Type } from '@angular/core';
@@ -15,6 +15,7 @@ describe('FormGeneratorComponent:', () => {
 
     let instance: FormGeneratorComponent;
     let fixture: ComponentFixture<FormGeneratorComponent>;
+    let meshControlGroup: MeshControlGroupService;
 
     @NgModule({
         imports: [GenticsUICoreModule, FormsModule],
@@ -28,10 +29,11 @@ describe('FormGeneratorComponent:', () => {
         TestBed.configureTestingModule({
             imports: [TestModule],
             declarations: [FormGeneratorComponent],
-            providers: [FieldGeneratorService, MeshControlGroup]
+            providers: [FieldGeneratorService, MeshControlGroupService]
         });
         fixture = TestBed.createComponent(FormGeneratorComponent);
         instance = fixture.componentInstance;
+        meshControlGroup = TestBed.get(MeshControlGroupService);
     }));
 
     it(`should be initialized`, () => {
@@ -79,6 +81,84 @@ describe('FormGeneratorComponent:', () => {
         expect(instance.isDirty).toBe(true);
         instance.setPristine();
         expect(instance.isDirty).toBe(false);
+    });
+
+    describe('MeshControlGroupService interop', () => {
+
+        it('should invoke MeshControlGroupService.init() with a getNodeFn', () => {
+            const initSpy = spyOn(meshControlGroup, 'init').and.callThrough();
+            populateMockData(fixture);
+
+            expect(initSpy).toHaveBeenCalledTimes(1);
+            expect(typeof initSpy.calls.argsFor(0)[0]).toBe('function');
+        });
+
+        describe('getNodeFn', () => {
+            let getNodeFn: Function;
+            /*tslint:disable no-use-before-declare */
+            const complexNode = Object.assign({}, mockNode, {
+                fields: {
+                    name: 'Ada',
+                    age: 42,
+                    locations: [
+                        {
+                            uuid: '2f26db6facc047c7a6db6facc027c76b',
+                            microschema: {
+                                name: 'geolocation',
+                                uuid: '95b6cbb75638477fb6cbb75638b77f96'
+                            },
+                            fields: {
+                                latitude: 48.208330230278,
+                                longitude: 16.373063840833,
+                                addresses: [
+                                    '22 Acacia Avenue',
+                                    '42 Deepthought Lane'
+                                ]
+                            },
+                            type: 'micronode'
+                        }
+                    ]
+                }
+            });
+            /*tslint:enable no-use-before-declare */
+
+            beforeEach(() => {
+                const initSpy = spyOn(meshControlGroup, 'init').and.callThrough();
+                populateMockData(fixture, complexNode);
+                getNodeFn = initSpy.calls.argsFor(0)[0];
+            });
+
+            it('should return a clone of the entire node if called without a path', () => {
+                expect(getNodeFn()).toEqual(complexNode, 'equal value');
+                expect(getNodeFn()).not.toBe(complexNode, 'identical reference');
+            });
+
+            it('should return the field value for a valid top-level path', () => {
+                expect(getNodeFn(['name'])).toEqual(complexNode.fields.name);
+                expect(getNodeFn(['age'])).toEqual(complexNode.fields.age);
+            });
+
+            it('should return the field value for a valid list index path', () => {
+                expect(getNodeFn(['locations', 0])).toEqual(complexNode.fields.locations[0]);
+            });
+
+            it('nested values should be equal but not identical', () => {
+                expect(getNodeFn(['locations', 0])).not.toBe(complexNode.fields.locations[0]);
+            });
+
+            it('should return the field value for a valid deeply-nested path', () => {
+                expect(getNodeFn(['locations', 0, 'fields', 'addresses', 1])).toEqual(complexNode.fields.locations[0].fields.addresses[1]);
+            });
+
+            it('should return undefined for invalid top-level path ', () => {
+                expect(getNodeFn(['nonexistent'])).toBeUndefined();
+            });
+
+            it('should return undefined for invalid nested path ', () => {
+                expect(getNodeFn(['nonexistent', 1, 'bar', 'baz'])).toBeUndefined();
+            });
+        });
+
     });
 
 });
@@ -178,10 +258,10 @@ const mockSchema: Schema = {
     container: false
 };
 
-function populateMockData(fixture: ComponentFixture<FormGeneratorComponent>): void {
+function populateMockData(fixture: ComponentFixture<FormGeneratorComponent>, node: MeshNode = mockNode): void {
     const instance = fixture.componentInstance;
     fixture.detectChanges();
-    instance.node = mockNode;
+    instance.node = node;
     instance.schema = mockSchema;
     instance.ngOnChanges({ schema: {} } as any);
     // run change detection on child components

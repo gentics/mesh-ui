@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MicronodeFieldComponent } from './micronode-field.component';
 import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
-import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
+import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 
 describe('MicronodeFieldComponent:', () => {
 
@@ -11,7 +11,7 @@ describe('MicronodeFieldComponent:', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [MicronodeFieldComponent],
-            providers: [FieldGeneratorService, MeshControlGroup]
+            providers: [FieldGeneratorService, MeshControlGroupService]
         })
         .compileComponents();
     }));

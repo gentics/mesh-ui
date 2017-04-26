@@ -9,7 +9,7 @@ import { getControlType } from '../../common/get-control-type';
 import { initializeListValue } from '../../common/initialize-list-value';
 import { mockGetMicroschemaByName } from '../../common/mock-get-microschema';
 import { Observable, Subscription } from 'rxjs';
-import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
+import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 function randomId(): string {
@@ -48,7 +48,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     private subscription: Subscription;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private meshControlGroup: MeshControlGroup,
+                private meshControlGroup: MeshControlGroupService,
                 private viewContainerRef: ViewContainerRef) {
         super();
     }
@@ -164,13 +164,13 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                     };
                     const value = this.value[index];
                     const newContainer = meshControl.addChild(pseudoField, value);
-                    const componentRef = this.fieldGenerator.attachField(
-                        this.api.path.concat(index),
-                        pseudoField,
+                    const componentRef = this.fieldGenerator.attachField({
+                        path: this.api.path.concat(index),
+                        field: pseudoField,
                         value,
-                        controlType,
+                        fieldComponent: controlType,
                         viewContainerRef
-                    );
+                    });
 
                     newContainer.registerMeshFieldInstance(componentRef.instance);
                     this.componentRefs.push(componentRef);

@@ -9,7 +9,7 @@ import { HtmlFieldComponent } from './components/html-field/html-field.component
 import { ListFieldComponent } from './components/list-field/list-field.component';
 import { FieldGeneratorService } from './providers/field-generator/field-generator.service';
 import { MicronodeFieldComponent } from './components/micronode-field/micronode-field.component';
-import { MeshControlGroup } from './providers/field-control-group/mesh-control-group.service';
+import { MeshControlGroupService } from './providers/field-control-group/mesh-control-group.service';
 import { BooleanFieldComponent } from './components/boolean-field/boolean-field.component';
 import { DateFieldComponent } from './components/date-field/date-field.component';
 import { FormsModule } from '@angular/forms';
@@ -34,7 +34,7 @@ const ENTRY_COMPONENTS = [
     imports: [GenticsUICoreModule, CommonModule, FormsModule],
     declarations: [FormGeneratorComponent, ...ENTRY_COMPONENTS],
     entryComponents: ENTRY_COMPONENTS,
-    providers: [FieldGeneratorService, MeshControlGroup],
+    providers: [FieldGeneratorService, MeshControlGroupService],
     exports: [FormGeneratorComponent]
 })
 export class FormGeneratorModule {}

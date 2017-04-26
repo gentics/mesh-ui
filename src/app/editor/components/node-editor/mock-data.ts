@@ -62,6 +62,7 @@ export const testNode: any = {
     displayField: 'name',
     fields: {
         name: 'Gulfstream G550',
+        slug: '',
         description: `The Gulfstream G500 and G550 are business jet aircraft 
                 produced by General Dynamics' Gulfstream Aerospace unit in Savannah, Georgia.`,
         weight: 21900,
@@ -167,6 +168,19 @@ export const testSchema: any = {
             type: 'string'
         },
         {
+            name: 'slug',
+            label: 'Slug',
+            required: true,
+            type: 'string',
+            control: {
+                use: 'slug',
+                config: {
+                    target: ['aliases', 0],
+                    extension: '.foo'
+                }
+            }
+        },
+        {
             name: 'description',
             label: 'Description',
             required: true,
@@ -177,8 +191,8 @@ export const testSchema: any = {
             label: 'Weight',
             required: false,
             type: 'number',
-            config: {
-                formControl: 'test'
+            control: {
+                use: 'test'
             }
         },
         {
@@ -186,8 +200,8 @@ export const testSchema: any = {
             label: 'In Stock',
             required: false,
             type: 'boolean',
-            config: {
-                formControl: 'vue-checkbox'
+            control: {
+                use: 'vue-checkbox'
             }
         },
         {
@@ -231,8 +245,8 @@ export const testSchema: any = {
             label: 'Location',
             type: 'micronode',
             allow: ['geolocation'],
-            config: {
-                formControl: 'geolocation'
+            control: {
+                use: 'geolocation'
             }
         },
         {

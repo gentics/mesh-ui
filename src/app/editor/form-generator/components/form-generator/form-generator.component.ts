@@ -17,7 +17,7 @@ import { Schema } from '../../../../common/models/schema.model';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
-import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
+import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { SchemaFieldPath } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 import { Subject } from 'rxjs/Subject';
@@ -60,7 +60,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     private containerResizeSub: Subscription;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private meshControlGroup: MeshControlGroup,
+                private meshControlGroup: MeshControlGroupService,
                 @Optional() private splitViewContainer: SplitViewContainer) {}
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -102,13 +102,26 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
             this.componentRefs.forEach(componentRef => componentRef.hostView.destroy());
             this.componentRefs = [];
 
-            this.meshControlGroup.init();
+            this.meshControlGroup.init((path?: SchemaFieldPath) => {
+                if (!path) {
+                    return this.clone(this.node);
+                } else {
+                    const pointer = this.getPointerByPath(this.node.fields, path);
+                    const value = pointer[path[path.length - 1]];
+                    return value ? this.clone(value) : undefined;
+                }
+            });
 
             this.schema.fields.forEach(field => {
                 const value = this.node.fields[field.name];
                 const controlType = getControlType(field);
                 if (controlType) {
-                    const componentRef = this.fieldGenerator.attachField([field.name], field, value, controlType);
+                    const componentRef = this.fieldGenerator.attachField({
+                        path: [field.name],
+                        field,
+                        value,
+                        fieldComponent: controlType
+                    });
                     if (componentRef) {
                         this.componentRefs.push(componentRef);
                     }
@@ -128,6 +141,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     private onChange(path: SchemaFieldPath, value: any): void {
         this.updateAtPath(this.node.fields, path, value);
         this.meshControlGroup.checkValue(this.node.fields, path);
+        this.meshControlGroup.nodeChanged(path, value, this.node);
         this._isDirty = true;
     }
 

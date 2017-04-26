@@ -1,4 +1,4 @@
-import { NodeFieldType } from '../../../common/models/node.model';
+import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
 
 /**
@@ -16,6 +16,11 @@ export type SchemaFieldPath = Array<string | number>;
 export type ValueChangeCallback = (newValue: NodeFieldType, oldValue?: NodeFieldType) => void;
 
 export type FormWidthChangeCallback = (widthInPixels: number) => void;
+
+export type NodeChangeCallback = (path: SchemaFieldPath, value: any, node: MeshNode) => void;
+
+export type GetNodeValueReturnType = MeshNode | string | number | any[] | Object | undefined;
+export type GetNodeValueFunction = (path?: SchemaFieldPath) => GetNodeValueReturnType;
 
 export interface MeshFieldControlApi {
     /**
@@ -46,6 +51,14 @@ export interface MeshFieldControlApi {
      * descendant field changes.
      */
     onValueChange: (callback: ValueChangeCallback) => void;
+    /**
+     * Returns the current value of the node to which the field belongs.
+     */
+    getNodeValue: GetNodeValueFunction;
+    /**
+     * Takes a callback which will be invoked whenever any field's value in the node changes.
+     */
+    onNodeChange: (callback: NodeChangeCallback) => void;
     /**
      * Sets the css width of the host component.
      */

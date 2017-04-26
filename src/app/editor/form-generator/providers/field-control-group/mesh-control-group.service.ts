@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SchemaFieldPath } from '../../common/form-generator-models';
-import { NodeFieldType } from '../../../../common/models/node.model';
+import { GetNodeValueFunction, GetNodeValueReturnType, SchemaFieldPath } from '../../common/form-generator-models';
+import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { MeshControl } from './mesh-control.class';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
@@ -9,7 +9,7 @@ import { BaseFieldComponent } from '../../components/base-field/base-field.compo
  * A service which represents the root of the tree of MeshControls which make up the form in the editor.
  */
 @Injectable()
-export class MeshControlGroup {
+export class MeshControlGroupService {
 
     get isValid(): boolean {
         return !!this._rootControl && this.rootControl.isValid;
@@ -23,13 +23,26 @@ export class MeshControlGroup {
     }
 
     private _rootControl: MeshControl;
+    private getNodeFn: GetNodeValueFunction;
 
     /**
      * Creates a new MeshControl as the root control for the group. This method must be invoked before attempting
      * to use the other class methods.
      */
-    init(): void {
+    init(getNodeFn: GetNodeValueFunction): void {
+        this.getNodeFn = getNodeFn;
         this._rootControl = new MeshControl();
+    }
+
+    /**
+     * Invokes the getNodeFn which returns the value of the node.
+     */
+    getNodeValue(path?: SchemaFieldPath): GetNodeValueReturnType {
+        if (typeof this.getNodeFn !== 'function') {
+            throw new Error('No getNodeFn was set. Did you forget to call MeshControlGroup.init()?');
+        } else {
+            return this.getNodeFn(path);
+        }
     }
 
     /**
@@ -67,6 +80,13 @@ export class MeshControlGroup {
                 }
             });
         }
+    }
+
+    /**
+     * Causes the `nodeChanged()` method to be invoked for all controls in the group.
+     */
+    nodeChanged(path: SchemaFieldPath, value: any, node: MeshNode): void {
+        this.rootControl.nodeChanged(path, value, node);
     }
 
     /**

@@ -17,9 +17,11 @@ export interface BaseSchemaField {
     options?: string[];
     required?: boolean;
     step?: number;
-    config?: {
-        formControl?: string;
-        [key: string]: any;
+    control?: {
+        use?: string;
+        config?: {
+            [key: string]: any;
+        };
     };
 }
 

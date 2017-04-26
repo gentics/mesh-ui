@@ -34,7 +34,7 @@ const defaultTypeComponentMap: TypeComponentMap = {
  */
 export function getControlType(field: SchemaField): Type<BaseFieldComponent> | undefined {
     const defaultFieldType = defaultTypeComponentMap[field.type];
-    if (field.config && field.config.formControl) {
+    if (field.control && field.control.use) {
         // TODO: check for built-in variants
         // ...
 

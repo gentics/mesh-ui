@@ -4,7 +4,7 @@ import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/nod
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { mockGetMicroschemaByUuid } from '../../common/mock-get-microschema';
-import { MeshControlGroup } from '../../providers/field-control-group/mesh-control-group.service';
+import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
@@ -22,7 +22,7 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     private fieldGenerator: FieldGenerator;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
-                private meshControlGroup: MeshControlGroup) {
+                private meshControlGroup: MeshControlGroupService) {
         super();
     }
 
@@ -54,12 +54,12 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
                         const controlType = getControlType(field);
                         if (controlType) {
                             const newContainer = meshControl.addChild(field, value);
-                            const componentRef = this.fieldGenerator.attachField(
-                                this.api.path.concat(['fields', field.name]),
+                            const componentRef = this.fieldGenerator.attachField({
+                                path: this.api.path.concat(['fields', field.name]),
                                 field,
                                 value,
-                                controlType
-                            );
+                                fieldComponent: controlType
+                            });
                             newContainer.registerMeshFieldInstance(componentRef.instance);
                         }
                     });
