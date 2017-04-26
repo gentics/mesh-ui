@@ -42,7 +42,7 @@ describe('LanguageSwitcherComponent:', () => {
         componentTest(() => TestComponent, fixture => {
             fixture.detectChanges();
             const buttonText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(buttonText).toBe('en');
+            expect(buttonText).toContain('English');
         })
     );
 
@@ -93,7 +93,7 @@ describe('LanguageSwitcherComponent:', () => {
             // English at first
             fixture.detectChanges();
             const buttonText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(buttonText).toBe('en');
+            expect(buttonText).toContain('English');
 
             // Change state
             appState.mockState({
@@ -105,7 +105,7 @@ describe('LanguageSwitcherComponent:', () => {
             // Label shows German now
             fixture.detectChanges();
             const buttonTextAfter: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(buttonTextAfter).toBe('de');
+            expect(buttonTextAfter).toContain('Deutsch');
         })
     );
 
