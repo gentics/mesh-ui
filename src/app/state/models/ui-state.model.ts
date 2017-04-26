@@ -3,5 +3,4 @@ import { Project } from '../../common/models/project.model';
 
 export interface UIState {
     currentLanguage: UILanguage;
-    currentProject: string;
 }

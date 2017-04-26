@@ -1,3 +1,10 @@
-<gtx-select [value]="currentProject$ | async" (change)="changeProject($event)">
-    <gtx-option *ngFor="let project of projects$ | async" [value]="project">{{ project.name }}</gtx-option>
-</gtx-select>
+<gtx-dropdown-list width="trigger">
+    <gtx-dropdown-trigger>
+        <gtx-button>{{ (currentProjectName$ | async) }}</gtx-button>
+    </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+        <gtx-dropdown-item *ngFor="let project of projects$ | async" (click)="changeProject(project)">
+            {{ project.name }}
+        </gtx-dropdown-item>
+    </gtx-dropdown-content>
+</gtx-dropdown-list>

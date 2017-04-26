@@ -17,8 +17,7 @@ export class UIStateActions extends StateActionBranch<AppState> {
             uses: ['ui'],
             initialState: {
                 ui: {
-                    currentLanguage: 'en',
-                    currentProject: '55f6a4666eb8467ab6a4666eb8867a84'
+                    currentLanguage: 'en'
                 }
             }
         });
@@ -26,9 +25,5 @@ export class UIStateActions extends StateActionBranch<AppState> {
 
     setLanguage(newUiLanguage: UILanguage): void {
         this.ui.currentLanguage = newUiLanguage;
-    }
-
-    setProject(newProjectUuid: string): void {
-        this.ui.currentProject = newProjectUuid;
     }
 }
