@@ -10,7 +10,7 @@
         // Custom
         "trailing-comma": [true, {"singleline": "never"}],
         "no-consecutive-blank-lines": [true, 2],
-        "no-trailing-whitespace": true,
+        "no-trailing-whitespace": false,
         "interface-name": [true, "never-prefix"],
         // Angular 2
         "component-class-suffix": true,
