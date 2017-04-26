@@ -67,6 +67,8 @@
     "watch:dev": "npm run build:dev -- --watch",
     "watch:prod": "npm run build:prod -- --watch",
     "watch:test": "npm run test -- --auto-watch --no-single-run",
+    "watch:test-only": "karma start --auto-watch --no-single-run",
+    "watch:test-only-headless": "karma start --auto-watch --no-single-run --browsers ChromeCanaryHeadless",
     "watch": "npm run watch:dev",
     "webdriver-manager": "webdriver-manager",
     "webdriver:start": "npm run webdriver-manager start",

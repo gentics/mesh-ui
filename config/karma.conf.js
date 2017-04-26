@@ -108,6 +108,13 @@ module.exports = function (config) {
         ],
 
         customLaunchers: {
+            ChromeCanaryHeadless: {
+                base: 'ChromeCanary',
+                flags: [
+                    '--headless',
+                    '--remote-debugging-port=9222'
+                ]
+            },
             ChromeTravisCi: {
                 base: 'Chrome',
                 flags: ['--no-sandbox']
