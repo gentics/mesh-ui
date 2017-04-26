@@ -20,6 +20,11 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     @ViewChild('editor')
     private editorRef: ElementRef;
     private editor: Quill.Quill;
+    private blurTimer: any;
+
+    constructor(private elementRef: ElementRef) {
+        super();
+    }
 
     ngAfterViewInit(): void {
         const editorElement = this.editorRef.nativeElement;
@@ -30,11 +35,15 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
 
         this.editor.on('text-change', this.onTextChangeHandler);
         this.editor.on('selection-change', this.onSelectionChangeHandler);
+        this.elementRef.nativeElement.querySelector('.ql-toolbar').addEventListener('click', this.focusHandler);
+        this.editorRef.nativeElement.querySelector('.ql-editor').addEventListener('blur', this.blurHandler);
     }
 
     ngOnDestroy(): void {
         this.editor.off('text-change', this.onTextChangeHandler);
         this.editor.off('selection-change', this.onSelectionChangeHandler);
+        this.elementRef.nativeElement.querySelector('.ql-toolbar').removeEventListener('click', this.focusHandler);
+        this.editorRef.nativeElement.querySelector('.ql-editor').removeEventListener('blur', this.blurHandler);
     }
 
     init(api: MeshFieldControlApi): void {
@@ -55,6 +64,18 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         this.editor.focus();
     }
 
+    private focusHandler = () => {
+        this.focus = true;
+        this.editor.focus();
+        clearTimeout(this.blurTimer);
+    }
+
+    private blurHandler = () => {
+        this.blurTimer = setTimeout(() => {
+            this.focus = false;
+        }, 50);
+    }
+
     private onTextChangeHandler = () => {
         const value = this.editorRef.nativeElement.querySelector('.ql-editor').innerHTML;
         this.api.setValue(value);
@@ -62,7 +83,11 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     private onSelectionChangeHandler = range => {
-        this.focus = range !== null;
+        if (range !== null) {
+            this.focus = true;
+        } else {
+            this.blurHandler();
+        }
     }
 
     /**
