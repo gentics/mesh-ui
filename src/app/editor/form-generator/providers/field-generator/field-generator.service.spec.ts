@@ -4,11 +4,11 @@ import { By } from '@angular/platform-browser';
 
 import { FieldGenerator, FieldGeneratorService } from './field-generator.service';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
-import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { SchemaField } from '../../../../common/models/schema.model';
-import createSpy = jasmine.createSpy;
 import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
+import createSpy = jasmine.createSpy;
 
 describe('FieldGeneratorService', () => {
     let fieldGeneratorService: FieldGeneratorService;
@@ -173,6 +173,19 @@ describe('FieldGeneratorService', () => {
 
                 result.instance.formWidthChange(123);
                 expect(formWidthChangeSpy).toHaveBeenCalledWith(123);
+            });
+
+            it('api.appendDefaultStyles() appends a <style> element to the parentElement', () => {
+                const result = fieldGenerator.attachField(fieldConfig);
+                const api = result.instance.api;
+                const parentElement: any = {
+                    appendChild: createSpy('appendChild')
+                };
+
+                api.appendDefaultStyles(parentElement);
+                expect(parentElement.appendChild).toHaveBeenCalled();
+                const styleElement = parentElement.appendChild.calls.argsFor(0)[0];
+                expect(styleElement instanceof HTMLStyleElement).toBe(true);
             });
 
         });

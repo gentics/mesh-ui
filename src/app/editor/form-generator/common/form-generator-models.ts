@@ -71,4 +71,9 @@ export interface MeshFieldControlApi {
      * Takes a callback function which will be invoked whenever the width of the form changes.
      */
     onFormWidthChange: (callback: FormWidthChangeCallback) => void;
+    /**
+     * Appends a style block containing default css styles to the parentElement. These styles
+     * allow custom controls to fit the look and feel of the built-in controls.
+     */
+    appendDefaultStyles: (parentElement: HTMLElement) => void;
 }

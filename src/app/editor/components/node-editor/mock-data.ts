@@ -175,8 +175,8 @@ export const testSchema: any = {
             control: {
                 use: 'slug',
                 config: {
-                    target: ['aliases', 0],
-                    extension: '.foo'
+                    target: ['name'],
+                    extension: '.html'
                 }
             }
         },
@@ -192,7 +192,7 @@ export const testSchema: any = {
             required: false,
             type: 'number',
             control: {
-                use: 'test'
+                use: 'slider'
             }
         },
         {

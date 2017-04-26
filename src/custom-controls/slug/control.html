@@ -3,20 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Slug Control</title>
-    <style>
-        html, body {
-            padding: 0;
-            margin: 0;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        }
-    </style>
 </head>
 <body>
 
-<label>
-    <span id="label"></span>
+<div class="mesh-input">
     <input type="text" id="input">
-</label><br>
+    <label id="label" for="input"></label>
+</div>
+<br>
 <small>(demo node-aware control)</small>
 
 <script>
@@ -30,10 +24,11 @@
     window.initMeshControl = function(api) {
         var target = api.field.control.config.target;
         var ext = api.field.control.config.extension || '.html';
-        debugger;
         var initVal = api.getValue() || api.getNodeValue(target);
         input.value = nameToSlug(initVal, ext);
         label.innerHTML = api.field.label || api.field.name;
+
+        api.appendDefaultStyles(document.querySelector('head'));
 
         input.addEventListener('input', function(e) {
             api.setValue(e.target.value);
@@ -43,14 +38,15 @@
             input.value = value;
         });
 
-        api.onNodeChange(function(path, value, node) {
-            console.log(`Node change`, path, value, node);
+        api.onNodeChange(function(path, value) {
             if (path.join() === target.join()) {
                 input.value = nameToSlug(value, ext);
             }
         });
 
-        api.setHeight(document.body.offsetHeight + 'px');
+        setTimeout(function() {
+            api.setHeight(document.body.offsetHeight + 'px');
+        });
     };
 
     function nameToSlug(name, ext) {

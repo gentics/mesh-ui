@@ -69,6 +69,12 @@ export class FieldGenerator {
             },
             onFormWidthChange(cb: FormWidthChangeCallback): void {
                 instance.formWidthChange = cb.bind(instance);
+            },
+            appendDefaultStyles(parentElement: HTMLElement): void {
+                const defaultStyles = require('!raw-loader!sass-loader!./default-styles.scss');
+                const styleElement = document.createElement('style');
+                styleElement.innerText = defaultStyles;
+                parentElement.appendChild(styleElement);
             }
         };
         componentRef.instance.init(meshControlFieldInstance);

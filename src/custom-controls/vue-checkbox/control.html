@@ -12,7 +12,7 @@
 </head>
 <body>
 <div id="app">
-    <ui-checkbox v-model="value" v-bind:label="label" v-bind:name="name" v-on:input="onChange"></ui-checkbox>
+    <ui-checkbox v-model="value" v-bind:label="label" v-bind:name="name" v-on:input="onChange" v-bind:id="id"></ui-checkbox>
     <small>(demo Vue.js component)</small>
 </div>
 
@@ -22,29 +22,31 @@
      * a custom form control. In this case, we use Vue.js to implement a simple checkbox component.
      */
     Vue.component('ui-checkbox', {
-        template: '<div><input type="hidden" :name="name" :value="+value"> \
-                 <input type="checkbox" :checked="value" @change="$emit(\'input\', $event.target.checked)" class="hidden"> \
-                 <label v-if="label">{{label}}</label></div>',
-        props: ['name', 'label', 'value']
+        template: '<div class="mesh-input"><input type="hidden" :name="name" :value="+value"> \
+                 <input type="checkbox" :checked="value" @change="$emit(\'input\', $event.target.checked)" class="hidden" :id="id"> \
+                 <label v-if="label" :for="id">{{label}}</label></div>',
+        props: ['name', 'label', 'value', 'id']
     })
 
     window.initMeshControl = (api) => {
         let value = api.getValue();
         const name = api.field.name;
         const label = api.field.label || api.field.name;
+        const id = Math.random().toString(36).substring(2);
         const data = {
             value,
             name,
             label,
+            id,
             onChange(value) {
                 api.setValue(value);
             }
         };
 
+        api.appendDefaultStyles(document.querySelector('head'));
         api.onValueChange(val => {
             data.value = val;
         });
-
         api.setHeight('70px');
 
         new Vue({ el: '#app', data });

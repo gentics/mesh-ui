@@ -1,0 +1,134 @@
+@import "../../../../../styles/variables";
+
+/**
+ * Default form control styles for custom controls
+ */
+
+@font-face {
+    font-family: "Roboto";
+    src: local(Roboto Thin), url(/public/fonts/Roboto-Thin.eot);
+    src: url(/public/fonts/Roboto-Thin.eot?#iefix) format("embedded-opentype"), url(/public/fonts/Roboto-Thin.woff2) format("woff2"), url(/public/fonts/Roboto-Thin.woff) format("woff"), url(/public/fonts/Roboto-Thin.ttf) format("truetype");
+    font-weight: 200; }
+
+@font-face {
+    font-family: "Roboto";
+    src: local(Roboto Light), url(/public/fonts/Roboto-Light.eot);
+    src: url(/public/fonts/Roboto-Light.eot?#iefix) format("embedded-opentype"), url(/public/fonts/Roboto-Light.woff2) format("woff2"), url(/public/fonts/Roboto-Light.woff) format("woff"), url(/public/fonts/Roboto-Light.ttf) format("truetype");
+    font-weight: 300; }
+
+@font-face {
+    font-family: "Roboto";
+    src: local(Roboto Regular), url(/public/fonts/Roboto-Regular.eot);
+    src: url(/public/fonts/Roboto-Regular.eot?#iefix) format("embedded-opentype"), url(/public/fonts/Roboto-Regular.woff2) format("woff2"), url(/public/fonts/Roboto-Regular.woff) format("woff"), url(/public/fonts/Roboto-Regular.ttf) format("truetype");
+    font-weight: 400; }
+
+@font-face {
+    font-family: "Roboto";
+    src: url(/public/fonts/Roboto-Medium.eot);
+    src: url(/public/fonts/Roboto-Medium.eot?#iefix) format("embedded-opentype"), url(/public/fonts/Roboto-Medium.woff2) format("woff2"), url(/public/fonts/Roboto-Medium.woff) format("woff"), url(/public/fonts/Roboto-Medium.ttf) format("truetype");
+    font-weight: 500; }
+
+@font-face {
+    font-family: "Roboto";
+    src: url(/public/fonts/Roboto-Bold.eot);
+    src: url(/public/fonts/Roboto-Bold.eot?#iefix) format("embedded-opentype"), url(/public/fonts/Roboto-Bold.woff2) format("woff2"), url(/public/fonts/Roboto-Bold.woff) format("woff"), url(/public/fonts/Roboto-Bold.ttf) format("truetype");
+    font-weight: 700; }
+
+html {
+    font-weight: normal;
+    font-family: "Roboto", Arial, sans-serif;
+    color: $gtx-color-off-black;
+    @include responsive-font-size($gtx-font-size-regular);
+    margin: 0;
+}
+
+body {
+    margin: 0;
+}
+
+@mixin form-input {
+    @include input-base;
+    border-width: 2px;
+    color: rgba(0, 0, 0, 0.870588) !important;
+    &:focus {
+        outline: none !important;
+        &.solid {
+            border: 2px solid $gtx-color-primary !important;
+        }
+    }
+}
+
+.mesh-input {
+    position: relative;
+
+    input[type="text"], input[type="range"], input[type="number"], input[type="password"] {
+        @include form-input;
+    }
+
+    textarea {
+        @include form-input;
+        height: auto;
+    }
+
+    select.mesh {
+        @include form-input;
+    }
+
+    input:not([type="checkbox"]) + label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: $gtx-font-size-small;
+        color: $gtx-color-dark-gray;
+        transition: color 0.2s;
+    }
+
+    input[type="checkbox"] + label {
+        cursor: pointer;
+        color: $gtx-color-dark-gray;
+    }
+
+    input[type=checkbox] {
+        cursor: pointer;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        outline: 0;
+        position: relative;
+        width: 22px;
+        height: 22px;
+    }
+
+    input[type=checkbox]:after {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 0;
+        width: 14px;
+        height: 14px;
+        z-index: 0;
+        border: 2px solid $gtx-color-dark-gray;
+        border-radius: 1px;
+        margin-top: 2px;
+        transition: .2s;
+        will-change: transform;
+    }
+
+    input[type=checkbox]:checked:after {
+        position: absolute;
+        top: 2px;
+        left: -5px;
+        width: 8px;
+        height: 18px;
+        border-top: 2px solid transparent;
+        border-left: 2px solid transparent;
+        border-right: 2px solid $gtx-color-primary;
+        border-bottom: 2px solid $gtx-color-primary;
+        transform: rotate(40deg);
+        backface-visibility: hidden;
+        transform-origin: 100% 100%;
+    }
+}
+
+
+

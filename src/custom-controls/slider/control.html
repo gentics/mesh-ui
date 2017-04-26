@@ -3,21 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Test Custom Control</title>
-    <style>
-        html, body {
-            padding: 0;
-            margin: 0;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        }
-    </style>
 </head>
 <body>
 
-<label>
-    <span id="label"></span>:
-    <span id="value"></span><br>
+<div class="mesh-input">
     <input type="range" id="input">
-</label><br>
+    <label><span id="label"></span>: <span id="value"></span><br></label>
+</div>
 <small>(demo plain js component)</small>
 
 <script>
@@ -37,6 +29,8 @@
         label.innerHTML = api.field.label || api.field.name;
         valueLabel.innerHTML = api.getValue().toString();
 
+        api.appendDefaultStyles(document.querySelector('head'));
+
         input.addEventListener('input', function(e) {
             api.setValue(e.target.value);
         });
@@ -46,7 +40,9 @@
             valueLabel.innerHTML = value.toString();
         });
 
-        api.setHeight(document.body.offsetHeight + 'px');
+        setTimeout(function() {
+            api.setHeight(document.body.offsetHeight + 'px');
+        });
     };
 
 </script>
