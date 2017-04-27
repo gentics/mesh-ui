@@ -4,6 +4,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { Project } from '../../../common/models/project.model';
 import { Subject } from 'rxjs/Subject';
 import { StateActionBranch } from 'immutablets';
+import { NavigationService } from '../../providers/navigation/navigation.service';
 
 type ProjectHash = { [uuid: string]: Project };
 
@@ -16,7 +17,8 @@ export class ProjectSwitcherComponent {
     projects$: Observable<Project[]>;
     currentProjectName$: Observable<String>;
 
-    constructor(private appState: ApplicationStateService) {
+    constructor(private appState: ApplicationStateService,
+                private navigation: NavigationService) {
         this.projects$ = this.appState.select(state => state.entities.project)
             .map(this.values);
 
@@ -27,8 +29,7 @@ export class ProjectSwitcherComponent {
     }
 
     private changeProject(project: Project) {
-        // TODO remove hardcoded language when opening other project
-        this.appState.actions.editor.openNode(project.name, project.rootNodeUuid, 'en');
+        this.navigation.list(project.name, project.rootNodeUuid).navigate();
     }
 
     private getProjectByName(projects: ProjectHash, projectName: string): Project {
