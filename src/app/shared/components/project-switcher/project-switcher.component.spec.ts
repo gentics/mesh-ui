@@ -42,7 +42,7 @@ describe('ProjectSwitcherComponent:', () => {
                 currentLanguage: 'en',
             },
             entities: {
-                projects: {
+                project: {
                     '55f6a4666eb8467ab6a4666eb8867a84': {
                         uuid: '55f6a4666eb8467ab6a4666eb8867a84',
                         creator: {

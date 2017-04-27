@@ -8,9 +8,9 @@ import { EntityState } from '../models/entity-state.model';
 export class ProjectStateActions extends StateActionBranch<EntityState> {
     constructor() {
         super({
-            uses: ['projects'],
+            uses: ['project'],
             initialState: {
-                projects: {}
+                project: {}
             }
         });
     }

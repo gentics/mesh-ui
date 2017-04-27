@@ -17,11 +17,11 @@ export class ProjectSwitcherComponent {
     currentProjectName$: Observable<String>;
 
     constructor(private appState: ApplicationStateService) {
-        this.projects$ = this.appState.select(state => state.entities.projects)
+        this.projects$ = this.appState.select(state => state.entities.project)
             .map(this.values);
 
         this.currentProjectName$ = this.appState.select(state =>
-            this.getProjectByName(state.entities.projects, this.appState.now.editor.openNode.projectName))
+            this.getProjectByName(state.entities.project, this.appState.now.editor.openNode.projectName))
             .filter(Boolean)
             .map(it => it.name);
     }

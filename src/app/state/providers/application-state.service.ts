@@ -7,7 +7,7 @@ import { AuthStateActions } from './auth-state-actions';
 import { UIStateActions } from './ui-state-actions';
 import { EditorStateActions } from './editor-state-actions';
 import { EntityState } from '../models/entity-state.model';
-import { EntityStateActions } from './entitiy-state-actions';
+import { EntityStateActions } from './entity-state-actions';
 
 type ActionBranches = {
     auth: AuthStateActions;
