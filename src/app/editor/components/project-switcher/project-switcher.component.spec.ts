@@ -1,4 +1,4 @@
-import { Component, QueryList } from '@angular/core';
+import { Component, QueryList, Injectable } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DropdownItem, GenticsUICoreModule } from 'gentics-ui-core';
@@ -12,26 +12,31 @@ import { UI_LANGUAGES } from '../../../common/config/config';
 import { EditorModule } from '../../editor.module';
 import { ProjectSwitcherComponent } from './project-switcher.component';
 import { SharedModule } from '../../../shared/shared.module';
+import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 
 
 describe('ProjectSwitcherComponent:', () => {
 
     let appState: TestApplicationState;
+    let navigation: MockNavigationService;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [TestComponent, ProjectSwitcherComponent],
             imports: [SharedModule, StateModule, GenticsUICoreModule],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState }
+                { provide: ApplicationStateService, useClass: TestApplicationState },
+                { provide: NavigationService, useClass: MockNavigationService }
             ]
         });
     }));
 
     beforeEach(() => {
+        navigation = TestBed.get(NavigationService);
+        spyOn(navigation, 'list');
+
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
-        // Initial language is english
         appState.mockState({
             editor: {
                 openNode: {
@@ -121,7 +126,7 @@ describe('ProjectSwitcherComponent:', () => {
         })
     );
 
-    it(`changes the state when selecting a project`,
+    it(`navigates to the selected project`,
         componentTest(() => TestComponent, fixture => {
             // Open Select
             fixture.nativeElement.querySelector('gtx-button').click();
@@ -136,7 +141,7 @@ describe('ProjectSwitcherComponent:', () => {
             tick();
 
             // Demo Project
-            expect(appState.actions.editor.openNode).toHaveBeenCalledWith('demo', '8a74925be3b24272b4925be3b2f27289', 'en');
+            expect(navigation.list).toHaveBeenCalledWith('demo', '8a74925be3b24272b4925be3b2f27289');
         })
     );
 
@@ -171,3 +176,10 @@ describe('ProjectSwitcherComponent:', () => {
         <project-switcher></project-switcher>`
 })
 class TestComponent { }
+
+@Injectable()
+class MockNavigationService {
+    list(projectName: string, containerUuid: string) {
+        return { navigate() { } };
+    }
+}
