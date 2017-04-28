@@ -12,7 +12,7 @@ import { ApplicationStateService } from './state/providers/application-state.ser
     templateUrl: './app.component.html',
     // This root component provides the OverlayHostService, so that there is only one service for the project.
     providers: [
-        { provide: OverlayHostService, useClass: OverlayHostService }
+        OverlayHostService
     ]
 })
 export class AppComponent {
