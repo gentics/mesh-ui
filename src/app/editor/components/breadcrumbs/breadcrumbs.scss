@@ -1,7 +1,7 @@
 @import "variables";
 
 :host {
-    display: block;
+    display: flex;
     width: 100%;
     height: 40px;
     background-color: $gtx-color-light-gray;
@@ -10,4 +10,9 @@
     font-size: 32px;
     color: $gtx-color-mid-gray;
     margin: 5px 0;
+
+    gtx-breadcrumbs {
+        height: 40px;
+        line-height: 40px;
+    }
 }

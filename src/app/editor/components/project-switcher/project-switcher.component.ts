@@ -4,13 +4,13 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { Project } from '../../../common/models/project.model';
 import { Subject } from 'rxjs/Subject';
 import { StateActionBranch } from 'immutablets';
-import { NavigationService } from '../../providers/navigation/navigation.service';
+import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 
 type ProjectHash = { [uuid: string]: Project };
 
 @Component({
     selector: 'project-switcher',
-    templateUrl: 'project-switcher.component.html',
+    templateUrl: './project-switcher.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectSwitcherComponent {

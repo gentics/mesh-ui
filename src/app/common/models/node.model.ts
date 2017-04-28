@@ -1,3 +1,5 @@
+import { SchemaReference } from './common.model';
+import { TagFamily } from './tag-family.model';
 import {
     BaseProperties, NodeReference, TagReference,
     SchemaReferenceWithVersion, MicroschemaReference
@@ -13,13 +15,20 @@ export interface NodeChildrenInfo {
 export interface Breadcrumb {
     uuid: string;
     displayName: string;
-    path: string;
+    path?: string;
+    projectName: string;
+    schema: SchemaReference;
 }
 
-export interface TagTree {
-    [tagFamilyName: string]: {
-        items: TagReference[];
-    };
+export interface Version {
+    uuid: string;
+    number: string;
+}
+
+export interface TagReference {
+    name: string;
+    tagFamily: string;
+    uuid: string;
 }
 
 export type NodeFieldString = string;
@@ -56,10 +65,12 @@ export interface MeshNode extends BaseProperties {
     breadcrumb: Breadcrumb[];
     childrenInfo: NodeChildrenInfo;
     container: boolean;
+    displayField: string;
     fields: { [fieldName: string]: NodeFieldType; };
-    languagePaths: { [languageCode: string]: string; };
+    language: string;
     parentNode: NodeReference;
-    path: string;
+    path?: string;
     schema: SchemaReferenceWithVersion;
-    tags: TagTree;
+    tags: TagReference[];
+    version: Version;
 }

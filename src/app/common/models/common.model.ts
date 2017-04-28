@@ -1,6 +1,6 @@
 export interface UserReference {
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     uuid: string;
 }
 
@@ -40,7 +40,14 @@ export interface TagReference {
     uuid: string;
 }
 
-export type PermissionsArray = Array<'publish' | 'create' | 'update' | 'read' | 'readpublished' | 'delete'>;
+export interface Permissions {
+    create: boolean;
+    read: boolean;
+    update: boolean;
+    delete: boolean;
+    publish: boolean;
+    readPublished: boolean;
+  }
 
 /**
  * Common properties of all entities. Note that at this time, the Schema & Microschemas only return
@@ -51,7 +58,7 @@ export interface BaseProperties {
     creator: UserReference;
     edited: string;
     editor: UserReference;
-    permissions: PermissionsArray;
+    permissions: Permissions;
     uuid: string;
 }
 

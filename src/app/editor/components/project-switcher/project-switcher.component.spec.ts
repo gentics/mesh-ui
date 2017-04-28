@@ -59,12 +59,14 @@ describe('ProjectSwitcherComponent:', () => {
                         edited: '2016-09-14T12:48:11Z',
                         name: 'demo',
                         rootNodeUuid: '8a74925be3b24272b4925be3b2f27289',
-                        permissions: [
-                            'create',
-                            'read',
-                            'update',
-                            'delete'
-                        ]
+                        permissions: {
+                            create: true,
+                            read: true,
+                            update: true,
+                            delete: true,
+                            publish: true,
+                            readPublished: true
+                        }
                     },
                     'b5eba09ef1554337aba09ef155d337a5': {
                         uuid: 'b5eba09ef1554337aba09ef155d337a5',
@@ -82,12 +84,14 @@ describe('ProjectSwitcherComponent:', () => {
                         edited: '2017-04-20T12:00:42Z',
                         name: 'tvc',
                         rootNodeUuid: '6c71621d1a8542e4b1621d1a8542e46f',
-                        permissions: [
-                            'create',
-                            'read',
-                            'update',
-                            'delete'
-                        ]
+                        permissions: {
+                            create: true,
+                            read: true,
+                            update: true,
+                            delete: true,
+                            publish: true,
+                            readPublished: true
+                        }
                     }
                 }
             }
@@ -164,4 +168,4 @@ describe('ProjectSwitcherComponent:', () => {
         <gtx-overlay-host></gtx-overlay-host>
         <project-switcher></project-switcher>`
 })
-class TestComponent {}
+class TestComponent { }

@@ -1,14 +1,19 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
+import { OverlayHostService } from 'gentics-ui-core';
 
 import { ApplicationStateService } from './state/providers/application-state.service';
 
 @Component({
-  selector: 'app',
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: ['app.component.scss'],
-  templateUrl: './app.component.html'
+    selector: 'app',
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['app.component.scss'],
+    templateUrl: './app.component.html',
+    // This root component provides the OverlayHostService, so that there is only one service for the project.
+    providers: [
+        { provide: OverlayHostService, useClass: OverlayHostService }
+    ]
 })
 export class AppComponent {
     loggedIn$: Observable<boolean>;
