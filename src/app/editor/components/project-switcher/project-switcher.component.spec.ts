@@ -5,11 +5,13 @@ import { DropdownItem, GenticsUICoreModule } from 'gentics-ui-core';
 
 import { StateModule } from '../../../state/state.module';
 import { LanguageSwitcherComponent } from './language-switcher.component';
-import { SharedModule } from '../../shared.module';
 import { componentTest } from '../../../../testing/component-test';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { UI_LANGUAGES } from '../../../common/config/config';
+import { EditorModule } from '../../editor.module';
+import { ProjectSwitcherComponent } from './project-switcher.component';
+import { SharedModule } from '../../../shared/shared.module';
 
 
 describe('ProjectSwitcherComponent:', () => {
@@ -18,7 +20,7 @@ describe('ProjectSwitcherComponent:', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TestComponent],
+            declarations: [TestComponent, ProjectSwitcherComponent],
             imports: [SharedModule, StateModule, GenticsUICoreModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState }

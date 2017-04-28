@@ -9,7 +9,6 @@ import { CustomLoader } from './providers/i18n/custom-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 import { NavigationService } from './providers/navigation/navigation.service';
-import { ProjectOverviewComponent } from './components/project-overview/project-overview.component';
 import { RouterModule } from '@angular/router';
 
 const SHARED_COMPONENTS = [

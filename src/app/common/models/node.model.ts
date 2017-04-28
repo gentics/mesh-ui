@@ -68,6 +68,7 @@ export interface MeshNode extends BaseProperties {
     displayField: string;
     fields: { [fieldName: string]: NodeFieldType; };
     language: string;
+    languagePaths?: { [language: string]: string};
     parentNode: NodeReference;
     path?: string;
     schema: SchemaReferenceWithVersion;
