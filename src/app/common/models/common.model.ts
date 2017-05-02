@@ -37,6 +37,7 @@ export interface TagFamilyReference {
 
 export interface TagReference {
     name: string;
+    tagFamily: string;
     uuid: string;
 }
 

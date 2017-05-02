@@ -25,12 +25,6 @@ export interface Version {
     number: string;
 }
 
-export interface TagReference {
-    name: string;
-    tagFamily: string;
-    uuid: string;
-}
-
 export type NodeFieldString = string;
 export type NodeFieldHTML = string;
 export type NodeFieldNumber = number;

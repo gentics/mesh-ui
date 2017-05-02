@@ -16,7 +16,14 @@ export class BreadcrumbsComponent {
 
     constructor(private state: ApplicationStateService,
                 private navigationService: NavigationService) {
-        this.routerLinks$ = state.select(state => state.entities.node[state.editor.openNode.uuid])
+        this.routerLinks$ = state.select(state => state.editor.openNode)
+            .switchMap(node => {
+                if (node) {
+                    return state.select(state => state.entities.node[node.uuid]);
+                } else {
+                    return Observable.of(undefined);
+                }
+            })
             .map(node => this.toRouterLinks(node));
     }
 
@@ -24,7 +31,10 @@ export class BreadcrumbsComponent {
      * Turns a node to breadcrumb router links, which are used for the gtx-breadcrumbs directive.
      * @param node A node in mesh containing the breadcrumb information.
      */
-    private toRouterLinks(node: MeshNode): IBreadcrumbRouterLink[] {
+    private toRouterLinks(node: MeshNode | undefined): IBreadcrumbRouterLink[] {
+        if (!node) {
+            return [];
+        }
         const projectName = this.state.now.editor.openNode.projectName;
         return node.breadcrumb.map(ascendant => ({
             route: this.navigationService.list(projectName, ascendant.uuid).commands(),

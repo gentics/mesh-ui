@@ -121,6 +121,77 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                                 publish: true,
                                 readPublished: true
                             }
+                        },
+                        'fdc937c9ce0440188937c9ce04b0185f': {
+                            uuid: 'fdc937c9ce0440188937c9ce04b0185f',
+                            creator: {
+                                uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
+                            },
+                            created: '2016-09-14T12:48:14Z',
+                            editor: {
+                                uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
+                            },
+                            edited: '2016-09-14T12:48:14Z',
+                            language: 'en',
+                            availableLanguages: ['en'],
+                            parentNode: {
+                                projectName: 'demo',
+                                uuid: 'f69a7a7c1459495c9a7a7c1459e95c21',
+                                displayName: 'Automobiles',
+                                schema: {
+                                    name: 'category',
+                                    uuid: '084396b200bc46d18396b200bca6d11f'
+                                }
+                            },
+                            tags: [{
+                                name: 'Gasoline',
+                                uuid: '4618c692de20456198c692de20956110',
+                                tagFamily: 'Fuels'
+                            }, {
+                                name: 'Silver',
+                                uuid: 'bb98bab72af544ec98bab72af594ec8d',
+                                tagFamily: 'Colors'
+                            }],
+                            childrenInfo: {},
+                            schema: {
+                                name: 'vehicle',
+                                uuid: '37b70224f243418bb70224f243d18b5c',
+                                version: 1
+                            },
+                            displayField: 'name',
+                            fields: {
+                                name: 'Koenigsegg CXX',
+                                weight: 1456,
+                                SKU: 3,
+                                price: 135000,
+                                stocklevel: 4,
+                                description: 'The Koenigsegg CCX is a mid-engined sports car built by Koenigsegg Automotive AB.',
+                                vehicleImage: {
+                                    uuid: '46c8c31846d049e288c31846d0a9e2c4'
+                                }
+                            },
+                            breadcrumb: [{
+                                projectName: 'demo',
+                                uuid: 'f69a7a7c1459495c9a7a7c1459e95c21',
+                                displayName: 'Automobiles',
+                                schema: {
+                                    name: 'category',
+                                    uuid: '084396b200bc46d18396b200bca6d11f'
+                                }
+                            }],
+                            version: {
+                                uuid: '532761d08a5b4867a761d08a5b3867d9',
+                                number: '0.1'
+                            },
+                            container: false,
+                            permissions: {
+                                create: true,
+                                read: true,
+                                update: true,
+                                delete: true,
+                                publish: true,
+                                readPublished: true
+                            }
                         }
                     }
                 }

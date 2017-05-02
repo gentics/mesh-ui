@@ -33,7 +33,7 @@ describe('ProjectSwitcherComponent:', () => {
 
     beforeEach(() => {
         navigation = TestBed.get(NavigationService);
-        spyOn(navigation, 'list');
+        spyOn(navigation, 'list').and.callThrough();
 
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
