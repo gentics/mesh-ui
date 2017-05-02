@@ -23,7 +23,7 @@ describe('FormGeneratorComponent:', () => {
         entryComponents: [StringFieldComponent, NumberFieldComponent],
         exports: [StringFieldComponent, NumberFieldComponent]
     })
-    class TestModule {}
+    class TestModule { }
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -174,18 +174,20 @@ const mockUser = {
 };
 const mockNode: MeshNode = {
     uuid: '6b415925881043f1815925881063f147',
+    displayField: 'name',
+    language: 'en',
     creator: mockUser,
     created: '2017-01-19T12:08:02Z',
     editor: mockUser,
     edited: '2017-01-19T12:08:05Z',
-    permissions: [
-        'create',
-        'update',
-        'delete',
-        'readpublished',
-        'read',
-        'publish'
-    ],
+    permissions: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+        publish: true,
+        readPublished: true
+    },
     availableLanguages: [
         'en'
     ],
@@ -198,7 +200,11 @@ const mockNode: MeshNode = {
             uuid: '1c401518014a407d801518014a507d2b'
         }
     },
-    tags: {},
+    tags: [],
+    version: {
+        uuid: 'abcdef',
+        number: '0.1'
+    },
     childrenInfo: {},
     schema: {
         name: 'person',
@@ -217,7 +223,11 @@ const mockNode: MeshNode = {
         {
             uuid: '69e74dfa02a24a1da74dfa02a2aa1d6f',
             displayName: 'Aircraft',
-            path: ''
+            projectName: 'demo',
+            schema: {
+                name: 'folder',
+                uuid: 'abcdef'
+            }
         }
     ],
     container: false
@@ -229,14 +239,14 @@ const mockSchema: Schema = {
     created: '2017-01-19T12:08:02Z',
     editor: mockUser,
     edited: '2017-01-19T12:08:05Z',
-    permissions: [
-        'create',
-        'update',
-        'delete',
-        'readpublished',
-        'read',
-        'publish'
-    ],
+    permissions: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+        publish: true,
+        readPublished: true
+    },
     version: 1,
     name: 'vehicle',
     fields: [

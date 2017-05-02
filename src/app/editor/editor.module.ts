@@ -10,6 +10,7 @@ import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.compo
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
 import { EditorEffectsService } from './providers/editor-effects.service';
+import { ProjectSwitcherComponent } from './components/project-switcher/project-switcher.component';
 
 @NgModule({
     imports: [
@@ -22,7 +23,8 @@ import { EditorEffectsService } from './providers/editor-effects.service';
         MasterDetailComponent,
         NodeEditorComponent,
         BreadcrumbsComponent,
-        SearchBarComponent
+        SearchBarComponent,
+        ProjectSwitcherComponent
     ],
     providers: [
         EditorEffectsService

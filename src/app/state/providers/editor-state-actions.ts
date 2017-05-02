@@ -17,9 +17,9 @@ export class EditorStateActions extends StateActionBranch<AppState> {
                     editorIsFocused: false,
                     editorIsOpen: false,
                     openNode: {
-                        uuid: '',
-                        projectName: '',
-                        language: ''
+                        uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
+                        projectName: 'demo',
+                        language: 'en'
                     }
                 }
             }

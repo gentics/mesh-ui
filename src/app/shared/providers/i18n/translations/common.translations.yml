@@ -43,6 +43,9 @@ id_label:
 okay_button:
     en: Okay
     de: OK
+project:
+    en: Project
+    de: Projekt
 publish_button:
     en: Publish
     de: Veröffentlichen
