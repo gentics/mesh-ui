@@ -2,12 +2,12 @@
     <gtx-dropdown-trigger>
         <gtx-button flat size="small" type="secondary">
             <icon left>account_circle</icon>
-            Hans Maulwurf
+            {{ currentUsername$ | async }}
             <icon right>arrow_drop_down</icon>
         </gtx-button>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
-        <gtx-dropdown-item>
+        <gtx-dropdown-item (click)="changePassword()">
             {{ 'user.change_password' | i18n }}
         </gtx-dropdown-item>
         <gtx-dropdown-item (click)="logOut()">

@@ -19,7 +19,8 @@ export class AuthStateActions extends StateActionBranch<AppState> {
                     // persistent logged-in state.
                     loggedIn: true,
                     loggingIn: false,
-                    loggingOut: false
+                    loggingOut: false,
+                    currentUser: 'd8b043e818144e27b043e81814ae2713'
                 }
             }
         });
