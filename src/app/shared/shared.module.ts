@@ -10,10 +10,12 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 import { NavigationService } from './providers/navigation/navigation.service';
 import { RouterModule } from '@angular/router';
+import { UserDropdownComponent } from './components/user-dropdown/user-dropdown.component';
 
 const SHARED_COMPONENTS = [
     NoContentComponent,
-    LanguageSwitcherComponent
+    LanguageSwitcherComponent,
+    UserDropdownComponent
 ];
 
 const SHARED_PIPES = [

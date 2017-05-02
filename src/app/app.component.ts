@@ -27,12 +27,4 @@ export class AppComponent {
             .filter(event => event instanceof NavigationEnd)
             .map((event: NavigationEnd) => /^\/admin/.test(event.url));
     }
-
-    logOut(): void {
-        // TODO: actually log out
-        this.state.actions.auth.logoutStart();
-        this.state.actions.auth.logoutSuccess();
-
-        this.router.navigate(['/login']);
-    }
 }

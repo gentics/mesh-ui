@@ -1,0 +1,17 @@
+<gtx-dropdown-list>
+    <gtx-dropdown-trigger>
+        <gtx-button flat size="small" type="secondary">
+            <icon left>account_circle</icon>
+            Hans Maulwurf
+            <icon right>arrow_drop_down</icon>
+        </gtx-button>
+    </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+        <gtx-dropdown-item>
+            {{ 'user.change_password' | i18n }}
+        </gtx-dropdown-item>
+        <gtx-dropdown-item (click)="logOut()">
+            {{ 'user.logout' | i18n }}
+        </gtx-dropdown-item>
+    </gtx-dropdown-content>
+ </gtx-dropdown-list>
