@@ -12,14 +12,17 @@ getRamlFromServer()
     })
     .then(parsedRaml => {
         const renderer = new TypescriptModelRenderer({
+            addEndpointList: true,
             emitInterfacesAsReadonly: true,
             emitRequestExamples: true,
             emitRequestURLs: true,
             emitResponseExamples: false,
-            interfaceSuffix: 'FromServer',
             sortInterfaces: true,
             sortKeys: true
         });
+        renderer.formatModelName = (shortName) => {
+            return /Request$|Response$/.test(shortName) ? shortName : shortName + 'FromServer';
+        };
         return renderer.renderAll(parsedRaml);
     })
     .then(renderedTypeScript => {

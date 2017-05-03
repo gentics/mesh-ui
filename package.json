@@ -139,7 +139,7 @@
     "karma-remap-coverage": "^0.1.4",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "2.0.1",
-    "mesh-model-generator": "^0.1.1",
+    "mesh-model-generator": "^0.2.2",
     "ng-router-loader": "^1.0.2",
     "ngc-webpack": "1.1.0",
     "node-sass": "^4.2.0",
