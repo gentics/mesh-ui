@@ -1,11 +1,19 @@
 import { TranslateLoader } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
+const translationFiles = [
+    'common',
+    'lang',
+    'user',
+    'modal'
+].reduce((hash, name) => {
+    hash[name] = require(`./translations/${name}.translations.yml`);
+    return hash;
+}, {});
+
 // Parse the yaml files into a JS object.
 const translations: any = {
-    common: require('./translations/common.translations.yml'),
-    lang: require('./translations/lang.translations.yml'),
-    user: require('./translations/user.translations.yml')
+    ...translationFiles
 };
 
 /**

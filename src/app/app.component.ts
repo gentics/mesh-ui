@@ -9,11 +9,7 @@ import { ApplicationStateService } from './state/providers/application-state.ser
     selector: 'app',
     encapsulation: ViewEncapsulation.None,
     styleUrls: ['app.component.scss'],
-    templateUrl: './app.component.html',
-    // This root component provides the OverlayHostService, so that there is only one service for the project.
-    providers: [
-        OverlayHostService
-    ]
+    templateUrl: './app.component.html'
 })
 export class AppComponent {
     loggedIn$: Observable<boolean>;

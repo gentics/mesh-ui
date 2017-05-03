@@ -1,0 +1,15 @@
+change_password_title:
+    en: Change Password
+    de: Passwort ändern
+change_password_button:
+    en: Change password
+    de: Passwort ändern
+confirm_password_label:
+    en: Confirm password
+    de: Passwort bestätigen
+new_password_label:
+    en: New password
+    de: Neues Passwort
+validation_passwords_must_match:
+    en: Passwords must match
+    de: Passworteingaben stimmen nicht überein

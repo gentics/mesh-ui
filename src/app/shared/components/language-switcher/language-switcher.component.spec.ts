@@ -23,8 +23,7 @@ describe('LanguageSwitcherComponent:', () => {
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState }
             ]
-        })
-        .compileComponents();
+        });
     }));
 
     beforeEach(() => {

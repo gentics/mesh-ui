@@ -1,10 +1,13 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { NavigationService } from '../../providers/navigation/navigation.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { ModalService } from 'gentics-ui-core';
+
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { NavigationService } from '../../providers/navigation/navigation.service';
 import { NavigationElementFromServer } from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
+import { ChangePasswordModalComponent } from '../change-password-modal/change-password-modal.component';
 
 @Component({
     selector: 'user-dropdown',
@@ -15,7 +18,8 @@ export class UserDropdownComponent {
     currentUsername$: Observable<string>;
 
     constructor(private state: ApplicationStateService,
-                private router: Router) {
+                private router: Router,
+                private modal: ModalService) {
         this.currentUsername$ = state.select(state => state.entities.user[state.auth.currentUser])
             .map(this.toUserName)
             .distinctUntilChanged();
@@ -30,7 +34,8 @@ export class UserDropdownComponent {
     }
 
     changePassword(): void {
-        this.router.navigate(['/changepassword']);
+        this.modal.fromComponent(ChangePasswordModalComponent)
+            .then(modal => modal.open());
     }
 
     /**

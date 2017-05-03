@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgModule, ApplicationRef } from '@angular/core';
 import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
@@ -26,6 +26,7 @@ import { AuthGuard } from './shared/providers/guards/auth-guard';
 import { LoginModule } from './login/login.module';
 import { AdminModule } from './admin/admin.module';
 import { EditorModule } from './editor/editor.module';
+import { ChangePasswordModalComponent } from './shared/components/change-password-modal/change-password-modal.component';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -49,13 +50,18 @@ const appSubModules = [
     EditorModule
 ];
 
+const ENTRY_COMPONENTS = [
+    ChangePasswordModalComponent
+];
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
 @NgModule({
     bootstrap: [AppComponent],
     declarations: [
-        AppComponent
+        AppComponent,
+        ...ENTRY_COMPONENTS
     ],
     imports: [
         BrowserModule,
@@ -64,12 +70,14 @@ const appSubModules = [
         RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
         SharedModule,
         StateModule,
+        ReactiveFormsModule,
         ...appSubModules
     ],
     providers: [
         ENV_PROVIDERS,
         APP_PROVIDERS
-    ]
+    ],
+    entryComponents: ENTRY_COMPONENTS
 })
 export class AppModule {
 
