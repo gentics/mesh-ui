@@ -43,8 +43,10 @@ export class ChangePasswordModalComponent implements IModalDialog {
     }
 
     changePassword(): void {
-        // TODO call auth action and actually change password
-        this.closeFn();
+        if (this.form.valid) {
+            // TODO call auth action and actually change password
+            this.closeFn();
+        }
     }
 
     closeFn = () => {};
