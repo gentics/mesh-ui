@@ -1,0 +1,14 @@
+<div class="container">
+    <h1>Projects</h1>
+
+    <div class="not-found" *ngIf="(projects$ | async).length === 0">
+        <div><icon>sentiment_very_dissatisfied</icon></div>
+        <p>No projects found</p>
+    </div>
+
+    <div class="project-list">
+        <project-list-item *ngFor="let project of projects$ | async" [project]="project"></project-list-item>
+    </div>
+
+    <gtx-button (click)="create()">Create Project</gtx-button>
+</div>

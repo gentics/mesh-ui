@@ -1,0 +1,11 @@
+gtx-input {
+    padding-left: 5px;
+}
+
+:host /deep/ gtx-input input {
+    border-width: 0;
+}
+
+:host /deep/ gtx-input input:hover {
+    border-width: 2px;
+}

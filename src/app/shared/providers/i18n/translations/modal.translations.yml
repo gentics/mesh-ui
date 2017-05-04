@@ -7,6 +7,12 @@ change_password_button:
 confirm_password_label:
     en: Confirm password
     de: Passwort bestätigen
+delete_project_title:
+    en: Delete Project
+    de: Projekt löschen
+delete_project_body:
+    en: Are you sure you want to delete project <var>{{ name }}</var>?
+    de: Sind Sie sicher, dass sie Projekt <var>{{ name }}</var> löschen wollen?
 new_password_label:
     en: New password
     de: Neues Passwort

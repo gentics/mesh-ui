@@ -29,7 +29,7 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                             permissions: {
                                 create: true,
                                 read: true,
-                                update: true,
+                                update: false,
                                 delete: true,
                                 publish: true,
                                 readPublished: true
