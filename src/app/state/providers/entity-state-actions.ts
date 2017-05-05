@@ -222,6 +222,249 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                                 readPublished: true
                             }
                         }
+                    },
+                    schema: {
+                        '5953336e4342498593336e4342398599': {
+                            uuid: '5953336e4342498593336e4342398599',
+                            creator: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            created: '2017-04-28T13:15:23Z',
+                            editor: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            edited: '2017-04-28T13:15:23Z',
+                            displayField: 'title',
+                            segmentField: 'filename',
+                            container: false,
+                            version: 1,
+                            name: 'content',
+                            fields: [{
+                                name: 'name',
+                                label: 'Name',
+                                required: true,
+                                type: 'string'
+                            }, {
+                                name: 'filename',
+                                label: 'Filename',
+                                required: false,
+                                type: 'string'
+                            }, {
+                                name: 'title',
+                                label: 'Title',
+                                required: false,
+                                type: 'string'
+                            }, {
+                                name: 'content',
+                                label: 'Content',
+                                required: false,
+                                type: 'html'
+                            }],
+                            permissions: {
+                                create: true,
+                                read: true,
+                                update: true,
+                                delete: true,
+                                publish: true,
+                                readPublished: true
+                            }
+                        }, 'b73bbc9adae94c88bbbc9adae99c88f5': {
+                            uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
+                            creator: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            created: '2017-04-28T13:15:23Z',
+                            editor: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            edited: '2017-04-28T13:15:23Z',
+                            displayField: 'name',
+                            segmentField: 'name',
+                            container: true,
+                            version: 1,
+                            name: 'folder',
+                            fields: [{
+                                name: 'name',
+                                label: 'Name',
+                                required: false,
+                                type: 'string'
+                            }],
+                            permissions: {
+                                create: true,
+                                read: true,
+                                update: true,
+                                delete: true,
+                                publish: true,
+                                readPublished: true
+                            }
+                        }, 'eb967a50be7e4602967a50be7ed60265': {
+                            uuid: 'eb967a50be7e4602967a50be7ed60265',
+                            creator: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            created: '2017-04-28T13:15:23Z',
+                            editor: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            edited: '2017-04-28T13:15:23Z',
+                            displayField: 'name',
+                            segmentField: 'binary',
+                            container: false,
+                            version: 1,
+                            name: 'binary_content',
+                            fields: [{
+                                name: 'name',
+                                label: 'Name',
+                                required: false,
+                                type: 'string'
+                            }, {
+                                name: 'binary',
+                                label: 'Binary Data',
+                                required: false,
+                                type: 'binary'
+                            }],
+                            permissions: {
+                                create: true,
+                                read: true,
+                                update: true,
+                                delete: true,
+                                publish: true,
+                                readPublished: true
+                            }
+                        }, 'a38a5c9af65844f28a5c9af65804f2e1': {
+                            uuid: 'a38a5c9af65844f28a5c9af65804f2e1',
+                            creator: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            created: '2017-04-28T13:15:48Z',
+                            editor: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            edited: '2017-04-28T13:15:48Z',
+                            displayField: 'name',
+                            segmentField: 'name',
+                            container: false,
+                            version: 1,
+                            name: 'vehicle',
+                            fields: [{
+                                name: 'name',
+                                label: 'Name',
+                                required: true,
+                                type: 'string'
+                            }, {
+                                name: 'weight',
+                                label: 'Weight',
+                                required: false,
+                                type: 'number'
+                            }, {
+                                name: 'SKU',
+                                label: 'Stock Keeping Unit',
+                                required: false,
+                                type: 'number'
+                            }, {
+                                name: 'price',
+                                label: 'Price',
+                                required: false,
+                                type: 'number'
+                            }, {
+                                name: 'stocklevel',
+                                label: 'Stock Level',
+                                required: false,
+                                type: 'number'
+                            }, {
+                                name: 'description',
+                                label: 'Description',
+                                required: false,
+                                type: 'html'
+                            }, {
+                                name: 'vehicleImage',
+                                label: 'Vehicle Image',
+                                required: false,
+                                type: 'node',
+                                allow: ['vehicleImage']
+                            }],
+                            permissions: {
+                                create: true,
+                                read: true,
+                                update: true,
+                                delete: true,
+                                publish: true,
+                                readPublished: true
+                            }
+                        }, '832235ac0570435ea235ac0570b35e10': {
+                            uuid: '832235ac0570435ea235ac0570b35e10',
+                            creator: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            created: '2017-04-28T13:15:56Z',
+                            editor: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            edited: '2017-04-28T13:15:56Z',
+                            displayField: 'name',
+                            segmentField: 'image',
+                            container: false,
+                            version: 1,
+                            name: 'vehicleImage',
+                            fields: [{
+                                name: 'name',
+                                label: 'Name',
+                                required: true,
+                                type: 'string'
+                            }, {
+                                name: 'altText',
+                                label: 'Alternative Text',
+                                required: false,
+                                type: 'string'
+                            }, {
+                                name: 'image',
+                                label: 'Image',
+                                required: false,
+                                type: 'binary'
+                            }],
+                            permissions: {
+                                create: true,
+                                read: true,
+                                update: true,
+                                delete: true,
+                                publish: true,
+                                readPublished: true
+                            }
+                        }, '4de05a1e64894a44a05a1e64897a445b': {
+                            uuid: '4de05a1e64894a44a05a1e64897a445b',
+                            creator: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            created: '2017-04-28T13:16:04Z',
+                            editor: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            edited: '2017-04-28T13:16:04Z',
+                            displayField: 'name',
+                            segmentField: 'name',
+                            container: true,
+                            version: 1,
+                            name: 'category',
+                            fields: [{
+                                name: 'name',
+                                label: 'Name',
+                                required: true,
+                                type: 'string'
+                            }, {
+                                name: 'description',
+                                label: 'Description',
+                                required: false,
+                                type: 'string'
+                            }],
+                            permissions: {
+                                create: true,
+                                read: true,
+                                update: true,
+                                delete: true,
+                                publish: true,
+                                readPublished: true
+                            }
+                        }
                     }
                 }
             }
