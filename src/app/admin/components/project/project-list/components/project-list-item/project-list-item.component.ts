@@ -32,6 +32,9 @@ export class ProjectListItemComponent {
         }
     }
 
+    /**
+     * Shows confirmation dialog, then deletes the project.
+     */
     delete(): void {
         this.modal.dialog({
             title: this.i18n.translate('modal.delete_project_title'),

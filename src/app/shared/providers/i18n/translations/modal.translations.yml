@@ -7,6 +7,15 @@ change_password_button:
 confirm_password_label:
     en: Confirm password
     de: Passwort bestätigen
+create_project_button:
+    en: Create Project
+    de: Projekt erstellen
+create_project_schema_label:
+    en: "Schema for root node"
+    de: "Schema für Root-Node"
+create_project_title:
+    en: New Project
+    de: Neues Projekt
 delete_project_title:
     en: Delete Project
     de: Projekt löschen

@@ -1,1 +1,21 @@
-hi!
+
+
+<div class="modal-title">
+    <h5>{{ 'modal.create_project_title' | i18n }}</h5>
+</div>
+<div class="modal-content">
+    <form [formGroup]="form">
+        <gtx-input label="Name" formControlName="name"></gtx-input>
+
+        <gtx-select label="{{ 'modal.create_project_schema_label' | i18n }}" formControlName="schema">
+            <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option>
+        </gtx-select>
+    </form>
+</div>
+<div class="modal-footer">
+    <gtx-button type="secondary" flat
+                (click)="cancelFn()">{{ 'common.cancel_button' | i18n }}</gtx-button>
+    <gtx-button type="primary"
+                [disabled]="!form?.valid"
+                (click)="createProject()">{{ 'modal.create_project_button' | i18n }}</gtx-button>
+</div>

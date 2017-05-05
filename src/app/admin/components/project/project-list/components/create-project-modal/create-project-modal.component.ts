@@ -1,20 +1,35 @@
 import { Component } from '@angular/core';
-import { IModalDialog } from 'gentics-ui-core';
+import { IModalDialog, Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 
 import { Schema } from '../../../../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../../../../state/providers/application-state.service';
 import { hashValues } from '../../../../../../util';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
     templateUrl: './create-project-modal.component.html'
 })
 export class CreateProjectModalComponent implements IModalDialog {
+    schemas$: Observable<Schema[]>;
 
-    schemas$: Observable<Schema>;
+    schema: FormControl;
+    name: FormControl;
 
-    constructor(state: ApplicationStateService) {
+    form: FormGroup;
 
+    constructor(state: ApplicationStateService,
+                private notification: Notification) {
+        this.schemas$ = state.select(state => state.entities.schema)
+            .map(hashValues);
+
+        this.name = new FormControl('', Validators.required);
+        this.schema = new FormControl('', Validators.required);
+
+        this.form = new FormGroup({
+            name: this.name,
+            schema: this.schema
+        });
     }
 
     closeFn = () => {};
@@ -26,5 +41,13 @@ export class CreateProjectModalComponent implements IModalDialog {
 
     registerCancelFn(cancel: () => void): void {
         this.cancelFn = cancel;
+    }
+
+    createProject() {
+        if (this.form.valid) {
+            // TODO Actually create project
+            this.notification.show({type: 'success', message: 'created'});
+            this.closeFn();
+        }
     }
 }
