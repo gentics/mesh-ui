@@ -580,7 +580,7 @@ function getButton(fixture: ComponentFixture<TestComponent>, iconName: string): 
 }
 
 @Component({
-    template: `<project-list-item [project]="project"></project-list-item>`
+    template: `<project-list-item [projectUuid]="project.uuid"></project-list-item>`
 })
 class TestComponent {
     project: Project;

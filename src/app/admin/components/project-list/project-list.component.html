@@ -7,7 +7,7 @@
     </div>
 
     <div class="project-list">
-        <project-list-item *ngFor="let project of projects$ | async" [project]="project"></project-list-item>
+        <project-list-item *ngFor="let project of projects$ | async" [projectUuid]="project.uuid"></project-list-item>
     </div>
 
     <gtx-button (click)="create()">Create Project</gtx-button>

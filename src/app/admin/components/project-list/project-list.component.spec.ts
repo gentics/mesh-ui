@@ -527,7 +527,7 @@ describe('ProjectListComponent', () => {
 
 function getListedProjectUuids(fixture: ComponentFixture<ProjectListComponent>): string[] {
     return fixture.debugElement.queryAll(By.directive(MockProjectItemComponent))
-        .map(it => it.componentInstance.project.uuid);
+        .map(it => it.componentInstance.projectUuid);
 }
 
 function testProject(name: string): Project {
@@ -560,5 +560,5 @@ function testProject(name: string): Project {
 })
 class MockProjectItemComponent {
     @Input()
-    public project: Project;
+    public projectUuid: string;
 }
