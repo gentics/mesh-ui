@@ -943,6 +943,10 @@ module meshAdminUi {
             return this.meshGet('microschemas', queryParams);
         }
 
+        public getProjectMicroschemas(projectName: string): ng.IPromise<IListResponse<IMicroschema>> {
+            return this.meshGet(projectName + '/microschemas');
+        }
+
         public getMicroschema(uuid: string, queryParams?):ng.IPromise<IMicroschema> {
             return this.meshGet('microschemas/' + uuid, queryParams);
         }
@@ -951,6 +955,17 @@ module meshAdminUi {
             return this.getMicroschemas(queryParams)
                 .then(response => response.data.filter(microschema => microschema.name === name)[0]);
         }
+
+        public addMicroschemaToProject(microschemaUuid: string, projectName: string): ng.IPromise<any> {
+            this.clearCache('microschemas');
+            return this.meshPost(projectName + '/microschemas/' + microschemaUuid, {});
+        }
+
+        public removeMicroschemaFromProject(microschemaUuid: string, projectName: string): ng.IPromise<any> {
+            this.clearCache('microschemas');
+            return this.meshDelete(projectName + '/microschemas/' + microschemaUuid);
+        }
+
 
 
         public diffMicroschema(microschema: IMicroschema): ng.IPromise<ISchemaChangeset> {
@@ -1146,7 +1161,7 @@ module meshAdminUi {
             'nodes': new RegExp(projectName + _ + 'nodes\\/', 'gi'),
             'tags': new RegExp(projectName + _ + 'tagFamilies\\/?', 'gi'),
             'schemas': /\/?schemas\??/,
-            'microschemas': /^microschemas\??/,
+            'microschemas': /\/?microschemas\??/,
             'users': /^users\??/,
             'roles': /^roles\??/,
             'groups': /^groups\??/

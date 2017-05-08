@@ -9,9 +9,9 @@ module meshAdminUi {
         private modified: boolean = false;
         private project: IProject;
         private schemas: ISchema[];
-        private projectSchemas: {
-            [uuid: string]: boolean
-        } = {};
+        private microschemas: IMicroschema[];
+        private projectSchemas: { [uuid: string]: boolean} = {};
+        private projectMicroschemas: { [uuid: string]: boolean} = {};
 
         constructor(private $q: ng.IQService,
                     private $state: ng.ui.IStateService,
@@ -88,19 +88,28 @@ module meshAdminUi {
             if (projectId && projectId !== 'new') {
                 return this.$q.all<any>([
                     this.dataService.getProject(this.$stateParams.uuid),
-                    this.dataService.getSchemas()
+                    this.dataService.getSchemas(),
+                    this.dataService.getMicroschemas()
                 ])
                     .then((responses: any[])=> {
                         this.project = responses[0];
                         this.schemas = responses[1].data;
-                        return this.dataService.getProjectSchemas(this.project.name);
+                        this.microschemas = responses[2].data;
+                        return this.$q.all<IListResponse<ISchema | IMicroschema>>([
+                            this.dataService.getProjectSchemas(this.project.name),
+                            this.dataService.getProjectMicroschemas(this.project.name)
+                        ]);
                     })
                     .then(response => {
-                        let currentSchemaUuids = response.data.map(schema => schema.uuid);
+                        let currentSchemaUuids = response[0].data.map(schema => schema.uuid);
                         this.schemas.forEach(schema => {
                             this.projectSchemas[schema.uuid] = -1 < currentSchemaUuids.indexOf(schema.uuid);
                         });
-                    })
+                        let currentMicroschemaUuids = response[1].data.map(microschema => microschema.uuid);
+                        this.microschemas.forEach(microschema => {
+                            this.projectMicroschemas[microschema.uuid] = -1 < currentMicroschemaUuids.indexOf(microschema.uuid);
+                        });
+                    });
             } else {
                 this.project = this.createEmptyProject();
                 this.isNew = true;
@@ -108,8 +117,8 @@ module meshAdminUi {
         }
 
         public toggleSchema(schema: ISchema) {
-            let add = this.projectSchemas[schema.uuid],
-                promise;
+            let add = this.projectSchemas[schema.uuid];
+            let promise;
             if (add) {
                 promise = this.dataService.addSchemaToProject(schema.uuid, this.project.name);
             } else {
@@ -118,6 +127,20 @@ module meshAdminUi {
             promise.then(() => {
                 let token = add ? 'SCHEMA_ADDED_TO_PROJECT' : 'SCHEMA_REMOVED_FROM_PROJECT';
                 this.notifyService.toast(token, { name: schema.name });
+            });
+        }
+
+        public toggleMicroschema(microschema: IMicroschema) {
+            let add = this.projectMicroschemas[microschema.uuid];
+            let promise;
+            if (add) {
+                promise = this.dataService.addMicroschemaToProject(microschema.uuid, this.project.name);
+            } else {
+                promise = this.dataService.removeMicroschemaFromProject(microschema.uuid, this.project.name);
+            }
+            promise.then(() => {
+                let token = add ? 'MICROSCHEMA_ADDED_TO_PROJECT' : 'MICROSCHEMA_REMOVED_FROM_PROJECT';
+                this.notifyService.toast(token, { name: microschema.name });
             });
         }
 

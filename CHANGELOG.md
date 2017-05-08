@@ -2,6 +2,9 @@
 
 ## Version 0.6.2 (in progress)
 
+#### Features
+* Microschemas can now be assigned to projects
+
 #### Fixes
 * Remove the "binary" option from micronode editor
 

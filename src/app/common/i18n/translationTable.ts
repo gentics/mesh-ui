@@ -326,6 +326,14 @@ module meshAdminUi {
             en: 'Schema "{{ name }}" was removed from this project',
             de: 'Das Schema "{{ name }}" wurde von diesem Projekt entfernt'
         },
+        'MICROSCHEMA_ADDED_TO_PROJECT': {
+            en: 'Microschema "{{ name }}" was added to this project',
+            de: 'Microschema "{{ name }}" wurde zu diesem Projekt hinzugefügt'
+        },
+        'MICROSCHEMA_REMOVED_FROM_PROJECT': {
+            en: 'Microschema "{{ name }}" was removed from this project',
+            de: 'Das Microschema "{{ name }}" wurde von diesem Projekt entfernt'
+        },
         'PROJECT_NAME': {
             en: 'Project name',
             de: 'Projektname'

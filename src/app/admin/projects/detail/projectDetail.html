@@ -49,7 +49,7 @@
                     </h2>
                     <md-input-container flex>
                         <label>Filter</label>
-                        <input ng-model="vm.filter">
+                        <input ng-model="vm.schemaFilter">
                     </md-input-container>
                 </div>
             </md-toolbar>
@@ -59,7 +59,7 @@
                 <div class="permissions-table">
                     <table class="mh-table">
                         <tbody>
-                        <tr ng-repeat="schema in vm.schemas | filter: vm.filter track by schema.uuid">
+                        <tr ng-repeat="schema in vm.schemas | filter: vm.schemaFilter track by schema.uuid">
                             <td>
                                 <md-checkbox md-no-ink aria-label="Add schema to project"
                                              ng-model="vm.projectSchemas[schema.uuid]"
@@ -68,12 +68,49 @@
                             <td>
                                 {{:: schema.name }}
                             </td>
+                            <td>
+                                {{:: schema.description }}
+                            </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </md-content>
 
+            <md-toolbar class="admin-toolbar">
+                <div class="md-toolbar-tools">
+                    <h2 class="md-title" flex >
+                        Project Microschemas
+                    </h2>
+                    <md-input-container flex>
+                        <label>Filter</label>
+                        <input ng-model="vm.microschemaFilter">
+                    </md-input-container>
+                </div>
+            </md-toolbar>
+
+            <md-content layout-padding class="admin-content-block">
+
+                <div class="permissions-table">
+                    <table class="mh-table">
+                        <tbody>
+                        <tr ng-repeat="microschema in vm.microschemas | filter: vm.microschemaFilter track by microschema.uuid">
+                            <td>
+                                <md-checkbox md-no-ink aria-label="Add microschema to project"
+                                             ng-model="vm.projectMicroschemas[microschema.uuid]"
+                                             ng-change="vm.toggleMicroschema(microschema)"></md-checkbox>
+                            </td>
+                            <td>
+                                {{:: microschema.name }}
+                            </td>
+                            <td>
+                                {{:: microschema.description }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </md-content>
 
         </div>
 

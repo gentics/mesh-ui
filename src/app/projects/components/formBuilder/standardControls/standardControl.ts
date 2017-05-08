@@ -324,6 +324,7 @@ module meshAdminUi {
 
         private dragStartIndex: number;
         private listFieldModels: INodeFieldModel[] = [];
+        private availableMicroschemas: string[] = [];
 
         constructor(private $scope: ng.IScope,
                     private dataService: DataService,
@@ -341,6 +342,15 @@ module meshAdminUi {
                     this.updateListFieldModels(list);
                 }
             }, true);
+
+            if (this.fieldModel.listType === 'micronode') {
+                this.dataService.getProjectMicroschemas(this.fieldModel.projectName)
+                    .then(result => {
+                        const projectMicroschemas = result.data.map(microschema => microschema.name);
+                        this.availableMicroschemas = this.fieldModel.allow
+                            .filter(name => -1 < projectMicroschemas.indexOf(name));
+                    });
+            }
         }
 
         private updateListFieldModels(list) {
