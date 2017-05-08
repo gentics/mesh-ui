@@ -84,8 +84,8 @@ module meshAdminUi {
 
         constructor($scope: ng.IScope) {
             super($scope);
-            // micronodes are not a valid type in a microschema field.
-            this.types = this.types.filter(type => type.name !== 'micronode');
+            // micronodes and binary fields are not a valid type in a microschema field.
+            this.types = this.types.filter(type => type.name !== 'micronode' && type.name !== 'binary');
         }
     }
 

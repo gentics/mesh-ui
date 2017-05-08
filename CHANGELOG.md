@@ -1,5 +1,10 @@
 # MeshAdminUI Changelog
 
+## Version 0.6.2 (in progress)
+
+#### Fixes
+* Remove the "binary" option from micronode editor
+
 ## Version 0.6.1 (2017-04-13)
 
 #### Fixes
