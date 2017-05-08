@@ -2,6 +2,7 @@ import { async, TestBed, ComponentFixture, tick } from '@angular/core/testing';
 import { GenticsUICoreModule, ModalService, Button } from 'gentics-ui-core';
 import { Component, Input } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { componentTest } from '../../../../../testing/component-test';
 import { ProjectListComponent } from './project-list.component';
@@ -9,7 +10,6 @@ import { ApplicationStateService } from '../../../../state/providers/application
 import { TestApplicationState } from '../../../../state/testing/test-application-state.mock';
 import { Project } from '../../../../common/models/project.model';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
-import { FormsModule } from '@angular/forms';
 
 describe('ProjectListComponent', () => {
 
@@ -21,7 +21,7 @@ describe('ProjectListComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [ProjectListComponent, MockProjectItemComponent],
-            imports: [GenticsUICoreModule],
+            imports: [GenticsUICoreModule, FormsModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ModalService, useValue: mockModal }
