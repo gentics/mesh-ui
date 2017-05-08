@@ -1,31 +1,25 @@
-import { async, TestBed, ComponentFixture, tick } from '@angular/core/testing';
-import { GenticsUICoreModule, ModalService, Button } from 'gentics-ui-core';
-import { Component, Input } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { async, TestBed } from '@angular/core/testing';
+import { GenticsUICoreModule } from 'gentics-ui-core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { componentTest } from '../../../../../testing/component-test';
-import { ProjectListComponent } from './project-list.component';
-import { ApplicationStateService } from '../../../../state/providers/application-state.service';
-import { TestApplicationState } from '../../../../state/testing/test-application-state.mock';
-import { Project } from '../../../../common/models/project.model';
-import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
+import { CreateProjectModalComponent } from './create-project-modal.component';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { SharedModule } from '../../../shared/shared.module';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { componentTest } from '../../../../testing/component-test';
 
-describe('ProjectListComponent', () => {
+describe('CreateProjectModal', () => {
 
     let appState: TestApplicationState;
-    let mockModal = { fromComponent() {} };
 
     beforeEach(async(() => {
-        spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() {} }));
 
         TestBed.configureTestingModule({
-            declarations: [ProjectListComponent, MockProjectItemComponent],
-            imports: [GenticsUICoreModule, FormsModule],
+            imports: [GenticsUICoreModule, FormsModule, ReactiveFormsModule, SharedModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: ModalService, useValue: mockModal }
-            ]
+            ],
+            declarations: [CreateProjectModalComponent]
         });
     }));
 
@@ -75,6 +69,27 @@ describe('ProjectListComponent', () => {
                             read: true,
                             update: true,
                             delete: true,
+                            publish: true,
+                            readPublished: true
+                        }
+                    },
+                    '1fdb2624b6cb4b3a8ef7b5baabe47c74': {
+                        uuid: '1fdb2624b6cb4b3a8ef7b5baabe47c74',
+                        creator: {
+                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
+                        },
+                        created: '2017-04-20T12:00:42Z',
+                        editor: {
+                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
+                        },
+                        edited: '2017-04-20T12:00:42Z',
+                        name: 'test3',
+                        rootNodeUuid: '6c71621d1a8542e4b1621d1a8542e46f',
+                        permissions: {
+                            create: true,
+                            read: true,
+                            update: true,
+                            delete: false,
                             publish: true,
                             readPublished: true
                         }
@@ -493,72 +508,13 @@ describe('ProjectListComponent', () => {
         });
     });
 
-    it(`shows the list of projects`,
-        componentTest(() => ProjectListComponent, fixture => {
+    it(`shows a warning if the schema is not a container`,
+        componentTest(() => CreateProjectModalComponent, fixture => {
+            fixture.componentInstance.schema.setValue(appState.now.entities.schema['832235ac0570435ea235ac0570b35e10']);
             fixture.detectChanges();
-            expect(getListedProjectUuids(fixture)).toEqual(['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5']);
-        })
-    );
 
-    it(`shows a new project after it was added`,
-        componentTest(() => ProjectListComponent, fixture => {
-            fixture.detectChanges();
-            appState.mockState({
-                entities: {
-                    project: {
-                        ...appState.now.entities.project,
-                        'test3': testProject('test3')
-                    }
-                }
-            });
-            fixture.detectChanges();
-            expect(getListedProjectUuids(fixture)).toEqual(['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5', 'test3']);
-        })
-    );
-
-    it(`opens create project dialog when create button is clicked`,
-        componentTest(() => ProjectListComponent, fixture => {
-            fixture.debugElement.query(By.directive(Button)).nativeElement.click();
-            fixture.detectChanges();
-            expect(mockModal.fromComponent).toHaveBeenCalledWith(CreateProjectModalComponent);
+            let warning = fixture.nativeElement.querySelector('.non-container-warning');
+            expect(warning).toBeDefined();
         })
     );
 });
-
-function getListedProjectUuids(fixture: ComponentFixture<ProjectListComponent>): string[] {
-    return fixture.debugElement.queryAll(By.directive(MockProjectItemComponent))
-        .map(it => it.componentInstance.project.uuid);
-}
-
-function testProject(name: string): Project {
-    return {
-        uuid: name,
-        creator: {
-            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-        },
-        created: '2016-09-14T12:48:11Z',
-        editor: {
-            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-        },
-        edited: '2016-09-14T12:48:11Z',
-        name,
-        rootNodeUuid: '8a74925be3b24272b4925be3b2f27289',
-        permissions: {
-            create: true,
-            read: true,
-            update: false,
-            delete: true,
-            publish: true,
-            readPublished: true
-        }
-    };
-}
-
-@Component({
-    selector: 'project-list-item',
-    template: `-`
-})
-class MockProjectItemComponent {
-    @Input()
-    public project: Project;
-}

@@ -1,8 +1,9 @@
 import { Component, Input, ElementRef } from '@angular/core';
 import { Notification, ModalService } from 'gentics-ui-core';
 
-import { Project } from '../../../../../../common/models/project.model';
-import { I18nService } from '../../../../../../shared/providers/i18n/i18n.service';
+import { Project } from '../../../common/models/project.model';
+import { I18nService } from '../../../shared/providers/i18n/i18n.service';
+
 
 @Component({
     selector: 'project-list-item',

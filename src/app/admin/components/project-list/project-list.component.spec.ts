@@ -1,37 +1,31 @@
 import { async, TestBed, ComponentFixture, tick } from '@angular/core/testing';
-import { GenticsUICoreModule, ModalService, Button, InputField, Notification } from 'gentics-ui-core';
+import { GenticsUICoreModule, ModalService, Button } from 'gentics-ui-core';
 import { Component, Input } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
-import { Project } from '../../../../../../common/models/project.model';
-import { componentTest } from '../../../../../../../testing/component-test';
-import { ApplicationStateService } from '../../../../../../state/providers/application-state.service';
-import { TestApplicationState } from '../../../../../../state/testing/test-application-state.mock';
-import { ProjectListItemComponent } from './project-list-item.component';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { SharedModule } from '../../../../../../shared/shared.module';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { ProjectListComponent } from './project-list.component';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { componentTest } from '../../../../testing/component-test';
+import { Project } from '../../../common/models/project.model';
+import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 
-describe('ProjectListItemComponent', () => {
+describe('ProjectListComponent', () => {
 
     let appState: TestApplicationState;
-    let mockModal;
-    let mockNotification;
+    let mockModal = { fromComponent() {} };
 
     beforeEach(async(() => {
-        mockModal = { dialog() { } };
-        spyOn(mockModal, 'dialog').and.returnValue(Promise.resolve({ open() { } }));
-
-        mockNotification = { show() { } };
-        spyOn(mockNotification, 'show');
+        spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() {} }));
 
         TestBed.configureTestingModule({
-            imports: [GenticsUICoreModule, FormsModule, SharedModule],
+            declarations: [ProjectListComponent, MockProjectItemComponent],
+            imports: [GenticsUICoreModule, FormsModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: ModalService, useValue: mockModal },
-                { provide: Notification, useValue: mockNotification }
-            ],
-            declarations: [TestComponent, ProjectListItemComponent]
+                { provide: ModalService, useValue: mockModal }
+            ]
         });
     }));
 
@@ -81,27 +75,6 @@ describe('ProjectListItemComponent', () => {
                             read: true,
                             update: true,
                             delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    },
-                    '1fdb2624b6cb4b3a8ef7b5baabe47c74': {
-                        uuid: '1fdb2624b6cb4b3a8ef7b5baabe47c74',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-04-20T12:00:42Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-04-20T12:00:42Z',
-                        name: 'test3',
-                        rootNodeUuid: '6c71621d1a8542e4b1621d1a8542e46f',
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: false,
                             publish: true,
                             readPublished: true
                         }
@@ -520,68 +493,72 @@ describe('ProjectListItemComponent', () => {
         });
     });
 
-    it(`shows the project name and icons`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
+    it(`shows the list of projects`,
+        componentTest(() => ProjectListComponent, fixture => {
             fixture.detectChanges();
-            tick();
-            expect(projectName(fixture)).toBe('tvc');
-            expect(getButton(fixture, 'edit')).toBeDefined();
-            expect(getButton(fixture, 'delete')).toBeDefined();
+            expect(getListedProjectUuids(fixture)).toEqual(['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5']);
         })
     );
 
-    it(`does not show edit button if update permission is missing`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['55f6a4666eb8467ab6a4666eb8867a84'];
+    it(`shows a new project after it was added`,
+        componentTest(() => ProjectListComponent, fixture => {
             fixture.detectChanges();
-            expect(getButton(fixture, 'edit')).toBeUndefined();
+            appState.mockState({
+                entities: {
+                    project: {
+                        ...appState.now.entities.project,
+                        'test3': testProject('test3')
+                    }
+                }
+            });
+            fixture.detectChanges();
+            expect(getListedProjectUuids(fixture)).toEqual(['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5', 'test3']);
         })
     );
 
-    it(`does not show delete button if delete permission is missing`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['1fdb2624b6cb4b3a8ef7b5baabe47c74'];
+    it(`opens create project dialog when create button is clicked`,
+        componentTest(() => ProjectListComponent, fixture => {
+            fixture.debugElement.query(By.directive(Button)).nativeElement.click();
             fixture.detectChanges();
-            expect(getButton(fixture, 'delete')).toBeUndefined();
-        })
-    );
-
-
-    it(`opens confirmation dialog when delete button is clicked`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
-            fixture.detectChanges();
-            getButton(fixture, 'delete').click();
-            fixture.detectChanges();
-            expect(mockModal.dialog).toHaveBeenCalled();
-            // TODO maybe remove this if state and api is implemented and notification is not done in this component
-            tick();
-            expect(mockNotification.show).toHaveBeenCalled();
+            expect(mockModal.fromComponent).toHaveBeenCalledWith(CreateProjectModalComponent);
         })
     );
 });
 
-function projectName(fixture: ComponentFixture<TestComponent>): string {
-    let input = fixture.nativeElement.querySelector('input');
-    let element: HTMLElement = fixture.nativeElement.querySelector('div.item-primary');
-
-    if (input) {
-        return input.value;
-    } else {
-        return element.textContent!;
-    }
+function getListedProjectUuids(fixture: ComponentFixture<ProjectListComponent>): string[] {
+    return fixture.debugElement.queryAll(By.directive(MockProjectItemComponent))
+        .map(it => it.componentInstance.project.uuid);
 }
 
-function getButton(fixture: ComponentFixture<TestComponent>, iconName: string): HTMLElement {
-    let element: HTMLElement = fixture.nativeElement;
-    return Array.from(element.querySelectorAll('gtx-button'))
-        .filter(it => it.textContent === iconName)[0] as HTMLElement;
+function testProject(name: string): Project {
+    return {
+        uuid: name,
+        creator: {
+            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
+        },
+        created: '2016-09-14T12:48:11Z',
+        editor: {
+            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
+        },
+        edited: '2016-09-14T12:48:11Z',
+        name,
+        rootNodeUuid: '8a74925be3b24272b4925be3b2f27289',
+        permissions: {
+            create: true,
+            read: true,
+            update: false,
+            delete: true,
+            publish: true,
+            readPublished: true
+        }
+    };
 }
 
 @Component({
-    template: `<project-list-item [project]="project"></project-list-item>`
+    selector: 'project-list-item',
+    template: `-`
 })
-class TestComponent {
-    project: Project;
+class MockProjectItemComponent {
+    @Input()
+    public project: Project;
 }

@@ -27,7 +27,7 @@ import { LoginModule } from './login/login.module';
 import { AdminModule } from './admin/admin.module';
 import { EditorModule } from './editor/editor.module';
 import { ChangePasswordModalComponent } from './shared/components/change-password-modal/change-password-modal.component';
-import { CreateProjectModalComponent } from './admin/components/project/project-list/components/create-project-modal/create-project-modal.component';
+import { CreateProjectModalComponent } from './admin/components/create-project-modal/create-project-modal.component';
 
 // Application wide providers
 const APP_PROVIDERS = [

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
-
-import { Schema } from '../../../../../../common/models/schema.model';
-import { ApplicationStateService } from '../../../../../../state/providers/application-state.service';
-import { hashValues } from '../../../../../../util';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { Schema } from '../../../common/models/schema.model';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { hashValues } from '../../../util';
 
 @Component({
     templateUrl: './create-project-modal.component.html',
