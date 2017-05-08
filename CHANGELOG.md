@@ -4,6 +4,7 @@
 
 #### Features
 * Microschemas can now be assigned to projects
+* Descriptions can now be assigned to schemas & microschemas
 
 #### Fixes
 * Remove the "binary" option from micronode editor

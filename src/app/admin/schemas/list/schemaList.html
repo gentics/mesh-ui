@@ -28,6 +28,7 @@
                 <td>
                     <a ui-sref="admin.schemas.detail({ uuid: schema.uuid })"><strong>{{:: schema.name}}</strong></a>
                 <td>
+                <td>{{:: schema.description }}<td>
                 <td>
                     <md-checkbox ng-model="vm.selected[schema.uuid]"
                                  md-no-ink

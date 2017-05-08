@@ -28,6 +28,7 @@
                 <td>
                     <a ui-sref="admin.microschemas.detail({ uuid: microschema.uuid })"><strong>{{:: microschema.name}}</strong></a>
                 <td>
+                <td>{{:: microschema.description }}</td>
                 <td>
                     <md-checkbox ng-model="vm.selected[microschema.uuid]"
                                  md-no-ink

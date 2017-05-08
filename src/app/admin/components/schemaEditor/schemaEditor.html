@@ -18,6 +18,11 @@
         </div>
     </div>
 
+    <md-input-container flex flex-gt-sm="70">
+        <label>Description</label>
+        <input type="text" ng-model="vm.schema.description" required ng-change="vm.schemaChanged()">
+    </md-input-container>
+
 
     <div layout="row">
         <md-input-container flex flex-gt-sm="30">
