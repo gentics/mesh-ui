@@ -1,6 +1,6 @@
 # MeshAdminUI Changelog
 
-## Version 0.6.2 (in progress)
+## Version 0.6.2 (2017-05-08)
 
 #### Features
 * Microschemas can now be assigned to projects
