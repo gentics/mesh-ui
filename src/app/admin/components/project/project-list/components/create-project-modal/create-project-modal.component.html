@@ -10,6 +10,10 @@
         <gtx-select label="{{ 'modal.create_project_schema_label' | i18n }}" formControlName="schema">
             <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option>
         </gtx-select>
+
+        <div class="non-container-warning" *ngIf="schema.value && !schema.value.container">
+            {{ 'modal.create_project_non_container_hint' | i18n }}
+        </div>
     </form>
 </div>
 <div class="modal-footer">

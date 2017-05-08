@@ -8,7 +8,8 @@ import { hashValues } from '../../../../../../util';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
-    templateUrl: './create-project-modal.component.html'
+    templateUrl: './create-project-modal.component.html',
+    styleUrls: ['./create-project-modal.scss']
 })
 export class CreateProjectModalComponent implements IModalDialog {
     schemas$: Observable<Schema[]>;
