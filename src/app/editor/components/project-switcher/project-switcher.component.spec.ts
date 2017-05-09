@@ -1,18 +1,16 @@
-import { Component, QueryList, Injectable } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DropdownItem, GenticsUICoreModule } from 'gentics-ui-core';
+import { Component, Injectable } from '@angular/core';
+import { TestBed, tick } from '@angular/core/testing';
+import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
 
 import { StateModule } from '../../../state/state.module';
 import { LanguageSwitcherComponent } from './language-switcher.component';
 import { componentTest } from '../../../../testing/component-test';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { UI_LANGUAGES } from '../../../common/config/config';
-import { EditorModule } from '../../editor.module';
 import { ProjectSwitcherComponent } from './project-switcher.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
 
 
 describe('ProjectSwitcherComponent:', () => {
@@ -20,16 +18,17 @@ describe('ProjectSwitcherComponent:', () => {
     let appState: TestApplicationState;
     let navigation: MockNavigationService;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
+    beforeEach(() => {
+        configureComponentTest({
             declarations: [TestComponent, ProjectSwitcherComponent],
             imports: [SharedModule, StateModule, GenticsUICoreModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: NavigationService, useClass: MockNavigationService }
+                { provide: NavigationService, useClass: MockNavigationService },
+                OverlayHostService
             ]
         });
-    }));
+    });
 
     beforeEach(() => {
         navigation = TestBed.get(NavigationService);

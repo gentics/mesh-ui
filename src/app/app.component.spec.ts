@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, TestBed, ComponentFixture } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { AppComponent } from './app.component';
 import { ApplicationStateService } from './state/providers/application-state.service';
@@ -13,7 +14,10 @@ describe(`App`, () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [SharedModule],
+            imports: [
+                SharedModule,
+                GenticsUICoreModule.forRoot()
+            ],
             declarations: [AppComponent],
             providers: [
                 ApplicationStateService,

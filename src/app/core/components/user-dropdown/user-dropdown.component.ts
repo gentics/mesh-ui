@@ -1,11 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ModalService } from 'gentics-ui-core';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { NavigationService } from '../../providers/navigation/navigation.service';
-import { NavigationElementFromServer } from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
 import { ChangePasswordModalComponent } from '../change-password-modal/change-password-modal.component';
 

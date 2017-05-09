@@ -1,27 +1,29 @@
 import { async, TestBed } from '@angular/core/testing';
-import { GenticsUICoreModule } from 'gentics-ui-core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { GenticsUICoreModule, Notification, OverlayHostService } from 'gentics-ui-core';
 
 import { CreateProjectModalComponent } from './create-project-modal.component';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
 
 describe('CreateProjectModal', () => {
 
     let appState: TestApplicationState;
 
-    beforeEach(async(() => {
-
-        TestBed.configureTestingModule({
+    beforeEach(() => {
+        configureComponentTest({
             imports: [GenticsUICoreModule, FormsModule, ReactiveFormsModule, SharedModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
+                Notification,
+                OverlayHostService
             ],
             declarations: [CreateProjectModalComponent]
         });
-    }));
+    });
 
     beforeEach(() => {
         appState = TestBed.get(ApplicationStateService);
