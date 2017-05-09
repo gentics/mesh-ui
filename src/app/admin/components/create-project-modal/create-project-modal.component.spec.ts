@@ -107,6 +107,10 @@ describe('CreateProjectModal', () => {
                         editor: {
                             uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
                         },
+                        project: {
+                            uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+                            name: 'demo',
+                        },
                         edited: '2017-04-27T09:08:20Z',
                         language: 'en',
                         availableLanguages: ['en'],
@@ -182,6 +186,10 @@ describe('CreateProjectModal', () => {
                                 name: 'category',
                                 uuid: '084396b200bc46d18396b200bca6d11f'
                             }
+                        },
+                        project: {
+                            uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+                            name: 'demo',
                         },
                         tags: [{
                             name: 'Gasoline',

@@ -175,6 +175,10 @@ const mockUser = {
 const mockNode: MeshNode = {
     uuid: '6b415925881043f1815925881063f147',
     displayField: 'name',
+    project: {
+        uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+        name: 'demo',
+    },
     language: 'en',
     creator: mockUser,
     created: '2017-01-19T12:08:02Z',

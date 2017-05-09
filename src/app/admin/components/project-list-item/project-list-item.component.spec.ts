@@ -119,6 +119,10 @@ describe('ProjectListItemComponent', () => {
                         editor: {
                             uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
                         },
+                        project: {
+                            uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+                            name: 'demo',
+                        },
                         edited: '2017-04-27T09:08:20Z',
                         language: 'en',
                         availableLanguages: ['en'],
@@ -184,6 +188,10 @@ describe('ProjectListItemComponent', () => {
                             uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
                         },
                         edited: '2016-09-14T12:48:14Z',
+                        project: {
+                            uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+                            name: 'demo',
+                        },
                         language: 'en',
                         availableLanguages: ['en'],
                         parentNode: {
