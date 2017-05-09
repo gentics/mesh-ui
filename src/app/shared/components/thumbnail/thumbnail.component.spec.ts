@@ -558,7 +558,7 @@ describe('Thumbnail', () => {
             fixture.detectChanges();
 
             let imageSrc = fixture.debugElement.query(By.css('img')).nativeElement.src;
-            expect(hasQueryParameters(imageSrc!, dimensions)).toBe(true, `Invalid query params in ${imageSrc}`);
+            expect(hasQueryParameters(imageSrc, dimensions)).toBe(true, `Invalid query params in ${imageSrc}`);
         })
     );
 

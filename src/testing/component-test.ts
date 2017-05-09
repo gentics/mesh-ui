@@ -80,10 +80,10 @@ export interface ComponentType<T> {
 }
 
 function parseOverloadArguments<T>(args: any[]): {
-                                       template?: string,
-                                       overwritesFn?: (testBed: TestBed) => TestBed,
-                                       testFn: (fixture: ComponentFixture<T>, instance: T | null) => (void | Promise<any>)
-                                   } {
+    template?: string,
+    overwritesFn?: (testBed: TestBed) => TestBed,
+    testFn: (fixture: ComponentFixture<T>, instance: T | null) => (void | Promise<any>)
+} {
     if (typeof args[1] === 'function' && !args[2]) {
         return { testFn: args[1] };
     } else if (typeof args[1] === 'string') {
