@@ -34,7 +34,7 @@ export class ChangePasswordModalComponent implements IModalDialog {
      * Validator which checks that both passwords contain equal values.
      */
     areEqual(group: FormGroup): { mustBeEqual: boolean } | null {
-        let valid = group.get('password1').value === group.get('password2').value;
+        let valid = group.get('password1')!.value === group.get('password2')!.value;
         if (valid) {
             return null;
         } else {

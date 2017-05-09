@@ -251,10 +251,10 @@ export class ApiBase {
 
     /** Gets the body from an angular `Response` object */
     private getBody(response: Response): any {
-        const contentType = response.headers.get('Content-Type');
-        if (contentType.startsWith('application/json') || contentType.startsWith('text/json')) {
+        const contentType = response.headers && response.headers.get('Content-Type');
+        if (contentType && (contentType.startsWith('application/json') || contentType.startsWith('text/json'))) {
             return response.json();
-        } else if (contentType.startsWith('text/')) {
+        } else if (contentType && contentType.startsWith('text/')) {
             return response.text();
         } else {
             return response.blob();

@@ -93,7 +93,7 @@ describe('ApiBase', () => {
                 expect(error.name).toBe('ApiError');
                 expect(error.response!.status).toBe(404);
                 expect(error.response!.statusText).toBe('Not Found');
-                expect(error.response!.headers.get('Content-Type')).toBe('text/plain');
+                expect(error.response!.headers!.get('Content-Type')).toBe('text/plain');
                 expect(error.response!.text()).toBe('Endpoint not found');
                 didThrow = true;
             });
@@ -206,7 +206,7 @@ describe('ApiBase', () => {
             expect(thrownError).toBeDefined();
             expect(thrownError.response!.status).toBe(404);
             expect(thrownError.response!.statusText).toBe('Not Found');
-            expect(thrownError.response!.headers.get('Content-Type')).toBe('text/plain');
+            expect(thrownError.response!.headers!.get('Content-Type')).toBe('text/plain');
             expect(thrownError.response!.text()).toBe('Endpoint not found');
         });
 
