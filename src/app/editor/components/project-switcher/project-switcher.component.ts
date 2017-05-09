@@ -5,7 +5,7 @@ import { Project } from '../../../common/models/project.model';
 import { Subject } from 'rxjs/Subject';
 import { StateActionBranch } from 'immutablets';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
-import { hashValues } from '../../../util';
+import { hashValues } from '../../../common/util/util';
 
 type ProjectHash = { [uuid: string]: Project };
 

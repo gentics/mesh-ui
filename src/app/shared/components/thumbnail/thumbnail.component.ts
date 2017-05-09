@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { MeshNode, NodeFieldBinary } from '../../../common/models/node.model';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
-import { isImageField, filenameExtension, queryString } from '../../../util';
+import { isImageField, filenameExtension, queryString } from '../../../common/util/util';
 
 @Component({
     selector: 'thumbnail',

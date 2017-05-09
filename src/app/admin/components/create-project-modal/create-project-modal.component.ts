@@ -5,7 +5,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Schema } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { hashValues } from '../../../util';
+import { hashValues } from '../../../common/util/util';
 
 @Component({
     templateUrl: './create-project-modal.component.html',

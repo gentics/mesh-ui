@@ -1,4 +1,5 @@
-import { NodeFieldBinary } from './common/models/node.model';
+import { NodeFieldBinary } from '../models/node.model';
+
 // Pure functions for utility
 
 /**
@@ -27,6 +28,8 @@ export function filenameExtension(filename: string): string {
  * Creates an query string from the provided object.
  * Uses all properties from the object that are not undefined or null.
  * This will prepend an '?' if at least one valid property is found.
+ *
+ * TODO Add url encode or use angular URLSearchParams
  */
 export function queryString(obj: any): string {
     let qs = Object.keys(obj).reduce<string[]>((query, key) => {

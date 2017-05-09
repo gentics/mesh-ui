@@ -4,8 +4,8 @@ import { ModalService } from 'gentics-ui-core';
 
 import { Project } from '../../../common/models/project.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { hashValues } from '../../../util';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
+import { hashValues } from '../../../common/util/util';
 
 @Component({
     templateUrl: './project-list.component.html',
