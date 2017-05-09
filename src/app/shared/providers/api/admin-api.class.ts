@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 
 import { ApiBase } from './api-base.service';
-import { apiGetMethod, apiDeleteMethod } from './api-methods';
+import { apiGetMethod, apiDeleteMethod, apiPostMethod } from './api-methods';
 
 
 export class AdminApi {
@@ -44,23 +44,21 @@ export class AdminApi {
      * Invoke a graph database backup and dump the data to the configured backup
      * location. Note that this operation will block all current operation.
      */
-    startDatabaseBackup = apiGetMethod('/admin/backup');
+    startDatabaseBackup = apiPostMethod('/admin/backup');
 
     /** Invoke a orientdb graph database export. */
-    startDatabaseExport = apiGetMethod('/admin/export');
+    startDatabaseExport = apiPostMethod('/admin/export');
 
     /**
      * Invoke a orientdb graph database import. The latest import file from the import
      * directory will be used for this operation.
      */
-    startDatabaseImport = apiGetMethod('/admin/import');
+    startDatabaseImport = apiPostMethod('/admin/import');
 
     /**
      * Invoke a graph database restore. The latest dump from the backup directory will
      * be inserted. Please note that this operation will block all current operation and
      * effectively destroy all previously stored data.
      */
-    startDatabaseRestore = apiGetMethod('/admin/restore');
-
     startDatabaseRestore = apiPostMethod('/admin/restore');
 }
