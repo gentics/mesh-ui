@@ -39,12 +39,12 @@ describe('ChangePasswordModal', () => {
             const password2 = form.get('password2');
             fixture.detectChanges();
 
-            password1!.setValue('abcde');
-            password2!.setValue('abcdZ');
+            password1.setValue('abcde');
+            password2.setValue('abcdZ');
             form.updateValueAndValidity();
             expect(form.valid).toBe(false);
 
-            password2!.setValue('abcde');
+            password2.setValue('abcde');
             form.updateValueAndValidity();
             expect(form.valid).toBe(true);
 

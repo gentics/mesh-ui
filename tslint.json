@@ -18,11 +18,14 @@
         "directive-class-suffix": true,
         // "directive-selector": [true, "attribute", "my", "camelCase"],
         "member-access": false,
+        "member-ordering": [
+            false
+        ],
         "import-destructuring-spacing": true,
         "invoke-injectable": true,
+        "no-empty": false,
         "no-access-missing-member": true,
         "no-attribute-parameter-decorator": true,
-        "no-empty": false,
         "no-forward-ref": true,
         "no-input-rename": true,
         "no-output-rename": true,
