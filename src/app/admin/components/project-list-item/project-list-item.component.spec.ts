@@ -31,7 +31,7 @@ describe('ProjectListItemComponent', () => {
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ModalService, useValue: mockModal },
                 { provide: Notification, useValue: mockNotification },
-                { provide: I18nService, useValue: { translate() {} } }
+                { provide: I18nService, useValue: { translate() { } } }
             ],
             declarations: [TestComponent, ProjectListItemComponent]
         });
@@ -557,7 +557,6 @@ describe('ProjectListItemComponent', () => {
         })
     );
 
-
     it(`opens confirmation dialog when delete button is clicked`,
         componentTest(() => TestComponent, fixture => {
             fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
@@ -570,7 +569,44 @@ describe('ProjectListItemComponent', () => {
             expect(mockNotification.show).toHaveBeenCalled();
         })
     );
+
+    it(`updates the state on blur`,
+        componentTest(() => TestComponent, fixture => {
+            fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
+            fixture.detectChanges();
+
+            let input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
+            input.value = 'abcdef';
+            triggerEvent(input, 'input');
+            fixture.detectChanges();
+            triggerEvent(input, 'blur');
+            fixture.detectChanges();
+            // TODO maybe remove this if state and api is implemented and notification is not done in this component
+            tick();
+            expect(mockNotification.show).toHaveBeenCalled();
+        })
+    );
+
+    it(`must not update the state on blur if no changes are made`,
+        componentTest(() => TestComponent, fixture => {
+            fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
+            fixture.detectChanges();
+
+            let input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
+            triggerEvent(input, 'blur');
+            fixture.detectChanges();
+            // TODO maybe remove this if state and api is implemented and notification is not done in this component
+            tick();
+            expect(mockNotification.show).not.toHaveBeenCalled();
+        })
+    );
 });
+
+function triggerEvent(element: HTMLElement, eventName: string) {
+    let event = document.createEvent('Event');
+    event.initEvent(eventName, true, true);
+    element.dispatchEvent(event);
+}
 
 function projectName(fixture: ComponentFixture<TestComponent>): string {
     let input = fixture.nativeElement.querySelector('input');

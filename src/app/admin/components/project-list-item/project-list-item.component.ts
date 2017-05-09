@@ -30,7 +30,7 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.subscription = this.state.select(state => state.entities.project[this.projectUuid])
-            .subscribe(project => this.project = project);
+            .subscribe(project => this.project = {...project});
     }
 
     ngOnDestroy(): void {
@@ -74,6 +74,9 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
      */
     update(): void {
         // TODO actually update
-        this.notification.show({ message: 'update' });
+        // TODO maybe not check state but something different because it might get update later (after api call is done)
+        if (this.state.now.entities.project[this.projectUuid].name !== this.project.name) {
+            this.notification.show({ message: 'update' });
+        }
     }
 }
