@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { I18nService, UILanguage } from '../../providers/i18n/i18n.service';
+import { I18nService, UILanguage } from '../../../shared/providers/i18n/i18n.service';
 import { UI_LANGUAGES } from '../../../common/config/config';
 
 

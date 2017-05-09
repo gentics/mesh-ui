@@ -1,7 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
-import { OverlayHostService } from 'gentics-ui-core';
 
 import { ApplicationStateService } from './state/providers/application-state.service';
 

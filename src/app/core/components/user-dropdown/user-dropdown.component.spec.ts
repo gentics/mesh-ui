@@ -4,7 +4,7 @@ import { StateModule } from '../../../state/state.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { Component } from '@angular/core';
-import { SharedModule } from '../../shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { Router } from '@angular/router';
 
 describe('UserDropdownComponent:', () => {

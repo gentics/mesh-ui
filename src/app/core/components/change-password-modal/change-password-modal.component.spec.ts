@@ -4,13 +4,14 @@ import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { ChangePasswordModalComponent } from './change-password-modal.component';
 import { componentTest } from '../../../../testing/component-test';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { SharedModule } from '../../shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('ChangePasswordModal', () => {
 
     beforeEach(async(() => {
-        TestBed.configureTestingModule({
+        configureComponentTest({
             imports: [GenticsUICoreModule, ReactiveFormsModule, SharedModule],
             providers: [
                 { provide: ApplicationStateService, useValue: {} }

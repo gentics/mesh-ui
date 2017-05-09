@@ -5,7 +5,7 @@ import { DropdownItem } from 'gentics-ui-core';
 
 import { StateModule } from '../../../state/state.module';
 import { LanguageSwitcherComponent } from './language-switcher.component';
-import { SharedModule } from '../../shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { componentTest } from '../../../../testing/component-test';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
