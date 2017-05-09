@@ -5,6 +5,6 @@ import { Route } from '@angular/router';
 export const routes: Route[] = [
     { path: '', component: AdminShellComponent, children: [
         { path: '', pathMatch: 'full', redirectTo: 'projects' },
-        { path: 'projects', component: ProjectListComponent }
+        { path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } }
     ] }
 ];

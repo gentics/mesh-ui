@@ -8,9 +8,11 @@ import { AdminShellComponent } from './components/admin-shell/admin-shell.compon
 import { ProjectListComponent } from './components/project-list/project-list.component';
 import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
+import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
 
 @NgModule({
     declarations: [
+        AdminBreadcrumbsComponent,
         AdminShellComponent,
         ProjectListComponent,
         ProjectListItemComponent,
