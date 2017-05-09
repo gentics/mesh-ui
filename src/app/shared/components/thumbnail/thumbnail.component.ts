@@ -8,8 +8,7 @@ import { isImageField, filenameExtension, queryString } from '../../../util';
 
 @Component({
     selector: 'thumbnail',
-    templateUrl: './thumbnail.component.html',
-    styleUrls: ['./thumbnail.scss']
+    templateUrl: './thumbnail.component.html'
 })
 export class ThumbnailComponent implements OnInit {
     @Input()
