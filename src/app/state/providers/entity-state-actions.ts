@@ -58,6 +58,75 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                         }
                     },
                     node: {
+                        '825f34f29df24f2a9f34f29df27f2a59': {
+                            uuid: '825f34f29df24f2a9f34f29df27f2a59',
+                            creator: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            created: '2017-04-28T13:16:14Z',
+                            editor: {
+                                uuid: '8fbffd876e694439bffd876e697439a4'
+                            },
+                            edited: '2017-04-28T13:16:25Z',
+                            language: 'en',
+                            availableLanguages: ['en'],
+                            parentNode: {
+                                projectName: 'demo',
+                                uuid: '6fc30221c18549fa830221c18589fa74',
+                                displayName: 'Vehicle Images',
+                                schema: {
+                                    name: 'folder',
+                                    uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                                }
+                            },
+                            project: {
+                                uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+                                name: 'demo',
+                            },
+                            tags: [],
+                            childrenInfo: {},
+                            schema: {
+                                name: 'vehicleImage',
+                                uuid: '832235ac0570435ea235ac0570b35e10',
+                                version: 1
+                            },
+                            displayField: 'name',
+                            fields: {
+                                name: 'Indian Empress Image',
+                                image: {
+                                    'fileName': 'yacht-indian-empress.jpg',
+                                    'width': 1024,
+                                    'height': 508,
+                                    'sha512sum': '45d976266c7e702ad96b9e0c44f504b9957619dbc5436b9937f919a5b3' +
+                                    'c01b004e0a99e39d832b969a91d3bd2dda3e411c0374297fe3b3e8405f0fa468629e8b',
+                                    'fileSize': 149527,
+                                    'mimeType': 'irgendwas',
+                                    'dominantColor': '#6683af'
+                                }
+                            },
+                            breadcrumb: [{
+                                projectName: 'demo',
+                                uuid: '6fc30221c18549fa830221c18589fa74',
+                                displayName: 'Vehicle Images',
+                                schema: {
+                                    name: 'folder',
+                                    uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                                }
+                            }],
+                            version: {
+                                uuid: 'f5f2ab25378d455ab2ab25378d755a53',
+                                number: '1.0'
+                            },
+                            container: false,
+                            permissions: {
+                                create: false,
+                                read: true,
+                                update: false,
+                                delete: false,
+                                publish: false,
+                                readPublished: false
+                            }
+                        },
                         '6adfe63bb9a34b8d9fe63bb9a30b8d8b': {
                             uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
                             creator: {
@@ -90,6 +159,10 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                             fields: {
                                 name: 'stuff',
                                 title: 'titel'
+                            },
+                            project: {
+                                uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+                                name: 'demo',
                             },
                             breadcrumb: [{
                                 projectName: 'demo',
@@ -134,6 +207,10 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                             edited: '2016-09-14T12:48:14Z',
                             language: 'en',
                             availableLanguages: ['en'],
+                            project: {
+                                uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+                                name: 'demo',
+                            },
                             parentNode: {
                                 projectName: 'demo',
                                 uuid: 'f69a7a7c1459495c9a7a7c1459e95c21',

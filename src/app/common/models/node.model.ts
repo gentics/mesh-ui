@@ -1,4 +1,4 @@
-import { SchemaReference } from './common.model';
+import { SchemaReference, ProjectReference } from './common.model';
 import { TagFamily } from './tag-family.model';
 import {
     BaseProperties, NodeReference, TagReference,
@@ -65,6 +65,7 @@ export interface MeshNode extends BaseProperties {
     languagePaths?: { [language: string]: string};
     parentNode: NodeReference;
     path?: string;
+    project: ProjectReference;
     schema: SchemaReferenceWithVersion;
     tags: TagReference[];
     version: Version;

@@ -9,6 +9,11 @@ export interface GroupReference {
     uuid: string;
 }
 
+export interface ProjectReference {
+    name: string;
+    uuid: string;
+}
+
 export interface NodeReference {
     uuid: string;
     displayName: string;
