@@ -1,4 +1,5 @@
 <div class="uuid-form">
+    <thumbnail [nodeUuid]="userValue"></thumbnail>
     <gtx-input [(ngModel)]="userValue"
                [label]="api.field.label || api.field.name"></gtx-input>
     <gtx-button [disabled]="!isValidUuid()"

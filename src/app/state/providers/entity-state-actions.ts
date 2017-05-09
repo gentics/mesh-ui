@@ -58,8 +58,8 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                         }
                     },
                     node: {
-                        '825f34f29df24f2a9f34f29df27f2a59': {
-                            uuid: '825f34f29df24f2a9f34f29df27f2a59',
+                        '4d1cabf1382e41ea9cabf1382ef1ea7c': {
+                            uuid: '4d1cabf1382e41ea9cabf1382ef1ea7c',
                             creator: {
                                 uuid: '8fbffd876e694439bffd876e697439a4'
                             },
@@ -100,7 +100,7 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                                     'sha512sum': '45d976266c7e702ad96b9e0c44f504b9957619dbc5436b9937f919a5b3' +
                                     'c01b004e0a99e39d832b969a91d3bd2dda3e411c0374297fe3b3e8405f0fa468629e8b',
                                     'fileSize': 149527,
-                                    'mimeType': 'irgendwas',
+                                    'mimeType': 'image/jpg',
                                     'dominantColor': '#6683af'
                                 }
                             },

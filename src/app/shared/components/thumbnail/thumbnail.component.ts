@@ -24,8 +24,7 @@ export class ThumbnailComponent implements OnInit {
     height: number;
 
     binaryProperties: {
-        isImage: boolean;
-        isBinary: boolean;
+        type: 'image' | 'binary' | 'noBinary';
         imageUrl?: string;
         extension?: string;
     };
@@ -72,20 +71,17 @@ export class ThumbnailComponent implements OnInit {
 
         if (firstImageField && firstImageFieldName) {
             this.binaryProperties = {
-                isImage: true,
-                isBinary: true,
+                type: 'image',
                 imageUrl: this.getImageUrl(node, firstImageFieldName)
             };
         } else if (firstBinaryField) {
             this.binaryProperties = {
-                isImage: false,
-                isBinary: true,
+                type: 'binary',
                 extension: filenameExtension(firstBinaryField.fileName)
             };
         } else {
             this.binaryProperties = {
-                isImage: false,
-                isBinary: false
+                type: 'noBinary'
             };
         }
     }
