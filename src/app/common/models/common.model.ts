@@ -55,10 +55,7 @@ export interface Permissions {
     readPublished: boolean;
   }
 
-/**
- * Common properties of all entities. Note that at this time, the Schema & Microschemas only return
- * uuid and permissions - this is a bug tracked by https://jira.gentics.com/browse/CL-537
- */
+/** Common properties of all entities. */
 export interface BaseProperties {
     created: string;
     creator: UserReference;
@@ -66,17 +63,4 @@ export interface BaseProperties {
     editor: UserReference;
     permissions: Permissions;
     uuid: string;
-}
-
-/**
- * Calling GET on a list endpoint (e.g. `api/v1/users/`) results in a paged list response.
- */
-export interface ListResponse<T> {
-    data: T[];
-    _metainfo: {
-        currentPage: number;
-        perPage: number;
-        pageCount: number;
-        totalCount: number;
-    };
 }
