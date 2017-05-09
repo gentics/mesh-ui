@@ -16,7 +16,7 @@ export interface ProjectReference {
 
 export interface NodeReference {
     uuid: string;
-    displayName: string;
+    displayName?: string;
     projectName: string;
     schema: SchemaReference;
 }
