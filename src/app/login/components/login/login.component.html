@@ -1,5 +1,5 @@
-<form class="login-form">
+<form class="login-form" (ngSubmit)="onSubmit()">
     <gtx-input placeholder="username" [(ngModel)]="username" name="username"></gtx-input>
     <gtx-input placeholder="password" type="password" [(ngModel)]="password" name="password"></gtx-input>
-    <gtx-button submit (click)="onSubmit($event)">Log In</gtx-button>
+    <gtx-button submit>Log In</gtx-button>
 </form>

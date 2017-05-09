@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { AuthEffectsService } from '../../providers/auth-effects.service';
 
 
 @Component({
@@ -9,21 +11,30 @@ import { ApplicationStateService } from '../../../state/providers/application-st
     templateUrl: './login.component.html',
     styleUrls: ['./login.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
 
     username = '';
     password = '';
 
-    constructor(private state: ApplicationStateService,
-                private router: Router) {}
+    private subscription: Subscription;
 
-    onSubmit(e: Event): void {
-        e.preventDefault();
+    constructor(private appState: ApplicationStateService,
+                private authEffects: AuthEffectsService,
+                private router: Router) {
+        this.subscription = this.appState
+            .select(state => state.auth.loggedIn)
+            .filter(isLoggedIn => isLoggedIn)
+            .take(1)
+            .subscribe(() => {
+                this.router.navigate(['/editor', 'project']);
+            });
+    }
 
-        // TODO: actually login
-        this.state.actions.auth.loginStart();
-        this.state.actions.auth.loginSuccess();
+    onSubmit(): void {
+        this.authEffects.login(this.username, this.password);
+    }
 
-        this.router.navigate(['/editor', 'project']);
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }
