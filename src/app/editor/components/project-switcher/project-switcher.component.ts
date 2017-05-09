@@ -29,7 +29,7 @@ export class ProjectSwitcherComponent {
             .map(it => it.name);
     }
 
-    private changeProject(project: Project) {
+    changeProject(project: Project) {
         this.navigation.list(project.name, project.rootNodeUuid).navigate();
     }
 

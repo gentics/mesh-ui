@@ -44,7 +44,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         width?: string | null;
     };
 
-    subscription: Subscription;
+    private subscription: Subscription;
 
     constructor(private state: ApplicationStateService) {
     }
@@ -65,13 +65,17 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        console.log('change!', changes);
         if (changes['width'] || changes['height']) {
             this.setDisplaySize();
         }
     }
 
-    setDisplaySize() {
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
+    private setDisplaySize() {
         if (this.width || this.height) {
             this.displaySize = {
                 height: this.height ? this.height + 'px' : null,
@@ -84,9 +88,6 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
-    }
 
     /**
      * Gets all the information from a node to display the thumbnail.
@@ -95,7 +96,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
      * 2. If not, the first binary field that contains an image will be chosen.
      * 3. If there is no image, the first binary field will be chosen.
      */
-    getBinaryProperties([node, schema]: [MeshNode, Schema]): BinaryProperties {
+    private getBinaryProperties([node, schema]: [MeshNode, Schema]): BinaryProperties {
         let firstBinaryField: NodeFieldBinary | undefined;
         let firstBinaryFieldName: string | undefined;
 
@@ -140,14 +141,14 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * Filters by component field name, or if it is not set, by binary fields.
      */
-    binaryFilter(field: SchemaField): boolean {
+    private binaryFilter(field: SchemaField): boolean {
         return this.fieldName ? field.name === this.fieldName && field.type === 'binary' : field.type === 'binary';
     }
 
     /**
      * Creates an image URL from the node and the chosen field. Also uses Mesh Image API to resize the image.
      */
-    getImageUrl(node: MeshNode, fieldName: string): string {
+    private getImageUrl(node: MeshNode, fieldName: string): string {
         let query = queryString({
             width: this.width,
             height: this.height
