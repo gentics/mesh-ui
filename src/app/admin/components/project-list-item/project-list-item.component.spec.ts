@@ -1,8 +1,7 @@
-import { async, TestBed, ComponentFixture, tick } from '@angular/core/testing';
-import { GenticsUICoreModule, ModalService, Button, InputField, Notification } from 'gentics-ui-core';
-import { Component, Input } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { GenticsUICoreModule, ModalService, Notification } from 'gentics-ui-core';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { ProjectListItemComponent } from './project-list-item.component';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -10,6 +9,8 @@ import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { Project } from '../../../common/models/project.model';
+import { I18nService } from '../../../shared/providers/i18n/i18n.service';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
 
 describe('ProjectListItemComponent', () => {
 
@@ -17,23 +18,24 @@ describe('ProjectListItemComponent', () => {
     let mockModal;
     let mockNotification;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         mockModal = { dialog() { } };
         spyOn(mockModal, 'dialog').and.returnValue(Promise.resolve({ open() { } }));
 
         mockNotification = { show() { } };
         spyOn(mockNotification, 'show');
 
-        TestBed.configureTestingModule({
+        configureComponentTest({
             imports: [GenticsUICoreModule, FormsModule, SharedModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ModalService, useValue: mockModal },
-                { provide: Notification, useValue: mockNotification }
+                { provide: Notification, useValue: mockNotification },
+                { provide: I18nService, useValue: { translate() {} } }
             ],
             declarations: [TestComponent, ProjectListItemComponent]
         });
-    }));
+    });
 
     beforeEach(() => {
         appState = TestBed.get(ApplicationStateService);

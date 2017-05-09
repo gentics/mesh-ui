@@ -1,23 +1,29 @@
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { Component } from '@angular/core';
 import { async, TestBed, ComponentFixture } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { ModalService, OverlayHostService } from 'gentics-ui-core';
+
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { StateModule } from '../../../state/state.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
-import { Component } from '@angular/core';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { SharedModule } from '../../../shared/shared.module';
-import { Router } from '@angular/router';
+import { UserDropdownComponent } from './user-dropdown.component';
 
 describe('UserDropdownComponent:', () => {
 
     let appState: TestApplicationState;
 
     beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [TestComponent],
+        configureComponentTest({
+            declarations: [TestComponent, UserDropdownComponent],
             imports: [StateModule, SharedModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: Router, useValue: {} }
+                { provide: Router, useValue: {} },
+                { provide: ModalService, useValue: {} },
+                OverlayHostService
             ]
         });
     }));

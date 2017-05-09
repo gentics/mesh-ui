@@ -1,30 +1,34 @@
-import { Component, QueryList } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { Component, Pipe, PipeTransform } from '@angular/core';
+import { TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { DropdownItem } from 'gentics-ui-core';
+import { DropdownItem, OverlayHostService } from 'gentics-ui-core';
 
 import { StateModule } from '../../../state/state.module';
-import { LanguageSwitcherComponent } from './language-switcher.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { componentTest } from '../../../../testing/component-test';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { UI_LANGUAGES } from '../../../common/config/config';
-
+import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { LanguageSwitcherComponent } from './language-switcher.component';
+import { I18nService } from '../../../shared/providers/i18n/i18n.service';
+import createSpy = jasmine.createSpy;
 
 describe('LanguageSwitcherComponent:', () => {
 
     let appState: TestApplicationState;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [TestComponent],
+    beforeEach(() => {
+        configureComponentTest({
+            declarations: [TestComponent, LanguageSwitcherComponent, MockI18nPipe],
             imports: [SharedModule, StateModule],
             providers: [
+                OverlayHostService,
+                { provide: I18nService, useValue: { setLanguage() {} } },
                 { provide: ApplicationStateService, useClass: TestApplicationState }
-            ]
+            ],
         });
-    }));
+    });
 
     beforeEach(() => {
         appState = TestBed.get(ApplicationStateService);
@@ -41,7 +45,7 @@ describe('LanguageSwitcherComponent:', () => {
         componentTest(() => TestComponent, fixture => {
             fixture.detectChanges();
             const buttonText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(buttonText).toContain('English');
+            expect(buttonText).toContain('translated lang.en');
         })
     );
 
@@ -87,12 +91,12 @@ describe('LanguageSwitcherComponent:', () => {
         })
     );
 
-    it(`changes the active label when the langauge is changed in the state`,
+    it(`changes the active label when the language is changed in the state`,
         componentTest(() => TestComponent, fixture => {
             // English at first
             fixture.detectChanges();
             const buttonText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(buttonText).toContain('English');
+            expect(buttonText).toContain('translated lang.en');
 
             // Change state
             appState.mockState({
@@ -104,12 +108,20 @@ describe('LanguageSwitcherComponent:', () => {
             // Label shows German now
             fixture.detectChanges();
             const buttonTextAfter: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(buttonTextAfter).toContain('Deutsch');
+            expect(buttonTextAfter).toContain('translated lang.de');
         })
     );
 
 });
 
+@Pipe({
+    name: 'i18n'
+})
+class MockI18nPipe implements PipeTransform {
+    transform(arg) {
+        return `translated ${arg}`;
+    }
+}
 
 @Component({
     template: `

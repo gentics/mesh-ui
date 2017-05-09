@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { GenticsUICoreModule } from 'gentics-ui-core';
+import { GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
 import { DateFieldComponent } from './date-field.component';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
 import createSpy = jasmine.createSpy;
@@ -13,7 +13,8 @@ describe('DateFieldComponent:', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [GenticsUICoreModule, FormsModule],
-            declarations: [DateFieldComponent]
+            declarations: [DateFieldComponent],
+            providers: [ModalService, OverlayHostService]
         });
         fixture = TestBed.createComponent(DateFieldComponent);
         instance = fixture.componentInstance;
