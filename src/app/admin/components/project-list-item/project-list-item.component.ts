@@ -1,10 +1,11 @@
-import { Component, Input, ElementRef, OnInit } from '@angular/core';
+import { Component, Input, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Notification, ModalService } from 'gentics-ui-core';
 
 import { Project } from '../../../common/models/project.model';
 import { I18nService } from '../../../shared/providers/i18n/i18n.service';
 import { Observable } from 'rxjs/Observable';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -12,11 +13,13 @@ import { ApplicationStateService } from '../../../state/providers/application-st
     templateUrl: './project-list-item.component.html',
     styleUrls: ['./project-list-item.scss']
 })
-export class ProjectListItemComponent implements OnInit {
+export class ProjectListItemComponent implements OnInit, OnDestroy {
     @Input()
     projectUuid: string;
 
     project: Project;
+
+    private subscription: Subscription;
 
     constructor(private elementRef: ElementRef,
                 private notification: Notification,
@@ -26,8 +29,12 @@ export class ProjectListItemComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.state.select(state => state.entities.project[this.projectUuid])
+        this.subscription = this.state.select(state => state.entities.project[this.projectUuid])
             .subscribe(project => this.project = project);
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     /**
