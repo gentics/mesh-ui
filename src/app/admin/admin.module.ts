@@ -4,14 +4,14 @@ import { ModalService } from 'gentics-ui-core';
 
 import { routes } from './admin.routes';
 import { SharedModule } from '../shared/shared.module';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
 import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
 
 @NgModule({
     declarations: [
-        DashboardComponent,
+        AdminShellComponent,
         ProjectListComponent,
         ProjectListItemComponent,
         CreateProjectModalComponent
