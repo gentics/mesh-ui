@@ -17,7 +17,7 @@ import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 })
 export class AdminBreadcrumbsComponent implements OnInit, OnDestroy {
     breadcrumbs: IBreadcrumbRouterLink[];
-    subscription: Subscription;
+    private subscription: Subscription;
 
     constructor(private router: Router, private route: ActivatedRoute) {}
 
@@ -34,7 +34,7 @@ export class AdminBreadcrumbsComponent implements OnInit, OnDestroy {
                     childRoutes.forEach((route: ActivatedRoute) => {
                         if (route.outlet === PRIMARY_OUTLET) {
                             let routeSnapshot = route.snapshot;
-                            routeDef = routeSnapshot.url.map(segment => segment.path);
+                            routeDef = routeDef.concat(routeSnapshot.url.map(segment => segment.path));
                             let breadcrumb = route.routeConfig && route.routeConfig.data && route.routeConfig.data['breadcrumb'];
                             if (breadcrumb) {
                                 let text = typeof breadcrumb === 'function' ? breadcrumb(routeSnapshot.data, routeSnapshot.params) : breadcrumb;
