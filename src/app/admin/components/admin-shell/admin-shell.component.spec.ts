@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AdminShellComponent } from './admin-shell.component';
+import { AdminBreadcrumbsComponent } from '../admin-breadcrumbs/admin-breadcrumbs.component';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { SharedModule } from '../../../shared/shared.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AdminShellComponent', () => {
 
@@ -7,8 +11,9 @@ describe('AdminShellComponent', () => {
     let fixture: ComponentFixture<AdminShellComponent>;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({
-            declarations: [AdminShellComponent]
+        configureComponentTest({
+            imports: [SharedModule, RouterTestingModule],
+            declarations: [AdminShellComponent, AdminBreadcrumbsComponent]
         });
     });
 

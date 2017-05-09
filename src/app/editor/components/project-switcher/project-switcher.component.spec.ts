@@ -107,15 +107,15 @@ describe('ProjectSwitcherComponent:', () => {
     it(`shows the currently selected project`,
         componentTest(() => TestComponent, fixture => {
             fixture.detectChanges();
-            const selectText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(selectText).toBe('demo', fixture.nativeElement.innerHTML);
+            const selectText: string = fixture.nativeElement.querySelector('.current-project').innerText;
+            expect(selectText).toContain('demo', fixture.nativeElement.innerHTML);
         })
     );
 
     it(`shows the names of all available projects`,
         componentTest(() => TestComponent, fixture => {
             // Open Select
-            fixture.nativeElement.querySelector('gtx-button').click();
+            fixture.nativeElement.querySelector('.current-project').click();
             fixture.detectChanges();
             tick();
 
@@ -128,7 +128,7 @@ describe('ProjectSwitcherComponent:', () => {
     it(`navigates to the selected project`,
         componentTest(() => TestComponent, fixture => {
             // Open Select
-            fixture.nativeElement.querySelector('gtx-button').click();
+            fixture.nativeElement.querySelector('.current-project').click();
             fixture.detectChanges();
             tick();
 
@@ -148,8 +148,8 @@ describe('ProjectSwitcherComponent:', () => {
         componentTest(() => TestComponent, fixture => {
             fixture.detectChanges();
 
-            const selectText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(selectText).toBe('demo', fixture.nativeElement.innerHTML);
+            const selectText: string = fixture.nativeElement.querySelector('.current-project').innerText;
+            expect(selectText).toContain('demo', fixture.nativeElement.innerHTML);
 
             appState.mockState({
                 editor: {
@@ -163,8 +163,8 @@ describe('ProjectSwitcherComponent:', () => {
 
             fixture.detectChanges();
 
-            const nextSelectText: string = fixture.nativeElement.querySelector('gtx-button').innerText;
-            expect(nextSelectText).toBe('tvc', fixture.nativeElement.innerHTML);
+            const nextSelectText: string = fixture.nativeElement.querySelector('.current-project').innerText;
+            expect(nextSelectText).toContain('tvc', fixture.nativeElement.innerHTML);
         })
     );
 });

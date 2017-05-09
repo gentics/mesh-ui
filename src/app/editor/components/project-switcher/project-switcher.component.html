@@ -1,6 +1,8 @@
 <gtx-dropdown-list width="trigger">
     <gtx-dropdown-trigger>
-        <gtx-button>{{ (currentProjectName$ | async) ? (currentProjectName$ | async) : ('common.project' | i18n) }}</gtx-button>
+        <div class="current-project">
+            <icon>arrow_drop_down</icon>{{ (currentProjectName$ | async) ? (currentProjectName$ | async) : ('common.project' | i18n) }}
+        </div>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
         <gtx-dropdown-item *ngFor="let project of projects$ | async" (click)="changeProject(project)">

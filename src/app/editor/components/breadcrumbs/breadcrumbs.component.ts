@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 
-import { Breadcrumb, MeshNode } from '../../../common/models/node.model';
+import { MeshNode } from '../../../common/models/node.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 

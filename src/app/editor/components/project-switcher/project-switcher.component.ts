@@ -1,9 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Project } from '../../../common/models/project.model';
-import { Subject } from 'rxjs/Subject';
-import { StateActionBranch } from 'immutablets';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 import { hashValues } from '../../../common/util/util';
 
@@ -12,6 +10,7 @@ type ProjectHash = { [uuid: string]: Project };
 @Component({
     selector: 'project-switcher',
     templateUrl: './project-switcher.component.html',
+    styleUrls: ['./project-switcher.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectSwitcherComponent {
