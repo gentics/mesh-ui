@@ -5,7 +5,7 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "/coverage": true,
+        "coverage/": true,
         "/dist": true,
         "/public/__build__/": true,
         "/src/*/__build__/": true,
