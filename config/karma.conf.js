@@ -38,7 +38,9 @@ module.exports = function (config) {
          * By default all assets are served at http://localhost:[PORT]/base/
          */
         proxies: {
-            "/assets/": "/base/src/assets/"
+            "/assets/": "/base/src/assets/",
+            // For thumbnail tests:
+            "/api/v1/demo/nodes/4d1cabf1382e41ea9cabf1382ef1ea7c/binary/image": "/base/src/assets/mock-data/mockimage.gif"
         },
 
         /*
