@@ -62,7 +62,7 @@ describe('ApiBase', () => {
             expect(request.url).toBe('/api/v1/groups/some-uuid?role=some-role');
             expect(request.headers.getAll('Accept')).toEqual(['application/json']);
             expect(request.headers.getAll('Accept-Language')).toEqual(['en']);
-            expect(request.headers.getAll('Content-Type')).toEqual(['application/json']);
+            expect(request.headers.getAll('Content-Type')).toEqual(null);
         });
 
         it('emits the response body on successful status codes', () => {
@@ -241,6 +241,42 @@ describe('ApiBase', () => {
             const observable = apiBase.post('/some-api-endpoint' as any, {}, undefined);
             expect(typeof observable.mapResponses).toBe('function', 'mapResponses is not defined');
             expect(called).toBe(true);
+        });
+
+        it('requests with "multipart/form-data" when passed a FormData object', () => {
+            let formData: FormData;
+            try {
+                let file = new File([], 'test-file.txt', { type: 'text/plain' });
+                formData = new FormData();
+                formData.append('testfile', file);
+            } catch (ex) {
+                return pending('can not be tested in this environment.');
+            }
+
+            apiBase.post('/some-api-endpoint' as any, {}, formData).subscribe();
+
+            const requestBody: FormData = backend.connectionsArray[0].request.getBody();
+            expect(requestBody instanceof FormData).toBe(true, 'not a FormData instance');
+            expect(requestBody.get('testfile') instanceof File).toBe(true, 'not a File instance');
+        });
+
+        it('requests with "multipart/form-data" when passed an object with "File" objects', () => {
+            let body: any;
+            try {
+                let file = new File([], 'test-file.txt', { type: 'text/plain' });
+                body = {
+                    destination: 'xyz',
+                    testfile: file
+                };
+            } catch (ex) {
+                return pending('can not be tested in this environment.');
+            }
+
+            apiBase.post('/some-api-endpoint' as any, {}, body).subscribe();
+
+            const requestBody: FormData = backend.connectionsArray[0].request.getBody();
+            expect(requestBody instanceof FormData).toBe(true, 'not a FormData instance');
+            expect(requestBody.get('testfile') instanceof File).toBe(true, 'not a File instance');
         });
 
     });

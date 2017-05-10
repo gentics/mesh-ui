@@ -72,6 +72,8 @@ export class ApiBase {
      * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
      * @param {object} params Url and query parameters of the request.
      * @param {object} body The POST body of the request.
+     *     When a `FormData` or an object containing `File` values are passed, the request is sent
+     *     as a file upload with a `Content-Type` request header set to `"multipart/form-data"`.
      */
     post<U extends keyof ApiEndpoints['POST']>(
         url: U,
@@ -135,19 +137,41 @@ export class ApiBase {
         // Append request headers
         const headers = new Headers({
             'Accept': 'application/json',
-            'Accept-Language': this.requestLanguage,
-            'Content-Type': 'application/json'
+            'Accept-Language': this.requestLanguage
         });
 
-        const bodyAsJSON = body != null
-            ? JSON.stringify(body)
-            : undefined;
+        // Determine which body type to use.
+        //
+        // Passing a FormData object or a hash with a `File` instance as value
+        // uses a FormData object and sends the request as `multipart/form-data`.
+        // All other non-null values are sent as JSON.
+        let bodyToUse: any;
+        if (body == null) {
+            bodyToUse = undefined;
+        } else if (typeof FormData === 'function' && body instanceof FormData) {
+            bodyToUse = body;
+        } else if (typeof File === 'function' && typeof FormData === 'function'
+            && typeof body === 'object' && Object.keys(body).some(key =>
+                body[key] && (body[key].constructor === File || body[key] instanceof File))) {
+            // An object with at least one `File` instance was passed -> use FormData as request body
+            bodyToUse = new FormData();
+            for (let key of Object.keys(body)) {
+                if (body[key] && (body[key].constructor === File || body[key] instanceof File)) {
+                    bodyToUse.append(key, body[key], body[key].name);
+                } else {
+                    bodyToUse.append(key, body[key], String(body[key]));
+                }
+            }
+        } else {
+            bodyToUse = JSON.stringify(body);
+            headers.append('Content-Type', 'application/json');
+        }
 
         const request = new Request({
             url: this.formatUrl(url, params),
             method,
             headers,
-            body: bodyAsJSON
+            body: bodyToUse
         });
 
         // Perform the actual request using the Http service provided by Angular
