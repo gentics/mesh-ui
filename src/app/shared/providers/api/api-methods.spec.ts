@@ -1,4 +1,4 @@
-import { apiDeleteMethod, apiGetMethod, apiPostMethod, apiPostMethodWithBody, apiPutMethod, apiPatchMethod } from './api-methods';
+import { apiDelete, apiGet, apiPost, apiPostWithoutBody, apiPut, apiPatch } from './api-methods';
 import { MockApiBase } from './api-base.mock';
 
 describe('api-methods helper functions', () => {
@@ -10,7 +10,7 @@ describe('api-methods helper functions', () => {
         testApi = new TestApi(apiBase);
     });
 
-    describe('apiGetMethod()', () => {
+    describe('apiGet()', () => {
         it('forwards the passed parameters to apiBase.get()', () => {
             testApi.getSomething({ a: 1, b: 'two', c: true });
             expect(apiBase.allRequests.length).toBe(1);
@@ -32,29 +32,7 @@ describe('api-methods helper functions', () => {
         });
     });
 
-    describe('apiPostMethod()', () => {
-        it('forwards the passed parameters to apiBase.post()', () => {
-            testApi.postSomething({ a: 1, b: 'two', c: true });
-            expect(apiBase.allRequests.length).toBe(1);
-            expect(apiBase.lastRequest.method).toBe('POST');
-            expect(apiBase.lastRequest.url).toBe('/some-api-endpoint');
-            expect(apiBase.lastRequest.params).toEqual({ a: 1, b: 'two', c: true });
-            expect(apiBase.lastRequest.body).toBeUndefined();
-        });
-
-        it('returns the return value of apiBase.post()', () => {
-            let emitted: any[] = [];
-            testApi.postSomething({ a: 1, b: 'two', c: true })
-                .subscribe(v => { emitted.push(v); });
-
-            expect(emitted).toEqual([]);
-            expect(apiBase.allRequests.length).toBe(1);
-            apiBase.lastRequest.respond(200, { pi: 3.14 });
-            expect(emitted).toEqual([{ pi: 3.14 }]);
-        });
-    });
-
-    describe('apiPostMethodWithBody()', () => {
+    describe('apiPost()', () => {
         it('forwards the passed parameters to apiBase.post()', () => {
             testApi.postSomethingWithBody({ a: 1, b: 'two', c: true }, { body: 'as expected' });
             expect(apiBase.allRequests.length).toBe(1);
@@ -76,7 +54,29 @@ describe('api-methods helper functions', () => {
         });
     });
 
-    describe('apiDeleteMethod()', () => {
+    describe('apiPostWithoutBody()', () => {
+        it('forwards the passed parameters to apiBase.post()', () => {
+            testApi.postSomethingWithoutBody({ a: 1, b: 'two', c: true });
+            expect(apiBase.allRequests.length).toBe(1);
+            expect(apiBase.lastRequest.method).toBe('POST');
+            expect(apiBase.lastRequest.url).toBe('/some-api-endpoint');
+            expect(apiBase.lastRequest.params).toEqual({ a: 1, b: 'two', c: true });
+            expect(apiBase.lastRequest.body).toBeUndefined();
+        });
+
+        it('returns the return value of apiBase.post()', () => {
+            let emitted: any[] = [];
+            testApi.postSomethingWithoutBody({ a: 1, b: 'two', c: true })
+                .subscribe(v => { emitted.push(v); });
+
+            expect(emitted).toEqual([]);
+            expect(apiBase.allRequests.length).toBe(1);
+            apiBase.lastRequest.respond(200, { pi: 3.14 });
+            expect(emitted).toEqual([{ pi: 3.14 }]);
+        });
+    });
+
+    describe('apiDelete()', () => {
         it('forwards the passed parameters to apiBase.delete()', () => {
             testApi.deleteSomething({ id: 47 });
             expect(apiBase.allRequests.length).toBe(1);
@@ -98,7 +98,7 @@ describe('api-methods helper functions', () => {
         });
     });
 
-    describe('apiPatchMethod()', () => {
+    describe('apiPatch()', () => {
         it('forwards the passed parameters to apiBase.patch()', () => {
             testApi.patchSomething({ id: 314 }, { someData: 'to update somewhere' });
             expect(apiBase.allRequests.length).toBe(1);
@@ -120,7 +120,7 @@ describe('api-methods helper functions', () => {
         });
     });
 
-    describe('apiPutMethod()', () => {
+    describe('apiPut()', () => {
         it('forwards the passed parameters to apiBase.put()', () => {
             testApi.putSomething({ id: 314 }, { someData: 'to be put somewhere' });
             expect(apiBase.allRequests.length).toBe(1);
@@ -147,14 +147,14 @@ describe('api-methods helper functions', () => {
 class TestApi {
     constructor (private apiBase: MockApiBase) { }
 
-    getSomething = apiGetMethod('/some-api-endpoint' as any);
-    postSomething = apiPostMethod('/some-api-endpoint' as any);
-    postSomethingWithBody = apiPostMethodWithBody('/some-api-endpoint' as any);
-    deleteSomething = apiDeleteMethod('/some-api-endpoint' as any);
+    getSomething = apiGet('/some-api-endpoint' as any);
+    postSomethingWithoutBody = apiPostWithoutBody('/some-api-endpoint' as any);
+    postSomethingWithBody = apiPost('/some-api-endpoint' as any);
+    deleteSomething = apiDelete('/some-api-endpoint' as any);
 
     // `never` means there are no PATCH endpoints yet
-    patchSomething = apiPatchMethod('/some-api-endpoint' as any as never);
+    patchSomething = apiPatch('/some-api-endpoint' as any as never);
 
     // `never` means there are no PUT endpoints yet
-    putSomething = apiPutMethod('/some-api-endpoint' as any as never);
+    putSomething = apiPut('/some-api-endpoint' as any as never);
 }

@@ -12,7 +12,7 @@ import { Observable } from 'rxjs/Observable';
  *         return this.apiBase.get('/users', { params });
  *     }
  */
-export function apiGetMethod<U extends keyof ApiEndpoints['GET']>(url: U) {
+export function apiGet<U extends keyof ApiEndpoints['GET']>(url: U) {
     return function getMethod(
         params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams']
     ): Observable<ApiEndpoints['GET'][U]['responseType']> {
@@ -20,17 +20,8 @@ export function apiGetMethod<U extends keyof ApiEndpoints['GET']>(url: U) {
     };
 }
 
-/** Creates a method that is a typed wrapper to `this.apiBase.post()` for endpoints without a request body. */
-export function apiPostMethod<U extends keyof ApiEndpoints['POST']>(url: U) {
-    return function postMethod(
-        params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams']
-    ): Observable<ApiEndpoints['POST'][U]['responseType']> {
-        return this.apiBase.post(url, params);
-    };
-}
-
 /** Creates a method that is a typed wrapper to `this.apiBase.post()`. */
-export function apiPostMethodWithBody<U extends keyof ApiEndpoints['POST']>(url: U) {
+export function apiPost<U extends keyof ApiEndpoints['POST']>(url: U) {
     return function postMethod(
         params: ApiEndpoints['POST'][U]['request']['urlParams'] & ApiEndpoints['POST'][U]['request']['queryParams'],
         body: ApiEndpoints['POST'][U]['request']['body']
@@ -39,8 +30,17 @@ export function apiPostMethodWithBody<U extends keyof ApiEndpoints['POST']>(url:
     };
 }
 
+/** Creates a method that is a typed wrapper to `this.apiBase.post()` for endpoints without a request body. */
+export function apiPostWithoutBody<U extends keyof ApiEndpoints['POST']>(url: U) {
+    return function postMethod(
+        params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams']
+    ): Observable<ApiEndpoints['POST'][U]['responseType']> {
+        return this.apiBase.post(url, params);
+    };
+}
+
 /** Creates a method that is a typed wrapper to `this.apiBase.delete()`. */
-export function apiDeleteMethod<U extends keyof ApiEndpoints['DELETE']>(url: U) {
+export function apiDelete<U extends keyof ApiEndpoints['DELETE']>(url: U) {
     return function deleteMethod(
         params: ApiEndpoints['DELETE'][U]['request']['urlParams'] & ApiEndpoints['DELETE'][U]['request']['queryParams']
     ): Observable<ApiEndpoints['DELETE'][U]['responseType']> {
@@ -49,7 +49,7 @@ export function apiDeleteMethod<U extends keyof ApiEndpoints['DELETE']>(url: U) 
 }
 
 /** Creates a method that is a typed wrapper to `this.apiBase.put()`. */
-export function apiPutMethod<U extends keyof ApiEndpoints['PUT']>(url: U) {
+export function apiPut<U extends keyof ApiEndpoints['PUT']>(url: U) {
     return function putMethod(
         params: ApiEndpoints['PUT'][U]['request']['urlParams'] & ApiEndpoints['PUT'][U]['request']['queryParams'],
         body: ApiEndpoints['POST'][U]['request']['body']
@@ -59,7 +59,7 @@ export function apiPutMethod<U extends keyof ApiEndpoints['PUT']>(url: U) {
 }
 
 /** Creates a method that is a typed wrapper to `this.apiBase.pattch()`. */
-export function apiPatchMethod<U extends keyof ApiEndpoints['PATCH']>(url: U) {
+export function apiPatch<U extends keyof ApiEndpoints['PATCH']>(url: U) {
     return function patchMethod(
         params: ApiEndpoints['PATCH'][U]['request']['urlParams'] & ApiEndpoints['PATCH'][U]['request']['queryParams'],
         body: ApiEndpoints['PATCH'][U]['request']['body']

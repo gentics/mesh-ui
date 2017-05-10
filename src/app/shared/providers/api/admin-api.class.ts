@@ -1,138 +1,138 @@
 import { Observable } from 'rxjs/Observable';
 
 import { ApiBase } from './api-base.service';
-import { apiGetMethod, apiDeleteMethod, apiPostMethod, apiPostMethodWithBody } from './api-methods';
+import { apiGet, apiDelete, apiPost, apiPostWithoutBody } from './api-methods';
 
 
 export class AdminApi {
     constructor(private apiBase: ApiBase) { }
 
     /** Add a role to an existing group. */
-    addRoleToGroup = apiPostMethod('/groups/{groupUuid}/roles/{roleUuid}');
+    addRoleToGroup = apiPostWithoutBody('/groups/{groupUuid}/roles/{roleUuid}');
 
     /** Add a user to an existing group. */
-    addUserToGroup = apiPostMethod('/groups/{groupUuid}/users/{userUuid}');
+    addUserToGroup = apiPostWithoutBody('/groups/{groupUuid}/users/{userUuid}');
 
     /**
      * Apply the provided changes on the latest version of the microschema and migrate all
      * nodes which are based on the microschema. This operation is non-blocking
      * and will continue to run in the background.
      */
-    applyMicroschemaChanges = apiPostMethodWithBody('/microschemas/{microschemaUuid}/changes');
+    applyMicroschemaChanges = apiPost('/microschemas/{microschemaUuid}/changes');
 
     /**
      * Apply the provided changes on the latest version of the schema and migrate all nodes
      * which are based on the schema. This operation is non-blocking and will continue to run
      * in the background.
      */
-    applySchemaChanges = apiPostMethodWithBody('/schemas/{schemaUuid}/changes');
+    applySchemaChanges = apiPost('/schemas/{schemaUuid}/changes');
 
     /** Assign a microschema to a project. */
-    assignMicroschemaToProject = apiPostMethodWithBody('/{project}/microschemas/{microschemaUuid}');
+    assignMicroschemaToProject = apiPost('/{project}/microschemas/{microschemaUuid}');
 
     /** Assign a schema version to a project. */
-    assignSchemaToProject = apiPostMethodWithBody('/{project}/schemas/{schemaUuid}');
+    assignSchemaToProject = apiPost('/{project}/schemas/{schemaUuid}');
 
     /** Create a new group. */
-    createGroup = apiPostMethod('/groups');
+    createGroup = apiPostWithoutBody('/groups');
 
     /** Create a new microschema. */
-    createMicroschema = apiPostMethodWithBody('/microschemas');
+    createMicroschema = apiPost('/microschemas');
 
     /** Create a new project. */
-    createProject = apiPostMethodWithBody('/projects');
+    createProject = apiPost('/projects');
 
     /** Create a new role. */
-    createRole = apiPostMethodWithBody('/roles');
+    createRole = apiPost('/roles');
 
     /** Create a new schema. */
-    createSchema = apiPostMethodWithBody('/schemas');
+    createSchema = apiPost('/schemas');
 
     /** Create a new user. */
-    createUser = apiPostMethodWithBody('/users');
+    createUser = apiPost('/users');
 
     /** Deactivate the user with the given uuid. */
-    deactivateUser = apiDeleteMethod('/users/{userUuid}');
+    deactivateUser = apiDelete('/users/{userUuid}');
 
     /** Delete the group with the given uuid */
-    deleteGroup = apiDeleteMethod('/groups/{groupUuid}');
+    deleteGroup = apiDelete('/groups/{groupUuid}');
 
     /** Delete the microschema with the given uuid */
-    deleteMicroschema = apiDeleteMethod('/microschemas/{microschemaUuid}');
+    deleteMicroschema = apiDelete('/microschemas/{microschemaUuid}');
 
     /** Delete a project and all attached nodes. */
-    deleteProject = apiDeleteMethod('/projects/{projectUuid}');
+    deleteProject = apiDelete('/projects/{projectUuid}');
 
     /** Delete the role with the given uuid */
-    deleteRole = apiDeleteMethod('/roles/{roleUuid}');
+    deleteRole = apiDelete('/roles/{roleUuid}');
 
     /** Delete the schema with the given uuid */
-    deleteSchema = apiDeleteMethod('/schemas/{schemaUuid}');
+    deleteSchema = apiDelete('/schemas/{schemaUuid}');
 
     /** Compare the provided microschema with the miroschema which is currently stored. */
-    diffMicroschemaChanges = apiPostMethodWithBody('/microschemas/{microschemaUuid}/diff');
+    diffMicroschemaChanges = apiPost('/microschemas/{microschemaUuid}/diff');
 
     /** Compare the provided schema with the schema which is currently stored. */
-    diffSchemaChanges = apiPostMethodWithBody('/schemas/{schemaUuid}/diff');
+    diffSchemaChanges = apiPost('/schemas/{schemaUuid}/diff');
 
     /** Get the current schema or node migration status. */
-    getMigrationStatus = apiGetMethod('/admin/status/migrations');
+    getMigrationStatus = apiGet('/admin/status/migrations');
 
     /** Get the mesh system status. */
-    getSystemStatus = apiGetMethod('/admin/status');
+    getSystemStatus = apiGet('/admin/status');
 
     /** Get the version info of the server software. */
-    getVersionInfo = apiGetMethod('/');
+    getVersionInfo = apiGet('/');
 
     /** Invalidate the issued API token. */
-    invalidateUserToken = apiDeleteMethod('/users/{userUuid}/token');
+    invalidateUserToken = apiDelete('/users/{userUuid}/token');
 
     /** Remove the given role from the group. */
-    removeRoleFromGroup = apiDeleteMethod('/groups/{groupUuid}/roles/{roleUuid}');
+    removeRoleFromGroup = apiDelete('/groups/{groupUuid}/roles/{roleUuid}');
 
     /** Remove a microschema from the given project. */
-    removeMicroschemaFromProject = apiDeleteMethod('/{project}/microschemas/{microschemaUuid}');
+    removeMicroschemaFromProject = apiDelete('/{project}/microschemas/{microschemaUuid}');
 
     /** Set the permissions between role and the targeted element. */
-    setRolePermissions = apiPostMethodWithBody('/roles/{roleUuid}/permissions/{pathToElement}');
+    setRolePermissions = apiPost('/roles/{roleUuid}/permissions/{pathToElement}');
 
     /**
      * Invoke a graph database backup and dump the data to the configured backup
      * location. Note that this operation will block all current operation.
      */
-    startDatabaseBackup = apiPostMethod('/admin/backup');
+    startDatabaseBackup = apiPostWithoutBody('/admin/backup');
 
     /** Invoke a orientdb graph database export. */
-    startDatabaseExport = apiPostMethod('/admin/export');
+    startDatabaseExport = apiPostWithoutBody('/admin/export');
 
     /**
      * Invoke a orientdb graph database import. The latest import file from the import
      * directory will be used for this operation.
      */
-    startDatabaseImport = apiPostMethod('/admin/import');
+    startDatabaseImport = apiPostWithoutBody('/admin/import');
 
     /**
      * Invoke a graph database restore. The latest dump from the backup directory will
      * be inserted. Please note that this operation will block all current operation and
      * effectively destroy all previously stored data.
      */
-    startDatabaseRestore = apiPostMethod('/admin/restore');
+    startDatabaseRestore = apiPostWithoutBody('/admin/restore');
 
     /** Update the group with the given uuid. */
-    updateGroup = apiPostMethodWithBody('/groups/{groupUuid}');
+    updateGroup = apiPost('/groups/{groupUuid}');
 
     /** Update the microschema with the given uuid. */
-    updateMicroschema = apiPostMethodWithBody('/microschemas/{microschemaUuid}');
+    updateMicroschema = apiPost('/microschemas/{microschemaUuid}');
 
     /** Update the project with the given uuid. */
-    updateProject = apiPostMethodWithBody('/projects/{projectUuid}');
+    updateProject = apiPost('/projects/{projectUuid}');
 
     /** Update the role with the given uuid. */
-    updateRole = apiPostMethodWithBody('/roles/{roleUuid}');
+    updateRole = apiPost('/roles/{roleUuid}');
 
     /** Update the schema with the given uuid. */
-    updateSchema = apiPostMethodWithBody('/schemas/{schemaUuid}');
+    updateSchema = apiPost('/schemas/{schemaUuid}');
 
     /** Update the user with the given uuid. */
-    updateUser = apiPostMethodWithBody('/users/{userUuid}');
+    updateUser = apiPost('/users/{userUuid}');
 }
