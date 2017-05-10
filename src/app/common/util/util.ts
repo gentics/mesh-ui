@@ -45,3 +45,5 @@ export function queryString(obj: any): string {
     }
     return qs;
 }
+
+export function noop() {}

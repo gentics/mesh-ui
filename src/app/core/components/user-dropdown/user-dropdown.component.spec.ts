@@ -10,6 +10,7 @@ import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { SharedModule } from '../../../shared/shared.module';
 import { UserDropdownComponent } from './user-dropdown.component';
+import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
 
 describe('UserDropdownComponent:', () => {
 
@@ -21,7 +22,7 @@ describe('UserDropdownComponent:', () => {
             imports: [StateModule, SharedModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: Router, useValue: {} },
+                { provide: AuthEffectsService, useValue: {} },
                 { provide: ModalService, useValue: {} },
                 OverlayHostService
             ]

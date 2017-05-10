@@ -6,6 +6,8 @@ import { ModalService } from 'gentics-ui-core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { User } from '../../../common/models/user.model';
 import { ChangePasswordModalComponent } from '../change-password-modal/change-password-modal.component';
+import { UserResponse } from '../../../common/models/server-models';
+import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
 
 @Component({
     selector: 'user-dropdown',
@@ -16,19 +18,18 @@ export class UserDropdownComponent {
     currentUsername$: Observable<string>;
 
     constructor(private state: ApplicationStateService,
-                private router: Router,
-                private modal: ModalService) {
-        this.currentUsername$ = state.select(state => state.entities.user[state.auth.currentUser])
+                private modal: ModalService,
+                private authEffects: AuthEffectsService) {
+        this.currentUsername$ = state.select(state => state.auth.currentUser)
+            // Filter so that nothing emits if no user is logged in
+            .filter(user => !!user)
+            .switchMap((userUuid: string) => this.state.select(state => state.entities.user[userUuid]))
             .map(this.toUserName)
             .distinctUntilChanged();
     }
 
     logOut(): void {
-        // TODO: actually log out
-        this.state.actions.auth.logoutStart();
-        this.state.actions.auth.logoutSuccess();
-
-        this.router.navigate(['/login']);
+        this.authEffects.logout();
     }
 
     changePassword(): void {
@@ -41,7 +42,7 @@ export class UserDropdownComponent {
      * This is needed because the first name and last name properties are optional.
      * @param user The user to extract the user name from
      */
-    private toUserName(user: User): string {
+    private toUserName(user: UserResponse): string {
         if (user.firstname && user.lastname) {
             return `${user.firstname} ${user.lastname}`;
         } else {

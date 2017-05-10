@@ -271,35 +271,7 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                             }
                         }
                     },
-                    user: {
-                        'd8b043e818144e27b043e81814ae2713': {
-                            uuid: 'd8b043e818144e27b043e81814ae2713',
-                            creator: {
-                                uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                            },
-                            created: '2017-05-02T09:06:00Z',
-                            editor: {
-                                uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                            },
-                            edited: '2017-05-02T09:06:00Z',
-                            lastname: 'Maulwurf',
-                            firstname: 'Hans',
-                            username: 'HM',
-                            enabled: true,
-                            groups: [{
-                                name: 'Client Group',
-                                uuid: '7e0a45aa7cbe471d8a45aa7cbe071d94'
-                            }],
-                            permissions: {
-                                create: true,
-                                read: true,
-                                update: true,
-                                delete: true,
-                                publish: true,
-                                readPublished: true
-                            }
-                        }
-                    },
+                    user: {},
                     schema: {
                         '5953336e4342498593336e4342398599': {
                             uuid: '5953336e4342498593336e4342398599',
