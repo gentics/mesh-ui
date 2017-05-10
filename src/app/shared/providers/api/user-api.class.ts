@@ -7,9 +7,6 @@ import { apiGetMethod, apiDeleteMethod, apiPostMethod, apiPostMethodWithBody } f
 export class UserApi {
     constructor(private apiBase: ApiBase) { }
 
-    /** Create a new schema. */
-    createSchema = apiPostMethodWithBody('/schemas');
-
     /** Deactivate the user with the given uuid. */
     deactivateUser = apiDeleteMethod('/users/{userUuid}');
 
@@ -48,4 +45,22 @@ export class UserApi {
 
     /** Load a list of users which have been assigned to the group. */
     getUsersOfGroup = apiGetMethod('/groups/{groupUuid}/users');
+
+    /** Generate an API token which can be used to authenticate the user. */
+    generateApiToken = apiPostMethod('/users/{userUuid}/token');
+
+    /** Generate a one-time token which can be used by any user to update a user (e.g. to reset the password). */
+    generateResetToken = apiPostMethod('/users/{userUuid}/reset_token');
+
+    /** Invoke a search query for groups and return a paged list response. */
+    // TODO: This is typed wrong in the RAML.
+    searchGroups = apiPostMethodWithBody('/search/groups');
+
+    /** Invoke a search query for roles and return a paged list response. */
+    // TODO: This is typed wrong in the RAML.
+    searchRoles = apiPostMethodWithBody('/search/roles');
+
+    /** Invoke a search query for users and return a paged list response. */
+    // TODO: This is typed wrong in the RAML.
+    searchUsers = apiPostMethodWithBody('/search/users');
 }
