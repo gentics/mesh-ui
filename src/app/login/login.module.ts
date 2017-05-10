@@ -13,9 +13,6 @@ import { AuthEffectsService } from './providers/auth-effects.service';
     imports: [
         SharedModule,
         RouterModule.forChild(routes),
-    ],
-    providers: [
-        AuthEffectsService
     ]
 })
 export class LoginModule {
