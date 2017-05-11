@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { IModalDialog } from 'gentics-ui-core';
+import { IModalDialog, Notification } from 'gentics-ui-core';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { UserEffectsService } from '../../providers/user-effects.service';
 import { Observable } from 'rxjs';
+import { I18nService } from '../../../shared/providers/i18n/i18n.service';
 
 @Component({
     selector: 'change-password-modal',
@@ -20,7 +21,9 @@ export class ChangePasswordModalComponent implements IModalDialog {
     passwordChanging$: Observable<boolean>;
 
     constructor(private effects: UserEffectsService,
-                private state: ApplicationStateService) {
+                private state: ApplicationStateService,
+                private notification: Notification,
+                private i18n: I18nService) {
 
         const passwordValidators = [
             Validators.required
@@ -35,16 +38,6 @@ export class ChangePasswordModalComponent implements IModalDialog {
         }, this.areEqual);
 
         this.passwordChanging$ = this.state.select(state => state.admin.changingPassword);
-
-        // Close when password has changed
-        this.passwordChanging$
-            // Skip initial state
-            .skip(1)
-            .filter(changing => !changing)
-            .take(1)
-            .subscribe(() => {
-                this.closeFn();
-            });
     }
 
     /**
@@ -68,7 +61,11 @@ export class ChangePasswordModalComponent implements IModalDialog {
                 return;
             }
 
-            this.effects.changePassword(user, this.password1.value);
+            this.effects.changePassword(user, this.password1.value)
+                .then(() => {
+                    this.notification.show({ type: 'success', message: this.i18n.translate('modal.change_password_success') });
+                    this.closeFn();
+                });
         }
     }
 

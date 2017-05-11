@@ -9,13 +9,13 @@ export class UserEffectsService {
                 private state: ApplicationStateService) {
     }
 
-    changePassword(userUuid: string, password: string) {
+    changePassword(userUuid: string, password: string): Promise<void> {
         this.state.actions.admin.changePasswordStart();
-        this.api.admin.updateUser({ userUuid }, { password })
-            .subscribe(user => {
+        return this.api.admin.updateUser({ userUuid }, { password })
+            .toPromise()
+            .then(user => {
                 this.state.actions.admin.changePasswordEnd();
-            }, error => {
-                // TODO Provide some error message or toast and add some generic error handler
             });
+            // TODO Provide some error message or toast and add some generic error handler
     }
 }
