@@ -8,8 +8,11 @@ import { UIStateActions } from './ui-state-actions';
 import { EditorStateActions } from './editor-state-actions';
 import { EntityState } from '../models/entity-state.model';
 import { EntityStateActions } from './entity-state-actions';
+import { AdminStateActions } from './admin-state-actions';
+import { AdminState } from '../models/admin-state.model';
 
 type ActionBranches = {
+    admin: AdminStateActions;
     auth: AuthStateActions;
     editor: EditorStateActions;
     ui: UIStateActions;
@@ -33,6 +36,7 @@ export class ApplicationStateService {
 
     constructor() {
         this.store = new ImmutableStateStore<AppState, ActionBranches>({
+            admin: new AdminStateActions(),
             auth: new AuthStateActions(),
             entity: new EntityStateActions(),
             editor: new EditorStateActions(),
