@@ -4,8 +4,9 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { Project } from '../../../common/models/project.model';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 import { hashValues } from '../../../common/util/util';
+import { ProjectResponse } from '../../../common/models/server-models';
 
-type ProjectHash = { [uuid: string]: Project };
+type ProjectHash = { [uuid: string]: ProjectResponse };
 
 @Component({
     selector: 'project-switcher',
@@ -14,7 +15,7 @@ type ProjectHash = { [uuid: string]: Project };
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectSwitcherComponent {
-    projects$: Observable<Project[]>;
+    projects$: Observable<ProjectResponse[]>;
     currentProjectName$: Observable<String>;
 
     constructor(private appState: ApplicationStateService,
@@ -28,11 +29,11 @@ export class ProjectSwitcherComponent {
             .map(it => it.name);
     }
 
-    changeProject(project: Project) {
-        this.navigation.list(project.name, project.rootNodeUuid).navigate();
+    changeProject(project: ProjectResponse) {
+        this.navigation.list(project.name, project.rootNode.uuid).navigate();
     }
 
-    private getProjectByName(projects: ProjectHash, projectName: string): Project {
+    private getProjectByName(projects: ProjectHash, projectName: string): ProjectResponse {
         return hashValues(projects).filter(it => it.name === projectName)[0];
     }
 }

@@ -51,4 +51,16 @@ export function queryString(obj: any): string {
     return qs;
 }
 
+/**
+ * Creates an object out of an array, which has elements with uuids. These uuids are used
+ * for the keys of the object.
+ * This is useful for transforming a list response from mesh to a format suitable to the state.
+ */
+export function uuidHash<T extends { uuid: string }>(elements: T[]): {[uuid: string]: T} {
+    return elements.reduce((hash, element) => {
+        hash[element.uuid] = element;
+        return hash;
+    }, {});
+}
+
 export function noop() {}

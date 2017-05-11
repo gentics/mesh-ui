@@ -6,6 +6,8 @@ import { I18nService } from '../../../shared/providers/i18n/i18n.service';
 import { Observable } from 'rxjs/Observable';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Subscription } from 'rxjs';
+import { ProjectResponse } from '../../../common/models/server-models';
+import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
 
 
 @Component({
@@ -17,7 +19,7 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
     @Input()
     projectUuid: string;
 
-    project: Project;
+    project: ProjectResponse;
 
     private subscription: Subscription;
 

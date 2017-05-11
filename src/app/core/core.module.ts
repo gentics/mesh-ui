@@ -16,6 +16,7 @@ import { ApiBase } from '../shared/providers/api/api-base.service';
 import { ChangePasswordModalComponent } from './components/change-password-modal/change-password-modal.component';
 import { AuthEffectsService } from '../login/providers/auth-effects.service';
 import { UserEffectsService } from './providers/user-effects.service';
+import { ProjectEffectsService } from './providers/project-effects.service';
 
 // Application wide providers
 const CORE_PROVIDERS = [
@@ -25,6 +26,7 @@ const CORE_PROVIDERS = [
     NavigationService,
     AuthEffectsService,
     UserEffectsService,
+    ProjectEffectsService,
     ApiService,
     ApiBase,
     ENV_PROVIDERS,

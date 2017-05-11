@@ -1,10 +1,12 @@
-<div class="not-found" *ngIf="(projects$ | async).length === 0">
+<gtx-progress-bar [for]="projectsLoading$"></gtx-progress-bar>
+
+<div class="not-found" *ngIf="(projects$ | async).length === 0 && !(projectsLoading$ | async)">
     <div><icon>sentiment_very_dissatisfied</icon></div>
-    <p>No projects found</p>
+    <p>{{ 'admin.projects_none_found' | i18n }}</p>
 </div>
 
 <div class="project-list">
     <project-list-item *ngFor="let project of projects$ | async" [projectUuid]="project.uuid"></project-list-item>
 </div>
 
-<gtx-button (click)="create()">Create Project</gtx-button>
+<gtx-button (click)="create()">{{ 'admin.projects_create' | i18n }}</gtx-button>
