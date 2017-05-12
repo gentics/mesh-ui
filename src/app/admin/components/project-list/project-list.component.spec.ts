@@ -11,6 +11,9 @@ import { componentTest } from '../../../../testing/component-test';
 import { Project } from '../../../common/models/project.model';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { ProjectResponse } from '../../../common/models/server-models';
+import { SharedModule } from '../../../shared/shared.module';
+import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
+import { CoreModule } from '../../../core/core.module';
 
 describe('ProjectListComponent', () => {
 
@@ -22,10 +25,11 @@ describe('ProjectListComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [ProjectListComponent, MockProjectItemComponent],
-            imports: [GenticsUICoreModule, FormsModule],
+            imports: [GenticsUICoreModule, FormsModule, SharedModule, CoreModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: ModalService, useValue: mockModal }
+                { provide: ModalService, useValue: mockModal },
+                { provide: ProjectEffectsService, useValue: jasmine.createSpyObj('stub', ['loadProjects'])}
             ]
         });
     }));
@@ -90,34 +94,6 @@ describe('ProjectListComponent', () => {
                             read: true,
                             update: true,
                             delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    },
-                    '1fdb2624b6cb4b3a8ef7b5baabe47c74': {
-                        uuid: '1fdb2624b6cb4b3a8ef7b5baabe47c74',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-04-20T12:00:42Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-04-20T12:00:42Z',
-                        name: 'test3',
-                        rootNode: {
-                            projectName: 'demo',
-                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
-                            }
-                        },
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: false,
                             publish: true,
                             readPublished: true
                         }

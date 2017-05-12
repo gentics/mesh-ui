@@ -104,34 +104,6 @@ describe('ProjectSwitcherComponent:', () => {
                             publish: true,
                             readPublished: true
                         }
-                    },
-                    '1fdb2624b6cb4b3a8ef7b5baabe47c74': {
-                        uuid: '1fdb2624b6cb4b3a8ef7b5baabe47c74',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-04-20T12:00:42Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-04-20T12:00:42Z',
-                        name: 'test3',
-                        rootNode: {
-                            projectName: 'demo',
-                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
-                            }
-                        },
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: false,
-                            publish: true,
-                            readPublished: true
-                        }
                     }
                 }
             }
@@ -174,7 +146,7 @@ describe('ProjectSwitcherComponent:', () => {
             tick();
 
             // Demo Project
-            expect(navigation.list).toHaveBeenCalledWith('demo', '8a74925be3b24272b4925be3b2f27289');
+            expect(navigation.list).toHaveBeenCalledWith('demo', '83ff6b33bbda4048bf6b33bbdaa04840');
         })
     );
 

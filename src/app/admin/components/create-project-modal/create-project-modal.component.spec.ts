@@ -11,7 +11,7 @@ import { configureComponentTest } from '../../../../testing/configure-component-
 import { By } from '@angular/platform-browser';
 import { SchemaEffectsService } from '../../../core/providers/schema-effects.service';
 
-fdescribe('CreateProjectModal', () => {
+describe('CreateProjectModal', () => {
 
     let appState: TestApplicationState;
 
@@ -572,4 +572,11 @@ fdescribe('CreateProjectModal', () => {
 
 function getSelectOptions(fixture: ComponentFixture<CreateProjectModalComponent>) {
     return fixture.nativeElement.querySelectorAll('li');
+}
+
+
+function triggerEvent(element: HTMLElement, eventName: string) {
+    let event = document.createEvent('Event');
+    event.initEvent(eventName, true, true);
+    element.dispatchEvent(event);
 }
