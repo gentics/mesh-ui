@@ -11,6 +11,7 @@ import { ProjectSwitcherComponent } from './project-switcher.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
 
 
 describe('ProjectSwitcherComponent:', () => {
@@ -25,6 +26,7 @@ describe('ProjectSwitcherComponent:', () => {
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: NavigationService, useClass: MockNavigationService },
+                { provide: ProjectEffectsService, useValue: jasmine.createSpyObj('ProjectEffectsService', ['loadProjects']) },
                 OverlayHostService
             ]
         });

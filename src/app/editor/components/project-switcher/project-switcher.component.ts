@@ -5,6 +5,7 @@ import { Project } from '../../../common/models/project.model';
 import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
 import { hashValues } from '../../../common/util/util';
 import { ProjectResponse } from '../../../common/models/server-models';
+import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
 
 type ProjectHash = { [uuid: string]: ProjectResponse };
 
@@ -19,9 +20,17 @@ export class ProjectSwitcherComponent {
     currentProjectName$: Observable<String>;
 
     constructor(private appState: ApplicationStateService,
-                private navigation: NavigationService) {
+                private navigation: NavigationService,
+                private effects: ProjectEffectsService) {
         this.projects$ = this.appState.select(state => state.entities.project)
-            .map(hashValues);
+            .map(hashValues)
+            .do(projects => {
+                // TODO Ask if this is ok or if there is a better way
+                if (projects.length === 0) {
+                    this.effects.loadProjects();
+                }
+            });
+
 
         this.currentProjectName$ = this.appState.select(state =>
             this.getProjectByName(state.entities.project, this.appState.now.editor.openNode.projectName))
