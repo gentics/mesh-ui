@@ -11,6 +11,7 @@ import { componentTest } from '../../../../testing/component-test';
 import { Project } from '../../../common/models/project.model';
 import { I18nService } from '../../../shared/providers/i18n/i18n.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { ProjectResponse } from '../../../common/models/server-models';
 
 describe('ProjectListItemComponent', () => {
 
@@ -56,7 +57,14 @@ describe('ProjectListItemComponent', () => {
                         },
                         edited: '2016-09-14T12:48:11Z',
                         name: 'demo',
-                        rootNodeUuid: '8a74925be3b24272b4925be3b2f27289',
+                        rootNode: {
+                            projectName: 'demo',
+                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
+                            schema: {
+                                name: 'folder',
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                            }
+                        },
                         permissions: {
                             create: true,
                             read: true,
@@ -77,7 +85,14 @@ describe('ProjectListItemComponent', () => {
                         },
                         edited: '2017-04-20T12:00:42Z',
                         name: 'tvc',
-                        rootNodeUuid: '6c71621d1a8542e4b1621d1a8542e46f',
+                        rootNode: {
+                            projectName: 'demo',
+                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
+                            schema: {
+                                name: 'folder',
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                            }
+                        },
                         permissions: {
                             create: true,
                             read: true,
@@ -98,7 +113,14 @@ describe('ProjectListItemComponent', () => {
                         },
                         edited: '2017-04-20T12:00:42Z',
                         name: 'test3',
-                        rootNodeUuid: '6c71621d1a8542e4b1621d1a8542e46f',
+                        rootNode: {
+                            projectName: 'demo',
+                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
+                            schema: {
+                                name: 'folder',
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                            }
+                        },
                         permissions: {
                             create: true,
                             read: true,
@@ -629,5 +651,5 @@ function getButton(fixture: ComponentFixture<TestComponent>, iconName: string): 
     template: `<project-list-item [projectUuid]="project.uuid"></project-list-item>`
 })
 class TestComponent {
-    project: Project;
+    project: ProjectResponse;
 }

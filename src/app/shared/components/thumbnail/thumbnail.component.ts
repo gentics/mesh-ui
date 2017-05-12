@@ -5,6 +5,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { MeshNode, NodeFieldBinary } from '../../../common/models/node.model';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { isImageField, filenameExtension, queryString } from '../../../common/util/util';
+import { SchemaResponse, FieldSchemaFromServer } from '../../../common/models/server-models';
 
 /**
  * Thumbnail component for displaying node references or fields in a node.
@@ -96,7 +97,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
      * 2. If not, the first binary field that contains an image will be chosen.
      * 3. If there is no image, the first binary field will be chosen.
      */
-    private getBinaryProperties([node, schema]: [MeshNode, Schema]): BinaryProperties {
+    private getBinaryProperties([node, schema]: [MeshNode, SchemaResponse]): BinaryProperties {
         let firstBinaryField: NodeFieldBinary | undefined;
         let firstBinaryFieldName: string | undefined;
 
@@ -108,7 +109,8 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         schema.fields
             .filter(field => this.binaryFilter(field))
             .forEach(field => {
-                let nodeField: NodeFieldBinary = node.fields[field.name] as NodeFieldBinary;
+                // TODO Remove exclamation mark as soon as mesh typing is fixed
+                let nodeField: NodeFieldBinary = node.fields[field.name!] as NodeFieldBinary;
                 if (!firstBinaryField) {
                     firstBinaryField = nodeField;
                     firstBinaryFieldName = field.name;
@@ -141,7 +143,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * Filters by component field name, or if it is not set, by binary fields.
      */
-    private binaryFilter(field: SchemaField): boolean {
+    private binaryFilter(field: FieldSchemaFromServer): boolean {
         return this.fieldName ? field.name === this.fieldName && field.type === 'binary' : field.type === 'binary';
     }
 

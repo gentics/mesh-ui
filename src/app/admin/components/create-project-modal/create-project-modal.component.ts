@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -6,13 +6,16 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Schema } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { hashValues } from '../../../common/util/util';
+import { SchemaResponse } from '../../../common/models/server-models';
+import { SchemaEffectsService } from '../../../core/providers/schema-effects.service';
 
 @Component({
     templateUrl: './create-project-modal.component.html',
-    styleUrls: ['./create-project-modal.scss']
+    styleUrls: ['./create-project-modal.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreateProjectModalComponent implements IModalDialog {
-    schemas$: Observable<Schema[]>;
+export class CreateProjectModalComponent implements IModalDialog, OnInit {
+    schemas$: Observable<SchemaResponse[]>;
 
     schema: FormControl;
     name: FormControl;
@@ -20,9 +23,10 @@ export class CreateProjectModalComponent implements IModalDialog {
     form: FormGroup;
 
     constructor(state: ApplicationStateService,
-                private notification: Notification) {
+                private notification: Notification,
+                private schemaEffects: SchemaEffectsService) {
         this.schemas$ = state.select(state => state.entities.schema)
-            .map(hashValues);
+            .map(hashValues)
 
         this.name = new FormControl('', Validators.required);
         this.schema = new FormControl('', Validators.required);
@@ -31,6 +35,10 @@ export class CreateProjectModalComponent implements IModalDialog {
             name: this.name,
             schema: this.schema
         });
+    }
+
+    ngOnInit(): void {
+        this.schemaEffects.loadSchemas();
     }
 
     closeFn = () => {};

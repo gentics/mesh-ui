@@ -6,7 +6,7 @@ import { AuthState } from '../models/auth-state.model';
 import { AdminState } from '../models/admin-state.model';
 import { ChangePasswordModalComponent } from '../../core/components/change-password-modal/change-password-modal.component';
 import { EntityState } from '../models/entity-state.model';
-import { ProjectResponse } from '../../common/models/server-models';
+import { ProjectResponse, SchemaResponse } from '../../common/models/server-models';
 import { uuidHash } from '../../common/util/util';
 
 @Injectable()
@@ -21,7 +21,8 @@ export class AdminStateActions extends StateActionBranch<AppState> {
             initialState: {
                 admin: {
                     changingPassword: false,
-                    projectsLoading: false
+                    projectsLoading: false,
+                    schemasLoading: false
                 }
             }
         });
@@ -42,5 +43,14 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     loadProjectsEnd(projects: ProjectResponse[]) {
         this.entities.project = uuidHash(projects);
         this.admin.projectsLoading = false;
+    }
+
+    loadSchemasStart() {
+        this.admin.schemasLoading = true;
+    }
+
+    loadSchemasEnd(schemas: SchemaResponse[]) {
+        this.entities.schema = uuidHash(schemas);
+        this.admin.schemasLoading = false;
     }
 }

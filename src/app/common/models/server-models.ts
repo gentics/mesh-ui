@@ -2962,9 +2962,10 @@ export interface FieldMapFromServer {
 
 export interface FieldSchemaFromServer {
     readonly label?: string;
-    readonly name?: string;
+    readonly name: string;
     readonly required?: boolean;
-    readonly type?: string;
+    readonly type: string;
+    readonly allow?: string[];
 }
 
 /**
@@ -3012,7 +3013,7 @@ export interface GroupCreateRequest {
 export interface GroupListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: GroupResponse[];
+    readonly data: GroupResponse[];
 }
 
 export interface GroupReferenceFromServer {
@@ -3042,7 +3043,7 @@ export interface GroupResponse {
     /** Name of the group */
     readonly name?: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /** List of role references */
     readonly roles?: RoleReferenceFromServer[];
     /** Uuid of the element */
@@ -3099,7 +3100,7 @@ export interface MicroschemaCreateRequest {
 export interface MicroschemaListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: MicroschemaResponse[];
+    readonly data: MicroschemaResponse[];
 }
 
 export interface MicroschemaReferenceFromServer {
@@ -3132,7 +3133,7 @@ export interface MicroschemaResponse {
     /** Name of the microschema */
     readonly name?: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /** Uuid of the element */
     readonly uuid: string;
     /** Version of the microschema */
@@ -3204,7 +3205,7 @@ export interface NodeCreateRequest {
 export interface NodeListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: NodeResponse[];
+    readonly data: NodeResponse[];
 }
 
 /** The project root node. All futher nodes are children of this node. */
@@ -3287,7 +3288,7 @@ export interface NodeResponse {
     readonly permissions: PermissionInfoFromServer;
     /** Reference to the project of the node. */
     readonly project: ProjectReferenceFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /**
      * Reference to the schema of the root node. Creating a project will also
      * automatically create the base node of the project and link the schema to the
@@ -3357,7 +3358,7 @@ export interface ProjectCreateRequest {
 export interface ProjectListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: ProjectResponse[];
+    readonly data: ProjectResponse[];
 }
 
 /** Reference to the project of the node. */
@@ -3387,7 +3388,7 @@ export interface ProjectResponse {
     /** The name of the project. */
     readonly name: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /** The project root node. All futher nodes are children of this node. */
     readonly rootNode: NodeReferenceFromServer;
     /** Uuid of the element */
@@ -3434,7 +3435,7 @@ export interface ReleaseCreateRequest {
 export interface ReleaseListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: ReleaseResponse[];
+    readonly data: ReleaseResponse[];
 }
 
 /**
@@ -3460,7 +3461,7 @@ export interface ReleaseResponse {
     /** Name of the release */
     readonly name: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /** Uuid of the element */
     readonly uuid: string;
 }
@@ -3484,7 +3485,7 @@ export interface RoleCreateRequest {
 export interface RoleListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: RoleResponse[];
+    readonly data: RoleResponse[];
 }
 
 export interface RolePermissionRequest {
@@ -3538,7 +3539,7 @@ export interface RoleResponse {
     /** Name of the role. */
     readonly name?: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /** Uuid of the element */
     readonly uuid: string;
 }
@@ -3597,7 +3598,7 @@ export interface SchemaCreateRequest {
 export interface SchemaListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: SchemaResponse[];
+    readonly data: SchemaResponse[];
 }
 
 /**
@@ -3644,7 +3645,7 @@ export interface SchemaResponse {
     /** Name of the schema */
     readonly name: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /**
      * Name of the segment field. This field is used to construct the webroot path to
      * the node.
@@ -3693,7 +3694,7 @@ export interface TagFamilyCreateRequest {
 export interface TagFamilyListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: TagFamilyResponse[];
+    readonly data: TagFamilyResponse[];
 }
 
 /** Reference to the tag family to which the tag belongs. */
@@ -3722,7 +3723,7 @@ export interface TagFamilyResponse {
     /** Name of the tag family. */
     readonly name?: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /** Uuid of the element */
     readonly uuid: string;
 }
@@ -3743,7 +3744,7 @@ export interface TagFamilyUpdateRequest {
 export interface TagListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: TagResponse[];
+    readonly data: TagResponse[];
 }
 
 export interface TagListUpdateRequest {
@@ -3779,7 +3780,7 @@ export interface TagResponse {
     /** Name of the tag. */
     readonly name: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    readonly rolePerms?: PermissionInfoFromServer;
     /** Reference to the tag family to which the tag belongs. */
     readonly tagFamily: TagFamilyReferenceFromServer;
     /** Uuid of the element */
@@ -3833,7 +3834,7 @@ export interface UserCreateRequest {
 export interface UserListResponse {
     /** Paging information of the list result. */
     readonly _metainfo: PagingMetaInfoFromServer;
-    readonly data?: UserResponse[];
+    readonly data: UserResponse[];
 }
 
 /**

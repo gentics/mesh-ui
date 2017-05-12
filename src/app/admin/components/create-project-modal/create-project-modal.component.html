@@ -7,6 +7,7 @@
     <form [formGroup]="form">
         <gtx-input label="Name" formControlName="name"></gtx-input>
 
+        <!-- TODO Fix this select with async (schemas are not displayed). There is a test for that, but thats ignored for now -->
         <gtx-select label="{{ 'modal.create_project_schema_label' | i18n }}" formControlName="schema">
             <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option>
         </gtx-select>

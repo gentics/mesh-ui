@@ -1,6 +1,6 @@
-import { async, TestBed } from '@angular/core/testing';
+import { async, TestBed, ComponentFixture, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GenticsUICoreModule, Notification, OverlayHostService } from 'gentics-ui-core';
+import { GenticsUICoreModule, Notification, OverlayHostService, SelectOption } from 'gentics-ui-core';
 
 import { CreateProjectModalComponent } from './create-project-modal.component';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -8,8 +8,10 @@ import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { By } from '@angular/platform-browser';
+import { SchemaEffectsService } from '../../../core/providers/schema-effects.service';
 
-describe('CreateProjectModal', () => {
+fdescribe('CreateProjectModal', () => {
 
     let appState: TestApplicationState;
 
@@ -18,6 +20,7 @@ describe('CreateProjectModal', () => {
             imports: [GenticsUICoreModule, FormsModule, ReactiveFormsModule, SharedModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
+                { provide: SchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
                 Notification,
                 OverlayHostService
             ],
@@ -44,7 +47,14 @@ describe('CreateProjectModal', () => {
                         },
                         edited: '2016-09-14T12:48:11Z',
                         name: 'demo',
-                        rootNodeUuid: '8a74925be3b24272b4925be3b2f27289',
+                        rootNode: {
+                            projectName: 'demo',
+                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
+                            schema: {
+                                name: 'folder',
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                            }
+                        },
                         permissions: {
                             create: true,
                             read: true,
@@ -65,7 +75,14 @@ describe('CreateProjectModal', () => {
                         },
                         edited: '2017-04-20T12:00:42Z',
                         name: 'tvc',
-                        rootNodeUuid: '6c71621d1a8542e4b1621d1a8542e46f',
+                        rootNode: {
+                            projectName: 'demo',
+                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
+                            schema: {
+                                name: 'folder',
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                            }
+                        },
                         permissions: {
                             create: true,
                             read: true,
@@ -86,7 +103,14 @@ describe('CreateProjectModal', () => {
                         },
                         edited: '2017-04-20T12:00:42Z',
                         name: 'test3',
-                        rootNodeUuid: '6c71621d1a8542e4b1621d1a8542e46f',
+                        rootNode: {
+                            projectName: 'demo',
+                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
+                            schema: {
+                                name: 'folder',
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                            }
+                        },
                         permissions: {
                             create: true,
                             read: true,
@@ -527,4 +551,25 @@ describe('CreateProjectModal', () => {
             expect(warning).toBeDefined();
         })
     );
+
+    // TODO: gtx-select does not seem to work with async pipe
+    xit(`shows changes in the schema entities`,
+        componentTest(() => CreateProjectModalComponent, fixture => {
+            fixture.detectChanges();
+            tick();
+            expect(getSelectOptions(fixture).length).toBe(6, fixture.nativeElement.innerHTML);
+            appState.mockState({
+                entities: {
+                    schema: {}
+                }
+            });
+            fixture.detectChanges();
+            tick();
+            expect(getSelectOptions(fixture).length).toBe(0);
+        })
+    );
 });
+
+function getSelectOptions(fixture: ComponentFixture<CreateProjectModalComponent>) {
+    return fixture.nativeElement.querySelectorAll('li');
+}
