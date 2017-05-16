@@ -1,5 +1,6 @@
 module meshAdminUi {
 
+    import IHttpProvider = angular.IHttpProvider;
     declare var meshUiConfig: any;
 
     /**
@@ -1147,9 +1148,17 @@ module meshAdminUi {
      * @param $httpProvider
      * @param selectiveCacheProvider
      */
-    function dataServiceConfig($httpProvider, selectiveCacheProvider) {
+    function dataServiceConfig($httpProvider: IHttpProvider, selectiveCacheProvider) {
 
         $httpProvider.interceptors.push(languageRequestInterceptor);
+        $httpProvider.interceptors.push(function() {
+            return {
+                request: function(config) {
+                    config.headers['Anonymous-Authentication'] = 'disable';
+                    return config;
+                }
+            }
+        });
 
         // define the urls we wish to cache
         var projectName = '^[a-zA-Z\\-]*',
@@ -1173,6 +1182,7 @@ module meshAdminUi {
         return {
             request: function (config) {
                 config = mu.safeClone(config);
+
                 if (config.url.indexOf(meshUiConfig.apiUrl) > -1) {
                     config.params = config.params || {};
 
