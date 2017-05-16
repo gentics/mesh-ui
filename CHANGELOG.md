@@ -1,5 +1,10 @@
 # MeshAdminUI Changelog
 
+## Version 0.6.3 (2017-05-16)
+
+#### Fixes
+* Send a header to prevent being logged in as anonymous user
+
 ## Version 0.6.2 (2017-05-08)
 
 #### Features
