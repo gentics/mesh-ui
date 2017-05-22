@@ -1,5 +1,10 @@
 # MeshAdminUI Changelog
 
+## Version 0.6.4 (2107-05-22)
+
+#### Fixes
+* Schema & Microschema description is no longer a required field
+
 ## Version 0.6.3 (2017-05-16)
 
 #### Fixes
