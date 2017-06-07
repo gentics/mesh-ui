@@ -53,7 +53,7 @@ export interface Permissions {
     delete: boolean;
     publish: boolean;
     readPublished: boolean;
-  }
+}
 
 /** Common properties of all entities. */
 export interface BaseProperties {

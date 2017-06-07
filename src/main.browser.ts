@@ -14,10 +14,10 @@ import { AppModule } from './app/app.module';
  * Bootstrap our Angular app with a top level NgModule
  */
 export function main(): Promise<any> {
-  return platformBrowserDynamic()
-    .bootstrapModule(AppModule)
-    .then(decorateModuleRef)
-    .catch((err) => console.error(err));
+    return platformBrowserDynamic()
+        .bootstrapModule(AppModule)
+        .then(decorateModuleRef)
+        .catch((err) => console.error(err));
 }
 
 // needed for hmr
