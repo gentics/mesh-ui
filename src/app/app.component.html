@@ -1,14 +1,16 @@
 <gtx-top-bar *ngIf="loggedIn$ | async">
-    <gtx-button size="small"
-                flat
-                type="secondary"
-                *ngIf="!(adminMode$ | async)"
-                [routerLink]="['/admin']">Admin Mode</gtx-button>
-    <gtx-button size="small"
-                flat
-                type="secondary"
-                *ngIf="adminMode$ | async"
-                [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
+    <div class="gtx-top-bar-left">
+        <gtx-button size="small"
+                    flat
+                    type="secondary"
+                    *ngIf="!(adminMode$ | async)"
+                    [routerLink]="['/admin']">Admin Mode</gtx-button>
+        <gtx-button size="small"
+                    flat
+                    type="secondary"
+                    *ngIf="adminMode$ | async"
+                    [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
+    </div>
 
     <div class="gtx-top-bar-right">
         <language-switcher></language-switcher>
