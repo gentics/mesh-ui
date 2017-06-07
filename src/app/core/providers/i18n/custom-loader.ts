@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 const translationFiles = [
     'common',
     'lang',
-    'user',
+    'auth',
     'modal',
     'admin'
 ].reduce((hash, name) => {
@@ -31,12 +31,12 @@ const translations: any = {
 export class CustomLoader implements TranslateLoader {
 
     getTranslation(lang: string): Observable<any> {
-        let output: any = {};
-        for (let section in translations) {
+        const output: any = {};
+        for (const section in translations) {
             if (translations.hasOwnProperty(section)) {
                 output[section] = {};
 
-                for (let token in translations[section]) {
+                for (const token in translations[section]) {
                     if (translations[section].hasOwnProperty(token)) {
                         output[section][token] = translations[section][token][lang];
                     }

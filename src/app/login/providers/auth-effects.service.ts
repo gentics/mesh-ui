@@ -1,23 +1,20 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../core/providers/api/api.service';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
-import { Observable } from 'rxjs/Observable';
-import { noop } from '../../common/util/util';
 import { Router } from '@angular/router';
 import { ANONYMOUS_USER_NAME } from '../../common/config/config';
+import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 
 @Injectable()
 export class AuthEffectsService {
 
     constructor(private api: ApiService,
                 private state: ApplicationStateService,
+                private notification: I18nNotification,
                 private router: Router) {}
 
-    /**
-     *
-     */
+    /** Check if the user has an active authenticated session already */
     validateSession(): void {
-
         this.state.actions.auth.loginStart();
 
         this.api.auth.getCurrentUser()
@@ -37,40 +34,46 @@ export class AuthEffectsService {
                 if (successful) {
                     return this.api.auth.getCurrentUser();
                 } else {
-                    return Observable.throw('autherror');
-                    // TODO: Show a "wrong password" notification
+                    this.notification.show({
+                        type: 'error',
+                        message: 'auth.auth_error',
+                        delay: 5000
+                    });
+                    return [];
                 }
-            })
-            .do(noop, error => {
-                this.state.actions.auth.loginError();
             })
             .subscribe(
                 user => {
-                    if (user.username === ANONYMOUS_USER_NAME) {
+                    if (!user || user.username === ANONYMOUS_USER_NAME) {
                         this.state.actions.auth.loginError();
                     } else {
                         this.state.actions.auth.loginSuccess(user);
                     }
                 },
-                err => {
-                    console.log(`BALLS`, err);
+                error => {
+                    this.state.actions.auth.loginError();
+                    // TODO: Add general error handler
+                    throw error;
                 });
-
-        // TODO: Add general error handler
     }
 
     logout(): void {
         this.state.actions.auth.logoutStart();
         this.api.auth.logout()
-            .subscribe(successful => {
-                if (successful) {
-                    this.state.actions.auth.logoutSuccess();
-                    this.router.navigate(['/login']);
-                } else {
+            .subscribe(
+                successful => {
+                    if (successful) {
+                        this.state.actions.auth.logoutSuccess();
+                        this.router.navigate(['/login']);
+                    } else {
+                        this.state.actions.auth.logoutError();
+                    }
+                },
+                error => {
                     this.state.actions.auth.logoutError();
+                    // TODO: Add general error handler
+                    throw error;
                 }
-            });
-
-        // TODO: Add general error handler
+            );
     }
 }

@@ -2,27 +2,29 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
-import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
-import { UserDropdownComponent } from './components/user-dropdown/user-dropdown.component';
-import { CustomLoader } from './providers/i18n/custom-loader';
-import { NavigationService } from './providers/navigation/navigation.service';
-import { I18nService } from './providers/i18n/i18n.service';
-import { ENV_PROVIDERS } from '../environment';
-import { AuthGuard } from './providers/guards/auth-guard';
-import { ApplicationStateService } from '../state/providers/application-state.service';
-import { SharedModule } from '../shared/shared.module';
-import { ApiService } from './providers/api/api.service';
 import { ApiBase } from './providers/api/api-base.service';
-import { ChangePasswordModalComponent } from './components/change-password-modal/change-password-modal.component';
+import { ApiService } from './providers/api/api.service';
+import { ApplicationStateService } from '../state/providers/application-state.service';
 import { AuthEffectsService } from '../login/providers/auth-effects.service';
-import { UserEffectsService } from './providers/effects/user-effects.service';
+import { AuthGuard } from './providers/guards/auth-guard';
+import { ChangePasswordModalComponent } from './components/change-password-modal/change-password-modal.component';
+import { CustomLoader } from './providers/i18n/custom-loader';
+import { ENV_PROVIDERS } from '../environment';
+import { I18nNotification } from './providers/i18n-notification/i18n-notification.service';
+import { I18nService } from './providers/i18n/i18n.service';
+import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
+import { NavigationService } from './providers/navigation/navigation.service';
 import { ProjectEffectsService } from './providers/effects/project-effects.service';
 import { SchemaEffectsService } from './providers/effects/schema-effects.service';
+import { SharedModule } from '../shared/shared.module';
+import { UserDropdownComponent } from './components/user-dropdown/user-dropdown.component';
+import { UserEffectsService } from './providers/effects/user-effects.service';
 
 // Application wide providers
 const CORE_PROVIDERS = [
     ApplicationStateService,
     AuthGuard,
+    I18nNotification,
     I18nService,
     NavigationService,
     AuthEffectsService,
