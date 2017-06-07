@@ -6,6 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 import { ApiBase, ResponseObservable } from './api-base.service';
 import { ApiError } from './api-error';
 import { Subject } from 'rxjs/Subject';
+import { API_BASE_URL } from './api-di-tokens';
 
 
 describe('ApiBase', () => {
@@ -20,7 +21,8 @@ describe('ApiBase', () => {
             providers: [
                 ApiBase,
                 Http,
-                { provide: ConnectionBackend, useClass: MockBackend }
+                { provide: ConnectionBackend, useClass: MockBackend },
+                { provide: API_BASE_URL, useValue: '/api/v1' }
             ]
         });
 

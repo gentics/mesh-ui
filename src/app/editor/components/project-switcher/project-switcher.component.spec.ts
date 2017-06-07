@@ -3,7 +3,6 @@ import { TestBed, tick } from '@angular/core/testing';
 import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
 
 import { StateModule } from '../../../state/state.module';
-import { LanguageSwitcherComponent } from './language-switcher.component';
 import { componentTest } from '../../../../testing/component-test';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';

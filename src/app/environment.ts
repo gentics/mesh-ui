@@ -2,7 +2,7 @@
 import { disableDebugTools, enableDebugTools } from '@angular/platform-browser';
 import { ApplicationRef, enableProdMode } from '@angular/core';
 
-import { API_BASE_URL } from './shared/providers/api/api-di-tokens';
+import { API_BASE_URL } from './core/providers/api/api-di-tokens';
 
 // Environment Providers
 let PROVIDERS: any[] = [
