@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../../shared/providers/api/api.service';
-import { ApplicationStateService } from '../../state/providers/application-state.service';
+import { ApiService } from '../api/api.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Injectable()
 export class SchemaEffectsService {

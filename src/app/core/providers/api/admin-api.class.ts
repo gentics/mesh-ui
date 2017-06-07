@@ -1,7 +1,5 @@
-import { Observable } from 'rxjs/Observable';
-
 import { ApiBase } from './api-base.service';
-import { apiGet, apiDelete, apiPost, apiPostWithoutBody } from './api-methods';
+import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 
 
 export class AdminApi {

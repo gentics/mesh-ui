@@ -11,7 +11,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { UI_LANGUAGES } from '../../../common/config/config';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { LanguageSwitcherComponent } from './language-switcher.component';
-import { I18nService } from '../../../shared/providers/i18n/i18n.service';
+import { I18nService } from '../../providers/i18n/i18n.service';
 import createSpy = jasmine.createSpy;
 
 describe('LanguageSwitcherComponent:', () => {

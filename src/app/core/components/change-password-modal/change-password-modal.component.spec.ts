@@ -1,16 +1,15 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { async, TestBed, tick } from '@angular/core/testing';
-import { GenticsUICoreModule, Notification } from 'gentics-ui-core';
+import { Notification } from 'gentics-ui-core';
 
 import { ChangePasswordModalComponent } from './change-password-modal.component';
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { SharedModule } from '../../../shared/shared.module';
-import { UserEffectsService } from '../../providers/user-effects.service';
-import { CoreModule } from '../../core.module';
-import { I18nService } from '../../../shared/providers/i18n/i18n.service';
-import { MockAppState, TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { UserEffectsService } from '../../providers/effects/user-effects.service';
+import { I18nService } from '../../providers/i18n/i18n.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 
 describe('ChangePasswordModal', () => {
 

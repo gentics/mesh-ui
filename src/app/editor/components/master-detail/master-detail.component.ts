@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Observable } from 'rxjs/Observable';
-import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 
 @Component({
     selector: 'master-detail',

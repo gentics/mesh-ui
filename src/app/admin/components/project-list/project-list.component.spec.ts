@@ -1,5 +1,5 @@
-import { async, TestBed, ComponentFixture, tick } from '@angular/core/testing';
-import { GenticsUICoreModule, ModalService, Button } from 'gentics-ui-core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Button, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { Component, Input } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -8,11 +8,10 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { ProjectListComponent } from './project-list.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
-import { Project } from '../../../common/models/project.model';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { ProjectResponse } from '../../../common/models/server-models';
 import { SharedModule } from '../../../shared/shared.module';
-import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
+import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
 import { CoreModule } from '../../../core/core.module';
 
 describe('ProjectListComponent', () => {

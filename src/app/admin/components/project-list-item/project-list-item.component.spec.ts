@@ -8,8 +8,7 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
-import { Project } from '../../../common/models/project.model';
-import { I18nService } from '../../../shared/providers/i18n/i18n.service';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ProjectResponse } from '../../../common/models/server-models';
 

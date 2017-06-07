@@ -9,9 +9,9 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ProjectSwitcherComponent } from './project-switcher.component';
 import { SharedModule } from '../../../shared/shared.module';
-import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
+import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
 
 
 describe('ProjectSwitcherComponent:', () => {

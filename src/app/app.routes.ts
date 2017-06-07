@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './shared/providers/guards/auth-guard';
+import { AuthGuard } from './core/providers/guards/auth-guard';
 
 export const ROUTES: Routes = [
     { path: 'login', loadChildren: './login/login.module#LoginModule' },

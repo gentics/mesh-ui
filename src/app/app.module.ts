@@ -11,13 +11,14 @@ import { ROUTES } from './app.routes';
 import { AppComponent } from './app.component';
 
 import { SharedModule } from './shared/shared.module';
-import { I18nService } from './shared/providers/i18n/i18n.service';
+import { I18nService } from './core/providers/i18n/i18n.service';
 import { StateModule } from './state/state.module';
 import { CoreModule } from './core/core.module';
 import { AppState } from './state/models/app-state.model';
 import { ApplicationStateService } from './state/providers/application-state.service';
 
 import '../styles/main.scss';
+import { AuthEffectsService } from './login/providers/auth-effects.service';
 
 // Data type for saving and restoring application state with hot module reloading
 interface HmrStore {
@@ -46,8 +47,10 @@ export class AppModule {
     constructor(public appRef: ApplicationRef,
                 public i18nService: I18nService,
                 private router: Router,
+                private authEffects: AuthEffectsService,
                 public appState: ApplicationStateService) {
         i18nService.setLanguage('en');
+        authEffects.validateSession();
         // router.events.subscribe(event => console.log(event));
     }
 

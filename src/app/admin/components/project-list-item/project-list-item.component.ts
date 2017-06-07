@@ -1,13 +1,9 @@
-import { Component, Input, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { Notification, ModalService } from 'gentics-ui-core';
-
-import { Project } from '../../../common/models/project.model';
-import { I18nService } from '../../../shared/providers/i18n/i18n.service';
-import { Observable } from 'rxjs/Observable';
+import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { ModalService, Notification } from 'gentics-ui-core';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Subscription } from 'rxjs';
 import { ProjectResponse } from '../../../common/models/server-models';
-import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
 
 
 @Component({

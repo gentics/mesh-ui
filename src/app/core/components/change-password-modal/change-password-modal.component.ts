@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { UserEffectsService } from '../../providers/user-effects.service';
+import { UserEffectsService } from '../../providers/effects/user-effects.service';
 import { Observable } from 'rxjs';
-import { I18nService } from '../../../shared/providers/i18n/i18n.service';
+import { I18nService } from '../../providers/i18n/i18n.service';
 
 @Component({
     selector: 'change-password-modal',

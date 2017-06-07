@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ModalService } from 'gentics-ui-core';
 
@@ -6,7 +6,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { hashValues } from '../../../common/util/util';
 import { ProjectResponse } from '../../../common/models/server-models';
-import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
+import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
 
 @Component({
     templateUrl: './project-list.component.html',

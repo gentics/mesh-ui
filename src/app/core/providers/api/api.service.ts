@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 
 import { AuthApi } from './auth-api.class';
 import { ApiBase, RequestLanguage } from './api-base.service';

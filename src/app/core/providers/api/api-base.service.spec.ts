@@ -1,5 +1,5 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { BaseRequestOptions, ConnectionBackend, Headers, Http, HttpModule, Response, RequestMethod, ResponseOptions, Request } from '@angular/http';
+import { TestBed } from '@angular/core/testing';
+import { ConnectionBackend, Headers, Http, HttpModule, Request, RequestMethod, Response, ResponseOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { Observable, Subscription } from 'rxjs';
 

@@ -1,8 +1,8 @@
-import { Request, RequestMethod, Response, ResponseOptions, Headers, Http } from '@angular/http';
+import { Headers, Http, Request, RequestMethod, Response, ResponseOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { ApiBase, RequestLanguage, ResponseObservable } from './api-base.service';
+import { ApiBase } from './api-base.service';
 
 
 /** Only available in testing. A request tracked by {@link MockApiBase}. */

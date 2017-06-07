@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { Project } from '../../../common/models/project.model';
-import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { hashValues } from '../../../common/util/util';
 import { ProjectResponse } from '../../../common/models/server-models';
-import { ProjectEffectsService } from '../../../core/providers/project-effects.service';
+import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
 
 type ProjectHash = { [uuid: string]: ProjectResponse };
 
@@ -17,7 +16,7 @@ type ProjectHash = { [uuid: string]: ProjectResponse };
 })
 export class ProjectSwitcherComponent {
     projects$: Observable<ProjectResponse[]>;
-    currentProjectName$: Observable<String>;
+    currentProjectName$: Observable<string>;
 
     constructor(private appState: ApplicationStateService,
                 private navigation: NavigationService,

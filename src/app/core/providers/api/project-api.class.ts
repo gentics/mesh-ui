@@ -1,6 +1,6 @@
 import { ApiBase } from './api-base.service';
 import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
-import { ApiEndpoints, NodeResponse, NodeUpdateRequest, GenericMessageResponse } from '../../../common/models/server-models';
+import { GenericMessageResponse, NodeResponse, NodeUpdateRequest } from '../../../common/models/server-models';
 
 export class ProjectApi {
     constructor(private apiBase: ApiBase) { }

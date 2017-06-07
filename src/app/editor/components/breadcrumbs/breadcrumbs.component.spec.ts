@@ -1,18 +1,14 @@
-import { Component, QueryList, Injectable, Input } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { Component, Injectable, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { BreadcrumbsComponent } from './breadcrumbs.component';
-import { SharedModule } from '../../../shared/shared.module';
 import { StateModule } from '../../../state/state.module';
-import { GenticsUICoreModule, IBreadcrumbRouterLink } from 'gentics-ui-core';
+import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
-import { EditorModule } from '../../editor.module';
-import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
-import { Router } from '@angular/router';
-import { Breadcrumb } from '../../../common/models/node.model';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 
 describe('BreadcrumbsComponent:', () => {
 

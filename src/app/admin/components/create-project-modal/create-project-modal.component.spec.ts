@@ -1,6 +1,6 @@
-import { async, TestBed, ComponentFixture, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GenticsUICoreModule, Notification, OverlayHostService, SelectOption } from 'gentics-ui-core';
+import { GenticsUICoreModule, Notification, OverlayHostService } from 'gentics-ui-core';
 
 import { CreateProjectModalComponent } from './create-project-modal.component';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -8,8 +8,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { By } from '@angular/platform-browser';
-import { SchemaEffectsService } from '../../../core/providers/schema-effects.service';
+import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 
 describe('CreateProjectModal', () => {
 

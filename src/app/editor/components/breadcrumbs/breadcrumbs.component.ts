@@ -4,7 +4,7 @@ import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 
 @Component({
     selector: 'breadcrumbs',

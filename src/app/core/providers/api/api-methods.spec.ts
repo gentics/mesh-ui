@@ -1,4 +1,4 @@
-import { apiDelete, apiGet, apiPost, apiPostWithoutBody, apiPut, apiPatch } from './api-methods';
+import { apiDelete, apiGet, apiPatch, apiPost, apiPostWithoutBody, apiPut } from './api-methods';
 import { MockApiBase } from './api-base.mock';
 
 describe('api-methods helper functions', () => {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ActivatedRoute } from '@angular/router';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { NavigationService } from '../../../shared/providers/navigation/navigation.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 
 @Component({
     selector: 'container-contents',

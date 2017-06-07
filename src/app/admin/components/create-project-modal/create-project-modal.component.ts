@@ -1,13 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-
-import { Schema } from '../../../common/models/schema.model';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { hashValues } from '../../../common/util/util';
 import { SchemaResponse } from '../../../common/models/server-models';
-import { SchemaEffectsService } from '../../../core/providers/schema-effects.service';
+import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 
 @Component({
     templateUrl: './create-project-modal.component.html',

@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { ApiError } from './api-error';
 import { API_BASE_URL } from './api-di-tokens';
-import { UILanguage } from '../i18n/i18n.service';
 import { ApiEndpoints } from '../../../common/models/server-models';
 
 

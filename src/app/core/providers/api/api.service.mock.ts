@@ -1,8 +1,4 @@
-import { Response } from '@angular/http';
-import { Observable } from 'rxjs';
-
 import { ApiService } from './api.service';
-import { RequestMethodString } from './api-base.service';
 import { MockApiBase } from './api-base.mock';
 
 /**
