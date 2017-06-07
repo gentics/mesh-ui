@@ -32,7 +32,7 @@ export class MockApiBase extends ApiBase {
 
     constructor() {
         // Provide a spy Http service to ApiBase, we don't want to do actual http calls in unit tests.
-        super(undefined as any as Http);
+        super(undefined as any as string, undefined as any as Http);
         this.http = {
             request: (r: Request) => this.interceptHttpRequest(r)
         } as any as Http;
@@ -53,8 +53,8 @@ export class MockApiBase extends ApiBase {
 
     /** Intercepts requests made via Angulars `Http` service and stores them on this instance. */
     private interceptHttpRequest(request: Request): Observable<Response> {
-        let trackedRequest = { } as MockedApiRequest;
-        let returnedObservable = new Subject<Response>();
+        const trackedRequest = { } as MockedApiRequest;
+        const returnedObservable = new Subject<Response>();
 
         // Add a non-enumerable "respond" method
         Object.defineProperty(trackedRequest, 'respond', {

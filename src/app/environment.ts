@@ -2,6 +2,8 @@
 import { disableDebugTools, enableDebugTools } from '@angular/platform-browser';
 import { ApplicationRef, enableProdMode } from '@angular/core';
 
+import { API_BASE_URL } from './shared/providers/api/api-di-tokens';
+
 // Environment Providers
 let PROVIDERS: any[] = [
     // common env directives
@@ -43,6 +45,7 @@ if ('production' === ENV) {
     PROVIDERS = [
         ...PROVIDERS,
         // custom providers in development
+        { provide: API_BASE_URL, useValue: 'http://localhost:8080/api/v1' }
     ];
 
 }

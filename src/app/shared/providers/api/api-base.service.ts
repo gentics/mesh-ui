@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
 import { Headers, Http, Request, RequestMethod, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import { ApiError } from './api-error';
+import { API_BASE_URL } from './api-di-tokens';
 import { UILanguage } from '../i18n/i18n.service';
 import { ApiEndpoints } from '../../../common/models/server-models';
 
@@ -39,9 +40,13 @@ type PartialResponseMap<T extends { [status: number]: any }, R> = {
     success: R | ResponseMapCallback<T[keyof T], R>;
 };
 
-type QueryParams = { [name: string]: string | number | boolean | Array<string | number | boolean> };
-type UrlParams = { [name: string]: string | number | boolean };
-type UntypedRequestArgs = { params?: UrlParams & QueryParams, body?: any };
+interface QueryParams {
+    [name: string]: string | number | boolean | Array<string | number | boolean>;
+}
+
+interface UrlParams {
+    [name: string]: string | number | boolean;
+}
 
 
 /**
@@ -51,7 +56,8 @@ type UntypedRequestArgs = { params?: UrlParams & QueryParams, body?: any };
 export class ApiBase {
     protected requestLanguage: RequestLanguage = 'en';
 
-    constructor(protected http: Http) { }
+    constructor(@Inject(API_BASE_URL) @Optional() protected baseUrl: string = `/api/${API_VERSION}`,
+                protected http: Http) { }
 
     /**
      * Create an Observable that will send a GET request to the API when subscribed to.
@@ -155,7 +161,7 @@ export class ApiBase {
                 body[key] && (body[key].constructor === File || body[key] instanceof File))) {
             // An object with at least one `File` instance was passed -> use FormData as request body
             bodyToUse = new FormData();
-            for (let key of Object.keys(body)) {
+            for (const key of Object.keys(body)) {
                 if (body[key] && (body[key].constructor === File || body[key] instanceof File)) {
                     bodyToUse.append(key, body[key], body[key].name);
                 } else {
@@ -171,7 +177,8 @@ export class ApiBase {
             url: this.formatUrl(url, params),
             method,
             headers,
-            body: bodyToUse
+            body: bodyToUse,
+            withCredentials: true
         });
 
         // Perform the actual request using the Http service provided by Angular
@@ -225,7 +232,7 @@ export class ApiBase {
         const queryParamNames = Object.keys(params).filter(param => urlParams.indexOf(param) < 0);
         if (queryParamNames.length) {
             const queryParams = new URLSearchParams();
-            for (let key of queryParamNames) {
+            for (const key of queryParamNames) {
                 const value = params[key];
                 if (Array.isArray(value)) {
                     value.forEach(v => queryParams.append(key, String(v)));
@@ -236,7 +243,7 @@ export class ApiBase {
             filledUrl += '?' + queryParams.toString();
         }
 
-        return `/api/${API_VERSION}${separator}${filledUrl}`;
+        return this.baseUrl + separator + filledUrl;
     }
 
     /** Adds the mapResponses method to observables returned by ApiBase methods. */
@@ -255,7 +262,7 @@ export class ApiBase {
         resultObservable.mapResponses = <TResult>(mapping: ResponseMap<T, TResult>): Observable<TResult> => {
             return inputObservable.map((response, index) => {
                 if (response.status in mapping || (response.ok && (mapping as any).success)) {
-                    let mappedTo: any = response.status in mapping
+                    const mappedTo: any = response.status in mapping
                         ? mapping[response.status]
                         : (mapping as any).success;
 
