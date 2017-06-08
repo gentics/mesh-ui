@@ -98,23 +98,14 @@ export class AdminApi {
      * Invoke a graph database backup and dump the data to the configured backup
      * location. Note that this operation will block all current operation.
      */
-    startDatabaseBackup = apiPostWithoutBody('/admin/backup');
-
-    /** Invoke a orientdb graph database export. */
-    startDatabaseExport = apiPostWithoutBody('/admin/export');
-
-    /**
-     * Invoke a orientdb graph database import. The latest import file from the import
-     * directory will be used for this operation.
-     */
-    startDatabaseImport = apiPostWithoutBody('/admin/import');
+    startDatabaseBackup = apiPostWithoutBody('/admin/graphdb/backup');
 
     /**
      * Invoke a graph database restore. The latest dump from the backup directory will
      * be inserted. Please note that this operation will block all current operation and
      * effectively destroy all previously stored data.
      */
-    startDatabaseRestore = apiPostWithoutBody('/admin/restore');
+    startDatabaseRestore = apiPostWithoutBody('/admin/graphdb/restore');
 
     /** Update the group with the given uuid. */
     updateGroup = apiPost('/groups/{groupUuid}');
