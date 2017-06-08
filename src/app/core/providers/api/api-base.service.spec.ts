@@ -21,8 +21,7 @@ describe('ApiBase', () => {
             providers: [
                 ApiBase,
                 Http,
-                { provide: ConnectionBackend, useClass: MockBackend },
-                { provide: API_BASE_URL, useValue: '/api/v1' }
+                { provide: ConnectionBackend, useClass: MockBackend }
             ]
         });
 

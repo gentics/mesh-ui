@@ -54,9 +54,14 @@ interface UrlParams {
 @Injectable()
 export class ApiBase {
     protected requestLanguage: RequestLanguage = 'en';
+    protected baseUrl = `/api/${API_VERSION}`;
 
-    constructor(@Inject(API_BASE_URL) @Optional() protected baseUrl: string = `/api/${API_VERSION}`,
-                protected http: Http) { }
+    constructor(@Inject(API_BASE_URL) @Optional() baseUrl: string | null,
+                protected http: Http) {
+        if (baseUrl) {
+            this.baseUrl = baseUrl;
+        }
+    }
 
     /**
      * Create an Observable that will send a GET request to the API when subscribed to.
