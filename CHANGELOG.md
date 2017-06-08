@@ -1,6 +1,9 @@
 # MeshAdminUI Changelog
 
-## Version 0.6.4 (2107-05-22)
+## Version 0.6.5 (2017-06-08)
+* Fix image upload when updating nodes
+
+## Version 0.6.4 (2017-05-22)
 
 #### Fixes
 * Schema & Microschema description is no longer a required field
