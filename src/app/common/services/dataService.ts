@@ -548,7 +548,7 @@ module meshAdminUi {
             return this.meshPost(projectName + '/nodes/' + node.uuid, node, queryParams)
                 .then(
                     (newNode: INode) => {
-                        return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number, 'PUT')
+                        return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number, 'POST')
                             .then(result => {
                                 if (result === false) {
                                     // no uploads were required
