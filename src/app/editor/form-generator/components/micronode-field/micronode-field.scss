@@ -1,17 +1,47 @@
-:host {
-    box-shadow: 0 1px 5px 0 rgba(0,0,0,0.44);
-    margin: 5px;
-    padding: 5px;
+@import "variables";
+@import "../../common-styles";
+
+:host.mesh-field {
+    display: flex;
+    justify-content: space-between;
+    width: $full-width;
+
+    :host-context(list-field),
+    &.compact {
+        flex-direction: column;
+
+        label {
+            @include label-style-compact;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .micronode-control-wrapper {
+            width: $full-width;
+        }
+    }
+
+    &.list-item {
+        .micronode-control-wrapper {
+            margin-bottom: 0;
+        }
+    }
+}
+
+label {
+    @include label-style-full;
+    margin-top: 0;
 }
 
 .micronode-control-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 20px 0;
+    width: calc(#{$full-width-right} + #{$left-bar-width});
+    border: 2px solid $gtx-color-very-light-gray;
+    border-radius: 3px;
     overflow: hidden;
-    justify-content: space-between;
+    margin-bottom: 20px;
 
     /deep/ & > .mesh-field {
+        display: block;
         margin-left: 20px;
         margin-right: 20px;
     }

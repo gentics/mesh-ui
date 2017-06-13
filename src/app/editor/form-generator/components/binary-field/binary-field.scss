@@ -1,7 +1,34 @@
 @import "variables";
+@import "../../common-styles";
 
-:host {
+:host.mesh-field {
     margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    label {
+        @include label-style-full;
+        margin-top: 0;
+    }
+
+    &.compact {
+        flex-direction: column;
+        margin-top: 0;
+
+        label {
+            @include label-style-compact;
+            margin-bottom: 0;
+        }
+        .binary-preview {
+            width: $full-width;
+        }
+    }
+}
+
+
+
+.binary-preview {
+    width: $full-width-right;
 }
 
 .property-list {

@@ -3,12 +3,13 @@ import * as Quill from 'quill';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
-import { BaseFieldComponent } from '../base-field/base-field.component';
+import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
 @Component({
     selector: 'html-field',
     templateUrl: './html-field.component.html',
     styleUrls: ['./html-field.scss'],
+    // required for the Quill.js styles to work correctly
     encapsulation: ViewEncapsulation.None
 })
 export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy {
@@ -56,8 +57,9 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         this.value = value;
     }
 
-    formWidthChange(): void {
-        this.setWidth('100%');
+    formWidthChange(width: number): void {
+        this.setWidth(FIELD_FULL_WIDTH);
+        this.isCompact = width <= SMALL_SCREEN_LIMIT;
     }
 
     focusEditor(): void {

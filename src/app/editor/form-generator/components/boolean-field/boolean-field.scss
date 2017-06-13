@@ -1,7 +1,31 @@
-:host {
+@import "variables";
+@import "../../common-styles";
+
+:host.mesh-field {
     display: flex;
-    align-items: flex-end;
-    min-height: 50px;
-    margin-bottom: 12px;
-    padding-bottom: 15px;
+    justify-content: space-between;
+    padding-top: 10px;
+
+    .label {
+        @include label-style-full;
+        margin-top: 0;
+    }
+    gtx-checkbox {
+        width: $half-width-right;
+    }
+
+    &.compact {
+        justify-content: flex-start;
+        padding-top: 0;
+        margin-bottom: 3px;
+
+        .label {
+            margin-top: 2px;
+            margin-right: 10px;
+            font-size: $gtx-font-size-small;
+        }
+        gtx-checkbox {
+            width: $full-width-right;
+        }
+    }
 }

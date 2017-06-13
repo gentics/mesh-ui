@@ -1,4 +1,16 @@
-import { AfterViewInit, Component, ComponentRef, ElementRef, OnDestroy, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ComponentRef,
+    ElementRef,
+    HostBinding,
+    OnDestroy,
+    OnInit,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+    ViewContainerRef
+} from '@angular/core';
 import { ISortableEvent, ISortableGroupOptions } from 'gentics-ui-core';
 import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { ListTypeFieldType, SchemaField } from '../../../../common/models/schema.model';
@@ -10,7 +22,7 @@ import { initializeListValue } from '../../common/initialize-list-value';
 import { mockGetMicroschemaByName } from '../../common/mock-get-microschema';
 import { Observable, Subscription } from 'rxjs';
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
-import { BaseFieldComponent } from '../base-field/base-field.component';
+import { BaseFieldComponent, FIELD_FULL_WIDTH, FIELD_HALF_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
 function randomId(): string {
     return Math.random().toString(36).substring(5);
@@ -21,7 +33,7 @@ function randomId(): string {
     templateUrl: './list-field.component.html',
     styleUrls: ['./list-field.scss']
 })
-export class ListFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy  {
+export class ListFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy, OnInit  {
 
     api: MeshFieldControlApi;
     field: SchemaField;
@@ -30,11 +42,13 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     listItems: QueryList<ViewContainerRef>;
     @ViewChild('listContainer', { read: ElementRef })
     listContainer: ElementRef;
+    @HostBinding('class.micronode-list')
+    isMicronodeList: boolean = false;
     listHeight: string = 'auto';
     updating: boolean = false;
     groupId: string = randomId();
     removeGroupId: string = randomId();
-    displayRemoveArea: boolean = false;
+    dragging: boolean = false;
     hoverRemoveArea: boolean = false;
     mainGroup: ISortableGroupOptions = {
         name: this.groupId,
@@ -51,6 +65,10 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                 private meshControlGroup: MeshControlGroupService,
                 private viewContainerRef: ViewContainerRef) {
         super();
+    }
+
+    ngOnInit(): void {
+        this.isMicronodeList = this.field.listType === 'micronode';
     }
 
     ngAfterViewInit(): void {
@@ -104,23 +122,20 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     formWidthChange(widthInPixels: number): void {
-        if (this.field.listType === 'micronode') {
-            this.setWidth('100%');
+        if (this.isMicronodeList) {
+            this.setWidth(FIELD_FULL_WIDTH);
         } else {
-            if (widthInPixels < 800) {
-                this.setWidth('100%');
+            if (widthInPixels < SMALL_SCREEN_LIMIT) {
+                this.setWidth(FIELD_FULL_WIDTH);
             } else {
-                this.setWidth('42%');
+                this.setWidth(FIELD_HALF_WIDTH);
             }
         }
-    }
-
-    dragStart(): void {
-        this.displayRemoveArea = true;
+        this.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;
     }
 
     dragEnd(e: ISortableEvent): void {
-        this.displayRemoveArea = false;
+        this.dragging = false;
         if (!this.updating) {
             this.reorderList(e);
         }
@@ -171,7 +186,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                         fieldComponent: controlType,
                         viewContainerRef
                     });
-
+                    componentRef.instance.isListItem = true;
                     newContainer.registerMeshFieldInstance(componentRef.instance);
                     this.componentRefs.push(componentRef);
                 });

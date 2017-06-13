@@ -1,7 +1,8 @@
+<label>{{ api.field.label || api.field.name }}</label>
 <div class="uuid-form">
-    <thumbnail [nodeUuid]="userValue"></thumbnail>
-    <gtx-input [(ngModel)]="userValue"
-               [label]="api.field.label || api.field.name"></gtx-input>
+    <!-- TODO: re-enable the thumbnail once we have wired up real data -->
+    <!--<thumbnail [nodeUuid]="userValue"></thumbnail>-->
+    <gtx-input [(ngModel)]="userValue"></gtx-input>
     <gtx-button [disabled]="!isValidUuid()"
                 flat="true"
                 (click)="doUpdate()">Set</gtx-button>

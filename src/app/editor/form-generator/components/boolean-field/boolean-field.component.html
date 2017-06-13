@@ -1,1 +1,2 @@
-<gtx-checkbox [label]="api.field.label || api.field.name" [checked]="value" (change)="onChange($event)"></gtx-checkbox>
+<div class="label" (click)="onChange(!value)">{{ api.field.label || api.field.name }}</div>
+<gtx-checkbox [checked]="value" (change)="onChange($event)"></gtx-checkbox>

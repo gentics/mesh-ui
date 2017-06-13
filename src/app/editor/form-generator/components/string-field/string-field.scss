@@ -1,1 +1,6 @@
+@import "variables";
+@import "../../common-styles";
 
+:host {
+    @include input-styles;
+}

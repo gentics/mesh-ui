@@ -1,57 +1,83 @@
 @import "variables";
+@import "../../common-styles";
 
-:host {
-    display: block;
-    margin: 20px 0;
-}
-
-.item-row {
+:host.mesh-field {
     display: flex;
-    align-items: center;
-    margin: -1px 0;
-    padding: 0 6px;
-    border: 1px solid $gtx-color-very-light-gray;
+    justify-content: space-between;
+    margin: 20px 0 20px 20px;
 
-    /deep/ & > micronode-field,
-    /deep/ & > number-field,
-    /deep/ & > html-field,
-    /deep/ & > string-field {
-        flex-grow: 1;
+    :host-context(micronode-field),
+    &.compact {
+        flex-direction: column;
+
+        .label-container {
+            flex-direction: row;
+            align-items: center;
+            label {
+                @include label-style-compact;
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+        }
+        .list-container {
+            width: $full-width;
+        }
+    }
+
+    &.micronode-list:not(.compact) {
+        .list-container {
+            width: calc(#{$full-width-right} + #{$left-bar-width});
+        }
     }
 }
 
-.list-container {
-    transition: opacity 0.2s;
-    position: relative;
-    will-change: opacity;
-    &.updating {
-        opacity: 0.2;
-        transition: opacity 0s;
-    }
+.label-container {
+    display: flex;
+    flex-direction: column;
 
-    gtx-drag-handle {
-        color: $gtx-color-dark-gray;
+    label {
+        @include label-style-full;
+        margin-top: 0;
     }
 
     .remove-area-wrapper {
         visibility: hidden;
+        flex-grow: 1;
         opacity: 0;
-        position: absolute;
-        top: 0;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100px;
-        height: 100%;
         border: 1px dotted transparent;
         background-color: transparentize($gtx-color-alert, 0.9);
         transition: opacity 0.1s, visibility 0s 0.1s;
         will-change: opacity, visibility, border;
         overflow: hidden;
 
-        icon {
-            color: $gtx-color-alert;
-            opacity: 0.7;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 18%;
+        z-index: 100;
+
+
+        .icon-and-label {
+            padding: 5px;
+            background-color: rgba(255, 255, 255, 0.75);
+            border-radius: 3px;
+            text-align: center;
+
+            icon {
+                color: $gtx-color-alert;
+                opacity: 0.7;
+            }
+
+            .remove-instruction {
+                color: $gtx-color-alert;
+                font-size: $gtx-font-size-small;
+            }
         }
 
         &.visible {
@@ -75,6 +101,49 @@
             display: flex;
             align-items: center;
         }
+    }
+}
+
+.list-container {
+    width: calc(#{$half-width-right} + #{$left-bar-width});
+    transition: opacity 0.2s;
+    will-change: opacity;
+    &.updating {
+        opacity: 0.2;
+        transition: opacity 0s;
+    }
+
+
+    .item-row {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 6px;
+        border-left: $left-bar-width solid $gtx-color-very-light-gray;
+        transition: background-color 0.3s, border-color 0.3s;
+
+        /deep/ & > micronode-field,
+        /deep/ & > number-field,
+        /deep/ & > html-field,
+        /deep/ & > string-field {
+            flex-grow: 1;
+        }
+    }
+
+
+    gtx-sortable-item.sortable-chosen > .item-row,
+    &:not(.dragging) .item-row:hover {
+        border-color: transparentize($gtx-color-primary, 0.5);
+        background-color: transparentize(desaturate($gtx-color-primary, 30%), 0.95);
+
+        > gtx-drag-handle {
+            color: $gtx-color-dark-gray;
+        }
+    }
+
+    gtx-drag-handle {
+        color: $gtx-color-mid-gray;
+        transition: color 0.3s;
     }
 }
 

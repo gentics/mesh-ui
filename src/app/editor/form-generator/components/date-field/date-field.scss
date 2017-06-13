@@ -1,3 +1,6 @@
+@import "variables";
+@import "../../common-styles";
+
 :host {
-    margin-top: 20px;
+   @include input-styles;
 }

@@ -5,7 +5,7 @@ import { FieldGenerator, FieldGeneratorService } from '../../providers/field-gen
 import { getControlType } from '../../common/get-control-type';
 import { mockGetMicroschemaByUuid } from '../../common/mock-get-microschema';
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
-import { BaseFieldComponent } from '../base-field/base-field.component';
+import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
 @Component({
     selector: 'micronode-field',
@@ -41,6 +41,11 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
 
     valueChange(value: NodeFieldMicronode): void {
         this.value = value;
+    }
+
+    formWidthChange(widthInPixels: number): void {
+        this.setWidth(FIELD_FULL_WIDTH);
+        this.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;
     }
 
     createDefaultMicronodeComponent(): void {

@@ -1,0 +1,77 @@
+@import "variables";
+
+$full-width: 96%;
+$half-width: 60%;
+$full-width-right: 81.3%;
+$half-width-right: 70%;
+
+$left-bar-width: 6px;
+
+@mixin label-style-full {
+    position: relative;
+    font-size: $gtx-font-size-regular;
+    margin-top: 26px;
+    cursor: pointer;
+    color: $gtx-color-dark-gray;
+}
+
+@mixin label-style-compact {
+    position: relative;
+    font-size: $gtx-font-size-small;
+    margin-bottom: -20px;
+    margin-top: 0;
+    cursor: pointer;
+    color: $gtx-color-dark-gray;
+}
+
+@mixin input-styles {
+    /deep/ gtx-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+
+        input[type="number"],
+        input[type="text"],
+        input[type="password"] {
+            width: $half-width-right;
+            background-color: white;
+        }
+        label {
+            @include label-style-full;
+        }
+    }
+
+    :host-context(micronode-field),
+    :host-context(list-field),
+    &.compact {
+        & /deep/ gtx-input {
+            flex-direction: column-reverse;
+
+            input[type="number"],
+            input[type="text"],
+            input[type="password"] {
+                width: $full-width;
+
+                list-field & {
+                    width: $full-width;
+                }
+            }
+            label {
+                @include label-style-compact;
+            }
+        }
+    }
+
+    &.list-item {
+        & /deep/ gtx-input {
+            input[type="number"],
+            input[type="text"],
+            input[type="password"] {
+                margin: 0;
+            }
+            label {
+                display: none;
+            }
+        }
+    }
+}

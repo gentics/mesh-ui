@@ -1,11 +1,13 @@
 <label>{{ api.field.label || api.field.name }}</label>
-<ul class="property-list">
-    <li *ngFor="let prop of binaryProperties">
-        {{ prop.key }}: {{ prop.value }}
-    </li>
-</ul>
-<gtx-file-picker (fileSelect)="onFilesSelected($event)"
-                 flat="true"
-                 [multiple]="false">
-    Pick a file
-</gtx-file-picker>
+<div class="binary-preview">
+    <ul class="property-list">
+        <li *ngFor="let prop of binaryProperties">
+            {{ prop.key }}: {{ prop.value }}
+        </li>
+    </ul>
+    <gtx-file-picker (fileSelect)="onFilesSelected($event)"
+                     flat="true"
+                     [multiple]="false">
+        Pick a file
+    </gtx-file-picker>
+</div>

@@ -1,12 +1,30 @@
 @import "~quill/dist/quill.snow.css";
 @import "variables";
+@import "../../common-styles";
 
-html-field {
-    width: 100%;
-    padding-bottom: 77px;
+html-field.mesh-field {
+    padding-bottom: 68px;
+    display: flex !important;
+    justify-content: space-between;
 
     label {
-        transition: color 0.2s;
+        @include label-style-full;
+    }
+
+    .editor-container {
+        width: $full-width-right;
+        margin-top: 20px;
+    }
+
+    &.compact {
+        padding-bottom: 18px;
+        flex-direction: column;
+        label {
+            @include label-style-compact;
+        }
+        .editor-container {
+            width: $full-width;
+        }
     }
 
     .ql-snow.ql-toolbar button:focus {

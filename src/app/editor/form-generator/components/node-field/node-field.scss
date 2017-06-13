@@ -1,8 +1,27 @@
-:host {
-    margin-top: 20px;
+@import "variables";
+@import "../../common-styles";
+
+:host.mesh-field {
+    display: flex;
+    justify-content: space-between;
+
+    :host-context(micronode-field),
+    :host-context(list-field),
+    &.compact {
+        flex-direction: column;
+
+        label {
+            @include label-style-compact;
+        }
+    }
+}
+
+label {
+    @include label-style-full;
 }
 
 .uuid-form {
+    width: $half-width-right;
     display: flex;
     align-items: center;
 }

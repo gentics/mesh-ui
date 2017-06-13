@@ -2,6 +2,10 @@ import { Component, HostBinding } from '@angular/core';
 import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 
+export const FIELD_FULL_WIDTH = '96%';
+export const FIELD_HALF_WIDTH = '60%';
+export const SMALL_SCREEN_LIMIT = 800;
+
 /**
  * This is the base class from which all of the built-in form controls inherit.
  */
@@ -11,6 +15,13 @@ import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 export abstract class BaseFieldComponent  {
     @HostBinding('class.mesh-field')
     readonly isMeshField = true;
+
+    @HostBinding('class.compact')
+    protected isCompact = false;
+
+    /** This is set by the ListFieldComponent when creating new list items */
+    @HostBinding('class.list-item')
+    isListItem = false;
 
     @HostBinding('style.width')
     width: string;
@@ -51,11 +62,12 @@ export abstract class BaseFieldComponent  {
      * This method is invoked whenever the containing form's width changes.
      */
     formWidthChange(widthInPixels: number): void {
-        if (widthInPixels < 800) {
-            this.setWidth('100%');
+        if (widthInPixels < SMALL_SCREEN_LIMIT) {
+            this.setWidth(FIELD_FULL_WIDTH);
         } else {
-            this.setWidth('42%');
+            this.setWidth(FIELD_HALF_WIDTH);
         }
+        this.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;
     }
 
     /**

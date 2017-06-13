@@ -6,7 +6,8 @@ const translationFiles = [
     'lang',
     'auth',
     'modal',
-    'admin'
+    'admin',
+    'editor'
 ].reduce((hash, name) => {
     hash[name] = require(`./translations/${name}.translations.yml`);
     return hash;

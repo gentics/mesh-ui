@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
-import { BaseFieldComponent } from '../base-field/base-field.component';
+import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
 @Component({
     selector: 'binary-field',
@@ -21,6 +21,11 @@ export class BinaryFieldComponent extends BaseFieldComponent {
 
     valueChange(value: NodeFieldType): void {
         this.binaryProperties = Object.keys(value).map(key => ({ key, value: value[key] }));
+    }
+
+    formWidthChange(width: number): void {
+        this.setWidth(FIELD_FULL_WIDTH);
+        this.isCompact = width <= SMALL_SCREEN_LIMIT;
     }
 
     onFilesSelected(files: any[]): void {
