@@ -150,8 +150,8 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
      * Note: this method mutates the object passed in.
      */
     private updateAtPath(object: any, path: any[], value: any): any {
-        let pointer = this.getPointerByPath(object, path);
-        console.log(`updating`, path, value);
+        const pointer = this.getPointerByPath(object, path);
+        // console.log(`updating`, path, value);
         return pointer[path[path.length - 1]] = this.clone(value);
     }
 
@@ -162,7 +162,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     private getPointerByPath(object: any, path: any[]): any {
         let pointer = object;
         for (let i = 0; i < path.length - 1; i++) {
-            let key = path[i];
+            const key = path[i];
             if (!pointer[key]) {
                 pointer[key] = {};
             }

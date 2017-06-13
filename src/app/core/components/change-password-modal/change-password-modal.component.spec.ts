@@ -101,7 +101,7 @@ describe('ChangePasswordModal', () => {
 
 // TODO Use some central utility function for this
 function triggerEvent(element: HTMLElement, eventName: string) {
-    let event = document.createEvent('Event');
+    const event = document.createEvent('Event');
     event.initEvent(eventName, true, true);
     element.dispatchEvent(event);
 }

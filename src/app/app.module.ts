@@ -63,7 +63,7 @@ export class AppModule {
         this.appState.restore(store.state);
         // set input values
         if ('restoreInputValues' in store) {
-            let restoreInputValues = store.restoreInputValues;
+            const restoreInputValues = store.restoreInputValues;
             setTimeout(restoreInputValues);
         }
 

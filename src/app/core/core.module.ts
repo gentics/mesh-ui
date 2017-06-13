@@ -70,7 +70,7 @@ export class CoreModule {
     /**
      * Throw an exception if someone tries to import the CoreModule into any child module.
      */
-    constructor (@Optional() @SkipSelf() parentModule: CoreModule) {
+    constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
       if (parentModule) {
         throw new Error('CoreModule is already loaded. Import it in the AppModule only');
       }

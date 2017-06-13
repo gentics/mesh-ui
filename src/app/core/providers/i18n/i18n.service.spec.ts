@@ -13,8 +13,8 @@ describe('I18nService', () => {
 
     it('passes key and params to TranslateService', () => {
         for (let i = 0; i < 100; i++) {
-            let key = Math.random().toString(36);
-            let params = {
+            const key = Math.random().toString(36);
+            const params = {
                 foo: i
             };
             i18n.translate(key, params);

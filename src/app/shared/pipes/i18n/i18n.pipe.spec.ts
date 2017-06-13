@@ -20,8 +20,8 @@ describe('I18nPipe', () => {
 
     it('passes key and params to TranslatePipe', () => {
         for (let i = 0; i < 100; i++) {
-            let key = Math.random().toString(36);
-            let params = {
+            const key = Math.random().toString(36);
+            const params = {
                 foo: i
             };
             i18nPipe.transform(key, params);
@@ -32,7 +32,7 @@ describe('I18nPipe', () => {
 });
 
 class MockTranslateService {
-    instant = jasmine.createSpy('instant').and.callFake((key: string, params: Object) => {
+    instant = jasmine.createSpy('instant').and.callFake((key: string, params: object) => {
         return `${key}_translated`;
     });
     onLangChange = new EventEmitter<any>();

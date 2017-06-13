@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, getTestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, getTestBed, TestBed } from '@angular/core/testing';
 
 /**
  * Use to test a component in one consistent way. The passed callback
@@ -40,14 +40,14 @@ export function componentTest<T>(
     ): () => void;
 
 export function componentTest<T>(componentFn: () => ComponentType<T>, second: any, third?: any): () => void {
-    let args = Array.from(arguments);
+    const args = Array.from(arguments);
     return () => {
         // Parse possible combination of arguments
-        let {template, overwritesFn, testFn} = parseOverloadArguments(args);
+        const {template, overwritesFn, testFn} = parseOverloadArguments(args);
 
-        let fakeAsyncTest = fakeAsync(() => {
+        const fakeAsyncTest = fakeAsync(() => {
             let testBed: TestBed = getTestBed();
-            let componentType: ComponentType<T> = componentFn();
+            const componentType: ComponentType<T> = componentFn();
 
             if (overwritesFn) {
                 testBed = overwritesFn(testBed) || testBed;
@@ -55,9 +55,9 @@ export function componentTest<T>(componentFn: () => ComponentType<T>, second: an
                 testBed.overrideComponent(componentType, { set: { template } });
             }
 
-            let fixture = testBed.createComponent(componentType);
+            const fixture = testBed.createComponent(componentType);
             if (!fixture || !fixture.componentInstance) {
-                throw new Error('Component ' + (<any> componentType).name + ' can not be created.');
+                throw new Error('Component ' + (componentType as any).name + ' can not be created.');
             }
 
             Promise.resolve()

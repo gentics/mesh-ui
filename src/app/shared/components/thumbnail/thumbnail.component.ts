@@ -1,11 +1,10 @@
-import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { MeshNode, NodeFieldBinary } from '../../../common/models/node.model';
-import { Schema, SchemaField } from '../../../common/models/schema.model';
-import { isImageField, filenameExtension, queryString } from '../../../common/util/util';
-import { SchemaResponse, FieldSchemaFromServer } from '../../../common/models/server-models';
+import { filenameExtension, isImageField, queryString } from '../../../common/util/util';
+import { FieldSchemaFromServer, SchemaResponse } from '../../../common/models/server-models';
 
 /**
  * Thumbnail component for displaying node references or fields in a node.
@@ -51,17 +50,16 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnInit(): void {
-        let node$ = this.state.select(state => state.entities.node[this.nodeUuid])
+        const node$ = this.state.select(state => state.entities.node[this.nodeUuid])
             // Does not emit node if it was not found
             .filter(node => !!node);
-        let schema$ = node$.switchMap(node => this.state.select(state => state.entities.schema[node.schema.uuid]));
+        const schema$ = node$.switchMap(node => this.state.select(state => state.entities.schema[node.schema.uuid]));
 
         // Update binary properties when node or schema changes
         this.subscription = Observable.combineLatest(node$, schema$)
             .map(value => this.getBinaryProperties(value))
             .subscribe(binaryProperties => this.binaryProperties = binaryProperties);
 
-        console.log('init', this.width, this.height);
         this.setDisplaySize();
     }
 
@@ -110,7 +108,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
             .filter(field => this.binaryFilter(field))
             .forEach(field => {
                 // TODO Remove exclamation mark as soon as mesh typing is fixed
-                let nodeField: NodeFieldBinary = node.fields[field.name!] as NodeFieldBinary;
+                const nodeField: NodeFieldBinary = node.fields[field.name!] as NodeFieldBinary;
                 if (!firstBinaryField) {
                     firstBinaryField = nodeField;
                     firstBinaryFieldName = field.name;
@@ -151,7 +149,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
      * Creates an image URL from the node and the chosen field. Also uses Mesh Image API to resize the image.
      */
     private getImageUrl(node: MeshNode, fieldName: string): string {
-        let query = queryString({
+        const query = queryString({
             width: this.width,
             height: this.height
         });

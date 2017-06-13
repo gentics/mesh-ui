@@ -21,7 +21,7 @@ describe('api-methods helper functions', () => {
         });
 
         it('returns the return value of apiBase.get()', () => {
-            let emitted: any[] = [];
+            const emitted: any[] = [];
             testApi.getSomething({ a: 1, b: 'two', c: true })
                 .subscribe(v => { emitted.push(v); });
 
@@ -43,7 +43,7 @@ describe('api-methods helper functions', () => {
         });
 
         it('returns the return value of apiBase.post()', () => {
-            let emitted: any[] = [];
+            const emitted: any[] = [];
             testApi.postSomethingWithBody({ a: 1, b: 'two', c: true }, { body: 'as expected' })
                 .subscribe(v => { emitted.push(v); });
 
@@ -65,7 +65,7 @@ describe('api-methods helper functions', () => {
         });
 
         it('returns the return value of apiBase.post()', () => {
-            let emitted: any[] = [];
+            const emitted: any[] = [];
             testApi.postSomethingWithoutBody({ a: 1, b: 'two', c: true })
                 .subscribe(v => { emitted.push(v); });
 
@@ -87,7 +87,7 @@ describe('api-methods helper functions', () => {
         });
 
         it('returns the return value of apiBase.delete()', () => {
-            let emitted: any[] = [];
+            const emitted: any[] = [];
             testApi.deleteSomething({ a: 1, b: 'two', c: true })
                 .subscribe(v => { emitted.push(v); });
 
@@ -109,7 +109,7 @@ describe('api-methods helper functions', () => {
         });
 
         it('returns the return value of apiBase.patch()', () => {
-            let emitted: any[] = [];
+            const emitted: any[] = [];
             testApi.patchSomething({ id: 314 }, { someData: 'to update somewhere' })
                 .subscribe(v => { emitted.push(v); });
 
@@ -131,7 +131,7 @@ describe('api-methods helper functions', () => {
         });
 
         it('returns the return value of apiBase.put()', () => {
-            let emitted: any[] = [];
+            const emitted: any[] = [];
             testApi.putSomething({ id: 314 }, { someData: 'to be put somewhere' })
                 .subscribe(v => { emitted.push(v); });
 
@@ -145,7 +145,7 @@ describe('api-methods helper functions', () => {
 });
 
 class TestApi {
-    constructor (private apiBase: MockApiBase) { }
+    constructor(private apiBase: MockApiBase) { }
 
     getSomething = apiGet('/some-api-endpoint' as any);
     postSomethingWithoutBody = apiPostWithoutBody('/some-api-endpoint' as any);

@@ -21,7 +21,7 @@ export function isImageField(field: NodeFieldBinary): boolean {
  * Returns the extension of a filename.
  */
 export function filenameExtension(filename: string): string {
-    let index = filename.lastIndexOf('.');
+    const index = filename.lastIndexOf('.');
     if (index < 0) {
         return '';
     } else {
@@ -38,7 +38,7 @@ export function filenameExtension(filename: string): string {
  */
 export function queryString(obj: any): string {
     let qs = Object.keys(obj).reduce<string[]>((query, key) => {
-        let val = obj[key];
+        const val = obj[key];
         if (val !== undefined && val !== null) {
             query.push(`${key}=${val}`);
         }

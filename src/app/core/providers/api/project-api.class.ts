@@ -38,6 +38,9 @@ export class ProjectApi {
     /** Download the binary field with the given name. */
     downloadBinaryField = apiGet('/{project}/nodes/{nodeUuid}/binary/{fieldName}');
 
+    /** Returns a node. */
+    getNode = apiGet('/{project}/nodes/{nodeUuid}');
+
     /** Load all child nodes and return a paged list response. */
     getNodeChildren = apiGet('/{project}/nodes/{nodeUuid}/children');
 

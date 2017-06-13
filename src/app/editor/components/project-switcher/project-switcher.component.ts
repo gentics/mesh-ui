@@ -6,7 +6,7 @@ import { hashValues } from '../../../common/util/util';
 import { ProjectResponse } from '../../../common/models/server-models';
 import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
 
-type ProjectHash = { [uuid: string]: ProjectResponse };
+interface ProjectHash { [uuid: string]: ProjectResponse; }
 
 @Component({
     selector: 'project-switcher',

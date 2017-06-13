@@ -15,7 +15,7 @@ export class MockApiService extends ApiService {
         super(new MockApiBase());
         this.apiBase.setLanguageForServerMessages('en');
 
-        for (let key in this) {
+        for (const key in this) {
             if (typeof this[key] === 'function') {
                 spyOn(this, key).and.callThrough();
             }

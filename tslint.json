@@ -24,7 +24,9 @@
         "import-destructuring-spacing": true,
         "invoke-injectable": true,
         "no-empty": false,
-        "no-access-missing-member": true,
+        // TODO: re-enable this rule one this issue is resolved in Codelyzer v4
+        // https://github.com/mgechev/codelyzer/issues/190
+        "no-access-missing-member": false,
         "no-attribute-parameter-decorator": true,
         "no-forward-ref": true,
         "no-input-rename": true,
@@ -62,6 +64,7 @@
             "single",
             "avoid-escape"
         ],
+        "unified-signatures": false,
         "variable-name": [
             true,
             "allow-leading-underscore",

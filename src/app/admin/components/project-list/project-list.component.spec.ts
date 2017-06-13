@@ -17,7 +17,7 @@ import { CoreModule } from '../../../core/core.module';
 describe('ProjectListComponent', () => {
 
     let appState: TestApplicationState;
-    let mockModal = { fromComponent() { } };
+    const mockModal = { fromComponent() { } };
 
     beforeEach(async(() => {
         spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() { } }));
@@ -99,7 +99,7 @@ describe('ProjectListComponent', () => {
                     }
                 },
                 user: {
-                    'd8b043e818144e27b043e81814ae2713': {
+                    d8b043e818144e27b043e81814ae2713: {
                         uuid: 'd8b043e818144e27b043e81814ae2713',
                         creator: {
                             uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
@@ -388,7 +388,7 @@ describe('ProjectListComponent', () => {
                 entities: {
                     project: {
                         ...appState.now.entities.project,
-                        'test3': testProject('test3')
+                        test3: testProject('test3')
                     }
                 }
             });

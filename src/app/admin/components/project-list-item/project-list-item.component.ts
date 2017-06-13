@@ -39,8 +39,8 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
      * Only focuses on project input
      */
     edit(): void {
-        let element: HTMLElement = this.elementRef.nativeElement;
-        let input = element.querySelector('input');
+        const element: HTMLElement = this.elementRef.nativeElement;
+        const input = element.querySelector('input');
         if (input) {
             input.focus();
             input.setSelectionRange(0, input.value.length);

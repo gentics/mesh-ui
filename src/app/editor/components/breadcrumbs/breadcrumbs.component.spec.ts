@@ -317,7 +317,7 @@ describe('BreadcrumbsComponent:', () => {
 });
 
 function getBreadcrumbText(fixture: ComponentFixture<TestComponent>): string[] {
-    let gtxBreadcrumbs: MockGtxBreadcrumbsComponent = fixture.debugElement.query(By.directive(MockGtxBreadcrumbsComponent)).componentInstance;
+    const gtxBreadcrumbs: MockGtxBreadcrumbsComponent = fixture.debugElement.query(By.directive(MockGtxBreadcrumbsComponent)).componentInstance;
     return gtxBreadcrumbs.routerLinks.map(it => it.text);
 }
 

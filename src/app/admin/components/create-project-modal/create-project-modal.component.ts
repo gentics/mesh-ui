@@ -24,7 +24,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
                 private notification: Notification,
                 private schemaEffects: SchemaEffectsService) {
         this.schemas$ = state.select(state => state.entities.schema)
-            .map(hashValues)
+            .map(hashValues);
 
         this.name = new FormControl('', Validators.required);
         this.schema = new FormControl('', Validators.required);

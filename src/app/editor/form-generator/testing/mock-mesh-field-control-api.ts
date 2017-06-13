@@ -1,4 +1,4 @@
-///<reference types="jasmine"/>
+/// <reference types="jasmine"/>
 import { MeshFieldControlApi, SchemaFieldPath } from '../common/form-generator-models';
 import { SchemaField } from '../../../common/models/schema.model';
 import createSpy = jasmine.createSpy;

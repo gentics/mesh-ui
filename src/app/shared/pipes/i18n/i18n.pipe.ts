@@ -1,5 +1,5 @@
-import { Injectable, Pipe, ChangeDetectorRef, PipeTransform, OnDestroy } from '@angular/core';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { ChangeDetectorRef, Injectable, OnDestroy, Pipe, PipeTransform } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/Subscription';
 
 /**
@@ -71,8 +71,8 @@ export class I18nPipe implements PipeTransform, OnDestroy {
         }
 
         let result: string;
-        let token = `${value}:${this.simpleStringify(params)}`;
-        let memoized = I18nPipe.memoized[token];
+        const token = `${value}:${this.simpleStringify(params)}`;
+        const memoized = I18nPipe.memoized[token];
         if (memoized) {
             result = memoized;
         } else {
@@ -97,7 +97,7 @@ export class I18nPipe implements PipeTransform, OnDestroy {
      */
     private simpleStringify(params: { [key: string]: string }): string {
         let output = '';
-        for (let key in params) {
+        for (const key in params) {
             if (params.hasOwnProperty(key)) {
                 output += `${key}${params[key]}`;
             }

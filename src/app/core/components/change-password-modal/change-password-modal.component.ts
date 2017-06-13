@@ -44,7 +44,7 @@ export class ChangePasswordModalComponent implements IModalDialog {
      * Validator which checks that both passwords contain equal values.
      */
     areEqual(group: FormGroup): { mustBeEqual: boolean } | null {
-        let valid = group.get('password1')!.value === group.get('password2')!.value;
+        const valid = group.get('password1')!.value === group.get('password2')!.value;
         if (valid) {
             return null;
         } else {
@@ -53,7 +53,7 @@ export class ChangePasswordModalComponent implements IModalDialog {
     }
 
     changePassword(): void {
-        let user = this.state.now.auth.currentUser;
+        const user = this.state.now.auth.currentUser;
         if (this.form.valid) {
             if (!user) {
                 // TODO Happens when user logged out while in this dialog. Can this actually happen?

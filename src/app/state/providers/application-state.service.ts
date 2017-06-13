@@ -6,11 +6,11 @@ import { AppState } from '../models/app-state.model';
 import { AuthStateActions } from './auth-state-actions';
 import { UIStateActions } from './ui-state-actions';
 import { EditorStateActions } from './editor-state-actions';
-import { EntityState } from '../models/entity-state.model';
 import { EntityStateActions } from './entity-state-actions';
 import { AdminStateActions } from './admin-state-actions';
-import { AdminState } from '../models/admin-state.model';
 
+// TODO: re-enable this rule once immutablets has been updated
+/* tslint:disable interface-over-type-literal */
 type ActionBranches = {
     admin: AdminStateActions;
     auth: AuthStateActions;
@@ -18,6 +18,7 @@ type ActionBranches = {
     ui: UIStateActions;
     entity: EntityStateActions;
 };
+/* tslint:enable interface-over-type-literal */
 
 @Injectable()
 export class ApplicationStateService {

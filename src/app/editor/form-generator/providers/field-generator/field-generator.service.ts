@@ -1,16 +1,19 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
 import { SchemaField } from '../../../../common/models/schema.model';
-import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
+import { NodeFieldType } from '../../../../common/models/node.model';
 import {
-    FormWidthChangeCallback, GetNodeValueFunction, GetNodeValueReturnType, MeshFieldControlApi, NodeChangeCallback, SchemaFieldPath,
+    FormWidthChangeCallback,
+    GetNodeValueFunction,
+    GetNodeValueReturnType,
+    MeshFieldControlApi,
+    NodeChangeCallback,
+    SchemaFieldPath,
     ValueChangeCallback
 } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
 
-type OnChangeFunction = {
-    (path: SchemaFieldPath, value: NodeFieldType): void;
-};
+type OnChangeFunction = (path: SchemaFieldPath, value: NodeFieldType) => void;
 
 /**
  * This class is instantiated by the FieldGeneratorService, and is responsible for creating an instance of a SchemaFieldControl

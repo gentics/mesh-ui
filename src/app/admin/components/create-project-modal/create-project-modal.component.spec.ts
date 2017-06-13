@@ -266,7 +266,7 @@ describe('CreateProjectModal', () => {
                     }
                 },
                 user: {
-                    'd8b043e818144e27b043e81814ae2713': {
+                    d8b043e818144e27b043e81814ae2713: {
                         uuid: 'd8b043e818144e27b043e81814ae2713',
                         creator: {
                             uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
@@ -546,7 +546,7 @@ describe('CreateProjectModal', () => {
             fixture.componentInstance.schema.setValue(appState.now.entities.schema['832235ac0570435ea235ac0570b35e10']);
             fixture.detectChanges();
 
-            let warning = fixture.nativeElement.querySelector('.non-container-warning');
+            const warning = fixture.nativeElement.querySelector('.non-container-warning');
             expect(warning).toBeDefined();
         })
     );
@@ -575,7 +575,7 @@ function getSelectOptions(fixture: ComponentFixture<CreateProjectModalComponent>
 
 
 function triggerEvent(element: HTMLElement, eventName: string) {
-    let event = document.createEvent('Event');
+    const event = document.createEvent('Event');
     event.initEvent(eventName, true, true);
     element.dispatchEvent(event);
 }

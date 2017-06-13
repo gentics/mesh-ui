@@ -2,9 +2,9 @@ import { MeshControl, ROOT_NAME, ROOT_TYPE } from './mesh-control.class';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
-import createSpy = jasmine.createSpy;
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 import { MeshControlGroupService } from './mesh-control-group.service';
+import createSpy = jasmine.createSpy;
 
 describe('MeshControl class', () => {
 
@@ -124,7 +124,7 @@ describe('MeshControl class', () => {
         });
 
         it('invokes meshField.valueChange() when the object reference changes', () => {
-            let newValue = initialValue.slice(0);
+            const newValue = initialValue.slice(0);
             meshControl.checkValue(newValue);
             expect(meshField.valueChange).toHaveBeenCalledWith(newValue, initialValue);
         });

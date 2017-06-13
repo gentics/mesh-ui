@@ -1,8 +1,11 @@
-import { SchemaReference, ProjectReference } from './common.model';
-import { TagFamily } from './tag-family.model';
 import {
-    BaseProperties, NodeReference, TagReference,
-    SchemaReferenceWithVersion, MicroschemaReference
+    BaseProperties,
+    MicroschemaReference,
+    NodeReference,
+    ProjectReference,
+    SchemaReference,
+    SchemaReferenceWithVersion,
+    TagReference
 } from './common.model';
 
 export interface NodeChildrenInfo {
@@ -31,7 +34,7 @@ export type NodeFieldNumber = number;
 export type NodeFieldBoolean = boolean;
 export type NodeFieldDate = string;
 export type NodeFieldList<T extends ListableNodeFieldType> = T[];
-export type NodeFieldBinary = {
+export interface NodeFieldBinary {
     fileName: string;
     fileSize: number;
     mimeType: string;
@@ -39,15 +42,15 @@ export type NodeFieldBinary = {
     dominantColor?: string;
     height?: number;
     width?: number;
-};
-export type NodeFieldNode = {
+}
+export interface NodeFieldNode {
     uuid: string;
-};
-export type NodeFieldMicronode = {
+}
+export interface NodeFieldMicronode {
     uuid: string;
     microschema: MicroschemaReference;
     fields: { [fieldName: string]: MicronodeFieldType; };
-};
+}
 
 export type CommonNodeFieldType = NodeFieldString | NodeFieldHTML | NodeFieldNumber | NodeFieldBoolean | NodeFieldDate | NodeFieldNode;
 export type NodeFieldType = CommonNodeFieldType | NodeFieldBinary | NodeFieldMicronode | NodeFieldList<ListableNodeFieldType>;

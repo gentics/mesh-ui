@@ -1,6 +1,5 @@
-import { async, TestBed, ComponentFixture, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { URLSearchParams } from '@angular/http';
 
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -67,14 +66,14 @@ describe('Thumbnail', () => {
                         fields: {
                             name: 'Indian Empress Image',
                             image: {
-                                'fileName': 'yacht-indian-empress.jpg',
-                                'width': 1024,
-                                'height': 508,
-                                'sha512sum': '45d976266c7e702ad96b9e0c44f504b9957619dbc5436b9937f919a5b3' +
+                                fileName: 'yacht-indian-empress.jpg',
+                                width: 1024,
+                                height: 508,
+                                sha512sum: '45d976266c7e702ad96b9e0c44f504b9957619dbc5436b9937f919a5b3' +
                                 'c01b004e0a99e39d832b969a91d3bd2dda3e411c0374297fe3b3e8405f0fa468629e8b',
-                                'fileSize': 149527,
-                                'mimeType': 'image/jpg',
-                                'dominantColor': '#6683af'
+                                fileSize: 149527,
+                                mimeType: 'image/jpg',
+                                dominantColor: '#6683af'
                             }
                         },
                         breadcrumb: [{
@@ -136,11 +135,11 @@ describe('Thumbnail', () => {
                         fields: {
                             name: 'test',
                             binary: {
-                                'fileName': 'small.mp4',
-                                'sha512sum': '549c53a072a80adcf0ca8c620c0a25da0be964724e428ecb13dc64bee4f2b93e819' +
+                                fileName: 'small.mp4',
+                                sha512sum: '549c53a072a80adcf0ca8c620c0a25da0be964724e428ecb13dc64bee4f2b93e819' +
                                 'd829488b52e14ea6cbf0f956e3813ad90567eb3e7244c4d029b69d318d40a',
-                                'fileSize': 383631,
-                                'mimeType': 'video/mp4'
+                                fileSize: 383631,
+                                mimeType: 'video/mp4'
                             }
                         },
                         breadcrumb: [],
@@ -525,46 +524,46 @@ describe('Thumbnail', () => {
 
     it(`shows the image`,
         componentTest(() => TestComponent, fixture => {
-            let component: TestComponent = fixture.debugElement.componentInstance;
+            const component: TestComponent = fixture.debugElement.componentInstance;
             component.nodeUuid = '4d1cabf1382e41ea9cabf1382ef1ea7c';
             fixture.detectChanges();
 
-            let image = fixture.debugElement.query(By.css('img'));
+            const image = fixture.debugElement.query(By.css('img'));
             expect(image).toBeDefined();
         })
     );
 
     it(`does not use Mesh image API when no dimension parameters are given`,
         componentTest(() => TestComponent, fixture => {
-            let component: TestComponent = fixture.debugElement.componentInstance;
+            const component: TestComponent = fixture.debugElement.componentInstance;
             component.nodeUuid = '4d1cabf1382e41ea9cabf1382ef1ea7c';
             fixture.detectChanges();
 
-            let imageSrc = fixture.debugElement.query(By.css('img')).nativeElement.src;
+            const imageSrc = fixture.debugElement.query(By.css('img')).nativeElement.src;
             expect(endsWith(imageSrc, '/api/v1/demo/nodes/4d1cabf1382e41ea9cabf1382ef1ea7c/binary/image')).toBe(true, `invalid image src`);
         })
     );
 
     it(`uses Mesh image API when dimension parameters are given`,
         componentTest(() => TestComponent, fixture => {
-            let dimensions = {
+            const dimensions = {
                 width: 640,
                 height: 480
             };
-            let component: TestComponent = fixture.debugElement.componentInstance;
+            const component: TestComponent = fixture.debugElement.componentInstance;
             component.nodeUuid = '4d1cabf1382e41ea9cabf1382ef1ea7c';
             component.width = dimensions.width;
             component.height = dimensions.height;
             fixture.detectChanges();
 
-            let imageSrc = fixture.debugElement.query(By.css('img')).nativeElement.src;
+            const imageSrc = fixture.debugElement.query(By.css('img')).nativeElement.src;
             expect(hasQueryParameters(imageSrc, dimensions)).toBe(true, `Invalid query params in ${imageSrc}`);
         })
     );
 
     it(`displays nothing if uuid is invalid`,
         componentTest(() => TestComponent, fixture => {
-            let component: TestComponent = fixture.debugElement.componentInstance;
+            const component: TestComponent = fixture.debugElement.componentInstance;
             component.nodeUuid = 'invalid';
             fixture.detectChanges();
 
@@ -582,7 +581,7 @@ describe('Thumbnail', () => {
 
     it(`displays nothing if node has no binary field`,
         componentTest(() => TestComponent, fixture => {
-            let component: TestComponent = fixture.debugElement.componentInstance;
+            const component: TestComponent = fixture.debugElement.componentInstance;
             component.nodeUuid = '6adfe63bb9a34b8d9fe63bb9a30b8d8b';
             fixture.detectChanges();
 
@@ -592,7 +591,7 @@ describe('Thumbnail', () => {
 
     it(`displays nothing if schema has binary field but is undefined`,
         componentTest(() => TestComponent, fixture => {
-            let component: TestComponent = fixture.debugElement.componentInstance;
+            const component: TestComponent = fixture.debugElement.componentInstance;
             component.nodeUuid = 'd53197e5aa154e36b197e5aa155e367e';
             fixture.detectChanges();
 
@@ -602,7 +601,7 @@ describe('Thumbnail', () => {
 
     it(`displays nothing if field cannot be found`,
         componentTest(() => TestComponent, fixture => {
-            let component: TestComponent = fixture.debugElement.componentInstance;
+            const component: TestComponent = fixture.debugElement.componentInstance;
             component.nodeUuid = '4d1cabf1382e41ea9cabf1382ef1ea7c';
             component.fieldName = 'bogus';
             fixture.detectChanges();
@@ -614,11 +613,11 @@ describe('Thumbnail', () => {
     describe('file placeholder', () => {
         it(`is shown with file extension`,
             componentTest(() => TestComponent, fixture => {
-                let component: TestComponent = fixture.debugElement.componentInstance;
+                const component: TestComponent = fixture.debugElement.componentInstance;
                 component.nodeUuid = '9b41402a3925434d81402a3925e34d93';
                 fixture.detectChanges();
 
-                let thumbnail = getThumbnail(fixture);
+                const thumbnail = getThumbnail(fixture);
                 expect(thumbnail.children.length).toBe(1, thumbnail.nativeElement.innerHTML);
                 expect(thumbnail.nativeElement.querySelector('text').textContent).toBe('.mp4');
             })
@@ -626,12 +625,12 @@ describe('Thumbnail', () => {
 
         it(`has a default size of 128px wide if none is provided`,
             componentTest(() => TestComponent, fixture => {
-                let component: TestComponent = fixture.debugElement.componentInstance;
+                const component: TestComponent = fixture.debugElement.componentInstance;
                 component.nodeUuid = '9b41402a3925434d81402a3925e34d93';
                 fixture.detectChanges();
 
-                let thumbnail = getThumbnail(fixture);
-                let svgStyle = thumbnail.nativeElement.querySelector('svg').style;
+                const thumbnail = getThumbnail(fixture);
+                const svgStyle = thumbnail.nativeElement.querySelector('svg').style;
                 expect(svgStyle.width).toBe('128px');
                 expect(svgStyle.height).toBe('');
             })
@@ -639,13 +638,13 @@ describe('Thumbnail', () => {
 
         it(`has the provided size`,
             componentTest(() => TestComponent, fixture => {
-                let component: TestComponent = fixture.debugElement.componentInstance;
+                const component: TestComponent = fixture.debugElement.componentInstance;
                 component.nodeUuid = '9b41402a3925434d81402a3925e34d93';
                 component.height = 30;
                 fixture.detectChanges();
 
-                let thumbnail = getThumbnail(fixture);
-                let svgStyle = thumbnail.nativeElement.querySelector('svg').style;
+                const thumbnail = getThumbnail(fixture);
+                const svgStyle = thumbnail.nativeElement.querySelector('svg').style;
                 expect(svgStyle.width).toBe('');
                 expect(svgStyle.height).toBe('30px');
 
@@ -668,7 +667,7 @@ describe('Thumbnail', () => {
 });
 
 function hasQueryParameters(url: string, params: any): boolean {
-    let urlparams: URLSearchParams = new URLSearchParams(url.split('?')[1]);
+    const urlparams: URLSearchParams = new URLSearchParams(url.split('?')[1]);
 
     return Object.keys(params)
         .every(key => urlparams.get(key) === params[key].toString());

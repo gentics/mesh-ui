@@ -15,7 +15,7 @@ export function initializeMicronode(microschema: Microschema): NodeFieldMicronod
         fields: {}
     };
 
-    for (let field of microschema.fields) {
+    for (const field of microschema.fields) {
         micronode.fields[field.name] = initializeFieldValue(field);
     }
 

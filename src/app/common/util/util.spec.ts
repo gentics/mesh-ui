@@ -21,7 +21,7 @@ describe('Utility', () => {
 
     describe('query string', () => {
         it('returns the query string with ?', () => {
-            let query = {
+            const query = {
                 a: 1,
                 b: '2',
                 c: '3'
@@ -30,7 +30,7 @@ describe('Utility', () => {
         });
 
         it('returns an empty string if all entries are undefined or null', () => {
-            let query = {
+            const query = {
                 a: undefined,
                 b: null,
             };
@@ -38,7 +38,7 @@ describe('Utility', () => {
         });
 
         it('returns an empty string on empty object', () => {
-            let query = {
+            const query = {
             };
             expect(queryString(query)).toBe('');
         });

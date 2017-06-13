@@ -1,5 +1,4 @@
 import { Observable, Subscription } from 'rxjs';
-import { TrackedMethodCall } from 'immutablets';
 
 import { ApplicationStateService } from '../providers/application-state.service';
 import { AppState } from '../models/app-state.model';
@@ -78,7 +77,7 @@ export class TestApplicationState extends ApplicationStateService {
         selectors = selectors || this.trackedSubscriptions;
 
         const usedBranches: any = {};
-        for (let selectorFunction of selectors) {
+        for (const selectorFunction of selectors) {
             // Get name of first function argument from function body
             const source: string = Function.prototype.toString.call(selectorFunction);
             const parsed = source.match(/^function\s*[\(]*\(\s*([^,\)\s]+)[^\)]*\)\s*\{(.+)\}$/);
@@ -87,7 +86,7 @@ export class TestApplicationState extends ApplicationStateService {
             // Search for "state.something" in the function body
             const regex = new RegExp(`(?:^|[^.\[])${firstParam}\.([a-zA-Z0-9_$]+)`, 'g');
             const matches = functionBody.match(regex) || [];
-            for (let match of matches) {
+            for (const match of matches) {
                 const accessedProperty = match.split('.')[1];
                 usedBranches[accessedProperty] = true;
             }
@@ -104,12 +103,12 @@ export class TestApplicationState extends ApplicationStateService {
      * - "throw": Throw on method calls, unless they are explicitly set to a different value.
      */
     public trackAllActionCalls({ behavior }: { behavior: 'original' | 'stub' | 'throw' } = { behavior: 'stub' }): void {
-        for (let branchName of Object.keys(this.actions)) {
+        for (const branchName of Object.keys(this.actions)) {
             const actionBranch = (this.actions as any)[branchName];
             const prototype = Object.getPrototypeOf(actionBranch);
             const propNames = Object.keys(prototype);
 
-            for (let key of propNames) {
+            for (const key of propNames) {
                 if (typeof actionBranch[key] === 'function' && actionBranch[key] === prototype[key]) {
                     const originalMethod = actionBranch[key];
                     const self = this;
@@ -117,7 +116,7 @@ export class TestApplicationState extends ApplicationStateService {
 
                     // Overwrite the original action method with a jasmine spy and a custom function
                     actionBranch[key] = jasmine.createSpy(method).and.callFake(
-                        function (this: any, ...args: any[]): any {
+                        function(this: any, ...args: any[]): any {
                             self.trackedActionCalls = self.trackedActionCalls.concat({ method, args });
 
                             switch (behavior) {

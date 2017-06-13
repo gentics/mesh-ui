@@ -29,15 +29,15 @@ export class AdminBreadcrumbsComponent implements OnInit, OnDestroy {
                 let currentRoute: ActivatedRoute | null = this.route.root;
                 let routeDef: any[] = [];
                 do {
-                    let childRoutes = currentRoute.children;
+                    const childRoutes = currentRoute.children;
                     currentRoute = null;
                     childRoutes.forEach((route: ActivatedRoute) => {
                         if (route.outlet === PRIMARY_OUTLET) {
-                            let routeSnapshot = route.snapshot;
+                            const routeSnapshot = route.snapshot;
                             routeDef = routeDef.concat(routeSnapshot.url.map(segment => segment.path));
-                            let breadcrumb = route.routeConfig && route.routeConfig.data && route.routeConfig.data['breadcrumb'];
+                            const breadcrumb = route.routeConfig && route.routeConfig.data && route.routeConfig.data['breadcrumb'];
                             if (breadcrumb) {
-                                let text = typeof breadcrumb === 'function' ? breadcrumb(routeSnapshot.data, routeSnapshot.params) : breadcrumb;
+                                const text = typeof breadcrumb === 'function' ? breadcrumb(routeSnapshot.data, routeSnapshot.params) : breadcrumb;
                                 this.breadcrumbs.push({ text, route: routeDef });
                             }
                             currentRoute = route;

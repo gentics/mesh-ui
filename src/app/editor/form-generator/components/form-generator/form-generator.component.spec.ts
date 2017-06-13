@@ -94,7 +94,7 @@ describe('FormGeneratorComponent:', () => {
         });
 
         describe('getNodeFn', () => {
-            let getNodeFn: Function;
+            let getNodeFn: (arg?: any) => any;
             /*tslint:disable no-use-before-declare */
             const complexNode = Object.assign({}, mockNode, {
                 fields: {

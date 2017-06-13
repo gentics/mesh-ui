@@ -35,9 +35,9 @@ export class I18nService {
             return browserLanguage as any;
         }
 
-        if ((<any> navigator).languages) {
-            const languages: string[] = (<any> navigator).languages;
-            for (let lang of languages.map(l => l.split('-')[0])) {
+        if ((navigator as any).languages) {
+            const languages: string[] = (navigator as any).languages;
+            for (const lang of languages.map(l => l.split('-')[0])) {
                 if (UI_LANGUAGES.indexOf(lang) >= 0) {
                     return lang as any;
                 }

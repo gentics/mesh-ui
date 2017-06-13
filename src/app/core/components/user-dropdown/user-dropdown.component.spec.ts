@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { async, TestBed, ComponentFixture } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalService, OverlayHostService } from 'gentics-ui-core';
 
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -39,7 +38,7 @@ describe('UserDropdownComponent:', () => {
             },
             entities: {
                 user: {
-                    'd8b043e818144e27b043e81814ae2713': {
+                    d8b043e818144e27b043e81814ae2713: {
                         uuid: 'd8b043e818144e27b043e81814ae2713',
                         creator: {
                             uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
@@ -66,7 +65,7 @@ describe('UserDropdownComponent:', () => {
                             readPublished: true
                         }
                     },
-                    'b6f535db1751483ab535db1751e83afe': {
+                    b6f535db1751483ab535db1751e83afe: {
                         uuid: 'b6f535db1751483ab535db1751e83afe',
                         creator: {
                             uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
@@ -120,7 +119,7 @@ describe('UserDropdownComponent:', () => {
             appState.mockState({
                 entities: {
                     user: {
-                        'd8b043e818144e27b043e81814ae2713': {
+                        d8b043e818144e27b043e81814ae2713: {
                             uuid: 'd8b043e818144e27b043e81814ae2713',
                             creator: {
                                 uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'

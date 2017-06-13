@@ -61,9 +61,9 @@ export class MeshControlGroupService {
         if (propertyChanged) {
             const path = propertyChanged.slice();
             let value = values as any;
-            let pathToTarget: SchemaFieldPath = [];
+            const pathToTarget: SchemaFieldPath = [];
             do {
-                let nextKey = path.shift();
+                const nextKey = path.shift();
                 if (nextKey !== undefined) {
                     value = value[nextKey];
                     pathToTarget.push(nextKey);

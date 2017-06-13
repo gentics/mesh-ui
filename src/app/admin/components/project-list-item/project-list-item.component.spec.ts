@@ -276,7 +276,7 @@ describe('ProjectListItemComponent', () => {
                     }
                 },
                 user: {
-                    'd8b043e818144e27b043e81814ae2713': {
+                    d8b043e818144e27b043e81814ae2713: {
                         uuid: 'd8b043e818144e27b043e81814ae2713',
                         creator: {
                             uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
@@ -596,7 +596,7 @@ describe('ProjectListItemComponent', () => {
             fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
             fixture.detectChanges();
 
-            let input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
+            const input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
             input.value = 'abcdef';
             triggerEvent(input, 'input');
             fixture.detectChanges();
@@ -613,7 +613,7 @@ describe('ProjectListItemComponent', () => {
             fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
             fixture.detectChanges();
 
-            let input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
+            const input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
             triggerEvent(input, 'blur');
             fixture.detectChanges();
             // TODO maybe remove this if state and api is implemented and notification is not done in this component
@@ -624,14 +624,14 @@ describe('ProjectListItemComponent', () => {
 });
 
 function triggerEvent(element: HTMLElement, eventName: string) {
-    let event = document.createEvent('Event');
+    const event = document.createEvent('Event');
     event.initEvent(eventName, true, true);
     element.dispatchEvent(event);
 }
 
 function projectName(fixture: ComponentFixture<TestComponent>): string {
-    let input = fixture.nativeElement.querySelector('input');
-    let element: HTMLElement = fixture.nativeElement.querySelector('div.item-primary');
+    const input = fixture.nativeElement.querySelector('input');
+    const element: HTMLElement = fixture.nativeElement.querySelector('div.item-primary');
 
     if (input) {
         return input.value;
@@ -641,7 +641,7 @@ function projectName(fixture: ComponentFixture<TestComponent>): string {
 }
 
 function getButton(fixture: ComponentFixture<TestComponent>, iconName: string): HTMLElement {
-    let element: HTMLElement = fixture.nativeElement;
+    const element: HTMLElement = fixture.nativeElement;
     return Array.from(element.querySelectorAll('gtx-button'))
         .filter(it => it.textContent === iconName)[0] as HTMLElement;
 }

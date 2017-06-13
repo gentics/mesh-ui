@@ -248,7 +248,7 @@ describe('ApiBase', () => {
         it('requests with "multipart/form-data" when passed a FormData object', () => {
             let formData: FormData;
             try {
-                let file = new File([], 'test-file.txt', { type: 'text/plain' });
+                const file = new File([], 'test-file.txt', { type: 'text/plain' });
                 formData = new FormData();
                 formData.append('testfile', file);
             } catch (ex) {
@@ -265,7 +265,7 @@ describe('ApiBase', () => {
         it('requests with "multipart/form-data" when passed an object with "File" objects', () => {
             let body: any;
             try {
-                let file = new File([], 'test-file.txt', { type: 'text/plain' });
+                const file = new File([], 'test-file.txt', { type: 'text/plain' });
                 body = {
                     destination: 'xyz',
                     testfile: file

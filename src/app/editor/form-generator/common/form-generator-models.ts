@@ -19,7 +19,7 @@ export type FormWidthChangeCallback = (widthInPixels: number) => void;
 
 export type NodeChangeCallback = (path: SchemaFieldPath, value: any, node: MeshNode) => void;
 
-export type GetNodeValueReturnType = MeshNode | string | number | any[] | Object | undefined;
+export type GetNodeValueReturnType = MeshNode | string | number | any[] | object | undefined;
 export type GetNodeValueFunction = (path?: SchemaFieldPath) => GetNodeValueReturnType;
 
 export interface MeshFieldControlApi {

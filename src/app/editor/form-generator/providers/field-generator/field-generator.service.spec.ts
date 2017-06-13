@@ -226,8 +226,8 @@ class MockFieldComponent extends BaseFieldComponent {
         this.setWidth = createSpy('setWidth');
         this.setHeight = createSpy('setHeight');
         this.setValid = createSpy('setValid');
-    };
-    init(api: MeshFieldControlApi): void {};
+    }
+    init(api: MeshFieldControlApi): void {}
     valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void {}
 }
 
