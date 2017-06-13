@@ -68,6 +68,16 @@ export interface MeshFieldControlApi {
      */
     setHeight: (width: string) => void;
     /**
+     * When true, sets the `focus` class on the host component. Useful for simulating a focused
+     * input label in custom controls.
+     */
+    setFocus: (value: boolean) => void;
+    /**
+     * Takes a callback which will be invoked whenever the custom control's label is clicked.
+     * Intended to be used to focus the custom control.
+     */
+    onLabelClick: (callback: () => void) => void;
+    /**
      * Takes a callback function which will be invoked whenever the width of the form changes.
      */
     onFormWidthChange: (callback: FormWidthChangeCallback) => void;

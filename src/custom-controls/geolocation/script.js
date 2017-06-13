@@ -23,6 +23,22 @@ window.initMeshControl = function(api) {
         latitudeInput.value = value.fields && value.fields.latitude;
     });
 
+    api.onFormWidthChange(function() {
+        setHostDimensions(api);
+    });
+
+    api.onLabelClick(function() {
+        longitudeInput.focus();
+    })
+
+    window.addEventListener('focus', function() {
+        api.setFocus(true);
+    });
+
+    window.addEventListener('blur', function() {
+        api.setFocus(false);
+    });
+
     function initMap() {
         var mapOptions = {
             center: {

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { FieldGenerator, FieldGeneratorService } from './field-generator.service';
-import { BaseFieldComponent } from '../../components/base-field/base-field.component';
+import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../../components/base-field/base-field.component';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { SchemaField } from '../../../../common/models/schema.model';
@@ -142,6 +142,26 @@ describe('FieldGeneratorService', () => {
                 expect(result.instance.setHeight).toHaveBeenCalledWith('200px');
             });
 
+            it('api.setFocus() sets the isFocused property on the FieldComponent', () => {
+                const result = fieldGenerator.attachField(fieldConfig);
+                const api = result.instance.api;
+
+                api.setFocus(true);
+                expect(result.instance.isFocused).toBe(true);
+                api.setFocus(false);
+                expect(result.instance.isFocused).toBe(false);
+            });
+
+            it('api.onLabelClick() callback is invoked with valueChange()', () => {
+                const result = fieldGenerator.attachField(fieldConfig);
+                const api = result.instance.api;
+                const labelClickSpy = createSpy('onLabelClick');
+                api.onLabelClick(labelClickSpy);
+
+                result.instance.labelClick();
+                expect(labelClickSpy).toHaveBeenCalled();
+            });
+
             it('api.onValueChange() callback is invoked with valueChange()', () => {
                 const result = fieldGenerator.attachField(fieldConfig);
                 const api = result.instance.api;
@@ -173,6 +193,20 @@ describe('FieldGeneratorService', () => {
 
                 result.instance.formWidthChange(123);
                 expect(formWidthChangeSpy).toHaveBeenCalledWith(123);
+            });
+
+            it('instance.isCompact is set automatically when an onFormWidthChange callback is used', () => {
+                const result = fieldGenerator.attachField(fieldConfig);
+                const api = result.instance.api;
+                const smallWidth = SMALL_SCREEN_LIMIT - 1;
+                const largeWidth = SMALL_SCREEN_LIMIT + 1;
+                api.onFormWidthChange(() => {});
+
+                expect(result.instance.isCompact).toBe(false, 'initially false');
+                result.instance.formWidthChange(smallWidth);
+                expect(result.instance.isCompact).toBe(true, 'small width');
+                result.instance.formWidthChange(largeWidth);
+                expect(result.instance.isCompact).toBe(false, 'large width');
             });
 
             it('api.appendDefaultStyles() appends a <style> element to the parentElement', () => {

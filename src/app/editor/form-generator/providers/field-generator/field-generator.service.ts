@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Injectable, NgZone, Type, ViewContainerRef } from '@angular/core';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import {
@@ -10,7 +10,7 @@ import {
     SchemaFieldPath,
     ValueChangeCallback
 } from '../../common/form-generator-models';
-import { BaseFieldComponent } from '../../components/base-field/base-field.component';
+import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../../components/base-field/base-field.component';
 import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
 
 type OnChangeFunction = (path: SchemaFieldPath, value: NodeFieldType) => void;
@@ -70,8 +70,17 @@ export class FieldGenerator {
             setWidth(value: string): void {
                 instance.setWidth(value);
             },
+            setFocus(value: boolean): void {
+                instance.setFocus(value);
+            },
+            onLabelClick(cb: () => void): void {
+                instance.labelClick = cb.bind(instance);
+            },
             onFormWidthChange(cb: FormWidthChangeCallback): void {
-                instance.formWidthChange = cb.bind(instance);
+                instance.formWidthChange = (widthInPixels: number) => {
+                    instance.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;
+                    cb(widthInPixels);
+                };
             },
             appendDefaultStyles(parentElement: HTMLElement): void {
                 const defaultStyles = require('!raw-loader!sass-loader!./default-styles.scss');
@@ -92,10 +101,14 @@ export class FieldGenerator {
 export class FieldGeneratorService {
 
     constructor(private resolver: ComponentFactoryResolver,
-                private meshControlGroup: MeshControlGroupService) {}
+                private meshControlGroup: MeshControlGroupService,
+                private ngZone: NgZone) {}
 
     create(viewContainerRef: ViewContainerRef, onChange: OnChangeFunction): FieldGenerator {
+        const zoneAwareChangeFn = (path: SchemaFieldPath, value: NodeFieldType) => {
+            this.ngZone.run(() => onChange(path, value));
+        };
         const getNode = (path?: SchemaFieldPath) => this.meshControlGroup.getNodeValue(path);
-        return new FieldGenerator(this.resolver, viewContainerRef, onChange, getNode);
+        return new FieldGenerator(this.resolver, viewContainerRef, zoneAwareChangeFn, getNode);
     }
 }

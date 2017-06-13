@@ -17,7 +17,10 @@ export abstract class BaseFieldComponent  {
     readonly isMeshField = true;
 
     @HostBinding('class.compact')
-    protected isCompact = false;
+    isCompact = false;
+
+    @HostBinding('class.focus')
+    isFocused: boolean = false;
 
     /** This is set by the ListFieldComponent when creating new list items */
     @HostBinding('class.list-item')
@@ -73,15 +76,31 @@ export abstract class BaseFieldComponent  {
     /**
      * Sets the css width of the host component. Intended for use by custom controls.
      */
-    setWidth(value: string) {
+    setWidth(value: string): void {
         this.width = value;
     }
 
     /**
      * Sets the css height of the host component. Intended for use by custom controls.
      */
-    setHeight(value: string) {
+    setHeight(value: string): void {
         this.height = value;
+    }
+
+    /**
+     * Sets the focused class on the host component.
+     */
+    setFocus(value: boolean): void {
+        this.isFocused = value;
+    }
+
+    /**
+     * To be invoked when the label of custom controls is clicked, so that those controls
+     * may respond to the click (e.g. by focusing an input) via the api.onLabelClick() callback.
+     */
+    labelClick(): void {
+        // no-op, can be optionally implemented by subclasses. Primary use-case it to enable the
+        // `onLabelClick()` method of the MeshFieldControlApi.
     }
 
     /**

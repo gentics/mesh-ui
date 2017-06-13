@@ -16,7 +16,9 @@ export class MockMeshFieldControlApi implements MeshFieldControlApi {
     onNodeChange = createSpy('onNodeChange');
     setHeight = createSpy('setHeight');
     setWidth = createSpy('setWidth');
+    setFocus = createSpy('setFocus');
     setValid = createSpy('setValid');
+    onLabelClick = createSpy('onLabelClick');
     onFormWidthChange = createSpy('onFormWidthChange');
     appendDefaultStyles = createSpy('appendDefaultStyles');
 }

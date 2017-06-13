@@ -1,1 +1,6 @@
-<iframe #iframe></iframe>
+<label (click)="labelClick()">{{ api.field.label || api.field.name }}</label>
+<div class="iframe-container">
+    <iframe #iframe
+            [style.height]="iframeHeight"
+            [style.width]="iframeWidth"></iframe>
+</div>

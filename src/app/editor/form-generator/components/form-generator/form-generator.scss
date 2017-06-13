@@ -9,6 +9,10 @@
         margin-left: 20px;
         margin-right: 20px;
         width: $half-width;
+
+        label {
+            @include noselect;
+        }
     }
 
     // The first mesh-field should be bigger, since it can be considered the title of the node.

@@ -173,7 +173,7 @@ export const testSchema: any = {
             required: true,
             type: 'string',
             control: {
-               // use: 'slug',
+                use: 'slug',
                 config: {
                     target: ['name'],
                     extension: '.html'
@@ -192,7 +192,7 @@ export const testSchema: any = {
             required: false,
             type: 'number',
             control: {
-               // use: 'slider'
+               use: 'slider'
             }
         },
         {
@@ -201,7 +201,7 @@ export const testSchema: any = {
             required: false,
             type: 'boolean',
             control: {
-               // use: 'vue-checkbox'
+               use: 'vue-checkbox'
             }
         },
         {
@@ -246,7 +246,7 @@ export const testSchema: any = {
             type: 'micronode',
             allow: ['geolocation'],
             control: {
-               // use: 'geolocation'
+               use: 'geolocation'
             }
         },
         {

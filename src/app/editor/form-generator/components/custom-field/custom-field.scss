@@ -1,9 +1,42 @@
-:host {
+@import "variables";
+@import "../../common-styles";
+
+:host.mesh-field {
     margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    label {
+        @include label-style-full;
+        margin-top: 0;
+    }
+
+    &.focus, &.compact.focus {
+        label {
+            color: $gtx-color-primary;
+        }
+    }
+
+    &.compact {
+        flex-direction: column;
+        margin-top: 0;
+
+        label {
+            @include label-style-compact;
+            margin-bottom: 0;
+        }
+        .iframe-container {
+            width: $full-width;
+        }
+    }
 }
 
 iframe {
     border: none;
-    width: 100%;
+}
+
+.iframe-container {
     height: 100%;
+    width: $full-width-right;
 }

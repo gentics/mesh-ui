@@ -12,7 +12,12 @@
 </head>
 <body>
 <div id="app">
-    <ui-checkbox v-model="value" v-bind:label="label" v-bind:name="name" v-on:input="onChange" v-bind:id="id"></ui-checkbox>
+    <ui-checkbox v-model="value"
+                 v-bind:name="name"
+                 v-on:input="onChange"
+                 v-on:focus="onFocus"
+                 v-on:blur="onBlur"
+                 v-bind:id="id"></ui-checkbox>
     <small>(demo Vue.js component)</small>
 </div>
 
@@ -23,23 +28,30 @@
      */
     Vue.component('ui-checkbox', {
         template: '<div class="mesh-input"><input type="hidden" :name="name" :value="+value"> \
-                 <input type="checkbox" :checked="value" @change="$emit(\'input\', $event.target.checked)" class="hidden" :id="id"> \
-                 <label v-if="label" :for="id">{{label}}</label></div>',
-        props: ['name', 'label', 'value', 'id']
-    })
+                       <input type="checkbox" :checked="value" class="hidden" :id="id" \
+                       @change="$emit(\'input\', $event.target.checked)" \
+                       @focus="$emit(\'focus\')" \
+                       @blur="$emit(\'blur\')" > \
+                   </div>',
+        props: ['name', 'value', 'id']
+    });
 
     window.initMeshControl = (api) => {
         let value = api.getValue();
         const name = api.field.name;
-        const label = api.field.label || api.field.name;
         const id = Math.random().toString(36).substring(2);
         const data = {
             value,
             name,
-            label,
             id,
             onChange(value) {
                 api.setValue(value);
+            },
+            onFocus() {
+                api.setFocus(true);
+            },
+            onBlur() {
+                api.setFocus(false);
             }
         };
 
@@ -48,6 +60,11 @@
             data.value = val;
         });
         api.setHeight('70px');
+
+        api.onLabelClick(function() {
+            document.querySelector('input[type="checkbox"]').focus();
+            api.setValue(!data.value);
+        })
 
         new Vue({ el: '#app', data });
     };

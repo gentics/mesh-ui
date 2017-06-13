@@ -48,6 +48,7 @@ body {
 
 @mixin form-input {
     @include input-base;
+    margin-top: 0;
     border-width: 2px;
     color: rgba(0, 0, 0, 0.870588) !important;
     &:focus {

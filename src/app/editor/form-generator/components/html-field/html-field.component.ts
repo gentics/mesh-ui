@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostBinding, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as Quill from 'quill';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
@@ -16,8 +16,6 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     field: SchemaField;
     api: MeshFieldControlApi;
     value: NodeFieldType;
-    @HostBinding('class.focus')
-    focus: boolean = false;
     @ViewChild('editor')
     private editorRef: ElementRef;
     private editor: Quill.Quill;
@@ -67,14 +65,14 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     private focusHandler = () => {
-        this.focus = true;
+        this.api.setFocus(true);
         this.editor.focus();
         clearTimeout(this.blurTimer);
     }
 
     private blurHandler = () => {
         this.blurTimer = setTimeout(() => {
-            this.focus = false;
+            this.api.setFocus(false);
         }, 50);
     }
 
@@ -86,7 +84,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
 
     private onSelectionChangeHandler = range => {
         if (range !== null) {
-            this.focus = true;
+            this.api.setFocus(true);
         } else {
             this.blurHandler();
         }

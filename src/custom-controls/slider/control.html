@@ -8,7 +8,7 @@
 
 <div class="mesh-input">
     <input type="range" id="input">
-    <label><span id="label"></span>: <span id="value"></span><br></label>
+    <label><span id="value"></span><br></label>
 </div>
 <small>(demo plain js component)</small>
 
@@ -18,7 +18,6 @@
      * number field.
      */
     var input = document.querySelector('#input');
-    var label = document.querySelector('#label');
     var valueLabel = document.querySelector('#value');
 
     window.initMeshControl = function(api) {
@@ -26,7 +25,6 @@
         input.setAttribute('max', api.field.max || api.getValue() * 2);
         input.setAttribute('step', api.field.step || 1);
         input.value = api.getValue();
-        label.innerHTML = api.field.label || api.field.name;
         valueLabel.innerHTML = api.getValue().toString();
 
         api.appendDefaultStyles(document.querySelector('head'));
@@ -38,6 +36,18 @@
         api.onValueChange(function(value) {
             input.value = value;
             valueLabel.innerHTML = value.toString();
+        });
+
+        api.onLabelClick(function() {
+            input.focus();
+        })
+
+        input.addEventListener('focus', function() {
+            api.setFocus(true);
+        });
+
+        input.addEventListener('blur', function() {
+            api.setFocus(false);
         });
 
         setTimeout(function() {

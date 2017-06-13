@@ -8,7 +8,6 @@
 
 <div class="mesh-input">
     <input type="text" id="input">
-    <label id="label" for="input"></label>
 </div>
 <br>
 <small>(demo node-aware control)</small>
@@ -19,14 +18,12 @@
      * number field.
      */
     var input = document.querySelector('#input');
-    var label = document.querySelector('#label');
 
     window.initMeshControl = function(api) {
         var target = api.field.control.config.target;
         var ext = api.field.control.config.extension || '.html';
         var initVal = api.getValue() || api.getNodeValue(target);
         input.value = nameToSlug(initVal, ext);
-        label.innerHTML = api.field.label || api.field.name;
 
         api.appendDefaultStyles(document.querySelector('head'));
 
@@ -42,6 +39,18 @@
             if (path.join() === target.join()) {
                 input.value = nameToSlug(value, ext);
             }
+        });
+
+        api.onLabelClick(function() {
+            input.focus();
+        })
+
+        input.addEventListener('focus', function() {
+            api.setFocus(true);
+        });
+
+        input.addEventListener('blur', function() {
+            api.setFocus(false);
         });
 
         setTimeout(function() {
