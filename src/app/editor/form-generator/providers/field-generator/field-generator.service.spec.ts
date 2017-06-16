@@ -209,6 +209,19 @@ describe('FieldGeneratorService', () => {
                 expect(result.instance.isCompact).toBe(false, 'large width');
             });
 
+            it('original instace.formWidthChange() method is still called even when an onFormWidthChange callback is used', () => {
+                const result = fieldGenerator.attachField(fieldConfig);
+                const api = result.instance.api;
+                const originalFormWidthChangeSpy = createSpy('originalFormWidthChange');
+                const formWidthChangeSpy = createSpy('formWidthChange');
+                result.instance.formWidthChange = originalFormWidthChangeSpy;
+                api.onFormWidthChange(formWidthChangeSpy);
+
+                result.instance.formWidthChange(123);
+                expect(formWidthChangeSpy).toHaveBeenCalledWith(123);
+                expect(originalFormWidthChangeSpy).toHaveBeenCalledWith(123);
+            });
+
             it('api.appendDefaultStyles() appends a <style> element to the parentElement', () => {
                 const result = fieldGenerator.attachField(fieldConfig);
                 const api = result.instance.api;

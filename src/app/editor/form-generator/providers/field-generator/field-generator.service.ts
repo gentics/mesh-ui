@@ -77,8 +77,10 @@ export class FieldGenerator {
                 instance.labelClick = cb.bind(instance);
             },
             onFormWidthChange(cb: FormWidthChangeCallback): void {
+                const originalFormWidthChangeFn = instance.formWidthChange.bind(instance);
                 instance.formWidthChange = (widthInPixels: number) => {
                     instance.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;
+                    originalFormWidthChangeFn(widthInPixels);
                     cb(widthInPixels);
                 };
             },
