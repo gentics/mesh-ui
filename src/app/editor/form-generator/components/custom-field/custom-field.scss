@@ -2,14 +2,11 @@
 @import "../../common-styles";
 
 :host.mesh-field {
-    margin-top: 20px;
-    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
 
     label {
         @include label-style-full;
-        margin-top: 0;
     }
 
     &.focus, &.compact.focus {
@@ -27,6 +24,7 @@
             margin-bottom: 0;
         }
         .iframe-container {
+            margin-top: 0;
             width: $full-width;
         }
     }
@@ -38,5 +36,8 @@ iframe {
 
 .iframe-container {
     height: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
     width: $full-width-right;
+    transition: width 0.2s;
 }

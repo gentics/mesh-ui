@@ -13,6 +13,7 @@ $left-bar-width: 6px;
     margin-top: 26px;
     cursor: pointer;
     color: $gtx-color-dark-gray;
+    transition: margin 0.2s;
 }
 
 @mixin label-style-compact {
@@ -35,6 +36,7 @@ $left-bar-width: 6px;
         input[type="password"] {
             width: $half-width-right;
             background-color: white;
+            transition: width 0.2s;
         }
         label {
             @include label-style-full;

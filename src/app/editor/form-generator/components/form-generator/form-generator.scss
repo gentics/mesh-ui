@@ -9,6 +9,7 @@
         margin-left: 20px;
         margin-right: 20px;
         width: $half-width;
+        transition: width 0.2s;
 
         label {
             @include noselect;

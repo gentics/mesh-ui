@@ -13,6 +13,10 @@
         label {
             @include label-style-compact;
         }
+
+        .uuid-form {
+            width: $full-width;
+        }
     }
 }
 
@@ -24,4 +28,5 @@ label {
     width: $half-width-right;
     display: flex;
     align-items: center;
+    transition: width 0.2s;
 }

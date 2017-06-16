@@ -4,7 +4,7 @@
 :host.mesh-field {
     display: flex;
     justify-content: space-between;
-    margin: 20px 0 20px 20px;
+    margin: 0 20px;
 
     :host-context(micronode-field),
     &.compact {
@@ -15,12 +15,12 @@
             align-items: center;
             label {
                 @include label-style-compact;
-                margin-top: 0;
                 margin-bottom: 0;
                 margin-right: 10px;
             }
         }
         .list-container {
+            margin-top: 0;
             width: $full-width;
         }
     }
@@ -38,7 +38,6 @@
 
     label {
         @include label-style-full;
-        margin-top: 0;
     }
 
     .remove-area-wrapper {
@@ -105,8 +104,9 @@
 }
 
 .list-container {
+    margin: 20px 0;
     width: calc(#{$half-width-right} + #{$left-bar-width});
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, width 0.2s;
     will-change: opacity;
     &.updating {
         opacity: 0.2;

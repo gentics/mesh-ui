@@ -14,6 +14,7 @@ html-field.mesh-field {
     .editor-container {
         width: $full-width-right;
         margin-top: 20px;
+        transition: width 0.2s;
     }
 
     &.compact {

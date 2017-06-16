@@ -2,13 +2,11 @@
 @import "../../common-styles";
 
 :host.mesh-field {
-    margin-top: 20px;
     display: flex;
     justify-content: space-between;
 
     label {
         @include label-style-full;
-        margin-top: 0;
     }
 
     &.compact {
@@ -21,14 +19,16 @@
         }
         .binary-preview {
             width: $full-width;
+            margin-top: 0;
         }
     }
 }
 
-
-
 .binary-preview {
     width: $full-width-right;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    transition: width 0.2s;
 }
 
 .property-list {
