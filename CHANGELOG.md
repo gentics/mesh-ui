@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.6.6 (2017-06-20)
+* Replace version references with simple strings (fix for mesh update)
+
 ## Version 0.6.5 (2017-06-08)
 * Fix image upload when updating nodes
 
