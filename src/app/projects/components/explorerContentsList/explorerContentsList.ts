@@ -148,7 +148,7 @@ module meshAdminUi {
         }
 
         public isPublished(node: INode): boolean {
-            return node.version && node.version.number.substr(-2) === '.0';
+            return node.version && node.version.substr(-2) === '.0';
         }
 
         /**

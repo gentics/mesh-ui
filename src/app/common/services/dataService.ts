@@ -529,7 +529,7 @@ module meshAdminUi {
         private createNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             return this.meshPost(projectName + '/nodes', node, queryParams)
                 .then((newNode: INode) => {
-                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number, 'POST')
+                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version, 'POST')
                         .then(result => {
                             if (result === false) {
                                 // no uploads were required
@@ -539,7 +539,7 @@ module meshAdminUi {
                             }
                         })
                         .then(newNode => {
-                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number)
+                            return this.transformBinaryFields(projectName, node.fields, newNode.uuid, newNode.version)
                                 .then(() => newNode);
                         });
                 });
@@ -548,7 +548,7 @@ module meshAdminUi {
             return this.meshPost(projectName + '/nodes/' + node.uuid, node, queryParams)
                 .then(
                     (newNode: INode) => {
-                        return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number, 'POST')
+                        return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version, 'POST')
                             .then(result => {
                                 if (result === false) {
                                     // no uploads were required
@@ -558,7 +558,7 @@ module meshAdminUi {
                                 }
                             })
                             .then(newNode => {
-                                return this.transformBinaryFields(projectName, node.fields, newNode.uuid, newNode.version.number)
+                                return this.transformBinaryFields(projectName, node.fields, newNode.uuid, newNode.version)
                                     .then(() => newNode);
                             });
                     },
@@ -567,7 +567,7 @@ module meshAdminUi {
                             // a conflict occurred, so we will brute-force update the node by simply setting the version
                             // to the latest version and re-posting.
                             console.warn(`Version conflict detected, forcing update to this version`, err.data);
-                            node.version.number = err.data.properties.newVersion;
+                            node.version = err.data.properties.newVersion;
                             return this.updateNode(projectName, node, queryParams);
                         }
                     }

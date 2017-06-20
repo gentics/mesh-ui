@@ -5,7 +5,7 @@
         <div class="published-status">
             <span class="published" ng-if="vm.isPublished()"><span translate>PUBLISHED</span></span>
             <span class="draft" ng-if="!vm.isPublished()" ><span translate>DRAFT</span></span>
-            <span class="version">v{{ vm.node.version.number }}</span>
+            <span class="version">v{{ vm.node.version }}</span>
         </div>
         <div>
             <preview-selector node="vm.node"></preview-selector>

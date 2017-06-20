@@ -109,7 +109,7 @@ module meshAdminUi {
         }
 
         public isPublished(): boolean {
-            return this.node && this.node.version && this.node.version.number.substr(-2) === '.0';
+            return this.node && this.node.version && this.node.version.substr(-2) === '.0';
         }
 
         public readyToPublish(): boolean {

@@ -72,11 +72,6 @@ declare module meshAdminUi {
         };
     }
 
-    export interface IVersionInfo {
-        number: string;
-        uuid: string;
-    }
-
     export interface INode extends IMeshBaseProps{
         availableLanguages?: string[];
         childrenInfo?: {
@@ -96,7 +91,7 @@ declare module meshAdminUi {
         container?: boolean;
         parentNode?: IExtendedNodeReference;
         fields: INodeFields;
-        version?: IVersionInfo;
+        version?: string;
     }
 
     export interface IPublishedResponse {
@@ -105,7 +100,7 @@ declare module meshAdminUi {
                 publishDate: string;
                 published: boolean;
                 publisher: IReference;
-                version: IVersionInfo;
+                version: string;
             }
         }
     }
