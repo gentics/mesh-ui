@@ -682,7 +682,7 @@ module meshAdminUi {
             params.width = params.cropw * params.scale;
             params.height = params.croph * params.scale;
             params.language = lang;
-            params.version = { number: version };
+            params.version = version;
 
             return this.meshPost(projectName + `/nodes/${nodeUuid}/binaryTransform/${fieldName}`, params);
         }
