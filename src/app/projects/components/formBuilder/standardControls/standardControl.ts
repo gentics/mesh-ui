@@ -527,7 +527,7 @@ module meshAdminUi {
             } else if (type === 'list') {
                 defaultValue = [];
             } else if (type === 'node') {
-                defaultValue = {};
+                defaultValue = null;
             }
 
             return defaultValue;
