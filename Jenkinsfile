@@ -1,28 +1,33 @@
-properties([[$class: 'ParametersDefinitionProperty', parameterDefinitions: [[$class: 'BooleanParameterDefinition', name: 'release', defaultValue: false]]]])
-if (!Boolean.valueOf(release)) {
-	stage 'Release Build'
-	echo "Skipped"
+
+properties([
+	parameters([
+		booleanParam(name: 'release', defaultValue: false, description: "Whether to run the release steps.")
+	])
+])
+
+if (!Boolean.valueOf(params.release)) {
+	stage("Release Build") {
+		echo "Skipped"
+	}
 	
-	stage 'Build'
-	echo "Building " + env.BRANCH_NAME
-	node('mesh') {
-		def mvnHome = tool 'M3'
-		checkout scm
-		sh "${mvnHome}/bin/mvn -B clean test -Dmaven.test.failure.ignore"
-		step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
+	stage("Build") {
+		echo "Building " + env.BRANCH_NAME
+		node('jenkins-slave') {
+			checkout scm
+			try {
+				sh "mvn -B clean test -Dmaven.test.failure.ignore"
+			} finally {
+				step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
+			}
+		}
 	}
 } else {
-	node('mesh') {
-	    def mvnHome = tool 'M3'
-	    
-	    sh "rm -rf *"
-	    sh "rm -rf .git"
+	node('jenkins-slave') {
 	    checkout scm
-	    //checkout([$class: 'GitSCM', branches: [[name: '*/' + env.BRANCH_NAME]], extensions: [[$class: 'CleanCheckout'],[$class: 'LocalBranch', localBranch: env.BRANCH_NAME]]])
-
-	    stage 'Release Build'
-	    sshagent(['601b6ce9-37f7-439a-ac0b-8e368947d98d']) {
-	        sh "${mvnHome}/bin/mvn -B release:prepare release:perform -Dresume=false -DignoreSnapshots=true -Darguments=\"-DskipTests\""
-	    }
+	    stage("Release Build") {
+			sshagent(["git"]) {
+				sh "mvn -B release:prepare release:perform -Dresume=false -DignoreSnapshots=true -Darguments=\"-DskipTests\""
+			}
+		}
 	}
 }
