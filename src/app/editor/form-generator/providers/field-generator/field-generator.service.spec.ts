@@ -8,11 +8,17 @@ import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
+import { ApplicationStateService } from '../../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../../state/testing/test-application-state.mock';
+import { FieldErrorsComponent } from '../../components/field-errors/field-errors.component';
+import { CommonModule } from '@angular/common';
+import { provideMockI18n } from '../../../../../testing/configure-component-test';
 import createSpy = jasmine.createSpy;
 
 describe('FieldGeneratorService', () => {
     let fieldGeneratorService: FieldGeneratorService;
     let fixture: ComponentFixture<TestComponent>;
+    let state: TestApplicationState;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -20,7 +26,8 @@ describe('FieldGeneratorService', () => {
             providers: [
                 FieldGeneratorService,
                 ComponentFactoryResolver,
-                { provide: MeshControlGroupService, useClass: MockMeshControlGroupService }
+                { provide: MeshControlGroupService, useClass: MockMeshControlGroupService },
+                { provide: ApplicationStateService, useClass: TestApplicationState }
             ],
             declarations: [
                 TestComponent
@@ -28,6 +35,7 @@ describe('FieldGeneratorService', () => {
         });
 
         fieldGeneratorService = TestBed.get(FieldGeneratorService);
+        state = TestBed.get(ApplicationStateService);
         fixture = TestBed.createComponent(TestComponent);
         fixture.detectChanges();
     });
@@ -99,12 +107,12 @@ describe('FieldGeneratorService', () => {
                 expect(fixture.componentInstance.onChangeFn).toHaveBeenCalledWith(mockPath, 'foo');
             });
 
-            it('api.setValid() invokes the setValid function', () => {
+            it('api.setError() invokes the setError function', () => {
                 const result = fieldGenerator.attachField(fieldConfig);
                 const api = result.instance.api;
 
-                api.setValid(false);
-                expect(result.instance.setValid).toHaveBeenCalledWith(false);
+                api.setError('err', 'error');
+                expect(result.instance.setError).toHaveBeenCalledWith('err', 'error');
             });
 
             it('api.setValue() allows overriding of the path argument', () => {
@@ -235,6 +243,37 @@ describe('FieldGeneratorService', () => {
                 expect(styleElement instanceof HTMLStyleElement).toBe(true);
             });
 
+            it('api.uiLanguage has correct value', () => {
+                state.mockState({
+                    ui: {
+                        currentLanguage: 'de'
+                    }
+                });
+                const result = fieldGenerator.attachField(fieldConfig);
+                const api = result.instance.api;
+
+                expect(api.uiLanguage).toBe('de');
+            });
+
+            it('attaches an instance of FieldErrorsComponent adjacent to the field', () => {
+                fieldGenerator.attachField(fieldConfig);
+                const fieldComponent = fixture.debugElement.query(By.directive(MockFieldComponent));
+                const errorsComponent = fixture.debugElement.query(By.directive(FieldErrorsComponent));
+
+                expect(errorsComponent).toBeTruthy();
+                expect(errorsComponent.nativeElement.previousSibling).toBe(fieldComponent.nativeElement);
+            });
+
+            it('reflects field errors in the FieldErrorsComponent', () => {
+                const result = fieldGenerator.attachField(fieldConfig);
+                const errorsComponent = fixture.debugElement.query(By.directive(FieldErrorsComponent));
+                const fieldErrorsInstance: FieldErrorsComponent = errorsComponent.componentInstance;
+                expect(fieldErrorsInstance.errors).toEqual({});
+
+                result.instance.setError('ERR', 'test error');
+                expect(fieldErrorsInstance.errors).toEqual({ ERR: 'test error' });
+            });
+
         });
 
     });
@@ -272,17 +311,21 @@ class MockFieldComponent extends BaseFieldComponent {
         });
         this.setWidth = createSpy('setWidth');
         this.setHeight = createSpy('setHeight');
-        this.setValid = createSpy('setValid');
+        this.setError = createSpy('setError').and.callFake((...args: any[]) => {
+            // Array spread in args not supported currently - https://github.com/Microsoft/TypeScript/issues/4130
+            (super.setError as any)(...args);
+        });
     }
     init(api: MeshFieldControlApi): void {}
     valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void {}
 }
 
-@NgModule({
-    declarations: [MockFieldComponent],
-    entryComponents: [MockFieldComponent],
-    exports: [MockFieldComponent]
-})
+@NgModule(provideMockI18n({
+    imports: [CommonModule],
+    declarations: [MockFieldComponent, FieldErrorsComponent],
+    entryComponents: [MockFieldComponent, FieldErrorsComponent],
+    exports: [MockFieldComponent, FieldErrorsComponent]
+}))
 class TestModule {}
 
 class MockMeshControlGroupService {

@@ -3,6 +3,7 @@ import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
+import { ErrorCode, errorHashFor } from '../../common/form-errors';
 
 @Component({
     selector: 'number-field',
@@ -35,13 +36,15 @@ export class NumberFieldComponent extends BaseFieldComponent {
     private setValidity(value: any): void {
         const min = this.api.field.min;
         const max = this.api.field.max;
-        let isValid = !this.api.field.required || (typeof value === 'number' && !Number.isNaN(value));
-        if (min !== undefined && value < min) {
-            isValid = false;
-        }
-        if (max !== undefined && max < value) {
-            isValid = false;
-        }
-        this.api.setValid(isValid);
+        const requiredError = this.api.field.required && (typeof value !== 'number' || Number.isNaN(value));
+        const minError = (min !== undefined && value < min);
+        const maxError = (max !== undefined && max < value);
+
+        const errors = {
+            ...errorHashFor(ErrorCode.REQUIRED, requiredError),
+            ...errorHashFor(ErrorCode.MIN_VALUE, minError),
+            ...errorHashFor(ErrorCode.MAX_VALUE, maxError)
+        };
+        this.api.setError(errors);
     }
 }

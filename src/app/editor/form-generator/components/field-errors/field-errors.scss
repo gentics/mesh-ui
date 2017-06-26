@@ -1,0 +1,18 @@
+@import "variables";
+
+:host {
+    display: block;
+}
+
+:host-context(form-generator.compact) {
+    ul {
+        margin-left: 20px;
+        margin-bottom: 20px;
+    }
+}
+ul {
+    margin-top: -16px;
+    margin-bottom: 0;
+    margin-left: calc(20px + 18%);
+    color: $gtx-color-alert;
+}

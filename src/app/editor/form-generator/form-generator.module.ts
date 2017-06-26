@@ -17,12 +17,14 @@ import { NodeFieldComponent } from './components/node-field/node-field.component
 import { BinaryFieldComponent } from './components/binary-field/binary-field.component';
 import { CustomFieldComponent } from './components/custom-field/custom-field.component';
 import { SharedModule } from '../../shared/shared.module';
+import { FieldErrorsComponent } from './components/field-errors/field-errors.component';
 
 const ENTRY_COMPONENTS = [
     BinaryFieldComponent,
     BooleanFieldComponent,
     CustomFieldComponent,
     DateFieldComponent,
+    FieldErrorsComponent,
     HtmlFieldComponent,
     ListFieldComponent,
     MicronodeFieldComponent,

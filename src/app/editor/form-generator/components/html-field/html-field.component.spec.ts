@@ -1,8 +1,9 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { HtmlFieldComponent } from './html-field.component';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
+import { ErrorCode, errorHashFor } from '../../common/form-errors';
 import createSpy = jasmine.createSpy;
 
 describe('HtmlFieldComponent:', () => {
@@ -57,10 +58,10 @@ describe('HtmlFieldComponent:', () => {
             api.field.required = true;
             instance.init(api);
             fixture.detectChanges();
-            expect(api.setValid).toHaveBeenCalledWith(false);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED));
 
             insertText(fixture, 0, 'foo');
-            expect(api.setValid).toHaveBeenCalledWith(true);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
         });
 
         it('correctly sets validity when required == true with empty <p> tag', () => {
@@ -68,20 +69,20 @@ describe('HtmlFieldComponent:', () => {
             api.getValue = createSpy('getValue').and.returnValue('initial');
             instance.init(api);
             fixture.detectChanges();
-            expect(api.setValid).toHaveBeenCalledWith(true);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
 
             clearText(fixture);
-            expect(api.setValid).toHaveBeenCalledWith(false);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED));
         });
 
         it('correctly sets validity when required == false', () => {
             api.field.required = false;
             instance.init(api);
             fixture.detectChanges();
-            expect(api.setValid).toHaveBeenCalledWith(true);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
 
             insertText(fixture, 0, 'foo');
-            expect(api.setValid).toHaveBeenCalledWith(true);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
         });
     });
 });

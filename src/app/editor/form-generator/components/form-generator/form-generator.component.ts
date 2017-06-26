@@ -3,6 +3,7 @@ import {
     Component,
     ComponentRef,
     ElementRef,
+    HostBinding,
     HostListener,
     Input,
     OnChanges,
@@ -19,7 +20,7 @@ import { FieldGenerator, FieldGeneratorService } from '../../providers/field-gen
 import { getControlType } from '../../common/get-control-type';
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { SchemaFieldPath } from '../../common/form-generator-models';
-import { BaseFieldComponent } from '../base-field/base-field.component';
+import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -34,6 +35,9 @@ import { Subscription } from 'rxjs/Subscription';
 export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestroy {
     @Input() schema: Schema;
     @Input() node: MeshNode;
+
+    @HostBinding('class.compact')
+    isCompact: boolean = false;
 
     /**
      * True if all form controls are valid.
@@ -83,6 +87,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
             .map(() => this.formContainer.nativeElement.offsetWidth)
             .subscribe(widthInPixels => {
                 this.meshControlGroup.formWidthChanged(widthInPixels);
+                this.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;
             });
     }
 

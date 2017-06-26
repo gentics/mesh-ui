@@ -4,6 +4,7 @@ import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
+import { ErrorCode, errorHashFor } from '../../common/form-errors';
 
 @Component({
     selector: 'html-field',
@@ -96,6 +97,6 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     private setValidity(value: any): void {
         const quillEmptyValue = '<p><br></p>';
         const isValid = !this.api.field.required || (!!value && value !== quillEmptyValue);
-        this.api.setValid(isValid);
+        this.api.setError(errorHashFor(ErrorCode.REQUIRED, !isValid));
     }
 }

@@ -11,6 +11,15 @@
         width: $half-width;
         transition: width 0.2s;
 
+        &.invalid {
+            label {
+                color: $gtx-color-alert;
+            }
+            input {
+                border-color: $gtx-color-alert;
+            }
+        }
+
         label {
             @include noselect;
         }

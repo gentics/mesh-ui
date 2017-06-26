@@ -62,4 +62,17 @@ html-field.mesh-field {
             border-top-color: $gtx-color-light-gray;
         }
     }
+
+    &.invalid {
+        .ql-toolbar.ql-snow {
+            border-color: $gtx-color-alert;
+            border-bottom-color: $gtx-color-light-gray;
+        }
+        .ql-snow.ql-container {
+            border-color: $gtx-color-alert;
+            border-top-color: $gtx-color-light-gray;
+        }
+    }
+
+
 }

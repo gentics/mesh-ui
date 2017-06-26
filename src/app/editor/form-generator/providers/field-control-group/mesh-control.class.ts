@@ -1,5 +1,5 @@
 import { MeshNode, NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
-import { SchemaFieldPath } from '../../common/form-generator-models';
+import { MeshControlErrors, SchemaFieldPath } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 import { MeshControlGroupService } from './mesh-control-group.service';
@@ -42,6 +42,10 @@ export class MeshControl {
         const childrenValid = Array.from(this.children.values())
             .reduce((valid, control) => !valid ? false : control.isValid, true);
         return selfValid && childrenValid;
+    }
+
+    get errors(): MeshControlErrors {
+        return this.meshField.errors;
     }
 
     constructor();

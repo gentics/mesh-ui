@@ -2,6 +2,7 @@ import { ComponentFactoryResolver, ComponentRef, Injectable, NgZone, Type, ViewC
 import { SchemaField } from '../../../../common/models/schema.model';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import {
+    ErrorCodeHash,
     FormWidthChangeCallback,
     GetNodeValueFunction,
     GetNodeValueReturnType,
@@ -12,6 +13,8 @@ import {
 } from '../../common/form-generator-models';
 import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../../components/base-field/base-field.component';
 import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
+import { ApplicationStateService } from '../../../../state/providers/application-state.service';
+import { FieldErrorsComponent } from '../../components/field-errors/field-errors.component';
 
 type OnChangeFunction = (path: SchemaFieldPath, value: NodeFieldType) => void;
 
@@ -24,7 +27,8 @@ export class FieldGenerator {
     constructor(private resolver: ComponentFactoryResolver,
                 private viewContainerRef: ViewContainerRef,
                 private onChange: OnChangeFunction,
-                private getNodeFn: GetNodeValueFunction) {}
+                private getNodeFn: GetNodeValueFunction,
+                private state: ApplicationStateService) {}
 
     attachField<T extends BaseFieldComponent>(
         fieldConfig: {
@@ -37,12 +41,15 @@ export class FieldGenerator {
 
         const _viewContainerRef = fieldConfig.viewContainerRef || this.viewContainerRef;
         const factory = this.resolver.resolveComponentFactory(fieldConfig.fieldComponent);
+        const fieldErrorsFactory = this.resolver.resolveComponentFactory(FieldErrorsComponent);
         const componentRef = _viewContainerRef.createComponent(factory);
+        const errorsComponentRef = _viewContainerRef.createComponent(fieldErrorsFactory);
         const update = (path: SchemaFieldPath, val: NodeFieldType) => {
             this.onChange(path, val);
         };
         const getNodeValue = (path?: SchemaFieldPath) => this.getNodeFn(path);
         const instance = componentRef.instance;
+        errorsComponentRef.instance.errors = instance.errors;
         const meshControlFieldInstance: MeshFieldControlApi = {
             path: fieldConfig.path,
             field: fieldConfig.field,
@@ -52,8 +59,12 @@ export class FieldGenerator {
             setValue(value: any, pathOverride?: SchemaFieldPath): void {
                 update(pathOverride || fieldConfig.path, value);
             },
-            setValid(isValid: boolean): void {
-                instance.setValid(isValid);
+            setError(errorCodeOrHash: string | ErrorCodeHash, errorMessage?: string | false): void {
+                if (typeof errorCodeOrHash === 'string') {
+                    instance.setError(errorCodeOrHash, errorMessage!);
+                } else {
+                    instance.setError(errorCodeOrHash);
+                }
             },
             onValueChange(cb: ValueChangeCallback): void {
                 instance.valueChange = cb.bind(instance);
@@ -89,7 +100,8 @@ export class FieldGenerator {
                 const styleElement = document.createElement('style');
                 styleElement.innerText = defaultStyles;
                 parentElement.appendChild(styleElement);
-            }
+            },
+            uiLanguage: this.state.now.ui.currentLanguage
         };
         componentRef.instance.init(meshControlFieldInstance);
         return componentRef;
@@ -104,6 +116,7 @@ export class FieldGeneratorService {
 
     constructor(private resolver: ComponentFactoryResolver,
                 private meshControlGroup: MeshControlGroupService,
+                private state: ApplicationStateService,
                 private ngZone: NgZone) {}
 
     create(viewContainerRef: ViewContainerRef, onChange: OnChangeFunction): FieldGenerator {
@@ -111,6 +124,6 @@ export class FieldGeneratorService {
             this.ngZone.run(() => onChange(path, value));
         };
         const getNode = (path?: SchemaFieldPath) => this.meshControlGroup.getNodeValue(path);
-        return new FieldGenerator(this.resolver, viewContainerRef, zoneAwareChangeFn, getNode);
+        return new FieldGenerator(this.resolver, viewContainerRef, zoneAwareChangeFn, getNode, this.state);
     }
 }

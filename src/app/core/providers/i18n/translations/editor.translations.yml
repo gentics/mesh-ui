@@ -1,3 +1,12 @@
+error_max_value:
+    en: The value is greater than the maximum
+    de: Der Wert is größer als Maximum
+error_min_value:
+    en: The value is below the minimum
+    de: Der Wert is weniger als Minimum
+error_required:
+    en: This field is required
+    de: Dieses Felt is erforderlich
 remove_list_item_tooltip:
     en: Drop here to remove
     de: Zum Entfernen hier ablegen

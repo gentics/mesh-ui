@@ -491,7 +491,7 @@ describe('MeshControl class', () => {
                 type: 'string'
             };
             const mockMeshField = new MockMeshField();
-            mockMeshField.setValid(false);
+            mockMeshField.setError({ err: 'error' });
             const meshControl = new MeshControl(fieldDef, '', mockControlGroup, mockMeshField);
             expect(meshControl.isValid).toBe(false);
         });
@@ -530,7 +530,7 @@ describe('MeshControl class', () => {
                 type: 'string'
             };
             const mockChildField = new MockMeshField();
-            mockChildField.setValid(false);
+            mockChildField.setError({ err: 'error' });
             meshControl.addChild(pseudoField1, '', mockChildField);
             const pseudoField2: SchemaField = {
                 name: 'child2',
@@ -566,8 +566,31 @@ describe('MeshControl class', () => {
             listControl.addChild(stringField, 'okay', mockChildField);
 
             expect(meshControl.isValid).toBe(true);
-            mockChildField.setValid(false);
+            mockChildField.setError({ err: 'error' });
             expect(meshControl.isValid).toBe(false);
+        });
+    });
+
+    describe('errors', () => {
+
+        it('errors object is empty when there are no own validation errors', () => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'string'
+            };
+            const meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, new MockMeshField());
+            expect(meshControl.errors).toEqual({});
+        });
+
+        it('isValid == false when there is own validation error', () => {
+            const fieldDef: SchemaField = {
+                name: 'test',
+                type: 'string'
+            };
+            const mockMeshField = new MockMeshField();
+            mockMeshField.setError({ err: 'error' });
+            const meshControl = new MeshControl(fieldDef, '', mockControlGroup, mockMeshField);
+            expect(meshControl.errors).toEqual({ err: 'error' });
         });
     });
 

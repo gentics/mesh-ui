@@ -1,5 +1,6 @@
 import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
+import { UILanguage } from '../../../core/providers/i18n/i18n.service';
 
 /**
  * An object path to a value contained in a MeshNode's fields.
@@ -22,6 +23,13 @@ export type NodeChangeCallback = (path: SchemaFieldPath, value: any, node: MeshN
 export type GetNodeValueReturnType = MeshNode | string | number | any[] | object | undefined;
 export type GetNodeValueFunction = (path?: SchemaFieldPath) => GetNodeValueReturnType;
 
+export interface ErrorCodeHash { [errorCode: string]: string | false; }
+type SetErrorFunction = (errorCode: string | ErrorCodeHash, errorMessage?: string | false) => void;
+
+export interface MeshControlErrors {
+    [errorCode: string]: string;
+}
+
 export interface MeshFieldControlApi {
     /**
      * The object path to this field in the schema.
@@ -43,9 +51,9 @@ export interface MeshFieldControlApi {
      */
     setValue: (value: NodeFieldType, path?: SchemaFieldPath) => void;
     /**
-     * Sets the validity of the control.
+     * Sets the error state of the field.
      */
-    setValid: (isValid: boolean) => void;
+    setError: SetErrorFunction;
     /**
      * Takes a callback function which will be invoked whenever the field value or the value of a
      * descendant field changes.
@@ -86,4 +94,8 @@ export interface MeshFieldControlApi {
      * allow custom controls to fit the look and feel of the built-in controls.
      */
     appendDefaultStyles: (parentElement: HTMLElement) => void;
+    /**
+     * The current UI language.
+     */
+    uiLanguage: UILanguage | undefined;
 }

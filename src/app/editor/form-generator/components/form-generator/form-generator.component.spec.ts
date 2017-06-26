@@ -1,15 +1,21 @@
+import { NgModule, Type } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { GenticsUICoreModule } from 'gentics-ui-core';
+
 import { FormGeneratorComponent } from './form-generator.component';
 import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { MeshNode } from '../../../../common/models/node.model';
 import { Schema } from '../../../../common/models/schema.model';
-import { NgModule, Type } from '@angular/core';
 import { StringFieldComponent } from '../string-field/string-field.component';
 import { NumberFieldComponent } from '../number-field/number-field.component';
-import { FormsModule } from '@angular/forms';
-import { GenticsUICoreModule } from 'gentics-ui-core';
-import { By } from '@angular/platform-browser';
+import { ApplicationStateService } from '../../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../../state/testing/test-application-state.mock';
+import { FieldErrorsComponent } from '../field-errors/field-errors.component';
+import { provideMockI18n } from '../../../../../testing/configure-component-test';
+import { CommonModule } from '@angular/common';
 
 describe('FormGeneratorComponent:', () => {
 
@@ -17,19 +23,23 @@ describe('FormGeneratorComponent:', () => {
     let fixture: ComponentFixture<FormGeneratorComponent>;
     let meshControlGroup: MeshControlGroupService;
 
-    @NgModule({
-        imports: [GenticsUICoreModule, FormsModule],
-        declarations: [StringFieldComponent, NumberFieldComponent],
-        entryComponents: [StringFieldComponent, NumberFieldComponent],
+    @NgModule(provideMockI18n({
+        imports: [GenticsUICoreModule, FormsModule, CommonModule],
+        declarations: [StringFieldComponent, NumberFieldComponent, FieldErrorsComponent],
+        entryComponents: [StringFieldComponent, NumberFieldComponent, FieldErrorsComponent],
         exports: [StringFieldComponent, NumberFieldComponent]
-    })
+    }))
     class TestModule { }
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [TestModule],
             declarations: [FormGeneratorComponent],
-            providers: [FieldGeneratorService, MeshControlGroupService]
+            providers: [
+                FieldGeneratorService,
+                MeshControlGroupService,
+                { provide: ApplicationStateService, useClass: TestApplicationState }
+            ]
         });
         fixture = TestBed.createComponent(FormGeneratorComponent);
         instance = fixture.componentInstance;
@@ -81,6 +91,13 @@ describe('FormGeneratorComponent:', () => {
         expect(instance.isDirty).toBe(true);
         instance.setPristine();
         expect(instance.isDirty).toBe(false);
+    });
+
+    it('attaches a FieldErrorsComponent to each field', () => {
+        populateMockData(fixture);
+        const fieldErrorComponents = fixture.debugElement.queryAll(By.directive(FieldErrorsComponent));
+
+        expect(fieldErrorComponents.length).toBe(2);
     });
 
     describe('MeshControlGroupService interop', () => {

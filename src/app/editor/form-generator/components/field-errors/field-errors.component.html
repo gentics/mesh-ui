@@ -1,0 +1,5 @@
+<ul *ngIf="0 < errorMessages?.length">
+    <li *ngFor="let error of errorMessages">
+        {{ error | i18n }}
+    </li>
+</ul>

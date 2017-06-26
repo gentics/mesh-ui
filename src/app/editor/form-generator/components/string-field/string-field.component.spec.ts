@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { StringFieldComponent } from './string-field.component';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
+import { ErrorCode, errorHashFor } from '../../common/form-errors';
 import createSpy = jasmine.createSpy;
 
 describe('StringFieldComponent:', () => {
@@ -41,22 +42,31 @@ describe('StringFieldComponent:', () => {
             api.getValue = createSpy('getValue').and.returnValue('');
         });
 
-        it('correctly sets validity when required == true', () => {
+        it('correctly sets error when required == true', () => {
             api.field.required = true;
             instance.init(api);
-            expect(api.setValid).toHaveBeenCalledWith(false);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED));
 
             instance.onChange('foo');
-            expect(api.setValid).toHaveBeenCalledWith(true);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
         });
 
-        it('correctly sets validity when required == false', () => {
+        it('correctly sets error when required == false', () => {
             api.field.required = false;
             instance.init(api);
-            expect(api.setValid).toHaveBeenCalledWith(true);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
 
             instance.onChange('foo');
-            expect(api.setValid).toHaveBeenCalledWith(true);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+        });
+
+        it('correctly sets error when required == undefined', () => {
+            api.field.required = undefined;
+            instance.init(api);
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+
+            instance.onChange('foo');
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
         });
     });
 });

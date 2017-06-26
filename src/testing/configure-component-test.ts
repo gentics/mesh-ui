@@ -1,5 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { TestModuleMetadata, getTestBed } from '@angular/core/testing';
+import { NgModule, Pipe, PipeTransform } from '@angular/core';
+import { getTestBed, TestModuleMetadata } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
@@ -11,19 +11,26 @@ import { Observable } from 'rxjs';
  */
 export function configureComponentTest(config: TestModuleMetadata): void {
     const testBed = getTestBed();
+    testBed.configureTestingModule(provideMockI18n(config));
+}
+
+/**
+ * Adds mocked i18n pipe/service to the test module metadata and returns the new config.
+ */
+export function provideMockI18n(config: NgModule): NgModule {
     const defaultConfig: TestModuleMetadata = {
         imports: [],
         declarations: [MockI18nPipe],
         providers: [{ provide: TranslateService, useClass: MockTranslateService }]
     };
 
-    const mergedConfig: TestModuleMetadata = {
+    return {
         imports: mergeUnique(defaultConfig.imports, config.imports),
         declarations: mergeUnique(defaultConfig.declarations, config.declarations),
         providers: mergeUnique(defaultConfig.providers, config.providers),
-        schemas: mergeUnique(defaultConfig.schemas, config.schemas)
+        schemas: mergeUnique(defaultConfig.schemas, config.schemas),
+        entryComponents: config.entryComponents
     };
-    testBed.configureTestingModule(mergedConfig);
 }
 
 @Pipe({

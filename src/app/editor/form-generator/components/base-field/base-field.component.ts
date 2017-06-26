@@ -1,5 +1,5 @@
 import { Component, HostBinding } from '@angular/core';
-import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { MeshControlErrors, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 
 export const FIELD_FULL_WIDTH = '96%';
@@ -32,13 +32,21 @@ export abstract class BaseFieldComponent  {
     @HostBinding('style.height')
     height: string;
 
-    /**
-     * Returns true is the control is in a valid state.
-     */
+    /** Returns true is the control is in a valid state */
     get isValid(): boolean {
-        return this._isValid;
+        return Object.keys(this._errors).length === 0;
     }
-    private _isValid: boolean = true;
+
+    /** Returns true is the control is in an invalid state */
+    @HostBinding('class.invalid')
+    get isInvalid(): boolean {
+        return !this.isValid;
+    }
+
+    get errors(): MeshControlErrors {
+        return this._errors;
+    }
+    private _errors: MeshControlErrors = {};
 
     /**
      * Initializes the field, providing it with the api object which gives access to properties
@@ -104,9 +112,27 @@ export abstract class BaseFieldComponent  {
     }
 
     /**
-     * Set the validity state of the control.
+     * Sets an error on the current control. If the message is "false", this signifies that the given errorCode
+     * is no longer in the error state. Alternatively, a hash of { errorCode: message } can be passed in.
      */
-    setValid(value: boolean) {
-        this._isValid = value;
+    setError(errors: { [errorCode: string]: string | false });
+    setError(errorCode: string, errorMessage: string | false);
+    setError(errorsOrErrorCode: string | { [errorCode: string]: string | false }, errorMessage?: string | false) {
+        let errorHash: { [errorCode: string]: string | false };
+
+        if (typeof errorsOrErrorCode === 'string') {
+            errorHash = { [errorsOrErrorCode]: errorMessage! };
+        } else {
+            errorHash = errorsOrErrorCode;
+        }
+
+        Object.keys(errorHash).forEach(errorCode => {
+            const errorValue = errorHash[errorCode];
+            if (errorValue === false) {
+                delete this._errors[errorCode];
+            } else {
+                this._errors[errorCode] = errorValue.toString();
+            }
+        });
     }
 }
