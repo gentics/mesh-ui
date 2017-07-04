@@ -22,6 +22,15 @@
             "port": 9222,
             "sourceMaps": true,
             "webRoot": "${workspaceRoot}"
+        },
+        {
+            "name": "Attach to Chrome running Karma tests, with sourcemaps",
+            "type": "chrome",
+            "request": "attach",
+            "url": "http://localhost:9876/*",
+            "port": 9222,
+            "sourceMaps": true,
+            "webRoot": "${workspaceRoot}"
         }
     ]
 }
