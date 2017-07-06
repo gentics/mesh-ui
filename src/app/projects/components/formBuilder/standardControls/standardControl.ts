@@ -381,10 +381,10 @@ module meshAdminUi {
          * Returns true if the uuid or tempId of the two micronodes match.
          */
         private idsMatch(existingNode: IMicroschema, newNode: IMicroschema): boolean {
-            if (existingNode.uuid && newNode.uuid && existingNode.uuid === newNode.uuid) {
+            if (existingNode && newNode && existingNode.uuid && newNode.uuid && existingNode.uuid === newNode.uuid) {
                 return true;
             }
-            if (existingNode.tempId && newNode.tempId && existingNode.tempId === newNode.tempId) {
+            if (existingNode && newNode && existingNode.tempId && newNode.tempId && existingNode.tempId === newNode.tempId) {
                 return true;
             }
             return false;
@@ -401,7 +401,7 @@ module meshAdminUi {
             let schemaDef: any = {
                 type: type
             };
-            if (value.microschema) {
+            if (value && value.microschema) {
                 schemaDef.allow = [value.microschema.name];
             }
             let model = this.fieldModel.createChild(value, schemaDef, path);
@@ -414,7 +414,7 @@ module meshAdminUi {
          * object itself in order for sorting to work correctly.
          */
         public tracker(item: INodeFieldModel, $id: Function, $index: number): any {
-            return item.id;
+            return item && item.id;
         }
 
         /**
