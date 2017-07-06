@@ -1,5 +1,9 @@
 # MeshAdminUI Changelog
 
+## Version 0.6.7 (2017-07-06)
+* Fix adding node to node list
+* Change downloaded thumbnail width to 200
+
 ## Version 0.6.6 (2017-06-20)
 * Replace version references with simple strings (fix for mesh update)
 

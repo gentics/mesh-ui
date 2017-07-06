@@ -4,7 +4,9 @@
   "description": "Admin UI for Mesh",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "gulp watch",
+    "install": "npm install && bower install && tsd install",
+    "bump-version": "gulp bump-version"
   },
   "repository": {
     "type": "git",
