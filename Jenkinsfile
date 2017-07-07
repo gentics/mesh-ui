@@ -30,7 +30,7 @@ node('jenkins-slave') {
 				sh "npm run bump-version"
 				def buildVars = readJSON file: 'build-vars.json'
 				version = buildVars.VERSION
-				sh "mvn versions:set -DnewVersion=" + version
+				sh "mvn versions:set -DgenerateBackupPoms=false -DnewVersion=" + version
 			} else {
 				echo "Not setting version"
 			}
