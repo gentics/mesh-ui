@@ -10,34 +10,12 @@
 	<name>Mesh - Admin UI</name>
 	<description>Mesh Adminstation UI</description>
 
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<scm>
-		<connection>scm:git:git@github.com:gentics/mesh-ui.git</connection>
-		<developerConnection>scm:git:git@github.com:gentics/mesh-ui.git</developerConnection>
-		<url>https://github.com/gentics/mesh-ui</url>
-	  <tag>HEAD</tag>
-  </scm>
-
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<skip>true</skip>
-					<skipDeploy>true</skipDeploy>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.2</version>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -93,12 +71,12 @@
 		<repository>
 			<id>lan.releases</id>
 			<name>Gentics Releases Repository</name>
-			<url>http://artifactory.office/repository/lan.releases</url>
+			<url>https://repo.gentics.com/artifactory/lan.releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>lan.snapshots</id>
 			<name>Gentics Snapshots Repository</name>
-			<url>http://artifactory.office/repository/lan.snapshots.mesh</url>
+			<url>https://repo.gentics.com/artifactory/lan.snapshots.mesh</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>

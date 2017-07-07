@@ -1,4 +1,9 @@
-final def gitCommitTag = '[Jenkins | ' + env.JOB_BASE_NAME + ']';
+// The GIT repository for this pipeline lib is defined in the global Jenkins setting
+@Library('jenkins-pipeline-library')
+import com.gentics.*
+
+// Make the helpers aware of this jobs environment
+JobContext.set(this)
 
 properties([
 	parameters([
@@ -6,37 +11,41 @@ properties([
 	])
 ])
 
-if (!Boolean.valueOf(params.release)) {
-	stage("Release Build") {
-		echo "Skipped"
-	}
-	
-	stage("Build") {
-		echo "Building " + env.BRANCH_NAME
-		node('jenkins-slave') {
+final def gitCommitTag = '[Jenkins | ' + env.JOB_BASE_NAME + ']'
+def version = null
+
+node('jenkins-slave') {
+	sshagent(["git"]) {
+		stage("Checkout") {
 			checkout scm
+			echo "Building " + env.BRANCH_NAME
+		}
+
+		stage("Set version") {
+			if (params.release) {
+				sh "npm run bump-version"
+				def buildVars = readJSON file: 'build-vars.json'
+				version = buildVars.VERSION
+				sh "mvn versions:set -DnewVersion=" + version
+			} else {
+				echo "Not setting version"
+			}
+		}
+
+		stage("Build") {
 			try {
 				sh "npm run install"
-				sh "npm run test"
+				sh "npm run dist"
 			} finally {
 				step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
 			}
 		}
-	}
-} else {
-	node('jenkins-slave') {
-	    checkout scm
-	    stage("Release Build") {
-			sshagent(["git"]) {
-				sh "npm run bump-version"
-				def buildVars = readJSON file: 'build-vars.json'
-        		def version = buildVars.VERSION
-				sh "npm run install"
-				sh "npm run dist"
-				sh "mvn versions:set -DnewVersion=" + version
-				sh "mvn deploy"
+
+		stage("Deploy") {
+			if (params.release) {
 				GitHelper.addCommit('.', gitCommitTag + ' Release version ' + version)
 				GitHelper.addTag(version, 'Release version ' + version)
+				sh "mvn deploy"
 				GitHelper.pushTag(version)
 				GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
 			}
