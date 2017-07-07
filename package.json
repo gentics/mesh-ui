@@ -6,6 +6,8 @@
   "scripts": {
     "watch": "gulp watch",
     "install": "npm install && bower install && tsd install",
+    "dist": "gulp dist",
+    "test": "gulp karma-test",
     "bump-version": "gulp bump-version"
   },
   "repository": {

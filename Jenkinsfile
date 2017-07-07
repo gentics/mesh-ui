@@ -1,3 +1,4 @@
+final def gitCommitTag = '[Jenkins | ' + env.JOB_BASE_NAME + ']';
 
 properties([
 	parameters([
@@ -15,7 +16,8 @@ if (!Boolean.valueOf(params.release)) {
 		node('jenkins-slave') {
 			checkout scm
 			try {
-				sh "mvn -B clean test -Dmaven.test.failure.ignore"
+				sh "npm run install"
+				sh "npm run test"
 			} finally {
 				step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
 			}
@@ -26,7 +28,17 @@ if (!Boolean.valueOf(params.release)) {
 	    checkout scm
 	    stage("Release Build") {
 			sshagent(["git"]) {
-				sh "mvn -B release:prepare release:perform -Dresume=false -DignoreSnapshots=true -Darguments=\"-DskipTests\""
+				sh "npm run bump-version"
+				def buildVars = readJSON file: 'build-vars.json'
+        		def version = buildVars.VERSION
+				sh "npm run install"
+				sh "npm run dist"
+				sh "mvn versions:set -DnewVersion=" + version
+				sh "mvn deploy"
+				GitHelper.addCommit('.', gitCommitTag + ' Release version ' + version)
+				GitHelper.addTag(version, 'Release version ' + version)
+				GitHelper.pushTag(version)
+				GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
 			}
 		}
 	}
