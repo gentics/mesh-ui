@@ -34,7 +34,7 @@ node('jenkins-slave') {
 
 		stage("Build") {
 			try {
-				sh "npm run install"
+				sh "npm install"
 				sh "npm run dist"
 			} finally {
 				step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
