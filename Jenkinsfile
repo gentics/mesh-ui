@@ -21,6 +21,10 @@ node('jenkins-slave') {
 			echo "Building " + env.BRANCH_NAME
 		}
 
+		stage("Install dependencies") {
+			sh "npm install"
+		}
+
 		stage("Set version") {
 			if (params.release) {
 				sh "npm run bump-version"
@@ -34,7 +38,6 @@ node('jenkins-slave') {
 
 		stage("Build") {
 			try {
-				sh "npm install"
 				sh "npm run dist"
 			} finally {
 				step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
