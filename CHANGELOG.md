@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.7.1 (2017-07-07)
+* Synchronize version with maven
+
 ## Version 0.6.7 (2017-07-06)
 * Fix adding node to node list
 * Change downloaded thumbnail width to 200
