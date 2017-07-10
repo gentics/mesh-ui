@@ -121,7 +121,7 @@ describe('formBuilder Module', function() {
     });
 
     it('should generate a date type field', function() {
-        var timestamp = 1433336633;
+        var timeString = "2008-09-15T15:53:00Z";
         var schemaFields = [{
             "name": "date",
             "label": "Date Type",
@@ -129,11 +129,10 @@ describe('formBuilder Module', function() {
         }];
 
         var fields = {
-            "date": timestamp
+            "date": timeString
         };
-
         compileElement(fields, schemaFields);
-        expect(containingElement.querySelector('input[type="date"]').value).toEqual(getDateString(timestamp));
+        expect(containingElement.querySelector('input[type="date"]').value).toEqual("2008-09-15");
 
     });
 
@@ -304,20 +303,15 @@ describe('formBuilder Module', function() {
             });
 
             it('should create correct default for date', function() {
-                // divide by 10 to get around imprecision caused by getting Date.now() slightly after the method is called.
-                expect(Math.round(scopeListObject.fields.date / 10)).toEqual(Math.round(Date.now() / 10000));
+                var expectedDate = new Date(scopeListObject.fields.date).getDate();
+                var actualDate = new Date().getDate();
+                expect(expectedDate).toEqual(actualDate);
             });
         });
     });
 
 
 });
-
-// utilities
-function getDateString(timeStampInSeconds) {
-    var dateObject = new Date(timeStampInSeconds * 1000);
-    return pad(dateObject.getFullYear(), 4) + '-' + pad(dateObject.getMonth() + 1, 2) + '-' + pad(dateObject.getDay(), 2);
-}
 
 /**
  * http://stackoverflow.com/a/10073788/772859

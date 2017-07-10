@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.7.2 (in progress)
+* Date fields now work with ISO 8601 strings rather than unix timestamps
+
 ## Version 0.7.1 (2017-07-07)
 * Synchronize version with maven
 

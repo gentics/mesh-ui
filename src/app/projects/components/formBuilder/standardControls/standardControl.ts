@@ -46,7 +46,7 @@ module meshAdminUi {
 
     /**
      * Since the input[type="date"] directive requires a Date object, we need to convert the
-     * timestamp into a Date object and bind to that.
+     * ISO8601 string into a Date object and bind to that.
      */
     class DateController {
 
@@ -57,17 +57,16 @@ module meshAdminUi {
         public time = { h: null, m: null, s: null};
 
         constructor(private $scope: any, private $element: any) {
-
             // this flag prevents the update callback from firing as soon as the
             // control loads and performs a mutation of the value to a Date object.
             let initialDateConversionDone = false;
 
-            if (0 < this.fieldModel.value) {
-                this.valueMoment = moment.unix(this.fieldModel.value);
+            if (this.fieldModel.value) {
+                this.valueMoment = moment(this.fieldModel.value);
             } else {
                 // if the value is not yet set, default it to the current timestamp
                 this.valueMoment = moment();
-                this.fieldModel.update(this.valueMoment.unix());
+                this.fieldModel.update(this.valueMoment.toISOString());
             }
             this.value = this.valueMoment.toDate();
             this.setTimeFields(this.valueMoment);
@@ -76,7 +75,7 @@ module meshAdminUi {
                 if (newVal) {
                     if (initialDateConversionDone){
                         this.valueMoment = moment(newVal);
-                        this.fieldModel.update(this.valueMoment.unix());
+                        this.fieldModel.update(this.valueMoment.toISOString());
                         this.setTimeFields(this.valueMoment);
                     } else {
                         initialDateConversionDone = true;
@@ -521,7 +520,7 @@ module meshAdminUi {
             } else if (type === 'boolean') {
                 defaultValue = false;
             } else if (type === 'date') {
-                defaultValue = Math.floor(Date.now() / 1000);
+                defaultValue = new Date().toISOString();
             } else if (type === 'select') {
                 defaultValue = fieldModel.options[0] || "";
             } else if (type === 'list') {
