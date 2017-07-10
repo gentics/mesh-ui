@@ -220,6 +220,9 @@ module.exports = function (options) {
             port: METADATA.port,
             host: METADATA.host,
             historyApiFallback: true,
+            proxy: {
+                '/api': 'http://localhost:8080'
+            },
             watchOptions: {
                 aggregateTimeout: 300,
                 poll: 1000
