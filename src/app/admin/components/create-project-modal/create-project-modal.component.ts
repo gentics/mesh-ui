@@ -8,9 +8,10 @@ import { SchemaResponse } from '../../../common/models/server-models';
 import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 
 @Component({
+    selector: 'create-project-modal',
     templateUrl: './create-project-modal.component.html',
     styleUrls: ['./create-project-modal.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateProjectModalComponent implements IModalDialog, OnInit {
     schemas$: Observable<SchemaResponse[]>;
@@ -23,6 +24,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     constructor(state: ApplicationStateService,
                 private notification: Notification,
                 private schemaEffects: SchemaEffectsService) {
+
         this.schemas$ = state.select(state => state.entities.schema)
             .map(hashValues);
 

@@ -70,7 +70,7 @@ function mergeEntityStateBranch<B extends keyof EntityState>(oldBranch: EntitySt
             // const entity = mergeEntity(oldBranch[uuid], change);
             const entity = deepApplyWithReuse(oldBranch[uuid], change);
             if (entity !== oldBranch[uuid]) {
-                oldBranch[uuid] = entity;
+                newBranch[uuid] = entity;
                 anyEntityChanged = true;
             }
         }

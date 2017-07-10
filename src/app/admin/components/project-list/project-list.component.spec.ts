@@ -9,10 +9,10 @@ import { ProjectListComponent } from './project-list.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
-import { ProjectResponse } from '../../../common/models/server-models';
 import { SharedModule } from '../../../shared/shared.module';
 import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
 import { CoreModule } from '../../../core/core.module';
+import { Project } from '../../../common/models/project.model';
 
 describe('ProjectListComponent', () => {
 
@@ -411,7 +411,7 @@ function getListedProjectUuids(fixture: ComponentFixture<ProjectListComponent>):
         .map(it => it.componentInstance.projectUuid);
 }
 
-function testProject(name: string): ProjectResponse {
+function testProject(name: string): Project {
     return {
         uuid: name,
         creator: {

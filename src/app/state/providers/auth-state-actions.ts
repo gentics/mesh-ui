@@ -5,19 +5,21 @@ import { AppState } from '../models/app-state.model';
 import { AuthState } from '../models/auth-state.model';
 import { UserResponse } from '../../common/models/server-models';
 import { EntityState } from '../models/entity-state.model';
+import { mergeEntityState } from './entity-state-actions';
 
 
 @Injectable()
 @Immutable()
 export class AuthStateActions extends StateActionBranch<AppState> {
     @CloneDepth(1) private auth: AuthState;
-    @CloneDepth(2) private entities: EntityState;
+    @CloneDepth(0) private entities: EntityState;
 
     constructor() {
         super({
             uses: ['auth', 'entities'],
             initialState: {
                 auth: {
+                    changingPassword: false,
                     loggedIn: false,
                     loggingIn: false,
                     loggingOut: false,
@@ -27,16 +29,32 @@ export class AuthStateActions extends StateActionBranch<AppState> {
         });
     }
 
+    changePasswordStart() {
+        this.auth.changingPassword = true;
+    }
+
+    changePasswordSuccess() {
+        this.auth.changingPassword = false;
+    }
+
+    changePasswordError() {
+        this.auth.changingPassword = false;
+    }
+
     loginStart(): void {
         this.auth.loggingIn = true;
     }
 
     loginSuccess(user: UserResponse): void {
-        // TODO: Save user session date (if there is any to save)
+        // TODO: Save user session data (if there is any to save)
         this.auth.loggedIn = true;
         this.auth.loggingIn = false;
-        this.entities.user[user.uuid] = user;
         this.auth.currentUser = user.uuid;
+        this.entities = mergeEntityState(this.entities, {
+            user: {
+                [user.uuid]: user
+            }
+        });
     }
 
     loginError(): void {

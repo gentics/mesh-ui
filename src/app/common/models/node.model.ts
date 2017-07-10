@@ -1,3 +1,4 @@
+import { NodeResponse, FieldMapFromServer } from './server-models';
 import {
     BaseProperties,
     MicroschemaReference,
@@ -8,19 +9,13 @@ import {
     TagReference
 } from './common.model';
 
+/* tslint:disable:no-empty-interface */
+
 export interface NodeChildrenInfo {
     [schemaName: string]: {
         schemaUuid: string;
         count: number;
     };
-}
-
-export interface Breadcrumb {
-    uuid: string;
-    displayName: string;
-    path?: string;
-    projectName: string;
-    schema: SchemaReference;
 }
 
 export interface Version {
@@ -57,19 +52,9 @@ export type NodeFieldType = CommonNodeFieldType | NodeFieldBinary | NodeFieldMic
 export type ListableNodeFieldType = CommonNodeFieldType | NodeFieldBinary | NodeFieldMicronode;
 export type MicronodeFieldType = CommonNodeFieldType | NodeFieldBinary;
 
-export interface MeshNode extends BaseProperties {
-    availableLanguages: string[];
-    breadcrumb: Breadcrumb[];
-    childrenInfo: NodeChildrenInfo;
-    container: boolean;
-    displayField: string;
-    fields: { [fieldName: string]: NodeFieldType; };
-    language: string;
-    languagePaths?: { [language: string]: string};
-    parentNode: NodeReference;
-    path?: string;
-    project: ProjectReference;
-    schema: SchemaReferenceWithVersion;
-    tags: TagReference[];
-    version: Version;
+export interface MeshNode extends NodeResponse {
+    /** UUUIDs of child nodes. Added in the application. */
+    children?: string[];
 }
+
+export interface FieldMap extends FieldMapFromServer { }

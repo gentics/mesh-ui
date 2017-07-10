@@ -3,6 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { ApplicationStateService } from './state/providers/application-state.service';
+import { ApplicationStateDevtools } from './state/providers/application-state-devtools';
 
 @Component({
     selector: 'app',
@@ -15,6 +16,7 @@ export class AppComponent {
     adminMode$: Observable<boolean>;
 
     constructor(public state: ApplicationStateService,
+                devtools: ApplicationStateDevtools,
                 private router: Router) {
 
         this.loggedIn$ = state.select(state => state.auth.loggedIn);

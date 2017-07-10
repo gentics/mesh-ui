@@ -1,31 +1,36 @@
 <search-bar></search-bar>
-<gtx-contents-list-item>
-    <div class="item-primary">
-        Node 1
-    </div>
-    <div class="show-on-hover">
-        <gtx-button flat size="small" (click)="openNode()">
-            <icon left>edit</icon> Edit
-        </gtx-button>
-    </div>
-</gtx-contents-list-item>
-<gtx-contents-list-item>
-    <div class="item-primary">
-        Node 2
-    </div>
-    <div class="show-on-hover">
-        <gtx-button flat size="small" (click)="openNode()">
-            <icon left>edit</icon> Edit
-        </gtx-button>
-    </div>
-</gtx-contents-list-item>
-<gtx-contents-list-item>
-    <div class="item-primary">
-        Node 3
-    </div>
-    <div class="show-on-hover">
-        <gtx-button flat size="small" (click)="openNode()">
-            <icon left>edit</icon> Edit
-        </gtx-button>
-    </div>
-</gtx-contents-list-item>
+<ng-template ngFor let-schema [ngForOf]="schemas">
+    <gtx-contents-list-item class="group-header">
+        {{schema.name}}
+    </gtx-contents-list-item>
+    <gtx-contents-list-item *ngFor="let child of childrenBySchema[schema.uuid]">
+        <icon *ngIf="child.container">folder</icon>
+        <icon *ngIf="!child.container">insert_drive_file</icon>
+        <div class="item-primary">
+            <a href [routerLink]="routerLinkOf(child)">{{ child | displayField }}</a>
+        </div>
+        <div class="show-on-hover">
+            <gtx-button flat size="small" (click)="editNode(child)">
+                <icon left>edit</icon> Edit
+            </gtx-button>
+            <gtx-dropdown-list align="right">
+                <gtx-dropdown-trigger>
+                    <gtx-button icon type="secondary">
+                        <icon>more_vert</icon>
+                    </gtx-button>
+                </gtx-dropdown-trigger>
+                <gtx-dropdown-content>
+                    <gtx-dropdown-item (click)="copyNode(child)">
+                        <icon left>content_copy</icon> {{ 'list.copy' | i18n }}
+                    </gtx-dropdown-item>
+                    <gtx-dropdown-item (click)="moveNode(child)">
+                        <icon left>subdirectory_arrow_right</icon> {{ 'list.move' | i18n }}
+                    </gtx-dropdown-item>
+                    <gtx-dropdown-item (click)="deleteNode(child)" class="alert">
+                        <icon left>delete</icon> {{ 'list.delete' | i18n }}
+                    </gtx-dropdown-item>
+                </gtx-dropdown-content>
+            </gtx-dropdown-list>
+        </div>
+    </gtx-contents-list-item>
+</ng-template>

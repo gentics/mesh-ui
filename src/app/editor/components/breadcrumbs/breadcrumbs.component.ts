@@ -16,14 +16,10 @@ export class BreadcrumbsComponent {
 
     constructor(private state: ApplicationStateService,
                 private navigationService: NavigationService) {
-        this.routerLinks$ = state.select(state => state.editor.openNode)
-            .switchMap(node => {
-                if (node) {
-                    return state.select(state => state.entities.node[node.uuid]);
-                } else {
-                    return Observable.of(undefined);
-                }
-            })
+        this.routerLinks$ = state.select(state =>
+                state.list.currentNode &&
+                state.entities.node[state.list.currentNode] || undefined)
+            .filter(node => !!node)
             .map(node => this.toRouterLinks(node));
     }
 
@@ -38,7 +34,7 @@ export class BreadcrumbsComponent {
         const projectName = this.state.now.editor.openNode.projectName;
         return node.breadcrumb.map(ascendant => ({
             route: this.navigationService.list(projectName, ascendant.uuid).commands(),
-            text: ascendant.displayName
+            text: ascendant.displayName!
         }));
     }
 }

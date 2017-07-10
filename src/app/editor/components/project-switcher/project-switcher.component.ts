@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { hashValues } from '../../../common/util/util';
-import { ProjectResponse } from '../../../common/models/server-models';
-import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { Project } from '../../../common/models/project.model';
 
-interface ProjectHash { [uuid: string]: ProjectResponse; }
+interface ProjectHash {
+    [uuid: string]: Project;
+}
 
 @Component({
     selector: 'project-switcher',
@@ -15,18 +18,19 @@ interface ProjectHash { [uuid: string]: ProjectResponse; }
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectSwitcherComponent {
-    projects$: Observable<ProjectResponse[]>;
+    projects$: Observable<Project[]>;
     currentProjectName$: Observable<string>;
 
     constructor(private appState: ApplicationStateService,
                 private navigation: NavigationService,
-                private effects: ProjectEffectsService) {
+                private listEffects: ListEffectsService) {
+
         this.projects$ = this.appState.select(state => state.entities.project)
             .map(hashValues)
             .do(projects => {
                 // TODO Ask if this is ok or if there is a better way
                 if (projects.length === 0) {
-                    this.effects.loadProjects();
+                    this.listEffects.loadProjects();
                 }
             });
 
@@ -37,11 +41,15 @@ export class ProjectSwitcherComponent {
             .map(it => it.name);
     }
 
-    changeProject(project: ProjectResponse) {
+    changeProject(project: Project) {
         this.navigation.list(project.name, project.rootNode.uuid).navigate();
     }
 
-    private getProjectByName(projects: ProjectHash, projectName: string): ProjectResponse {
-        return hashValues(projects).filter(it => it.name === projectName)[0];
+    private getProjectByName(projects: ProjectHash, projectName: string): Project | undefined {
+        for (const key in projects) {
+            if (projects[key].name === projectName) {
+                return projects[key];
+            }
+        }
     }
 }

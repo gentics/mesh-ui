@@ -145,7 +145,11 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
 
     private onChange(path: SchemaFieldPath, value: any): void {
         this.updateAtPath(this.node.fields, path, value);
-        this.meshControlGroup.checkValue(this.node.fields, path);
+
+        // --- TODO: fix typings ---
+        this.meshControlGroup.checkValue(this.node.fields as any, path);
+        // --- TODO: fix typings ---
+
         this.meshControlGroup.nodeChanged(path, value, this.node);
         this._isDirty = true;
     }

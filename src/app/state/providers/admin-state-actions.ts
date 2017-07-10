@@ -8,49 +8,37 @@ import { ChangePasswordModalComponent } from '../../core/components/change-passw
 import { EntityState } from '../models/entity-state.model';
 import { ProjectResponse, SchemaResponse } from '../../common/models/server-models';
 import { uuidHash } from '../../common/util/util';
+import { mergeEntityState } from './entity-state-actions';
 
 @Injectable()
 @Immutable()
 export class AdminStateActions extends StateActionBranch<AppState> {
     @CloneDepth(1) private admin: AdminState;
-    @CloneDepth(2) private entities: EntityState;
+    @CloneDepth(0) private entities: EntityState;
 
     constructor() {
         super({
             uses: ['admin', 'entities'],
             initialState: {
                 admin: {
-                    changingPassword: false,
-                    projectsLoading: false,
                     schemasLoading: false
                 }
             }
         });
     }
 
-    changePasswordStart() {
-        this.admin.changingPassword = true;
-    }
-
-    changePasswordEnd() {
-        this.admin.changingPassword = false;
-    }
-
-    loadProjectsStart() {
-        this.admin.projectsLoading = true;
-    }
-
-    loadProjectsEnd(projects: ProjectResponse[]) {
-        this.entities.project = uuidHash(projects);
-        this.admin.projectsLoading = false;
-    }
-
     loadSchemasStart() {
         this.admin.schemasLoading = true;
     }
 
-    loadSchemasEnd(schemas: SchemaResponse[]) {
-        this.entities.schema = uuidHash(schemas);
+    loadSchemasSuccess(schemas: SchemaResponse[]) {
+        this.admin.schemasLoading = false;
+        this.entities = mergeEntityState(this.entities, {
+            schema: schemas
+        });
+    }
+
+    loadSchemasError() {
         this.admin.schemasLoading = false;
     }
 }

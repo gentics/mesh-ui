@@ -182,7 +182,7 @@ export class ApiBase {
             method,
             headers,
             body: bodyToUse,
-            withCredentials: true
+            withCredentials: false
         });
 
         // Perform the actual request using the Http service provided by Angular

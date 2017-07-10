@@ -1,22 +1,28 @@
 import { Injectable } from '@angular/core';
 import { ImmutableStateStore, TrackedMethodCall } from 'immutablets';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+import { AdminStateActions } from './admin-state-actions';
 import { AppState } from '../models/app-state.model';
 import { AuthStateActions } from './auth-state-actions';
-import { UIStateActions } from './ui-state-actions';
 import { EditorStateActions } from './editor-state-actions';
 import { EntityStateActions } from './entity-state-actions';
-import { AdminStateActions } from './admin-state-actions';
+import { ListStateActions } from './list-state-actions';
+import { UIStateActions } from './ui-state-actions';
+
 
 // TODO: re-enable this rule once immutablets has been updated
+// This needs to be a "type" vs "interface" becuase of limitations of mapped types.
 /* tslint:disable interface-over-type-literal */
 type ActionBranches = {
     admin: AdminStateActions;
     auth: AuthStateActions;
     editor: EditorStateActions;
-    ui: UIStateActions;
     entity: EntityStateActions;
+    list: ListStateActions;
+    ui: UIStateActions;
 };
 /* tslint:enable interface-over-type-literal */
 
@@ -41,6 +47,7 @@ export class ApplicationStateService {
             auth: new AuthStateActions(),
             entity: new EntityStateActions(),
             editor: new EditorStateActions(),
+            list: new ListStateActions(),
             ui: new UIStateActions()
         });
 

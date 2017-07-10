@@ -4,7 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { MeshNode, NodeFieldBinary } from '../../../common/models/node.model';
 import { filenameExtension, isImageField, queryString } from '../../../common/util/util';
-import { FieldSchemaFromServer, SchemaResponse } from '../../../common/models/server-models';
+import { Schema, SchemaField } from '../../../common/models/schema.model';
 
 /**
  * Thumbnail component for displaying node references or fields in a node.
@@ -95,7 +95,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
      * 2. If not, the first binary field that contains an image will be chosen.
      * 3. If there is no image, the first binary field will be chosen.
      */
-    private getBinaryProperties([node, schema]: [MeshNode, SchemaResponse]): BinaryProperties {
+    private getBinaryProperties([node, schema]: [MeshNode, Schema]): BinaryProperties {
         let firstBinaryField: NodeFieldBinary | undefined;
         let firstBinaryFieldName: string | undefined;
 
@@ -141,7 +141,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * Filters by component field name, or if it is not set, by binary fields.
      */
-    private binaryFilter(field: FieldSchemaFromServer): boolean {
+    private binaryFilter(field: SchemaField): boolean {
         return this.fieldName ? field.name === this.fieldName && field.type === 'binary' : field.type === 'binary';
     }
 

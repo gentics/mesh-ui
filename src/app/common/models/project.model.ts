@@ -1,6 +1,6 @@
-import { BaseProperties } from './common.model';
+import { BaseProperties, NodeReference } from './common.model';
 
 export interface Project extends BaseProperties {
     name: string;
-    rootNodeUuid: string;
+    rootNode: NodeReference;
 }

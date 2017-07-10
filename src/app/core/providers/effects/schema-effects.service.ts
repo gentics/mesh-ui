@@ -14,7 +14,7 @@ export class SchemaEffectsService {
         // TODO How to handle paging? Should all schemas be loaded?
         this.api.schema.getSchemas({})
             .subscribe(schemas => {
-                this.state.actions.admin.loadSchemasEnd(schemas.data);
+                this.state.actions.admin.loadSchemasSuccess(schemas.data);
             });
     }
 }

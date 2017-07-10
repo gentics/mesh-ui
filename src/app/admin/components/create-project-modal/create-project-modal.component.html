@@ -1,5 +1,3 @@
-
-
 <div class="modal-title">
     <h5>{{ 'modal.create_project_title' | i18n }}</h5>
 </div>
@@ -8,7 +6,7 @@
         <gtx-input label="Name" formControlName="name"></gtx-input>
 
         <!-- TODO Fix this select with async (schemas are not displayed). There is a test for that, but thats ignored for now -->
-        <gtx-select label="{{ 'modal.create_project_schema_label' | i18n }}" formControlName="schema">
+        <gtx-select formControlName="schema" label="{{ 'modal.create_project_schema_label' | i18n }}">
             <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option>
         </gtx-select>
 

@@ -1,0 +1,9 @@
+copy_button:
+    en: Copy
+    de: Kopieren
+move_button:
+    en: Move
+    de: Verschieben
+delete_button:
+    en: Delete
+    de: Löschen

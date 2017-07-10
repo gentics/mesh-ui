@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Observable } from 'rxjs/Observable';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { Project } from '../../../common/models/project.model';
 
 @Component({
     selector: 'master-detail',
@@ -22,7 +23,19 @@ export class MasterDetailComponent implements OnInit {
     ngOnInit(): void {
         // TODO: We need to determine a "default" project to load up on init, fetch it from the
         // API and navigate to its baseNode.
-        this.navigationService.list('demo', 'container_uuid').navigate();
+        // this.navigationService.list('demo', 'container_uuid').navigate();
+        this.state.select(state => state.auth.loggedIn)
+            .filter(Boolean)
+            .switchMap(() => this.state.select(state => {
+                const projects = state.entities.project;
+                const firstProjectUuid = Object.keys(projects)[0];
+                return firstProjectUuid && projects[firstProjectUuid];
+            }))
+            .filter(Boolean)
+            .take(1)
+            .subscribe((firstProject: Project) => {
+                this.navigationService.list(firstProject.name, firstProject.rootNode.uuid);
+            });
     }
 
     setSplitFocus(focus: 'left' | 'right'): void {

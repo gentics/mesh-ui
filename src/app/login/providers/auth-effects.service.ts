@@ -13,17 +13,15 @@ export class AuthEffectsService {
                 private notification: I18nNotification,
                 private router: Router) {}
 
-    /** Check if the user has an active authenticated session already */
-    validateSession(): void {
-        this.state.actions.auth.loginStart();
-
-        this.api.auth.getCurrentUser()
-            .subscribe(user => {
-                if (user.username === ANONYMOUS_USER_NAME) {
-                    this.state.actions.auth.loginError();
-                } else {
-                    this.state.actions.auth.loginSuccess(user);
-                }
+    changePassword(userUuid: string, password: string): Promise<void> {
+        this.state.actions.auth.changePasswordStart();
+        return this.api.admin.updateUser({ userUuid }, { password })
+            .toPromise()
+            .then(user => {
+                this.state.actions.auth.changePasswordSuccess();
+            }, error => {
+                // TODO Provide some error message or toast and add some generic error handler
+                this.state.actions.auth.changePasswordError();
             });
     }
 
@@ -76,4 +74,19 @@ export class AuthEffectsService {
                 }
             );
     }
+
+    /** Check if the user has an active authenticated session already */
+    validateSession(): void {
+        this.state.actions.auth.loginStart();
+
+        this.api.auth.getCurrentUser()
+            .subscribe(user => {
+                if (user.username === ANONYMOUS_USER_NAME) {
+                    this.state.actions.auth.loginError();
+                } else {
+                    this.state.actions.auth.loginSuccess(user);
+                }
+            });
+    }
+
 }

@@ -18,6 +18,31 @@ export function isImageField(field: NodeFieldBinary): boolean {
 }
 
 /**
+ * Checks if a value is not null or undefined.
+ * @example
+ *     appState.select(state => state.possiblyUndefinedValue)
+ *         .filter(notNullOrUndefined)
+ */
+export function notNullOrUndefined<T extends string | number | boolean | object>(input: T | null | undefined): input is T;
+export function notNullOrUndefined(input: boolean[]): input is boolean[];
+export function notNullOrUndefined(input: number[]): input is number[];
+export function notNullOrUndefined(input: string[]): input is string[];
+export function notNullOrUndefined(input: any): boolean {
+    return input != null;
+}
+
+/**
+ * Checks if all values of an array are equal (by reference).
+ * @example
+ *     appState.select(state => state.possiblyUndefinedValue)
+ *         .distinctUntilChanged(arrayContentsEqual)
+ */
+export function arrayContentsEqual<T>(a: T[], b: T[]): boolean {
+    return a === b || a && b && a.length === b.length && a.every((value, index) => b[index] === value);
+}
+
+
+/**
  * Returns the extension of a filename.
  */
 export function filenameExtension(filename: string): string {

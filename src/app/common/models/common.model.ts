@@ -1,3 +1,4 @@
+import { SchemaReferenceFromServer, NodeReferenceFromServer } from './server-models';
 export interface UserReference {
     firstName?: string;
     lastName?: string;
@@ -14,16 +15,16 @@ export interface ProjectReference {
     uuid: string;
 }
 
-export interface NodeReference {
-    uuid: string;
-    displayName?: string;
-    projectName: string;
-    schema: SchemaReference;
+export interface NodeReference extends NodeReferenceFromServer {
+    // uuid: string;
+    // displayName?: string;
+    // projectName: string;
+    // schema: SchemaReference;
 }
 
-export interface SchemaReference {
-    name: string;
-    uuid: string;
+export interface SchemaReference extends SchemaReferenceFromServer {
+    // name: string;
+    // uuid: string;
 }
 
 export interface MicroschemaReference {
@@ -62,5 +63,6 @@ export interface BaseProperties {
     edited: string;
     editor: UserReference;
     permissions: Permissions;
+    rolePerms?: Permissions;
     uuid: string;
 }

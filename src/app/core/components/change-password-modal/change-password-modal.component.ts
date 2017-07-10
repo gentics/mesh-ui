@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { UserEffectsService } from '../../providers/effects/user-effects.service';
+import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
 import { Observable } from 'rxjs';
 import { I18nService } from '../../providers/i18n/i18n.service';
 
@@ -20,7 +20,7 @@ export class ChangePasswordModalComponent implements IModalDialog {
 
     passwordChanging$: Observable<boolean>;
 
-    constructor(private effects: UserEffectsService,
+    constructor(private effects: AuthEffectsService,
                 private state: ApplicationStateService,
                 private notification: Notification,
                 private i18n: I18nService) {
@@ -37,7 +37,7 @@ export class ChangePasswordModalComponent implements IModalDialog {
             password2: this.password2
         }, this.areEqual);
 
-        this.passwordChanging$ = this.state.select(state => state.admin.changingPassword);
+        this.passwordChanging$ = this.state.select(state => state.auth.changingPassword);
     }
 
     /**

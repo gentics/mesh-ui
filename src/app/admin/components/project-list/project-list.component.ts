@@ -5,8 +5,8 @@ import { ModalService } from 'gentics-ui-core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { hashValues } from '../../../common/util/util';
-import { ProjectResponse } from '../../../common/models/server-models';
-import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
+import { Project } from '../../../common/models/project.model';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 
 @Component({
     templateUrl: './project-list.component.html',
@@ -14,18 +14,17 @@ import { ProjectEffectsService } from '../../../core/providers/effects/project-e
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectListComponent {
-    projects$: Observable<ProjectResponse[]>;
+    projects$: Observable<Project[]>;
     projectsLoading$: Observable<boolean>;
 
     constructor(private state: ApplicationStateService,
                 private modal: ModalService,
-                private effects: ProjectEffectsService) {
+                private listEffects: ListEffectsService) {
         this.projects$ = state.select(state => state.entities.project)
             .map(hashValues);
 
-        this.projectsLoading$ = state.select(state => state.admin.projectsLoading);
-
-        this.effects.loadProjects();
+        this.projectsLoading$ = state.select(state => state.list.loadCount > 0);
+        this.listEffects.loadProjects();
     }
 
     create(): void {

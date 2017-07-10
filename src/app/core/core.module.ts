@@ -14,11 +14,10 @@ import { I18nNotification } from './providers/i18n-notification/i18n-notificatio
 import { I18nService } from './providers/i18n/i18n.service';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 import { NavigationService } from './providers/navigation/navigation.service';
-import { ProjectEffectsService } from './providers/effects/project-effects.service';
+import { ListEffectsService } from './providers/effects/list-effects.service';
 import { SchemaEffectsService } from './providers/effects/schema-effects.service';
 import { SharedModule } from '../shared/shared.module';
 import { UserDropdownComponent } from './components/user-dropdown/user-dropdown.component';
-import { UserEffectsService } from './providers/effects/user-effects.service';
 
 // Application wide providers
 const CORE_PROVIDERS = [
@@ -28,8 +27,7 @@ const CORE_PROVIDERS = [
     I18nService,
     NavigationService,
     AuthEffectsService,
-    UserEffectsService,
-    ProjectEffectsService,
+    ListEffectsService,
     SchemaEffectsService,
     ApiService,
     ApiBase,
@@ -67,12 +65,10 @@ const CORE_ENTRY_COMPONENTS = [
     providers: CORE_PROVIDERS,
 })
 export class CoreModule {
-    /**
-     * Throw an exception if someone tries to import the CoreModule into any child module.
-     */
     constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
-      if (parentModule) {
-        throw new Error('CoreModule is already loaded. Import it in the AppModule only');
-      }
+        // Throw an exception if someone tries to import the CoreModule into any child module.
+        if (parentModule) {
+            throw new Error('CoreModule is already loaded. Import it in the AppModule only');
+        }
     }
 }

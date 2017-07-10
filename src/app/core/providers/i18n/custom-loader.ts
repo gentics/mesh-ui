@@ -2,12 +2,13 @@ import { TranslateLoader } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
 const translationFiles = [
-    'common',
-    'lang',
-    'auth',
-    'modal',
     'admin',
-    'editor'
+    'auth',
+    'common',
+    'editor',
+    'lang',
+    'list',
+    'modal',
 ].reduce((hash, name) => {
     hash[name] = require(`./translations/${name}.translations.yml`);
     return hash;
