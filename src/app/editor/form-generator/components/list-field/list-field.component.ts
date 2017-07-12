@@ -6,6 +6,7 @@ import {
     HostBinding,
     OnDestroy,
     OnInit,
+    Optional,
     QueryList,
     ViewChild,
     ViewChildren,
@@ -23,6 +24,7 @@ import { mockGetMicroschemaByName } from '../../common/mock-get-microschema';
 import { Observable, Subscription } from 'rxjs';
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, FIELD_HALF_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
+import { MicronodeFieldComponent } from '../micronode-field/micronode-field.component';
 
 function randomId(): string {
     return Math.random().toString(36).substring(5);
@@ -56,6 +58,9 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         put: true,
         revertClone: false
     };
+    get disableScrollTarget(): boolean {
+        return this.isCompact || !!this.micronodeField;
+    }
 
     private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
@@ -63,8 +68,12 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
                 private meshControlGroup: MeshControlGroupService,
-                private viewContainerRef: ViewContainerRef) {
+                private viewContainerRef: ViewContainerRef,
+                public elementRef: ElementRef,
+                @Optional() private micronodeField?: MicronodeFieldComponent
+    ) {
         super();
+
     }
 
     ngOnInit(): void {

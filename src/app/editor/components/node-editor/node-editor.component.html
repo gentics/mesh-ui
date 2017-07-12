@@ -15,7 +15,7 @@
         <gtx-button icon type="secondary" (click)="closeEditor()"><icon>close</icon></gtx-button>
     </div>
 </div>
-<div class="editor-body">
+<div class="editor-body" scrollFrame>
     <form-generator #formGenerator
                     [schema]="schema"
                     [node]="node"></form-generator>

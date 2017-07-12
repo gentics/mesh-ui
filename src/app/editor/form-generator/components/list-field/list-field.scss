@@ -10,7 +10,7 @@
     &.compact {
         flex-direction: column;
 
-        .label-container {
+        .label-container .floating-label {
             flex-direction: row;
             align-items: center;
             label {
@@ -63,8 +63,10 @@
 }
 
 .label-container {
-    display: flex;
-    flex-direction: column;
+    .floating-label {
+        display: flex;
+        flex-direction: column;
+    }
 
     label {
         @include label-style-full;
