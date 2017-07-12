@@ -2,26 +2,23 @@
     <label>{{ field.label || field.name }}</label>
 
     <div class="add-item-button">
-        <gtx-button *ngIf="field.listType !== 'micronode'"
-                    size="small"
-                    flat
-                    (click)="addItem()">
-            <icon left>add</icon>Add Item
-        </gtx-button>
-
-        <gtx-dropdown-list *ngIf="field.listType === 'micronode'">
-            <gtx-dropdown-trigger>
-                <gtx-button size="small" flat>
-                    <icon left>add</icon>Add Item <icon right>arrow_drop_down</icon>
-                </gtx-button>
-            </gtx-dropdown-trigger>
-            <gtx-dropdown-content>
-                <gtx-dropdown-item *ngFor="let schemaName of field.allow"
-                                   (click)="addItem(schemaName)">
-                    {{ schemaName }}
-                </gtx-dropdown-item>
-            </gtx-dropdown-content>
-        </gtx-dropdown-list>
+        <gtx-sortable-list [group]="{ name: groupId, pull: 'clone', put: false }">
+            <ng-template [ngIf]="field.listType === 'micronode'">
+                <gtx-sortable-item *ngFor="let schemaName of field.allow"
+                                   [attr.data-microschema-name]="schemaName">
+                    <div class="new-item">
+                        <icon>add</icon>{{ schemaName }}
+                        <gtx-drag-handle></gtx-drag-handle>
+                    </div>
+                </gtx-sortable-item>
+            </ng-template>
+            <gtx-sortable-item *ngIf="field.listType !== 'micronode'">
+                <div class="new-item">
+                    <icon>add</icon>{{ field.listType }}
+                    <gtx-drag-handle></gtx-drag-handle>
+                </div>
+            </gtx-sortable-item>
+        </gtx-sortable-list>
     </div>
 
     <div class="remove-area-wrapper"
@@ -46,6 +43,7 @@
      [style.height]="listHeight">
     <gtx-sortable-list #listContainer
                        (dragEnd)="dragEnd($event)"
+                       (addItem)="addNewElement($event)"
                        [onMove]="onMove"
                        [group]="mainGroup">
         <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">

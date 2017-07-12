@@ -52,8 +52,8 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     hoverRemoveArea: boolean = false;
     mainGroup: ISortableGroupOptions = {
         name: this.groupId,
-        pull: (e) => e.options.group.name === this.removeGroupId ? 'clone' : true,
-        put: false,
+        pull: e => e.options.group.name === this.removeGroupId ? 'clone' : true,
+        put: true,
         revertClone: false
     };
 
@@ -142,14 +142,21 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     deleteItem(e: ISortableEvent): void {
-        const spliced = this.value.slice(0);
-        spliced.splice(e.oldIndex, 1);
-        this.api.setValue(spliced);
+        const newValue = this.value.slice(0);
+        newValue.splice(e.oldIndex, 1);
+        this.api.setValue(newValue);
     }
 
-    addItem(microschemaName: string): void {
+    addNewElement(e: ISortableEvent): void {
+        const el = e.item as HTMLElement;
+        const microschemaName = el.dataset['microschemaName'];
+        this.addItem(microschemaName, e.newIndex);
+    }
+
+    addItem(microschemaName?: string, index?: number): void {
         let lookup: Observable<Microschema | undefined>;
-        if (microschemaName !== undefined) {
+        const insertIndex = typeof index === 'number' ? index : this.value.length;
+        if (typeof microschemaName === 'string') {
             lookup = mockGetMicroschemaByName(microschemaName);
         } else {
             lookup = Observable.of(undefined);
@@ -157,7 +164,9 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
         lookup.take(1).subscribe(result => {
             const newItem = initializeListValue(this.field, result);
-            this.api.setValue(this.value.concat(newItem));
+            const newValue = this.value.slice();
+            newValue.splice(insertIndex, 0, newItem);
+            this.api.setValue(newValue);
         });
     }
 

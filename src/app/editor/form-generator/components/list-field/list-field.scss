@@ -23,12 +23,42 @@
             margin-top: 0;
             width: $full-width;
         }
+        .new-item {
+            font-size: $gtx-font-size-small;
+            height: 24px;
+            icon {
+                font-size: 18px;
+            }
+        }
     }
 
     &.micronode-list:not(.compact) {
         .list-container {
             width: calc(#{$full-width-right} + #{$left-bar-width});
         }
+    }
+}
+
+.new-item {
+    display: flex;
+    align-items: center;
+    color: $gtx-color-dark-gray;
+    justify-content: space-between;
+    border: 1px solid $gtx-color-very-light-gray;
+    border-radius: 3px;
+    transition: height 0.2s;
+    > * {
+        padding: 0 5px;
+    }
+    icon {
+        color: $gtx-color-primary;
+    }
+    gtx-drag-handle {
+        color: $gtx-color-mid-gray;
+    }
+    .sortable-ghost & {
+        //padding: 0 3px;
+        height: inherit;
     }
 }
 
