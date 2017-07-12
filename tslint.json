@@ -29,7 +29,7 @@
         "no-access-missing-member": false,
         "no-attribute-parameter-decorator": true,
         "no-forward-ref": true,
-        "no-input-rename": true,
+        "no-input-rename": false,
         "no-output-rename": true,
         "only-arrow-functions": [
             true,
