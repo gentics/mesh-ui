@@ -18,6 +18,7 @@ import { BinaryFieldComponent } from './components/binary-field/binary-field.com
 import { CustomFieldComponent } from './components/custom-field/custom-field.component';
 import { SharedModule } from '../../shared/shared.module';
 import { FieldErrorsComponent } from './components/field-errors/field-errors.component';
+import { BaseFieldComponent } from './components/base-field/base-field.component';
 
 const ENTRY_COMPONENTS = [
     BinaryFieldComponent,
@@ -35,7 +36,7 @@ const ENTRY_COMPONENTS = [
 
 @NgModule({
     imports: [GenticsUICoreModule, CommonModule, FormsModule, SharedModule],
-    declarations: [FormGeneratorComponent, ...ENTRY_COMPONENTS],
+    declarations: [BaseFieldComponent, FormGeneratorComponent, ...ENTRY_COMPONENTS],
     entryComponents: ENTRY_COMPONENTS,
     providers: [FieldGeneratorService, MeshControlGroupService],
     exports: [FormGeneratorComponent]

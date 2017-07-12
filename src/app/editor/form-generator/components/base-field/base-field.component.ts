@@ -10,9 +10,10 @@ export const SMALL_SCREEN_LIMIT = 800;
  * This is the base class from which all of the built-in form controls inherit.
  */
 @Component({
-    selector: 'base-field'
+    selector: 'base-field',
+    template: ``
 })
-export abstract class BaseFieldComponent  {
+export class BaseFieldComponent  {
     @HostBinding('class.mesh-field')
     readonly isMeshField = true;
 
@@ -52,14 +53,18 @@ export abstract class BaseFieldComponent  {
      * Initializes the field, providing it with the api object which gives access to properties
      * necessary for rendering the field.
      */
-    abstract init(api: MeshFieldControlApi): void;
+    init(api: MeshFieldControlApi): void {
+        throw new Error('init method must be implemented.');
+    }
 
     /**
      * This method will be invoked whenever the field's value might have changed. "Might have" because it is
      * also invoked when a child field has changed, e.g. when a list item is changed, `valueChange()` is called
      * on the list item *and* the list.
      */
-    abstract valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void;
+    valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void {
+        throw new Error('valueChange method must be implemented.');
+    }
 
     /**
      * This method will be invoked whenever then value of another field in the node is changed.
