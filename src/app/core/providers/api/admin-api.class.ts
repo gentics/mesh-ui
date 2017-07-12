@@ -92,7 +92,7 @@ export class AdminApi {
     removeMicroschemaFromProject = apiDelete('/{project}/microschemas/{microschemaUuid}');
 
     /** Set the permissions between role and the targeted element. */
-    setRolePermissions = apiPost('/roles/{roleUuid}/permissions/{pathToElement}');
+    setRolePermissions = apiPost('/roles/{roleUuid}/permissions/{path}');
 
     /**
      * Invoke a graph database backup and dump the data to the configured backup

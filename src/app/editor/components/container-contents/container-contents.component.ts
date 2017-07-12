@@ -51,7 +51,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         const childNodes$ = this.state.select(state => state.list.currentNode)
                 .switchMap(containerUuid =>
                     this.state.select(state => {
-                        const node = state.entities.node[containerUuid];
+                        const node = state.entities.node[containerUuid!];
                         return node && node.children;
                     })
                     .map(childrenUuids => {
@@ -59,6 +59,13 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                         return childrenUuids && childrenUuids.map(uuid => nodes[uuid]);
                     })
         );
+
+        const onProjectLoadSchemas = this.state
+            .select(state => state.list.currentProject)
+            .filter<string>(notNullOrUndefined)
+            .subscribe(projectName => {
+                this.listEffects.loadSchemasForProject(projectName);
+            });
 
         this.subscription = routerParams$
             .subscribe(({ containerUuid, projectName }) => {

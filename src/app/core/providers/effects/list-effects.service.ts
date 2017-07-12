@@ -20,6 +20,14 @@ export class ListEffectsService {
             });
     }
 
+    loadSchemasForProject(project: string) {
+        this.state.actions.list.fetchSchemasStart(project);
+        this.api.project.getProjectSchemas({ project })
+            .subscribe(
+                ({data}) => this.state.actions.list.fetchSchemasSuccess(project, data),
+                error => this.state.actions.list.fetchSchemasError() /* TODO: error handling */);
+    }
+
     setActiveContainer(projectName: string, containerUuid: string) {
         // Update active container in state
         this.state.actions.list.setActiveContainer(projectName, containerUuid);

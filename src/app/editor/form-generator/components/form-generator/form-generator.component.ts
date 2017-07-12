@@ -23,6 +23,7 @@ import { SchemaFieldPath } from '../../common/form-generator-models';
 import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 
 /**
  * Generates a form based on a schema and populates with data from the node.
@@ -60,6 +61,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
     private _isDirty: boolean = false;
+    private formGenerated$ = new Subject<void>();
     private windowResize$ = new Subject<void>();
     private containerResizeSub: Subscription;
 
@@ -68,7 +70,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
                 @Optional() private splitViewContainer: SplitViewContainer) {}
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes['schema']) {
+        if (changes.schema || (changes.node && changes.node.previousValue && changes.node.currentValue.uuid !== changes.node.previousValue.uuid)) {
             this.generateForm();
         }
     }
@@ -80,8 +82,11 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         this.fieldGenerator = this.fieldGeneratorService.create(this.formRoot, updateFn);
         this.generateForm();
 
-        this.containerResizeSub = this.windowResize$
-            .merge(this.splitViewContainer && this.splitViewContainer.splitDragEnd || [])
+        this.containerResizeSub = Observable
+            .merge(
+                this.windowResize$,
+                this.formGenerated$,
+                this.splitViewContainer && this.splitViewContainer.splitDragEnd || [])
             .startWith(true)
             .debounceTime(500)
             .map(() => this.formContainer.nativeElement.offsetWidth)
@@ -133,6 +138,8 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
                     this.meshControlGroup.addControl(field, value, componentRef.instance);
                 }
             });
+
+            this.formGenerated$.next();
         }
     }
 

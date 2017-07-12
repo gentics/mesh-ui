@@ -11,6 +11,16 @@ export class EditorEffectsService {
     openNode(projectName: string, nodeUuid: string): void {
         // TODO: Make API call to get the node
         this.state.actions.editor.openNode(projectName, nodeUuid, 'en');
+
+        // Refresh the node
+        this.state.actions.list.fetchNodeStart(nodeUuid);
+        this.api.project.getProjectNode({ project: projectName, nodeUuid })
+            .subscribe(response => {
+                this.state.actions.list.fetchNodeSuccess(response);
+            }, error => {
+                this.state.actions.list.fetchChildrenError();
+                throw new Error('TODO: Error handling');
+            });
     }
 
     closeEditor(): void {

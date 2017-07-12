@@ -1,4 +1,4 @@
-// Auto-generated from the RAML for Version 0.9.11 of the Gentics Mesh REST API.
+// Auto-generated from the RAML for Version 0.9.19 of the Gentics Mesh REST API.
 
 export type Integer = number;
 
@@ -98,12 +98,11 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
@@ -124,18 +123,17 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "f816f50df067442896f50df067442896"
+                     * @example "d3047743ee0f4aa6847743ee0fcaa664"
                      */
                     groupUuid: string;
                 };
                 queryParams?: {
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
@@ -156,7 +154,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "f9a2361168894c0aa236116889fc0a62"
+                     * @example "265da54d364e44669da54d364e846628"
                      */
                     groupUuid: string;
                 };
@@ -172,12 +170,11 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
@@ -198,7 +195,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "b4f2b506cebc4779b2b506cebc4779ab"
+                     * @example "aa805c39c6ed45f4805c39c6edd5f449"
                      */
                     groupUuid: string;
                 };
@@ -241,7 +238,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "511e03ef420845ba9e03ef4208b5bae1"
+                     * @example "eb4630733e8d4b468630733e8ddb46ed"
                      */
                     microschemaUuid: string;
                 };
@@ -270,12 +267,11 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
@@ -296,18 +292,17 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "5d2547202b4a42d5a547202b4a02d566"
+                     * @example "b7eb04b45c50438cab04b45c50438cc8"
                      */
                     projectUuid: string;
                 };
                 queryParams?: {
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
@@ -364,7 +359,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "38d63a350880461e963a350880a61eac"
+                     * @example "64b6c92894514a4fb6c92894510a4ff6"
                      */
                     roleUuid: string;
                 };
@@ -378,20 +373,20 @@ export interface ApiEndpoints {
             };
         };
         /** Load the permissions between given role and the targeted element. */
-        '/roles/{roleUuid}/permissions/{pathToElement}': {
+        '/roles/{roleUuid}/permissions/{path}': {
             request: {
                 urlParams: {
                     /**
                      * API path to the element.
                      * @example
-                     *     "projects/b1795f8e0dc24a01b95f8e0dc2ea01b8"
-                     *     "projects/c7906afb6e854783906afb6e85e7837e/nodes/a9f688d265344c32b688d26534dc32b0"
+                     *     "projects/4344a77c8a74473d84a77c8a74b73dc1"
+                     *     "projects/e5c63202e73146aa863202e731d6aa29/nodes/34f350bcada4479eb350bcada4379e82"
                      *     ""
                      */
-                    pathToElement: string;
+                    path: string;
                     /**
                      * Uuid of the role.
-                     * @example "1a4d75b5824347018d75b58243e70185"
+                     * @example "a258086719f2458198086719f26581d2"
                      */
                     roleUuid: string;
                 };
@@ -434,7 +429,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "375ef0f6e02f4bbe9ef0f6e02f3bbee4"
+                     * @example "fafbbc3a5eec44c1bbbc3a5eec14c166"
                      */
                     schemaUuid: string;
                 };
@@ -495,12 +490,11 @@ export interface ApiEndpoints {
                 urlParams?: { };
                 queryParams?: {
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
@@ -512,9 +506,13 @@ export interface ApiEndpoints {
                      */
                     perPage?: number;
                     /**
-                     * The resolve links parameter can be set to either short, medium or full. Stored
-                     * mesh links will automatically be resolved and replaced by the resolved webroot
-                     * link. No resolving occurs if no link has been specified.
+                     * The resolve links parameter can be set to either _short_, _medium_ or _full_.
+                     * Stored mesh links will automatically be resolved and replaced by the resolved
+                     * webroot link. With the parameter set the _path_ property as well as the
+                     * _languagesPath_ property (for available language variants) will be included in
+                     * the response. Gentics Mesh links in any HTML-typed field will automatically be
+                     * resolved and replaced by the resolved link:features.html#_link_resolving[WebRoot
+                     * path]. No resolving occurs if no link has been specified.
                      * @example "medium"
                      */
                     resolveLinks?: string;
@@ -530,14 +528,17 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                     /**
-                     * Name of the language which should be loaded. Fallback handling can be applied by
-                     * specifying multiple languages. The first matching language will be returned.
+                     * ISO 639-1 language tag of the language which should be loaded. Fallback handling
+                     * can be applied by specifying multiple languages in a comma-separated list. The
+                     * first matching language will be returned.  If omitted or the requested language
+                     * is not available then the _defaultLanguage_ as configured in _mesh.yml_ will be
+                     * returned.
                      * @example "en,de"
                      */
                     lang?: string;
                     /**
                      * Specifies the version to be loaded (default: 'draft'). Can either be
-                     * published/draft or version number.
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
                      * @example "1.1"
                      */
                     version?: string;
@@ -556,39 +557,45 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "41804a55dd9f4a92804a55dd9f4a924a"
+                     * @example "698bf45547a748bd8bf45547a7b8bd25"
                      */
                     userUuid: string;
                 };
                 queryParams?: {
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
                      */
                     role?: string;
                     /**
-                     * Name of the language which should be loaded. Fallback handling can be applied by
-                     * specifying multiple languages. The first matching language will be returned.
+                     * ISO 639-1 language tag of the language which should be loaded. Fallback handling
+                     * can be applied by specifying multiple languages in a comma-separated list. The
+                     * first matching language will be returned.  If omitted or the requested language
+                     * is not available then the _defaultLanguage_ as configured in _mesh.yml_ will be
+                     * returned.
                      * @example "en,de"
                      */
                     lang?: string;
                     /**
-                     * The resolve links parameter can be set to either short, medium or full. Stored
-                     * mesh links will automatically be resolved and replaced by the resolved webroot
-                     * link. No resolving occurs if no link has been specified.
+                     * The resolve links parameter can be set to either _short_, _medium_ or _full_.
+                     * Stored mesh links will automatically be resolved and replaced by the resolved
+                     * webroot link. With the parameter set the _path_ property as well as the
+                     * _languagesPath_ property (for available language variants) will be included in
+                     * the response. Gentics Mesh links in any HTML-typed field will automatically be
+                     * resolved and replaced by the resolved link:features.html#_link_resolving[WebRoot
+                     * path]. No resolving occurs if no link has been specified.
                      * @example "medium"
                      */
                     resolveLinks?: string;
                     /**
                      * Specifies the version to be loaded (default: 'draft'). Can either be
-                     * published/draft or version number.
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
                      * @example "1.1"
                      */
                     version?: string;
@@ -621,7 +628,7 @@ export interface ApiEndpoints {
                     path: string;
                     /**
                      * Uuid of the user.
-                     * @example "51189bbb491e44f5989bbb491e64f5d1"
+                     * @example "cdc026900c5a40648026900c5a9064ce"
                      */
                     userUuid: string;
                 };
@@ -721,12 +728,11 @@ export interface ApiEndpoints {
                 };
                 queryParams?: {
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
@@ -738,9 +744,13 @@ export interface ApiEndpoints {
                      */
                     perPage?: number;
                     /**
-                     * The resolve links parameter can be set to either short, medium or full. Stored
-                     * mesh links will automatically be resolved and replaced by the resolved webroot
-                     * link. No resolving occurs if no link has been specified.
+                     * The resolve links parameter can be set to either _short_, _medium_ or _full_.
+                     * Stored mesh links will automatically be resolved and replaced by the resolved
+                     * webroot link. With the parameter set the _path_ property as well as the
+                     * _languagesPath_ property (for available language variants) will be included in
+                     * the response. Gentics Mesh links in any HTML-typed field will automatically be
+                     * resolved and replaced by the resolved link:features.html#_link_resolving[WebRoot
+                     * path]. No resolving occurs if no link has been specified.
                      * @example "medium"
                      */
                     resolveLinks?: string;
@@ -756,14 +766,17 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                     /**
-                     * Name of the language which should be loaded. Fallback handling can be applied by
-                     * specifying multiple languages. The first matching language will be returned.
+                     * ISO 639-1 language tag of the language which should be loaded. Fallback handling
+                     * can be applied by specifying multiple languages in a comma-separated list. The
+                     * first matching language will be returned.  If omitted or the requested language
+                     * is not available then the _defaultLanguage_ as configured in _mesh.yml_ will be
+                     * returned.
                      * @example "en,de"
                      */
                     lang?: string;
                     /**
                      * Specifies the version to be loaded (default: 'draft'). Can either be
-                     * published/draft or version number.
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
                      * @example "1.1"
                      */
                     version?: string;
@@ -787,39 +800,45 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "bf892405213a4d55892405213a3d5523"
+                     * @example "bf39f90ab2984cb2b9f90ab2983cb2d3"
                      */
                     nodeUuid: string;
                 };
                 queryParams?: {
                     /**
-                     * The role permission parameter can be used to set the role parameter value in form
-                     * of an UUID which will cause mesh to add the rolePerm field to the rest response.
+                     * The _role_ query parameter take a UUID of a role and may be used to add
+                     * permission information to the response via the _rolePerm_ property which lists
+                     * the permissions for the specified role on the element.
                      * This may be useful when you are logged in as admin but you want to retrieve the
                      * editor role permissions on a given node.
-                     * When used, the response will include the _rolePerms_ property which lists the
-                     * permissions for the specified role.
                      * Endpoint: _/api/v1/:projectName/nodes?role=:roleUuid_
                      *
                      * @example "24cf92691c7641158f92691c76c115ef"
                      */
                     role?: string;
                     /**
-                     * Name of the language which should be loaded. Fallback handling can be applied by
-                     * specifying multiple languages. The first matching language will be returned.
+                     * ISO 639-1 language tag of the language which should be loaded. Fallback handling
+                     * can be applied by specifying multiple languages in a comma-separated list. The
+                     * first matching language will be returned.  If omitted or the requested language
+                     * is not available then the _defaultLanguage_ as configured in _mesh.yml_ will be
+                     * returned.
                      * @example "en,de"
                      */
                     lang?: string;
                     /**
                      * Specifies the version to be loaded (default: 'draft'). Can either be
-                     * published/draft or version number.
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
                      * @example "1.1"
                      */
                     version?: string;
                     /**
-                     * The resolve links parameter can be set to either short, medium or full. Stored
-                     * mesh links will automatically be resolved and replaced by the resolved webroot
-                     * link. No resolving occurs if no link has been specified.
+                     * The resolve links parameter can be set to either _short_, _medium_ or _full_.
+                     * Stored mesh links will automatically be resolved and replaced by the resolved
+                     * webroot link. With the parameter set the _path_ property as well as the
+                     * _languagesPath_ property (for available language variants) will be included in
+                     * the response. Gentics Mesh links in any HTML-typed field will automatically be
+                     * resolved and replaced by the resolved link:features.html#_link_resolving[WebRoot
+                     * path]. No resolving occurs if no link has been specified.
                      * @example "medium"
                      */
                     resolveLinks?: string;
@@ -839,7 +858,7 @@ export interface ApiEndpoints {
             };
         };
         /**
-         * Download the binary field with the given name. You canuse image query parameters
+         * Download the binary field with the given name. You can use image query parameters
          * for crop and resize if the binary data represents an image.
          */
         '/{project}/nodes/{nodeUuid}/binary/{fieldName}': {
@@ -857,7 +876,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "e4e57aa8e39a4fb3a57aa8e39adfb33a"
+                     * @example "b74ac23ceecd44b78ac23ceecd94b78f"
                      */
                     nodeUuid: string;
                 };
@@ -913,7 +932,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "4dce9ed8c3144b428e9ed8c314bb428e"
+                     * @example "dca8b6367dee4975a8b6367dee09750f"
                      */
                     nodeUuid: string;
                 };
@@ -929,21 +948,28 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                     /**
-                     * Name of the language which should be loaded. Fallback handling can be applied by
-                     * specifying multiple languages. The first matching language will be returned.
+                     * ISO 639-1 language tag of the language which should be loaded. Fallback handling
+                     * can be applied by specifying multiple languages in a comma-separated list. The
+                     * first matching language will be returned.  If omitted or the requested language
+                     * is not available then the _defaultLanguage_ as configured in _mesh.yml_ will be
+                     * returned.
                      * @example "en,de"
                      */
                     lang?: string;
                     /**
-                     * The resolve links parameter can be set to either short, medium or full. Stored
-                     * mesh links will automatically be resolved and replaced by the resolved webroot
-                     * link. No resolving occurs if no link has been specified.
+                     * The resolve links parameter can be set to either _short_, _medium_ or _full_.
+                     * Stored mesh links will automatically be resolved and replaced by the resolved
+                     * webroot link. With the parameter set the _path_ property as well as the
+                     * _languagesPath_ property (for available language variants) will be included in
+                     * the response. Gentics Mesh links in any HTML-typed field will automatically be
+                     * resolved and replaced by the resolved link:features.html#_link_resolving[WebRoot
+                     * path]. No resolving occurs if no link has been specified.
                      * @example "medium"
                      */
                     resolveLinks?: string;
                     /**
                      * Specifies the version to be loaded (default: 'draft'). Can either be
-                     * published/draft or version number.
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
                      * @example "1.1"
                      */
                     version?: string;
@@ -978,7 +1004,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "3b8c2e7548c341e58c2e7548c311e507"
+                     * @example "1e894a4ea9c14687894a4ea9c1b68705"
                      */
                     nodeUuid: string;
                 };
@@ -1002,7 +1028,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "a6ff28ee129b4a3fbf28ee129b3a3fed"
+                     * @example "9ec686479cdb48f18686479cdb58f1cf"
                      */
                     nodeUuid: string;
                 };
@@ -1039,7 +1065,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "b4318656643f43b1b18656643f93b1bf"
+                     * @example "5b494dcb7d5c4808894dcb7d5c3808bc"
                      */
                     nodeUuid: string;
                 };
@@ -1063,14 +1089,14 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "facab8f7b20149068ab8f7b201190675"
+                     * @example "737aa967c585481abaa967c585581ab4"
                      */
                     nodeUuid: string;
                 };
                 queryParams?: {
                     /**
                      * Specifies the version to be loaded (default: 'draft'). Can either be
-                     * published/draft or version number.
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
                      * @example "1.1"
                      */
                     version?: string;
@@ -1130,7 +1156,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "3d4ebe40966146f78ebe409661f6f7f4"
+                     * @example "b733fa9433cc4d29b3fa9433cc9d292b"
                      */
                     releaseUuid: string;
                 };
@@ -1157,7 +1183,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "726c57ba5aee4a78ac57ba5aee0a783e"
+                     * @example "664326d054a1483e8326d054a1483ee5"
                      */
                     releaseUuid: string;
                 };
@@ -1195,7 +1221,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "298300da8a634d208300da8a63ad2069"
+                     * @example "7bc5248fd14141df85248fd14121dfb9"
                      */
                     releaseUuid: string;
                 };
@@ -1222,7 +1248,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "f3af2320105a4be2af2320105aebe2ad"
+                     * @example "eac010579be54f328010579be55f325b"
                      */
                     releaseUuid: string;
                 };
@@ -1246,7 +1272,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "ddcd1836476d40e28d1836476d40e263"
+                     * @example "e5b0174cb81f4bbdb0174cb81fcbbd6f"
                      */
                     releaseUuid: string;
                 };
@@ -1300,7 +1326,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "549b32d3db5949589b32d3db59895859"
+                     * @example "8c47bbdeda85436187bbdeda85f361ae"
                      */
                     schemaUuid: string;
                 };
@@ -1354,7 +1380,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "47c2ee43571f4cce82ee43571ffccea2"
+                     * @example "b52a153423c14046aa153423c1604689"
                      */
                     tagFamilyUuid: string;
                 };
@@ -1381,7 +1407,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "70c4c2c27c054de584c2c27c053de553"
+                     * @example "bda0e746b00a4096a0e746b00a009630"
                      */
                     tagFamilyUuid: string;
                 };
@@ -1416,12 +1442,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "c78bfe2389ea4ab78bfe2389ea4ab7c6"
+                     * @example "231430fe022349189430fe0223191859"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "73df30acf3ce476b9f30acf3ce576b55"
+                     * @example "bd30996ccde0458bb0996ccde0958b12"
                      */
                     tagUuid: string;
                 };
@@ -1448,12 +1474,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "59f98f105e6a4049b98f105e6a20491c"
+                     * @example "6eae6762e02f498eae6762e02ff98e9c"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "6440f720fa9a43d280f720fa9af3d27d"
+                     * @example "0f270c95d76b40b0a70c95d76b60b051"
                      */
                     tagUuid: string;
                 };
@@ -1599,7 +1625,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "f816f50df067442896f50df067442896"
+                     * @example "d3047743ee0f4aa6847743ee0fcaa664"
                      */
                     groupUuid: string;
                 };
@@ -1618,12 +1644,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "e3692f47018e4d6ea92f47018e6d6e0f"
+                     * @example "8307882920eb4b6b87882920eb2b6bbb"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the role.
-                     * @example "c80d3d0c414e41928d3d0c414eb19214"
+                     * @example "fc7cd9ea1c104010bcd9ea1c1020104f"
                      */
                     roleUuid: string;
                 };
@@ -1642,12 +1668,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "962558b936f54779a558b936f50779bb"
+                     * @example "7024e305c99747c7a4e305c99707c7df"
                      */
                     groupUuid: string;
                     /**
-                     * Uuid of the user which should be added to the group.
-                     * @example "a70f1ed1eb704feb8f1ed1eb70cfeb4f"
+                     * Uuid of the user which should be removed from the group.
+                     * @example "15b8272d4a3d432fb8272d4a3dd32f4a"
                      */
                     userUuid: string;
                 };
@@ -1679,7 +1705,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "511e03ef420845ba9e03ef4208b5bae1"
+                     * @example "eb4630733e8d4b468630733e8ddb46ed"
                      */
                     microschemaUuid: string;
                 };
@@ -1702,7 +1728,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "3178d1f2660445cbb8d1f2660435cb86"
+                     * @example "f3fe11e4f3064730be11e4f3064730c4"
                      */
                     microschemaUuid: string;
                 };
@@ -1724,7 +1750,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "bf5c41fe381a4f6f9c41fe381a6f6faa"
+                     * @example "b49c10230711425e9c10230711f25e3d"
                      */
                     microschemaUuid: string;
                 };
@@ -1756,7 +1782,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "5d2547202b4a42d5a547202b4a02d566"
+                     * @example "b7eb04b45c50438cab04b45c50438cc8"
                      */
                     projectUuid: string;
                 };
@@ -1788,7 +1814,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "38d63a350880461e963a350880a61eac"
+                     * @example "64b6c92894514a4fb6c92894510a4ff6"
                      */
                     roleUuid: string;
                 };
@@ -1802,20 +1828,20 @@ export interface ApiEndpoints {
             };
         };
         /** Set the permissions between role and the targeted element. */
-        '/roles/{roleUuid}/permissions/{pathToElement}': {
+        '/roles/{roleUuid}/permissions/{path}': {
             request: {
                 urlParams: {
                     /**
                      * API path to the element.
                      * @example
-                     *     "projects/b1795f8e0dc24a01b95f8e0dc2ea01b8"
-                     *     "projects/c7906afb6e854783906afb6e85e7837e/nodes/a9f688d265344c32b688d26534dc32b0"
+                     *     "projects/4344a77c8a74473d84a77c8a74b73dc1"
+                     *     "projects/e5c63202e73146aa863202e731d6aa29/nodes/34f350bcada4479eb350bcada4379e82"
                      *     ""
                      */
-                    pathToElement: string;
+                    path: string;
                     /**
                      * Uuid of the role.
-                     * @example "1a4d75b5824347018d75b58243e70185"
+                     * @example "a258086719f2458198086719f26581d2"
                      */
                     roleUuid: string;
                 };
@@ -1847,7 +1873,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "375ef0f6e02f4bbe9ef0f6e02f3bbee4"
+                     * @example "fafbbc3a5eec44c1bbbc3a5eec14c166"
                      */
                     schemaUuid: string;
                 };
@@ -1879,7 +1905,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "e4c54133b358404b854133b358c04b6a"
+                     * @example "7787c90bacfa495087c90bacfa8950f9"
                      */
                     schemaUuid: string;
                 };
@@ -1898,7 +1924,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "633ec6ddcb1a467ebec6ddcb1a067e1a"
+                     * @example "f9080ba244f04824880ba244f0782422"
                      */
                     schemaUuid: string;
                 };
@@ -2050,15 +2076,15 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "41804a55dd9f4a92804a55dd9f4a924a"
+                     * @example "698bf45547a748bd8bf45547a7b8bd25"
                      */
                     userUuid: string;
                 };
                 queryParams?: {
                     /**
                      * Token code which can be used to update the user even if the connection is not
-                     * authenticated. This can be used to implement a password reset feature.
-                     * @example "nEdebvuxd7hH"
+                     * authenticated. This can be used to implement a password recovery feature.
+                     * @example "pQcyhUn6CBsJ"
                      */
                     token?: string;
                 };
@@ -2079,7 +2105,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "8af945b71d8e4eedb945b71d8e7eeded"
+                     * @example "2ef4ed9d037b4459b4ed9d037bf459b5"
                      */
                     userUuid: string;
                 };
@@ -2101,7 +2127,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "6f7fc34cdcc041bfbfc34cdcc071bf93"
+                     * @example "0a8c835c93b54f5e8c835c93b51f5efc"
                      */
                     userUuid: string;
                 };
@@ -2123,15 +2149,22 @@ export interface ApiEndpoints {
                 urlParams?: { };
                 queryParams?: {
                     /**
-                     * Name of the language which should be loaded. Fallback handling can be applied by
-                     * specifying multiple languages. The first matching language will be returned.
+                     * ISO 639-1 language tag of the language which should be loaded. Fallback handling
+                     * can be applied by specifying multiple languages in a comma-separated list. The
+                     * first matching language will be returned.  If omitted or the requested language
+                     * is not available then the _defaultLanguage_ as configured in _mesh.yml_ will be
+                     * returned.
                      * @example "en,de"
                      */
                     lang?: string;
                     /**
-                     * The resolve links parameter can be set to either short, medium or full. Stored
-                     * mesh links will automatically be resolved and replaced by the resolved webroot
-                     * link. No resolving occurs if no link has been specified.
+                     * The resolve links parameter can be set to either _short_, _medium_ or _full_.
+                     * Stored mesh links will automatically be resolved and replaced by the resolved
+                     * webroot link. With the parameter set the _path_ property as well as the
+                     * _languagesPath_ property (for available language variants) will be included in
+                     * the response. Gentics Mesh links in any HTML-typed field will automatically be
+                     * resolved and replaced by the resolved link:features.html#_link_resolving[WebRoot
+                     * path]. No resolving occurs if no link has been specified.
                      * @example "medium"
                      */
                     resolveLinks?: string;
@@ -2173,7 +2206,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the microschema.
-                     * @example "9f6531af9c814006a531af9c81300610"
+                     * @example "96af9c5a0d2141d6af9c5a0d2121d657"
                      */
                     microschemaUuid: string;
                 };
@@ -2221,7 +2254,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "bf892405213a4d55892405213a3d5523"
+                     * @example "bf39f90ab2984cb2b9f90ab2983cb2d3"
                      */
                     nodeUuid: string;
                 };
@@ -2252,7 +2285,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "e4e57aa8e39a4fb3a57aa8e39adfb33a"
+                     * @example "b74ac23ceecd44b78ac23ceecd94b78f"
                      */
                     nodeUuid: string;
                 };
@@ -2299,7 +2332,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "f0ea00efd6bf47c2aa00efd6bf07c23b"
+                     * @example "6d68ee475c524adfa8ee475c52cadf7b"
                      */
                     nodeUuid: string;
                 };
@@ -2310,6 +2343,38 @@ export interface ApiEndpoints {
             responseTypes: {
                 /** Transformation was executed and updated node was returned. */
                 200: NodeResponse;
+            };
+        };
+        /**
+         * Publish the language of the node. This will automatically assign a new major
+         * version to the node and update the draft version to the published version.
+         */
+        '/{project}/nodes/{nodeUuid}/languages/{language}/published': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                    /**
+                     * Name of the language tag
+                     * @example "en"
+                     */
+                    language: string;
+                    /**
+                     * Uuid of the node
+                     * @example "1e894a4ea9c14687894a4ea9c1b68705"
+                     */
+                    nodeUuid: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: PublishStatusModelFromServer;
+            responseTypes: {
+                /** Updated publish status. */
+                200: PublishStatusModelFromServer;
             };
         };
         /** Move the node into the target node. */
@@ -2323,19 +2388,19 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of target the node.
-                     * @example "55ccccd96dc340678cccd96dc33067d5"
+                     * @example "959b2967587a4d349b2967587a5d3455"
                      */
                     toUuid: string;
                     /**
                      * Uuid of the node which should be moved.
-                     * @example "9a3c7ba1d6f84ff8bc7ba1d6f8bff8bc"
+                     * @example "f5c58bb0be8347da858bb0be8317da90"
                      */
                     nodeUuid: string;
                 };
                 queryParams?: {
                     /**
                      * Specifies the version to be loaded (default: 'draft'). Can either be
-                     * published/draft or version number.
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
                      * @example "1.1"
                      */
                     version?: string;
@@ -2365,7 +2430,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "b4318656643f43b1b18656643f93b1bf"
+                     * @example "5b494dcb7d5c4808894dcb7d5c3808bc"
                      */
                     nodeUuid: string;
                 };
@@ -2396,7 +2461,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "facab8f7b20149068ab8f7b201190675"
+                     * @example "737aa967c585481abaa967c585581ab4"
                      */
                     nodeUuid: string;
                 };
@@ -2420,19 +2485,19 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag
-                     * @example "edadff26ef8a4339adff26ef8a33395d"
+                     * @example "c89ab26593574df19ab2659357cdf132"
                      */
                     tagUuid: string;
                     /**
                      * Uuid of the node
-                     * @example "72de49583a8a4ce79e49583a8a7ce7da"
+                     * @example "2d68653a2f9542efa8653a2f9582ef15"
                      */
                     nodeUuid: string;
                 };
                 queryParams?: {
                     /**
                      * Specifies the version to be loaded (default: 'draft'). Can either be
-                     * published/draft or version number.
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
                      * @example "1.1"
                      */
                     version?: string;
@@ -2481,7 +2546,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "3d4ebe40966146f78ebe409661f6f7f4"
+                     * @example "b733fa9433cc4d29b3fa9433cc9d292b"
                      */
                     releaseUuid: string;
                 };
@@ -2505,7 +2570,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "726c57ba5aee4a78ac57ba5aee0a783e"
+                     * @example "664326d054a1483e8326d054a1483ee5"
                      */
                     releaseUuid: string;
                 };
@@ -2529,7 +2594,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "ddcd1836476d40e28d1836476d40e263"
+                     * @example "e5b0174cb81f4bbdb0174cb81fcbbd6f"
                      */
                     releaseUuid: string;
                 };
@@ -2556,7 +2621,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "549b32d3db5949589b32d3db59895859"
+                     * @example "8c47bbdeda85436187bbdeda85f361ae"
                      */
                     schemaUuid: string;
                 };
@@ -2656,7 +2721,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "47c2ee43571f4cce82ee43571ffccea2"
+                     * @example "b52a153423c14046aa153423c1604689"
                      */
                     tagFamilyUuid: string;
                 };
@@ -2667,6 +2732,30 @@ export interface ApiEndpoints {
             responseTypes: {
                 /** Updated tag family. */
                 200: TagFamilyResponse;
+            };
+        };
+        /** Create a new tag within the tag family. */
+        '/{project}/tagFamilies/{tagFamilyUuid}/tags': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                    /**
+                     * Uuid of the tag family.
+                     * @example "bda0e746b00a4096a0e746b00a009630"
+                     */
+                    tagFamilyUuid: string;
+                };
+                queryParams?: { };
+                body: TagCreateRequest;
+            };
+            responseType: TagResponse;
+            responseTypes: {
+                /** Created tag */
+                200: TagResponse;
             };
         };
         /** Update the specified tag */
@@ -2680,12 +2769,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "c78bfe2389ea4ab78bfe2389ea4ab7c6"
+                     * @example "231430fe022349189430fe0223191859"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "73df30acf3ce476b9f30acf3ce576b55"
+                     * @example "bd30996ccde0458bb0996ccde0958b12"
                      */
                     tagUuid: string;
                 };
@@ -2708,7 +2797,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "f816f50df067442896f50df067442896"
+                     * @example "d3047743ee0f4aa6847743ee0fcaa664"
                      */
                     groupUuid: string;
                 };
@@ -2727,12 +2816,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "e3692f47018e4d6ea92f47018e6d6e0f"
+                     * @example "8307882920eb4b6b87882920eb2b6bbb"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the role.
-                     * @example "c80d3d0c414e41928d3d0c414eb19214"
+                     * @example "fc7cd9ea1c104010bcd9ea1c1020104f"
                      */
                     roleUuid: string;
                 };
@@ -2745,13 +2834,37 @@ export interface ApiEndpoints {
                 204: undefined;
             };
         };
+        /** Remove the given user from the group. */
+        '/groups/{groupUuid}/users/{userUuid}': {
+            request: {
+                urlParams: {
+                    /**
+                     * Uuid of the group.
+                     * @example "7024e305c99747c7a4e305c99707c7df"
+                     */
+                    groupUuid: string;
+                    /**
+                     * Uuid of the user which should be removed from the group.
+                     * @example "15b8272d4a3d432fb8272d4a3dd32f4a"
+                     */
+                    userUuid: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: undefined;
+            responseTypes: {
+                /** User was removed from the group. */
+                204: undefined;
+            };
+        };
         /** Delete the microschema with the given uuid. */
         '/microschemas/{microschemaUuid}': {
             request: {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "511e03ef420845ba9e03ef4208b5bae1"
+                     * @example "eb4630733e8d4b468630733e8ddb46ed"
                      */
                     microschemaUuid: string;
                 };
@@ -2770,7 +2883,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "5d2547202b4a42d5a547202b4a02d566"
+                     * @example "b7eb04b45c50438cab04b45c50438cc8"
                      */
                     projectUuid: string;
                 };
@@ -2789,7 +2902,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "38d63a350880461e963a350880a61eac"
+                     * @example "64b6c92894514a4fb6c92894510a4ff6"
                      */
                     roleUuid: string;
                 };
@@ -2808,7 +2921,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "375ef0f6e02f4bbe9ef0f6e02f3bbee4"
+                     * @example "fafbbc3a5eec44c1bbbc3a5eec14c166"
                      */
                     schemaUuid: string;
                 };
@@ -2830,7 +2943,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "41804a55dd9f4a92804a55dd9f4a924a"
+                     * @example "698bf45547a748bd8bf45547a7b8bd25"
                      */
                     userUuid: string;
                 };
@@ -2849,7 +2962,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "6f7fc34cdcc041bfbfc34cdcc071bf93"
+                     * @example "0a8c835c93b54f5e8c835c93b51f5efc"
                      */
                     userUuid: string;
                 };
@@ -2873,7 +2986,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the microschema.
-                     * @example "9f6531af9c814006a531af9c81300610"
+                     * @example "96af9c5a0d2141d6af9c5a0d2121d657"
                      */
                     microschemaUuid: string;
                 };
@@ -2897,7 +3010,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "bf892405213a4d55892405213a3d5523"
+                     * @example "bf39f90ab2984cb2b9f90ab2983cb2d3"
                      */
                     nodeUuid: string;
                 };
@@ -2926,7 +3039,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node.
-                     * @example "3d78dfc2a76d4c5cb8dfc2a76dec5c59"
+                     * @example "c1d09db438b54c9c909db438b51c9ce3"
                      */
                     nodeUuid: string;
                 };
@@ -2937,6 +3050,35 @@ export interface ApiEndpoints {
             responseTypes: {
                 /** Language variation of the node has been deleted. */
                 204: undefined;
+            };
+        };
+        /** Take the language of the node offline. */
+        '/{project}/nodes/{nodeUuid}/languages/{language}/published': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                    /**
+                     * Name of the language tag
+                     * @example "en"
+                     */
+                    language: string;
+                    /**
+                     * Uuid of the node
+                     * @example "1e894a4ea9c14687894a4ea9c1b68705"
+                     */
+                    nodeUuid: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: PublishStatusModelFromServer;
+            responseTypes: {
+                /** Node language was taken offline. */
+                204: PublishStatusModelFromServer;
             };
         };
         /** Unpublish the given node. */
@@ -2950,7 +3092,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "b4318656643f43b1b18656643f93b1bf"
+                     * @example "5b494dcb7d5c4808894dcb7d5c3808bc"
                      */
                     nodeUuid: string;
                 };
@@ -2981,12 +3123,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag
-                     * @example "edadff26ef8a4339adff26ef8a33395d"
+                     * @example "c89ab26593574df19ab2659357cdf132"
                      */
                     tagUuid: string;
                     /**
                      * Uuid of the node
-                     * @example "72de49583a8a4ce79e49583a8a7ce7da"
+                     * @example "2d68653a2f9542efa8653a2f9582ef15"
                      */
                     nodeUuid: string;
                 };
@@ -3013,7 +3155,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "549b32d3db5949589b32d3db59895859"
+                     * @example "8c47bbdeda85436187bbdeda85f361ae"
                      */
                     schemaUuid: string;
                 };
@@ -3037,7 +3179,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "47c2ee43571f4cce82ee43571ffccea2"
+                     * @example "b52a153423c14046aa153423c1604689"
                      */
                     tagFamilyUuid: string;
                 };
@@ -3061,12 +3203,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "c78bfe2389ea4ab78bfe2389ea4ab7c6"
+                     * @example "231430fe022349189430fe0223191859"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "73df30acf3ce476b9f30acf3ce576b55"
+                     * @example "bd30996ccde0458bb0996ccde0958b12"
                      */
                     tagUuid: string;
                 };
@@ -3098,8 +3240,11 @@ export interface BinaryFieldTransformRequest {
      * transformed.
      */
     readonly language: string;
-    /** Reference to the version of the node content. */
-    readonly version?: VersionReferenceFromServer;
+    /**
+     * Version number which must be provided in order to handle and detect concurrent
+     * changes to the node content.
+     */
+    readonly version: string;
     /** New width of the image. */
     readonly width?: Integer;
 }
@@ -3148,7 +3293,7 @@ export interface FieldSchemaFromServer {
  *   - `POST /admin/graphdb/restore`
  *   - `POST /microschemas/{microschemaUuid}`
  *   - `POST /microschemas/{microschemaUuid}/changes`
- *   - `POST /roles/{roleUuid}/permissions/{pathToElement}`
+ *   - `POST /roles/{roleUuid}/permissions/{path}`
  *   - `POST /schemas/{schemaUuid}/changes`
  *   - `POST /{project}/nodes/{nodeUuid}`
  *   - `DELETE /users/{userUuid}/token`
@@ -3505,8 +3650,8 @@ export interface NodeResponse {
     readonly tags: TagReferenceFromServer[];
     /** Uuid of the element */
     readonly uuid: string;
-    /** Reference to the version of the node content. */
-    readonly version?: VersionReferenceFromServer;
+    /** Version of the node content. */
+    readonly version: string;
 }
 
 export interface NodeUpdateRequest {
@@ -3514,8 +3659,11 @@ export interface NodeUpdateRequest {
     readonly fields: FieldMapFromServer;
     /** ISO 639-1 language tag of the node content. */
     readonly language: string;
-    /** Reference to the version of the node content. */
-    readonly version?: VersionReferenceFromServer;
+    /**
+     * Version number which must be provided in order to handle and detect concurrent
+     * changes to the node content.
+     */
+    readonly version: string;
 }
 
 /** Paging information of the list result. */
@@ -3608,7 +3756,10 @@ export interface ProjectUpdateRequest {
 }
 
 /**
- * Returned for `GET /{project}/nodes/{nodeUuid}/languages/{language}/published`
+ * Returned for:
+ *   - `GET /{project}/nodes/{nodeUuid}/languages/{language}/published`
+ *   - `POST /{project}/nodes/{nodeUuid}/languages/{language}/published`
+ *   - `DELETE /{project}/nodes/{nodeUuid}/languages/{language}/published`
  */
 export interface PublishStatusModelFromServer {
     /** ISO8601 formatted publish date string. */
@@ -3617,8 +3768,8 @@ export interface PublishStatusModelFromServer {
     readonly published?: boolean;
     /** User reference of the creator of the element. */
     readonly publisher: UserReferenceFromServer;
-    /** Reference to the version of the node content. */
-    readonly version?: VersionReferenceFromServer;
+    /** Version number. */
+    readonly version?: string;
 }
 
 /**
@@ -3704,7 +3855,7 @@ export interface RolePermissionRequest {
 }
 
 /**
- * Returned for `GET /roles/{roleUuid}/permissions/{pathToElement}`
+ * Returned for `GET /roles/{roleUuid}/permissions/{path}`
  */
 export interface RolePermissionResponse {
     /** Flag which indicates whether the create permission is granted. */
@@ -3890,6 +4041,11 @@ export interface SchemaUpdateRequest {
     readonly version: Integer;
 }
 
+export interface TagCreateRequest {
+    /** Name of the tag which will be created. */
+    readonly name: string;
+}
+
 export interface TagFamilyCreateRequest {
     /** Name of the tag family which will be created. */
     readonly name: string;
@@ -3978,6 +4134,7 @@ export interface TagReferenceFromServer {
 /**
  * Returned for:
  *   - `GET /{project}/tagFamilies/{tagFamilyUuid}/tags/{tagUuid}`
+ *   - `POST /{project}/tagFamilies/{tagFamilyUuid}/tags`
  *   - `POST /{project}/tagFamilies/{tagFamilyUuid}/tags/{tagUuid}`
  */
 export interface TagResponse {
@@ -4152,12 +4309,4 @@ export interface UserUpdateRequest {
     readonly password?: string;
     /** New username of the user */
     readonly username?: string;
-}
-
-/** Reference to the version of the node content. */
-export interface VersionReferenceFromServer {
-    /** Version number */
-    readonly number?: string;
-    /** Uuid of the element */
-    readonly uuid: string;
 }

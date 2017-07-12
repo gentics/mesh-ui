@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { StateActionBranch, Immutable, CloneDepth } from 'immutablets';
 
-import { NodeResponse, ProjectResponse } from '../../common/models/server-models';
+import { NodeResponse, ProjectResponse, SchemaResponse } from '../../common/models/server-models';
 import { MeshNode } from '../../common/models/node.model';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
 import { mergeEntityState } from './entity-state-actions';
+import { Schema } from '../../common/models/schema.model';
 
 @Injectable()
 @Immutable()
@@ -75,6 +76,29 @@ export class ListStateActions extends StateActionBranch<AppState> {
     }
 
     fetchProjectsError() {
+        this.list.loadCount--;
+    }
+
+    fetchSchemasStart(projectName: string) {
+        this.list.loadCount++;
+    }
+
+    fetchSchemasSuccess(projectName: string, schemas: SchemaResponse[]) {
+        const projectUuid = Object.keys(this.entities.project)
+            .filter(uuid => this.entities.project[uuid].name === projectName)[0];
+
+        this.list.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            project: {
+                [projectUuid]: {
+                    schemas: schemas.map(schema => schema.uuid)
+                }
+            },
+            schema: schemas
+        });
+    }
+
+    fetchSchemasError() {
         this.list.loadCount--;
     }
 

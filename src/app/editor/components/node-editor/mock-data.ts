@@ -1,69 +1,52 @@
+import { MeshNode } from '../../../common/models/node.model';
+import { Schema } from '../../../common/models/schema.model';
 /**
  * Some hard-coded mock data used for developing the FormGenerator module.
  */
 
-export const testNode: any = {
-    uuid: '6b415925881043f1815925881063f147',
-    creator: {
-        uuid: 'ab4d3343ee834f128d3343ee834f12d6'
+export const testNode: MeshNode = {
+    "uuid" : "21203632520b4d19a03632520b2d19c1",
+    "creator" : {
+        "uuid" : "344af82020cf4f6c8af82020cf7f6c76"
+    } as any,
+    "created" : "2017-07-07T12:18:54Z",
+    "editor" : {
+        "uuid" : "344af82020cf4f6c8af82020cf7f6c76"
     },
-    created: '2017-01-19T12:08:02Z',
-    editor: {
-        uuid: 'ab4d3343ee834f128d3343ee834f12d6'
-    },
-    edited: '2017-01-19T12:08:05Z',
-    permissions: [
-        'create',
-        'update',
-        'delete',
-        'readpublished',
-        'read',
-        'publish'
-    ],
-    language: 'en',
-    availableLanguages: [
-        'en'
-    ],
-    parentNode: {
-        projectName: 'demo',
-        uuid: '69e74dfa02a24a1da74dfa02a2aa1d6f',
-        displayName: 'Aircraft',
-        schema: {
-            name: 'category',
-            uuid: '1c401518014a407d801518014a507d2b'
+    "edited" : "2017-07-07T12:18:55Z",
+    "language" : "en",
+    "availableLanguages" : [ "en" ],
+    "parentNode" : {
+        "projectName" : "demo",
+        "uuid" : "f183fc2da8014c2383fc2da8011c2392",
+        "schema" : {
+            "name" : "folder",
+            "uuid" : "c16bb4d872564963abb4d872566963e2"
         }
     },
-    tags: {
-        Colors: {
-            uuid: '424997f976e54e2c8997f976e58e2c82',
-            items: [
-                {
-                    name: 'White',
-                    uuid: '0285966a7eb0466b85966a7eb0766be8'
-                }
-            ]
-        },
-        Fuels: {
-            uuid: 'c7bcb1469f9747c0bcb1469f9727c0b2',
-            items: [
-                {
-                    name: 'Kerosene',
-                    uuid: '33ad0f52e6324192ad0f52e63251922e'
-                }
-            ]
+    "tags" : [ ],
+    "project" : {
+        "name" : "demo",
+        "uuid" : "217f8c981ada4642bf8c981adaa642c3"
+    },
+    "childrenInfo" : {
+        "vehicle" : {
+            "schemaUuid" : "2aa83a2b3cba40a1a83a2b3cba90a1de",
+            "count" : 3
         }
     },
-    childrenInfo: {},
-    schema: {
-        name: 'vehicle',
-        uuid: 'b85a103e9902460e9a103e9902b60eee',
-        version: 1
+    rolePerms: undefined as any,
+    "schema" : {
+        "name" : "category",
+        "uuid" : "2ca2362b041247c4a2362b041227c4da",
+        "version" : 1
     },
-    displayField: 'name',
-    fields: {
+    "container" : true,
+    "displayField" : "name",
+    "fields" : {
         name: 'Gulfstream G550',
         slug: '',
-        description: `The Gulfstream G500 and G550 are business jet aircraft 
+        description: `The Gulfstream G500 and G550 are business jet aircraft
                 produced by General Dynamics' Gulfstream Aerospace unit in Savannah, Georgia.`,
         weight: 21900,
         in_stock: true,
@@ -134,30 +117,33 @@ export const testNode: any = {
                 type: 'micronode'
             }
         ]
-    },
-    breadcrumb: [
-        {
-            uuid: '69e74dfa02a24a1da74dfa02a2aa1d6f',
-            displayName: 'Aircraft'
-        }
-    ],
-    version: {
-        uuid: 'f6e8236c65824cd1a8236c65820cd176',
-        number: '1.0'
-    },
-    container: false
+    } as any,
+    "breadcrumb" : [ ],
+    "version" : "1.0",
+    "permissions" : {
+        "create" : true,
+        "read" : true,
+        "update" : true,
+        "delete" : true,
+        "publish" : true,
+        "readPublished" : true
+    }
 };
 
-export const testSchema: any = {
+export const testSchema: Schema = {
+    created: '18513.51-4321325-1-1243-151-251-Z',
+    creator: undefined as any,
+    edited: undefined as any,
+    editor: undefined as any,
     uuid: 'b85a103e9902460e9a103e9902b60eee',
-    permissions: [
-        'create',
-        'update',
-        'delete',
-        'readpublished',
-        'read',
-        'publish'
-    ],
+    permissions: {
+        create: true,
+        update: true,
+        delete: true,
+        readPublished: true,
+        read: true,
+        publish: true,
+    },
     version: 1,
     name: 'vehicle',
     fields: [
