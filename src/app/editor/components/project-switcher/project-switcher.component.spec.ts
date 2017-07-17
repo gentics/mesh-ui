@@ -80,14 +80,6 @@ describe('ProjectSwitcherComponent:', () => {
         });
     });
 
-    it(`shows the currently selected project`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.detectChanges();
-            const selectText: string = fixture.nativeElement.querySelector('.current-project').innerText;
-            expect(selectText).toContain('demo', fixture.nativeElement.innerHTML);
-        })
-    );
-
     it(`shows the names of all available projects`,
         componentTest(() => TestComponent, fixture => {
             // Open Select
@@ -97,7 +89,7 @@ describe('ProjectSwitcherComponent:', () => {
 
             const projectNames: string[] = Array.from<HTMLLIElement>(fixture.nativeElement.querySelectorAll('gtx-dropdown-item'))
                 .map(li => li.innerText);
-            expect(projectNames).toEqual(['demo', 'tvc'], fixture.nativeElement.innerHTML);
+            expect(projectNames).toEqual(['demo', 'tvc']);
         })
     );
 
@@ -117,30 +109,6 @@ describe('ProjectSwitcherComponent:', () => {
 
             // Demo Project
             expect(navigation.list).toHaveBeenCalledWith('demo', '83ff6b33bbda4048bf6b33bbdaa04840');
-        })
-    );
-
-    it(`displays the current project when it changes`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.detectChanges();
-
-            const selectText: string = fixture.nativeElement.querySelector('.current-project').innerText;
-            expect(selectText).toContain('demo', fixture.nativeElement.innerHTML);
-
-            appState.mockState({
-                editor: {
-                    openNode: {
-                        projectName: 'tvc',
-                        uuid: '6c71621d1a8542e4b1621d1a8542e46f',
-                        language: 'en'
-                    }
-                }
-            });
-
-            fixture.detectChanges();
-
-            const nextSelectText: string = fixture.nativeElement.querySelector('.current-project').innerText;
-            expect(nextSelectText).toContain('tvc', fixture.nativeElement.innerHTML);
         })
     );
 });

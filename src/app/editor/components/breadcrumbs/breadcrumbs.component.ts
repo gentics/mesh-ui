@@ -5,6 +5,7 @@ import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 import { MeshNode } from '../../../common/models/node.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { Project } from '../../../common/models/project.model';
 
 @Component({
     selector: 'breadcrumbs',
@@ -28,19 +29,35 @@ export class BreadcrumbsComponent {
      */
     private toRouterLinks(node: MeshNode | undefined): IBreadcrumbRouterLink[] {
         const currentProject = this.state.now.list.currentProject;
-        const projectName = this.projectNameToUuid(currentProject);
-        if (!node || !currentProject || !projectName) {
+        const project = this.getProjectByName(currentProject);
+        if (!currentProject || !project) {
             return [];
         }
-
-
-        return node.breadcrumb.map(ascendant => ({
-            route: this.navigationService.list(projectName, ascendant.uuid).commands(),
+        const rootNodeLink: IBreadcrumbRouterLink = {
+            route: this.navigationService.list(project.name, project.rootNode.uuid).commands(),
+            text: project.name
+        };
+        if (!node) {
+            return [rootNodeLink];
+        }
+        const selfName = node.displayField ? node.fields[node.displayField] : node.uuid;
+        const selfLink: IBreadcrumbRouterLink = {
+            route: this.navigationService.list(project.name, node.uuid).commands(),
+            text: selfName
+        };
+        const breadcrumbs = node.breadcrumb.map(ascendant => ({
+            route: this.navigationService.list(project.name, ascendant.uuid).commands(),
             text: ascendant.displayName!
         }));
+
+        // TODO: currently Mesh returns the breadcrumbs reversed, but this behaviour will change in
+        // the future. At that time, this line may be removed.
+        breadcrumbs.reverse();
+
+        return [rootNodeLink, ...breadcrumbs, selfLink];
     }
 
-    private projectNameToUuid(projectName: string | undefined): string | undefined {
+    private getProjectByName(projectName: string | undefined): Project | undefined {
         if (!projectName) {
             return;
         }
@@ -48,6 +65,6 @@ export class BreadcrumbsComponent {
         const match = Object.keys(projects)
             .map(uuid => projects[uuid])
             .find(project => project.name === projectName);
-        return match && match.name;
+        return match;
     }
 }

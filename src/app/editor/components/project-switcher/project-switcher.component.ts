@@ -19,7 +19,6 @@ interface ProjectHash {
 })
 export class ProjectSwitcherComponent {
     projects$: Observable<Project[]>;
-    currentProjectName$: Observable<string>;
 
     constructor(private appState: ApplicationStateService,
                 private navigation: NavigationService,
@@ -33,23 +32,9 @@ export class ProjectSwitcherComponent {
                     this.listEffects.loadProjects();
                 }
             });
-
-
-        this.currentProjectName$ = this.appState.select(state =>
-            this.getProjectByName(state.entities.project, this.appState.now.editor.openNode.projectName))
-            .filter(Boolean)
-            .map(it => it.name);
     }
 
     changeProject(project: Project) {
         this.navigation.list(project.name, project.rootNode.uuid).navigate();
-    }
-
-    private getProjectByName(projects: ProjectHash, projectName: string): Project | undefined {
-        for (const key in projects) {
-            if (projects[key].name === projectName) {
-                return projects[key];
-            }
-        }
     }
 }
