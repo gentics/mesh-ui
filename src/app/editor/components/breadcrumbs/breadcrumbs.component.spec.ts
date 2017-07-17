@@ -48,7 +48,7 @@ describe('BreadcrumbsComponent:', () => {
                         name: 'testProject',
                         rootNode: {
                             projectName: 'testProject',
-                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
+                            uuid: 'root_node_uuid',
                             schema: {
                                 name: 'folder',
                                 uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
@@ -57,6 +57,13 @@ describe('BreadcrumbsComponent:', () => {
                     })
                 },
                 node: {
+                    'root_node_uuid': mockMeshNode({
+                        uuid: 'root_node_uuid',
+                        container: true,
+                        displayField: 'name',
+                        fields: { name: 'rootNode' } as any,
+                        breadcrumb: []
+                    }),
                     '6adfe63bb9a34b8d9fe63bb9a30b8d8b': mockMeshNode({
                         uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
                         displayField: 'name',
@@ -113,6 +120,19 @@ describe('BreadcrumbsComponent:', () => {
             appState.mockState({
                 list: {
                     currentNode: undefined,
+                    currentProject: 'testProject'
+                }
+            });
+            fixture.detectChanges();
+            expect(getBreadcrumbText(fixture)).toEqual(['testProject']);
+        })
+    );
+
+    it(`does not duplicate root node when root node is open`,
+        componentTest(() => TestComponent, fixture => {
+            appState.mockState({
+                list: {
+                    currentNode: 'root_node_uuid',
                     currentProject: 'testProject'
                 }
             });

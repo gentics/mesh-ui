@@ -40,11 +40,7 @@ export class BreadcrumbsComponent {
         if (!node) {
             return [rootNodeLink];
         }
-        const selfName = node.displayField ? node.fields[node.displayField] : node.uuid;
-        const selfLink: IBreadcrumbRouterLink = {
-            route: this.navigationService.list(project.name, node.uuid).commands(),
-            text: selfName
-        };
+
         const breadcrumbs = node.breadcrumb.map(ascendant => ({
             route: this.navigationService.list(project.name, ascendant.uuid).commands(),
             text: ascendant.displayName!
@@ -54,7 +50,18 @@ export class BreadcrumbsComponent {
         // the future. At that time, this line may be removed.
         breadcrumbs.reverse();
 
-        return [rootNodeLink, ...breadcrumbs, selfLink];
+        const fullBreadcrumbs = [rootNodeLink, ...breadcrumbs];
+
+        if (node.uuid !== project.rootNode.uuid) {
+            const selfName = node.displayField ? node.fields[node.displayField] : node.uuid;
+            const selfLink: IBreadcrumbRouterLink = {
+                route: this.navigationService.list(project.name, node.uuid).commands(),
+                text: selfName
+            };
+            fullBreadcrumbs.push(selfLink);
+        }
+
+        return fullBreadcrumbs;
     }
 
     private getProjectByName(projectName: string | undefined): Project | undefined {
