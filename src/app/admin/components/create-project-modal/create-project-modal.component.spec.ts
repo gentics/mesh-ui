@@ -1,31 +1,40 @@
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DropdownTriggerDirective, GenticsUICoreModule, Notification, OverlayHostService } from 'gentics-ui-core';
+import { DropdownTriggerDirective, GenticsUICoreModule, ModalService, Notification, OverlayHostService } from 'gentics-ui-core';
 
 import { CreateProjectModalComponent } from './create-project-modal.component';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
-import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 import { mockMeshNode, mockProject, mockSchema, mockUser } from '../../../../testing/mock-models';
 import { By } from '@angular/platform-browser';
+import { Component, NgModule } from '@angular/core';
 
 describe('CreateProjectModal', () => {
 
     let appState: TestApplicationState;
 
+    @NgModule(provideMockI18n({
+        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule],
+        providers: [
+            { provide: ApplicationStateService, useClass: TestApplicationState },
+            { provide: SchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
+            Notification,
+            OverlayHostService
+        ],
+        entryComponents: [CreateProjectModalComponent],
+        declarations: [CreateProjectModalComponent]
+    }))
+    class TestModule {}
+
     beforeEach(() => {
-        configureComponentTest({
-            imports: [GenticsUICoreModule, FormsModule, ReactiveFormsModule, SharedModule],
-            providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: SchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
-                Notification,
-                OverlayHostService
-            ],
-            declarations: [CreateProjectModalComponent]
+        TestBed.configureTestingModule({
+            imports: [TestModule, GenticsUICoreModule],
+            providers: [ModalService],
+            declarations: [TestComponent]
         });
     });
 
@@ -127,13 +136,14 @@ describe('CreateProjectModal', () => {
         })
     );
 
-    // TODO: Test needs to be re-worked to account for OverlayHost used by the gtx-select
-    xit(`shows changes in the schema entities`,
-        componentTest(() => CreateProjectModalComponent, fixture => {
+    it(`shows changes in the schema entities`,
+        componentTest(() => TestComponent, (fixture, instance) => {
+            instance.openCreateProjectModal();
+            tick();
             triggerEvent(fixture.debugElement.query(By.directive(DropdownTriggerDirective)).nativeElement, 'click');
             fixture.detectChanges();
             tick();
-            expect(getSelectOptions(fixture).length).toBe(6, fixture.nativeElement.innerHTML);
+            expect(getSelectOptions(fixture).length).toBe(6);
             appState.mockState({
                 entities: {
                     schema: {}
@@ -146,13 +156,24 @@ describe('CreateProjectModal', () => {
     );
 });
 
-function getSelectOptions(fixture: ComponentFixture<CreateProjectModalComponent>) {
+function getSelectOptions(fixture: ComponentFixture<TestComponent>) {
     return fixture.nativeElement.querySelectorAll('li');
 }
-
 
 function triggerEvent(element: HTMLElement, eventName: string) {
     const event = document.createEvent('Event');
     event.initEvent(eventName, true, true);
     element.dispatchEvent(event);
+}
+
+@Component({
+    template: `<gtx-overlay-host></gtx-overlay-host>`
+})
+class TestComponent {
+    constructor(private modalService: ModalService) {}
+
+    openCreateProjectModal(): Promise<any> {
+        return this.modalService.fromComponent(CreateProjectModalComponent)
+            .then(modal => modal.open());
+    }
 }
