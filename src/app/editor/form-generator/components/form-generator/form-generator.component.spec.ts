@@ -209,6 +209,7 @@ const mockNode: MeshNode = {
         publish: true,
         readPublished: true
     },
+    rolePerms: {} as any,
     availableLanguages: [
         'en'
     ],
@@ -222,10 +223,7 @@ const mockNode: MeshNode = {
         }
     },
     tags: [],
-    version: {
-        uuid: 'abcdef',
-        number: '0.1'
-    },
+    version: '0.1',
     childrenInfo: {},
     schema: {
         name: 'person',
@@ -235,7 +233,7 @@ const mockNode: MeshNode = {
     fields: {
         name: 'Ada',
         age: 42,
-    },
+    } as any,
     languagePaths: {
         en: ''
     },

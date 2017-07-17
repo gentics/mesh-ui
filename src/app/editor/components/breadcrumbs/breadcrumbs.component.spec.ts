@@ -33,12 +33,9 @@ describe('BreadcrumbsComponent:', () => {
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
         appState.mockState({
-            editor: {
-                openNode: {
-                    uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
-                    projectName: 'demo',
-                    language: 'en'
-                }
+            list: {
+                currentProject: 'demo',
+                currentNode:  '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
             },
             ui: {
                 currentLanguage: 'en',
@@ -185,10 +182,7 @@ describe('BreadcrumbsComponent:', () => {
                                 uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
                             }
                         }],
-                        version: {
-                            uuid: '985e32ab5fb4461e9e32ab5fb4e61e95',
-                            number: '0.2'
-                        },
+                        version: '0.2',
                         container: false,
                         permissions: {
                             create: true,
@@ -197,7 +191,8 @@ describe('BreadcrumbsComponent:', () => {
                             delete: true,
                             publish: true,
                             readPublished: true
-                        }
+                        },
+                        rolePerms: {} as any
                     },
                     'fdc937c9ce0440188937c9ce04b0185f': {
                         uuid: 'fdc937c9ce0440188937c9ce04b0185f',
@@ -260,10 +255,7 @@ describe('BreadcrumbsComponent:', () => {
                                 uuid: '084396b200bc46d18396b200bca6d11f'
                             }
                         }],
-                        version: {
-                            uuid: '532761d08a5b4867a761d08a5b3867d9',
-                            number: '0.1'
-                        },
+                        version: '0.1',
                         container: false,
                         permissions: {
                             create: true,
@@ -272,7 +264,8 @@ describe('BreadcrumbsComponent:', () => {
                             delete: true,
                             publish: true,
                             readPublished: true
-                        }
+                        },
+                        rolePerms: {} as any
                     }
                 }
             }
@@ -289,8 +282,8 @@ describe('BreadcrumbsComponent:', () => {
     it(`empties the breadcrumb when no node is open`,
         componentTest(() => TestComponent, fixture => {
             appState.mockState({
-                editor: {
-                    openNode: undefined
+                list: {
+                    currentNode: undefined
                 }
             });
             fixture.detectChanges();
@@ -302,12 +295,9 @@ describe('BreadcrumbsComponent:', () => {
         componentTest(() => TestComponent, fixture => {
             fixture.detectChanges();
             appState.mockState({
-                editor: {
-                    openNode: {
-                        uuid: 'fdc937c9ce0440188937c9ce04b0185f',
-                        language: 'en',
-                        projectName: 'demo'
-                    }
+                list: {
+                    currentProject: 'demo',
+                    currentNode: 'fdc937c9ce0440188937c9ce04b0185f'
                 }
             });
             fixture.detectChanges();

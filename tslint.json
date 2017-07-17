@@ -24,6 +24,7 @@
         "import-destructuring-spacing": true,
         "invoke-injectable": true,
         "no-empty": false,
+        "no-empty-interface": false,
         // TODO: re-enable this rule one this issue is resolved in Codelyzer v4
         // https://github.com/mgechev/codelyzer/issues/190
         "no-access-missing-member": false,

@@ -10,9 +10,9 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { componentTest } from '../../../../testing/component-test';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { SharedModule } from '../../../shared/shared.module';
-import { ProjectEffectsService } from '../../../core/providers/effects/project-effects.service';
 import { CoreModule } from '../../../core/core.module';
 import { Project } from '../../../common/models/project.model';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 
 describe('ProjectListComponent', () => {
 
@@ -28,7 +28,7 @@ describe('ProjectListComponent', () => {
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ModalService, useValue: mockModal },
-                { provide: ProjectEffectsService, useValue: jasmine.createSpyObj('stub', ['loadProjects'])}
+                { provide: ListEffectsService, useValue: jasmine.createSpyObj('stub', ['loadProjects'])}
             ]
         });
     }));

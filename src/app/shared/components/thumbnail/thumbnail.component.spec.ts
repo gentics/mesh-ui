@@ -85,10 +85,7 @@ describe('Thumbnail', () => {
                                 uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
                             }
                         }],
-                        version: {
-                            uuid: 'f5f2ab25378d455ab2ab25378d755a53',
-                            number: '1.0'
-                        },
+                        version: '1.0',
                         container: false,
                         permissions: {
                             create: false,
@@ -97,7 +94,8 @@ describe('Thumbnail', () => {
                             delete: false,
                             publish: false,
                             readPublished: false
-                        }
+                        },
+                        rolePerms: {} as any
                     },
                     '9b41402a3925434d81402a3925e34d93': {
                         uuid: '9b41402a3925434d81402a3925e34d93',
@@ -143,10 +141,7 @@ describe('Thumbnail', () => {
                             }
                         },
                         breadcrumb: [],
-                        version: {
-                            uuid: 'fe318ce6548e48c1b18ce6548ec8c1fb',
-                            number: '1.0'
-                        },
+                        version: '1.0',
                         permissions: {
                             create: true,
                             read: true,
@@ -154,7 +149,8 @@ describe('Thumbnail', () => {
                             delete: true,
                             publish: true,
                             readPublished: true
-                        }
+                        },
+                        rolePerms: {} as any
                     },
                     '6adfe63bb9a34b8d9fe63bb9a30b8d8b': {
                         uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
@@ -210,10 +206,7 @@ describe('Thumbnail', () => {
                                 uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
                             }
                         }],
-                        version: {
-                            uuid: '985e32ab5fb4461e9e32ab5fb4e61e95',
-                            number: '0.2'
-                        },
+                        version: '0.2',
                         container: false,
                         permissions: {
                             create: true,
@@ -222,7 +215,8 @@ describe('Thumbnail', () => {
                             delete: true,
                             publish: true,
                             readPublished: true
-                        }
+                        },
+                        rolePerms: {} as any
                     },
                     'akd53197e5aa154e36b197e5aa155e367esd': {
                         uuid: 'd53197e5aa154e36b197e5aa155e367e',
@@ -261,10 +255,7 @@ describe('Thumbnail', () => {
                             name: 'no binary'
                         },
                         breadcrumb: [],
-                        version: {
-                            uuid: '30768d4efcfb49ebb68d4efcfb99ebfb',
-                            number: '1.0'
-                        },
+                        version: '1.0',
                         permissions: {
                             create: true,
                             read: true,
@@ -272,7 +263,8 @@ describe('Thumbnail', () => {
                             delete: true,
                             publish: true,
                             readPublished: true
-                        }
+                        },
+                        rolePerms: {} as any
                     }
                 },
                 schema: {

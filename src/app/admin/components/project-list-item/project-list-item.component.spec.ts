@@ -185,10 +185,7 @@ describe('ProjectListItemComponent', () => {
                                 uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
                             }
                         }],
-                        version: {
-                            uuid: '985e32ab5fb4461e9e32ab5fb4e61e95',
-                            number: '0.2'
-                        },
+                        version: '0.2',
                         container: false,
                         permissions: {
                             create: true,
@@ -197,7 +194,8 @@ describe('ProjectListItemComponent', () => {
                             delete: true,
                             publish: true,
                             readPublished: true
-                        }
+                        },
+                        rolePerms: {} as any
                     },
                     'fdc937c9ce0440188937c9ce04b0185f': {
                         uuid: 'fdc937c9ce0440188937c9ce04b0185f',
@@ -260,10 +258,7 @@ describe('ProjectListItemComponent', () => {
                                 uuid: '084396b200bc46d18396b200bca6d11f'
                             }
                         }],
-                        version: {
-                            uuid: '532761d08a5b4867a761d08a5b3867d9',
-                            number: '0.1'
-                        },
+                        version: '0.1',
                         container: false,
                         permissions: {
                             create: true,
@@ -272,7 +267,8 @@ describe('ProjectListItemComponent', () => {
                             delete: true,
                             publish: true,
                             readPublished: true
-                        }
+                        },
+                        rolePerms: {} as any
                     }
                 },
                 user: {

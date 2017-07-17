@@ -2,7 +2,7 @@ import { mergeEntityState } from './entity-state-actions';
 import { EntityState } from '../models/entity-state.model';
 import { User } from '../../common/models/user.model';
 
-fdescribe('EntityStateActions', () => {
+describe('EntityStateActions', () => {
 
     describe('mergeEntityState()', () => {
 

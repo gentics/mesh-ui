@@ -7,27 +7,27 @@ import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { SharedModule } from '../../../shared/shared.module';
-import { UserEffectsService } from '../../providers/effects/user-effects.service';
 import { I18nService } from '../../providers/i18n/i18n.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
 
 describe('ChangePasswordModal', () => {
 
-    let userEffectSpy;
+    let authEffectSpy;
     let notificationSpy;
     let appState: TestApplicationState;
 
 
     beforeEach(async(() => {
         notificationSpy = jasmine.createSpyObj('Notification', ['show']);
-        userEffectSpy = jasmine.createSpyObj('UserEffects', ['changePassword']);
-        userEffectSpy.changePassword.and.returnValue(Promise.resolve());
+        authEffectSpy = jasmine.createSpyObj('AuthEffectsService', ['changePassword']);
+        authEffectSpy.changePassword.and.returnValue(Promise.resolve());
 
         configureComponentTest({
             imports: [ReactiveFormsModule, SharedModule],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: UserEffectsService, useValue: userEffectSpy },
+                { provide: AuthEffectsService, useValue: authEffectSpy },
                 { provide: Notification, useValue: notificationSpy },
                 { provide: I18nService, useValue: { translate(key) { return key; } } }
             ],
@@ -92,7 +92,7 @@ describe('ChangePasswordModal', () => {
                 triggerEvent(fixture.nativeElement.querySelector('gtx-button[type="primary"]'), 'click');
                 fixture.detectChanges();
                 tick();
-                expect(userEffectSpy.changePassword).toHaveBeenCalledWith('d8b043e818144e27b043e81814ae2713', 'testpw');
+                expect(authEffectSpy.changePassword).toHaveBeenCalledWith('d8b043e818144e27b043e81814ae2713', 'testpw');
                 expect(notificationSpy.show).toHaveBeenCalled();
             })
         );

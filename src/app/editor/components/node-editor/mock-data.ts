@@ -5,45 +5,45 @@ import { Schema } from '../../../common/models/schema.model';
  */
 
 export const testNode: MeshNode = {
-    "uuid" : "21203632520b4d19a03632520b2d19c1",
-    "creator" : {
-        "uuid" : "344af82020cf4f6c8af82020cf7f6c76"
+    uuid : '21203632520b4d19a03632520b2d19c1',
+    creator : {
+        uuid : '344af82020cf4f6c8af82020cf7f6c76'
     } as any,
-    "created" : "2017-07-07T12:18:54Z",
-    "editor" : {
-        "uuid" : "344af82020cf4f6c8af82020cf7f6c76"
+    created : '2017-07-07T12:18:54Z',
+    editor : {
+        uuid : '344af82020cf4f6c8af82020cf7f6c76'
     },
-    "edited" : "2017-07-07T12:18:55Z",
-    "language" : "en",
-    "availableLanguages" : [ "en" ],
-    "parentNode" : {
-        "projectName" : "demo",
-        "uuid" : "f183fc2da8014c2383fc2da8011c2392",
-        "schema" : {
-            "name" : "folder",
-            "uuid" : "c16bb4d872564963abb4d872566963e2"
+    edited : '2017-07-07T12:18:55Z',
+    language : 'en',
+    availableLanguages : [ 'en' ],
+    parentNode : {
+        projectName : 'demo',
+        uuid : 'f183fc2da8014c2383fc2da8011c2392',
+        schema : {
+            name : 'folder',
+            uuid : 'c16bb4d872564963abb4d872566963e2'
         }
     },
-    "tags" : [ ],
-    "project" : {
-        "name" : "demo",
-        "uuid" : "217f8c981ada4642bf8c981adaa642c3"
+    tags : [ ],
+    project : {
+        name : 'demo',
+        uuid : '217f8c981ada4642bf8c981adaa642c3'
     },
-    "childrenInfo" : {
-        "vehicle" : {
-            "schemaUuid" : "2aa83a2b3cba40a1a83a2b3cba90a1de",
-            "count" : 3
+    childrenInfo : {
+        vehicle : {
+            schemaUuid : '2aa83a2b3cba40a1a83a2b3cba90a1de',
+            count : 3
         }
     },
     rolePerms: undefined as any,
-    "schema" : {
-        "name" : "category",
-        "uuid" : "2ca2362b041247c4a2362b041227c4da",
-        "version" : 1
+    schema : {
+        name : 'category',
+        uuid : '2ca2362b041247c4a2362b041227c4da',
+        version : 1
     },
-    "container" : true,
-    "displayField" : "name",
-    "fields" : {
+    container : true,
+    displayField : 'name',
+    fields : {
         name: 'Gulfstream G550',
         slug: '',
         description: `The Gulfstream G500 and G550 are business jet aircraft
@@ -118,15 +118,15 @@ export const testNode: MeshNode = {
             }
         ]
     } as any,
-    "breadcrumb" : [ ],
-    "version" : "1.0",
-    "permissions" : {
-        "create" : true,
-        "read" : true,
-        "update" : true,
-        "delete" : true,
-        "publish" : true,
-        "readPublished" : true
+    breadcrumb : [ ],
+    version : '1.0',
+    permissions : {
+        create : true,
+        read : true,
+        update : true,
+        delete : true,
+        publish : true,
+        readPublished : true
     }
 };
 
