@@ -1,18 +1,18 @@
 @import "variables";
 
 :host {
-    .container {
+   /* .container {
         display: flex;
         height: 40px;
         background-color: $gtx-color-light-gray;
         text-align: center;
         font-size: 32px;
-        color: $gtx-color-mid-gray;
+        color: $gtx-color-mid-gray;*/
 
         gtx-breadcrumbs {
             height: 40px;
             line-height: 40px;
             width: 100%;
         }
-    }
+   // }
 }

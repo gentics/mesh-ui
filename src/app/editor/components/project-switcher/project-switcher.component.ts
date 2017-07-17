@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { hashValues } from '../../../common/util/util';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { Project } from '../../../common/models/project.model';
 
 interface ProjectHash {
@@ -21,17 +20,10 @@ export class ProjectSwitcherComponent {
     projects$: Observable<Project[]>;
 
     constructor(private appState: ApplicationStateService,
-                private navigation: NavigationService,
-                private listEffects: ListEffectsService) {
+                private navigation: NavigationService) {
 
         this.projects$ = this.appState.select(state => state.entities.project)
-            .map(hashValues)
-            .do(projects => {
-                // TODO Ask if this is ok or if there is a better way
-                if (projects.length === 0) {
-                    this.listEffects.loadProjects();
-                }
-            });
+            .map(hashValues);
     }
 
     changeProject(project: Project) {
