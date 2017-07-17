@@ -9,6 +9,7 @@ import { componentTest } from '../../../../testing/component-test';
 import { SharedModule } from '../../shared.module';
 import { By } from '@angular/platform-browser';
 import { ThumbnailComponent } from './thumbnail.component';
+import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
 
 describe('Thumbnail', () => {
 
@@ -30,39 +31,13 @@ describe('Thumbnail', () => {
         appState.mockState({
             entities: {
                 node: {
-                    '4d1cabf1382e41ea9cabf1382ef1ea7c': {
+                    '4d1cabf1382e41ea9cabf1382ef1ea7c': mockMeshNode({
                         uuid: '4d1cabf1382e41ea9cabf1382ef1ea7c',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:16:14Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:16:25Z',
-                        language: 'en',
-                        availableLanguages: ['en'],
-                        parentNode: {
-                            projectName: 'demo',
-                            uuid: '6fc30221c18549fa830221c18589fa74',
-                            displayName: 'Vehicle Images',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
-                            }
-                        },
-                        project: {
-                            uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
-                            name: 'demo',
-                        },
-                        tags: [],
-                        childrenInfo: {},
                         schema: {
                             name: 'vehicleImage',
                             uuid: '832235ac0570435ea235ac0570b35e10',
                             version: 1
                         },
-                        displayField: 'name',
                         fields: {
                             name: 'Indian Empress Image',
                             image: {
@@ -75,60 +50,15 @@ describe('Thumbnail', () => {
                                 mimeType: 'image/jpg',
                                 dominantColor: '#6683af'
                             }
-                        },
-                        breadcrumb: [{
-                            projectName: 'demo',
-                            uuid: '6fc30221c18549fa830221c18589fa74',
-                            displayName: 'Vehicle Images',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
-                            }
-                        }],
-                        version: '1.0',
-                        container: false,
-                        permissions: {
-                            create: false,
-                            read: true,
-                            update: false,
-                            delete: false,
-                            publish: false,
-                            readPublished: false
-                        },
-                        rolePerms: {} as any
-                    },
-                    '9b41402a3925434d81402a3925e34d93': {
+                        } as any
+                    }),
+                    '9b41402a3925434d81402a3925e34d93': mockMeshNode({
                         uuid: '9b41402a3925434d81402a3925e34d93',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-05-09T12:26:02Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-05-09T12:26:03Z',
-                        language: 'en',
-                        availableLanguages: ['en'],
-                        parentNode: {
-                            projectName: 'demo',
-                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
-                            }
-                        },
-                        tags: [],
-                        project: {
-                            name: 'demo',
-                            uuid: '079bc38c5cb94db69bc38c5cb97db6b0'
-                        },
-                        childrenInfo: {},
                         schema: {
                             name: 'binary_content',
                             uuid: 'eb967a50be7e4602967a50be7ed60265',
                             version: 1
                         },
-                        container: false,
                         displayField: 'name',
                         fields: {
                             name: 'test',
@@ -139,42 +69,10 @@ describe('Thumbnail', () => {
                                 fileSize: 383631,
                                 mimeType: 'video/mp4'
                             }
-                        },
-                        breadcrumb: [],
-                        version: '1.0',
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        },
-                        rolePerms: {} as any
-                    },
-                    '6adfe63bb9a34b8d9fe63bb9a30b8d8b': {
+                        } as any,
+                    }),
+                    '6adfe63bb9a34b8d9fe63bb9a30b8d8b': mockMeshNode({
                         uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-04-27T09:08:13Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-04-27T09:08:20Z',
-                        language: 'en',
-                        availableLanguages: ['en'],
-                        parentNode: {
-                            projectName: 'demo',
-                            uuid: '5b1d4f44d5a545f49d4f44d5a5c5f495',
-                            displayName: 'folder2',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
-                            }
-                        },
-                        tags: [],
-                        childrenInfo: {},
                         schema: {
                             name: 'content',
                             uuid: '5953336e4342498593336e4342398599',
@@ -184,66 +82,10 @@ describe('Thumbnail', () => {
                         fields: {
                             name: 'stuff',
                             title: 'titel'
-                        },
-                        project: {
-                            uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
-                            name: 'demo',
-                        },
-                        breadcrumb: [{
-                            projectName: 'demo',
-                            uuid: '5b1d4f44d5a545f49d4f44d5a5c5f495',
-                            displayName: 'folder2',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
-                            }
-                        }, {
-                            projectName: 'demo',
-                            uuid: '74abb50f8b5d4e1fabb50f8b5dee1f5c',
-                            displayName: 'test',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
-                            }
-                        }],
-                        version: '0.2',
-                        container: false,
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        },
-                        rolePerms: {} as any
-                    },
-                    'akd53197e5aa154e36b197e5aa155e367esd': {
+                        } as any
+                    }),
+                    'akd53197e5aa154e36b197e5aa155e367esd': mockMeshNode({
                         uuid: 'd53197e5aa154e36b197e5aa155e367e',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-05-09T13:08:11Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-05-09T13:08:11Z',
-                        language: 'en',
-                        availableLanguages: ['en'],
-                        parentNode: {
-                            projectName: 'demo',
-                            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
-                            schema: {
-                                name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
-                            }
-                        },
-                        tags: [],
-                        project: {
-                            name: 'demo',
-                            uuid: '079bc38c5cb94db69bc38c5cb97db6b0'
-                        },
-                        childrenInfo: {},
                         schema: {
                             name: 'binary_content',
                             uuid: 'eb967a50be7e4602967a50be7ed60265',
@@ -253,35 +95,12 @@ describe('Thumbnail', () => {
                         displayField: 'name',
                         fields: {
                             name: 'no binary'
-                        },
-                        breadcrumb: [],
-                        version: '1.0',
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        },
-                        rolePerms: {} as any
-                    }
+                        } as any
+                    })
                 },
                 schema: {
-                    '5953336e4342498593336e4342398599': {
+                    '5953336e4342498593336e4342398599': mockSchema({
                         uuid: '5953336e4342498593336e4342398599',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:23Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:23Z',
-                        displayField: 'title',
-                        segmentField: 'filename',
-                        container: false,
-                        version: 1,
                         name: 'content',
                         fields: [{
                             name: 'name',
@@ -304,57 +123,20 @@ describe('Thumbnail', () => {
                             required: false,
                             type: 'html'
                         }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, 'b73bbc9adae94c88bbbc9adae99c88f5': {
+                    }),
+                    'b73bbc9adae94c88bbbc9adae99c88f5': mockSchema({
                         uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:23Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:23Z',
-                        displayField: 'name',
-                        segmentField: 'name',
-                        container: true,
-                        version: 1,
                         name: 'folder',
+                        container: true,
                         fields: [{
                             name: 'name',
                             label: 'Name',
                             required: false,
                             type: 'string'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, 'eb967a50be7e4602967a50be7ed60265': {
+                        }]
+                    }),
+                    'eb967a50be7e4602967a50be7ed60265': mockSchema({
                         uuid: 'eb967a50be7e4602967a50be7ed60265',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:23Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:23Z',
-                        displayField: 'name',
-                        segmentField: 'binary',
-                        container: false,
-                        version: 1,
                         name: 'binary_content',
                         fields: [{
                             name: 'name',
@@ -366,29 +148,10 @@ describe('Thumbnail', () => {
                             label: 'Binary Data',
                             required: false,
                             type: 'binary'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, 'a38a5c9af65844f28a5c9af65804f2e1': {
+                        }]
+                    }),
+                    'a38a5c9af65844f28a5c9af65804f2e1': mockSchema({
                         uuid: 'a38a5c9af65844f28a5c9af65804f2e1',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:48Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:48Z',
-                        displayField: 'name',
-                        segmentField: 'name',
-                        container: false,
-                        version: 1,
                         name: 'vehicle',
                         fields: [{
                             name: 'name',
@@ -426,29 +189,10 @@ describe('Thumbnail', () => {
                             required: false,
                             type: 'node',
                             allow: ['vehicleImage']
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, '832235ac0570435ea235ac0570b35e10': {
+                        }]
+                    }),
+                    '832235ac0570435ea235ac0570b35e10': mockSchema({
                         uuid: '832235ac0570435ea235ac0570b35e10',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:56Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:56Z',
-                        displayField: 'name',
-                        segmentField: 'image',
-                        container: false,
-                        version: 1,
                         name: 'vehicleImage',
                         fields: [{
                             name: 'name',
@@ -465,29 +209,10 @@ describe('Thumbnail', () => {
                             label: 'Image',
                             required: false,
                             type: 'binary'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, '4de05a1e64894a44a05a1e64897a445b': {
+                        }]
+                    }),
+                    '4de05a1e64894a44a05a1e64897a445b': mockSchema({
                         uuid: '4de05a1e64894a44a05a1e64897a445b',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:16:04Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:16:04Z',
-                        displayField: 'name',
-                        segmentField: 'name',
-                        container: true,
-                        version: 1,
                         name: 'category',
                         fields: [{
                             name: 'name',
@@ -499,16 +224,8 @@ describe('Thumbnail', () => {
                             label: 'Description',
                             required: false,
                             type: 'string'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }
+                        }]
+                    })
                 }
             }
         });

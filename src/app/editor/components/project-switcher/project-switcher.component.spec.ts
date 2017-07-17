@@ -11,6 +11,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { mockProject } from '../../../../testing/mock-models';
 
 
 describe('ProjectSwitcherComponent:', () => {
@@ -50,16 +51,8 @@ describe('ProjectSwitcherComponent:', () => {
             },
             entities: {
                 project: {
-                    '55f6a4666eb8467ab6a4666eb8867a84': {
+                    '55f6a4666eb8467ab6a4666eb8867a84': mockProject({
                         uuid: '55f6a4666eb8467ab6a4666eb8867a84',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2016-09-14T12:48:11Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2016-09-14T12:48:11Z',
                         name: 'demo',
                         rootNode: {
                             projectName: 'demo',
@@ -68,26 +61,10 @@ describe('ProjectSwitcherComponent:', () => {
                                 name: 'folder',
                                 uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
                             }
-                        },
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: false,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
                         }
-                    },
-                    'b5eba09ef1554337aba09ef155d337a5': {
+                    }),
+                    'b5eba09ef1554337aba09ef155d337a5': mockProject({
                         uuid: 'b5eba09ef1554337aba09ef155d337a5',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-04-20T12:00:42Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-04-20T12:00:42Z',
                         name: 'tvc',
                         rootNode: {
                             projectName: 'demo',
@@ -96,16 +73,8 @@ describe('ProjectSwitcherComponent:', () => {
                                 name: 'folder',
                                 uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
                             }
-                        },
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
                         }
-                    }
+                    })
                 }
             }
         });

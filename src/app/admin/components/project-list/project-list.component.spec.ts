@@ -11,8 +11,8 @@ import { componentTest } from '../../../../testing/component-test';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { CoreModule } from '../../../core/core.module';
-import { Project } from '../../../common/models/project.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { mockProject } from '../../../../testing/mock-models';
 
 describe('ProjectListComponent', () => {
 
@@ -41,16 +41,8 @@ describe('ProjectListComponent', () => {
                 currentUser: 'd8b043e818144e27b043e81814ae2713'
             }, entities: {
                 project: {
-                    '55f6a4666eb8467ab6a4666eb8867a84': {
+                    '55f6a4666eb8467ab6a4666eb8867a84': mockProject({
                         uuid: '55f6a4666eb8467ab6a4666eb8867a84',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2016-09-14T12:48:11Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2016-09-14T12:48:11Z',
                         name: 'demo',
                         rootNode: {
                             projectName: 'demo',
@@ -60,25 +52,9 @@ describe('ProjectListComponent', () => {
                                 uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
                             }
                         },
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: false,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    },
-                    'b5eba09ef1554337aba09ef155d337a5': {
+                    }),
+                    'b5eba09ef1554337aba09ef155d337a5': mockProject({
                         uuid: 'b5eba09ef1554337aba09ef155d337a5',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-04-20T12:00:42Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-04-20T12:00:42Z',
                         name: 'tvc',
                         rootNode: {
                             projectName: 'demo',
@@ -88,287 +64,7 @@ describe('ProjectListComponent', () => {
                                 uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
                             }
                         },
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }
-                },
-                user: {
-                    d8b043e818144e27b043e81814ae2713: {
-                        uuid: 'd8b043e818144e27b043e81814ae2713',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-05-02T09:06:00Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-05-02T09:06:00Z',
-                        lastname: 'Maulwurf',
-                        firstname: 'Hans',
-                        username: 'HM',
-                        enabled: true,
-                        groups: [{
-                            name: 'Client Group',
-                            uuid: '7e0a45aa7cbe471d8a45aa7cbe071d94'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }
-                },
-                schema: {
-                    '5953336e4342498593336e4342398599': {
-                        uuid: '5953336e4342498593336e4342398599',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:23Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:23Z',
-                        displayField: 'title',
-                        segmentField: 'filename',
-                        container: false,
-                        version: 1,
-                        name: 'content',
-                        fields: [{
-                            name: 'name',
-                            label: 'Name',
-                            required: true,
-                            type: 'string'
-                        }, {
-                            name: 'filename',
-                            label: 'Filename',
-                            required: false,
-                            type: 'string'
-                        }, {
-                            name: 'title',
-                            label: 'Title',
-                            required: false,
-                            type: 'string'
-                        }, {
-                            name: 'content',
-                            label: 'Content',
-                            required: false,
-                            type: 'html'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, 'b73bbc9adae94c88bbbc9adae99c88f5': {
-                        uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:23Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:23Z',
-                        displayField: 'name',
-                        segmentField: 'name',
-                        container: true,
-                        version: 1,
-                        name: 'folder',
-                        fields: [{
-                            name: 'name',
-                            label: 'Name',
-                            required: false,
-                            type: 'string'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, 'eb967a50be7e4602967a50be7ed60265': {
-                        uuid: 'eb967a50be7e4602967a50be7ed60265',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:23Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:23Z',
-                        displayField: 'name',
-                        segmentField: 'binary',
-                        container: false,
-                        version: 1,
-                        name: 'binary_content',
-                        fields: [{
-                            name: 'name',
-                            label: 'Name',
-                            required: false,
-                            type: 'string'
-                        }, {
-                            name: 'binary',
-                            label: 'Binary Data',
-                            required: false,
-                            type: 'binary'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, 'a38a5c9af65844f28a5c9af65804f2e1': {
-                        uuid: 'a38a5c9af65844f28a5c9af65804f2e1',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:48Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:48Z',
-                        displayField: 'name',
-                        segmentField: 'name',
-                        container: false,
-                        version: 1,
-                        name: 'vehicle',
-                        fields: [{
-                            name: 'name',
-                            label: 'Name',
-                            required: true,
-                            type: 'string'
-                        }, {
-                            name: 'weight',
-                            label: 'Weight',
-                            required: false,
-                            type: 'number'
-                        }, {
-                            name: 'SKU',
-                            label: 'Stock Keeping Unit',
-                            required: false,
-                            type: 'number'
-                        }, {
-                            name: 'price',
-                            label: 'Price',
-                            required: false,
-                            type: 'number'
-                        }, {
-                            name: 'stocklevel',
-                            label: 'Stock Level',
-                            required: false,
-                            type: 'number'
-                        }, {
-                            name: 'description',
-                            label: 'Description',
-                            required: false,
-                            type: 'html'
-                        }, {
-                            name: 'vehicleImage',
-                            label: 'Vehicle Image',
-                            required: false,
-                            type: 'node',
-                            allow: ['vehicleImage']
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, '832235ac0570435ea235ac0570b35e10': {
-                        uuid: '832235ac0570435ea235ac0570b35e10',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:15:56Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:15:56Z',
-                        displayField: 'name',
-                        segmentField: 'image',
-                        container: false,
-                        version: 1,
-                        name: 'vehicleImage',
-                        fields: [{
-                            name: 'name',
-                            label: 'Name',
-                            required: true,
-                            type: 'string'
-                        }, {
-                            name: 'altText',
-                            label: 'Alternative Text',
-                            required: false,
-                            type: 'string'
-                        }, {
-                            name: 'image',
-                            label: 'Image',
-                            required: false,
-                            type: 'binary'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }, '4de05a1e64894a44a05a1e64897a445b': {
-                        uuid: '4de05a1e64894a44a05a1e64897a445b',
-                        creator: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        created: '2017-04-28T13:16:04Z',
-                        editor: {
-                            uuid: '8fbffd876e694439bffd876e697439a4'
-                        },
-                        edited: '2017-04-28T13:16:04Z',
-                        displayField: 'name',
-                        segmentField: 'name',
-                        container: true,
-                        version: 1,
-                        name: 'category',
-                        fields: [{
-                            name: 'name',
-                            label: 'Name',
-                            required: true,
-                            type: 'string'
-                        }, {
-                            name: 'description',
-                            label: 'Description',
-                            required: false,
-                            type: 'string'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }
+                    })
                 }
             }
         });
@@ -388,7 +84,7 @@ describe('ProjectListComponent', () => {
                 entities: {
                     project: {
                         ...appState.now.entities.project,
-                        test3: testProject('test3')
+                        test3: mockProject({ name: 'test3', uuid: 'test3' })
                     }
                 }
             });
@@ -409,37 +105,6 @@ describe('ProjectListComponent', () => {
 function getListedProjectUuids(fixture: ComponentFixture<ProjectListComponent>): string[] {
     return fixture.debugElement.queryAll(By.directive(MockProjectItemComponent))
         .map(it => it.componentInstance.projectUuid);
-}
-
-function testProject(name: string): Project {
-    return {
-        uuid: name,
-        creator: {
-            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-        },
-        created: '2016-09-14T12:48:11Z',
-        editor: {
-            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-        },
-        edited: '2016-09-14T12:48:11Z',
-        name,
-        rootNode: {
-            projectName: 'demo',
-            uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
-            schema: {
-                name: 'folder',
-                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
-            }
-        },
-        permissions: {
-            create: true,
-            read: true,
-            update: false,
-            delete: true,
-            publish: true,
-            readPublished: true
-        }
-    };
 }
 
 @Component({

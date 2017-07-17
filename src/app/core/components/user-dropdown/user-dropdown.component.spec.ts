@@ -10,6 +10,7 @@ import { configureComponentTest } from '../../../../testing/configure-component-
 import { SharedModule } from '../../../shared/shared.module';
 import { UserDropdownComponent } from './user-dropdown.component';
 import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
+import { mockUser } from '../../../../testing/mock-models';
 
 describe('UserDropdownComponent:', () => {
 
@@ -38,58 +39,18 @@ describe('UserDropdownComponent:', () => {
             },
             entities: {
                 user: {
-                    d8b043e818144e27b043e81814ae2713: {
+                    d8b043e818144e27b043e81814ae2713: mockUser({
                         uuid: 'd8b043e818144e27b043e81814ae2713',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-05-02T09:06:00Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-05-02T09:06:00Z',
                         lastname: 'Maulwurf',
                         firstname: 'Hans',
-                        username: 'HM',
-                        enabled: true,
-                        groups: [{
-                            name: 'Client Group',
-                            uuid: '7e0a45aa7cbe471d8a45aa7cbe071d94'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    },
-                    b6f535db1751483ab535db1751e83afe: {
+                        username: 'HM'
+                    }),
+                    b6f535db1751483ab535db1751e83afe: mockUser({
                         uuid: 'b6f535db1751483ab535db1751e83afe',
-                        creator: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        created: '2017-05-02T09:05:41Z',
-                        editor: {
-                            uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                        },
-                        edited: '2017-05-02T09:05:41Z',
                         username: 'TestUser',
-                        enabled: true,
-                        groups: [{
-                            name: 'Editor Group',
-                            uuid: '63ab949103024a43ab94910302fa4325'
-                        }],
-                        permissions: {
-                            create: true,
-                            read: true,
-                            update: true,
-                            delete: true,
-                            publish: true,
-                            readPublished: true
-                        }
-                    }
+                        firstname: undefined,
+                        lastname: undefined
+                    })
                 }
             }
         });
@@ -119,33 +80,12 @@ describe('UserDropdownComponent:', () => {
             appState.mockState({
                 entities: {
                     user: {
-                        d8b043e818144e27b043e81814ae2713: {
+                        d8b043e818144e27b043e81814ae2713: mockUser({
                             uuid: 'd8b043e818144e27b043e81814ae2713',
-                            creator: {
-                                uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                            },
-                            created: '2017-05-02T09:06:00Z',
-                            editor: {
-                                uuid: 'fddebd539e6b4eb79ebd539e6b6eb74f'
-                            },
-                            edited: '2017-05-02T09:06:00Z',
                             lastname: 'Maulwurf',
                             firstname: 'Horst',
-                            username: 'HM',
-                            enabled: true,
-                            groups: [{
-                                name: 'Client Group',
-                                uuid: '7e0a45aa7cbe471d8a45aa7cbe071d94'
-                            }],
-                            permissions: {
-                                create: true,
-                                read: true,
-                                update: true,
-                                delete: true,
-                                publish: true,
-                                readPublished: true
-                            }
-                        }
+                            username: 'HM'
+                        })
                     }
                 }
             });
@@ -163,7 +103,7 @@ function getDisplayedUsername(fixture: ComponentFixture<TestComponent>): string 
 // TODO move this to general util class
 function getTextFromElement(element: HTMLElement): string[] {
     return Array.from(element.childNodes)
-        // type 3 is Text
+    // type 3 is Text
         .filter(node => node.nodeType === 3)
         .map((node: Text) => node.textContent as string)
         .map(text => text.trim())
