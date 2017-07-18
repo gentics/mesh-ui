@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { testNode, testSchema } from './mock-data';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ActivatedRoute } from '@angular/router';
@@ -11,12 +11,15 @@ import { Observable } from 'rxjs/Observable';
 @Component({
     selector: 'node-editor',
     templateUrl: './node-editor.component.html',
-    styleUrls: ['./node-editor.scss']
+    styleUrls: ['./node-editor.scss'],
+    // TODO: set to OnPush - needs changeDetector work in FormGenerator
+    changeDetection: ChangeDetectionStrategy.Default
 })
 
 export class NodeEditorComponent implements OnInit, OnDestroy {
     node: MeshNode = testNode;
     schema: Schema = testSchema;
+    nodeTitle: string = '';
 
     constructor(
         private state: ApplicationStateService,
@@ -48,6 +51,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             .subscribe(([node, schema]) => {
                 this.node = node;
                 this.schema = schema;
+                this.nodeTitle = this.getNodeTitle();
                 this.changeDetector.markForCheck();
             });
     }
@@ -56,7 +60,31 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.editorEffects.closeEditor();
     }
 
+    getNodePath(): string {
+        const breadcrumbs = this.node.breadcrumb.map(b => b.displayName);
+        // TODO: remove this once Mesh fixes the order of the breadcrumbs
+        breadcrumbs.reverse();
+
+        return [this.node.project.name, ...breadcrumbs].join(' > ');
+    }
+
+    getNodePathRouterLink(): any[] {
+        if (this.node.project.name) {
+            return this.navigationService.list(this.node.project.name, this.node.parentNode.uuid).commands();
+        } else {
+            return [];
+        }
+    }
+
     closeEditor(): void {
         this.navigationService.clearDetail().navigate();
+    }
+
+    private getNodeTitle(): string {
+        if (this.node.displayField) {
+            return this.node.fields[this.node.displayField];
+        } else {
+            return this.node.uuid;
+        }
     }
 }

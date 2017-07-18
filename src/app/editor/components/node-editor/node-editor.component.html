@@ -1,21 +1,44 @@
 <div class="editor-header">
-    <div>
-        <small>[debug]</small>
-    </div>
-    <div>
-        Valid: {{ formGenerator?.isValid }}
-    </div>
-    <div>
-        Dirty: {{ formGenerator?.isDirty }}
-    </div>
-    <div>
-        <gtx-button size="small" flat (click)="formGenerator.setPristine()" [disabled]="!formGenerator?.isDirty">set pristine</gtx-button>
+    <div class="title-row">
+        <div class="main">
+            <div class="display-name">{{ nodeTitle }}</div>
+            <div class="schema">
+                <schema-label [schema]="node.schema"></schema-label>
+            </div>
+        </div>
+        <div class="primary-buttons">
+            <gtx-button size="small" type="primary" [disabled]="!formGenerator?.isDirty">
+                <icon left>save</icon> {{ 'editor.save_button' | i18n }}
+            </gtx-button>
+            <gtx-button size="small" type="success" [disabled]="!formGenerator?.isDirty">
+                <icon left>public</icon> {{ 'editor.publish_button' | i18n }}
+            </gtx-button>
+        </div>
     </div>
     <div class="close-button">
         <gtx-button icon type="secondary" (click)="closeEditor()"><icon>close</icon></gtx-button>
     </div>
+    <div class="info-row">
+        <div class="path">
+            <a [routerLink]="getNodePathRouterLink()">
+                {{ getNodePath() }}
+            </a>
+        </div>
+        <div class="language">
+            LANGUAGE STUFF
+        </div>
+    </div>
+    <div class="tags-row">
+        <div class="tags">
+            TAGS STUFF
+        </div>
+        <div class="versions">
+            VERSIONS STUFF
+        </div>
+    </div>
 </div>
-<div class="editor-body" scrollFrame *ngIf="node">
+
+<div class="editor-body" scrollFrame>
     <form-generator #formGenerator
                     [schema]="schema"
                     [node]="node"></form-generator>

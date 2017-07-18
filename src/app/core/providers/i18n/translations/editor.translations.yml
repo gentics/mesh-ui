@@ -7,6 +7,12 @@ error_min_value:
 error_required:
     en: This field is required
     de: Dieses Felt is erforderlich
+publish_button:
+    en: Publish
+    de: Veröffentlichen
 remove_list_item_tooltip:
     en: Drop here to remove
     de: Zum Entfernen hier ablegen
+save_button:
+    en: Save
+    de: Speichern

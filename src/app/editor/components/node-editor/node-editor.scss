@@ -1,3 +1,5 @@
+@import "variables";
+
 :host {
     display: flex;
     flex-direction: column;
@@ -7,18 +9,56 @@
 .editor-header {
     flex-shrink: 1;
     position: relative;
-    background-color: rgba(3, 100, 15, 0.2);
-    padding: 5px;
-    height: 40px;
-    > div {
-        display: inline-block;
-        margin: 0 10px;
-    }
-
+    box-shadow: 1px 3px 7px -5px;
     .close-button {
         position: absolute;
-        right: 0;
+        right: 5px;
         top: 6px;
+    }
+}
+
+.title-row {
+    display: flex;
+    padding: 5px;
+    background-color: lighten(desaturate($gtx-color-primary, 60%), 40%);
+    padding-right: 30px;
+    height: 40px;
+    .main {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+    }
+    .display-name {
+        font-size: $gtx-font-size-lead;
+        display: inline-block;
+    }
+    .schema {
+        margin-left: 10px;
+        display: inline-block;
+    }
+}
+.primary-buttons {
+    display: flex;
+    align-items: center;
+    > gtx-button {
+        margin: 0 10px;
+    }
+}
+.info-row {
+    padding: 5px;
+    background-color: lighten(desaturate($gtx-color-primary, 80%), 50%);
+    display: flex;
+    justify-content: space-between;
+    .language {
+        color: $gtx-color-light-gray;
+    }
+}
+.tags-row {
+    display: flex;
+    justify-content: space-between;
+    .tags, .versions {
+        padding: 5px;
+        color: $gtx-color-light-gray;
     }
 }
 .editor-body {
