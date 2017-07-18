@@ -7,10 +7,14 @@
             </div>
         </div>
         <div class="primary-buttons">
-            <gtx-button size="small" type="primary" [disabled]="!formGenerator?.isDirty">
+            <gtx-button size="small" type="primary"
+                        (click)="saveNode()"
+                        [disabled]="!formGenerator?.isDirty">
                 <icon left>save</icon> {{ 'editor.save_button' | i18n }}
             </gtx-button>
-            <gtx-button size="small" type="success" [disabled]="!formGenerator?.isDirty">
+            <gtx-button size="small" type="success"
+                        (click)="publishNode()"
+                        [disabled]="!isDraft()">
                 <icon left>public</icon> {{ 'editor.publish_button' | i18n }}
             </gtx-button>
         </div>
@@ -33,13 +37,12 @@
             TAGS STUFF
         </div>
         <div class="versions">
-            VERSIONS STUFF
+            v{{ node.version }} VERSIONS STUFF
         </div>
     </div>
 </div>
 
 <div class="editor-body" scrollFrame>
-    <form-generator #formGenerator
-                    [schema]="schema"
+    <form-generator [schema]="schema"
                     [node]="node"></form-generator>
 </div>

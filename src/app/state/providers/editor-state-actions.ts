@@ -3,15 +3,19 @@ import { CloneDepth, Immutable, StateActionBranch, withChanges } from 'immutable
 
 import { AppState } from '../models/app-state.model';
 import { EditorState } from '../models/editor-state.model';
+import { EntityState } from '../models/entity-state.model';
+import { mergeEntityState } from './entity-state-actions';
+import { MeshNode } from '../../common/models/node.model';
 
 @Injectable()
 @Immutable()
 export class EditorStateActions extends StateActionBranch<AppState> {
     @CloneDepth(1) private editor: EditorState;
+    @CloneDepth(0) private entities: EntityState;
 
     constructor() {
         super({
-            uses: ['editor'],
+            uses: ['editor', 'entities'],
             initialState: {
                 editor: {
                     editorIsFocused: false,
@@ -20,7 +24,8 @@ export class EditorStateActions extends StateActionBranch<AppState> {
                         uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
                         projectName: 'demo',
                         language: 'en'
-                    }
+                    },
+                    loadCount: 0
                 }
             }
         });
@@ -49,5 +54,39 @@ export class EditorStateActions extends StateActionBranch<AppState> {
 
     focusList(): void {
         this.editor.editorIsFocused = false;
+    }
+
+    saveNodeStart(): void {
+        this.editor.loadCount ++;
+    }
+
+    saveNodeError(): void {
+        this.editor.loadCount --;
+    }
+
+    saveNodeSuccess(node: MeshNode): void {
+        this.editor.loadCount --;
+        this.entities = mergeEntityState(this.entities, {
+            node: {
+                [node.uuid]: node
+            }
+        });
+    }
+
+    publishNodeStart(): void {
+        this.editor.loadCount ++;
+    }
+
+    publishNodeError(): void {
+        this.editor.loadCount --;
+    }
+
+    publishNodeSuccess(nodeUuid: string, version: string): void {
+        this.editor.loadCount --;
+        this.entities = mergeEntityState(this.entities, {
+            node: {
+                [nodeUuid]: { version }
+            }
+        });
     }
 }

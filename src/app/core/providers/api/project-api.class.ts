@@ -180,9 +180,9 @@ export class ProjectApi {
      */
     updateNode({ project, nodeUuid }: { project: string, nodeUuid: string }, updateRequest: NodeUpdateRequest) {
         return this.apiBase.post('/{project}/nodes/{nodeUuid}', { project, nodeUuid }, updateRequest)
-            .mapResponses<{ conflict: GenericMessageResponse } | { node: NodeResponse }>({
-                200: node => ({ node }),
-                409: conflict => ({ conflict })
+            .mapResponses<{ conflict: GenericMessageResponse | null; node: NodeResponse | null; }>({
+                200: node => ({ node, conflict: null }),
+                409: conflict => ({ node: null, conflict })
             });
     }
 

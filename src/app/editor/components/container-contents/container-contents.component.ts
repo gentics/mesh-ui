@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -49,6 +48,8 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 a.containerUuid === b.containerUuid && a.projectName === b.projectName);
 
         const childNodes$ = this.state.select(state => state.list.currentNode)
+                .combineLatest(this.state.select(state => state.entities.node))
+                .map(([containerUuid, nodes]) => containerUuid)
                 .switchMap(containerUuid =>
                     this.state.select(state => {
                         const node = state.entities.node[containerUuid!];

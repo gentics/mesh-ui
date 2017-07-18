@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { testNode, testSchema } from './mock-data';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ActivatedRoute } from '@angular/router';
@@ -7,6 +7,7 @@ import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Observable } from 'rxjs/Observable';
+import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 
 @Component({
     selector: 'node-editor',
@@ -20,6 +21,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     node: MeshNode = testNode;
     schema: Schema = testSchema;
     nodeTitle: string = '';
+    @ViewChild(FormGeneratorComponent) formGenerator: FormGeneratorComponent;
 
     constructor(
         private state: ApplicationStateService,
@@ -49,6 +51,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 )
             )
             .subscribe(([node, schema]) => {
+                this.formGenerator.setPristine();
                 this.node = node;
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();
@@ -65,7 +68,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         // TODO: remove this once Mesh fixes the order of the breadcrumbs
         breadcrumbs.reverse();
 
-        return [this.node.project.name, ...breadcrumbs].join(' > ');
+        return [this.node.project.name, ...breadcrumbs].join(' › ');
     }
 
     getNodePathRouterLink(): any[] {
@@ -73,6 +76,23 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             return this.navigationService.list(this.node.project.name, this.node.parentNode.uuid).commands();
         } else {
             return [];
+        }
+    }
+
+    /** Returns true if the node is a draft version i.e. not a whole number version */
+    isDraft(): boolean {
+        return !/\.0$/.test(this.node.version);
+    }
+
+    saveNode(): void {
+        if (this.formGenerator.isDirty) {
+            this.editorEffects.saveNode(this.node);
+        }
+    }
+
+    publishNode(): void {
+        if (this.isDraft()) {
+            this.editorEffects.publishNode(this.node);
         }
     }
 

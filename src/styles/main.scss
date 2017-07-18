@@ -8,3 +8,7 @@ $roboto-font-path: '../../node_modules/gentics-ui-core/dist/fonts/';
 
 @import "scroll-frame";
 
+html, body {
+    overflow-x: hidden;
+}
+

@@ -7,6 +7,18 @@ error_min_value:
 error_required:
     en: This field is required
     de: Dieses Felt is erforderlich
+node_published:
+    en: 'Node successfully published as version {{version}}'
+    de: 'Node erfolgreich veröffentlicht als Version {{version}}'
+node_publish_error:
+    en: Node could not be published
+    de: Node könnte nicht veröffentlicht werden
+node_saved:
+    en: Node successfully saved
+    de: Node erfolgrich geschpeichert
+node_save_error:
+    en: Node could not be saved
+    de: Node könnte nicht geschpeichert werden
 publish_button:
     en: Publish
     de: Veröffentlichen

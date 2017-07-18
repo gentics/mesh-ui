@@ -6,4 +6,5 @@ export interface EditorState {
         projectName: string;
         language: string;
     };
+    loadCount: number;
 }
