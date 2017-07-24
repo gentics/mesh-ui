@@ -77,7 +77,7 @@ describe('AdminBreadcrumbsComponent', () => {
         testingRouter.navigate(['/foo2']);
         tick();
         expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo2', route: ['foo2'] }
+            { text: 'Foo2', route: ['/foo2'] }
         ]);
     }));
 
@@ -85,8 +85,8 @@ describe('AdminBreadcrumbsComponent', () => {
         testingRouter.navigate(['/foo2', 'bar2']);
         tick();
         expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo2', route: ['foo2'] },
-            { text: 'Bar2', route: ['foo2', 'bar2'] }
+            { text: 'Foo2', route: ['/foo2'] },
+            { text: 'Bar2', route: ['/foo2', 'bar2'] }
         ]);
     }));
 
@@ -94,9 +94,9 @@ describe('AdminBreadcrumbsComponent', () => {
         testingRouter.navigate(['/foo2', 'bar2', 'baz1']);
         tick();
         expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo2', route: ['foo2'] },
-            { text: 'Bar2', route: ['foo2', 'bar2'] },
-            { text: 'Baz1', route: ['foo2', 'bar2', 'baz1'] }
+            { text: 'Foo2', route: ['/foo2'] },
+            { text: 'Bar2', route: ['/foo2', 'bar2'] },
+            { text: 'Baz1', route: ['/foo2', 'bar2', 'baz1'] }
         ]);
     }));
 
@@ -104,7 +104,7 @@ describe('AdminBreadcrumbsComponent', () => {
         testingRouter.navigate(['/foo3']);
         tick();
         expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo3', route: ['foo3'] }
+            { text: 'Foo3', route: ['/foo3'] }
         ]);
     }));
 
@@ -112,7 +112,7 @@ describe('AdminBreadcrumbsComponent', () => {
         testingRouter.navigate(['/foo4/hello']);
         tick();
         expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo4 hello', route: ['foo4', 'hello'] }
+            { text: 'Foo4 hello', route: ['/foo4', 'hello'] }
         ]);
     }));
 
@@ -120,7 +120,7 @@ describe('AdminBreadcrumbsComponent', () => {
         testingRouter.navigate(['/foo5/hello']);
         tick();
         expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo5 hello quux', route: ['foo5', 'hello'] }
+            { text: 'Foo5 hello quux', route: ['/foo5', 'hello'] }
         ]);
     }));
 

@@ -35,6 +35,10 @@ export class AdminBreadcrumbsComponent implements OnInit, OnDestroy {
                         if (route.outlet === PRIMARY_OUTLET) {
                             const routeSnapshot = route.snapshot;
                             routeDef = routeDef.concat(routeSnapshot.url.map(segment => segment.path));
+                            if (routeSnapshot.url.length > 0 && routeDef.length === routeSnapshot.url.length) {
+                                // Add "/" once before first element to get an absolute path
+                                routeDef[0] = '/' + routeDef[0];
+                            }
                             const breadcrumb = route.routeConfig && route.routeConfig.data && route.routeConfig.data['breadcrumb'];
                             if (breadcrumb) {
                                 const text = typeof breadcrumb === 'function' ? breadcrumb(routeSnapshot.data, routeSnapshot.params) : breadcrumb;
