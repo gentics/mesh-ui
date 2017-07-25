@@ -291,6 +291,8 @@ export class ApiBase {
             return response.json();
         } else if (contentType && contentType.startsWith('text/')) {
             return response.text();
+        } else if (response.status === 204) { // No content (happens on delete)
+            return null;
         } else {
             return response.blob();
         }

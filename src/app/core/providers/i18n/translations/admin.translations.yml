@@ -1,9 +1,15 @@
 projects_create:
     en: Create project
     de: Projekt erstellen
-projects_none_found:
-    en: No projects found
-    de: Keine Projekte gefunden
 project_created:
     en: Project created
     de: Projekt erstellt
+project_deleted:
+    en: Project deleted
+    de: Projekt gelöscht
+project_deleted_error:
+    en: Project could not be deleted
+    de: Projekt konnte nicht gelöscht werden
+projects_none_found:
+    en: No projects found
+    de: Keine Projekte gefunden

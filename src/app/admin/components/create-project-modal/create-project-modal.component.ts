@@ -71,7 +71,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
             this.creating = true;
             this.conflict = false;
             try {
-                const response = await this.projectEffects.create(request);
+                const response = await this.projectEffects.createProject(request);
                 this.closeFn(response);
             } catch (err) {
                 if (err instanceof ApiError && err.response && err.response.status === 409) {
@@ -91,7 +91,6 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     }
 
     private conflictValidator: (control: AbstractControl) => ValidationErrors | null = control => {
-        console.log('validating', control.pristine, this.conflict);
         if (control.pristine && this.conflict) {
             return {conflict: true};
         } else {

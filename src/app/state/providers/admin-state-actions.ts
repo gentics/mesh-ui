@@ -21,31 +21,40 @@ export class AdminStateActions extends StateActionBranch<AppState> {
             uses: ['admin', 'entities'],
             initialState: {
                 admin: {
-                    schemasLoading: false
+                    loadCount: 0
                 }
             }
         });
     }
 
-    loadSchemasStart() {
-        this.admin.schemasLoading = true;
+    actionStart() {
+        this.admin.loadCount++;
+    }
+
+    actionError() {
+        this.admin.loadCount++;
     }
 
     loadSchemasSuccess(schemas: SchemaResponse[]) {
-        this.admin.schemasLoading = false;
+        this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             schema: schemas
         });
     }
 
-    loadSchemasError() {
-        this.admin.schemasLoading = false;
-    }
-
-    createProject(project: ProjectResponse) {
+    createProjectSuccess(project: ProjectResponse) {
+        this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             project: {
                 [project.uuid]: project
+            }
+        });
+    }
+
+    deleteProjectSuccess(projectUuid: string) {
+        this.entities = mergeEntityState(this.entities, {
+            project: {
+                [projectUuid]: undefined
             }
         });
     }

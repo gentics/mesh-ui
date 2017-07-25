@@ -4,6 +4,7 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Subscription } from 'rxjs';
 import { ProjectResponse } from '../../../common/models/server-models';
+import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
                 private notification: Notification,
                 private modal: ModalService,
                 private i18n: I18nService,
-                private state: ApplicationStateService) {
+                private state: ApplicationStateService,
+                private ProjectEffectsService: ProjectEffectsService) {
     }
 
     ngOnInit(): void {
@@ -60,19 +62,18 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
             ]
         })
         .then(modal => modal.open())
-        .then(() => {
-            // TODO actually delete
-            this.notification.show({ message: 'delete' });
-        });
+        .then(() => this.ProjectEffectsService.deleteProject(this.projectUuid));
     }
 
     /**
      * Updates the project.
      * Happens on input blur
      */
-    update(): void {
+    update(event): void {
+        console.log(event);
         // TODO actually update
-        // TODO maybe not check state but something different because it might get update later (after api call is done)
+        // TODO maybe not check state but something different because it might get updated later (after api call is done)
+        // TODO Implement as soon as double firing of this event is fixed
         if (this.state.now.entities.project[this.projectUuid].name !== this.project.name) {
             this.notification.show({ message: 'update' });
         }

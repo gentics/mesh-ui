@@ -1,5 +1,5 @@
 <gtx-contents-list-item>
-    <gtx-input #projectName *ngIf="project.permissions.update" class="item-primary" [(ngModel)]="project.name" (blur)="update()"></gtx-input>
+    <gtx-input #projectName *ngIf="project.permissions.update" class="item-primary" [(ngModel)]="project.name" (blur)="update($event)"></gtx-input>
     <div *ngIf="!project.permissions.update" class="item-primary">{{ project.name }}</div>
     <div class="show-on-hover">
         <gtx-button icon (click)="edit()"><icon *ngIf="project.permissions.update">edit</icon></gtx-button>

@@ -1,3 +1,3 @@
 export interface AdminState {
-    schemasLoading: boolean;
+    loadCount: number;
 }
