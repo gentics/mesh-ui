@@ -58,7 +58,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
         this.cancelFn = cancel;
     }
 
-    async createProject() {
+    createProject() {
         if (this.form.valid) {
             const request: ProjectCreateRequest = {
                 name: this.name.value,
@@ -70,10 +70,10 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
             this.form.markAsPristine();
             this.creating = true;
             this.conflict = false;
-            try {
-                const response = await this.projectEffects.createProject(request);
+            this.projectEffects.createProject(request).then(response => {
                 this.closeFn(response);
-            } catch (err) {
+                this.creating = false;
+            }).catch(err => {
                 if (err instanceof ApiError && err.response && err.response.status === 409) {
                     this.conflict = true;
                     this.name.updateValueAndValidity();
@@ -84,9 +84,8 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
                     });
                     console.error(JSON.stringify(err, undefined, 2));
                 }
-            } finally {
                 this.creating = false;
-            }
+            });
         }
     }
 

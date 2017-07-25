@@ -12,12 +12,14 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ProjectResponse } from '../../../common/models/server-models';
 import { mockProject } from '../../../../testing/mock-models';
+import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 
 describe('ProjectListItemComponent', () => {
 
     let appState: TestApplicationState;
     let mockModal;
     let mockNotification;
+    const mockProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['deleteProject']);
 
     beforeEach(() => {
         mockModal = { dialog() { } };
@@ -32,7 +34,8 @@ describe('ProjectListItemComponent', () => {
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ModalService, useValue: mockModal },
                 { provide: Notification, useValue: mockNotification },
-                { provide: I18nService, useValue: { translate() { } } }
+                { provide: I18nService, useValue: { translate() { } } },
+                { provide: ProjectEffectsService, useValue: mockProjectEffectsService}
             ],
             declarations: [TestComponent, ProjectListItemComponent]
         });
@@ -122,9 +125,8 @@ describe('ProjectListItemComponent', () => {
             getButton(fixture, 'delete').click();
             fixture.detectChanges();
             expect(mockModal.dialog).toHaveBeenCalled();
-            // TODO maybe remove this if state and api is implemented and notification is not done in this component
             tick();
-            expect(mockNotification.show).toHaveBeenCalled();
+            expect(mockProjectEffectsService.deleteProject).toHaveBeenCalled();
         })
     );
 

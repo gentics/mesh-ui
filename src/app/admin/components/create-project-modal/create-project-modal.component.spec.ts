@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { Component, NgModule } from '@angular/core';
 import { DropdownTriggerDirective, GenticsUICoreModule, ModalService, Notification, OverlayHostService } from 'gentics-ui-core';
 
 import { CreateProjectModalComponent } from './create-project-modal.component';
@@ -10,19 +12,22 @@ import { componentTest } from '../../../../testing/component-test';
 import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 import { mockMeshNode, mockProject, mockSchema, mockUser } from '../../../../testing/mock-models';
-import { By } from '@angular/platform-browser';
-import { Component, NgModule } from '@angular/core';
+import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
+import { ApiError } from '../../../core/providers/api/api-error';
 
 describe('CreateProjectModal', () => {
 
     let appState: TestApplicationState;
+    const mockProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['createProject']);
+    const mockNotification = jasmine.createSpyObj('Notification', ['show']);
 
     @NgModule(provideMockI18n({
         imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule],
         providers: [
             { provide: ApplicationStateService, useClass: TestApplicationState },
             { provide: SchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
-            Notification,
+            { provide: ProjectEffectsService, useValue: mockProjectEffectsService},
+            { provide: Notification, useValue: mockNotification},
             OverlayHostService
         ],
         entryComponents: [CreateProjectModalComponent],
@@ -152,6 +157,71 @@ describe('CreateProjectModal', () => {
             fixture.detectChanges();
             tick();
             expect(getSelectOptions(fixture).length).toBe(0);
+        })
+    );
+
+    it(`creates a new project`,
+        componentTest(() => CreateProjectModalComponent, (fixture, instance) => {
+            const projectName = 'testproject1';
+            const testSchema = appState.now.entities.schema['5953336e4342498593336e4342398599'];
+
+            instance.name.setValue('testproject1');
+            instance.schema.setValue(testSchema);
+            triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
+            fixture.detectChanges();
+            expect(mockProjectEffectsService.createProject).toHaveBeenCalledWith({
+                name: 'testproject1',
+                schema: {
+                    uuid: testSchema.uuid
+                }
+            });
+        })
+    );
+
+
+    it(`shows error message on conflict`,
+        componentTest(() => CreateProjectModalComponent, (fixture, instance) => {
+            const projectName = 'testproject1';
+            const testSchema = appState.now.entities.schema['5953336e4342498593336e4342398599'];
+
+
+            instance.name.setValue('testproject1');
+            instance.schema.setValue(testSchema);
+
+            let error: any = {
+                response: {
+                    status: 409
+                }
+            };
+
+            error = Object.setPrototypeOf(error, ApiError.prototype);
+
+            mockProjectEffectsService.createProject.and.returnValue(Promise.reject(error));
+
+            triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
+            fixture.detectChanges();
+
+            const errorMessage = fixture.nativeElement.querySelector('.error');
+            expect(errorMessage).toBeDefined();
+        })
+    );
+
+    it(`shows notification on other error`,
+        componentTest(() => CreateProjectModalComponent, (fixture, instance) => {
+            const projectName = 'testproject1';
+            const testSchema = appState.now.entities.schema['5953336e4342498593336e4342398599'];
+
+
+            instance.name.setValue('testproject1');
+            instance.schema.setValue(testSchema);
+
+            mockProjectEffectsService.createProject.and.returnValue(Promise.reject('test error'));
+
+            triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
+            fixture.detectChanges();
+
+            tick();
+            expect(mockNotification.show).toHaveBeenCalled();
         })
     );
 });
