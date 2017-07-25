@@ -4,3 +4,6 @@ projects_create:
 projects_none_found:
     en: No projects found
     de: Keine Projekte gefunden
+project_created:
+    en: Project created
+    de: Projekt erstellt

@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { hashValues } from '../../../common/util/util';
-import { SchemaResponse } from '../../../common/models/server-models';
+import { SchemaResponse, ProjectCreateRequest, ProjectResponse } from '../../../common/models/server-models';
 import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
+import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
+import { ApiError } from '../../../core/providers/api/api-error';
 
 @Component({
     selector: 'create-project-modal',
@@ -18,17 +21,20 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
 
     schema: FormControl;
     name: FormControl;
-
     form: FormGroup;
+
+    creating: boolean = false;
+    conflict: boolean = false;
 
     constructor(state: ApplicationStateService,
                 private notification: Notification,
-                private schemaEffects: SchemaEffectsService) {
+                private schemaEffects: SchemaEffectsService,
+                private projectEffects: ProjectEffectsService) {
 
         this.schemas$ = state.select(state => state.entities.schema)
             .map(hashValues);
 
-        this.name = new FormControl('', Validators.required);
+        this.name = new FormControl('', Validators.compose([Validators.required, this.conflictValidator]));
         this.schema = new FormControl('', Validators.required);
 
         this.form = new FormGroup({
@@ -41,22 +47,55 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
         this.schemaEffects.loadSchemas();
     }
 
-    closeFn = () => {};
-    cancelFn = () => {};
+    closeFn = (val: ProjectResponse) => {};
+    cancelFn = (val?: any) => {};
 
-    registerCloseFn(close: () => void): void {
+    registerCloseFn(close: (val: ProjectResponse) => void): void {
         this.closeFn = close;
     }
 
-    registerCancelFn(cancel: () => void): void {
+    registerCancelFn(cancel: (val?: any) => void): void {
         this.cancelFn = cancel;
     }
 
-    createProject() {
+    async createProject() {
         if (this.form.valid) {
-            // TODO Actually create project
-            this.notification.show({type: 'success', message: 'created'});
-            this.closeFn();
+            const request: ProjectCreateRequest = {
+                name: this.name.value,
+                schema: {
+                    uuid: this.schema.value.uuid
+                }
+            };
+
+            this.form.markAsPristine();
+            this.creating = true;
+            this.conflict = false;
+            try {
+                const response = await this.projectEffects.create(request);
+                this.closeFn(response);
+            } catch (err) {
+                if (err instanceof ApiError && err.response && err.response.status === 409) {
+                    this.conflict = true;
+                    this.name.updateValueAndValidity();
+                } else {
+                    this.notification.show({
+                        type: 'error',
+                        message: err.toString()
+                    });
+                    console.error(JSON.stringify(err, undefined, 2));
+                }
+            } finally {
+                this.creating = false;
+            }
+        }
+    }
+
+    private conflictValidator: (control: AbstractControl) => ValidationErrors | null = control => {
+        console.log('validating', control.pristine, this.conflict);
+        if (control.pristine && this.conflict) {
+            return {conflict: true};
+        } else {
+            return null;
         }
     }
 }

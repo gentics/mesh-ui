@@ -1,11 +1,15 @@
+<gtx-progress-bar [active]="creating"></gtx-progress-bar>
+
 <div class="modal-title">
     <h5>{{ 'modal.create_project_title' | i18n }}</h5>
 </div>
 <div class="modal-content">
     <form [formGroup]="form">
         <gtx-input label="Name" formControlName="name"></gtx-input>
+        <div class="error" *ngIf="name.errors && name.errors.conflict">
+            {{ 'modal.create_project_conflict' | i18n }}
+        </div>
 
-        <!-- TODO Fix this select with async (schemas are not displayed). There is a test for that, but thats ignored for now -->
         <gtx-select formControlName="schema" label="{{ 'modal.create_project_schema_label' | i18n }}">
             <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option>
         </gtx-select>
@@ -19,6 +23,6 @@
     <gtx-button type="secondary" flat
                 (click)="cancelFn()">{{ 'common.cancel_button' | i18n }}</gtx-button>
     <gtx-button type="primary"
-                [disabled]="!form?.valid"
+                [disabled]="!form?.valid || creating"
                 (click)="createProject()">{{ 'modal.create_project_button' | i18n }}</gtx-button>
 </div>

@@ -9,6 +9,7 @@ import { ProjectListComponent } from './components/project-list/project-list.com
 import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
 import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
+import { ProjectEffectsService } from './providers/effects/project-effects.service';
 
 @NgModule({
     declarations: [
@@ -26,7 +27,8 @@ import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-
         RouterModule.forChild(routes),
     ],
     providers: [
-        ModalService
+        ModalService,
+        ProjectEffectsService
     ]
 })
 export class AdminModule {

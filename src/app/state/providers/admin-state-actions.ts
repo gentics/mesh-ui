@@ -41,4 +41,12 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     loadSchemasError() {
         this.admin.schemasLoading = false;
     }
+
+    createProject(project: ProjectResponse) {
+        this.entities = mergeEntityState(this.entities, {
+            project: {
+                [project.uuid]: project
+            }
+        });
+    }
 }
