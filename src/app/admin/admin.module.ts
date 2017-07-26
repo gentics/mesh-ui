@@ -10,6 +10,10 @@ import { ProjectListItemComponent } from './components/project-list-item/project
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
 import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
 import { ProjectEffectsService } from './providers/effects/project-effects.service';
+import { MicroschemaListComponent } from './components/microschema-list/mircoschema-list.component';
+import { MicroschemaEffectsService } from './providers/effects/microschema-effects.service';
+import { MicroschemaComponent } from './components/microschema/mircoschema.component';
+import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 
 @NgModule({
     declarations: [
@@ -17,7 +21,10 @@ import { ProjectEffectsService } from './providers/effects/project-effects.servi
         AdminShellComponent,
         ProjectListComponent,
         ProjectListItemComponent,
-        CreateProjectModalComponent
+        CreateProjectModalComponent,
+        MicroschemaListComponent,
+        MicroschemaComponent,
+        MonacoEditorComponent
     ],
     entryComponents: [
         CreateProjectModalComponent
@@ -28,7 +35,8 @@ import { ProjectEffectsService } from './providers/effects/project-effects.servi
     ],
     providers: [
         ModalService,
-        ProjectEffectsService
+        ProjectEffectsService,
+        MicroschemaEffectsService
     ]
 })
 export class AdminModule {

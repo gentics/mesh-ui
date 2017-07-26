@@ -253,6 +253,7 @@ module.exports = function (options) {
                 { from: 'src/assets', to: 'assets' },
                 { from: 'src/custom-controls', to: 'custom-controls' },
                 { from: 'node_modules/gentics-ui-core/dist/fonts', to: 'assets/fonts' },
+                { from: 'node_modules/monaco-editor/min', to: 'assets/monaco' }
             ]),
 
 

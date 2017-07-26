@@ -16,7 +16,8 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                     project: {},
                     node: {},
                     user: {},
-                    schema: {}
+                    schema: {},
+                    microschema: {}
                 }
             }
         });
