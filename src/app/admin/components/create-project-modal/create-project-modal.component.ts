@@ -45,6 +45,21 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
 
     ngOnInit(): void {
         this.schemaEffects.loadSchemas();
+
+        this.setDefaultSchema();
+    }
+
+    /** Set folder schema as default if it exists. (It will be chosen most of the time) */
+    setDefaultSchema() {
+        this.schemas$
+        .skipWhile(schemas => schemas.length === 0)
+        .take(1)
+        .subscribe(schemas => {
+            const folderSchema = schemas.find(schema => schema.name === 'folder');
+            if (folderSchema) {
+                this.schema.setValue(folderSchema);
+            }
+        });
     }
 
     closeFn = (val: ProjectResponse) => {};
