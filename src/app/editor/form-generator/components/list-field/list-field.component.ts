@@ -20,11 +20,12 @@ import { ListableNodeFieldType, NodeFieldList, NodeFieldType } from '../../../..
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { initializeListValue } from '../../common/initialize-list-value';
-import { mockGetMicroschemaByName } from '../../common/mock-get-microschema';
 import { Observable, Subscription } from 'rxjs';
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, FIELD_HALF_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { MicronodeFieldComponent } from '../micronode-field/micronode-field.component';
+import { ApplicationStateService } from '../../../../state/providers/application-state.service';
+import { hashValues } from '../../../../common/util/util';
 
 function randomId(): string {
     return Math.random().toString(36).substring(5);
@@ -69,6 +70,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     constructor(private fieldGeneratorService: FieldGeneratorService,
                 private meshControlGroup: MeshControlGroupService,
                 private viewContainerRef: ViewContainerRef,
+                private state: ApplicationStateService,
                 public elementRef: ElementRef,
                 @Optional() private micronodeField?: MicronodeFieldComponent
     ) {
@@ -166,7 +168,9 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         let lookup: Observable<Microschema | undefined>;
         const insertIndex = typeof index === 'number' ? index : this.value.length;
         if (typeof microschemaName === 'string') {
-            lookup = mockGetMicroschemaByName(microschemaName);
+            lookup = this.state.select(state => hashValues(state.entities.microschema)
+                .find(microschema => microschema.name === microschemaName)
+            );
         } else {
             lookup = Observable.of(undefined);
         }

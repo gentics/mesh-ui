@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { StateActionBranch, Immutable, CloneDepth } from 'immutablets';
+import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
 import { NodeResponse, ProjectResponse, SchemaResponse, MicroschemaResponse } from '../../common/models/server-models';
-import { MeshNode } from '../../common/models/node.model';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
 import { mergeEntityState } from './entity-state-actions';
-import { Schema } from '../../common/models/schema.model';
 
 @Injectable()
 @Immutable()
@@ -131,6 +129,21 @@ export class ListStateActions extends StateActionBranch<AppState> {
     }
 
     fetchSchemasError() {
+        this.list.loadCount--;
+    }
+
+    fetchMicroschemasStart(projectName: string) {
+        this.list.loadCount++;
+    }
+
+    fetchMicroschemasSuccess(microschemas: MicroschemaResponse[]) {
+        this.list.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            microschema: microschemas
+        });
+    }
+
+    fetchMicroschemasError() {
         this.list.loadCount--;
     }
 

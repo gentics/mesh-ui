@@ -28,6 +28,14 @@ export class ListEffectsService {
                 error => this.state.actions.list.fetchSchemasError() /* TODO: error handling */);
     }
 
+    loadMicroschemasForProject(project: string) {
+        this.state.actions.list.fetchMicroschemasStart(project);
+        this.api.project.getProjectMicroschemas({ project })
+            .subscribe(
+                ({data}) => this.state.actions.list.fetchMicroschemasSuccess(data),
+                error => this.state.actions.list.fetchMicroschemasError() /* TODO: error handling */);
+    }
+
     setActiveContainer(projectName: string, containerUuid: string) {
         // Update active container in state
         this.state.actions.list.setActiveContainer(projectName, containerUuid);

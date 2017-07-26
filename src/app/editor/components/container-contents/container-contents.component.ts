@@ -66,6 +66,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .filter<string>(notNullOrUndefined)
             .subscribe(projectName => {
                 this.listEffects.loadSchemasForProject(projectName);
+                this.listEffects.loadMicroschemasForProject(projectName);
             });
 
         this.subscription = routerParams$

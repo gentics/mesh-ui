@@ -7,6 +7,7 @@ describe('EntityStateActions', () => {
     describe('mergeEntityState()', () => {
 
         const empty: EntityState = {
+            microschema: {},
             node: {},
             project: {},
             schema: {},
@@ -47,6 +48,7 @@ describe('EntityStateActions', () => {
             });
 
             expect(before).toEqual({
+                microschema: {},
                 node: {},
                 project: {},
                 schema: {},
