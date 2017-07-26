@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { MasterDetailComponent } from './components/master-detail/master-detail.component';
 import { NodeEditorComponent } from './components/node-editor/node-editor.component';
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
+import { NodeEditorGuard } from './providers/node-editor-guard';
 
 export const routes: Route[] = [
     /**
@@ -18,7 +19,8 @@ export const routes: Route[] = [
         {
             path: ':projectName/:nodeUuid',
             component: NodeEditorComponent,
-            outlet: 'detail'
+            outlet: 'detail',
+            canDeactivate: [NodeEditorGuard]
         }
     ]},
 ];

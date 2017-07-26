@@ -11,6 +11,9 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
 import { EditorEffectsService } from './providers/editor-effects.service';
 import { ProjectSwitcherComponent } from './components/project-switcher/project-switcher.component';
+import { NodeEditorGuard } from './providers/node-editor-guard';
+import { ConfirmNavigationModalComponent } from './components/confirm-navigation-modal/confirm-navigation-modal.component';
+import { ModalService, OverlayHostService } from 'gentics-ui-core';
 
 @NgModule({
     imports: [
@@ -19,6 +22,7 @@ import { ProjectSwitcherComponent } from './components/project-switcher/project-
         FormGeneratorModule
     ],
     declarations: [
+        ConfirmNavigationModalComponent,
         ContainerContentsComponent,
         MasterDetailComponent,
         NodeEditorComponent,
@@ -26,8 +30,14 @@ import { ProjectSwitcherComponent } from './components/project-switcher/project-
         SearchBarComponent,
         ProjectSwitcherComponent
     ],
+    entryComponents: [
+        ConfirmNavigationModalComponent
+    ],
     providers: [
-        EditorEffectsService
+        EditorEffectsService,
+        NodeEditorGuard,
+        ModalService,
+        OverlayHostService
     ]
 })
 export class EditorModule {

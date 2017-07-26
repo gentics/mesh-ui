@@ -1,0 +1,14 @@
+<div class="modal-title">
+    <h5>{{ 'modal.confirm_navigation_title' | i18n }}</h5>
+</div>
+<div class="modal-content">
+    <div class="node-title">{{ nodeEditor.nodeTitle }}</div>
+    <p class="lead">
+        {{ 'modal.confirm_navigation_body' | i18n }}
+    </p>
+</div>
+<div class="modal-footer">
+    <gtx-button type="secondary" flat (click)="closeFn(false)">{{ 'common.cancel_button' | i18n }}</gtx-button>
+    <gtx-button type="alert" (click)="closeFn(true)">{{ 'modal.discard_changes_button' | i18n }}</gtx-button>
+    <gtx-button type="primary" (click)="saveAndClose()"><icon left>save</icon> {{ 'modal.save_and_close_button' | i18n }}</gtx-button>
+</div>

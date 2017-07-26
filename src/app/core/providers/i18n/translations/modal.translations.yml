@@ -7,6 +7,12 @@ change_password_button:
 change_password_success:
     en: Password changed successfully
     de: Passwort erfolgreich geändert
+confirm_navigation_body:
+    en: Unsaved changes will be lost.
+    de: Ungespeicherte Änderungen gehen verloren.
+confirm_navigation_title:
+    en: Discard changes?
+    de: Änderungen verwerfen?
 confirm_password_label:
     en: Confirm password
     de: Passwort bestätigen
@@ -31,9 +37,15 @@ delete_project_title:
 delete_project_body:
     en: Are you sure you want to delete project <var>{{ name }}</var>?
     de: Sind Sie sicher, dass sie Projekt <var>{{ name }}</var> löschen wollen?
+discard_changes_button:
+    en: Discard changes
+    de: Änderungen verwerfen
 new_password_label:
     en: New password
     de: Neues Passwort
+save_and_close_button:
+    en: Save and close
+    de: Speichern und schließen
 validation_passwords_must_match:
     en: Passwords must match
     de: Passworteingaben stimmen nicht überein
