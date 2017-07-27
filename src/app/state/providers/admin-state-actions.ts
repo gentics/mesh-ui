@@ -4,7 +4,7 @@ import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 import { AppState } from '../models/app-state.model';
 import { AdminState } from '../models/admin-state.model';
 import { EntityState } from '../models/entity-state.model';
-import { SchemaResponse } from '../../common/models/server-models';
+import { ProjectResponse, SchemaResponse } from '../../common/models/server-models';
 import { mergeEntityState } from './entity-state-actions';
 
 @Injectable()

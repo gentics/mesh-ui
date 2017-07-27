@@ -11,8 +11,7 @@ describe('EntityStateActions', () => {
             node: {},
             project: {},
             schema: {},
-            user: {},
-            microschema: {}
+            user: {}
         };
 
         it('adds new entities to the output hash', () => {
@@ -52,8 +51,7 @@ describe('EntityStateActions', () => {
                 node: {},
                 project: {},
                 schema: {},
-                user: {},
-                microschema: {}
+                user: {}
             });
         });
 

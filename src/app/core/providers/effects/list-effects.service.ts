@@ -29,7 +29,7 @@ export class ListEffectsService {
     }
 
     loadMicroschemasForProject(project: string) {
-        this.state.actions.list.fetchMicroschemasStart(project);
+        this.state.actions.list.fetchMicroschemasStart();
         this.api.project.getProjectMicroschemas({ project })
             .subscribe(
                 ({data}) => this.state.actions.list.fetchMicroschemasSuccess(data),
