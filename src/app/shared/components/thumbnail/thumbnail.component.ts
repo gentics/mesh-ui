@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit
 import { Observable, Subscription } from 'rxjs';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { MeshNode, NodeFieldBinary } from '../../../common/models/node.model';
+import { BinaryField, MeshNode } from '../../../common/models/node.model';
 import { filenameExtension, isImageField, queryString } from '../../../common/util/util';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
 
@@ -96,10 +96,10 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
      * 3. If there is no image, the first binary field will be chosen.
      */
     private getBinaryProperties([node, schema]: [MeshNode, Schema]): BinaryProperties {
-        let firstBinaryField: NodeFieldBinary | undefined;
+        let firstBinaryField: BinaryField | undefined;
         let firstBinaryFieldName: string | undefined;
 
-        let firstImageField: NodeFieldBinary | undefined;
+        let firstImageField: BinaryField | undefined;
         let firstImageFieldName: string | undefined;
 
         let binaryProperties;
@@ -108,7 +108,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
             .filter(field => this.binaryFilter(field))
             .forEach(field => {
                 // TODO Remove exclamation mark as soon as mesh typing is fixed
-                const nodeField: NodeFieldBinary = node.fields[field.name!] as NodeFieldBinary;
+                const nodeField: BinaryField = node.fields[field.name!] as BinaryField;
                 if (!firstBinaryField) {
                     firstBinaryField = nodeField;
                     firstBinaryFieldName = field.name;

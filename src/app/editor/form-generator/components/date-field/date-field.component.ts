@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
-import { NodeFieldDate } from '../../../../common/models/node.model';
+import { DateField } from '../../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
@@ -17,7 +17,7 @@ export class DateFieldComponent extends BaseFieldComponent {
         this.valueChange(api.getValue());
     }
 
-    valueChange(value: NodeFieldDate): void {
+    valueChange(value: DateField): void {
         const date = new Date(value);
         this.timestampValue = date.getTime() / 1000;
     }

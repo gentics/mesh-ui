@@ -1,4 +1,4 @@
-import { NodeFieldBinary } from '../models/node.model';
+import { BinaryField, ListNodeFieldType, MicronodeFieldMap, MicronodeFieldType, NodeFieldType } from '../models/node.model';
 
 // Pure functions for utility
 
@@ -13,7 +13,7 @@ export function hashValues<T>(object: { [key: string]: T } | { [key: number]: T 
 /**
  * Checks if the provided field is an image field.
  */
-export function isImageField(field: NodeFieldBinary): boolean {
+export function isImageField(field: BinaryField): boolean {
     return field && field.mimeType.startsWith('image/');
 }
 
@@ -89,3 +89,46 @@ export function uuidHash<T extends { uuid: string }>(elements: T[]): {[uuid: str
 }
 
 export function noop() {}
+
+
+export type Primitive = string | number | boolean;
+export interface SimpleObject { [key: string]: SimpleObject | Primitive | SimpleArray; }
+export type SimpleArray = Array<SimpleObject | Primitive>;
+export type SimpleDeepEqualsType = Primitive | SimpleObject | SimpleArray |
+    NodeFieldType | ListNodeFieldType | MicronodeFieldType | MicronodeFieldMap;
+
+/**
+ * An simple object equality function designed for primitives (string, number, boolean), plain objects, arrays, or any combination thereof.
+ */
+export function simpleDeepEquals<T extends SimpleDeepEqualsType>(o1?: T, o2?: T): boolean {
+    if (isPrimitiveValue(o1) || isPrimitiveValue(o2)) {
+        return o1 === o2;
+    }
+
+    if (!o1 || !o2) {
+        return o1 === o2;
+    }
+
+    const keys1 = Object.keys(o1);
+    const keys2 = Object.keys(o2);
+
+    if (keys1.length !== keys2.length) {
+        return false;
+    }
+
+    for (let i = keys1.length - 1; i >= 0; i--) {
+        const key = keys1[i];
+        if (!simpleDeepEquals(o1[key], o2[key])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function isPrimitiveValue(arg: any): boolean {
+    return typeof arg === 'string' ||
+        typeof arg === 'number' ||
+        typeof arg === 'boolean' ||
+        arg === null;
+}

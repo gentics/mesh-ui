@@ -51,7 +51,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
      * Becomes true once a change is made to one of the form controls.
      */
     get isDirty(): boolean {
-        return this._isDirty;
+        return this.meshControlGroup.isDirty();
     }
 
     @ViewChild('formContainer', { read: ElementRef })
@@ -60,7 +60,6 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     private formRoot: ViewContainerRef;
     private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
-    private _isDirty: boolean = false;
     private formGenerated$ = new Subject<void>();
     private windowResize$ = new Subject<void>();
     private containerResizeSub: Subscription;
@@ -147,7 +146,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
      * Resets the isDirty state of the component.
      */
     setPristine(): void {
-        this._isDirty = false;
+        this.meshControlGroup.reset();
     }
 
     private onChange(path: SchemaFieldPath, value: any): void {
@@ -158,16 +157,14 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         // --- TODO: fix typings ---
 
         this.meshControlGroup.nodeChanged(path, value, this.node);
-        this._isDirty = true;
     }
 
     /**
      * Given an object, update the value specified by the `path` array with the given value.
      * Note: this method mutates the object passed in.
      */
-    private updateAtPath(object: any, path: any[], value: any): any {
+    private updateAtPath(object: any, path: Array<string | number>, value: any): any {
         const pointer = this.getPointerByPath(object, path);
-        // console.log(`updating`, path, value);
         return pointer[path[path.length - 1]] = this.clone(value);
     }
 
@@ -175,7 +172,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
      * Given an object and a path e.g. ['foo', 'bar'], return the a pointer to
      * the object.foo.bar property.
      */
-    private getPointerByPath(object: any, path: any[]): any {
+    private getPointerByPath(object: any, path: Array<string | number>): any {
         let pointer = object;
         for (let i = 0; i < path.length - 1; i++) {
             const key = path[i];

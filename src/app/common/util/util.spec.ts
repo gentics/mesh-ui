@@ -1,4 +1,4 @@
-import { filenameExtension, queryString } from './util';
+import { filenameExtension, queryString, simpleDeepEquals } from './util';
 
 describe('Utility', () => {
     describe('Filename extension', () => {
@@ -42,5 +42,41 @@ describe('Utility', () => {
             };
             expect(queryString(query)).toBe('');
         });
+    });
+
+    describe('simpleDeepEquals()', () => {
+
+        it('works with primitive values', () => {
+            expect(simpleDeepEquals(1, 1)).toBe(true, '1, 1');
+            expect(simpleDeepEquals(1, 2)).toBe(false, '1, 2');
+            expect(simpleDeepEquals('foo', 'foo')).toBe(true, '"foo", "foo"');
+            expect(simpleDeepEquals('foo', 'bar')).toBe(false, '"foo", "bar"');
+            expect(simpleDeepEquals(true, true)).toBe(true, 'true, true');
+            expect(simpleDeepEquals(true, false)).toBe(false, 'true, false');
+        });
+
+        it('works with 1 level deep objects', () => {
+            expect(simpleDeepEquals({ foo: 1}, { foo: 1})).toBe(true);
+            expect(simpleDeepEquals({ foo: 1, bar: 2}, { foo: 1, bar: 2})).toBe(true);
+            expect(simpleDeepEquals({ foo: 1, bar: 2}, { foo: 1, bar: 3})).toBe(false);
+        });
+
+        it('works with arrays of primitives', () => {
+            expect(simpleDeepEquals([1, 2, 3], [1, 2, 3])).toBe(true);
+            expect(simpleDeepEquals([1, 2, 3], [1, 1, 3])).toBe(false);
+        });
+
+        it('works with 2 level deep objects', () => {
+            expect(simpleDeepEquals({ foo: { bar: true } }, { foo: { bar: true } })).toBe(true);
+            expect(simpleDeepEquals({ foo: { bar: true } }, { foo: { bar: false } })).toBe(false);
+        });
+
+        it('works with arrays of objects', () => {
+            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2] } }, true])).toBe(true);
+            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2] } }, false])).toBe(false);
+            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 5] } }, true])).toBe(false);
+            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2, 3] } }, true])).toBe(false);
+        });
+
     });
 });

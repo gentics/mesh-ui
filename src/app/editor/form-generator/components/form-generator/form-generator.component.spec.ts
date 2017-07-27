@@ -83,14 +83,15 @@ describe('FormGeneratorComponent:', () => {
         expect(instance.isDirty).toBe(true);
     });
 
-    it('setPristine() resets the dirty state', () => {
+    it('setPristine() invokes meshControlGroup.reset()', () => {
         populateMockData(fixture);
+        const resetSpy = spyOn(meshControlGroup, 'reset');
         const nameField = getFormField(fixture, StringFieldComponent);
         nameField.onChange('bar');
 
-        expect(instance.isDirty).toBe(true);
+        expect(resetSpy).not.toHaveBeenCalled();
         instance.setPristine();
-        expect(instance.isDirty).toBe(false);
+        expect(resetSpy).toHaveBeenCalled();
     });
 
     it('attaches a FieldErrorsComponent to each field', () => {

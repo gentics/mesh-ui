@@ -16,7 +16,7 @@ import { ISortableEvent, ISortableGroupOptions } from 'gentics-ui-core';
 import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { ListTypeFieldType, SchemaField } from '../../../../common/models/schema.model';
 import { Microschema } from '../../../../common/models/microschema.model';
-import { ListableNodeFieldType, NodeFieldList, NodeFieldType } from '../../../../common/models/node.model';
+import { ListField, ListNodeFieldType, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { initializeListValue } from '../../common/initialize-list-value';
@@ -40,7 +40,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
     api: MeshFieldControlApi;
     field: SchemaField;
-    value: NodeFieldList<ListableNodeFieldType>;
+    value: ListField<ListNodeFieldType>;
     @ViewChildren('listItem', { read: ViewContainerRef })
     listItems: QueryList<ViewContainerRef>;
     @ViewChild('listContainer', { read: ElementRef })
@@ -115,12 +115,12 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     init(api: MeshFieldControlApi): void {
-        this.value = api.getValue() as NodeFieldList<ListableNodeFieldType>;
+        this.value = api.getValue() as ListField<ListNodeFieldType>;
         this.api = api;
         this.field = api.field;
     }
 
-    valueChange(newValue: NodeFieldList<ListableNodeFieldType>, oldValue: NodeFieldList<ListableNodeFieldType>): void {
+    valueChange(newValue: ListField<ListNodeFieldType>, oldValue: ListField<ListNodeFieldType>): void {
         if (newValue !== oldValue) {
             this.listHeight = this.listContainer.nativeElement.offsetHeight + 'px';
             this.updating = true;

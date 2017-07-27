@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GetNodeValueFunction, GetNodeValueReturnType, SchemaFieldPath } from '../../common/form-generator-models';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { SchemaField } from '../../../../common/models/schema.model';
-import { MeshControl } from './mesh-control.class';
+import { ControlChanges, MeshControl } from './mesh-control.class';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 
 /**
@@ -15,14 +15,14 @@ export class MeshControlGroupService {
         return !!this._rootControl && this.rootControl.isValid;
     }
 
-    private get rootControl(): MeshControl {
+    private get rootControl(): MeshControl<any> {
         if (!this._rootControl) {
             throw new Error('No rootControl was set. Did you forget to call MeshControlGroup.init()?');
         }
         return this._rootControl;
     }
 
-    private _rootControl: MeshControl;
+    private _rootControl: MeshControl<any> | undefined;
     private getNodeFn: GetNodeValueFunction;
 
     /**
@@ -42,6 +42,29 @@ export class MeshControlGroupService {
             throw new Error('No getNodeFn was set. Did you forget to call MeshControlGroup.init()?');
         } else {
             return this.getNodeFn(path);
+        }
+    }
+
+    getChanges(): ControlChanges<undefined> {
+        return this.rootControl.getChanges();
+    }
+
+    getChangesByPath(): ChangesByPath[] {
+        const changes = this.rootControl.getChanges();
+        return getChangesByPath(changes);
+    }
+
+    isDirty(): boolean {
+        if (!this._rootControl) {
+            return false;
+        }
+        const changes = this.rootControl.getChanges();
+        return checkForChanges(changes);
+    }
+
+    reset(): void {
+        if (this._rootControl && this.isDirty()) {
+            this.rootControl.reset();
         }
     }
 
@@ -99,7 +122,56 @@ export class MeshControlGroupService {
     /**
      * Returns the MeshControl at the given path in the tree.
      */
-    getMeshControlAtPath(path: SchemaFieldPath): MeshControl | undefined {
+    getMeshControlAtPath(path: SchemaFieldPath): MeshControl<any> | undefined {
         return this.rootControl.getMeshControlAtPath(path);
     }
+}
+
+/**
+ * Recursively inspects a ControlChanges object and returns true if the root or any descendants have changed.
+ */
+export function checkForChanges(changes: ControlChanges<any>): boolean {
+    const children: Array<ControlChanges<any>> = Object.keys(changes.children).map(k => changes.children[k]);
+
+    if (changes.changed) {
+        return true;
+    } else if (0 < children.length) {
+        return children.reduce((hasChanges, change) => {
+            return hasChanges || checkForChanges(change);
+        }, false);
+    }
+    return false;
+}
+
+export interface ChangesByPath {
+    path: SchemaFieldPath;
+    initialValue: any;
+    currentValue: any;
+}
+
+/**
+ * Returns a flat list of changed controls with paths and values.
+ */
+export function getChangesByPath(changes: ControlChanges<any>): ChangesByPath[] {
+    const result: ChangesByPath[] = [];
+
+    function check(changes: ControlChanges<any>, path: SchemaFieldPath) {
+        if (changes.changed) {
+            result.push({
+                path,
+                initialValue: changes.initialValue,
+                currentValue: changes.currentValue
+            });
+        }
+        const childrenKeys = Object.keys(changes.children);
+        if (0 < childrenKeys.length) {
+            childrenKeys.forEach(key => {
+                check(changes.children[key], [...path, key]);
+            });
+        }
+    }
+
+    check(changes, []);
+
+    return result;
 }

@@ -1,13 +1,5 @@
-import { NodeResponse, FieldMapFromServer } from './server-models';
-import {
-    BaseProperties,
-    MicroschemaReference,
-    NodeReference,
-    ProjectReference,
-    SchemaReference,
-    SchemaReferenceWithVersion,
-    TagReference
-} from './common.model';
+import { FieldMapFromServer, NodeResponse } from './server-models';
+import { MicroschemaReference } from './common.model';
 
 /* tslint:disable:no-empty-interface */
 
@@ -23,13 +15,13 @@ export interface Version {
     number: string;
 }
 
-export type NodeFieldString = string;
-export type NodeFieldHTML = string;
-export type NodeFieldNumber = number;
-export type NodeFieldBoolean = boolean;
-export type NodeFieldDate = string;
-export type NodeFieldList<T extends ListableNodeFieldType> = T[];
-export interface NodeFieldBinary {
+export type StringField = string;
+export type HTMLField = string;
+export type NumberField = number;
+export type BooleanField = boolean;
+export type DateField = string;
+export type ListField<T extends ListNodeFieldType> = T[];
+export interface BinaryField {
     fileName: string;
     fileSize: number;
     mimeType: string;
@@ -38,22 +30,25 @@ export interface NodeFieldBinary {
     height?: number;
     width?: number;
 }
-export interface NodeFieldNode {
+export interface NodeField {
     uuid: string;
+}
+export interface MicronodeFieldMap {
+    [fieldName: string]: MicronodeFieldType;
 }
 export interface NodeFieldMicronode {
     uuid: string;
     microschema: MicroschemaReference;
-    fields: { [fieldName: string]: MicronodeFieldType; };
+    fields: MicronodeFieldMap;
 }
 
-export type CommonNodeFieldType = NodeFieldString | NodeFieldHTML | NodeFieldNumber | NodeFieldBoolean | NodeFieldDate | NodeFieldNode;
-export type NodeFieldType = CommonNodeFieldType | NodeFieldBinary | NodeFieldMicronode | NodeFieldList<ListableNodeFieldType>;
-export type ListableNodeFieldType = CommonNodeFieldType | NodeFieldBinary | NodeFieldMicronode;
-export type MicronodeFieldType = CommonNodeFieldType | NodeFieldBinary;
+export type CommonNodeFieldType = StringField | HTMLField | NumberField | BooleanField | DateField | NodeField;
+export type NodeFieldType = CommonNodeFieldType | BinaryField | NodeFieldMicronode | ListField<ListNodeFieldType>;
+export type ListNodeFieldType = CommonNodeFieldType | BinaryField | NodeFieldMicronode;
+export type MicronodeFieldType = CommonNodeFieldType | BinaryField;
 
 export interface MeshNode extends NodeResponse {
-    /** UUUIDs of child nodes. Added in the application. */
+    /** UUIDs of child nodes. Added in the application. */
     children?: string[];
 }
 

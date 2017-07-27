@@ -1,7 +1,7 @@
 import { MeshControl, ROOT_NAME, ROOT_TYPE } from './mesh-control.class';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
-import { NodeFieldType } from '../../../../common/models/node.model';
+import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 import { MeshControlGroupService } from './mesh-control-group.service';
 import createSpy = jasmine.createSpy;
@@ -11,7 +11,7 @@ describe('MeshControl class', () => {
     const mockControlGroup = new MeshControlGroupService();
 
     it('creates a root control when constructed with no arguments', () => {
-        const meshControl = new MeshControl();
+        const meshControl = new MeshControl<any>();
         expect(meshControl.fieldDef.name).toBe(ROOT_NAME);
         expect(meshControl.fieldDef.type).toBe(ROOT_TYPE);
     });
@@ -21,7 +21,7 @@ describe('MeshControl class', () => {
             name: 'test',
             type: 'string'
         };
-        const meshControl = new MeshControl(fieldDef, 'foo');
+        const meshControl = new MeshControl<any>(fieldDef, 'foo');
         expect(meshControl.fieldDef).toBe(fieldDef);
     });
 
@@ -31,7 +31,7 @@ describe('MeshControl class', () => {
             type: 'string'
         };
         const meshField = new MockMeshField();
-        const meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, meshField);
+        const meshControl = new MeshControl<any>(fieldDef, 'foo', mockControlGroup, meshField);
         expect(meshControl.fieldDef).toBe(fieldDef);
         expect(meshControl.group).toBe(mockControlGroup);
         expect(meshControl.meshField).toBe(meshField);
@@ -42,7 +42,7 @@ describe('MeshControl class', () => {
             name: 'test',
             type: 'string'
         };
-        const meshControl = new MeshControl(fieldDef, 'foo');
+        const meshControl = new MeshControl<any>(fieldDef, 'foo');
         expect(meshControl.fieldDef).toBe(fieldDef);
         expect(meshControl.meshField).toBeUndefined();
 
@@ -60,7 +60,7 @@ describe('MeshControl class', () => {
         const initialValue = ['foo'];
         const meshField = new MockMeshField();
         meshField.valueChange = createSpy('valueChange');
-        const meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, meshField);
+        const meshControl = new MeshControl<any>(fieldDef, initialValue, mockControlGroup, meshField);
 
         expect(meshControl.children.size).toBe(0);
 
@@ -74,7 +74,7 @@ describe('MeshControl class', () => {
 
         expect(meshControl.children.size).toBe(1);
         expect(meshControl.children.has(0)).toBe(true);
-        const childMeshControl = meshControl.children.get(0) as MeshControl;
+        const childMeshControl = meshControl.children.get(0) as MeshControl<any>;
         expect(childMeshControl instanceof MeshControl).toBe(true);
         expect(childMeshControl.meshField).toBe(childField);
     });
@@ -82,7 +82,7 @@ describe('MeshControl class', () => {
     describe('checkValue() with primitives', () => {
 
         let meshField: MockMeshField;
-        let meshControl: MeshControl;
+        let meshControl: MeshControl<any>;
 
         beforeEach(() => {
             const fieldDef: SchemaField = {
@@ -91,7 +91,7 @@ describe('MeshControl class', () => {
             };
             meshField = new MockMeshField();
             meshField.valueChange = createSpy('valueChange');
-            meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, meshField);
+            meshControl = new MeshControl<any>(fieldDef, 'foo', mockControlGroup, meshField);
         });
 
         it('invokes meshField.valueChange() when the value has changed with the new value and old value', () => {
@@ -108,7 +108,7 @@ describe('MeshControl class', () => {
     describe('checkValue() with objects', () => {
 
         let meshField: MockMeshField;
-        let meshControl: MeshControl;
+        let meshControl: MeshControl<any>;
         let initialValue: string[];
 
         beforeEach(() => {
@@ -120,7 +120,7 @@ describe('MeshControl class', () => {
             initialValue = ['foo', 'bar', 'baz'];
             meshField = new MockMeshField();
             meshField.valueChange = createSpy('valueChange');
-            meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, meshField);
+            meshControl = new MeshControl<any>(fieldDef, initialValue, mockControlGroup, meshField);
         });
 
         it('invokes meshField.valueChange() when the object reference changes', () => {
@@ -141,7 +141,7 @@ describe('MeshControl class', () => {
     describe('nodeChange()', () => {
 
         let meshField: MockMeshField;
-        let meshControl: MeshControl;
+        let meshControl: MeshControl<any>;
 
         beforeEach(() => {
             const fieldDef: SchemaField = {
@@ -150,7 +150,7 @@ describe('MeshControl class', () => {
             };
             meshField = new MockMeshField();
             meshField.nodeFieldChange = createSpy('nodeFieldChange');
-            meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, meshField);
+            meshControl = new MeshControl<any>(fieldDef, 'foo', mockControlGroup, meshField);
         });
 
         it('invokes meshField.nodeFieldChange()', () => {
@@ -165,7 +165,7 @@ describe('MeshControl class', () => {
     describe('formWidthChanged()', () => {
         let meshFieldParent: MockMeshField;
         let meshFieldChild: MockMeshField;
-        let meshControl: MeshControl;
+        let meshControl: MeshControl<any>;
         let initialValue: string[];
 
         beforeEach(() => {
@@ -181,7 +181,7 @@ describe('MeshControl class', () => {
             initialValue = ['foo', 'bar', 'baz'];
             meshFieldParent = new MockMeshField();
             meshFieldParent.formWidthChange = createSpy('formWidthChange');
-            meshControl = new MeshControl(fieldDefList, initialValue, mockControlGroup, meshFieldParent);
+            meshControl = new MeshControl<any>(fieldDefList, initialValue, mockControlGroup, meshFieldParent);
             meshFieldChild = new MockMeshField();
             meshFieldChild.formWidthChange = createSpy('formWidthChange');
             meshControl.addChild(fieldDefString, 'foo', meshFieldChild);
@@ -201,9 +201,9 @@ describe('MeshControl class', () => {
     describe('list type', () => {
 
         let meshField: MockMeshField;
-        let meshControl: MeshControl;
+        let meshControl: MeshControl<any>;
         let childMeshFields: BaseFieldComponent[];
-        let childMeshControls: MeshControl[];
+        let childMeshControls: Array<MeshControl<any>>;
         let initialValue: string[];
 
         beforeEach(() => {
@@ -217,7 +217,7 @@ describe('MeshControl class', () => {
             initialValue = ['foo', 'bar', 'baz'];
             meshField = new MockMeshField();
             meshField.valueChange = createSpy('valueChange');
-            meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, meshField);
+            meshControl = new MeshControl<any>(fieldDef, initialValue, mockControlGroup, meshField);
 
             initialValue.forEach((value, index) => {
                 const childField = new MockMeshField();
@@ -242,9 +242,9 @@ describe('MeshControl class', () => {
         });
 
         it('child control has access to MeshControlGroup', () => {
-            expect((meshControl.children.get(0) as MeshControl).group).toBe(mockControlGroup);
-            expect((meshControl.children.get(1) as MeshControl).group).toBe(mockControlGroup);
-            expect((meshControl.children.get(2) as MeshControl).group).toBe(mockControlGroup);
+            expect((meshControl.children.get(0) as MeshControl<any>).group).toBe(mockControlGroup);
+            expect((meshControl.children.get(1) as MeshControl<any>).group).toBe(mockControlGroup);
+            expect((meshControl.children.get(2) as MeshControl<any>).group).toBe(mockControlGroup);
         });
 
         it('clearChildren() empties the children map', () => {
@@ -287,9 +287,9 @@ describe('MeshControl class', () => {
     describe('simple micronode type', () => {
 
         let meshField: MockMeshField;
-        let meshControl: MeshControl;
+        let meshControl: MeshControl<any>;
         let childMeshFields: BaseFieldComponent[];
-        let childMeshControls: MeshControl[];
+        let childMeshControls: Array<MeshControl<any>>;
         let initialValue: any;
 
         beforeEach(() => {
@@ -312,7 +312,7 @@ describe('MeshControl class', () => {
             };
             meshField = new MockMeshField();
             meshField.valueChange = createSpy('valueChange');
-            meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, meshField);
+            meshControl = new MeshControl<any>(fieldDef, initialValue, mockControlGroup, meshField);
 
             function addChild(name: string, type: 'string' | 'number', value: any) {
                 const childField = new MockMeshField();
@@ -336,8 +336,8 @@ describe('MeshControl class', () => {
         });
 
         it('child control has access to MeshControlGroup', () => {
-            expect((meshControl.children.get('name') as MeshControl).group).toBe(mockControlGroup);
-            expect((meshControl.children.get('age') as MeshControl).group).toBe(mockControlGroup);
+            expect((meshControl.children.get('name') as MeshControl<any>).group).toBe(mockControlGroup);
+            expect((meshControl.children.get('age') as MeshControl<any>).group).toBe(mockControlGroup);
         });
 
         it('clearChildren() empties the children map', () => {
@@ -380,8 +380,8 @@ describe('MeshControl class', () => {
     describe('getMeshControlAtPath()', () => {
 
         let meshField: MockMeshField;
-        let rootControl: MeshControl;
-        let childControls: { [id: string]: MeshControl };
+        let rootControl: MeshControl<any>;
+        let childControls: { [id: string]: MeshControl<any> };
 
         beforeEach(() => {
             childControls = {};
@@ -391,9 +391,9 @@ describe('MeshControl class', () => {
                 listType: 'micronode'
             };
             meshField = new MockMeshField();
-            rootControl = new MeshControl(fieldDef, {}, mockControlGroup, meshField);
+            rootControl = new MeshControl<any>(fieldDef, {}, mockControlGroup, meshField);
 
-            function addChild(parent: MeshControl, name: string, type: any, value: any): MeshControl {
+            function addChild(parent: MeshControl<any>, name: string, type: any, value: any): MeshControl<any> {
                 const childField = new MockMeshField();
                 const pseudoField = { name, type };
                 const childControl = parent.addChild(pseudoField, value, childField);
@@ -472,7 +472,7 @@ describe('MeshControl class', () => {
                 name: 'test',
                 type: 'string'
             };
-            const meshControl = new MeshControl(fieldDef, 'foo');
+            const meshControl = new MeshControl<any>(fieldDef, 'foo');
             expect(meshControl.isValid).toBe(false);
         });
 
@@ -481,7 +481,7 @@ describe('MeshControl class', () => {
                 name: 'test',
                 type: 'string'
             };
-            const meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, new MockMeshField());
+            const meshControl = new MeshControl<any>(fieldDef, 'foo', mockControlGroup, new MockMeshField());
             expect(meshControl.isValid).toBe(true);
         });
 
@@ -492,7 +492,7 @@ describe('MeshControl class', () => {
             };
             const mockMeshField = new MockMeshField();
             mockMeshField.setError({ err: 'error' });
-            const meshControl = new MeshControl(fieldDef, '', mockControlGroup, mockMeshField);
+            const meshControl = new MeshControl<any>(fieldDef, '', mockControlGroup, mockMeshField);
             expect(meshControl.isValid).toBe(false);
         });
 
@@ -502,7 +502,7 @@ describe('MeshControl class', () => {
                 type: 'micronode'
             };
             const initialValue = { child: '' };
-            const meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, new MockMeshField());
+            const meshControl = new MeshControl<any>(fieldDef, initialValue, mockControlGroup, new MockMeshField());
 
             expect(meshControl.children.size).toBe(0);
 
@@ -521,7 +521,7 @@ describe('MeshControl class', () => {
                 type: 'micronode'
             };
             const initialValue = { child: '' };
-            const meshControl = new MeshControl(fieldDef, initialValue);
+            const meshControl = new MeshControl<any>(fieldDef, initialValue);
 
             expect(meshControl.children.size).toBe(0);
 
@@ -547,7 +547,7 @@ describe('MeshControl class', () => {
                 type: 'micronode'
             };
             const initialValue = { child: '' };
-            const meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, new MockMeshField());
+            const meshControl = new MeshControl<any>(fieldDef, initialValue, mockControlGroup, new MockMeshField());
 
             expect(meshControl.children.size).toBe(0);
 
@@ -578,7 +578,7 @@ describe('MeshControl class', () => {
                 name: 'test',
                 type: 'string'
             };
-            const meshControl = new MeshControl(fieldDef, 'foo', mockControlGroup, new MockMeshField());
+            const meshControl = new MeshControl<any>(fieldDef, 'foo', mockControlGroup, new MockMeshField());
             expect(meshControl.errors).toEqual({});
         });
 
@@ -589,14 +589,178 @@ describe('MeshControl class', () => {
             };
             const mockMeshField = new MockMeshField();
             mockMeshField.setError({ err: 'error' });
-            const meshControl = new MeshControl(fieldDef, '', mockControlGroup, mockMeshField);
+            const meshControl = new MeshControl<any>(fieldDef, '', mockControlGroup, mockMeshField);
             expect(meshControl.errors).toEqual({ err: 'error' });
         });
     });
 
+    describe('getChanges()', () => {
+
+        describe('simple value', () => {
+            let meshControl: MeshControl<string>;
+            const initialValue = 'foo';
+
+            beforeEach(() => {
+                const fieldDef: SchemaField = {
+                    name: 'test',
+                    type: 'string'
+                };
+                meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, new MockMeshField());
+            });
+
+            it('"changed" starts false and stays false while value is unchanged', () => {
+                expect(meshControl.getChanges().changed).toBe(false);
+
+                meshControl.checkValue(initialValue);
+                expect(meshControl.getChanges().changed).toBe(false);
+            });
+
+            it('"changed" property set to true after checkValue() called with different value', () => {
+                expect(meshControl.getChanges().changed).toBe(false);
+
+                meshControl.checkValue('bar');
+                expect(meshControl.getChanges().changed).toBe(true);
+            });
+
+            it('"initialValue" and "currentValue" properties update correctly', () => {
+                meshControl.checkValue('bar');
+                const changes = meshControl.getChanges();
+                expect(changes.initialValue).toBe(initialValue);
+                expect(changes.currentValue).toBe('bar');
+            });
+        });
+
+        describe('object values', () => {
+
+            it('compares lists by value equality, not by reference', () => {
+                const fieldDef: SchemaField = {
+                    name: 'test',
+                    type: 'list',
+                    listType: 'string'
+                };
+                const meshControl = new MeshControl(fieldDef, ['foo', 'bar'], mockControlGroup, new MockMeshField());
+                expect(meshControl.getChanges().changed).toBe(false);
+
+                meshControl.checkValue(['foo', 'bar']);
+                expect(meshControl.getChanges().changed).toBe(false);
+            });
+
+            it('compares micronodes by value equality, not by reference', () => {
+                const fieldDef: SchemaField = {
+                    name: 'test',
+                    type: 'micronode',
+                };
+
+                function getMicronodeValue(fields: { [key: string]: any }): NodeFieldMicronode {
+                    return {
+                        uuid: 'test',
+                        microschema: {} as any,
+                        fields
+                    };
+                }
+                const meshControl = new MeshControl(fieldDef, getMicronodeValue({ test: 'foo' }), mockControlGroup, new MockMeshField());
+                expect(meshControl.getChanges().changed).toBe(false);
+
+                meshControl.checkValue(getMicronodeValue({ test: 'foo' }));
+                expect(meshControl.getChanges().changed).toBe(false);
+            });
+
+        });
+
+        describe('with children', () => {
+
+            let meshControl: MeshControl<string[]>;
+            let initialValue: string[];
+
+            beforeEach(() => {
+                const fieldDef: SchemaField = {
+                    name: 'test',
+                    type: 'list',
+                    listType: 'string'
+                };
+                initialValue = ['foo', 'bar', 'baz'];
+                meshControl = new MeshControl(fieldDef, initialValue, mockControlGroup, new MockMeshField());
+
+                initialValue.forEach((value, index) => {
+                    const childField = new MockMeshField();
+                    const pseudoField = {
+                        name: `${fieldDef.name} ${index}`,
+                        type: fieldDef.listType as 'string'
+                    };
+                    meshControl.addChild(pseudoField, value, childField);
+                });
+            });
+
+            it('returns a nested ControlChanges object', () => {
+                expect(meshControl.getChanges()).toEqual({
+                    changed: false,
+                    initialValue,
+                    currentValue: initialValue,
+                    children: {
+                        0: {
+                            changed: false,
+                            initialValue: 'foo',
+                            currentValue: 'foo',
+                            children: {}
+                        },
+                        1: {
+                            changed: false,
+                            initialValue: 'bar',
+                            currentValue: 'bar',
+                            children: {}
+                        },
+                        2: {
+                            changed: false,
+                            initialValue: 'baz',
+                            currentValue: 'baz',
+                            children: {}
+                        }
+                    }
+                });
+            });
+
+            it('registers a change on a child control', () => {
+                initialValue[1] = 'quux';
+                meshControl.checkValue(initialValue, true);
+                const changes = meshControl.getChanges();
+
+                expect(changes.changed).toBe(false);
+                expect(changes.children[1].changed).toBe(true);
+            });
+
+            it('does not register a change on a parent control if the object reference changes but values are equal', () => {
+                meshControl.checkValue(initialValue.slice(), true);
+                const changes = meshControl.getChanges();
+
+                expect(changes.changed).toBe(false);
+                expect(changes.children[0].changed).toBe(false);
+                expect(changes.children[1].changed).toBe(false);
+                expect(changes.children[2].changed).toBe(false);
+            });
+
+            it('reset() resets changed state recursively', () => {
+                meshControl.checkValue(['one', 'two', 'three'], true);
+                const changes1 = meshControl.getChanges();
+
+                expect(changes1.changed).toBe(true);
+                expect(changes1.children[0].changed).toBe(true);
+                expect(changes1.children[1].changed).toBe(true);
+                expect(changes1.children[2].changed).toBe(true);
+
+                meshControl.reset();
+                const changes2 = meshControl.getChanges();
+
+                expect(changes2.changed).toBe(false, 'parent');
+                expect(changes2.children[0].changed).toBe(false, 'child0');
+                expect(changes2.children[1].changed).toBe(false, 'child1');
+                expect(changes2.children[2].changed).toBe(false, 'child2');
+            });
+        });
+
+    });
+
 });
 
-/* tslint:disable:no-empty */
 class MockMeshField extends BaseFieldComponent {
     init(api: MeshFieldControlApi): void {}
     valueChange(value: NodeFieldType): void {}

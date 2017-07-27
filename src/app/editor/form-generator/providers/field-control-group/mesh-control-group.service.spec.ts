@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { MeshControlGroupService } from './mesh-control-group.service';
-import { MeshControl } from './mesh-control.class';
+import { checkForChanges, getChangesByPath, MeshControlGroupService } from './mesh-control-group.service';
+import { ControlChanges, MeshControl } from './mesh-control.class';
 import createSpy = jasmine.createSpy;
 import Spy = jasmine.Spy;
 
@@ -43,7 +43,7 @@ describe('MeshControlGroupService', () => {
     it('addControl() adds a control with named key to the _rootControl', () => {
         meshControlGroup.init(mockGetNodeFn);
 
-        expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl).children.size).toBe(0);
+        expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.size).toBe(0);
 
         const mockMeshField: any = {};
         const mockFieldDef: any = {
@@ -52,29 +52,29 @@ describe('MeshControlGroupService', () => {
         };
         meshControlGroup.addControl(mockFieldDef, 'foo', mockMeshField);
 
-        expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl).children.size).toBe(1);
-        const meshControl = (meshControlGroup.getMeshControlAtPath([]) as MeshControl).children.get('test') as MeshControl;
+        expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.size).toBe(1);
+        const meshControl = (meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.get('test') as MeshControl<any>;
         expect(meshControl.meshField).toBe(mockMeshField);
     });
 
     describe('checkValue()', () => {
 
-        let nameControl: MeshControl;
-        let friendsControl: MeshControl;
-        let friend1Control: MeshControl;
-        let friend2Control: MeshControl;
+        let nameControl: MeshControl<any>;
+        let friendsControl: MeshControl<any>;
+        let friend1Control: MeshControl<any>;
+        let friend2Control: MeshControl<any>;
 
         beforeEach(() => {
             meshControlGroup.init(mockGetNodeFn);
 
-            expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl).children.size).toBe(0);
+            expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.size).toBe(0);
 
             const mockMeshField: any = { valueChange: () => undefined };
             meshControlGroup.addControl({ name: 'name', type: 'string' }, 'joe', mockMeshField);
             meshControlGroup.addControl({ name: 'friends', type: 'list', listType: 'string' }, ['peter', 'susan'], mockMeshField);
 
-            function getChildControl(name: string): MeshControl {
-                return (meshControlGroup.getMeshControlAtPath([]) as MeshControl).children.get(name) as MeshControl;
+            function getChildControl(name: string): MeshControl<any> {
+                return (meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.get(name) as MeshControl<any>;
             }
 
             nameControl = getChildControl('name');
@@ -139,12 +139,12 @@ describe('MeshControlGroupService', () => {
 
     describe('nodeChanged()', () => {
 
-        it('invokes nodeChanged() on the root MeshControl', () => {
+        it('invokes nodeChanged() on the root MeshControl<any>', () => {
             const path = ['foo'];
             const value = 'bar';
             const node = {} as any;
             meshControlGroup.init(mockGetNodeFn);
-            const rootControl = meshControlGroup.getMeshControlAtPath([]) as MeshControl;
+            const rootControl = meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>;
             rootControl.nodeChanged = createSpy('nodeChanged');
 
             meshControlGroup.nodeChanged(path, value, node);
@@ -153,9 +153,9 @@ describe('MeshControlGroupService', () => {
 
     });
 
-    it('formWidthChanged() invokes formWidthChanged() on root MeshControl', () => {
+    it('formWidthChanged() invokes formWidthChanged() on root MeshControl<any>', () => {
         meshControlGroup.init(mockGetNodeFn);
-        const rootControl = meshControlGroup.getMeshControlAtPath([]) as MeshControl;
+        const rootControl = meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>;
         rootControl.formWidthChanged = createSpy('formWidthChanged');
 
         meshControlGroup.formWidthChanged(123);
@@ -165,11 +165,188 @@ describe('MeshControlGroupService', () => {
 
     it('getMeshControlAtPath() invokes _rootControl.getMeshControlAtPath()', () => {
         meshControlGroup.init(mockGetNodeFn);
-        const spy = spyOn(meshControlGroup.getMeshControlAtPath([]) as MeshControl, 'getMeshControlAtPath');
+        const spy = spyOn(meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>, 'getMeshControlAtPath');
         const path = ['foo'];
         meshControlGroup.getMeshControlAtPath(path);
 
         expect(spy).toHaveBeenCalledWith(path);
+    });
+
+    describe('checkForChanges()', () => {
+
+        it('returns correct value for 1 level deep', () => {
+            const changes: ControlChanges<string> = {
+                changed: false,
+                initialValue: 'foo',
+                currentValue: 'foo',
+                children: {}
+            };
+
+            expect(checkForChanges(changes)).toBe(false);
+
+            changes.changed = true;
+            changes.currentValue = 'bar';
+
+            expect(checkForChanges(changes)).toBe(true);
+        });
+
+        it('returns correct value for 2 levels deep', () => {
+            const changes: ControlChanges<string> = {
+                changed: false,
+                initialValue: 'foo',
+                currentValue: 'foo',
+                children: {
+                    child: {
+                        changed: false,
+                        initialValue: 'bar',
+                        currentValue: 'bar',
+                        children: {}
+                    }
+                }
+            };
+
+            expect(checkForChanges(changes)).toBe(false);
+
+            changes.children['child'].changed = true;
+            changes.children['child'].currentValue = 'baz';
+
+            expect(checkForChanges(changes)).toBe(true);
+        });
+
+        describe('3 levels deep', () => {
+            let changes: ControlChanges<string>;
+
+            beforeEach(() => {
+                changes = {
+                    changed: false,
+                    initialValue: 'foo',
+                    currentValue: 'foo',
+                    children: {
+                        child: {
+                            changed: false,
+                            initialValue: 'bar',
+                            currentValue: 'bar',
+                            children: {
+                                grandchild: {
+                                    changed: false,
+                                    initialValue: 'baz',
+                                    currentValue: 'baz',
+                                    children: {}
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+
+            it('returns correct value when leaf node is changed', () => {
+                expect(checkForChanges(changes)).toBe(false);
+
+                changes.children['child'].children['grandchild'].changed = true;
+                changes.children['child'].children['grandchild'].currentValue = 'quux';
+
+                expect(checkForChanges(changes)).toBe(true);
+            });
+
+            it('returns correct value when middle node is changed', () => {
+                expect(checkForChanges(changes)).toBe(false);
+
+                changes.children['child'].changed = true;
+                changes.children['child'].currentValue = 'quux';
+
+                expect(checkForChanges(changes)).toBe(true);
+            });
+        });
+
+
+    });
+
+    describe('getChangesByPath()', () => {
+
+        it('returns correct value for 2 levels deep', () => {
+            const changes: ControlChanges<undefined> = {
+                changed: false,
+                initialValue: undefined,
+                currentValue: undefined,
+                children: {
+                    child1: {
+                        changed: false,
+                        initialValue: 'bar',
+                        currentValue: 'bar',
+                        children: {}
+                    },
+                    child2: {
+                        changed: true,
+                        initialValue: 'baz',
+                        currentValue: 'boz',
+                        children: {}
+                    }
+                }
+            };
+
+            expect(getChangesByPath(changes)).toEqual([
+                {
+                    path: ['child2'],
+                    initialValue: 'baz',
+                    currentValue: 'boz'
+                }
+            ]);
+        });
+
+        describe('3 levels deep', () => {
+            let changes: ControlChanges<undefined>;
+
+            beforeEach(() => {
+                changes = {
+                    changed: false,
+                    initialValue: undefined,
+                    currentValue: undefined,
+                    children: {
+                        child: {
+                            changed: false,
+                            initialValue: 'bar',
+                            currentValue: 'bar',
+                            children: {
+                                grandchild: {
+                                    changed: false,
+                                    initialValue: 'baz',
+                                    currentValue: 'baz',
+                                    children: {}
+                                }
+                            }
+                        }
+                    }
+                };
+            });
+
+            it('returns correct value when leaf node is changed', () => {
+                changes.children['child'].children['grandchild'].changed = true;
+                changes.children['child'].children['grandchild'].currentValue = 'quux';
+
+                expect(getChangesByPath(changes)).toEqual([
+                    {
+                        path: ['child', 'grandchild'],
+                        initialValue: 'baz',
+                        currentValue: 'quux'
+                    }
+                ]);
+            });
+
+            it('returns correct value when middle node is changed', () => {
+                changes.children['child'].changed = true;
+                changes.children['child'].currentValue = 'quux';
+
+                expect(getChangesByPath(changes)).toEqual([
+                    {
+                        path: ['child'],
+                        initialValue: 'bar',
+                        currentValue: 'quux'
+                    }
+                ]);
+            });
+        });
+
+
     });
 
 });

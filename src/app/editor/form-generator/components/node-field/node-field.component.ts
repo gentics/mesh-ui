@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
-import { NodeFieldNode, NodeFieldType } from '../../../../common/models/node.model';
+import { NodeField, NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
@@ -20,7 +20,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
         this.valueChange(api.getValue());
     }
 
-    valueChange(value: NodeFieldNode): void {
+    valueChange(value: NodeField): void {
         this.userValue = value.uuid;
     }
 

@@ -3,6 +3,7 @@ import { MeshControlErrors, SchemaFieldPath } from '../../common/form-generator-
 import { SchemaField } from '../../../../common/models/schema.model';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 import { MeshControlGroupService } from './mesh-control-group.service';
+import { fieldsAreEqual } from '../../common/fields-are-equal';
 
 export const ROOT_TYPE = 'root';
 export const ROOT_NAME = 'root';
@@ -13,15 +14,22 @@ class RootFieldDefinition {
     required = false;
 }
 
+export interface ControlChanges<T> {
+    changed: boolean;
+    initialValue: T | undefined;
+    currentValue: T | undefined;
+    children: { [key: string]: ControlChanges<any> };
+}
+
 /**
  * A MeshControl is a wrapper around a BaseFieldComponent, and is responsible for propagating calls to the
  * BaseFieldComponent.valueChange() and BaseFieldComponent.formWidthChange() methods. MeshControls can be nested
  * by use of the addChild() method, which allows the implementation of complex types such as lists and
  * micronodes.
  */
-export class MeshControl {
+export class MeshControl<T extends NodeFieldType> {
     meshField: BaseFieldComponent;
-    children = new Map<string | number, MeshControl>();
+    children = new Map<string | number, MeshControl<NodeFieldType>>();
     fieldDef: SchemaField | RootFieldDefinition;
 
     /**
@@ -31,7 +39,8 @@ export class MeshControl {
         return this.meshControlGroup;
     }
     private meshControlGroup: MeshControlGroupService | undefined;
-    private lastValue;
+    private lastValue: T | undefined;
+    private initialValue: T | undefined;
 
     /**
      * Returns true if this MeshControl and all of its children are valid
@@ -49,14 +58,40 @@ export class MeshControl {
     }
 
     constructor();
-    constructor(fieldDef: SchemaField, initialValue: any, group?: MeshControlGroupService, meshFieldInstance?: BaseFieldComponent);
-    constructor(fieldDef?: SchemaField, initialValue?: any, group?: MeshControlGroupService, meshFieldInstance?: BaseFieldComponent) {
+    constructor(fieldDef: SchemaField, initialValue: T, group?: MeshControlGroupService, meshFieldInstance?: BaseFieldComponent);
+    constructor(fieldDef?: SchemaField, initialValue?: T, group?: MeshControlGroupService, meshFieldInstance?: BaseFieldComponent) {
         this.meshControlGroup = group;
-        this.lastValue = initialValue;
+        this.lastValue = this.initialValue = initialValue;
         this.fieldDef = fieldDef === undefined ? new RootFieldDefinition() : fieldDef;
         if (meshFieldInstance) {
             this.registerMeshFieldInstance(meshFieldInstance);
         }
+    }
+
+    /**
+     * Returns a recursive data structure indicating whether the value of this control has been changed, as well as the
+     * old and new values.
+     */
+    getChanges(): ControlChanges<T> {
+        return {
+            changed: !fieldsAreEqual(this.initialValue, this.lastValue),
+            initialValue: this.initialValue,
+            currentValue: this.lastValue,
+            children: Array.from(this.children.keys())
+                .reduce((hash, key) => {
+                    hash[key] = this.children.get(key)!.getChanges();
+                    return hash;
+                }, {} as { [key: string]: ControlChanges<any>; })
+        };
+    }
+
+    /**
+     * Resets the initialValue so that the control is put into a new "pristine" state. Operates recursively over
+     * all descendants.
+     */
+    reset(): void {
+        this.initialValue = this.lastValue;
+        Array.from(this.children.values()).forEach(child => child.reset());
     }
 
     /**
@@ -70,7 +105,7 @@ export class MeshControl {
     /**
      * Runs the `valueChange()` function for this control's BaseFieldComponent, and optionally checks recursively for all descendants.
      */
-    checkValue(value: NodeFieldType, recursive: boolean = false) {
+    checkValue(value: T, recursive: boolean = false) {
         if (this.meshField) {
             this.meshField.valueChange(value, this.lastValue);
         }
@@ -125,7 +160,7 @@ export class MeshControl {
     /**
      * Adds a new MeshControl as a child of this one.
      */
-    addChild(field: SchemaField, initialValue: any, control?: BaseFieldComponent): MeshControl {
+    addChild(field: SchemaField, initialValue: any, control?: BaseFieldComponent): MeshControl<NodeFieldType> {
         const useStringIndex = this.fieldDef.type === 'micronode' || this.fieldDef.type === ROOT_TYPE;
         const meshControl = new MeshControl(field, initialValue, this.group, control);
         const key = useStringIndex ? field.name : this.children.size;
@@ -136,9 +171,9 @@ export class MeshControl {
     /**
      * Given a path (e.g. ['locations', 0, 'longitude']), returns the associated MeshControl if one exists.
      */
-    getMeshControlAtPath(path: SchemaFieldPath): MeshControl | undefined {
-        let pointer: MeshControl | undefined = this;
-        const isMicronode = (control: MeshControl): boolean => control.fieldDef.type === 'micronode';
+    getMeshControlAtPath(path: SchemaFieldPath): MeshControl<any> | undefined {
+        let pointer: MeshControl<NodeFieldType> | undefined = this;
+        const isMicronode = (control: MeshControl<any>): boolean => control.fieldDef.type === 'micronode';
 
         path.forEach((key, index) => {
             if (pointer) {
