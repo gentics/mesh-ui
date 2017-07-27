@@ -5,7 +5,7 @@
 </div>
 <div class="modal-content">
     <form [formGroup]="form">
-        <gtx-input label="Name" formControlName="name"></gtx-input>
+        <gtx-input label="Name" formControlName="name" autofocus></gtx-input>
         <div class="error" *ngIf="name.errors && name.errors.conflict">
             {{ 'modal.create_project_conflict' | i18n }}
         </div>
