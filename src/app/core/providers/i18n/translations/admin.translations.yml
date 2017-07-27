@@ -1,3 +1,9 @@
+microschema_create:
+    en: Create Microschema
+    de: Microschema erstellen
+microschema_updated:
+    en: Microschema updated
+    de: Microschema gespeichert
 microschema_none_found:
     en: No microschemas found
     de: Keine Microschemas gefunden

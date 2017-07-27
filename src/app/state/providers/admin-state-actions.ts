@@ -4,8 +4,10 @@ import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 import { AppState } from '../models/app-state.model';
 import { AdminState } from '../models/admin-state.model';
 import { EntityState } from '../models/entity-state.model';
-import { ProjectResponse, SchemaResponse } from '../../common/models/server-models';
+import { ProjectResponse, SchemaResponse, MicroschemaResponse } from '../../common/models/server-models';
+import { uuidHash } from '../../common/util/util';
 import { mergeEntityState } from './entity-state-actions';
+import { MicroschemaReference } from '../../common/models/common.model';
 
 @Injectable()
 @Immutable()
@@ -28,8 +30,12 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         this.admin.loadCount++;
     }
 
+    actionSuccess() {
+        this.admin.loadCount--;
+    }
+
     actionError() {
-        this.admin.loadCount++;
+        this.admin.loadCount--;
     }
 
     loadSchemasSuccess(schemas: SchemaResponse[]) {
@@ -52,6 +58,14 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         this.entities = mergeEntityState(this.entities, {
             project: {
                 [projectUuid]: undefined
+            }
+        });
+    }
+
+    updateMicroschemaSuccess(response: MicroschemaResponse) {
+        this.entities = mergeEntityState(this.entities, {
+            microschema: {
+                [response.uuid]: response
             }
         });
     }

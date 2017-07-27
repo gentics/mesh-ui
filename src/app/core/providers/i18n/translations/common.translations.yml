@@ -58,6 +58,9 @@ priority_label:
 retry_button:
     en: Retry
     de: Erneut versuchen
+save:
+    en: Save
+    de: Speichern
 search_placeholder:
     en: Search
     de: Suche

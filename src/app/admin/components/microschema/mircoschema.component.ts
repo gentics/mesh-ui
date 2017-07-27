@@ -8,17 +8,23 @@ import { ModalService } from 'gentics-ui-core';
 import { hashValues } from '../../../common/util/util';
 import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
 import { MicroschemaResponse, MicroschemaUpdateRequest } from '../../../common/models/server-models';
+import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
     templateUrl: './microschema.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MicroschemaComponent implements OnInit {
+    // TODO Disable save button when editor is pristine
+    // TODO Show message on save when schema has not changed
     microschema$: Observable<MicroschemaResponse>;
+    version$: Observable<string>;
 
     microschemaJson: string;
     // TODO load json schema from mesh instead of static file
     schema = require('./microschema.schema.json');
+
+    errors: MarkerData[] = [];
 
     constructor(private state: ApplicationStateService,
                 private modal: ModalService,
@@ -41,7 +47,9 @@ export class MicroschemaComponent implements OnInit {
                     throw Error('uuid not set');
                 }
             }
-        );
+        ).filter(Boolean);
+
+        this.version$ = this.microschema$.map(it => it.version);
 
         uuid$.filter(Boolean).take(1).subscribe(uuid => {
             // TODO handle 404 or other errors
@@ -49,18 +57,31 @@ export class MicroschemaComponent implements OnInit {
         });
 
         this.microschema$
-        .filter(Boolean)
         .take(1)
         .subscribe(microschema => {
-            const val = JSON.stringify(stripMicroschemaFields(microschema), undefined, 2);
+            const val = JSON.stringify(stripMicroschemaFields(microschema), undefined, 4);
             this.microschemaJson = val;
             this.ref.detectChanges();
         });
+    }
+
+    onErrorChange(errors: MarkerData[]) {
+        this.errors = errors;
+        this.ref.detectChanges();
+    }
+
+    save() {
+        if (this.errors.length === 0) {
+            this.microschema$.take(1).subscribe(microschema => {
+                const changedSchema = JSON.parse(this.microschemaJson);
+                this.microschemaEffects.updateMicroschema({...microschema, ...changedSchema});
+            });
+        }
     }
 }
 
 const updateFields = ['name', 'description', 'fields'];
 
-function stripMicroschemaFields(microschema: MicroschemaResponse): MicroschemaUpdateRequest {
+function stripMicroschemaFields(microschema: MicroschemaResponse): any {
     return updateFields.reduce((obj, key) => ({...obj, [key]: microschema[key]}), {});
 }

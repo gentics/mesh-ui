@@ -6,9 +6,31 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 declare const window: Window & { require: any };
 declare const monaco: any;
 
+
+/**
+ * A structure defining a problem/warning/etc.
+ */
+export interface MarkerData {
+    code?: string;
+    severity: Severity;
+    message: string;
+    source?: string;
+    startLineNumber: number;
+    startColumn: number;
+    endLineNumber: number;
+    endColumn: number;
+}
+
+export enum Severity {
+    Ignore = 0,
+    Info = 1,
+    Warning = 2,
+    Error = 3,
+}
+
 @Component({
     selector: 'monaco-editor',
-    template: `<div id='editor' #editor class="monaco-editor"></div>`,
+    template: `<div (window:resize)="onResize()" id='editor' #editor class="monaco-editor"></div>`,
     styleUrls: ['./monaco-editor.scss'],
     providers: [
         {
@@ -33,6 +55,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
     get value(): string { return this._value; }
     @Output() change = new EventEmitter();
     @Output() instance: any = null;
+    @Output() errors = new EventEmitter<MarkerData[]>();
 
     private _editor: any;
     private _value = '';
@@ -46,7 +69,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
     }
 
     ngAfterViewInit() {
-
         const onGotAmdLoader = () => {
             // Load monaco
             window.require.config({ paths: { vs: 'assets/monaco/vs' } });
@@ -112,9 +134,29 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
             });
         }
 
+        // This is a hack to get errors from the validation in the editor.
+        // https://github.com/Microsoft/monaco-editor/issues/30
+        const setModelMarkers = monaco.editor.setModelMarkers;
+        monaco.editor.setModelMarkers = (model, owner, markers: MarkerData[]) => {
+            setModelMarkers.call(monaco.editor, model, owner, markers);
+            this.errors.emit(markers);
+        };
+
         this._editor.getModel().onDidChangeContent((e) => {
             this.updateValue(this._editor.getModel().getValue());
         });
+    }
+
+    updateDimensions() {
+        this._editor.layout();
+    }
+
+    componentDidMount() {
+
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions.bind(this));
     }
 
     /**
@@ -143,6 +185,12 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         // If an instance of Monaco editor is running, update its contents
         if (this._editor) {
             this._editor.getModel().setValue(this._value);
+        }
+    }
+
+    onResize() {
+        if (this._editor) {
+            this._editor.layout();
         }
     }
 

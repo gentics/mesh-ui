@@ -3458,7 +3458,7 @@ export interface MicroschemaReferenceFromServer {
     readonly name?: string;
     /** Uuid of the referenced element */
     readonly uuid: string;
-    readonly version?: Integer;
+    readonly version?: string;
 }
 
 /**
@@ -3487,7 +3487,7 @@ export interface MicroschemaResponse {
     /** Uuid of the element */
     readonly uuid: string;
     /** Version of the microschema */
-    readonly version?: Integer;
+    readonly version: string;
 }
 
 export interface MicroschemaUpdateRequest {
@@ -3498,7 +3498,7 @@ export interface MicroschemaUpdateRequest {
     /** Name of the microschema */
     readonly name?: string;
     /** Version of the microschema */
-    readonly version?: Integer;
+    readonly version: string;
 }
 
 export interface NavigationElementFromServer {
@@ -3972,7 +3972,7 @@ export interface SchemaReferenceFromServer {
     readonly name?: string;
     /** Uuid of the referenced element */
     readonly uuid: string;
-    readonly version?: Integer;
+    readonly version?: string;
 }
 
 /**
@@ -4015,7 +4015,7 @@ export interface SchemaResponse {
     /** Uuid of the element */
     readonly uuid: string;
     /** Version of the schema */
-    readonly version: Integer;
+    readonly version: string;
 }
 
 export interface SchemaUpdateRequest {
@@ -4038,7 +4038,7 @@ export interface SchemaUpdateRequest {
      */
     readonly segmentField: string;
     /** Version of the schema */
-    readonly version: Integer;
+    readonly version: string;
 }
 
 export interface TagCreateRequest {
