@@ -60,6 +60,9 @@ export class MeshControlGroupService {
         return getChangesByPath(changes);
     }
 
+    /**
+     * Returns true if any of the controls in the group have changed from their initial values.
+     */
     isDirty(): boolean {
         if (!this._rootControl) {
             return false;
@@ -68,9 +71,13 @@ export class MeshControlGroupService {
         return checkForChanges(changes);
     }
 
-    reset(): void {
+    /**
+     * Resets all controls to the values defined in the values object (which should be the
+     * map from the MeshNode.fields property).
+     */
+    reset(values: { [p: string]: NodeFieldType }): void {
         if (this._rootControl && this.isDirty()) {
-            this.rootControl.reset();
+            this.rootControl.reset(values);
         }
     }
 

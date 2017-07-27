@@ -1,9 +1,9 @@
-import { MeshNode, NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
+import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { MeshControlErrors, SchemaFieldPath } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
 import { MeshControlGroupService } from './mesh-control-group.service';
-import { fieldsAreEqual } from '../../common/fields-are-equal';
+import { fieldsAreEqual, isMicronode } from '../../common/fields-are-equal';
 
 export const ROOT_TYPE = 'root';
 export const ROOT_NAME = 'root';
@@ -89,9 +89,17 @@ export class MeshControl<T extends NodeFieldType> {
      * Resets the initialValue so that the control is put into a new "pristine" state. Operates recursively over
      * all descendants.
      */
-    reset(): void {
-        this.initialValue = this.lastValue;
-        Array.from(this.children.values()).forEach(child => child.reset());
+    reset(value: T): void {
+        this.initialValue = this.lastValue = value;
+
+        if (0 < this.children.size) {
+            const valueContainer = isMicronode(value) ? value.fields : value;
+            if (valueContainer) {
+                this.children.forEach((meshControl, key) => {
+                    meshControl.reset(valueContainer[key]);
+                });
+            }
+        }
     }
 
     /**
@@ -105,15 +113,14 @@ export class MeshControl<T extends NodeFieldType> {
     /**
      * Runs the `valueChange()` function for this control's BaseFieldComponent, and optionally checks recursively for all descendants.
      */
-    checkValue(value: T, recursive: boolean = false) {
+    checkValue(value: T, recursive: boolean = false): void {
         if (this.meshField) {
             this.meshField.valueChange(value, this.lastValue);
         }
         this.lastValue = value;
 
         if (recursive && 0 < this.children.size) {
-            const isMicronode = this.fieldDef.type === 'micronode';
-            const valueContainer = isMicronode && value && value.hasOwnProperty('fields') ? (value as NodeFieldMicronode).fields : value;
+            const valueContainer = isMicronode(value) ? value.fields : value;
             if (valueContainer) {
                 this.children.forEach((meshControl, key) => {
                     meshControl.checkValue(valueContainer[key], true);

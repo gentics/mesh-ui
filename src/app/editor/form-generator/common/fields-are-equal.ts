@@ -14,7 +14,10 @@ export function fieldsAreEqual<T extends NodeFieldType>(initial?: T, current?: T
     }
 }
 
-function isMicronode(field?: NodeFieldType): field is NodeFieldMicronode {
+/**
+ * Returns true if the object has the shape of a micronode field.
+ */
+export function isMicronode(field?: NodeFieldType): field is NodeFieldMicronode {
     if (!field) {
         return false;
     }

@@ -145,8 +145,9 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     /**
      * Resets the isDirty state of the component.
      */
-    setPristine(): void {
-        this.meshControlGroup.reset();
+    setPristine(node: MeshNode): void {
+        // --- TODO: fix typings ---
+        this.meshControlGroup.reset(node.fields as any);
     }
 
     /**

@@ -90,7 +90,7 @@ describe('FormGeneratorComponent:', () => {
         nameField.onChange('bar');
 
         expect(resetSpy).not.toHaveBeenCalled();
-        instance.setPristine();
+        instance.setPristine({} as any);
         expect(resetSpy).toHaveBeenCalled();
     });
 

@@ -747,7 +747,7 @@ describe('MeshControl class', () => {
                 expect(changes1.children[1].changed).toBe(true);
                 expect(changes1.children[2].changed).toBe(true);
 
-                meshControl.reset();
+                meshControl.reset(['new1', 'new2', 'new3']);
                 const changes2 = meshControl.getChanges();
 
                 expect(changes2.changed).toBe(false, 'parent');
