@@ -45,10 +45,16 @@ export class MeshControlGroupService {
         }
     }
 
+    /**
+     * Returns a tree of ControlChanges for all the fields in the form.
+     */
     getChanges(): ControlChanges<undefined> {
         return this.rootControl.getChanges();
     }
 
+    /**
+     * Returns a flat list of changed controls with paths and values.
+     */
     getChangesByPath(): ChangesByPath[] {
         const changes = this.rootControl.getChanges();
         return getChangesByPath(changes);

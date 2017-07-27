@@ -2,7 +2,14 @@
     <h5>{{ 'modal.confirm_navigation_title' | i18n }}</h5>
 </div>
 <div class="modal-content">
-    <div class="node-title">{{ nodeEditor.nodeTitle }}</div>
+    <ul class="changes">
+        <li *ngFor="let change of changes | slice:0:displayLimit" class="change-item">
+            <div class="path">{{ change.path }}</div>
+            <div class="old-val" *ngIf="change.oldValue">{{ change.oldValue }}</div>
+            <div class="new-val">{{ change.newValue }}</div>
+        </li>
+    </ul>
+    <div class="additional" *ngIf="0 < additionalChangesCount">{{ 'modal.additional_changes_label' | i18n:{ count: additionalChangesCount } }}</div>
     <p class="lead">
         {{ 'modal.confirm_navigation_body' | i18n }}
     </p>

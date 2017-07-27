@@ -1,3 +1,6 @@
+additional_changes_label:
+    en: '+ {{count}} additional changes'
+    de: '+ {{count}} weitere Änderungen'
 change_password_title:
     en: Change Password
     de: Passwort ändern
@@ -40,6 +43,9 @@ delete_project_body:
 discard_changes_button:
     en: Discard changes
     de: Änderungen verwerfen
+list_changed_label:
+    en: list changed
+    de: Liste geändert
 new_password_label:
     en: New password
     de: Neues Passwort

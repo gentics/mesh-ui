@@ -18,7 +18,7 @@ import { Schema } from '../../../../common/models/schema.model';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
-import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
+import { ChangesByPath, MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { SchemaFieldPath } from '../../common/form-generator-models';
 import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { Subject } from 'rxjs/Subject';
@@ -147,6 +147,13 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
      */
     setPristine(): void {
         this.meshControlGroup.reset();
+    }
+
+    /**
+     * Returns a list of fields which have changed, including the object path to that field, and the old and new values.
+     */
+    getChangesByPath(): ChangesByPath[] {
+        return this.meshControlGroup.getChangesByPath();
     }
 
     private onChange(path: SchemaFieldPath, value: any): void {

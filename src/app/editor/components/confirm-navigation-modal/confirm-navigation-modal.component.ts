@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { IModalDialog } from 'gentics-ui-core';
 import { NodeEditorComponent } from '../node-editor/node-editor.component';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 
 /**
  * A modal for the user to
@@ -8,13 +9,33 @@ import { NodeEditorComponent } from '../node-editor/node-editor.component';
 @Component({
     selector: 'confirm-navigation-modal',
     templateUrl: './confirm-navigation-modal.tpl.html',
-    styleUrls: ['./confirm-navigation-modal.scss']
+    styleUrls: ['./confirm-navigation-modal.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ConfirmNavigationModalComponent implements IModalDialog {
+export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
     closeFn: (result: boolean) => void;
     cancelFn: (val?: any) => void;
-
     nodeEditor: NodeEditorComponent;
+    changes: Array<{ path: string; oldValue: string; newValue: string; }>;
+    displayLimit = 10;
+    additionalChangesCount: number = 0;
+
+    constructor(private i18n: I18nService) {}
+
+    ngOnInit(): void {
+        const listChangedLabel = this.i18n.translate('modal.list_changed_label');
+
+        this.changes = this.nodeEditor.formGenerator.getChangesByPath()
+            .map(change => {
+                const path = change.path.join(' › ');
+                const oldValue = typeof change.initialValue !== 'object' ? change.initialValue.toString() : '';
+                const newValue = typeof change.currentValue !== 'object' ? change.currentValue.toString() : listChangedLabel;
+                return { path, oldValue, newValue };
+            });
+        if (this.displayLimit < this.changes.length) {
+            this.additionalChangesCount = this.changes.length - this.displayLimit;
+        }
+    }
 
     saveAndClose(): void {
         this.nodeEditor.saveNode();
