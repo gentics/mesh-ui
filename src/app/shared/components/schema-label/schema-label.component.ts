@@ -10,9 +10,12 @@ import { Schema } from '../../../common/models/schema.model';
 })
 
 export class SchemaLabelComponent {
-    @Input() schema: SchemaReference | Schema;
+    @Input() schema: SchemaReference | Schema | undefined;
 
     getSchemaName(): string {
+        if (!this.schema) {
+            return '';
+        }
         return this.schema.name || this.schema.uuid;
     }
 }

@@ -3,13 +3,13 @@
         <div class="main">
             <div class="display-name">{{ nodeTitle }}</div>
             <div class="schema">
-                <schema-label [schema]="node.schema"></schema-label>
+                <schema-label [schema]="node?.schema"></schema-label>
             </div>
         </div>
         <div class="primary-buttons">
             <gtx-button size="small" type="primary"
                         (click)="saveNode()"
-                        [disabled]="!formGenerator?.isDirty">
+                        [disabled]="!formGenerator?.isDirty || !formGenerator?.isValid">
                 <icon left>save</icon> {{ 'editor.save_button' | i18n }}
             </gtx-button>
             <gtx-button size="small" type="success"
@@ -37,7 +37,7 @@
             TAGS STUFF
         </div>
         <div class="versions">
-            v{{ node.version }} VERSIONS STUFF
+            v{{ node?.version }} VERSIONS STUFF
         </div>
     </div>
 </div>

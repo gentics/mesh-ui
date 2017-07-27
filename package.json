@@ -93,7 +93,7 @@
     "@ngx-translate/core": "^6.0.1",
     "@types/quill": "0.0.29",
     "core-js": "^2.4.1",
-    "gentics-ui-core": "^5.1.1",
+    "gentics-ui-core": "^5.2.2",
     "http-server": "^0.9.0",
     "ie-shim": "^0.1.0",
     "immutablets": "^0.11.0",

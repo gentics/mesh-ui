@@ -32,7 +32,7 @@ export class EditorEffectsService {
         this.state.actions.editor.closeEditor();
     }
 
-    saveNode(node: MeshNode): void {
+    saveNode(node: MeshNode): Promise<MeshNode | void> {
         if (!node.project.name) {
             throw new Error('Project name is not available');
         }
@@ -43,8 +43,9 @@ export class EditorEffectsService {
             language: node.language || FALLBACK_LANGUAGE
         };
 
-        this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid }, updateRequest)
-            .subscribe(response => {
+        return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid }, updateRequest)
+            .toPromise()
+            .then(response => {
                     if (response.conflict) {
                         // TODO: conflict resolution handling
                     } else if (response.node) {

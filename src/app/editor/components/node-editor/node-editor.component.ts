@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { testNode, testSchema } from './mock-data';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ActivatedRoute } from '@angular/router';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
@@ -18,17 +17,16 @@ import { FormGeneratorComponent } from '../../form-generator/components/form-gen
 })
 
 export class NodeEditorComponent implements OnInit, OnDestroy {
-    node: MeshNode = testNode;
-    schema: Schema = testSchema;
+    node: MeshNode | undefined;
+    schema: Schema | undefined;
     nodeTitle: string = '';
     @ViewChild(FormGeneratorComponent) formGenerator: FormGeneratorComponent;
 
-    constructor(
-        private state: ApplicationStateService,
-        private changeDetector: ChangeDetectorRef,
-        private editorEffects: EditorEffectsService,
-        private navigationService: NavigationService,
-        private route: ActivatedRoute) {}
+    constructor(private state: ApplicationStateService,
+                private changeDetector: ChangeDetectorRef,
+                private editorEffects: EditorEffectsService,
+                private navigationService: NavigationService,
+                private route: ActivatedRoute) {}
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -51,7 +49,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 )
             )
             .subscribe(([node, schema]) => {
-                this.formGenerator.setPristine();
+                this.formGenerator.setPristine(node);
                 this.node = node;
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();
@@ -64,14 +62,21 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     }
 
     getNodePath(): string {
+        if (!this.node) {
+            return '';
+        }
         const breadcrumbs = this.node.breadcrumb.map(b => b.displayName);
         // TODO: remove this once Mesh fixes the order of the breadcrumbs
         breadcrumbs.reverse();
 
         return [this.node.project.name, ...breadcrumbs].join(' › ');
+
     }
 
     getNodePathRouterLink(): any[] {
+        if (!this.node) {
+            return [];
+        }
         if (this.node.project.name) {
             return this.navigationService.list(this.node.project.name, this.node.parentNode.uuid).commands();
         } else {
@@ -81,18 +86,32 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     /** Returns true if the node is a draft version i.e. not a whole number version */
     isDraft(): boolean {
-        return !/\.0$/.test(this.node.version);
+        return !!this.node && !/\.0$/.test(this.node.version);
     }
 
+    /**
+     * Save the node as a new draft version.
+     */
     saveNode(): void {
-        if (this.formGenerator.isDirty) {
+        if (this.node && this.formGenerator.isDirty) {
             this.editorEffects.saveNode(this.node);
         }
     }
 
+    /**
+     * Publish the node, and if there are changes, save first before publishing.
+     */
     publishNode(): void {
-        if (this.isDraft()) {
-            this.editorEffects.publishNode(this.node);
+        if (this.node && this.isDraft()) {
+            const promise = this.formGenerator.isDirty ?
+                this.editorEffects.saveNode(this.node) :
+                Promise.resolve(this.node);
+
+            promise.then(node => {
+                if (node) {
+                    this.editorEffects.publishNode(node);
+                }
+            });
         }
     }
 
@@ -101,6 +120,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     }
 
     private getNodeTitle(): string {
+        if (!this.node) {
+            return '';
+        }
         if (this.node.displayField) {
             return this.node.fields[this.node.displayField];
         } else {
