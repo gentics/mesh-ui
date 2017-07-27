@@ -14,7 +14,6 @@ import { MicroschemaListComponent } from './components/microschema-list/mircosch
 import { MicroschemaEffectsService } from './providers/effects/microschema-effects.service';
 import { MicroschemaComponent } from './components/microschema/mircoschema.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
-import { AdminProgressBarComponent } from './components/admin-progress-bar/admin-progress-bar.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +25,6 @@ import { AdminProgressBarComponent } from './components/admin-progress-bar/admin
         MicroschemaListComponent,
         MicroschemaComponent,
         MonacoEditorComponent,
-        AdminProgressBarComponent
     ],
     entryComponents: [
         CreateProjectModalComponent

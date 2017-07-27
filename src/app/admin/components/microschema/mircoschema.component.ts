@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Microschema } from '../../../common/models/microschema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ModalService } from 'gentics-ui-core';
-import { hashValues } from '../../../common/util/util';
+import { hashValues, filenameExtension } from '../../../common/util/util';
 import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
 import { MicroschemaResponse, MicroschemaUpdateRequest } from '../../../common/models/server-models';
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
@@ -20,38 +20,44 @@ export class MicroschemaComponent implements OnInit {
     microschema$: Observable<MicroschemaResponse>;
     version$: Observable<string>;
 
-    microschemaJson: string;
+    microschemaJson: string = '';
     // TODO load json schema from mesh instead of static file
     schema = require('./microschema.schema.json');
 
     errors: MarkerData[] = [];
+    isNew = true;
+
+    loading$: Observable<boolean>;
 
     constructor(private state: ApplicationStateService,
                 private modal: ModalService,
                 private microschemaEffects: MicroschemaEffectsService,
                 private route: ActivatedRoute,
+                private router: Router,
                 private ref: ChangeDetectorRef) {
     }
 
     ngOnInit() {
+        this.loading$ = this.state.select(state => state.admin.loadCount > 0);
+
         const uuid$ = this.route.paramMap
-        .map(map => map.get('uuid'))
-        .distinctUntilChanged();
+            .map(map => map.get('uuid'))
+            .distinctUntilChanged()
+            .do(route => {
+                this.isNew = route === 'new';
+            })
+            // This will cause all the stuff below to not trigger when a new microschema is made.
+            .filter(route => route !== 'new');
 
         this.microschema$ = uuid$
             .switchMap(uuid => {
-                if (uuid) {
-                    return this.state.select(state => state.entities.microschema[uuid]);
-                } else {
-                    // TODO handle this?
-                    throw Error('uuid not set');
-                }
+                return this.state.select(state => state.entities.microschema[uuid!]);
             }
         ).filter(Boolean);
 
         this.version$ = this.microschema$.map(it => it.version);
 
-        uuid$.filter(Boolean).take(1).subscribe(uuid => {
+        uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
             // TODO handle 404 or other errors
             this.microschemaEffects.loadMicroschema(uuid);
         });
@@ -72,11 +78,23 @@ export class MicroschemaComponent implements OnInit {
 
     save() {
         if (this.errors.length === 0) {
-            this.microschema$.take(1).subscribe(microschema => {
-                const changedSchema = JSON.parse(this.microschemaJson);
-                this.microschemaEffects.updateMicroschema({...microschema, ...changedSchema});
-            });
+            const changedSchema = JSON.parse(this.microschemaJson);
+            if (this.isNew) {
+                this.microschemaEffects.createMicroschema(changedSchema).subscribe(microschema => {
+                    this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                });
+            } else {
+                this.microschema$.take(1).subscribe(microschema => {
+                    this.microschemaEffects.updateMicroschema({...microschema, ...changedSchema});
+                });
+            }
         }
+    }
+
+    delete() {
+        this.microschema$.take(1)
+        .switchMap(microschema => this.microschemaEffects.deleteMicroschema(microschema.uuid))
+        .subscribe(() => this.router.navigate(['admin', 'microschemas']));
     }
 }
 

@@ -6,5 +6,11 @@
 </div>
 
 <div>
-    <a [routerLink]="['/admin/microschemas', microschema.uuid]" *ngFor="let microschema of microschemas$ | async">{{ microschema.name }}</a>
+    <a [routerLink]="['/admin/microschemas', microschema.uuid]" *ngFor="let microschema of microschemas$ | async">
+        <gtx-contents-list-item>
+            <div class="item-primary">{{ microschema.name }}</div>
+        </gtx-contents-list-item>
+    </a>
 </div>
+
+<gtx-button (click)="createMicroschema()">{{ 'admin.microschema_create' | i18n }}</gtx-button>

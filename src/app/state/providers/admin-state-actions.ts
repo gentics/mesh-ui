@@ -55,14 +55,26 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     }
 
     deleteProjectSuccess(projectUuid: string) {
+        // TODO implement
+        throw new Error('Not implemented');
+    }
+
+    deleteMicroschemaSuccess(projectUuid: string) {
+        // TODO implement
+        throw new Error('Not implemented');
+    }
+
+    updateMicroschemaSuccess(response: MicroschemaResponse) {
+        this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            project: {
-                [projectUuid]: undefined
+            microschema: {
+                [response.uuid]: response
             }
         });
     }
 
-    updateMicroschemaSuccess(response: MicroschemaResponse) {
+    createMicroschemaSuccess(response: MicroschemaResponse) {
+        this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             microschema: {
                 [response.uuid]: response

@@ -1,6 +1,15 @@
 microschema_create:
     en: Create Microschema
     de: Microschema erstellen
+microschema_deleted:
+    en: Microschema deleted
+    de: Microschema gelöscht
+microschema_deleted_error:
+    en: Microschema could not be deleted
+    de: Microschema konnte nicht gelöscht werden
+microschema_created:
+    en: Microschema created
+    de: Microschema erstellt
 microschema_updated:
     en: Microschema updated
     de: Microschema gespeichert

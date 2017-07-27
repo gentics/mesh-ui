@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { MicroschemaUpdateRequest, MicroschemaCreateRequest } from '../../../common/models/server-models';
+import { MicroschemaUpdateRequest, MicroschemaCreateRequest, MicroschemaResponse } from '../../../common/models/server-models';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 
 
 @Injectable()
@@ -46,6 +48,47 @@ export class MicroschemaEffectsService {
             });
         }, error => {
             this.state.actions.admin.actionError();
+        });
+    }
+
+    createMicroschema(request: MicroschemaCreateRequest): Observable<MicroschemaResponse> {
+        const subject = new Subject<MicroschemaResponse>();
+
+        this.state.actions.admin.actionStart();
+        this.api.admin.createMicroschema({}, request)
+        .subscribe(microschema => {
+            this.state.actions.admin.createMicroschemaSuccess(microschema);
+            this.notification.show({
+                type: 'success',
+                message: 'admin.microschema_created'
+            });
+            subject.next(microschema);
+            subject.complete();
+        }, error => {
+            this.state.actions.admin.actionError();
+            subject.error(error);
+        });
+
+        return subject.asObservable();
+    }
+
+    deleteMicroschema(microschemaUuid: string): void {
+        this.state.actions.admin.actionStart();
+
+        this.api.admin.deleteMicroschema({microschemaUuid})
+        .subscribe(() => {
+            this.state.actions.admin.deleteMicroschemaSuccess(microschemaUuid);
+            this.notification.show({
+                type: 'success',
+                message: 'admin.microschema_deleted'
+            });
+        }, error => {
+            this.state.actions.admin.actionError();
+            this.notification.show({
+                type: 'error',
+                message: 'admin.microschema_deleted_error'
+            });
+            console.error(error);
         });
     }
 }
