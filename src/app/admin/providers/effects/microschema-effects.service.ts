@@ -36,6 +36,16 @@ export class MicroschemaEffectsService {
         });
     }
 
+    openMicroschema(microschemaUuid: string) {
+        this.state.actions.admin.openMicroschemaStart();
+        this.api.admin.getMicroschema({microschemaUuid})
+        .subscribe(microschema => {
+            this.state.actions.admin.openMicroschemaSuccess(microschema);
+        }, error => {
+            this.state.actions.admin.openMicroschemaError();
+        });
+    }
+
     updateMicroschema(request: MicroschemaUpdateRequest & {uuid: string}) {
         this.state.actions.admin.actionStart();
         this.api.admin.updateMicroschema({microschemaUuid: request.uuid}, request)
@@ -72,7 +82,8 @@ export class MicroschemaEffectsService {
         return subject.asObservable();
     }
 
-    deleteMicroschema(microschemaUuid: string): void {
+    deleteMicroschema(microschemaUuid: string): Observable<void> {
+        const subject = new Subject<void>();
         this.state.actions.admin.actionStart();
 
         this.api.admin.deleteMicroschema({microschemaUuid})
@@ -82,13 +93,17 @@ export class MicroschemaEffectsService {
                 type: 'success',
                 message: 'admin.microschema_deleted'
             });
+            subject.next();
+            subject.complete();
         }, error => {
             this.state.actions.admin.actionError();
             this.notification.show({
                 type: 'error',
                 message: 'admin.microschema_deleted_error'
             });
-            console.error(error);
+            subject.error(error);
         });
+
+        return subject.asObservable();
     }
 }

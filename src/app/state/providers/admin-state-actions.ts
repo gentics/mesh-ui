@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
 import { AppState } from '../models/app-state.model';
-import { AdminState } from '../models/admin-state.model';
+import { AuthState } from '../models/auth-state.model';
+import { AdminState, AdminStateEntity } from '../models/admin-state.model';
+import { ChangePasswordModalComponent } from '../../core/components/change-password-modal/change-password-modal.component';
 import { EntityState } from '../models/entity-state.model';
 import { ProjectResponse, SchemaResponse, MicroschemaResponse } from '../../common/models/server-models';
 import { uuidHash } from '../../common/util/util';
@@ -80,5 +82,30 @@ export class AdminStateActions extends StateActionBranch<AppState> {
                 [response.uuid]: response
             }
         });
+    }
+
+    openMicroschemaStart() {
+        this.admin.loadCount++;
+    }
+
+    openMicroschemaSuccess(microschema: MicroschemaResponse) {
+        this.admin.loadCount--;
+        this.admin.openEntity = {
+            type: 'microschema',
+            uuid: microschema.uuid
+        };
+        this.entities = mergeEntityState(this.entities, {
+            microschema: {
+                [microschema.uuid]: microschema
+            }
+        });
+    }
+
+    openMicroschemaError() {
+        this.admin.loadCount--;
+    }
+
+    newMicroschema() {
+        delete this.admin.openEntity;
     }
 }

@@ -3481,7 +3481,7 @@ export interface MicroschemaResponse {
     /** List of microschema fields */
     readonly fields?: FieldSchemaFromServer[];
     /** Name of the microschema */
-    readonly name?: string;
+    readonly name: string;
     readonly permissions: PermissionInfoFromServer;
     readonly rolePerms: PermissionInfoFromServer;
     /** Uuid of the element */

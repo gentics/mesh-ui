@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { Microschema } from '../../../common/models/microschema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -14,7 +14,7 @@ import { MarkerData } from '../monaco-editor/monaco-editor.component';
     templateUrl: './microschema.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MicroschemaComponent implements OnInit {
+export class MicroschemaComponent implements OnInit, OnDestroy {
     // TODO Disable save button when editor is pristine
     // TODO Show message on save when schema has not changed
     microschema$: Observable<MicroschemaResponse>;
@@ -28,6 +28,8 @@ export class MicroschemaComponent implements OnInit {
     isNew = true;
 
     loading$: Observable<boolean>;
+
+    subscription: Subscription;
 
     constructor(private state: ApplicationStateService,
                 private modal: ModalService,
@@ -45,6 +47,9 @@ export class MicroschemaComponent implements OnInit {
             .distinctUntilChanged()
             .do(route => {
                 this.isNew = route === 'new';
+                if (this.isNew) {
+                    this.state.actions.admin.newMicroschema();
+                }
             })
             // This will cause all the stuff below to not trigger when a new microschema is made.
             .filter(route => route !== 'new');
@@ -59,16 +64,19 @@ export class MicroschemaComponent implements OnInit {
 
         uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
             // TODO handle 404 or other errors
-            this.microschemaEffects.loadMicroschema(uuid);
+            this.microschemaEffects.openMicroschema(uuid);
         });
 
-        this.microschema$
-        .take(1)
+        this.subscription = this.microschema$
         .subscribe(microschema => {
             const val = JSON.stringify(stripMicroschemaFields(microschema), undefined, 4);
             this.microschemaJson = val;
             this.ref.detectChanges();
         });
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     onErrorChange(errors: MarkerData[]) {

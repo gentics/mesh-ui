@@ -6,7 +6,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { ModalService } from 'gentics-ui-core';
 import { hashValues } from '../../../common/util/util';
 import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     templateUrl: './microschema-list.component.html',
