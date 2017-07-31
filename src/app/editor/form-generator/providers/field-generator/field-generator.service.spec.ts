@@ -82,13 +82,13 @@ describe('FieldGeneratorService', () => {
             });
 
             it('returns an instance of ComponentRef<FieldComponent>', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 expect(result instanceof ComponentRef).toBe(true);
                 expect(result.instance instanceof MockFieldComponent).toBe(true);
             });
 
             it('invokes FieldComponent.init() with a MeshFieldControlApi object', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 expect(result.instance.init).toHaveBeenCalled();
 
                 const api = result.instance.api;
@@ -98,7 +98,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.setValue() invokes the onChange function', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
 
                 expect(fixture.componentInstance.onChangeFn).not.toHaveBeenCalled();
@@ -108,7 +108,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.setError() invokes the setError function', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
 
                 api.setError('err', 'error');
@@ -116,7 +116,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.setValue() allows overriding of the path argument', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const customPath = ['my', 'custom', 'path'];
                 expect(fixture.componentInstance.onChangeFn).not.toHaveBeenCalled();
@@ -126,7 +126,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.getNodeValue() invokes MeshControlGroupService.getNodeValue()', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const path = ['foo'];
                 const meshControlGroup: MockMeshControlGroupService = TestBed.get(MeshControlGroupService);
@@ -137,21 +137,21 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.setWidth() invokes the setWidth method on the FieldComponent', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 api.setWidth('45%');
                 expect(result.instance.setWidth).toHaveBeenCalledWith('45%');
             });
 
             it('api.setHeight() invokes the setHeight method on the FieldComponent', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 api.setHeight('200px');
                 expect(result.instance.setHeight).toHaveBeenCalledWith('200px');
             });
 
             it('api.setFocus() sets the isFocused property on the FieldComponent', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
 
                 api.setFocus(true);
@@ -161,7 +161,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.onLabelClick() callback is invoked with valueChange()', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const labelClickSpy = createSpy('onLabelClick');
                 api.onLabelClick(labelClickSpy);
@@ -171,7 +171,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.onValueChange() callback is invoked with valueChange()', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const valueChangeSpy = createSpy('onValueChange');
                 api.onValueChange(valueChangeSpy);
@@ -181,7 +181,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.onNodeChange() callback is invoked with nodeFieldChange()', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const nodeChangeSpy = createSpy('onNodeChange');
                 const path = ['foo'];
@@ -194,7 +194,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.onFormWidthChange() callback is invoked with formWidthChange()', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const formWidthChangeSpy = createSpy('formWidthChange');
                 api.onFormWidthChange(formWidthChangeSpy);
@@ -204,7 +204,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('instance.isCompact is set automatically when an onFormWidthChange callback is used', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const smallWidth = SMALL_SCREEN_LIMIT - 1;
                 const largeWidth = SMALL_SCREEN_LIMIT + 1;
@@ -218,7 +218,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('original instace.formWidthChange() method is still called even when an onFormWidthChange callback is used', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const originalFormWidthChangeSpy = createSpy('originalFormWidthChange');
                 const formWidthChangeSpy = createSpy('formWidthChange');
@@ -231,7 +231,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('api.appendDefaultStyles() appends a <style> element to the parentElement', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
                 const parentElement: any = {
                     appendChild: createSpy('appendChild')
@@ -249,7 +249,7 @@ describe('FieldGeneratorService', () => {
                         currentLanguage: 'de'
                     }
                 });
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const api = result.instance.api;
 
                 expect(api.uiLanguage).toBe('de');
@@ -265,7 +265,7 @@ describe('FieldGeneratorService', () => {
             });
 
             it('reflects field errors in the FieldErrorsComponent', () => {
-                const result = fieldGenerator.attachField(fieldConfig);
+                const result = fieldGenerator.attachField(fieldConfig).field;
                 const errorsComponent = fixture.debugElement.query(By.directive(FieldErrorsComponent));
                 const fieldErrorsInstance: FieldErrorsComponent = errorsComponent.componentInstance;
                 expect(fieldErrorsInstance.errors).toEqual({});
@@ -305,7 +305,7 @@ class TestComponent implements AfterViewInit {
 class MockFieldComponent extends BaseFieldComponent {
     api: MeshFieldControlApi;
     constructor() {
-        super();
+        super({ markForCheck() {} } as any);
         this.init = createSpy('init').and.callFake((api) => {
             this.api = api;
         });

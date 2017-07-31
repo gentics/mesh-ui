@@ -1,7 +1,7 @@
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
-    ComponentRef,
     ElementRef,
     HostBinding,
     HostListener,
@@ -16,7 +16,7 @@ import {
 import { SplitViewContainer } from 'gentics-ui-core';
 import { Schema } from '../../../../common/models/schema.model';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
-import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
+import { FieldGenerator, FieldGeneratorService, FieldSet } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { ChangesByPath, MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { SchemaFieldPath } from '../../common/form-generator-models';
@@ -40,6 +40,9 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     @HostBinding('class.compact')
     isCompact: boolean = false;
 
+    @HostBinding('class.invisible')
+    isInvisible: boolean = false;
+
     /**
      * True if all form controls are valid.
      */
@@ -58,7 +61,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     private formContainer: ElementRef;
     @ViewChild('formRoot', { read: ViewContainerRef })
     private formRoot: ViewContainerRef;
-    private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
+    private fieldSets: Array<FieldSet<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
     private formGenerated$ = new Subject<void>();
     private windowResize$ = new Subject<void>();
@@ -66,6 +69,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
                 private meshControlGroup: MeshControlGroupService,
+                private changeDetector: ChangeDetectorRef,
                 @Optional() private splitViewContainer: SplitViewContainer) {}
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -87,11 +91,12 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
                 this.formGenerated$,
                 this.splitViewContainer && this.splitViewContainer.splitDragEnd || [])
             .startWith(true)
-            .debounceTime(500)
+            .debounceTime(200)
             .map(() => this.formContainer.nativeElement.offsetWidth)
             .subscribe(widthInPixels => {
                 this.meshControlGroup.formWidthChanged(widthInPixels);
                 this.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;
+                this.changeDetector.markForCheck();
             });
     }
 
@@ -108,8 +113,9 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
 
     generateForm(): void {
         if (this.fieldGenerator && this.schema && this.node) {
-            this.componentRefs.forEach(componentRef => componentRef.hostView.destroy());
-            this.componentRefs = [];
+            this.isInvisible = true;
+            this.fieldSets.forEach(fieldSet => fieldSet.destroy());
+            this.fieldSets = [];
 
             this.meshControlGroup.init((path?: SchemaFieldPath) => {
                 if (!path) {
@@ -125,20 +131,29 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
                 const value = this.node.fields[field.name];
                 const controlType = getControlType(field);
                 if (controlType) {
-                    const componentRef = this.fieldGenerator.attachField({
+                    const fieldSet = this.fieldGenerator.attachField({
                         path: [field.name],
                         field,
                         value,
                         fieldComponent: controlType
                     });
-                    if (componentRef) {
-                        this.componentRefs.push(componentRef);
+                    if (fieldSet) {
+                        this.fieldSets.push(fieldSet);
                     }
-                    this.meshControlGroup.addControl(field, value, componentRef.instance);
+                    this.meshControlGroup.addControl(field, value, fieldSet.field.instance);
                 }
             });
 
             this.formGenerated$.next();
+
+            const initialWidth = this.formContainer.nativeElement.offsetWidth;
+            this.meshControlGroup.formWidthChanged(initialWidth);
+            this.changeDetector.markForCheck();
+
+            setTimeout(() => {
+                this.isInvisible = false;
+                this.changeDetector.markForCheck();
+            }, 200);
         }
     }
 
@@ -165,6 +180,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         // --- TODO: fix typings ---
 
         this.meshControlGroup.nodeChanged(path, value, this.node);
+        this.changeDetector.markForCheck();
     }
 
     /**

@@ -1,4 +1,4 @@
-import { Component, HostBinding } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding } from '@angular/core';
 import { MeshControlErrors, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 
@@ -11,7 +11,8 @@ export const SMALL_SCREEN_LIMIT = 800;
  */
 @Component({
     selector: 'base-field',
-    template: ``
+    template: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BaseFieldComponent  {
     @HostBinding('class.mesh-field')
@@ -48,6 +49,8 @@ export class BaseFieldComponent  {
         return this._errors;
     }
     private _errors: MeshControlErrors = {};
+
+    constructor(protected changeDetector: ChangeDetectorRef) {}
 
     /**
      * Initializes the field, providing it with the api object which gives access to properties
@@ -91,6 +94,7 @@ export class BaseFieldComponent  {
      */
     setWidth(value: string): void {
         this.width = value;
+        this.changeDetector.markForCheck();
     }
 
     /**
@@ -98,6 +102,7 @@ export class BaseFieldComponent  {
      */
     setHeight(value: string): void {
         this.height = value;
+        this.changeDetector.markForCheck();
     }
 
     /**
@@ -105,6 +110,7 @@ export class BaseFieldComponent  {
      */
     setFocus(value: boolean): void {
         this.isFocused = value;
+        this.changeDetector.markForCheck();
     }
 
     /**
@@ -139,5 +145,6 @@ export class BaseFieldComponent  {
                 this._errors[errorCode] = errorValue.toString();
             }
         });
+        this.changeDetector.markForCheck();
     }
 }

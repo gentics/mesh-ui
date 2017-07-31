@@ -18,6 +18,12 @@ import { FieldErrorsComponent } from '../../components/field-errors/field-errors
 
 type OnChangeFunction = (path: SchemaFieldPath, value: NodeFieldType) => void;
 
+export interface FieldSet<T extends BaseFieldComponent> {
+    field: ComponentRef<T>;
+    errors: ComponentRef<FieldErrorsComponent>;
+    destroy: () => void;
+}
+
 /**
  * This class is instantiated by the FieldGeneratorService, and is responsible for creating an instance of a SchemaFieldControl
  * in the correct place in the DOM.
@@ -37,7 +43,7 @@ export class FieldGenerator {
             value: NodeFieldType;
             fieldComponent: Type<T>;
             viewContainerRef?: ViewContainerRef;
-        }): ComponentRef<T> {
+        }): FieldSet<T> {
 
         const _viewContainerRef = fieldConfig.viewContainerRef || this.viewContainerRef;
         const factory = this.resolver.resolveComponentFactory(fieldConfig.fieldComponent);
@@ -104,7 +110,14 @@ export class FieldGenerator {
             uiLanguage: this.state.now.ui.currentLanguage
         };
         componentRef.instance.init(meshControlFieldInstance);
-        return componentRef;
+        return {
+            field: componentRef,
+            errors: errorsComponentRef,
+            destroy: () => {
+                componentRef.hostView.destroy();
+                errorsComponentRef.hostView.destroy();
+            }
+        };
     }
 }
 

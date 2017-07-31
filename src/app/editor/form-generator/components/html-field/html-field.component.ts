@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as Quill from 'quill';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
@@ -11,7 +11,7 @@ import { ErrorCode, errorHashFor } from '../../common/form-errors';
     templateUrl: './html-field.component.html',
     styleUrls: ['./html-field.scss'],
     // required for the Quill.js styles to work correctly
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy {
     field: SchemaField;
@@ -22,8 +22,8 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     private editor: Quill.Quill;
     private blurTimer: any;
 
-    constructor(private elementRef: ElementRef) {
-        super();
+    constructor(changeDetector: ChangeDetectorRef, private elementRef: ElementRef) {
+        super(changeDetector);
     }
 
     ngAfterViewInit(): void {

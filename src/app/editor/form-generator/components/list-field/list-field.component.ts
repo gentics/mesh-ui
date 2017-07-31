@@ -1,7 +1,8 @@
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
-    ComponentRef,
     ElementRef,
     HostBinding,
     OnDestroy,
@@ -17,7 +18,7 @@ import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generato
 import { ListTypeFieldType, SchemaField } from '../../../../common/models/schema.model';
 import { Microschema } from '../../../../common/models/microschema.model';
 import { ListField, ListNodeFieldType, NodeFieldType } from '../../../../common/models/node.model';
-import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
+import { FieldGenerator, FieldGeneratorService, FieldSet } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
 import { initializeListValue } from '../../common/initialize-list-value';
 import { Observable, Subscription } from 'rxjs';
@@ -34,7 +35,8 @@ function randomId(): string {
 @Component({
     selector: 'list-field',
     templateUrl: './list-field.component.html',
-    styleUrls: ['./list-field.scss']
+    styleUrls: ['./list-field.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy, OnInit  {
 
@@ -63,7 +65,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         return this.isCompact || !!this.micronodeField;
     }
 
-    private componentRefs: Array<ComponentRef<BaseFieldComponent>> = [];
+    private fieldSets: Array<FieldSet<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
     private subscription: Subscription;
 
@@ -71,10 +73,11 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                 private meshControlGroup: MeshControlGroupService,
                 private viewContainerRef: ViewContainerRef,
                 private state: ApplicationStateService,
+                changeDetector: ChangeDetectorRef,
                 public elementRef: ElementRef,
                 @Optional() private micronodeField?: MicronodeFieldComponent
     ) {
-        super();
+        super(changeDetector);
 
     }
 
@@ -93,6 +96,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                 setTimeout(() => {
                     this.listHeight = 'auto';
                     this.updating = false;
+                    this.changeDetector.markForCheck();
                 }, 100);
             });
         });
@@ -102,11 +106,12 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
-        this.componentRefs.forEach(componentRef => componentRef.destroy());
+        this.fieldSets.forEach(componentRef => componentRef.destroy());
     }
 
     onMove = (e): boolean => {
         this.hoverRemoveArea = e.to.classList.contains('remove-area');
+        this.changeDetector.markForCheck();
         return true;
     }
 
@@ -150,6 +155,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         if (!this.updating) {
             this.reorderList(e);
         }
+        this.changeDetector.markForCheck();
     }
 
     deleteItem(e: ISortableEvent): void {
@@ -184,8 +190,8 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     createListItems(): void {
-        this.componentRefs.forEach(componentRef => componentRef.destroy());
-        this.componentRefs = [];
+        this.fieldSets.forEach(fieldSet => fieldSet.destroy());
+        this.fieldSets = [];
         const fieldType = this.field.listType as ListTypeFieldType;
         const controlType = getControlType({ type: fieldType } as any);
         const meshControl = this.meshControlGroup.getMeshControlAtPath(this.api.path);
@@ -201,18 +207,19 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                     };
                     const value = this.value[index];
                     const newContainer = meshControl.addChild(pseudoField, value);
-                    const componentRef = this.fieldGenerator.attachField({
+                    const fieldSet = this.fieldGenerator.attachField({
                         path: this.api.path.concat(index),
                         field: pseudoField,
                         value,
                         fieldComponent: controlType,
                         viewContainerRef
                     });
-                    componentRef.instance.isListItem = true;
-                    newContainer.registerMeshFieldInstance(componentRef.instance);
-                    this.componentRefs.push(componentRef);
+                    fieldSet.field.instance.isListItem = true;
+                    newContainer.registerMeshFieldInstance(fieldSet.field.instance);
+                    this.fieldSets.push(fieldSet);
                 });
             }
+            this.changeDetector.markForCheck();
         }
     }
 

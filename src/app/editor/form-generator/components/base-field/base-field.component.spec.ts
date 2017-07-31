@@ -90,6 +90,11 @@ describe('BaseFieldComponent', () => {
 });
 
 class TestComponent extends BaseFieldComponent {
+
+    constructor() {
+        super({ markForCheck() {} } as any);
+    }
+
     init(api: MeshFieldControlApi): void {
         throw new Error('Method not implemented.');
     }

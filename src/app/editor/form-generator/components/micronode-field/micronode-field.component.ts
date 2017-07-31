@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { NodeFieldMicronode, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
@@ -10,7 +10,8 @@ import { ApplicationStateService } from '../../../../state/providers/application
 @Component({
     selector: 'micronode-field',
     templateUrl: 'micronode-field.component.html',
-    styleUrls: ['micronode-field.scss']
+    styleUrls: ['micronode-field.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MicronodeFieldComponent extends BaseFieldComponent implements AfterViewInit {
 
@@ -21,10 +22,11 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     private micronodeControlAnchor: ViewContainerRef;
     private fieldGenerator: FieldGenerator;
 
-    constructor(private fieldGeneratorService: FieldGeneratorService,
+    constructor(changeDetector: ChangeDetectorRef,
+                private fieldGeneratorService: FieldGeneratorService,
                 private state: ApplicationStateService,
                 private meshControlGroup: MeshControlGroupService) {
-        super();
+        super(changeDetector);
     }
 
     init(api: MeshFieldControlApi): void {
@@ -64,10 +66,11 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
                         field,
                         value,
                         fieldComponent: controlType
-                    });
+                    }).field;
                     newContainer.registerMeshFieldInstance(componentRef.instance);
                 }
             });
+            this.changeDetector.markForCheck();
         }
     }
 }

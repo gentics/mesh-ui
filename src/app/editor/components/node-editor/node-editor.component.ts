@@ -12,8 +12,7 @@ import { FormGeneratorComponent } from '../../form-generator/components/form-gen
     selector: 'node-editor',
     templateUrl: './node-editor.component.html',
     styleUrls: ['./node-editor.scss'],
-    // TODO: set to OnPush - needs changeDetector work in FormGenerator
-    changeDetection: ChangeDetectionStrategy.Default
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class NodeEditorComponent implements OnInit, OnDestroy {

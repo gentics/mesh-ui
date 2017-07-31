@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
@@ -22,8 +22,8 @@ export class CustomFieldComponent extends BaseFieldComponent implements AfterVie
     @ViewChild('iframe')
     private iframe: ElementRef;
 
-    constructor(private ngZone: NgZone) {
-        super();
+    constructor(changeDetector: ChangeDetectorRef, private ngZone: NgZone) {
+        super(changeDetector);
     }
 
     ngAfterViewInit(): void {

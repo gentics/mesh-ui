@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostBinding, Input, OnChanges, OnDestroy, OnInit, Optional, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, HostBinding, Input, OnChanges, OnDestroy, OnInit, Optional, SimpleChanges } from '@angular/core';
 import { ScrollFrameDirective } from './scroll-frame.directive';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -59,6 +59,7 @@ export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges
     private subscription: Subscription;
 
     constructor(private elementRef: ElementRef,
+                private changeDetector: ChangeDetectorRef,
                 @Optional() private scrollFrame?: ScrollFrameDirective) {}
 
     ngOnInit() {
@@ -106,6 +107,7 @@ export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges
                     this.top = 'inherit';
                 }
                 this.floating = float;
+                this.changeDetector.markForCheck();
             });
     }
 

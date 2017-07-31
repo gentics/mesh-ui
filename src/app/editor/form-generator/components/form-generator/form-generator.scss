@@ -1,5 +1,15 @@
 @import "../../common-styles";
 
+:host {
+    display: block;
+    transition: opacity 0.5s;
+    opacity: 1;
+    &.invisible {
+        opacity: 0;
+        transition: opacity 0s;
+    }
+}
+
 .form-container {
     padding: 20px 0;
     overflow: hidden;

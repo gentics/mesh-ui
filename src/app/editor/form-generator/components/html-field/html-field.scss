@@ -17,17 +17,6 @@ html-field.mesh-field {
         transition: width 0.2s;
     }
 
-    &.compact {
-        padding-bottom: 18px;
-        flex-direction: column;
-        label {
-            @include label-style-compact;
-        }
-        .editor-container {
-            width: $full-width;
-        }
-    }
-
     .ql-snow.ql-toolbar button:focus {
         outline: 1px solid transparentize($gtx-color-primary, 0.7);
     }
@@ -73,6 +62,16 @@ html-field.mesh-field {
             border-top-color: $gtx-color-light-gray;
         }
     }
-
-
+}
+list-field html-field.mesh-field,
+micronode-field html-field.mesh-field,
+html-field.mesh-field.compact {
+    padding-bottom: 18px;
+    flex-direction: column;
+    label {
+        @include label-style-compact;
+    }
+    .editor-container {
+        width: $full-width;
+    }
 }

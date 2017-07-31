@@ -762,6 +762,9 @@ describe('MeshControl class', () => {
 });
 
 class MockMeshField extends BaseFieldComponent {
+    constructor() {
+         super({ markForCheck() {} } as any);
+     }
     init(api: MeshFieldControlApi): void {}
     valueChange(value: NodeFieldType): void {}
 }
