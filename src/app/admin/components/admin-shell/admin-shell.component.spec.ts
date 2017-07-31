@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AdminShellComponent } from './admin-shell.component';
 import { AdminBreadcrumbsComponent } from '../admin-breadcrumbs/admin-breadcrumbs.component';
-import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { configureComponentTest, provideMockI18n } from '../../../../testing/configure-component-test';
 import { SharedModule } from '../../../shared/shared.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 describe('AdminShellComponent', () => {
 
@@ -13,7 +14,8 @@ describe('AdminShellComponent', () => {
     beforeEach(() => {
         configureComponentTest({
             imports: [SharedModule, RouterTestingModule],
-            declarations: [AdminShellComponent, AdminBreadcrumbsComponent]
+            declarations: [AdminShellComponent, AdminBreadcrumbsComponent],
+            providers: [ApplicationStateService]
         });
     });
 
