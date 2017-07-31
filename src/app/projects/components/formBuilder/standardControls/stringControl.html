@@ -13,6 +13,7 @@
                         ng-class="{ 'display-field' : vm.fieldModel.isDisplayField }">
         <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
         <input type="text"
+               dnd-nodrag-mouseover
                ng-model="vm.value"
                ng-change="vm.fieldModel.update(vm.value)"
                ng-readonly="!vm.fieldModel.canUpdate"

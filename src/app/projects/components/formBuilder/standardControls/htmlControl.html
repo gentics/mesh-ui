@@ -2,6 +2,7 @@
     <div class="toolbar-container aloha"></div>
     <label ng-class="{ focused: vm.isFocused }">{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
     <div options='{"placeholder": ""}'
+         dnd-nodrag-mouseover
          class="htmlField"
          ng-class="{ 'ng-invalid': !vm.valueIsValid() }"
          ng-readonly="!vm.fieldModel.canUpdate"

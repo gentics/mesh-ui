@@ -1,8 +1,9 @@
 # MeshAdminUI Changelog
 
-## Version 0.7.2 (in progress)
+## Version 0.7.2 (2017-07-31)
 * Date fields now work with ISO 8601 strings rather than unix timestamps
 * Fix bugs with lists of microschemas (SUP-4712)
+* Fix mouse clicks not working in lists in FF and (partially) in IE/Edge (SUP-4717)
 
 ## Version 0.7.1 (2017-07-07)
 * Synchronize version with maven
