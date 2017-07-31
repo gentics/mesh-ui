@@ -1,6 +1,6 @@
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { ComponentFixture, fakeAsync, TestBed, tick, async } from '@angular/core/testing';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
@@ -8,12 +8,15 @@ import { AdminBreadcrumbsComponent } from './admin-breadcrumbs.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { By } from '@angular/platform-browser';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { AppState } from '../../../state/models/app-state.model';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 
-fdescribe('AdminBreadcrumbsComponent', () => {
+describe('AdminBreadcrumbsComponent', () => {
 
     let testingRouter: Router;
     let fixture: ComponentFixture<TestComponent>;
     let instance: AdminBreadcrumbsComponent;
+    let appState: TestApplicationState;
 
     beforeEach(() => {
         configureComponentTest({
@@ -37,7 +40,7 @@ fdescribe('AdminBreadcrumbsComponent', () => {
                         path: 'foo4/:param',
                         component: MockRouteComponent,
                         data: {
-                            breadcrumb: (route) => {
+                            breadcrumb: (route: ActivatedRouteSnapshot) => {
                                 return `Foo4 ${route.params.param}`;
                             }
                         }
@@ -47,8 +50,17 @@ fdescribe('AdminBreadcrumbsComponent', () => {
                         component: MockRouteComponent,
                         data: {
                             someData: 'quux',
-                            breadcrumb: (route) => {
+                            breadcrumb: (route: ActivatedRouteSnapshot) => {
                                 return `Foo5 ${route.params.param} ${route.data.someData}`;
+                            }
+                        }
+                    },
+                    {
+                        path: 'foo6',
+                        component: MockRouteComponent,
+                        data: {
+                            breadcrumb: (route: ActivatedRouteSnapshot, state: AppState) => {
+                                return state.admin.openEntity!.uuid;
                             }
                         }
                     }
@@ -61,8 +73,19 @@ fdescribe('AdminBreadcrumbsComponent', () => {
                 TestComponent,
             ],
             providers: [
-                ApplicationStateService
+                { provide: ApplicationStateService, useClass: TestApplicationState },
             ]
+        });
+
+        appState = TestBed.get(ApplicationStateService);
+        appState.trackAllActionCalls({ behavior: 'original' });
+        appState.mockState({
+            admin: {
+                openEntity: {
+                    type: 'microschema',
+                    uuid: 'testuuid'
+                }
+            }
         });
 
         testingRouter = TestBed.get(Router);
@@ -143,6 +166,17 @@ fdescribe('AdminBreadcrumbsComponent', () => {
             ]);
         });
         testingRouter.navigate(['/foo5/hello']);
+        tick();
+        expect(sub.closed).toBe(true, 'Subscription must be closed');
+    }));
+
+    it('uses app storage', fakeAsync(() => {
+        const sub = instance.breadcrumbs$.take(1).subscribe(it => {
+            expect(it).toEqual([
+                { text: 'testuuid', route: ['/foo6'] }
+            ]);
+        });
+        testingRouter.navigate(['/foo6']);
         tick();
         expect(sub.closed).toBe(true, 'Subscription must be closed');
     }));
