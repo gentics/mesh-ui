@@ -22,9 +22,13 @@ export interface NodeReference extends NodeReferenceFromServer {
     // schema: SchemaReference;
 }
 
-export interface SchemaReference extends SchemaReferenceFromServer {
-    // name: string;
-    // uuid: string;
+/**
+ * Reference to the schema when creating a node or project.
+ * Only one of these properties is required.
+ */
+export interface SchemaReference {
+    name?: string;
+    uuid?: string;
 }
 
 export interface MicroschemaReference {
@@ -33,7 +37,7 @@ export interface MicroschemaReference {
 }
 
 export interface SchemaReferenceWithVersion extends SchemaReference {
-    version: number;
+    version: string;
 }
 
 export interface TagFamilyReference {

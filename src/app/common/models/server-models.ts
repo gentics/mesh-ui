@@ -1,3 +1,4 @@
+import { SchemaReference } from './common.model';
 // Auto-generated from the RAML for Version 0.9.19 of the Gentics Mesh REST API.
 
 export type Integer = number;
@@ -3541,7 +3542,7 @@ export interface NodeCreateRequest {
      * automatically create the base node of the project and link the schema to the
      * initial release of the project.
      */
-    readonly schema: SchemaReferenceFromServer;
+    readonly schema: SchemaReference;
 }
 
 /**
@@ -3578,8 +3579,8 @@ export interface NodeReferenceFromServer {
      * automatically create the base node of the project and link the schema to the
      * initial release of the project.
      */
-    readonly schema: SchemaReferenceFromServer;
     /** Uuid of the node */
+    readonly schema: SchemaReferenceFromServer;
     readonly uuid: string;
 }
 
@@ -3701,7 +3702,7 @@ export interface ProjectCreateRequest {
      * automatically create the base node of the project and link the schema to the
      * initial release of the project.
      */
-    readonly schema: SchemaReferenceFromServer;
+    readonly schema: SchemaReference;
 }
 
 /**
@@ -3969,10 +3970,10 @@ export interface SchemaListResponse {
  */
 export interface SchemaReferenceFromServer {
     /** Name of the referenced element */
-    readonly name?: string;
+    readonly name: string;
     /** Uuid of the referenced element */
     readonly uuid: string;
-    readonly version?: string;
+    readonly version: string;
 }
 
 /**

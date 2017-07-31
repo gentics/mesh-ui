@@ -9,6 +9,7 @@ import { BreadcrumbsComponent } from '../../../editor/components/breadcrumbs/bre
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { StateActionBranch } from 'immutablets';
 import { AppState } from '../../../state/models/app-state.model';
+import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 
 /**
  * A breadcrumbs component which reads the route config and any route that has a `data.breadcrumb` property will
@@ -30,12 +31,12 @@ export class AdminBreadcrumbsComponent implements OnInit {
                 private state: ApplicationStateService) { }
 
     ngOnInit() {
-        this.breadcrumbs$ = this.router.events
-            .filter(event => event instanceof NavigationEnd)
+        this.breadcrumbs$ = this.router.events                  // On router event
+            .filter(event => event instanceof NavigationEnd)    // when user navigated somewhere...
             .switchMap(() => Observable.combineLatest(
-                ...flatRoute(this.route.root.snapshot)
-                    .filter(getBreadcrumbText) // has breadcrumb text
-                    .map(it => this.toBreadcrumb(it))
+                ...flatRoute(this.route.root.snapshot)          // get the current route,
+                    .filter(getBreadcrumbText)                  // that have breadcrumb options set
+                    .map(it => this.toBreadcrumb(it))           // and map them to breadcrumbs
             ));
     }
 
@@ -45,7 +46,7 @@ export class AdminBreadcrumbsComponent implements OnInit {
      * The `data.breadcrumb` can be one of the following:
      * * string
      * * Observable<string>
-     * * (appState) => string
+     * * (routeSnapshot, appState) => string
      *
      * @param route
      */
@@ -58,7 +59,7 @@ export class AdminBreadcrumbsComponent implements OnInit {
         const paths = routeUrl(route);
         let result;
         if (typeof breadcrumb === 'function') {
-            result = this.state.select(breadcrumb);
+            result = this.state.select(state => breadcrumb(route, state));
         } else {
             result = breadcrumb;
         }
@@ -108,16 +109,16 @@ function routeUrl(route: ActivatedRouteSnapshot): string[] {
         if (!route) {
             return [];
         }
-        const url = route.url[0];
-        if (url) {
-            return [...recur(route.parent), url.path];
+        const urls = route.url.map(it => it.path);
+        if (urls.length > 0) {
+            return [...recur(route.parent), ...urls];
         } else {
             return recur(route.parent);
         }
     }
 }
 
-type BreadcrumbText = string | Observable<string> | ((state: AppState) => Observable<string>) | null;
+type BreadcrumbText = string | Observable<string> | ((routeSnapshot: ActivatedRouteSnapshot, state: AppState) => Observable<string>) | null;
 
 /**
  * Returns breadcrumb text or null if it does not exist

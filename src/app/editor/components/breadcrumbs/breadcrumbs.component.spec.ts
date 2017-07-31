@@ -51,7 +51,8 @@ describe('BreadcrumbsComponent:', () => {
                             uuid: 'root_node_uuid',
                             schema: {
                                 name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
+                                version: '1.0'
                             }
                         }
                     })
@@ -74,7 +75,8 @@ describe('BreadcrumbsComponent:', () => {
                             displayName: 'folder2',
                             schema: {
                                 name: 'folder',
-                                uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
+                                uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
+                                version: '1.0'
                             }
                         }, {
                             projectName: 'testProject',
@@ -82,7 +84,8 @@ describe('BreadcrumbsComponent:', () => {
                             displayName: 'test',
                             schema: {
                                 name: 'folder',
-                                uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
+                                uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
+                                version: '1.0'
                             }
                         }]
                     }),
@@ -96,7 +99,8 @@ describe('BreadcrumbsComponent:', () => {
                             displayName: 'Automobiles',
                             schema: {
                                 name: 'category',
-                                uuid: '084396b200bc46d18396b200bca6d11f'
+                                uuid: '084396b200bc46d18396b200bca6d11f',
+                                version: '1.0'
                             }
                         }]
                     })

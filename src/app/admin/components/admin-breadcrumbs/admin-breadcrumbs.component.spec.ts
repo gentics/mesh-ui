@@ -1,14 +1,15 @@
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, async } from '@angular/core/testing';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { AdminBreadcrumbsComponent } from './admin-breadcrumbs.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { By } from '@angular/platform-browser';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
-describe('AdminBreadcrumbsComponent', () => {
+fdescribe('AdminBreadcrumbsComponent', () => {
 
     let testingRouter: Router;
     let fixture: ComponentFixture<TestComponent>;
@@ -36,8 +37,8 @@ describe('AdminBreadcrumbsComponent', () => {
                         path: 'foo4/:param',
                         component: MockRouteComponent,
                         data: {
-                            breadcrumb: (data, params) => {
-                                return `Foo4 ${params.param}`;
+                            breadcrumb: (route) => {
+                                return `Foo4 ${route.params.param}`;
                             }
                         }
                     },
@@ -46,8 +47,8 @@ describe('AdminBreadcrumbsComponent', () => {
                         component: MockRouteComponent,
                         data: {
                             someData: 'quux',
-                            breadcrumb: (data, params) => {
-                                return `Foo5 ${params.param} ${data.someData}`;
+                            breadcrumb: (route) => {
+                                return `Foo5 ${route.params.param} ${route.data.someData}`;
                             }
                         }
                     }
@@ -57,7 +58,10 @@ describe('AdminBreadcrumbsComponent', () => {
             declarations: [
                 AdminBreadcrumbsComponent,
                 MockRouteComponent,
-                TestComponent
+                TestComponent,
+            ],
+            providers: [
+                ApplicationStateService
             ]
         });
 
@@ -68,60 +72,79 @@ describe('AdminBreadcrumbsComponent', () => {
     });
 
     it('ignores route with no breadcrumb defined', fakeAsync(() => {
-        testingRouter.navigate(['/foo1']);
+        const sub = instance.breadcrumbs$.take(1).subscribe();
         tick();
-        expect(instance.breadcrumbs).toEqual([]);
+        expect(sub.closed).toBe(false, 'Subscription must still be open');
+        sub.unsubscribe();
     }));
 
     it('creates links for top level breadcrumb', fakeAsync(() => {
+        const sub = instance.breadcrumbs$.take(1).subscribe(it => {
+            expect(it).toEqual([
+                { text: 'Foo2', route: ['/foo2'] }
+            ]);
+        });
         testingRouter.navigate(['/foo2']);
         tick();
-        expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo2', route: ['/foo2'] }
-        ]);
+        expect(sub.closed).toBe(true, 'Subscription must be closed');
     }));
 
     it('creates links for second level breadcrumb', fakeAsync(() => {
+        const sub = instance.breadcrumbs$.take(1).subscribe(it => {
+            expect(it).toEqual([
+                { text: 'Foo2', route: ['/foo2'] },
+                { text: 'Bar2', route: ['/foo2', 'bar2'] }
+            ]);
+        });
         testingRouter.navigate(['/foo2', 'bar2']);
         tick();
-        expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo2', route: ['/foo2'] },
-            { text: 'Bar2', route: ['/foo2', 'bar2'] }
-        ]);
+        expect(sub.closed).toBe(true, 'Subscription must be closed');
     }));
 
     it('creates links for third level breadcrumb', fakeAsync(() => {
+        const sub = instance.breadcrumbs$.take(1).subscribe(it => {
+            expect(it).toEqual([
+                { text: 'Foo2', route: ['/foo2'] },
+                { text: 'Bar2', route: ['/foo2', 'bar2'] },
+                { text: 'Baz1', route: ['/foo2', 'bar2', 'baz1'] }
+            ]);
+        });
         testingRouter.navigate(['/foo2', 'bar2', 'baz1']);
         tick();
-        expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo2', route: ['/foo2'] },
-            { text: 'Bar2', route: ['/foo2', 'bar2'] },
-            { text: 'Baz1', route: ['/foo2', 'bar2', 'baz1'] }
-        ]);
+        expect(sub.closed).toBe(true, 'Subscription must be closed');
     }));
 
     it('creates link for function breadcrumb', fakeAsync(() => {
+        const sub = instance.breadcrumbs$.take(1).subscribe(it => {
+            expect(it).toEqual([
+                { text: 'Foo3', route: ['/foo3'] }
+            ]);
+        });
         testingRouter.navigate(['/foo3']);
         tick();
-        expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo3', route: ['/foo3'] }
-        ]);
+        expect(sub.closed).toBe(true, 'Subscription must be closed');
     }));
 
     it('creates link for function breadcrumb with params', fakeAsync(() => {
+        const sub = instance.breadcrumbs$.take(1).subscribe(it => {
+            expect(it).toEqual([
+                { text: 'Foo4 hello', route: ['/foo4', 'hello'] }
+            ]);
+        });
         testingRouter.navigate(['/foo4/hello']);
         tick();
-        expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo4 hello', route: ['/foo4', 'hello'] }
-        ]);
+        expect(sub.closed).toBe(true, 'Subscription must be closed');
     }));
 
     it('creates link for function breadcrumb with params and data args', fakeAsync(() => {
+        const sub = instance.breadcrumbs$.take(1).subscribe(it => {
+            expect(it).toEqual([
+                { text: 'Foo5 hello quux', route: ['/foo5', 'hello'] }
+            ]);
+        });
         testingRouter.navigate(['/foo5/hello']);
         tick();
-        expect(instance.breadcrumbs).toEqual([
-            { text: 'Foo5 hello quux', route: ['/foo5', 'hello'] }
-        ]);
+        expect(sub.closed).toBe(true, 'Subscription must be closed');
     }));
 
 });

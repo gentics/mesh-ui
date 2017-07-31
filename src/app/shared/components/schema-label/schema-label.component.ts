@@ -16,6 +16,6 @@ export class SchemaLabelComponent {
         if (!this.schema) {
             return '';
         }
-        return this.schema.name || this.schema.uuid;
+        return this.schema.name! || this.schema.uuid!;
     }
 }

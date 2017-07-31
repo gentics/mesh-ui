@@ -220,7 +220,8 @@ const mockNode: MeshNode = {
         displayName: 'Aircraft',
         schema: {
             name: 'category',
-            uuid: '1c401518014a407d801518014a507d2b'
+            uuid: '1c401518014a407d801518014a507d2b',
+            version: '1.0'
         }
     },
     tags: [],
@@ -229,7 +230,7 @@ const mockNode: MeshNode = {
     schema: {
         name: 'person',
         uuid: 'b85a103e9902460e9a103e9902b60eee',
-        version: 1
+        version: '1.0'
     },
     fields: {
         name: 'Ada',
@@ -246,7 +247,8 @@ const mockNode: MeshNode = {
             projectName: 'demo',
             schema: {
                 name: 'folder',
-                uuid: 'abcdef'
+                uuid: 'abcdef',
+                version: '1.0'
             }
         }
     ],

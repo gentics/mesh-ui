@@ -59,7 +59,8 @@ describe('ProjectSwitcherComponent:', () => {
                             uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
                             schema: {
                                 name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
+                                version: '1.0'
                             }
                         }
                     }),
@@ -71,7 +72,8 @@ describe('ProjectSwitcherComponent:', () => {
                             uuid: '83ff6b33bbda4048bf6b33bbdaa04840',
                             schema: {
                                 name: 'folder',
-                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5'
+                                uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
+                                version: '1.0'
                             }
                         }
                     })

@@ -36,7 +36,7 @@ describe('Thumbnail', () => {
                         schema: {
                             name: 'vehicleImage',
                             uuid: '832235ac0570435ea235ac0570b35e10',
-                            version: 1
+                            version: '1.0'
                         },
                         fields: {
                             name: 'Indian Empress Image',
@@ -57,7 +57,7 @@ describe('Thumbnail', () => {
                         schema: {
                             name: 'binary_content',
                             uuid: 'eb967a50be7e4602967a50be7ed60265',
-                            version: 1
+                            version: '1.0'
                         },
                         displayField: 'name',
                         fields: {
@@ -76,7 +76,7 @@ describe('Thumbnail', () => {
                         schema: {
                             name: 'content',
                             uuid: '5953336e4342498593336e4342398599',
-                            version: 1
+                            version: '1.0'
                         },
                         displayField: 'title',
                         fields: {
@@ -89,7 +89,7 @@ describe('Thumbnail', () => {
                         schema: {
                             name: 'binary_content',
                             uuid: 'eb967a50be7e4602967a50be7ed60265',
-                            version: 1
+                            version: '1.0'
                         },
                         container: false,
                         displayField: 'name',

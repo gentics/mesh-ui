@@ -25,7 +25,8 @@ export function mockMeshNode(properties?: Partial<MeshNode>): MeshNode {
                 displayName: 'folder2',
                 schema: {
                     name: 'folder',
-                    uuid: 'a2356ca67bb742adb56ca67bb7d2adca'
+                    uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
+                    version: '1.0'
                 }
             },
             tags: [],
@@ -33,7 +34,7 @@ export function mockMeshNode(properties?: Partial<MeshNode>): MeshNode {
             schema: {
                 name: 'content',
                 uuid: 'default000mock000meshnode0schema',
-                version: 1
+                version: '1.0'
             },
             displayField: 'title',
             fields: {},
@@ -60,7 +61,9 @@ export function mockProject(properties?: Partial<Project>): Project {
             rootNode: {
                 projectName: 'mockProject',
                 schema: {
-                    uuid: 'default000mock000rootnode0schema'
+                    name: 'mockSchema',
+                    uuid: 'default000mock000rootnode0schema',
+                    version: '1.0'
                 },
                 uuid: 'default000mock000rootnode000000'
             }

@@ -17,7 +17,7 @@ export const routes: Route[] = [
     ] }
 ];
 
-function microSchemaName(state: AppState): string {
+function microSchemaName(route: any, state: AppState): string {
     const entity = state.admin.openEntity;
     let result;
     if (entity) {
