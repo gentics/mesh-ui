@@ -74,7 +74,7 @@ module meshAdminUi {
             if (!schemaField.name) {
                 return nodeFields;
             }
-            let pointer = this.getPointerByPath(nodeFields, path);
+            let pointer = this.mu.getPointerByPath(nodeFields, path);
             if (0 < path.length) {
                 if (pointer[path[path.length - 1]][schemaField.name] === undefined) {
                     pointer[path[path.length - 1]][schemaField.name] = null;
@@ -92,7 +92,7 @@ module meshAdminUi {
          * object.foo.bar.
          */
         private getValueAtPath(object: any, path: any[]) {
-            let pointer = this.getPointerByPath(object, path);
+            let pointer = this.mu.getPointerByPath(object, path);
             return pointer[path[path.length - 1]];
         }
 
@@ -135,24 +135,8 @@ module meshAdminUi {
          * Given an object, update the value specified by the `path` array with the given value.
          */
         private updateAtPath(object:any, path:any[], value:any): any {
-            let pointer = this.getPointerByPath(object, path);
+            let pointer = this.mu.getPointerByPath(object, path);
             return pointer[path[path.length - 1]] = value;
-        }
-
-        /**
-         * Given an object and a path e.g. ['foo', 'bar'], return the a pointer to
-         * the object.foo.bar property.
-         */
-        private getPointerByPath(object: any, path: any[]): any {
-            let pointer = object;
-            for (let i = 0; i < path.length - 1; i++) {
-                let key = path[i];
-                if (!pointer[key]) {
-                    pointer[key] = {};
-                }
-                pointer = pointer[key];
-            }
-            return pointer;
         }
 
     }

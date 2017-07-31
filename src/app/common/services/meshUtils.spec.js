@@ -464,4 +464,42 @@ describe('meshUtils', function() {
             expect(result.fields.image.fileName).toBe('image.suffix.jpg');
         });
     });
+
+    describe('getPointerByPath()', function() {
+
+        var testObject = {
+            name: 'Joe',
+            friends: [
+                { name: 'Judy', age: 44 },
+                { name: 'Sarah', age: 23 }
+            ],
+            employer: {
+                addresses: [
+                    {
+                        postcode: '123445'
+                    }
+                ]
+            }
+        };
+
+        it('should return pointer for top level', function() {
+            var result = mu.getPointerByPath(testObject, ['name']);
+            expect(result).toBe(testObject);
+        });
+
+        it('should return pointer for second level list', function() {
+            var result = mu.getPointerByPath(testObject, ['friends', 1]);
+            expect(result).toBe(testObject.friends);
+        });
+
+        it('should return pointer for second level list property', function() {
+            var result = mu.getPointerByPath(testObject, ['friends', 1, 'name']);
+            expect(result).toBe(testObject.friends[1]);
+        });
+
+        it('should return pointer for second level object property', function() {
+            var result = mu.getPointerByPath(testObject, ['employer', 'addresses', 0, 'postcode']);
+            expect(result).toBe(testObject.employer.addresses[0]);
+        });
+    });
 });

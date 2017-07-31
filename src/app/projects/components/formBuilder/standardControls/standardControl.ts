@@ -336,11 +336,14 @@ module meshAdminUi {
              * (or $watchCollection) is used, changes to a micronode field value will not trigger an update
              * of the local fieldModel, leading to data being lost when re-ordering items.
              */
-            $scope.$watch(() => this.fieldModel.value, list => {
-                if (list) {
-                    this.updateListFieldModels(list);
-                }
-            }, true);
+            $scope.$watch(() => {
+                return this.mu.getPointerByPath(this.fieldModel.node.fields, this.fieldModel.path)[this.fieldModel.path[this.fieldModel.path.length - 1]];
+            }, list => {
+                    if (list) {
+                        this.updateListFieldModels(list);
+                        this.fieldModel.value = list;
+                    }
+                }, true);
 
             if (this.fieldModel.listType === 'micronode') {
                 this.dataService.getProjectMicroschemas(this.fieldModel.projectName)

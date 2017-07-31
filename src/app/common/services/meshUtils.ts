@@ -326,6 +326,22 @@ module meshAdminUi {
 
             return nodeClone;
         }
+
+        /**
+         * Given an object and a path e.g. ['foo', 'bar'], return the a pointer to
+         * the object.foo.bar property.
+         */
+        getPointerByPath(object: any, path: any[]): any {
+            let pointer = object;
+            for (let i = 0; i < path.length - 1; i++) {
+                let key = path[i];
+                if (!pointer[key]) {
+                    pointer[key] = {};
+                }
+                pointer = pointer[key];
+            }
+            return pointer;
+        }
     }
 
     angular.module('meshAdminUi.common')

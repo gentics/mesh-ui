@@ -25,12 +25,16 @@ describe('formBuilder Module', function() {
         $scope.state = {
             modified: false
         };
+        $scope.node = {
+            fields: fields
+        };
         $scope.onChangeCallback = function() {};
 
         spyOn($scope, 'onChangeCallback');
 
         html = '<form-builder fields="fields" ' +
             'schema="schemaFields" ' +
+            'node="node" ' +
             'display-field="vm.schema.displayField" ' +
             'on-change="onChangeCallback()" ' +
             'perms="perms"></form-builder>';
