@@ -66,6 +66,11 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         throw new Error('Not implemented');
     }
 
+    deleteSchemaSuccess(projectUuid: string) {
+        // TODO implement
+        throw new Error('Not implemented');
+    }
+
     updateMicroschemaSuccess(response: MicroschemaResponse) {
         this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
@@ -106,6 +111,49 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     }
 
     newMicroschema() {
+        delete this.admin.openEntity;
+    }
+
+    updateSchemaSuccess(response: SchemaResponse) {
+        this.admin.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            schema: {
+                [response.uuid]: response
+            }
+        });
+    }
+
+    createSchemaSuccess(response: SchemaResponse) {
+        this.admin.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            schema: {
+                [response.uuid]: response
+            }
+        });
+    }
+
+    openSchemaStart() {
+        this.admin.loadCount++;
+    }
+
+    openSchemaSuccess(schema: SchemaResponse) {
+        this.admin.loadCount--;
+        this.admin.openEntity = {
+            type: 'schema',
+            uuid: schema.uuid
+        };
+        this.entities = mergeEntityState(this.entities, {
+            schema: {
+                [schema.uuid]: schema
+            }
+        });
+    }
+
+    openSchemaError() {
+        this.admin.loadCount--;
+    }
+
+    newSchema() {
         delete this.admin.openEntity;
     }
 }

@@ -14,6 +14,8 @@ import { MicroschemaListComponent } from './components/microschema-list/mircosch
 import { MicroschemaEffectsService } from './providers/effects/microschema-effects.service';
 import { MicroschemaComponent } from './components/microschema/mircoschema.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
+import { SchemaListComponent } from './components/schema-list/schema-list.component';
+import { SchemaComponent } from './components/schema/schema.component';
 
 @NgModule({
     declarations: [
@@ -24,6 +26,8 @@ import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.
         CreateProjectModalComponent,
         MicroschemaListComponent,
         MicroschemaComponent,
+        SchemaListComponent,
+        SchemaComponent,
         MonacoEditorComponent,
     ],
     entryComponents: [

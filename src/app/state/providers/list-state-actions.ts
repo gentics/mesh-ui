@@ -132,6 +132,23 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount--;
     }
 
+    fetchSchemaStart() {
+        this.list.loadCount++;
+    }
+
+    fetchSchemaSuccess(schema: SchemaResponse) {
+        this.list.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            schema: {
+                [schema.uuid]: schema
+            }
+        });
+    }
+
+    fetchSchemaError() {
+        this.list.loadCount--;
+    }
+
     /** Change the active container in the list view from values of the current route. */
     setActiveContainer(projectName: string, containerUuid: string) {
         this.list.currentProject = projectName;

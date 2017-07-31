@@ -6,4 +6,7 @@ export class SchemaApi {
 
     /** Load all schemas. */
     getSchemas = apiGet('/schemas');
+
+    /** Load a schema */
+    getSchema = apiGet('/schemas/{schemaUuid}');
 }

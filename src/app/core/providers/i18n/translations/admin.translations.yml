@@ -31,3 +31,21 @@ project_deleted_error:
 projects_none_found:
     en: No projects found
     de: Keine Projekte gefunden
+schema_create:
+    en: Create Schema
+    de: Schema erstellen
+schema_deleted:
+    en: Schema deleted
+    de: Schema gelöscht
+schema_deleted_error:
+    en: Schema could not be deleted
+    de: Schema konnte nicht gelöscht werden
+schema_created:
+    en: Schema created
+    de: Schema erstellt
+schema_updated:
+    en: Schema updated
+    de: Schema gespeichert
+schema_none_found:
+    en: No schemas found
+    de: Keine Schemas gefunden

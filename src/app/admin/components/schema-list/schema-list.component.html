@@ -1,0 +1,16 @@
+<gtx-progress-bar [for]="loading$"></gtx-progress-bar>
+
+<div class="not-found" *ngIf="(schemas$ | async).length === 0 && !(loading$ | async)">
+    <div><icon>sentiment_very_dissatisfied</icon></div>
+    <p>{{ 'admin.schema_none_found' | i18n }}</p>
+</div>
+
+<div>
+    <a [routerLink]="['/admin/schemas', schema.uuid]" *ngFor="let schema of schemas$ | async">
+        <gtx-contents-list-item>
+            <div class="item-primary">{{ schema.name }}</div>
+        </gtx-contents-list-item>
+    </a>
+</div>
+
+<gtx-button (click)="createSchema()">{{ 'admin.schema_create' | i18n }}</gtx-button>
