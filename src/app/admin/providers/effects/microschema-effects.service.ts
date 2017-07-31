@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Notification } from 'gentics-ui-core';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
@@ -13,7 +14,8 @@ export class MicroschemaEffectsService {
 
     constructor(private api: ApiService,
                 private state: ApplicationStateService,
-                private notification: I18nNotification) {
+                private i18nNotification: I18nNotification,
+                private notification: Notification) {
     }
 
     loadMicroschemas() {
@@ -43,6 +45,10 @@ export class MicroschemaEffectsService {
             this.state.actions.admin.openMicroschemaSuccess(microschema);
         }, error => {
             this.state.actions.admin.openMicroschemaError();
+            this.notification.show({
+                type: 'error',
+                message: error.toString()
+            });
         });
     }
 
@@ -52,7 +58,7 @@ export class MicroschemaEffectsService {
         .subscribe(() => {
             this.loadMicroschema(request.uuid);
             this.state.actions.admin.actionSuccess();
-            this.notification.show({
+            this.i18nNotification.show({
                 type: 'success',
                 message: 'admin.microschema_updated'
             });
@@ -68,7 +74,7 @@ export class MicroschemaEffectsService {
         this.api.admin.createMicroschema({}, request)
         .subscribe(microschema => {
             this.state.actions.admin.createMicroschemaSuccess(microschema);
-            this.notification.show({
+            this.i18nNotification.show({
                 type: 'success',
                 message: 'admin.microschema_created'
             });
@@ -76,6 +82,10 @@ export class MicroschemaEffectsService {
             subject.complete();
         }, error => {
             this.state.actions.admin.actionError();
+            this.notification.show({
+                type: 'error',
+                message: error.toString()
+            });
             subject.error(error);
         });
 
@@ -89,7 +99,7 @@ export class MicroschemaEffectsService {
         this.api.admin.deleteMicroschema({microschemaUuid})
         .subscribe(() => {
             this.state.actions.admin.deleteMicroschemaSuccess(microschemaUuid);
-            this.notification.show({
+            this.i18nNotification.show({
                 type: 'success',
                 message: 'admin.microschema_deleted'
             });
@@ -97,7 +107,7 @@ export class MicroschemaEffectsService {
             subject.complete();
         }, error => {
             this.state.actions.admin.actionError();
-            this.notification.show({
+            this.i18nNotification.show({
                 type: 'error',
                 message: 'admin.microschema_deleted_error'
             });

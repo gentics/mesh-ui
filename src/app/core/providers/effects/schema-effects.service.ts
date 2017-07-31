@@ -6,13 +6,15 @@ import { Subject } from 'rxjs/Subject';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { SchemaUpdateRequest, SchemaResponse, SchemaCreateRequest } from '../../../common/models/server-models';
 import { I18nNotification } from '../i18n-notification/i18n-notification.service';
+import { Notification } from 'gentics-ui-core';
 
 @Injectable()
 export class SchemaEffectsService {
 
     constructor(private api: ApiService,
                 private state: ApplicationStateService,
-                private notification: I18nNotification) {
+                private i18nNotification: I18nNotification,
+                private notification: Notification) {
     }
 
     loadSchemas() {
@@ -52,12 +54,16 @@ export class SchemaEffectsService {
         .subscribe(() => {
             this.loadSchema(request.uuid);
             this.state.actions.admin.actionSuccess();
-            this.notification.show({
+            this.i18nNotification.show({
                 type: 'success',
                 message: 'admin.schema_updated'
             });
         }, error => {
             this.state.actions.admin.actionError();
+            this.notification.show({
+                type: 'error',
+                message: error.toString()
+            });
         });
     }
 
@@ -68,7 +74,7 @@ export class SchemaEffectsService {
         this.api.admin.createSchema({}, request)
         .subscribe(schema => {
             this.state.actions.admin.createSchemaSuccess(schema);
-            this.notification.show({
+            this.i18nNotification.show({
                 type: 'success',
                 message: 'admin.schema_created'
             });
@@ -76,6 +82,10 @@ export class SchemaEffectsService {
             subject.complete();
         }, error => {
             this.state.actions.admin.actionError();
+            this.notification.show({
+                type: 'error',
+                message: error.toString()
+            });
             subject.error(error);
         });
 
@@ -89,7 +99,7 @@ export class SchemaEffectsService {
         this.api.admin.deleteSchema({schemaUuid})
         .subscribe(() => {
             this.state.actions.admin.deleteSchemaSuccess(schemaUuid);
-            this.notification.show({
+            this.i18nNotification.show({
                 type: 'success',
                 message: 'admin.schema_deleted'
             });
@@ -97,7 +107,7 @@ export class SchemaEffectsService {
             subject.complete();
         }, error => {
             this.state.actions.admin.actionError();
-            this.notification.show({
+            this.i18nNotification.show({
                 type: 'error',
                 message: 'admin.schema_deleted_error'
             });
