@@ -145,6 +145,34 @@
         transition: opacity 0s;
     }
 
+    &.empty {
+        margin-top: 30px;
+        border-left: $left-bar-width solid $gtx-color-very-light-gray;
+        content: ' ';
+        display: block;
+        height: 50px;
+        position: relative;
+        &:before {
+            position: absolute;
+            content: ' ';
+            background: $gtx-color-off-white;
+            display: block;
+            border-radius: 3px;
+            width: 100%;
+            height: 100%;
+            margin-left: 5px;
+            z-index: -1;
+        }
+    }
+
+    gtx-sortable-list {
+        height: 100%;
+    }
+
+    .empty-placeholder {
+        visibility: hidden;
+        height: 0;
+    }
 
     .item-row {
         display: flex;

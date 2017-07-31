@@ -133,6 +133,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
             setTimeout(() => {
                 this.value = newValue;
+                this.changeDetector.markForCheck();
             });
         }
     }
@@ -183,7 +184,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
         lookup.take(1).subscribe(result => {
             const newItem = initializeListValue(this.field, result);
-            const newValue = this.value.slice();
+            const newValue = Array.isArray(this.value) ? this.value.slice() : [];
             newValue.splice(insertIndex, 0, newItem);
             this.api.setValue(newValue);
         });

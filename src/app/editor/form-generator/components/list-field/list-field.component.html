@@ -42,20 +42,28 @@
 <div class="list-container"
      [class.updating]="updating"
      [class.dragging]="dragging"
+     [class.empty]="!value || 0 === value.length"
      [style.height]="listHeight">
     <gtx-sortable-list #listContainer
                        (dragEnd)="dragEnd($event)"
                        (addItem)="addNewElement($event)"
                        [onMove]="onMove"
                        [group]="mainGroup">
-        <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">
-            <div class="item-row">
-                <div #listItem class="list-item"></div>
-                <gtx-drag-handle (mousedown)="dragging = true"
-                                 (mouseup)="dragging = false"></gtx-drag-handle>
-            </div>
-        </gtx-sortable-item>
+
+                <div class="empty-placeholder" *ngIf="!value || value.length === 0">
+                    <!-- this empty-placeholder is a work-around for an issue with gtx-sortable-list, do not remove -->
+                    <gtx-drag-handle></gtx-drag-handle>
+                </div>
+
+            <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">
+                <div class="item-row">
+                    <div #listItem class="list-item"></div>
+                    <gtx-drag-handle (mousedown)="dragging = true"
+                                     (mouseup)="dragging = false"></gtx-drag-handle>
+                </div>
+            </gtx-sortable-item>
     </gtx-sortable-list>
 </div>
+
 
 
