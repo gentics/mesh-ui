@@ -103,7 +103,8 @@
                         "type": {
                             "type": "string",
                             "enum": [
-                                "node"
+                                "node",
+                                "micronode"
                             ],
                             "description": "Type of the field."
                         },
@@ -169,12 +170,13 @@
                             "items": {
                                 "type": "string"
                             },
-                            "description": "List of allowed schemas (Only applies to node lists)."
+                            "description": "List of allowed schemas."
                         },
                         "listType": {
                             "type": "string",
                             "enum": [
-                                "node"
+                                "node",
+                                "micronode"
                             ],
                             "description": "Type of the list elements."
                         }
@@ -206,7 +208,7 @@
         }
     },
     "type": "object",
-    "id": "urn:jsonschema:com:gentics:mesh:core:rest:microschema:impl:MicroschemaUpdateRequest",
+    "id": "urn:jsonschema:com:gentics:mesh:core:rest:schema:impl:SchemaUpdateRequest",
     "required":[
         "name",
         "fields"
@@ -214,16 +216,28 @@
     "properties": {
         "name": {
             "type": "string",
-            "description": "Name of the microschema"
+            "description": "Name of the schema"
         },
         "description": {
             "type": "string",
-            "description": "Description of the microschema"
+            "description": "Description of the schema"
+        },
+        "displayField": {
+            "type": "string",
+            "description": "Name of the display field"
+        },
+        "segmentField": {
+            "type": "string",
+            "description": "Name of the segment field. This field is used to construct the webroot path to the node."
+        },
+        "container": {
+            "type": "boolean",
+            "description": "Flag which indicates whether nodes which use this schema store additional child nodes."
         },
         "fields": {
             "type": "array",
             "minItems": 1,
-            "description": "List of microschema fields",
+            "description": "List of schema fields",
             "items": {
                 "$ref": "#/definitions/field"
             }
