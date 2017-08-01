@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { I18nService, UILanguage } from '../../providers/i18n/i18n.service';
-import { UI_LANGUAGES } from '../../../common/config/config';
+import { ConfigService } from '../../providers/config/config.service';
 
 
 @Component({
@@ -16,8 +16,9 @@ export class LanguageSwitcherComponent {
     currentLanguage$: Observable<UILanguage>;
 
     constructor(private appState: ApplicationStateService,
+                private config: ConfigService,
                 private i18n: I18nService) {
-        this.availableLanguages = UI_LANGUAGES;
+        this.availableLanguages = config.UI_LANGUAGES;
         this.currentLanguage$ = appState.select(state => state.ui.currentLanguage)
             .map(languageCode => `lang.${languageCode}`);
     }

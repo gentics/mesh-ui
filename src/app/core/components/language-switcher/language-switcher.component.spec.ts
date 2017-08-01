@@ -8,11 +8,10 @@ import { SharedModule } from '../../../shared/shared.module';
 import { componentTest } from '../../../../testing/component-test';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { UI_LANGUAGES } from '../../../common/config/config';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { LanguageSwitcherComponent } from './language-switcher.component';
 import { I18nService } from '../../providers/i18n/i18n.service';
-import createSpy = jasmine.createSpy;
+import { ConfigService } from '../../providers/config/config.service';
 
 describe('LanguageSwitcherComponent:', () => {
 
@@ -24,6 +23,7 @@ describe('LanguageSwitcherComponent:', () => {
             imports: [SharedModule, StateModule],
             providers: [
                 OverlayHostService,
+                ConfigService,
                 { provide: I18nService, useValue: { setLanguage() {} } },
                 { provide: ApplicationStateService, useClass: TestApplicationState }
             ],
@@ -60,8 +60,9 @@ describe('LanguageSwitcherComponent:', () => {
             fixture.detectChanges();
             tick();
 
+            const config = new ConfigService();
             const dropdownItems = fixture.debugElement.queryAll(By.directive(DropdownItem));
-            expect(dropdownItems.length).toEqual(UI_LANGUAGES.length);
+            expect(dropdownItems.length).toEqual(config.UI_LANGUAGES.length);
         })
     );
 

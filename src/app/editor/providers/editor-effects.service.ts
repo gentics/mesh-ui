@@ -3,14 +3,15 @@ import { ApplicationStateService } from '../../state/providers/application-state
 import { ApiService } from '../../core/providers/api/api.service';
 import { MeshNode } from '../../common/models/node.model';
 import { NodeUpdateRequest } from '../../common/models/server-models';
-import { FALLBACK_LANGUAGE } from '../../common/config/config';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
+import { ConfigService } from '../../core/providers/config/config.service';
 
 @Injectable()
 export class EditorEffectsService {
 
     constructor(private state: ApplicationStateService,
                 private notification: I18nNotification,
+                private config: ConfigService,
                 private api: ApiService) {}
 
     openNode(projectName: string, nodeUuid: string): void {
@@ -40,7 +41,7 @@ export class EditorEffectsService {
         const updateRequest: NodeUpdateRequest = {
             fields: node.fields,
             version: node.version,
-            language: node.language || FALLBACK_LANGUAGE
+            language: node.language || this.config.FALLBACK_LANGUAGE
         };
 
         return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid }, updateRequest)
