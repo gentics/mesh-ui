@@ -7,6 +7,12 @@ error_min_value:
 error_required:
     en: This field is required
     de: Dieses Felt is erforderlich
+language_switch_to:
+    en: 'Switch to {{language}}'
+    de: 'Auf {{language}} umschalten'
+language_translate_to:
+    en: 'Create {{language}} version'
+    de: '{{language}} Variante erstellen'
 node_published:
     en: 'Node successfully published as version {{version}}'
     de: 'Node erfolgreich veröffentlicht als Version {{version}}'

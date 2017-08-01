@@ -1,0 +1,17 @@
+<gtx-dropdown-list>
+    <gtx-dropdown-trigger>
+        <div class="trigger">
+        <node-language-label [language]="node.language"></node-language-label> <icon>arrow_drop_down</icon>
+        </div>
+    </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+        <gtx-dropdown-item *ngFor="let language of availableLanguages" (click)="itemClick(language)">
+            <div *ngIf="language.translationExists">
+                {{ 'editor.language_switch_to' | i18n:{ language: ('lang.' + language.code | i18n) } }}
+            </div>
+            <div *ngIf="!language.translationExists">
+                {{ 'editor.language_translate_to' | i18n:{ language: ('lang.' + language.code | i18n) } }}
+            </div>
+        </gtx-dropdown-item>
+    </gtx-dropdown-content>
+ </gtx-dropdown-list>

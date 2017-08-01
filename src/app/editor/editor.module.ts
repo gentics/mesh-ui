@@ -11,6 +11,7 @@ import { MasterDetailComponent } from './components/master-detail/master-detail.
 import { NodeEditorComponent } from './components/node-editor/node-editor.component';
 import { NodeEditorGuard } from './providers/node-editor-guard';
 import { NodeLanguageLabelComponent } from './components/node-language-label/node-language-label.component';
+import { NodeLanguageSwitcherComponent } from './components/node-language-switcher/node-language-switcher.component';
 import { ProjectSwitcherComponent } from './components/project-switcher/project-switcher.component';
 import { routes } from './editor.routes';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
@@ -29,6 +30,7 @@ import { SharedModule } from '../shared/shared.module';
         MasterDetailComponent,
         NodeEditorComponent,
         NodeLanguageLabelComponent,
+        NodeLanguageSwitcherComponent,
         ProjectSwitcherComponent,
         SearchBarComponent
     ],

@@ -10,6 +10,12 @@ export class ConfigService {
     /** UI localizations */
     readonly UI_LANGUAGES = ['en', 'de'];
 
+    /**
+     * Languages in which the content is available.
+     * TODO: This will need to be user-configurable eventually.
+     */
+    readonly CONTENT_LANGUAGES = ['en', 'de'];
+
     /** Language used when no translation is found in the current language */
     readonly FALLBACK_LANGUAGE = 'en';
 
