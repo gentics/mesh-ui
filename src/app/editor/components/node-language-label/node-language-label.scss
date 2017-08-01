@@ -1,0 +1,14 @@
+@import "variables";
+
+:host {
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    icon {
+        font-size: 1.3em;
+        margin-right: 1px;
+    }
+    .language-code {
+        line-height: 1em;
+    }
+}
