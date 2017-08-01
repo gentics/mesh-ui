@@ -31,8 +31,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.route.paramMap.subscribe(paramMap => {
             const projectName = paramMap.get('projectName');
             const nodeUuid = paramMap.get('nodeUuid');
-            if (projectName && nodeUuid) {
-                this.editorEffects.openNode(projectName, nodeUuid);
+            const language = paramMap.get('language');
+            if (projectName && nodeUuid && language) {
+                this.editorEffects.openNode(projectName, nodeUuid, language);
             }
         });
 

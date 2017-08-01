@@ -9,6 +9,7 @@ interface NavigationInstruction {
     detail?: {
         projectName: string;
         nodeUuid: string;
+        language?: string;
     } | null;
 }
 
@@ -40,11 +41,12 @@ export class NavigationService {
     /**
      * Open a node for editing in the detail outlet.
      */
-    detail(projectName: string, nodeUuid: string): InstructionActions {
+    detail(projectName: string, nodeUuid: string, language?: string): InstructionActions {
         return this.instruction({
             detail: {
                 projectName,
-                nodeUuid
+                nodeUuid,
+                language
             }
         });
     }
@@ -83,8 +85,8 @@ export class NavigationService {
             outlets.detail = null;
         }
         if (instruction.detail) {
-            const { projectName, nodeUuid } = instruction.detail;
-            outlets.detail = [projectName, nodeUuid];
+            const { projectName, nodeUuid, language } = instruction.detail;
+            outlets.detail = [projectName, nodeUuid, language];
         }
         if (instruction.list) {
             const { projectName, containerUuid } = instruction.list;

@@ -131,7 +131,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     editNode(node: MeshNode): void {
-        this.navigationService.detail(node.project.name!, node.uuid).navigate();
+        this.navigationService.detail(node.project.name!, node.uuid, node.language).navigate();
     }
 
     copyNode(node: MeshNode): void {
@@ -150,7 +150,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         if (node.container) {
             return this.navigationService.list(node.project.name!, node.uuid).commands();
         } else {
-            return this.navigationService.detail(node.project.name!, node.uuid).commands();
+            return this.navigationService.detail(node.project.name!, node.uuid, node.language).commands();
         }
     }
 }

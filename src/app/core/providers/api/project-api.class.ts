@@ -178,8 +178,9 @@ export class ProjectApi {
      * and return a 409 error if a conflict has been detected. Additional conflict
      * checks for webrootpath conflicts will also be performed.
      */
-    updateNode({ project, nodeUuid }: { project: string, nodeUuid: string }, updateRequest: NodeUpdateRequest) {
-        return this.apiBase.post('/{project}/nodes/{nodeUuid}', { project, nodeUuid }, updateRequest)
+    updateNode({ project, nodeUuid, language }: { project: string, nodeUuid: string, language: string }, updateRequest: NodeUpdateRequest) {
+        // TODO: remove the "any" cast in the .post() call below once (https://jira.gentics.com/browse/CL-604) is resolved.
+        return this.apiBase.post('/{project}/nodes/{nodeUuid}', { project, nodeUuid, lang: language } as any, updateRequest)
             .mapResponses<{ conflict: GenericMessageResponse | null; node: NodeResponse | null; }>({
                 200: node => ({ node, conflict: null }),
                 409: conflict => ({ node: null, conflict })

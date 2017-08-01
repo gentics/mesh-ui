@@ -14,13 +14,14 @@ export class EditorEffectsService {
                 private config: ConfigService,
                 private api: ApiService) {}
 
-    openNode(projectName: string, nodeUuid: string): void {
+    openNode(projectName: string, nodeUuid: string, language?: string): void {
         // TODO: Make API call to get the node
-        this.state.actions.editor.openNode(projectName, nodeUuid, 'en');
+        const lang = language || this.config.FALLBACK_LANGUAGE;
+        this.state.actions.editor.openNode(projectName, nodeUuid, lang);
 
         // Refresh the node
         this.state.actions.list.fetchNodeStart(nodeUuid);
-        this.api.project.getProjectNode({ project: projectName, nodeUuid })
+        this.api.project.getProjectNode({ project: projectName, nodeUuid, lang })
             .subscribe(response => {
                 this.state.actions.list.fetchNodeSuccess(response);
             }, error => {
@@ -43,8 +44,9 @@ export class EditorEffectsService {
             version: node.version,
             language: node.language || this.config.FALLBACK_LANGUAGE
         };
+        const language = node.language || this.config.FALLBACK_LANGUAGE;
 
-        return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid }, updateRequest)
+        return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
             .toPromise()
             .then(response => {
                     if (response.conflict) {
