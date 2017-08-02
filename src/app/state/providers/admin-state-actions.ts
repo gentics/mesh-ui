@@ -4,8 +4,9 @@ import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 import { AppState } from '../models/app-state.model';
 import { AdminState } from '../models/admin-state.model';
 import { EntityState } from '../models/entity-state.model';
-import { ProjectResponse, SchemaResponse } from '../../common/models/server-models';
+import { ProjectResponse } from '../../common/models/server-models';
 import { mergeEntityState } from './entity-state-actions';
+import { Schema } from '../../common/models/schema.model';
 
 @Injectable()
 @Immutable()
@@ -32,7 +33,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         this.admin.loadCount++;
     }
 
-    loadSchemasSuccess(schemas: SchemaResponse[]) {
+    loadSchemasSuccess(schemas: Schema[]) {
         this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             schema: schemas
@@ -42,17 +43,15 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     createProjectSuccess(project: ProjectResponse) {
         this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            project: {
-                [project.uuid]: project
-            }
+            project: [project]
         });
     }
 
     deleteProjectSuccess(projectUuid: string) {
-        this.entities = mergeEntityState(this.entities, {
+        /*this.entities = mergeEntityState(this.entities, {
             project: {
                 [projectUuid]: undefined
             }
-        });
+        });*/
     }
 }

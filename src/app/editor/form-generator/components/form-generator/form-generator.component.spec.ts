@@ -285,7 +285,8 @@ const mockSchema: Schema = {
     ],
     displayField: 'name',
     segmentField: 'name',
-    container: false
+    container: false,
+    rolePerms: {} as any
 };
 
 function populateMockData(fixture: ComponentFixture<FormGeneratorComponent>, node: MeshNode = mockNode): void {

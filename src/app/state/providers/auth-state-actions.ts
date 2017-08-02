@@ -51,9 +51,7 @@ export class AuthStateActions extends StateActionBranch<AppState> {
         this.auth.loggingIn = false;
         this.auth.currentUser = user.uuid;
         this.entities = mergeEntityState(this.entities, {
-            user: {
-                [user.uuid]: user
-            }
+            user: [user]
         });
     }
 

@@ -6,6 +6,8 @@ import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
 import { mergeEntityState } from './entity-state-actions';
+import { Microschema } from '../../common/models/microschema.model';
+import { Schema } from '../../common/models/schema.model';
 
 @Injectable()
 @Immutable()
@@ -30,6 +32,9 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount++;
     }
 
+    // TODO: think about how we will handle language variants of containers.
+    // For now we will rely on the "best guess" default behaviour of
+    // the getNestedEntity() function within mergeEntityState()
     fetchChildrenSuccess(containerUuid: string, children: NodeResponse[]) {
         this.list.loadCount--;
         this.entities = mergeEntityState(this.entities, {
@@ -40,7 +45,7 @@ export class ListStateActions extends StateActionBranch<AppState> {
                     children: children.map(node => node.uuid)
                 }
             ]
-        });
+        }, false);
     }
 
     fetchChildrenError() {
@@ -84,7 +89,7 @@ export class ListStateActions extends StateActionBranch<AppState> {
     fetchMicroschemasSuccess(microschemas: MicroschemaResponse[]) {
         this.list.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            microschema: microschemas
+            microschema: microschemas as Microschema[]
         });
     }
 
@@ -99,9 +104,7 @@ export class ListStateActions extends StateActionBranch<AppState> {
     fetchMicroschemaSuccess(microschema: MicroschemaResponse) {
         this.list.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            microschema: {
-                [microschema.uuid]: microschema
-            }
+            microschema: [microschema as Microschema]
         });
     }
 
@@ -119,12 +122,15 @@ export class ListStateActions extends StateActionBranch<AppState> {
 
         this.list.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            project: {
-                [projectUuid]: {
-                    schemas: schemas.map(schema => schema.uuid)
-                }
-            },
-            schema: schemas
+            project: [{
+                uuid: projectUuid,
+                schemas: schemas.map(schema => ({
+                    name: schema.name,
+                    uuid: schema.uuid,
+                    version: schema.version
+                }))
+            }],
+            schema: schemas as Schema[]
         });
     }
 

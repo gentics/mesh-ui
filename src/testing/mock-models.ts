@@ -8,7 +8,7 @@ import { Schema } from '../app/common/models/schema.model';
  * Returns a mock MeshNode for use in testing. Any properties may be overridden by passing the
  * properties argument.
  */
-export function mockMeshNode(properties?: Partial<MeshNode>): MeshNode {
+export function mockMeshNode(properties?: Partial<MeshNode>): { [language: string]: { [version: string]: MeshNode; }; } {
     const defaultMockNode: MeshNode = {
         ...mockBaseProperties(),
         ...{
@@ -43,8 +43,8 @@ export function mockMeshNode(properties?: Partial<MeshNode>): MeshNode {
             rolePerms: {} as any
         }
     };
-
-    return { ...defaultMockNode, ...properties };
+    const mockNode = { ...defaultMockNode, ...properties };
+    return { [mockNode.language!]: { [mockNode.version]: mockNode } };
 }
 
 /**
@@ -74,7 +74,7 @@ export function mockProject(properties?: Partial<Project>): Project {
  * Returns a mock Schema for use in testing. Any properties may be overridden by passing the
  * properties argument.
  */
-export function mockSchema(properties?: Partial<Schema>): Schema {
+export function mockSchema(properties?: Partial<Schema>): { [version: string]: Schema; } {
     const defaultMockSchema: Schema = {
         ...mockBaseProperties(),
         ...{
@@ -88,7 +88,8 @@ export function mockSchema(properties?: Partial<Schema>): Schema {
         }
     };
 
-    return { ...defaultMockSchema, ...properties };
+    const mockSchema = { ...defaultMockSchema, ...properties };
+    return { [mockSchema.version]: mockSchema };
 }
 
 
@@ -112,8 +113,14 @@ export function mockUser(properties?: Partial<User>): User {
 
 /**
  * Returns a mock BaseProperties for use in testing. To be used when composing the concrete mocks such as in mockMeshNode().
+ *
+ * TODO: this should return BaseProperties, but there are inconsistencies certain generated models where
+ * properties are optional but should not be or vice versa.
+ * See
+ * - https://jira.gentics.com/browse/CL-605
+ * - https://github.com/gentics/mesh-model-generator/issues/13
  */
-function mockBaseProperties(properties?: Partial<BaseProperties>): BaseProperties {
+function mockBaseProperties(properties?: Partial<BaseProperties>): any {
     const defaultBaseProperties: BaseProperties = {
         uuid: 'default000mock000baseproperties0',
         creator: {
