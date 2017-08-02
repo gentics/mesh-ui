@@ -1,6 +1,3 @@
-import { BaseProperties, GroupReference } from './common.model';
+import { RoleResponse } from './server-models';
 
-export interface Role extends BaseProperties {
-    name: string;
-    groups: GroupReference[];
-}
+export interface Role extends RoleResponse {}

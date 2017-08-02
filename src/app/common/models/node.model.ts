@@ -1,5 +1,4 @@
-import { FieldMapFromServer, NodeResponse } from './server-models';
-import { MicroschemaReference } from './common.model';
+import { FieldMapFromServer, MicroschemaReferenceFromServer, NodeResponse } from './server-models';
 
 /* tslint:disable:no-empty-interface */
 
@@ -38,7 +37,7 @@ export interface MicronodeFieldMap {
 }
 export interface NodeFieldMicronode {
     uuid: string;
-    microschema: MicroschemaReference;
+    microschema: MicroschemaReferenceFromServer;
     fields: MicronodeFieldMap;
 }
 
