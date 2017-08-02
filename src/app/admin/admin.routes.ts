@@ -24,15 +24,17 @@ export const routes: Route[] = [
 ];
 
 
-function entityName(fallBackName: string) {
+function entityName(newName: string) {
     return (route: any, state: AppState): string => {
         const entity = state.admin.openEntity;
         let result;
-        if (entity) {
+        if (entity && !entity.isNew && entity.uuid) {
             result =  state.entities[entity.type][entity.uuid].name;
-        } else {
+        } else if (entity && entity.isNew) {
             // TODO i18n or rework this
-            result = fallBackName;
+            result = newName;
+        } else {
+            result = '';
         }
         return result;
     };

@@ -1,0 +1,6 @@
+<gtx-select label="{{'admin.assigned_to_projects' | i18n}}" [ngModel]="assignedProjects" (ngModelChange)="assign($event)" multiple="true">
+    <gtx-option *ngFor="let assignment of assignments$ | async"
+        [value]="assignment.projectUuid">
+        {{ assignment.projectName }}
+    </gtx-option>
+</gtx-select>

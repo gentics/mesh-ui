@@ -83,7 +83,8 @@ describe('AdminBreadcrumbsComponent', () => {
             admin: {
                 openEntity: {
                     type: 'microschema',
-                    uuid: 'testuuid'
+                    uuid: 'testuuid',
+                    isNew: true
                 }
             }
         });

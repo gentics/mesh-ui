@@ -94,6 +94,9 @@ export class AdminApi {
     /** Remove the given role from the group. */
     removeRoleFromGroup = apiDelete('/groups/{groupUuid}/roles/{roleUuid}');
 
+    /** Remove a schema from the given project. */
+    removeSchemaFromProject = apiDelete('/{project}/schemas/{schemaUuid}');
+
     /** Remove a microschema from the given project. */
     removeMicroschemaFromProject = apiDelete('/{project}/microschemas/{microschemaUuid}');
 

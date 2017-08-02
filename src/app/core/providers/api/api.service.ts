@@ -6,6 +6,7 @@ import { ProjectApi } from './project-api.class';
 import { UserApi } from './user-api.class';
 import { AdminApi } from './admin-api.class';
 import { SchemaApi } from './schema-api.class';
+import { apiPost } from './api-methods';
 
 
 @Injectable()
@@ -15,6 +16,8 @@ export class ApiService {
     public schema: SchemaApi;
     public user: UserApi;
     public admin: AdminApi;
+
+    graphQL = apiPost('/{project}/graphql');
 
     constructor(protected apiBase: ApiBase) {
         this.auth = new AuthApi(apiBase);

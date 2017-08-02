@@ -3,7 +3,7 @@ import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
 import { AppState } from '../models/app-state.model';
 import { AuthState } from '../models/auth-state.model';
-import { AdminState, AdminStateEntity } from '../models/admin-state.model';
+import { AdminState, AdminStateEntity, ProjectAssignments } from '../models/admin-state.model';
 import { ChangePasswordModalComponent } from '../../core/components/change-password-modal/change-password-modal.component';
 import { EntityState } from '../models/entity-state.model';
 import { ProjectResponse, SchemaResponse, MicroschemaResponse } from '../../common/models/server-models';
@@ -22,7 +22,8 @@ export class AdminStateActions extends StateActionBranch<AppState> {
             uses: ['admin', 'entities'],
             initialState: {
                 admin: {
-                    loadCount: 0
+                    loadCount: 0,
+                    assignedToProject: {}
                 }
             }
         });
@@ -91,13 +92,15 @@ export class AdminStateActions extends StateActionBranch<AppState> {
 
     openMicroschemaStart() {
         this.admin.loadCount++;
+        delete this.admin.openEntity;
     }
 
     openMicroschemaSuccess(microschema: MicroschemaResponse) {
         this.admin.loadCount--;
         this.admin.openEntity = {
             type: 'microschema',
-            uuid: microschema.uuid
+            uuid: microschema.uuid,
+            isNew: false
         };
         this.entities = mergeEntityState(this.entities, {
             microschema: {
@@ -111,7 +114,10 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     }
 
     newMicroschema() {
-        delete this.admin.openEntity;
+        this.admin.openEntity = {
+            type: 'microschema',
+            isNew: true
+        };
     }
 
     updateSchemaSuccess(response: SchemaResponse) {
@@ -134,13 +140,15 @@ export class AdminStateActions extends StateActionBranch<AppState> {
 
     openSchemaStart() {
         this.admin.loadCount++;
+        delete this.admin.openEntity;
     }
 
     openSchemaSuccess(schema: SchemaResponse) {
         this.admin.loadCount--;
         this.admin.openEntity = {
             type: 'schema',
-            uuid: schema.uuid
+            uuid: schema.uuid,
+            isNew: false
         };
         this.entities = mergeEntityState(this.entities, {
             schema: {
@@ -154,6 +162,28 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     }
 
     newSchema() {
-        delete this.admin.openEntity;
+        this.admin.openEntity = {
+            type: 'schema',
+            isNew: true
+        };
+    }
+
+    loadEntityAssignmentsStart() {
+        this.admin.loadCount++;
+    }
+
+    loadEntityAssignmentProjectsSuccess(projects: ProjectResponse[]) {
+        this.entities = mergeEntityState(this.entities, {
+            project: projects
+        });
+    }
+
+    loadEntityAssignmentsSuccess(assignments: ProjectAssignments) {
+        this.admin.loadCount--;
+        this.admin.assignedToProject = assignments;
+    }
+
+    loadEntityAssignmentsError() {
+        this.admin.loadCount--;
     }
 }

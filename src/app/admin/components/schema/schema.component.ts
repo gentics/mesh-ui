@@ -19,6 +19,8 @@ export class SchemaComponent implements OnInit, OnDestroy {
     schema$: Observable<SchemaResponse>;
     version$: Observable<string>;
 
+    uuid$: Observable<string>;
+
     schemaJson: string = '';
     // TODO load json schema from mesh instead of static file
     schema = require('./schema.schema.json');
@@ -41,19 +43,19 @@ export class SchemaComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.loading$ = this.state.select(state => state.admin.loadCount > 0);
 
-        const uuid$ = this.route.paramMap
+        this.uuid$ = this.route.paramMap
             .map(map => map.get('uuid'))
             .distinctUntilChanged()
             .do(route => {
                 this.isNew = route === 'new';
                 if (this.isNew) {
-                    this.state.actions.admin.newMicroschema();
+                    this.state.actions.admin.newSchema();
                 }
             })
             // This will cause all the stuff below to not trigger when a new schema is made.
-            .filter(route => route !== 'new');
+            .filter(route => route != null && route !== 'new') as Observable<string>;
 
-        this.schema$ = uuid$
+        this.schema$ = this.uuid$
             .switchMap(uuid => {
                 return this.state.select(state => state.entities.schema[uuid!]);
             }
@@ -61,7 +63,7 @@ export class SchemaComponent implements OnInit, OnDestroy {
 
         this.version$ = this.schema$.map(it => it.version);
 
-        uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
+        this.uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
             // TODO handle 404 or other errors
             this.schemaEffects.openSchema(uuid);
         });

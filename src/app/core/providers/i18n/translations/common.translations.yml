@@ -40,6 +40,9 @@ file_type_label:
 id_label:
     en: ID
     de: ID
+not_found:
+    en: Not found
+    de: Nicht gefunden
 okay_button:
     en: Okay
     de: OK

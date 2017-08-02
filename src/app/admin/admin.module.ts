@@ -16,6 +16,8 @@ import { MicroschemaComponent } from './components/microschema/mircoschema.compo
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { SchemaComponent } from './components/schema/schema.component';
+import { SchemaAssignmentComponent } from './components/schema-assignment/schema-assignment.component';
+import { AdminEffectsService } from './providers/effects/admin-effects.service';
 
 @NgModule({
     declarations: [
@@ -29,6 +31,7 @@ import { SchemaComponent } from './components/schema/schema.component';
         SchemaListComponent,
         SchemaComponent,
         MonacoEditorComponent,
+        SchemaAssignmentComponent
     ],
     entryComponents: [
         CreateProjectModalComponent
@@ -40,7 +43,8 @@ import { SchemaComponent } from './components/schema/schema.component';
     providers: [
         ModalService,
         ProjectEffectsService,
-        MicroschemaEffectsService
+        MicroschemaEffectsService,
+        AdminEffectsService
     ]
 })
 export class AdminModule {

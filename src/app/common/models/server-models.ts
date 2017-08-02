@@ -2627,7 +2627,7 @@ export interface ApiEndpoints {
                     schemaUuid: string;
                 };
                 queryParams?: { };
-                body: SchemaUpdateRequest;
+                body: undefined;
             };
             responseType: SchemaResponse;
             responseTypes: {
@@ -3330,7 +3330,7 @@ export interface GraphQLRequest {
     /** The actual GraphQL query. */
     readonly query: string;
     /** JSON object which contains the variables. */
-    readonly variables?: JsonObjectFromServer;
+    readonly variables?: any;
 }
 
 /**
@@ -3338,7 +3338,7 @@ export interface GraphQLRequest {
  */
 export interface GraphQLResponse {
     /** JSON object which contains the variables. */
-    readonly data?: JsonObjectFromServer;
+    readonly data?: any;
     /** Array of errors which were encoutered when handling the query. */
     readonly errors?: GraphQLErrorFromServer[];
 }
