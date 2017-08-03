@@ -53,6 +53,7 @@ export class AdminEffectsService {
                             type: 'error',
                             message: 'common.not_found'
                         });
+                        actions.loadEntityAssignmentsError();
                         return;
                     }
                     const allProjects =
