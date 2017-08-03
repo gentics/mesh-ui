@@ -22,7 +22,7 @@ export class SchemaListComponent {
         this.schemas$ = state.select(state => state.entities.schema)
             .map(hashValues);
 
-        this.loading$ = state.select(state => state.list.loadCount > 0);
+        this.loading$ = state.select(state => state.admin.loadCount > 0);
         this.schemaEffects.loadSchemas();
     }
 
