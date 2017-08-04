@@ -86,6 +86,7 @@ export class ListStateActions extends StateActionBranch<AppState> {
 
     fetchMicroschemasSuccess(microschemas: MicroschemaResponse[]) {
         this.list.loadCount--;
+        this.admin.displayedMicroschemas = microschemas.map(schema => schema.uuid);
         this.entities = mergeEntityState(this.entities, {
             microschema: microschemas
         });

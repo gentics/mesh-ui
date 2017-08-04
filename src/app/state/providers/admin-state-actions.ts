@@ -24,7 +24,9 @@ export class AdminStateActions extends StateActionBranch<AppState> {
                 admin: {
                     loadCount: 0,
                     assignedToProject: {},
-                    displayedProjects: []
+                    displayedProjects: [],
+                    displayedSchemas: [],
+                    displayedMicroschemas: []
                 }
             }
         });
@@ -44,6 +46,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
 
     loadSchemasSuccess(schemas: SchemaResponse[]) {
         this.admin.loadCount--;
+        this.admin.displayedSchemas = schemas.map(schema => schema.uuid);
         this.entities = mergeEntityState(this.entities, {
             schema: schemas
         });
@@ -63,14 +66,14 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         this.admin.displayedProjects = this.admin.displayedProjects.filter(uuid => uuid !== projectUuid);
     }
 
-    deleteMicroschemaSuccess(projectUuid: string) {
-        // TODO implement
-        throw new Error('Not implemented');
+    deleteMicroschemaSuccess(microschemaUuid: string) {
+        this.admin.loadCount--;
+        this.admin.displayedMicroschemas = this.admin.displayedMicroschemas.filter(uuid => uuid !== microschemaUuid);
     }
 
-    deleteSchemaSuccess(projectUuid: string) {
-        // TODO implement
-        throw new Error('Not implemented');
+    deleteSchemaSuccess(schemaUuid: string) {
+        this.admin.loadCount--;
+        this.admin.displayedSchemas = this.admin.displayedSchemas.filter(uuid => uuid !== schemaUuid);
     }
 
     updateMicroschemaSuccess(response: MicroschemaResponse) {
@@ -89,6 +92,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
                 [response.uuid]: response
             }
         });
+        this.admin.displayedMicroschemas = [...this.admin.displayedMicroschemas, response.uuid];
     }
 
     openMicroschemaStart() {
@@ -137,6 +141,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
                 [response.uuid]: response
             }
         });
+        this.admin.displayedSchemas = [...this.admin.displayedSchemas, response.uuid];
     }
 
     openSchemaStart() {

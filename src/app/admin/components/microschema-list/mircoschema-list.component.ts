@@ -20,8 +20,8 @@ export class MicroschemaListComponent {
     constructor(private state: ApplicationStateService,
                 private microschemaEffects: MicroschemaEffectsService,
                 private router: Router) {
-        this.microschemas$ = state.select(state => state.entities.microschema)
-            .map(hashValues);
+        this.microschemas$ = state.select(state => state.admin.displayedMicroschemas)
+            .map(uuids => uuids.map(uuid => state.now.entities.microschema[uuid]));
 
         this.loading$ = state.select(state => state.list.loadCount > 0);
         this.microschemaEffects.loadMicroschemas();

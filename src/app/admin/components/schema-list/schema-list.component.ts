@@ -19,8 +19,8 @@ export class SchemaListComponent {
     constructor(private state: ApplicationStateService,
                 private schemaEffects: SchemaEffectsService,
                 private router: Router) {
-        this.schemas$ = state.select(state => state.entities.schema)
-            .map(hashValues);
+        this.schemas$ = state.select(state => state.admin.displayedSchemas)
+            .map(uuids => uuids.map(uuid => state.now.entities.schema[uuid]));
 
         this.loading$ = state.select(state => state.admin.loadCount > 0);
         this.schemaEffects.loadSchemas();
