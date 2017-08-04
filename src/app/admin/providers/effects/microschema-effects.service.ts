@@ -106,9 +106,9 @@ export class MicroschemaEffectsService {
             subject.complete();
         }, error => {
             this.state.actions.admin.actionError();
-            this.i18nNotification.show({
+            this.notification.show({
                 type: 'error',
-                message: 'admin.microschema_deleted_error'
+                message: error.toString()
             });
             subject.error(error);
         });

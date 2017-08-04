@@ -27,7 +27,16 @@ export class ApiError extends Error {
 
         let message: string;
         if (response) {
-            message = (cause || `HTTP ${response.status} returned`) + ` for "${url}"`;
+            // Attempt to parse error message from mesh
+            let responseBody;
+            try {
+                responseBody = response.json();
+            } catch (err) {}
+            if (responseBody && responseBody.message) {
+                message = responseBody.message;
+            } else {
+                message = (cause || `HTTP ${response.status} returned`) + ` for "${url}"`;
+            }
         } else if (originalError) {
             message = `${originalError.name} requesting "${url}": ${originalError.message}`;
         } else {
