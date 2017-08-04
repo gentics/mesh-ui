@@ -23,7 +23,8 @@ export class AdminStateActions extends StateActionBranch<AppState> {
             initialState: {
                 admin: {
                     loadCount: 0,
-                    assignedToProject: {}
+                    assignedToProject: {},
+                    displayedProjects: []
                 }
             }
         });
@@ -55,11 +56,11 @@ export class AdminStateActions extends StateActionBranch<AppState> {
                 [project.uuid]: project
             }
         });
+        this.admin.displayedProjects = [...this.admin.displayedProjects, project.uuid];
     }
 
     deleteProjectSuccess(projectUuid: string) {
-        // TODO implement
-        throw new Error('Not implemented');
+        this.admin.displayedProjects = this.admin.displayedProjects.filter(uuid => uuid !== projectUuid);
     }
 
     deleteMicroschemaSuccess(projectUuid: string) {

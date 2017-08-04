@@ -37,6 +37,9 @@ describe('ProjectListComponent', () => {
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
         appState.mockState({
+            admin: {
+                displayedProjects: ['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5']
+            },
             auth: {
                 currentUser: 'd8b043e818144e27b043e81814ae2713'
             }, entities: {
@@ -83,6 +86,9 @@ describe('ProjectListComponent', () => {
         componentTest(() => ProjectListComponent, fixture => {
             fixture.detectChanges();
             appState.mockState({
+                admin: {
+                    displayedProjects: [...appState.now.admin.displayedProjects, 'test3']
+                },
                 entities: {
                     project: {
                         ...appState.now.entities.project,

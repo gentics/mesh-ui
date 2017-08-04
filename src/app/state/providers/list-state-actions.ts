@@ -6,16 +6,18 @@ import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
 import { mergeEntityState } from './entity-state-actions';
+import { AdminState } from '../models/admin-state.model';
 
 @Injectable()
 @Immutable()
 export class ListStateActions extends StateActionBranch<AppState> {
     @CloneDepth(0) private entities: EntityState;
     @CloneDepth(1) private list: ListState;
+    @CloneDepth(1) private admin: AdminState;
 
     constructor() {
         super({
-            uses: ['entities', 'list'],
+            uses: ['entities', 'list', 'admin'],
             initialState: {
                 list: {
                     currentNode: undefined,
@@ -71,6 +73,7 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.entities = mergeEntityState(this.entities, {
             project: projects
         });
+        this.admin.displayedProjects = projects.map(project => project.uuid);
     }
 
     fetchProjectsError() {

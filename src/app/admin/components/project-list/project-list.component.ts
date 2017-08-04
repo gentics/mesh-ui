@@ -20,8 +20,8 @@ export class ProjectListComponent {
     constructor(private state: ApplicationStateService,
                 private modal: ModalService,
                 private listEffects: ListEffectsService) {
-        this.projects$ = state.select(state => state.entities.project)
-            .map(hashValues);
+        this.projects$ = state.select(state => state.admin.displayedProjects)
+            .map(uuids => uuids.map(uuid => state.now.entities.project[uuid]));
 
         this.projectsLoading$ = state.select(state => state.list.loadCount > 0);
         this.listEffects.loadProjects();
