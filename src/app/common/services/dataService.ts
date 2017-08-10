@@ -86,6 +86,7 @@ module meshAdminUi {
 
             selectiveCache.setBaseUrl(apiUrl);
             $http.defaults.cache = selectiveCache;
+            $http.defaults.withCredentials = true;
         }
 
 
@@ -146,6 +147,7 @@ module meshAdminUi {
             }
             config = config || {};
             config.params = params;
+            config.withCredentials = true;
             return config;
         }
 
