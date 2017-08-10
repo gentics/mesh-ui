@@ -47,11 +47,13 @@ module meshAdminUi {
         public logIn(userName, password) {
             let authHeaderValue,
                 $http = <ng.IHttpService>this.$injector.get("$http"),
-                config: ng.IRequestShortcutConfig = { headers: {} },
+                config: ng.IRequestShortcutConfig = { headers: {}, withCredentials: true },
                 deferred = this.$q.defer();
 
             authHeaderValue = "Basic " + btoa(userName + ":" + password);
             config.headers[this.AUTH_HEADER_NAME] = authHeaderValue;
+            config.withCredentials = true;
+            $http.defaults.withCredentials = true;
 
             this.userRequestInFlight = $http.get(meshUiConfig.apiUrl + 'auth/login', config)
                 .then(response => {
@@ -92,7 +94,8 @@ module meshAdminUi {
             }
             // need to re-fetch the current user data
             let config: ng.IRequestShortcutConfig = {
-                headers: { [this.AUTH_HEADER_NAME]: this.authString }
+                headers: { [this.AUTH_HEADER_NAME]: this.authString },
+                withCredentials: true
             };
             let $http = <ng.IHttpService>this.$injector.get("$http");
             this.userRequestInFlight = $http.get(meshUiConfig.apiUrl + 'auth/me', config)
@@ -121,7 +124,7 @@ module meshAdminUi {
         public logOut() {
             let $http = <ng.IHttpService>this.$injector.get("$http"),
                 deferred = this.$q.defer();
-
+            $http.defaults.withCredentials = true;
             $http.get(meshUiConfig.apiUrl + 'auth/logout').then(() => {
                 this.doLogoutHousekeeping();
                 deferred.resolve(true);
