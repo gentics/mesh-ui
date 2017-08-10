@@ -1,5 +1,10 @@
 # MeshAdminUI Changelog
 
+## Version 0.7.3 (2017-08-10)
+* Add CORS support. Previously CORS was not supported by the UI.
+* Fix translation action. Previously a error prevented translations from being executed.
+* Fix image handling for binary fields. Previously only the default language image was displayed in the edit view. This has been fixed.
+
 ## Version 0.7.2 (2017-07-31)
 * Date fields now work with ISO 8601 strings rather than unix timestamps
 * Fix bugs with lists of microschemas (SUP-4712)
