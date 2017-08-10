@@ -79,14 +79,12 @@ describe('meshUtils', function() {
                 fields: {
                     name: 'foo',
                     image: {
-                        type: 'binary',
                         fileName: 'image.jpg',
                         fileSize: 4200,
                         mimeType: 'image/jpeg',
                         sha512sum: '1243123123123'
                     },
                     document: {
-                        type: 'binary',
                         fileName: 'doc.pdf',
                         fileSize: 333,
                         mimeType: 'application/pdf',
@@ -411,7 +409,7 @@ describe('meshUtils', function() {
                     other: 'bar',
                     image: {
                         fileName: 'image.jpg',
-                        type: 'binary'
+                        sha512sum: '124124124'
                     }
                 }
             };
