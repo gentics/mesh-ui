@@ -72,7 +72,7 @@ module meshAdminUi {
                     return queryString + `&${key}=${imageOptions[key]}`;
                 }, queryParams);
             }
-            queryParams += `&lang=${languageCode}`
+            queryParams += `&lang=${languageCode}`;
             return meshUiConfig.apiUrl + projectName + `/nodes/${nodeUuid}/binary/${fieldName + queryParams}`;
         }
 
