@@ -7,6 +7,7 @@
             </div>
         </div>
         <div class="primary-buttons">
+            <version-label [version]="node?.version"></version-label>
             <gtx-button size="small" type="primary"
                         (click)="saveNode()"
                         [disabled]="!formGenerator?.isDirty || !formGenerator?.isValid">
@@ -24,7 +25,7 @@
     </div>
     <div class="info-row">
         <div class="path">
-            <a [routerLink]="getNodePathRouterLink()">
+            <a [routerLink]="getNodePathRouterLink()" (click)="focusList()">
                 {{ getNodePath() }}
             </a>
         </div>
@@ -35,9 +36,6 @@
     <div class="tags-row">
         <div class="tags">
             TAGS STUFF
-        </div>
-        <div class="versions">
-            v{{ node?.version }} VERSIONS STUFF
         </div>
     </div>
 </div>

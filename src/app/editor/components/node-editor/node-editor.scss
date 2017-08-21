@@ -49,7 +49,10 @@
     background-color: lighten(desaturate($gtx-color-primary, 80%), 50%);
     display: flex;
     justify-content: space-between;
-    .language {
+    .path {
+        a:hover {
+            text-decoration: underline;
+        }
     }
 }
 .tags-row {

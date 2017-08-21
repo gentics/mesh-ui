@@ -1,0 +1,9 @@
+@import "variables";
+
+:host {
+    color: darken($gtx-color-warning, 10%);
+
+    .published {
+        color: $gtx-color-success;
+    }
+}

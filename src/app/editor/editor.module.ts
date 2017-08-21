@@ -16,6 +16,7 @@ import { ProjectSwitcherComponent } from './components/project-switcher/project-
 import { routes } from './editor.routes';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { SharedModule } from '../shared/shared.module';
+import { VersionLabelComponent } from './components/version-label/version-label.component';
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import { SharedModule } from '../shared/shared.module';
         NodeLanguageLabelComponent,
         NodeLanguageSwitcherComponent,
         ProjectSwitcherComponent,
-        SearchBarComponent
+        SearchBarComponent,
+        VersionLabelComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent

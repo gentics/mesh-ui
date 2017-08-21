@@ -122,6 +122,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.navigationService.clearDetail().navigate();
     }
 
+    focusList(): void {
+        this.state.actions.editor.focusList();
+    }
+
     private getNodeTitle(): string {
         if (!this.node) {
             return '';
