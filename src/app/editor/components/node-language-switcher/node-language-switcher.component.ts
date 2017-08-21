@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MeshNode } from '../../../common/models/node.model';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { EditorEffectsService } from '../../providers/editor-effects.service';
 
 @Component({
     selector: 'node-language-switcher',
@@ -30,15 +31,25 @@ export class NodeLanguageSwitcherComponent {
     }
 
     constructor(private config: ConfigService,
+                private editorEffects: EditorEffectsService,
                 private navigationService: NavigationService) {}
 
     itemClick(language: { code: string; translationExists: boolean; }): void {
         if (this.node) {
             if (language.translationExists) {
-                this.navigationService.detail(this.node.project.name!, this.node.uuid, language.code).navigate();
+                this.navigateToLanguage(language.code);
             } else {
-                // create translation
+                this.editorEffects.createTranslation(this.node, language.code)
+                    .then(() => {
+                        this.navigateToLanguage(language.code);
+                    });
             }
+        }
+    }
+
+    private navigateToLanguage(languageCode: string): void {
+        if (this.node) {
+            this.navigationService.detail(this.node.project.name!, this.node.uuid, languageCode).navigate();
         }
     }
 }
