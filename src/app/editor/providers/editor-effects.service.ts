@@ -94,7 +94,8 @@ export class EditorEffectsService {
                         message: 'editor.node_published',
                         translationParams: { version }
                     });
-                    this.state.actions.editor.publishNodeSuccess(node.uuid, node.language!, version);
+                    const newNode = Object.assign({}, node, { version });
+                    this.state.actions.editor.publishNodeSuccess(newNode);
                 },
                 error => {
                     this.state.actions.editor.publishNodeError();

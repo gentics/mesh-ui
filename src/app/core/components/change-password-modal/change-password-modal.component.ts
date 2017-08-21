@@ -69,14 +69,14 @@ export class ChangePasswordModalComponent implements IModalDialog {
         }
     }
 
-    closeFn = () => {};
-    cancelFn = () => {};
+    closeFn = (val?: any) => {};
+    cancelFn = (val?: any) => {};
 
-    registerCloseFn(close: () => void): void {
+    registerCloseFn(close: (val: any) => void): void {
         this.closeFn = close;
     }
 
-    registerCancelFn(cancel: () => void): void {
+    registerCancelFn(cancel: (val: any) => void): void {
         this.cancelFn = cancel;
     }
 }

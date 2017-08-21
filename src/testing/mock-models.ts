@@ -3,6 +3,8 @@ import { Project } from '../app/common/models/project.model';
 import { BaseProperties } from '../app/common/models/common.model';
 import { User } from '../app/common/models/user.model';
 import { Schema } from '../app/common/models/schema.model';
+import { Microschema } from '../app/common/models/microschema.model';
+import { simpleMergeDeep } from '../app/common/util/util';
 
 /**
  * Returns a mock MeshNode for use in testing. Any properties may be overridden by passing the
@@ -92,6 +94,26 @@ export function mockSchema(properties?: Partial<Schema>): { [version: string]: S
     return { [mockSchema.version]: mockSchema };
 }
 
+/**
+ * Returns a mock Microschema for use in testing. Any properties may be overridden by passing the
+ * properties argument.
+ */
+export function mockMicroschema(properties?: Partial<Microschema>): { [version: string]: Microschema; } {
+    const defaultMockMicroschema: Microschema = {
+        ...mockBaseProperties(),
+        ...{
+            uuid: 'default000mock000microschema000',
+            name: 'mockMicroschema',
+            version: 1,
+            fields: [],
+            container: false,
+        }
+    };
+
+    const mockMicroschema = { ...defaultMockMicroschema, ...properties };
+    return { [mockMicroschema.version!]: mockMicroschema };
+}
+
 
 /**
  * Returns a mock User for use in testing. Any properties may be overridden by passing the
@@ -142,4 +164,11 @@ function mockBaseProperties(properties?: Partial<BaseProperties>): any {
         rolePerms: {} as any
     };
     return { ...defaultBaseProperties, ...properties };
+}
+
+/**
+ * Performs a deep merge on the supplied mock entities.
+ */
+export function mergeMocks<T>(mock: T, ...mocks: T[]): T {
+    return simpleMergeDeep(mock, ...mocks);
 }

@@ -1,13 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-
-import { Microschema } from '../../../common/models/microschema.model';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ModalService } from 'gentics-ui-core';
-import { hashValues } from '../../../common/util/util';
 import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
 import { MicroschemaResponse, MicroschemaUpdateRequest } from '../../../common/models/server-models';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
     templateUrl: './microschema.component.html',
@@ -20,7 +17,7 @@ export class MicroschemaComponent implements OnInit {
     // TODO load json schema from mesh instead of static file
     schema = require('./microschema.schema.json');
 
-    constructor(private state: ApplicationStateService,
+    constructor(private entities: EntitiesService,
                 private modal: ModalService,
                 private microschemaEffects: MicroschemaEffectsService,
                 private route: ActivatedRoute,
@@ -35,7 +32,7 @@ export class MicroschemaComponent implements OnInit {
         this.microschema$ = uuid$
             .switchMap(uuid => {
                 if (uuid) {
-                    return this.state.select(state => state.entities.microschema[uuid]);
+                    return this.entities.selectSchema(uuid);
                 } else {
                     // TODO handle this?
                     throw Error('uuid not set');

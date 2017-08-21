@@ -2,7 +2,6 @@ import { Component, Injectable } from '@angular/core';
 import { TestBed, tick } from '@angular/core/testing';
 import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
 
-import { StateModule } from '../../../state/state.module';
 import { componentTest } from '../../../../testing/component-test';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -12,6 +11,7 @@ import { NavigationService } from '../../../core/providers/navigation/navigation
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { mockProject } from '../../../../testing/mock-models';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 
 describe('ProjectSwitcherComponent:', () => {
@@ -22,9 +22,8 @@ describe('ProjectSwitcherComponent:', () => {
     beforeEach(() => {
         configureComponentTest({
             declarations: [TestComponent, ProjectSwitcherComponent],
-            imports: [SharedModule, StateModule, GenticsUICoreModule],
+            imports: [SharedModule, TestStateModule, GenticsUICoreModule],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: NavigationService, useClass: MockNavigationService },
                 { provide: ListEffectsService, useValue: jasmine.createSpyObj('ListEffectsService', ['loadProjects']) },
                 OverlayHostService

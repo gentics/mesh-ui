@@ -132,3 +132,46 @@ function isPrimitiveValue(arg: any): boolean {
         typeof arg === 'boolean' ||
         arg === null;
 }
+
+
+function isObject(item: any): item is object {
+  return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+/**
+ * Deep merge two objects. Objects should be simple (bags key-values or arrays) - no circular references or functions, class instances etc.
+ * Array values are overwritten rather than merged.
+ * Based on: https://stackoverflow.com/a/34749873/772859
+ */
+export function simpleMergeDeep(target: any, ...sources: any[]): any {
+    if (!sources.length) {
+        return target;
+    }
+    const source = sources.shift();
+
+    if (isObject(target) && isObject(source)) {
+        for (const key in source) {
+            if (isObject(source[key])) {
+                if (!target[key]) {
+                    Object.assign(target, { [key]: {} });
+                }
+                simpleMergeDeep(target[key], source[key]);
+            } else {
+                const value = Array.isArray(source[key]) ? source[key].slice(0) : source[key];
+                Object.assign(target, { [key]: value });
+            }
+        }
+    }
+
+    return simpleMergeDeep(target, ...sources);
+}
+
+/**
+ * Clone a simple object (no functions, no circular references, no class instances)
+ *
+ * Apparently the fastest way to do this in JS, since the JSON methods are implemented in
+ * native code and will be faster than any recursive JS-based approach. See https://stackoverflow.com/a/5344074/772859
+ */
+export function simpleCloneDeep<T>(target: T): T {
+    return JSON.parse(JSON.stringify(target));
+}

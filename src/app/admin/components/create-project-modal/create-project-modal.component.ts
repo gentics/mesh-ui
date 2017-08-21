@@ -1,14 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
-import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { hashValues } from '../../../common/util/util';
-import { SchemaResponse, ProjectCreateRequest, ProjectResponse } from '../../../common/models/server-models';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { ProjectCreateRequest, ProjectResponse, SchemaResponse } from '../../../common/models/server-models';
 import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 import { ApiError } from '../../../core/providers/api/api-error';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
     selector: 'create-project-modal',
@@ -26,14 +24,12 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     creating: boolean = false;
     conflict: boolean = false;
 
-    constructor(state: ApplicationStateService,
+    constructor(entities: EntitiesService,
                 private notification: Notification,
                 private schemaEffects: SchemaEffectsService,
                 private projectEffects: ProjectEffectsService) {
 
-        this.schemas$ = state.select(state => state.entities.schema)
-            .map(hashValues);
-
+        this.schemas$ = entities.selectAllSchemas();
         this.name = new FormControl('', Validators.compose([Validators.required, this.conflictValidator]));
         this.schema = new FormControl('', Validators.required);
 

@@ -4,12 +4,12 @@ import { By } from '@angular/platform-browser';
 
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { BreadcrumbsComponent } from './breadcrumbs.component';
-import { StateModule } from '../../../state/state.module';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { mockMeshNode, mockProject } from '../../../../testing/mock-models';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('BreadcrumbsComponent:', () => {
 
@@ -19,9 +19,8 @@ describe('BreadcrumbsComponent:', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [TestComponent, BreadcrumbsComponent, MockProjectSwitcherComponent, MockGtxBreadcrumbsComponent],
-            imports: [StateModule],
+            imports: [TestStateModule],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: NavigationService, useClass: MockNavigationService }
             ]
         });

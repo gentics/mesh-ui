@@ -3,13 +3,13 @@ import { Component } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { StateModule } from '../../../state/state.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { SharedModule } from '../../shared.module';
 import { By } from '@angular/platform-browser';
 import { ThumbnailComponent } from './thumbnail.component';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('Thumbnail', () => {
 
@@ -18,10 +18,7 @@ describe('Thumbnail', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [TestComponent],
-            imports: [StateModule, SharedModule],
-            providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
-            ]
+            imports: [TestStateModule, SharedModule]
         });
     }));
 
@@ -283,7 +280,6 @@ describe('Thumbnail', () => {
     it(`displays nothing if uuid is not set`,
         componentTest(() => TestComponent, fixture => {
             fixture.detectChanges();
-
             expect(getThumbnail(fixture).children.length).toBe(0);
         })
     );

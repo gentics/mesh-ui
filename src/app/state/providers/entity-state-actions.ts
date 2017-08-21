@@ -92,7 +92,7 @@ function mergeBranch<B extends keyof EntityState>(oldBranch: EntityState[B],
                                                   changes: Array<EntityStateType[B]>,
                                                   discriminator: EntityDiscriminators[B],
                                                   strict: boolean = true): EntityState[B] {
-    const newBranch: EntityState[B] = Object.assign({}, oldBranch);
+    let newBranch: EntityState[B] = Object.assign({}, oldBranch);
     let anyEntityChanged = false;
 
     for (const change of changes) {
@@ -107,11 +107,12 @@ function mergeBranch<B extends keyof EntityState>(oldBranch: EntityState[B],
         }
 
         const oldEntity = getNestedEntity(oldBranch, discriminator, change, FALLBACK_LANGUAGE);
-        const newEntity = deepApplyWithReuse(oldEntity, change);
+        const newEntity = oldEntity ? deepApplyWithReuse(oldEntity, change) : change;
         if (newEntity !== oldEntity) {
-            assignNestedEntity(newBranch, discriminator, newEntity);
+            newBranch = assignNestedEntity(newBranch, discriminator, newEntity);
             anyEntityChanged = true;
         }
+
     }
 
     return anyEntityChanged ? newBranch : oldBranch;
@@ -139,8 +140,13 @@ export function getDiscriminator<K extends keyof EntityDiscriminators>(type: K):
  */
 export function getNestedEntity<B extends keyof EntityState>(branch: EntityState[B],
                                                              discriminator: EntityDiscriminators[B],
-                                                             source: Partial<EntityStateType[B]>,
-                                                             fallbacklanguage: string): EntityStateType[B] {
+                                                             source: Partial<EntityStateType[B]> & { uuid: string },
+                                                             fallbackLanguage: string): EntityStateType[B] | undefined {
+    // for all entities, the uuid is required
+    if (!source || !source.uuid) {
+        return undefined;
+    }
+
     let o: any = branch;
     for (const k of discriminator) {
         let key = source[k];
@@ -150,10 +156,10 @@ export function getNestedEntity<B extends keyof EntityState>(branch: EntityState
             const alternativeKeys = Object.keys(o);
             if (k === 'version') {
                 // return the most recent version
-                key = Math.max(...alternativeKeys.map(parseFloat));
+                key = alternativeKeys.sort((a, b) => parseFloat(b) - parseFloat(a))[0];
             } else if (k === 'language') {
                 // return the fallback language if it exists, else the first available language
-                key = -1 < alternativeKeys.indexOf(fallbacklanguage) ? fallbacklanguage : alternativeKeys[0];
+                key = -1 < alternativeKeys.indexOf(fallbackLanguage) ? fallbackLanguage : alternativeKeys[0];
             } else {
                 key = alternativeKeys[0];
             }
@@ -186,13 +192,16 @@ export function getNestedEntity<B extends keyof EntityState>(branch: EntityState
  */
 function assignNestedEntity<B extends keyof EntityState>(branch: EntityState[B],
                                                          discriminator: EntityDiscriminators[B],
-                                                         newValue: EntityStateType[B]): void {
-    let o: any = branch;
+                                                         newValue: EntityStateType[B]): EntityState[B] {
+    const mutateBranch: any = Object.assign({}, branch);
+    let o: any = mutateBranch;
     for (const k of discriminator) {
         const key = newValue[k];
         o[key] = k === discriminator[discriminator.length - 1] ? newValue : {};
         o = o[key];
     }
+
+    return deepApplyWithReuse(branch, mutateBranch);
 }
 
 /**

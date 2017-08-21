@@ -6,7 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 import { ApiBase, ResponseObservable } from './api-base.service';
 import { ApiError } from './api-error';
 import { Subject } from 'rxjs/Subject';
-import { API_BASE_URL } from './api-di-tokens';
 
 
 describe('ApiBase', () => {
@@ -372,7 +371,7 @@ describe('ApiBase', () => {
 
             it('does not subscribe automatically', () => {
                 let subscribed = false;
-                const inputObservable = new Observable(() => { subscribed = true; });
+                const inputObservable = new Observable<any>(() => { subscribed = true; });
                 observable = apiBase['toResponseObservable'](inputObservable, '/some/url', {} as any as Request);
 
                 expect(subscribed).toBe(false);

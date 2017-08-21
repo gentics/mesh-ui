@@ -20,7 +20,7 @@ export class LanguageSwitcherComponent {
                 private i18n: I18nService) {
         this.availableLanguages = config.UI_LANGUAGES;
         this.currentLanguage$ = appState.select(state => state.ui.currentLanguage)
-            .map(languageCode => `lang.${languageCode}`);
+            .map(languageCode => `lang.${languageCode}` as UILanguage);
     }
 
     changeLanguage(language: UILanguage): void {

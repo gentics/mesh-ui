@@ -3,7 +3,7 @@ import { EntityState } from '../models/entity-state.model';
 import { User } from '../../common/models/user.model';
 import { MeshNode } from '../../common/models/node.model';
 
-fdescribe('EntityStateActions', () => {
+describe('EntityStateActions', () => {
 
     describe('mergeEntityState()', () => {
 
@@ -249,6 +249,51 @@ fdescribe('EntityStateActions', () => {
                                 uuid: 'node-uuid',
                                 language: 'en',
                                 version: '0.1',
+                                edited: 'today'
+                            } as MeshNode
+                        }
+                    }
+                });
+            });
+
+            it('adds a new version of a node', () => {
+                const before = {
+                    ...empty,
+                    node: {
+                        'node-uuid': {
+                            en: {
+                                0.1: {
+                                    uuid: 'node-uuid',
+                                    language: 'en',
+                                    version: '0.1',
+                                    edited: 'yesterday'
+                                } as MeshNode
+                            }
+                        }}
+                };
+                const after = mergeEntityState(before, {
+                    node: [
+                        {
+                            uuid: 'node-uuid',
+                            language: 'en',
+                            version: '0.2',
+                            edited: 'today'
+                        }
+                    ]
+                });
+                expect(after.node).toEqual({
+                    'node-uuid': {
+                        en: {
+                            0.1: {
+                                uuid: 'node-uuid',
+                                language: 'en',
+                                version: '0.1',
+                                edited: 'yesterday'
+                            } as MeshNode,
+                            0.2: {
+                                uuid: 'node-uuid',
+                                language: 'en',
+                                version: '0.2',
                                 edited: 'today'
                             } as MeshNode
                         }

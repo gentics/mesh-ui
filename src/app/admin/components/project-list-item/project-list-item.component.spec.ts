@@ -13,6 +13,7 @@ import { configureComponentTest } from '../../../../testing/configure-component-
 import { ProjectResponse } from '../../../common/models/server-models';
 import { mockProject } from '../../../../testing/mock-models';
 import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('ProjectListItemComponent', () => {
 
@@ -29,9 +30,8 @@ describe('ProjectListItemComponent', () => {
         spyOn(mockNotification, 'show');
 
         configureComponentTest({
-            imports: [GenticsUICoreModule, FormsModule, SharedModule],
+            imports: [GenticsUICoreModule, FormsModule, SharedModule, TestStateModule],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ModalService, useValue: mockModal },
                 { provide: Notification, useValue: mockNotification },
                 { provide: I18nService, useValue: { translate() { } } },

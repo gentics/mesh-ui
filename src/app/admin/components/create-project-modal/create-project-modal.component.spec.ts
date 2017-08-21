@@ -14,6 +14,7 @@ import { SchemaEffectsService } from '../../../core/providers/effects/schema-eff
 import { mockMeshNode, mockProject, mockSchema, mockUser } from '../../../../testing/mock-models';
 import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 import { ApiError } from '../../../core/providers/api/api-error';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('CreateProjectModal', () => {
 
@@ -22,9 +23,8 @@ describe('CreateProjectModal', () => {
     const mockNotification = jasmine.createSpyObj('Notification', ['show']);
 
     @NgModule(provideMockI18n({
-        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule],
+        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule, TestStateModule],
         providers: [
-            { provide: ApplicationStateService, useClass: TestApplicationState },
             { provide: SchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
             { provide: ProjectEffectsService, useValue: mockProjectEffectsService},
             { provide: Notification, useValue: mockNotification},

@@ -79,14 +79,10 @@ export class EditorStateActions extends StateActionBranch<AppState> {
         this.editor.loadCount --;
     }
 
-    publishNodeSuccess(nodeUuid: string, language: string, version: string): void {
+    publishNodeSuccess(node: MeshNode): void {
         this.editor.loadCount --;
         this.entities = mergeEntityState(this.entities, {
-            node: [{
-                uuid: nodeUuid,
-                language,
-                version
-            }]
+            node: [node]
         });
     }
 }

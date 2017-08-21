@@ -54,16 +54,17 @@ describe('NavigationService', () => {
         let result: InstructionActions;
         const projectName = 'foo';
         const nodeUuid = 'test_uuid';
+        const lang = 'en';
         const expectedCommands = [
             '/editor', 'project', {
                 outlets: {
-                    detail: [projectName, nodeUuid]
+                    detail: [projectName, nodeUuid, lang]
                 }
             }
         ];
 
         beforeEach(() => {
-            result = navigationService.detail(projectName, nodeUuid);
+            result = navigationService.detail(projectName, nodeUuid, lang);
         });
 
         it('commands() should return the correct commands', () => {
