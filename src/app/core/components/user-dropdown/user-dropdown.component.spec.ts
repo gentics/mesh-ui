@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalService, OverlayHostService } from 'gentics-ui-core';
 
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { StateModule } from '../../../state/state.module';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
@@ -19,9 +19,8 @@ describe('UserDropdownComponent:', () => {
     beforeEach(async(() => {
         configureComponentTest({
             declarations: [TestComponent, UserDropdownComponent],
-            imports: [StateModule, SharedModule],
+            imports: [TestStateModule, SharedModule],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: AuthEffectsService, useValue: {} },
                 { provide: ModalService, useValue: {} },
                 OverlayHostService

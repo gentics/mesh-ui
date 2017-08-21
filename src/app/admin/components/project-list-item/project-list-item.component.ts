@@ -3,8 +3,9 @@ import { ModalService, Notification } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Subscription } from 'rxjs';
-import { ProjectResponse } from '../../../common/models/server-models';
 import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
+import { Project } from '../../../common/models/project.model';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
     @Input()
     projectUuid: string;
 
-    project: ProjectResponse;
+    project: Project;
 
     private subscription: Subscription;
 
@@ -25,11 +26,12 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
                 private modal: ModalService,
                 private i18n: I18nService,
                 private state: ApplicationStateService,
+                private entities: EntitiesService,
                 private ProjectEffectsService: ProjectEffectsService) {
     }
 
     ngOnInit(): void {
-        this.subscription = this.state.select(state => state.entities.project[this.projectUuid])
+        this.subscription = this.entities.selectProject(this.projectUuid)
             .subscribe(project => this.project = {...project});
     }
 

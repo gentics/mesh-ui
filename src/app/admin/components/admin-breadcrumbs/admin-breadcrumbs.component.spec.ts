@@ -10,6 +10,7 @@ import { By } from '@angular/platform-browser';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AppState } from '../../../state/models/app-state.model';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('AdminBreadcrumbsComponent', () => {
 
@@ -21,6 +22,7 @@ describe('AdminBreadcrumbsComponent', () => {
     beforeEach(() => {
         configureComponentTest({
             imports: [
+                TestStateModule,
                 RouterTestingModule.withRoutes([
                     { path: 'foo1',  component: MockRouteComponent },
                     { path: 'foo2',  component: MockRouteComponent, data: { breadcrumb: 'Foo2' }, children: [
@@ -72,9 +74,7 @@ describe('AdminBreadcrumbsComponent', () => {
                 MockRouteComponent,
                 TestComponent,
             ],
-            providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
-            ]
+            providers: []
         });
 
         appState = TestBed.get(ApplicationStateService);

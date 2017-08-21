@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 import { Microschema } from '../../../common/models/microschema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ModalService } from 'gentics-ui-core';
-import { hashValues } from '../../../common/util/util';
 import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
 import { Router } from '@angular/router';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
     templateUrl: './microschema-list.component.html',
@@ -17,12 +17,11 @@ export class MicroschemaListComponent {
     microschemas$: Observable<Microschema[]>;
     loading$: Observable<boolean>;
 
-    constructor(private state: ApplicationStateService,
+    constructor(entities: EntitiesService,
                 private microschemaEffects: MicroschemaEffectsService,
+                private state: ApplicationStateService,
                 private router: Router) {
-        this.microschemas$ = state.select(state => state.admin.displayedMicroschemas)
-            .map(uuids => uuids.map(uuid => state.now.entities.microschema[uuid]));
-
+        this.microschemas$ = entities.selectAllMicroschemas();
         this.loading$ = state.select(state => state.list.loadCount > 0);
         this.microschemaEffects.loadMicroschemas();
     }

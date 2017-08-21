@@ -1,11 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { LoginComponent } from './login.component';
 import { SharedModule } from '../../../shared/shared.module';
-import { StateModule } from '../../../state/state.module';
 import { Router } from '@angular/router';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { AuthEffectsService } from '../../providers/auth-effects.service';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('LoginComponent:', () => {
 
@@ -15,10 +16,9 @@ describe('LoginComponent:', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [SharedModule, StateModule],
+            imports: [SharedModule, TestStateModule],
             providers: [
                 { provide: Router, useClass: MockRouter },
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: AuthEffectsService, useClass: MockAuthEffects }
             ],
             declarations: [LoginComponent]

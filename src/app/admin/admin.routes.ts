@@ -1,4 +1,4 @@
-import { Route } from '@angular/router';
+import { ActivatedRouteSnapshot, Route } from '@angular/router';
 
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
@@ -7,6 +7,10 @@ import { MicroschemaComponent } from './components/microschema/mircoschema.compo
 import { AppState } from '../state/models/app-state.model';
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { SchemaComponent } from './components/schema/schema.component';
+import { EntitiesService } from '../state/providers/entities.service';
+import { Microschema } from '../common/models/microschema.model';
+import { Schema } from '../common/models/schema.model';
+import { BreadcrumbTextFunction } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
 
 export const routes: Route[] = [
     { path: '', component: AdminShellComponent, children: [
@@ -24,12 +28,18 @@ export const routes: Route[] = [
 ];
 
 
-function entityName(newName: string) {
-    return (route: any, state: AppState): string => {
+function entityName(newName: string): BreadcrumbTextFunction {
+    return (route: ActivatedRouteSnapshot, state: AppState, entities: EntitiesService): string => {
         const entity = state.admin.openEntity;
         let result;
         if (entity && !entity.isNew && entity.uuid) {
-            result =  state.entities[entity.type][entity.uuid].name;
+            let schemaOrMicroschema: Schema | Microschema | undefined;
+            if (entity.type === 'schema') {
+                schemaOrMicroschema = entities.getSchema(entity.uuid);
+            } else if (entity.type === 'microschema') {
+                schemaOrMicroschema = entities.getMicroschema(entity.uuid);
+            }
+            result =  schemaOrMicroschema && schemaOrMicroschema.name;
         } else if (entity && entity.isNew) {
             // TODO i18n or rework this
             result = newName;

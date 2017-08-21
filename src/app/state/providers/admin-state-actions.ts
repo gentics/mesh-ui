@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
 import { AppState } from '../models/app-state.model';
-import { AuthState } from '../models/auth-state.model';
-import { AdminState, AdminStateEntity, ProjectAssignments } from '../models/admin-state.model';
-import { ChangePasswordModalComponent } from '../../core/components/change-password-modal/change-password-modal.component';
+import { AdminState, ProjectAssignments } from '../models/admin-state.model';
 import { EntityState } from '../models/entity-state.model';
-import { ProjectResponse, SchemaResponse, MicroschemaResponse } from '../../common/models/server-models';
-import { uuidHash } from '../../common/util/util';
+import { MicroschemaResponse, ProjectResponse, SchemaResponse } from '../../common/models/server-models';
 import { mergeEntityState } from './entity-state-actions';
-import { MicroschemaReference } from '../../common/models/common.model';
+import { Schema } from '../../common/models/schema.model';
+import { Microschema } from '../../common/models/microschema.model';
 
 @Injectable()
 @Immutable()
@@ -44,7 +42,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         this.admin.loadCount--;
     }
 
-    loadSchemasSuccess(schemas: SchemaResponse[]) {
+    loadSchemasSuccess(schemas: Schema[]) {
         this.admin.loadCount--;
         this.admin.displayedSchemas = schemas.map(schema => schema.uuid);
         this.entities = mergeEntityState(this.entities, {
@@ -55,9 +53,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     createProjectSuccess(project: ProjectResponse) {
         this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            project: {
-                [project.uuid]: project
-            }
+            project: [project]
         });
         this.admin.displayedProjects = [...this.admin.displayedProjects, project.uuid];
     }
@@ -79,18 +75,14 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     updateMicroschemaSuccess(response: MicroschemaResponse) {
         this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            microschema: {
-                [response.uuid]: response
-            }
+            microschema: [response as Microschema]
         });
     }
 
     createMicroschemaSuccess(response: MicroschemaResponse) {
         this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            microschema: {
-                [response.uuid]: response
-            }
+            microschema: [response as Microschema]
         });
         this.admin.displayedMicroschemas = [...this.admin.displayedMicroschemas, response.uuid];
     }
@@ -108,9 +100,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
             isNew: false
         };
         this.entities = mergeEntityState(this.entities, {
-            microschema: {
-                [microschema.uuid]: microschema
-            }
+            microschema: [microschema as Microschema]
         });
     }
 
@@ -128,18 +118,14 @@ export class AdminStateActions extends StateActionBranch<AppState> {
     updateSchemaSuccess(response: SchemaResponse) {
         this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            schema: {
-                [response.uuid]: response
-            }
+            schema: [response as Schema]
         });
     }
 
     createSchemaSuccess(response: SchemaResponse) {
         this.admin.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            schema: {
-                [response.uuid]: response
-            }
+            schema: [response as Schema]
         });
         this.admin.displayedSchemas = [...this.admin.displayedSchemas, response.uuid];
     }
@@ -157,9 +143,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
             isNew: false
         };
         this.entities = mergeEntityState(this.entities, {
-            schema: {
-                [schema.uuid]: schema
-            }
+            schema: [schema as Schema]
         });
     }
 

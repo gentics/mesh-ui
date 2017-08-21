@@ -1,4 +1,4 @@
-import { filenameExtension, queryString, simpleDeepEquals } from './util';
+import { filenameExtension, queryString, simpleDeepEquals, simpleMergeDeep } from './util';
 
 describe('Utility', () => {
     describe('Filename extension', () => {
@@ -77,6 +77,69 @@ describe('Utility', () => {
             expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 5] } }, true])).toBe(false);
             expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2, 3] } }, true])).toBe(false);
         });
+
+    });
+
+    describe('simpleMergeDeep()', () => {
+
+        it('merges two simple objects', () => {
+            const o1 = { foo: 1 };
+            const o2 = { bar: 2 };
+            expect(simpleMergeDeep(o1, o2)).toEqual({
+                foo: 1,
+                bar: 2
+            });
+        });
+
+        it('merges three simple objects', () => {
+            const o1 = { foo: 1 };
+            const o2 = { bar: 2 };
+            const o3 = { baz: 3 };
+            expect(simpleMergeDeep(o1, o2, o3)).toEqual({
+                foo: 1,
+                bar: 2,
+                baz: 3
+            });
+        });
+
+        describe('deep objects', () => {
+            const o1 = {
+                user: {
+                    name: 'Joe',
+                    friends: [1, 2, 3]
+                }
+            };
+            const o2 = {
+                user: {
+                    age: 18,
+                    friends: [1, 2, 3, 4]
+                },
+                parent: {
+                    name: 'june'
+                }
+            };
+
+            it('merges deep objects', () => {
+                expect(simpleMergeDeep(o1, o2)).toEqual({
+                    user: {
+                        name: 'Joe',
+                        age: 18,
+                        friends: [1, 2, 3, 4]
+                    },
+                    parent: {
+                        name: 'june'
+                    }
+                });
+            });
+
+            it('does not re-use object or array references', () => {
+                const result = simpleMergeDeep(o1, o2);
+
+                expect(result.parent).not.toBe(o2.parent);
+                expect(result.user.friends).not.toBe(o2.user.friends);
+            });
+        });
+
 
     });
 });

@@ -6,6 +6,7 @@ import { getControlType } from '../../common/get-control-type';
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { ApplicationStateService } from '../../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../../state/providers/entities.service';
 
 @Component({
     selector: 'micronode-field',
@@ -25,6 +26,7 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     constructor(changeDetector: ChangeDetectorRef,
                 private fieldGeneratorService: FieldGeneratorService,
                 private state: ApplicationStateService,
+                private entities: EntitiesService,
                 private meshControlGroup: MeshControlGroupService) {
         super(changeDetector);
     }
@@ -55,22 +57,24 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
         const meshControl = this.meshControlGroup.getMeshControlAtPath(this.api.path);
 
         if (meshControl && this.value && this.value.microschema) {
-            const microschema = this.state.now.entities.microschema[this.value.microschema.uuid];
-            microschema.fields.forEach(field => {
-                const value = this.value.fields[field.name];
-                const controlType = getControlType(field);
-                if (controlType) {
-                    const newContainer = meshControl.addChild(field, value);
-                    const componentRef = this.fieldGenerator.attachField({
-                        path: this.api.path.concat(['fields', field.name]),
-                        field,
-                        value,
-                        fieldComponent: controlType
-                    }).field;
-                    newContainer.registerMeshFieldInstance(componentRef.instance);
-                }
-            });
-            this.changeDetector.markForCheck();
+            const microschema = this.entities.getMicroschema(this.value.microschema.uuid);
+            if (microschema) {
+                microschema.fields.forEach(field => {
+                    const value = this.value.fields[field.name];
+                    const controlType = getControlType(field);
+                    if (controlType) {
+                        const newContainer = meshControl.addChild(field, value);
+                        const componentRef = this.fieldGenerator.attachField({
+                            path: this.api.path.concat(['fields', field.name]),
+                            field,
+                            value,
+                            fieldComponent: controlType
+                        }).field;
+                        newContainer.registerMeshFieldInstance(componentRef.instance);
+                    }
+                });
+                this.changeDetector.markForCheck();
+            }
         }
     }
 }

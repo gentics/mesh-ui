@@ -26,7 +26,7 @@ import { MeshControlGroupService } from '../../providers/field-control-group/mes
 import { BaseFieldComponent, FIELD_FULL_WIDTH, FIELD_HALF_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { MicronodeFieldComponent } from '../micronode-field/micronode-field.component';
 import { ApplicationStateService } from '../../../../state/providers/application-state.service';
-import { hashValues } from '../../../../common/util/util';
+import { EntitiesService } from '../../../../state/providers/entities.service';
 
 function randomId(): string {
     return Math.random().toString(36).substring(5);
@@ -73,6 +73,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                 private meshControlGroup: MeshControlGroupService,
                 private viewContainerRef: ViewContainerRef,
                 private state: ApplicationStateService,
+                private entities: EntitiesService,
                 changeDetector: ChangeDetectorRef,
                 public elementRef: ElementRef,
                 @Optional() private micronodeField?: MicronodeFieldComponent
@@ -175,9 +176,8 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         let lookup: Observable<Microschema | undefined>;
         const insertIndex = typeof index === 'number' ? index : this.value.length;
         if (typeof microschemaName === 'string') {
-            lookup = this.state.select(state => hashValues(state.entities.microschema)
-                .find(microschema => microschema.name === microschemaName)
-            );
+            lookup = this.entities.selectAllMicroschemas()
+                .map(microschemas => microschemas.find(microschema => microschema.name === microschemaName));
         } else {
             lookup = Observable.of(undefined);
         }

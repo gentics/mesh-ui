@@ -3,12 +3,14 @@ import { Project } from '../app/common/models/project.model';
 import { BaseProperties } from '../app/common/models/common.model';
 import { User } from '../app/common/models/user.model';
 import { Schema } from '../app/common/models/schema.model';
+import { Microschema } from '../app/common/models/microschema.model';
+import { simpleMergeDeep } from '../app/common/util/util';
 
 /**
  * Returns a mock MeshNode for use in testing. Any properties may be overridden by passing the
  * properties argument.
  */
-export function mockMeshNode(properties?: Partial<MeshNode>): MeshNode {
+export function mockMeshNode(properties?: Partial<MeshNode>): { [language: string]: { [version: string]: MeshNode; }; } {
     const defaultMockNode: MeshNode = {
         ...mockBaseProperties(),
         ...{
@@ -44,8 +46,8 @@ export function mockMeshNode(properties?: Partial<MeshNode>): MeshNode {
             rolePerms: {} as any
         }
     };
-
-    return { ...defaultMockNode, ...properties };
+    const mockNode = { ...defaultMockNode, ...properties };
+    return { [mockNode.language!]: { [mockNode.version]: mockNode } };
 }
 
 /**
@@ -77,13 +79,13 @@ export function mockProject(properties?: Partial<Project>): Project {
  * Returns a mock Schema for use in testing. Any properties may be overridden by passing the
  * properties argument.
  */
-export function mockSchema(properties?: Partial<Schema>): Schema {
+export function mockSchema(properties?: Partial<Schema>): { [version: string]: Schema; } {
     const defaultMockSchema: Schema = {
         ...mockBaseProperties(),
         ...{
             uuid: 'default000mock000schema00000000',
             name: 'mockSchema',
-            version: 1,
+            version: '1.0',
             fields: [],
             displayField: '',
             segmentField: '',
@@ -91,7 +93,28 @@ export function mockSchema(properties?: Partial<Schema>): Schema {
         }
     };
 
-    return { ...defaultMockSchema, ...properties };
+    const mockSchema = { ...defaultMockSchema, ...properties };
+    return { [mockSchema.version]: mockSchema };
+}
+
+/**
+ * Returns a mock Microschema for use in testing. Any properties may be overridden by passing the
+ * properties argument.
+ */
+export function mockMicroschema(properties?: Partial<Microschema>): { [version: string]: Microschema; } {
+    const defaultMockMicroschema: Microschema = {
+        ...mockBaseProperties(),
+        ...{
+            uuid: 'default000mock000microschema000',
+            name: 'mockMicroschema',
+            version: 1,
+            fields: [],
+            container: false,
+        }
+    };
+
+    const mockMicroschema = { ...defaultMockMicroschema, ...properties };
+    return { [mockMicroschema.version!]: mockMicroschema };
 }
 
 
@@ -115,8 +138,14 @@ export function mockUser(properties?: Partial<User>): User {
 
 /**
  * Returns a mock BaseProperties for use in testing. To be used when composing the concrete mocks such as in mockMeshNode().
+ *
+ * TODO: this should return BaseProperties, but there are inconsistencies certain generated models where
+ * properties are optional but should not be or vice versa.
+ * See
+ * - https://jira.gentics.com/browse/CL-605
+ * - https://github.com/gentics/mesh-model-generator/issues/13
  */
-function mockBaseProperties(properties?: Partial<BaseProperties>): BaseProperties {
+function mockBaseProperties(properties?: Partial<BaseProperties>): any {
     const defaultBaseProperties: BaseProperties = {
         uuid: 'default000mock000baseproperties0',
         creator: {
@@ -138,4 +167,11 @@ function mockBaseProperties(properties?: Partial<BaseProperties>): BasePropertie
         rolePerms: {} as any
     };
     return { ...defaultBaseProperties, ...properties };
+}
+
+/**
+ * Performs a deep merge on the supplied mock entities.
+ */
+export function mergeMocks<T>(mock: T, ...mocks: T[]): T {
+    return simpleMergeDeep(mock, ...mocks);
 }

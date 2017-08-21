@@ -11,11 +11,10 @@ import { MeshNode } from '../../../../common/models/node.model';
 import { Schema } from '../../../../common/models/schema.model';
 import { StringFieldComponent } from '../string-field/string-field.component';
 import { NumberFieldComponent } from '../number-field/number-field.component';
-import { ApplicationStateService } from '../../../../state/providers/application-state.service';
-import { TestApplicationState } from '../../../../state/testing/test-application-state.mock';
 import { FieldErrorsComponent } from '../field-errors/field-errors.component';
 import { provideMockI18n } from '../../../../../testing/configure-component-test';
 import { CommonModule } from '@angular/common';
+import { TestStateModule } from '../../../../state/testing/test-state.module';
 
 describe('FormGeneratorComponent:', () => {
 
@@ -33,12 +32,11 @@ describe('FormGeneratorComponent:', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [TestModule],
+            imports: [TestModule, TestStateModule],
             declarations: [FormGeneratorComponent],
             providers: [
                 FieldGeneratorService,
-                MeshControlGroupService,
-                { provide: ApplicationStateService, useClass: TestApplicationState }
+                MeshControlGroupService
             ]
         });
         fixture = TestBed.createComponent(FormGeneratorComponent);
@@ -269,7 +267,7 @@ const mockSchema: Schema = {
         publish: true,
         readPublished: true
     },
-    version: 1,
+    version: '1.0',
     name: 'vehicle',
     fields: [
         {
@@ -287,7 +285,8 @@ const mockSchema: Schema = {
     ],
     displayField: 'name',
     segmentField: 'name',
-    container: false
+    container: false,
+    rolePerms: {} as any
 };
 
 function populateMockData(fixture: ComponentFixture<FormGeneratorComponent>, node: MeshNode = mockNode): void {

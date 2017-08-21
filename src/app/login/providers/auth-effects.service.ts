@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../../core/providers/api/api.service';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { Router } from '@angular/router';
-import { ANONYMOUS_USER_NAME } from '../../common/config/config';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
+import { ConfigService } from '../../core/providers/config/config.service';
 
 @Injectable()
 export class AuthEffectsService {
 
     constructor(private api: ApiService,
                 private state: ApplicationStateService,
+                private config: ConfigService,
                 private notification: I18nNotification,
                 private router: Router) {}
 
@@ -42,7 +43,7 @@ export class AuthEffectsService {
             })
             .subscribe(
                 user => {
-                    if (!user || user.username === ANONYMOUS_USER_NAME) {
+                    if (!user || user.username === this.config.ANONYMOUS_USER_NAME) {
                         this.state.actions.auth.loginError();
                     } else {
                         this.state.actions.auth.loginSuccess(user);
@@ -81,7 +82,7 @@ export class AuthEffectsService {
 
         this.api.auth.getCurrentUser()
             .subscribe(user => {
-                if (user.username === ANONYMOUS_USER_NAME) {
+                if (user.username === this.config.ANONYMOUS_USER_NAME) {
                     this.state.actions.auth.loginError();
                 } else {
                     this.state.actions.auth.loginSuccess(user);

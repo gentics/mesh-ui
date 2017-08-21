@@ -10,6 +10,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { I18nService } from '../../providers/i18n/i18n.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('ChangePasswordModal', () => {
 
@@ -24,9 +25,8 @@ describe('ChangePasswordModal', () => {
         authEffectSpy.changePassword.and.returnValue(Promise.resolve());
 
         configureComponentTest({
-            imports: [ReactiveFormsModule, SharedModule],
+            imports: [ReactiveFormsModule, SharedModule, TestStateModule],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: AuthEffectsService, useValue: authEffectSpy },
                 { provide: Notification, useValue: notificationSpy },
                 { provide: I18nService, useValue: { translate(key) { return key; } } }

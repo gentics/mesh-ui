@@ -6,6 +6,7 @@ import { MeshNode } from '../../../common/models/node.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { Project } from '../../../common/models/project.model';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
     selector: 'breadcrumbs',
@@ -16,10 +17,14 @@ export class BreadcrumbsComponent {
     routerLinks$: Observable<IBreadcrumbRouterLink[]>;
 
     constructor(private state: ApplicationStateService,
+                private entities: EntitiesService,
                 private navigationService: NavigationService) {
-        this.routerLinks$ = state.select(state => {
-                return state.list.currentNode &&
-                state.entities.node[state.list.currentNode] || undefined; })
+        this.routerLinks$ = state.select(state => state.list.currentNode)
+            .map(nodeUuid => {
+                if (nodeUuid) {
+                    return entities.getNode(nodeUuid) || undefined;
+                }
+            })
             .map(node => this.toRouterLinks(node));
     }
 

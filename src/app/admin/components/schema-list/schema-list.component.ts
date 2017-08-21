@@ -6,6 +6,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { hashValues } from '../../../common/util/util';
 import { Schema } from '../../../common/models/schema.model';
 import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
     templateUrl: './schema-list.component.html',
@@ -17,11 +18,10 @@ export class SchemaListComponent {
     loading$: Observable<boolean>;
 
     constructor(private state: ApplicationStateService,
+                private entities: EntitiesService,
                 private schemaEffects: SchemaEffectsService,
                 private router: Router) {
-        this.schemas$ = state.select(state => state.admin.displayedSchemas)
-            .map(uuids => uuids.map(uuid => state.now.entities.schema[uuid]));
-
+        this.schemas$ = entities.selectAllSchemas();
         this.loading$ = state.select(state => state.admin.loadCount > 0);
         this.schemaEffects.loadSchemas();
     }

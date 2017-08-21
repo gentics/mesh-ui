@@ -1,10 +1,7 @@
-import { BaseProperties, NodeReference } from './common.model';
-import { Schema } from './schema.model';
+import { ProjectResponse } from './server-models';
+import { SchemaReference } from './common.model';
 
-export interface Project extends BaseProperties {
-    name: string;
-    rootNode: NodeReference;
-
+export interface Project extends ProjectResponse {
     // TODO: move to distinct interface
-    schemas?: Schema[];
+    schemas?: SchemaReference[];
 }

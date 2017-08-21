@@ -14,6 +14,7 @@ import { SchemaEffectsService } from '../../../core/providers/effects/schema-eff
 import { mockMeshNode, mockProject, mockSchema, mockUser } from '../../../../testing/mock-models';
 import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 import { ApiError } from '../../../core/providers/api/api-error';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('CreateProjectModal', () => {
 
@@ -22,9 +23,8 @@ describe('CreateProjectModal', () => {
     const mockNotification = jasmine.createSpyObj('Notification', ['show']);
 
     @NgModule(provideMockI18n({
-        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule],
+        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule, TestStateModule],
         providers: [
-            { provide: ApplicationStateService, useClass: TestApplicationState },
             { provide: SchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
             { provide: ProjectEffectsService, useValue: mockProjectEffectsService},
             { provide: Notification, useValue: mockNotification},
@@ -166,16 +166,21 @@ describe('CreateProjectModal', () => {
     it(`creates a new project`,
         componentTest(() => CreateProjectModalComponent, (fixture, instance) => {
             const projectName = 'testproject1';
-            const testSchema = appState.now.entities.schema['5953336e4342498593336e4342398599'];
+            const testSchema = {
+                uuid: 'test_schema',
+                name: 'TestSchema'
+            };
 
-            instance.name.setValue('testproject1');
+            instance.name.setValue(projectName);
             instance.schema.setValue(testSchema);
             triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
             fixture.detectChanges();
             expect(mockProjectEffectsService.createProject).toHaveBeenCalledWith({
-                name: 'testproject1',
+                name: projectName,
                 schema: {
-                    uuid: testSchema.uuid
+                    uuid: testSchema.uuid,
+                    name: testSchema.name,
+                    version: ''
                 }
             });
         })

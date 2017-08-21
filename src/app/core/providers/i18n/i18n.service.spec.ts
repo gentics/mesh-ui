@@ -1,14 +1,16 @@
 import { I18nService } from './i18n.service';
-import { FALLBACK_LANGUAGE } from '../../../common/config/config';
+import { ConfigService } from '../config/config.service';
 
 describe('I18nService', () => {
 
     let i18n: I18nService;
     let mockTranslateService: MockTranslateService;
+    const config = new ConfigService();
+    const FALLBACK_LANGUAGE = config.FALLBACK_LANGUAGE;
 
     beforeEach(() => {
         mockTranslateService = new MockTranslateService();
-        i18n = new I18nService(mockTranslateService as any);
+        i18n = new I18nService(mockTranslateService as any, config);
     });
 
     it('passes key and params to TranslateService', () => {

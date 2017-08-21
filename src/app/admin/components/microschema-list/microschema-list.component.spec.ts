@@ -1,20 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Button, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
-import { Component, Input } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { Button, GenticsUICoreModule } from 'gentics-ui-core';
 import { By } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
 
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
-import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
-import { SharedModule } from '../../../shared/shared.module';
-import { CoreModule } from '../../../core/core.module';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { mockProject } from '../../../../testing/mock-models';
 import { MicroschemaListComponent } from './mircoschema-list.component';
-import { RouterModule, Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
+import { TestStateModule } from '../../../state/testing/test-state.module';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
 
 describe('MicroSchemaListComponent', () => {
 
@@ -28,22 +23,19 @@ describe('MicroSchemaListComponent', () => {
         mockMicroSchemaEffects = jasmine.createSpyObj('MicroSchemaEffects', ['loadMicroschemas']);
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-        TestBed.configureTestingModule({
+        configureComponentTest({
             declarations: [MicroschemaListComponent],
-            imports: [GenticsUICoreModule, SharedModule, CoreModule, RouterModule],
+            imports: [GenticsUICoreModule, RouterModule, TestStateModule],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: MicroschemaEffectsService, useValue: mockMicroSchemaEffects },
                 { provide: Router, useValue: mockRouter },
             ]
         });
-    }));
 
-    beforeEach(() => {
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
         appState.mockState({});
-    });
+    }));
 
     it(`loads the microschemas`,
         componentTest(() => MicroschemaListComponent, fixture => {

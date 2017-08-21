@@ -8,6 +8,7 @@ import { NavigationService } from '../../../core/providers/navigation/navigation
 import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         private listEffects: ListEffectsService,
         private navigationService: NavigationService,
         private route: ActivatedRoute,
+        private entities: EntitiesService,
         private state: ApplicationStateService) {
     }
 
@@ -48,21 +50,20 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 a.containerUuid === b.containerUuid && a.projectName === b.projectName);
 
         const childNodes$ = this.state.select(state => state.list.currentNode)
-                .combineLatest(this.state.select(state => state.entities.node))
-                .map(([containerUuid, nodes]) => containerUuid)
-                .switchMap(containerUuid =>
-                    this.state.select(state => {
-                        const node = state.entities.node[containerUuid!];
-                        return node && node.children;
-                    })
-                    .map(childrenUuids => {
-                        const nodes = this.state.now.entities.node;
-                        return childrenUuids && childrenUuids.map(uuid => nodes[uuid]);
-                    })
-        );
+            .combineLatest(this.state.select(state => state.entities.node))
+            .map(([containerUuid, nodes]) => containerUuid)
+            .switchMap(containerUuid =>
+                this.entities.selectNode(containerUuid!)
+                    .map(node => node.children)
+            )
+            .map(childrenUuids => {
+                return childrenUuids && childrenUuids
+                    .map(uuid => this.entities.getNode(uuid))
+                    .filter<MeshNode>(notNullOrUndefined);
+            });
 
         const onProjectLoadSchemas = this.state
-            .select(state => state.list.currentProject)
+            .select(state => state.list.currentProject!)
             .filter<string>(notNullOrUndefined)
             .subscribe(projectName => {
                 this.listEffects.loadSchemasForProject(projectName);
@@ -96,13 +97,16 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     private refreshOnStateChanges(): Subscription {
         return this.state
             .select(state => {
-                const node = state.entities.node[state.list.currentNode!];
+                const node = this.entities.getNode(state.list.currentNode!);
                 return node && node.children || undefined;
             })
             .filter(notNullOrUndefined)
             .switchMap(childUuids =>
                 this.state.select(state => state.entities.node)
-                    .map(nodes => childUuids.map(uuid => nodes[uuid]))
+                    .map(nodes => childUuids
+                        .map(uuid => this.entities.getNode(uuid))
+                        .filter<MeshNode>(notNullOrUndefined)
+                    )
                     .distinctUntilChanged()
             )
             .subscribe(children => this.updateChildList(children));
@@ -131,7 +135,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     editNode(node: MeshNode): void {
-        this.navigationService.detail(node.project.name!, node.uuid).navigate();
+        this.navigationService.detail(node.project.name!, node.uuid, node.language).navigate();
     }
 
     copyNode(node: MeshNode): void {
@@ -150,7 +154,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         if (node.container) {
             return this.navigationService.list(node.project.name!, node.uuid).commands();
         } else {
-            return this.navigationService.detail(node.project.name!, node.uuid).commands();
+            return this.navigationService.detail(node.project.name!, node.uuid, node.language).commands();
         }
     }
 }

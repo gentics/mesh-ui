@@ -13,6 +13,7 @@ import { TestApplicationState } from '../../../../state/testing/test-application
 import { FieldErrorsComponent } from '../../components/field-errors/field-errors.component';
 import { CommonModule } from '@angular/common';
 import { provideMockI18n } from '../../../../../testing/configure-component-test';
+import { TestStateModule } from '../../../../state/testing/test-state.module';
 import createSpy = jasmine.createSpy;
 
 describe('FieldGeneratorService', () => {
@@ -22,12 +23,11 @@ describe('FieldGeneratorService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [TestModule],
+            imports: [TestModule, TestStateModule],
             providers: [
                 FieldGeneratorService,
                 ComponentFactoryResolver,
-                { provide: MeshControlGroupService, useClass: MockMeshControlGroupService },
-                { provide: ApplicationStateService, useClass: TestApplicationState }
+                { provide: MeshControlGroupService, useClass: MockMeshControlGroupService }
             ],
             declarations: [
                 TestComponent

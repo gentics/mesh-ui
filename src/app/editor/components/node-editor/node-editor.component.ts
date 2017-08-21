@@ -7,6 +7,8 @@ import { Schema } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Observable } from 'rxjs/Observable';
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
+import { EntitiesService } from '../../../state/providers/entities.service';
+import { simpleCloneDeep } from '../../../common/util/util';
 
 @Component({
     selector: 'node-editor',
@@ -22,6 +24,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     @ViewChild(FormGeneratorComponent) formGenerator: FormGeneratorComponent;
 
     constructor(private state: ApplicationStateService,
+                private entities: EntitiesService,
                 private changeDetector: ChangeDetectorRef,
                 private editorEffects: EditorEffectsService,
                 private navigationService: NavigationService,
@@ -31,8 +34,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.route.paramMap.subscribe(paramMap => {
             const projectName = paramMap.get('projectName');
             const nodeUuid = paramMap.get('nodeUuid');
-            if (projectName && nodeUuid) {
-                this.editorEffects.openNode(projectName, nodeUuid);
+            const language = paramMap.get('language');
+            if (projectName && nodeUuid && language) {
+                this.editorEffects.openNode(projectName, nodeUuid, language);
             }
         });
 
@@ -40,11 +44,11 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             .filter(nodeUuid => nodeUuid != null)
             .switchMap(uuid =>
                 Observable.combineLatest(
-                    this.state.select(state => state.entities.node[uuid])
-                        .filter<MeshNode>(Boolean),
-                    this.state.select(state =>
-                        state.entities.node[uuid] && state.entities.schema[state.entities.node[uuid].schema.uuid])
-                        .filter<Schema>(Boolean)
+                    this.entities.selectNode(uuid)
+                        .filter<MeshNode>(Boolean)
+                        .map(node => simpleCloneDeep(node)),
+                    this.entities.selectNode(uuid)
+                        .switchMap(node => this.entities.selectSchema(node.schema.uuid))
                 )
             )
             .subscribe(([node, schema]) => {

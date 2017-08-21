@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-
-import { Microschema } from '../../../common/models/microschema.model';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ModalService } from 'gentics-ui-core';
 import { hashValues, filenameExtension } from '../../../common/util/util';
 import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
 import { MicroschemaResponse, MicroschemaUpdateRequest } from '../../../common/models/server-models';
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
+import { EntitiesService } from '../../../state/providers/entities.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Component({
     templateUrl: './microschema.component.html',
@@ -32,6 +31,7 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
     subscription: Subscription;
 
     constructor(private state: ApplicationStateService,
+                private entities: EntitiesService,
                 private modal: ModalService,
                 private microschemaEffects: MicroschemaEffectsService,
                 private route: ActivatedRoute,
@@ -56,9 +56,13 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
 
         this.microschema$ = uuid$
             .switchMap(uuid => {
-                return this.state.select(state => state.entities.microschema[uuid!]);
-            }
-        ).filter(Boolean);
+                if (uuid) {
+                    return this.entities.selectSchema(uuid);
+                } else {
+                    // TODO handle this?
+                    throw Error('uuid not set');
+                }
+            });
 
         this.version$ = this.microschema$.map(it => it.version);
 

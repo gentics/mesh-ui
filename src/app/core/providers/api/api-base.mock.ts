@@ -76,7 +76,7 @@ export class MockApiBase extends ApiBase {
             }
         });
         this.allRequests.push(this.lastRequest = trackedRequest);
-        return returnedObservable;
+        return returnedObservable as Observable<Response>;
     }
 }
 

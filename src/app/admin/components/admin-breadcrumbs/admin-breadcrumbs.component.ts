@@ -1,15 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, PRIMARY_OUTLET, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 import { Observable } from 'rxjs';
-
-import { RoleUpdateRequest } from '../../../common/models/server-models';
-import { BreadcrumbsComponent } from '../../../editor/components/breadcrumbs/breadcrumbs.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { StateActionBranch } from 'immutablets';
 import { AppState } from '../../../state/models/app-state.model';
-import { MockApiBase } from '../../../core/providers/api/api-base.mock';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 /**
  * A breadcrumbs component which reads the route config and any route that has a `data.breadcrumb` property will
@@ -28,6 +23,7 @@ export class AdminBreadcrumbsComponent implements OnInit {
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
+                private entities: EntitiesService,
                 private state: ApplicationStateService) { }
 
     ngOnInit() {
@@ -59,7 +55,7 @@ export class AdminBreadcrumbsComponent implements OnInit {
         const paths = routeUrl(route);
         let result;
         if (typeof breadcrumb === 'function') {
-            result = this.state.select(state => breadcrumb(route, state));
+            result = this.state.select(state => breadcrumb(route, state, this.entities));
         } else {
             result = breadcrumb;
         }
@@ -118,7 +114,9 @@ function routeUrl(route: ActivatedRouteSnapshot): string[] {
     }
 }
 
-type BreadcrumbText = string | Observable<string> | ((routeSnapshot: ActivatedRouteSnapshot, state: AppState) => Observable<string>) | null;
+export type BreadcrumbTextFunction = (route: ActivatedRouteSnapshot, state: AppState, entities: EntitiesService) => string;
+
+type BreadcrumbText = string | Observable<string> | BreadcrumbTextFunction | null;
 
 /**
  * Returns breadcrumb text or null if it does not exist

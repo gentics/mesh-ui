@@ -1,5 +1,3 @@
-import { BaseProperties } from './common.model';
+import { TagFamilyResponse } from './server-models';
 
-export interface TagFamily extends BaseProperties {
-    name: string;
-}
+export interface TagFamily extends TagFamilyResponse {}

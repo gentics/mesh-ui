@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { BinaryField, MeshNode } from '../../../common/models/node.model';
 import { filenameExtension, isImageField, queryString } from '../../../common/util/util';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 /**
  * Thumbnail component for displaying node references or fields in a node.
@@ -46,14 +45,13 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
 
     private subscription: Subscription;
 
-    constructor(private state: ApplicationStateService) {
-    }
+    constructor(private entities: EntitiesService) {}
 
     ngOnInit(): void {
-        const node$ = this.state.select(state => state.entities.node[this.nodeUuid])
+        const node$ = this.entities.selectNode(this.nodeUuid)
             // Does not emit node if it was not found
             .filter(node => !!node);
-        const schema$ = node$.switchMap(node => this.state.select(state => state.entities.schema[node.schema.uuid]));
+        const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid));
 
         // Update binary properties when node or schema changes
         this.subscription = Observable.combineLatest(node$, schema$)

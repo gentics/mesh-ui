@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FALLBACK_LANGUAGE, UI_LANGUAGES } from '../../../common/config/config';
+import { ConfigService } from '../config/config.service';
 
 export type UILanguage = 'en' | 'de';
 
 @Injectable()
 export class I18nService {
 
-    constructor(private ngxTranslate: TranslateService) {
-        ngxTranslate.setDefaultLang(FALLBACK_LANGUAGE);
+    constructor(private ngxTranslate: TranslateService,
+                private config: ConfigService) {
+        ngxTranslate.setDefaultLang(config.FALLBACK_LANGUAGE);
     }
 
     /**
@@ -31,19 +32,19 @@ export class I18nService {
      */
     inferUserLanguage(): UILanguage {
         const browserLanguage = navigator.language.split('-')[0];
-        if (UI_LANGUAGES.indexOf(browserLanguage) >= 0) {
+        if (this.config.UI_LANGUAGES.indexOf(browserLanguage) >= 0) {
             return browserLanguage as any;
         }
 
         if ((navigator as any).languages) {
             const languages: string[] = (navigator as any).languages;
             for (const lang of languages.map(l => l.split('-')[0])) {
-                if (UI_LANGUAGES.indexOf(lang) >= 0) {
+                if (this.config.UI_LANGUAGES.indexOf(lang) >= 0) {
                     return lang as any;
                 }
             }
         }
 
-        return FALLBACK_LANGUAGE as any;
+        return this.config.FALLBACK_LANGUAGE as any;
     }
 }

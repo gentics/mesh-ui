@@ -1,4 +1,4 @@
-import { BaseProperties } from './common.model';
+import { SchemaResponse } from './server-models';
 
 export type CommonFieldType = 'node' | 'boolean' | 'string' | 'number' | 'date' | 'html';
 export type SchemaFieldType = CommonFieldType | 'micronode' | 'binary' | 'list';
@@ -30,11 +30,6 @@ export interface SchemaField extends BaseSchemaField {
     listType?: ListTypeFieldType;
 }
 
-export interface Schema extends BaseProperties {
-    name: string;
-    version: number;
+export interface Schema extends SchemaResponse {
     fields: SchemaField[];
-    displayField: string;
-    segmentField: string;
-    container: boolean;
 }

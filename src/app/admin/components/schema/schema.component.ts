@@ -8,6 +8,7 @@ import { hashValues, filenameExtension } from '../../../common/util/util';
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 import { SchemaResponse } from '../../../common/models/server-models';
 import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
     templateUrl: './schema.component.html',
@@ -33,6 +34,7 @@ export class SchemaComponent implements OnInit, OnDestroy {
     subscription: Subscription;
 
     constructor(private state: ApplicationStateService,
+                private entities: EntitiesService,
                 private modal: ModalService,
                 private schemaEffects: SchemaEffectsService,
                 private route: ActivatedRoute,
@@ -56,10 +58,8 @@ export class SchemaComponent implements OnInit, OnDestroy {
             .filter(route => route != null && route !== 'new') as Observable<string>;
 
         this.schema$ = this.uuid$
-            .switchMap(uuid => {
-                return this.state.select(state => state.entities.schema[uuid!]);
-            }
-        ).filter(Boolean);
+            .switchMap(uuid => this.entities.selectSchema(uuid))
+            .filter(Boolean);
 
         this.version$ = this.schema$.map(it => it.version);
 

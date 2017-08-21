@@ -13,6 +13,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { CoreModule } from '../../../core/core.module';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { mockProject } from '../../../../testing/mock-models';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('ProjectListComponent', () => {
 
@@ -24,9 +25,8 @@ describe('ProjectListComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [ProjectListComponent, MockProjectItemComponent],
-            imports: [GenticsUICoreModule, FormsModule, SharedModule, CoreModule],
+            imports: [GenticsUICoreModule, FormsModule, SharedModule, CoreModule, TestStateModule],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ModalService, useValue: mockModal },
                 { provide: ListEffectsService, useValue: jasmine.createSpyObj('stub', ['loadProjects'])}
             ]

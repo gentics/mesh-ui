@@ -1,5 +1,6 @@
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     ElementRef,
@@ -9,6 +10,7 @@ import {
     OnChanges,
     OnDestroy,
     Optional,
+    SimpleChange,
     SimpleChanges,
     ViewChild,
     ViewContainerRef
@@ -31,7 +33,8 @@ import { Observable } from 'rxjs/Observable';
 @Component({
     selector: 'form-generator',
     templateUrl: 'form-generator.component.html',
-    styleUrls: ['form-generator.scss']
+    styleUrls: ['form-generator.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestroy {
     @Input() schema: Schema;
@@ -73,7 +76,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
                 @Optional() private splitViewContainer: SplitViewContainer) {}
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.schema || (changes.node && changes.node.previousValue && changes.node.currentValue.uuid !== changes.node.previousValue.uuid)) {
+        if (changes.schema || this.nodeHasChanged(changes.node)) {
             this.generateForm();
         }
     }
@@ -170,6 +173,20 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
      */
     getChangesByPath(): ChangesByPath[] {
         return this.meshControlGroup.getChangesByPath();
+    }
+
+    /**
+     * Returns true if the input node has changed to a different uuid or language.
+     */
+    private nodeHasChanged(nodeChanges?: SimpleChange): boolean {
+        if (!nodeChanges) {
+            return false;
+        }
+        if (!nodeChanges.previousValue) {
+            return true;
+        }
+        return nodeChanges.previousValue.uuid !== nodeChanges.currentValue.uuid ||
+            nodeChanges.previousValue.language !== nodeChanges.currentValue.language;
     }
 
     private onChange(path: SchemaFieldPath, value: any): void {

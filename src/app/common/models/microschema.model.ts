@@ -1,14 +1,11 @@
-import { BaseProperties } from './common.model';
-import { BaseSchemaField, MicroschemaFieldType, CommonFieldType } from './schema.model';
+import { BaseSchemaField, CommonFieldType, MicroschemaFieldType } from './schema.model';
+import { MicroschemaResponse } from './server-models';
 
 export interface MicroschemaField extends BaseSchemaField {
     type: MicroschemaFieldType;
     listType?: CommonFieldType;
 }
 
-export interface Microschema extends BaseProperties {
-     version: number;
-     description: string;
-     name: string;
+export interface Microschema extends MicroschemaResponse {
      fields: MicroschemaField[];
 }

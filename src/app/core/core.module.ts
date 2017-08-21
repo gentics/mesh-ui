@@ -18,11 +18,13 @@ import { ListEffectsService } from './providers/effects/list-effects.service';
 import { SchemaEffectsService } from './providers/effects/schema-effects.service';
 import { SharedModule } from '../shared/shared.module';
 import { UserDropdownComponent } from './components/user-dropdown/user-dropdown.component';
+import { ConfigService } from './providers/config/config.service';
 
 // Application wide providers
 const CORE_PROVIDERS = [
     ApplicationStateService,
     AuthGuard,
+    ConfigService,
     I18nNotification,
     I18nService,
     NavigationService,

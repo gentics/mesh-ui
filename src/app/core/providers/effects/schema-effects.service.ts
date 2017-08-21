@@ -7,6 +7,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { SchemaUpdateRequest, SchemaResponse, SchemaCreateRequest } from '../../../common/models/server-models';
 import { I18nNotification } from '../i18n-notification/i18n-notification.service';
 import { Notification } from 'gentics-ui-core';
+import { Schema } from '../../../common/models/schema.model';
 
 @Injectable()
 export class SchemaEffectsService {
@@ -21,8 +22,8 @@ export class SchemaEffectsService {
         this.state.actions.admin.actionStart();
         // TODO How to handle paging? Should all schemas be loaded?
         this.api.schema.getSchemas({})
-            .subscribe(schemas => {
-                this.state.actions.admin.loadSchemasSuccess(schemas.data);
+            .subscribe((response) => {
+                this.state.actions.admin.loadSchemasSuccess(response.data as Schema[]);
             }, error => {
                 this.state.actions.admin.actionError();
             });

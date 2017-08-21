@@ -1,15 +1,31 @@
 import { MeshNode } from '../../common/models/node.model';
+import { User } from '../../common/models/user.model';
+import { Schema } from '../../common/models/schema.model';
+import { Microschema } from '../../common/models/microschema.model';
+import { Project } from '../../common/models/project.model';
 
 export interface EntityState {
-    project: { [uuid: string]: any };
-    node: { [uuid: string]: MeshNode };
-    user: { [uuid: string]: any };
-    schema: { [uuid: string]: any };
-    microschema: { [uuid: string]: any };
-    // TODO -----------------------------------------------
-    // project: { [uuid: string]: Project };
-    // node: { [uuid: string]: MeshNode };
-    // user: { [uuid: string]: User };
-    // schema: { [uuid: string]: Schema };
-    // microschema: { [uuid: string]: Microschema };
+    project: {
+        [uuid: string]: Project
+    };
+    node: {
+        [uuid: string]: {
+            [lang: string]: {
+                [version: string]: MeshNode;
+            };
+        };
+    };
+    user: {
+        [uuid: string]: User;
+    };
+    schema: {
+        [uuid: string]: {
+            [version: string]: Schema;
+        };
+    };
+    microschema: {
+        [uuid: string]: {
+            [version: string]: Microschema;
+        };
+    };
 }

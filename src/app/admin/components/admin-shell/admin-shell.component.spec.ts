@@ -5,6 +5,7 @@ import { configureComponentTest, provideMockI18n } from '../../../../testing/con
 import { SharedModule } from '../../../shared/shared.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('AdminShellComponent', () => {
 
@@ -13,7 +14,7 @@ describe('AdminShellComponent', () => {
 
     beforeEach(() => {
         configureComponentTest({
-            imports: [SharedModule, RouterTestingModule],
+            imports: [SharedModule, RouterTestingModule, TestStateModule],
             declarations: [AdminShellComponent, AdminBreadcrumbsComponent],
             providers: [ApplicationStateService]
         });

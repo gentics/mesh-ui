@@ -17,7 +17,7 @@ export const routes: Route[] = [
             outlet: 'list'
         },
         {
-            path: ':projectName/:nodeUuid',
+            path: ':projectName/:nodeUuid/:language',
             component: NodeEditorComponent,
             outlet: 'detail',
             canDeactivate: [NodeEditorGuard]
