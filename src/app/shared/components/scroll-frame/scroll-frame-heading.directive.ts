@@ -92,7 +92,7 @@ export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges
         }
         const target = this.options.target instanceof ElementRef ? this.options.target.nativeElement : this.options.target;
         const frameElement = this.scrollFrame.frameElement;
-        const options = { ...DEFAULT_OPTIONS, ...this.options };
+        const options: Options & ScrollFrameTrackingOptions = { ...DEFAULT_OPTIONS, ...this.options };
 
         this.subscription = this.scrollFrame.scrollEnd$
             .debounceTime(options.debounce)
