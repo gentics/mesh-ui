@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'node-language-label',
-    templateUrl: 'node-language-label.component.html',
-    styleUrls: ['node-language-label.scss'],
+    selector: 'language-label',
+    templateUrl: 'language-label.component.html',
+    styleUrls: ['language-label.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 

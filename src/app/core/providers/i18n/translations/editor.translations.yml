@@ -1,3 +1,6 @@
+create_node:
+    en: Create node
+    de: Node erstellen
 error_max_value:
     en: The value is greater than the maximum
     de: Der Wert is größer als Maximum

@@ -140,7 +140,7 @@ export class EditorEffectsService {
                 clone.fields[displayField] += ` (${suffix})`;
             }
             if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
-                if (node.fields[segmentField].type === 'binary') {
+                if (node.fields[segmentField].sha512sum) {
                     clone.fields[segmentField].fileName = this.addSuffixToString(node.fields[segmentField].fileName, suffix);
                 } else if (node.fields[segmentField] !== undefined) {
                     clone.fields[segmentField] = this.addSuffixToString(clone.fields[segmentField], suffix);

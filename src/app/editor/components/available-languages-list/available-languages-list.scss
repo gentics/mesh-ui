@@ -1,0 +1,20 @@
+@import "variables";
+
+:host {
+    ul {
+        margin: 0;
+        display: flex;
+    }
+
+    li {
+        font-size: $gtx-font-size-small;
+        margin-right: 2px;
+        padding: 0 3px;
+        background: $gtx-color-off-white;
+        border-bottom: 2px solid $gtx-color-off-white;
+        border-radius: 2px;
+        &.current {
+            border-bottom: 2px solid $gtx-color-primary;
+        }
+    }
+}

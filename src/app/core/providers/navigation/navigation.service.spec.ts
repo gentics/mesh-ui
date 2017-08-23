@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { InstructionActions, NavigationService } from './navigation.service';
+import { ConfigService } from '../config/config.service';
 import createSpy = jasmine.createSpy;
 
 describe('NavigationService', () => {
@@ -12,7 +13,8 @@ describe('NavigationService', () => {
         TestBed.configureTestingModule({
             providers: [
                 NavigationService,
-                { provide: Router, useClass: MockRouter }
+                { provide: Router, useClass: MockRouter },
+                ConfigService
             ]
         });
         navigationService = TestBed.get(NavigationService);
@@ -24,16 +26,17 @@ describe('NavigationService', () => {
         let result: InstructionActions;
         const projectName = 'foo';
         const containerUuid = 'test_uuid';
+        const language = 'en';
         const expectedCommands = [
             '/editor', 'project', {
                 outlets: {
-                    list: [projectName, containerUuid]
+                    list: [projectName, containerUuid, language]
                 }
             }
         ];
 
         beforeEach(() => {
-            result = navigationService.list(projectName, containerUuid);
+            result = navigationService.list(projectName, containerUuid, language);
         });
 
         it('commands() should return the correct commands', () => {

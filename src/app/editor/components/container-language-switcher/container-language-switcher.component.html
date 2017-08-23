@@ -1,0 +1,12 @@
+<gtx-dropdown-list>
+    <gtx-dropdown-trigger>
+        <div class="trigger">
+            <language-label [language]="currentLanguage$ | async"></language-label> <icon>arrow_drop_down</icon>
+        </div>
+    </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+        <gtx-dropdown-item *ngFor="let language of availableLanguages$ | async" (click)="itemClick(language)">
+            {{ 'list.language_select_switch_to' | i18n:{ language: ('lang.' + language | i18n) } }}
+        </gtx-dropdown-item>
+    </gtx-dropdown-content>
+</gtx-dropdown-list>

@@ -1,0 +1,12 @@
+@import "variables";
+
+.name-row {
+    display: flex;
+}
+.name {
+    margin-left: 6px;
+}
+.description {
+    color: $gtx-color-dark-gray;
+    font-size: $gtx-font-size-small;
+}

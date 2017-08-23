@@ -20,13 +20,13 @@ import { Observable } from 'rxjs/Observable';
 })
 export class ContainerContentsComponent implements OnInit, OnDestroy {
 
-    private subscription: Subscription;
+    listLanguage: string;
 
+    private subscription: Subscription;
     /** @internal */
     public schemas: SchemaReference[] = [];
     /** @internal */
     public childrenBySchema: { [schemaUuid: string]: MeshNode[] } = { };
-    private listLanguage: string;
 
     constructor(
         private changeDetector: ChangeDetectorRef,

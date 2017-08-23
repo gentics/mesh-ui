@@ -7,3 +7,24 @@
 icon {
     color: $gtx-color-very-dark-gray;
 }
+
+.detail-bar {
+    display: flex;
+    justify-content: space-between;
+}
+
+gtx-contents-list-item {
+    &.container-node {
+
+    }
+    &.not-in-current-lang {
+        .node-icon {
+            color: $gtx-color-light-gray;
+        }
+        .item-primary {
+            a:link, a:visited {
+                color: $gtx-color-dark-gray;
+            }
+        }
+    }
+}
