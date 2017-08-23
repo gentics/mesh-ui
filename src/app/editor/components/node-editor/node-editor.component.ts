@@ -45,7 +45,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             this.state.select(state => state.editor.openNode && state.editor.openNode.language)
         )
             .switchMap(([uuid, language]) => {
-                const node$ = this.entities.selectNode(uuid, language);
+                const node$ = this.entities.selectNode(uuid, { language });
                 return Observable.combineLatest(
                     node$.filter<MeshNode>(Boolean).map(node => simpleCloneDeep(node)),
                     node$.switchMap(node => this.entities.selectSchema(node.schema.uuid))

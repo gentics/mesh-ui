@@ -19,27 +19,28 @@ export class BreadcrumbsComponent {
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
                 private navigationService: NavigationService) {
-        this.routerLinks$ = state.select(state => state.list.currentNode)
-            .map(nodeUuid => {
-                if (nodeUuid) {
-                    return entities.getNode(nodeUuid) || undefined;
+
+        this.routerLinks$ = state.select(state => state.list)
+            .map(({ currentNode, language }) => {
+                let node: MeshNode | undefined;
+                if (currentNode) {
+                    node = entities.getNode(currentNode, { language, strictLanguageMatch: false });
                 }
-            })
-            .map(node => this.toRouterLinks(node));
+                return this.toRouterLinks(node, language);
+            });
     }
 
     /**
      * Turns a node to breadcrumb router links, which are used for the gtx-breadcrumbs directive.
-     * @param node A node in mesh containing the breadcrumb information.
      */
-    private toRouterLinks(node: MeshNode | undefined): IBreadcrumbRouterLink[] {
+    private toRouterLinks(node: MeshNode | undefined, language: string): IBreadcrumbRouterLink[] {
         const currentProject = this.state.now.list.currentProject;
         const project = this.getProjectByName(currentProject);
         if (!currentProject || !project) {
             return [];
         }
         const rootNodeLink: IBreadcrumbRouterLink = {
-            route: this.navigationService.list(project.name, project.rootNode.uuid).commands(),
+            route: this.navigationService.list(project.name, project.rootNode.uuid, language).commands(),
             text: project.name
         };
         if (!node) {
@@ -47,7 +48,7 @@ export class BreadcrumbsComponent {
         }
 
         const breadcrumbs = node.breadcrumb.map(ascendant => ({
-            route: this.navigationService.list(project.name, ascendant.uuid).commands(),
+            route: this.navigationService.list(project.name, ascendant.uuid, language).commands(),
             text: ascendant.displayName!
         }));
 
@@ -60,7 +61,7 @@ export class BreadcrumbsComponent {
         if (node.uuid !== project.rootNode.uuid) {
             const selfName = node.displayField ? node.fields[node.displayField] : node.uuid;
             const selfLink: IBreadcrumbRouterLink = {
-                route: this.navigationService.list(project.name, node.uuid).commands(),
+                route: this.navigationService.list(project.name, node.uuid, node.language).commands(),
                 text: selfName
             };
             fullBreadcrumbs.push(selfLink);

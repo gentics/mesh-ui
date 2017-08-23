@@ -77,6 +77,18 @@ export function queryString(obj: any): string {
 }
 
 /**
+ * Concatenates two or more arrays and de-duplicates and duplicate values.
+ *
+ * @example
+ * concatUnique([1, 2, 4, 6], [2, 4, 0, 7]);
+ * // => [1, 2, 4, 6, 0, 7]
+ */
+export function concatUnique<T>(first: T[], ...rest: T[][]): T[] {
+    const all = [first, ...rest].reduce((acc, curr) => acc.concat(curr), []);
+    return Array.from(new Set(all));
+}
+
+/**
  * Creates an object out of an array, which has elements with uuids. These uuids are used
  * for the keys of the object.
  * This is useful for transforming a list response from mesh to a format suitable to the state.

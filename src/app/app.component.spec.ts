@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { ApplicationStateService } from './state/providers/application-state.service';
 import { SharedModule } from './shared/shared.module';
 import { ApplicationStateDevtools } from './state/providers/application-state-devtools';
+import { ConfigService } from './core/providers/config/config.service';
 
 describe(`App`, () => {
     let comp: AppComponent;
@@ -23,6 +24,7 @@ describe(`App`, () => {
             providers: [
                 ApplicationStateService,
                 ApplicationStateDevtools,
+                ConfigService,
                 { provide: Router, useClass: MockRouter }
             ],
             schemas: [NO_ERRORS_SCHEMA]

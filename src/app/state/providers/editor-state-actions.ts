@@ -6,6 +6,7 @@ import { EditorState } from '../models/editor-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { mergeEntityState } from './entity-state-actions';
 import { MeshNode } from '../../common/models/node.model';
+import { ConfigService } from '../../core/providers/config/config.service';
 
 @Injectable()
 @Immutable()
@@ -13,7 +14,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
     @CloneDepth(1) private editor: EditorState;
     @CloneDepth(0) private entities: EntityState;
 
-    constructor() {
+    constructor(private config: ConfigService) {
         super({
             uses: ['editor', 'entities'],
             initialState: {
@@ -23,7 +24,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
                     openNode: {
                         uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
                         projectName: 'demo',
-                        language: 'en'
+                        language: config.FALLBACK_LANGUAGE
                     },
                     loadCount: 0
                 }

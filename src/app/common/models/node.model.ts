@@ -47,8 +47,6 @@ export type ListNodeFieldType = CommonNodeFieldType | BinaryField | NodeFieldMic
 export type MicronodeFieldType = CommonNodeFieldType | BinaryField;
 
 export interface MeshNode extends NodeResponse {
-    /** UUIDs of child nodes. Added in the application. */
-    children?: string[];
     /**
      * Language can be overwritten. This is currently how new language variations
      * are created.

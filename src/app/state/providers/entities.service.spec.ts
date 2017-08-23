@@ -3,15 +3,19 @@ import { TestApplicationState } from '../testing/test-application-state.mock';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { mergeMocks, mockMeshNode, mockMicroschema, mockProject, mockSchema, mockUser } from '../../../testing/mock-models';
 
+const CONTENT_LANGUAGES = ['en', 'de'];
+const FALLBACK_LANGUAGE = 'en';
+
 describe('EntitiesService', () => {
 
     let entities: EntitiesService;
     let state: TestApplicationState;
-
+    let config: MockConfigService;
 
     beforeEach(() => {
-        state = new TestApplicationState();
-        entities = new EntitiesService(state, new ConfigService());
+        config = new MockConfigService();
+        state = new TestApplicationState(config);
+        entities = new EntitiesService(state, config);
     });
 
     describe('Project', () => {
@@ -74,10 +78,10 @@ describe('EntitiesService', () => {
 
     describe('Node', () => {
         const mockNode1 =  mergeMocks(
+            mockMeshNode({ uuid: 'mockNode1', language: 'de', version: '0.1' }),
             mockMeshNode({ uuid: 'mockNode1', language: 'en', version: '1.0' }),
             mockMeshNode({ uuid: 'mockNode1', language: 'en', version: '1.1' }),
-            mockMeshNode({ uuid: 'mockNode1', language: 'en', version: '2.0' }),
-            mockMeshNode({ uuid: 'mockNode1', language: 'de', version: '0.1' })
+            mockMeshNode({ uuid: 'mockNode1', language: 'en', version: '2.0' })
         );
         const mockNode2 = mergeMocks(
             mockMeshNode({ uuid: 'mockNode2', language: 'de', version: '0.1' }),
@@ -93,27 +97,59 @@ describe('EntitiesService', () => {
         });
 
         it('getNode() returns correct node with all discriminators supplied', () => {
-            expect(entities.getNode('mockNode1', 'en', '1.1')).toEqual(mockNode1['en']['1.1']);
+            expect(entities.getNode('mockNode1', { language: ['en'], version: '1.1' })).toEqual(mockNode1['en']['1.1']);
         });
 
         it('getNode() returns latest version if no version supplied', () => {
-            expect(entities.getNode('mockNode1', 'en')).toEqual(mockNode1['en']['2.0']);
+            expect(entities.getNode('mockNode1', { language: ['en'] })).toEqual(mockNode1['en']['2.0']);
         });
 
-        it('getNode() returns default language if no language supplied', () => {
-            expect(entities.getNode('mockNode1')).toEqual(mockNode1['en']['2.0']);
+        it('getNode() accepts language as string', () => {
+            expect(entities.getNode('mockNode1', { language: 'en' })).toEqual(mockNode1['en']['2.0']);
         });
 
-        it('getNode() returns available language if no language supplied and node not available in default', () => {
-            expect(entities.getNode('mockNode2')).toEqual(mockNode2['de']['0.5']);
+        it('getNode() throws if no languages supplied and strict mode set to true', () => {
+            expect(() => entities.getNode('mockNode1', { strictLanguageMatch: true })).toThrow();
+        });
+
+        it('getNode() throws if given empty language array with strict mode', () => {
+            expect(() => entities.getNode('mockNode2', { language: [], strictLanguageMatch: true })).toThrow();
         });
 
         it('getNode() returns undefined for invalid uuid', () => {
-            expect(entities.getNode('bad_uuid')).toBeUndefined();
+            expect(entities.getNode('bad_uuid', { language: ['en'] })).toBeUndefined();
         });
 
         it('getNode() returns undefined for undefined uuid', () => {
-            expect(entities.getNode(undefined as any)).toBeUndefined();
+            expect(entities.getNode(undefined as any, { language: ['en'] })).toBeUndefined();
+        });
+
+        it('getNode() accepts language fallback array', () => {
+            expect(entities.getNode('mockNode1', { language: ['de', 'en'] })).toEqual(mockNode1['de']['0.1']);
+        });
+
+        it('getNode() returns undefined when no languages match in strict mode', () => {
+            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: true })).toBeUndefined();
+        });
+
+        it('getNode() returns default content language with missing language array in not strict mode', () => {
+            config.FALLBACK_LANGUAGE = 'de';
+            expect(entities.getNode('mockNode1', { strictLanguageMatch: false })).toEqual(mockNode1['de']['0.1']);
+        });
+
+        it('getNode() returns default content language with empty language array in not strict mode', () => {
+            config.FALLBACK_LANGUAGE = 'de';
+            expect(entities.getNode('mockNode1', { language: [], strictLanguageMatch: false })).toEqual(mockNode1['de']['0.1']);
+        });
+
+        it('getNode() returns default content language when no languages match in not strict mode', () => {
+            config.FALLBACK_LANGUAGE = 'de';
+            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false })).toEqual(mockNode1['de']['0.1']);
+        });
+
+        it('getNode() returns alphabetically first language when no languages match and default not found in not strict mode', () => {
+            config.FALLBACK_LANGUAGE = 'zulu';
+            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false })).toEqual(mockNode1['en']['2.0']);
         });
     });
 
@@ -264,3 +300,11 @@ describe('EntitiesService', () => {
         });
     });
 });
+
+class MockConfigService implements ConfigService {
+    readonly ANONYMOUS_USER_NAME: any;
+    readonly UI_LANGUAGES: any;
+
+    FALLBACK_LANGUAGE: any = FALLBACK_LANGUAGE;
+    CONTENT_LANGUAGES: any = CONTENT_LANGUAGES;
+}

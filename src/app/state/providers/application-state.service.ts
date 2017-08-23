@@ -11,6 +11,7 @@ import { EditorStateActions } from './editor-state-actions';
 import { EntityStateActions } from './entity-state-actions';
 import { ListStateActions } from './list-state-actions';
 import { UIStateActions } from './ui-state-actions';
+import { ConfigService } from '../../core/providers/config/config.service';
 
 
 // TODO: re-enable this rule once immutablets has been updated
@@ -41,13 +42,13 @@ export class ApplicationStateService {
     private stateSubject: BehaviorSubject<AppState>;
     private subscription: Subscription;
 
-    constructor() {
+    constructor(config: ConfigService) {
         this.store = new ImmutableStateStore<AppState, ActionBranches>({
             admin: new AdminStateActions(),
             auth: new AuthStateActions(),
             entity: new EntityStateActions(),
-            editor: new EditorStateActions(),
-            list: new ListStateActions(),
+            editor: new EditorStateActions(config),
+            list: new ListStateActions(config),
             ui: new UIStateActions()
         });
 

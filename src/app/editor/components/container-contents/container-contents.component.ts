@@ -9,6 +9,7 @@ import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { Observable } from 'rxjs/Observable';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     public schemas: SchemaReference[] = [];
     /** @internal */
     public childrenBySchema: { [schemaUuid: string]: MeshNode[] } = { };
+    private listLanguage: string;
 
     constructor(
         private changeDetector: ChangeDetectorRef,
@@ -39,30 +41,24 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         const onLogin$ = this.state.select(state => state.auth.loggedIn)
             .filter(loggedIn => loggedIn);
 
-        const routerParams$ = onLogin$
-            .switchMapTo(this.route.paramMap)
-            .filter(params => params.has('containerUuid') && params.has('projectName'))
-            .map(paramMap => ({
-                containerUuid: paramMap.get('containerUuid')!,
-                projectName: paramMap.get('projectName')!
-            }))
-            .distinctUntilChanged((a, b) =>
-                a.containerUuid === b.containerUuid && a.projectName === b.projectName);
+        const languageSub = this.state.select(state => state.list.language)
+            .subscribe(lang => this.listLanguage = lang);
 
-        const childNodes$ = this.state.select(state => state.list.currentNode)
-            .combineLatest(this.state.select(state => state.entities.node))
-            .map(([containerUuid, nodes]) => containerUuid)
-            .switchMap(containerUuid =>
-                this.entities.selectNode(containerUuid!)
-                    .map(node => node.children)
-            )
-            .map(childrenUuids => {
-                return childrenUuids && childrenUuids
-                    .map(uuid => this.entities.getNode(uuid))
-                    .filter<MeshNode>(notNullOrUndefined);
+        const routerParamsSub = onLogin$
+            .let(obs => this.switchMapToParams(obs))
+            .subscribe(({ containerUuid, projectName, language }) => {
+                this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
-        const onProjectLoadSchemas = this.state
+        const childNodesSub = this.state.select(state => state.list.children)
+            .map(childrenUuids =>
+                childrenUuids && childrenUuids
+                    .map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }))
+                    .filter<MeshNode>(notNullOrUndefined)
+            )
+            .subscribe(childNodes => this.updateChildList(childNodes));
+
+        const onProjectLoadSchemasSub = this.state
             .select(state => state.list.currentProject!)
             .filter<string>(notNullOrUndefined)
             .subscribe(projectName => {
@@ -70,46 +66,33 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 this.listEffects.loadMicroschemasForProject(projectName);
             });
 
-        this.subscription = routerParams$
-            .subscribe(({ containerUuid, projectName }) => {
-                this.listEffects.setActiveContainer(projectName, containerUuid);
-            })
-            .add(childNodes$.subscribe(childNodes => this.updateChildList(childNodes)));
+        this.subscription = routerParamsSub
+            .add(languageSub)
+            .add(childNodesSub)
+            .add(onProjectLoadSchemasSub);
     }
 
-    private updateStateWhenRouteChanges(): Subscription {
-        return this.state
-            .select(state => state.auth.loggedIn)
-            .filter(loggedIn => loggedIn)
+    /**
+     * SwitchMaps the input observable to the router ParamMap related to the list route.
+     */
+    private switchMapToParams(input$: Observable<any>): Observable<{ containerUuid: string; projectName: string; language: string; }> {
+        return input$
             .switchMapTo(this.route.paramMap)
-            .filter(params => params.has('containerUuid') && params.has('projectName'))
+            .filter(params =>
+                params.has('containerUuid') &&
+                params.has('projectName') &&
+                params.has('language')
+            )
             .map(paramMap => ({
                 containerUuid: paramMap.get('containerUuid')!,
-                projectName: paramMap.get('projectName')!
+                projectName: paramMap.get('projectName')!,
+                language: paramMap.get('language')!
             }))
             .distinctUntilChanged((a, b) =>
-                a.containerUuid === b.containerUuid && a.projectName === b.projectName)
-            .subscribe(({ containerUuid, projectName }) => {
-                this.listEffects.setActiveContainer(projectName, containerUuid);
-            });
-    }
-
-    private refreshOnStateChanges(): Subscription {
-        return this.state
-            .select(state => {
-                const node = this.entities.getNode(state.list.currentNode!);
-                return node && node.children || undefined;
-            })
-            .filter(notNullOrUndefined)
-            .switchMap(childUuids =>
-                this.state.select(state => state.entities.node)
-                    .map(nodes => childUuids
-                        .map(uuid => this.entities.getNode(uuid))
-                        .filter<MeshNode>(notNullOrUndefined)
-                    )
-                    .distinctUntilChanged()
-            )
-            .subscribe(children => this.updateChildList(children));
+                a.containerUuid === b.containerUuid &&
+                a.projectName === b.projectName &&
+                a.language === b.language
+            );
     }
 
     private updateChildList(childNodes: MeshNode[] | undefined): void {
@@ -152,7 +135,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
     routerLinkOf(node: MeshNode) {
         if (node.container) {
-            return this.navigationService.list(node.project.name!, node.uuid).commands();
+            return this.navigationService.list(node.project.name!, node.uuid, this.listLanguage).commands();
         } else {
             return this.navigationService.detail(node.project.name!, node.uuid, node.language).commands();
         }

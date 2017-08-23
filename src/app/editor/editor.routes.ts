@@ -12,7 +12,7 @@ export const routes: Route[] = [
      */
     { path: 'project', component: MasterDetailComponent, children: [
         {
-            path: ':projectName/:containerUuid',
+            path: ':projectName/:containerUuid/:language',
             component: ContainerContentsComponent,
             outlet: 'list'
         },

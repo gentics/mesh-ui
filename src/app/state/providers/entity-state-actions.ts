@@ -9,7 +9,6 @@ import { Microschema } from '../../common/models/microschema.model';
 import { Project } from '../../common/models/project.model';
 import { User } from '../../common/models/user.model';
 import { BaseProperties } from '../../common/models/common.model';
-import { ConfigService } from '../../core/providers/config/config.service';
 
 @Injectable()
 @Immutable()
@@ -50,8 +49,6 @@ const defaultDiscriminator: Discriminator<BaseProperties> = ['uuid'];
 const schemaDiscriminator: Discriminator<Schema> = ['uuid', 'version'];
 const microschemaDiscriminator: Discriminator<Schema> = ['uuid', 'version'];
 const nodeDiscriminator: Discriminator<MeshNode> = ['uuid', 'language', 'version'];
-
-const FALLBACK_LANGUAGE = new ConfigService().FALLBACK_LANGUAGE;
 
 /**
  * Utility function to update the entity state.
@@ -106,7 +103,7 @@ function mergeBranch<B extends keyof EntityState>(oldBranch: EntityState[B],
             throw new Error(`mergeBranch: Missing uuid on ${JSON.stringify(change, null, 4)}`);
         }
 
-        const oldEntity = getNestedEntity(oldBranch, discriminator, change, FALLBACK_LANGUAGE);
+        const oldEntity = getNestedEntity(oldBranch, discriminator, change);
         const newEntity = oldEntity ? deepApplyWithReuse(oldEntity, change) : change;
         if (newEntity !== oldEntity) {
             newBranch = assignNestedEntity(newBranch, discriminator, newEntity);
@@ -141,7 +138,7 @@ export function getDiscriminator<K extends keyof EntityDiscriminators>(type: K):
 export function getNestedEntity<B extends keyof EntityState>(branch: EntityState[B],
                                                              discriminator: EntityDiscriminators[B],
                                                              source: Partial<EntityStateType[B]> & { uuid: string },
-                                                             fallbackLanguage: string): EntityStateType[B] | undefined {
+                                                             languageFallbacks?: string[]): EntityStateType[B] | undefined {
     // for all entities, the uuid is required
     if (!source || !source.uuid) {
         return undefined;
@@ -150,18 +147,16 @@ export function getNestedEntity<B extends keyof EntityState>(branch: EntityState
     let o: any = branch;
     for (const k of discriminator) {
         let key = source[k];
-        if (key === undefined) {
+        if (k === 'language' && Array.isArray(languageFallbacks) && 0 < languageFallbacks.length) {
+            const availableLanguages = Object.keys(o);
+            key = getLanguageKeyFromFallbackArray(availableLanguages, languageFallbacks);
+        } else if (key === undefined) {
             // The discriminator part was not provided in the source.
             // We must choose a default from any available.
             const alternativeKeys = Object.keys(o);
             if (k === 'version') {
                 // return the most recent version
                 key = alternativeKeys.sort((a, b) => parseFloat(b) - parseFloat(a))[0];
-            } else if (k === 'language') {
-                // return the fallback language if it exists, else the first available language
-                key = -1 < alternativeKeys.indexOf(fallbackLanguage) ? fallbackLanguage : alternativeKeys[0];
-            } else {
-                key = alternativeKeys[0];
             }
         }
         o = o[key];
@@ -170,6 +165,14 @@ export function getNestedEntity<B extends keyof EntityState>(branch: EntityState
         }
     }
     return o;
+}
+
+function getLanguageKeyFromFallbackArray(available: string[], fallbacks: string[]): string | undefined {
+    for (const language of fallbacks) {
+        if (-1 < available.indexOf(language)) {
+            return language;
+        }
+    }
 }
 
 /**

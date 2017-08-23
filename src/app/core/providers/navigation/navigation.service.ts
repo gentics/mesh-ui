@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { ConfigService } from '../config/config.service';
 
 interface NavigationInstruction {
     list?: {
         projectName: string;
         containerUuid: string;
+        language: string;
     };
     detail?: {
         projectName: string;
@@ -24,16 +26,20 @@ export interface InstructionActions {
 @Injectable()
 export class NavigationService {
 
-    constructor(private router: Router) { }
+    constructor(private router: Router, private config: ConfigService) { }
 
     /**
      * Navigate to a container in the list outlet.
      */
-    list(projectName: string, containerUuid: string): InstructionActions {
+    list(projectName: string, containerUuid: string, language?: string): InstructionActions {
+        if (!language) {
+            language = this.config.FALLBACK_LANGUAGE;
+        }
         return this.instruction({
             list: {
                 projectName,
-                containerUuid
+                containerUuid,
+                language
             }
         });
     }
@@ -89,8 +95,8 @@ export class NavigationService {
             outlets.detail = [projectName, nodeUuid, language];
         }
         if (instruction.list) {
-            const { projectName, containerUuid } = instruction.list;
-            outlets.list = [projectName, containerUuid];
+            const { projectName, containerUuid, language } = instruction.list;
+            outlets.list = [projectName, containerUuid, language];
         }
         return ['/editor', 'project', { outlets }];
     }

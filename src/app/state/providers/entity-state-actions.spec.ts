@@ -337,7 +337,7 @@ describe('EntityStateActions', () => {
                 language: 'de',
                 version: '0.1'
             } as any;
-            const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, 'en');
+            const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source);
 
             expect(result).toBe(node4);
         });
@@ -347,18 +347,72 @@ describe('EntityStateActions', () => {
                 uuid: 'nodeUuid1',
                 language: 'en'
             } as any;
-            const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, 'en');
+            const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source);
 
             expect(result).toBe(node3);
         });
 
-        it('should return most recent version of fallback language when no language or version present in source', () => {
-            const source = {
-                uuid: 'nodeUuid1'
-            } as any;
-            const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, 'de');
+        describe('language handling', () => {
 
-            expect(result).toBe(node5);
+            it('should return undefined if no language supplied', () => {
+                const source = {
+                    uuid: 'nodeUuid1'
+                } as any;
+                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source);
+
+                expect(result).toBeUndefined();
+            });
+
+
+            it('should return undefined if language string does not match any available', () => {
+                const source = {
+                    uuid: 'nodeUuid1',
+                    language: 'bad'
+                } as any;
+                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source);
+
+                expect(result).toBeUndefined();
+            });
+
+            it('should accept array for language and use it as a fallback sequence', () => {
+                const source = {
+                    uuid: 'nodeUuid1'
+                } as any;
+                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, ['bad', 'de', 'en']);
+
+                expect(result).toBe(node5);
+            });
+
+            it('language fallbacks take precedence over the language key in the source object', () => {
+                const source = {
+                    uuid: 'nodeUuid1',
+                    language: 'en'
+                } as any;
+                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, ['bad', 'de', 'en']);
+
+                expect(result).toBe(node5);
+            });
+
+            it('empty language fallbacks do not take precedence over the language key in the source object', () => {
+                const source = {
+                    uuid: 'nodeUuid1',
+                    language: 'en'
+                } as any;
+                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, []);
+
+                expect(result).toBe(node3);
+            });
+
+            it('should return undefined if language fallback does not match any available', () => {
+                const source = {
+                    uuid: 'nodeUuid1'
+                } as any;
+                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, ['bad', 'badder']);
+
+                expect(result).toBeUndefined();
+            });
         });
+
+
     });
 });

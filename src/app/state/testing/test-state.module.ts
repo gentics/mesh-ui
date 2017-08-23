@@ -13,7 +13,7 @@ import { ConfigService } from '../../core/providers/config/config.service';
     providers: [
         { provide: ApplicationStateService, useClass: TestApplicationState},
         EntitiesService,
-        { provide: ConfigService, useValue: { FALLBACK_LANGUAGE: 'en' } }
+        ConfigService
     ]
 })
 export class TestStateModule {}

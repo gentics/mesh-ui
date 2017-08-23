@@ -1,4 +1,4 @@
-import { filenameExtension, queryString, simpleDeepEquals, simpleMergeDeep } from './util';
+import { concatUnique, filenameExtension, queryString, simpleDeepEquals, simpleMergeDeep } from './util';
 
 describe('Utility', () => {
     describe('Filename extension', () => {
@@ -140,6 +140,25 @@ describe('Utility', () => {
             });
         });
 
+    });
+
+    describe('concatUnique()', () => {
+
+        it('works with two arrays', () => {
+            expect(concatUnique([1, 2, 4, 6], [2, 4, 0, 7])).toEqual([1, 2, 4, 6, 0, 7]);
+        });
+
+        it('works with three arrays', () => {
+            expect(concatUnique([1, 2], [2, 4], [9, 3, 1, 4])).toEqual([1, 2, 4, 9, 3]);
+        });
+
+        it('works with empty array', () => {
+            expect(concatUnique([])).toEqual([]);
+        });
+
+        it('works with empty and non-empty arrays', () => {
+            expect(concatUnique([4, 34], [], [], [5], [14, 4])).toEqual([4, 34, 5, 14]);
+        });
 
     });
 });

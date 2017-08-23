@@ -48,7 +48,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     constructor(private entities: EntitiesService) {}
 
     ngOnInit(): void {
-        const node$ = this.entities.selectNode(this.nodeUuid)
+        const node$ = this.entities.selectNode(this.nodeUuid, { strictLanguageMatch: false })
             // Does not emit node if it was not found
             .filter(node => !!node);
         const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid));
@@ -67,9 +67,10 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     private setDisplaySize() {

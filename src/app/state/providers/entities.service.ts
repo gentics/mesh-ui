@@ -10,6 +10,24 @@ import { User } from '../../common/models/user.model';
 import { Schema } from '../../common/models/schema.model';
 import { Microschema } from '../../common/models/microschema.model';
 import { AppState } from '../models/app-state.model';
+import { concatUnique } from '../../common/util/util';
+
+export interface NodeDiscriminatorOptions {
+    /**
+     * The language or array of language codes which act as fallbacks.
+     * The fist language is returned if it exists, the the second and so on.
+     */
+    language?: string[] | string;
+    /**
+     * If false, then all possible languages are checked (starting with the ones supplied by the fallback option),
+     * and even if none of the fallback languages exist for that node, the next non-matching language will be
+     * returned.
+     * Defaults to true.
+     */
+    strictLanguageMatch?: boolean;
+    /** The version of the node being requested */
+    version?: string;
+}
 
 /**
  * This service replaces the pattern of `state.select(state => state.entities.node[uuid]).subscribe(...)`, since we now have
@@ -49,25 +67,54 @@ export class EntitiesService {
         return getNestedEntity<'project'>(
             state.entities.project,
             this.discriminator.project,
-            { uuid },
-            this.config.FALLBACK_LANGUAGE
+            { uuid }
         );
     }
 
-    getNode(uuid: string, language?: string, version?: string): MeshNode | undefined {
-        return this.getNodeFromState(this.state.now, uuid, language, version);
+    getNode(uuid: string, options: NodeDiscriminatorOptions = { strictLanguageMatch: true }): MeshNode | undefined {
+        const { version, language, strictLanguageMatch } = options;
+        const fallbacks = this.createFallbackArray(strictLanguageMatch, language);
+        return this.getNodeFromState(this.state.now, uuid, fallbacks, version);
     }
 
-    selectNode(uuid: string, language?: string, version?: string): Observable<MeshNode> {
-        return this.selectWithFilter(state => this.getNodeFromState(state, uuid, language, version));
+    selectNode(uuid: string, options: NodeDiscriminatorOptions = { strictLanguageMatch: true }): Observable<MeshNode> {
+        const { version, language, strictLanguageMatch } = options;
+        const fallbacks = this.createFallbackArray(strictLanguageMatch, language);
+        return this.selectWithFilter(state => this.getNodeFromState(state, uuid, fallbacks, version));
     }
 
-    private getNodeFromState(state: AppState, uuid: string, language?: string, version?: string): MeshNode | undefined {
+    /**
+     * Creates an array of languages to be used as fallbacks based on the input.
+     * If strict === true, then the input array is returned.
+     * If strict === false, then the input array is augmented with the other available
+     * languages based on the app config.
+     */
+    private createFallbackArray(strict: boolean = false, languages?: string[] | string): string[] {
+        let languageArray: string[] | undefined;
+        if (typeof languages === 'string') {
+            languageArray = [languages];
+        } else {
+            languageArray = languages;
+        }
+        if (strict) {
+            if (!languageArray || languageArray.length === 0) {
+                throw new Error('At least one language must be provided when in strictLanguageMatch is true.');
+            }
+            return languageArray;
+        }
+
+        const defaultFallbacks = this.config.CONTENT_LANGUAGES
+            .sort((a, b) => a === this.config.FALLBACK_LANGUAGE ? -1 : 1);
+
+        return concatUnique(languageArray || [], defaultFallbacks);
+    }
+
+    private getNodeFromState(state: AppState, uuid: string, languageFallbacks?: string[], version?: string): MeshNode | undefined {
         return getNestedEntity<'node'>(
             state.entities.node,
             this.discriminator.node,
-            { uuid, language, version },
-            this.config.FALLBACK_LANGUAGE
+            { uuid, version },
+            languageFallbacks
         );
     }
 
@@ -83,8 +130,7 @@ export class EntitiesService {
         return getNestedEntity<'user'>(
             state.entities.user,
             this.discriminator.user,
-            { uuid },
-            this.config.FALLBACK_LANGUAGE
+            { uuid }
         );
     }
 
@@ -113,8 +159,7 @@ export class EntitiesService {
         return getNestedEntity<'schema'>(
             state.entities.schema,
             this.discriminator.schema,
-            { uuid, version },
-            this.config.FALLBACK_LANGUAGE
+            { uuid, version }
         );
     }
 
@@ -143,8 +188,7 @@ export class EntitiesService {
         return getNestedEntity<'microschema'>(
             state.entities.microschema,
             this.discriminator.microschema,
-            { uuid, version },
-            this.config.FALLBACK_LANGUAGE
+            { uuid, version }
         );
     }
 

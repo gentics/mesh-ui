@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { ConfigService } from '../config/config.service';
 
 @Injectable()
 export class ListEffectsService {
 
     constructor(private api: ApiService,
+                private config: ConfigService,
                 private state: ApplicationStateService) {
     }
 
@@ -36,13 +38,13 @@ export class ListEffectsService {
                 error => this.state.actions.list.fetchMicroschemasError() /* TODO: error handling */);
     }
 
-    setActiveContainer(projectName: string, containerUuid: string) {
+    setActiveContainer(projectName: string, containerUuid: string, language: string) {
         // Update active container in state
-        this.state.actions.list.setActiveContainer(projectName, containerUuid);
+        this.state.actions.list.setActiveContainer(projectName, containerUuid, language);
 
         // Refresh the node
         this.state.actions.list.fetchNodeStart(containerUuid);
-        this.api.project.getProjectNode({ project: projectName, nodeUuid: containerUuid })
+        this.api.project.getProjectNode({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })
             .subscribe(response => {
                 this.state.actions.list.fetchNodeSuccess(response);
             }, error => {
@@ -53,12 +55,18 @@ export class ListEffectsService {
         // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
         this.api.project
-            .getNodeChildren({ project: projectName, nodeUuid: containerUuid })
+            .getNodeChildren({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })
             .subscribe(response => {
                 this.state.actions.list.fetchChildrenSuccess(containerUuid, response.data);
             }, error => {
                 this.state.actions.list.fetchChildrenError();
                 throw new Error('TODO: Error handling');
             });
+    }
+
+    private languageWithFallbacks(language: string): string {
+        return this.config.CONTENT_LANGUAGES
+            .sort((a, b) => a === language ? -1 : 1)
+            .join(',');
     }
 }

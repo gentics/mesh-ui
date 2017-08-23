@@ -9,6 +9,7 @@ import { mergeEntityState } from './entity-state-actions';
 import { AdminState } from '../models/admin-state.model';
 import { Microschema } from '../../common/models/microschema.model';
 import { Schema } from '../../common/models/schema.model';
+import { ConfigService } from '../../core/providers/config/config.service';
 
 @Injectable()
 @Immutable()
@@ -17,14 +18,16 @@ export class ListStateActions extends StateActionBranch<AppState> {
     @CloneDepth(1) private list: ListState;
     @CloneDepth(1) private admin: AdminState;
 
-    constructor() {
+    constructor(private config: ConfigService) {
         super({
             uses: ['entities', 'list', 'admin'],
             initialState: {
                 list: {
                     currentNode: undefined,
                     currentProject: undefined,
-                    loadCount: 0
+                    loadCount: 0,
+                    language: config.FALLBACK_LANGUAGE,
+                    children: []
                 }
             }
         });
@@ -44,10 +47,10 @@ export class ListStateActions extends StateActionBranch<AppState> {
                 ...children,
                 {
                     uuid: containerUuid,
-                    children: children.map(node => node.uuid)
                 }
             ]
         }, false);
+        this.list.children = children.map(node => node.uuid);
     }
 
     fetchChildrenError() {
@@ -158,9 +161,10 @@ export class ListStateActions extends StateActionBranch<AppState> {
     }
 
     /** Change the active container in the list view from values of the current route. */
-    setActiveContainer(projectName: string, containerUuid: string) {
+    setActiveContainer(projectName: string, containerUuid: string, language: string) {
         this.list.currentProject = projectName;
         this.list.currentNode = containerUuid;
+        this.list.language = language;
     }
 
 }
