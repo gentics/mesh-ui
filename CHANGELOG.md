@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.7.4 (2017-09-01)
+* Add support for Gentics Mesh 0.10.0
+
 ## Version 0.7.3 (2017-08-10)
 * Add CORS support. Previously CORS was not supported by the UI.
 * Fix translation action. Previously a error prevented translations from being executed.

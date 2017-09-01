@@ -695,13 +695,13 @@ module meshAdminUi {
         public deleteNode(projectName: string, node: INode|string): ng.IPromise<any> {
             this.clearCache('nodes');
             let uuid = this.toUuid(node);
-            return this.meshDelete(projectName + '/nodes/' + uuid);
+            return this.meshDelete(projectName + '/nodes/' + uuid, { "recursive": true } );
         }
 
         public deleteNodeLanguage(projectName: string, node: INode|string, langCode: string): ng.IPromise<any> {
             this.clearCache('nodes');
             let uuid = this.toUuid(node);
-            return this.meshDelete(projectName + '/nodes/' + uuid + '/languages/' + langCode);
+            return this.meshDelete(projectName + '/nodes/' + uuid + '/languages/' + langCode,  { "recursive": true } );
         }
 
         /**
