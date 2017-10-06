@@ -2,6 +2,12 @@
 
 Browser-based client app for the Mesh CMS REST API.
 
+
+# Important Note
+
+This project makes use of Angular 1.4.8. We are currently developing a new revision of the UI using Angular 2 (develop branch)
+Please note that we will discontinue to support and develop version 0.7.x of the UI in favour of the new version.
+
 ## Build
 
 ```Shell
