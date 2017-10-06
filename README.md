@@ -6,9 +6,8 @@ Browser-based client app for the Mesh CMS REST API.
 
 ```Shell
 npm install
-bower install
-tsd install
 ```
+Bower and typings will be installed in NPM postinstall.
 
 ### Dev build
 
