@@ -1,0 +1,32 @@
+<md-dialog ng-cloak>
+    <form>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h2 translate>CONFIRM_UNPUBLISH_TITLE</h2>
+
+                <span translate>CONFIRM_UNPUBLISH_NODE_MULTI_MESSAGE</span>
+
+                <md-radio-group ng-model="vm.unpublishAllLangs">
+                    <md-radio-button ng-value="false"
+                                     aria-label="Unpublish only current language version">
+                        <span translate>CONFIRM_UNPUBLISH_NODE_MULTI_CURRENT_MESSAGE</span> ({{:: vm.currentLangInfo.nativeName }})
+                    </md-radio-button>
+                    <md-radio-button ng-value="true"
+                                     aria-label="Unpublish all language versions">
+                        <span translate>CONFIRM_UNPUBLISH_NODE_MULTI_ALL_MESSAGE</span>
+                    </md-radio-button>
+                </md-radio-group>
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions>
+            <button ng-click="vm.unpublishNodeMulti()" class="btn btn-warn">
+                Unpublish
+            </button>
+            <button ng-click="vm.cancel()" class="btn">
+                Cancel
+            </button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

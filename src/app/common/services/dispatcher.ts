@@ -15,7 +15,8 @@ module meshAdminUi {
             explorerSearchParamsChanged: 'mesh:explorerSearchParamsChanged',
             explorerContentsChanged: 'mesh:explorerContentsChanged',
             explorerNodeTagsChanged: 'mesh:explorerNodeTagsChanged',
-            languageChanged: 'mesh:languageChanged'
+            languageChanged: 'mesh:languageChanged',
+            nodeUnpublished: 'mesh:nodeUnpublished'
         };
 
         private callbacks: any[] = [];

@@ -1,5 +1,9 @@
 # MeshAdminUI Changelog
 
+## Version 0.7.5 (2017-09-01)
+* Add support for Gentics Mesh 0.10.4
+* Add button for unpublishing node
+
 ## Version 0.7.4 (2017-09-01)
 * Add support for Gentics Mesh 0.10.0
 
