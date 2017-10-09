@@ -99,6 +99,11 @@ module meshAdminUi {
             dispatcher.subscribe(dispatcher.events.editorServiceNodeOpened, init);
             dispatcher.subscribe(dispatcher.events.editorServiceNodeClosed, empty);
             dispatcher.subscribe(dispatcher.events.explorerContentsChanged, emptyIfOpenNodeDeleted);
+            dispatcher.subscribe(dispatcher.events.nodeUnpublished, (event, node: INode) => {
+                if (this.node) {
+                    this.node.availableLanguages = node.availableLanguages;
+                }
+            });
 
             $scope.$on('$destroy', () => {
                 if (this.node !== undefined) {
@@ -109,7 +114,9 @@ module meshAdminUi {
         }
 
         public isPublished(): boolean {
-            return this.node && this.node.version && this.node.version.substr(-2) === '.0';
+            return this.node && this.node.availableLanguages && this.node.language && this.node.version &&
+                this.node.availableLanguages[this.node.language].version === this.node.version &&
+                this.node.availableLanguages[this.node.language].published;
         }
 
         public readyToPublish(): boolean {
@@ -135,6 +142,7 @@ module meshAdminUi {
                         const newVersionInfo = data.availableLanguages[this.node.language];
                         if (newVersionInfo) {
                             this.node.version = newVersionInfo.version;
+                            this.node.availableLanguages[this.node.language] = newVersionInfo;
                             this.wipService.updateItem(this.wipType, this.node);
                             this.notifyService.toast('PUBLISHED');
                             if (!savingNode){
@@ -218,10 +226,11 @@ module meshAdminUi {
         }
 
         private updateCurrentNodeAvailableLangs(node: INode, langCode: string) {
-            if (node.availableLanguages instanceof Array) {
-                node.availableLanguages.push(langCode);
-            } else {
-                node.availableLanguages = [node.language, langCode];
+            if (node.availableLanguages) {
+                node.availableLanguages[langCode] = {
+                    published: false,
+                    version: '0.1'
+                };
             }
         }
 
@@ -293,11 +302,13 @@ module meshAdminUi {
          * Did the user select to delete all available languages?
          */
         private checkDeleteAll(langs: string[], node: INode) {
-            if (!node.availableLanguages || node.availableLanguages.length < 2) {
+            const langCount = Object.keys(node.availableLanguages).length;
+
+            if (!node.availableLanguages || langCount < 2) {
                 return true;
             }
 
-            return node.availableLanguages.length === langs.length;
+            return langCount === langs.length;
         }
 
         private closeWipAndClearPane(node: INode) {

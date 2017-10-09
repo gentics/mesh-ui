@@ -453,6 +453,10 @@ module meshAdminUi {
             en: 'Move',
             de: 'Verschieben'
         },
+        'UNPUBLISH': {
+            en: 'Unpublish',
+            de: 'Depublizieren'
+        },
         'OKAY': {
             en: 'Okay',
             de: 'Okay'
@@ -519,6 +523,26 @@ module meshAdminUi {
         'USE_SELECTED_NODE': {
             en: 'Use selected node',
             de: 'Benutze ausgewählten Node'
+        },
+        'CONFIRM_UNPUBLISH_TITLE': {
+            en: 'Unpublish?',
+            de: 'Depublizieren?'
+        },
+        'CONFIRM_UNPUBLISH_NODE_MESSAGE': {
+            en: 'This node exists in the following languages. Check the ones you wish to unpublish:',
+            de: 'Dieser Node existiert in folgenden Sprachen. Wählen Sie die zu depublizierenden Versionen:'
+        },
+        'CONFIRM_UNPUBLISH_NODE_MULTI_MESSAGE': {
+            en: 'The selected nodes may exist in more than one language.',
+            de: 'Die ausgewählten Nodes könnten in mehreren Sprachen existieren.'
+        },
+        'CONFIRM_UNPUBLISH_NODE_MULTI_CURRENT_MESSAGE': {
+            en: 'Unpublish current language version only.',
+            de: 'Nur derzeitige Sprachversion depublizieren.'
+        },
+        'CONFIRM_UNPUBLISH_NODE_MULTI_ALL_MESSAGE': {
+            en: 'Unpublish all language versions.',
+            de: 'Alle Sprachversionen depublizieren.'
         },
         'CONFIRM_DELETE_TITLE': {
             en: 'Delete?',

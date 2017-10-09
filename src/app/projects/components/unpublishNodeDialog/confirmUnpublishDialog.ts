@@ -1,16 +1,16 @@
 module meshAdminUi {
 
-    class ConfirmDeleteDialogController {
+    class ConfirmUnpublishDialogController {
 
-        public langsToDelete: any = {};
+        public langsToUnpublish: any = {};
         public currentLangInfo: ILanguageInfo;
-        public deleteAllLangs: boolean = false;
+        public unpublishAllLangs: boolean = false;
 
         constructor(private $mdDialog: ng.material.IDialogService,
                     private i18nService: I18nService,
                     private node: INode) {
             if (node) {
-                this.langsToDelete[node.language] = true;
+                this.langsToUnpublish[node.language] = true;
             }
             this.currentLangInfo = i18nService.getCurrentLang();
         }
@@ -19,21 +19,21 @@ module meshAdminUi {
             return this.i18nService.getLanguageInfo(code);
         }
 
-        public deleteNode() {
-            let selectedLangs = Object.keys(this.langsToDelete).filter(code => {
-                return this.langsToDelete[code] === true;
+        public unpublishNode() {
+            let selectedLangs = Object.keys(this.langsToUnpublish).filter(code => {
+                return this.langsToUnpublish[code] === true;
             });
             this.$mdDialog.hide(selectedLangs);
         }
 
-        public getAvailableLanguages(): string[] {
-            return Object.keys(this.node.availableLanguages);
+        public unpublishNodeMulti() {
+            this.$mdDialog.hide({
+                unpublishAllLangs: this.unpublishAllLangs
+            });
         }
 
-        public deleteNodeMulti() {
-            this.$mdDialog.hide({
-                deleteAllLangs: this.deleteAllLangs
-            });
+        public getAvailableLanguages(): string[] {
+            return Object.keys(this.node.availableLanguages);
         }
 
         public cancel() {
@@ -44,5 +44,5 @@ module meshAdminUi {
 
 
     angular.module('meshAdminUi.projects')
-        .controller('ConfirmDeleteDialogController', ConfirmDeleteDialogController);
+        .controller('ConfirmUnpublishDialogController', ConfirmUnpublishDialogController);
 }

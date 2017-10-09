@@ -705,6 +705,21 @@ module meshAdminUi {
         }
 
         /**
+         * Unpublish the content from the server.
+         */
+        public unpublishNode(projectName: string, node: INode|string): ng.IPromise<any> {
+            this.clearCache('nodes');
+            let uuid = this.toUuid(node);
+            return this.meshDelete(projectName + '/nodes/' + uuid + '/published', { "recursive": true } );
+        }
+
+        public unpublishNodeLanguage(projectName: string, node: INode|string, langCode: string): ng.IPromise<any> {
+            this.clearCache('nodes');
+            let uuid = this.toUuid(node);
+            return this.meshDelete(projectName + '/nodes/' + uuid + '/languages/' + langCode + '/published',  { "recursive": true } );
+        }
+
+        /**
          * Delete multiple nodes in sequence. Returns the node uuids that were deleted.
          */
         public deleteNodes(projectName: string, nodes: INode[]|string[], deleteAllLanguages: boolean = false): ng.IPromise<string[]> {

@@ -12,9 +12,8 @@ Please note that we will discontinue to support and develop version 0.7.x of the
 
 ```Shell
 npm install
-bower install
-tsd install
 ```
+Bower and typings will be installed in NPM postinstall.
 
 ### Dev build
 

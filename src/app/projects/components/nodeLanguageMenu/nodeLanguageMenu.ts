@@ -25,16 +25,19 @@ module meshAdminUi {
                 return [];
             }
             return available.filter(lang => {
-                return this.node.availableLanguages.indexOf(lang.code) == -1;
+                return !this.node.availableLanguages[lang.code];
             });
         }
 
         public getAvailableLanguages(node: INode): ILanguageInfo[] {
-            let langCodes;
+            let langCodes: string[];
+            if (!node || !node.availableLanguages) {
+                return [];
+            }
             if (this.omitCurrentLanguage !== false && this.omitCurrentLanguage !== 'false') {
-                langCodes = node.availableLanguages.filter(lang => lang !== node.language);
+                langCodes = Object.keys(node.availableLanguages).filter(lang => lang !== node.language);
             } else {
-                langCodes = node.availableLanguages;
+                langCodes = Object.keys(node.availableLanguages);
             }
             return langCodes.map(code => this.i18nService.getLanguageInfo(code));
         }

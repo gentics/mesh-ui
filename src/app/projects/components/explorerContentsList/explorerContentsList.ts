@@ -47,6 +47,7 @@ module meshAdminUi {
                     private dataService: DataService,
                     private notifyService: NotifyService,
                     private deleteNodeDialog: DeleteNodeDialog,
+                    private unpublishNodeDialog: UnpublishNodeDialog,
                     private wipService: WipService,
                     private confirmActionDialog: ConfirmActionDialog) {
 
@@ -89,7 +90,7 @@ module meshAdminUi {
          * Returns true if the node is available in the current language.
          */
         public isAvailableInCurrentLang(node: INode): boolean {
-            return 0 < node.availableLanguages.filter(lang => this.i18nService.getCurrentLang().code === lang).length;
+            return !!node.availableLanguages[this.i18nService.getCurrentLang().code];
         }
 
         /**
@@ -148,7 +149,9 @@ module meshAdminUi {
         }
 
         public isPublished(node: INode): boolean {
-            return node.version && node.version.substr(-2) === '.0';
+            return node && node.availableLanguages && node.language && node.version &&
+                node.availableLanguages[node.language].version === node.version &&
+                node.availableLanguages[node.language].published;
         }
 
         /**
@@ -268,14 +271,40 @@ module meshAdminUi {
         }
 
         /**
+         * Show the unpublish node dialog and unpublish the node.
+         */
+        unpublishNode(node: INode, event: MouseEvent) {
+            event.preventDefault();
+            let projectName = this.contextService.getProject().name;
+
+            this.unpublishNodeDialog.show(node)
+                .then((langs: string[]) => {
+                    if (this.checkDeleteAll(langs, node)) {
+                        return this.dataService.unpublishNode(projectName, node);
+                    } else {
+                        let promises = langs.map(code => {
+                            return this.dataService.unpublishNodeLanguage(projectName, node, code);
+                        });
+                        return this.$q.all(promises);
+                    }
+                })
+                .then(() => this.dataService.getNode(projectName, node.uuid))                
+                .then((unpublishedNode: INode) => {
+                    this.notifyService.toast('UNPUBLISHED');
+                    node.availableLanguages = unpublishedNode.availableLanguages;
+                    this.dispatcher.publish(this.dispatcher.events.nodeUnpublished, unpublishedNode);
+                });
+        }
+
+        /**
          * Did the user select to delete all available languages?
          */
         private checkDeleteAll(langs: string[], node: INode) {
-            if (!node.availableLanguages || node.availableLanguages.length < 2) {
+            if (!node.availableLanguages || Object.keys(node.availableLanguages).length < 2) {
                 return true;
             }
 
-            return node.availableLanguages.length === langs.length;
+            return Object.keys(node.availableLanguages).length === langs.length;
         }
     }
 

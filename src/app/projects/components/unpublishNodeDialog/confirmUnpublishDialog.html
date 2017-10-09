@@ -2,13 +2,13 @@
     <form>
         <md-dialog-content>
             <div class="md-dialog-content">
-                <h2 translate>CONFIRM_DELETE_TITLE</h2>
+                <h2 translate>CONFIRM_UNPUBLISH_TITLE</h2>
 
                 <div ng-if="1 < vm.getAvailableLanguages().length">
-                    <span translate>CONFIRM_DELETE_NODE_MESSAGE</span>
+                    <span translate>CONFIRM_UNPUBLISH_NODE_MESSAGE</span>
 
                     <div ng-repeat="code in vm.getAvailableLanguages()">
-                        <md-checkbox ng-model="vm.langsToDelete[code]" md-no-ink
+                        <md-checkbox ng-model="vm.langsToUnpublish[code]" md-no-ink
                                      aria-label="{{:: code }}">
                             {{:: vm.getLangInfo(code).nativeName }} ({{:: vm.getLangInfo(code).name }})
                         </md-checkbox>
@@ -19,8 +19,8 @@
         </md-dialog-content>
 
         <md-dialog-actions>
-            <button ng-click="vm.deleteNode()" class="btn btn-warn">
-                <span translate>DELETE</span>
+            <button ng-click="vm.unpublishNode()" class="btn btn-warn">
+                <span translate>UNPUBLISH</span>
             </button>
             <button ng-click="vm.cancel()" class="btn">
                 <span translate>CANCEL</span>

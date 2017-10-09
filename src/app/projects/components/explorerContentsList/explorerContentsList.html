@@ -61,6 +61,9 @@
                                 <li ng-click="vm.moveNode(node, $event)">
                                     <a href="#" class="a-plain" translate>MOVE</a>
                                 </li>
+                                <li ng-if="vm.isPublished(node)" ng-click="vm.unpublishNode(node, $event)">
+                                    <a href="#" class="a-plain" translate>UNPUBLISH</a>
+                                </li>
                                 <li ng-click="vm.deleteNode(node, $event)" class="warn">
                                     <a href="#" class="a-plain" translate>DELETE</a>
                                 </li>
