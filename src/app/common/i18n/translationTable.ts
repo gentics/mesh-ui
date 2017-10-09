@@ -455,7 +455,7 @@ module meshAdminUi {
         },
         'UNPUBLISH': {
             en: 'Unpublish',
-            de: 'Depublizieren'
+            de: 'Offline nehmen'
         },
         'OKAY': {
             en: 'Okay',
@@ -526,11 +526,11 @@ module meshAdminUi {
         },
         'CONFIRM_UNPUBLISH_TITLE': {
             en: 'Unpublish?',
-            de: 'Depublizieren?'
+            de: 'Offline nehmen?'
         },
         'CONFIRM_UNPUBLISH_NODE_MESSAGE': {
             en: 'This node exists in the following languages. Check the ones you wish to unpublish:',
-            de: 'Dieser Node existiert in folgenden Sprachen. Wählen Sie die zu depublizierenden Versionen:'
+            de: 'Dieser Node existiert in folgenden Sprachen. Wählen Sie die zu offline nehmenden Versionen:'
         },
         'CONFIRM_UNPUBLISH_NODE_MULTI_MESSAGE': {
             en: 'The selected nodes may exist in more than one language.',
@@ -538,11 +538,11 @@ module meshAdminUi {
         },
         'CONFIRM_UNPUBLISH_NODE_MULTI_CURRENT_MESSAGE': {
             en: 'Unpublish current language version only.',
-            de: 'Nur derzeitige Sprachversion depublizieren.'
+            de: 'Nur derzeitige Sprachversion offline nehmen.'
         },
         'CONFIRM_UNPUBLISH_NODE_MULTI_ALL_MESSAGE': {
             en: 'Unpublish all language versions.',
-            de: 'Alle Sprachversionen depublizieren.'
+            de: 'Alle Sprachversionen offline nehmen.'
         },
         'CONFIRM_DELETE_TITLE': {
             en: 'Delete?',
