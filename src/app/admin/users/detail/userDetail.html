@@ -5,10 +5,15 @@
                 <span>
                     <a href="#" ui-sref="admin.users.list">Users</a>
                 </span>
-            </li><li><span>
+            </li>
+            <li ng-if="vm.isNew">
+                <span translate>CREATE_NEW_USER</span>
+            </li>
+            <li ng-if="!vm.isNew">
+                <span>
                     {{ vm.user.username }}
                 </span>
-        </li>
+            </li>
         </ul>
     </div>
 
@@ -16,11 +21,11 @@
 
         <md-input-container>
             <label translate>USERNAME</label>
-            <input type="text" ng-model="vm.user.username" ng-change="vm.modified = true">
+            <input type="text" ng-model="vm.user.username" ng-change="vm.modified = true" autocomplete="off">
         </md-input-container>
         <md-input-container>
             <label translate>PASSWORD</label>
-            <input type="password" ng-model="vm.user.password" ng-change="vm.modified = true">
+            <input type="password" ng-model="vm.user.password" ng-change="vm.modified = true" autocomplete="new-password">
         </md-input-container>
         <md-input-container>
             <label translate>FIRST_NAME</label>

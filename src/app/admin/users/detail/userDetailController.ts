@@ -75,7 +75,7 @@ module meshAdminUi {
          */
         private getUserData() {
             var userId = this.$stateParams.uuid;
-            if (userId) {
+            if (userId && userId !== 'new') {
                 return this.dataService.getUser(userId)
                     .then(data => this.user = data);
             } else {

@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.7.7 (2017-10-18)
+* Fix user detail page when creating a new user
+
 ## Version 0.7.5 (2017-09-01)
 * Add support for Gentics Mesh 0.10.4
 * Add button for unpublishing node
