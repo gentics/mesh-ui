@@ -137,9 +137,9 @@ declare module meshAdminUi {
     }
 
     export interface ISchema {
-        binary?: boolean;
         displayField: string;
         segmentField: string;
+        urlFields: string[];
         fields: ISchemaFieldDefinition[];
         container: boolean;
         meshVersion?: string;

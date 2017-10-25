@@ -23,7 +23,6 @@
         <input type="text" ng-model="vm.schema.description" ng-change="vm.schemaChanged()">
     </md-input-container>
 
-
     <div layout="row">
         <md-input-container flex flex-gt-sm="30">
             <label>Display Field</label>
@@ -37,6 +36,14 @@
             <md-select ng-model="vm.segmentFieldValue" ng-change="vm.updateSegmentField()" ng-model-options="{ trackBy: '$value.name'}">
                 <md-option ng-value="{ name: '' }" ></md-option>
                 <md-option ng-value="field" ng-repeat="field in vm.baseSchema.fields">{{ field.name || 'name property not set' }}</md-option>
+            </md-select>
+        </md-input-container>
+
+        <md-input-container flex flex-gt-sm="30">
+            <label>URL Fields</label>
+            <md-select ng-model="vm.urlFieldsValue" ng-change="vm.updateUrlFields()" multiple="true" ng-model-options="{ trackBy: '$value.name'}">
+                <md-option ng-value="{ name: '' }" ></md-option>
+                <md-option ng-value="field" ng-repeat="field in vm.urlFieldsOptions">{{ field.name || 'name property not set' }}</md-option>
             </md-select>
         </md-input-container>
     </div>

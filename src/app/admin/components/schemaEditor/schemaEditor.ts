@@ -116,6 +116,8 @@ module meshAdminUi {
         public microschemas: IMicroschema[];
         public displayFieldValue: ISchemaFieldDefinition;
         public segmentFieldValue: ISchemaFieldDefinition;
+        public urlFieldsValue: ISchemaFieldDefinition[];
+        public urlFieldsOptions: ISchemaFieldDefinition[];
 
         constructor($scope: ng.IScope) {
             super();
@@ -124,6 +126,8 @@ module meshAdminUi {
                     this.baseSchema = val;
                     this.displayFieldValue = this.schema.fields.filter(f => f.name === this.schema.displayField)[0];
                     this.segmentFieldValue = this.schema.fields.filter(f => f.name === this.schema.segmentField)[0];
+                    this.urlFieldsValue = this.schema.urlFields ? this.schema.fields.filter(f => this.schema.urlFields.indexOf(f.name) >= 0) : [];
+                    this.urlFieldsOptions = this.schema.fields.filter(f => f.type === "string" || (f.type === "list" &&  f.listType === "string"));
                     unwatch();
                 }
             });
@@ -136,6 +140,11 @@ module meshAdminUi {
 
         public updateSegmentField() {
             this.schema.segmentField = this.segmentFieldValue.name;
+            this.schemaChanged();
+        }
+
+        public updateUrlFields() {
+            this.schema.urlFields = this.urlFieldsValue.map(f => f.name);
             this.schemaChanged();
         }
     }

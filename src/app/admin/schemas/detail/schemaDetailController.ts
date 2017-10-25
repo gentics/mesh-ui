@@ -134,8 +134,8 @@ module meshAdminUi {
                 name: schema.name || '',
                 displayField: schema.displayField || '',
                 segmentField: schema.segmentField || '',
+                urlFields: schema.urlFields || [],
                 container: schema.container || false,
-                binary: schema.binary || false,
                 fields: schema.fields.map(removeHashKey) || []
             };
             return JSON.stringify(jsonObj, null, '\t');
@@ -201,9 +201,9 @@ module meshAdminUi {
          */
         private createEmptySchema(): ISchema {
             return {
-                binary: false,
                 displayField: '',
                 segmentField: '',
+                urlFields: [],
                 fields: [],
                 container: false,
                 name: ''
