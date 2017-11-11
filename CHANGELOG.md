@@ -1,5 +1,9 @@
 # MeshAdminUI Changelog
 
+## Version 0.8.0 (2017-11-11)
+* Add urlField handling to schema editor
+* Remove obsolete binary property from schema editor
+
 ## Version 0.7.7 (2017-10-18)
 * Fix user detail page when creating a new user
 
