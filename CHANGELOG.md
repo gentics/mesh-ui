@@ -1,7 +1,8 @@
 # MeshAdminUI Changelog
 
-## Version 0.8.1 (2017-11-28)
+## Version 0.8.1 (2017-11-29)
 * Fix trying to publish after failed save. This has been hiding the error message of the failed save.
+* Fix dropdown positioning in IE
 
 ## Version 0.8.0 (2017-11-11)
 * Add urlField handling to schema editor

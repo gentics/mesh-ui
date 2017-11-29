@@ -199,8 +199,7 @@ function dropdownBodyDirective() {
                  * Check to see if the dropdown body goes off the bottom of the viewport,
                  * and adjust it if so.
                  */
-                if (window.innerHeight + window.scrollY <= bodyTop + bodyHeight) {
-                    console.log('Adjusting body', bodyTop + bodyHeight);
+                if (window.innerHeight + (window.scrollY || window.pageYOffset) <= bodyTop + bodyHeight) {
                     bodyTop = bodyTop - bodyHeight;
                     container.classList.remove('top');
                     container.classList.add('bottom');
