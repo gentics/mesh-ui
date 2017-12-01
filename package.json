@@ -4,6 +4,7 @@
   "description": "Admin UI for Mesh",
   "main": "index.js",
   "scripts": {
+    "start": "npm run watch",
     "watch": "gulp watch",
     "postinstall": "bower install && tsd install",
     "dist": "gulp dist",
