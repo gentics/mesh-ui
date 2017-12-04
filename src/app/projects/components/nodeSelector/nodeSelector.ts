@@ -76,7 +76,7 @@ module meshAdminUi {
         private containersOnly: boolean;
         private includeRootNode: boolean;
         private startingNodeUuid: string;
-        private nodes;
+        private nodes: INode[];
         private breadcrumbs: any[];
         private filterNodes;
         private q: string;
@@ -165,6 +165,7 @@ module meshAdminUi {
             this.dataService.getChildNodes(this.currentProject.name, this.currentNode.uuid, { perPage: 9999999 })
                 .then(response => {
                     this.nodes = response.data.filter(node => this.isAllowedSchemaOrFolder(node));
+                    this.nodes.sort(displayFieldSorter);
                     if (this.includeRootNode) {
                        this.addRootNode();
                     }
@@ -204,14 +205,14 @@ module meshAdminUi {
                 this.nodes.unshift(rootNode);
             }
         }
-        
+
         /**
          * Returns true if the node is not available in the current language
          */
         public isUntranslated(node: INode): boolean {
             return node.language !== this.i18nService.getCurrentLang().code;
         }
-        
+
         public getDisplayName(node: INode): string {
             let displayName = node.fields[node.displayField];
             let langCode = node.language && node.language.toUpperCase();
@@ -256,6 +257,42 @@ module meshAdminUi {
                 startingNodeUuid: '=',
             }
         };
+    }
+
+    /**
+     * Use this function for Array.prototype.sort to compare strings in two objects.
+     * @param path The path to the string value. See also propByPath
+     */
+    function displayFieldSorter(a: INode, b: INode): number {
+        const aVal: string = propByPath(["fields", a.displayField], a);
+        const bVal: string = propByPath(["fields", b.displayField], b);
+        if (!aVal) {
+            return 1;
+        } else if (!bVal) {
+            return -1;
+        } else {
+            return aVal.toLocaleLowerCase().localeCompare(bVal.toLocaleLowerCase());
+        }
+    }
+
+    /**
+     * Returns the value that is nested in an object.
+     * Example:
+     * propByPath(["a", "b", "c"], obj) is equivalent to obj.a.b.c
+     * 
+     * @param path An array of property keys
+     * @param obj Any object
+     */
+    function propByPath<T>(path: string[], obj: any): T {
+        for (const prop of path) {
+            if (typeof obj === "object") {
+                obj = obj[prop];
+            } else {
+                console.warn("Could not find path in object", path, prop, obj);
+                return undefined;
+            }
+        }
+        return obj;
     }
 
     angular.module('meshAdminUi.projects')

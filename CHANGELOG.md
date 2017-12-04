@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.8.2 (upcoming)
+* Nodes in the "Select Node..." dialog are now sorted by their display name.
+
 ## Version 0.8.1 (2017-11-29)
 * Fix trying to publish after failed save. This has been hiding the error message of the failed save.
 * Fix dropdown positioning in IE
