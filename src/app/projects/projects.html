@@ -35,6 +35,15 @@
                             </mh-dropdown-body>
                         </mh-dropdown>
                     </div>
+                    <div>
+                        <md-tooltip md-direction="top" md-delay="0" ng-if="!vm.uploadSchemaAvailable">
+                            <span translate>NO_BINARY_SCHEMAS</span>
+                        </md-tooltip>
+                        <button class="btn btn-primary btn-small" aria-label="{{'UPLOAD_FILES' | translate}}"
+                            ng-disabled="!vm.uploadSchemaAvailable" ng-click="vm.uploadFiles()">
+                            <span translate>UPLOAD_FILES</span>
+                        </button>
+                    </div>
                     <div flex></div>
                     <button class="btn btn-primary btn-small" ng-disabled="!vm.nodesSelected()" ng-click="vm.openSelected()">
                         <span translate>EDIT</span>

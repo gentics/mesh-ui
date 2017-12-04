@@ -40,6 +40,14 @@ module meshAdminUi {
             en: 'Create node',
             de: 'Node erstellen'
         },
+        'UPLOAD_FILES': {
+            en: 'Upload files',
+            de: 'Dateien hochladen'
+        },
+        'NO_BINARY_SCHEMAS': {
+            en: 'This project has no schema with a binary field',
+            de: 'Dieses Projekt hat keine Schemas mit einem Binary-Feld'
+        }
         'CLOSE_ALL_TABS': {
             en: 'Close all tabs',
             de: 'Alle Tabs schließen'

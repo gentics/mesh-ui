@@ -12,6 +12,7 @@ module meshAdminUi {
         private contents = [];
         private projectName: string;
         private wipType: string = 'contents';
+        private uploadSchemaAvailable: boolean;
 
         constructor($scope: ng.IScope,
                     private explorerContentsListService: ExplorerContentsListService,
@@ -49,8 +50,12 @@ module meshAdminUi {
          * Fill the vm with all available schemas.
          */
         public populateSchemas() {
+            const hasBinaryField = (schema: ISchema) => schema.fields.some(field => field.type === 'binary');
             this.dataService.getProjectSchemas(this.projectName)
-                .then(result => this.schemas = result.data);
+                .then(result => {
+                    this.schemas = result.data;
+                    this.uploadSchemaAvailable = this.schemas.some(hasBinaryField);
+                });
         }
 
         public populateTags() {
