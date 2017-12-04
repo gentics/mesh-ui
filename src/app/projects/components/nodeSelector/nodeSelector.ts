@@ -10,6 +10,11 @@ module meshAdminUi {
         startingNodeUuid?: string;
     }
 
+    export interface LastOpenedSettings {
+        // Maps project uuid to node uuid of the container that was last opened
+        [projectUuid: string]: string;
+    }
+
     /**
      * The nodeSelector service is used to configure and display a node selector modal dialog.
      */
@@ -83,19 +88,31 @@ module meshAdminUi {
         private itemsPerPage = 20;
         private currentPage = 1;
 
+        public static readonly LOCAL_STORAGE_LAST_DIALOG_KEY = "lastDialogPosition";
+
         constructor(private dataService: DataService,
                     private i18nService: I18nService,
                     mu: MeshUtils,
-                    private contextService: ContextService) {
+                    private contextService: ContextService,
+                    private localStorageService,
+                    private $q: ng.IQService) {
 
             this.selectedNodesHash = {};
             this.currentProject = contextService.getProject();
             this.currentNode = contextService.getCurrentNode();
             this.selectedNodes = this.selectedNodes instanceof Array ? this.selectedNodes : [];
 
-            let initialUuid = this.startingNodeUuid || this.currentProject.rootNode.uuid;
+            let initialUuid = this.startingNodeUuid || this.getLastDialogPosition() || this.currentProject.rootNode.uuid;
 
             dataService.getNode(this.currentProject.name, initialUuid)
+                .catch(reason => {
+                    // In case the requested node does not exist (ex. if it was deleted)
+                    if (reason.status === 404) {
+                        return dataService.getNode(this.currentProject.name, this.currentProject.rootNode.uuid);
+                    } else {
+                        return $q.reject(reason);
+                    }
+                })
                 .then((node: INode) => {
                     if (this.startingNodeUuid && node.parentNode) {
                         // if the startingNodeUuid was specified, we want to go up a level
@@ -105,7 +122,10 @@ module meshAdminUi {
                         return node;
                     }
                 })
-                .then(node => this.currentNode = node)
+                .then(node => {
+                    this.currentNode = node;
+                    this.setLastDialogPosition();
+                })
                 .then(() => this.populateContents());
 
             this.filterNodes = (node: INode) => {
@@ -113,6 +133,21 @@ module meshAdminUi {
             }
         }
 
+        private getLastDialogPosition() {
+            const positions = this.localStorageService.get(NodeSelectorController.LOCAL_STORAGE_LAST_DIALOG_KEY);
+            if (positions) {
+                return positions[this.currentProject.uuid];
+            }
+        }
+
+        private setLastDialogPosition() {
+            let positions = this.localStorageService.get(NodeSelectorController.LOCAL_STORAGE_LAST_DIALOG_KEY);
+            if (!positions) {
+                positions = {};
+            }
+            positions[this.currentProject.uuid] = this.currentNode.uuid;
+            this.localStorageService.set(NodeSelectorController.LOCAL_STORAGE_LAST_DIALOG_KEY, positions);
+        }
 
         public toggleSelect(node: INode, event: Event) {
             if (this.isAllowedSchema(node)) {
@@ -156,6 +191,7 @@ module meshAdminUi {
                 this.dataService.getNode(this.currentProject.name, node.uuid)
                     .then(node => {
                         this.currentNode = node;
+                        this.setLastDialogPosition();
                         this.populateContents();
                     });
             }
