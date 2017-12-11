@@ -531,7 +531,7 @@ module meshAdminUi {
         private createNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             return this.meshPost(projectName + '/nodes', node, queryParams)
                 .then((newNode: INode) => {
-                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version, 'POST')
+                    return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version)
                         .then(result => {
                             if (result === false) {
                                 // no uploads were required
@@ -550,7 +550,7 @@ module meshAdminUi {
             return this.meshPost(projectName + '/nodes/' + node.uuid, node, queryParams)
                 .then(
                     (newNode: INode) => {
-                        return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version, 'POST')
+                        return this.uploadBinaryFields(projectName, node.fields, newNode.uuid, newNode.version)
                             .then(result => {
                                 if (result === false) {
                                     // no uploads were required
@@ -603,7 +603,7 @@ module meshAdminUi {
          * Given a node, inspect each field for any that have a File value. This means a file has been selected
          * in the editor for upload.
          */
-        private uploadBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string, versionNumber: string, method: string): ng.IPromise<any> {
+        private uploadBinaryFields(projectName: string, fields: INodeFields, nodeUuid: string, versionNumber: string): ng.IPromise<any> {
             let binaryFields = Object.keys(fields)
                 .filter(key => fields[key] instanceof File)
                 .map(key => {
@@ -615,7 +615,7 @@ module meshAdminUi {
 
             if (0 < binaryFields.length) {
                 let uploads = binaryFields
-                    .map(field => this.uploadBinaryFile(projectName, nodeUuid, field.name, field.file, versionNumber, method));
+                    .map(field => this.uploadBinaryFile(projectName, nodeUuid, field.name, field.file, versionNumber));
 
                 return this.$q.all(uploads)
                     // re-get the node as it will now contain the correct binary field properties.
@@ -628,18 +628,22 @@ module meshAdminUi {
         /**
          * Uploads a binary file to a specified field of a node.
          */
-        private uploadBinaryFile(projectName: string, nodeUuid: string, fieldName: string, binaryFile: File, versionNumber: string, method: string = 'POST'): ng.IPromise<INode> {
+        public uploadBinaryFile(projectName: string, nodeUuid: string, fieldName: string, binaryFile: File, versionNumber: string, notifyCallback?: Function): ng.IPromise<INode> {
             let lang = this.i18nService.getCurrentLang().code;
+            if (typeof notifyCallback !== 'function') {
+                notifyCallback = () => {};
+            }
+            const rethrow = (err) => {throw err};
             return this.Upload.upload({
                 url: this.apiUrl + projectName + `/nodes/${nodeUuid}/binary/${fieldName}`,
-                method: method,
+                method: 'POST',
                 data: {
                     file: binaryFile,
                     filename: binaryFile.name,
                     language: lang,
                     version: versionNumber
                 }
-            });
+            }).then(response => response.data, rethrow, notifyCallback);
         }
 
         /**

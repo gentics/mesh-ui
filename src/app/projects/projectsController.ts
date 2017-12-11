@@ -12,6 +12,7 @@ module meshAdminUi {
         private contents = [];
         private projectName: string;
         private wipType: string = 'contents';
+        private uploadSchemaAvailable: boolean;
 
         constructor($scope: ng.IScope,
                     private explorerContentsListService: ExplorerContentsListService,
@@ -22,7 +23,8 @@ module meshAdminUi {
                     private wipService: WipService,
                     private dispatcher: Dispatcher,
                     private nodeSelector: NodeSelector,
-                    private notifyService: NotifyService) {
+                    private notifyService: NotifyService,
+                    private multiFileUpload: MultiFileUpload) {
 
             this.projectName = contextService.getProject().name;
             this.createPermission = contextService.getCurrentNode().permissions.create;
@@ -50,7 +52,10 @@ module meshAdminUi {
          */
         public populateSchemas() {
             this.dataService.getProjectSchemas(this.projectName)
-                .then(result => this.schemas = result.data);
+                .then(result => {
+                    this.schemas = result.data;
+                    this.uploadSchemaAvailable = this.schemas.some(MeshUtils.hasBinaryField);
+                });
         }
 
         public populateTags() {
@@ -115,6 +120,14 @@ module meshAdminUi {
                     this.notifyService.toast('DELETED_NODES', { count: deletedUuids.length });
                 })
                 .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
+        }
+
+        /**
+         * Upload multiple files at once
+         */
+        public uploadFiles(): void {
+            this.multiFileUpload.open(this.contextService.getCurrentNode().uuid)
+            .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
         }
 
         public nodesSelected(): boolean {

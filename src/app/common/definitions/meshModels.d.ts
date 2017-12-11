@@ -21,7 +21,7 @@ declare module meshAdminUi {
     }
 
     export interface IReference {
-        uuid: string;
+        uuid?: string;
     }
 
     export interface IProject extends IMeshBaseProps {
@@ -124,7 +124,8 @@ declare module meshAdminUi {
 
     export interface ISchemaFieldDefinition {
         name: string;
-        type: string;
+        // See https://getmesh.io/docs/beta/building-blocks.html#_schema_field_types
+        type: "string" | "number" | "date" | "boolean" | "html" | "micronode" | "node" | "list" | "binary";
         label?: string;
         required?: boolean;
         defaultValue?: any;
@@ -133,7 +134,7 @@ declare module meshAdminUi {
         step?: number;
         options?: string[];
         allow?: string[];
-        listType?: string;
+        listType?: "string" | "number" | "date" | "boolean" | "html" | "micronode" | "node";
     }
 
     export interface ISchema {

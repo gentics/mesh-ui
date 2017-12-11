@@ -103,6 +103,28 @@ module meshAdminUi {
         }
 
         /**
+         * Checks if the schema has at least one binary field
+         */
+        public static hasBinaryField(schema: ISchema): boolean {
+            return schema.fields.some(MeshUtils.isBinaryField);
+        }
+
+        /**
+         * Checks if a field is a binary field
+         */
+        public static isBinaryField(field: ISchemaFieldDefinition): boolean {
+            return field.type === 'binary';
+        }
+
+        /**
+         * Reduces an array of numbers to its sum.
+         * To be used with Array.prototype.reduce
+         */
+        public static sum(previousValue: number, currentValue: number): number {
+            return previousValue + currentValue;
+        }
+
+        /**
          * Reads the mime type of a binary field and returns true if it is an image.
          */
         public isImageField(field: IBinaryField): boolean {

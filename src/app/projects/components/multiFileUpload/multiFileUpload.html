@@ -1,0 +1,76 @@
+<md-dialog flex="50" class="node-selector-dialog">
+    <md-dialog-content class="md-dialog-content">
+        <h2 translate="UPLOAD_FILES"></h2>
+        <div class="multi-file-upload-container" layout="column">
+            <div layout="row">
+                <md-input-container flex flex-gt-sm="50">
+                    <label translate="SCHEMA"></label>
+                    <md-select ng-model="vm.selectedSchema" ng-disabled="vm.isUploading" ng-change="vm.updateFields()" ng-model-options="{ trackBy: '$value.uuid'}">
+                        <md-option ng-value="schema" ng-repeat="schema in vm.schemas">{{ schema.name }}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex flex-gt-sm="50">
+                    <label translate="FIELD"></label>
+                    <md-tooltip md-direction="top" md-delay="0" ng-if="!vm.selectedSchema">
+                            <span translate="CHOOSE_SCHEMA_FIRST"></span>
+                    </md-tooltip>
+                    <md-select ng-disabled="!vm.selectedSchema || vm.isUploading" ng-change="vm.checkValidity()" ng-model="vm.selectedField" ng-model-options="{ trackBy: '$value.name'}">
+                        <md-option ng-value="field" ng-repeat="field in vm.fields">{{ field.name }}</md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="row">                
+                <md-checkbox aria-label="{{'PUBLISH_NODES' | translate}}" ng-model="vm.publishNodes"
+                    class="checkbox-horizonal-align"
+                    ng-disabled="vm.isUploading">
+                    <md-tooltip md-direction="top" md-delay="0">
+                        <span translate="PUBLISH_NODES_TOOLTIP"></span>
+                    </md-tooltip>
+                    <span translate="PUBLISH_NODES"></span>
+                </md-checkbox>
+            </div>
+            <div class="binary-file-input">
+                <div class="binary-preview-container" ng-class="{ 'has-files': vm.filesChosen }">
+
+                    <div ng-if="vm.files" layout="row" layout-wrap>
+                        <div flex flex-gt-sm="20" class="file-container" ng-repeat="file in vm.files"
+                            layout="row" layout-align="center center">
+                            <binary-file-preview src-file="file" transform="vm.transform"></binary-file-preview>
+                        </div>
+                    </div>
+
+                    <div class="drop-box"
+                            ng-model="vm.files"
+                            ngf-change="vm.filesChanged()"
+                            ngf-select=""
+                            ngf-drop=""
+                            ngf-multiple="true"
+                            ngf-drag-over-class="dragover"
+                            ngf-fix-orientation="false"
+                            layout="row"
+                            layout-align="center center">
+                        <div ng-hide="vm.filesChosen" class="hint" translate="CHOOSE_FILES"></div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="vm.isUploading">
+                <md-progress-linear
+                    md-mode="determinate"
+                    value="{{ vm.uploadProgress }}"
+                ></md-progress-linear>
+                Uploading... {{vm.uploadProgress | number : 0}}%
+            </div>
+            <div class="mh-error-alert" ng-if="!vm.isValid" layout="row" layout-align="center center">
+                <i class="icon-error"></i> <span translate="MULTI_UPLOAD_INVALID_SCHEMA"></span>
+            </div>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <button ng-click="vm.upload()" ng-disabled="!vm.uploadEnabled()" class="btn">
+            <span translate="UPLOAD"></span>
+        </button>
+        <button ng-click="vm.cancel()" class="btn">
+            <span translate="CANCEL"></span>
+        </button>
+    </md-dialog-actions>
+</md-dialog>

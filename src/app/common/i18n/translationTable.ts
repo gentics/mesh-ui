@@ -40,6 +40,38 @@ module meshAdminUi {
             en: 'Create node',
             de: 'Node erstellen'
         },
+        'UPLOAD_FILES': {
+            en: 'Upload files',
+            de: 'Dateien hochladen'
+        },
+        'CHOOSE_FILES': {
+            en: 'Select or drop files...',
+            de: 'Dateien auswählen oder hier ablegen...'
+        },
+        'CHOOSE_SCHEMA_FIRST': {
+            en: 'Choose a schema first',
+            de: 'Wählen Sie zuerst ein Schema'
+        },
+        'UPLOAD_COMPLETE': {
+            en: 'Upload complete',
+            de: 'Upload abgeschlossen'
+        },
+        'PUBLISH_NODES': {
+            en: 'Publish nodes',
+            de: 'Nodes veröffentlichen'
+        },
+        'PUBLISH_NODES_TOOLTIP': {
+            en: 'Automatically publish all nodes after uploading',
+            de: 'Automatisch alle Nodes nach dem Hochladen veröffentlichen'
+        },
+        'MULTI_UPLOAD_INVALID_SCHEMA': {
+            en: 'This schema has other fields that are required when creating a node. Please choose another field, create the node manually or make the field optional.',
+            de: 'Dieses Schema hat andere notwendige Felder. Bitte wählen Sie ein anderes Feld, erstellen Sie den Node manuell oder ändern Sie das Schema, sodass die Felder optional sind.'
+        },
+        'NO_BINARY_SCHEMAS': {
+            en: 'This project has no schema with a binary field',
+            de: 'Dieses Projekt hat keine Schemas mit einem Binary-Feld'
+        },
         'CLOSE_ALL_TABS': {
             en: 'Close all tabs',
             de: 'Alle Tabs schließen'
@@ -416,6 +448,10 @@ module meshAdminUi {
         'TITLE': {
             en: 'Title',
             de: 'Titel'
+        },
+        'FIELD': {
+            en: 'Field',
+            de: 'Feld'
         },
         'SCHEMA': {
             en: 'Schema',
