@@ -32,6 +32,14 @@ module meshAdminUi {
                 parsedMessage = this.i18n(message, values);
             } else if (message instanceof Array) {
                 parsedMessage = message.map(m => this.i18n(m, values)).join('<br>');
+            } else if (typeof message === 'object') {
+                if (message.data && message.data.message) {
+                    parsedMessage = message.data.message;
+                } else if (message.statusText) {
+                    parsedMessage = message.statusText;
+                } else {
+                    parsedMessage = JSON.stringify(message, null, '\t');    
+                }
             } else {
                 parsedMessage = JSON.stringify(message, null, '\t');
             }

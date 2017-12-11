@@ -23,7 +23,8 @@ module meshAdminUi {
                     private wipService: WipService,
                     private dispatcher: Dispatcher,
                     private nodeSelector: NodeSelector,
-                    private notifyService: NotifyService) {
+                    private notifyService: NotifyService,
+                    private multiFileUpload: MultiFileUpload) {
 
             this.projectName = contextService.getProject().name;
             this.createPermission = contextService.getCurrentNode().permissions.create;
@@ -50,11 +51,10 @@ module meshAdminUi {
          * Fill the vm with all available schemas.
          */
         public populateSchemas() {
-            const hasBinaryField = (schema: ISchema) => schema.fields.some(field => field.type === 'binary');
             this.dataService.getProjectSchemas(this.projectName)
                 .then(result => {
                     this.schemas = result.data;
-                    this.uploadSchemaAvailable = this.schemas.some(hasBinaryField);
+                    this.uploadSchemaAvailable = this.schemas.some(MeshUtils.hasBinaryField);
                 });
         }
 
@@ -120,6 +120,14 @@ module meshAdminUi {
                     this.notifyService.toast('DELETED_NODES', { count: deletedUuids.length });
                 })
                 .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
+        }
+
+        /**
+         * Upload multiple files at once
+         */
+        public uploadFiles(): void {
+            this.multiFileUpload.open(this.contextService.getCurrentNode().uuid)
+            .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
         }
 
         public nodesSelected(): boolean {

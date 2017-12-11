@@ -21,7 +21,7 @@ declare module meshAdminUi {
     }
 
     export interface IReference {
-        uuid: string;
+        uuid?: string;
     }
 
     export interface IProject extends IMeshBaseProps {
