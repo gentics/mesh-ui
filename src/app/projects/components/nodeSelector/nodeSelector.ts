@@ -88,7 +88,7 @@ module meshAdminUi {
         private itemsPerPage = 20;
         private currentPage = 1;
 
-        public static readonly LOCAL_STORAGE_LAST_DIALOG_KEY = "lastDialogPosition";
+        public static LOCAL_STORAGE_LAST_DIALOG_KEY = "lastDialogPosition";
 
         constructor(private dataService: DataService,
                     private i18nService: I18nService,
@@ -319,7 +319,7 @@ module meshAdminUi {
      * @param path An array of property keys
      * @param obj Any object
      */
-    function propByPath<T>(path: string[], obj: any): T {
+    function propByPath(path: string[], obj: any): any {
         for (const prop of path) {
             if (typeof obj === "object") {
                 obj = obj[prop];

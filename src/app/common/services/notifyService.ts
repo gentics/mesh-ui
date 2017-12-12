@@ -25,7 +25,7 @@ module meshAdminUi {
          * @param message - the string message or translation token to display
          * @param values {Object} - interpolation object for translation.
          */
-        public toast(message: string|string[]|{ [key: string] : any }, values: any = {}) {
+        public toast(message: any, values: any = {}) {
             let parsedMessage;
 
             if (typeof message === 'string') {
