@@ -329,8 +329,8 @@ module meshAdminUi {
             let displayField = schema.displayField;
             let segmentField = schema.segmentField;
 
-            if (typeof node.displayName === 'string') {
-                nodeClone.displayName += ` (${suffix})`
+            if (typeof node.fields[displayField] === 'string') {
+                nodeClone.fields[displayField] += ` (${suffix})`
             }
             if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
                 if (node.fields[segmentField].sha512sum !== undefined) {
