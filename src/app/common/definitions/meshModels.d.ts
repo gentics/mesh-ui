@@ -1,5 +1,10 @@
 declare module meshAdminUi {
 
+    /**
+     * From https://getmesh.io/docs/beta/features.html#_link_resolving
+     */
+    type LinkResolvingType = 'off' | 'short' | 'medium' | 'full'
+
     interface IPermissions {
         create: boolean;
         read: boolean;

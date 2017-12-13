@@ -39,6 +39,12 @@
         </div>
     </div>
 
+    <div ng-if="vm.liveUrl" layout="row" layout-align="start" class="editor-top-bar">
+        <a target="_blank" ng-href="{{ vm.liveUrl }}">
+            <i class="icon-open-in-new"></i> <span translate="LIVE_URL"></span>
+        </a>
+    </div>
+
     <form-builder fields="vm.node.fields"
                   schema="vm.schema.fields"
                   project-name="vm.projectName"

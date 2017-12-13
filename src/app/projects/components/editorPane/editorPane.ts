@@ -10,6 +10,11 @@ module meshAdminUi {
         };
     }
 
+    interface LiveUrlConfig {
+        providePath?: boolean;
+        urlResolver?(node: INode, path?: string): string;
+    }
+
     /**
      * Controller for the node edit/create form.
      */
@@ -25,6 +30,7 @@ module meshAdminUi {
         private selectedLangs: any;
         private isLoaded: boolean;
         private schema: ISchema;
+        private liveUrl: string;
 
         constructor(private $scope: ng.IScope,
                     private $q: ng.IQService,
@@ -81,7 +87,8 @@ module meshAdminUi {
                 this.binaryFile = undefined;
                 this.getNodeData(schemaUuid, parentNodeUuid)
                     .then(() => this.isLoaded = true)
-                    .then(() => $location.search('edit', this.node.uuid));
+                    .then(() => $location.search('edit', this.node.uuid))
+                    .then(() => this.initLiveUrl());
 
                 ignoreNext = (typeof nodeUuid === 'undefined');
             };
@@ -111,6 +118,21 @@ module meshAdminUi {
                 }
                 dispatcher.unsubscribeAll(init, empty, emptyIfOpenNodeDeleted);
             });
+        }
+
+        private initLiveUrl() {
+            const config: LiveUrlConfig = meshUiConfig.liveUrl;
+            if (!config || !(typeof config.urlResolver === 'function')) {
+                return;
+            }
+            let url: ng.IPromise<string>;
+            if (config.providePath) {
+                url = this.dataService.getPath(this.projectName, this.node.uuid)
+                    .then(path => config.urlResolver(this.node, path));
+            } else {
+                url = this.$q.when(config.urlResolver(this.node));
+            }
+            url.then(u => this.liveUrl = u);
         }
 
         public isPublished(): boolean {

@@ -1146,6 +1146,32 @@ module meshAdminUi {
         }
 
         /**
+         * Executes a GraphQL query.
+         */
+        public graphQl<T>(project: string, query: string, variables?: any, queryParams?: INodeQueryParams): ng.IPromise<T> {
+            return this.meshPost(`${project}/graphql`, {query, variables}, queryParams)
+                .then(response => response.data);
+        }
+
+        /**
+         * Gets the path of a node.
+         * @param nodeUuid Uuid of the node
+         * @param linkType The type of the path to receive.
+         *      See https://getmesh.io/docs/beta/features.html#_link_resolving for more details.
+         */
+        public getPath(projectName: string, nodeUuid: string): ng.IPromise<string> {
+            const query = `
+              query($uuid:String){
+                node(uuid:$uuid){
+                  path
+                }
+              }`
+
+            return this.graphQl<any>(projectName, query, {uuid: nodeUuid})
+                .then(response => response.node && response.node.path);
+        }
+
+        /**
          * Sort function to be used with array.sort()
          */
         private sortNodesBySchemaName(a: INode, b: INode): number {
