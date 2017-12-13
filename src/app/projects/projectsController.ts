@@ -80,12 +80,13 @@ module meshAdminUi {
          */
         public moveSelected() {
             let uuids = this.explorerContentsListService.getSelection();
+            const parent = this.contextService.getCurrentNode().parentNode;
 
             this.nodeSelector.open({ 
                 containersOnly: true, 
                 includeRootNode: true, 
                 title: 'SELECT_DESTINATION',
-                startingNodeUuid: this.contextService.getCurrentNode().parentNode.uuid
+                startingNodeUuid: parent && parent.uuid
             })
                 .then((selection: INode[]) => this.dataService.moveNodes(this.projectName, uuids, selection[0].uuid))
                 .then(movedUuids => this.notifyService.toast('MOVED_NODES', { count: movedUuids.length }))
