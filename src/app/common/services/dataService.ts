@@ -507,15 +507,19 @@ module meshAdminUi {
             return filtered;
         }
 
+        private setQueryParamsLanguage(queryParams: INodeQueryParams) {
+            const currLangCode = this.i18nService.getCurrentLang().code;
+            const availableLangs = this.i18nService.getAvailableLanguages();
+            queryParams.lang = this.mu.sortLanguages(availableLangs, currLangCode).join(',');
+        }
+
         /**
          * Get a single node.
          */
         public getNode(projectName, uuid, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             queryParams = queryParams || {};
+            this.setQueryParamsLanguage(queryParams);
 
-            const currLangCode = this.i18nService.getCurrentLang().code;
-            const availableLangs = this.i18nService.getAvailableLanguages();
-            queryParams.lang = this.mu.sortLanguages(availableLangs, currLangCode).join(',');
             return this.meshGet(projectName + '/nodes/' + uuid, queryParams);
         }
 
@@ -523,6 +527,9 @@ module meshAdminUi {
          * Create or update the node object on the server.
          */
         public persistNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
+            queryParams = queryParams || {};
+            this.setQueryParamsLanguage(queryParams);
+
             let isNew = !node.hasOwnProperty('created');
             let sanitizedNode = this.sanitizeFields(node);
             this.clearCache('nodes');
