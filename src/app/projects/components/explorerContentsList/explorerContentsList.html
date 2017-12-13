@@ -31,7 +31,7 @@
                     <a class="node-title" href=""
                           ng-class="{'container': node.container}"
                           ng-click="vm.openNode(node, $event)">
-                        {{:: node.fields[node.displayField] || 'Untitled (' + node.uuid + ')' }}
+                        {{:: node.displayName || 'Untitled (' + node.uuid + ')' }}
                     </a>
                 </div>
 

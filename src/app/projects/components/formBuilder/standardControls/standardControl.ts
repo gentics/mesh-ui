@@ -275,7 +275,7 @@ module meshAdminUi {
          */
         public getNodeName(): string {
             let node = this.fieldModel.value;
-            let displayName = node && node.fields && node.fields[node.displayField];
+            let displayName = node && node.displayName;
             let uuid = node && node.uuid;
             let noneSelected = this.i18n('NO_NODE_SELECTED');
             return displayName || uuid || noneSelected;

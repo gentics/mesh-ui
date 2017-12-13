@@ -69,7 +69,7 @@ module meshAdminUi {
          * TODO: allow other field types: https://jira.gentics.com/browse/CL-408
          */
         public validDisplayFieldsFilter(field: ISchemaFieldDefinition) {
-            const validTypes = ['string'];
+            const validTypes = ['string', 'binary'];
             return -1 < validTypes.indexOf(field.type);
         }
 

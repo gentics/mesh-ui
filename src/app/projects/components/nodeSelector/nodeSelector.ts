@@ -211,7 +211,7 @@ module meshAdminUi {
 
                     let breadcrumbLabels = breadcrumbs.map(node => {
                         return {
-                            name: node.fields[node.displayField],
+                            name: node.displayName,
                             uuid: node.uuid
                         };
                     });
@@ -250,7 +250,7 @@ module meshAdminUi {
         }
 
         public getDisplayName(node: INode): string {
-            let displayName = node.fields[node.displayField];
+            let displayName = node.displayName;
             let langCode = node.language && node.language.toUpperCase();
             let langString = this.isUntranslated(node) && langCode ? ` (${langCode})` : '';
             return displayName + langString;
@@ -300,8 +300,8 @@ module meshAdminUi {
      * @param path The path to the string value. See also propByPath
      */
     function displayFieldSorter(a: INode, b: INode): number {
-        const aVal: string = propByPath(["fields", a.displayField], a);
-        const bVal: string = propByPath(["fields", b.displayField], b);
+        const aVal: string = a.displayName;
+        const bVal: string = b.displayName;
         if (!aVal) {
             return 1;
         } else if (!bVal) {

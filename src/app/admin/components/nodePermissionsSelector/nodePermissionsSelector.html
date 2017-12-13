@@ -20,7 +20,7 @@
             <ul>
                 <li ng-repeat="node in vm.breadcrumbs" ng-if="node">
                   <span>
-                       <a href="#" ng-click="vm.openNode($event, node)">{{ node.name || node.fields[node.displayField] }}</a>
+                       <a href="#" ng-click="vm.openNode($event, node)">{{ node.name || node.displayName }}</a>
                   </span>
                 </li>
             </ul>
@@ -30,10 +30,10 @@
             <tr ng-class="{'folder': node.container || node.rootNode }" ng-repeat="node in vm.nodes | filter: vm.filterNodes track by node.uuid">
                 <td>
                     <span ng-if="!node.container && !node.rootNode">
-                        {{:: node.name || node.fields[node.displayField] }}
+                        {{:: node.name || node.displayName }}
                     </span>
                     <a href="#" ng-click="vm.openNode($event, node)" ng-if="node.container || node.rootNode">
-                        {{:: node.name || node.fields[node.displayField] }}</a>
+                        {{:: node.name || node.displayName }}</a>
                 </td>
                 <td>
                     <recursive-toggle-checkbox ng-if=":: node.container || node.rootNode"

@@ -3,10 +3,10 @@
          class="wip-tab"
          ng-class="{ 'active' : vm.selectedIndex === $index }"
          ng-click="vm.open(wip.item.uuid)"
-         aria-label="{{ wip.item.fields[wip.item.displayField] }}"
-         title="{{ wip.item.fields[wip.item.displayField] }}">
+         aria-label="{{ wip.item.displayName }}"
+         title="{{ wip.item.displayName }}">
 
-        <a href="" class="a-plain label" ng-class="{ modified: vm.isModified(wip.item.uuid) }">{{ wip.item.fields[wip.item.displayField] || 'Untitled ' + wip.item.schema.name  }}</a>
+        <a href="" class="a-plain label" ng-class="{ modified: vm.isModified(wip.item.uuid) }">{{ wip.item.displayName || 'Untitled ' + wip.item.schema.name  }}</a>
         <a href="" ng-click="vm.closeWip($index, $event)" class="a-plain close"><i class="icon-close"></i></a>
 
     </div>

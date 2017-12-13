@@ -40,7 +40,7 @@ module meshAdminUi {
                     .then(breadcrumbs => {
                         let breadcrumbLabels = breadcrumbs.map(node => {
                             return {
-                                name: node.fields[node.displayField],
+                                name: node.displayName,
                                 uuid: node.uuid
                             };
                         });
