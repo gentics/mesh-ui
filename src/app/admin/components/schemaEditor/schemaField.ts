@@ -18,6 +18,7 @@ module meshAdminUi {
             { name: 'micronode', icon: 'icon-view-quilt' },
             { name: 'binary', icon: 'icon-attach-file' }
         ];
+        public listTypes = this.types.filter(type => type.name !== 'list' && type.name !== 'binary');
 
         public microschemaAllow: string = '';
         public microschemasAllow: string[] = [];

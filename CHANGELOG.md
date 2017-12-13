@@ -4,6 +4,7 @@
 * Nodes in the "Select Node..." dialog are now sorted by their display name. (#15)
 * The "Select Node..." dialog now remembers the last position it was opened. (#12)
 * Add multi binary upload dialog. Users can now upload multiple files at once by clicking the button next to the create node button.
+* The dropdown for list types in the schema editor now only shows valid list types.
 
 ## Version 0.8.1 (2017-11-29)
 * Fix trying to publish after failed save. This has been hiding the error message of the failed save.

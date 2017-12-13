@@ -59,7 +59,7 @@
                 <md-select required
                            ng-model="vm.field.listType"
                            ng-change="vm.onChange()">
-                    <md-option ng-value="type.name" ng-repeat="type in :: vm.types">
+                    <md-option ng-value="type.name" ng-repeat="type in :: vm.listTypes">
                         <i class="{{ type.icon }}"></i> {{ type.name }}
                     </md-option>
                 </md-select>
