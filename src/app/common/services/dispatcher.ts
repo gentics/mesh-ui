@@ -13,6 +13,7 @@ module meshAdminUi {
             editorServiceNodeOpened: 'mesh:editorServiceNodeOpened',
             editorServiceNodeClosed: 'mesh:editorServiceNodeClosed',
             explorerSearchParamsChanged: 'mesh:explorerSearchParamsChanged',
+            nodeLoaded: 'mesh:nodeLoaded',
             explorerContentsChanged: 'mesh:explorerContentsChanged',
             explorerNodeTagsChanged: 'mesh:explorerNodeTagsChanged',
             languageChanged: 'mesh:languageChanged',

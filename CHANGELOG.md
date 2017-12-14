@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.8.3 (upcoming)
+* Nodes are now always reloaded when the edit button is clicked in the explorer content list. (#16)
+
 ## Version 0.8.2 (2017-12-14)
 * Nodes in the "Select Node..." dialog are now sorted by their display name. (#15)
 * The "Select Node..." dialog now remembers the last position it was opened. (#12)

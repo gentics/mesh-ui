@@ -431,6 +431,7 @@ module meshAdminUi {
                     return this.dataService.getNode(this.projectName, this.currentNodeId, { expandAll: true })
                         .then(node => {
                             this.node = node;
+                            this.dispatcher.publish(this.dispatcher.events.nodeLoaded, node);
                             if (!wipContent) {
                                 this.openInWipService(this.node);
                             } else {

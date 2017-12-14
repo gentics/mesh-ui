@@ -49,7 +49,9 @@ module meshAdminUi {
                     private deleteNodeDialog: DeleteNodeDialog,
                     private unpublishNodeDialog: UnpublishNodeDialog,
                     private wipService: WipService,
-                    private confirmActionDialog: ConfirmActionDialog) {
+                    private confirmActionDialog: ConfirmActionDialog,
+                    private selectiveCache: SelectiveCache,
+                    private $mdDialog: ng.material.IDialogService) {
 
             explorerContentsListService.clearSelection();
             const searchTermHandler = (event, params: INodeSearchParams) => {
@@ -133,7 +135,44 @@ module meshAdminUi {
         public editNode(node: INode, event: ng.IAngularEvent) {
             event.preventDefault();
             event.stopPropagation();
-            this.editorService.open(node.uuid);
+            this.selectiveCache.remove('nodes');
+
+            // Reload explorer list if node was loaded during this button click
+            const loaded = (event, changedNode: INode) => {
+                if (changedNode.uuid === node.uuid) {
+                    this.dispatcher.unsubscribeAll(loaded);
+                    this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged);
+                }
+            }
+            this.dispatcher.subscribe(this.dispatcher.events.nodeLoaded, loaded);
+
+            const projectName = this.contextService.getProject().name;
+            let wip = this.wipService.getItem(this.wipType, node.uuid);
+            let action : ng.IPromise<any>;
+            if (wip && this.wipService.isModified(this.wipType, wip)) {
+                action = this.openChangedDialog(wip).then(response => {
+                    if (response === 'save') {
+                        this.notifyService.toast('SAVED_CHANGES');
+                        return this.dataService.persistNode(projectName, wip)
+                            .then(() => this.dataService.updateNodeTags(projectName, wip, wip.tags))
+                            .then(() => this.dispatcher.publish(this.dispatcher.events.explorerContentsChanged));
+                    } else if (response === 'discard') {
+                        return this.wipService.closeItem(this.wipType, wip);
+                    }
+                });
+            } else {
+                action = this.$q.when();
+            }
+            action.then(() => this.editorService.open(node.uuid));
+        }
+
+        private openChangedDialog(node: INode): ng.IPromise<'save' | 'discard'> {
+            return this.$mdDialog.show({
+                templateUrl: 'common/components/wipTabs/wipTabsCloseDialog.html',
+                controller: 'wipTabsDialogController',
+                controllerAs: 'vm',
+                locals: { node }
+            });
         }
 
         public getBinaryRepresentation(item) {
