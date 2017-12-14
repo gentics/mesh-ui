@@ -193,7 +193,7 @@ module meshAdminUi {
             if (!query) {
                 return true;
             }
-            return -1 < node.fields[node.displayField].toLowerCase().indexOf(query.toLowerCase());
+            return -1 < node.displayName.toLowerCase().indexOf(query.toLowerCase());
         }
 
 

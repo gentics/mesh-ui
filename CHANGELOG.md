@@ -5,6 +5,10 @@
 * The "Select Node..." dialog now remembers the last position it was opened. (#12)
 * Add multi binary upload dialog. Users can now upload multiple files at once by clicking the button next to the create node button.
 * The dropdown for list types in the schema editor now only shows valid list types.
+* Binary fields can now be used as display fields. The filename is used as the display name for the node. (#11)
+* Fixed a bug that causes image preview to disappear after saving a node. (#18)
+* It is now possible to specify the URL to the frontend of a system. This allows users to quickly go to the page that represents the node in the system.
+  See the default `mesh-ui-config.js` or the [online documentation](https://getmesh.io/docs/beta/user-interface.html#_configuration) for more details. (#14)
 
 ## Version 0.8.1 (2017-11-29)
 * Fix trying to publish after failed save. This has been hiding the error message of the failed save.

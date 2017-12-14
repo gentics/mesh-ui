@@ -507,15 +507,19 @@ module meshAdminUi {
             return filtered;
         }
 
+        private setQueryParamsLanguage(queryParams: INodeQueryParams) {
+            const currLangCode = this.i18nService.getCurrentLang().code;
+            const availableLangs = this.i18nService.getAvailableLanguages();
+            queryParams.lang = this.mu.sortLanguages(availableLangs, currLangCode).join(',');
+        }
+
         /**
          * Get a single node.
          */
         public getNode(projectName, uuid, queryParams?: INodeQueryParams): ng.IPromise<INode> {
             queryParams = queryParams || {};
+            this.setQueryParamsLanguage(queryParams);
 
-            const currLangCode = this.i18nService.getCurrentLang().code;
-            const availableLangs = this.i18nService.getAvailableLanguages();
-            queryParams.lang = this.mu.sortLanguages(availableLangs, currLangCode).join(',');
             return this.meshGet(projectName + '/nodes/' + uuid, queryParams);
         }
 
@@ -523,6 +527,9 @@ module meshAdminUi {
          * Create or update the node object on the server.
          */
         public persistNode(projectName: string, node: INode, queryParams?: INodeQueryParams): ng.IPromise<INode> {
+            queryParams = queryParams || {};
+            this.setQueryParamsLanguage(queryParams);
+
             let isNew = !node.hasOwnProperty('created');
             let sanitizedNode = this.sanitizeFields(node);
             this.clearCache('nodes');
@@ -1136,6 +1143,32 @@ module meshAdminUi {
             };
 
             return getBreadcrumbs(project, currentNode);
+        }
+
+        /**
+         * Executes a GraphQL query.
+         */
+        public graphQl<T>(project: string, query: string, variables?: any, queryParams?: INodeQueryParams): ng.IPromise<T> {
+            return this.meshPost(`${project}/graphql`, {query, variables}, queryParams)
+                .then(response => response.data);
+        }
+
+        /**
+         * Gets the path of a node.
+         * @param nodeUuid Uuid of the node
+         * @param linkType The type of the path to receive.
+         *      See https://getmesh.io/docs/beta/features.html#_link_resolving for more details.
+         */
+        public getPath(projectName: string, nodeUuid: string): ng.IPromise<string> {
+            const query = `
+              query($uuid:String){
+                node(uuid:$uuid){
+                  path
+                }
+              }`
+
+            return this.graphQl<any>(projectName, query, {uuid: nodeUuid})
+                .then(response => response.node && response.node.path);
         }
 
         /**

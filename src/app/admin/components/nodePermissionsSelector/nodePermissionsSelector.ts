@@ -60,7 +60,7 @@ module meshAdminUi {
                 if (this.isProjectNode(node)) {
                     name = node.name;
                 } else {
-                    name = node.fields[node.displayField];
+                    name = node.displayName;
                 }
                 return name.toLowerCase().indexOf(this.filter.toLowerCase()) > -1;
             } else {

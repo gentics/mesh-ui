@@ -42,7 +42,7 @@ module meshAdminUi {
             if (this.searchAll) {
                 text += this.i18n('WHOLE_PROJECT');
             } else {
-                text += this.currentNode.fields[this.currentNode.displayField] || this.currentProject.name;
+                text += this.currentNode.displayName || this.currentProject.name;
             }
             return text + ', # to filter by tag';
         }

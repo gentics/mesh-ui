@@ -934,7 +934,7 @@ define([
                     that.hrefField.setValue('');
                     that.resolveNodeName(that.selectedNode)
                         .then(node => {
-                            that._selectedNodeLabel.setValue('Linked to node: ' + (node.fields[node.displayField] || node.uuid));
+                            that._selectedNodeLabel.setValue('Linked to node: ' + (node.displayName || node.uuid));
                         });
                 } else {
                     that.selectedNode = undefined;

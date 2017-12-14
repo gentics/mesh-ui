@@ -229,7 +229,7 @@ module meshAdminUi {
 
         public setNodePermissions(node: INode, project:IProject, permissions: IPermissionsRequest) {
             this.dataService.setNodePermissions(this.role.uuid, project.uuid, node.uuid, permissions)
-                .then(() => this.notifyService.toast('PERMISSIONS_SET_ON_NODE', { name: node.fields[node.displayField] }));
+                .then(() => this.notifyService.toast('PERMISSIONS_SET_ON_NODE', { name: node.displayName }));
         }
 
         public setProjectPermissions(permissions: IPermissionsRequest, project?: IProject) {

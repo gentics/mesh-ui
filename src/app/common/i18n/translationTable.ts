@@ -186,6 +186,10 @@ module meshAdminUi {
         'REMOVE_NODE': {
             en: 'Remove node',
             de: 'Node löschen'
+        },
+        'LIVE_URL': {
+            en: 'Live URL',
+            de: 'Live-URL'
         }
     };
 
