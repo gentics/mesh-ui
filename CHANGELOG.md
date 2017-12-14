@@ -1,6 +1,6 @@
 # MeshAdminUI Changelog
 
-## Version 0.8.2 (upcoming)
+## Version 0.8.2 (2017-12-14)
 * Nodes in the "Select Node..." dialog are now sorted by their display name. (#15)
 * The "Select Node..." dialog now remembers the last position it was opened. (#12)
 * Add multi binary upload dialog. Users can now upload multiple files at once by clicking the button next to the create node button.
