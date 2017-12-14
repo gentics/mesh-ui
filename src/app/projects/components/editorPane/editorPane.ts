@@ -1,5 +1,7 @@
 module meshAdminUi {
 
+    declare var meshUiConfig;
+
     function editorPaneDirective() {
         return {
             restrict: 'E',
