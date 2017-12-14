@@ -2,6 +2,7 @@
 
 ## Version 0.8.3 (upcoming)
 * Nodes are now always reloaded when the edit button is clicked in the explorer content list. (#16)
+* Fix issue that was causing a click on a node in the explorer list to open it like a container, even if it is not a container.
 
 ## Version 0.8.2 (2017-12-14)
 * Nodes in the "Select Node..." dialog are now sorted by their display name. (#15)

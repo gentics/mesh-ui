@@ -18,7 +18,7 @@
                 <div flex layout="row" layout-align="start center">
                     <span class="parent-node-title container"
                           ng-if=":: vm.isGlobal() && node.parentNode.displayName"
-                          ng-click=":: vm.openNode(node.parentNode, $event)">
+                          ng-click=":: vm.openNode(node.parentNode, $event, true)">
                         {{:: node.parentNode.displayName}}
                     </span>
 

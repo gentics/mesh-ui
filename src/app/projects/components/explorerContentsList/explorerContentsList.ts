@@ -98,11 +98,11 @@ module meshAdminUi {
         /**
          * Transition to the contentEditor view for the given uuid
          */
-        public openNode(node: INode, event?: ng.IAngularEvent) {
+        public openNode(node: INode, event?: ng.IAngularEvent, asFolder: boolean = false) {
             event.preventDefault();
             event.stopPropagation();
 
-            if (node.container || node.hasOwnProperty('displayName')) {
+            if (node.container || asFolder) {
                 this.$state.go('projects.node', {
                     projectName: this.contextService.getProject().name, nodeId: node.uuid
                 });
