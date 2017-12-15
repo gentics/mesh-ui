@@ -33,6 +33,7 @@ module meshAdminUi {
         private isLoaded: boolean;
         private schema: ISchema;
         private liveUrl: string;
+        private microschemas: IMicroschema[];
 
         constructor(private $scope: ng.IScope,
                     private $q: ng.IQService,
@@ -91,6 +92,7 @@ module meshAdminUi {
                     .then(() => this.isLoaded = true)
                     .then(() => $location.search('edit', this.node.uuid))
                     .then(() => this.initLiveUrl());
+                this.dataService.getMicroschemas().then(resp => this.microschemas = resp.data);
 
                 ignoreNext = (typeof nodeUuid === 'undefined');
             };
@@ -369,9 +371,9 @@ module meshAdminUi {
                 return false;
             }
 
-            const fieldIsValidReducer = (valid: boolean, field: ISchemaFieldDefinition) => {
+            const fieldIsValidReducer = (container: {fields: INodeFields}) => (valid: boolean, field: ISchemaFieldDefinition) => {
                 if (field.required) {
-                    let nodeField = this.node.fields[field.name];
+                    let nodeField = container.fields[field.name];
                     if (this.fieldIsEmpty(nodeField, field)) {
                         return false;
                     }
@@ -379,11 +381,18 @@ module meshAdminUi {
                         return false;
                     }
                 }
+                if (field.type === 'micronode' && this.microschemas) {
+                    const nodeField = container.fields[field.name];
+                    const microschema = this.microschemas.filter(m => m.name === nodeField.microschema.name)[0];
+                    if (microschema) {
+                        return microschema.fields.reduce(fieldIsValidReducer(nodeField), valid);
+                    }
+                }
                 return valid;
             };
 
             if (this.schema && this.schema.fields instanceof Array) {
-                return this.schema.fields.reduce(fieldIsValidReducer, true);
+                return this.schema.fields.reduce(fieldIsValidReducer(this.node), true);
             }
         }
 
