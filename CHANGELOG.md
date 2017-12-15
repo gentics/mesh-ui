@@ -1,10 +1,13 @@
 # MeshAdminUI Changelog
 
+## Version 0.8.4 (upcoming)
+* Fixed an issue that always showed the name in the explorer content list in english. (#23)
+
 ## Version 0.8.3 (2017-12-15)
 * Nodes are now always reloaded when the edit button is clicked in the explorer content list. (#16)
 * Fixed an issue that was causing a click on a node in the explorer list to open it like a container, even if it is not a container.
 * Dropdowns for required string fields with the allowed attribute now properly require a value to be set in order to save the node.
-* Fixed a issue where contents of a micronode were not validated before saving a node.
+* Fixed an issue where contents of a micronode were not validated before saving a node.
 
 ## Version 0.8.2 (2017-12-14)
 * Nodes in the "Select Node..." dialog are now sorted by their display name. (#15)
