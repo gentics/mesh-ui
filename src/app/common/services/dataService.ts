@@ -448,7 +448,7 @@ module meshAdminUi {
          * @param queryParams
          */
         public searchNodes(query: ISearchQuery, projectName: string, queryParams?: INodeListQueryParams): ng.IPromise<IListResponse<INode>> {
-            queryParams.lang = '*';
+            this.setQueryParamsLanguage(queryParams);
             const url = `${projectName}/search/nodes`;
             return this.meshPost(url, query, queryParams)
                 .then((response: IListResponse<INode>) => {
