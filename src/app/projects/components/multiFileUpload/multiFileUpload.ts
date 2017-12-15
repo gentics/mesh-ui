@@ -114,7 +114,6 @@ module meshAdminUi {
                 this.notifyService.toast('UPLOAD_COMPLETE');
                 this.close();
             }).catch(err => {
-                console.log(err);
                 this.notifyService.toast(err)
             });
         }
@@ -139,7 +138,6 @@ module meshAdminUi {
                     }
                 )
             }).then(node => {
-                console.log(node);
                 if (this.publishNodes) {
                     return this.dataService.publishNode(this.projectName, node)
                         .then(resp => node);
