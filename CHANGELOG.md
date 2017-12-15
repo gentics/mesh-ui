@@ -1,6 +1,6 @@
 # MeshAdminUI Changelog
 
-## Version 0.8.3 (upcoming)
+## Version 0.8.3 (2017-12-15)
 * Nodes are now always reloaded when the edit button is clicked in the explorer content list. (#16)
 * Fixed an issue that was causing a click on a node in the explorer list to open it like a container, even if it is not a container.
 * Dropdowns for required string fields with the allowed attribute now properly require a value to be set in order to save the node.
