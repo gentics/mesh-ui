@@ -3,7 +3,7 @@
     <md-input-container ng-if="0 < vm.fieldModel.allow.length"
                         ng-class="{ 'display-field' : vm.fieldModel.isDisplayField }">
         <label>{{ vm.fieldModel.label || vm.fieldModel.name }}</label>
-        <md-select ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate" md-no-ink>
+        <md-select ng-model="vm.value" ng-change="vm.fieldModel.update(vm.value)" ng-readonly="!vm.fieldModel.canUpdate" ng-required="vm.fieldModel.required" md-no-ink>
             <md-option ng-value="opt" ng-repeat="opt in vm.fieldModel.allow">{{ opt }}</md-option>
         </md-select>
     </md-input-container>
