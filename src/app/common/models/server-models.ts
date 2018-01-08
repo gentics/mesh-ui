@@ -1,5 +1,4 @@
-import { SchemaReference } from './common.model';
-// Auto-generated from the RAML for Version 0.9.19 of the Gentics Mesh REST API.
+// Auto-generated from the RAML for Version 0.13.1 of the Gentics Mesh REST API.
 
 export type Integer = number;
 
@@ -19,30 +18,78 @@ export interface ApiEndpoints {
                 200: MeshServerInfoModelFromServer;
             };
         };
-        /** Return the mesh system status. */
+        /** Loads the cluster status information. */
+        '/admin/cluster/status': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: ClusterStatusResponse;
+            responseTypes: {
+                /** Cluster status. */
+                200: ClusterStatusResponse;
+            };
+        };
+        /**
+         * Invokes a consistency check of the graph database and returns a list of found
+         * issues
+         */
+        '/admin/consistency/check': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: ConsistencyCheckResponse;
+            responseTypes: {
+                /** Consistency check report */
+                200: ConsistencyCheckResponse;
+            };
+        };
+        /** List all currently queued jobs. */
+        '/admin/jobs': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: JobListResponse;
+            responseTypes: {
+                /** List of jobs. */
+                200: JobListResponse;
+            };
+        };
+        /** Load a specific job. */
+        '/admin/jobs/{jobUuid}': {
+            request: {
+                urlParams: {
+                    /**
+                     * Uuid of the job.
+                     * @example "24cbb4916457411b8bb4916457711b5e"
+                     */
+                    jobUuid: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: JobResponse;
+            responseTypes: {
+                /** Job information. */
+                200: JobResponse;
+            };
+        };
+        /** Return the Gentics Mesh server status. */
         '/admin/status': {
             request: {
                 urlParams?: { };
                 queryParams?: { };
                 body?: undefined;
             };
-            responseType: GenericMessageResponse;
+            responseType: MeshStatusResponse;
             responseTypes: {
-                /** System status */
-                200: GenericMessageResponse;
-            };
-        };
-        /** Return the current schema or node migration status. */
-        '/admin/status/migrations': {
-            request: {
-                urlParams?: { };
-                queryParams?: { };
-                body?: undefined;
-            };
-            responseType: GenericMessageResponse;
-            responseTypes: {
-                /** Migration status. */
-                200: GenericMessageResponse;
+                /** Status of the Gentics Mesh server. */
+                200: MeshStatusResponse;
             };
         };
         /** Login via basic authentication. */
@@ -124,7 +171,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "d3047743ee0f4aa6847743ee0fcaa664"
+                     * @example "2623844472f1483ca3844472f1e83cdd"
                      */
                     groupUuid: string;
                 };
@@ -155,7 +202,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "265da54d364e44669da54d364e846628"
+                     * @example "b90d5aa2e2064f008d5aa2e2062f00b7"
                      */
                     groupUuid: string;
                 };
@@ -196,7 +243,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "aa805c39c6ed45f4805c39c6edd5f449"
+                     * @example "688dd10ac6fa4a878dd10ac6fa1a87ab"
                      */
                     groupUuid: string;
                 };
@@ -239,11 +286,24 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "eb4630733e8d4b468630733e8ddb46ed"
+                     * @example "a4ecf9b645064c46acf9b64506ec469d"
                      */
                     microschemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {
+                    /**
+                     * Specifies the version to be loaded (default: 'draft'). Can either be
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
+                     * @example "1.1"
+                     */
+                    version?: string;
+                    /**
+                     * Specifies the release to be used for loading data. The latest project release
+                     * will be used if this parameter is omitted.
+                     * @example "24cf92691c7641158f92691c76c115ef"
+                     */
+                    release?: string;
+                };
                 body?: undefined;
             };
             responseType: MicroschemaResponse;
@@ -293,7 +353,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "b7eb04b45c50438cab04b45c50438cc8"
+                     * @example "8fb239c8d2284bc3b239c8d228ebc33f"
                      */
                     projectUuid: string;
                 };
@@ -360,7 +420,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "64b6c92894514a4fb6c92894510a4ff6"
+                     * @example "aca0ff2e4f494729a0ff2e4f49d7295e"
                      */
                     roleUuid: string;
                 };
@@ -380,14 +440,14 @@ export interface ApiEndpoints {
                     /**
                      * API path to the element.
                      * @example
-                     *     "projects/4344a77c8a74473d84a77c8a74b73dc1"
-                     *     "projects/e5c63202e73146aa863202e731d6aa29/nodes/34f350bcada4479eb350bcada4379e82"
+                     *     "projects/ccafa8daba1e4a20afa8daba1e5a206d"
+                     *     "projects/572498f18359431aa498f18359631a09/nodes/8da50bcc4bcf4968a50bcc4bcf29681f"
                      *     ""
                      */
                     path: string;
                     /**
                      * Uuid of the role.
-                     * @example "a258086719f2458198086719f26581d2"
+                     * @example "2cf73e39392e4537b73e39392e5537a6"
                      */
                     roleUuid: string;
                 };
@@ -430,46 +490,30 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "fafbbc3a5eec44c1bbbc3a5eec14c166"
+                     * @example "e5b05d4215a84db3b05d4215a8edb36d"
                      */
                     schemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {
+                    /**
+                     * Specifies the version to be loaded (default: 'draft'). Can either be
+                     * published/draft or version number. e.g.: _0.1_, _1.0_, _draft_, _published_.
+                     * @example "1.1"
+                     */
+                    version?: string;
+                    /**
+                     * Specifies the release to be used for loading data. The latest project release
+                     * will be used if this parameter is omitted.
+                     * @example "24cf92691c7641158f92691c76c115ef"
+                     */
+                    release?: string;
+                };
                 body?: undefined;
             };
             responseType: SchemaResponse;
             responseTypes: {
                 /** Loaded schema. */
                 200: SchemaResponse;
-            };
-        };
-        /** Create search index mappings. */
-        '/search/createMappings': {
-            request: {
-                urlParams?: { };
-                queryParams?: { };
-                body?: undefined;
-            };
-            responseType: GenericMessageResponse;
-            responseTypes: {
-                /** Create all mappings. */
-                200: GenericMessageResponse;
-            };
-        };
-        /**
-         * Invokes a full reindex of the search indices. This operation may take some time
-         * to complete.
-         */
-        '/search/reindex': {
-            request: {
-                urlParams?: { };
-                queryParams?: { };
-                body?: undefined;
-            };
-            responseType: GenericMessageResponse;
-            responseTypes: {
-                /** Invoked reindex command for all elements. */
-                200: GenericMessageResponse;
             };
         };
         /** Returns the search index status. */
@@ -558,7 +602,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "698bf45547a748bd8bf45547a7b8bd25"
+                     * @example "a65c02fea66449fa9c02fea66479fa06"
                      */
                     userUuid: string;
                 };
@@ -629,7 +673,7 @@ export interface ApiEndpoints {
                     path: string;
                     /**
                      * Uuid of the user.
-                     * @example "cdc026900c5a40648026900c5a9064ce"
+                     * @example "b32edf5b9b844941aedf5b9b842941bd"
                      */
                     userUuid: string;
                 };
@@ -801,7 +845,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "bf39f90ab2984cb2b9f90ab2983cb2d3"
+                     * @example "dd9eba4ce3b949069eba4ce3b9b9066c"
                      */
                     nodeUuid: string;
                 };
@@ -877,7 +921,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "b74ac23ceecd44b78ac23ceecd94b78f"
+                     * @example "67c838391f834cf48838391f83dcf47c"
                      */
                     nodeUuid: string;
                 };
@@ -933,7 +977,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "dca8b6367dee4975a8b6367dee09750f"
+                     * @example "ce44c53104be4ee484c53104be4ee4e6"
                      */
                     nodeUuid: string;
                 };
@@ -1005,7 +1049,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "1e894a4ea9c14687894a4ea9c1b68705"
+                     * @example "4af18abd36bb4754b18abd36bbe754a7"
                      */
                     nodeUuid: string;
                 };
@@ -1029,7 +1073,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "9ec686479cdb48f18686479cdb58f1cf"
+                     * @example "a17f5bcf81bb42f4bf5bcf81bb32f478"
                      */
                     nodeUuid: string;
                 };
@@ -1066,7 +1110,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "5b494dcb7d5c4808894dcb7d5c3808bc"
+                     * @example "29c99b35883e42f0899b35883e92f073"
                      */
                     nodeUuid: string;
                 };
@@ -1090,7 +1134,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "737aa967c585481abaa967c585581ab4"
+                     * @example "ee9be878767e41fc9be878767ef1fce5"
                      */
                     nodeUuid: string;
                 };
@@ -1157,7 +1201,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "b733fa9433cc4d29b3fa9433cc9d292b"
+                     * @example "a7b5402e933748cbb5402e9337c8cb45"
                      */
                     releaseUuid: string;
                 };
@@ -1184,7 +1228,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "664326d054a1483e8326d054a1483ee5"
+                     * @example "1fda49c05a0a44f89a49c05a0a24f8ee"
                      */
                     releaseUuid: string;
                 };
@@ -1202,64 +1246,10 @@ export interface ApiEndpoints {
                 };
                 body?: undefined;
             };
-            responseType: MicroschemaReferenceFromServer[];
+            responseType: ReleaseInfoMicroschemaListFromServer;
             responseTypes: {
                 /** List of microschemas. */
-                200: MicroschemaReferenceFromServer[];
-            };
-        };
-        /**
-         * Invoked the micronode migration for not yet migrated micronodes of microschemas
-         * that are assigned to the release.
-         */
-        '/{project}/releases/{releaseUuid}/migrateMicroschemas': {
-            request: {
-                urlParams: {
-                    /**
-                     * Name of the project.
-                     * @example "demo"
-                     */
-                    project: string;
-                    /**
-                     * Uuid of the release
-                     * @example "7bc5248fd14141df85248fd14121dfb9"
-                     */
-                    releaseUuid: string;
-                };
-                queryParams?: { };
-                body?: undefined;
-            };
-            responseType: GenericMessageResponse;
-            responseTypes: {
-                /** schema_migration_invoked */
-                200: GenericMessageResponse;
-            };
-        };
-        /**
-         * Invoked the node migration for not yet migrated nodes of schemas that are
-         * assigned to the release.
-         */
-        '/{project}/releases/{releaseUuid}/migrateSchemas': {
-            request: {
-                urlParams: {
-                    /**
-                     * Name of the project.
-                     * @example "demo"
-                     */
-                    project: string;
-                    /**
-                     * Uuid of the release
-                     * @example "eac010579be54f328010579be55f325b"
-                     */
-                    releaseUuid: string;
-                };
-                queryParams?: { };
-                body?: undefined;
-            };
-            responseType: GenericMessageResponse;
-            responseTypes: {
-                /** schema_migration_invoked */
-                200: GenericMessageResponse;
+                200: ReleaseInfoMicroschemaListFromServer;
             };
         };
         /** Load schemas that are assigned to the release and return a paged list response. */
@@ -1273,7 +1263,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "e5b0174cb81f4bbdb0174cb81fcbbd6f"
+                     * @example "2c313bd4c60f48acb13bd4c60f28ac07"
                      */
                     releaseUuid: string;
                 };
@@ -1291,10 +1281,10 @@ export interface ApiEndpoints {
                 };
                 body?: undefined;
             };
-            responseType: SchemaReferenceFromServer[];
+            responseType: ReleaseInfoSchemaListFromServer;
             responseTypes: {
                 /** Loaded schema list. */
-                200: SchemaReferenceFromServer[];
+                200: ReleaseInfoSchemaListFromServer;
             };
         };
         /** Read multiple schemas and return a paged list response. */
@@ -1327,7 +1317,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "8c47bbdeda85436187bbdeda85f361ae"
+                     * @example "b691184afb21455291184afb2195524d"
                      */
                     schemaUuid: string;
                 };
@@ -1381,7 +1371,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "b52a153423c14046aa153423c1604689"
+                     * @example "8b0678aa1cc849288678aa1cc8d92868"
                      */
                     tagFamilyUuid: string;
                 };
@@ -1408,7 +1398,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "bda0e746b00a4096a0e746b00a009630"
+                     * @example "eea44dd9ab0a49e9a44dd9ab0aa9e996"
                      */
                     tagFamilyUuid: string;
                 };
@@ -1443,12 +1433,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "231430fe022349189430fe0223191859"
+                     * @example "1a46f26579bd455b86f26579bde55b98"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "bd30996ccde0458bb0996ccde0958b12"
+                     * @example "0fe81376cf194435a81376cf198435ca"
                      */
                     tagUuid: string;
                 };
@@ -1475,12 +1465,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "6eae6762e02f498eae6762e02ff98e9c"
+                     * @example "79e6bc03e6d147e0a6bc03e6d1e7e086"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "0f270c95d76b40b0a70c95d76b60b051"
+                     * @example "1249e9847ef342ee89e9847ef3d2ee70"
                      */
                     tagUuid: string;
                 };
@@ -1595,6 +1585,19 @@ export interface ApiEndpoints {
                 200: GenericMessageResponse;
             };
         };
+        /** Invoke the processing of remaining jobs. */
+        '/admin/processJobs': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: GenericMessageResponse;
+            responseTypes: {
+                /** Response message. */
+                200: GenericMessageResponse;
+            };
+        };
         /** Login via this dedicated login endpoint. */
         '/auth/login': {
             request: {
@@ -1620,13 +1623,16 @@ export interface ApiEndpoints {
                 201: GroupResponse;
             };
         };
-        /** Update the group with the given uuid. */
+        /**
+         * Update the group with the given uuid. The group is created if no group with the
+         * specified uuid could be found.
+         */
         '/groups/{groupUuid}': {
             request: {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "d3047743ee0f4aa6847743ee0fcaa664"
+                     * @example "2623844472f1483ca3844472f1e83cdd"
                      */
                     groupUuid: string;
                 };
@@ -1645,12 +1651,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "8307882920eb4b6b87882920eb2b6bbb"
+                     * @example "43b566e8a8864fdab566e8a8860fdab1"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the role.
-                     * @example "fc7cd9ea1c104010bcd9ea1c1020104f"
+                     * @example "a2809b941fcc40b7809b941fcc70b78e"
                      */
                     roleUuid: string;
                 };
@@ -1669,12 +1675,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "7024e305c99747c7a4e305c99707c7df"
+                     * @example "f135cc4833014beeb5cc4833010beee7"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the user which should be removed from the group.
-                     * @example "15b8272d4a3d432fb8272d4a3dd32f4a"
+                     * @example "d77bdeaa248941e2bbdeaa2489b1e28f"
                      */
                     userUuid: string;
                 };
@@ -1706,7 +1712,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "eb4630733e8d4b468630733e8ddb46ed"
+                     * @example "a4ecf9b645064c46acf9b64506ec469d"
                      */
                     microschemaUuid: string;
                 };
@@ -1729,7 +1735,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "f3fe11e4f3064730be11e4f3064730c4"
+                     * @example "6b37042d21f84e97b7042d21f86e97ba"
                      */
                     microschemaUuid: string;
                 };
@@ -1751,7 +1757,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "b49c10230711425e9c10230711f25e3d"
+                     * @example "e101783da3fe4f9d81783da3fe4f9d5a"
                      */
                     microschemaUuid: string;
                 };
@@ -1777,13 +1783,16 @@ export interface ApiEndpoints {
                 201: ProjectResponse;
             };
         };
-        /** Update the project with the given uuid. */
+        /**
+         * Update the project with the given uuid. The project is created if no project with
+         * the specified uuid could be found.
+         */
         '/projects/{projectUuid}': {
             request: {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "b7eb04b45c50438cab04b45c50438cc8"
+                     * @example "8fb239c8d2284bc3b239c8d228ebc33f"
                      */
                     projectUuid: string;
                 };
@@ -1809,13 +1818,16 @@ export interface ApiEndpoints {
                 201: RoleResponse;
             };
         };
-        /** Update the role with the given uuid. */
+        /**
+         * Update the role with the given uuid. The role is created if no role with the
+         * specified uuid could be found.
+         */
         '/roles/{roleUuid}': {
             request: {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "64b6c92894514a4fb6c92894510a4ff6"
+                     * @example "aca0ff2e4f494729a0ff2e4f49d7295e"
                      */
                     roleUuid: string;
                 };
@@ -1835,14 +1847,14 @@ export interface ApiEndpoints {
                     /**
                      * API path to the element.
                      * @example
-                     *     "projects/4344a77c8a74473d84a77c8a74b73dc1"
-                     *     "projects/e5c63202e73146aa863202e731d6aa29/nodes/34f350bcada4479eb350bcada4379e82"
+                     *     "projects/ccafa8daba1e4a20afa8daba1e5a206d"
+                     *     "projects/572498f18359431aa498f18359631a09/nodes/8da50bcc4bcf4968a50bcc4bcf29681f"
                      *     ""
                      */
                     path: string;
                     /**
                      * Uuid of the role.
-                     * @example "a258086719f2458198086719f26581d2"
+                     * @example "2cf73e39392e4537b73e39392e5537a6"
                      */
                     roleUuid: string;
                 };
@@ -1874,7 +1886,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "fafbbc3a5eec44c1bbbc3a5eec14c166"
+                     * @example "e5b05d4215a84db3b05d4215a8edb36d"
                      */
                     schemaUuid: string;
                 };
@@ -1900,13 +1912,16 @@ export interface ApiEndpoints {
                 200: SchemaResponse;
             };
         };
-        /** Apply the posted changes to the schema. */
+        /**
+         * Apply the posted changes to the schema. The schema migration will not
+         * automatically be started.
+         */
         '/schemas/{schemaUuid}/changes': {
             request: {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "7787c90bacfa495087c90bacfa8950f9"
+                     * @example "4e27cce6ab174bf8a7cce6ab176bf868"
                      */
                     schemaUuid: string;
                 };
@@ -1915,7 +1930,7 @@ export interface ApiEndpoints {
             };
             responseType: GenericMessageResponse;
             responseTypes: {
-                /** Schema migration was started. */
+                /** Schema changes have been applied. */
                 200: GenericMessageResponse;
             };
         };
@@ -1925,7 +1940,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "f9080ba244f04824880ba244f0782422"
+                     * @example "2928b970573344e7a8b970573334e7da"
                      */
                     schemaUuid: string;
                 };
@@ -1991,6 +2006,22 @@ export interface ApiEndpoints {
             responseTypes: {
                 /** Paged search result for projects */
                 200: ProjectListResponse;
+            };
+        };
+        /**
+         * Invokes a full reindex of the search indices. This operation may take some time
+         * to complete.
+         */
+        '/search/reindex': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: GenericMessageResponse;
+            responseTypes: {
+                /** Invoked reindex command for all elements. */
+                200: GenericMessageResponse;
             };
         };
         /** Invoke a search query for roles and return a paged list response. */
@@ -2071,13 +2102,16 @@ export interface ApiEndpoints {
                 201: UserResponse;
             };
         };
-        /** Update the user with the given uuid. */
+        /**
+         * Update the user with the given uuid. The user is created if no user with the
+         * specified uuid could be found.
+         */
         '/users/{userUuid}': {
             request: {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "698bf45547a748bd8bf45547a7b8bd25"
+                     * @example "a65c02fea66449fa9c02fea66479fa06"
                      */
                     userUuid: string;
                 };
@@ -2085,7 +2119,7 @@ export interface ApiEndpoints {
                     /**
                      * Token code which can be used to update the user even if the connection is not
                      * authenticated. This can be used to implement a password recovery feature.
-                     * @example "pQcyhUn6CBsJ"
+                     * @example "w8dMTw2AKQtK"
                      */
                     token?: string;
                 };
@@ -2106,7 +2140,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "2ef4ed9d037b4459b4ed9d037bf459b5"
+                     * @example "663c86075fb749b6bc86075fb7d9b6f9"
                      */
                     userUuid: string;
                 };
@@ -2128,7 +2162,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "0a8c835c93b54f5e8c835c93b51f5efc"
+                     * @example "b6097abf956b4b03897abf956bcb0336"
                      */
                     userUuid: string;
                 };
@@ -2177,6 +2211,32 @@ export interface ApiEndpoints {
                 200: any; // TODO: This is not typed in the RAML
             };
         };
+        /** Validate the posted microschema and report errors. */
+        '/utilities/validateMicroschema': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body: MicroschemaCreateRequest;
+            };
+            responseType: SchemaValidationResponse;
+            responseTypes: {
+                /** The validation report */
+                200: SchemaValidationResponse;
+            };
+        };
+        /** Validate the posted schema and report errors. */
+        '/utilities/validateSchema': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body: SchemaUpdateRequest;
+            };
+            responseType: SchemaValidationResponse;
+            responseTypes: {
+                /** The validation message */
+                200: SchemaValidationResponse;
+            };
+        };
         /** Endpoint which accepts GraphQL queries. */
         '/{project}/graphql': {
             request: {
@@ -2207,7 +2267,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the microschema.
-                     * @example "96af9c5a0d2141d6af9c5a0d2121d657"
+                     * @example "b166ba670e764b03a6ba670e766b035d"
                      */
                     microschemaUuid: string;
                 };
@@ -2243,7 +2303,8 @@ export interface ApiEndpoints {
          * Update the node with the given uuid. It is mandatory to specify the version
          * within the update request. Mesh will automatically check for version conflicts
          * and return a 409 error if a conflict has been detected. Additional conflict
-         * checks for WebRoot path conflicts will also be performed.
+         * checks for WebRoot path conflicts will also be performed. The node is created if
+         * no node with the specified uuid could be found.
          */
         '/{project}/nodes/{nodeUuid}': {
             request: {
@@ -2255,7 +2316,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "bf39f90ab2984cb2b9f90ab2983cb2d3"
+                     * @example "dd9eba4ce3b949069eba4ce3b9b9066c"
                      */
                     nodeUuid: string;
                 };
@@ -2286,7 +2347,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "b74ac23ceecd44b78ac23ceecd94b78f"
+                     * @example "67c838391f834cf48838391f83dcf47c"
                      */
                     nodeUuid: string;
                 };
@@ -2333,7 +2394,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "6d68ee475c524adfa8ee475c52cadf7b"
+                     * @example "9e495282dce043f8895282dce0f3f87a"
                      */
                     nodeUuid: string;
                 };
@@ -2365,7 +2426,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "1e894a4ea9c14687894a4ea9c1b68705"
+                     * @example "4af18abd36bb4754b18abd36bbe754a7"
                      */
                     nodeUuid: string;
                 };
@@ -2389,12 +2450,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of target the node.
-                     * @example "959b2967587a4d349b2967587a5d3455"
+                     * @example "4051baffbabe48a491baffbabea8a44d"
                      */
                     toUuid: string;
                     /**
                      * Uuid of the node which should be moved.
-                     * @example "f5c58bb0be8347da858bb0be8317da90"
+                     * @example "584197e1081247f88197e10812f7f883"
                      */
                     nodeUuid: string;
                 };
@@ -2420,7 +2481,7 @@ export interface ApiEndpoints {
                 204: undefined;
             };
         };
-        /** Publish the node with the given uuid. */
+        /** Publish all language specific contents of the node with the given uuid. */
         '/{project}/nodes/{nodeUuid}/published': {
             request: {
                 urlParams: {
@@ -2431,7 +2492,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "5b494dcb7d5c4808894dcb7d5c3808bc"
+                     * @example "29c99b35883e42f0899b35883e92f073"
                      */
                     nodeUuid: string;
                 };
@@ -2462,7 +2523,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "737aa967c585481abaa967c585581ab4"
+                     * @example "ee9be878767e41fc9be878767ef1fce5"
                      */
                     nodeUuid: string;
                 };
@@ -2486,12 +2547,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag
-                     * @example "c89ab26593574df19ab2659357cdf132"
+                     * @example "9c9270585f3642c99270585f36e2c9e8"
                      */
                     tagUuid: string;
                     /**
                      * Uuid of the node
-                     * @example "2d68653a2f9542efa8653a2f9582ef15"
+                     * @example "71b633109d3e4c35b633109d3e4c35cf"
                      */
                     nodeUuid: string;
                 };
@@ -2536,7 +2597,10 @@ export interface ApiEndpoints {
                 201: ReleaseResponse;
             };
         };
-        /** Update the release with the given uuid. */
+        /**
+         * Update the release with the given uuid. The release is created if no release with
+         * the specified uuid could be found.
+         */
         '/{project}/releases/{releaseUuid}': {
             request: {
                 urlParams: {
@@ -2547,7 +2611,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "b733fa9433cc4d29b3fa9433cc9d292b"
+                     * @example "a7b5402e933748cbb5402e9337c8cb45"
                      */
                     releaseUuid: string;
                 };
@@ -2571,17 +2635,71 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "664326d054a1483e8326d054a1483ee5"
+                     * @example "1fda49c05a0a44f89a49c05a0a24f8ee"
                      */
                     releaseUuid: string;
                 };
                 queryParams?: { };
-                body: MicroschemaReferenceFromServer[];
+                body: ReleaseInfoMicroschemaListFromServer;
             };
-            responseType: MicroschemaReferenceFromServer[];
+            responseType: ReleaseInfoMicroschemaListFromServer;
             responseTypes: {
                 /** Updated microschema list. */
-                200: MicroschemaReferenceFromServer[];
+                200: ReleaseInfoMicroschemaListFromServer;
+            };
+        };
+        /**
+         * Invoked the micronode migration for not yet migrated micronodes of microschemas
+         * that are assigned to the release.
+         */
+        '/{project}/releases/{releaseUuid}/migrateMicroschemas': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                    /**
+                     * Uuid of the release
+                     * @example "62a87c5390ff49eca87c5390ffb9ec6e"
+                     */
+                    releaseUuid: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: GenericMessageResponse;
+            responseTypes: {
+                /** schema_migration_invoked */
+                200: GenericMessageResponse;
+            };
+        };
+        /**
+         * Invoked the node migration for not yet migrated nodes of schemas that are
+         * assigned to the release.
+         */
+        '/{project}/releases/{releaseUuid}/migrateSchemas': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                    /**
+                     * Uuid of the release
+                     * @example "86caaaf894b544068aaaf894b564062d"
+                     */
+                    releaseUuid: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: GenericMessageResponse;
+            responseTypes: {
+                /** schema_migration_invoked */
+                200: GenericMessageResponse;
             };
         };
         /** Assign a schema version to the release. */
@@ -2595,17 +2713,17 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "e5b0174cb81f4bbdb0174cb81fcbbd6f"
+                     * @example "2c313bd4c60f48acb13bd4c60f28ac07"
                      */
                     releaseUuid: string;
                 };
                 queryParams?: { };
-                body: SchemaReferenceFromServer[];
+                body: ReleaseInfoSchemaListFromServer;
             };
-            responseType: SchemaReferenceFromServer[];
+            responseType: ReleaseInfoSchemaListFromServer;
             responseTypes: {
                 /** Updated schema list. */
-                200: SchemaReferenceFromServer[];
+                200: ReleaseInfoSchemaListFromServer;
             };
         };
         /**
@@ -2622,12 +2740,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "8c47bbdeda85436187bbdeda85f361ae"
+                     * @example "b691184afb21455291184afb2195524d"
                      */
                     schemaUuid: string;
                 };
                 queryParams?: { };
-                body: undefined;
+                body?: undefined;
             };
             responseType: SchemaResponse;
             responseTypes: {
@@ -2722,7 +2840,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "b52a153423c14046aa153423c1604689"
+                     * @example "8b0678aa1cc849288678aa1cc8d92868"
                      */
                     tagFamilyUuid: string;
                 };
@@ -2746,7 +2864,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "bda0e746b00a4096a0e746b00a009630"
+                     * @example "eea44dd9ab0a49e9a44dd9ab0aa9e996"
                      */
                     tagFamilyUuid: string;
                 };
@@ -2770,12 +2888,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "231430fe022349189430fe0223191859"
+                     * @example "1a46f26579bd455b86f26579bde55b98"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "bd30996ccde0458bb0996ccde0958b12"
+                     * @example "0fe81376cf194435a81376cf198435ca"
                      */
                     tagUuid: string;
                 };
@@ -2792,13 +2910,52 @@ export interface ApiEndpoints {
     PATCH: { };
     PUT: { };
     DELETE: {
+        /** Deletes the job. Note that it is only possible to delete failed jobs */
+        '/admin/jobs/{jobUuid}': {
+            request: {
+                urlParams: {
+                    /**
+                     * Uuid of the job.
+                     * @example "24cbb4916457411b8bb4916457711b5e"
+                     */
+                    jobUuid: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Deletes error state from the job. This will make it possible to execute the job
+         * once again.
+         */
+        '/admin/jobs/{jobUuid}/error': {
+            request: {
+                urlParams: {
+                    /**
+                     * Uuid of the job.
+                     * @example "2615fd11a80d4d5a95fd11a80d0d5aa2"
+                     */
+                    jobUuid: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
         /** Delete the given group. */
         '/groups/{groupUuid}': {
             request: {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "d3047743ee0f4aa6847743ee0fcaa664"
+                     * @example "2623844472f1483ca3844472f1e83cdd"
                      */
                     groupUuid: string;
                 };
@@ -2817,12 +2974,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "8307882920eb4b6b87882920eb2b6bbb"
+                     * @example "43b566e8a8864fdab566e8a8860fdab1"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the role.
-                     * @example "fc7cd9ea1c104010bcd9ea1c1020104f"
+                     * @example "a2809b941fcc40b7809b941fcc70b78e"
                      */
                     roleUuid: string;
                 };
@@ -2841,12 +2998,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "7024e305c99747c7a4e305c99707c7df"
+                     * @example "f135cc4833014beeb5cc4833010beee7"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the user which should be removed from the group.
-                     * @example "15b8272d4a3d432fb8272d4a3dd32f4a"
+                     * @example "d77bdeaa248941e2bbdeaa2489b1e28f"
                      */
                     userUuid: string;
                 };
@@ -2865,7 +3022,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "eb4630733e8d4b468630733e8ddb46ed"
+                     * @example "a4ecf9b645064c46acf9b64506ec469d"
                      */
                     microschemaUuid: string;
                 };
@@ -2884,7 +3041,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "b7eb04b45c50438cab04b45c50438cc8"
+                     * @example "8fb239c8d2284bc3b239c8d228ebc33f"
                      */
                     projectUuid: string;
                 };
@@ -2903,7 +3060,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "64b6c92894514a4fb6c92894510a4ff6"
+                     * @example "aca0ff2e4f494729a0ff2e4f49d7295e"
                      */
                     roleUuid: string;
                 };
@@ -2922,7 +3079,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "fafbbc3a5eec44c1bbbc3a5eec14c166"
+                     * @example "e5b05d4215a84db3b05d4215a8edb36d"
                      */
                     schemaUuid: string;
                 };
@@ -2944,7 +3101,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "698bf45547a748bd8bf45547a7b8bd25"
+                     * @example "a65c02fea66449fa9c02fea66479fa06"
                      */
                     userUuid: string;
                 };
@@ -2963,7 +3120,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "0a8c835c93b54f5e8c835c93b51f5efc"
+                     * @example "b6097abf956b4b03897abf956bcb0336"
                      */
                     userUuid: string;
                 };
@@ -2987,7 +3144,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the microschema.
-                     * @example "96af9c5a0d2141d6af9c5a0d2121d657"
+                     * @example "b166ba670e764b03a6ba670e766b035d"
                      */
                     microschemaUuid: string;
                 };
@@ -3011,11 +3168,17 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "bf39f90ab2984cb2b9f90ab2983cb2d3"
+                     * @example "dd9eba4ce3b949069eba4ce3b9b9066c"
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {
+                    /**
+                     * Specifiy whether deletion should also be applied recursively (default: false)
+                     * @example true
+                     */
+                    recursive?: boolean;
+                };
                 body?: undefined;
             };
             responseType: undefined;
@@ -3040,7 +3203,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node.
-                     * @example "c1d09db438b54c9c909db438b51c9ce3"
+                     * @example "012b195f020741b7ab195f020721b7f7"
                      */
                     nodeUuid: string;
                 };
@@ -3069,7 +3232,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "1e894a4ea9c14687894a4ea9c1b68705"
+                     * @example "4af18abd36bb4754b18abd36bbe754a7"
                      */
                     nodeUuid: string;
                 };
@@ -3093,7 +3256,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "5b494dcb7d5c4808894dcb7d5c3808bc"
+                     * @example "29c99b35883e42f0899b35883e92f073"
                      */
                     nodeUuid: string;
                 };
@@ -3124,12 +3287,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag
-                     * @example "c89ab26593574df19ab2659357cdf132"
+                     * @example "9c9270585f3642c99270585f36e2c9e8"
                      */
                     tagUuid: string;
                     /**
                      * Uuid of the node
-                     * @example "2d68653a2f9542efa8653a2f9582ef15"
+                     * @example "71b633109d3e4c35b633109d3e4c35cf"
                      */
                     nodeUuid: string;
                 };
@@ -3156,7 +3319,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "8c47bbdeda85436187bbdeda85f361ae"
+                     * @example "b691184afb21455291184afb2195524d"
                      */
                     schemaUuid: string;
                 };
@@ -3180,7 +3343,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "b52a153423c14046aa153423c1604689"
+                     * @example "8b0678aa1cc849288678aa1cc8d92868"
                      */
                     tagFamilyUuid: string;
                 };
@@ -3204,12 +3367,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "231430fe022349189430fe0223191859"
+                     * @example "1a46f26579bd455b86f26579bde55b98"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "bd30996ccde0458bb0996ccde0958b12"
+                     * @example "0fe81376cf194435a81376cf198435ca"
                      */
                     tagUuid: string;
                 };
@@ -3250,6 +3413,30 @@ export interface BinaryFieldTransformRequest {
     readonly width?: Integer;
 }
 
+export interface ClusterInstanceInfoFromServer {
+    readonly address?: string;
+    readonly name?: string;
+    readonly startDate?: string;
+    readonly status?: string;
+}
+
+/**
+ * Returned for `GET /admin/cluster/status`
+ */
+export interface ClusterStatusResponse {
+    readonly instances?: ClusterInstanceInfoFromServer[];
+}
+
+/**
+ * Returned for `GET /admin/consistency/check`
+ */
+export interface ConsistencyCheckResponse {
+    /** List of found inconsistencies. */
+    readonly inconsistencies: InconsistencyInfoFromServer[];
+    /** Result of the consistency check. */
+    readonly result: string;
+}
+
 export interface ErrorLocationFromServer {
     /** Error column number. */
     readonly column: Integer;
@@ -3271,6 +3458,11 @@ export interface FieldMapFromServer {
 }
 
 export interface FieldSchemaFromServer {
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly elasticsearch?: JsonObjectFromServer;
     /** Label of the field. */
     readonly label?: string;
     /** Name of the field. */
@@ -3282,21 +3474,19 @@ export interface FieldSchemaFromServer {
 
 /**
  * Returned for:
- *   - `GET /admin/status`
- *   - `GET /admin/status/migrations`
  *   - `GET /auth/logout`
- *   - `GET /search/createMappings`
- *   - `GET /search/reindex`
  *   - `GET /search/status`
- *   - `GET /{project}/releases/{releaseUuid}/migrateMicroschemas`
- *   - `GET /{project}/releases/{releaseUuid}/migrateSchemas`
  *   - `POST /admin/graphdb/backup`
  *   - `POST /admin/graphdb/restore`
+ *   - `POST /admin/processJobs`
  *   - `POST /microschemas/{microschemaUuid}`
  *   - `POST /microschemas/{microschemaUuid}/changes`
  *   - `POST /roles/{roleUuid}/permissions/{path}`
  *   - `POST /schemas/{schemaUuid}/changes`
+ *   - `POST /search/reindex`
  *   - `POST /{project}/nodes/{nodeUuid}`
+ *   - `POST /{project}/releases/{releaseUuid}/migrateMicroschemas`
+ *   - `POST /{project}/releases/{releaseUuid}/migrateSchemas`
  *   - `DELETE /users/{userUuid}/token`
  */
 export interface GenericMessageResponse {
@@ -3329,16 +3519,22 @@ export interface GraphQLRequest {
     readonly operationName?: string;
     /** The actual GraphQL query. */
     readonly query: string;
-    /** JSON object which contains the variables. */
-    readonly variables?: any;
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly variables?: JsonObjectFromServer;
 }
 
 /**
  * Returned for `POST /{project}/graphql`
  */
 export interface GraphQLResponse {
-    /** JSON object which contains the variables. */
-    readonly data?: any;
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly data?: JsonObjectFromServer;
     /** Array of errors which were encoutered when handling the query. */
     readonly errors?: GraphQLErrorFromServer[];
 }
@@ -3399,7 +3595,59 @@ export interface GroupUpdateRequest {
     readonly name: string;
 }
 
-/** JSON object which contains the variables. */
+export interface InconsistencyInfoFromServer {
+    readonly description?: string;
+    readonly elementUuid?: string;
+    readonly severity?: string;
+}
+
+/**
+ * Returned for `GET /admin/jobs`
+ */
+export interface JobListResponse {
+    /** Paging information of the list result. */
+    readonly _metainfo: PagingMetaInfoFromServer;
+    /** Array which contains the found elements. */
+    readonly data: JobResponse[];
+}
+
+/**
+ * Returned for `GET /admin/jobs/{jobUuid}`
+ */
+export interface JobResponse {
+    /**
+     * The completion count of the job. This indicates how many items the job has
+     * processed.
+     */
+    readonly completionCount: Integer;
+    /** ISO8601 formatted created date string. */
+    readonly created: string;
+    /** User reference of the creator of the element. */
+    readonly creator: UserReferenceFromServer;
+    /** The detailed error information of the job. */
+    readonly errorDetail?: string;
+    /** The error message of the job. */
+    readonly errorMessage?: string;
+    /** Name of the Gentics Mesh instance on which the job was executed. */
+    readonly nodeName?: string;
+    /** Properties of the job. */
+    readonly properties: { [key: string]: string };
+    /** The start date of the job. */
+    readonly startDate: string;
+    /** Migration status. */
+    readonly status: string;
+    /** The stop date of the job. */
+    readonly stopDate: string;
+    /** The type of the job. */
+    readonly type: string;
+    /** Uuid of the element */
+    readonly uuid: string;
+}
+
+/**
+ * Additional search index configuration. This can be used to setup custom analyzers
+ * and filters.
+ */
 export interface JsonObjectFromServer {
     readonly empty?: boolean;
     readonly map?: { [key: string]: any };
@@ -3428,17 +3676,30 @@ export interface MeshServerInfoModelFromServer {
     readonly searchVendor?: string;
     /** Used search implementation version. */
     readonly searchVersion?: string;
-    /** Used vert.x version. */
+    /** Used Vert.x version. */
     readonly vertxVersion?: string;
+}
+
+/**
+ * Returned for `GET /admin/status`
+ */
+export interface MeshStatusResponse {
+    /** The current Gentics Mesh server status. */
+    readonly status: string;
 }
 
 export interface MicroschemaCreateRequest {
     /** Description of the microschema */
     readonly description?: string;
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly elasticsearch?: JsonObjectFromServer;
     /** List of microschema fields */
     readonly fields?: FieldSchemaFromServer[];
     /** Name of the microschema */
-    readonly name?: string;
+    readonly name: string;
 }
 
 /**
@@ -3452,14 +3713,6 @@ export interface MicroschemaListResponse {
     readonly _metainfo: PagingMetaInfoFromServer;
     /** Array which contains the found elements. */
     readonly data: MicroschemaResponse[];
-}
-
-export interface MicroschemaReferenceFromServer {
-    /** Name of the referenced element */
-    readonly name?: string;
-    /** Uuid of the referenced element */
-    readonly uuid: string;
-    readonly version?: string;
 }
 
 /**
@@ -3479,8 +3732,13 @@ export interface MicroschemaResponse {
     readonly edited: string;
     /** User reference of the creator of the element. */
     readonly editor: UserReferenceFromServer;
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly elasticsearch?: JsonObjectFromServer;
     /** List of microschema fields */
-    readonly fields?: FieldSchemaFromServer[];
+    readonly fields: FieldSchemaFromServer[];
     /** Name of the microschema */
     readonly name: string;
     readonly permissions: PermissionInfoFromServer;
@@ -3494,12 +3752,17 @@ export interface MicroschemaResponse {
 export interface MicroschemaUpdateRequest {
     /** Description of the microschema */
     readonly description?: string;
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly elasticsearch?: JsonObjectFromServer;
     /** List of microschema fields */
     readonly fields?: FieldSchemaFromServer[];
     /** Name of the microschema */
     readonly name?: string;
     /** Version of the microschema */
-    readonly version: string;
+    readonly version?: string;
 }
 
 export interface NavigationElementFromServer {
@@ -3542,7 +3805,7 @@ export interface NodeCreateRequest {
      * automatically create the base node of the project and link the schema to the
      * initial release of the project.
      */
-    readonly schema: SchemaReference;
+    readonly schema: SchemaReferenceFromServer;
 }
 
 /**
@@ -3579,8 +3842,8 @@ export interface NodeReferenceFromServer {
      * automatically create the base node of the project and link the schema to the
      * initial release of the project.
      */
-    /** Uuid of the node */
     readonly schema: SchemaReferenceFromServer;
+    /** Uuid of the node */
     readonly uuid: string;
 }
 
@@ -3594,8 +3857,8 @@ export interface NodeReferenceFromServer {
  *   - `POST /{project}/nodes/{nodeUuid}/tags/{tagUuid}`
  */
 export interface NodeResponse {
-    /** List of languages for which content is available. */
-    readonly availableLanguages: string[];
+    /** Map of languages for which content is available and their publish status. */
+    readonly availableLanguages: { [key: string]: PublishStatusModelFromServer };
     /**
      * List of nodes which construct the breadcrumb. Note that the start node will not
      * be included in the list.
@@ -3613,10 +3876,15 @@ export interface NodeResponse {
     /** User reference of the creator of the element. */
     readonly creator: UserReferenceFromServer;
     /**
-     * Display field value of the node. May not be retured if the node schema has no
-     * display field value.
+     * Display field name of the node. May not be retured if the node schema has no
+     * display field.
      */
     readonly displayField?: string;
+    /**
+     * Display field value of the node. May not be retured if the node schema has no
+     * display field.
+     */
+    readonly displayName?: string;
     /** ISO8601 formatted edited date string. */
     readonly edited: string;
     /** User reference of the creator of the element. */
@@ -3695,6 +3963,11 @@ export interface PermissionInfoFromServer {
 }
 
 export interface ProjectCreateRequest {
+    /**
+     * The hostname of the project can be used to generate links across multiple
+     * projects. The hostname will be stored along the initial release of the project.
+     */
+    readonly hostname?: string;
     /** Name of the project */
     readonly name: string;
     /**
@@ -3702,7 +3975,12 @@ export interface ProjectCreateRequest {
      * automatically create the base node of the project and link the schema to the
      * initial release of the project.
      */
-    readonly schema: SchemaReference;
+    readonly schema: SchemaReferenceFromServer;
+    /**
+     * SSL flag of the project which will be used to generate links across multiple
+     * projects. The flag will be stored along the intial release of the project.
+     */
+    readonly ssl?: boolean;
 }
 
 /**
@@ -3784,8 +4062,38 @@ export interface PublishStatusResponse {
 }
 
 export interface ReleaseCreateRequest {
+    /**
+     * The hostname of the release which will be used to generate links across multiple
+     * projects.
+     */
+    readonly hostname?: string;
     /** Name of the release */
     readonly name: string;
+    /**
+     * SSL flag of the release which will be used to generate links across multiple
+     * projects.
+     */
+    readonly ssl?: boolean;
+}
+
+/**
+ * Returned for:
+ *   - `GET /{project}/releases/{releaseUuid}/microschemas`
+ *   - `POST /{project}/releases/{releaseUuid}/microschemas`
+ */
+export interface ReleaseInfoMicroschemaListFromServer {
+    /** List of microschema references. */
+    readonly microschemas?: ReleaseMicroschemaInfoFromServer[];
+}
+
+/**
+ * Returned for:
+ *   - `GET /{project}/releases/{releaseUuid}/schemas`
+ *   - `POST /{project}/releases/{releaseUuid}/schemas`
+ */
+export interface ReleaseInfoSchemaListFromServer {
+    /** List of schema references. */
+    readonly schemas?: ReleaseSchemaInfoFromServer[];
 }
 
 /**
@@ -3796,6 +4104,22 @@ export interface ReleaseListResponse {
     readonly _metainfo: PagingMetaInfoFromServer;
     /** Array which contains the found elements. */
     readonly data: ReleaseResponse[];
+}
+
+export interface ReleaseMicroschemaInfoFromServer {
+    /** Uuid of the migration job. */
+    readonly jobUuid?: string;
+    /**
+     * Status of the migration which was triggered when the schema/microschema was added
+     * to the release.
+     */
+    readonly migrationStatus?: string;
+    /** Name of the referenced element */
+    readonly name?: string;
+    /** Uuid of the referenced element */
+    readonly uuid: string;
+    /** The version of the microschema. */
+    readonly version: string;
 }
 
 /**
@@ -3814,21 +4138,57 @@ export interface ReleaseResponse {
     /** User reference of the creator of the element. */
     readonly editor: UserReferenceFromServer;
     /**
+     * The hostname of the release which will be used to generate links across multiple
+     * projects.
+     */
+    readonly hostname?: string;
+    /**
      * Flag which indicates whether any active node migration for this release is still
-     * running or whether all nodes have been migrated to this release
+     * running or whether all nodes have been migrated to this release.
      */
     readonly migrated: boolean;
     /** Name of the release */
     readonly name: string;
     readonly permissions: PermissionInfoFromServer;
     readonly rolePerms: PermissionInfoFromServer;
+    /**
+     * SSL flag of the release which will be used to generate links across multiple
+     * projects.
+     */
+    readonly ssl?: boolean;
     /** Uuid of the element */
     readonly uuid: string;
 }
 
+export interface ReleaseSchemaInfoFromServer {
+    /** Uuid of the migration job. */
+    readonly jobUuid?: string;
+    /**
+     * Status of the migration which was triggered when the schema/microschema was added
+     * to the release.
+     */
+    readonly migrationStatus?: string;
+    /** Name of the referenced element */
+    readonly name?: string;
+    /** Uuid of the referenced element */
+    readonly uuid: string;
+    /** The version of the microschema. */
+    readonly version: string;
+}
+
 export interface ReleaseUpdateRequest {
+    /**
+     * The hostname of the release which will be used to generate links across multiple
+     * projects.
+     */
+    readonly hostname?: string;
     /** Name of the release */
     readonly name: string;
+    /**
+     * SSL flag of the release which will be used to generate links across multiple
+     * projects.
+     */
+    readonly ssl?: boolean;
 }
 
 export interface RoleCreateRequest {
@@ -3939,6 +4299,11 @@ export interface SchemaCreateRequest {
     readonly description?: string;
     /** Name of the display field. */
     readonly displayField: string;
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly elasticsearch?: JsonObjectFromServer;
     /** List of schema fields */
     readonly fields: FieldSchemaFromServer[];
     /** Name of the schema */
@@ -3947,7 +4312,13 @@ export interface SchemaCreateRequest {
      * Name of the segment field. This field is used to construct the webroot path to
      * the node.
      */
-    readonly segmentField: string;
+    readonly segmentField?: string;
+    /**
+     * Names of the fields which provide a compete url to the node. This property can be
+     * used to define custom urls for certain nodes. The webroot API will try to locate
+     * the node via it's segment field and via the specified url fields.
+     */
+    readonly urlFields?: string[];
 }
 
 /**
@@ -3969,11 +4340,10 @@ export interface SchemaListResponse {
  * initial release of the project.
  */
 export interface SchemaReferenceFromServer {
-    /** Name of the referenced element */
-    readonly name: string;
-    /** Uuid of the referenced element */
-    readonly uuid: string;
-    readonly version: string;
+    readonly name?: string;
+    readonly set?: boolean;
+    readonly uuid?: string;
+    readonly version?: string;
 }
 
 /**
@@ -3994,7 +4364,7 @@ export interface SchemaResponse {
     readonly created: string;
     /** User reference of the creator of the element. */
     readonly creator: UserReferenceFromServer;
-    /** Description of the schema */
+    /** Description of the schema. */
     readonly description?: string;
     /** Name of the display field. */
     readonly displayField: string;
@@ -4002,9 +4372,14 @@ export interface SchemaResponse {
     readonly edited: string;
     /** User reference of the creator of the element. */
     readonly editor: UserReferenceFromServer;
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly elasticsearch?: JsonObjectFromServer;
     /** List of schema fields */
     readonly fields: FieldSchemaFromServer[];
-    /** Name of the schema */
+    /** Name of the schema. */
     readonly name: string;
     readonly permissions: PermissionInfoFromServer;
     readonly rolePerms: PermissionInfoFromServer;
@@ -4012,10 +4387,16 @@ export interface SchemaResponse {
      * Name of the segment field. This field is used to construct the webroot path to
      * the node.
      */
-    readonly segmentField: string;
+    readonly segmentField?: string;
+    /**
+     * Names of the fields which provide a compete url to the node. This property can be
+     * used to define custom urls for certain nodes. The webroot API will try to locate
+     * the node via it's segment field and via the specified url fields.
+     */
+    readonly urlFields?: string[];
     /** Uuid of the element */
     readonly uuid: string;
-    /** Version of the schema */
+    /** Version of the schema. */
     readonly version: string;
 }
 
@@ -4024,22 +4405,49 @@ export interface SchemaUpdateRequest {
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.
      */
-    readonly container: boolean;
-    /** Description of the schema */
+    readonly container?: boolean;
+    /** New description of the schema. */
     readonly description?: string;
     /** Name of the display field. */
-    readonly displayField: string;
+    readonly displayField?: string;
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly elasticsearch?: JsonObjectFromServer;
     /** List of schema fields */
     readonly fields: FieldSchemaFromServer[];
-    /** Name of the schema */
+    /** Name of the schema. */
     readonly name: string;
     /**
      * Name of the segment field. This field is used to construct the webroot path to
      * the node.
      */
-    readonly segmentField: string;
-    /** Version of the schema */
-    readonly version: string;
+    readonly segmentField?: string;
+    /**
+     * Names of the fields which provide a compete url to the node. This property can be
+     * used to define custom urls for certain nodes. The webroot API will try to locate
+     * the node via it's segment field and via the specified url fields.
+     */
+    readonly urlFields?: string[];
+    /** Version of the schema. */
+    readonly version?: string;
+}
+
+/**
+ * Returned for:
+ *   - `POST /utilities/validateMicroschema`
+ *   - `POST /utilities/validateSchema`
+ */
+export interface SchemaValidationResponse {
+    /**
+     * Additional search index configuration. This can be used to setup custom analyzers
+     * and filters.
+     */
+    readonly elasticsearch?: JsonObjectFromServer;
+    readonly message?: GenericMessageResponse;
+    /** Status of the validation. */
+    readonly status: string;
 }
 
 export interface TagCreateRequest {
@@ -4173,25 +4581,25 @@ export interface UserAPITokenResponse {
 }
 
 export interface UserCreateRequest {
-    /** New email address of the user */
+    /** Email address of the user. */
     readonly emailAddress?: string;
-    /** New firstname of the user */
+    /** Firstname of the user. */
     readonly firstname?: string;
     /**
      * Optional group id for the user. If provided the user will automatically be
      * assigned to the identified group.
      */
     readonly groupUuid?: string;
-    /** New lastname of the user */
+    /** Lastname of the user. */
     readonly lastname?: string;
     /**
      * New node reference of the user. This can also explicitly set to null in order to
      * remove the assigned node from the user
      */
     readonly nodeReference?: ExpandableNodeFromServer;
-    /** New password of the user */
-    readonly password?: string;
-    /** New username of the user */
+    /** Password of the new user. */
+    readonly password: string;
+    /** Username of the user. */
     readonly username: string;
 }
 
@@ -4260,8 +4668,8 @@ export interface UserResponse {
     readonly creator: UserReferenceFromServer;
     /** ISO8601 formatted edited date string. */
     readonly edited: string;
-    /** User reference of the editor of the element. */
-    readonly editor?: UserReferenceFromServer;
+    /** User reference of the creator of the element. */
+    readonly editor: UserReferenceFromServer;
     /** Email address of the user */
     readonly emailAddress?: string;
     /**
@@ -4282,11 +4690,7 @@ export interface UserResponse {
      */
     readonly nodeReference?: ExpandableNodeFromServer;
     readonly permissions: PermissionInfoFromServer;
-    /**
-     * Permission information for provided role. This property will only be populated if
-     * a role query parameter has been specified.
-     */
-    readonly rolePerms?: PermissionInfoFromServer;
+    readonly rolePerms: PermissionInfoFromServer;
     /** Username of the user. */
     readonly username: string;
     /** Uuid of the element */
