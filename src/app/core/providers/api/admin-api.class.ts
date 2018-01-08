@@ -80,7 +80,11 @@ export class AdminApi {
     getMicroschemas = apiGet('/microschemas');
 
     /** Get the current schema or node migration status. */
-    getMigrationStatus = apiGet('/admin/status/migrations');
+    // getMigrationStatus = apiGet('/admin/status/migrations');
+
+    /**
+     * TODO - Implement the Jobs status endpoints
+     */
 
     /** Get the mesh system status. */
     getSystemStatus = apiGet('/admin/status');

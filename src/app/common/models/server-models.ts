@@ -3649,8 +3649,7 @@ export interface JobResponse {
  * and filters.
  */
 export interface JsonObjectFromServer {
-    readonly empty?: boolean;
-    readonly map?: { [key: string]: any };
+    readonly [key: string]: any;
 }
 
 export interface LoginRequest {

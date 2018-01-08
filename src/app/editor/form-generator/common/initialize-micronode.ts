@@ -4,13 +4,16 @@ import { initializeFieldValue } from './initialize-field-value';
 
 /**
  * Initializes a new Micronode based on the associated Microschema.
+ * 
+ * TODO - verify what's the version number for NodeFieldMicronode.microschema
  */
 export function initializeMicronode(microschema: Microschema): NodeFieldMicronode {
-    const micronode = {
+    const micronode: NodeFieldMicronode = {
         uuid: '',
         microschema: {
             name: microschema.name,
-            uuid: microschema.uuid
+            uuid: microschema.uuid,
+            version: '0.0'
         },
         fields: {}
     };

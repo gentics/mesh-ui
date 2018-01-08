@@ -1,5 +1,5 @@
 import {
-    MicroschemaReferenceFromServer, NodeReferenceFromServer, PermissionInfoFromServer, SchemaReferenceFromServer,
+    ReleaseMicroschemaInfoFromServer, NodeReferenceFromServer, PermissionInfoFromServer, SchemaReferenceFromServer,
     UserReferenceFromServer
 } from './server-models';
 
@@ -7,7 +7,7 @@ export interface NodeReference extends NodeReferenceFromServer {}
 
 export interface SchemaReference extends SchemaReferenceFromServer {}
 
-export interface MicroschemaReference extends MicroschemaReferenceFromServer {}
+export interface MicroschemaReference extends ReleaseMicroschemaInfoFromServer {}
 
 /** Common properties of all entities. */
 export interface BaseProperties {

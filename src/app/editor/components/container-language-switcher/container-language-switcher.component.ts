@@ -41,7 +41,7 @@ export class ContainerLanguageSwitcherComponent {
             .map(uuid => this.entities.getNode(uuid, { language, strictLanguageMatch: false }))
             .filter<MeshNode>(notNullOrUndefined)
             .map(node => node.availableLanguages)
-            .reduce((unique, curr) => concatUnique(unique, curr), []);
+            .reduce((unique, curr) => concatUnique(unique, Object.keys(curr)), []);
     }
 
     private removeCurrentLanguage(languages: string[], currentLanguage: string): string[] {
