@@ -9,7 +9,7 @@ import { AuthEffectsService } from '../login/providers/auth-effects.service';
 import { AuthGuard } from './providers/guards/auth-guard';
 import { ChangePasswordModalComponent } from './components/change-password-modal/change-password-modal.component';
 import { CustomLoader } from './providers/i18n/custom-loader';
-import { ENV_PROVIDERS } from '../environment';
+
 import { I18nNotification } from './providers/i18n-notification/i18n-notification.service';
 import { I18nService } from './providers/i18n/i18n.service';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
@@ -33,7 +33,6 @@ const CORE_PROVIDERS = [
     SchemaEffectsService,
     ApiService,
     ApiBase,
-    ENV_PROVIDERS,
 ];
 
 const CORE_COMPONENTS = [

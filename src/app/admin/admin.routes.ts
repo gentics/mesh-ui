@@ -28,7 +28,7 @@ export const routes: Route[] = [
 ];
 
 
-function entityName(newName: string): BreadcrumbTextFunction {
+export function entityName(newName: string): BreadcrumbTextFunction {
     return (route: ActivatedRouteSnapshot, state: AppState, entities: EntitiesService): string => {
         const entity = state.admin.openEntity;
         let result;

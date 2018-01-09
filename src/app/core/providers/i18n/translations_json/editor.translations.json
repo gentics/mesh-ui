@@ -1,0 +1,54 @@
+{
+    "create_node": {
+      "en": "Create node",
+      "de": "Node erstellen"
+    },
+    "error_max_value": {
+      "en": "The value is greater than the maximum",
+      "de": "Der Wert is größer als Maximum"
+    },
+    "error_min_value": {
+      "en": "The value is below the minimum",
+      "de": "Der Wert is weniger als Minimum"
+    },
+    "error_required": {
+      "en": "This field is required",
+      "de": "Dieses Felt is erforderlich"
+    },
+    "language_switch_to": {
+      "en": "Switch to {{language}}",
+      "de": "Auf {{language}} umschalten"
+    },
+    "language_translate_to": {
+      "en": "Create {{language}} version",
+      "de": "{{language}} Variante erstellen"
+    },
+    "node_published": {
+      "en": "Node successfully published as version {{version}}",
+      "de": "Node erfolgreich veröffentlicht als Version {{version}}"
+    },
+    "node_publish_error": {
+      "en": "Node could not be published",
+      "de": "Node könnte nicht veröffentlicht werden"
+    },
+    "node_saved": {
+      "en": "Node successfully saved",
+      "de": "Node erfolgrich geschpeichert"
+    },
+    "node_save_error": {
+      "en": "Node could not be saved",
+      "de": "Node könnte nicht geschpeichert werden"
+    },
+    "publish_button": {
+      "en": "Publish",
+      "de": "Veröffentlichen"
+    },
+    "remove_list_item_tooltip": {
+      "en": "Drop here to remove",
+      "de": "Zum Entfernen hier ablegen"
+    },
+    "save_button": {
+      "en": "Save",
+      "de": "Speichern"
+    }
+  }
