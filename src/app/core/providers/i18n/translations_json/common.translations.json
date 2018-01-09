@@ -1,0 +1,278 @@
+{
+    "apply_button": {
+      "en": "Apply",
+      "de": "Übernehmen"
+    },
+    "apply_recursively_label": {
+      "en": "Apply recursively",
+      "de": "Rekursiv übernehmen"
+    },
+    "apply_recursively_button": {
+      "en": "Apply recursively",
+      "de": "Rekursiv übernehmen"
+    },
+    "cancel_button": {
+      "en": "Cancel",
+      "de": "Abbrechen"
+    },
+    "close_button": {
+      "en": "Close",
+      "de": "Schließen"
+    },
+    "creator_label": {
+      "en": "Creator",
+      "de": "Erstellt von"
+    },
+    "copy": {
+      "en": "copy",
+      "de": "Kopie"
+    },
+    "date_created_label": {
+      "en": "Date created",
+      "de": "Erstellt am"
+    },
+    "date_edited_label": {
+      "en": "Date edited",
+      "de": "Bearbeitet am"
+    },
+    "delete_button": {
+      "en": "Delete",
+      "de": "Löschen"
+    },
+    "editor_label": {
+      "en": "Editor",
+      "de": "Bearbeitet von"
+    },
+    "file_size_label": {
+      "en": "File size",
+      "de": "Dateigröße"
+    },
+    "file_type_label": {
+      "en": "File type",
+      "de": "Dateityp"
+    },
+    "id_label": {
+      "en": "ID",
+      "de": "ID"
+    },
+    "not_found": {
+      "en": "Not found",
+      "de": "Nicht gefunden"
+    },
+    "okay_button": {
+      "en": "Okay",
+      "de": "OK"
+    },
+    "project": {
+      "en": "Project",
+      "de": "Projekt"
+    },
+    "publish_button": {
+      "en": "Publish",
+      "de": "Veröffentlichen"
+    },
+    "publish_tooltip": {
+      "en": "Publish",
+      "de": "Veröffentlichen"
+    },
+    "priority_label": {
+      "en": "Priority",
+      "de": "Priorität"
+    },
+    "retry_button": {
+      "en": "Retry",
+      "de": "Erneut versuchen"
+    },
+    "save": {
+      "en": "Save",
+      "de": "Speichern"
+    },
+    "search_placeholder": {
+      "en": "Search",
+      "de": "Suche"
+    },
+    "searching": {
+      "en": "Searching:",
+      "de": "Suche:"
+    },
+    "select_all_label": {
+      "en": "Select all",
+      "de": "Alle auswählen"
+    },
+    "select_channel": {
+      "en": "Select channel",
+      "de": "Channel auswählen"
+    },
+    "sort_asc": {
+      "en": "ASC",
+      "de": "aufsteigend"
+    },
+    "sort_desc": {
+      "en": "DESC",
+      "de": "absteigend"
+    },
+    "sort_cdate": {
+      "en": "Date created",
+      "de": "Erstellt am"
+    },
+    "sort_deletedate": {
+      "en": "Date deleted",
+      "de": "Gelösched am"
+    },
+    "sort_edate": {
+      "en": "Date edited",
+      "de": "Bearbeitet am"
+    },
+    "sort_filename": {
+      "en": "File name",
+      "de": "Dateiname"
+    },
+    "sort_filesize": {
+      "en": "File size",
+      "de": "Dateigröße"
+    },
+    "sort_name": {
+      "en": "Name",
+      "de": "Name"
+    },
+    "sort_pdate": {
+      "en": "Date published",
+      "de": "Publiziert am"
+    },
+    "sort_priority": {
+      "en": "Priority",
+      "de": "Priorität"
+    },
+    "sort_template": {
+      "en": "Template",
+      "de": "Vorlage"
+    },
+    "sort_type": {
+      "en": "File type",
+      "de": "Dateityp"
+    },
+    "status_edited": {
+      "en": "Edited",
+      "de": "Bearbeitet"
+    },
+    "status_published": {
+      "en": "Published",
+      "de": "Veröffentlicht"
+    },
+    "status_publishat": {
+      "en": "Planned",
+      "de": "Geplant"
+    },
+    "status_offline": {
+      "en": "Offline",
+      "de": "Unveröffentlicht"
+    },
+    "status_queue": {
+      "en": "Queued",
+      "de": "In Warteschlange"
+    },
+    "status_timeframe": {
+      "en": "Not in time frame",
+      "de": "Außerhalb Zeitrahmen"
+    },
+    "template_label": {
+      "en": "Template",
+      "de": "Vorlage"
+    },
+    "type_contenttag": {
+      "en": "content tag",
+      "de": "Seitentag"
+    },
+    "type_contenttags": {
+      "en": "content tags",
+      "de": "Seitentags"
+    },
+    "type_folder": {
+      "en": "folder",
+      "de": "Ordner"
+    },
+    "type_folders": {
+      "en": "folders",
+      "de": "Ordner"
+    },
+    "type_page": {
+      "en": "page",
+      "de": "Seite"
+    },
+    "type_pages": {
+      "en": "pages",
+      "de": "Seiten"
+    },
+    "type_file": {
+      "en": "file",
+      "de": "Datei"
+    },
+    "type_files": {
+      "en": "files",
+      "de": "Dateien"
+    },
+    "type_image": {
+      "en": "image",
+      "de": "Bild"
+    },
+    "type_images": {
+      "en": "images",
+      "de": "Bilder"
+    },
+    "type_object": {
+      "en": "object",
+      "de": "Objekt"
+    },
+    "type_objects": {
+      "en": "objects",
+      "de": "Objekte"
+    },
+    "type_tag": {
+      "en": "tag",
+      "de": "Tag"
+    },
+    "type_tags": {
+      "en": "tags",
+      "de": "Tags"
+    },
+    "type_template": {
+      "en": "template",
+      "de": "Vorlage"
+    },
+    "type_templates": {
+      "en": "templates",
+      "de": "Vorlagen"
+    },
+    "type_templatetag": {
+      "en": "template tag",
+      "de": "Vorlagentag"
+    },
+    "type_templatetags": {
+      "en": "template tags",
+      "de": "Vorlagentags"
+    },
+    "type_variant": {
+      "en": "variant",
+      "de": "Variante"
+    },
+    "type_variants": {
+      "en": "variants",
+      "de": "Varianten"
+    },
+    "type_node": {
+      "en": "node",
+      "de": "Node"
+    },
+    "type_nodes": {
+      "en": "nodes",
+      "de": "Nodes"
+    },
+    "undo_button": {
+      "en": "Undo",
+      "de": "Rückgängig"
+    },
+    "usage_label": {
+      "en": "Usage",
+      "de": "Verwendung"
+    }
+  }

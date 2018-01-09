@@ -1,45 +1,20 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
-        "sourceMap": true,
-        "noEmit": true,
-        "noEmitHelpers": true,
-        "importHelpers": true,
-        "strictNullChecks": true,
-        "skipLibCheck": true,
-        "lib": [
-            "dom",
-            "es6"
-        ],
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "types": [
-            "hammerjs",
-            "jasmine",
-            "node",
-            "source-map",
-            "uglify-js",
-            "webpack"
-        ]
-    },
-    "exclude": [
-        "node_modules",
-        "dist",
-        "compiled"
+  "compileOnSave": false,
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
     ],
-    "awesomeTypescriptLoaderOptions": {
-        "forkChecker": true,
-        "useWebpackText": true
-    },
-    "compileOnSave": false,
-    "buildOnSave": false,
-    "atom": {
-        "rewriteTsconfig": false
-    }
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  }
 }

@@ -10,7 +10,7 @@ const translationFiles = [
     'list',
     'modal',
 ].reduce((hash, name) => {
-    hash[name] = require(`./translations/${name}.translations.yml`);
+    hash[name] = require(`./translations_json/${name}.translations.json`);
     return hash;
 }, {});
 

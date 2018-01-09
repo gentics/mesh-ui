@@ -1,0 +1,78 @@
+{
+    "additional_changes_label": {
+      "en": "+ {{count}} additional changes",
+      "de": "+ {{count}} weitere Änderungen"
+    },
+    "change_password_title": {
+      "en": "Change Password",
+      "de": "Passwort ändern"
+    },
+    "change_password_button": {
+      "en": "Change password",
+      "de": "Passwort ändern"
+    },
+    "change_password_success": {
+      "en": "Password changed successfully",
+      "de": "Passwort erfolgreich geändert"
+    },
+    "confirm_navigation_body": {
+      "en": "Unsaved changes will be lost.",
+      "de": "Ungespeicherte Änderungen gehen verloren."
+    },
+    "confirm_navigation_title": {
+      "en": "Discard changes?",
+      "de": "Änderungen verwerfen?"
+    },
+    "confirm_password_label": {
+      "en": "Confirm password",
+      "de": "Passwort bestätigen"
+    },
+    "create_project_button": {
+      "en": "Create Project",
+      "de": "Projekt erstellen"
+    },
+    "create_project_conflict": {
+      "en": "A project with this name already exists. Please choose another name.",
+      "de": "Es existiert bereits ein Projekt mit diesem Namen. Bitte wählen Sie einen anderen Namen."
+    },
+    "create_project_non_container_hint": {
+      "en": "The chosen schema is not a container. You will not be able to create other nodes in this project.",
+      "de": "Das gewählte Schema is kein Container. Sie werden in diesem Projekt keine anderen Nodes erstellen können."
+    },
+    "create_project_schema_label": {
+      "en": "Schema for root node",
+      "de": "Schema für Root-Node"
+    },
+    "create_project_title": {
+      "en": "New Project",
+      "de": "Neues Projekt"
+    },
+    "delete_project_title": {
+      "en": "Delete Project",
+      "de": "Projekt löschen"
+    },
+    "delete_project_body": {
+      "en": "Are you sure you want to delete project <var>{{ name }}</var>?",
+      "de": "Sind Sie sicher, dass sie Projekt <var>{{ name }}</var> löschen wollen?"
+    },
+    "discard_changes_button": {
+      "en": "Discard changes",
+      "de": "Änderungen verwerfen"
+    },
+    "list_changed_label": {
+      "en": "list changed",
+      "de": "Liste geändert"
+    },
+    "new_password_label": {
+      "en": "New password",
+      "de": "Neues Passwort"
+    },
+    "save_and_close_button": {
+      "en": "Save and close",
+      "de": "Speichern und schließen"
+    },
+    "validation_passwords_must_match": {
+      "en": "Passwords must match",
+      "de": "Passworteingaben stimmen nicht überein"
+    }
+  }

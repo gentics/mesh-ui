@@ -1,36 +1,15 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <title>MeshUi</title>
+  <base href="/">
 
-    <title><%= htmlWebpackPlugin.options.title %></title>
-
-    <meta name="description" content="<%= htmlWebpackPlugin.options.title %>">
-
-    <% if (webpackConfig.htmlElements.headTags) { %>
-    <!-- Configured Head Tags  -->
-    <%= webpackConfig.htmlElements.headTags %>
-    <% } %>
-
-    <!-- base url -->
-    <base href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>">
-
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-
 <body>
-
-<app>
-    Loading...
-</app>
-
-<% if (htmlWebpackPlugin.options.metadata.isDevServer && htmlWebpackPlugin.options.metadata.HMR !== true) { %>
-<!-- Webpack Dev Server reload -->
-<script src="/webpack-dev-server.js"></script>
-<% } %>
-
-
+  <app></app>
 </body>
 </html>
+

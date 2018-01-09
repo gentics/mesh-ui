@@ -1,0 +1,74 @@
+{
+    "assigned_to_projects": {
+        "en": "Assigned to projects",
+        "de": "Zugewiesen zu Projekte"
+    },
+    "microschema_create": {
+        "en": "Create Microschema",
+        "de": "Microschema erstellen"
+    },
+    "microschema_deleted": {
+        "en": "Microschema deleted",
+        "de": "Microschema gelöscht"
+    },
+    "microschema_deleted_error": {
+        "en": "Microschema could not be deleted",
+        "de": "Microschema konnte nicht gelöscht werden"
+    },
+    "microschema_created": {
+        "en": "Microschema created",
+        "de": "Microschema erstellt"
+    },
+    "microschema_updated": {
+        "en": "Microschema updated",
+        "de": "Microschema gespeichert"
+    },
+    "microschema_none_found": {
+        "en": "No microschemas found",
+        "de": "Keine Microschemas gefunden"
+    },
+    "projects_create": {
+        "en": "Create project",
+        "de": "Projekt erstellen"
+    },
+    "project_created": {
+        "en": "Project created",
+        "de": "Projekt erstellt"
+    },
+    "project_deleted": {
+        "en": "Project deleted",
+        "de": "Projekt gelöscht"
+    },
+    "project_deleted_error": {
+        "en": "Project could not be deleted",
+        "de": "Projekt konnte nicht gelöscht werden"
+    },
+    "projects_none_found": {
+        "en": "No projects found",
+        "de": "Keine Projekte gefunden"
+    },
+    "schema_create": {
+        "en": "Create Schema",
+        "de": "Schema erstellen"
+    },
+    "schema_deleted": {
+        "en": "Schema deleted",
+        "de": "Schema gelöscht"
+    },
+    "schema_deleted_error": {
+        "en": "Schema could not be deleted",
+        "de": "Schema konnte nicht gelöscht werden"
+    },
+    "schema_created": {
+        "en": "Schema created",
+        "de": "Schema erstellt"
+    },
+    "schema_updated": {
+        "en": "Schema updated",
+        "de": "Schema gespeichert"
+    },
+    "schema_none_found": {
+        "en": "No schemas found",
+        "de": "Keine Schemas gefunden"
+    }
+}

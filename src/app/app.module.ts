@@ -6,7 +6,12 @@ import { PreloadAllModules, Router, RouterModule } from '@angular/router';
 /*
  * Platform and Environment providers/directives/pipes
  */
-import { ROUTES } from './app.routes';
+
+//import { ROUTER_CONFIG } from './app.routes';
+
+import { Routes } from '@angular/router';
+import { AuthGuard } from './core/providers/guards/auth-guard';
+
 // App is our top level component
 import { AppComponent } from './app.component';
 
@@ -19,6 +24,16 @@ import { ApplicationStateService } from './state/providers/application-state.ser
 
 import '../styles/main.scss';
 import { AuthEffectsService } from './login/providers/auth-effects.service';
+
+export const ROUTER_CONFIG: Routes = [
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    { path: 'login', loadChildren: './login/login.module#LoginModule' },
+    { path: '',  children: [
+        { path: 'editor', canActivate: [AuthGuard], loadChildren: './editor/editor.module#EditorModule' },
+        { path: 'admin', canActivate: [AuthGuard], loadChildren: './admin/admin.module#AdminModule' }
+    ] },
+];
+
 
 // Data type for saving and restoring application state with hot module reloading
 interface HmrStore {
@@ -34,9 +49,9 @@ interface HmrStore {
     bootstrap: [AppComponent],
     declarations: [AppComponent],
     imports: [
+        RouterModule.forRoot(ROUTER_CONFIG, { useHash: true, preloadingStrategy: PreloadAllModules }),
         BrowserModule,
         HttpModule,
-        RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
         CoreModule,
         SharedModule,
         StateModule

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/providers/guards/auth-guard';
 
-export const ROUTES: Routes = [
+export const ROUTER_CONFIG: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', loadChildren: './login/login.module#LoginModule' },
     { path: '',  children: [
