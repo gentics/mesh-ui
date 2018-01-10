@@ -96,10 +96,17 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
         let breadcrumb: NodeReferenceFromServer[] = [];
         if (this.node.breadcrumb) {
-            breadcrumb = this.node.breadcrumb;
+            breadcrumb = Object.assign([], this.node.breadcrumb);
         } else {
-            breadcrumb = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language }).breadcrumb;
-            console.log(breadcrumb);
+            const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
+
+            if (parentNode) {
+                breadcrumb = Object.assign([], parentNode.breadcrumb);
+                breadcrumb.unshift({ displayName: this.i18n.translate('editor.create_node') } as any);
+            }
+            // breadcrumb = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language }).breadcrumb;
+            // console.log(breadcrumb);
+
             // breadcrumb.unshift({ displayName: this.i18n.translate('editor.create_node') } as any);
         }
         // TODO: remove this once Mesh fixes the order of the breadcrumbs

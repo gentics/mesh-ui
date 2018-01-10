@@ -42,20 +42,9 @@ export class EditorEffectsService {
                 this.state.actions.list.fetchChildrenError();
                 throw new Error('TODO: Error handling');
             });
-        // TODO: dispatch actual createNodeStart action
-        /*this.api.project.createNode({ project: projectName }, request)
-            .subscribe(response => {
-                // TODO: dispatch actual action
-                this.state.actions.list.fetchNodeSuccess(response);
-            }, error => {
-                // TODO: dispatch actual action
-                this.state.actions.list.fetchChildrenError();
-                throw new Error('TODO: Error handling');
-            });*/
     }
 
-    saveNewNode(): void
-    {
+    saveNewNode(): void {
         // TODO: save the new new node to the Mesh
     }
 
