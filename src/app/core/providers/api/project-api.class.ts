@@ -71,9 +71,6 @@ export class ProjectApi {
     /** Return a navigation for the node which is located using the given path. */
     getProjectNavigation = apiGet('/{project}/navroot/{path}');
 
-    /** Load the node with the given uuid. */
-    getProjectNode = apiGet('/{project}/nodes/{nodeUuid}');
-
     /** Read all nodes and return a paged list response. */
     getProjectNodes = apiGet('/{project}/nodes');
 

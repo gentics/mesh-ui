@@ -5,6 +5,8 @@ export interface EditorState {
         uuid: string;
         projectName: string;
         language: string;
+        schemaUuid?: string;
+        parentNodeUuid?: string;
     };
     loadCount: number;
 }

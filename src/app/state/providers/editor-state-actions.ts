@@ -32,6 +32,20 @@ export class EditorStateActions extends StateActionBranch<AppState> {
         });
     }
 
+    openNewNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
+        this.editor = withChanges(this.editor, {
+            openNode: withChanges(this.editor.openNode, {
+                uuid: '',
+                projectName,
+                language,
+                schemaUuid,
+                parentNodeUuid,
+            }),
+            editorIsOpen: true,
+            editorIsFocused: true
+        });
+    }
+
     openNode(projectName: string, uuid: string, language: string): void {
         this.editor = withChanges(this.editor, {
             openNode: withChanges(this.editor.openNode, {

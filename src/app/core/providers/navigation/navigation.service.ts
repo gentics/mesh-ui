@@ -10,10 +10,15 @@ interface NavigationInstruction {
     };
     detail?: {
         projectName: string;
-        nodeUuid: string;
+        nodeUuid?: string;
+        parentNodeUuid?: string,
+        schemaUuid?: string;
         language?: string;
+        command?: ValidDetailCommands;
     } | null;
 }
+
+export type ValidDetailCommands = 'createNode';
 
 export interface InstructionActions {
     navigate(extras?: NavigationExtras): Promise<boolean>;
@@ -57,6 +62,18 @@ export class NavigationService {
         });
     }
 
+    createNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language?: string): InstructionActions {
+        return this.instruction({
+            detail: {
+                projectName,
+                command: 'createNode',
+                schemaUuid,
+                parentNodeUuid,
+                language,
+            }
+        });
+    }
+
     /**
      * Close the node in the detail outlet.
      */
@@ -91,8 +108,15 @@ export class NavigationService {
             outlets.detail = null;
         }
         if (instruction.detail) {
-            const { projectName, nodeUuid, language } = instruction.detail;
-            outlets.detail = [projectName, nodeUuid, language];
+            const { projectName, nodeUuid, schemaUuid, parentNodeUuid, language, command} = instruction.detail;
+            switch (command) {
+                case 'createNode':
+                    outlets.detail = [projectName, command, schemaUuid, parentNodeUuid, language];
+                break;
+                default:
+                    outlets.detail = [projectName, nodeUuid, language];
+                break;
+            }
         }
         if (instruction.list) {
             const { projectName, containerUuid, language } = instruction.list;

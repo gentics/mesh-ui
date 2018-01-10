@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { ApiService } from '../../core/providers/api/api.service';
 import { BinaryField, MeshNode } from '../../common/models/node.model';
-import { NodeUpdateRequest } from '../../common/models/server-models';
+import { NodeUpdateRequest, NodeCreateRequest } from '../../common/models/server-models';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep } from '../../common/util/util';
@@ -24,13 +24,39 @@ export class EditorEffectsService {
 
         // Refresh the node
         this.state.actions.list.fetchNodeStart(nodeUuid);
-        this.api.project.getProjectNode({ project: projectName, nodeUuid, lang })
+        this.api.project.getNode({ project: projectName, nodeUuid, lang })
             .subscribe(response => {
                 this.state.actions.list.fetchNodeSuccess(response);
             }, error => {
                 this.state.actions.list.fetchChildrenError();
                 throw new Error('TODO: Error handling');
             });
+    }
+
+    createNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
+        this.api.project.getNode({project: projectName, nodeUuid: parentNodeUuid})
+            .subscribe(response => {
+                this.state.actions.list.fetchNodeSuccess(response);
+                this.state.actions.editor.openNewNode(projectName, schemaUuid, parentNodeUuid, language);
+            }, error => {
+                this.state.actions.list.fetchChildrenError();
+                throw new Error('TODO: Error handling');
+            });
+        // TODO: dispatch actual createNodeStart action
+        /*this.api.project.createNode({ project: projectName }, request)
+            .subscribe(response => {
+                // TODO: dispatch actual action
+                this.state.actions.list.fetchNodeSuccess(response);
+            }, error => {
+                // TODO: dispatch actual action
+                this.state.actions.list.fetchChildrenError();
+                throw new Error('TODO: Error handling');
+            });*/
+    }
+
+    saveNewNode(): void
+    {
+        // TODO: save the new new node to the Mesh
     }
 
     closeEditor(): void {

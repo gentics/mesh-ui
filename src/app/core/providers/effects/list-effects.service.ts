@@ -44,7 +44,7 @@ export class ListEffectsService {
 
         // Refresh the node
         this.state.actions.list.fetchNodeStart(containerUuid);
-        this.api.project.getProjectNode({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })
+        this.api.project.getNode({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })
             .subscribe(response => {
                 this.state.actions.list.fetchNodeSuccess(response);
             }, error => {
