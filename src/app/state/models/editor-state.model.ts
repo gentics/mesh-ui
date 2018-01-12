@@ -7,6 +7,6 @@ export interface EditorState {
         language: string;
         schemaUuid?: string;
         parentNodeUuid?: string;
-    };
+    } | null;
     loadCount: number;
 }

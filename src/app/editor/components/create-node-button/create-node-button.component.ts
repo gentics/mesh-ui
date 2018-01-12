@@ -37,9 +37,20 @@ export class CreateNodeButtonComponent {
     }
 
     itemClick(schema: SchemaDisplayProperties): void {
-        const listState = this.state.now.list;
-        this.navigationService.createNode(listState.currentProject, schema.uuid, listState.currentNode, listState.language).navigate();
+        let askUserToSave: Promise<boolean>;
+        if (this.state.now.editor.openNode) {
+            askUserToSave = this.navigationService.clearDetail().navigate();
+        } else {
+            askUserToSave = Promise.resolve(true);
+        }
 
+        askUserToSave.then(show => {
+            console.log('should we show? ', show);
+            if (show) {
+                const {currentProject, currentNode, language} = this.state.now.list;
+                this.navigationService.createNode(currentProject, schema.uuid, currentNode, language).navigate();
+            }
+        });
     }
 
     private nameSort(a: Schema, b: Schema): number {

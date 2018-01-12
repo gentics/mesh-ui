@@ -48,25 +48,22 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             if (projectName && nodeUuid && language) {
                 this.editorEffects.openNode(projectName, nodeUuid, language);
             } else {
-                console.log('Create new node on its way');
                 this.editorEffects.createNode(projectName, schemaUuid, parentNodeUuid, language);
             }
         });
 
-        const openNode$ = Observable.combineLatest(
-            this.state.select(state => state.editor.openNode && state.editor.openNode.uuid),
-            this.state.select(state => state.editor.openNode && state.editor.openNode.language),
-            this.state.select(state => state.editor.openNode && state.editor.openNode.schemaUuid),
-            this.state.select(state => state.editor.openNode && state.editor.openNode.parentNodeUuid),
-        )
-            .switchMap(([uuid, language, schemaUuid, parentNodeUuid]) => {
-                if (!!schemaUuid) {
+        const openNode$ = this.state.select(state => state.editor.openNode)
+            .filter(Boolean)
+            .switchMap(openNode => {
+                // const {uuid, language, schemaUuid, parentNodeUuid} = openNode;
+                const schemaUuid = openNode && openNode.schemaUuid;
+                if (schemaUuid) {
                     return this.entities.selectSchema(schemaUuid).map((schema) => {
-                        const node = initializeNode(schema, parentNodeUuid, language);
+                        const node = initializeNode(schema, openNode.parentNodeUuid, openNode.language);
                         return [node, schema] as [MeshNode, Schema];
                     });
                 } else {
-                    const node$ = this.entities.selectNode(uuid, { language });
+                    const node$ = this.entities.selectNode(openNode.uuid, { language: openNode.language });
                     return Observable.combineLatest(
                         node$.filter<MeshNode>(Boolean).map(node => simpleCloneDeep(node)),
                         node$.switchMap(node => this.entities.selectSchema(node.schema.uuid))
@@ -94,23 +91,18 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             return '';
         }
 
-        let breadcrumb: NodeReferenceFromServer[] = [];
-        if (this.node.breadcrumb) {
-            breadcrumb = Object.assign([], this.node.breadcrumb);
-        } else {
-            const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
+        const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
 
-            if (parentNode) {
-                breadcrumb = Object.assign([], parentNode.breadcrumb);
-                breadcrumb.unshift({ displayName: this.i18n.translate('editor.create_node') } as any);
-            }
-            // breadcrumb = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language }).breadcrumb;
-            // console.log(breadcrumb);
-
-            // breadcrumb.unshift({ displayName: this.i18n.translate('editor.create_node') } as any);
+        let breadcrumb = this.node.breadcrumb;
+        if (!breadcrumb && parentNode) {
+            const createNodeBreadcrumb: any = { displayName: this.i18n.translate('editor.create_node') };
+            breadcrumb = [createNodeBreadcrumb, ...parentNode.breadcrumb];
+        } else if (!breadcrumb) {
+            breadcrumb = [];
         }
+
         // TODO: remove this once Mesh fixes the order of the breadcrumbs
-        return breadcrumb.reverse().map(b => b.displayName).join(' › ');
+        return breadcrumb.slice().reverse().map(b => b.displayName).join(' › ');
     }
 
     getNodePathRouterLink(): any[] {

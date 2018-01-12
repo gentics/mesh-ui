@@ -21,11 +21,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
                 editor: {
                     editorIsFocused: false,
                     editorIsOpen: false,
-                    openNode: {
-                        uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
-                        projectName: 'demo',
-                        language: config.FALLBACK_LANGUAGE
-                    },
+                    openNode: null,
                     loadCount: 0
                 }
             }
@@ -34,13 +30,13 @@ export class EditorStateActions extends StateActionBranch<AppState> {
 
     openNewNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
         this.editor = withChanges(this.editor, {
-            openNode: withChanges(this.editor.openNode, {
+            openNode: {
                 uuid: '',
                 projectName,
                 language,
                 schemaUuid,
                 parentNodeUuid,
-            }),
+            },
             editorIsOpen: true,
             editorIsFocused: true
         });
@@ -48,11 +44,11 @@ export class EditorStateActions extends StateActionBranch<AppState> {
 
     openNode(projectName: string, uuid: string, language: string): void {
         this.editor = withChanges(this.editor, {
-            openNode: withChanges(this.editor.openNode, {
+            openNode: {
                 uuid,
                 projectName,
                 language
-            }),
+            },
             editorIsOpen: true,
             editorIsFocused: true
         });
