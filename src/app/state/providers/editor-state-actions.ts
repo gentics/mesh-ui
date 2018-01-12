@@ -57,6 +57,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
     closeEditor(): void {
         this.editor.editorIsOpen = false;
         this.editor.editorIsFocused = false;
+        this.editor.openNode = null;
     }
 
     focusEditor(): void {

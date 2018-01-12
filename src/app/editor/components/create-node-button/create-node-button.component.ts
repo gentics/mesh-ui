@@ -38,6 +38,9 @@ export class CreateNodeButtonComponent {
 
     itemClick(schema: SchemaDisplayProperties): void {
         let askUserToSave: Promise<boolean>;
+        
+        console.log('We have an open node', this.state.now.editor.openNode);
+
         if (this.state.now.editor.openNode) {
             askUserToSave = this.navigationService.clearDetail().navigate();
         } else {

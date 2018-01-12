@@ -10,7 +10,7 @@ import { FormGeneratorComponent } from '../../form-generator/components/form-gen
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { simpleCloneDeep } from '../../../common/util/util';
 import { initializeNode } from '../../form-generator/common/initialize-node';
-import { NodeReferenceFromServer } from '../../../common/models/server-models';
+import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 
 @Component({
@@ -125,8 +125,23 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Save the node as a new draft version.
      */
     saveNode(): void {
-        if (this.node && this.formGenerator.isDirty) {
-            this.editorEffects.saveNode(this.node);
+
+        if (!this.node) {
+            return;
+        }
+
+        if (this.formGenerator.isDirty) {
+            if (!this.node.uuid) {
+                const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
+                this.editorEffects.saveNewNode(parentNode.project.name, this.node)
+                .then(node => {
+                    if (node) {
+                        this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
+                    }
+                });
+            } else {
+                this.editorEffects.saveNode(this.node);
+            }
         }
     }
 
