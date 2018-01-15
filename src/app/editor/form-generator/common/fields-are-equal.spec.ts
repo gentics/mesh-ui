@@ -1,4 +1,5 @@
 import { fieldsAreEqual } from './fields-are-equal';
+import { NodeFieldMicronode } from '../../../common/models/node.model';
 
 describe('fieldsAreEqual()', () => {
 
@@ -14,36 +15,29 @@ describe('fieldsAreEqual()', () => {
     });
 
     it('works with micronode fields', () => {
-        expect(fieldsAreEqual({
+        const field1: NodeFieldMicronode = {
             uuid: 'uuid1',
-            microschema: {name: 'test', uuid: 'test'},
+            microschema: {name: 'test', uuid: 'test', version: '1.0'},
             fields: {name: 'foo'}
-        }, {
-            uuid: 'uuid1',
-            microschema: {name: 'test', uuid: 'test'},
-            fields: {name: 'foo'}
-        })).toBe(true, 'all equal');
+        };
 
-        expect(fieldsAreEqual({
-            uuid: 'uuid1',
-            microschema: {name: 'test', uuid: 'test'},
-            fields: {name: 'foo'}
-        }, {
+        const field2: NodeFieldMicronode = {
             uuid: 'new_uuid',
-            microschema: {name: 'test', uuid: 'test'},
+            microschema: {name: 'test', uuid: 'test', version: '1.0'},
             fields: {name: 'foo'}
-        })).toBe(true, 'fields equal, uuid changed');
+        };
 
-        expect(fieldsAreEqual({
+        const field3: NodeFieldMicronode = {
             uuid: 'uuid1',
-            microschema: {name: 'test', uuid: 'test'},
-            fields: {name: 'foo'}
-        }, {
-            uuid: 'uuid1',
-            microschema: {name: 'test', uuid: 'test'},
+            microschema: {name: 'test', uuid: 'test', version: '1.0'},
             fields: {name: 'bar'}
-        })).toBe(false, 'fields changed');
+        };
 
+        expect(fieldsAreEqual(field1, field1)).toBe(true, 'all equal');
+
+        expect(fieldsAreEqual(field1, field2)).toBe(true, 'fields equal, uuid changed');
+
+        expect(fieldsAreEqual(field1, field3)).toBe(false, 'fields changed');
     });
 
 });

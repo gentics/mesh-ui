@@ -141,6 +141,7 @@ describe('CreateProjectModal', () => {
 
             const warning = fixture.nativeElement.querySelector('.non-container-warning');
             expect(warning).toBeDefined();
+            tick(100);
         })
     );
 

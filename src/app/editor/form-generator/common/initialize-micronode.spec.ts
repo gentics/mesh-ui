@@ -11,7 +11,8 @@ describe('initializeMicronode()', () => {
 
         expect(initializeMicronode(microschema).microschema).toEqual({
             name: microschema.name,
-            uuid: microschema.uuid
+            uuid: microschema.uuid,
+            version: '0.0'
         });
     });
 

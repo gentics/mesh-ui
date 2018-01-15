@@ -39,12 +39,12 @@ describe('initializeListValue()', () => {
                    ]
         } as any;
         const field = { type: 'list', listType: 'micronode' } as SchemaField;
-
         expect(initializeListValue(field, microschema)).toEqual({
             uuid: '',
             microschema: {
                 name: 'test',
                 uuid: 'test_uuid',
+                version: '0.0'
             },
             fields: {
                 field1: '',

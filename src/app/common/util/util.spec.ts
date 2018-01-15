@@ -58,7 +58,7 @@ describe('Utility', () => {
         it('works with 1 level deep objects', () => {
             expect(simpleDeepEquals({ foo: 1}, { foo: 1})).toBe(true);
             expect(simpleDeepEquals({ foo: 1, bar: 2}, { foo: 1, bar: 2})).toBe(true);
-            expect(simpleDeepEquals({ foo: 1, bar: 2}, { foo: 1, bar: 3})).toBe(false);
+            expect(simpleDeepEquals({ foo: 1, bar: 2}, { foo: 1, bar: 3} as any)).toBe(false);
         });
 
         it('works with arrays of primitives', () => {
@@ -68,13 +68,13 @@ describe('Utility', () => {
 
         it('works with 2 level deep objects', () => {
             expect(simpleDeepEquals({ foo: { bar: true } }, { foo: { bar: true } })).toBe(true);
-            expect(simpleDeepEquals({ foo: { bar: true } }, { foo: { bar: false } })).toBe(false);
+            expect(simpleDeepEquals({ foo: { bar: true } }, { foo: { bar: false } } as any)).toBe(false);
         });
 
         it('works with arrays of objects', () => {
             expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2] } }, true])).toBe(true);
-            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2] } }, false])).toBe(false);
-            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 5] } }, true])).toBe(false);
+            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2] } }, false] as any)).toBe(false);
+            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 5] } }, true] as any)).toBe(false);
             expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2, 3] } }, true])).toBe(false);
         });
 

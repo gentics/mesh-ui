@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AppState } from '../../../state/models/app-state.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
