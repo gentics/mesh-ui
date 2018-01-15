@@ -216,8 +216,8 @@ declare module meshAdminUi {
      * Params that can be passed to the Mesg image API
      */
     export interface IImageOptions {
-        width?: number;
-        height?: number;
+        w?: number;
+        h?: number;
     }
 
 }
