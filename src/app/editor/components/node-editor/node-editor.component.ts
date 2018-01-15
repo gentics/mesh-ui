@@ -57,6 +57,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         const openNode$ = this.state.select(state => state.editor.openNode)
             .filter(Boolean)
             .switchMap(openNode => {
+
                 // const {uuid, language, schemaUuid, parentNodeUuid} = openNode;
                 const schemaUuid = openNode && openNode.schemaUuid;
                 if (schemaUuid) {
@@ -127,7 +128,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Save the node as a new draft version.
      */
     saveNode(): void {
-
         if (!this.node) {
             return;
         }
