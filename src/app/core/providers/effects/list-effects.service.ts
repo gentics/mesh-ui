@@ -52,7 +52,11 @@ export class ListEffectsService {
                 throw new Error('TODO: Error handling');
             });
 
-        // Refresh child node list
+       this.loadChildren(projectName, containerUuid, language);
+    }
+
+    loadChildren(projectName: string, containerUuid: string, language: string) {
+         // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
         this.api.project
             .getNodeChildren({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })

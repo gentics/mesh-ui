@@ -12,6 +12,7 @@ import { simpleCloneDeep } from '../../../common/util/util';
 import { initializeNode } from '../../form-generator/common/initialize-node';
 import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 
 @Component({
     selector: 'node-editor',
@@ -32,6 +33,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 private entities: EntitiesService,
                 private changeDetector: ChangeDetectorRef,
                 private editorEffects: EditorEffectsService,
+                private listEffects: ListEffectsService,
                 private navigationService: NavigationService,
                 private route: ActivatedRoute,
                 private i18n: I18nService) {}
@@ -136,11 +138,16 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 this.editorEffects.saveNewNode(parentNode.project.name, this.node)
                 .then(node => {
                     if (node) {
+                        this.formGenerator.setPristine(this.node);
+                        this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
                         this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
                     }
                 });
             } else {
-                this.editorEffects.saveNode(this.node);
+                this.editorEffects.saveNode(this.node)
+                .then(result => {
+                    this.listEffects.loadChildren(this.node.project.name, this.node.parentNode.uuid, this.node.language);
+                });
             }
         }
     }
