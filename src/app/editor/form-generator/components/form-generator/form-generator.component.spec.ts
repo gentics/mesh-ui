@@ -209,9 +209,13 @@ const mockNode: MeshNode = {
         readPublished: true
     },
     rolePerms: {} as any,
-    availableLanguages: [
-        'en'
-    ],
+    availableLanguages: {
+        en: {
+            publisher: {
+                uuid: 'publisher_uuid'
+            }
+        }
+    },
     parentNode: {
         projectName: 'demo',
         uuid: '69e74dfa02a24a1da74dfa02a2aa1d6f',

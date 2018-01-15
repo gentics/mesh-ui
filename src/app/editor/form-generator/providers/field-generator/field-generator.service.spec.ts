@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, ComponentRef, NgModule, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, NgModule, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -26,7 +26,6 @@ describe('FieldGeneratorService', () => {
             imports: [TestModule, TestStateModule],
             providers: [
                 FieldGeneratorService,
-                ComponentFactoryResolver,
                 { provide: MeshControlGroupService, useClass: MockMeshControlGroupService }
             ],
             declarations: [

@@ -1,7 +1,6 @@
 import { BaseFieldComponent } from './base-field.component';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../../common/models/node.model';
-import { test } from 'shelljs';
 
 describe('BaseFieldComponent', () => {
 
