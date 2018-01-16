@@ -37,7 +37,9 @@ node('jenkins-slave') {
 
 		stage("Build") {
 			try {
-				sh "npm run dist"
+				withEnv(['QT_QPA_PLATFORM=offscreen']) {
+					sh "npm run dist"
+				}
 			} finally {
 				step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
 			}
