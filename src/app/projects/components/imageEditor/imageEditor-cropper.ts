@@ -41,14 +41,14 @@ module meshAdminUi {
                         };
                         this.onCrop({ params: params });
 
-                        if (this.params.cropw && this.params.croph) {
+                        if (this.params.cropRect && this.params.cropRect.width && this.params.cropRect.height) {
                             // The transform params were pre-specified via the intialTransform attribute on the
                             // image editor component.
                             this.cropper.setData({
-                                y: this.params.cropy,
-                                x: this.params.cropx,
-                                width: this.params.cropw,
-                                height: this.params.croph
+                                y: this.params.cropRect.startY,
+                                x: this.params.cropRect.startX,
+                                width: this.params.cropRect.width,
+                                height: this.params.cropRect.height
                             });
                         } else {
                             this.setAspectRatioAndFitToImage(null);
@@ -89,11 +89,13 @@ module meshAdminUi {
          */
         private updateParams() {
             let data = this.cropper.getData();
-            let params = {
-                cropx: data.x,
-                cropy: data.y,
-                cropw: data.width,
-                croph: data.height
+            let params:IImageTransformParams = {
+                cropRect: {
+                    startX: data.x,
+                    startY: data.y,
+                    width: data.width,
+                    height: data.height
+                }
             };
             this.onCrop({ params: params });
         }

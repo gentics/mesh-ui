@@ -4,10 +4,12 @@ module meshAdminUi {
         src?: string;
         width?: number;
         height?: number;
-        cropx?: number;
-        cropy?: number;
-        cropw?: number;
-        croph?: number;
+        cropRect?: {
+            width: number;
+            height: number;
+            startX: number;
+            startY: number;
+        };
         scale?: number;
         language?: string;
         version?: string;
@@ -27,14 +29,16 @@ module meshAdminUi {
                     private src: string,
                     private initialTransform: IImageTransformParams) {
 
-            const defaultParams = {
+            const defaultParams:IImageTransformParams = {
                 src: this.src,
                 width: 0,
                 height: 0,
-                cropx: 0,
-                cropy: 0,
-                cropw: 0,
-                croph: 0,
+                cropRect: {
+                    height: 0,
+                    width: 0,
+                    startX: 0,
+                    startY: 0
+                },
                 scale: 1
             };
 

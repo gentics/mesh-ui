@@ -57,16 +57,16 @@ module meshAdminUi {
          */
         public calculateStyles() {
             const container = this.$element[0].getBoundingClientRect();
-            const isSmallerThanContainer = this.transform.cropw * this.transform.scale < container.width;
+            const isSmallerThanContainer = this.transform.cropRect && this.transform.cropRect.width * this.transform.scale < container.width;
 
-            if (!this.transform || !this.transform.cropw) {
+            if (!this.transform || !this.transform.cropRect || !this.transform.cropRect.width) {
                 this.styles.content = {
                     position: 'relative'
                 };
             } else {
                 const scale = this.transform.scale;
-                const cropWidth = this.transform.cropw * scale;
-                const cropHeight = this.transform.croph * scale;
+                const cropWidth = this.transform.cropRect.width * scale;
+                const cropHeight = this.transform.cropRect.height * scale;
                 const scaleX = (val:number) => val * 100 / cropWidth * scale;
                 const scaleY = (val:number) => val * 100 / cropHeight * scale;
 
@@ -74,8 +74,8 @@ module meshAdminUi {
                     position: 'absolute',
                     width: scaleX(this.transform.width) + '%',
                     height: scaleY(this.transform.height) + '%',
-                    left: -scaleX(this.transform.cropx) + '%',
-                    top: -scaleY(this.transform.cropy) + '%'
+                    left: -scaleX(this.transform.cropRect.startX) + '%',
+                    top: -scaleY(this.transform.cropRect.startY) + '%'
                 };
 
                 if (isSmallerThanContainer) {
@@ -89,7 +89,7 @@ module meshAdminUi {
                 } else {
                     this.styles.container = {
                         width: '100%',
-                        'padding-bottom': scaleX(this.transform.croph) + '%',
+                        'padding-bottom': scaleX(this.transform.cropRect.height) + '%',
                     };
                 }
             }

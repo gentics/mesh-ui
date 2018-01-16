@@ -96,8 +96,8 @@ module meshAdminUi {
          * @param dy - a y delta to offset the position by
          */
         private makeTransformString(dx = 0, dy = 0): string {
-            let x = dx + this.resizePos.x - this.params.cropw * this.scale / 2;
-            let y = dy + this.resizePos.y - this.params.croph * this.scale / 2;
+            let x = dx + this.resizePos.x - this.params.cropRect.width * this.scale / 2;
+            let y = dy + this.resizePos.y - this.params.cropRect.height * this.scale / 2;
             return `translate3d(${x}px, ${y}px, 0)`;
         }
 
@@ -113,7 +113,7 @@ module meshAdminUi {
          * Set the scale based on a change to the width value
          */
         public changeScaleWidth() {
-            this.scale = this.scaleWidth / this.params.cropw;
+            this.scale = this.scaleWidth / this.params.cropRect.width;
             this.updateScaleDimensions();
         }
 
@@ -121,7 +121,7 @@ module meshAdminUi {
          * Set the scale based on a change to the height value
          */
         public changeScaleHeight() {
-            this.scale = this.scaleHeight / this.params.croph;
+            this.scale = this.scaleHeight / this.params.cropRect.height;
             this.updateScaleDimensions();
         }
 
@@ -130,8 +130,8 @@ module meshAdminUi {
          */
         private updateScaleDimensions() {
             this.onResize({ params: { scale: this.scale }})
-            this.scaleWidth = Math.round(this.params.cropw * this.scale);
-            this.scaleHeight = Math.round(this.params.croph * this.scale);
+            this.scaleWidth = Math.round(this.params.cropRect.width * this.scale);
+            this.scaleHeight = Math.round(this.params.cropRect.height * this.scale);
             this.setImageResizeStyles();
         }
 
@@ -144,12 +144,12 @@ module meshAdminUi {
             this.resizeImageStyle = {
                 width: scale(this.params.width) + 'px',
                 height: scale(this.params.height) + 'px',
-                'margin-left': -scale(this.params.cropx) + 'px',
-                'margin-top': -scale(this.params.cropy) + 'px'
+                'margin-left': -scale(this.params.cropRect.width) + 'px',
+                'margin-top': -scale(this.params.cropRect.height) + 'px'
             };
             this.resizeContainerStyle = {
-                width: scale(this.params.cropw) + 'px',
-                height: scale(this.params.croph) + 'px',
+                width: scale(this.params.cropRect.width) + 'px',
+                height: scale(this.params.cropRect.height) + 'px',
                 transform: this.makeTransformString()
             };
         }

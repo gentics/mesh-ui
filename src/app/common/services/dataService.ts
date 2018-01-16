@@ -692,8 +692,10 @@ module meshAdminUi {
             let params = angular.copy(transformParams);
             // set the width and height of the image in pixels according to
             // the crop and scale data.
-            params.width = params.cropw * params.scale;
-            params.height = params.croph * params.scale;
+            if (params.cropRect) {
+                params.width = params.cropRect.width * params.scale;
+                params.height = params.cropRect.height * params.scale;
+            }
             params.language = lang;
             params.version = version;
 
