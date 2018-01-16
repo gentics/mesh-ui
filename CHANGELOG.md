@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.8.5 (2018-01-16)
+* Update image handling due to Gentics Mesh 0.14.0 API changes
+
 ## Version 0.8.4 (2017-12-17)
 * Fixed an issue that always showed the name in the explorer content list in english. (#23)
 
