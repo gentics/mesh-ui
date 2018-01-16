@@ -37,10 +37,7 @@ node('jenkins-slave') {
 
 		stage("Build") {
 			try {
-				withEnv(['QT_QPA_PLATFORM=']) {
-					sh "echo $QT_QPA_PLATFORM"
-					sh "npm run dist"
-				}
+				sh "npm run dist"
 			} finally {
 				step([$class: 'JUnitResultArchiver', testResults: 'build/junit.xml'])
 			}
