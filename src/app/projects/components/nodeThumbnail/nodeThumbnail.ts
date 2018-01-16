@@ -43,7 +43,7 @@ module meshAdminUi {
 
         public getFileUrl(): string {
             let projectName = this.contextService.getProject().name;
-            let imageOptions = { width: 200 };
+            let imageOptions = { w: 200 };
             return this.mu.getBinaryFileUrl(
                 projectName,
                 this.node.uuid,
