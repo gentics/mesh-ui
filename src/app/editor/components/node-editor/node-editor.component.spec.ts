@@ -69,6 +69,14 @@ describe('NodeEditorComponent', () => {
         tick();
     };
 
+    const clickClose = (fixture: ComponentFixture<NodeEditorComponent>) => {
+        fixture.detectChanges();
+        tick();
+        console.log((fixture.debugElement.query(By.css('.close-button')).nativeElement as HTMLElement));
+        (fixture.debugElement.query(By.css('.close-button gtx-button')).nativeElement as HTMLElement).click();
+        tick();
+    };
+
     describe('saving a new node', () => {
         const newNode = { language: 'en', uuid: 'new_node_uuid' };
         beforeEach(() => {
@@ -191,6 +199,16 @@ describe('NodeEditorComponent', () => {
             })
         );
     });
+
+
+    describe('closing editor', () => {
+        fit('calls navigationService.clearDetail',
+            componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                clickClose(fixture);
+                expect(navigationService.clearDetail).toHaveBeenCalled();
+            })
+        );
+    });
 });
 
 class MockEditorEffectsService {
@@ -208,6 +226,7 @@ class MockListEffectsService {
 
 class MockNavigationService {
     detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => { } });
+    clearDetail = jasmine.createSpy('clearDetail').and.returnValue({ navigate: () => { } });
     list = jasmine.createSpy('list').and.returnValue({ commands: () => { } });
 }
 
