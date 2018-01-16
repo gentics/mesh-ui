@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TestBed, tick } from '@angular/core/testing';
+import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavigationService, InstructionActions } from '../../../core/providers/navigation/navigation.service';
@@ -28,10 +28,12 @@ import { MeshControlGroupService } from '../../form-generator/providers/field-co
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
     let state: TestApplicationState;
+    let listEffectsService: MockListEffectsService;
+    let navigationService: MockNavigationService;
 
     beforeEach(() => {
         configureComponentTest({
-            declarations: [ 
+            declarations: [
                 NodeEditorComponent,
                 SchemaLabelComponent,
                 VersionLabelComponent,
@@ -48,55 +50,156 @@ describe('NodeEditorComponent', () => {
                 { provide: ListEffectsService, useClass: MockListEffectsService },
                 { provide: NavigationService, useClass: MockNavigationService },
                 { provide: I18nService, useClass: MockI18nService },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: []} },
+                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
                 { provide: FieldGeneratorService, useClass: MockFieldGeneratorService },
                 { provide: MeshControlGroupService, useClass: MockMeshControlGroupService },
             ],
-
-            imports: [ RouterTestingModule.withRoutes([]) ]
+            imports: [RouterTestingModule.withRoutes([])]
         });
         editorEffectsService = TestBed.get(EditorEffectsService);
         state = TestBed.get(ApplicationStateService);
-        navigator
+        listEffectsService = TestBed.get(ListEffectsService);
+        navigationService = TestBed.get(NavigationService);
     });
 
+    const clickSave = (fixture: ComponentFixture<NodeEditorComponent>) => {
+        fixture.detectChanges();
+        tick();
+        (fixture.debugElement.query(By.css('.save-button')).nativeElement as HTMLElement).click();
+        tick();
+    };
+
     describe('saving a new node', () => {
-        it('calls EditorEffectsService.saveNewNode',
-            componentTest( () => NodeEditorComponent, (fixture, instance) => {
-                state.mockState({
-                    editor: {
-                        openNode: {
-                            schemaUuid: 'uuid1',
-                            uuid: '',
-                            projectName: '',
-                            language: 'en',
-                            parentNodeUuid: 'uuid_parentNode',
-                        }
-                    },
-                    entities: {
-                        schema: {
-                            uuid1 : mockSchema({uuid: 'uuid1', version: '0.1'}),
-                        },
-                        node: { 
-                            uuid_parentNode: mockMeshNode({uuid: 'uuid_parentNode', })
-                        }
+        const newNode = { language: 'en', uuid: 'new_node_uuid' };
+        beforeEach(() => {
+            editorEffectsService.saveNewNode = jasmine.createSpy('saveNewNode').and.returnValue(Promise.resolve(newNode));
+            state.mockState({
+                editor: {
+                    openNode: {
+                        schemaUuid: 'uuid1',
+                        uuid: '',
+                        projectName: '',
+                        language: 'en',
+                        parentNodeUuid: 'uuid_parentNode',
                     }
-                });
-                fixture.detectChanges();
-                tick();
-                (fixture.debugElement.query(By.css('.save-button')).nativeElement as HTMLElement).click();
-                tick();
+                },
+                entities: {
+                    schema: {
+                        uuid1: mockSchema({ uuid: 'uuid1', version: '0.1' }),
+                    },
+                    node: {
+                        uuid_parentNode: mockMeshNode({ uuid: 'uuid_parentNode', project: { name: 'demo', uuid: 'demo_uuid' } })
+                    }
+                }
+            });
+        });
+
+        it('calls EditorEffectsService.saveNewNode',
+            componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                clickSave(fixture);
                 expect(editorEffectsService.saveNewNode).toHaveBeenCalled();
+            })
+        );
+
+        it('calls formGenerator.setPristine',
+            componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                instance.formGenerator.setPristine = jasmine.createSpy('setPristine');
+                clickSave(fixture);
+                expect(instance.formGenerator.setPristine).toHaveBeenCalledWith(newNode);
+            })
+        );
+
+        it('calls listEffects.loadChildren',
+            componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                instance.formGenerator.setPristine = jasmine.createSpy('setPristine');
+                clickSave(fixture);
+                expect(listEffectsService.loadChildren).toHaveBeenCalledWith('demo', 'uuid_parentNode', 'en');
+            })
+        );
+
+        it('calls navigationService.detail and navigationService.navigate',
+            componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                const navigateSpy = jasmine.createSpy('navigate');
+                navigationService.detail = jasmine.createSpy('detail').and.returnValue({ navigate: navigateSpy });
+                clickSave(fixture);
+                expect(navigationService.detail).toHaveBeenCalledWith('demo', 'new_node_uuid', 'en');
+                expect(navigateSpy).toHaveBeenCalled();
+            })
+        );
+    });
+
+    describe('updating a node', () => {
+        const node = {
+            uuid: 'node_uuid',
+            project: {
+                uuid: 'demo_uuid',
+                name: 'demo'
+            },
+            parentNode: {
+                uuid: 'uuid_parentNode'
+            },
+            language: 'en',
+        };
+
+        beforeEach(() => {
+            state.mockState({
+                editor: {
+                    openNode: {
+                        uuid: node.uuid,
+                        projectName: node.project.name,
+                        language: node.language,
+                        parentNodeUuid: node.parentNode.uuid,
+                    }
+                },
+                entities: {
+                    schema: {
+                        uuid1: mockSchema({ uuid: 'uuid1', version: '0.1' }),
+                    },
+                    node: {
+                        uuid_parentNode: mockMeshNode({
+                            uuid: node.parentNode.uuid,
+                            project: {
+                                name: node.project.name,
+                                uuid: node.project.uuid,
+                            }
+                        }),
+                        node_uuid: mockMeshNode({
+                            uuid: node.uuid,
+                            project: {
+                                name: node.project.name,
+                                uuid: node.project.uuid,
+                            },
+                            schema: { uuid: 'uuid1' }
+                        }),
+                    }
+                }
+            });
+        });
+
+        it('calls editorEffects.saveNode',
+            componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                clickSave(fixture);
+                expect(editorEffectsService.saveNode).toHaveBeenCalled();
+            })
+        );
+
+        it('calls listEffects.loadChildren',
+            componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.returnValue(Promise.resolve(node));
+                clickSave(fixture);
+                expect(listEffectsService.loadChildren).toHaveBeenCalledWith(node.project.name, node.parentNode.uuid, node.language);
             })
         );
     });
 });
 
 class MockEditorEffectsService {
-    saveNewNode = jasmine.createSpy('saveNewNode').and.returnValue(Promise.resolve({}));
+
+    saveNewNode = jasmine.createSpy('saveNewNode')
     closeEditor = jasmine.createSpy('closeEditor');
     openNode = jasmine.createSpy('openNode');
     createNode = jasmine.createSpy('createNode');
+    saveNode = jasmine.createSpy('saveNode');
 }
 
 class MockListEffectsService {
@@ -104,31 +207,32 @@ class MockListEffectsService {
 }
 
 class MockNavigationService {
-    detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => {} });
+    detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => { } });
+    list = jasmine.createSpy('list').and.returnValue({ commands: () => { } });
 }
 
 class MockI18nService {
-    translate(str: string):string {
+    translate(str: string): string {
         return str;
     }
 }
 
 class MockFieldGeneratorService {
-    create() {}
+    create() { }
 }
 
 class MockMeshControlGroupService {
-    reset() {}
+    reset() { }
     isDirty() { return true; }
 }
 
-@Component({selector: 'node-language-switcher', template: ''})
+@Component({ selector: 'node-language-switcher', template: '' })
 class MockLanguageSwitcher {
     @Input()
     node: any;
 }
 
-@Component({selector: 'form-generator', template: ''})
+@Component({ selector: 'form-generator', template: '' })
 class MockFormGeneratorComponent {
     @Input()
     schema: any;

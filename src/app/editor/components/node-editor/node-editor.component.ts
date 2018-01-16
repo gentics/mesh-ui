@@ -13,6 +13,7 @@ import { initializeNode } from '../../form-generator/common/initialize-node';
 import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { debuglog } from 'util';
 
 @Component({
     selector: 'node-editor',
@@ -67,10 +68,15 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     });
                 } else {
                     const node$ = this.entities.selectNode(openNode.uuid, { language: openNode.language });
-                    return Observable.combineLatest(
-                        node$.filter<MeshNode>(Boolean).map(node => simpleCloneDeep(node)),
-                        node$.switchMap(node => this.entities.selectSchema(node.schema.uuid))
+                    const latest = Observable.combineLatest(
+                        node$.filter<MeshNode>(Boolean).map(node => {
+                            return simpleCloneDeep(node);
+                        }),
+                        node$.switchMap(node => {
+                            return this.entities.selectSchema(node.schema.uuid);
+                        })
                     );
+                    return latest;
                 }
             })
             .subscribe(([node, schema]) => {
@@ -79,7 +85,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();
                 this.changeDetector.markForCheck();
-
                 this.nodePathRouterLink = this.getNodePathRouterLink();
                 this.nodePath = this.getNodePath();
             });
@@ -138,15 +143,17 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 this.editorEffects.saveNewNode(parentNode.project.name, this.node)
                 .then(node => {
                     if (node) {
-                        this.formGenerator.setPristine(this.node);
+                        this.formGenerator.setPristine(node);
                         this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
                         this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
                     }
                 });
             } else {
                 this.editorEffects.saveNode(this.node)
-                .then(result => {
-                    this.listEffects.loadChildren(this.node.project.name, this.node.parentNode.uuid, this.node.language);
+                .then(node => {
+                    if (node) {
+                        this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
+                    }
                 });
             }
         }
