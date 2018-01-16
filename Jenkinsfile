@@ -37,7 +37,8 @@ node('jenkins-slave') {
 
 		stage("Build") {
 			try {
-				withEnv(['QT_QPA_PLATFORM=offscreen']) {
+				withEnv(['QT_QPA_PLATFORM=']) {
+					sh "echo $QT_QPA_PLATFORM"
 					sh "npm run dist"
 				}
 			} finally {
