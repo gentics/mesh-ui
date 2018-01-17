@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { ApiService } from '../../core/providers/api/api.service';
 import { BinaryField, MeshNode } from '../../common/models/node.model';
-import { NodeUpdateRequest } from '../../common/models/server-models';
+import { NodeUpdateRequest, NodeCreateRequest } from '../../common/models/server-models';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep } from '../../common/util/util';
@@ -24,13 +24,60 @@ export class EditorEffectsService {
 
         // Refresh the node
         this.state.actions.list.fetchNodeStart(nodeUuid);
-        this.api.project.getProjectNode({ project: projectName, nodeUuid, lang })
+        this.api.project.getNode({ project: projectName, nodeUuid, lang })
             .subscribe(response => {
                 this.state.actions.list.fetchNodeSuccess(response);
             }, error => {
                 this.state.actions.list.fetchChildrenError();
                 throw new Error('TODO: Error handling');
             });
+    }
+
+    createNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
+        this.api.project.getNode({project: projectName, nodeUuid: parentNodeUuid})
+            .subscribe(response => {
+                this.state.actions.list.fetchNodeSuccess(response);
+                this.state.actions.editor.openNewNode(projectName, schemaUuid, parentNodeUuid, language);
+            }, error => {
+                this.state.actions.list.fetchChildrenError();
+                throw new Error('TODO: Error handling');
+            });
+    }
+
+    saveNewNode(projectName: string, node: MeshNode): Promise<MeshNode | void> {
+        // TODO: save the new new node to the Mesh
+        console.log('Saving node', node);
+
+        this.state.actions.editor.saveNodeStart();
+        const nodeCreateRequest: NodeCreateRequest = {
+            fields: node.fields,
+            parentNode: node.parentNode,
+            schema: node.schema,
+            language: node.language || this.config.FALLBACK_LANGUAGE,
+        };
+
+        const language = node.language || this.config.FALLBACK_LANGUAGE;
+
+        return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
+        .toPromise()
+        .then(node => {
+            console.warn('no error handling present in NodeResponse?', node);
+
+            this.state.actions.editor.saveNodeSuccess(node);
+            this.notification.show({
+                type: 'success',
+                message: 'editor.node_saved'
+            });
+            return node;
+        },
+        error => {
+            this.state.actions.editor.saveNodeError();
+            this.notification.show({
+                type: 'error',
+                message: 'editor.node_save_error'
+            });
+            throw new Error('TODO: Error handling');
+        });
     }
 
     closeEditor(): void {
@@ -56,6 +103,7 @@ export class EditorEffectsService {
         if (!node.project.name) {
             throw new Error('Project name is not available');
         }
+
         this.state.actions.editor.saveNodeStart();
         const updateRequest: NodeUpdateRequest = {
             fields: node.fields,

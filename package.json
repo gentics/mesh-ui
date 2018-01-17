@@ -7,7 +7,7 @@
     "start-original": "ng serve",
     "start": "ng serve --verbose --proxy-config proxy.conf.json",
     "build": "ng build --prod",
-    "test": "ng test",
+    "test": "ng test -sm=false",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

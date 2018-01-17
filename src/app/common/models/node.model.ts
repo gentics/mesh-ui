@@ -1,4 +1,4 @@
-import { FieldMapFromServer, ReleaseMicroschemaInfoFromServer, NodeResponse } from './server-models';
+import { FieldMapFromServer, ReleaseMicroschemaInfoFromServer, NodeResponse, NodeCreateRequest } from './server-models';
 
 /* tslint:disable:no-empty-interface */
 

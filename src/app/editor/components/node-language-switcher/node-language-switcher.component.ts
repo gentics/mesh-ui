@@ -25,7 +25,7 @@ export class NodeLanguageSwitcherComponent {
             .map(lang => {
                 return {
                     code: lang,
-                    translationExists: !!this.node!.availableLanguages[lang]
+                    translationExists: !!this.node!.availableLanguages ? !!this.node!.availableLanguages[lang] : false
                 };
             });
     }

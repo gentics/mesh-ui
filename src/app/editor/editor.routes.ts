@@ -17,10 +17,16 @@ export const routes: Route[] = [
             outlet: 'list'
         },
         {
+            path: ':projectName/:command/:schemaUuid/:parentNodeUuid/:language',
+            component: NodeEditorComponent,
+            outlet: 'detail',
+            canDeactivate: [NodeEditorGuard]
+        },
+        {
             path: ':projectName/:nodeUuid/:language',
             component: NodeEditorComponent,
             outlet: 'detail',
             canDeactivate: [NodeEditorGuard]
-        }
+        },
     ]},
 ];
