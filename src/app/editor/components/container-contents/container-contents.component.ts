@@ -140,4 +140,8 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             return this.navigationService.detail(node.project.name!, node.uuid, node.language).commands();
         }
     }
+
+    focusEditor() {
+        this.state.actions.editor.focusEditor();
+    }
 }

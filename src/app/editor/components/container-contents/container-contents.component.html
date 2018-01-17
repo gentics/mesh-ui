@@ -15,7 +15,7 @@
         <icon class="node-icon" *ngIf="!child.container">insert_drive_file</icon>
         <div class="item-primary">
             <div class="title">
-                <a href [routerLink]="routerLinkOf(child)">{{ child | displayField }}</a>
+                <a href [routerLink]="routerLinkOf(child)" (click)="focusEditor()">{{ child | displayField }}</a>
             </div>
             <div class="available-languages">
                 <available-languages-list [available]="child.availableLanguages"

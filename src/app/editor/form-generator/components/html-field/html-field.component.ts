@@ -40,10 +40,17 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     ngOnDestroy(): void {
-        this.editor.off('text-change', this.onTextChangeHandler);
-        this.editor.off('selection-change', this.onSelectionChangeHandler);
-        this.elementRef.nativeElement.querySelector('.ql-toolbar').removeEventListener('click', this.focusHandler);
-        this.editorRef.nativeElement.querySelector('.ql-editor').removeEventListener('blur', this.blurHandler);
+        if (this.editor) {
+            this.editor.off('text-change', this.onTextChangeHandler);
+            this.editor.off('selection-change', this.onSelectionChangeHandler);
+        }
+
+        const qlToolBar = this.elementRef.nativeElement.querySelector('.ql-toolbar');
+        if (qlToolBar) {
+            this.elementRef.nativeElement.querySelector('.ql-toolbar').removeEventListener('click', this.focusHandler);
+            this.editorRef.nativeElement.querySelector('.ql-editor').removeEventListener('blur', this.blurHandler);
+        }
+        
     }
 
     init(api: MeshFieldControlApi): void {

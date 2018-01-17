@@ -96,7 +96,6 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
                         type: 'error',
                         message: err.toString()
                     });
-                    console.error(JSON.stringify(err, undefined, 2));
                 }
                 this.creating = false;
             });

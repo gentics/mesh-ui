@@ -11,6 +11,9 @@ export class ListEffectsService {
                 private state: ApplicationStateService) {
     }
 
+    /**
+     * Load all projects
+     */
     loadProjects() {
         this.state.actions.list.fetchProjectsStart();
         // TODO How to handle paging? Should all projects be loaded?
@@ -22,6 +25,9 @@ export class ListEffectsService {
             });
     }
 
+    /**
+     * @param project project name
+     */
     loadSchemasForProject(project: string) {
         this.state.actions.list.fetchSchemasStart(project);
         this.api.project.getProjectSchemas({ project })
@@ -30,6 +36,9 @@ export class ListEffectsService {
                 error => this.state.actions.list.fetchSchemasError() /* TODO: error handling */);
     }
 
+    /**
+     * @param project project name
+     */
     loadMicroschemasForProject(project: string) {
         this.state.actions.list.fetchMicroschemasStart();
         this.api.project.getProjectMicroschemas({ project })
@@ -37,7 +46,12 @@ export class ListEffectsService {
                 ({data}) => this.state.actions.list.fetchMicroschemasSuccess(data),
                 error => this.state.actions.list.fetchMicroschemasError() /* TODO: error handling */);
     }
-
+    /**
+     * Basicaly display the content of the folder in the list view
+     * @param projectName 
+     * @param containerUuid 
+     * @param language 
+     */
     setActiveContainer(projectName: string, containerUuid: string, language: string) {
         // Update active container in state
         this.state.actions.list.setActiveContainer(projectName, containerUuid, language);
@@ -55,6 +69,12 @@ export class ListEffectsService {
        this.loadChildren(projectName, containerUuid, language);
     }
 
+    /**
+     * Load the children for the opened folder
+     * @param projectName
+     * @param containerUuid
+     * @param language
+     */
     loadChildren(projectName: string, containerUuid: string, language: string) {
          // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
@@ -68,6 +88,10 @@ export class ListEffectsService {
             });
     }
 
+    /**
+     * make a comma seperated list of langues. Put the passed language in front
+     * @param language 
+     */
     private languageWithFallbacks(language: string): string {
         return this.config.CONTENT_LANGUAGES
             .sort((a, b) => a === language ? -1 : 1)

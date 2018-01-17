@@ -33,6 +33,14 @@ export class EditorEffectsService {
             });
     }
 
+    /**
+     * Create an placeholder object in the state for the new node
+     * and open dispatch an action to open it in the editor
+     * @param projectName 
+     * @param schemaUuid 
+     * @param parentNodeUuid 
+     * @param language 
+     */
     createNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
         this.api.project.getNode({project: projectName, nodeUuid: parentNodeUuid})
             .subscribe(response => {
@@ -44,10 +52,12 @@ export class EditorEffectsService {
             });
     }
 
+    /**
+     * Save a new node to the api endpoint
+     * @param projectName 
+     * @param node 
+     */
     saveNewNode(projectName: string, node: MeshNode): Promise<MeshNode | void> {
-        // TODO: save the new new node to the Mesh
-        console.log('Saving node', node);
-
         this.state.actions.editor.saveNodeStart();
         const nodeCreateRequest: NodeCreateRequest = {
             fields: node.fields,
@@ -59,25 +69,25 @@ export class EditorEffectsService {
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
-        .toPromise()
-        .then(node => {
-            console.warn('no error handling present in NodeResponse?', node);
+            .toPromise()
+            .then(node => {
+                    console.warn('no error handling present in NodeResponse?', node);
 
-            this.state.actions.editor.saveNodeSuccess(node);
-            this.notification.show({
-                type: 'success',
-                message: 'editor.node_saved'
-            });
-            return node;
-        },
-        error => {
-            this.state.actions.editor.saveNodeError();
-            this.notification.show({
-                type: 'error',
-                message: 'editor.node_save_error'
-            });
-            throw new Error('TODO: Error handling');
-        });
+                    this.state.actions.editor.saveNodeSuccess(node);
+                    this.notification.show({
+                        type: 'success',
+                        message: 'editor.node_saved'
+                    });
+                    return node;
+                },
+                error => {
+                    this.state.actions.editor.saveNodeError();
+                    this.notification.show({
+                        type: 'error',
+                        message: 'editor.node_save_error'
+                    });
+                    throw new Error('TODO: Error handling');
+                });
     }
 
     closeEditor(): void {
@@ -99,6 +109,10 @@ export class EditorEffectsService {
         }
     }
 
+    /**
+     * Save (or update) an existing node
+     * @param node 
+     */
     saveNode(node: MeshNode): Promise<MeshNode | void> {
         if (!node.project.name) {
             throw new Error('Project name is not available');

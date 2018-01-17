@@ -174,6 +174,9 @@ describe('CreateProjectModal', () => {
 
             instance.name.setValue(projectName);
             instance.schema.setValue(testSchema);
+
+            mockProjectEffectsService.createProject.and.returnValue(Promise.resolve(null));
+
             triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
             fixture.detectChanges();
             expect(mockProjectEffectsService.createProject).toHaveBeenCalledWith({

@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+
 import { NavigationService, ValidDetailCommands } from '../../../core/providers/navigation/navigation.service';
+import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { Observable } from 'rxjs/Observable';
+
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { simpleCloneDeep } from '../../../common/util/util';
@@ -13,7 +16,7 @@ import { initializeNode } from '../../form-generator/common/initialize-node';
 import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { debuglog } from 'util';
+
 
 @Component({
     selector: 'node-editor',
@@ -28,6 +31,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     nodePathRouterLink: any[];
     nodePath: string;
     nodeTitle = '';
+
+    private openNode$: Subscription;
+
     @ViewChild(FormGeneratorComponent) formGenerator: FormGeneratorComponent;
 
     constructor(private state: ApplicationStateService,
@@ -55,7 +61,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             }
         });
 
-        const openNode$ = this.state.select(state => state.editor.openNode)
+        this.openNode$ = this.state.select(state => state.editor.openNode)
             .filter(Boolean)
             .switchMap(openNode => {
 
@@ -92,6 +98,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.editorEffects.closeEditor();
+        this.openNode$.unsubscribe();
     }
 
     getNodePath(): string {
@@ -100,18 +107,20 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
 
         const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
-        const parentDisplayNode: any = { displayName: parentNode.displayName || '' };
+        // const parentDisplayNode: any = { displayName: parentNode.displayName || '' };
+        const parentDisplayNode: NodeReferenceFromServer = { displayName: parentNode.displayName || '' } as NodeReferenceFromServer;
         let breadcrumb = this.node.breadcrumb;
 
         if (!breadcrumb && parentNode) {
-            const createNodeBreadcrumb: any = { displayName: this.i18n.translate('editor.create_node') };
+            const createNodeBreadcrumb: NodeReferenceFromServer = {
+                displayName: this.i18n.translate('editor.create_node')
+            } as NodeReferenceFromServer;
             breadcrumb = [createNodeBreadcrumb, parentDisplayNode, ...parentNode.breadcrumb];
         } else if (!breadcrumb) {
-            breadcrumb = [parentDisplayNode as any, ...parentNode.breadcrumb];
+            breadcrumb = [parentDisplayNode, ...parentNode.breadcrumb];
         } else {
-            breadcrumb = [this.node as any, ...breadcrumb];
+            breadcrumb = [{ displayName: this.node.displayName} as NodeReferenceFromServer, ...breadcrumb];
         }
-
         // TODO: remove this once Mesh fixes the order of the breadcrumbs
         return breadcrumb.slice().reverse().map(b => b.displayName).join(' › ');
     }
@@ -135,7 +144,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     /**
      * Save the node as a new draft version.
      */
-    saveNode(): void {
+    saveNode(navigateOnSave = true): void {
         if (!this.node) {
             return;
         }
@@ -144,20 +153,22 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             if (!this.node.uuid) {
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
                 this.editorEffects.saveNewNode(parentNode.project.name, this.node)
-                .then(node => {
-                    if (node) {
-                        this.formGenerator.setPristine(node);
-                        this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
-                        this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
-                    }
+                    .then(node => {
+                        if (node) {
+                            this.formGenerator.setPristine(node);
+                            this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
+                            if (navigateOnSave) {
+                                this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
+                            }
+                        }
                 });
             } else {
                 this.editorEffects.saveNode(this.node)
-                .then(node => {
-                    if (node) {
-                        this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
-                    }
-                });
+                    .then(node => {
+                        if (node) {
+                            this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
+                        }
+                    });
             }
         }
     }

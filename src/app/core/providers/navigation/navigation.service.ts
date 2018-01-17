@@ -108,7 +108,7 @@ export class NavigationService {
             outlets.detail = null;
         }
         if (instruction.detail) {
-            const { projectName, nodeUuid, schemaUuid, parentNodeUuid, language, command} = instruction.detail;
+            const { projectName, nodeUuid, schemaUuid, parentNodeUuid, language, command } = instruction.detail;
             switch (command) {
                 case 'createNode':
                     outlets.detail = [projectName, command, schemaUuid, parentNodeUuid, language];

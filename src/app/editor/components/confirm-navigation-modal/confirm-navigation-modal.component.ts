@@ -38,7 +38,7 @@ export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
     }
 
     saveAndClose(): void {
-        this.nodeEditor.saveNode();
+        this.nodeEditor.saveNode(false);
         this.closeFn(true);
     }
 

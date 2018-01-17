@@ -190,6 +190,7 @@ describe('NodeEditorComponent', () => {
 
         it('calls editorEffects.saveNode',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.returnValue(Promise.resolve(node));
                 clickSave(fixture);
                 expect(editorEffectsService.saveNode).toHaveBeenCalled();
             })
