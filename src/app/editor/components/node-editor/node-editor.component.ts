@@ -98,6 +98,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         if (!this.node) {
             return '';
         }
+
         const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
         const parentDisplayNode: any = { displayName: parentNode.displayName || '' };
         let breadcrumb = this.node.breadcrumb;

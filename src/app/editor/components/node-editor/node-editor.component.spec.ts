@@ -163,18 +163,23 @@ describe('NodeEditorComponent', () => {
                         uuid1: mockSchema({ uuid: 'uuid1', version: '0.1' }),
                     },
                     node: {
-                        uuid_parentNode: mockMeshNode({
+                        [node.parentNode.uuid]: mockMeshNode({
                             uuid: node.parentNode.uuid,
                             project: {
                                 name: node.project.name,
                                 uuid: node.project.uuid,
                             }
                         }),
-                        node_uuid: mockMeshNode({
+                        [node.uuid]: mockMeshNode({
                             uuid: node.uuid,
                             project: {
                                 name: node.project.name,
                                 uuid: node.project.uuid,
+                            },
+                            parentNode: {
+                                uuid: node.parentNode.uuid,
+                                projectName: node.project.name,
+                                schema: { uuid: 'uuid1' }
                             },
                             schema: { uuid: 'uuid1' }
                         }),
@@ -201,7 +206,7 @@ describe('NodeEditorComponent', () => {
 
 
     describe('closing editor', () => {
-        fit('calls navigationService.clearDetail',
+        it('calls navigationService.clearDetail',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
                 clickClose(fixture);
                 expect(navigationService.clearDetail).toHaveBeenCalled();
