@@ -20,7 +20,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value: NodeFieldType): void {
-        this.binaryProperties = Object.keys(value).map(key => ({ key, value: value[key] }));
+        this.binaryProperties = Object.keys(value || {}).map(key => ({ key, value: value[key] }));
     }
 
     formWidthChange(width: number): void {

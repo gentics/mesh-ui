@@ -72,7 +72,6 @@ describe('NodeEditorComponent', () => {
     const clickClose = (fixture: ComponentFixture<NodeEditorComponent>) => {
         fixture.detectChanges();
         tick();
-        console.log((fixture.debugElement.query(By.css('.close-button')).nativeElement as HTMLElement));
         (fixture.debugElement.query(By.css('.close-button gtx-button')).nativeElement as HTMLElement).click();
         tick();
     };

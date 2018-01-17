@@ -1,1 +1,1 @@
-<span [class.published]="isPublishedVersion">v{{ version }}</span>
+<span [class.published]="isPublishedVersion" *ngIf="version">v{{ version }}</span>

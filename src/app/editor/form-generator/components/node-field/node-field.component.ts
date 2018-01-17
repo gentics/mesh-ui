@@ -21,7 +21,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value: NodeField): void {
-        this.userValue = value.uuid;
+        this.userValue = value && value.uuid || '';
     }
 
     isValidUuid(): boolean {
