@@ -55,6 +55,14 @@
       "en": "Are you sure you want to delete project <var>{{ name }}</var>?",
       "de": "Sind Sie sicher, dass sie Projekt <var>{{ name }}</var> löschen wollen?"
     },
+    "delete_node_title": {
+      "en": "Delete node",
+      "de": "Node löschen"
+    },
+    "delete_node_body": {
+      "en": "Are you sure you want to delete this node <var>{{ name }}</var>?",
+      "de": "Sind Sie sicher, dass sie die Node <var>{{ name }}</var> löschen wollen?"
+    },
     "discard_changes_button": {
       "en": "Discard changes",
       "de": "Änderungen verwerfen"

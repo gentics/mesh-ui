@@ -9,6 +9,7 @@
         {{schema.name}}
     </gtx-contents-list-item>
     <gtx-contents-list-item *ngFor="let child of childrenBySchema[schema.uuid]"
+                            class="node-list-item"
                             [class.container-node]="child.container"
                             [class.not-in-current-lang]="child.language !== listLanguage">
         <icon class="node-icon" *ngIf="child.container">folder</icon>

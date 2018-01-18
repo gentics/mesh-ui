@@ -217,8 +217,7 @@ describe('NodeEditorComponent', () => {
 });
 
 class MockEditorEffectsService {
-
-    saveNewNode = jasmine.createSpy('saveNewNode')
+    saveNewNode = jasmine.createSpy('saveNewNode');
     closeEditor = jasmine.createSpy('closeEditor');
     openNode = jasmine.createSpy('openNode');
     createNode = jasmine.createSpy('createNode');
