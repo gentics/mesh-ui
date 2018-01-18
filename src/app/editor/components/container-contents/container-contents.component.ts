@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import { ModalService, IDialogConfig } from 'gentics-ui-core';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -9,7 +11,9 @@ import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { Observable } from 'rxjs/Observable';
+import { ApiService } from '../../../core/providers/api/api.service';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+
 
 
 @Component({
@@ -34,7 +38,10 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         private navigationService: NavigationService,
         private route: ActivatedRoute,
         private entities: EntitiesService,
-        private state: ApplicationStateService) {
+        private state: ApplicationStateService,
+        private api: ApiService,
+        private i18n: I18nService,
+        private modalService: ModalService) {
     }
 
     ngOnInit(): void {
@@ -130,7 +137,26 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     deleteNode(node: MeshNode): void {
-        // TODO
+        const dialogConfig: IDialogConfig = {
+            title: this.i18n.translate('modal.delete_node_title'),
+            body: this.i18n.translate('modal.delete_node_body', { name: node.displayName }),
+            buttons: [
+                { label: this.i18n.translate('common.cancel_button'), type: 'secondary', shouldReject: true },
+                { label: this.i18n.translate('common.delete_button'), type: 'alert', returnValue: true }
+            ]
+        };
+
+        this.modalService.dialog(dialogConfig)
+            .then(modal => modal.open())
+            .then(() => {
+                this.api.project.deleteNode({ project: node.project.name, nodeUuid: node.uuid, recursive: true })
+                .take(1)
+                .subscribe(result => {
+                    console.warn('implement check if delete happened');
+                    const parentNode = this.entities.getNode(node.parentNode.uuid, { language : node.language });
+                    this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, parentNode.language);
+                });
+            });
     }
 
     routerLinkOf(node: MeshNode) {
