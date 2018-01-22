@@ -22,10 +22,11 @@ import { AvailableLanguagesListComponent } from '../available-languages-list/ava
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockMeshNode } from '../../../../testing/mock-models';
 
-describe('NodeRowComponent', () => {
+fdescribe('NodeRowComponent', () => {
     let api: MockApiService;
     let state: TestApplicationState;
     let modalService: MockModalService;
+    let listService: MockListEffectsService;
 
     beforeEach(() => {
         configureComponentTest({
@@ -55,6 +56,7 @@ describe('NodeRowComponent', () => {
 
         api = TestBed.get(ApiService);
         modalService = TestBed.get(ModalService);
+        listService = TestBed.get(ListEffectsService);
     });
 
 
@@ -75,7 +77,8 @@ describe('NodeRowComponent', () => {
                 openDropdownAndDeleteFirstItem(fixture);
                 expect(api.project.deleteNode).not.toHaveBeenCalled();
                 modalService.confirmLastModal();
-                expect(api.project.deleteNode).toHaveBeenCalled();
+                expect(listService.deleteNode).toHaveBeenCalled();
+                // expect(api.project.deleteNode).toHaveBeenCalled();
             })
         );
     });
@@ -102,6 +105,8 @@ class MockDisplayFieldPipe implements PipeTransform {
 
 class MockListEffectsService {
     loadChildren = jasmine.createSpy('loadChildren');
+    // deleteNode = jasmine.createSpy('deleteNode');
+    deleteNode = jasmine.createSpy('deleteNode');
     loadSchemasForProject = () => { };
     loadMicroschemasForProject = () => { };
     setActiveContainer = (projectName: string, containerUuid: string, language: string) => { };
