@@ -9,6 +9,7 @@
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
+    "preinstall": "node ./check-if-yarn-is-used",
     "e2e": "ng e2e"
   },
   "private": true,
