@@ -55,13 +55,7 @@ export class NodeRowComponent implements OnInit {
         this.modalService.dialog(dialogConfig)
             .then(modal => modal.open())
             .then(() => {
-                this.api.project.deleteNode({ project: this.node.project.name, nodeUuid: this.node.uuid, recursive: true })
-                    .take(1)
-                    .subscribe(result => {
-                        console.warn('implement check if delete happened');
-                        const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                        this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, parentNode.language);
-                    });
+                this.listEffects.deleteNode(this.node, true);
             });
     }
 
