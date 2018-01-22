@@ -7,7 +7,8 @@
     "start-original": "ng serve",
     "start": "ng serve --verbose --proxy-config proxy.conf.json",
     "build": "ng build --prod",
-    "test": "ng test -sm=false --browsers=ChromeHeadless",
+    "test": "ng test",
+    "test-no-sourcemaps": "ng test -sm=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

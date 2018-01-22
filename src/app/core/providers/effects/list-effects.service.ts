@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ConfigService } from '../config/config.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
+import { MeshNode } from '../../../common/models/node.model';
 
 @Injectable()
 export class ListEffectsService {
 
     constructor(private api: ApiService,
                 private config: ConfigService,
-                private state: ApplicationStateService) {
+                private state: ApplicationStateService,
+                private entities: EntitiesService) {
     }
 
     /**
@@ -48,9 +51,9 @@ export class ListEffectsService {
     }
     /**
      * Basicaly display the content of the folder in the list view
-     * @param projectName 
-     * @param containerUuid 
-     * @param language 
+     * @param projectName
+     * @param containerUuid
+     * @param language
      */
     setActiveContainer(projectName: string, containerUuid: string, language: string) {
         // Update active container in state
@@ -90,11 +93,24 @@ export class ListEffectsService {
 
     /**
      * make a comma seperated list of langues. Put the passed language in front
-     * @param language 
+     * @param language
      */
     private languageWithFallbacks(language: string): string {
         return this.config.CONTENT_LANGUAGES
             .sort((a, b) => a === language ? -1 : 1)
             .join(',');
+    }
+
+    /**
+     *
+     */
+    public deleteNode(node: MeshNode, recursive: boolean): void {
+        this.api.project.deleteNode({ project: node.project.name, nodeUuid: node.uuid, recursive })
+            .take(1)
+            .subscribe(result => {
+            console.warn('implement check if delete happened');
+            const parentNode = this.entities.getNode(node.parentNode.uuid, { language: node.language });
+            this.loadChildren(parentNode.project.name, parentNode.uuid, parentNode.language);
+        });
     }
 }
