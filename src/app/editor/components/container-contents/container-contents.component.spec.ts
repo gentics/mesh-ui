@@ -38,7 +38,6 @@ describe('ContainerContentsComponent', () => {
 
     let api: MockApiService;
     let state: TestApplicationState;
-    let modalService: MockModalService;
 
     beforeEach(() => {
         configureComponentTest({
@@ -48,7 +47,6 @@ describe('ContainerContentsComponent', () => {
                 SearchBarComponent,
                 CreateNodeButtonComponent,
                 ContainerLanguageSwitcherComponent,
-                MockDisplayFieldPipe,
                 AvailableLanguagesListComponent,
                 ProjectSwitcherComponent,
                 NodeLanguageLabelComponent,
@@ -57,12 +55,10 @@ describe('ContainerContentsComponent', () => {
             providers: [
                 EntitiesService,
                 OverlayHostService,
-                { provide: ModalService, useClass: MockModalService },
                 { provide: NavigationService, useClass: MockNavigationService },
                 { provide: ListEffectsService, useClass: MockListEffectsService },
                 { provide: ApiService, useClass: MockApiService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: I18nService, useClass: MockI18nService },
                 { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
                 { provide: ActivatedRoute, useValue: { paramMap: Observable.of(convertToParamMap({
                     containerUuid: 'container_uuid',
@@ -77,7 +73,6 @@ describe('ContainerContentsComponent', () => {
         });
 
         api = TestBed.get(ApiService);
-        modalService = TestBed.get(ModalService);
 
         state = TestBed.get(ApplicationStateService);
         state.mockState({
@@ -114,30 +109,7 @@ describe('ContainerContentsComponent', () => {
             }
         });
     });
-
-    describe('Deleting new node',  () => {
-
-        it('asks the user for confirmation',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                openDropdownAndDeleteFirstItem(fixture);
-
-                expect(modalService.dialog).toHaveBeenCalled();
-                expect(modalService.fakeDialog.open).toHaveBeenCalled();
-            })
-        );
-
-        it('deletes the node via the API if the user confirms',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                openDropdownAndDeleteFirstItem(fixture);
-                expect(api.project.deleteNode).not.toHaveBeenCalled();
-                modalService.confirmLastModal();
-                expect(api.project.deleteNode).toHaveBeenCalled();
-            })
-        );
-
-    });
 });
-
 
 @Component({
     template: `
@@ -145,15 +117,6 @@ describe('ContainerContentsComponent', () => {
         <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent { }
-
-const routerLinkOf = (node: MeshNode): any[] => [];
-
-@Pipe({ name: 'displayField' })
-class MockDisplayFieldPipe implements PipeTransform {
-    transform(a: any): any {
-        return a;
-    }
-}
 
 class MockListEffectsService {
     loadChildren = jasmine.createSpy('loadChildren');
@@ -165,47 +128,4 @@ class MockListEffectsService {
 class MockNavigationService {
     list = jasmine.createSpy('list').and.returnValue({ commands: () => { } });
     detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => { }, commands: () => { } });
-}
-
-class MockI18nService {
-    translate(str: string): string {
-        return str;
-    }
-}
-
-class MockModalService {
-    dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fakeDialog = {
-        open: jasmine.createSpy('open').and.callFake(() => {
-            return new Promise(resolve => {
-                this.confirmLastModal = () => { resolve(); tick(); };
-            });
-        })
-    };
-    confirmLastModal: () => void;
-}
-
-
-function findDeleteButton(fixture: ComponentFixture<any>): DebugElement {
-    return fixture.debugElement.queryAll(By.directive(DropdownItem))
-        .find(dropdownItem => dropdownItem.nativeElement.innerText.indexOf('delete') >= 0);
-}
-
-function openDropdownAndDeleteFirstItem(fixture: ComponentFixture<any>): void {
-    fixture.detectChanges();
-    tick();
-
-    const listItem = fixture.debugElement.query(By.css('.node-list-item'));
-    const dropdownTrigger = listItem.query(By.directive(DropdownTriggerDirective));
-
-    expect(findDeleteButton(fixture)).toBeUndefined();
-
-    dropdownTrigger.nativeElement.click();
-    fixture.detectChanges();
-
-    const deleteButton = findDeleteButton(fixture);
-    expect(deleteButton).toBeDefined();
-
-    deleteButton.nativeElement.click();
-    tick();
 }
