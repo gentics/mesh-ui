@@ -1,0 +1,38 @@
+<gtx-contents-list-item class="node-list-item"
+                            [class.container-node]="node.container"
+                            [class.not-in-current-lang]="node.language !== listLanguage">
+        <icon class="node-icon" *ngIf="node.container">folder</icon>
+        <icon class="node-icon" *ngIf="!node.container">insert_drive_file</icon>
+        <div class="item-primary">
+            <div class="title">
+                <a href [routerLink]="getRouterLink()" (click)="focusEditor()">{{ node | displayField }}</a>
+            </div>
+            <div class="available-languages">
+                <available-languages-list [available]="node.availableLanguages"
+                                          [current]="listLanguage"></available-languages-list>
+            </div>
+        </div>
+        <div class="show-on-hover">
+            <gtx-button flat size="small" (click)="editNode()">
+                <icon left>edit</icon> Edit
+            </gtx-button>
+            <gtx-dropdown-list align="right">
+                <gtx-dropdown-trigger>
+                    <gtx-button icon type="secondary">
+                        <icon>more_vert</icon>
+                    </gtx-button>
+                </gtx-dropdown-trigger>
+                <gtx-dropdown-content>
+                    <gtx-dropdown-item (click)="copyNode()">
+                        <icon left>content_copy</icon> {{ 'list.copy' | i18n }}
+                    </gtx-dropdown-item>
+                    <gtx-dropdown-item (click)="moveNode()">
+                        <icon left>subdirectory_arrow_right</icon> {{ 'list.move' | i18n }}
+                    </gtx-dropdown-item>
+                    <gtx-dropdown-item (click)="deleteNode()" class="alert">
+                        <icon left>delete</icon> {{ 'list.delete' | i18n }}
+                    </gtx-dropdown-item>
+                </gtx-dropdown-content>
+            </gtx-dropdown-list>
+        </div>
+    </gtx-contents-list-item>
