@@ -105,12 +105,15 @@ export class ListEffectsService {
      *
      */
     public deleteNode(node: MeshNode, recursive: boolean): void {
+        this.state.actions.list.deleteNodeStart();
         this.api.project.deleteNode({ project: node.project.name, nodeUuid: node.uuid, recursive })
-            .take(1)
             .subscribe(result => {
-            console.warn('implement check if delete happened');
-            const parentNode = this.entities.getNode(node.parentNode.uuid, { language: node.language });
-            this.loadChildren(parentNode.project.name, parentNode.uuid, parentNode.language);
-        });
+                this.state.actions.list.deleteNodeSuccess();
+                const parentNode = this.entities.getNode(node.parentNode.uuid, { language: node.language });
+                this.loadChildren(parentNode.project.name, parentNode.uuid, parentNode.language);
+        }, error => {
+            this.state.actions.list.deleteNodeError();
+            throw new Error('TODO: Error handling');
+        })
     }
 }
