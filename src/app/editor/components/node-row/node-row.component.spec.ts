@@ -22,7 +22,7 @@ import { AvailableLanguagesListComponent } from '../available-languages-list/ava
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockMeshNode } from '../../../../testing/mock-models';
 
-fdescribe('NodeRowComponent', () => {
+describe('NodeRowComponent', () => {
     let api: MockApiService;
     let state: TestApplicationState;
     let modalService: MockModalService;
