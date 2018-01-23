@@ -37,24 +37,17 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.valueChange(api.getValue());
     }
 
-    imageLoaded(): void {
-        console.log('image has loaded');
-    }
     valueChange(value: NodeFieldType): void {
         //this.binaryProperties = Object.keys(value || {}).map(key => ({ key, value: value[key] }));
-        this.binaryProperties = { ...value as Object };
-
-        const mimeType: string = this.binaryProperties['mimeType'];
-        if (!!mimeType === false) {
+        this.binaryProperties = value === null ? null : { ...value as Object };
+        if (this.binaryProperties === null || !!this.binaryProperties['mimeType'] === false) {
             this.binaryUrl = null;
             return;
         }
 
         if (this.binaryProperties['file']) {
-
             const url = window.URL.createObjectURL(this.binaryProperties['file']);
             this.binaryUrl = this.sanitizer.bypassSecurityTrustUrl(url);
-
         } else {
             const node: MeshNode = this.api.getNodeValue() as MeshNode;
             const url = this.meshUIAPI.project.getBinaryFileUrl(node.project.name, node.uuid);

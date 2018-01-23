@@ -7,7 +7,6 @@ import { I18nNotification } from '../../core/providers/i18n-notification/i18n-no
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
-import { debuglog } from 'util';
 
 @Injectable()
 export class EditorEffectsService {
@@ -60,8 +59,12 @@ export class EditorEffectsService {
      */
     saveNewNode(projectName: string, node: MeshNode): Promise<MeshNode | void> {
         this.state.actions.editor.saveNodeStart();
+
+        const allowedFields = { ...node.fields };
+        delete allowedFields['binary'];
+
         const nodeCreateRequest: NodeCreateRequest = {
-            fields: node.fields,
+            fields: allowedFields,
             parentNode: node.parentNode,
             schema: node.schema,
             language: node.language || this.config.FALLBACK_LANGUAGE,
@@ -69,43 +72,33 @@ export class EditorEffectsService {
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
-        return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
+        return new Promise<MeshNode | void>(resolve => {
+            this.api.project.createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
-            .then(node => {
-                    this.state.actions.editor.saveNodeSuccess(node);
-                    this.notification.show({
-                        type: 'success',
-                        message: 'editor.node_saved'
+            .then(newNode => {
+                if (node.fields['binary'] && node.fields['binary'].file) {
+                    const binary: File = node.fields['binary'].file as File;
+                    this.uploadBinary(newNode.project.name, newNode.uuid, binary, newNode.language, newNode.version)
+                    .then(uploadResponse => {
+                        this.showStatusNotification(uploadResponse as MeshNode, 'success', 'editor.node_saved');
+                        resolve(uploadResponse);
+                    }, uploadError => {
+                        this.state.actions.editor.saveNodeError();
                     });
-                    return node;
-                },
-                error => {
-                    this.state.actions.editor.saveNodeError();
-                    this.notification.show({
-                        type: 'error',
-                        message: 'editor.node_save_error'
-                    });
-                    throw new Error('TODO: Error handling');
+
+                } else {
+                    this.showStatusNotification(newNode, 'success', 'editor.node_saved');
+                    resolve(newNode);
+                }
+            }, error => {
+                this.state.actions.editor.saveNodeError();
+                this.notification.show({
+                    type: 'error',
+                    message: 'editor.node_save_error'
                 });
-    }
-
-    closeEditor(): void {
-        this.state.actions.editor.closeEditor();
-    }
-
-    /**
-     * Creates a translation of a node by cloning the given node and renaming certain fields which need to be unique.
-     * This method is limited in that it does not work with binary fields and the renaming is naive and may fail.
-     * TODO: update this when a translation endpoint in implemented in Mesh: https://github.com/gentics/mesh/issues/12
-     */
-    createTranslation(node: MeshNode, languageCode: string): Promise<MeshNode | void> {
-        const clone = this.cloneNodeWithRename(node, languageCode.toUpperCase());
-        if (clone) {
-            clone.language = languageCode;
-            return this.saveNode(clone);
-        } else {
-            return Promise.reject(`Could not create translation`);
-        }
+                throw new Error('TODO: Error handling');
+            });
+        });
     }
 
     /**
@@ -119,18 +112,8 @@ export class EditorEffectsService {
 
         this.state.actions.editor.saveNodeStart();
 
-
-        /*const allowedFields = Object.keys(node.fields).reduce((allowedFields, fieldName, index) => {
-            if (fieldName !== 'binary') {
-                allowedFields[fieldName] = node.fields[fieldName];
-            }
-            return allowedFields;
-        }, {});*/
-
         const allowedFields = { ...node.fields };
-        if (allowedFields['binary']) {
-            delete allowedFields['binary'];
-        }
+        delete allowedFields['binary'];
 
         const updateRequest: NodeUpdateRequest = {
             fields: allowedFields,
@@ -140,50 +123,54 @@ export class EditorEffectsService {
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
-        return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
+        return new Promise<MeshNode | void>(resolve => {
+            this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
             .toPromise()
             .then(response => {
-                    if (response.conflict) {
-                        // TODO: conflict resolution handling
-                    } else if (response.node) {
-
-
-                        if (node.fields['binary']) {
-                            const binary: File = node.fields['binary'].file as File;
-
-                            this.api.project.updateBinaryField({
-                                project: node.project.name,
-                                fieldName: 'binary',
-                                nodeUuid: response.node.uuid
-                            }, {
-                                binary,
-                                language: node.language,
-                                version: response.node.version
-                            })
-                            .toPromise()
-                            .then(uploadResponse => {
-                            }, uploadError => {
-                            });
-                        }
-
-
-                        this.state.actions.editor.saveNodeSuccess(response.node);
-                        this.notification.show({
-                            type: 'success',
-                            message: 'editor.node_saved'
+                if (response.conflict) {
+                    // TODO: conflict resolution handling
+                    debugger;
+                } else if (response.node) {
+                    if (node.fields['binary'] && node.fields['binary'].file) {
+                        const binary: File = node.fields['binary'].file as File;
+                        this.uploadBinary(node.project.name, response.node.uuid, binary, node.language, node.version)
+                        .then(uploadResponse => {
+                            this.showStatusNotification(uploadResponse as MeshNode, 'success', 'editor.node_saved');
+                            resolve(uploadResponse);
+                        }, uploadError => {
+                            this.state.actions.editor.saveNodeError();
                         });
-                        return response.node;
+                    } else {
+                        this.showStatusNotification(response.node, 'success', 'editor.node_saved');
+                        resolve(response.node);
                     }
+                } else {
                     this.state.actions.editor.saveNodeError();
-                },
-                error => {
-                    this.state.actions.editor.saveNodeError();
-                    this.notification.show({
-                        type: 'error',
-                        message: 'editor.node_save_error'
-                    });
-                    throw new Error('TODO: Error handling');
+                }
+            },
+            error => {
+                this.state.actions.editor.saveNodeError();
+                this.notification.show({
+                    type: 'error',
+                    message: 'editor.node_save_error'
                 });
+                throw new Error('TODO: Error handling');
+            });
+        })
+    }
+
+    uploadBinary(project: string, nodeUuid: string, binary: File, language: string, version: string): Promise<MeshNode | void> {
+
+        return this.api.project.updateBinaryField({
+            project,
+            nodeUuid,
+            fieldName: 'binary',
+        }, {
+            binary,
+            language,
+            version
+        })
+        .toPromise();
     }
 
     publishNode(node: MeshNode): void {
@@ -222,6 +209,27 @@ export class EditorEffectsService {
                 });
     }
 
+
+    closeEditor(): void {
+        this.state.actions.editor.closeEditor();
+    }
+
+    /**
+     * Creates a translation of a node by cloning the given node and renaming certain fields which need to be unique.
+     * This method is limited in that it does not work with binary fields and the renaming is naive and may fail.
+     * TODO: update this when a translation endpoint in implemented in Mesh: https://github.com/gentics/mesh/issues/12
+     */
+    createTranslation(node: MeshNode, languageCode: string): Promise<MeshNode | void> {
+        const clone = this.cloneNodeWithRename(node, languageCode.toUpperCase());
+        if (clone) {
+            clone.language = languageCode;
+            return this.saveNode(clone);
+        } else {
+            return Promise.reject(`Could not create translation`);
+        }
+    }
+
+
     /**
      * Clones a node and changes the fields which should be unique in a given parentNode (i.e. displayField,
      * segmentField) by adding a suffix.
@@ -253,6 +261,14 @@ export class EditorEffectsService {
 
             return clone;
         }
+    }
+
+    private showStatusNotification(node: MeshNode, type: string, message: string) {
+        this.state.actions.editor.saveNodeSuccess(node);
+        this.notification.show({
+            type: type,
+            message: message
+        });
     }
 
     /**

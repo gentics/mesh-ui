@@ -157,6 +157,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         if (node) {
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
+
                             if (navigateOnSave) {
                                 this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
                             }
@@ -166,6 +167,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 this.editorEffects.saveNode(this.node)
                     .then(node => {
                         if (node) {
+                            this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                         }
                     });
