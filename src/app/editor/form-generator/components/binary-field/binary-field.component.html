@@ -1,7 +1,18 @@
 <label>{{ api.field.label || api.field.name }}</label>
 <div class="binary-preview">
+    <div [ngSwitch]="getBinaryMediaType()">
+        <div *ngSwitchCase="'image'">
+            <img class="image-preview" [src]="binaryUrl" alt="" />
+        </div>
+        <div *ngSwitchCase="'video'">
+            <video width="100%" controls>
+                <source [src]="binaryUrl" type="{{binaryProperties['mimeType']}}">
+            </video>
+        </div>
+        <div *ngSwitchDefault>{{getBinaryMediaType()}} this is a default</div>
+    </div>
     <ul class="property-list">
-        <li *ngFor="let prop of binaryProperties">
+        <li *ngFor="let prop of binaryPropertiesAsArray">
             {{ prop.key }}: {{ prop.value }}
         </li>
     </ul>

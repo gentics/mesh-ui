@@ -24,7 +24,7 @@ export interface BinaryField {
     fileName: string;
     fileSize: number;
     mimeType: string;
-    sha512sum: string;
+    sha512sum?: string;
     dominantColor?: string;
     height?: number;
     width?: number;

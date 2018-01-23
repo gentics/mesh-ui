@@ -7,6 +7,7 @@ import { I18nNotification } from '../../core/providers/i18n-notification/i18n-no
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
+import { debuglog } from 'util';
 
 @Injectable()
 export class EditorEffectsService {
@@ -36,10 +37,10 @@ export class EditorEffectsService {
     /**
      * Create an placeholder object in the state for the new node
      * and open dispatch an action to open it in the editor
-     * @param projectName 
-     * @param schemaUuid 
-     * @param parentNodeUuid 
-     * @param language 
+     * @param projectName
+     * @param schemaUuid
+     * @param parentNodeUuid
+     * @param language
      */
     createNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
         this.api.project.getNode({project: projectName, nodeUuid: parentNodeUuid})
@@ -54,8 +55,8 @@ export class EditorEffectsService {
 
     /**
      * Save a new node to the api endpoint
-     * @param projectName 
-     * @param node 
+     * @param projectName
+     * @param node
      */
     saveNewNode(projectName: string, node: MeshNode): Promise<MeshNode | void> {
         this.state.actions.editor.saveNodeStart();
@@ -71,8 +72,6 @@ export class EditorEffectsService {
         return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
             .then(node => {
-                    console.warn('no error handling present in NodeResponse?', node);
-
                     this.state.actions.editor.saveNodeSuccess(node);
                     this.notification.show({
                         type: 'success',
@@ -111,7 +110,7 @@ export class EditorEffectsService {
 
     /**
      * Save (or update) an existing node
-     * @param node 
+     * @param node
      */
     saveNode(node: MeshNode): Promise<MeshNode | void> {
         if (!node.project.name) {
@@ -119,11 +118,26 @@ export class EditorEffectsService {
         }
 
         this.state.actions.editor.saveNodeStart();
+
+
+        /*const allowedFields = Object.keys(node.fields).reduce((allowedFields, fieldName, index) => {
+            if (fieldName !== 'binary') {
+                allowedFields[fieldName] = node.fields[fieldName];
+            }
+            return allowedFields;
+        }, {});*/
+
+        const allowedFields = { ...node.fields };
+        if (allowedFields['binary']) {
+            delete allowedFields['binary'];
+        }
+
         const updateRequest: NodeUpdateRequest = {
-            fields: node.fields,
+            fields: allowedFields,
             version: node.version,
             language: node.language || this.config.FALLBACK_LANGUAGE
         };
+
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
@@ -132,6 +146,27 @@ export class EditorEffectsService {
                     if (response.conflict) {
                         // TODO: conflict resolution handling
                     } else if (response.node) {
+
+
+                        if (node.fields['binary']) {
+                            const binary: File = node.fields['binary'].file as File;
+
+                            this.api.project.updateBinaryField({
+                                project: node.project.name,
+                                fieldName: 'binary',
+                                nodeUuid: response.node.uuid
+                            }, {
+                                binary,
+                                language: node.language,
+                                version: response.node.version
+                            })
+                            .toPromise()
+                            .then(uploadResponse => {
+                            }, uploadError => {
+                            });
+                        }
+
+
                         this.state.actions.editor.saveNodeSuccess(response.node);
                         this.notification.show({
                             type: 'success',

@@ -170,6 +170,14 @@ export class ProjectApi {
     updateRelease = apiPost('/{project}/releases/{releaseUuid}');
 
     /**
+     * Returns a url to a node binary file
+     */
+    getBinaryFileUrl(project: string, nodeUuid: string): string {
+
+        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/binary', { project, nodeUuid });
+    }
+
+    /**
      * Update the node with the given uuid. It is mandatory to specify the version
      * within the update request. Mesh will automatically check for version conflicts
      * and return a 409 error if a conflict has been detected. Additional conflict
