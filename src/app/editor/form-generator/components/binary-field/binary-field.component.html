@@ -7,10 +7,12 @@
             </div>
             <div *ngSwitchCase="'video'">
                 <video width="100%" controls>
-                    <source [src]="binaryUrl" type="{{binaryProperties['mimeType']}}">
+                    <source [src]="binaryUrl" type="{{ binaryProperties['mimeType'] }}">
                 </video>
             </div>
-            <div *ngSwitchDefault><icon class="node-icon">insert_drive_file</icon>{{binaryProperties['fileName']}}</div>
+            <div *ngSwitchDefault>
+                <icon class="node-icon">insert_drive_file</icon>{{ binaryProperties['fileName'] }}
+            </div>
         </div>
         <ul class="property-list">
             <li *ngFor="let prop of binaryPropertiesAsArray">

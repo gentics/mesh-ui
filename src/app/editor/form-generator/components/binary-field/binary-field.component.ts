@@ -37,10 +37,12 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.valueChange(api.getValue());
     }
 
+    imageLoaded(): void {
+        console.log('image has loaded');
+    }
     valueChange(value: NodeFieldType): void {
-        //this.binaryProperties = Object.keys(value || {}).map(key => ({ key, value: value[key] }));
-        this.binaryProperties = value === null ? null : { ...value as Object };
-        if (this.binaryProperties === null || !!this.binaryProperties['mimeType'] === false) {
+        this.binaryProperties = value && { ...value as Object };
+        if (!this.binaryProperties || !this.binaryProperties['mimeType']) {
             this.binaryUrl = null;
             return;
         }
@@ -61,7 +63,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
      * video/ogg => video
      */
     getBinaryMediaType(): string {
-
         const mimeType: string = this.binaryProperties['mimeType'];
         if (!!mimeType === false) {
             return null;

@@ -173,7 +173,6 @@ export class ProjectApi {
      * Returns a url to a node binary file
      */
     getBinaryFileUrl(project: string, nodeUuid: string, name: string): string {
-
         return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', { project, nodeUuid, name });
     }
 

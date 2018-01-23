@@ -7,6 +7,7 @@ import { I18nNotification } from '../../core/providers/i18n-notification/i18n-no
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
+import { debuglog } from 'util';
 
 
 @Injectable()
@@ -176,21 +177,7 @@ export class EditorEffectsService {
                 });
                 throw new Error('TODO: Error handling');
             });
-        })
-    }
-
-    uploadBinary(project: string, nodeUuid: string, binary: File, language: string, version: string): Promise<MeshNode | void> {
-
-        return this.api.project.updateBinaryField({
-            project,
-            nodeUuid,
-            fieldName: 'binary',
-        }, {
-            binary,
-            language,
-            version
-        })
-        .toPromise();
+        });
     }
 
     publishNode(node: MeshNode): void {
