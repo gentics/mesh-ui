@@ -37,9 +37,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.valueChange(api.getValue());
     }
 
-    imageLoaded(): void {
-        console.log('image has loaded');
-    }
     valueChange(value: NodeFieldType): void {
         this.binaryProperties = value && { ...value as Object };
         if (!this.binaryProperties || !this.binaryProperties['mimeType']) {
