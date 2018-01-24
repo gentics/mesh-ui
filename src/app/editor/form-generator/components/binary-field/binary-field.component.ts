@@ -50,7 +50,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
             this.binaryUrl = this.sanitizer.bypassSecurityTrustUrl(url);
         } else {
             const node: MeshNode = this.api.getNodeValue() as MeshNode;
-            const url = this.meshUIAPI.project.getBinaryFileUrl(node.project.name, node.uuid);
+            const url = this.meshUIAPI.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
             this.binaryUrl = url;
         }
     }

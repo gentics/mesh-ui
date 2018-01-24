@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { ApiService } from '../../core/providers/api/api.service';
 import { BinaryField, MeshNode } from '../../common/models/node.model';
-import { NodeUpdateRequest, NodeCreateRequest } from '../../common/models/server-models';
+import { NodeUpdateRequest, NodeCreateRequest, FieldMapFromServer } from '../../common/models/server-models';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
+
 
 @Injectable()
 export class EditorEffectsService {
@@ -60,24 +61,31 @@ export class EditorEffectsService {
     saveNewNode(projectName: string, node: MeshNode): Promise<MeshNode | void> {
         this.state.actions.editor.saveNodeStart();
 
-        const allowedFields = { ...node.fields };
-        delete allowedFields['binary'];
+        const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const nodeCreateRequest: NodeCreateRequest = {
-            fields: allowedFields,
+            fields: this.getNonBinaryFields(node),
             parentNode: node.parentNode,
             schema: node.schema,
-            language: node.language || this.config.FALLBACK_LANGUAGE,
+            language: language,
         };
-
-        const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         return new Promise<MeshNode | void>(resolve => {
             this.api.project.createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
             .then(newNode => {
-                if (node.fields['binary'] && node.fields['binary'].file) {
-                    const binary: File = node.fields['binary'].file as File;
+                this.uploadBinaries(newNode, this.getBinaryFields(node))
+                .then(savedNode => {
+                    this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode, node);
+                    this.notification.show({
+                        type: 'success',
+                        message: 'editor.node_saved'
+                    });
+                    resolve(savedNode);
+                });
+
+                /*if (node.fields['image'] && node.fields['image'].file) {
+                    const binary: File = node.fields['image'].file as File;
                     this.uploadBinary(newNode.project.name, newNode.uuid, binary, newNode.language, newNode.version)
                     .then(uploadResponse => {
                         this.showStatusNotification(uploadResponse as MeshNode, 'success', 'editor.node_saved');
@@ -89,7 +97,8 @@ export class EditorEffectsService {
                 } else {
                     this.showStatusNotification(newNode, 'success', 'editor.node_saved');
                     resolve(newNode);
-                }
+                }*/
+
             }, error => {
                 this.state.actions.editor.saveNodeError();
                 this.notification.show({
@@ -112,16 +121,13 @@ export class EditorEffectsService {
 
         this.state.actions.editor.saveNodeStart();
 
-        const allowedFields = { ...node.fields };
-        delete allowedFields['binary'];
+        const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const updateRequest: NodeUpdateRequest = {
-            fields: allowedFields,
+            fields: this.getNonBinaryFields(node),
             version: node.version,
-            language: node.language || this.config.FALLBACK_LANGUAGE
+            language: language
         };
-
-        const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         return new Promise<MeshNode | void>(resolve => {
             this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
@@ -129,9 +135,19 @@ export class EditorEffectsService {
             .then(response => {
                 if (response.conflict) {
                     // TODO: conflict resolution handling
-                    debugger;
+
                 } else if (response.node) {
-                    if (node.fields['binary'] && node.fields['binary'].file) {
+                    this.uploadBinaries(response.node, this.getBinaryFields(node))
+                    .then(savedNode => {
+                        this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode, node);
+                        this.notification.show({
+                            type: 'success',
+                            message: 'editor.node_saved'
+                        });
+                        resolve(savedNode);
+                    });
+
+                    /*if (node.fields['binary'] && node.fields['binary'].file) {
                         const binary: File = node.fields['binary'].file as File;
                         this.uploadBinary(node.project.name, response.node.uuid, binary, node.language, node.version)
                         .then(uploadResponse => {
@@ -143,9 +159,13 @@ export class EditorEffectsService {
                     } else {
                         this.showStatusNotification(response.node, 'success', 'editor.node_saved');
                         resolve(response.node);
-                    }
+                    }*/
                 } else {
-                    this.state.actions.editor.saveNodeError();
+                    this.state.actions.editor.saveNodeError(node);
+                    this.notification.show({
+                        type: 'error',
+                        message: 'editor.node_save_error'
+                    });
                 }
             },
             error => {
@@ -315,5 +335,62 @@ export class EditorEffectsService {
                 value: binaryFieldValue
             };
         }
+    }
+
+    uploadBinary(project: string, nodeUuid: string, fieldName: string, binary: File, language: string, version: string): Promise<MeshNode | void> {
+        return this.api.project.updateBinaryField({
+            project,
+            nodeUuid,
+            fieldName,
+        }, {
+            binary,
+            language,
+            version
+        })
+        .toPromise();
+    }
+
+    uploadBinaries(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode> {
+        // if no binaries are present - return the same node
+        if (Object.keys(fields).length === 0) {
+            return Promise.resolve(node);
+        }
+
+        const promises: Promise<MeshNode>[] = Object.keys(fields).reduce((promises: any[], key, index) => {
+            promises.push(this.uploadBinary(node.project.name, node.uuid, key, fields[key].file, node.language, node.version));
+            return promises;
+        }, []);
+
+
+        return new Promise<MeshNode>(resolve => {
+            Promise.all(promises)
+            .then(nodes => {
+                // return the node from the last successfull request
+                resolve(nodes.pop());
+            });
+        });
+    }
+    /**
+     * Filter all the binary fields from the node
+     */
+    private getBinaryFields(node: MeshNode): FieldMapFromServer {
+        return Object.keys(node.fields).reduce((fields, key, index) => {
+            const field = node.fields[key];
+            // we remove all the binaries before saving
+            if ((field.file && field.file instanceof File) === true) {
+                fields[key] = field;
+            }
+            return fields;
+        }, {} as FieldMapFromServer);
+    }
+
+    private getNonBinaryFields(node: MeshNode): FieldMapFromServer {
+        const binaryFields = this.getBinaryFields(node);
+        return Object.keys(node.fields).reduce((nonBinaryFields, key) => {
+            if (binaryFields[key] === undefined) {
+                nonBinaryFields[key] = node.fields[key];
+            }
+            return nonBinaryFields;
+        }, {} as FieldMapFromServer);
     }
 }
