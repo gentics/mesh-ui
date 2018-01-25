@@ -20,7 +20,6 @@ module meshAdminUi {
     export interface ISearchQuery {
         sort? : any;
         query? : any;
-        filter? : any;
     }
 
     export interface INodeQueryParams {
@@ -233,16 +232,10 @@ module meshAdminUi {
             return deferred.promise;
         }
 
-        /**
-         *
-         */
         public getUsers(queryParams?: INodeListQueryParams): ng.IPromise<any> {
             return this.meshGet('users', queryParams);
         }
 
-        /**
-         *
-         */
         public getUser(uuid: string, queryParams?): ng.IPromise<any> {
             return this.meshGet('users/' + uuid, queryParams);
         }
@@ -279,9 +272,6 @@ module meshAdminUi {
             return this.meshDelete('groups/' + groupId + '/users/' + userId);
         }
 
-        /**
-         *
-         */
         public getGroups(queryParams?: INodeListQueryParams):ng.IPromise<any> {
             return this.meshGet('groups', queryParams);
         }
@@ -341,8 +331,6 @@ module meshAdminUi {
                 });
         }
 
-        /**
-         */
         public getNodeBundles(projectName: string,
                               node: INode,
                               bundleParams: INodeBundleParams[],
@@ -392,7 +380,7 @@ module meshAdminUi {
                                       searchParams: INodeSearchParams,
                                       bundleParam?: INodeBundleParams): ISearchQuery {
             let query: ISearchQuery = {
-                filter: {
+                query: {
                     bool: {
                         must: []
                     }
@@ -403,11 +391,11 @@ module meshAdminUi {
             };
 
             if (bundleParam && bundleParam.schema) {
-                query.filter.bool.must.push({ "term": { "schema.uuid": bundleParam.schema.uuid } });
+                query.query.bool.must.push({ "term": { "schema.uuid": bundleParam.schema.uuid } });
             }
 
             if (!searchParams.searchAll) {
-                query.filter.bool.must.push({ "term": { "parentNode.uuid": node.uuid } });
+                query.query.bool.must.push({ "term": { "parentNode.uuid": node.uuid } });
             }
 
             if (searchParams.searchTerm && searchParams.searchTerm !== '') {
@@ -419,7 +407,7 @@ module meshAdminUi {
             }
 
             if (searchParams.tagFilters && 0 < searchParams.tagFilters.length) {
-                query.filter.bool.must.push(
+                query.query.bool.must.push(
                     {
                         "nested": {
                             "path": "tags",
@@ -869,7 +857,7 @@ module meshAdminUi {
             return this.meshGet(url, queryParams);
             // TODO: use the search code below one the elasticsearch index allows us to query tag.project.name
             /*let query: ISearchQuery = {
-             filter: {
+             query: {
              bool: {
              must: [
              { "term": { "project.name": projectName.toLowerCase() } }

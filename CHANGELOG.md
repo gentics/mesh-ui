@@ -1,5 +1,8 @@
 # MeshAdminUI Changelog
 
+## Version 0.9.0 (2018-01-25)
+* Add support for Gentics Mesh 0.15.0
+
 ## Version 0.8.6 (2018-01-16)
 * Fix crop handling due to Gentics Mesh 0.14.0 API changes
 
