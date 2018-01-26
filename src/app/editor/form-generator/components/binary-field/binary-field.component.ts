@@ -17,6 +17,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
     styleUrls: ['./binary-field.scss']
 })
 export class BinaryFieldComponent extends BaseFieldComponent {
+
     field: SchemaField;
     //binaryProperties: Array<{ key: string; value: any }> = [];
     binaryProperties: Object;
@@ -28,7 +29,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     constructor(private meshUIAPI: ApiService,
                 private sanitizer: DomSanitizer,
                 protected changeDetector: ChangeDetectorRef) {
-
         super(changeDetector);
     }
 
@@ -64,7 +64,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         if (!!mimeType === false) {
             return null;
         }
-
         const type = (mimeType.split('/')[0] as string).toLowerCase();
         return type;
     }
