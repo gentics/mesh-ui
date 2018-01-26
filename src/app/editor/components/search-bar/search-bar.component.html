@@ -1,1 +1,36 @@
-search bar
+<form (ngSubmit)="search(input.currentValue)">
+    <div class="search-row">
+        <gtx-progress-bar [active]="searching"></gtx-progress-bar>
+        <gtx-input placeholder="Search" class="search-input" #input></gtx-input>
+        <div *ngIf="!filtersOpen"
+            class="button-open-filters"
+            (click)="openFilters()">
+            <icon>play_arrow</icon>
+        </div>
+
+        <gtx-button type="primary"
+            class="button-search"
+            [disabled]="searching"
+            submit>
+            <icon>search</icon>
+        </gtx-button>
+    </div>
+
+    <div *ngIf="filtersOpen" class="filter-form">
+        <div class="filter-form-inner">
+            <icon class="button-close-filters" (click)="closeFilters()">close</icon>
+            We will add the search fields here as soon as it's clear how to do it<br />
+
+
+            <gtx-button type="primary"
+                class="button-search"
+                [disabled]="searching"
+                submit>
+                Search
+            </gtx-button>
+        </div>
+    </div>
+</form>
+
+
+
