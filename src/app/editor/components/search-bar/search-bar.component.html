@@ -1,12 +1,7 @@
-<form (ngSubmit)="search(input.currentValue)">
+<form (ngSubmit)="search(searchField.currentValue)">
     <div class="search-row">
         <gtx-progress-bar [active]="searching"></gtx-progress-bar>
-        <gtx-input placeholder="Search" class="search-input" #input></gtx-input>
-        <div *ngIf="!filtersOpen"
-            class="button-open-filters"
-            (click)="openFilters()">
-            <icon>play_arrow</icon>
-        </div>
+        <gtx-input placeholder="Search" class="search-input" #searchField></gtx-input>
 
         <gtx-button type="primary"
             class="button-search"
@@ -16,11 +11,14 @@
         </gtx-button>
     </div>
 
-    <div *ngIf="filtersOpen" class="filter-form">
+    <div class="filter-form"
+         [@formState]="formState">
         <div class="filter-form-inner">
             <icon class="button-close-filters" (click)="closeFilters()">close</icon>
-            We will add the search fields here as soon as it's clear how to do it<br />
 
+            <gtx-input label="{{ 'editor.search_nodes' | i18n }}" #searchFieldNodes></gtx-input>
+            <gtx-input label="{{ 'editor.search_projects' | i18n }}" #searchFieldProjects></gtx-input>
+            <gtx-input label="{{ 'editor.searchSchemas' | i18n }}" #searchFieldSchemas></gtx-input>
 
             <gtx-button type="primary"
                 class="button-search"

@@ -10,6 +10,7 @@ import { PreloadAllModules, Router, RouterModule } from '@angular/router';
 //import { ROUTER_CONFIG } from './app.routes';
 
 import { Routes } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthGuard } from './core/providers/guards/auth-guard';
 
 // App is our top level component
@@ -24,6 +25,7 @@ import { ApplicationStateService } from './state/providers/application-state.ser
 
 import '../styles/main.scss';
 import { AuthEffectsService } from './login/providers/auth-effects.service';
+
 
 export const ROUTER_CONFIG: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -54,7 +56,8 @@ interface HmrStore {
         HttpModule,
         CoreModule,
         SharedModule,
-        StateModule
+        StateModule,
+        BrowserAnimationsModule
     ]
 })
 export class AppModule {
