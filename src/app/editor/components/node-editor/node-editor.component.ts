@@ -141,6 +141,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         return !!this.node && !/\.0$/.test(this.node.version);
     }
 
+    isSaving(): boolean {
+        return this.state.now.editor.savingNodes.has(this.node);
+    }
+
     /**
      * Save the node as a new draft version.
      */

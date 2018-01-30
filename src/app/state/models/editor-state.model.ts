@@ -1,3 +1,5 @@
+import { MeshNode } from "../../common/models/node.model";
+
 export interface EditorState {
     editorIsOpen: boolean;
     editorIsFocused: boolean;
@@ -9,4 +11,6 @@ export interface EditorState {
         parentNodeUuid?: string;
     } | null;
     loadCount: number;
+    savingNodes: Map<MeshNode, MeshNode>;
 }
+

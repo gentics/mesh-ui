@@ -59,7 +59,7 @@ export class EditorEffectsService {
      * @param node
      */
     saveNewNode(projectName: string, node: MeshNode): Promise<MeshNode | void> {
-        this.state.actions.editor.saveNodeStart();
+        this.state.actions.editor.saveNodeStart(node);
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
@@ -84,7 +84,7 @@ export class EditorEffectsService {
                     resolve(savedNode);
                 });
             }, error => {
-                this.state.actions.editor.saveNodeError();
+                this.state.actions.editor.saveNodeError(node);
                 this.notification.show({
                     type: 'error',
                     message: 'editor.node_save_error'
@@ -103,7 +103,7 @@ export class EditorEffectsService {
             throw new Error('Project name is not available');
         }
 
-        this.state.actions.editor.saveNodeStart();
+        this.state.actions.editor.saveNodeStart(node);
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
@@ -139,14 +139,14 @@ export class EditorEffectsService {
                 }
             },
             error => {
-                this.state.actions.editor.saveNodeError();
+                this.state.actions.editor.saveNodeError(node);
                 this.notification.show({
                     type: 'error',
                     message: 'editor.node_save_error'
                 });
                 throw new Error('TODO: Error handling');
             });
-        });
+        })
     }
 
     publishNode(node: MeshNode): void {
@@ -239,14 +239,6 @@ export class EditorEffectsService {
         }
     }
 
-    private showStatusNotification(node: MeshNode, type: string, message: string) {
-        this.state.actions.editor.saveNodeSuccess(node);
-        this.notification.show({
-            type: type,
-            message: message
-        });
-    }
-
     /**
      * Given a string value, append the suffix to the end.
      * If the value has periods in it (as in a file name), then insert
@@ -293,18 +285,23 @@ export class EditorEffectsService {
         }
     }
 
-    uploadBinary(project: string, nodeUuid: string, fieldName: string, binary: File, language: string, version: string): Promise<MeshNode | void> {
-        return this.api.project.updateBinaryField({
-            project,
-            nodeUuid,
-            fieldName,
-        }, {
-            binary,
-            language,
-            version
-        })
-        .toPromise();
-    }
+    uploadBinary(project: string,
+        nodeUuid: string,
+        fieldName: string,
+        binary: File,
+        language: string,
+        version: string): Promise<MeshNode | void> {
+            return this.api.project.updateBinaryField({
+                project,
+                nodeUuid,
+                fieldName,
+            }, {
+                binary,
+                language,
+                version
+            })
+            .toPromise();
+        }
 
     uploadBinaries(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode> {
         // if no binaries are present - return the same node
