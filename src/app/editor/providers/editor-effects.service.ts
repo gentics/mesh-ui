@@ -83,22 +83,6 @@ export class EditorEffectsService {
                     });
                     resolve(savedNode);
                 });
-
-                /*if (node.fields['image'] && node.fields['image'].file) {
-                    const binary: File = node.fields['image'].file as File;
-                    this.uploadBinary(newNode.project.name, newNode.uuid, binary, newNode.language, newNode.version)
-                    .then(uploadResponse => {
-                        this.showStatusNotification(uploadResponse as MeshNode, 'success', 'editor.node_saved');
-                        resolve(uploadResponse);
-                    }, uploadError => {
-                        this.state.actions.editor.saveNodeError();
-                    });
-
-                } else {
-                    this.showStatusNotification(newNode, 'success', 'editor.node_saved');
-                    resolve(newNode);
-                }*/
-
             }, error => {
                 this.state.actions.editor.saveNodeError();
                 this.notification.show({
@@ -146,20 +130,6 @@ export class EditorEffectsService {
                         });
                         resolve(savedNode);
                     });
-
-                    /*if (node.fields['binary'] && node.fields['binary'].file) {
-                        const binary: File = node.fields['binary'].file as File;
-                        this.uploadBinary(node.project.name, response.node.uuid, binary, node.language, node.version)
-                        .then(uploadResponse => {
-                            this.showStatusNotification(uploadResponse as MeshNode, 'success', 'editor.node_saved');
-                            resolve(uploadResponse);
-                        }, uploadError => {
-                            this.state.actions.editor.saveNodeError();
-                        });
-                    } else {
-                        this.showStatusNotification(response.node, 'success', 'editor.node_saved');
-                        resolve(response.node);
-                    }*/
                 } else {
                     this.state.actions.editor.saveNodeError(node);
                     this.notification.show({
