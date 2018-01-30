@@ -21,11 +21,11 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     public binaryPropertiesArray: Array<{ key: string; value: any }>;
     public binaryMediaType: string;
     public field: SchemaField;
-    public binaryUrl: string | SafeUrl = null;
+    public objectUrl: string | SafeUrl = null;
 
     public api: MeshFieldControlApi;
 
-    constructor(public meshUIAPI: ApiService,
+    constructor(public apiService: ApiService,
                 protected blobService: BlobService,
                 protected changeDetector: ChangeDetectorRef) {
         super(changeDetector);
@@ -36,10 +36,10 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.valueChange(api.getValue());
     }
 
-    valueChange(value: NodeFieldType): void {
+    valueChange(value: NodeFieldType | null | undefined): void {
         this.binaryProperties = value && { ...value as BinaryField };
         if (!this.binaryProperties || !this.binaryProperties.mimeType) {
-            this.binaryUrl = null;
+            this.objectUrl = null;
             return;
         }
 
@@ -47,11 +47,10 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.binaryMediaType = this.getBinaryMediaType();
 
         if (this.binaryProperties.file) {
-            this.binaryUrl = this.blobService.reateObjectURL(this.binaryProperties.file);
+            this.objectUrl = this.blobService.createObjectURL(this.binaryProperties.file);
         } else {
             const node = this.api.getNodeValue() as MeshNode;
-            const url = this.meshUIAPI.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
-            this.binaryUrl = url;
+            this.objectUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
         }
     }
 

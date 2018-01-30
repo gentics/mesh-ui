@@ -5,7 +5,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 export class BlobService {
     constructor( private sanitizer: DomSanitizer ) { }
 
-    reateObjectURL(file: File): SafeUrl {
+    createObjectURL(file: File): SafeUrl {
         const url = window.URL.createObjectURL(file);
         const binaryUrl = this.sanitizer.bypassSecurityTrustUrl(url);
         return binaryUrl;

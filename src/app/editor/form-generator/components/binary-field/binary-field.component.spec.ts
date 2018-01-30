@@ -211,7 +211,7 @@ function pretendUserUploadsFile(fixture: ComponentFixture<any>, file: Partial<Fi
 })
 class TestComponent implements OnInit {
     api: MockMeshFieldControlApi;
-    meshUIAPI: MockApiService;
+    apiService: MockApiService;
 
     @ViewChild(BinaryFieldComponent)
     binaryFieldComponent: BinaryFieldComponent;
@@ -220,7 +220,7 @@ class TestComponent implements OnInit {
         const api = new MockMeshFieldControlApi();
         api.getNodeValue = jasmine.createSpy('getNodeValue').and.returnValue({ project: {name: 'demo'}, uuid: 'node_uuid'});
         this.binaryFieldComponent.api = this.api = api;
-        this.binaryFieldComponent.meshUIAPI = this.meshUIAPI = TestBed.get(ApiService);
+        this.binaryFieldComponent.apiService = this.apiService = TestBed.get(ApiService);
     }
 }
 

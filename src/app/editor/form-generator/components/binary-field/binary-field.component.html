@@ -3,13 +3,20 @@
     <div *ngIf="binaryProperties">
         <div [ngSwitch]="binaryMediaType">
             <div *ngSwitchCase="'image'">
-                <img class="image-preview" [src]="binaryUrl" alt="" />
+                <img class="image-preview" [src]="objectUrl" alt="" />
             </div>
             <div *ngSwitchCase="'video'">
                 <video width="100%" controls>
-                    <source [src]="binaryUrl" type="{{ binaryProperties.mimeType }}">
+                    <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </video>
             </div>
+
+            <div *ngSwitchCase="'audio'">
+                    <audio controls="controls">
+                        <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
+                    </audio>
+                </div>
+
             <div *ngSwitchDefault>
                 <div class="default-preview">
                     <icon class="node-icon">insert_drive_file</icon>{{ binaryProperties.fileName }}
