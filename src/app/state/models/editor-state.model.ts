@@ -11,6 +11,5 @@ export interface EditorState {
         parentNodeUuid?: string;
     } | null;
     loadCount: number;
-    savingNodes: Map<MeshNode, MeshNode>;
 }
 

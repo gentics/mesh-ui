@@ -37,10 +37,6 @@ export class EditorEffectsService {
     /**
      * Create an placeholder object in the state for the new node
      * and open dispatch an action to open it in the editor
-     * @param projectName
-     * @param schemaUuid
-     * @param parentNodeUuid
-     * @param language
      */
     createNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
         this.api.project.getNode({project: projectName, nodeUuid: parentNodeUuid})
@@ -55,12 +51,9 @@ export class EditorEffectsService {
 
     /**
      * Save a new node to the api endpoint
-     * @param projectName
-     * @param node
      */
     saveNewNode(projectName: string, node: MeshNode): Promise<MeshNode | void> {
-        this.state.actions.editor.saveNodeStart(node);
-
+        this.state.actions.editor.saveNodeStart();
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const nodeCreateRequest: NodeCreateRequest = {
@@ -70,28 +63,24 @@ export class EditorEffectsService {
             language: language,
         };
 
-        return new Promise<MeshNode | void>(resolve => {
-            this.api.project.createNode({ project: projectName }, nodeCreateRequest)
+        return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
-            .then(newNode => {
-                this.uploadBinaries(newNode, this.getBinaryFields(node))
-                .then(savedNode => {
-                    this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode, node);
+            .then(newNode => this.uploadBinaries(newNode, this.getBinaryFields(node)))
+            .then(savedNode => {
+                    this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
                     this.notification.show({
                         type: 'success',
                         message: 'editor.node_saved'
                     });
-                    resolve(savedNode);
-                });
-            }, error => {
-                this.state.actions.editor.saveNodeError(node);
+                    return savedNode;
+                }, error => {
+                this.state.actions.editor.saveNodeError();
                 this.notification.show({
                     type: 'error',
                     message: 'editor.node_save_error'
                 });
                 throw new Error('TODO: Error handling');
             });
-        });
     }
 
     /**
@@ -103,7 +92,7 @@ export class EditorEffectsService {
             throw new Error('Project name is not available');
         }
 
-        this.state.actions.editor.saveNodeStart(node);
+        this.state.actions.editor.saveNodeStart();
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
@@ -123,7 +112,7 @@ export class EditorEffectsService {
                 } else if (response.node) {
                     this.uploadBinaries(response.node, this.getBinaryFields(node))
                     .then(savedNode => {
-                        this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode, node);
+                        this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
                         this.notification.show({
                             type: 'success',
                             message: 'editor.node_saved'
@@ -131,7 +120,7 @@ export class EditorEffectsService {
                         resolve(savedNode);
                     });
                 } else {
-                    this.state.actions.editor.saveNodeError(node);
+                    this.state.actions.editor.saveNodeError();
                     this.notification.show({
                         type: 'error',
                         message: 'editor.node_save_error'
@@ -139,7 +128,7 @@ export class EditorEffectsService {
                 }
             },
             error => {
-                this.state.actions.editor.saveNodeError(node);
+                this.state.actions.editor.saveNodeError();
                 this.notification.show({
                     type: 'error',
                     message: 'editor.node_save_error'
@@ -329,7 +318,6 @@ export class EditorEffectsService {
     private getBinaryFields(node: MeshNode): FieldMapFromServer {
         return Object.keys(node.fields).reduce((fields, key, index) => {
             const field = node.fields[key];
-            // we remove all the binaries before saving
             if ((field.file && field.file instanceof File) === true) {
                 fields[key] = field;
             }

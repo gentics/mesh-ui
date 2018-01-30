@@ -22,8 +22,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
                     editorIsFocused: false,
                     editorIsOpen: false,
                     openNode: null,
-                    loadCount: 0,
-                    savingNodes: new Map<MeshNode, MeshNode>(),
+                    loadCount: 0
                 }
             }
         });
@@ -69,19 +68,16 @@ export class EditorStateActions extends StateActionBranch<AppState> {
         this.editor.editorIsFocused = false;
     }
 
-    saveNodeStart(node:MeshNode): void {
+    saveNodeStart(): void {
         this.editor.loadCount ++;
-        this.editor.savingNodes.set(node, node);
     }
 
-    saveNodeError(node:MeshNode): void {
+    saveNodeError(): void {
         this.editor.loadCount --;
-        this.editor.savingNodes.delete(node);
     }
 
-    saveNodeSuccess(node: MeshNode, oldNode: MeshNode): void {
+    saveNodeSuccess(node: MeshNode): void {
         this.editor.loadCount --;
-        this.editor.savingNodes.delete(oldNode);
         this.entities = mergeEntityState(this.entities, {
             node: [node]
         });
