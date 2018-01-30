@@ -16,6 +16,7 @@ import { initializeNode } from '../../form-generator/common/initialize-node';
 import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { error } from 'protractor/node_modules/@types/selenium-webdriver';
 
 
 @Component({
@@ -31,6 +32,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     nodePathRouterLink: any[];
     nodePath: string;
     nodeTitle = '';
+    //isSaving$: Observable<boolean>;
+    isSaving = false;
 
     private openNode$: Subscription;
 
@@ -141,10 +144,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         return !!this.node && !/\.0$/.test(this.node.version);
     }
 
-    isSaving(): boolean {
-        return this.state.now.editor.savingNodes.has(this.node);
-    }
-
     /**
      * Save the node as a new draft version.
      */
@@ -154,10 +153,14 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
 
         if (this.formGenerator.isDirty) {
+
+            this.isSaving = true;
             if (!this.node.uuid) {
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
                 this.editorEffects.saveNewNode(parentNode.project.name, this.node)
                     .then(node => {
+                        this.isSaving = false;
+
                         if (node) {
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
@@ -166,14 +169,19 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                                 this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
                             }
                         }
+                }, error => {
+                    this.isSaving = false;
                 });
             } else {
                 this.editorEffects.saveNode(this.node)
                     .then(node => {
+                        this.isSaving = false;
                         if (node) {
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                         }
+                    }, error => {
+                        this.isSaving = false;
                     });
             }
         }

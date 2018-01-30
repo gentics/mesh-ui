@@ -104,7 +104,6 @@ describe('NodeEditorComponent', () => {
 
         it('calls EditorEffectsService.saveNewNode',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.isSaving = () => false;
                 clickSave(fixture);
                 expect(editorEffectsService.saveNewNode).toHaveBeenCalled();
             })
@@ -112,7 +111,6 @@ describe('NodeEditorComponent', () => {
 
         it('calls formGenerator.setPristine',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.isSaving = () => false;
                 instance.formGenerator.setPristine = jasmine.createSpy('setPristine');
                 clickSave(fixture);
                 expect(instance.formGenerator.setPristine).toHaveBeenCalledWith(newNode);
@@ -121,7 +119,6 @@ describe('NodeEditorComponent', () => {
 
         it('calls listEffects.loadChildren',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.isSaving = () => false;
                 instance.formGenerator.setPristine = jasmine.createSpy('setPristine');
                 clickSave(fixture);
                 expect(listEffectsService.loadChildren).toHaveBeenCalledWith('demo', 'uuid_parentNode', 'en');
@@ -130,7 +127,6 @@ describe('NodeEditorComponent', () => {
 
         it('calls navigationService.detail and navigationService.navigate',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.isSaving = () => false;
                 const navigateSpy = jasmine.createSpy('navigate');
                 navigationService.detail = jasmine.createSpy('detail').and.returnValue({ navigate: navigateSpy });
                 clickSave(fixture);
@@ -195,7 +191,6 @@ describe('NodeEditorComponent', () => {
 
         it('calls editorEffects.saveNode',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.isSaving = () => false;
                 editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.returnValue(Promise.resolve(node));
                 clickSave(fixture);
                 expect(editorEffectsService.saveNode).toHaveBeenCalled();
@@ -204,7 +199,6 @@ describe('NodeEditorComponent', () => {
 
         it('calls listEffects.loadChildren',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.isSaving = () => false;
                 editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.returnValue(Promise.resolve(node));
                 clickSave(fixture);
                 expect(listEffectsService.loadChildren).toHaveBeenCalledWith(node.project.name, node.parentNode.uuid, node.language);
@@ -216,7 +210,6 @@ describe('NodeEditorComponent', () => {
     describe('closing editor', () => {
         it('calls navigationService.clearDetail',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.isSaving = () => false;
                 clickClose(fixture);
                 expect(navigationService.clearDetail).toHaveBeenCalled();
             })
