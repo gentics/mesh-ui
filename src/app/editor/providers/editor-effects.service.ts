@@ -7,6 +7,7 @@ import { I18nNotification } from '../../core/providers/i18n-notification/i18n-no
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
+import { promise } from 'protractor/node_modules/@types/selenium-webdriver';
 
 
 @Injectable()
@@ -102,32 +103,31 @@ export class EditorEffectsService {
             language: language
         };
 
-        return new Promise<MeshNode | void>(resolve => {
-            this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
+        return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
             .toPromise()
             .then(response => {
                 if (response.conflict) {
                     // TODO: conflict resolution handling
-
+                    throw new Error('saveNode was rejected');
                 } else if (response.node) {
-                    this.uploadBinaries(response.node, this.getBinaryFields(node))
-                    .then(savedNode => {
-                        this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
-                        this.notification.show({
-                            type: 'success',
-                            message: 'editor.node_saved'
-                        });
-                        resolve(savedNode);
-                    });
+                    return this.uploadBinaries(response.node, this.getBinaryFields(node))
                 } else {
                     this.state.actions.editor.saveNodeError();
                     this.notification.show({
                         type: 'error',
                         message: 'editor.node_save_error'
                     });
+                    return response.node;
                 }
-            },
-            error => {
+            })
+            .then(savedNode => {
+                this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
+                this.notification.show({
+                    type: 'success',
+                    message: 'editor.node_saved'
+                });
+                return savedNode;
+            }, error => {
                 this.state.actions.editor.saveNodeError();
                 this.notification.show({
                     type: 'error',
@@ -135,7 +135,6 @@ export class EditorEffectsService {
                 });
                 throw new Error('TODO: Error handling');
             });
-        })
     }
 
     publishNode(node: MeshNode): void {

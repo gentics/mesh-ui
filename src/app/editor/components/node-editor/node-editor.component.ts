@@ -16,8 +16,6 @@ import { initializeNode } from '../../form-generator/common/initialize-node';
 import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { error } from 'protractor/node_modules/@types/selenium-webdriver';
-
 
 @Component({
     selector: 'node-editor',
@@ -32,6 +30,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     nodePathRouterLink: any[];
     nodePath: string;
     nodeTitle = '';
+    //TODO: make a fullscreen non-closable dialog for binary files preventing user from navigating away while file is uploading
     //isSaving$: Observable<boolean>;
     isSaving = false;
 
