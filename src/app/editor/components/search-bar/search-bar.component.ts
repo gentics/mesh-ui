@@ -9,21 +9,7 @@ import { ElementRef } from '@angular/core';
 @Component({
     selector: 'search-bar',
     templateUrl: './search-bar.component.html',
-    styleUrls: ['./search-bar.scss'],
-    animations: [
-        trigger('formState', [
-            state('visible', style({
-              opacity: '1',
-              display: 'block'
-            })),
-            state('hidden',   style({
-              opacity: '0',
-              display: 'none'
-            })),
-            transition('visible => hidden', animate('100ms ease-in')),
-            transition('hidden => visible', animate('100ms ease-out'))
-        ])
-    ]
+    styleUrls: ['./search-bar.scss']
 })
 
 export class SearchBarComponent {

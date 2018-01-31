@@ -10,7 +10,6 @@ import { PreloadAllModules, Router, RouterModule } from '@angular/router';
 //import { ROUTER_CONFIG } from './app.routes';
 
 import { Routes } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthGuard } from './core/providers/guards/auth-guard';
 
 // App is our top level component
@@ -56,8 +55,7 @@ interface HmrStore {
         HttpModule,
         CoreModule,
         SharedModule,
-        StateModule,
-        BrowserAnimationsModule
+        StateModule
     ]
 })
 export class AppModule {
