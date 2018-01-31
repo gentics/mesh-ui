@@ -8,42 +8,5 @@
     <gtx-contents-list-item class="group-header">
         {{schema.name}}
     </gtx-contents-list-item>
-    <gtx-contents-list-item *ngFor="let child of childrenBySchema[schema.uuid]"
-                            [class.container-node]="child.container"
-                            [class.not-in-current-lang]="child.language !== listLanguage">
-        <icon class="node-icon" *ngIf="child.container">folder</icon>
-        <icon class="node-icon" *ngIf="!child.container">insert_drive_file</icon>
-        <div class="item-primary">
-            <div class="title">
-                <a href [routerLink]="routerLinkOf(child)" (click)="focusEditor()">{{ child | displayField }}</a>
-            </div>
-            <div class="available-languages">
-                <available-languages-list [available]="child.availableLanguages"
-                                          [current]="listLanguage"></available-languages-list>
-            </div>
-        </div>
-        <div class="show-on-hover">
-            <gtx-button flat size="small" (click)="editNode(child)">
-                <icon left>edit</icon> Edit
-            </gtx-button>
-            <gtx-dropdown-list align="right">
-                <gtx-dropdown-trigger>
-                    <gtx-button icon type="secondary">
-                        <icon>more_vert</icon>
-                    </gtx-button>
-                </gtx-dropdown-trigger>
-                <gtx-dropdown-content>
-                    <gtx-dropdown-item (click)="copyNode(child)">
-                        <icon left>content_copy</icon> {{ 'list.copy' | i18n }}
-                    </gtx-dropdown-item>
-                    <gtx-dropdown-item (click)="moveNode(child)">
-                        <icon left>subdirectory_arrow_right</icon> {{ 'list.move' | i18n }}
-                    </gtx-dropdown-item>
-                    <gtx-dropdown-item (click)="deleteNode(child)" class="alert">
-                        <icon left>delete</icon> {{ 'list.delete' | i18n }}
-                    </gtx-dropdown-item>
-                </gtx-dropdown-content>
-            </gtx-dropdown-list>
-        </div>
-    </gtx-contents-list-item>
+    <app-node-row *ngFor="let child of childrenBySchema[schema.uuid]" [node]="child"></app-node-row>
 </ng-template>

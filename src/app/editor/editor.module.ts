@@ -20,6 +20,7 @@ import { VersionLabelComponent } from './components/version-label/version-label.
 import { CreateNodeButtonComponent } from './components/create-node-button/create-node-button.component';
 import { ContainerLanguageSwitcherComponent } from './components/container-language-switcher/container-language-switcher.component';
 import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
+import { NodeRowComponent } from './components/node-row/node-row.component';
 import { BlobService } from './providers/blob.service';
 
 @NgModule({
@@ -41,7 +42,8 @@ import { BlobService } from './providers/blob.service';
         NodeLanguageSwitcherComponent,
         ProjectSwitcherComponent,
         SearchBarComponent,
-        VersionLabelComponent
+        VersionLabelComponent,
+        NodeRowComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent

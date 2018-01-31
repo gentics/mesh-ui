@@ -17,7 +17,15 @@ export class MockApiService extends ApiService {
 
         for (const key in this) {
             if (typeof this[key] === 'function') {
+                // Spy on methods of the ApiService
                 spyOn(this, key).and.callThrough();
+            } else if (typeof this[key] === 'object') {
+                for (const subkey in this[key]) {
+                    // Spy on methods of the child properties, e.g. api.project.getNodes()
+                    if (typeof this[key][subkey] === 'function') {
+                        spyOn(this[key], subkey).and.callThrough();
+                    }
+                }
             }
         }
     }
