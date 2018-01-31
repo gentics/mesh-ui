@@ -20,6 +20,7 @@ import { VersionLabelComponent } from './components/version-label/version-label.
 import { CreateNodeButtonComponent } from './components/create-node-button/create-node-button.component';
 import { ContainerLanguageSwitcherComponent } from './components/container-language-switcher/container-language-switcher.component';
 import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
+import { BlobService } from './providers/blob.service';
 
 @NgModule({
     imports: [
@@ -49,7 +50,8 @@ import { AvailableLanguagesListComponent } from './components/available-language
         EditorEffectsService,
         NodeEditorGuard,
         ModalService,
-        OverlayHostService
+        OverlayHostService,
+        BlobService,
     ]
 })
 export class EditorModule {

@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { ApiService } from '../../core/providers/api/api.service';
 import { BinaryField, MeshNode } from '../../common/models/node.model';
-import { NodeUpdateRequest, NodeCreateRequest } from '../../common/models/server-models';
+import { NodeUpdateRequest, NodeCreateRequest, FieldMapFromServer } from '../../common/models/server-models';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
+import { promise } from 'protractor/node_modules/@types/selenium-webdriver';
+
 
 @Injectable()
 export class EditorEffectsService {
@@ -36,10 +38,6 @@ export class EditorEffectsService {
     /**
      * Create an placeholder object in the state for the new node
      * and open dispatch an action to open it in the editor
-     * @param projectName 
-     * @param schemaUuid 
-     * @param parentNodeUuid 
-     * @param language 
      */
     createNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
         this.api.project.getNode({project: projectName, nodeUuid: parentNodeUuid})
@@ -54,64 +52,41 @@ export class EditorEffectsService {
 
     /**
      * Save a new node to the api endpoint
-     * @param projectName 
-     * @param node 
      */
     saveNewNode(projectName: string, node: MeshNode): Promise<MeshNode | void> {
         this.state.actions.editor.saveNodeStart();
+        const language = node.language || this.config.FALLBACK_LANGUAGE;
+
         const nodeCreateRequest: NodeCreateRequest = {
-            fields: node.fields,
+            fields: this.getNonBinaryFields(node),
             parentNode: node.parentNode,
             schema: node.schema,
-            language: node.language || this.config.FALLBACK_LANGUAGE,
+            language: language,
         };
-
-        const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
-            .then(node => {
-                    console.warn('no error handling present in NodeResponse?', node);
-
-                    this.state.actions.editor.saveNodeSuccess(node);
+            .then(newNode => this.uploadBinaries(newNode, this.getBinaryFields(node)))
+            .then(savedNode => {
+                    this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
                     this.notification.show({
                         type: 'success',
                         message: 'editor.node_saved'
                     });
-                    return node;
-                },
-                error => {
-                    this.state.actions.editor.saveNodeError();
-                    this.notification.show({
-                        type: 'error',
-                        message: 'editor.node_save_error'
-                    });
-                    throw new Error('TODO: Error handling');
+                    return savedNode;
+                }, error => {
+                this.state.actions.editor.saveNodeError();
+                this.notification.show({
+                    type: 'error',
+                    message: 'editor.node_save_error'
                 });
-    }
-
-    closeEditor(): void {
-        this.state.actions.editor.closeEditor();
-    }
-
-    /**
-     * Creates a translation of a node by cloning the given node and renaming certain fields which need to be unique.
-     * This method is limited in that it does not work with binary fields and the renaming is naive and may fail.
-     * TODO: update this when a translation endpoint in implemented in Mesh: https://github.com/gentics/mesh/issues/12
-     */
-    createTranslation(node: MeshNode, languageCode: string): Promise<MeshNode | void> {
-        const clone = this.cloneNodeWithRename(node, languageCode.toUpperCase());
-        if (clone) {
-            clone.language = languageCode;
-            return this.saveNode(clone);
-        } else {
-            return Promise.reject(`Could not create translation`);
-        }
+                throw new Error('TODO: Error handling');
+            });
     }
 
     /**
      * Save (or update) an existing node
-     * @param node 
+     * @param node
      */
     saveNode(node: MeshNode): Promise<MeshNode | void> {
         if (!node.project.name) {
@@ -119,36 +94,47 @@ export class EditorEffectsService {
         }
 
         this.state.actions.editor.saveNodeStart();
-        const updateRequest: NodeUpdateRequest = {
-            fields: node.fields,
-            version: node.version,
-            language: node.language || this.config.FALLBACK_LANGUAGE
-        };
+
         const language = node.language || this.config.FALLBACK_LANGUAGE;
+
+        const updateRequest: NodeUpdateRequest = {
+            fields: this.getNonBinaryFields(node),
+            version: node.version,
+            language: language
+        };
 
         return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
             .toPromise()
             .then(response => {
-                    if (response.conflict) {
-                        // TODO: conflict resolution handling
-                    } else if (response.node) {
-                        this.state.actions.editor.saveNodeSuccess(response.node);
-                        this.notification.show({
-                            type: 'success',
-                            message: 'editor.node_saved'
-                        });
-                        return response.node;
-                    }
-                    this.state.actions.editor.saveNodeError();
-                },
-                error => {
+                if (response.conflict) {
+                    // TODO: conflict resolution handling
+                    throw new Error('saveNode was rejected');
+                } else if (response.node) {
+                    return this.uploadBinaries(response.node, this.getBinaryFields(node))
+                } else {
                     this.state.actions.editor.saveNodeError();
                     this.notification.show({
                         type: 'error',
                         message: 'editor.node_save_error'
                     });
-                    throw new Error('TODO: Error handling');
+                    return response.node;
+                }
+            })
+            .then(savedNode => {
+                this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
+                this.notification.show({
+                    type: 'success',
+                    message: 'editor.node_saved'
                 });
+                return savedNode;
+            }, error => {
+                this.state.actions.editor.saveNodeError();
+                this.notification.show({
+                    type: 'error',
+                    message: 'editor.node_save_error'
+                });
+                throw new Error('TODO: Error handling');
+            });
     }
 
     publishNode(node: MeshNode): void {
@@ -186,6 +172,27 @@ export class EditorEffectsService {
                     throw new Error('TODO: Error handling');
                 });
     }
+
+
+    closeEditor(): void {
+        this.state.actions.editor.closeEditor();
+    }
+
+    /**
+     * Creates a translation of a node by cloning the given node and renaming certain fields which need to be unique.
+     * This method is limited in that it does not work with binary fields and the renaming is naive and may fail.
+     * TODO: update this when a translation endpoint in implemented in Mesh: https://github.com/gentics/mesh/issues/12
+     */
+    createTranslation(node: MeshNode, languageCode: string): Promise<MeshNode | void> {
+        const clone = this.cloneNodeWithRename(node, languageCode.toUpperCase());
+        if (clone) {
+            clone.language = languageCode;
+            return this.saveNode(clone);
+        } else {
+            return Promise.reject(`Could not create translation`);
+        }
+    }
+
 
     /**
      * Clones a node and changes the fields which should be unique in a given parentNode (i.e. displayField,
@@ -264,5 +271,66 @@ export class EditorEffectsService {
                 value: binaryFieldValue
             };
         }
+    }
+
+    uploadBinary(project: string,
+        nodeUuid: string,
+        fieldName: string,
+        binary: File,
+        language: string,
+        version: string): Promise<MeshNode | void> {
+            return this.api.project.updateBinaryField({
+                project,
+                nodeUuid,
+                fieldName,
+            }, {
+                binary,
+                language,
+                version
+            })
+            .toPromise();
+        }
+
+    uploadBinaries(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode> {
+        // if no binaries are present - return the same node
+        if (Object.keys(fields).length === 0) {
+            return Promise.resolve(node);
+        }
+
+        const promises: Promise<MeshNode>[] = Object.keys(fields).reduce((promises: any[], key, index) => {
+            promises.push(this.uploadBinary(node.project.name, node.uuid, key, fields[key].file, node.language, node.version));
+            return promises;
+        }, []);
+
+
+        return new Promise<MeshNode>(resolve => {
+            Promise.all(promises)
+            .then(nodes => {
+                // return the node from the last successfull request
+                resolve(nodes.pop());
+            });
+        });
+    }
+    /**
+     * Filter all the binary fields from the node
+     */
+    private getBinaryFields(node: MeshNode): FieldMapFromServer {
+        return Object.keys(node.fields).reduce((fields, key, index) => {
+            const field = node.fields[key];
+            if ((field.file && field.file instanceof File) === true) {
+                fields[key] = field;
+            }
+            return fields;
+        }, {} as FieldMapFromServer);
+    }
+
+    private getNonBinaryFields(node: MeshNode): FieldMapFromServer {
+        const binaryFields = this.getBinaryFields(node);
+        return Object.keys(node.fields).reduce((nonBinaryFields, key) => {
+            if (binaryFields[key] === undefined) {
+                nonBinaryFields[key] = node.fields[key];
+            }
+            return nonBinaryFields;
+        }, {} as FieldMapFromServer);
     }
 }

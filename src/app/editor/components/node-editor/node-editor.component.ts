@@ -17,7 +17,6 @@ import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/se
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 
-
 @Component({
     selector: 'node-editor',
     templateUrl: './node-editor.component.html',
@@ -31,6 +30,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     nodePathRouterLink: any[];
     nodePath: string;
     nodeTitle = '';
+    //TODO: make a fullscreen non-closable dialog for binary files preventing user from navigating away while file is uploading
+    //isSaving$: Observable<boolean>;
+    isSaving = false;
 
     private openNode$: Subscription;
 
@@ -150,24 +152,35 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
 
         if (this.formGenerator.isDirty) {
+
+            this.isSaving = true;
             if (!this.node.uuid) {
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
                 this.editorEffects.saveNewNode(parentNode.project.name, this.node)
                     .then(node => {
+                        this.isSaving = false;
+
                         if (node) {
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
+
                             if (navigateOnSave) {
                                 this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
                             }
                         }
+                }, error => {
+                    this.isSaving = false;
                 });
             } else {
                 this.editorEffects.saveNode(this.node)
                     .then(node => {
+                        this.isSaving = false;
                         if (node) {
+                            this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                         }
+                    }, error => {
+                        this.isSaving = false;
                     });
             }
         }
