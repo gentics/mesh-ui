@@ -1,10 +1,34 @@
 <label>{{ api.field.label || api.field.name }}</label>
 <div class="binary-preview">
-    <ul class="property-list">
-        <li *ngFor="let prop of binaryProperties">
-            {{ prop.key }}: {{ prop.value }}
-        </li>
-    </ul>
+    <div *ngIf="binaryProperties">
+        <div [ngSwitch]="binaryMediaType">
+            <div *ngSwitchCase="'image'">
+                <img class="image-preview" [src]="objectUrl" alt="" />
+            </div>
+            <div *ngSwitchCase="'video'">
+                <video width="100%" controls>
+                    <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
+                </video>
+            </div>
+
+            <div *ngSwitchCase="'audio'">
+                <audio controls="controls">
+                    <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
+                </audio>
+            </div>
+
+            <div *ngSwitchDefault>
+                <div class="default-preview">
+                    <icon class="node-icon">insert_drive_file</icon>{{ binaryProperties.fileName }}
+                </div>
+            </div>
+        </div>
+        <ul class="property-list">
+            <li *ngFor="let prop of binaryPropertiesArray">
+                {{ prop.key }}: {{ prop.value }}
+            </li>
+        </ul>
+    </div>
     <gtx-file-picker (fileSelect)="onFilesSelected($event)"
                      flat="true"
                      [multiple]="false">

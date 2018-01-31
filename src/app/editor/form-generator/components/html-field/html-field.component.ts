@@ -50,7 +50,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
             this.elementRef.nativeElement.querySelector('.ql-toolbar').removeEventListener('click', this.focusHandler);
             this.editorRef.nativeElement.querySelector('.ql-editor').removeEventListener('blur', this.blurHandler);
         }
-        
+
     }
 
     init(api: MeshFieldControlApi): void {

@@ -169,7 +169,7 @@ export class ApiBase {
                 if (body[key] && (body[key].constructor === File || body[key] instanceof File)) {
                     bodyToUse.append(key, body[key], body[key].name);
                 } else {
-                    bodyToUse.append(key, body[key], String(body[key]));
+                    bodyToUse.append(key, body[key]);
                 }
             }
         } else {

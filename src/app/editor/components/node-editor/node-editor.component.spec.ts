@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
 
 import { NavigationService, InstructionActions } from '../../../core/providers/navigation/navigation.service';
 import { NodeEditorComponent } from './node-editor.component';
@@ -11,10 +12,9 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { componentTest } from '../../../../testing/component-test';
-import { By } from '@angular/platform-browser';
 import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
 import { VersionLabelComponent } from '../version-label/version-label.component';
-import { Button, Icon, DropdownTriggerDirective } from 'gentics-ui-core';
+import { Button, Icon, DropdownTriggerDirective, ProgressBar } from 'gentics-ui-core';
 import { NodeLanguageSwitcherComponent } from '../node-language-switcher/node-language-switcher.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
@@ -40,6 +40,7 @@ describe('NodeEditorComponent', () => {
                 NodeLanguageLabelComponent,
                 Button,
                 Icon,
+                ProgressBar,
                 MockLanguageSwitcher,
                 FormGeneratorComponent
             ],
@@ -217,8 +218,7 @@ describe('NodeEditorComponent', () => {
 });
 
 class MockEditorEffectsService {
-
-    saveNewNode = jasmine.createSpy('saveNewNode')
+    saveNewNode = jasmine.createSpy('saveNewNode');
     closeEditor = jasmine.createSpy('closeEditor');
     openNode = jasmine.createSpy('openNode');
     createNode = jasmine.createSpy('createNode');
