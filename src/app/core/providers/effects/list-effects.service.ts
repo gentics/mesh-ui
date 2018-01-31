@@ -51,9 +51,6 @@ export class ListEffectsService {
     }
     /**
      * Basicaly display the content of the folder in the list view
-     * @param projectName
-     * @param containerUuid
-     * @param language
      */
     setActiveContainer(projectName: string, containerUuid: string, language: string) {
         // Update active container in state
@@ -74,9 +71,6 @@ export class ListEffectsService {
 
     /**
      * Load the children for the opened folder
-     * @param projectName
-     * @param containerUuid
-     * @param language
      */
     loadChildren(projectName: string, containerUuid: string, language: string) {
          // Refresh child node list
@@ -93,7 +87,6 @@ export class ListEffectsService {
 
     /**
      * make a comma seperated list of langues. Put the passed language in front
-     * @param language
      */
     private languageWithFallbacks(language: string): string {
         return this.config.CONTENT_LANGUAGES
@@ -101,9 +94,6 @@ export class ListEffectsService {
             .join(',');
     }
 
-    /**
-     *
-     */
     public deleteNode(node: MeshNode, recursive: boolean): void {
         this.state.actions.list.deleteNodeStart();
         this.api.project.deleteNode({ project: node.project.name, nodeUuid: node.uuid, recursive })
