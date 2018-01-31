@@ -147,7 +147,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Save the node as a new draft version.
+     * Validate if saving is required.
+     * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
         if (!this.node) {
@@ -179,6 +180,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
     }
 
+     /**
+     * Save the node as a new draft version.
+     * Close file upload dialog if one was opened
+     */
     private saveNodeWithModal(navigateOnSave: boolean, modal?: IModalInstance<ProgressbarModalComponent>): void {
         if (!this.node.uuid) {
             const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });

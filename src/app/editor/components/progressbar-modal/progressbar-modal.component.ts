@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IModalDialog } from 'gentics-ui-core';
+import { IModalDialog, ProgressBar } from 'gentics-ui-core';
 
 @Component({
   selector: 'app-progressbar-modal',
