@@ -10,24 +10,6 @@
             <icon>search</icon>
         </gtx-button>
     </div>
-
-    <div class="filter-form"
-         [@formState]="formState">
-        <div class="filter-form-inner">
-            <icon class="button-close-filters" (click)="closeFilters()">close</icon>
-
-            <gtx-input label="{{ 'editor.search_nodes' | i18n }}" #searchFieldNodes></gtx-input>
-            <gtx-input label="{{ 'editor.search_projects' | i18n }}" #searchFieldProjects></gtx-input>
-            <gtx-input label="{{ 'editor.searchSchemas' | i18n }}" #searchFieldSchemas></gtx-input>
-
-            <gtx-button type="primary"
-                class="button-search"
-                [disabled]="searching"
-                submit>
-                Search
-            </gtx-button>
-        </div>
-    </div>
 </form>
 
 
