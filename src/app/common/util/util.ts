@@ -1,4 +1,5 @@
-import { BinaryField, ListNodeFieldType, MicronodeFieldMap, MicronodeFieldType, NodeFieldType } from '../models/node.model';
+import { BinaryField, ListNodeFieldType, MicronodeFieldMap, MicronodeFieldType, NodeFieldType, MeshNode } from '../models/node.model';
+import { FieldMapFromServer } from '../models/server-models';
 
 // Pure functions for utility
 
@@ -186,4 +187,28 @@ export function simpleMergeDeep(target: any, ...sources: any[]): any {
  */
 export function simpleCloneDeep<T>(target: T): T {
     return JSON.parse(JSON.stringify(target));
+}
+
+
+/**
+ * Filter all the binary fields from the node
+ */
+export function getBinaryFields(node: MeshNode): FieldMapFromServer {
+    return Object.keys(node.fields).reduce((fields, key, index) => {
+        const field = node.fields[key];
+        if ((field.file && field.file instanceof File) === true) {
+            fields[key] = field;
+        }
+        return fields;
+    }, {} as FieldMapFromServer);
+}
+
+export function getNonBinaryFields(node: MeshNode): FieldMapFromServer {
+    const binaryFields = getBinaryFields(node);
+    return Object.keys(node.fields).reduce((nonBinaryFields, key) => {
+        if (binaryFields[key] === undefined) {
+            nonBinaryFields[key] = node.fields[key];
+        }
+        return nonBinaryFields;
+    }, {} as FieldMapFromServer);
 }
