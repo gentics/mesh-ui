@@ -8,12 +8,17 @@
         </div>
         <div class="primary-buttons">
             <version-label [version]="node?.version"></version-label>
+
+            <gtx-progress-bar [active]="isSaving"></gtx-progress-bar>
+
             <gtx-button size="small" type="primary"
                         (click)="saveNode()"
                         class="save-button"
-                        [disabled]="!formGenerator?.isDirty || !formGenerator?.isValid">
+                        [disabled]="(isSaving) || !formGenerator?.isDirty || !formGenerator?.isValid ">
                 <icon left>save</icon> {{ 'editor.save_button' | i18n }}
             </gtx-button>
+
+
             <gtx-button size="small" type="success"
                         (click)="publishNode()"
                         [disabled]="!isDraft()">

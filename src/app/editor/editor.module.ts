@@ -21,6 +21,7 @@ import { CreateNodeButtonComponent } from './components/create-node-button/creat
 import { ContainerLanguageSwitcherComponent } from './components/container-language-switcher/container-language-switcher.component';
 import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
 import { NodeRowComponent } from './components/node-row/node-row.component';
+import { BlobService } from './providers/blob.service';
 
 @NgModule({
     imports: [
@@ -51,7 +52,8 @@ import { NodeRowComponent } from './components/node-row/node-row.component';
         EditorEffectsService,
         NodeEditorGuard,
         ModalService,
-        OverlayHostService
+        OverlayHostService,
+        BlobService,
     ]
 })
 export class EditorModule {
