@@ -216,11 +216,12 @@ class TestComponent implements OnInit {
     @ViewChild(BinaryFieldComponent)
     binaryFieldComponent: BinaryFieldComponent;
 
+
     ngOnInit() {
         const api = new MockMeshFieldControlApi();
         api.getNodeValue = jasmine.createSpy('getNodeValue').and.returnValue({ project: {name: 'demo'}, uuid: 'node_uuid'});
         this.binaryFieldComponent.api = this.api = api;
-        this.binaryFieldComponent.apiService = this.apiService = TestBed.get(ApiService);
+        //this.binaryFieldComponent.apiService = this.apiService = TestBed.get(ApiService);
     }
 }
 

@@ -17,16 +17,16 @@ import { BlobService } from '../../../providers/blob.service';
 })
 export class BinaryFieldComponent extends BaseFieldComponent {
 
-    public binaryProperties: BinaryField & { file?: File };
-    public binaryPropertiesArray: Array<{ key: string; value: any }>;
-    public binaryMediaType: string;
-    public field: SchemaField;
-    public objectUrl: string | SafeUrl = null;
+    binaryProperties: BinaryField & { file?: File };
+    binaryPropertiesArray: Array<{ key: string; value: any }>;
+    binaryMediaType: string;
+    field: SchemaField;
+    objectUrl: string | SafeUrl = null;
 
     public api: MeshFieldControlApi;
 
-    constructor(public apiService: ApiService,
-                protected blobService: BlobService,
+    constructor(private apiService: ApiService,
+                private blobService: BlobService,
                 protected changeDetector: ChangeDetectorRef) {
         super(changeDetector);
     }

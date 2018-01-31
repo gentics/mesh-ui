@@ -12,10 +12,10 @@
             </div>
 
             <div *ngSwitchCase="'audio'">
-                    <audio controls="controls">
-                        <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
-                    </audio>
-                </div>
+                <audio controls="controls">
+                    <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
+                </audio>
+            </div>
 
             <div *ngSwitchDefault>
                 <div class="default-preview">
