@@ -22,6 +22,7 @@ import { ContainerLanguageSwitcherComponent } from './components/container-langu
 import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
 import { NodeRowComponent } from './components/node-row/node-row.component';
 import { BlobService } from './providers/blob.service';
+import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
 
 @NgModule({
     imports: [
@@ -43,10 +44,12 @@ import { BlobService } from './providers/blob.service';
         ProjectSwitcherComponent,
         SearchBarComponent,
         VersionLabelComponent,
-        NodeRowComponent
+        NodeRowComponent,
+        ProgressbarModalComponent
     ],
     entryComponents: [
-        ConfirmNavigationModalComponent
+        ConfirmNavigationModalComponent,
+        ProgressbarModalComponent,
     ],
     providers: [
         EditorEffectsService,

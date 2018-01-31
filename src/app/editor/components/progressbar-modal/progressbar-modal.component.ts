@@ -1,0 +1,25 @@
+import { Component, OnInit } from '@angular/core';
+import { IModalDialog } from 'gentics-ui-core';
+
+@Component({
+  selector: 'app-progressbar-modal',
+  templateUrl: './progressbar-modal.component.html',
+  styleUrls: ['./progressbar-modal.component.scss']
+})
+export class ProgressbarModalComponent implements IModalDialog {
+
+  constructor() {}
+
+  translateToPlural = false;
+
+  closeFn: (val: any) => void;
+  cancelFn: (val?: any) => void;
+
+  registerCloseFn(close: (val: any) => void): void {
+    this.closeFn = close;
+  }
+
+  registerCancelFn(cancel: (val?: any) => void): void {
+    this.cancelFn = cancel;
+  }
+}

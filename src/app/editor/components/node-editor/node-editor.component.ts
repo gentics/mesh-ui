@@ -11,11 +11,13 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { simpleCloneDeep } from '../../../common/util/util';
+import { simpleCloneDeep, getMeshNodeBinaryFields } from '../../../common/util/util';
 import { initializeNode } from '../../form-generator/common/initialize-node';
-import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
+import { NodeReferenceFromServer, NodeResponse, FieldMapFromServer } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { ModalService, IDialogConfig, IModalOptions, IModalInstance } from 'gentics-ui-core';
+import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
 
 @Component({
     selector: 'node-editor',
@@ -45,7 +47,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 private listEffects: ListEffectsService,
                 private navigationService: NavigationService,
                 private route: ActivatedRoute,
-                private i18n: I18nService) {}
+                private i18n: I18nService,
+                private modalService: ModalService ) {}
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -154,37 +157,75 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         if (this.formGenerator.isDirty) {
 
             this.isSaving = true;
-            if (!this.node.uuid) {
-                const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
-                this.editorEffects.saveNewNode(parentNode.project.name, this.node)
-                    .then(node => {
-                        this.isSaving = false;
 
-                        if (node) {
-                            this.formGenerator.setPristine(node);
-                            this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
+            const numFields = Object.keys(getMeshNodeBinaryFields(this.node)).length;
 
-                            if (navigateOnSave) {
-                                this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
-                            }
-                        }
-                }, error => {
-                    this.isSaving = false;
+            if (numFields > 0) {
+                this.modalService.fromComponent(ProgressbarModalComponent,
+                                                {
+                                                    closeOnOverlayClick: false,
+                                                    closeOnEscape: false
+                                                },
+                                                {
+                                                    translateToPlural: numFields > 1
+                                                })
+                .then(modal => {
+                    modal.open();
+                    this.saveNodeWithModal(navigateOnSave, modal);
                 });
             } else {
-                this.editorEffects.saveNode(this.node)
-                    .then(node => {
-                        this.isSaving = false;
-                        if (node) {
-                            this.formGenerator.setPristine(node);
-                            this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
-                        }
-                    }, error => {
-                        this.isSaving = false;
-                    });
+                this.saveNodeWithModal(navigateOnSave);
             }
         }
     }
+
+    private saveNodeWithModal(navigateOnSave: boolean, modal?: IModalInstance<ProgressbarModalComponent>): void {
+        if (!this.node.uuid) {
+            const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
+            this.editorEffects.saveNewNode(parentNode.project.name, this.node)
+                .then(node => {
+                    this.isSaving = false;
+                    if (node) {
+                        this.formGenerator.setPristine(node);
+                        this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
+
+                        if (navigateOnSave) {
+                            this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
+                        }
+                    }
+                    if (modal) {
+                        modal.instance.closeFn(null);
+                    }
+            }, error => {
+                this.isSaving = false;
+
+                if (modal) {
+                    modal.instance.closeFn(null);
+                }
+            });
+        } else {
+            this.editorEffects.saveNode(this.node)
+                .then(node => {
+                    this.isSaving = false;
+                    if (node) {
+                        this.formGenerator.setPristine(node);
+                        this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
+                    }
+
+                    if (modal) {
+                        modal.instance.closeFn(null);
+                    }
+                }, error => {
+                    this.isSaving = false;
+
+                    if (modal) {
+                        modal.instance.closeFn(null);
+                    }
+                });
+        }
+    }
+
+
 
     /**
      * Publish the node, and if there are changes, save first before publishing.

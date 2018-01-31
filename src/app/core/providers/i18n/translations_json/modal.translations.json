@@ -79,8 +79,12 @@
       "en": "Save and close",
       "de": "Speichern und schließen"
     },
-    "validation_passwords_must_match": {
-      "en": "Passwords must match",
-      "de": "Passworteingaben stimmen nicht überein"
+    "uploading_file": {
+      "en": "Uploading file...",
+      "de": "Lade Datein hoch ..."
+    },
+    "uploading_files": {
+      "en": "Uploading files...",
+      "de": "Lade Datein hoch ..."
     }
   }
