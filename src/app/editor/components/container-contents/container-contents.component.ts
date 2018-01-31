@@ -10,8 +10,6 @@ import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { ApiService } from '../../../core/providers/api/api.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
 
 
 @Component({
@@ -30,15 +28,12 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     /** @internal */
     public childrenBySchema: { [schemaUuid: string]: MeshNode[] } = { };
 
-    constructor(
-        private changeDetector: ChangeDetectorRef,
-        private listEffects: ListEffectsService,
-        private navigationService: NavigationService,
-        private route: ActivatedRoute,
-        private entities: EntitiesService,
-        private state: ApplicationStateService,
-        private api: ApiService,
-        private i18n: I18nService) {
+    constructor(private changeDetector: ChangeDetectorRef,
+                private listEffects: ListEffectsService,
+                private navigationService: NavigationService,
+                private route: ActivatedRoute,
+                private entities: EntitiesService,
+                private state: ApplicationStateService) {
     }
 
     ngOnInit(): void {

@@ -18,20 +18,27 @@ export class NodeRowComponent implements OnInit {
     @Input() node: MeshNode;
     @Input() listLanguage: string;
 
-    constructor(
-        private state: ApplicationStateService,
-        private navigationService: NavigationService,
-        private modalService: ModalService,
-        private i18n: I18nService,
-        private listEffects: ListEffectsService,
-        private entities: EntitiesService,
-        private api: ApiService,
-    ) { }
+    routerLink: any[] = null;
 
-    ngOnInit() { }
+    constructor(private state: ApplicationStateService,
+                private navigationService: NavigationService,
+                private modalService: ModalService,
+                private i18n: I18nService,
+                private listEffects: ListEffectsService,
+                private entities: EntitiesService,
+                private api: ApiService) {
+    }
+
+    ngOnInit() {
+        if (this.node.container) {
+            this.routerLink = this.navigationService.list(this.node.project.name, this.node.uuid, this.listLanguage).commands();
+        } else {
+            this.routerLink = this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).commands();
+        }
+    }
 
     editNode(): void {
-        this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).navigate();
+        this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).navigate();
     }
 
     copyNode(): void {
@@ -57,14 +64,6 @@ export class NodeRowComponent implements OnInit {
             .then(() => {
                 this.listEffects.deleteNode(this.node, true);
             });
-    }
-
-    getRouterLink() {
-        if (this.node.container) {
-            return this.navigationService.list(this.node.project.name!, this.node.uuid, this.listLanguage).commands();
-        } else {
-            return this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).commands();
-        }
     }
 
     focusEditor() {

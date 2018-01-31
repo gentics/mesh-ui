@@ -24,7 +24,6 @@ import { mockMeshNode } from '../../../../testing/mock-models';
 
 describe('NodeRowComponent', () => {
     let api: MockApiService;
-    let state: TestApplicationState;
     let modalService: MockModalService;
     let listService: MockListEffectsService;
 
@@ -78,7 +77,6 @@ describe('NodeRowComponent', () => {
                 expect(api.project.deleteNode).not.toHaveBeenCalled();
                 modalService.confirmLastModal();
                 expect(listService.deleteNode).toHaveBeenCalled();
-                // expect(api.project.deleteNode).toHaveBeenCalled();
             })
         );
     });
@@ -137,8 +135,7 @@ class MockModalService {
 
 
 function findDeleteButton(fixture: ComponentFixture<any>): DebugElement {
-    return fixture.debugElement.queryAll(By.directive(DropdownItem))
-        .find(dropdownItem => dropdownItem.nativeElement.innerText.indexOf('delete') >= 0);
+    return fixture.debugElement.query(By.css('.item-delete'));
 }
 
 function openDropdownAndDeleteFirstItem(fixture: ComponentFixture<any>): void {
@@ -146,13 +143,10 @@ function openDropdownAndDeleteFirstItem(fixture: ComponentFixture<any>): void {
     tick();
 
     const dropdownTrigger = fixture.debugElement.query(By.directive(DropdownTriggerDirective));
-    expect(findDeleteButton(fixture)).toBeUndefined();
     dropdownTrigger.nativeElement.click();
     fixture.detectChanges();
 
     const deleteButton = findDeleteButton(fixture);
-    expect(deleteButton).toBeDefined();
-
     deleteButton.nativeElement.click();
     tick();
 }

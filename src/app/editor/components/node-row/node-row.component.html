@@ -3,7 +3,7 @@
     <icon class="node-icon" *ngIf="!node.container">insert_drive_file</icon>
     <div class="item-primary">
         <div class="title">
-            <a href [routerLink]="getRouterLink()" (click)="focusEditor()">{{ node | displayField }}</a>
+            <a href [routerLink]="routerLink" (click)="focusEditor()">{{ node | displayField }}</a>
         </div>
         <div class="available-languages">
             <available-languages-list [available]="node.availableLanguages" [current]="listLanguage"></available-languages-list>
@@ -26,7 +26,7 @@
                 <gtx-dropdown-item (click)="moveNode()">
                     <icon left>subdirectory_arrow_right</icon> {{ 'list.move' | i18n }}
                 </gtx-dropdown-item>
-                <gtx-dropdown-item (click)="deleteNode()" class="alert">
+                <gtx-dropdown-item (click)="deleteNode()" class="alert item-delete">
                     <icon left>delete</icon> {{ 'list.delete' | i18n }}
                 </gtx-dropdown-item>
             </gtx-dropdown-content>
