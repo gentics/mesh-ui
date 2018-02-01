@@ -194,9 +194,13 @@ export function simpleCloneDeep<T>(target: T): T {
  * Filter all the binary fields from the node
  */
 export function getMeshNodeBinaryFields(node: MeshNode): FieldMapFromServer {
+    if (!node.fields) {
+        return {} as FieldMapFromServer;
+    }
+
     return Object.keys(node.fields).reduce((fields, key, index) => {
         const field = node.fields[key];
-        if ((field.file && field.file instanceof File) === true) {
+        if (field && (field.file && field.file instanceof File) === true) {
             fields[key] = field;
         }
         return fields;

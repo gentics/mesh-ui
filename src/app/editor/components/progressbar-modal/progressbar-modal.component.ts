@@ -8,8 +8,6 @@ import { IModalDialog, ProgressBar } from 'gentics-ui-core';
 })
 export class ProgressbarModalComponent implements IModalDialog {
 
-  constructor() {}
-
   translateToPlural = false;
 
   closeFn: (val: any) => void;

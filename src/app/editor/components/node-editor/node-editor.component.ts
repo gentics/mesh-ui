@@ -146,8 +146,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         return !!this.node && !/\.0$/.test(this.node.version);
     }
 
-
-    private checkFileUpload(saveFn: Promise<any>): Promise<any> {
+    // carries on the saving process.
+    // displays a loading overlay if binary fields has to be uploaded
+    private saveNodeWithProgress(saveFn: Promise<any>): Promise<any> {
         const numFields = Object.keys(getMeshNodeBinaryFields(this.node)).length;
 
         if (numFields > 0) {
@@ -188,7 +189,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         if (node) {
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
-
+                            console.log('done creating a node');
                             if (navigateOnSave) {
                                 this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
                             }
@@ -201,6 +202,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
+                            console.log('Done saving the node');
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                         }
@@ -208,10 +210,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         this.isSaving = false;
                     });
             }
-
-            this.checkFileUpload(saveFn);
+            this.saveNodeWithProgress(saveFn);
         }
-
     }
 
     /**
