@@ -41,14 +41,14 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     @ViewChild(FormGeneratorComponent) formGenerator: FormGeneratorComponent;
 
     constructor(private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private changeDetector: ChangeDetectorRef,
-                private editorEffects: EditorEffectsService,
-                private listEffects: ListEffectsService,
-                private navigationService: NavigationService,
-                private route: ActivatedRoute,
-                private i18n: I18nService,
-                private modalService: ModalService ) {}
+        private entities: EntitiesService,
+        private changeDetector: ChangeDetectorRef,
+        private editorEffects: EditorEffectsService,
+        private listEffects: ListEffectsService,
+        private navigationService: NavigationService,
+        private route: ActivatedRoute,
+        private i18n: I18nService,
+        private modalService: ModalService) { }
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -111,7 +111,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             return '';
         }
 
-        const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
+        const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
         // const parentDisplayNode: any = { displayName: parentNode.displayName || '' };
         const parentDisplayNode: NodeReferenceFromServer = { displayName: parentNode.displayName || '' } as NodeReferenceFromServer;
         let breadcrumb = this.node.breadcrumb;
@@ -124,7 +124,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         } else if (!breadcrumb) {
             breadcrumb = [parentDisplayNode, ...parentNode.breadcrumb];
         } else {
-            breadcrumb = [{ displayName: this.node.displayName} as NodeReferenceFromServer, ...breadcrumb];
+            breadcrumb = [{ displayName: this.node.displayName } as NodeReferenceFromServer, ...breadcrumb];
         }
         // TODO: remove this once Mesh fixes the order of the breadcrumbs
         return breadcrumb.slice().reverse().map(b => b.displayName).join(' › ');
@@ -146,6 +146,26 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         return !!this.node && !/\.0$/.test(this.node.version);
     }
 
+
+    private checkFileUpload(saveFn: Promise<any>): Promise<any> {
+        const numFields = Object.keys(getMeshNodeBinaryFields(this.node)).length;
+
+        if (numFields > 0) {
+            return this.modalService.fromComponent(ProgressbarModalComponent,
+                {
+                    closeOnOverlayClick: false,
+                    closeOnEscape: false
+                },
+                {
+                    translateToPlural: numFields > 1
+                })
+                .then(modal => {
+                    modal.open();
+                    saveFn.then(() => modal.instance.closeFn(null));
+                });
+        }
+    }
+
     /**
      * Validate if saving is required.
      * Open a file upload progress if binary fields are present upload
@@ -158,79 +178,41 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         if (this.formGenerator.isDirty) {
 
             this.isSaving = true;
+            let saveFn: Promise<any>;
 
-            const numFields = Object.keys(getMeshNodeBinaryFields(this.node)).length;
+            if (!this.node.uuid) {
+                const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
+                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node)
+                    .then(node => {
+                        this.isSaving = false;
+                        if (node) {
+                            this.formGenerator.setPristine(node);
+                            this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
 
-            if (numFields > 0) {
-                this.modalService.fromComponent(ProgressbarModalComponent,
-                                                {
-                                                    closeOnOverlayClick: false,
-                                                    closeOnEscape: false
-                                                },
-                                                {
-                                                    translateToPlural: numFields > 1
-                                                })
-                .then(modal => {
-                    modal.open();
-                    this.saveNodeWithModal(navigateOnSave, modal);
-                });
-            } else {
-                this.saveNodeWithModal(navigateOnSave);
-            }
-        }
-    }
-
-     /**
-     * Save the node as a new draft version.
-     * Close file upload dialog if one was opened
-     */
-    private saveNodeWithModal(navigateOnSave: boolean, modal?: IModalInstance<ProgressbarModalComponent>): void {
-        if (!this.node.uuid) {
-            const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
-            this.editorEffects.saveNewNode(parentNode.project.name, this.node)
-                .then(node => {
-                    this.isSaving = false;
-                    if (node) {
-                        this.formGenerator.setPristine(node);
-                        this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
-
-                        if (navigateOnSave) {
-                            this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
+                            if (navigateOnSave) {
+                                this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
+                            }
                         }
-                    }
-                    if (modal) {
-                        modal.instance.closeFn(null);
-                    }
-            }, error => {
-                this.isSaving = false;
+                    }, error => {
+                        this.isSaving = false;
+                    });
+            } else {
+                saveFn = this.editorEffects.saveNode(this.node)
+                    .then(node => {
+                        this.isSaving = false;
+                        if (node) {
+                            this.formGenerator.setPristine(node);
+                            this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
+                        }
+                    }, error => {
+                        this.isSaving = false;
+                    });
+            }
 
-                if (modal) {
-                    modal.instance.closeFn(null);
-                }
-            });
-        } else {
-            this.editorEffects.saveNode(this.node)
-                .then(node => {
-                    this.isSaving = false;
-                    if (node) {
-                        this.formGenerator.setPristine(node);
-                        this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
-                    }
-
-                    if (modal) {
-                        modal.instance.closeFn(null);
-                    }
-                }, error => {
-                    this.isSaving = false;
-
-                    if (modal) {
-                        modal.instance.closeFn(null);
-                    }
-                });
+            this.checkFileUpload(saveFn);
         }
+
     }
-
-
 
     /**
      * Publish the node, and if there are changes, save first before publishing.
