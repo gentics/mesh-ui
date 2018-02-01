@@ -8,6 +8,7 @@
     "start": "ng serve --verbose --proxy-config proxy.conf.json",
     "build": "ng build --prod",
     "test": "ng test",
+    "test-no-sourcemaps": "ng test -sm=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "preinstall": "node ./check-if-yarn-is-used",
     "e2e": "ng e2e"

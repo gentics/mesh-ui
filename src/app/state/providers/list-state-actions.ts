@@ -160,6 +160,18 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount--;
     }
 
+    deleteNodeStart() {
+        this.list.loadCount++;
+    }
+
+    deleteNodeError() {
+        this.list.loadCount--;
+    }
+
+    deleteNodeSuccess() {
+        this.list.loadCount--;
+    }
+
     /** Change the active container in the list view from values of the current route. */
     setActiveContainer(projectName: string, containerUuid: string, language: string) {
         this.list.currentProject = projectName;

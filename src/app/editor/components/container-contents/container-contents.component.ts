@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -9,7 +10,6 @@ import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { Observable } from 'rxjs/Observable';
 
 
 @Component({
@@ -28,13 +28,12 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     /** @internal */
     public childrenBySchema: { [schemaUuid: string]: MeshNode[] } = { };
 
-    constructor(
-        private changeDetector: ChangeDetectorRef,
-        private listEffects: ListEffectsService,
-        private navigationService: NavigationService,
-        private route: ActivatedRoute,
-        private entities: EntitiesService,
-        private state: ApplicationStateService) {
+    constructor(private changeDetector: ChangeDetectorRef,
+                private listEffects: ListEffectsService,
+                private navigationService: NavigationService,
+                private route: ActivatedRoute,
+                private entities: EntitiesService,
+                private state: ApplicationStateService) {
     }
 
     ngOnInit(): void {
@@ -115,33 +114,5 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
-    }
-
-    editNode(node: MeshNode): void {
-        this.navigationService.detail(node.project.name!, node.uuid, node.language).navigate();
-    }
-
-    copyNode(node: MeshNode): void {
-        // TODO
-    }
-
-    moveNode(node: MeshNode): void {
-        // TODO
-    }
-
-    deleteNode(node: MeshNode): void {
-        // TODO
-    }
-
-    routerLinkOf(node: MeshNode) {
-        if (node.container) {
-            return this.navigationService.list(node.project.name!, node.uuid, this.listLanguage).commands();
-        } else {
-            return this.navigationService.detail(node.project.name!, node.uuid, node.language).commands();
-        }
-    }
-
-    focusEditor() {
-        this.state.actions.editor.focusEditor();
     }
 }
