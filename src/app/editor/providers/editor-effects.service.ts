@@ -5,7 +5,7 @@ import { BinaryField, MeshNode } from '../../common/models/node.model';
 import { NodeUpdateRequest, NodeCreateRequest, FieldMapFromServer } from '../../common/models/server-models';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ConfigService } from '../../core/providers/config/config.service';
-import { simpleCloneDeep } from '../../common/util/util';
+import { simpleCloneDeep, getMeshNodeNonBinaryFields, getMeshNodeBinaryFields } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
 import { promise } from 'protractor/node_modules/@types/selenium-webdriver';
 
@@ -58,7 +58,7 @@ export class EditorEffectsService {
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const nodeCreateRequest: NodeCreateRequest = {
-            fields: this.getNonBinaryFields(node),
+            fields: getMeshNodeNonBinaryFields(node),
             parentNode: node.parentNode,
             schema: node.schema,
             language: language,
@@ -66,7 +66,7 @@ export class EditorEffectsService {
 
         return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
-            .then(newNode => this.uploadBinaries(newNode, this.getBinaryFields(node)))
+            .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(node)))
             .then(savedNode => {
                     this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
                     this.notification.show({
@@ -98,7 +98,7 @@ export class EditorEffectsService {
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const updateRequest: NodeUpdateRequest = {
-            fields: this.getNonBinaryFields(node),
+            fields: getMeshNodeNonBinaryFields(node),
             version: node.version,
             language: language
         };
@@ -110,7 +110,7 @@ export class EditorEffectsService {
                     // TODO: conflict resolution handling
                     throw new Error('saveNode was rejected');
                 } else if (response.node) {
-                    return this.uploadBinaries(response.node, this.getBinaryFields(node))
+                    return this.uploadBinaries(response.node, getMeshNodeBinaryFields(node))
                 } else {
                     this.state.actions.editor.saveNodeError();
                     this.notification.show({
@@ -310,27 +310,5 @@ export class EditorEffectsService {
                 resolve(nodes.pop());
             });
         });
-    }
-    /**
-     * Filter all the binary fields from the node
-     */
-    private getBinaryFields(node: MeshNode): FieldMapFromServer {
-        return Object.keys(node.fields).reduce((fields, key, index) => {
-            const field = node.fields[key];
-            if ((field.file && field.file instanceof File) === true) {
-                fields[key] = field;
-            }
-            return fields;
-        }, {} as FieldMapFromServer);
-    }
-
-    private getNonBinaryFields(node: MeshNode): FieldMapFromServer {
-        const binaryFields = this.getBinaryFields(node);
-        return Object.keys(node.fields).reduce((nonBinaryFields, key) => {
-            if (binaryFields[key] === undefined) {
-                nonBinaryFields[key] = node.fields[key];
-            }
-            return nonBinaryFields;
-        }, {} as FieldMapFromServer);
     }
 }

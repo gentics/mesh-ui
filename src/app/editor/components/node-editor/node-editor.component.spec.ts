@@ -14,7 +14,7 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { componentTest } from '../../../../testing/component-test';
 import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
 import { VersionLabelComponent } from '../version-label/version-label.component';
-import { Button, Icon, DropdownTriggerDirective, ProgressBar } from 'gentics-ui-core';
+import { Button, Icon, DropdownTriggerDirective, ProgressBar, ModalService, OverlayHostService } from 'gentics-ui-core';
 import { NodeLanguageSwitcherComponent } from '../node-language-switcher/node-language-switcher.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
@@ -54,6 +54,8 @@ describe('NodeEditorComponent', () => {
                 { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
                 { provide: FieldGeneratorService, useClass: MockFieldGeneratorService },
                 { provide: MeshControlGroupService, useClass: MockMeshControlGroupService },
+                ModalService,
+                OverlayHostService,
             ],
             imports: [RouterTestingModule.withRoutes([])]
         });
