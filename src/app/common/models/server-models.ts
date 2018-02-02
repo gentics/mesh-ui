@@ -2763,8 +2763,8 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
-                body?: undefined;
+                queryParams?: {};
+                body?: any;
             };
             responseType: NodeListResponse;
             responseTypes: {

@@ -1,7 +1,7 @@
-<form (ngSubmit)="search(searchField.currentValue)">
+<form (ngSubmit)="search(searchField.currentValue.trim())">
     <div class="search-row">
         <gtx-progress-bar [active]="searching"></gtx-progress-bar>
-        <gtx-input placeholder="Search" class="search-input" (change)="filter(searchField.currentValue)" #searchField></gtx-input>
+        <gtx-input placeholder="Search" class="search-input" (change)="filter(searchField.currentValue.trim())" #searchField></gtx-input>
 
         <!--<gtx-button type="primary"
             class="button-search"

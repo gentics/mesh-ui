@@ -54,7 +54,6 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
-        const list$ = this.state.select(state => state.list.children);
         const childNodesSub = this.state.select(state => state.list.children)
             .map(childrenUuids =>
                     childrenUuids && childrenUuids
@@ -70,6 +69,11 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .subscribe(filter => {
                 this.filter = filter.trim();
                 this.updateChildList();
+            });
+
+        const searchSub = this.state.select(state => state.list.searchResults)
+            .subscribe(results => {
+                this.updateChildListWithSearchResults(results);
             });
 
         const onProjectLoadSchemasSub = this.state
@@ -132,6 +136,26 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 childrenBySchema[node.schema.uuid] = [];
             }
 
+            childrenBySchema[node.schema.uuid].push(node);
+        }
+
+        console.log('my childs', this.childNodes);
+
+        this.schemas = schemas;
+        this.childrenBySchema = childrenBySchema;
+        this.changeDetector.markForCheck();
+    }
+
+    private updateChildListWithSearchResults(nodes: MeshNode[]): void {
+        const schemas: SchemaReference[] = [];
+        const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
+
+
+        for (const node of nodes || []) {
+            if (!schemas.some(schema => node.schema.uuid === schema.uuid)) {
+                schemas.push(node.schema);
+                childrenBySchema[node.schema.uuid] = [];
+            }
             childrenBySchema[node.schema.uuid].push(node);
         }
 

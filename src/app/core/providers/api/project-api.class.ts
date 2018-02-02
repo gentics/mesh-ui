@@ -134,7 +134,7 @@ export class ProjectApi {
 
     /** Invoke a search query for nodes and return a paged list response. */
     // TODO: This is typed wrong in the RAML.
-    searchNodes = apiPost('/search/nodes');
+    searchNodes = apiPost('/{project}/search/nodes');
 
     /** Invoke a search query for projects and return a paged list response. */
     // TODO: This is typed wrong in the RAML.

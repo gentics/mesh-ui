@@ -21,9 +21,26 @@ export class SearchBarComponent {
     ) {}
 
     search(fraze: string) {
+        if (!fraze) {
+            return;
+        }
+
         this.searching = true;
-        console.log("I will do a search");
-        this.api.project.searchNodes({lang: 'En'}, undefined)
+
+        const searchObject = {query: {
+                                match_phrase: {
+                                    ['displayField.value']: fraze}
+                                },
+                                sort: [{created: 'asc'}]};
+
+        this.api.project.searchNodes({project : 'demo'}, searchObject)
+        .subscribe(response => {
+            this.searching = false;
+            this.changeDetectorRef.detectChanges();
+
+            this.state.actions.list.setSearchResults(response.data);
+        });
+
         //this.listActions.setFilter(fraze);
         //clearTimeout(this.searchTimeout);
         /*this.searchTimeout = setTimeout(() => {

@@ -10,6 +10,7 @@ import { AdminState } from '../models/admin-state.model';
 import { Microschema } from '../../common/models/microschema.model';
 import { Schema } from '../../common/models/schema.model';
 import { ConfigService } from '../../core/providers/config/config.service';
+import { MeshNode } from '../../common/models/node.model';
 
 @Injectable()
 @Immutable()
@@ -28,6 +29,7 @@ export class ListStateActions extends StateActionBranch<AppState> {
                     loadCount: 0,
                     language: config.FALLBACK_LANGUAGE,
                     children: [],
+                    searchResults: null,
                     filter: '',
                 }
             }
@@ -183,5 +185,10 @@ export class ListStateActions extends StateActionBranch<AppState> {
     /** sets the search filter for the nodes */
     setFilter(filter: string): void {
         this.list.filter = filter;
+    }
+
+     /** sets the search filter for the nodes */
+     setSearchResults(result: MeshNode[]): void {
+        this.list.searchResults = result;
     }
 }
