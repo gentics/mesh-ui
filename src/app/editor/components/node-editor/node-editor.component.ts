@@ -146,19 +146,20 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         return !!this.node && !/\.0$/.test(this.node.version);
     }
 
-    // carries on the saving process.
-    // displays a loading overlay if binary fields has to be uploaded
+    /**
+     * Carries on the saving process and displays a loading overlay if any binary fields has to be uploaded.
+     */
     private saveNodeWithProgress(saveFn: Promise<any>): Promise<any> {
-        const numFields = Object.keys(getMeshNodeBinaryFields(this.node)).length;
+        const numBinaryFields = Object.keys(getMeshNodeBinaryFields(this.node)).length;
 
-        if (numFields > 0) {
+        if (numBinaryFields > 0) {
             return this.modalService.fromComponent(ProgressbarModalComponent,
                 {
                     closeOnOverlayClick: false,
                     closeOnEscape: false
                 },
                 {
-                    translateToPlural: numFields > 1
+                    translateToPlural: numBinaryFields > 1
                 })
                 .then(modal => {
                     modal.open();
@@ -189,7 +190,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         if (node) {
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
-                            console.log('done creating a node');
+
                             if (navigateOnSave) {
                                 this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
                             }
