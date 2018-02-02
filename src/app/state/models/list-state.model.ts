@@ -4,4 +4,5 @@ export interface ListState {
     loadCount: number;
     language: string;
     children: string[];
+    filter: string,
 }

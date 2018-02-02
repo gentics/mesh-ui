@@ -1,10 +1,8 @@
-import { Component, trigger, state, style, transition, animate } from '@angular/core';
-import { ChangeDetectorRef } from '@angular/core';
-import { ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { ApiService } from '../../../core/providers/api/api.service';
-import { ElementRef } from '@angular/core';
-
-
+import { clearTimeout } from 'timers';
+import { ListStateActions } from '../../../state/providers/list-state-actions';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Component({
     selector: 'search-bar',
@@ -14,18 +12,27 @@ import { ElementRef } from '@angular/core';
 
 export class SearchBarComponent {
     protected searching = false;
-    public formState = 'hidden';
+    private searchTimeout: NodeJS.Timer;
 
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
-        private api: ApiService
+        private api: ApiService,
+        private state: ApplicationStateService
     ) {}
 
-    search(fraze: String) {
+    search(fraze: string) {
         this.searching = true;
-        setTimeout(() => {
+        console.log("I will do a search");
+        this.api.project.searchNodes({lang: 'En'}, undefined)
+        //this.listActions.setFilter(fraze);
+        //clearTimeout(this.searchTimeout);
+        /*this.searchTimeout = setTimeout(() => {
             this.searching = false;
             this.changeDetectorRef.detectChanges();
-        }, 1000);
+        }, 1000);*/
+    }
+
+    filter(fraze: string) {
+        this.state.actions.list.setFilter(fraze);
     }
 }

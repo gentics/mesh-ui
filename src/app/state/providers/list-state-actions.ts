@@ -27,7 +27,8 @@ export class ListStateActions extends StateActionBranch<AppState> {
                     currentProject: undefined,
                     loadCount: 0,
                     language: config.FALLBACK_LANGUAGE,
-                    children: []
+                    children: [],
+                    filter: '',
                 }
             }
         });
@@ -179,4 +180,8 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.language = language;
     }
 
+    /** sets the search filter for the nodes */
+    setFilter(filter: string): void {
+        this.list.filter = filter;
+    }
 }

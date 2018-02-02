@@ -10,6 +10,7 @@ import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 
 
 @Component({
@@ -21,6 +22,8 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 export class ContainerContentsComponent implements OnInit, OnDestroy {
 
     listLanguage: string;
+    filter: string;
+    childNodes: MeshNode[] | undefined;
 
     private subscription: Subscription;
     /** @internal */
@@ -36,7 +39,9 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 private state: ApplicationStateService) {
     }
 
+
     ngOnInit(): void {
+
         const onLogin$ = this.state.select(state => state.auth.loggedIn)
             .filter(loggedIn => loggedIn);
 
@@ -49,13 +54,23 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
+        const list$ = this.state.select(state => state.list.children);
         const childNodesSub = this.state.select(state => state.list.children)
             .map(childrenUuids =>
-                childrenUuids && childrenUuids
+                    childrenUuids && childrenUuids
                     .map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }))
-                    .filter<MeshNode>(notNullOrUndefined)
             )
-            .subscribe(childNodes => this.updateChildList(childNodes));
+            .subscribe(childNodes => {
+                this.childNodes = childNodes;
+                this.updateChildList();
+            })
+
+
+        const filterSub = this.state.select(state => state.list.filter)
+            .subscribe(filter => {
+                this.filter = filter.trim();
+                this.updateChildList();
+            });
 
         const onProjectLoadSchemasSub = this.state
             .select(state => state.list.currentProject!)
@@ -68,7 +83,18 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         this.subscription = routerParamsSub
             .add(languageSub)
             .add(childNodesSub)
-            .add(onProjectLoadSchemasSub);
+            .add(onProjectLoadSchemasSub)
+    }
+
+    /**Matches the some fields of the node with the filter */
+    private selectNodesByFilter = (node:MeshNode): boolean => {
+        //no filter set, return all the results
+        if (!this.filter) {
+            return true;
+        }
+
+        const matches: string[] = fuzzyMatch(this.filter, node.displayName);
+        return matches && matches.length > 0;
     }
 
     /**
@@ -94,11 +120,13 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             );
     }
 
-    private updateChildList(childNodes: MeshNode[] | undefined): void {
+    private updateChildList(): void {
         const schemas: SchemaReference[] = [];
         const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
 
-        for (const node of childNodes || []) {
+        const filteredNodes = this.childNodes.filter(this.selectNodesByFilter);
+
+        for (const node of filteredNodes || []) {
             if (!schemas.some(schema => node.schema.uuid === schema.uuid)) {
                 schemas.push(node.schema);
                 childrenBySchema[node.schema.uuid] = [];
