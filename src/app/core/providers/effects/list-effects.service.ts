@@ -86,6 +86,25 @@ export class ListEffectsService {
     }
 
     /**
+     * Load the children for the opened folder
+     */
+    searchChildren(searchTerm: string, projectName: string, language: string) {
+        // Refresh child node list
+       this.state.actions.list.searchNodesStart();
+
+       const searchObject = {query: {
+                                       match_phrase: {
+                                           ['displayField.value']: searchTerm}
+                                       },
+                                       sort: [{created: 'asc'}]};
+
+       this.api.project.searchNodes({project: projectName}, searchObject)
+       .subscribe(response => {
+           this.state.actions.list.searchNodesSuccess(response.data);
+       });
+   }
+
+    /**
      * make a comma seperated list of langues. Put the passed language in front
      */
     private languageWithFallbacks(language: string): string {

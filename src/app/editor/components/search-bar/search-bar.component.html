@@ -1,16 +1,20 @@
-<form (ngSubmit)="search(searchField.currentValue.trim())">
-    <div class="search-row">
-        <gtx-progress-bar [active]="searching"></gtx-progress-bar>
-        <gtx-input placeholder="Search" class="search-input" (change)="filter(searchField.currentValue.trim())" #searchField></gtx-input>
+<div class="search-row">
+  <gtx-progress-bar [active]="searching"></gtx-progress-bar>
+  <!--<gtx-input placeholder="Search" class="search-input" (change)="filter(searchField.currentValue.trim())" #searchField></gtx-input>-->
 
-        <!--<gtx-button type="primary"
-            class="button-search"
-            [disabled]="searching"
-            submit>
-            <icon>search</icon>
-        </gtx-button>-->
+  <gtx-search-bar [query]="filterTerm$ | async"
+                  [placeholder]="'common.search_placeholder' | i18n"
+                  [formControl]="filterInput"
+                  (clear)="filterTermChanged('')"
+                  (change)="filterTermChanged($event)"
+                  (search)="searchTermChanged($event)"
+                  name="search-bar">
+
+    <div class="search-chip" *ngIf="searchTerm$ | async">
+      <span class="chip-contents">
+        <span class="searching">{{ 'common.searching' | i18n }} </span>"{{ searchTerm$ | async }}"</span>
+      <i class="remove-button material-icons" (click)="searchTermChanged('')">close</i>
     </div>
-</form>
 
-
-
+  </gtx-search-bar>
+</div>

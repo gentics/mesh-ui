@@ -22,8 +22,6 @@ import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 export class ContainerContentsComponent implements OnInit, OnDestroy {
 
     listLanguage: string;
-    filter: string;
-    childNodes: MeshNode[] | undefined;
 
     private subscription: Subscription;
     /** @internal */
@@ -54,27 +52,27 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
-        const childNodesSub = this.state.select(state => state.list.children)
+        /*const childNodesSub = this.state.select(state => state.list.children)
             .map(childrenUuids =>
                     childrenUuids && childrenUuids
                     .map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }))
             )
             .subscribe(childNodes => {
-                this.childNodes = childNodes;
-                this.updateChildList();
-            })
+                this.updateChildList(childNodes);
+            });*/
 
+        const childNodesSub = this.state.select(state => state.list.children)
+        .subscribe(childrenUuid => {
+            this.updateChildList();
+        });
 
-        const filterSub = this.state.select(state => state.list.filter)
-            .subscribe(filter => {
-                this.filter = filter.trim();
-                this.updateChildList();
-            });
+        const filterSub = this.state.select(state => state.list.filterTerm)
+            .subscribe(filter => this.updateChildList());
 
-        const searchSub = this.state.select(state => state.list.searchResults)
+        /*const searchSub = this.state.select(state => state.list.searchResults)
             .subscribe(results => {
                 this.updateChildListWithSearchResults(results);
-            });
+            });*/
 
         const onProjectLoadSchemasSub = this.state
             .select(state => state.list.currentProject!)
@@ -93,11 +91,11 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     /**Matches the some fields of the node with the filter */
     private selectNodesByFilter = (node:MeshNode): boolean => {
         //no filter set, return all the results
-        if (!this.filter) {
+        if (!this.state.now.list.filterTerm) {
             return true;
         }
 
-        const matches: string[] = fuzzyMatch(this.filter, node.displayName);
+        const matches: string[] = fuzzyMatch(this.state.now.list.filterTerm, node.displayName);
         return matches && matches.length > 0;
     }
 
@@ -125,10 +123,13 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     private updateChildList(): void {
+
+        const childNodes = this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
+
         const schemas: SchemaReference[] = [];
         const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
 
-        const filteredNodes = this.childNodes.filter(this.selectNodesByFilter);
+        const filteredNodes = childNodes.filter(this.selectNodesByFilter);
 
         for (const node of filteredNodes || []) {
             if (!schemas.some(schema => node.schema.uuid === schema.uuid)) {
@@ -139,14 +140,12 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             childrenBySchema[node.schema.uuid].push(node);
         }
 
-        console.log('my childs', this.childNodes);
-
         this.schemas = schemas;
         this.childrenBySchema = childrenBySchema;
         this.changeDetector.markForCheck();
     }
 
-    private updateChildListWithSearchResults(nodes: MeshNode[]): void {
+    /*private updateChildListWithSearchResults(nodes: MeshNode[]): void {
         const schemas: SchemaReference[] = [];
         const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
 
@@ -162,7 +161,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         this.schemas = schemas;
         this.childrenBySchema = childrenBySchema;
         this.changeDetector.markForCheck();
-    }
+    }*/
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();

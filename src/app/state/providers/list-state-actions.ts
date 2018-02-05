@@ -30,7 +30,8 @@ export class ListStateActions extends StateActionBranch<AppState> {
                     language: config.FALLBACK_LANGUAGE,
                     children: [],
                     searchResults: null,
-                    filter: '',
+                    filterTerm: '',
+                    searchTerm: '',
                 }
             }
         });
@@ -57,6 +58,25 @@ export class ListStateActions extends StateActionBranch<AppState> {
     }
 
     fetchChildrenError() {
+        this.list.loadCount--;
+    }
+
+
+    searchNodesStart() {
+        this.list.loadCount++;
+    }
+
+    // TODO: think about how we will handle language variants of containers.
+    // For now we will rely on the "best guess" default behaviour of
+    // the getNestedEntity() function within mergeEntityState()
+    searchNodesSuccess(children: NodeResponse[]) {
+        this.list.loadCount--;
+        this.entities = mergeEntityState(this.entities, { node : children});
+
+        this.list.children = children.map(node => node.uuid);
+    }
+
+    fetchNodesError() {
         this.list.loadCount--;
     }
 
@@ -183,8 +203,14 @@ export class ListStateActions extends StateActionBranch<AppState> {
     }
 
     /** sets the search filter for the nodes */
-    setFilter(filter: string): void {
-        this.list.filter = filter;
+    setFilterTerm(term: string): void {
+        this.list.filterTerm = term;
+    }
+
+
+    /** sets the search filter for the nodes */
+    setSearchTerm(term: string): void {
+        this.list.searchTerm = term;
     }
 
      /** sets the search filter for the nodes */
