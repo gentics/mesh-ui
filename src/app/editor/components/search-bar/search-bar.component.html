@@ -1,20 +1,28 @@
 <div class="search-row">
   <gtx-progress-bar [active]="searching"></gtx-progress-bar>
-  <!--<gtx-input placeholder="Search" class="search-input" (change)="filter(searchField.currentValue.trim())" #searchField></gtx-input>-->
+<!--<gtx-input placeholder="Search" class="search-input" (change)="filter(searchField.currentValue.trim())" #searchField></gtx-input>-->
+    <gtx-search-bar [query]="filterTerm$ | async"
+                    [placeholder]="'common.search_placeholder' | i18n"
+                    [formControl]="filterInput"
+                    (clear)="filterTermChanged('')"
+                    (change)="filterTermChanged($event)"
+                    (search)="searchTermChanged($event)"
+                    name="search-bar">
 
-  <gtx-search-bar [query]="filterTerm$ | async"
-                  [placeholder]="'common.search_placeholder' | i18n"
-                  [formControl]="filterInput"
-                  (clear)="filterTermChanged('')"
-                  (change)="filterTermChanged($event)"
-                  (search)="searchTermChanged($event)"
-                  name="search-bar">
+        <div class="search-chip" *ngIf="searchTerm$ | async">
+        <span class="chip-contents">
+            <span class="searching">{{ 'common.searching' | i18n }} </span>"{{ searchTerm$ | async }}"</span>
+        <i class="remove-button material-icons" (click)="searchTermChanged('')">close</i>
+        </div>
+    </gtx-search-bar>
 
-    <div class="search-chip" *ngIf="searchTerm$ | async">
-      <span class="chip-contents">
-        <span class="searching">{{ 'common.searching' | i18n }} </span>"{{ searchTerm$ | async }}"</span>
-      <i class="remove-button material-icons" (click)="searchTermChanged('')">close</i>
-    </div>
+    <gtx-dropdown-list belowTrigger="true" width="content">
+        <gtx-dropdown-trigger>
+            <div class="dropdown-trigger"></div>
+        </gtx-dropdown-trigger>
+      <gtx-dropdown-content>
+          <gtx-dropdown-item>First</gtx-dropdown-item>
+      </gtx-dropdown-content>
+  </gtx-dropdown-list>
 
-  </gtx-search-bar>
 </div>

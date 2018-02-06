@@ -2801,13 +2801,13 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
-                body?: undefined;
+                queryParams?: {};
+                body?: any;
             };
-            responseType: TagListResponse;
+            responseType: NodeListResponse;
             responseTypes: {
                 /** Paged search result list. */
-                200: TagListResponse;
+                200: NodeListResponse;
             };
         };
         /** Create a new tag family. */

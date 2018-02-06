@@ -1,12 +1,14 @@
-import { Component, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { ApiService } from '../../../core/providers/api/api.service';
+import { Component, ChangeDetectorRef, ViewChild, ContentChild } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { clearTimeout } from 'timers';
+import { ApiService } from '../../../core/providers/api/api.service';
 import { ListStateActions } from '../../../state/providers/list-state-actions';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EventEmitter } from 'protractor/node_modules/@types/selenium-webdriver';
-import { Observable } from 'rxjs/Observable';
+
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { DropdownList } from 'gentics-ui-core';
 
 @Component({
     selector: 'search-bar',
@@ -20,6 +22,8 @@ export class SearchBarComponent implements OnInit {
     filterTerm$: Observable<string>;
     searchTerm$: Observable<string>;
 
+    @ViewChild(DropdownList)
+    dropDownList: DropdownList;
 
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
@@ -38,6 +42,19 @@ export class SearchBarComponent implements OnInit {
      * Update the filterTerm state
      */
     filterTermChanged(term: string): void {
+
+        const firstChar = term.charAt(0);
+
+        if (firstChar === '#') {
+            if (!this.dropDownList.isOpen) {
+                this.dropDownList.openDropdown();
+
+
+            }
+        } else {
+
+        }
+
         this.state.actions.list.setFilterTerm(term);
     }
 

@@ -4,6 +4,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { ConfigService } from '../config/config.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshNode } from '../../../common/models/node.model';
+import { NodeResponse } from '../../../common/models/server-models';
 
 @Injectable()
 export class ListEffectsService {
@@ -90,18 +91,55 @@ export class ListEffectsService {
      */
     searchChildren(searchTerm: string, projectName: string, language: string) {
         // Refresh child node list
-       this.state.actions.list.searchNodesStart();
 
-       const searchObject = {query: {
-                                       match_phrase: {
-                                           ['displayField.value']: searchTerm}
-                                       },
-                                       sort: [{created: 'asc'}]};
+        /*const searchQuery = {
+            query: {
+                query_string: {
+                    query: searchTerm
+                }
+            }
+        };
+        const searchQueryObject = JSON.stringify(searchQuery).replace(/"/g, '\\"');
+        const query = `{
+            nodes(query: "${searchQueryObject}") {
+              elements
+              totalCount
+            }
+          }`;
 
-       this.api.project.searchNodes({project: projectName}, searchObject)
-       .subscribe(response => {
-           this.state.actions.list.searchNodesSuccess(response.data);
-       });
+        this.api.graphQL({project: projectName}, {query})
+        .subscribe(response => {
+            console.log('ive got the response', response);
+        });*/
+
+        /*const searchTagsQuery = {
+                                    "query": {
+                                        "bool": {
+                                            "must": {
+                                                "match_phrase": {
+                                                "tags.name": "colour"
+                                                }
+                                            }
+                                        }
+                                    }
+                                };
+
+        this.api.project.searchTags({project: projectName}, searchTagsQuery)
+        .subscribe(result => {
+            console.log('got tag results', result);
+        })*/
+
+        this.state.actions.list.searchNodesStart();
+        const searchObject = {query: {
+                                        match_phrase: {
+                                            ['displayField.value']: searchTerm}
+                                        },
+                                        sort: [{created: 'asc'}]};
+
+        this.api.project.searchNodes({project: projectName}, searchObject)
+        .subscribe(response => {
+            this.state.actions.list.searchNodesSuccess(response.data);
+        });
    }
 
     /**
