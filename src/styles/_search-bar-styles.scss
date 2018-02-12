@@ -1,0 +1,69 @@
+@import "variables";
+
+@mixin search-bar-styles {
+    .search-bar-container {
+        position: relative;
+        @media screen and (max-width: $medium-screen) {
+            margin-right: 125px;
+        }
+        @media screen and (max-width: $small-screen) {
+            margin-left: 32px;
+            margin-right: 122px;
+        }
+    }
+
+    gtx-search-bar {
+        background-color: white;
+        &::shadow {
+            .submit-button {
+                @media screen and (max-width: $small-screen) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    gtx-search-bar /deep/ .contents {
+        display: flex;
+        max-width: 50%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .search-chip {
+        position: relative;
+        display: flex;
+
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.6);
+        line-height: 28px;
+        padding: 0 12px;
+        background-color: #e4e4e4;
+        overflow: hidden;
+        white-space: nowrap;
+        border-radius: 16px;
+        margin-right: 5px;
+
+        .chip-contents {
+            margin-right: 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            .searching {
+                @media screen and (max-width: $small-screen) {
+                    display: none;
+                }
+            }
+        }
+
+        > .remove-button {
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            right: 5px;
+            font-size: 16px;
+            line-height: 28px;
+        }
+    }
+}

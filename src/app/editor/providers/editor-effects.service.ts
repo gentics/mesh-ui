@@ -93,6 +93,7 @@ export class EditorEffectsService {
             throw new Error('Project name is not available');
         }
 
+
         this.state.actions.editor.saveNodeStart();
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
@@ -173,6 +174,29 @@ export class EditorEffectsService {
                 });
     }
 
+    saveNodeTag(project: string, nodeUuid: string, tagUuid: string) {
+
+        this.state.actions.editor.saveNodeStart();
+
+        this.api.project.assignTagToNode({project, nodeUuid, tagUuid})
+        .subscribe(node => {
+            this.state.actions.editor.saveNodeSuccess(node);
+        });
+    }
+
+    deleteNodeTag(project: string, nodeUuid: string, tagUuid: string) {
+
+        this.state.actions.editor.saveNodeStart();
+
+        this.api.project.removeTagFromNode({project, nodeUuid, tagUuid})
+        .subscribe(() => {
+            // since remoteTagFromNode does not return a new node data - we refetch it manualy
+            this.api.project.getNode({project, nodeUuid})
+            .subscribe(node => {
+                this.state.actions.editor.saveNodeSuccess(node);
+            });
+        });
+    }
 
     closeEditor(): void {
         this.state.actions.editor.closeEditor();

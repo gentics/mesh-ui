@@ -1,15 +1,20 @@
-<gtx-search-bar [query]="searchQuery"
-                 (change)="onChange($event)"
-                 (search)="search($event)">
- </gtx-search-bar>
+<gtx-dropdown-list belowTrigger="true" #DropdownList width="trigger">
+  <gtx-dropdown-trigger>
+    <gtx-search-bar [query]="searchQuery"
+                    (change)="onChange($event)"
+                    class="search-bar-container"
+                    placeholder="Add a Tag"
+                    hideClearButton="true">
+                    <div class="search-chip" *ngFor="let tag of this.node?.tags">
+                        <span class="chip-contents">{{tag.name}}</span>
+                        <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
+                    </div>
 
-<gtx-dropdown-list>
-    <gtx-dropdown-trigger>
-        <a>Show List</a>
-    </gtx-dropdown-trigger>
-    <gtx-dropdown-content>
-            <gtx-dropdown-item>First</gtx-dropdown-item>
-            <gtx-dropdown-item>Second</gtx-dropdown-item>
-            <gtx-dropdown-item>Third</gtx-dropdown-item>
-    </gtx-dropdown-content>
+    </gtx-search-bar>
+  </gtx-dropdown-trigger>
+  <gtx-dropdown-content>
+    <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag)">
+      {{ tag.name }}
+    </gtx-dropdown-item>
+  </gtx-dropdown-content>
 </gtx-dropdown-list>
