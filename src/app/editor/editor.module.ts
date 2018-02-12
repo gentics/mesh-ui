@@ -21,9 +21,11 @@ import { CreateNodeButtonComponent } from './components/create-node-button/creat
 import { ContainerLanguageSwitcherComponent } from './components/container-language-switcher/container-language-switcher.component';
 import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
 import { NodeRowComponent } from './components/node-row/node-row.component';
-import { BlobService } from './providers/blob.service';
 import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
+import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.component';
 import { ProjectEffectsService } from '../admin/providers/effects/project-effects.service';
+import { BlobService } from './providers/blob.service';
+
 
 @NgModule({
     imports: [
@@ -47,7 +49,7 @@ import { ProjectEffectsService } from '../admin/providers/effects/project-effect
         VersionLabelComponent,
         NodeRowComponent,
         ProgressbarModalComponent,
-        AddTagButtonComponent
+        NodeTagsBarComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,

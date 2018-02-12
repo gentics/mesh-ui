@@ -1,0 +1,15 @@
+<gtx-search-bar [query]="searchQuery"
+                 (change)="onChange($event)"
+                 (search)="search($event)">
+ </gtx-search-bar>
+
+<gtx-dropdown-list>
+    <gtx-dropdown-trigger>
+        <a>Show List</a>
+    </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+            <gtx-dropdown-item>First</gtx-dropdown-item>
+            <gtx-dropdown-item>Second</gtx-dropdown-item>
+            <gtx-dropdown-item>Third</gtx-dropdown-item>
+    </gtx-dropdown-content>
+</gtx-dropdown-list>
