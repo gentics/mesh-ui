@@ -50,5 +50,14 @@
     "save_button": {
       "en": "Save",
       "de": "Speichern"
+    },
+    "add_tag": {
+      "en": "ADD TAG",
+      "de": "TAG HINZUFÜGEN"
+    },
+
+    "load_tags_error": {
+      "en": "Some tags failed to load",
+      "de": "TAG HINZUFÜGEN"
     }
   }

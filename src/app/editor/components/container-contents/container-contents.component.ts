@@ -10,6 +10,7 @@ import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { ProjectEffectsService } from '../../../admin/providers/effects/project-effects.service';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
     constructor(private changeDetector: ChangeDetectorRef,
                 private listEffects: ListEffectsService,
+                private projectEffects: ProjectEffectsService,
                 private navigationService: NavigationService,
                 private route: ActivatedRoute,
                 private entities: EntitiesService,
@@ -63,6 +65,8 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .subscribe(projectName => {
                 this.listEffects.loadSchemasForProject(projectName);
                 this.listEffects.loadMicroschemasForProject(projectName);
+                this.projectEffects.loadTags(projectName);
+
             });
 
         this.subscription = routerParamsSub

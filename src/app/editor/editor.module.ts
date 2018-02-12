@@ -23,6 +23,7 @@ import { AvailableLanguagesListComponent } from './components/available-language
 import { NodeRowComponent } from './components/node-row/node-row.component';
 import { BlobService } from './providers/blob.service';
 import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
+import { ProjectEffectsService } from '../admin/providers/effects/project-effects.service';
 
 @NgModule({
     imports: [
@@ -45,7 +46,8 @@ import { ProgressbarModalComponent } from './components/progressbar-modal/progre
         SearchBarComponent,
         VersionLabelComponent,
         NodeRowComponent,
-        ProgressbarModalComponent
+        ProgressbarModalComponent,
+        AddTagButtonComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,
@@ -53,6 +55,7 @@ import { ProgressbarModalComponent } from './components/progressbar-modal/progre
     ],
     providers: [
         EditorEffectsService,
+        ProjectEffectsService,
         NodeEditorGuard,
         ModalService,
         OverlayHostService,

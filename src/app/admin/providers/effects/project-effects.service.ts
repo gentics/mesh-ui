@@ -4,6 +4,8 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ProjectCreateRequest, ProjectResponse } from '../../../common/models/server-models';
+import { Response } from '@angular/http/src/static_response';
+import { TagFamily } from '../../../common/models/tag-family.model';
 
 
 @Injectable()
@@ -43,7 +45,36 @@ export class ProjectEffectsService {
                 type: 'error',
                 message: 'admin.project_deleted_error'
             });
-            console.error(error);
+        });
+    }
+
+    // Load tag families and their sibling tags for a project
+    loadTags(project: string): void {
+        this.state.actions.entity.actionStart();
+        this.api.project.getTagFamilies({ project })
+        .subscribe(tagFamiesResponse => {
+            this.state.actions.entity.fetchTagFamiliesSuccess(tagFamiesResponse.data);
+            tagFamiesResponse.data.forEach((tagFamily: TagFamily) => this.LoadTagsOfTagFamily(project, tagFamily.uuid));
+        }, error => {
+            this.state.actions.entity.actionError();
+            this.notification.show({
+                type: 'error',
+                message: 'editor.load_tags_error'
+            });
+        });
+    }
+
+    LoadTagsOfTagFamily(project: string, tagFamilyUuid: string): void {
+        this.state.actions.entity.actionStart();
+        this.api.project.getTagsOfTagFamily({project, tagFamilyUuid})
+        .subscribe(response => {
+            this.state.actions.entity.fetchTagsOfTagFamilySuccess(response.data);
+        }, error => {
+            this.state.actions.entity.actionError();
+            this.notification.show({
+                type: 'error',
+                message: 'editor.load_tags_error'
+            });
         });
     }
 }
