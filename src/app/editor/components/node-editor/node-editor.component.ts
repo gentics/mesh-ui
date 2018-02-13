@@ -223,7 +223,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     publishNode(): void {
         if (this.node && this.isDraft()) {
             const promise = this.formGenerator.isDirty ?
-                this.editorEffects.saveNode(this.node) :
+                this.editorEffects.saveNode(this.node, this.tagsBar.nodeTags) :
                 Promise.resolve(this.node);
 
             promise.then(node => {

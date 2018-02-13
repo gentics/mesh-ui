@@ -33,7 +33,7 @@ export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
                 return { path, oldValue, newValue };
             });
 
-        const tagChanges = this.nodeEditor.tagsBar.getChanges();
+        const tagChanges = this.nodeEditor.tagsBar.changesSinceLastSave();
         if (tagChanges.deletedTags.length) {
             this.changes.push({
                 path: this.i18n.translate('modal.removed_tags'),

@@ -25,6 +25,7 @@ import { ProgressbarModalComponent } from './components/progressbar-modal/progre
 import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.component';
 import { ProjectEffectsService } from '../admin/providers/effects/project-effects.service';
 import { BlobService } from './providers/blob.service';
+import { CreateTagDialogComponent } from './components/create-tag-dialog/create-tag-dialog.component';
 
 
 @NgModule({
@@ -49,11 +50,13 @@ import { BlobService } from './providers/blob.service';
         VersionLabelComponent,
         NodeRowComponent,
         ProgressbarModalComponent,
-        NodeTagsBarComponent
+        NodeTagsBarComponent,
+        CreateTagDialogComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,
         ProgressbarModalComponent,
+        CreateTagDialogComponent,
     ],
     providers: [
         EditorEffectsService,

@@ -42,8 +42,8 @@ gtx-input /deep/ input {
     margin: 0 !important;
     border: none;
     padding-left: 15px;
-    outline: none;
-
+    outline: none !important;
+    color: $gtx-color-off-black;
 }
 
 
@@ -56,4 +56,22 @@ advanced-search-help {
     background-color: $gtx-color-very-light-gray;
     z-index: 0;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+
+.tagFamily {
+    color: $gtx-color-off-black;
+    font-size: 12px;
+}
+
+.tagName {
+   background-color: $gtx-color-primary;
+   color: $gtx-color-off-white;
+   padding: 2px 5px;
+   font-size: 14px;
+   color: $gtx-color-off-black;
+}
+
+.create-new-tag {
+    border-top: 2px solid rgba($gtx-color-off-black, 0.2);
 }

@@ -12,7 +12,10 @@
     </gtx-search-bar>-->
     <div class="search-bar-container">
         <div class="contents">
-            <div class="search-chip" *ngFor="let tag of this.nodeTags">
+            <div *ngFor="let tag of this.nodeTags"
+                class="search-chip"
+                [style.background]="getTagBackgroundColor(tag.tagFamily)"
+            >
                 <span class="chip-contents">{{tag.name}}</span>
                 <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
             </div>
@@ -25,7 +28,13 @@
   </gtx-dropdown-trigger>
   <gtx-dropdown-content>
     <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag)">
-      {{ tag.name }}
+        <span class="tagFamily">{{tag.tagFamily.name}}</span> <span class="tagName" [style.background]="getTagBackgroundColor(tag.tagFamily.name)">{{ tag.name }}</span>
     </gtx-dropdown-item>
+
+    <gtx-dropdown-item *ngIf="newTagName"
+                        class="create-new-tag"
+                        (click)="onCreateNewTagClick()">
+            <span class="tagFamily">create new tag: </span>{{newTagName}}
+        </gtx-dropdown-item>
   </gtx-dropdown-content>
 </gtx-dropdown-list>
