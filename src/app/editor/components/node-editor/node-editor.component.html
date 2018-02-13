@@ -14,7 +14,7 @@
             <gtx-button size="small" type="primary"
                         (click)="saveNode()"
                         class="save-button"
-                        [disabled]="(isSaving) || !formGenerator?.isDirty || !formGenerator?.isValid ">
+                        [disabled]="(isSaving) || !isDirty || !formGenerator?.isValid ">
                 <icon left>save</icon> {{ 'editor.save_button' | i18n }}
             </gtx-button>
 
