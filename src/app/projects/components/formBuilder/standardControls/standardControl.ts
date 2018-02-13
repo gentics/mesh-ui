@@ -375,6 +375,7 @@ module meshAdminUi {
                     } else {
                         this.listFieldModels[i] = this.createListItemFieldModel(type, value, i);
                     }
+                    this.listFieldModels[i].allow = this.listFieldModels[i].allow || this.fieldModel.allow;
                 });
             }
         }
