@@ -47,6 +47,21 @@ export class EntityStateActions extends StateActionBranch<AppState> {
         this.entities.loadCount--;
     }
 
+
+    createTagFamilySuccess(tagFamily: TagFamilyResponse) {
+        this.entities.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tagFamily: [tagFamily]
+        }, false);
+    }
+
+    createTagSuccess(tag: TagResponse) {
+        this.entities.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tag: [tag]
+        }, false);
+    }
+
     fetchTagFamiliesSuccess(tagFamilies: TagFamilyResponse[]) {
         this.entities.loadCount--;
         this.entities = mergeEntityState(this.entities, {

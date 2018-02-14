@@ -1,33 +1,27 @@
-<gtx-dropdown-list belowTrigger="true" #DropdownList width="trigger">
-  <gtx-dropdown-trigger>
-    <div class="search-bar-container">
-        <div class="contents">
-            <div *ngFor="let tag of this.nodeTags"
-                class="search-chip"
-                [style.background]="getTagBackgroundColor(tag.tagFamily)"
-            >
-                <span class="chip-contents">{{tag.name}}</span>
-                <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
-            </div>
+<div class="search-bar-container">
+    <div class="contents">
+        <div *ngFor="let tag of this.nodeTags" class="search-chip" [style.background]="getTagBackgroundColor(tag.tagFamily)">
+            <span class="chip-contents">{{tag.name}}</span>
+            <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
         </div>
-        <gtx-input #InputField
-                   placeholder="Add a Tag"
-                   (change)="onFilterChange($event)">
-        </gtx-input>
     </div>
-  </gtx-dropdown-trigger>
-  <gtx-dropdown-content>
-    <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag.tag)">
-        <span class="tagFamily">{{tag.tag.tagFamily.name}}</span>
-        <span class="tagName" [style.background]="getTagBackgroundColor(tag.tag.tagFamily.name)">
-            <span [innerHTML]="tag.valueFormated"></span>
-        </span>
-    </gtx-dropdown-item>
+    <gtx-input #InputField placeholder="Add a Tag" (change)="onFilterChange($event)">
+    </gtx-input>
+</div>
+<gtx-dropdown-list belowTrigger="true" #DropdownList width="trigger">
+    <gtx-dropdown-trigger>
+        <div></div>
+    </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+        <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag.tag)">
+            <span class="tagFamily">{{tag.tag.tagFamily.name}}</span>
+            <span class="tagName" [style.background]="getTagBackgroundColor(tag.tag.tagFamily.name)">
+                <span [innerHTML]="tag.valueFormated"></span>
+            </span>
+        </gtx-dropdown-item>
 
-    <gtx-dropdown-item *ngIf="newTagName"
-                        class="create-new-tag"
-                        (click)="onCreateNewTagClick()">
-        <span class="tagFamily">create new tag: </span>{{newTagName}}
-    </gtx-dropdown-item>
-  </gtx-dropdown-content>
+        <gtx-dropdown-item *ngIf="newTagName" class="create-new-tag" (click)="onCreateNewTagClick()">
+            <span class="tagFamily">create new tag: </span>{{newTagName}}
+        </gtx-dropdown-item>
+    </gtx-dropdown-content>
 </gtx-dropdown-list>

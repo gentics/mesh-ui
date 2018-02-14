@@ -191,6 +191,9 @@ export class ProjectApi {
             });
     }
 
+    /** Update the tag family with the given uuid. */
+    createTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags');
+
     /** Update the specified tag. */
     updateTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags/{tagUuid}');
 

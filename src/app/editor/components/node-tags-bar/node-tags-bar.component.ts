@@ -9,9 +9,8 @@ import { Tag } from '../../../common/models/tag.model';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { stringToColor } from '../../../common/util/util';
-import { CreateTagDialogComponent } from '../create-tag-dialog/create-tag-dialog.component';
+import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 import { FilterSelection } from '../../../common/models/common.model';
-
 
 @Component({
   selector: 'app-node-tags-bar',
@@ -20,12 +19,11 @@ import { FilterSelection } from '../../../common/models/common.model';
 })
 export class NodeTagsBarComponent implements OnChanges {
 
-  //@ContentChild(DropdownList) dropDown: DropdownList;
   @ViewChild('DropdownList') dropDown: DropdownList;
   @ViewChild('InputField') inputField: InputField;
   @Input() node: MeshNode;
   isDirty = false;
-  newTagName = ''; // contains a name for a new tag
+  newTagName = ''; // Contains a name for a new tag.
   nodeTags: TagReferenceFromServer[] = [];
 
   filteredTags: FilterSelection[] = [];
@@ -47,10 +45,9 @@ export class NodeTagsBarComponent implements OnChanges {
 
   onFilterChange(term: string) {
 
-    const tags = Object.values<Tag>(this.state.now.entities.tag);
-    //this.filteredTags = tags.filter(tag => this.selectTagByFilter(tag, term));
     this.filterTags(term);
 
+    const tags = Object.values<Tag>(this.state.now.entities.tag);
     // If the term does NOT perfectly match any of existing tags - we will show an option to create on
     if (!tags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
         this.newTagName = term;
@@ -58,6 +55,9 @@ export class NodeTagsBarComponent implements OnChanges {
         this.newTagName = '';
     }
 
+    if (!this.dropDown.isOpen) {
+        this.dropDown.openDropdown();
+    }
     this.dropDown.resize();
   }
 
@@ -77,10 +77,21 @@ export class NodeTagsBarComponent implements OnChanges {
   }
 
   onCreateNewTagClick(): void {
-    this.modalService.fromComponent(CreateTagDialogComponent, { closeOnOverlayClick: false }, { newTagName: this.newTagName })
+    this.modalService.fromComponent(
+        CreateTagDialogComponent,
+        {
+            closeOnOverlayClick: false
+        },
+        {
+            newTagName: this.newTagName,
+            projectName: this.state.now.editor.openNode.projectName
+        }
+    )
     .then(modal => modal.open())
-    .then(result => console.log('result:', result))
-    .catch(reason => console.log('rejected', reason));
+    .then((result: CreateTagDialogComponentResult) => {
+        this.onTagSelected(result.tag);
+        this.changeDetector.markForCheck();
+    });
   }
 
   /**
@@ -116,7 +127,7 @@ export class NodeTagsBarComponent implements OnChanges {
 
   private filterTags(term: string) {
 
-    if(term.trim() === "") {
+    if (term.trim() === '') {
         return [];
     }
     const tags = Object.values<Tag>(this.state.now.entities.tag);
@@ -132,13 +143,4 @@ export class NodeTagsBarComponent implements OnChanges {
         return filteredTags;
     }, []);
   }
-
-  /*private selectTagByFilter = (tag: Tag, term: string): boolean => {
-    if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) !== -1) {
-      return false;
-    }
-
-    const matches: string[] = fuzzyMatch(term, tag.name);
-    return matches && matches.length > 0;
-  }**/
 }

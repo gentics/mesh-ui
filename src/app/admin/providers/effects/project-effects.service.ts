@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { ProjectCreateRequest, ProjectResponse } from '../../../common/models/server-models';
+import { ProjectCreateRequest, ProjectResponse, TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { Response } from '@angular/http/src/static_response';
 import { TagFamily } from '../../../common/models/tag-family.model';
 
@@ -48,13 +48,46 @@ export class ProjectEffectsService {
         });
     }
 
+    createTagFamily(project: string, name: string): Promise<TagFamilyResponse > {
+        this.state.actions.entity.actionStart();
+        return this.api.project.createTagFamily({ project }, { name }).toPromise()
+        .then(response => {
+            this.state.actions.entity.createTagFamilySuccess(response);
+            return response;
+        }, error => {
+            this.state.actions.entity.actionError();
+            this.notification.show({
+                type: 'error',
+                message: 'project.create_tag_family_error'
+            });
+            return null;
+        });
+    }
+
+    createTag(project: string, tagFamilyUuid: string, name: string): Promise<TagResponse> {
+        this.state.actions.entity.actionStart();
+        return this.api.project.createTag({project, tagFamilyUuid}, { name }).toPromise()
+        .then(response => {
+            this.state.actions.entity.createTagSuccess(response);
+            return response;
+        }, error => {
+            this.state.actions.entity.actionError();
+            this.notification.show({
+                type: 'error',
+                message: 'project.create_tag_error'
+            });
+            return null;
+        });
+    }
+
+
     // Load tag families and their sibling tags for a project
     loadTags(project: string): void {
         this.state.actions.entity.actionStart();
         this.api.project.getTagFamilies({ project })
         .subscribe(tagFamiesResponse => {
             this.state.actions.entity.fetchTagFamiliesSuccess(tagFamiesResponse.data);
-            tagFamiesResponse.data.forEach((tagFamily: TagFamily) => this.LoadTagsOfTagFamily(project, tagFamily.uuid));
+            tagFamiesResponse.data.forEach((tagFamily: TagFamily) => this.loadTagsOfTagFamily(project, tagFamily.uuid));
         }, error => {
             this.state.actions.entity.actionError();
             this.notification.show({
@@ -64,7 +97,7 @@ export class ProjectEffectsService {
         });
     }
 
-    LoadTagsOfTagFamily(project: string, tagFamilyUuid: string): void {
+    loadTagsOfTagFamily(project: string, tagFamilyUuid: string): void {
         this.state.actions.entity.actionStart();
         this.api.project.getTagsOfTagFamily({project, tagFamilyUuid})
         .subscribe(response => {

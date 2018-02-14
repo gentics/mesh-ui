@@ -8,13 +8,16 @@
             (change)="InTagNameInputChange($event)">
     </gtx-input>
     <br />
+    <gtx-input #InputTagFamily
+            [(ngModel)]="inputTagFamilyValue"
+            label="Tag Family"
+            (focus)="onFamilyNameInputChange(inputTagFamilyValue)"
+            (ngModelChange)="onFamilyNameInputChange($event)">
+    </gtx-input>
+
     <gtx-dropdown-list belowTrigger="true" #TagFamilyList width="trigger">
         <gtx-dropdown-trigger>
-            <gtx-input #InputTagFamily
-                    [(ngModel)]="inputTagFamilyValue"
-                    label="Tag Family"
-                    (ngModelChange)="onFamilyNameInputChange($event)">
-            </gtx-input>
+            <div></div>
         </gtx-dropdown-trigger>
         <gtx-dropdown-content>
             <gtx-dropdown-item *ngFor="let family of filteredFamilies"
@@ -25,6 +28,6 @@
     </gtx-dropdown-list>
 </div>
 <div class="modal-footer">
-    <gtx-button type="secondary" flat (click)="closeFn(false)">{{ 'common.cancel_button' | i18n }}</gtx-button>
+    <gtx-button type="secondary" flat (click)="cancelFn(false)">{{ 'common.cancel_button' | i18n }}</gtx-button>
     <gtx-button type="primary" (click)="saveAndClose()"><icon left>save</icon> {{ 'modal.save_and_close_button' | i18n }}</gtx-button>
 </div>
