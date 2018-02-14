@@ -1,5 +1,6 @@
 @import "variables";
 @import "search-bar-styles";
+@include filter-selection;
 
 :host::shadow {
     @include search-bar-styles;
@@ -8,7 +9,6 @@
 gtx-dropdown-list, gtx-dropdown-trigger {
     width: 100%;
     display: block;
-
 }
 
 .search-bar-container {
@@ -65,8 +65,6 @@ advanced-search-help {
 }
 
 .tagName {
-   background-color: $gtx-color-primary;
-   color: $gtx-color-off-white;
    padding: 2px 5px;
    font-size: 14px;
    color: $gtx-color-off-black;

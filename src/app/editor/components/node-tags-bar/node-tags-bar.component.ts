@@ -3,13 +3,14 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { DropdownList, InputField, ModalService} from 'gentics-ui-core';
 import { MeshNode } from '../../../common/models/node.model';
-import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { fuzzyMatch, fuzzyReplace } from '../../../common/util/fuzzy-search';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Tag } from '../../../common/models/tag.model';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { stringToColor } from '../../../common/util/util';
 import { CreateTagDialogComponent } from '../create-tag-dialog/create-tag-dialog.component';
+import { FilterSelection } from '../../../common/models/common.model';
 
 
 @Component({
@@ -27,7 +28,8 @@ export class NodeTagsBarComponent implements OnChanges {
   newTagName = ''; // contains a name for a new tag
   nodeTags: TagReferenceFromServer[] = [];
 
-  filteredTags: Tag[] = null;
+  filteredTags: FilterSelection[] = [];
+
   constructor(private changeDetector: ChangeDetectorRef,
     private state: ApplicationStateService,
     private editorEffects: EditorEffectsService,
@@ -44,8 +46,10 @@ export class NodeTagsBarComponent implements OnChanges {
   }
 
   onFilterChange(term: string) {
+
     const tags = Object.values<Tag>(this.state.now.entities.tag);
-    this.filteredTags = tags.filter(tag => this.selectTagByFilter(tag, term));
+    //this.filteredTags = tags.filter(tag => this.selectTagByFilter(tag, term));
+    this.filterTags(term);
 
     // If the term does NOT perfectly match any of existing tags - we will show an option to create on
     if (!tags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
@@ -72,24 +76,11 @@ export class NodeTagsBarComponent implements OnChanges {
     this.checkIfDirty();
   }
 
-  onCreateNewTagClick(term): void {
-    /*this.modalService.dialog({
-        title: 'A Basic Dialog',
-        body: 'Create a new Dialog',
-        buttons: [
-            { label: 'Cancel', type: 'secondary', flat: true, returnValue: false, shouldReject: true },
-        ]
-    })
-    .then(dialog => dialog.open())
+  onCreateNewTagClick(): void {
+    this.modalService.fromComponent(CreateTagDialogComponent, { closeOnOverlayClick: false }, { newTagName: this.newTagName })
+    .then(modal => modal.open())
     .then(result => console.log('result:', result))
-    .catch(reason => console.log('rejected', reason));*/
-
-    const options = {
-        closeOnOverlayClick: false
-    };
-
-    this.modalService.fromComponent(CreateTagDialogComponent, options)
-                .then(modal => modal.open());
+    .catch(reason => console.log('rejected', reason));
   }
 
   /**
@@ -123,12 +114,31 @@ export class NodeTagsBarComponent implements OnChanges {
     this.isDirty = newUuids !== oldUuids;
   }
 
-  private selectTagByFilter = (tag: Tag, term: string): boolean => {
+  private filterTags(term: string) {
+
+    if(term.trim() === "") {
+        return [];
+    }
+    const tags = Object.values<Tag>(this.state.now.entities.tag);
+
+    this.filteredTags = tags.reduce<FilterSelection[]>((filteredTags, tag) => {
+
+        if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) === -1) {
+            const matchedName = fuzzyReplace(term, tag.name);
+            if (matchedName) {
+                filteredTags.push({...matchedName, tag});
+            }
+        }
+        return filteredTags;
+    }, []);
+  }
+
+  /*private selectTagByFilter = (tag: Tag, term: string): boolean => {
     if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) !== -1) {
       return false;
     }
 
     const matches: string[] = fuzzyMatch(term, tag.name);
     return matches && matches.length > 0;
-  }
+  }**/
 }
