@@ -51,13 +51,19 @@
       "en": "Save",
       "de": "Speichern"
     },
+
     "add_tag": {
-      "en": "ADD TAG",
-      "de": "TAG HINZUFÜGEN"
+      "en": "Add tag",
+      "de": "Tag hinzufügen"
     },
 
-    "load_tags_error": {
-      "en": "Some tags failed to load",
-      "de": "TAG HINZUFÜGEN"
+    "create_new_tag": {
+      "en": "Create new tag",
+      "de": "Neuen Tag erstellen"
+    },
+
+    "tag_name": {
+      "en": "Tag name",
+      "de": "Tag hinzufügen"
     }
   }

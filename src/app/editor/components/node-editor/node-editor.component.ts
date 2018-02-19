@@ -175,12 +175,13 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
+        debugger;
+
         if (!this.node) {
             return;
         }
 
         if (this.isDirty) {
-
             this.isSaving = true;
             let saveFn: Promise<any>;
 

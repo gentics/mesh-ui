@@ -4,6 +4,7 @@ import { EditorState } from './editor-state.model';
 import { EntityState } from './entity-state.model';
 import { AdminState } from './admin-state.model';
 import { ListState } from './list-state.model';
+import { TagState } from './tags-state.model';
 
 export interface AppState {
     admin: AdminState;
@@ -12,4 +13,5 @@ export interface AppState {
     entities: EntityState;
     list: ListState;
     ui: UIState;
+    tag: TagState;
 }

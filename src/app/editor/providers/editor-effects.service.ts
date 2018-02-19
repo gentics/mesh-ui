@@ -223,7 +223,7 @@ export class EditorEffectsService {
         const clone = this.cloneNodeWithRename(node, languageCode.toUpperCase());
         if (clone) {
             clone.language = languageCode;
-            return this.saveNode(clone);
+            return this.saveNode(clone, node.tags);
         } else {
             return Promise.reject(`Could not create translation`);
         }

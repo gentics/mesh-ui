@@ -7,7 +7,6 @@ import { TagFamily } from '../../common/models/tag-family.model';
 import { Tag } from '../../common/models/tag.model';
 
 export interface EntityState {
-    loadCount: number;
     project: {
         [uuid: string]: Project
     };
@@ -39,4 +38,5 @@ export interface EntityState {
     tag: {
         [uuid: string]: Tag;
     };
+    // loadCount: number;
 }

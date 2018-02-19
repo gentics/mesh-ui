@@ -45,7 +45,9 @@ export class EntitiesService {
         node: [],
         user: [],
         schema: [],
-        microschema: []
+        microschema: [],
+        tag: [],
+        tagFamily: [],
     };
 
     constructor(private state: ApplicationStateService,

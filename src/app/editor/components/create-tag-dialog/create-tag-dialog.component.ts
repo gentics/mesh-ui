@@ -9,6 +9,7 @@ import { FilterSelection } from '../../../common/models/common.model';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ProjectEffectsService } from '../../../admin/providers/effects/project-effects.service';
 import { Tag } from '../../../common/models/tag.model';
+import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 
 export interface CreateTagDialogComponentResult {
     tag: Tag;
@@ -40,7 +41,7 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
         private i18n: I18nService,
         private state: ApplicationStateService,
         private sanitizer: DomSanitizer,
-        private projectEffect: ProjectEffectsService) {}
+        private tagsEffects: TagsEffectsService) {}
 
     ngOnInit() {
         this.state.select(state => state.entities.tagFamily)
@@ -49,10 +50,6 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
             this.tagFamilies = tagFamilies;
             this.filterFamilies();
         }).unsubscribe();
-    }
-
-    InTagNameInputChange(term: string): void {
-
     }
 
     onFamilyNameInputChange(term: string): void {
@@ -68,23 +65,29 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
 
 
     saveTagToFamily (family: TagFamily, tagName: string) {
-        this.projectEffect.createTag(this.projectName, family.uuid, tagName)
+        this.tagsEffects.createTag(this.projectName, family.uuid, tagName)
         .then(tag => {
             this.closeFn({ tag, family });
         });
     }
 
     saveAndClose() {
+        if (!this.newTagName.trim()) {
+            return;
+        }
+
 
         const familyName = this.inputTagFamilyValue.toLowerCase();
         const family = this.tagFamilies.find(f => f.name.toLowerCase() === familyName);
 
         if (!family) {
             // save a new family
-            this.projectEffect.createTagFamily(this.projectName, familyName)
-            .then(newFamily => this.saveTagToFamily(newFamily, this.newTagName));
+            this.tagsEffects.createTagFamily(this.projectName, familyName)
+            .then(newFamily => {
+                this.saveTagToFamily(newFamily, this.newTagName);
+            });
         } else {
-            this.saveTagToFamily(family, this.newTagName)
+            this.saveTagToFamily(family, this.newTagName);
         }
     }
 
@@ -95,7 +98,6 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
     registerCancelFn(cancel: (val: any) => void): void {
         this.cancelFn = cancel;
     }
-
     private filterFamilies() {
         if (this.inputTagFamilyValue.trim() === '') {
             this.filteredFamilies = this.tagFamilies.map(family => {

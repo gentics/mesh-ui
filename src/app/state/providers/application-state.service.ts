@@ -12,6 +12,7 @@ import { EntityStateActions } from './entity-state-actions';
 import { ListStateActions } from './list-state-actions';
 import { UIStateActions } from './ui-state-actions';
 import { ConfigService } from '../../core/providers/config/config.service';
+import { TagsStateActions } from './tags-state-actions';
 
 
 // TODO: re-enable this rule once immutablets has been updated
@@ -24,6 +25,7 @@ type ActionBranches = {
     entity: EntityStateActions;
     list: ListStateActions;
     ui: UIStateActions;
+    tags: TagsStateActions;
 };
 /* tslint:enable interface-over-type-literal */
 
@@ -49,7 +51,8 @@ export class ApplicationStateService {
             entity: new EntityStateActions(),
             editor: new EditorStateActions(config),
             list: new ListStateActions(config),
-            ui: new UIStateActions()
+            ui: new UIStateActions(),
+            tags: new TagsStateActions(config),
         });
 
         this.actions = this.store.actions;

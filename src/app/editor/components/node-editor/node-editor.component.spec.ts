@@ -24,6 +24,7 @@ import { mockSchema, mockMeshNode } from '../../../../testing/mock-models';
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 import { FieldGeneratorService } from '../../form-generator/providers/field-generator/field-generator.service';
 import { MeshControlGroupService } from '../../form-generator/providers/field-control-group/mesh-control-group.service';
+import { TagReferenceFromServer } from '../../../common/models/server-models';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
@@ -42,6 +43,7 @@ describe('NodeEditorComponent', () => {
                 Icon,
                 ProgressBar,
                 MockLanguageSwitcher,
+                MockNodeTagsBar,
                 FormGeneratorComponent
             ],
             providers: [
@@ -256,6 +258,15 @@ class MockMeshControlGroupService {
 class MockLanguageSwitcher {
     @Input()
     node: any;
+}
+
+
+
+@Component({ selector: 'app-node-tags-bar', template: '' })
+class MockNodeTagsBar {
+    @Input()
+    node: any;
+    nodeTags: TagReferenceFromServer[] = [];
 }
 
 @Component({ selector: 'form-generator', template: '' })

@@ -24,7 +24,7 @@ export class NodeTagsBarComponent implements OnChanges {
   @Input() node: MeshNode;
   isDirty = false;
   newTagName = ''; // Contains a name for a new tag.
-  nodeTags: TagReferenceFromServer[] = [];
+  nodeTags: TagReferenceFromServer[] = []; //tags for the current opened node
 
   filteredTags: FilterSelection[] = [];
 

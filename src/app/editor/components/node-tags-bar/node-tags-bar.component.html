@@ -5,7 +5,7 @@
             <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
         </div>
     </div>
-    <gtx-input #InputField placeholder="Add a Tag" (change)="onFilterChange($event)">
+    <gtx-input #InputField placeholder="{{ 'editor.add_tag' | i18n }}" (change)="onFilterChange($event)">
     </gtx-input>
 </div>
 <gtx-dropdown-list belowTrigger="true" #DropdownList width="trigger">
@@ -21,7 +21,7 @@
         </gtx-dropdown-item>
 
         <gtx-dropdown-item *ngIf="newTagName" class="create-new-tag" (click)="onCreateNewTagClick()">
-            <span class="tagFamily">create new tag: </span>{{newTagName}}
+            <span class="tagFamily">{{ 'editor.create_new_tag' | i18n }} </span>{{newTagName}}
         </gtx-dropdown-item>
     </gtx-dropdown-content>
 </gtx-dropdown-list>

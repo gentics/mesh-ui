@@ -26,6 +26,7 @@ import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.c
 import { ProjectEffectsService } from '../admin/providers/effects/project-effects.service';
 import { BlobService } from './providers/blob.service';
 import { CreateTagDialogComponent } from './components/create-tag-dialog/create-tag-dialog.component';
+import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { CreateTagDialogComponent } from './components/create-tag-dialog/create-
     providers: [
         EditorEffectsService,
         ProjectEffectsService,
+        TagsEffectsService,
         NodeEditorGuard,
         ModalService,
         OverlayHostService,

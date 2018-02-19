@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { deepApplyWithReuse, Immutable, StateActionBranch, CloneDepth } from 'immutablets';
+import { deepApplyWithReuse, Immutable, StateActionBranch } from 'immutablets';
+
 import { EntityState } from '../models/entity-state.model';
 import { AppState } from '../models/app-state.model';
 import { MeshNode } from '../../common/models/node.model';
@@ -8,14 +9,13 @@ import { Microschema } from '../../common/models/microschema.model';
 import { Project } from '../../common/models/project.model';
 import { User } from '../../common/models/user.model';
 import { BaseProperties } from '../../common/models/common.model';
-import { TagFamily } from '../../common/models/tag-family.model';
 import { Tag } from '../../common/models/tag.model';
-import { NodeResponse, TagFamilyListResponse, TagFamilyResponse, TagResponse } from '../../common/models/server-models';
+import { TagFamily } from '../../common/models/tag-family.model';
 
 @Injectable()
 @Immutable()
 export class EntityStateActions extends StateActionBranch<AppState> {
-    @CloneDepth(1) private entities: EntityState;
+    private entities: EntityState;
 
     constructor() {
         super({
@@ -27,57 +27,11 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                     user: {},
                     schema: {},
                     microschema: {},
-                    tagFamily: {},
                     tag: {},
-                    loadCount: 0,
+                    tagFamily: {}
                 }
             }
         });
-    }
-
-    actionStart() {
-        this.entities.loadCount++;
-    }
-
-    actionSuccess() {
-        this.entities.loadCount--;
-    }
-
-    actionError() {
-        this.entities.loadCount--;
-    }
-
-
-    createTagFamilySuccess(tagFamily: TagFamilyResponse) {
-        this.entities.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            tagFamily: [tagFamily]
-        }, false);
-    }
-
-    createTagSuccess(tag: TagResponse) {
-        this.entities.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            tag: [tag]
-        }, false);
-    }
-
-    fetchTagFamiliesSuccess(tagFamilies: TagFamilyResponse[]) {
-        this.entities.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            tagFamily: [
-                ...tagFamilies
-            ]
-        }, false);
-    }
-
-    fetchTagsOfTagFamilySuccess(tags: TagResponse[]) {
-        this.entities.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            tag: [
-                ...tags
-            ]
-        }, false);
     }
 }
 
@@ -87,9 +41,10 @@ export interface EntityStateType {
     user: User;
     schema: Schema;
     microschema: Microschema;
-    tagFamily: TagFamily;
     tag: Tag;
+    tagFamily: TagFamily;
 }
+
 
 type Discriminator<T extends BaseProperties> = Array<keyof T>;
 
