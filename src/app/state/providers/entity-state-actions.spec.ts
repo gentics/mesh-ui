@@ -335,7 +335,6 @@ describe('EntityStateActions', () => {
             user: {},
             tag: {},
             tagFamily: {},
-            //loadCount: 0,
         };
 
         it('should return exact entity when all discriminators present in source', () => {

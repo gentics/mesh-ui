@@ -48,7 +48,6 @@ describe('NodeTagsBarComponent', () => {
                 { provide: EditorEffectsService, useClass: MockEditorEffectsService },
                 { provide: I18nService, useClass: MockI18nService },
                 { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
-
             ],
             imports: [
                 GenticsUICoreModule
