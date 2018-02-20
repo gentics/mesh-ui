@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
+import { GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
 
 import { NavigationService, InstructionActions } from '../../../core/providers/navigation/navigation.service';
 import { NodeEditorComponent } from './node-editor.component';
@@ -14,7 +15,6 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { componentTest } from '../../../../testing/component-test';
 import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
 import { VersionLabelComponent } from '../version-label/version-label.component';
-import { GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
 import { NodeLanguageSwitcherComponent } from '../node-language-switcher/node-language-switcher.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
@@ -25,7 +25,6 @@ import { FieldGeneratorService } from '../../form-generator/providers/field-gene
 import { MeshControlGroupService } from '../../form-generator/providers/field-control-group/mesh-control-group.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { FilterSelection } from '../../../common/models/common.model';
-import { ChangeDetectorRef } from '@angular/core/src/change_detection/change_detector_ref';
 import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 
 describe('NodeEditorComponent', () => {

@@ -30,11 +30,9 @@ export interface EntityState {
             [version: string]: Microschema;
         };
     };
-
     tagFamily: {
         [uuid: string]: TagFamily;
     };
-
     tag: {
         [uuid: string]: Tag;
     };

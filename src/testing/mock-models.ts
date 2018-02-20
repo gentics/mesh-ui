@@ -83,7 +83,7 @@ export function mockProject(properties?: Partial<Project>): Project {
  * properties argument.
  */
 export function mockTagFamily(properties?: Partial<TagFamily>): TagFamily {
-    const defaultMockProject: TagFamily = {
+    const defaultMockTagFamily: TagFamily = {
         ...mockBaseProperties(),
         ...{
             uuid: 'default000mock000TagFamily0',
@@ -91,7 +91,7 @@ export function mockTagFamily(properties?: Partial<TagFamily>): TagFamily {
         }
     };
 
-    return { ...defaultMockProject, ...properties };
+    return { ...defaultMockTagFamily, ...properties };
 }
 
 /**
@@ -99,7 +99,7 @@ export function mockTagFamily(properties?: Partial<TagFamily>): TagFamily {
  * properties argument.
  */
 export function mockTag(properties?: Partial<Tag>): Tag {
-    const defaultMockProject: Tag = {
+    const defaultMockTag: Tag = {
         ...mockBaseProperties(),
         ...{
             uuid: 'default000mock000Tag0',
@@ -109,7 +109,7 @@ export function mockTag(properties?: Partial<Tag>): Tag {
 
     };
 
-    return { ...defaultMockProject, ...properties };
+    return { ...defaultMockTag, ...properties };
 }
 
 /**

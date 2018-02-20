@@ -23,6 +23,6 @@ export interface BaseProperties {
 /** Contains an original value and a value with special formating applied. */
 export interface FilterSelection {
     value: string;
-    valueFormated: string;
+    valueFormatted: string;
     [propName: string]: any;
 }

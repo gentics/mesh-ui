@@ -13,5 +13,5 @@ export interface AppState {
     entities: EntityState;
     list: ListState;
     ui: UIState;
-    tag: TagState;
+    tags: TagState;
 }

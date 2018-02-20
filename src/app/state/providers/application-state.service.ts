@@ -25,7 +25,7 @@ type ActionBranches = {
     entity: EntityStateActions;
     list: ListStateActions;
     ui: UIStateActions;
-    tags: TagsStateActions;
+    tag: TagsStateActions;
 };
 /* tslint:enable interface-over-type-literal */
 
@@ -52,7 +52,7 @@ export class ApplicationStateService {
             editor: new EditorStateActions(config),
             list: new ListStateActions(config),
             ui: new UIStateActions(),
-            tags: new TagsStateActions(config),
+            tag: new TagsStateActions(),
         });
 
         this.actions = this.store.actions;

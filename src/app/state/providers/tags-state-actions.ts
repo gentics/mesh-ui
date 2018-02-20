@@ -5,52 +5,50 @@ import { NodeResponse, TagFamilyResponse, TagResponse } from '../../common/model
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
+import { TagState } from '../models/tags-state.model';
 import { mergeEntityState } from './entity-state-actions';
 import { ConfigService } from '../../core/providers/config/config.service';
 
 @Injectable()
 @Immutable()
 export class TagsStateActions extends StateActionBranch<AppState> {
+
     @CloneDepth(0) private entities: EntityState;
-    //@CloneDepth(1) private list: ListState;
-    //@CloneDepth(1) private admin: AdminState;
+    @CloneDepth(1) private tags: TagState;
 
     private loadCount = 0;
 
-    constructor(private config: ConfigService) {
+    constructor() {
         super({
-            uses: 'entities',
+            uses: ['entities', 'tags'],
             initialState: {
-                entities: {
-                    project: {},
-                    node: {},
-                    user: {},
-                    schema: {},
-                    microschema: {},
-                    tagFamily: {},
-                    tag: {},
+                tags: {
+                    tagFamilies: [],
+                    tags: [],
+                    loadCount: 0,
                 }
             }
         });
     }
+
     actionStart() {
-        this.loadCount++;
+        this.tags.loadCount++;
     }
 
     actionSuccess() {
-        this.loadCount--;
+        this.tags.loadCount--;
     }
 
     actionError() {
-        this.loadCount--;
+        this.tags.loadCount--;
     }
-
 
     createTagFamilySuccess(tagFamily: TagFamilyResponse) {
         this.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tagFamily: [tagFamily]
         }, false);
+        this.tags.tagFamilies = [...this.tags.tagFamilies, tagFamily.uuid];
     }
 
     createTagSuccess(tag: TagResponse) {
@@ -58,6 +56,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         this.entities = mergeEntityState(this.entities, {
             tag: [tag]
         }, false);
+        this.tags.tags = [...this.tags.tags, tag.uuid];
     }
 
     fetchTagFamiliesSuccess(tagFamilies: TagFamilyResponse[]) {
@@ -67,6 +66,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
                 ...tagFamilies
             ]
         }, false);
+        this.tags.tagFamilies = tagFamilies.map(family => family.uuid);
     }
 
     fetchTagsOfTagFamilySuccess(tags: TagResponse[]) {
@@ -76,5 +76,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
                 ...tags
             ]
         }, false);
+
+        this.tags.tags = tags.map(tag => tag.uuid);
     }
 }

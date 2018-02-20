@@ -1,10 +1,8 @@
 @import "variables";
 @import "search-bar-styles";
 @include filter-selection;
+@include search-chip;
 
-:host::shadow {
-    @include search-bar-styles;
-}
 
 gtx-dropdown-list, gtx-dropdown-trigger {
     width: 100%;
@@ -23,16 +21,6 @@ gtx-dropdown-list, gtx-dropdown-trigger {
     }
 }
 
-gtx-search-bar:hover + advanced-search-help, advanced-search-help:hover {
-    opacity: 1;
-}
-
-gtx-search-bar {
-    flex-grow: 1;
-    z-index: 1;
-    margin: 0;
-}
-
 gtx-input {
     flex-grow: 1;
     border: none;
@@ -46,25 +34,12 @@ gtx-input /deep/ input {
     color: $gtx-color-off-black;
 }
 
-
-advanced-search-help {
-    padding: 3px;
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
-    transition: opacity 0.3s;
-    background-color: $gtx-color-very-light-gray;
-    z-index: 0;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-}
-
-
-.tagFamily {
+.tag-family {
     color: $gtx-color-off-black;
     font-size: 12px;
 }
 
-.tagName {
+.tag-name {
    padding: 2px 5px;
    font-size: 14px;
    color: $gtx-color-off-black;

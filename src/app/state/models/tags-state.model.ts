@@ -1,6 +1,7 @@
 
 export interface TagState {
    tagFamilies: string[];
-   tag: string[];
+   tags: string[];
+   loadCount: number;
 }
 

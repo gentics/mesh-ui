@@ -17,46 +17,46 @@ export class TagsEffectsService {
     }
 
     createTagFamily(project: string, name: string): Promise<TagFamilyResponse > {
-        this.state.actions.tags.actionStart();
+        this.state.actions.tag.actionStart();
         return this.api.project.createTagFamily({ project }, { name }).toPromise()
         .then(response => {
-            this.state.actions.tags.createTagFamilySuccess(response);
+            this.state.actions.tag.createTagFamilySuccess(response);
             return response;
         }, error => {
-            this.state.actions.tags.actionError();
+            this.state.actions.tag.actionError();
             this.notification.show({
                 type: 'error',
                 message: 'project.create_tag_family_error'
             });
-            return null;
+            throw error;
         });
     }
 
     createTag(project: string, tagFamilyUuid: string, name: string): Promise<TagResponse> {
-        this.state.actions.tags.actionStart();
+        this.state.actions.tag.actionStart();
         return this.api.project.createTag({project, tagFamilyUuid}, { name }).toPromise()
         .then(response => {
-            this.state.actions.tags.createTagSuccess(response);
+            this.state.actions.tag.createTagSuccess(response);
             return response;
         }, error => {
-            this.state.actions.tags.actionError();
+            this.state.actions.tag.actionError();
             this.notification.show({
                 type: 'error',
                 message: 'project.create_tag_error'
             });
-            return null;
+            throw error;
         });
     }
 
     // Load tag families and their sibling tags for a project
     loadTagFamiliesAndTheirTags(project: string): void {
-        this.state.actions.tags.actionStart();
+        this.state.actions.tag.actionStart();
         this.api.project.getTagFamilies({ project })
         .subscribe(tagFamiesResponse => {
-            this.state.actions.tags.fetchTagFamiliesSuccess(tagFamiesResponse.data);
+            this.state.actions.tag.fetchTagFamiliesSuccess(tagFamiesResponse.data);
             tagFamiesResponse.data.forEach((tagFamily: TagFamily) => this.loadTagsOfTagFamily(project, tagFamily.uuid));
         }, error => {
-            this.state.actions.tags.actionError();
+            this.state.actions.tag.actionError();
             this.notification.show({
                 type: 'error',
                 message: 'editor.load_tags_error'
@@ -66,12 +66,12 @@ export class TagsEffectsService {
 
 
     loadTagsOfTagFamily(project: string, tagFamilyUuid: string): void {
-        this.state.actions.tags.actionStart();
+        this.state.actions.tag.actionStart();
         this.api.project.getTagsOfTagFamily({project, tagFamilyUuid})
         .subscribe(response => {
-            this.state.actions.tags.fetchTagsOfTagFamilySuccess(response.data);
+            this.state.actions.tag.fetchTagsOfTagFamilySuccess(response.data);
         }, error => {
-            this.state.actions.tags.actionError();
+            this.state.actions.tag.actionError();
             this.notification.show({
                 type: 'error',
                 message: 'editor.load_tags_error'

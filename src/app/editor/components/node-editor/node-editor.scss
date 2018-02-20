@@ -58,10 +58,6 @@
 .tags-row {
     display: flex;
     justify-content: space-between;
-    .versions {
-        padding: 5px;
-        color: $gtx-color-light-gray;
-    }
 
     .tags {
         color: $gtx-color-light-gray;
@@ -74,5 +70,5 @@
 }
 
 app-node-tags-bar {
-    width: 100%;
+    display: block;
 }

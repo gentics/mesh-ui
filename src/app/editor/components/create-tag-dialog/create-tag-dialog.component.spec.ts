@@ -13,85 +13,85 @@ import { ConfigService } from '../../../core/providers/config/config.service';
 
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 describe('CreateTagDialogComponent', () => {
-  let component: CreateTagDialogComponent;
-  let fixture: ComponentFixture<CreateTagDialogComponent>;
-  let tagsEffecsService: MockTagsEffectsService;
+    let component: CreateTagDialogComponent;
+    let fixture: ComponentFixture<CreateTagDialogComponent>;
+    let tagsEffecsService: MockTagsEffectsService;
 
 
-  beforeEach(() => {
-    configureComponentTest({
-      declarations: [
-        CreateTagDialogComponent,
-        MockI18nPipe
-      ],
-      providers: [
-        OverlayHostService,
-        { provide: TagsEffectsService, useClass: MockTagsEffectsService },
-        { provide: ApplicationStateService, useClass: TestApplicationState },
-        { provide: I18nService, useClass: MockI18nService },
-        { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
-      ],
-      imports: [
-        FormsModule,
-        GenticsUICoreModule
-      ]
+    beforeEach(() => {
+        configureComponentTest({
+            declarations: [
+                CreateTagDialogComponent,
+                MockI18nPipe
+            ],
+            providers: [
+                OverlayHostService,
+                EntitiesService,
+                { provide: TagsEffectsService, useClass: MockTagsEffectsService },
+                { provide: ApplicationStateService, useClass: TestApplicationState },
+                { provide: I18nService, useClass: MockI18nService },
+                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+            ],
+            imports: [
+                FormsModule,
+                GenticsUICoreModule
+            ]
+        });
+
+        tagsEffecsService = TestBed.get(TagsEffectsService);
+        fixture = TestBed.createComponent(CreateTagDialogComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
     });
 
-    tagsEffecsService = TestBed.get(TagsEffectsService);
-    fixture = TestBed.createComponent(CreateTagDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
+    it('should create new family', fakeAsync(() => {
+        component.closeFn = jasmine.createSpy('closeFn');
+        fixture.componentInstance.inputTagFamilyValue = 'new family name';
+        fixture.componentInstance.newTagName = 'new name';
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        const buttonSave = fixture.debugElement.query(By.css('.button_save'));
+        buttonSave.triggerEventHandler('click', null);
+        expect(tagsEffecsService.createTagFamily).toHaveBeenCalled();
+    }));
 
-  it('should create new family', fakeAsync(() => {
-    component.closeFn = jasmine.createSpy('closeFn');
-    fixture.componentInstance.inputTagFamilyValue = 'new family name';
-    fixture.componentInstance.newTagName = 'new name';
+    it('should create new node', fakeAsync(() => {
+        component.closeFn = jasmine.createSpy('closeFn');
+        fixture.componentInstance.inputTagFamilyValue = 'new family name';
+        fixture.componentInstance.newTagName = 'new name';
 
-    const buttonSave = fixture.debugElement.query(By.css('.button_save'));
-    buttonSave.triggerEventHandler('click', null);
-    expect(tagsEffecsService.createTagFamily).toHaveBeenCalled();
-  }));
-
-
-  it('should create new node', fakeAsync(() => {
-    component.closeFn = jasmine.createSpy('closeFn');
-    fixture.componentInstance.inputTagFamilyValue = 'new family name';
-    fixture.componentInstance.newTagName = 'new name';
-
-    const buttonSave = fixture.debugElement.query(By.css('.button_save'));
-    buttonSave.triggerEventHandler('click', null);
-    tick();
-    expect(tagsEffecsService.createTag).toHaveBeenCalled();
-  }));
+        const buttonSave = fixture.debugElement.query(By.css('.button_save'));
+        buttonSave.triggerEventHandler('click', null);
+        tick();
+        expect(tagsEffecsService.createTag).toHaveBeenCalled();
+    }));
 
 });
 
 class MockTagsEffectsService {
-    createTag = jasmine.createSpy('createTag').and.returnValue(Promise.resolve({uuid: 'new_node_uuid'}));
-    createTagFamily = jasmine.createSpy('createTagFamily').and.returnValue(Promise.resolve({uuid: 'new_family_uuid'}));
+    createTag = jasmine.createSpy('createTag').and.returnValue(Promise.resolve({ uuid: 'new_node_uuid' }));
+    createTagFamily = jasmine.createSpy('createTagFamily').and.returnValue(Promise.resolve({ uuid: 'new_family_uuid' }));
 }
 
 class MockI18nService {
-  translate(str: string): string {
-    return str;
-  }
+    translate(str: string): string {
+        return str;
+    }
 }
 
 
 @Pipe({
-  name: 'i18n'
+    name: 'i18n'
 })
 class MockI18nPipe implements PipeTransform {
-  transform(arg) {
-    return `translated ${arg}`;
-  }
+    transform(arg) {
+        return `translated ${arg}`;
+    }
 }
 

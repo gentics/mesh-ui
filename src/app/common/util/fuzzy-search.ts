@@ -21,7 +21,7 @@ export function fuzzyMatch(needle: string, haystack: string): string[] {
 export function fuzzyReplace(needle: string, haystack: string): FilterSelection {
     const matches = fuzzyMatch(needle, haystack);
     if (matches && matches.length) {
-        return { value: haystack, valueFormated: haystack.replace(matches[0], `<span class="filterSelection">${matches[0]}</span>`)};
+        return { value: haystack, valueFormatted: haystack.replace(matches[0], `<span class="filterSelection">${matches[0]}</span>`)};
     } else {
         return null;
     }

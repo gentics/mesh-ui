@@ -10,6 +10,7 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ProjectEffectsService } from '../../../admin/providers/effects/project-effects.service';
 import { Tag } from '../../../common/models/tag.model';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 export interface CreateTagDialogComponentResult {
     tag: Tag;
@@ -31,9 +32,9 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
 
     projectName: string;
     newTagName: string;
-    inputTagFamilyValue: string = '';
+    inputTagFamilyValue = '';
 
-    filteredFamilies: FilterSelection[]= [];
+    filteredFamilies: FilterSelection[] = [];
 
     private tagFamilies: TagFamily[] = [];
 
@@ -41,34 +42,33 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
         private i18n: I18nService,
         private state: ApplicationStateService,
         private sanitizer: DomSanitizer,
-        private tagsEffects: TagsEffectsService) {}
+        private tagsEffects: TagsEffectsService,
+        private entities: EntitiesService) { }
 
     ngOnInit() {
-        this.state.select(state => state.entities.tagFamily)
-        .map(families => Object.values(families).map(family => family))
-        .subscribe((tagFamilies) => {
-            this.tagFamilies = tagFamilies;
-            this.filterFamilies();
-        }).unsubscribe();
+        this.tagFamilies = this.state.now.tags.tagFamilies.map(uuid => this.entities.getTagFamily(uuid));
     }
 
     onFamilyNameInputChange(term: string): void {
         if (!this.familyDropDown.isOpen) {
             this.familyDropDown.openDropdown();
         }
-        this.filterFamilies();
+        this.filteredFamilies = this.filterFamilies();
+        this.familyDropDown.resize();
     }
 
     onFamilySelected(tagFamily: FilterSelection): void {
         this.inputTagFamilyValue = tagFamily.value;
     }
 
-
-    saveTagToFamily (family: TagFamily, tagName: string) {
+    saveTagToFamily(family: TagFamily, tagName: string) {
         this.tagsEffects.createTag(this.projectName, family.uuid, tagName)
-        .then(tag => {
-            this.closeFn({ tag, family });
-        });
+            .then(tag => {
+                this.closeFn({ tag, family });
+            })
+            .catch(error => {
+                this.cancelFn(false)
+            });
     }
 
     saveAndClose() {
@@ -76,16 +76,18 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
             return;
         }
 
-
         const familyName = this.inputTagFamilyValue.toLowerCase();
         const family = this.tagFamilies.find(f => f.name.toLowerCase() === familyName);
 
         if (!family) {
             // save a new family
             this.tagsEffects.createTagFamily(this.projectName, familyName)
-            .then(newFamily => {
-                this.saveTagToFamily(newFamily, this.newTagName);
-            });
+                .then(newFamily => {
+                    this.saveTagToFamily(newFamily, this.newTagName);
+                })
+                .catch(error => {
+                    this.cancelFn(false)
+                });
         } else {
             this.saveTagToFamily(family, this.newTagName);
         }
@@ -98,21 +100,21 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
     registerCancelFn(cancel: (val: any) => void): void {
         this.cancelFn = cancel;
     }
-    private filterFamilies() {
+
+    private filterFamilies(): FilterSelection[] {
+        let filterFamilies: FilterSelection[] = [];
+
         if (this.inputTagFamilyValue.trim() === '') {
-            this.filteredFamilies = this.tagFamilies.map(family => {
-                return { value: family.name, valueFormated: family.name };
+            filterFamilies = this.tagFamilies.map(family => {
+                return { value: family.name, valueFormatted: family.name };
             });
         } else {
-            this.filteredFamilies = this.tagFamilies.reduce<FilterSelection[]>((filteredFamilies, family) => {
+            filterFamilies = this.tagFamilies.reduce<FilterSelection[]>((filteredFamilies, family) => {
                 const matchedName = fuzzyReplace(this.inputTagFamilyValue, family.name);
-                if (matchedName) {
-                    filteredFamilies.push(matchedName);
-                }
-                return filteredFamilies;
+                return matchedName ? [...filteredFamilies, matchedName] : filteredFamilies;
             }, []);
         }
 
-        this.familyDropDown.resize();
+        return filterFamilies;
     }
 }

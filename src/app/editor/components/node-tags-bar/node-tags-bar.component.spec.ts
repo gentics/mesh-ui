@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { Component } from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { GenticsUICoreModule, ModalService, OverlayHostService, DropdownList } from 'gentics-ui-core';
 
-import { NodeTagsBarComponent } from './node-tags-bar.component';
 import { MeshNode } from '../../../common/models/node.model';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { GenticsUICoreModule, ModalService, OverlayHostService, DropdownList } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { componentTest } from '../../../../testing/component-test';
 import { ConfigService } from '../../../core/providers/config/config.service';
@@ -14,23 +14,25 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { mockMeshNode, mockSchema, mockTagFamily, mockTag } from '../../../../testing/mock-models';
 import { Tag } from '../../../common/models/tag.model';
 import { TagFamily } from '../../../common/models/tag-family.model';
-import { By } from '@angular/platform-browser';
+import { NodeTagsBarComponent } from './node-tags-bar.component';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
     let modalService: MockModalService;
 
     const tagFamily: TagFamily = mockTagFamily({uuid: 'tagFamilyUuid', name: 'mockFamily' });
-        const tag: Tag = mockTag({uuid: 'tagUuid', name: 'mockTag', tagFamily});
-        const node = mockMeshNode({
-            uuid: 'uuid_parentNode',
-            tags: [ { uuid: 'tagUuid' }],
-            version: '1',
-            project: {
-                name: 'demo',
-                uuid: 'demo_uuid'
-            }
-        });
+    const tag: Tag = mockTag({uuid: 'tagUuid', name: 'mockTag', tagFamily});
+    const tag2: Tag = mockTag({uuid: 'tagUuid2', name: 'mockTag', tagFamily});
+    const node = mockMeshNode({
+        uuid: 'uuid_parentNode',
+        tags: [ { uuid: tag.uuid } ],
+        version: '1',
+        project: {
+            name: 'demo',
+            uuid: 'demo_uuid'
+        }
+    });
 
     beforeEach(() => {
         configureComponentTest({
@@ -40,6 +42,7 @@ describe('NodeTagsBarComponent', () => {
             ],
             providers: [
                 OverlayHostService,
+                EntitiesService,
                 { provide: ModalService, useClass: MockModalService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: EditorEffectsService, useClass: MockEditorEffectsService },
@@ -73,17 +76,20 @@ describe('NodeTagsBarComponent', () => {
                     uuid_parentNode: node
                 },
                 tagFamily: {
-                    'tagFamilyUuid': tagFamily
+                    [tagFamily.uuid]: tagFamily
                 },
                 tag: {
-                    'tagUuid': tag
+                    [tag.uuid]: tag,
+                    [tag2.uuid]: tag2,
                 }
+            },
+
+            tags: {
+                tags: [tag.uuid, tag2.uuid],
+                tagFamilies: [tagFamily.uuid]
             }
         });
     });
-
-
-
 
     describe('Start typing', () => {
         it('it shows dropdown',
@@ -97,38 +103,36 @@ describe('NodeTagsBarComponent', () => {
         it('it filters matching tags',
             componentTest(() => TestComponent, (fixture, instance) => {
                 typeSearchTerm(fixture, 'mock');
-                const originalComponent = getOriginalComponent(fixture);
-                expect(originalComponent.filteredTags[0].tag).toEqual(tag);
+                const tagBarComponent = getTagsBarComponent(fixture);
+                expect(tagBarComponent.filteredTags[0].tag).toEqual(tag);
             })
         );
 
         it('it requires saving if things change',
             componentTest(() => TestComponent, (fixture, instance) => {
-                const originalComponent = getOriginalComponent(fixture);
-                originalComponent.node = node['en']['1'];
+                const tagBarComponent = getTagsBarComponent(fixture);
+                tagBarComponent.node = node['en']['1'];
                 const newTag: Tag = mockTag({uuid: 'incomingTagUuid', name: 'incomingTag', tagFamily});
-
-                expect(originalComponent.isDirty).toEqual(false);
-                originalComponent.onTagSelected(newTag);
-                expect(originalComponent.isDirty).toEqual(true);
+                expect(tagBarComponent.isDirty).toEqual(false);
+                tagBarComponent.onTagSelected(newTag);
+                expect(tagBarComponent.isDirty).toEqual(true);
             })
         );
 
-        it('it opens a dialog to create a now tag',
+        it('it opens a dialog to create a new tag',
             componentTest(() => TestComponent, (fixture, instance) => {
-                const originalComponent = getOriginalComponent(fixture);
-                originalComponent.onCreateNewTagClick();
+                const tagBarComponent = getTagsBarComponent(fixture);
+                tagBarComponent.onCreateNewTagClick();
                 expect(modalService.fromComponent).toHaveBeenCalled();
             })
         );
     });
 });
 
-
-function getOriginalComponent(fixture: ComponentFixture<TestComponent>): NodeTagsBarComponent {
-    const originalComponent: NodeTagsBarComponent = fixture.debugElement.query(By.css('app-node-tags-bar'))
+function getTagsBarComponent(fixture: ComponentFixture<TestComponent>): NodeTagsBarComponent {
+    const tagBarComponent: NodeTagsBarComponent = fixture.debugElement.query(By.css('app-node-tags-bar'))
                                                                             .componentInstance as NodeTagsBarComponent;
-    return originalComponent;
+    return tagBarComponent;
 }
 
 function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string): void {
@@ -141,8 +145,6 @@ function getDropDownList(fixture: ComponentFixture<TestComponent>): DropdownList
     const dropDown: DropdownList = fixture.debugElement.query(By.css('gtx-dropdown-list')).componentInstance as DropdownList;
     return dropDown;
 }
-
-
 @Component({
     template: `
     <app-node-tags-bar [node]="node"></app-node-tags-bar>
@@ -158,8 +160,6 @@ class MockI18nService {
     }
 }
 
-
-
 class MockEditorEffectsService {
     saveNewNode = jasmine.createSpy('saveNewNode');
     closeEditor = jasmine.createSpy('closeEditor');
@@ -167,7 +167,6 @@ class MockEditorEffectsService {
     createNode = jasmine.createSpy('createNode');
     saveNode = jasmine.createSpy('saveNode');
 }
-
 
 class MockModalService {
     dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));

@@ -71,7 +71,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.openNode$ = this.state.select(state => state.editor.openNode)
             .filter(Boolean)
             .switchMap(openNode => {
-
                 // const {uuid, language, schemaUuid, parentNodeUuid} = openNode;
                 const schemaUuid = openNode && openNode.schemaUuid;
                 if (schemaUuid) {
@@ -222,7 +221,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      */
     publishNode(): void {
         if (this.node && this.isDraft()) {
-            const promise = this.formGenerator.isDirty ?
+            const promise = this.isDirty ?
                 this.editorEffects.saveNode(this.node, this.tagsBar.nodeTags) :
                 Promise.resolve(this.node);
 

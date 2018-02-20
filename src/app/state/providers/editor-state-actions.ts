@@ -68,7 +68,6 @@ export class EditorStateActions extends StateActionBranch<AppState> {
         this.editor.editorIsFocused = false;
     }
 
-
     saveNodeStart(): void {
         this.editor.loadCount ++;
     }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { ApiService } from '../../core/providers/api/api.service';
 import { BinaryField, MeshNode } from '../../common/models/node.model';
-import { NodeUpdateRequest, NodeCreateRequest, FieldMapFromServer, TagReferenceFromServer } from '../../common/models/server-models';
+import { NodeUpdateRequest, NodeCreateRequest, FieldMapFromServer, TagReferenceFromServer, NodeResponse } from '../../common/models/server-models';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { simpleCloneDeep, getMeshNodeNonBinaryFields, getMeshNodeBinaryFields } from '../../common/util/util';
@@ -66,12 +66,7 @@ export class EditorEffectsService {
 
         return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
-            .then(newNode => {
-                return this.api.project.assignTagsToNode({project: projectName, nodeUuid: newNode.uuid}, { tags }).toPromise()
-                .then(tagListResponse => {
-                    return newNode;
-                });
-            })
+            .then(newNode => this.assignTagsToNode(newNode, tags))
             .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(node)))
             .then(savedNode => {
                     this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
@@ -117,13 +112,9 @@ export class EditorEffectsService {
                     // TODO: conflict resolution handling
                     throw new Error('saveNode was rejected');
                 } else if (response.node) {
-                    return this.api.project.assignTagsToNode({
-                                                                project: node.project.name,
-                                                                nodeUuid: response.node.uuid
-                                                            }, { tags }).toPromise()
-                    .then(tagListResponse => {
-                        return this.uploadBinaries(response.node, getMeshNodeBinaryFields(node))
-                    });
+                    return this.assignTagsToNode(response.node, tags)
+                    .then(node => this.uploadBinaries(node, getMeshNodeBinaryFields(node)));
+
                 } else {
                     this.state.actions.editor.saveNodeError();
                     this.notification.show({
@@ -186,28 +177,9 @@ export class EditorEffectsService {
                 });
     }
 
-    saveNodeTag(project: string, nodeUuid: string, tagUuid: string) {
-
-        this.state.actions.editor.saveNodeStart();
-
-        this.api.project.assignTagToNode({project, nodeUuid, tagUuid})
-        .subscribe(node => {
-            this.state.actions.editor.saveNodeSuccess(node);
-        });
-    }
-
-    deleteNodeTag(project: string, nodeUuid: string, tagUuid: string) {
-
-        this.state.actions.editor.saveNodeStart();
-
-        this.api.project.removeTagFromNode({project, nodeUuid, tagUuid})
-        .subscribe(() => {
-            // since remoteTagFromNode does not return a new node data - we refetch it manualy
-            this.api.project.getNode({project, nodeUuid})
-            .subscribe(node => {
-                this.state.actions.editor.saveNodeSuccess(node);
-            });
-        });
+    assignTagsToNode(node: NodeResponse, tags: TagReferenceFromServer[]) {
+        return this.api.project.assignTagsToNode({project: node.project.name, nodeUuid: node.uuid}, { tags }).toPromise()
+            .then(tagListResponse => node);
     }
 
     closeEditor(): void {
