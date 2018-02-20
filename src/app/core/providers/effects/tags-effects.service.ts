@@ -49,7 +49,7 @@ export class TagsEffectsService {
     }
 
     // Load tag families and their sibling tags for a project
-    loadTags(project: string): void {
+    loadTagFamiliesAndTheirTags(project: string): void {
         this.state.actions.tags.actionStart();
         this.api.project.getTagFamilies({ project })
         .subscribe(tagFamiesResponse => {
