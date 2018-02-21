@@ -60,23 +60,23 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     }
 
     fetchTagFamiliesSuccess(tagFamilies: TagFamilyResponse[]) {
-        this.loadCount--;
+        this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tagFamily: [
                 ...tagFamilies
             ]
         }, false);
-        this.tags.tagFamilies = tagFamilies.map(family => family.uuid);
+        this.tags.tagFamilies = [...this.tags.tagFamilies, ...tagFamilies.map(family => family.uuid)];
     }
 
     fetchTagsOfTagFamilySuccess(tags: TagResponse[]) {
-        this.loadCount--;
+        this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tag: [
                 ...tags
             ]
         }, false);
 
-        this.tags.tags = tags.map(tag => tag.uuid);
+        this.tags.tags = [...this.tags.tags, ...tags.map(tag => tag.uuid)]
     }
 }
