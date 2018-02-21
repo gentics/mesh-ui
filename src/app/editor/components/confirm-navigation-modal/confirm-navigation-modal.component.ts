@@ -32,6 +32,24 @@ export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
                 const newValue = typeof change.currentValue !== 'object' ? change.currentValue.toString() : listChangedLabel;
                 return { path, oldValue, newValue };
             });
+
+        const tagChanges = this.nodeEditor.tagsBar.changesSinceLastSave();
+        if (tagChanges.deletedTags.length) {
+            this.changes.push({
+                path: this.i18n.translate('modal.removed_tags'),
+                oldValue: tagChanges.deletedTags.join(', '),
+                newValue: ''
+            });
+        }
+
+        if (tagChanges.newTags.length) {
+            this.changes.push({
+                path: this.i18n.translate('modal.added_tags'),
+                oldValue: '',
+                newValue: tagChanges.newTags.join(', ')
+            });
+        }
+
         if (this.displayLimit < this.changes.length) {
             this.additionalChangesCount = this.changes.length - this.displayLimit;
         }

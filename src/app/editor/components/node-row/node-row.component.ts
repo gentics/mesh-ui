@@ -7,6 +7,7 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { ApiService } from '../../../core/providers/api/api.service';
+import { fuzzySearch, fuzzyReplace } from '../../../common/util/fuzzy-search';
 
 @Component({
     selector: 'app-node-row',
@@ -19,6 +20,7 @@ export class NodeRowComponent implements OnInit {
     @Input() listLanguage: string;
 
     routerLink: any[] = null;
+    nameFormated = '';
 
     constructor(private state: ApplicationStateService,
                 private navigationService: NavigationService,
@@ -34,6 +36,14 @@ export class NodeRowComponent implements OnInit {
             this.routerLink = this.navigationService.list(this.node.project.name, this.node.uuid, this.listLanguage).commands();
         } else {
             this.routerLink = this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).commands();
+        }
+
+
+        const matchedNode = fuzzyReplace(this.state.now.list.filterTerm, this.node.displayName);
+        if (matchedNode) {
+            this.nameFormated = matchedNode.valueFormatted;
+        } else {
+            this.nameFormated = this.node.displayName;
         }
     }
 

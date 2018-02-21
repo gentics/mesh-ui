@@ -79,8 +79,22 @@
       "en": "Save and close",
       "de": "Speichern und schließen"
     },
-    "validation_passwords_must_match": {
-      "en": "Passwords must match",
-      "de": "Passworteingaben stimmen nicht überein"
+    "uploading_file": {
+      "en": "Uploading file…",
+      "de": "Lade Datei hoch …"
+    },
+    "uploading_files": {
+      "en": "Uploading files…",
+      "de": "Lade Dateien hoch …"
+    },
+
+    "removed_tags": {
+      "en": "Removed tags",
+      "de": "Tags gelöscht"
+    },
+
+    "added_tags": {
+      "en": "Added tags",
+      "de": "Tags hinzugefügt"
     }
   }

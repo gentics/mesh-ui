@@ -5,6 +5,8 @@ import { User } from '../app/common/models/user.model';
 import { Schema } from '../app/common/models/schema.model';
 import { Microschema } from '../app/common/models/microschema.model';
 import { simpleMergeDeep } from '../app/common/util/util';
+import { TagFamily } from '../app/common/models/tag-family.model';
+import { Tag } from '../app/common/models/tag.model';
 
 /**
  * Returns a mock MeshNode for use in testing. Any properties may be overridden by passing the
@@ -73,6 +75,41 @@ export function mockProject(properties?: Partial<Project>): Project {
     };
 
     return { ...defaultMockProject, ...properties };
+}
+
+
+/**
+ * Returns a mock tag family for use in testing. Any properties may be overridden by passing the
+ * properties argument.
+ */
+export function mockTagFamily(properties?: Partial<TagFamily>): TagFamily {
+    const defaultMockTagFamily: TagFamily = {
+        ...mockBaseProperties(),
+        ...{
+            uuid: 'default000mock000TagFamily0',
+            name: 'mockFamily',
+        }
+    };
+
+    return { ...defaultMockTagFamily, ...properties };
+}
+
+/**
+ * Returns a mock tag for use in testing. Any properties may be overridden by passing the
+ * properties argument.
+ */
+export function mockTag(properties?: Partial<Tag>): Tag {
+    const defaultMockTag: Tag = {
+        ...mockBaseProperties(),
+        ...{
+            uuid: 'default000mock000Tag0',
+            name: 'mockFamily',
+            tagFamily: 'tagFamily',
+        },
+
+    };
+
+    return { ...defaultMockTag, ...properties };
 }
 
 /**

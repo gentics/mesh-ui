@@ -6,11 +6,13 @@ import { Observable } from 'rxjs/Observable';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { SchemaReference } from '../../../common/models/common.model';
+import { SchemaReference, FilterSelection } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
+import { fuzzyMatch, fuzzyReplace } from '../../../common/util/fuzzy-search';
+
 
 
 @Component({
@@ -27,10 +29,11 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     /** @internal */
     public schemas: SchemaReference[] = [];
     /** @internal */
-    public childrenBySchema: { [schemaUuid: string]: MeshNode[] } = { };
+    public childrenBySchema: { [schemaUuid: string]: FilterSelection[] } = { };
 
     constructor(private changeDetector: ChangeDetectorRef,
                 private listEffects: ListEffectsService,
+                private tagEffects: TagsEffectsService,
                 private navigationService: NavigationService,
                 private route: ActivatedRoute,
                 private entities: EntitiesService,
@@ -75,11 +78,12 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             });*/
 
         const onProjectLoadSchemasSub = this.state
-            .select(state => state.list.currentProject!)
+            .select(state => state.list.currentProject)
             .filter<string>(notNullOrUndefined)
             .subscribe(projectName => {
                 this.listEffects.loadSchemasForProject(projectName);
                 this.listEffects.loadMicroschemasForProject(projectName);
+                this.tagEffects.loadTagFamiliesAndTheirTags(projectName);
             });
 
         this.subscription = routerParamsSub
@@ -97,6 +101,20 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
         const matches: string[] = fuzzyMatch(this.state.now.list.filterTerm, node.displayName);
         return matches && matches.length > 0;
+    }
+
+    private filterNodes = () => {
+        const childNodes = this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
+        const filteredNodes = childNodes.reduce<FilterSelection[]>((filteredNodes, node) => {
+            const matchedNode = fuzzyReplace(this.state.now.list.filterTerm, node.displayName);
+            if (matchedNode) {
+                matchedNode.extra = node;
+                return [...filteredNodes, matchedNode];
+            }
+            return filteredNodes;
+        }, []);
+
+        return filteredNodes;
     }
 
     /**
@@ -127,17 +145,18 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         const childNodes = this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
 
         const schemas: SchemaReference[] = [];
-        const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
+        const childrenBySchema: { [schemaUuid: string]: FilterSelection[] } = {};
 
-        const filteredNodes = childNodes.filter(this.selectNodesByFilter);
+        //const filteredNodes = childNodes.filter(this.selectNodesByFilter);
+        const filteredNodes = this.filterNodes();
 
-        for (const node of filteredNodes || []) {
+        for (const filteredNode of filteredNodes || []) {
+            const node = (filteredNode as FilterSelection).extra as MeshNode;
             if (!schemas.some(schema => node.schema.uuid === schema.uuid)) {
                 schemas.push(node.schema);
                 childrenBySchema[node.schema.uuid] = [];
             }
-
-            childrenBySchema[node.schema.uuid].push(node);
+            childrenBySchema[node.schema.uuid].push(filteredNode);
         }
 
         this.schemas = schemas;

@@ -11,11 +11,14 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { simpleCloneDeep } from '../../../common/util/util';
+import { simpleCloneDeep, getMeshNodeBinaryFields } from '../../../common/util/util';
 import { initializeNode } from '../../form-generator/common/initialize-node';
-import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
+import { NodeReferenceFromServer, NodeResponse, FieldMapFromServer } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { ModalService, IDialogConfig, IModalOptions, IModalInstance } from 'gentics-ui-core';
+import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
+import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 
 @Component({
     selector: 'node-editor',
@@ -36,16 +39,18 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     private openNode$: Subscription;
 
-    @ViewChild(FormGeneratorComponent) formGenerator: FormGeneratorComponent;
+    @ViewChild(FormGeneratorComponent) formGenerator?: FormGeneratorComponent;
+    @ViewChild(NodeTagsBarComponent) tagsBar?: NodeTagsBarComponent;
 
     constructor(private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private changeDetector: ChangeDetectorRef,
-                private editorEffects: EditorEffectsService,
-                private listEffects: ListEffectsService,
-                private navigationService: NavigationService,
-                private route: ActivatedRoute,
-                private i18n: I18nService) {}
+        private entities: EntitiesService,
+        private changeDetector: ChangeDetectorRef,
+        private editorEffects: EditorEffectsService,
+        private listEffects: ListEffectsService,
+        private navigationService: NavigationService,
+        private route: ActivatedRoute,
+        private i18n: I18nService,
+        private modalService: ModalService) { }
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -66,7 +71,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.openNode$ = this.state.select(state => state.editor.openNode)
             .filter(Boolean)
             .switchMap(openNode => {
-
                 // const {uuid, language, schemaUuid, parentNodeUuid} = openNode;
                 const schemaUuid = openNode && openNode.schemaUuid;
                 if (schemaUuid) {
@@ -108,7 +112,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             return '';
         }
 
-        const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
+        const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
         // const parentDisplayNode: any = { displayName: parentNode.displayName || '' };
         const parentDisplayNode: NodeReferenceFromServer = { displayName: parentNode.displayName || '' } as NodeReferenceFromServer;
         let breadcrumb = this.node.breadcrumb;
@@ -121,7 +125,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         } else if (!breadcrumb) {
             breadcrumb = [parentDisplayNode, ...parentNode.breadcrumb];
         } else {
-            breadcrumb = [{ displayName: this.node.displayName} as NodeReferenceFromServer, ...breadcrumb];
+            breadcrumb = [{ displayName: this.node.displayName } as NodeReferenceFromServer, ...breadcrumb];
         }
         // TODO: remove this once Mesh fixes the order of the breadcrumbs
         return breadcrumb.slice().reverse().map(b => b.displayName).join(' › ');
@@ -144,22 +148,46 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Save the node as a new draft version.
+     * Carries on the saving process and displays a loading overlay if any binary fields has to be uploaded.
+     */
+    private saveNodeWithProgress(saveFn: Promise<any>): Promise<any> {
+        const numBinaryFields = Object.keys(getMeshNodeBinaryFields(this.node)).length;
+
+        if (numBinaryFields > 0) {
+            return this.modalService.fromComponent(ProgressbarModalComponent,
+                {
+                    closeOnOverlayClick: false,
+                    closeOnEscape: false
+                },
+                {
+                    translateToPlural: numBinaryFields > 1
+                })
+                .then(modal => {
+                    modal.open();
+                    saveFn.then(() => modal.instance.closeFn(null));
+                });
+        }
+    }
+
+    /**
+     * Validate if saving is required.
+     * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
+
         if (!this.node) {
             return;
         }
 
-        if (this.formGenerator.isDirty) {
-
+        if (this.isDirty) {
             this.isSaving = true;
+            let saveFn: Promise<any>;
+
             if (!this.node.uuid) {
-                const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language : this.node.language });
-                this.editorEffects.saveNewNode(parentNode.project.name, this.node)
+                const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
+                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
-
                         if (node) {
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
@@ -168,11 +196,11 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                                 this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
                             }
                         }
-                }, error => {
-                    this.isSaving = false;
-                });
+                    }, error => {
+                        this.isSaving = false;
+                    });
             } else {
-                this.editorEffects.saveNode(this.node)
+                saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
@@ -183,6 +211,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         this.isSaving = false;
                     });
             }
+            this.saveNodeWithProgress(saveFn);
         }
     }
 
@@ -191,8 +220,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      */
     publishNode(): void {
         if (this.node && this.isDraft()) {
-            const promise = this.formGenerator.isDirty ?
-                this.editorEffects.saveNode(this.node) :
+            const promise = this.isDirty ?
+                this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null) :
                 Promise.resolve(this.node);
 
             promise.then(node => {
@@ -209,6 +238,11 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     focusList(): void {
         this.state.actions.editor.focusList();
+    }
+
+
+    get isDirty(): boolean {
+        return this.formGenerator.isDirty || this.tagsBar.isDirty;
     }
 
     private getNodeTitle(): string {

@@ -9,6 +9,8 @@ import { Microschema } from '../../common/models/microschema.model';
 import { Project } from '../../common/models/project.model';
 import { User } from '../../common/models/user.model';
 import { BaseProperties } from '../../common/models/common.model';
+import { Tag } from '../../common/models/tag.model';
+import { TagFamily } from '../../common/models/tag-family.model';
 
 @Injectable()
 @Immutable()
@@ -24,7 +26,9 @@ export class EntityStateActions extends StateActionBranch<AppState> {
                     node: {},
                     user: {},
                     schema: {},
-                    microschema: {}
+                    microschema: {},
+                    tag: {},
+                    tagFamily: {}
                 }
             }
         });
@@ -37,7 +41,10 @@ export interface EntityStateType {
     user: User;
     schema: Schema;
     microschema: Microschema;
+    tag: Tag;
+    tagFamily: TagFamily;
 }
+
 
 type Discriminator<T extends BaseProperties> = Array<keyof T>;
 

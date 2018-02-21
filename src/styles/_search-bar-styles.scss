@@ -30,38 +30,9 @@
         text-overflow: ellipsis;
     }
 
-    .search-chip {
-        position: relative;
-        display: flex;
-        height: 36px;
-        font-size: 13px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.6);
-        line-height: 36px;
-        padding: 0 12px;
-        background-color: #e4e4e4;
-        overflow: hidden;
-        white-space: nowrap;
-
-        .chip-contents {
-            margin-right: 16px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            .searching {
-                @media screen and (max-width: $small-screen) {
-                    display: none;
-                }
-            }
-        }
-
-        > .remove-button {
-            cursor: pointer;
-            position: absolute;
-            top: 0;
-            right: 5px;
-            font-size: 16px;
-            line-height: 36px;
+    .search-chip .chip-contents .searching {
+        @media screen and (max-width: $small-screen) {
+            display: none;
         }
     }
 }

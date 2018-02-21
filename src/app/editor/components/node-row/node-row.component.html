@@ -3,7 +3,7 @@
     <icon class="node-icon" *ngIf="!node.container">insert_drive_file</icon>
     <div class="item-primary">
         <div class="title">
-            <a href [routerLink]="routerLink" (click)="focusEditor()">{{ node | displayField }}</a>
+            <a href [routerLink]="routerLink" (click)="focusEditor()" [innerHTML]="nameFormated"></a>
         </div>
         <div class="available-languages">
             <available-languages-list [available]="node.availableLanguages" [current]="listLanguage"></available-languages-list>

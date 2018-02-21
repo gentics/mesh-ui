@@ -43,7 +43,6 @@ export class ProjectEffectsService {
                 type: 'error',
                 message: 'admin.project_deleted_error'
             });
-            console.error(error);
         });
     }
 }

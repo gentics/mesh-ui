@@ -21,7 +21,13 @@ import { CreateNodeButtonComponent } from './components/create-node-button/creat
 import { ContainerLanguageSwitcherComponent } from './components/container-language-switcher/container-language-switcher.component';
 import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
 import { NodeRowComponent } from './components/node-row/node-row.component';
+import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
+import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.component';
+import { ProjectEffectsService } from '../admin/providers/effects/project-effects.service';
 import { BlobService } from './providers/blob.service';
+import { CreateTagDialogComponent } from './components/create-tag-dialog/create-tag-dialog.component';
+import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
+
 
 @NgModule({
     imports: [
@@ -43,13 +49,20 @@ import { BlobService } from './providers/blob.service';
         ProjectSwitcherComponent,
         SearchBarComponent,
         VersionLabelComponent,
-        NodeRowComponent
+        NodeRowComponent,
+        ProgressbarModalComponent,
+        NodeTagsBarComponent,
+        CreateTagDialogComponent
     ],
     entryComponents: [
-        ConfirmNavigationModalComponent
+        ConfirmNavigationModalComponent,
+        ProgressbarModalComponent,
+        CreateTagDialogComponent,
     ],
     providers: [
         EditorEffectsService,
+        ProjectEffectsService,
+        TagsEffectsService,
         NodeEditorGuard,
         ModalService,
         OverlayHostService,

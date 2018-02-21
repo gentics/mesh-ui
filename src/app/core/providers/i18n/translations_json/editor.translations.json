@@ -50,5 +50,20 @@
     "save_button": {
       "en": "Save",
       "de": "Speichern"
+    },
+
+    "add_tag": {
+      "en": "Add tag",
+      "de": "Tag hinzufügen"
+    },
+
+    "create_new_tag": {
+      "en": "Create new tag",
+      "de": "Neuen Tag erstellen"
+    },
+
+    "tag_name": {
+      "en": "Tag name",
+      "de": "Tag hinzufügen"
     }
   }

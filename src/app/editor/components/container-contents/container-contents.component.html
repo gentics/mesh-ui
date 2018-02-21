@@ -8,5 +8,5 @@
     <gtx-contents-list-item class="group-header">
         {{schema.name}}
     </gtx-contents-list-item>
-    <app-node-row *ngFor="let child of childrenBySchema[schema.uuid]" [node]="child"></app-node-row>
+    <app-node-row *ngFor="let child of childrenBySchema[schema.uuid]" [node]="child.extra"></app-node-row>
 </ng-template>

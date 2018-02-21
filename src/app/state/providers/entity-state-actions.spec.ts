@@ -12,7 +12,9 @@ describe('EntityStateActions', () => {
             node: {},
             project: {},
             schema: {},
-            user: {}
+            user: {},
+            tag: {},
+            tagFamily: {}
         };
 
         it('adds new entities to the output hash', () => {
@@ -49,7 +51,9 @@ describe('EntityStateActions', () => {
                 node: {},
                 project: {},
                 schema: {},
-                user: {}
+                user: {},
+                tag: {},
+                tagFamily: {},
             });
         });
 
@@ -328,7 +332,9 @@ describe('EntityStateActions', () => {
             },
             project: {},
             schema: {},
-            user: {}
+            user: {},
+            tag: {},
+            tagFamily: {},
         };
 
         it('should return exact entity when all discriminators present in source', () => {

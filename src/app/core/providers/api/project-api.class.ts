@@ -191,6 +191,9 @@ export class ProjectApi {
             });
     }
 
+    /** Create a new tag for a givn tag family. */
+    createTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags');
+
     /** Update the specified tag. */
     updateTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags/{tagUuid}');
 

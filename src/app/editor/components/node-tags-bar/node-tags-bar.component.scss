@@ -1,0 +1,50 @@
+@import "variables";
+@import "search-bar-styles";
+@include filter-selection;
+@include search-chip;
+
+
+gtx-dropdown-list, gtx-dropdown-trigger {
+    width: 100%;
+    display: block;
+}
+
+.search-bar-container {
+    display: flex;
+
+    .contents {
+        display: flex;
+        max-width: 50%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        align-self: center;
+    }
+}
+
+gtx-input {
+    flex-grow: 1;
+    border: none;
+}
+
+gtx-input /deep/ input {
+    margin: 0 !important;
+    border: none;
+    padding-left: 15px;
+    outline: none !important;
+    color: $gtx-color-off-black;
+}
+
+.tag-family {
+    color: $gtx-color-off-black;
+    font-size: 12px;
+}
+
+.tag-name {
+   padding: 2px 5px;
+   font-size: 14px;
+   color: $gtx-color-off-black;
+}
+
+.create-new-tag {
+    border-top: 2px solid rgba($gtx-color-off-black, 0.2);
+}
