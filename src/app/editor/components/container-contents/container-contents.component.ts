@@ -13,8 +13,6 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { fuzzyMatch, fuzzyReplace } from '../../../common/util/fuzzy-search';
 
-
-
 @Component({
     selector: 'container-contents',
     templateUrl: './container-contents.component.html',

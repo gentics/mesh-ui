@@ -11,12 +11,11 @@ icon {
 .detail-bar {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
 }
 
-gtx-contents-list-item {
-    &.container-node {
 
-    }
+gtx-contents-list-item {
     &.not-in-current-lang {
         .node-icon {
             color: $gtx-color-light-gray;

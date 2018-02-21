@@ -16,13 +16,18 @@
         </div>
     </gtx-search-bar>
 
-    <gtx-dropdown-list belowTrigger="true" width="content">
+    <gtx-dropdown-list belowTrigger="true" width="expand">
         <gtx-dropdown-trigger>
             <div class="dropdown-trigger"></div>
         </gtx-dropdown-trigger>
-      <gtx-dropdown-content>
-          <gtx-dropdown-item>First</gtx-dropdown-item>
-      </gtx-dropdown-content>
+        <gtx-dropdown-content>
+            <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag.tag)">
+                <span class="tag-family">{{tag.tag.tagFamily.name}}</span>
+                <span class="tag-name" [style.background]="getTagBackgroundColor(tag.tag.tagFamily.name)">
+                    <span [innerHTML]="tag.valueFormatted"></span>
+                </span>
+            </gtx-dropdown-item>
+        </gtx-dropdown-content>
   </gtx-dropdown-list>
 
 </div>

@@ -1,6 +1,7 @@
 @import "variables";
 @import "search-bar-styles";
 @include search-chip;
+@include tag-filter;
 
 :host::shadow {
     @include search-bar-styles;
@@ -10,6 +11,14 @@
     display: flex;
 }
 
+gtx-dropdown-list {
+    display: block
+}
+
+gtx-dropdown-trigger {
+    display: block;
+}
+
 gtx-search-bar:hover + advanced-search-help, advanced-search-help:hover {
     opacity: 1;
 }
@@ -17,6 +26,7 @@ gtx-search-bar:hover + advanced-search-help, advanced-search-help:hover {
 gtx-search-bar {
     flex-grow: 1;
     z-index: 1;
+    margin-bottom: 1px;
 }
 
 advanced-search-help {

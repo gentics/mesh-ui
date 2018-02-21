@@ -16,8 +16,6 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     @CloneDepth(0) private entities: EntityState;
     @CloneDepth(1) private tags: TagState;
 
-    private loadCount = 0;
-
     constructor() {
         super({
             uses: ['entities', 'tags'],
@@ -44,7 +42,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     }
 
     createTagFamilySuccess(tagFamily: TagFamilyResponse) {
-        this.loadCount--;
+        this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tagFamily: [tagFamily]
         }, false);
@@ -52,7 +50,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     }
 
     createTagSuccess(tag: TagResponse) {
-        this.loadCount--;
+        this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tag: [tag]
         }, false);
@@ -60,23 +58,23 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     }
 
     fetchTagFamiliesSuccess(tagFamilies: TagFamilyResponse[]) {
-        this.loadCount--;
+        this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tagFamily: [
                 ...tagFamilies
             ]
         }, false);
-        this.tags.tagFamilies = tagFamilies.map(family => family.uuid);
+        this.tags.tagFamilies = [...this.tags.tagFamilies, ...tagFamilies.map(family => family.uuid)];
     }
 
     fetchTagsOfTagFamilySuccess(tags: TagResponse[]) {
-        this.loadCount--;
+        this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tag: [
                 ...tags
             ]
         }, false);
 
-        this.tags.tags = tags.map(tag => tag.uuid);
+        this.tags.tags = [...this.tags.tags, ...tags.map(tag => tag.uuid)]
     }
 }
