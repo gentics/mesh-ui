@@ -16,8 +16,6 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     @CloneDepth(0) private entities: EntityState;
     @CloneDepth(1) private tags: TagState;
 
-    private loadCount = 0;
-
     constructor() {
         super({
             uses: ['entities', 'tags'],
@@ -44,7 +42,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     }
 
     createTagFamilySuccess(tagFamily: TagFamilyResponse) {
-        this.loadCount--;
+        this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tagFamily: [tagFamily]
         }, false);
@@ -52,7 +50,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     }
 
     createTagSuccess(tag: TagResponse) {
-        this.loadCount--;
+        this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tag: [tag]
         }, false);
