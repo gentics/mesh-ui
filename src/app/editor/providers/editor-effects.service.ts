@@ -53,7 +53,7 @@ export class EditorEffectsService {
     /**
      * Save a new node to the api endpoint
      */
-    saveNewNode(projectName: string, node: MeshNode, tags: TagReferenceFromServer[]): Promise<MeshNode | void> {
+    saveNewNode(projectName: string, node: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode | void> {
         this.state.actions.editor.saveNodeStart();
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
@@ -89,7 +89,7 @@ export class EditorEffectsService {
      * Save (or update) an existing node
      * @param node
      */
-    saveNode(node: MeshNode, tags: TagReferenceFromServer[]): Promise<MeshNode | void> {
+    saveNode(node: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode | void> {
         if (!node.project.name) {
             throw new Error('Project name is not available');
         }
@@ -177,7 +177,11 @@ export class EditorEffectsService {
                 });
     }
 
-    assignTagsToNode(node: NodeResponse, tags: TagReferenceFromServer[]) {
+    assignTagsToNode(node: NodeResponse, tags?: TagReferenceFromServer[]): Promise<NodeResponse> {
+        if (tags === null) {
+            return Promise.resolve(node);
+        }
+
         return this.api.project.assignTagsToNode({project: node.project.name, nodeUuid: node.uuid}, { tags }).toPromise()
             .then(tagListResponse => node);
     }

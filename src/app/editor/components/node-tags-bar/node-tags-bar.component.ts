@@ -64,8 +64,6 @@ export class NodeTagsBarComponent implements OnChanges {
             this.dropDown.openDropdown();
         }
         this.dropDown.resize();
-
-        console.log(this.dropDown);
     }
 
     onTagSelected(tag: Tag) {

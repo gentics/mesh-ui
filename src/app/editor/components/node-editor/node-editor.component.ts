@@ -185,7 +185,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
             if (!this.node.uuid) {
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, this.tagsBar.nodeTags)
+                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
@@ -200,11 +200,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         this.isSaving = false;
                     });
             } else {
-                saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.nodeTags)
+                saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
-                            console.log('Done saving the node');
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                         }
@@ -222,7 +221,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     publishNode(): void {
         if (this.node && this.isDraft()) {
             const promise = this.isDirty ?
-                this.editorEffects.saveNode(this.node, this.tagsBar.nodeTags) :
+                this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null) :
                 Promise.resolve(this.node);
 
             promise.then(node => {
