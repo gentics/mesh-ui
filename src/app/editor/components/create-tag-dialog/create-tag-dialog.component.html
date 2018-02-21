@@ -1,0 +1,32 @@
+<div class="modal-title">
+    <h5>{{ 'editor.create_new_tag' | i18n }}</h5>
+</div>
+<div class="modal-content">
+    <gtx-input #InputTagName
+            label="Tag Name"
+            [(ngModel)]="newTagName">
+    </gtx-input>
+    <br />
+    <gtx-input #InputTagFamily
+            [(ngModel)]="inputTagFamilyValue"
+            label="Tag Family"
+            (focus)="onFamilyNameInputChange(inputTagFamilyValue)"
+            (ngModelChange)="onFamilyNameInputChange($event)">
+    </gtx-input>
+
+    <gtx-dropdown-list belowTrigger="true" #TagFamilyList width="trigger">
+        <gtx-dropdown-trigger>
+            <div></div>
+        </gtx-dropdown-trigger>
+        <gtx-dropdown-content>
+            <gtx-dropdown-item *ngFor="let family of filteredFamilies"
+                                (click)="onFamilySelected(family)"
+                                [innerHTML]="family.valueFormatted">
+            </gtx-dropdown-item>
+        </gtx-dropdown-content>
+    </gtx-dropdown-list>
+</div>
+<div class="modal-footer">
+    <gtx-button type="secondary" flat (click)="cancelFn(false)" class="button_cancel">{{ 'common.cancel_button' | i18n }}</gtx-button>
+    <gtx-button type="primary" (click)="saveAndClose()" class="button_save"><icon left>save</icon> {{ 'modal.save_and_close_button' | i18n }}</gtx-button>
+</div>

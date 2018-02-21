@@ -10,6 +10,8 @@ import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
+
 
 
 @Component({
@@ -30,6 +32,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
     constructor(private changeDetector: ChangeDetectorRef,
                 private listEffects: ListEffectsService,
+                private tagEffects: TagsEffectsService,
                 private navigationService: NavigationService,
                 private route: ActivatedRoute,
                 private entities: EntitiesService,
@@ -63,6 +66,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .subscribe(projectName => {
                 this.listEffects.loadSchemasForProject(projectName);
                 this.listEffects.loadMicroschemasForProject(projectName);
+                this.tagEffects.loadTagFamiliesAndTheirTags(projectName);
             });
 
         this.subscription = routerParamsSub

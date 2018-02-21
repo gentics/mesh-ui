@@ -13,7 +13,7 @@ export class NodeEditorGuard implements CanDeactivate<NodeEditorComponent> {
     constructor(private modalService: ModalService) {}
 
     canDeactivate(nodeEditor: NodeEditorComponent, route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-        if (nodeEditor.formGenerator.isDirty) {
+        if (nodeEditor.isDirty) {
             const options = {
                 closeOnOverlayClick: false
             };

@@ -11,6 +11,8 @@ import { Schema } from '../../common/models/schema.model';
 import { Microschema } from '../../common/models/microschema.model';
 import { AppState } from '../models/app-state.model';
 import { concatUnique } from '../../common/util/util';
+import { TagFamily } from '../../common/models/tag-family.model';
+import { Tag } from '../../common/models/tag.model';
 
 export interface NodeDiscriminatorOptions {
     /**
@@ -45,7 +47,9 @@ export class EntitiesService {
         node: [],
         user: [],
         schema: [],
-        microschema: []
+        microschema: [],
+        tag: [],
+        tagFamily: [],
     };
 
     constructor(private state: ApplicationStateService,
@@ -189,6 +193,67 @@ export class EntitiesService {
             state.entities.microschema,
             this.discriminator.microschema,
             { uuid, version }
+        );
+    }
+
+
+    getTagFamily(uuid: string): TagFamily | undefined {
+        return this.getTagFamilyFromState(this.state.now, uuid);
+    }
+
+    // TODO: version should be of type string, it was fixed in Mesh 0.9.20
+    selectTagFamily(uuid: string): Observable<TagFamily> {
+        return this.selectWithFilter(state => this.getTagFamilyFromState(state, uuid));
+    }
+
+    getAllTagFamilies(): TagFamily[] {
+        return this.getAllTagFamiliesFromState(this.state.now);
+    }
+
+    selectAllTagFamilies(): Observable<TagFamily[]> {
+        return this.state.select(state => this.getAllTagFamiliesFromState(state));
+    }
+
+    private getAllTagFamiliesFromState(state: AppState): TagFamily[] {
+        return Object.keys(state.entities.tagFamily).map(uuid => this.getTagFamilyFromState(state, uuid)!);
+    }
+
+    private getTagFamilyFromState(state: AppState, uuid: string): TagFamily | undefined {
+        return getNestedEntity<'tagFamily'>(
+            state.entities.tagFamily,
+            this.discriminator.tagFamily,
+            { uuid }
+        );
+    }
+
+
+
+    getTag(uuid: string): Tag | undefined {
+        return this.getTagFromState(this.state.now, uuid);
+    }
+
+    // TODO: version should be of type string, it was fixed in Mesh 0.9.20
+    selectTag(uuid: string): Observable<Tag> {
+        return this.selectWithFilter(state => this.getTagFromState(state, uuid));
+    }
+
+    getAllTags(): Tag[] {
+        return this.getAllTagsFromState(this.state.now);
+    }
+
+    selectAllTags(): Observable<Tag[]> {
+        return this.state.select(state => this.getAllTagsFromState(state));
+    }
+
+    private getAllTagsFromState(state: AppState): Tag[] {
+        return Object.keys(state.entities.tag).map(uuid => this.getTagFromState(state, uuid)!);
+    }
+
+    private getTagFromState(state: AppState, uuid: string): Tag | undefined {
+        return getNestedEntity<'tag'>(
+            state.entities.tag,
+            this.discriminator.tag,
+            { uuid }
         );
     }
 

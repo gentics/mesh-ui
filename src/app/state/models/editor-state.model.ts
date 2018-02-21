@@ -1,5 +1,3 @@
-import { MeshNode } from "../../common/models/node.model";
-
 export interface EditorState {
     editorIsOpen: boolean;
     editorIsFocused: boolean;
@@ -12,4 +10,3 @@ export interface EditorState {
     } | null;
     loadCount: number;
 }
-

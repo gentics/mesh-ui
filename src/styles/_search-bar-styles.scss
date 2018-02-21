@@ -1,0 +1,38 @@
+@import "variables";
+
+@mixin search-bar-styles {
+    .search-bar-container {
+        position: relative;
+        @media screen and (max-width: $medium-screen) {
+            margin-right: 125px;
+        }
+        @media screen and (max-width: $small-screen) {
+            margin-left: 32px;
+            margin-right: 122px;
+        }
+    }
+
+    gtx-search-bar {
+        background-color: white;
+        &::shadow {
+            .submit-button {
+                @media screen and (max-width: $small-screen) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    gtx-search-bar /deep/ .contents {
+        display: flex;
+        max-width: 50%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .search-chip .chip-contents .searching {
+        @media screen and (max-width: $small-screen) {
+            display: none;
+        }
+    }
+}

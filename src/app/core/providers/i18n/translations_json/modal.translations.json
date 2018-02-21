@@ -86,5 +86,15 @@
     "uploading_files": {
       "en": "Uploading files…",
       "de": "Lade Dateien hoch …"
+    },
+
+    "removed_tags": {
+      "en": "Removed tags",
+      "de": "Tags gelöscht"
+    },
+
+    "added_tags": {
+      "en": "Added tags",
+      "de": "Tags hinzugefügt"
     }
   }

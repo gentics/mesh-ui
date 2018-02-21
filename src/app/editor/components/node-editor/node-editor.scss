@@ -58,12 +58,17 @@
 .tags-row {
     display: flex;
     justify-content: space-between;
-    .tags, .versions {
-        padding: 5px;
+
+    .tags {
         color: $gtx-color-light-gray;
+        width: 100%;
     }
 }
 .editor-body {
     overflow-y: auto;
     flex-grow: 1;
+}
+
+app-node-tags-bar {
+    display: block;
 }

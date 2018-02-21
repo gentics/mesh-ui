@@ -18,6 +18,7 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { ModalService, IDialogConfig, IModalOptions, IModalInstance } from 'gentics-ui-core';
 import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
+import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 
 @Component({
     selector: 'node-editor',
@@ -38,7 +39,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     private openNode$: Subscription;
 
-    @ViewChild(FormGeneratorComponent) formGenerator: FormGeneratorComponent;
+    @ViewChild(FormGeneratorComponent) formGenerator?: FormGeneratorComponent;
+    @ViewChild(NodeTagsBarComponent) tagsBar?: NodeTagsBarComponent;
 
     constructor(private state: ApplicationStateService,
         private entities: EntitiesService,
@@ -69,7 +71,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.openNode$ = this.state.select(state => state.editor.openNode)
             .filter(Boolean)
             .switchMap(openNode => {
-
                 // const {uuid, language, schemaUuid, parentNodeUuid} = openNode;
                 const schemaUuid = openNode && openNode.schemaUuid;
                 if (schemaUuid) {
@@ -173,18 +174,18 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
+
         if (!this.node) {
             return;
         }
 
-        if (this.formGenerator.isDirty) {
-
+        if (this.isDirty) {
             this.isSaving = true;
             let saveFn: Promise<any>;
 
             if (!this.node.uuid) {
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node)
+                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
@@ -199,11 +200,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         this.isSaving = false;
                     });
             } else {
-                saveFn = this.editorEffects.saveNode(this.node)
+                saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
-                            console.log('Done saving the node');
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                         }
@@ -220,8 +220,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      */
     publishNode(): void {
         if (this.node && this.isDraft()) {
-            const promise = this.formGenerator.isDirty ?
-                this.editorEffects.saveNode(this.node) :
+            const promise = this.isDirty ?
+                this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null) :
                 Promise.resolve(this.node);
 
             promise.then(node => {
@@ -238,6 +238,11 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     focusList(): void {
         this.state.actions.editor.focusList();
+    }
+
+
+    get isDirty(): boolean {
+        return this.formGenerator.isDirty || this.tagsBar.isDirty;
     }
 
     private getNodeTitle(): string {

@@ -1,0 +1,16 @@
+@import "variables";
+@include filter-selection;
+
+gtx-dropdown-list, gtx-dropdown-trigger {
+    width: 100%;
+    display: block;
+}
+
+
+gtx-input /deep/ input {
+    margin-bottom: 0 !important;
+}
+
+.modal-footer {
+    margin-top: 15px;
+}

@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
+import { GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
 
 import { NavigationService, InstructionActions } from '../../../core/providers/navigation/navigation.service';
 import { NodeEditorComponent } from './node-editor.component';
@@ -14,16 +15,17 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { componentTest } from '../../../../testing/component-test';
 import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
 import { VersionLabelComponent } from '../version-label/version-label.component';
-import { Button, Icon, DropdownTriggerDirective, ProgressBar, ModalService, OverlayHostService } from 'gentics-ui-core';
 import { NodeLanguageSwitcherComponent } from '../node-language-switcher/node-language-switcher.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
-import { DropdownContent } from 'gentics-ui-core/dist/components/dropdown-list/dropdown-content.component';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockSchema, mockMeshNode } from '../../../../testing/mock-models';
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 import { FieldGeneratorService } from '../../form-generator/providers/field-generator/field-generator.service';
 import { MeshControlGroupService } from '../../form-generator/providers/field-control-group/mesh-control-group.service';
+import { TagReferenceFromServer } from '../../../common/models/server-models';
+import { FilterSelection } from '../../../common/models/common.model';
+import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
@@ -38,10 +40,8 @@ describe('NodeEditorComponent', () => {
                 SchemaLabelComponent,
                 VersionLabelComponent,
                 NodeLanguageLabelComponent,
-                Button,
-                Icon,
-                ProgressBar,
-                MockLanguageSwitcher,
+                MockLanguageSwitcherComponent,
+                NodeTagsBarComponent,
                 FormGeneratorComponent
             ],
             providers: [
@@ -57,7 +57,10 @@ describe('NodeEditorComponent', () => {
                 ModalService,
                 OverlayHostService,
             ],
-            imports: [RouterTestingModule.withRoutes([])]
+            imports: [
+                RouterTestingModule.withRoutes([]),
+                GenticsUICoreModule,
+            ]
         });
         editorEffectsService = TestBed.get(EditorEffectsService);
         state = TestBed.get(ApplicationStateService);
@@ -219,6 +222,7 @@ describe('NodeEditorComponent', () => {
     });
 });
 
+
 class MockEditorEffectsService {
     saveNewNode = jasmine.createSpy('saveNewNode');
     closeEditor = jasmine.createSpy('closeEditor');
@@ -253,7 +257,7 @@ class MockMeshControlGroupService {
 }
 
 @Component({ selector: 'node-language-switcher', template: '' })
-class MockLanguageSwitcher {
+class MockLanguageSwitcherComponent {
     @Input()
     node: any;
 }
