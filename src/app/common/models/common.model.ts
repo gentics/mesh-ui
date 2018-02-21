@@ -20,7 +20,7 @@ export interface BaseProperties {
     uuid: string;
 }
 
-/** Contains an original value and a value with special formating applied. */
+/** Contains an original value and a value with special formatting applied. */
 export interface FilterSelection {
     value: string;
     valueFormatted: string;
