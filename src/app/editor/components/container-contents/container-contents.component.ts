@@ -38,7 +38,6 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 private state: ApplicationStateService) {
     }
 
-
     ngOnInit(): void {
 
         const onLogin$ = this.state.select(state => state.auth.loggedIn)
@@ -53,27 +52,15 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
-        /*const childNodesSub = this.state.select(state => state.list.children)
-            .map(childrenUuids =>
-                    childrenUuids && childrenUuids
-                    .map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }))
-            )
-            .subscribe(childNodes => {
-                this.updateChildList(childNodes);
-            });*/
 
         const childNodesSub = this.state.select(state => state.list.children)
-        .subscribe(childrenUuid => {
-            this.updateChildList();
-        });
+            .subscribe(childrenUuid => this.updateChildList());
 
         const filterSub = this.state.select(state => state.list.filterTerm)
             .subscribe(filter => this.updateChildList());
 
-        /*const searchSub = this.state.select(state => state.list.searchResults)
-            .subscribe(results => {
-                this.updateChildListWithSearchResults(results);
-            });*/
+        const searchSub = this.state.select(state => state.list.searchResults)
+            .subscribe(results => this.updateChildList());
 
         const onProjectLoadSchemasSub = this.state
             .select(state => state.list.currentProject)
@@ -90,19 +77,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .add(onProjectLoadSchemasSub)
     }
 
-    /**Matches the some fields of the node with the filter */
-    private selectNodesByFilter = (node:MeshNode): boolean => {
-        //no filter set, return all the results
-        if (!this.state.now.list.filterTerm) {
-            return true;
-        }
-
-        const matches: string[] = fuzzyMatch(this.state.now.list.filterTerm, node.displayName);
-        return matches && matches.length > 0;
-    }
-
-    private filterNodes = () => {
-        const childNodes = this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
+    private filterNodes = (childNodes: MeshNode[]) => {
         const filteredNodes = childNodes.reduce<FilterSelection[]>((filteredNodes, node) => {
             const matchedNode = fuzzyReplace(this.state.now.list.filterTerm, node.displayName);
             if (matchedNode) {
@@ -127,9 +102,9 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 params.has('language')
             )
             .map(paramMap => ({
-                containerUuid: paramMap.get('containerUuid')!,
-                projectName: paramMap.get('projectName')!,
-                language: paramMap.get('language')!
+                containerUuid: paramMap.get('containerUuid'),
+                projectName: paramMap.get('projectName'),
+                language: paramMap.get('language')
             }))
             .distinctUntilChanged((a, b) =>
                 a.containerUuid === b.containerUuid &&
@@ -139,14 +114,15 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     private updateChildList(): void {
-
-        const childNodes = this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
+        //const childNodes = this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
+        const childNodes: MeshNode[] = this.state.now.list.searchResults !== null
+            ? this.state.now.list.searchResults.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }))
+            : this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
 
         const schemas: SchemaReference[] = [];
         const childrenBySchema: { [schemaUuid: string]: FilterSelection[] } = {};
 
-        //const filteredNodes = childNodes.filter(this.selectNodesByFilter);
-        const filteredNodes = this.filterNodes();
+        const filteredNodes = this.filterNodes(childNodes);
 
         for (const filteredNode of filteredNodes || []) {
             const node = (filteredNode as FilterSelection).extra as MeshNode;
@@ -161,24 +137,6 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         this.childrenBySchema = childrenBySchema;
         this.changeDetector.markForCheck();
     }
-
-    /*private updateChildListWithSearchResults(nodes: MeshNode[]): void {
-        const schemas: SchemaReference[] = [];
-        const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
-
-
-        for (const node of nodes || []) {
-            if (!schemas.some(schema => node.schema.uuid === schema.uuid)) {
-                schemas.push(node.schema);
-                childrenBySchema[node.schema.uuid] = [];
-            }
-            childrenBySchema[node.schema.uuid].push(node);
-        }
-
-        this.schemas = schemas;
-        this.childrenBySchema = childrenBySchema;
-        this.changeDetector.markForCheck();
-    }*/
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();

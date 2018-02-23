@@ -15,9 +15,10 @@ import { fuzzyReplace } from '../../../common/util/fuzzy-search';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 import { stringToColor } from '../../../common/util/util';
+import { Tag } from '../../../common/models/tag.model';
 
 @Component({
-    selector: 'search-bar',
+    selector: 'app-search-bar',
     templateUrl: './search-bar.component.html',
     styleUrls: ['./search-bar.scss']
 })
@@ -25,8 +26,11 @@ import { stringToColor } from '../../../common/util/util';
 export class SearchBarComponent implements OnInit {
     private searching = false;
 
-    filterTerm$: Observable<string>;
-    searchTerm$: Observable<string>;
+    inputValue: string = '';
+    searchQuery: string = '';
+    //filterTerm$: Observable<string>;
+    //searchTerm$: Observable<string>;
+    searchTags: Tag[] = [];
 
     filteredTags: FilterSelection[];
 
@@ -43,19 +47,19 @@ export class SearchBarComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.filterTerm$ = this.state.select(state => state.list.filterTerm);
-        this.searchTerm$ = this.state.select(state => state.list.searchTerm);
-    }
-
-    getTagBackgroundColor(familyName: string): SafeStyle {
-        return this.sanitized.bypassSecurityTrustStyle(stringToColor(familyName));
+        //this.filterTerm$ = this.state.select(state => state.list.filterTerm);
+        //this.searchTerm$ = this.state.select(state => state.list.searchTerm);
     }
 
     private filterTags(term: string): FilterSelection[] {
         if (term.trim() === '') {
             return [];
         }
-        const tags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
+
+        const tags = this.state.now.tags.tags
+                        .map(uuid => this.entities.getTag(uuid))
+                        .filter(tag => this.searchTags.every(searchTag => searchTag.uuid !== tag.uuid));
+
         const filteredTags = tags.reduce<FilterSelection[]>((filteredTags, tag) => {
             const matchedName = fuzzyReplace(term, tag.name);
             return (matchedName === null) ? filteredTags : [...filteredTags, { ...matchedName, tag }];
@@ -66,36 +70,52 @@ export class SearchBarComponent implements OnInit {
     /**
      * Update the filterTerm state
      */
-    filterTermChanged(term: string): void {
-        const firstChar = term.charAt(0);
-        if (firstChar === '#' && term.length > 1) {
-            this.filteredTags = this.filterTags(term.substr(1));
-            console.log('what do we have in filter taga', this.filteredTags);
+    filterTermChanged(): void {
+        const firstChar = this.inputValue.charAt(0);
+        if (firstChar === '#') {
+            this.filteredTags = this.filterTags(this.inputValue.substr(1));
             if (!this.dropDownList.isOpen) {
                 this.dropDownList.openDropdown();
             }
             this.dropDownList.resize();
         } else {
-            this.state.actions.list.setFilterTerm(term);
+            this.state.actions.list.setFilterTerm(this.inputValue);
         }
+    }
+
+    onSearchTagSelected(tag: Tag) {
+        this.searchTags = [...this.searchTags, tag];
+        this.inputValue = '';
+        //this.listEffects.searhChildrenBySearhTags(searchTags, this.state.now.list.currentProject);
+    }
+
+    onTagDeleted(tag: Tag) {
+        this.searchTags = this.searchTags.filter(searchTag => searchTag.uuid !== tag.uuid);
     }
 
     /**
      * Update the searchTerm state
      */
-    searchTermChanged(term: string): void {
+    searchTermChanged(): void {
+        const firstChar = this.inputValue.charAt(0);
+        if (firstChar === '#') { // In tag mode search - ignore this event
+            return;
+        }
 
-        term = term.trim();
-        this.filterTermChanged('');
-        this.state.actions.list.setSearchTerm(term);
+        this.searchQuery = this.inputValue.trim();
+        // this.state.actions.list.setSearchTerm(term);
 
-        if (!term) {
+        if (!this.searchQuery) { // reset the search term
+            this.listEffects.resetSearch();
             this.listEffects.setActiveContainer(
                 this.state.now.list.currentProject,
                 this.state.now.list.currentNode,
                 this.state.now.list.language);
         } else {
-            this.listEffects.searchChildren(term, this.state.now.list.currentProject, this.state.now.list.language);
+            this.listEffects.searchNodesByKeyword(this.searchQuery, this.state.now.list.currentProject, this.state.now.list.language);
         }
+
+        this.inputValue = '';
+        this.state.actions.list.setFilterTerm(this.inputValue);
     }
 }

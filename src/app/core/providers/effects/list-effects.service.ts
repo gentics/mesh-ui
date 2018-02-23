@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+
 import { ApiService } from '../api/api.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ConfigService } from '../config/config.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshNode } from '../../../common/models/node.model';
 import { NodeResponse } from '../../../common/models/server-models';
+import { Tag } from '../../../common/models/tag.model';
+import { I18nNotification } from '../i18n-notification/i18n-notification.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Injectable()
 export class ListEffectsService {
@@ -12,6 +16,7 @@ export class ListEffectsService {
     constructor(private api: ApiService,
                 private config: ConfigService,
                 private state: ApplicationStateService,
+                private notification: I18nNotification,
                 private entities: EntitiesService) {
     }
 
@@ -19,6 +24,7 @@ export class ListEffectsService {
      * Load all projects
      */
     loadProjects() {
+
         this.state.actions.list.fetchProjectsStart();
         // TODO How to handle paging? Should all projects be loaded?
         this.api.project.getProjects({})
@@ -73,7 +79,7 @@ export class ListEffectsService {
     /**
      * Load the children for the opened folder
      */
-    loadChildren(projectName: string, containerUuid: string, language: string) {
+    loadChildren(projectName: string, containerUuid: string, language: string):void {
          // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
         this.api.project
@@ -86,60 +92,87 @@ export class ListEffectsService {
             });
     }
 
+    searhNodesByTags(tags: string, project: string): void {
+        this.state.actions.list.actionStart();
+        const query = JSON.stringify({
+            query: {
+                query_string: {
+                    query: tags
+                }
+            }
+        });
+
+        const queryString = `{
+            tags (query: ${JSON.stringify(query)}) {
+                elements {
+                    name,
+                    uuid,
+                    tagFamily {
+                        name
+                    },
+                    nodes {
+                        elements {
+                        uuid
+                        }
+                    }
+                }
+            }
+        }`;
+
+    this.api.graphQL({project}, {query: queryString})
+        .subscribe(results => {
+            console.log('results', results);
+            this.state.actions.list.actionSuccess();
+        });
+    }
+
+    resetSearch(): void  {
+        this.state.actions.list.setSearchResults(null);
+    }
+
     /**
      * Load the children for the opened folder
      */
-    searchChildren(searchTerm: string, projectName: string, language: string) {
-        // Refresh child node list
-
-        /*const searchQuery = {
+    searchNodesByKeyword(term: string, project: string, language: string): void {
+        this.state.actions.list.actionStart();
+        const query = JSON.stringify({
             query: {
                 query_string: {
-                    query: searchTerm
+                    query: term
                 }
             }
-        };
-        const searchQueryObject = JSON.stringify(searchQuery).replace(/"/g, '\\"');
-        const query = `{
-            nodes(query: "${searchQueryObject}") {
-              elements
-              totalCount
-            }
-          }`;
-
-        this.api.graphQL({project: projectName}, {query})
-        .subscribe(response => {
-            console.log('ive got the response', response);
-        });*/
-
-        /*const searchTagsQuery = {
-                                    "query": {
-                                        "bool": {
-                                            "must": {
-                                                "match_phrase": {
-                                                "tags.name": "colour"
-                                                }
-                                            }
-                                        }
-                                    }
-                                };
-
-        this.api.project.searchTags({project: projectName}, searchTagsQuery)
-        .subscribe(result => {
-            console.log('got tag results', result);
-        })*/
-
-        this.state.actions.list.searchNodesStart();
-        const searchObject = {query: {
-                                        match_phrase: {
-                                            ['displayField.value']: searchTerm}
-                                        },
-                                        sort: [{created: 'asc'}]};
-
-        this.api.project.searchNodes({project: projectName}, searchObject)
-        .subscribe(response => {
-            this.state.actions.list.searchNodesSuccess(response.data);
         });
+
+        const queryString = `{
+            nodes (query: ${JSON.stringify(query)}) {
+                elements {
+                  displayName,
+                  uuid,
+                }
+            }
+        }`;
+
+        this.api.graphQL({project}, {query: queryString})
+            .subscribe(results => {
+                if (results.data) {
+                    if (results.data.nodes.elements.length === 0) {
+                        this.state.actions.list.setSearchResults([]);
+                    } else {
+                        forkJoin<NodeResponse>(results.data.nodes.elements.map(node =>
+                            this.api.project.getNode({project, nodeUuid: node.uuid})
+                        ))
+                        .first()
+                        .subscribe(nodes => {
+                            this.state.actions.list.setSearchResults(nodes);
+                        });
+                    }
+                } else {
+                    this.notification.show({
+                        type: 'error',
+                        message: 'list.search_error_occured'
+                    });
+                }
+            });
    }
 
     /**

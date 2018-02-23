@@ -11,6 +11,7 @@ import { Microschema } from '../../common/models/microschema.model';
 import { Schema } from '../../common/models/schema.model';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { MeshNode } from '../../common/models/node.model';
+import { Tag } from '../../common/models/tag.model';
 
 @Injectable()
 @Immutable()
@@ -30,8 +31,9 @@ export class ListStateActions extends StateActionBranch<AppState> {
                     language: config.FALLBACK_LANGUAGE,
                     children: [],
                     searchResults: null,
+                    //searchTags: [],
+                    //searchTerm: '',
                     filterTerm: '',
-                    searchTerm: '',
                 }
             }
         });
@@ -61,19 +63,8 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount--;
     }
 
-
     searchNodesStart() {
         this.list.loadCount++;
-    }
-
-    // TODO: think about how we will handle language variants of containers.
-    // For now we will rely on the "best guess" default behaviour of
-    // the getNestedEntity() function within mergeEntityState()
-    searchNodesSuccess(children: NodeResponse[]) {
-        this.list.loadCount--;
-        this.entities = mergeEntityState(this.entities, { node : children});
-
-        this.list.children = children.map(node => node.uuid);
     }
 
     fetchNodesError() {
@@ -195,6 +186,14 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount--;
     }
 
+    actionStart() {
+        this.list.loadCount++;
+    }
+
+    actionSuccess() {
+        this.list.loadCount--;
+    }
+
     /** Change the active container in the list view from values of the current route. */
     setActiveContainer(projectName: string, containerUuid: string, language: string) {
         this.list.currentProject = projectName;
@@ -202,19 +201,25 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.language = language;
     }
 
-    /** sets the search filter for the nodes */
+    /** Sets the filter term for the nodes. */
     setFilterTerm(term: string): void {
         this.list.filterTerm = term;
     }
 
-
-    /** sets the search filter for the nodes */
-    setSearchTerm(term: string): void {
-        this.list.searchTerm = term;
-    }
-
-     /** sets the search filter for the nodes */
-     setSearchResults(result: MeshNode[]): void {
-        this.list.searchResults = result;
+    /** Sets the search results for the nodes. */
+    setSearchResults(nodes?: NodeResponse[]): void {
+        // this.list.searchResults = result;
+        if (nodes === null) {
+            this.list.searchResults = null;
+        } else {
+            const searchResults: string[] = [];
+            nodes.map(node => {
+                this.entities = mergeEntityState(this.entities, {
+                    node: [node]
+                });
+                searchResults.push(node.uuid);
+            });
+            this.list.searchResults = searchResults;
+        }
     }
 }

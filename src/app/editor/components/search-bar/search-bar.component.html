@@ -1,33 +1,38 @@
 <div class="search-row">
   <gtx-progress-bar [active]="searching"></gtx-progress-bar>
 <!--<gtx-input placeholder="Search" class="search-input" (change)="filter(searchField.currentValue.trim())" #searchField></gtx-input>-->
-    <gtx-search-bar [query]="filterTerm$ | async"
+    <gtx-search-bar [(ngModel)]="inputValue"
                     [placeholder]="'common.search_placeholder' | i18n"
-                    [formControl]="filterInput"
-                    (clear)="filterTermChanged('')"
-                    (change)="filterTermChanged($event)"
-                    (search)="searchTermChanged($event)"
+                    (clear)="inputValue=''; filterTermChanged()"
+                    (ngModelChange)="filterTermChanged()"
+                    (search)="searchTermChanged()"
                     name="search-bar">
 
-        <div class="search-chip" *ngIf="searchTerm$ | async">
-        <span class="chip-contents">
-            <span class="searching">{{ 'common.searching' | i18n }} </span>"{{ searchTerm$ | async }}"</span>
-        <i class="remove-button material-icons" (click)="searchTermChanged('')">close</i>
+        <div *ngFor="let tag of searchTags" class="search-chip" [appBackgroundFrom]="tag.tagFamily.name">
+            <span class="chip-contents">{{tag.name}}</span>
+            <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
+        </div>
+
+        <div class="search-chip" *ngIf="searchQuery">
+            <span class="chip-contents">
+                <span class="searching">{{ 'common.searching' | i18n }} "</span>{{ this.searchQuery }}<span class="searching">"</span>
+            </span>
+            <i class="remove-button material-icons" (click)="searchQuery=''; this.searchTermChanged()">close</i>
         </div>
     </gtx-search-bar>
+
 
     <gtx-dropdown-list belowTrigger="true" width="expand">
         <gtx-dropdown-trigger>
             <div class="dropdown-trigger"></div>
         </gtx-dropdown-trigger>
         <gtx-dropdown-content>
-            <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag.tag)">
+            <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onSearchTagSelected(tag.tag)">
                 <span class="tag-family">{{tag.tag.tagFamily.name}}</span>
-                <span class="tag-name" [style.background]="getTagBackgroundColor(tag.tag.tagFamily.name)">
+                <span class="tag-name" [appBackgroundFrom]="tag.tag.tagFamily.name">
                     <span [innerHTML]="tag.valueFormatted"></span>
                 </span>
             </gtx-dropdown-item>
         </gtx-dropdown-content>
   </gtx-dropdown-list>
-
 </div>

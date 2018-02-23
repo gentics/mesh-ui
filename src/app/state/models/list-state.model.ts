@@ -1,4 +1,5 @@
 import { MeshNode } from "../../common/models/node.model";
+import { Tag } from "../../common/models/tag.model";
 
 export interface ListState {
     currentProject: string | undefined;
@@ -7,6 +8,5 @@ export interface ListState {
     language: string;
     children: string[];
     filterTerm: string;
-    searchTerm: string;
-    searchResults?: MeshNode[];
+    searchResults?: string[];
 }

@@ -11,6 +11,7 @@ import { I18nPipe } from './pipes/i18n/i18n.pipe';
 import { ScrollFrameDirective } from './components/scroll-frame/scroll-frame.directive';
 import { ScrollFrameHeadingDirective } from './components/scroll-frame/scroll-frame-heading.directive';
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
+import { BackgroundFromDirective } from './directives/background-from.directive';
 
 
 const SHARED_COMPONENTS = [
@@ -21,7 +22,8 @@ const SHARED_COMPONENTS = [
 
 const SHARED_DIRECTIVES = [
     ScrollFrameDirective,
-    ScrollFrameHeadingDirective
+    ScrollFrameHeadingDirective,
+    BackgroundFromDirective
 ];
 
 const SHARED_PIPES = [
