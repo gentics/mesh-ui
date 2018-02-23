@@ -1,5 +1,9 @@
 # MeshAdminUI Changelog
 
+## Version 0.9.1 (2018-02-23)
+
+* Restrict nodes to certain schema if allow is set in node list fields
+
 ## Version 0.9.0 (2018-01-25)
 * Add support for Gentics Mesh 0.15.0
 
