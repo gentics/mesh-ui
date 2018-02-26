@@ -59,7 +59,10 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         const filterSub = this.state.select(state => state.list.filterTerm)
             .subscribe(filter => this.updateChildList());
 
-        const searchSub = this.state.select(state => state.list.searchResults)
+        const searchSub = this.state.select(state => state.list.searchByKeywordResults)
+            .subscribe(results => this.updateChildList());
+
+        const searchByTagSub = this.state.select(state => state.list.searchByTagResults)
             .subscribe(results => this.updateChildList());
 
         const onProjectLoadSchemasSub = this.state
@@ -113,11 +116,39 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             );
     }
 
+    // There are two types of search results: Search by keyword (list.searchByKeywordResults and list.searchByTagResults).
+    // First we look at the searchByKeywordResults and if it's !== null we apply intersect it with the searchByTagResults
+    // If The searchByKeywordResults === null and searchByTagResuls !== null - we return full searchByTagResults.
+    // Otherwise we just return nodes of current selected parent node
+    private getSearchResults (): MeshNode[] {
+        let childNodesUuid;
+        console.log('getting cildren');
+
+        if (this.state.now.list.searchByKeywordResults !== null) {
+            if (this.state.now.list.searchByTagResults !== null && this.state.now.list.searchByTagResults.length > 0) { //intersect with searchByTagResults
+                childNodesUuid = this.state.now.list.searchByKeywordResults.filter(searchByKeywordUuid =>
+                    this.state.now.list.searchByTagResults.some(searchByTagUuid =>
+                        searchByKeywordUuid === searchByTagUuid));
+            } else {
+                childNodesUuid = this.state.now.list.searchByKeywordResults;
+            }
+        } else if (this.state.now.list.searchByTagResults != null && this.state.now.list.searchByTagResults.length > 0) {
+            childNodesUuid = this.state.now.list.searchByTagResults;
+        } else { // no searching is done at all
+            childNodesUuid = this.state.now.list.children;
+        }
+
+        return childNodesUuid.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
+    }
+
     private updateChildList(): void {
         //const childNodes = this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
-        const childNodes: MeshNode[] = this.state.now.list.searchResults !== null
+        /*const childNodes: MeshNode[] = this.state.now.list.searchResults !== null
             ? this.state.now.list.searchResults.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }))
-            : this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
+            : this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));*/
+
+        const childNodes: MeshNode[] = this.getSearchResults();
+
 
         const schemas: SchemaReference[] = [];
         const childrenBySchema: { [schemaUuid: string]: FilterSelection[] } = {};

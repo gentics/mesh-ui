@@ -92,12 +92,14 @@ export class ListEffectsService {
             });
     }
 
-    searhNodesByTags(tags: string, project: string): void {
+    searhNodesByTags(tags: Tag[], project: string): void {
+
+        const tagsNames: string = tags.map(tag => tag.name).join(' ');
         this.state.actions.list.actionStart();
         const query = JSON.stringify({
             query: {
                 query_string: {
-                    query: tags
+                    query: tagsNames
                 }
             }
         });
@@ -121,13 +123,31 @@ export class ListEffectsService {
 
     this.api.graphQL({project}, {query: queryString})
         .subscribe(results => {
-            console.log('results', results);
+            if (results.data) {
+                if (results.data.tags.elements.length === 0) {
+                    this.state.actions.list.setSearchByTagResults([]);
+                } else {
+
+                    const foundNodesForTags: string[] = [];
+                    results.data.tags.elements.forEach(tag =>
+                        tag.nodes.elements.forEach(node => foundNodesForTags.push(node.uuid)));
+
+                    forkJoin<NodeResponse>(foundNodesForTags.map(nodeUuid =>
+                        this.api.project.getNode({project, nodeUuid})
+                    ))
+                    .first()
+                    .subscribe(nodes => {
+                        this.state.actions.list.setSearchByTagResults(nodes);
+                    });
+                }
+            } else {
+                this.notification.show({
+                    type: 'error',
+                    message: 'list.search_error_occured'
+                });
+            }
             this.state.actions.list.actionSuccess();
         });
-    }
-
-    resetSearch(): void  {
-        this.state.actions.list.setSearchResults(null);
     }
 
     /**
@@ -156,14 +176,14 @@ export class ListEffectsService {
             .subscribe(results => {
                 if (results.data) {
                     if (results.data.nodes.elements.length === 0) {
-                        this.state.actions.list.setSearchResults([]);
+                        this.state.actions.list.setSearchByKeywordResults([]);
                     } else {
                         forkJoin<NodeResponse>(results.data.nodes.elements.map(node =>
                             this.api.project.getNode({project, nodeUuid: node.uuid})
                         ))
                         .first()
                         .subscribe(nodes => {
-                            this.state.actions.list.setSearchResults(nodes);
+                            this.state.actions.list.setSearchByKeywordResults(nodes);
                         });
                     }
                 } else {
@@ -173,7 +193,85 @@ export class ListEffectsService {
                     });
                 }
             });
-   }
+    }
+
+    resetSearchByKeywordResults(): void  {
+        this.state.actions.list.setSearchByKeywordResults(null);
+    }
+
+    resetSearchByTagResults(): void  {
+        this.state.actions.list.setSearchByKeywordResults(null);
+    }
+
+   getTypes(): void {
+        const query = `query IntrospectionQuery {
+            __schema {
+                types {
+                    ...FullType
+                }
+            }
+        }
+        fragment FullType on __Type {
+                kind
+                name
+                description
+                fields(includeDeprecated: true) {
+                name
+                description
+                args {
+                    ...InputValue
+                }
+                type {
+                    ...TypeRef
+                }
+            }
+        }
+        fragment InputValue on __InputValue {
+            name
+            description
+            type {
+                ...TypeRef
+            }
+            defaultValue
+        }
+        fragment TypeRef on __Type {
+            kind
+            name
+            ofType {
+                kind
+                name
+                ofType {
+                    kind
+                    name
+                    ofType {
+                        kind
+                        name
+                        ofType {
+                            kind
+                            name
+                            ofType {
+                                kind
+                                name
+                                ofType {
+                                    kind
+                                    name
+                                    ofType {
+                                        kind
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }`;
+
+        this.api.graphQL({project: 'demo'}, {query: query})
+            .subscribe(result => {
+                console.log(result);
+            });
+    }
 
     /**
      * make a comma seperated list of langues. Put the passed language in front

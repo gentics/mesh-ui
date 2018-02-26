@@ -83,14 +83,16 @@ export class SearchBarComponent implements OnInit {
         }
     }
 
-    onSearchTagSelected(tag: Tag) {
+    onSearchTagSelected(tag: Tag): void {
         this.searchTags = [...this.searchTags, tag];
         this.inputValue = '';
-        //this.listEffects.searhChildrenBySearhTags(searchTags, this.state.now.list.currentProject);
+
+        this.listEffects.searhNodesByTags(this.searchTags, this.state.now.list.currentProject);
     }
 
-    onTagDeleted(tag: Tag) {
+    onTagDeleted(tag: Tag): void {
         this.searchTags = this.searchTags.filter(searchTag => searchTag.uuid !== tag.uuid);
+        this.listEffects.searhNodesByTags(this.searchTags, this.state.now.list.currentProject);
     }
 
     /**
@@ -106,7 +108,7 @@ export class SearchBarComponent implements OnInit {
         // this.state.actions.list.setSearchTerm(term);
 
         if (!this.searchQuery) { // reset the search term
-            this.listEffects.resetSearch();
+            this.listEffects.resetSearchByKeywordResults();
             this.listEffects.setActiveContainer(
                 this.state.now.list.currentProject,
                 this.state.now.list.currentNode,

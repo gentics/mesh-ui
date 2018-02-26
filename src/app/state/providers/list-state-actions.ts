@@ -30,7 +30,8 @@ export class ListStateActions extends StateActionBranch<AppState> {
                     loadCount: 0,
                     language: config.FALLBACK_LANGUAGE,
                     children: [],
-                    searchResults: null,
+                    searchByKeywordResults: null,
+                    searchByTagResults : null,
                     //searchTags: [],
                     //searchTerm: '',
                     filterTerm: '',
@@ -207,10 +208,10 @@ export class ListStateActions extends StateActionBranch<AppState> {
     }
 
     /** Sets the search results for the nodes. */
-    setSearchResults(nodes?: NodeResponse[]): void {
+    setSearchByKeywordResults(nodes?: NodeResponse[]): void {
         // this.list.searchResults = result;
         if (nodes === null) {
-            this.list.searchResults = null;
+            this.list.searchByKeywordResults = null;
         } else {
             const searchResults: string[] = [];
             nodes.map(node => {
@@ -219,7 +220,24 @@ export class ListStateActions extends StateActionBranch<AppState> {
                 });
                 searchResults.push(node.uuid);
             });
-            this.list.searchResults = searchResults;
+            this.list.searchByKeywordResults = searchResults;
+        }
+    }
+
+    /** Sets the search results for the nodes. */
+    setSearchByTagResults(nodes?: NodeResponse[]): void {
+        // this.list.searchResults = result;
+        if (nodes === null) {
+            this.list.searchByTagResults = null;
+        } else {
+            const searchByTagResults: string[] = [];
+            nodes.map(node => {
+                this.entities = mergeEntityState(this.entities, {
+                    node: [node]
+                });
+                searchByTagResults.push(node.uuid);
+            });
+            this.list.searchByTagResults = searchByTagResults;
         }
     }
 }

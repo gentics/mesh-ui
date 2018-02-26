@@ -8,16 +8,16 @@
                     (search)="searchTermChanged()"
                     name="search-bar">
 
-        <div *ngFor="let tag of searchTags" class="search-chip" [appBackgroundFrom]="tag.tagFamily.name">
-            <span class="chip-contents">{{tag.name}}</span>
-            <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
-        </div>
-
         <div class="search-chip" *ngIf="searchQuery">
             <span class="chip-contents">
                 <span class="searching">{{ 'common.searching' | i18n }} "</span>{{ this.searchQuery }}<span class="searching">"</span>
             </span>
             <i class="remove-button material-icons" (click)="searchQuery=''; this.searchTermChanged()">close</i>
+        </div>
+
+        <div *ngFor="let tag of searchTags" class="search-chip" [appBackgroundFrom]="tag.tagFamily.name">
+            <span class="chip-contents">{{tag.name}}</span>
+            <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
         </div>
     </gtx-search-bar>
 

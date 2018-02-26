@@ -8,5 +8,6 @@ export interface ListState {
     language: string;
     children: string[];
     filterTerm: string;
-    searchResults?: string[];
+    searchByKeywordResults?: string[];
+    searchByTagResults?: string[];
 }
