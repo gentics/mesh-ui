@@ -22,8 +22,6 @@ import { stringToColor } from '../../../common/util/util';
 import { Tag } from '../../../common/models/tag.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 
-
-
 @Component({
     selector: 'app-search-bar',
     templateUrl: './search-bar.component.html',
@@ -66,7 +64,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     }
 
     private searchParamsChanged(params: ParamMap) {
-
         this.searchQuery = params.get('q') || '';
         this.searchTags = (params.get('t') || '').split(',')
                                 .map(uuid => this.state.now.entities.tag[uuid])
@@ -95,12 +92,15 @@ export class SearchBarComponent implements OnInit, OnDestroy {
      */
     filterTermChanged(): void {
         const firstChar = this.inputValue.charAt(0);
+
         if (firstChar === '#') {
             this.filteredTags = this.filterTags(this.inputValue.substr(1));
             if (!this.dropDownList.isOpen) {
                 this.dropDownList.openDropdown();
+            } else {
+                this.dropDownList.resize();
             }
-            this.dropDownList.resize();
+
         } else {
             this.state.actions.list.setFilterTerm(this.inputValue);
         }
@@ -120,6 +120,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
      * Update the searchTerm state
      */
     searchTermChanged(): void {
+
         const firstChar = this.inputValue.charAt(0);
         if (firstChar === '#') { // In tag mode search - ignore this event
             return;

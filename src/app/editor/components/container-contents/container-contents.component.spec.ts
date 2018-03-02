@@ -1,12 +1,16 @@
+import { DebugElement, Component, Pipe, PipeTransform } from '@angular/core';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
+
+import { NeverObservable } from 'rxjs/Observable/NeverObservable';
+import { Observable } from 'rxjs/Observable';
+
+import { GenticsUICoreModule, ModalService, OverlayHostService, DropdownTriggerDirective, DropdownItem } from 'gentics-ui-core';
+
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { ContainerContentsComponent } from './container-contents.component';
-import { GenticsUICoreModule, ModalService, OverlayHostService, DropdownTriggerDirective, DropdownItem } from 'gentics-ui-core';
-import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { RouterTestingModule } from '@angular/router/testing';
-import { PipeTransform } from '@angular/core';
-import { Pipe } from '@angular/core';
 import { mockSchema, mockProject, mockMeshNode } from '../../../../testing/mock-models';
 import { Schema } from '../../../common/models/schema.model';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
@@ -21,17 +25,16 @@ import { NodeLanguageLabelComponent } from '../language-label/language-label.com
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { NeverObservable } from 'rxjs/Observable/NeverObservable';
-import { Observable } from 'rxjs/Observable';
+
+
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { DebugElement } from '@angular/core';
-import { Component } from '@angular/core';
+
+import { ContainerContentsComponent } from './container-contents.component';
 
 
 describe('ContainerContentsComponent', () => {
