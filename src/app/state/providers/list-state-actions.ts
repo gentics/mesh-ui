@@ -30,10 +30,6 @@ export class ListStateActions extends StateActionBranch<AppState> {
                     loadCount: 0,
                     language: config.FALLBACK_LANGUAGE,
                     children: [],
-                    searchByKeywordResults: null,
-                    searchByTagResults : null,
-                    //searchTags: [],
-                    //searchTerm: '',
                     filterTerm: '',
                 }
             }
@@ -205,39 +201,5 @@ export class ListStateActions extends StateActionBranch<AppState> {
     /** Sets the filter term for the nodes. */
     setFilterTerm(term: string): void {
         this.list.filterTerm = term;
-    }
-
-    /** Sets the search results for the nodes. */
-    setSearchByKeywordResults(nodes?: NodeResponse[]): void {
-        // this.list.searchResults = result;
-        if (nodes === null) {
-            this.list.searchByKeywordResults = null;
-        } else {
-            const searchResults: string[] = [];
-            nodes.map(node => {
-                this.entities = mergeEntityState(this.entities, {
-                    node: [node]
-                });
-                searchResults.push(node.uuid);
-            });
-            this.list.searchByKeywordResults = searchResults;
-        }
-    }
-
-    /** Sets the search results for the nodes. */
-    setSearchByTagResults(nodes?: NodeResponse[]): void {
-        // this.list.searchResults = result;
-        if (nodes === null) {
-            this.list.searchByTagResults = null;
-        } else {
-            const searchByTagResults: string[] = [];
-            nodes.map(node => {
-                this.entities = mergeEntityState(this.entities, {
-                    node: [node]
-                });
-                searchByTagResults.push(node.uuid);
-            });
-            this.list.searchByTagResults = searchByTagResults;
-        }
     }
 }

@@ -1,6 +1,6 @@
 <gtx-dropdown-list>
     <gtx-dropdown-trigger>
-        <gtx-button size="small" flat><icon left>add</icon> {{ 'editor.create_node' | i18n }}</gtx-button>
+        <gtx-button [disabled]="disabled" size="small" flat><icon left>add</icon> {{ 'editor.create_node' | i18n }}</gtx-button>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
         <gtx-dropdown-item *ngFor="let schema of schemas$ | async" (click)="itemClick(schema)">

@@ -1,12 +1,19 @@
 <breadcrumbs></breadcrumbs>
 <app-search-bar></app-search-bar>
 <div class="detail-bar">
-    <create-node-button></create-node-button>
+    <create-node-button [disabled]="displayingSearchResults"></create-node-button>
     <container-language-switcher></container-language-switcher>
 </div>
-<ng-template ngFor let-schema [ngForOf]="schemas">
-    <gtx-contents-list-item class="group-header">
-        {{schema.name}}
-    </gtx-contents-list-item>
-    <app-node-row *ngFor="let child of childrenBySchema[schema.uuid]" [node]="child.extra"></app-node-row>
+
+<ng-template [ngIf]="schemas.length > 0" [ngIfElse]="noResults">
+    <ng-template ngFor let-schema [ngForOf]="schemas">
+        <gtx-contents-list-item class="group-header">
+            {{schema.name}}
+        </gtx-contents-list-item>
+        <app-node-row *ngFor="let child of childrenBySchema[schema.uuid]" [node]="child.extra"></app-node-row>
+    </ng-template>
+</ng-template>
+
+<ng-template #noResults>
+    <gtx-contents-list-item *ngIf="displayingSearchResults === true" class="group-header">no results</gtx-contents-list-item>
 </ng-template>

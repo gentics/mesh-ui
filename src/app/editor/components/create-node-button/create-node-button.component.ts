@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -22,6 +22,7 @@ export interface SchemaDisplayProperties {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateNodeButtonComponent {
+    @Input() disabled: boolean;
     schemas$: Observable<SchemaDisplayProperties[]>;
 
     constructor(private entities: EntitiesService,

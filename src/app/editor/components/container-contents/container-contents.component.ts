@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -21,13 +23,20 @@ import { fuzzyMatch, fuzzyReplace } from '../../../common/util/fuzzy-search';
 })
 export class ContainerContentsComponent implements OnInit, OnDestroy {
 
-    listLanguage: string;
-
-    private subscription: Subscription;
+    private subscription: Subscription =  new Subscription();
     /** @internal */
     public schemas: SchemaReference[] = [];
     /** @internal */
     public childrenBySchema: { [schemaUuid: string]: FilterSelection[] } = { };
+
+    // Results in uuid of the search keyword.
+    private searchedNodes: string[] = null;
+
+    // Results in uuid of the search tags.
+    private searchedTags: string[] = null;
+
+    public listLanguage: string;
+    public displayingSearchResults = false; // Template wants to know if it should show the [create node] button or not
 
     constructor(private changeDetector: ChangeDetectorRef,
                 private listEffects: ListEffectsService,
@@ -43,55 +52,71 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         const onLogin$ = this.state.select(state => state.auth.loggedIn)
             .filter(loggedIn => loggedIn);
 
-        const languageSub = this.state.select(state => state.list.language)
-            .subscribe(lang => this.listLanguage = lang);
+        this.subscription.add(this.state.select(state => state.list.language)
+                                .subscribe(lang => this.listLanguage = lang));
 
-        const routerParamsSub = onLogin$
-            .let(obs => this.switchMapToParams(obs))
-            .subscribe(({ containerUuid, projectName, language }) => {
-                this.listEffects.setActiveContainer(projectName, containerUuid, language);
-            });
+        this.subscription.add(onLogin$.let(obs => this.switchMapToParams(obs))
+                                .subscribe(({ containerUuid, projectName, language }) => {
+                                    this.listEffects.setActiveContainer(projectName, containerUuid, language);
+                                }));
 
+        this.subscription.add(combineLatest(this.route.queryParamMap, this.state.select(state => state.entities.tag))
+            .subscribe(([paramMap, tagUuids]) => {
 
-        const childNodesSub = this.state.select(state => state.list.children)
-            .subscribe(childrenUuid => this.updateChildList());
+                const searchKeyword = (paramMap.get('q') || '').trim();
+                if (searchKeyword === '') {
+                    this.searchedNodes = null;
+                    this.updateChildList();
+                } else {
+                    this.listEffects.searchNodesByKeyword(
+                        searchKeyword,
+                        this.state.now.list.currentProject,
+                        this.state.now.ui.currentLanguage)
+                        .then(nodes => {
+                            this.searchedNodes = nodes ? nodes.map(node => node.uuid) : null;
+                            this.updateChildList();
+                        });
+                }
 
-        const filterSub = this.state.select(state => state.list.filterTerm)
-            .subscribe(filter => this.updateChildList());
+                if ((paramMap.get('t') || '').trim() === '') {
+                    if (this.searchedTags !== null) { // We had a search for tags before and now we don't so lets refresh
+                        this.searchedTags = null;
+                        this.updateChildList();
+                    }
+                } else {
+                    const searchedTags = paramMap.get('t')
+                                            .split(',')
+                                            .map(uuid => this.entities.getTag(uuid))
+                                            .filter(tag => !!tag);
 
-        const searchSub = this.state.select(state => state.list.searchByKeywordResults)
-            .subscribe(results => this.updateChildList());
+                    this.listEffects.searchNodesByTags(
+                        searchedTags,
+                        this.state.now.list.currentProject,
+                        this.state.now.ui.currentLanguage)
+                        .then(nodes => {
+                            this.searchedTags = nodes ? nodes.map(node => node.uuid) : null;
+                            this.updateChildList();
+                        });
+                }
+            })
+        );
 
-        const searchByTagSub = this.state.select(state => state.list.searchByTagResults)
-            .subscribe(results => this.updateChildList());
+        this.subscription.add(this.state.select(state => state.list.children)
+                                .subscribe(childrenUuid => this.updateChildList()));
 
-        const onProjectLoadSchemasSub = this.state
-            .select(state => state.list.currentProject)
-            .filter<string>(notNullOrUndefined)
-            .subscribe(projectName => {
-                this.listEffects.loadSchemasForProject(projectName);
-                this.listEffects.loadMicroschemasForProject(projectName);
-                this.tagEffects.loadTagFamiliesAndTheirTags(projectName);
-            });
+        this.subscription.add(this.state.select(state => state.list.filterTerm)
+                                .subscribe(filter => this.updateChildList()));
 
-        this.subscription = routerParamsSub
-            .add(languageSub)
-            .add(childNodesSub)
-            .add(onProjectLoadSchemasSub)
+        this.subscription.add(this.state
+                                .select(state => state.list.currentProject)
+                                .filter<string>(notNullOrUndefined)
+                                .subscribe(projectName => {
+                                    this.listEffects.loadSchemasForProject(projectName);
+                                    this.listEffects.loadMicroschemasForProject(projectName);
+                                    this.tagEffects.loadTagFamiliesAndTheirTags(projectName);
+                                }));
     }
 
-    private filterNodes = (childNodes: MeshNode[]) => {
-        const filteredNodes = childNodes.reduce<FilterSelection[]>((filteredNodes, node) => {
-            const matchedNode = fuzzyReplace(this.state.now.list.filterTerm, node.displayName);
-            if (matchedNode) {
-                matchedNode.extra = node;
-                return [...filteredNodes, matchedNode];
-            }
-            return filteredNodes;
-        }, []);
-
-        return filteredNodes;
-    }
 
     /**
      * SwitchMaps the input observable to the router ParamMap related to the list route.
@@ -116,25 +141,40 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             );
     }
 
+    private filterNodes = (childNodes: MeshNode[]) => {
+        const filteredNodes = childNodes.reduce<FilterSelection[]>((filteredNodes, node) => {
+            const matchedNode = fuzzyReplace(this.state.now.list.filterTerm, node.displayName);
+            if (matchedNode) {
+                matchedNode.extra = node;
+                return [...filteredNodes, matchedNode];
+            }
+            return filteredNodes;
+        }, []);
+
+        return filteredNodes;
+    }
+
     // There are two types of search results: Search by keyword (list.searchByKeywordResults and list.searchByTagResults).
     // First we look at the searchByKeywordResults and if it's !== null we apply intersect it with the searchByTagResults
     // If The searchByKeywordResults === null and searchByTagResuls !== null - we return full searchByTagResults.
     // Otherwise we just return nodes of current selected parent node
     private getSearchResults (): MeshNode[] {
-        let childNodesUuid;
-        console.log('getting cildren');
+        let childNodesUuid: string[] = [];
 
-        if (this.state.now.list.searchByKeywordResults !== null) {
-            if (this.state.now.list.searchByTagResults !== null && this.state.now.list.searchByTagResults.length > 0) { //intersect with searchByTagResults
-                childNodesUuid = this.state.now.list.searchByKeywordResults.filter(searchByKeywordUuid =>
-                    this.state.now.list.searchByTagResults.some(searchByTagUuid =>
+        if (this.searchedNodes !== null) {
+            this.displayingSearchResults = true;
+            if (this.searchedTags !== null) { //intersect with searchByTagResults
+                childNodesUuid = this.searchedNodes.filter(searchByKeywordUuid =>
+                    this.searchedTags.some(searchByTagUuid =>
                         searchByKeywordUuid === searchByTagUuid));
             } else {
-                childNodesUuid = this.state.now.list.searchByKeywordResults;
+                childNodesUuid = this.searchedNodes;
             }
-        } else if (this.state.now.list.searchByTagResults != null && this.state.now.list.searchByTagResults.length > 0) {
-            childNodesUuid = this.state.now.list.searchByTagResults;
+        } else if (this.searchedTags !== null) {
+            this.displayingSearchResults = true;
+            childNodesUuid = this.searchedTags;
         } else { // no searching is done at all
+            this.displayingSearchResults = false;
             childNodesUuid = this.state.now.list.children;
         }
 
@@ -142,13 +182,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     private updateChildList(): void {
-        //const childNodes = this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));
-        /*const childNodes: MeshNode[] = this.state.now.list.searchResults !== null
-            ? this.state.now.list.searchResults.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }))
-            : this.state.now.list.children.map(uuid => this.entities.getNode(uuid, { language: this.listLanguage }));*/
-
         const childNodes: MeshNode[] = this.getSearchResults();
-
 
         const schemas: SchemaReference[] = [];
         const childrenBySchema: { [schemaUuid: string]: FilterSelection[] } = {};

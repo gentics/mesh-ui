@@ -1,7 +1,11 @@
-import { Component, ChangeDetectorRef, ViewChild, ContentChild, OnInit } from '@angular/core';
-import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
-import { EventEmitter } from 'protractor/node_modules/@types/selenium-webdriver';
+import { Component, ChangeDetectorRef, ViewChild, ContentChild, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+
+import { EventEmitter } from 'protractor/node_modules/@types/selenium-webdriver';
+
 import { DropdownList } from 'gentics-ui-core';
 
 import { ApiService } from '../../../core/providers/api/api.service';
@@ -16,6 +20,9 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 
 import { stringToColor } from '../../../common/util/util';
 import { Tag } from '../../../common/models/tag.model';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+
+
 
 @Component({
     selector: 'app-search-bar',
@@ -23,11 +30,14 @@ import { Tag } from '../../../common/models/tag.model';
     styleUrls: ['./search-bar.scss']
 })
 
-export class SearchBarComponent implements OnInit {
+export class SearchBarComponent implements OnInit, OnDestroy {
+
+    private subscription: Subscription =  new Subscription();
+
     private searching = false;
 
-    inputValue: string = '';
-    searchQuery: string = '';
+    inputValue = '';
+    searchQuery = '';
     //filterTerm$: Observable<string>;
     //searchTerm$: Observable<string>;
     searchTags: Tag[] = [];
@@ -43,12 +53,25 @@ export class SearchBarComponent implements OnInit {
         private listEffects: ListEffectsService,
         private state: ApplicationStateService,
         private entities: EntitiesService,
-        private sanitized: DomSanitizer,
+        private route: ActivatedRoute,
+        private router: Router,
+        private navigationService: NavigationService,
     ) {}
 
     ngOnInit(): void {
-        //this.filterTerm$ = this.state.select(state => state.list.filterTerm);
-        //this.searchTerm$ = this.state.select(state => state.list.searchTerm);
+        this.subscription.add(combineLatest(this.route.queryParamMap, this.state.select(state => state.entities.tag))
+            .subscribe(([paramMap, tagUuids]) => {
+                this.searchParamsChanged(paramMap);
+            }));
+    }
+
+    private searchParamsChanged(params: ParamMap) {
+
+        this.searchQuery = params.get('q') || '';
+        this.searchTags = (params.get('t') || '').split(',')
+                                .map(uuid => this.state.now.entities.tag[uuid])
+                                .filter(tag => !!tag !== false);
+        this.changeDetectorRef.detectChanges(); // If the browser 'back' was clicked
     }
 
     private filterTags(term: string): FilterSelection[] {
@@ -84,15 +107,13 @@ export class SearchBarComponent implements OnInit {
     }
 
     onSearchTagSelected(tag: Tag): void {
-        this.searchTags = [...this.searchTags, tag];
         this.inputValue = '';
-
-        this.listEffects.searhNodesByTags(this.searchTags, this.state.now.list.currentProject);
+        this.updateSearchParams(this.searchQuery, [...this.searchTags, tag]);
     }
 
     onTagDeleted(tag: Tag): void {
         this.searchTags = this.searchTags.filter(searchTag => searchTag.uuid !== tag.uuid);
-        this.listEffects.searhNodesByTags(this.searchTags, this.state.now.list.currentProject);
+        this.updateSearchParams(this.searchQuery, this.searchTags.filter(searchTag => searchTag.uuid !== tag.uuid));
     }
 
     /**
@@ -104,20 +125,19 @@ export class SearchBarComponent implements OnInit {
             return;
         }
 
-        this.searchQuery = this.inputValue.trim();
-        // this.state.actions.list.setSearchTerm(term);
-
-        if (!this.searchQuery) { // reset the search term
-            this.listEffects.resetSearchByKeywordResults();
-            this.listEffects.setActiveContainer(
-                this.state.now.list.currentProject,
-                this.state.now.list.currentNode,
-                this.state.now.list.language);
-        } else {
-            this.listEffects.searchNodesByKeyword(this.searchQuery, this.state.now.list.currentProject, this.state.now.list.language);
-        }
+        this.updateSearchParams(this.inputValue, this.searchTags);
 
         this.inputValue = '';
         this.state.actions.list.setFilterTerm(this.inputValue);
+    }
+
+    private updateSearchParams(query: string, tags: Tag[]): void {
+        const q = query.trim();
+        const t = tags.map(tag => tag.uuid).join(','); // Tags
+        this.router.navigate([], { relativeTo: this.route, queryParams: {q, t}});
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

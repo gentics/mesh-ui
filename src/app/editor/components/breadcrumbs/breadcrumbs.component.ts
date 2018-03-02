@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, Input, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 
@@ -14,11 +14,13 @@ import { EntitiesService } from '../../../state/providers/entities.service';
     styleUrls: ['./breadcrumbs.scss']
 })
 export class BreadcrumbsComponent {
+
     routerLinks$: Observable<IBreadcrumbRouterLink[]>;
 
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
-                private navigationService: NavigationService) {
+                private navigationService: NavigationService,
+                private changeDetector: ChangeDetectorRef ) {
 
         this.routerLinks$ = state.select(state => state.list)
             .map(({ currentNode, language }) => {
@@ -30,26 +32,30 @@ export class BreadcrumbsComponent {
             });
     }
 
+
     /**
      * Turns a node to breadcrumb router links, which are used for the gtx-breadcrumbs directive.
      */
     private toRouterLinks(node: MeshNode | undefined, language: string): IBreadcrumbRouterLink[] {
+
         const currentProject = this.state.now.list.currentProject;
         const project = this.getProjectByName(currentProject);
         if (!currentProject || !project) {
             return [];
         }
+
         const rootNodeLink: IBreadcrumbRouterLink = {
             route: this.navigationService.list(project.name, project.rootNode.uuid, language).commands(),
             text: project.name
         };
+
         if (!node) {
             return [rootNodeLink];
         }
 
         const breadcrumbs = node.breadcrumb.map(ascendant => ({
             route: this.navigationService.list(project.name, ascendant.uuid, language).commands(),
-            text: ascendant.displayName!
+            text: ascendant.displayName
         }));
 
         // TODO: currently Mesh returns the breadcrumbs reversed, but this behaviour will change in

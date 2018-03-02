@@ -17,6 +17,11 @@ export const routes: Route[] = [
             outlet: 'list'
         },
         {
+            path: ':projectName/search/:keyword/:tags/:language',
+            component: ContainerContentsComponent,
+            outlet: 'list'
+        },
+        {
             path: ':projectName/:command/:schemaUuid/:parentNodeUuid/:language',
             component: NodeEditorComponent,
             outlet: 'detail',
