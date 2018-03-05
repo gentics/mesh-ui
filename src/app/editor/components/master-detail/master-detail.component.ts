@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute } from '@angular/router';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { Project } from '../../../common/models/project.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
     selector: 'master-detail',

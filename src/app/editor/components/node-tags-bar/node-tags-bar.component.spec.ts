@@ -15,9 +15,9 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { mockMeshNode, mockSchema, mockTagFamily, mockTag } from '../../../../testing/mock-models';
 import { Tag } from '../../../common/models/tag.model';
 import { TagFamily } from '../../../common/models/tag-family.model';
-import { NodeTagsBarComponent } from './node-tags-bar.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
+import { NodeTagsBarComponent } from './node-tags-bar.component';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;

@@ -20,7 +20,7 @@ export class NodeRowComponent implements OnInit {
     @Input() listLanguage: string;
 
     routerLink: any[] = null;
-    nameFormated = '';
+    formatedName = '';
 
     constructor(private state: ApplicationStateService,
                 private navigationService: NavigationService,
@@ -38,12 +38,11 @@ export class NodeRowComponent implements OnInit {
             this.routerLink = this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).commands();
         }
 
-
         const matchedNode = fuzzyReplace(this.state.now.list.filterTerm, this.node.displayName);
         if (matchedNode) {
-            this.nameFormated = matchedNode.valueFormatted;
+            this.formatedName = matchedNode.valueFormatted;
         } else {
-            this.nameFormated = this.node.displayName;
+            this.formatedName = this.node.displayName;
         }
     }
 

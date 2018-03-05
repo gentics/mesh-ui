@@ -1,3 +1,7 @@
+/**
+ * Make BackgroundColor from:
+ * Arbitrary string - see [stringToColor](app/common/utils/util.js).
+ */
 import { Directive, HostBinding, Input, OnChanges } from '@angular/core';
 import { stringToColor } from '../../common/util/util';
 

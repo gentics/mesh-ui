@@ -1,8 +1,8 @@
 import { Component, Injectable, DebugElement } from '@angular/core';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
 import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
 import { Observable } from 'rxjs/Observable';

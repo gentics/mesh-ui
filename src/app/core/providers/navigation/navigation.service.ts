@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { ConfigService } from '../config/config.service';
 import { Tag } from '../../../common/models/tag.model';
 
@@ -9,6 +9,7 @@ interface NavigationInstruction {
         containerUuid: string;
         language: string;
     };
+
     detail?: {
         projectName: string;
         nodeUuid?: string;
@@ -17,13 +18,6 @@ interface NavigationInstruction {
         language?: string;
         command?: ValidDetailCommands;
     } | null;
-
-    search?: {
-        projectName: string;
-        keyword?: string,
-        tags?: string,
-        language?: string;
-    }
 }
 
 export type ValidDetailCommands = 'createNode';
@@ -39,7 +33,7 @@ export interface InstructionActions {
 @Injectable()
 export class NavigationService {
 
-    constructor(private router: Router, private config: ConfigService, private route: ActivatedRoute) { }
+    constructor(private router: Router, private config: ConfigService) { }
 
     /**
      * Navigate to a container in the list outlet.
@@ -78,19 +72,6 @@ export class NavigationService {
                 schemaUuid,
                 parentNodeUuid,
                 language,
-            }
-        });
-    }
-
-    searchKeyword(projectName: string, keyword: string, tags: Tag[], language: string) {
-        const tagsNames: string = tags.map(tag => tag.name).join(' ');
-
-        return this.instruction({
-            search: {
-                projectName,
-                keyword,
-                tags: tagsNames,
-                language
             }
         });
     }
@@ -145,10 +126,7 @@ export class NavigationService {
             outlets.list = [projectName, containerUuid, language];
         }
 
-        if (instruction.search) {
-            const { projectName, keyword, tags, language } = instruction.search;
-            outlets.list = [projectName, 'search', keyword, tags, language];
-        }
         return ['/editor', 'project', { outlets }];
     }
 }
+

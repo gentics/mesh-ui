@@ -13,7 +13,6 @@ import { ScrollFrameHeadingDirective } from './components/scroll-frame/scroll-fr
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
 import { BackgroundFromDirective } from './directives/background-from.directive';
 
-
 const SHARED_COMPONENTS = [
     NoContentComponent,
     SchemaLabelComponent,

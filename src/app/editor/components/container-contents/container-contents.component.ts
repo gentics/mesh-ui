@@ -36,7 +36,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     private searchedTags: string[] = null;
 
     public listLanguage: string;
-    public displayingSearchResults = false; // Template wants to know if it should show the [create node] button or not
+    public displayingSearchResults = false; // Template wants to know if it should show the [create node] button or not.
 
     constructor(private changeDetector: ChangeDetectorRef,
                 private listEffects: ListEffectsService,
@@ -154,16 +154,18 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         return filteredNodes;
     }
 
-    // There are two types of search results: Search by keyword (list.searchByKeywordResults and list.searchByTagResults).
-    // First we look at the searchByKeywordResults and if it's !== null we apply intersect it with the searchByTagResults
-    // If The searchByKeywordResults === null and searchByTagResuls !== null - we return full searchByTagResults.
-    // Otherwise we just return nodes of current selected parent node
+    /**
+     * There are two types of search results: Search by keyword (list.searchByKeywordResults and list.searchByTagResults).
+     * First we look at the searchByKeywordResults and if it's !== null we apply intersect it with the searchByTagResults
+     * If The searchByKeywordResults === null and searchByTagResuls !== null - we return full searchByTagResults.
+     * Otherwise we just return nodes of current selected parent node.
+    */
     private getSearchResults (): MeshNode[] {
         let childNodesUuid: string[] = [];
 
         if (this.searchedNodes !== null) {
             this.displayingSearchResults = true;
-            if (this.searchedTags !== null) { //intersect with searchByTagResults
+            if (this.searchedTags !== null) { // Intersect with searchByTagResults.
                 childNodesUuid = this.searchedNodes.filter(searchByKeywordUuid =>
                     this.searchedTags.some(searchByTagUuid =>
                         searchByKeywordUuid === searchByTagUuid));
@@ -173,7 +175,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         } else if (this.searchedTags !== null) {
             this.displayingSearchResults = true;
             childNodesUuid = this.searchedTags;
-        } else { // no searching is done at all
+        } else { // No searching is done at all.
             this.displayingSearchResults = false;
             childNodesUuid = this.state.now.list.children;
         }

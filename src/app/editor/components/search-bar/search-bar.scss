@@ -19,27 +19,8 @@ gtx-dropdown-trigger {
     display: block;
 }
 
-gtx-search-bar:hover + advanced-search-help, advanced-search-help:hover {
-    opacity: 1;
-}
-
 gtx-search-bar {
     flex-grow: 1;
     z-index: 1;
     margin-bottom: 1px;
-}
-
-advanced-search-help {
-    padding: 3px;
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
-    transition: opacity 0.3s;
-    background-color: $gtx-color-very-light-gray;
-    z-index: 0;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-}
-
-.dropdown-trigger {
-
 }

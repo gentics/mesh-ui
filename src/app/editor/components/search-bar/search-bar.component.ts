@@ -36,8 +36,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
     inputValue = '';
     searchQuery = '';
-    //filterTerm$: Observable<string>;
-    //searchTerm$: Observable<string>;
+
     searchTags: Tag[] = [];
 
     filteredTags: FilterSelection[];
@@ -87,9 +86,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         return filteredTags;
     }
 
-    /**
-     * Update the filterTerm state
-     */
     filterTermChanged(): void {
         const firstChar = this.inputValue.charAt(0);
 
@@ -116,9 +112,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         this.updateSearchParams(this.searchQuery, this.searchTags.filter(searchTag => searchTag.uuid !== tag.uuid));
     }
 
-    /**
-     * Update the searchTerm state
-     */
     searchTermChanged(): void {
 
         const firstChar = this.inputValue.charAt(0);

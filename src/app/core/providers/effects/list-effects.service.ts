@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+
+import { I18nNotification } from '../i18n-notification/i18n-notification.service';
 import { ApiService } from '../api/api.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ConfigService } from '../config/config.service';
@@ -7,8 +10,8 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshNode } from '../../../common/models/node.model';
 import { NodeResponse } from '../../../common/models/server-models';
 import { Tag } from '../../../common/models/tag.model';
-import { I18nNotification } from '../i18n-notification/i18n-notification.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+
+
 
 @Injectable()
 export class ListEffectsService {
@@ -97,9 +100,6 @@ export class ListEffectsService {
 
 
     searchNodesByTags(tags: Tag[], project: string, language: string):  Promise<MeshNode[]> {
-
-        this.entities.getNodeGraphQLDescription();
-
         const tagsNames: string = tags.map(tag => tag.name).join(' ');
 
         this.state.actions.list.actionStart();
@@ -225,76 +225,6 @@ export class ListEffectsService {
                 }
             });
         });
-    }
-
-   getTypes(): void {
-        const query = `query IntrospectionQuery {
-            __schema {
-                types {
-                    ...FullType
-                }
-            }
-        }
-        fragment FullType on __Type {
-                kind
-                name
-                description
-                fields(includeDeprecated: true) {
-                name
-                description
-                args {
-                    ...InputValue
-                }
-                type {
-                    ...TypeRef
-                }
-            }
-        }
-        fragment InputValue on __InputValue {
-            name
-            description
-            type {
-                ...TypeRef
-            }
-            defaultValue
-        }
-        fragment TypeRef on __Type {
-            kind
-            name
-            ofType {
-                kind
-                name
-                ofType {
-                    kind
-                    name
-                    ofType {
-                        kind
-                        name
-                        ofType {
-                            kind
-                            name
-                            ofType {
-                                kind
-                                name
-                                ofType {
-                                    kind
-                                    name
-                                    ofType {
-                                        kind
-                                        name
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }`;
-
-        this.api.graphQL({project: 'demo'}, {query: query})
-            .subscribe(result => {
-                console.log(result);
-            });
     }
 
     /**

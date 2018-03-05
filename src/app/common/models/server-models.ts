@@ -2804,10 +2804,10 @@ export interface ApiEndpoints {
                 queryParams?: {};
                 body?: any;
             };
-            responseType: NodeListResponse;
+            responseType: TagListResponse;
             responseTypes: {
                 /** Paged search result list. */
-                200: NodeListResponse;
+                200: TagListResponse;
             };
         };
         /** Create a new tag family. */
