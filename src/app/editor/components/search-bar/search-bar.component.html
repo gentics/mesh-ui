@@ -1,11 +1,10 @@
 <div class="search-row">
   <gtx-progress-bar [active]="searching"></gtx-progress-bar>
-<!--<gtx-input placeholder="Search" class="search-input" (change)="filter(searchField.currentValue.trim())" #searchField></gtx-input>-->
     <gtx-search-bar [(ngModel)]="inputValue"
                     [placeholder]="'common.search_placeholder' | i18n"
-                    (clear)="inputValue=''; filterTermChanged()"
                     (ngModelChange)="filterTermChanged()"
                     (search)="searchTermChanged()"
+                    (clear)="clearFilter()"
                     name="search-bar">
 
         <div class="search-chip" *ngIf="searchQuery">
@@ -14,10 +13,10 @@
                 <span class="search-query">{{ this.searchQuery }}</span>
                 <span class="searching">"</span>
             </span>
-            <i class="remove-button material-icons" (click)="searchQuery=''; this.searchTermChanged()">close</i>
+            <i class="remove-button material-icons" (click)="clearSearch()">close</i>
         </div>
 
-        <div *ngFor="let tag of searchTags" class="search-chip" [appBackgroundFrom]="tag.tagFamily.name">
+        <div *ngFor="let tag of searchTags" class="search-chip" [meshBackgroundFrom]="tag.tagFamily.name">
             <span class="chip-contents chip-tags">{{tag.name}}</span>
             <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
         </div>
@@ -31,7 +30,7 @@
         <gtx-dropdown-content>
             <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onSearchTagSelected(tag.tag)">
                 <span class="tag-family">{{tag.tag.tagFamily.name}}</span>
-                <span class="tag-name" [appBackgroundFrom]="tag.tag.tagFamily.name">
+                <span class="tag-name" [meshBackgroundFrom]="tag.tag.tagFamily.name">
                     <span [innerHTML]="tag.valueFormatted"></span>
                 </span>
             </gtx-dropdown-item>

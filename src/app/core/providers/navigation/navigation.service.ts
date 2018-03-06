@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ConfigService } from '../config/config.service';
-import { Tag } from '../../../common/models/tag.model';
 
 interface NavigationInstruction {
     list?: {

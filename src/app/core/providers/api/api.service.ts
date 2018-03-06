@@ -30,4 +30,8 @@ export class ApiService {
     public setLanguageForServerMessages(language: RequestLanguage) {
         this.apiBase.setLanguageForServerMessages(language);
     }
+
+    public formatGraphQLSearchQuery(query: Object): string {
+        return JSON.stringify(JSON.stringify(query));
+    }
 }

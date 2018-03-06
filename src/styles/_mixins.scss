@@ -1,6 +1,8 @@
 
 @mixin filter-selection {
-    /deep/ .filterSelection {
+    /deep/ .filter-selection,
+    /deep/ .hl-pipe,
+    {
         background-color: $gtx-color-primary !important;
         color: #fff;
         padding: 0 1px;

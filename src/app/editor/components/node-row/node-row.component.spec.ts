@@ -21,6 +21,7 @@ import { NodeRowComponent } from './node-row.component';
 import { AvailableLanguagesListComponent } from '../available-languages-list/available-languages-list.component';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockMeshNode } from '../../../../testing/mock-models';
+import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 
 describe('NodeRowComponent', () => {
     let api: MockApiService;
@@ -32,6 +33,7 @@ describe('NodeRowComponent', () => {
             declarations: [
                 NodeRowComponent,
                 MockDisplayFieldPipe,
+                HighlightPipe,
                 AvailableLanguagesListComponent,
                 TestComponent,
             ],

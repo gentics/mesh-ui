@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
-import { DebugElement } from '@angular/core/src/debug/debug_node';
+import { DebugElement } from '@angular/core';
 import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { GenticsUICoreModule, ModalService, OverlayHostService, DropdownList, InputField } from 'gentics-ui-core';

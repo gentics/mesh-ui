@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
-import { MicroschemaResponse, NodeResponse, ProjectResponse, SchemaResponse } from '../../common/models/server-models';
+import { MicroschemaResponse, NodeResponse, ProjectResponse, SchemaResponse, GraphQLResponse } from '../../common/models/server-models';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
@@ -57,14 +57,6 @@ export class ListStateActions extends StateActionBranch<AppState> {
     }
 
     fetchChildrenError() {
-        this.list.loadCount--;
-    }
-
-    searchNodesStart() {
-        this.list.loadCount++;
-    }
-
-    fetchNodesError() {
         this.list.loadCount--;
     }
 
@@ -183,13 +175,30 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount--;
     }
 
-    actionStart() {
+    searchNodesByKeywordStart() {
         this.list.loadCount++;
     }
 
-    actionSuccess() {
+    searchNodesByKeywordSuccess(response: GraphQLResponse) {
         this.list.loadCount--;
     }
+
+    searchNodesByKeywordError(response: GraphQLResponse) {
+        this.list.loadCount--;
+    }
+
+    searchNodesByTagsStart() {
+        this.list.loadCount++;
+    }
+
+    searchNodesByTagsSuccess(response: GraphQLResponse) {
+        this.list.loadCount--;
+    }
+
+    searchNodesByTagsError(response: GraphQLResponse) {
+        this.list.loadCount--;
+    }
+
 
     /** Change the active container in the list view from values of the current route. */
     setActiveContainer(projectName: string, containerUuid: string, language: string) {

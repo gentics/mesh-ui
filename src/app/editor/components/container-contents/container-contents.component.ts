@@ -8,7 +8,7 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { SchemaReference, FilterSelection } from '../../../common/models/common.model';
+import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -27,7 +27,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     /** @internal */
     public schemas: SchemaReference[] = [];
     /** @internal */
-    public childrenBySchema: { [schemaUuid: string]: FilterSelection[] } = { };
+    public childrenBySchema: { [schemaUuid: string]: MeshNode[] } = { };
 
     // Results in uuid of the search keyword.
     private searchedNodes: string[] = null;
@@ -53,16 +53,15 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .filter(loggedIn => loggedIn);
 
         this.subscription.add(this.state.select(state => state.list.language)
-                                .subscribe(lang => this.listLanguage = lang));
+            .subscribe(lang => this.listLanguage = lang));
 
         this.subscription.add(onLogin$.let(obs => this.switchMapToParams(obs))
-                                .subscribe(({ containerUuid, projectName, language }) => {
-                                    this.listEffects.setActiveContainer(projectName, containerUuid, language);
-                                }));
+            .subscribe(({ containerUuid, projectName, language }) => {
+                this.listEffects.setActiveContainer(projectName, containerUuid, language);
+            }));
 
         this.subscription.add(combineLatest(this.route.queryParamMap, this.state.select(state => state.entities.tag))
             .subscribe(([paramMap, tagUuids]) => {
-
                 const searchKeyword = (paramMap.get('q') || '').trim();
                 if (searchKeyword === '') {
                     this.searchedNodes = null;
@@ -102,19 +101,19 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         );
 
         this.subscription.add(this.state.select(state => state.list.children)
-                                .subscribe(childrenUuid => this.updateChildList()));
+            .subscribe(childrenUuid => this.updateChildList()));
 
         this.subscription.add(this.state.select(state => state.list.filterTerm)
-                                .subscribe(filter => this.updateChildList()));
+            .subscribe(filter => this.updateChildList()));
 
         this.subscription.add(this.state
-                                .select(state => state.list.currentProject)
-                                .filter<string>(notNullOrUndefined)
-                                .subscribe(projectName => {
-                                    this.listEffects.loadSchemasForProject(projectName);
-                                    this.listEffects.loadMicroschemasForProject(projectName);
-                                    this.tagEffects.loadTagFamiliesAndTheirTags(projectName);
-                                }));
+            .select(state => state.list.currentProject)
+            .filter<string>(notNullOrUndefined)
+            .subscribe(projectName => {
+                this.listEffects.loadSchemasForProject(projectName);
+                this.listEffects.loadMicroschemasForProject(projectName);
+                this.tagEffects.loadTagFamiliesAndTheirTags(projectName);
+            }));
     }
 
 
@@ -141,12 +140,12 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             );
     }
 
-    private filterNodes = (childNodes: MeshNode[]) => {
-        const filteredNodes = childNodes.reduce<FilterSelection[]>((filteredNodes, node) => {
-            const matchedNode = fuzzyReplace(this.state.now.list.filterTerm, node.displayName);
+    private filterNodes (childNodes: MeshNode[]): MeshNode[] {
+        const filteredNodes = childNodes.reduce<MeshNode[]>((filteredNodes, node) => {
+            const matchedNode = fuzzyMatch(this.state.now.list.filterTerm, node.displayName);
+
             if (matchedNode) {
-                matchedNode.extra = node;
-                return [...filteredNodes, matchedNode];
+                return [...filteredNodes, node];
             }
             return filteredNodes;
         }, []);
@@ -155,9 +154,9 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * There are two types of search results: Search by keyword (list.searchByKeywordResults and list.searchByTagResults).
-     * First we look at the searchByKeywordResults and if it's !== null we apply intersect it with the searchByTagResults
-     * If The searchByKeywordResults === null and searchByTagResuls !== null - we return full searchByTagResults.
+     * There are two types of search results: searched by keyword (searchedNodes) and searched by tag (searchedTags)
+     * First we look at the searchedNodes and if it's !== null we apply intersect it with the searchedTags
+     * If The searchedNodes === null and searchedTags !== null - we return full searchedTags.
      * Otherwise we just return nodes of current selected parent node.
     */
     private getSearchResults (): MeshNode[] {
@@ -165,7 +164,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
         if (this.searchedNodes !== null) {
             this.displayingSearchResults = true;
-            if (this.searchedTags !== null) { // Intersect with searchByTagResults.
+            if (this.searchedTags !== null) { // Intersect with searchedTags.
                 childNodesUuid = this.searchedNodes.filter(searchByKeywordUuid =>
                     this.searchedTags.some(searchByTagUuid =>
                         searchByKeywordUuid === searchByTagUuid));
@@ -187,17 +186,16 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         const childNodes: MeshNode[] = this.getSearchResults();
 
         const schemas: SchemaReference[] = [];
-        const childrenBySchema: { [schemaUuid: string]: FilterSelection[] } = {};
+        const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
 
         const filteredNodes = this.filterNodes(childNodes);
 
-        for (const filteredNode of filteredNodes || []) {
-            const node = (filteredNode as FilterSelection).extra as MeshNode;
+        for (const node of filteredNodes || []) {
             if (!schemas.some(schema => node.schema.uuid === schema.uuid)) {
                 schemas.push(node.schema);
                 childrenBySchema[node.schema.uuid] = [];
             }
-            childrenBySchema[node.schema.uuid].push(filteredNode);
+            childrenBySchema[node.schema.uuid].push(node);
         }
 
         this.schemas = schemas;

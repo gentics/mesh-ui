@@ -1,5 +1,5 @@
 <breadcrumbs></breadcrumbs>
-<app-search-bar></app-search-bar>
+<mesh-search-bar></mesh-search-bar>
 <div class="detail-bar">
     <create-node-button [disabled]="displayingSearchResults"></create-node-button>
     <container-language-switcher></container-language-switcher>
@@ -10,10 +10,10 @@
         <gtx-contents-list-item class="group-header">
             {{schema.name}}
         </gtx-contents-list-item>
-        <app-node-row *ngFor="let child of childrenBySchema[schema.uuid]" [node]="child.extra"></app-node-row>
+        <app-node-row *ngFor="let child of childrenBySchema[schema.uuid]" [node]="child"></app-node-row>
     </ng-template>
 </ng-template>
 
 <ng-template #noResults>
-    <gtx-contents-list-item *ngIf="displayingSearchResults === true" class="group-header">no results</gtx-contents-list-item>
+    <gtx-contents-list-item *ngIf="displayingSearchResults === true" class="group-header">{{ 'list.no_results' | i18n }}</gtx-contents-list-item>
 </ng-template>

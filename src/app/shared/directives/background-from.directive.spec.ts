@@ -8,8 +8,8 @@ describe('BackgroundFromDirective', () => {
 });
 
 // `
-// <div [appBackgroundFrom]="'somename'"></div>
+// <div [meshBackgroundFrom]="'somename'"></div>
 
-// <div appBackgroundFrom="somename"></div>
+// <div meshBackgroundFrom="somename"></div>
 // `
 

@@ -2764,7 +2764,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: any;
+                body?: undefined;
             };
             responseType: NodeListResponse;
             responseTypes: {
@@ -2802,7 +2802,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: any;
+                body?: undefined;
             };
             responseType: TagListResponse;
             responseTypes: {

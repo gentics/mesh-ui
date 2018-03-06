@@ -1,4 +1,6 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ModalService, IDialogConfig } from 'gentics-ui-core';
 import { MeshNode } from '../../../common/models/node.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -7,7 +9,6 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { ApiService } from '../../../core/providers/api/api.service';
-import { fuzzySearch, fuzzyReplace } from '../../../common/util/fuzzy-search';
 
 @Component({
     selector: 'app-node-row',
@@ -15,12 +16,15 @@ import { fuzzySearch, fuzzyReplace } from '../../../common/util/fuzzy-search';
     styleUrls: ['./node-row.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodeRowComponent implements OnInit {
+export class NodeRowComponent implements OnInit, OnDestroy {
     @Input() node: MeshNode;
     @Input() listLanguage: string;
 
+    private subscription: Subscription =  new Subscription();
+
+    filterTerm$: Observable<string>;
+
     routerLink: any[] = null;
-    formatedName = '';
 
     constructor(private state: ApplicationStateService,
                 private navigationService: NavigationService,
@@ -38,12 +42,12 @@ export class NodeRowComponent implements OnInit {
             this.routerLink = this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).commands();
         }
 
-        const matchedNode = fuzzyReplace(this.state.now.list.filterTerm, this.node.displayName);
-        if (matchedNode) {
-            this.formatedName = matchedNode.valueFormatted;
-        } else {
-            this.formatedName = this.node.displayName;
-        }
+        /*this.subscription.add(this.state.select(state => state.list.filterTerm)
+            .subscribe(filter => {
+                this.filterTerm$.next(filter);
+                console.log('Im filtering the stuff', this.filterTerm$);
+            }));*/
+        this.filterTerm$ = this.state.select(state => state.list.filterTerm);
     }
 
     editNode(): void {
@@ -77,5 +81,10 @@ export class NodeRowComponent implements OnInit {
 
     focusEditor() {
         this.state.actions.editor.focusEditor();
+    }
+
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

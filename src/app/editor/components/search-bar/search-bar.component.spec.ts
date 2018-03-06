@@ -35,16 +35,16 @@ import { Tag } from '../../../common/models/tag.model';
 import { SearchBarComponent } from './search-bar.component';
 
 
-fdescribe('Search-bar component:', () => {
+describe('Search-bar component:', () => {
 
     let appState: TestApplicationState;
-
+    let listService: MockListEffectsService;
     const MockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-
     const tagFamily: TagFamily = mockTagFamily({uuid: 'tagFamilyUuid', name: 'mockFamily' });
-    const tag: Tag = mockTag({uuid: 'tagUuid', name: 'mockTag', tagFamily});
+    const tag: Tag = mockTag({uuid: 'tagUuid', name: 'firstTag', tagFamily});
     const tag2: Tag = mockTag({uuid: 'tagUuid2', name: 'secondTag', tagFamily});
+    const tag3: Tag = mockTag({uuid: 'tagUuid3', name: 'mockTag', tagFamily});
     const node = mockMeshNode({
         uuid: 'uuid_parentNode',
         tags: [ { uuid: tag.uuid } ],
@@ -78,6 +78,7 @@ fdescribe('Search-bar component:', () => {
                 TestComponent,
                 SearchBarComponent,
                 BackgroundFromDirective,
+
             ],
             providers: [
                 OverlayHostService,
@@ -99,10 +100,10 @@ fdescribe('Search-bar component:', () => {
             ]
         });
 
-
     });
 
     beforeEach(() => {
+        listService = TestBed.get(ListEffectsService);
         appState = TestBed.get(ApplicationStateService);
         appState.mockState({
             editor: {
@@ -127,11 +128,12 @@ fdescribe('Search-bar component:', () => {
                 tag: {
                     [tag.uuid]: tag,
                     [tag2.uuid]: tag2,
+                    [tag3.uuid]: tag3,
                 }
             },
 
             tags: {
-                tags: [tag.uuid, tag2.uuid],
+                tags: [tag.uuid, tag2.uuid, tag3.uuid],
                 tagFamilies: [tagFamily.uuid]
             }
         });
@@ -153,7 +155,6 @@ fdescribe('Search-bar component:', () => {
             componentTest(() => TestComponent, (fixture, instance) => {
                 fixture.detectChanges();
                 const tagChips: DebugElement[] = fixture.debugElement.queryAll(By.css('.chip-tags'));
-
                 expect(tagChips.length).toEqual(2); //thats how much we set in the activatedQuery mock config
             })
         );
@@ -164,7 +165,7 @@ fdescribe('Search-bar component:', () => {
             componentTest(() => TestComponent, (fixture, instance) => {
                 fixture.detectChanges();
                 typeSearchTerm(fixture, 'ford');
-                expect(appState.now.list.filterTerm).toEqual('ford');
+                expect(listService.setFilterTerm).toHaveBeenCalledWith('ford')
             })
         );
 
@@ -180,17 +181,21 @@ fdescribe('Search-bar component:', () => {
         );
     });
 
-    describe('Submitting the searh', () => {
+    describe('Submitting the search', () => {
         it('sets the search keyword if "search" is clicked',
             componentTest(() => TestComponent, (fixture, instance) => {
                 fixture.detectChanges();
                 typeSearchTerm(fixture, 'some search');
-
                 fixture.debugElement.query(By.css('gtx-search-bar')).triggerEventHandler('search', null);
-
-                //fixture.detectChanges();
                 tick();
-                expect(MockRouter.navigate).toHaveBeenCalled();
+                expect(MockRouter.navigate)
+                    .toHaveBeenCalledWith(
+                            [],
+                            {
+                                relativeTo: activeRoute,
+                                queryParams: { q: 'some search', t: 'tagUuid,tagUuid2' }
+                            }
+                    );
             })
         );
     });
@@ -206,13 +211,13 @@ function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string):
 
 @Component({
     template: `
-        <app-search-bar></app-search-bar>
+        <mesh-search-bar></mesh-search-bar>
         <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent { }
 
 function getSearchBarComponent(fixture: ComponentFixture<TestComponent>): SearchBarComponent {
-    const tagBarComponent: SearchBarComponent = fixture.debugElement.query(By.css('app-search-bar'))
+    const tagBarComponent: SearchBarComponent = fixture.debugElement.query(By.css('mesh-search-bar'))
                                                                             .componentInstance as SearchBarComponent;
     return tagBarComponent;
 }
@@ -220,6 +225,7 @@ function getSearchBarComponent(fixture: ComponentFixture<TestComponent>): Search
 
 class MockListEffectsService {
     loadChildren = jasmine.createSpy('loadChildren');
+    setFilterTerm = jasmine.createSpy('listEffects');
     loadSchemasForProject = () => {};
     loadMicroschemasForProject = () => {};
     setActiveContainer = (projectName: string , containerUuid: string, language: string) => {};

@@ -85,7 +85,7 @@ export class ListEffectsService {
     /**
      * Load the children for the opened folder
      */
-    loadChildren(projectName: string, containerUuid: string, language: string):void {
+    loadChildren(projectName: string, containerUuid: string, language: string): void {
          // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
         this.api.project
@@ -99,20 +99,20 @@ export class ListEffectsService {
     }
 
 
-    searchNodesByTags(tags: Tag[], project: string, language: string):  Promise<MeshNode[]> {
-        const tagsNames: string = tags.map(tag => tag.name).join(' ');
+    searchNodesByTags(tags: Tag[], project: string, language: string): Promise<MeshNode[]> {
+        const tagNames: string = tags.map(tag => tag.name).join(' ');
 
-        this.state.actions.list.actionStart();
-        const query = JSON.stringify({
+        this.state.actions.list.searchNodesByTagsStart();
+        const query = this.api.formatGraphQLSearchQuery({
             query: {
                 query_string: {
-                    query: tagsNames
+                    query: tagNames
                 }
             }
         });
 
         const queryString = `{
-            tags (query: ${JSON.stringify(query)}) {
+            tags (query: ${query}) {
                 elements {
                     name,
                     uuid,
@@ -130,11 +130,11 @@ export class ListEffectsService {
 
 
         return new Promise((resolve, reject) => {
-            this.api.graphQL({project}, {query: queryString})
+            this.api.graphQL({ project }, { query: queryString })
             .subscribe(results => {
-
                 if (results.data) {
                     if (results.data.tags.elements.length === 0) {
+                        this.state.actions.list.searchNodesByTagsSuccess(results);
                         resolve([]);
                     } else {
                         const foundNodesForTags: string[] = [];
@@ -146,21 +146,27 @@ export class ListEffectsService {
                         } else {
                             forkJoin<NodeResponse>(foundNodesForTags.map(nodeUuid => {
                                 this.state.actions.list.fetchNodeStart(nodeUuid);
-                                const existingNode = this.entities.getNode(nodeUuid, {language});
+                                const existingNode = this.entities.getNode(nodeUuid, { language });
                                 if (existingNode) {
                                     return Observable.of(existingNode);
                                 } else {
-                                    return this.api.project.getNode({project, nodeUuid});
+                                    return this.api.project.getNode({project, nodeUuid})
+                                        .catch((err, cought) => {
+                                            return Observable.of(null);
+                                        });
                                 }
                             }))
                             .first()
                             .subscribe(nodes => {
-                                nodes.map(node =>  this.state.actions.list.fetchNodeSuccess(node));
-                                resolve(nodes);
+                                const filteredNodes = nodes.filter(node => node != null);
+                                filteredNodes.map(node => this.state.actions.list.fetchNodeSuccess(node));
+                                this.state.actions.list.searchNodesByTagsSuccess(results);
+                                resolve(filteredNodes);
                             });
                         }
                     }
                 } else {
+                    this.state.actions.list.searchNodesByTagsError(results);
                     this.notification.show({
                         type: 'error',
                         message: 'list.search_error_occured'
@@ -174,8 +180,8 @@ export class ListEffectsService {
      * Load the children for the opened folder
      */
     searchNodesByKeyword(term: string, project: string, language: string): Promise<MeshNode[]> {
-        this.state.actions.list.actionStart();
-        const query = JSON.stringify({
+        this.state.actions.list.searchNodesByKeywordStart();
+        const query = this.api.formatGraphQLSearchQuery({
             query: {
                 query_string: {
                     query: term
@@ -184,7 +190,7 @@ export class ListEffectsService {
         });
 
         const queryString = `{
-            nodes (query: ${JSON.stringify(query)}) {
+            nodes (query: ${query}) {
                 elements {
                   displayName,
                   uuid,
@@ -193,31 +199,38 @@ export class ListEffectsService {
         }`;
 
         return new Promise((resolve, reject) => {
-            this.api.graphQL({project}, {query: queryString})
+            this.api.graphQL({ project }, { query: queryString })
             .subscribe(results => {
                 if (results.data) {
                     if (results.data.nodes.elements.length === 0) {
+                        this.state.actions.list.searchNodesByKeywordSuccess(results);
                         resolve([]);
                     } else {
                         forkJoin<NodeResponse>(results.data.nodes.elements.map(node => {
                             this.state.actions.list.fetchNodeStart(node.uuid);
 
-                            const existingNode = this.entities.getNode(node.uuid, {language});
+                            const existingNode = this.entities.getNode(node.uuid, { language });
                             if (existingNode) {
                                 return Observable.of(existingNode);
                             } else {
-                                return this.api.project.getNode({project, nodeUuid: node.uuid});
+                                return this.api.project.getNode({project, nodeUuid: node.uuid})
+                                    .catch((err, cought) => {
+                                        return Observable.of(null);
+                                    });
                             }
                         }))
                         .first()
                         .subscribe(nodes => {
-                            nodes.map(node => {
+                            const filteredNodes = nodes.filter(node => node !== null);
+                            filteredNodes.map(node => {
                                 this.state.actions.list.fetchNodeSuccess(node);
                             });
-                            resolve(nodes);
+                            this.state.actions.list.searchNodesByKeywordSuccess(results);
+                            resolve(filteredNodes);
                         });
                     }
                 } else {
+                    this.state.actions.list.searchNodesByKeywordError(results);
                     this.notification.show({
                         type: 'error',
                         message: 'list.search_error_occured'
@@ -247,5 +260,9 @@ export class ListEffectsService {
             this.state.actions.list.deleteNodeError();
             throw new Error('TODO: Error handling');
         })
+    }
+
+    public setFilterTerm(term: string) {
+        this.state.actions.list.setFilterTerm(term);
     }
 }

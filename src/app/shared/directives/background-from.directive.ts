@@ -1,21 +1,21 @@
+import { Directive, HostBinding, Input, OnChanges } from '@angular/core';
+import { stringToColor } from '../../common/util/util';
+
 /**
  * Make BackgroundColor from:
  * Arbitrary string - see [stringToColor](app/common/utils/util.js).
  */
-import { Directive, HostBinding, Input, OnChanges } from '@angular/core';
-import { stringToColor } from '../../common/util/util';
-
 @Directive({
-    selector: '[appBackgroundFrom]'
+    selector: '[meshBackgroundFrom]'
 })
 export class BackgroundFromDirective implements OnChanges {
     @HostBinding('style.backgroundColor')
     private backgroundColor: string;
 
     @Input()
-    private appBackgroundFrom: string;
+    private meshBackgroundFrom: string;
 
     ngOnChanges(): void {
-        this.backgroundColor = stringToColor(this.appBackgroundFrom);
+        this.backgroundColor = stringToColor(this.meshBackgroundFrom);
     }
 }

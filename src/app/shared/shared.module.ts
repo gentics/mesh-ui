@@ -12,6 +12,7 @@ import { ScrollFrameDirective } from './components/scroll-frame/scroll-frame.dir
 import { ScrollFrameHeadingDirective } from './components/scroll-frame/scroll-frame-heading.directive';
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
 import { BackgroundFromDirective } from './directives/background-from.directive';
+import { HighlightPipe } from './pipes/highlight/highlight.pipe';
 
 const SHARED_COMPONENTS = [
     NoContentComponent,
@@ -27,7 +28,8 @@ const SHARED_DIRECTIVES = [
 
 const SHARED_PIPES = [
     DisplayFieldPipe,
-    I18nPipe
+    I18nPipe,
+    HighlightPipe
 ];
 
 /**
@@ -45,7 +47,7 @@ const SHARED_PIPES = [
     declarations: [
         ...SHARED_COMPONENTS,
         ...SHARED_PIPES,
-        ...SHARED_DIRECTIVES
+        ...SHARED_DIRECTIVES,
     ],
     exports: [
         ...SHARED_COMPONENTS,

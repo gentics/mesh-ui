@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, Input, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 
@@ -19,8 +19,7 @@ export class BreadcrumbsComponent {
 
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
-                private navigationService: NavigationService,
-                private changeDetector: ChangeDetectorRef ) {
+                private navigationService: NavigationService) {
 
         this.routerLinks$ = state.select(state => state.list)
             .map(({ currentNode, language }) => {
