@@ -1,12 +1,30 @@
 
 @mixin filter-selection {
-    gtx-dropdown-item  /deep/ .filterSelection {
+    /deep/ .filter-selection,
+    /deep/ .hl-pipe,
+    {
         background-color: $gtx-color-primary !important;
         color: #fff;
         padding: 0 1px;
         margin: 0 1px;
     }
 }
+
+
+@mixin tag-filter {
+    .tag-family {
+        color: $gtx-color-off-black;
+        font-size: 12px;
+    }
+
+    .tag-name {
+       padding: 2px 5px;
+       font-size: 14px;
+       color: $gtx-color-off-black;
+    }
+}
+
+
 
 @mixin search-chip {
     .search-chip {
