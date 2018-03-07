@@ -17,6 +17,7 @@ import { TagFamily } from '../../../common/models/tag-family.model';
 import { NodeTagsBarComponent } from './node-tags-bar.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { DebugElement } from '@angular/core/src/debug/debug_node';
+import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -40,6 +41,7 @@ describe('NodeTagsBarComponent', () => {
             declarations: [
                 NodeTagsBarComponent,
                 TestComponent,
+                HighlightPipe
             ],
             providers: [
                 OverlayHostService,
@@ -104,7 +106,7 @@ describe('NodeTagsBarComponent', () => {
             componentTest(() => TestComponent, (fixture, instance) => {
                 typeSearchTerm(fixture, 'mock');
                 const tagBarComponent = getTagsBarComponent(fixture);
-                expect(tagBarComponent.filteredTags[0].tag).toEqual(tag);
+                expect(tagBarComponent.filteredTags[0]).toEqual(tag);
             })
         );
 

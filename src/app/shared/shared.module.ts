@@ -13,6 +13,7 @@ import { ScrollFrameHeadingDirective } from './components/scroll-frame/scroll-fr
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
 import { HighlightPipe } from './pipes/highlight/highlight.pipe';
 
+
 const SHARED_COMPONENTS = [
     NoContentComponent,
     SchemaLabelComponent,

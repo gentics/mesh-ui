@@ -24,8 +24,8 @@ import { FormGeneratorComponent } from '../../form-generator/components/form-gen
 import { FieldGeneratorService } from '../../form-generator/providers/field-generator/field-generator.service';
 import { MeshControlGroupService } from '../../form-generator/providers/field-control-group/mesh-control-group.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
-import { FilterSelection } from '../../../common/models/common.model';
 import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
+import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
@@ -42,7 +42,8 @@ describe('NodeEditorComponent', () => {
                 NodeLanguageLabelComponent,
                 MockLanguageSwitcherComponent,
                 NodeTagsBarComponent,
-                FormGeneratorComponent
+                FormGeneratorComponent,
+                HighlightPipe,
             ],
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },

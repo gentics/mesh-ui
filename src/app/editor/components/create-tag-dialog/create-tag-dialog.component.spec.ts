@@ -14,6 +14,7 @@ import { ConfigService } from '../../../core/providers/config/config.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 
 describe('CreateTagDialogComponent', () => {
     let component: CreateTagDialogComponent;
@@ -25,7 +26,8 @@ describe('CreateTagDialogComponent', () => {
         configureComponentTest({
             declarations: [
                 CreateTagDialogComponent,
-                MockI18nPipe
+                MockI18nPipe,
+                HighlightPipe,
             ],
             providers: [
                 OverlayHostService,
