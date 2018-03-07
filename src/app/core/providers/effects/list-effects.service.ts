@@ -12,7 +12,6 @@ import { NodeResponse } from '../../../common/models/server-models';
 import { Tag } from '../../../common/models/tag.model';
 
 
-
 @Injectable()
 export class ListEffectsService {
 
@@ -70,12 +69,12 @@ export class ListEffectsService {
         this.state.actions.list.setActiveContainer(projectName, containerUuid, language);
 
         // Refresh the node
-        this.state.actions.list.fetchNodeStart(containerUuid);
+        this.state.actions.list.fetchNodeStart();
         this.api.project.getNode({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })
             .subscribe(response => {
                 this.state.actions.list.fetchNodeSuccess(response);
             }, error => {
-                this.state.actions.list.fetchChildrenError();
+                this.state.actions.list.fetchNodeError();
                 throw new Error('TODO: Error handling');
             });
 
@@ -99,10 +98,54 @@ export class ListEffectsService {
     }
 
 
-    searchNodesByTags(tags: Tag[], project: string, language: string): Promise<MeshNode[]> {
-        const tagNames: string = tags.map(tag => tag.name).join(' ');
+    searchNodes(searchTerm: string, tags: Tag[], projectName: string, languageCode: string): void {
 
-        this.state.actions.list.searchNodesByTagsStart();
+        this.state.actions.list.searchNodesStart();
+        const hasTags = 0 < tags.length;
+        const hasSearchTerm = 0 < searchTerm.trim().length;
+
+        const searchRequests: Array<Observable<MeshNode[]>> = [
+            hasTags ? this.searchNodesByTags(tags, projectName, languageCode) : Observable.of([]),
+            hasSearchTerm ? this.searchNodesByKeyword(searchTerm, projectName, languageCode) : Observable.of([]),
+        ];
+
+        forkJoin(searchRequests)
+            .subscribe(results => {
+                const nodesFromTagSearch = results[0];
+                const nodesFromKeywordSearch = results[1];
+                const finalResult = this.reconcileSearchResults(nodesFromKeywordSearch, nodesFromTagSearch, hasSearchTerm, hasTags);
+                this.state.actions.list.searchNodesSuccess(finalResult);
+            });
+    }
+
+    /**
+     * There are two types of search results: searched by keyword and searched by tag.
+     * First we look at the searchedNodes and if it's !== null we apply intersect it with the searchedTags
+     * If The searchedNodes === null and searchedTags !== null - we return full searchedTags.
+     * Otherwise we just return nodes of current selected parent node.
+     */
+    private reconcileSearchResults(nodesFromKeywordSearch: MeshNode[], nodesFromTagSearch: MeshNode[], hasSearchTerm: boolean, hasTags: boolean): MeshNode[] {
+        let finalResult: MeshNode[] = [];
+
+        if (hasSearchTerm) {
+            if (hasTags) { // Intersect with searchedTags.
+                finalResult = nodesFromKeywordSearch.filter(nodeFromKeywordSearch =>
+                    nodesFromTagSearch.some(nodeFromTagSearch =>
+                        nodeFromKeywordSearch.uuid === nodeFromTagSearch.uuid));
+            } else {
+                finalResult = nodesFromKeywordSearch;
+            }
+        } else if (hasTags) {
+            finalResult = nodesFromTagSearch;
+        } else { // No searching is done at all.
+            throw new Error('No search term or tags were specified');
+        }
+
+        return finalResult;
+    }
+
+    searchNodesByTags(tags: Tag[], project: string, language: string): Observable<MeshNode[]> {
+        const tagNames: string = tags.map(tag => tag.name).join(' ');
         const query = this.api.formatGraphQLSearchQuery({
             query: {
                 query_string: {
@@ -128,59 +171,47 @@ export class ListEffectsService {
             }
         }`;
 
-
-        return new Promise((resolve, reject) => {
-            this.api.graphQL({ project }, { query: queryString })
-            .subscribe(results => {
+        return this.api.graphQL({ project }, { query: queryString })
+            .flatMap(results => {
                 if (results.data) {
                     if (results.data.tags.elements.length === 0) {
-                        this.state.actions.list.searchNodesByTagsSuccess(results);
-                        resolve([]);
+                        return Observable.of([]);
                     } else {
                         const foundNodesForTags: string[] = [];
                         results.data.tags.elements.forEach(tag =>
                             tag.nodes.elements.forEach(node => foundNodesForTags.push(node.uuid)));
 
                         if (foundNodesForTags.length === 0) {
-                            resolve([]);
+                            return Observable.of([]);
                         } else {
-                            forkJoin<NodeResponse>(foundNodesForTags.map(nodeUuid => {
-                                this.state.actions.list.fetchNodeStart(nodeUuid);
-                                const existingNode = this.entities.getNode(nodeUuid, { language });
-                                if (existingNode) {
-                                    return Observable.of(existingNode);
-                                } else {
-                                    return this.api.project.getNode({project, nodeUuid})
-                                        .catch((err, cought) => {
-                                            return Observable.of(null);
-                                        });
-                                }
-                            }))
-                            .first()
-                            .subscribe(nodes => {
-                                const filteredNodes = nodes.filter(node => node != null);
-                                filteredNodes.map(node => this.state.actions.list.fetchNodeSuccess(node));
-                                this.state.actions.list.searchNodesByTagsSuccess(results);
-                                resolve(filteredNodes);
-                            });
+                            return forkJoin<NodeResponse>(
+                                foundNodesForTags.map(nodeUuid => {
+                                    this.state.actions.list.fetchNodeStart();
+                                    const existingNode = this.entities.getNode(nodeUuid, { language });
+                                    if (existingNode) {
+                                        return Observable.of(existingNode);
+                                    } else {
+                                        return this.api.project.getNode({project, nodeUuid})
+                                            .catch(() => Observable.of(null));
+                                    }
+                                }))
+                                .map(nodes => {
+                                    const filteredNodes = nodes.filter(node => node != null);
+                                    filteredNodes.map(node => this.state.actions.list.fetchNodeSuccess(node));
+                                    return filteredNodes;
+                                });
                         }
                     }
                 } else {
-                    this.state.actions.list.searchNodesByTagsError(results);
-                    this.notification.show({
-                        type: 'error',
-                        message: 'list.search_error_occured'
-                    });
+                   throw new Error(JSON.stringify(results));
                 }
             });
-        });
     }
 
     /**
      * Load the children for the opened folder
      */
-    searchNodesByKeyword(term: string, project: string, language: string): Promise<MeshNode[]> {
-        this.state.actions.list.searchNodesByKeywordStart();
+    searchNodesByKeyword(term: string, project: string, language: string): Observable<MeshNode[]> {
         const query = this.api.formatGraphQLSearchQuery({
             query: {
                 query_string: {
@@ -198,46 +229,35 @@ export class ListEffectsService {
             }
         }`;
 
-        return new Promise((resolve, reject) => {
-            this.api.graphQL({ project }, { query: queryString })
-            .subscribe(results => {
+        return this.api.graphQL({ project }, { query: queryString })
+            .flatMap(results => {
                 if (results.data) {
                     if (results.data.nodes.elements.length === 0) {
-                        this.state.actions.list.searchNodesByKeywordSuccess(results);
-                        resolve([]);
+                        return Observable.of([]);
                     } else {
-                        forkJoin<NodeResponse>(results.data.nodes.elements.map(node => {
-                            this.state.actions.list.fetchNodeStart(node.uuid);
-
-                            const existingNode = this.entities.getNode(node.uuid, { language });
-                            if (existingNode) {
-                                return Observable.of(existingNode);
-                            } else {
-                                return this.api.project.getNode({project, nodeUuid: node.uuid})
-                                    .catch((err, cought) => {
-                                        return Observable.of(null);
-                                    });
-                            }
-                        }))
-                        .first()
-                        .subscribe(nodes => {
-                            const filteredNodes = nodes.filter(node => node !== null);
-                            filteredNodes.map(node => {
-                                this.state.actions.list.fetchNodeSuccess(node);
+                        return forkJoin<NodeResponse>(
+                            results.data.nodes.elements.map(node => {
+                                this.state.actions.list.fetchNodeStart();
+                                const existingNode = this.entities.getNode(node.uuid, { language });
+                                if (existingNode) {
+                                    return Observable.of(existingNode);
+                                } else {
+                                    return this.api.project.getNode({project, nodeUuid: node.uuid})
+                                        .catch(() => Observable.of(null));
+                                }
+                            }))
+                            .map(nodes => {
+                                const filteredNodes = nodes.filter(node => node !== null);
+                                filteredNodes.map(node => {
+                                    this.state.actions.list.fetchNodeSuccess(node);
+                                });
+                                return filteredNodes;
                             });
-                            this.state.actions.list.searchNodesByKeywordSuccess(results);
-                            resolve(filteredNodes);
-                        });
                     }
                 } else {
-                    this.state.actions.list.searchNodesByKeywordError(results);
-                    this.notification.show({
-                        type: 'error',
-                        message: 'list.search_error_occured'
-                    });
+                    throw new Error(JSON.stringify(results));
                 }
             });
-        });
     }
 
     /**

@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { ApiService } from '../../core/providers/api/api.service';
 import { BinaryField, MeshNode } from '../../common/models/node.model';
-import { NodeUpdateRequest, NodeCreateRequest, FieldMapFromServer, TagReferenceFromServer, NodeResponse } from '../../common/models/server-models';
+import { FieldMapFromServer, NodeCreateRequest, NodeResponse, NodeUpdateRequest, TagReferenceFromServer } from '../../common/models/server-models';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ConfigService } from '../../core/providers/config/config.service';
-import { simpleCloneDeep, getMeshNodeNonBinaryFields, getMeshNodeBinaryFields } from '../../common/util/util';
+import { getMeshNodeBinaryFields, getMeshNodeNonBinaryFields, simpleCloneDeep } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
-import { promise } from 'protractor/node_modules/@types/selenium-webdriver';
 
 
 @Injectable()
@@ -25,7 +24,7 @@ export class EditorEffectsService {
         this.state.actions.editor.openNode(projectName, nodeUuid, lang);
 
         // Refresh the node
-        this.state.actions.list.fetchNodeStart(nodeUuid);
+        this.state.actions.list.fetchNodeStart();
         this.api.project.getNode({ project: projectName, nodeUuid, lang })
             .subscribe(response => {
                 this.state.actions.list.fetchNodeSuccess(response);

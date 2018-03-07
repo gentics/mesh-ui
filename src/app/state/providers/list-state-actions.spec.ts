@@ -21,6 +21,6 @@ describe('ListStateActions', () => {
             })['en']['0.2']
         ];
         state.actions.list.fetchChildrenSuccess('123', mockNodes);
-        expect(state.now.list.children).toEqual(['uuid1', 'uuid2']);
+        expect(state.now.list.items).toEqual(['uuid1', 'uuid2']);
     });
 });
