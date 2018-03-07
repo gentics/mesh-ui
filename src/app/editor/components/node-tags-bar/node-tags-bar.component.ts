@@ -48,7 +48,6 @@ export class NodeTagsBarComponent implements OnChanges {
     }
 
     onFilterChange(term: string) {
-
         this.filterTerm = term;
 
         this.filteredTags = this.filterTags(term);
