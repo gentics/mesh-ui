@@ -10,7 +10,6 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { stringToColor } from '../../../common/util/util';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
-import { FilterSelection } from '../../../common/models/common.model';
 import { SafeStyle } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
@@ -28,7 +27,8 @@ export class NodeTagsBarComponent implements OnChanges {
     newTagName = ''; // Contains a name for a new tag.
     nodeTags: TagReferenceFromServer[] = []; //tags for the current opened node
 
-    filteredTags: FilterSelection[] = [];
+    filteredTags: Tag[] = [];
+    filterTerm = '';
 
     constructor(
         private changeDetector: ChangeDetectorRef,
@@ -48,6 +48,8 @@ export class NodeTagsBarComponent implements OnChanges {
     }
 
     onFilterChange(term: string) {
+
+        this.filterTerm = term;
 
         this.filteredTags = this.filterTags(term);
 
@@ -129,17 +131,16 @@ export class NodeTagsBarComponent implements OnChanges {
         this.isDirty = newUuids !== oldUuids;
     }
 
-    private filterTags(term: string): FilterSelection[] {
+    private filterTags(term: string): Tag[] {
         if (term.trim() === '') {
             return [];
         }
 
         const tags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
-        const filteredTags = tags.reduce<FilterSelection[]>((filteredTags, tag) => {
+        const filteredTags = tags.reduce<Tag[]>((filteredTags, tag) => {
             if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) === -1) {
-                const matchedName = fuzzyReplace(term, tag.name);
-                if (matchedName) {
-                    filteredTags.push({ ...matchedName, tag });
+                if(fuzzyMatch(term, tag.name)) {
+                   filteredTags.push(tag) ;
                 }
             }
             return filteredTags;
