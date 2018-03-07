@@ -2,10 +2,10 @@ import { FilterSelection } from "../models/common.model";
 
 export function fuzzyEscapeRegExp(text: string): string {
     return text.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    //return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+    // return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
-export function getFuzzyRegExp(term): RegExp {
+export function getFuzzyRegExp(term: string): RegExp {
     /*
     // The following would match words with non-matching symbols in between
     // e.g 'autos' would match 'AUTOmobileS'
@@ -13,6 +13,9 @@ export function getFuzzyRegExp(term): RegExp {
         const regex = new RegExp(regexParts.join('.*?'), 'i');
     */
 
+    /**
+     * The following just matches the consequent characters
+     */
     return new RegExp(`(${fuzzyEscapeRegExp(term)})`, 'gi');
 }
 
@@ -20,7 +23,6 @@ export function fuzzyMatch(needle: string, haystack: string): string[] {
     const regex = getFuzzyRegExp(needle);
     return regex.exec(haystack);
 }
-
 
 export function fuzzyReplace(needle: string, haystack: string): FilterSelection {
     const matches = fuzzyMatch(needle, haystack);
