@@ -41,19 +41,18 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         const onLogin$ = this.state.select(state => state.auth.loggedIn)
             .filter(loggedIn => loggedIn);
 
-        const listParams$ = Observable.of([]).let(obs => this.switchMapToParams(obs));
+        onLogin$.let(obs => this.switchMapToParams(obs))
+            .takeUntil(this.destroy$)
+            .subscribe(({ containerUuid, projectName, language }) => {
+                this.listEffects.setActiveContainer(projectName, containerUuid, language);
+            });
 
+        const listParams$ = Observable.of([]).let(obs => this.switchMapToParams(obs));
         const searchParams$ = this.route.queryParamMap
             .map(paramMap => {
                 const keyword = (paramMap.get('q') || '').trim();
                 const tags = (paramMap.get('t') || '').trim();
                 return { keyword, tags };
-            });
-
-        onLogin$.let(obs => this.switchMapToParams(obs))
-            .takeUntil(this.destroy$)
-            .subscribe(({ containerUuid, projectName, language }) => {
-                this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
         combineLatest(

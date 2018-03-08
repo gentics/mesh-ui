@@ -192,7 +192,10 @@ export class ListEffectsService {
                                         return Observable.of(existingNode);
                                     } else {
                                         return this.api.project.getNode({project, nodeUuid})
-                                            .catch(() => Observable.of(null));
+                                            .catch(() => {
+                                                this.state.actions.list.fetchNodeError();
+                                                return Observable.of(null);
+                                            });
                                     }
                                 }))
                                 .map(nodes => {
@@ -243,7 +246,10 @@ export class ListEffectsService {
                                     return Observable.of(existingNode);
                                 } else {
                                     return this.api.project.getNode({project, nodeUuid: node.uuid})
-                                        .catch(() => Observable.of(null));
+                                        .catch(() => {
+                                            this.state.actions.list.fetchNodeError();
+                                            return Observable.of(null);
+                                        });
                                 }
                             }))
                             .map(nodes => {

@@ -68,7 +68,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
             } else {
                 this.dropDownList.resize();
             }
-
         } else {
             this.listEffects.setFilterTerm(this.inputValue);
         }
