@@ -1,4 +1,4 @@
-// Auto-generated from the RAML for Version 0.13.1 of the Gentics Mesh REST API.
+// Auto-generated from the RAML for Version 0.17.1 of the Gentics Mesh REST API.
 
 export type Integer = number;
 
@@ -66,7 +66,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the job.
-                     * @example "24cbb4916457411b8bb4916457711b5e"
+                     * @example "f6b0c606a4df4aebb0c606a4dfbaeb76"
                      */
                     jobUuid: string;
                 };
@@ -171,7 +171,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "2623844472f1483ca3844472f1e83cdd"
+                     * @example "7e576ade346045bb976ade3460e5bb0d"
                      */
                     groupUuid: string;
                 };
@@ -202,7 +202,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "b90d5aa2e2064f008d5aa2e2062f00b7"
+                     * @example "2002b48af47b4e8b82b48af47bce8bd0"
                      */
                     groupUuid: string;
                 };
@@ -243,7 +243,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "688dd10ac6fa4a878dd10ac6fa1a87ab"
+                     * @example "7c947adeb3c24a08947adeb3c2da08a5"
                      */
                     groupUuid: string;
                 };
@@ -286,7 +286,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "a4ecf9b645064c46acf9b64506ec469d"
+                     * @example "8fc68b6fb6734e6a868b6fb673ae6a85"
                      */
                     microschemaUuid: string;
                 };
@@ -353,7 +353,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "8fb239c8d2284bc3b239c8d228ebc33f"
+                     * @example "2a47fd473345458d87fd473345258d91"
                      */
                     projectUuid: string;
                 };
@@ -420,7 +420,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "aca0ff2e4f494729a0ff2e4f49d7295e"
+                     * @example "488d9f45c53f4dbc8d9f45c53f8dbc1e"
                      */
                     roleUuid: string;
                 };
@@ -440,14 +440,14 @@ export interface ApiEndpoints {
                     /**
                      * API path to the element.
                      * @example
-                     *     "projects/ccafa8daba1e4a20afa8daba1e5a206d"
-                     *     "projects/572498f18359431aa498f18359631a09/nodes/8da50bcc4bcf4968a50bcc4bcf29681f"
+                     *     "projects/480f25e98efd44f28f25e98efd54f2db"
+                     *     "projects/dfc1930e9c1c426d81930e9c1c326d41/nodes/652a16df15114415aa16df151174154c"
                      *     ""
                      */
                     path: string;
                     /**
                      * Uuid of the role.
-                     * @example "2cf73e39392e4537b73e39392e5537a6"
+                     * @example "6f518c139dbf42d8918c139dbf12d872"
                      */
                     roleUuid: string;
                 };
@@ -490,7 +490,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "e5b05d4215a84db3b05d4215a8edb36d"
+                     * @example "a7ae272766984f1eae272766986f1e55"
                      */
                     schemaUuid: string;
                 };
@@ -602,7 +602,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "a65c02fea66449fa9c02fea66479fa06"
+                     * @example "a8d4390e34dc4fb694390e34dcafb697"
                      */
                     userUuid: string;
                 };
@@ -673,7 +673,7 @@ export interface ApiEndpoints {
                     path: string;
                     /**
                      * Uuid of the user.
-                     * @example "b32edf5b9b844941aedf5b9b842941bd"
+                     * @example "40745c441cc6489bb45c441cc6589b3a"
                      */
                     userUuid: string;
                 };
@@ -845,7 +845,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "dd9eba4ce3b949069eba4ce3b9b9066c"
+                     * @example "4dedc6fb60eb49e9adc6fb60ebb9e997"
                      */
                     nodeUuid: string;
                 };
@@ -921,43 +921,58 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "67c838391f834cf48838391f83dcf47c"
+                     * @example "42141e2991d34ad3941e2991d3ead30a"
                      */
                     nodeUuid: string;
                 };
                 queryParams?: {
                     /**
-                     * Set image crop area start x coordinate.
-                     * @example 260
+                     * Set the focal point zoom factor. The value must be greater than one.
+                     * @example 1.5
                      */
-                    cropx?: number;
+                    fpz?: number;
                     /**
-                     * Set image crop area height.
-                     * @example 35
+                     * Set image crop area.
+                     * @example "20,20,128,128"
                      */
-                    croph?: number;
-                    /**
-                     * Set image crop area start y coordinate.
-                     * @example 260
-                     */
-                    cropy?: number;
+                    rect?: string;
                     /**
                      * Set image target width. The height will automatically be calculated if the width
                      * was omitted.
                      * @example 1280
                      */
-                    width?: number;
+                    w?: number;
                     /**
                      * Set image target height. The width will automatically be calculated if the height
                      * was omitted.
                      * @example 720
                      */
-                    height?: number;
+                    h?: number;
                     /**
-                     * Set image crop area width.
-                     * @example 35
+                     * Set the focal point y factor between 0  and 1 where 0.5 is the middle of the
+                     * image. You can use this parameter in combination with the crop=fp parameter in
+                     * order to crop and resize the image in relation to the given point.
+                     * @example 0.2
                      */
-                    cropw?: number;
+                    fpy?: number;
+                    /**
+                     * Set the crop mode. Possible modes:
+                     * rect : The rect mode will work in combination with the rect parameter and crop
+                     * the specified area.
+                     * fp : The fp mode will utilize the specified or pre-selected focal point and crop
+                     * the image according to the position of the focus point and the specified image
+                     * size.
+                     *
+                     * @example "rect"
+                     */
+                    crop?: string;
+                    /**
+                     * Set the focal point x factor between 0  and 1 where 0.5 is the middle of the
+                     * image.  You can use this parameter in combination with the crop=fp parameter in
+                     * order to crop and resize the image in relation to the given point.
+                     * @example 0.1
+                     */
+                    fpx?: number;
                 };
                 body?: undefined;
             };
@@ -977,7 +992,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "ce44c53104be4ee484c53104be4ee4e6"
+                     * @example "dbc3409b80334e8483409b8033ce84b5"
                      */
                     nodeUuid: string;
                 };
@@ -1049,7 +1064,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "4af18abd36bb4754b18abd36bbe754a7"
+                     * @example "c53abad5e0e64bb3babad5e0e67bb356"
                      */
                     nodeUuid: string;
                 };
@@ -1073,7 +1088,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "a17f5bcf81bb42f4bf5bcf81bb32f478"
+                     * @example "1304823e2c9d4bf684823e2c9ddbf642"
                      */
                     nodeUuid: string;
                 };
@@ -1110,7 +1125,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "29c99b35883e42f0899b35883e92f073"
+                     * @example "429ca5e4a35143ce9ca5e4a35123ce12"
                      */
                     nodeUuid: string;
                 };
@@ -1134,7 +1149,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "ee9be878767e41fc9be878767ef1fce5"
+                     * @example "c1f4b6c0b8414661b4b6c0b841966127"
                      */
                     nodeUuid: string;
                 };
@@ -1201,7 +1216,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "a7b5402e933748cbb5402e9337c8cb45"
+                     * @example "2e8e6ed3e5a3465d8e6ed3e5a3465ded"
                      */
                     releaseUuid: string;
                 };
@@ -1228,7 +1243,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "1fda49c05a0a44f89a49c05a0a24f8ee"
+                     * @example "241f7261945248a59f72619452c8a570"
                      */
                     releaseUuid: string;
                 };
@@ -1263,7 +1278,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "2c313bd4c60f48acb13bd4c60f28ac07"
+                     * @example "618fd4745af649e08fd4745af699e011"
                      */
                     releaseUuid: string;
                 };
@@ -1317,7 +1332,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "b691184afb21455291184afb2195524d"
+                     * @example "10986ec00c844c5c986ec00c84fc5c9d"
                      */
                     schemaUuid: string;
                 };
@@ -1371,7 +1386,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "8b0678aa1cc849288678aa1cc8d92868"
+                     * @example "022d1b5c9e6f41c7ad1b5c9e6f41c7e3"
                      */
                     tagFamilyUuid: string;
                 };
@@ -1398,7 +1413,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "eea44dd9ab0a49e9a44dd9ab0aa9e996"
+                     * @example "bd892f22e1d547db892f22e1d5d7db3a"
                      */
                     tagFamilyUuid: string;
                 };
@@ -1433,12 +1448,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "1a46f26579bd455b86f26579bde55b98"
+                     * @example "b47c482d87ad47fdbc482d87ad07fdf5"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "0fe81376cf194435a81376cf198435ca"
+                     * @example "3274abc557374d44b4abc55737fd4499"
                      */
                     tagUuid: string;
                 };
@@ -1465,12 +1480,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "79e6bc03e6d147e0a6bc03e6d1e7e086"
+                     * @example "a119ab4147fa450299ab4147fad5024b"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "1249e9847ef342ee89e9847ef3d2ee70"
+                     * @example "2bb08b07e3cc410bb08b07e3cc510b46"
                      */
                     tagUuid: string;
                 };
@@ -1511,37 +1526,52 @@ export interface ApiEndpoints {
                 };
                 queryParams?: {
                     /**
-                     * Set image crop area start x coordinate.
-                     * @example 260
+                     * Set the focal point zoom factor. The value must be greater than one.
+                     * @example 1.5
                      */
-                    cropx?: number;
+                    fpz?: number;
                     /**
-                     * Set image crop area height.
-                     * @example 35
+                     * Set image crop area.
+                     * @example "20,20,128,128"
                      */
-                    croph?: number;
-                    /**
-                     * Set image crop area start y coordinate.
-                     * @example 260
-                     */
-                    cropy?: number;
+                    rect?: string;
                     /**
                      * Set image target width. The height will automatically be calculated if the width
                      * was omitted.
                      * @example 1280
                      */
-                    width?: number;
+                    w?: number;
                     /**
                      * Set image target height. The width will automatically be calculated if the height
                      * was omitted.
                      * @example 720
                      */
-                    height?: number;
+                    h?: number;
                     /**
-                     * Set image crop area width.
-                     * @example 35
+                     * Set the focal point y factor between 0  and 1 where 0.5 is the middle of the
+                     * image. You can use this parameter in combination with the crop=fp parameter in
+                     * order to crop and resize the image in relation to the given point.
+                     * @example 0.2
                      */
-                    cropw?: number;
+                    fpy?: number;
+                    /**
+                     * Set the crop mode. Possible modes:
+                     * rect : The rect mode will work in combination with the rect parameter and crop
+                     * the specified area.
+                     * fp : The fp mode will utilize the specified or pre-selected focal point and crop
+                     * the image according to the position of the focus point and the specified image
+                     * size.
+                     *
+                     * @example "rect"
+                     */
+                    crop?: string;
+                    /**
+                     * Set the focal point x factor between 0  and 1 where 0.5 is the middle of the
+                     * image.  You can use this parameter in combination with the crop=fp parameter in
+                     * order to crop and resize the image in relation to the given point.
+                     * @example 0.1
+                     */
+                    fpx?: number;
                 };
                 body?: undefined;
             };
@@ -1632,7 +1662,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "2623844472f1483ca3844472f1e83cdd"
+                     * @example "7e576ade346045bb976ade3460e5bb0d"
                      */
                     groupUuid: string;
                 };
@@ -1651,12 +1681,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "43b566e8a8864fdab566e8a8860fdab1"
+                     * @example "835c119c4d004e5f9c119c4d002e5fca"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the role.
-                     * @example "a2809b941fcc40b7809b941fcc70b78e"
+                     * @example "fe8ce6b67a97436c8ce6b67a97f36c68"
                      */
                     roleUuid: string;
                 };
@@ -1675,12 +1705,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "f135cc4833014beeb5cc4833010beee7"
+                     * @example "0216ed388c0744f696ed388c0784f6ce"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the user which should be removed from the group.
-                     * @example "d77bdeaa248941e2bbdeaa2489b1e28f"
+                     * @example "bda76c34969f47e3a76c34969f07e3da"
                      */
                     userUuid: string;
                 };
@@ -1712,7 +1742,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "a4ecf9b645064c46acf9b64506ec469d"
+                     * @example "8fc68b6fb6734e6a868b6fb673ae6a85"
                      */
                     microschemaUuid: string;
                 };
@@ -1735,7 +1765,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "6b37042d21f84e97b7042d21f86e97ba"
+                     * @example "370832da0ec04e868832da0ec00e8679"
                      */
                     microschemaUuid: string;
                 };
@@ -1757,7 +1787,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "e101783da3fe4f9d81783da3fe4f9d5a"
+                     * @example "9318791fd3ef472998791fd3efc729c1"
                      */
                     microschemaUuid: string;
                 };
@@ -1792,7 +1822,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "8fb239c8d2284bc3b239c8d228ebc33f"
+                     * @example "2a47fd473345458d87fd473345258d91"
                      */
                     projectUuid: string;
                 };
@@ -1803,6 +1833,146 @@ export interface ApiEndpoints {
             responseTypes: {
                 /** Updated project. */
                 200: ProjectResponse;
+            };
+        };
+        /**
+         * Invoke a search query for groups and return the unmodified Elasticsearch
+         * response. Note that the query will be executed using the multi search API of
+         * Elasticsearch.
+         */
+        '/rawSearch/groups': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for microschemas and return the unmodified Elasticsearch
+         * response. Note that the query will be executed using the multi search API of
+         * Elasticsearch.
+         */
+        '/rawSearch/microschemas': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for nodes and return the unmodified Elasticsearch response.
+         * Note that the query will be executed using the multi search API of Elasticsearch.
+         */
+        '/rawSearch/nodes': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for projects and return the unmodified Elasticsearch
+         * response. Note that the query will be executed using the multi search API of
+         * Elasticsearch.
+         */
+        '/rawSearch/projects': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for roles and return the unmodified Elasticsearch response.
+         * Note that the query will be executed using the multi search API of Elasticsearch.
+         */
+        '/rawSearch/roles': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for schemas and return the unmodified Elasticsearch
+         * response. Note that the query will be executed using the multi search API of
+         * Elasticsearch.
+         */
+        '/rawSearch/schemas': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for tagFamilies and return the unmodified Elasticsearch
+         * response. Note that the query will be executed using the multi search API of
+         * Elasticsearch.
+         */
+        '/rawSearch/tagFamilies': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for tags and return the unmodified Elasticsearch response.
+         * Note that the query will be executed using the multi search API of Elasticsearch.
+         */
+        '/rawSearch/tags': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for users and return the unmodified Elasticsearch response.
+         * Note that the query will be executed using the multi search API of Elasticsearch.
+         */
+        '/rawSearch/users': {
+            request: {
+                urlParams?: { };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
             };
         };
         /** Create a new role. */
@@ -1827,7 +1997,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "aca0ff2e4f494729a0ff2e4f49d7295e"
+                     * @example "488d9f45c53f4dbc8d9f45c53f8dbc1e"
                      */
                     roleUuid: string;
                 };
@@ -1847,14 +2017,14 @@ export interface ApiEndpoints {
                     /**
                      * API path to the element.
                      * @example
-                     *     "projects/ccafa8daba1e4a20afa8daba1e5a206d"
-                     *     "projects/572498f18359431aa498f18359631a09/nodes/8da50bcc4bcf4968a50bcc4bcf29681f"
+                     *     "projects/480f25e98efd44f28f25e98efd54f2db"
+                     *     "projects/dfc1930e9c1c426d81930e9c1c326d41/nodes/652a16df15114415aa16df151174154c"
                      *     ""
                      */
                     path: string;
                     /**
                      * Uuid of the role.
-                     * @example "2cf73e39392e4537b73e39392e5537a6"
+                     * @example "6f518c139dbf42d8918c139dbf12d872"
                      */
                     roleUuid: string;
                 };
@@ -1886,7 +2056,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "e5b05d4215a84db3b05d4215a8edb36d"
+                     * @example "a7ae272766984f1eae272766986f1e55"
                      */
                     schemaUuid: string;
                 };
@@ -1921,7 +2091,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "4e27cce6ab174bf8a7cce6ab176bf868"
+                     * @example "146a455c50e94073aa455c50e940737c"
                      */
                     schemaUuid: string;
                 };
@@ -1940,7 +2110,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "2928b970573344e7a8b970573334e7da"
+                     * @example "2853b5d94849437d93b5d94849237d3e"
                      */
                     schemaUuid: string;
                 };
@@ -2111,7 +2281,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "a65c02fea66449fa9c02fea66479fa06"
+                     * @example "a8d4390e34dc4fb694390e34dcafb697"
                      */
                     userUuid: string;
                 };
@@ -2119,7 +2289,7 @@ export interface ApiEndpoints {
                     /**
                      * Token code which can be used to update the user even if the connection is not
                      * authenticated. This can be used to implement a password recovery feature.
-                     * @example "w8dMTw2AKQtK"
+                     * @example "Wg4EfakPpYrT"
                      */
                     token?: string;
                 };
@@ -2140,7 +2310,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "663c86075fb749b6bc86075fb7d9b6f9"
+                     * @example "d4be29b328bc4ea6be29b328bc9ea6b9"
                      */
                     userUuid: string;
                 };
@@ -2162,7 +2332,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "b6097abf956b4b03897abf956bcb0336"
+                     * @example "d1f63b1f2891490bb63b1f2891e90b98"
                      */
                     userUuid: string;
                 };
@@ -2267,7 +2437,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the microschema.
-                     * @example "b166ba670e764b03a6ba670e766b035d"
+                     * @example "7cdf6dbde0ed48729f6dbde0ed7872d3"
                      */
                     microschemaUuid: string;
                 };
@@ -2316,7 +2486,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "dd9eba4ce3b949069eba4ce3b9b9066c"
+                     * @example "4dedc6fb60eb49e9adc6fb60ebb9e997"
                      */
                     nodeUuid: string;
                 };
@@ -2347,7 +2517,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "67c838391f834cf48838391f83dcf47c"
+                     * @example "42141e2991d34ad3941e2991d3ead30a"
                      */
                     nodeUuid: string;
                 };
@@ -2394,7 +2564,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "9e495282dce043f8895282dce0f3f87a"
+                     * @example "8c9eeefb29154da99eeefb2915eda997"
                      */
                     nodeUuid: string;
                 };
@@ -2426,7 +2596,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "4af18abd36bb4754b18abd36bbe754a7"
+                     * @example "c53abad5e0e64bb3babad5e0e67bb356"
                      */
                     nodeUuid: string;
                 };
@@ -2450,12 +2620,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of target the node.
-                     * @example "4051baffbabe48a491baffbabea8a44d"
+                     * @example "78c9be554fb94fb089be554fb9efb05c"
                      */
                     toUuid: string;
                     /**
                      * Uuid of the node which should be moved.
-                     * @example "584197e1081247f88197e10812f7f883"
+                     * @example "e2bead6d5c4e435ebead6d5c4e035e2f"
                      */
                     nodeUuid: string;
                 };
@@ -2492,7 +2662,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "29c99b35883e42f0899b35883e92f073"
+                     * @example "429ca5e4a35143ce9ca5e4a35123ce12"
                      */
                     nodeUuid: string;
                 };
@@ -2523,7 +2693,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "ee9be878767e41fc9be878767ef1fce5"
+                     * @example "c1f4b6c0b8414661b4b6c0b841966127"
                      */
                     nodeUuid: string;
                 };
@@ -2547,12 +2717,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag
-                     * @example "9c9270585f3642c99270585f36e2c9e8"
+                     * @example "c3fbf3bf84934425bbf3bf849384252f"
                      */
                     tagUuid: string;
                     /**
                      * Uuid of the node
-                     * @example "71b633109d3e4c35b633109d3e4c35cf"
+                     * @example "c4d2111a418b447192111a418b247129"
                      */
                     nodeUuid: string;
                 };
@@ -2576,6 +2746,70 @@ export interface ApiEndpoints {
             responseTypes: {
                 /** Updated node. */
                 200: NodeResponse;
+            };
+        };
+        /**
+         * Invoke a search query for nodes and return the unmodified Elasticsearch response.
+         * Note that the query will be executed using the multi search API of Elasticsearch.
+         */
+        '/{project}/rawSearch/nodes': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for tagFamilies and return the unmodified Elasticsearch
+         * response. Note that the query will be executed using the multi search API of
+         * Elasticsearch.
+         */
+        '/{project}/rawSearch/tagFamilies': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
+            };
+        };
+        /**
+         * Invoke a search query for tags and return the unmodified Elasticsearch response.
+         * Note that the query will be executed using the multi search API of Elasticsearch.
+         */
+        '/{project}/rawSearch/tags': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                };
+                queryParams?: { };
+                body?: undefined;
+            };
+            responseType: any; // TODO: This is not typed in the RAML
+            responseTypes: {
+                200: any; // TODO: This is not typed in the RAML
             };
         };
         /** Create a new release and automatically invoke a node migration. */
@@ -2611,7 +2845,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "a7b5402e933748cbb5402e9337c8cb45"
+                     * @example "2e8e6ed3e5a3465d8e6ed3e5a3465ded"
                      */
                     releaseUuid: string;
                 };
@@ -2635,7 +2869,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "1fda49c05a0a44f89a49c05a0a24f8ee"
+                     * @example "241f7261945248a59f72619452c8a570"
                      */
                     releaseUuid: string;
                 };
@@ -2662,7 +2896,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "62a87c5390ff49eca87c5390ffb9ec6e"
+                     * @example "ef9e178d42724ada9e178d42720adae2"
                      */
                     releaseUuid: string;
                 };
@@ -2689,7 +2923,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "86caaaf894b544068aaaf894b564062d"
+                     * @example "9f47a25b99de400987a25b99dea009ec"
                      */
                     releaseUuid: string;
                 };
@@ -2713,7 +2947,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the release
-                     * @example "2c313bd4c60f48acb13bd4c60f28ac07"
+                     * @example "618fd4745af649e08fd4745af699e011"
                      */
                     releaseUuid: string;
                 };
@@ -2740,7 +2974,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "b691184afb21455291184afb2195524d"
+                     * @example "10986ec00c844c5c986ec00c84fc5c9d"
                      */
                     schemaUuid: string;
                 };
@@ -2840,7 +3074,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "8b0678aa1cc849288678aa1cc8d92868"
+                     * @example "022d1b5c9e6f41c7ad1b5c9e6f41c7e3"
                      */
                     tagFamilyUuid: string;
                 };
@@ -2864,7 +3098,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "eea44dd9ab0a49e9a44dd9ab0aa9e996"
+                     * @example "bd892f22e1d547db892f22e1d5d7db3a"
                      */
                     tagFamilyUuid: string;
                 };
@@ -2888,12 +3122,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "1a46f26579bd455b86f26579bde55b98"
+                     * @example "b47c482d87ad47fdbc482d87ad07fdf5"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "0fe81376cf194435a81376cf198435ca"
+                     * @example "3274abc557374d44b4abc55737fd4499"
                      */
                     tagUuid: string;
                 };
@@ -2916,7 +3150,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the job.
-                     * @example "24cbb4916457411b8bb4916457711b5e"
+                     * @example "f6b0c606a4df4aebb0c606a4dfbaeb76"
                      */
                     jobUuid: string;
                 };
@@ -2937,7 +3171,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the job.
-                     * @example "2615fd11a80d4d5a95fd11a80d0d5aa2"
+                     * @example "7d0b1425f5624b4d8b1425f5623b4de2"
                      */
                     jobUuid: string;
                 };
@@ -2955,7 +3189,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "2623844472f1483ca3844472f1e83cdd"
+                     * @example "7e576ade346045bb976ade3460e5bb0d"
                      */
                     groupUuid: string;
                 };
@@ -2974,12 +3208,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "43b566e8a8864fdab566e8a8860fdab1"
+                     * @example "835c119c4d004e5f9c119c4d002e5fca"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the role.
-                     * @example "a2809b941fcc40b7809b941fcc70b78e"
+                     * @example "fe8ce6b67a97436c8ce6b67a97f36c68"
                      */
                     roleUuid: string;
                 };
@@ -2998,12 +3232,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "f135cc4833014beeb5cc4833010beee7"
+                     * @example "0216ed388c0744f696ed388c0784f6ce"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the user which should be removed from the group.
-                     * @example "d77bdeaa248941e2bbdeaa2489b1e28f"
+                     * @example "bda76c34969f47e3a76c34969f07e3da"
                      */
                     userUuid: string;
                 };
@@ -3022,7 +3256,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "a4ecf9b645064c46acf9b64506ec469d"
+                     * @example "8fc68b6fb6734e6a868b6fb673ae6a85"
                      */
                     microschemaUuid: string;
                 };
@@ -3041,7 +3275,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "8fb239c8d2284bc3b239c8d228ebc33f"
+                     * @example "2a47fd473345458d87fd473345258d91"
                      */
                     projectUuid: string;
                 };
@@ -3060,7 +3294,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "aca0ff2e4f494729a0ff2e4f49d7295e"
+                     * @example "488d9f45c53f4dbc8d9f45c53f8dbc1e"
                      */
                     roleUuid: string;
                 };
@@ -3079,7 +3313,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "e5b05d4215a84db3b05d4215a8edb36d"
+                     * @example "a7ae272766984f1eae272766986f1e55"
                      */
                     schemaUuid: string;
                 };
@@ -3101,7 +3335,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "a65c02fea66449fa9c02fea66479fa06"
+                     * @example "a8d4390e34dc4fb694390e34dcafb697"
                      */
                     userUuid: string;
                 };
@@ -3120,7 +3354,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "b6097abf956b4b03897abf956bcb0336"
+                     * @example "d1f63b1f2891490bb63b1f2891e90b98"
                      */
                     userUuid: string;
                 };
@@ -3144,7 +3378,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the microschema.
-                     * @example "b166ba670e764b03a6ba670e766b035d"
+                     * @example "7cdf6dbde0ed48729f6dbde0ed7872d3"
                      */
                     microschemaUuid: string;
                 };
@@ -3168,7 +3402,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "dd9eba4ce3b949069eba4ce3b9b9066c"
+                     * @example "4dedc6fb60eb49e9adc6fb60ebb9e997"
                      */
                     nodeUuid: string;
                 };
@@ -3203,7 +3437,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node.
-                     * @example "012b195f020741b7ab195f020721b7f7"
+                     * @example "3e0d09536c4746f48d09536c47a6f4e2"
                      */
                     nodeUuid: string;
                 };
@@ -3232,7 +3466,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "4af18abd36bb4754b18abd36bbe754a7"
+                     * @example "c53abad5e0e64bb3babad5e0e67bb356"
                      */
                     nodeUuid: string;
                 };
@@ -3256,7 +3490,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "29c99b35883e42f0899b35883e92f073"
+                     * @example "429ca5e4a35143ce9ca5e4a35123ce12"
                      */
                     nodeUuid: string;
                 };
@@ -3287,12 +3521,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag
-                     * @example "9c9270585f3642c99270585f36e2c9e8"
+                     * @example "c3fbf3bf84934425bbf3bf849384252f"
                      */
                     tagUuid: string;
                     /**
                      * Uuid of the node
-                     * @example "71b633109d3e4c35b633109d3e4c35cf"
+                     * @example "c4d2111a418b447192111a418b247129"
                      */
                     nodeUuid: string;
                 };
@@ -3319,7 +3553,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "b691184afb21455291184afb2195524d"
+                     * @example "10986ec00c844c5c986ec00c84fc5c9d"
                      */
                     schemaUuid: string;
                 };
@@ -3343,7 +3577,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "8b0678aa1cc849288678aa1cc8d92868"
+                     * @example "022d1b5c9e6f41c7ad1b5c9e6f41c7e3"
                      */
                     tagFamilyUuid: string;
                 };
@@ -3367,12 +3601,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "1a46f26579bd455b86f26579bde55b98"
+                     * @example "b47c482d87ad47fdbc482d87ad07fdf5"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "0fe81376cf194435a81376cf198435ca"
+                     * @example "3274abc557374d44b4abc55737fd4499"
                      */
                     tagUuid: string;
                 };
@@ -3389,14 +3623,8 @@ export interface ApiEndpoints {
 }
 
 export interface BinaryFieldTransformRequest {
-    /** Crop area height. */
-    readonly croph?: Integer;
-    /** Crop area width. */
-    readonly cropw?: Integer;
-    /** Crop x axis start coordinate. */
-    readonly cropx?: Integer;
-    /** Crop y axis start coordinate. */
-    readonly cropy?: Integer;
+    /** Crop area. */
+    readonly cropRect?: ImageRectFromServer;
     /** New height of the image. */
     readonly height?: Integer;
     /**
@@ -3595,6 +3823,14 @@ export interface GroupUpdateRequest {
     readonly name: string;
 }
 
+/** Crop area. */
+export interface ImageRectFromServer {
+    readonly height?: Integer;
+    readonly startX?: Integer;
+    readonly startY?: Integer;
+    readonly width?: Integer;
+}
+
 export interface InconsistencyInfoFromServer {
     readonly description?: string;
     readonly elementUuid?: string;
@@ -3663,6 +3899,8 @@ export interface LoginRequest {
  * Returned for `GET /`
  */
 export interface MeshServerInfoModelFromServer {
+    /** Database structure revision hash. */
+    readonly databaseRevision?: string;
     /** Used database implementation vendor name. */
     readonly databaseVendor?: string;
     /** Used database implementation version. */
