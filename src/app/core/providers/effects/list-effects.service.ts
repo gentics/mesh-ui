@@ -215,54 +215,22 @@ export class ListEffectsService {
      * Load the children for the opened folder
      */
     searchNodesByKeyword(term: string, project: string, language: string): Observable<MeshNode[]> {
-        const query = this.api.formatGraphQLSearchQuery({
+        const query = {
             query: {
-                query_string: {
+                /*query_string: {
                     query: term
+                },*/
+                match_phrase: {
+                    'displayField.value': term,
+                    'fields.*': term,
                 }
-            }
-        });
+            },
+            sort: [{ created: 'asc' }]
+        };
 
-        const queryString = `{
-            nodes (query: ${query}) {
-                elements {
-                  displayName,
-                  uuid,
-                }
-            }
-        }`;
-
-        return this.api.graphQL({ project }, { query: queryString })
-            .flatMap(results => {
-                if (results.data) {
-                    if (results.data.nodes.elements.length === 0) {
-                        return Observable.of([]);
-                    } else {
-                        return forkJoin<NodeResponse>(
-                            results.data.nodes.elements.map(node => {
-                                this.state.actions.list.fetchNodeStart();
-                                const existingNode = this.entities.getNode(node.uuid, { language });
-                                if (existingNode) {
-                                    return Observable.of(existingNode);
-                                } else {
-                                    return this.api.project.getNode({project, nodeUuid: node.uuid})
-                                        .catch(() => {
-                                            this.state.actions.list.fetchNodeError();
-                                            return Observable.of(null);
-                                        });
-                                }
-                            }))
-                            .map(nodes => {
-                                const filteredNodes = nodes.filter(node => node !== null);
-                                filteredNodes.map(node => {
-                                    this.state.actions.list.fetchNodeSuccess(node);
-                                });
-                                return filteredNodes;
-                            });
-                    }
-                } else {
-                    throw new Error(JSON.stringify(results));
-                }
+        return this.api.project.searchNodes({ project }, query)
+            .map(results => {
+                return results.data as MeshNode[];
             });
     }
 

@@ -2764,7 +2764,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: undefined;
+                body?: any;
             };
             responseType: NodeListResponse;
             responseTypes: {
