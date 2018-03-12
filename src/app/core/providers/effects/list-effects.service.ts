@@ -146,68 +146,40 @@ export class ListEffectsService {
 
     searchNodesByTags(tags: Tag[], project: string, language: string): Observable<MeshNode[]> {
         const tagNames: string = tags.map(tag => tag.name).join(' ');
-        const query = this.api.formatGraphQLSearchQuery({
-            query: {
-                query_string: {
-                    query: tagNames
-                }
-            }
-        });
 
-        const queryString = `{
-            tags (query: ${query}) {
-                elements {
-                    name,
-                    uuid,
-                    tagFamily {
-                        name
-                    },
-                    nodes {
-                        elements {
-                            uuid
-                        }
-                    }
-                }
-            }
-        }`;
-
-        return this.api.graphQL({ project }, { query: queryString })
-            .flatMap(results => {
-                if (results.data) {
-                    if (results.data.tags.elements.length === 0) {
-                        return Observable.of([]);
-                    } else {
-                        const foundNodesForTags: string[] = [];
-                        results.data.tags.elements.forEach(tag =>
-                            tag.nodes.elements.forEach(node => foundNodesForTags.push(node.uuid)));
-
-                        if (foundNodesForTags.length === 0) {
-                            return Observable.of([]);
-                        } else {
-                            return forkJoin<NodeResponse>(
-                                foundNodesForTags.map(nodeUuid => {
-                                    this.state.actions.list.fetchNodeStart();
-                                    const existingNode = this.entities.getNode(nodeUuid, { language });
-                                    if (existingNode) {
-                                        return Observable.of(existingNode);
-                                    } else {
-                                        return this.api.project.getNode({project, nodeUuid})
-                                            .catch(() => {
-                                                this.state.actions.list.fetchNodeError();
-                                                return Observable.of(null);
-                                            });
+        const query = {
+            'query': {
+                'bool': {
+                    'must': [
+                        {
+                            'nested': {
+                                'path': 'tags',
+                                'query': {
+                                    'bool': {
+                                        'must': [
+                                            {
+                                                'term': {
+                                                    'tags.name.raw': tagNames
+                                                }
+                                            }
+                                        ]
                                     }
-                                }))
-                                .map(nodes => {
-                                    const filteredNodes = nodes.filter(node => node != null);
-                                    filteredNodes.map(node => this.state.actions.list.fetchNodeSuccess(node));
-                                    return filteredNodes;
-                                });
+                                }
+                            }
                         }
-                    }
-                } else {
-                   throw new Error(JSON.stringify(results));
+                    ]
                 }
+            },
+            'sort': [
+                {
+                    'created': 'asc'
+                }
+            ]
+        };
+
+        return this.api.project.searchNodes({ project }, query)
+            .map(results => {
+                return results.data as MeshNode[];
             });
     }
 
@@ -217,13 +189,12 @@ export class ListEffectsService {
     searchNodesByKeyword(term: string, project: string, language: string): Observable<MeshNode[]> {
         const query = {
             query: {
-                /*query_string: {
+                query_string: {
                     query: term
-                },*/
-                match_phrase: {
+                },
+                /*match_phrase: { // Would search just in the 'name' field.
                     'displayField.value': term,
-                    'fields.*': term,
-                }
+                }*/
             },
             sort: [{ created: 'asc' }]
         };
