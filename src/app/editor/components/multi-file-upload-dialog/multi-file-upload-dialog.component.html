@@ -1,0 +1,48 @@
+<div class="modal-title">
+    <h5>{{ 'editor.pload_files' | i18n }}</h5>
+</div>
+
+<div class="modal-content">
+    <gtx-select label="Schema " [(ngModel)]="selectVal">
+        <gtx-option *ngFor="let schema of availableSchemas" [value]="schema">{{schema.name}}</gtx-option>
+    </gtx-select>
+
+    <gtx-select label="Field " [(ngModel)]="selectVal">
+            <gtx-option *ngFor="let schema of availableSchemas" [value]="schema">{{schema.name}}</gtx-option>
+        </gtx-select>
+
+    <div class="preview-container">
+        <div
+            *ngFor="let file of files"
+            class="preview-item"
+        >
+            <div [ngSwitch]="getBinaryMediaType(file)">
+                <div *ngSwitchCase="'image'">
+                    <img class="file-preview" [src]="getObjectURL(file)" alt="" />
+                </div>
+                <div *ngSwitchCase="'video'">
+                    <video class="file-preview"  width="100%" controls>
+                        <source [src]="getObjectURL(file)">
+                    </video>
+                </div>
+
+                <div *ngSwitchCase="'audio'">
+                    <div class="file-preview">
+                        <audio controls="controls">
+                            <source [src]="getObjectURL(file)">
+                        </audio>
+                    </div>
+                </div>
+
+                <div *ngSwitchDefault>
+                    <div class="default-preview file-preview">
+                        <icon class="node-icon">insert_drive_file</icon>some type
+                    </div>
+                </div>
+            </div>
+            {{file.name}}
+            <!--<binary-file-preview src-file="file" transform="vm.transform"></binary-file-preview>-->
+        </div>
+    </div>
+</div>
+
