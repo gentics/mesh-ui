@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
 import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { GenticsUICoreModule, ModalService, OverlayHostService, DropdownList, InputField } from 'gentics-ui-core';
@@ -14,9 +15,9 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { mockMeshNode, mockSchema, mockTagFamily, mockTag } from '../../../../testing/mock-models';
 import { Tag } from '../../../common/models/tag.model';
 import { TagFamily } from '../../../common/models/tag-family.model';
-import { NodeTagsBarComponent } from './node-tags-bar.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { DebugElement } from '@angular/core/src/debug/debug_node';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
+import { NodeTagsBarComponent } from './node-tags-bar.component';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -162,12 +163,6 @@ function getDropDownList(fixture: ComponentFixture<TestComponent>): DropdownList
 })
 class TestComponent {
     node: MeshNode;
-}
-
-class MockI18nService {
-    translate(str: string): string {
-        return str;
-    }
 }
 
 class MockEditorEffectsService {

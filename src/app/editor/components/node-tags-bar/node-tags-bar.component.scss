@@ -2,6 +2,8 @@
 @import "search-bar-styles";
 @include filter-selection;
 @include search-chip;
+@include tag-filter;
+
 
 
 gtx-dropdown-list, gtx-dropdown-trigger {
@@ -32,17 +34,6 @@ gtx-input /deep/ input {
     padding-left: 15px;
     outline: none !important;
     color: $gtx-color-off-black;
-}
-
-.tag-family {
-    color: $gtx-color-off-black;
-    font-size: 12px;
-}
-
-.tag-name {
-   padding: 2px 5px;
-   font-size: 14px;
-   color: $gtx-color-off-black;
 }
 
 .create-new-tag {

@@ -14,5 +14,14 @@
     "delete_button": {
       "en": "Delete",
       "de": "Löschen"
+    },
+    "no_results": {
+      "en": "No results",
+      "de": "Keine Ergebnisse"
+    },
+    "search_error_occured": {
+      "en": "An error has occurred while performing search",
+      "de": "Ein Fehler ist aufgetreten"
     }
   }
+

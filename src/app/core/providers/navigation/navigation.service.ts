@@ -8,6 +8,7 @@ interface NavigationInstruction {
         containerUuid: string;
         language: string;
     };
+
     detail?: {
         projectName: string;
         nodeUuid?: string;
@@ -118,11 +119,13 @@ export class NavigationService {
                 break;
             }
         }
+
         if (instruction.list) {
             const { projectName, containerUuid, language } = instruction.list;
             outlets.list = [projectName, containerUuid, language];
         }
+
         return ['/editor', 'project', { outlets }];
     }
-
 }
+

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
-import { MicroschemaResponse, NodeResponse, ProjectResponse, SchemaResponse } from '../../common/models/server-models';
+import { GraphQLResponse, MicroschemaResponse, NodeResponse, ProjectResponse, SchemaResponse } from '../../common/models/server-models';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
@@ -10,6 +10,7 @@ import { AdminState } from '../models/admin-state.model';
 import { Microschema } from '../../common/models/microschema.model';
 import { Schema } from '../../common/models/schema.model';
 import { ConfigService } from '../../core/providers/config/config.service';
+import { MeshNode } from '../../common/models/node.model';
 
 @Injectable()
 @Immutable()
@@ -27,7 +28,8 @@ export class ListStateActions extends StateActionBranch<AppState> {
                     currentProject: undefined,
                     loadCount: 0,
                     language: config.FALLBACK_LANGUAGE,
-                    children: []
+                    items: [],
+                    filterTerm: '',
                 }
             }
         });
@@ -43,21 +45,16 @@ export class ListStateActions extends StateActionBranch<AppState> {
     fetchChildrenSuccess(containerUuid: string, children: NodeResponse[]) {
         this.list.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            node: [
-                ...children,
-                {
-                    uuid: containerUuid,
-                }
-            ]
+            node: children
         }, false);
-        this.list.children = children.map(node => node.uuid);
+        this.list.items = children.map(node => node.uuid);
     }
 
     fetchChildrenError() {
         this.list.loadCount--;
     }
 
-    fetchNodeStart(nodeUuid: string) {
+    fetchNodeStart() {
         this.list.loadCount++;
     }
 
@@ -68,7 +65,7 @@ export class ListStateActions extends StateActionBranch<AppState> {
         });
     }
 
-    fetchNodeError(nodeUuid: string) {
+    fetchNodeError() {
         this.list.loadCount--;
     }
 
@@ -172,6 +169,22 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount--;
     }
 
+    searchNodesStart() {
+        this.list.loadCount++;
+    }
+
+    searchNodesSuccess(items: MeshNode[]) {
+        this.list.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            node: items
+        }, false);
+        this.list.items = items.map(node => node.uuid);
+    }
+
+    searchNodesError(response: GraphQLResponse) {
+        this.list.loadCount--;
+    }
+
     /** Change the active container in the list view from values of the current route. */
     setActiveContainer(projectName: string, containerUuid: string, language: string) {
         this.list.currentProject = projectName;
@@ -179,4 +192,8 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.language = language;
     }
 
+    /** Sets the filter term for the nodes. */
+    setFilterTerm(term: string): void {
+        this.list.filterTerm = term;
+    }
 }
