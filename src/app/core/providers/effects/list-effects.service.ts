@@ -192,7 +192,8 @@ export class ListEffectsService {
                 query_string: {
                     query: term
                 },
-                /*match_phrase: { // Would search just in the 'name' field.
+                 // Would search just in the 'name' field.
+                /*match_phrase: {
                     'displayField.value': term,
                 }*/
             },
