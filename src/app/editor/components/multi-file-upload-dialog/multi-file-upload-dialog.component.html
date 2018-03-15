@@ -1,48 +1,83 @@
-<div class="modal-title">
-    <h5>{{ 'editor.pload_files' | i18n }}</h5>
-</div>
+ <div
+    gtxFileDropArea
+    (fileDragEnter)="draggingFileOnThis = true"
+    (fileDragLeave)="draggingFileOnThis = false"
+    (fileDrop)="onDropFiles($event)"
+    (pageDragEnter)="draggingFileOnPage = true"
+    (pageDragLeave)="draggingFileOnPage = false"
+>
 
-<div class="modal-content">
-    <gtx-select label="Schema " [(ngModel)]="selectVal">
-        <gtx-option *ngFor="let schema of availableSchemas" [value]="schema">{{schema.name}}</gtx-option>
-    </gtx-select>
+    <div class="modal-title">
+        <h5>{{ 'editor.pload_files' | i18n }}</h5>
+    </div>
 
-    <gtx-select label="Field " [(ngModel)]="selectVal">
+    <div class="modal-content">
+        <gtx-select label="Schema" (change)="onSchemaChange($event)">
             <gtx-option *ngFor="let schema of availableSchemas" [value]="schema">{{schema.name}}</gtx-option>
         </gtx-select>
 
-    <div class="preview-container">
-        <div
-            *ngFor="let file of files"
-            class="preview-item"
-        >
-            <div [ngSwitch]="getBinaryMediaType(file)">
-                <div *ngSwitchCase="'image'">
-                    <img class="file-preview" [src]="getObjectURL(file)" alt="" />
-                </div>
-                <div *ngSwitchCase="'video'">
-                    <video class="file-preview"  width="100%" controls>
-                        <source [src]="getObjectURL(file)">
-                    </video>
-                </div>
+        <gtx-select label="Field" (change)="onFieldSelected($event)">
+            <gtx-option *ngFor="let field of schemaFields" [value]="field">{{field.name}}</gtx-option>
+        </gtx-select>
 
-                <div *ngSwitchCase="'audio'">
-                    <div class="file-preview">
-                        <audio controls="controls">
-                            <source [src]="getObjectURL(file)">
-                        </audio>
-                    </div>
-                </div>
+        <div class="dropable-area">
+            <div class="media-container">
+                <div
+                    *ngFor="let fileWithBlob of filesWithBlobs"
+                    class="media-box"
+                >
+                    <i class="material-icons button-close" (click)="onFileRemoved(fileWithBlob)">close</i>
+                    <div [ngSwitch]="fileWithBlob.mediaType">
+                        <div *ngSwitchCase="'image'">
+                            <img class="preview" [src]="fileWithBlob.blob" alt="" />
+                        </div>
+                        <div *ngSwitchCase="'video'">
+                            <video class="preview" width="100%" controls>
+                                <source [src]="fileWithBlob.blob">
+                            </video>
+                        </div>
 
-                <div *ngSwitchDefault>
-                    <div class="default-preview file-preview">
-                        <icon class="node-icon">insert_drive_file</icon>some type
+                        <div *ngSwitchCase="'audio'" class="preview audio">
+                            <audio controls="controls">
+                                <source [src]="fileWithBlob.blob">
+                            </audio>
+                        </div>
+
+                        <div *ngSwitchDefault>
+                            <div class="default-preview preview">
+                                <icon class="node-icon">insert_drive_file</icon>
+                            </div>
+                        </div>
                     </div>
+                    <div class="media-properties">{{fileWithBlob.file.name}}</div>
+                    <!--<binary-file-preview src-file="file" transform="vm.transform"></binary-file-preview>-->
                 </div>
             </div>
-            {{file.name}}
-            <!--<binary-file-preview src-file="file" transform="vm.transform"></binary-file-preview>-->
+
+            <div
+                [@overlayVisible]
+                *ngIf="draggingFileOnPage === true"
+                class="drop-area-container-overlay">
+                {{ 'editor.drop_files_here' | i18n }}
+            </div>
         </div>
     </div>
+
+    <div class="modal-footer">
+        <gtx-button
+            flat
+            type="secondary"
+            class="button_cancel"
+            (click)="cancelFn(false)"
+        >{{ 'common.cancel_button' | i18n }}</gtx-button>
+        <gtx-button
+            type="primary"
+            class="button_save"
+            (click)="save()"
+            [disabled]="selectedSchema === null || selectedField === null"
+        ><icon left>save</icon> {{ 'modal.save_and_close_button' | i18n }}</gtx-button>
+    </div>
 </div>
+
+
 

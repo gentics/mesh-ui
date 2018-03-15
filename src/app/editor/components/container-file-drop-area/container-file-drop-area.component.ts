@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
     trigger,
     state,
@@ -8,6 +8,7 @@ import {
   } from '@angular/animations';
 import { ModalService } from 'gentics-ui-core';
 import { MultiFileUploadDialogComponent } from '../multi-file-upload-dialog/multi-file-upload-dialog.component';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Component({
     selector: 'mesh-container-file-drop-area',
@@ -26,27 +27,39 @@ import { MultiFileUploadDialogComponent } from '../multi-file-upload-dialog/mult
         ])
     ]
 })
-export class ContainerFileDropAreaComponent {
-
+export class ContainerFileDropAreaComponent implements OnInit {
+    disabled = false;
     constructor(
-        private modalService: ModalService
+        private modalService: ModalService,
+        private state: ApplicationStateService,
     ) { }
 
+
+    ngOnInit() {
+        //this.onDropFiles([]);
+    }
+
     public onDropFiles(files: File[]) {
-        console.log('Files are', files);
+        this.disabled = true; // Keep this area disabled while the modal is open
         this.modalService.fromComponent(
             MultiFileUploadDialogComponent,
             {
                 closeOnOverlayClick: false,
-                width: '90%'
+                width: '90%',
+                onClose: (reason: any): void => {
+                    this.disabled = false;
+                }
             },
             {
-                files
+                files,
+                parentUuid: this.state.now.list.currentNode,
+                language: this.state.now.ui.currentLanguage,
+                project: this.state.now.list.currentProject,
             }
         )
         .then(modal => modal.open())
-        .then(() => {
-           // Success
+        .then(result => {
+            this.disabled = false;
         });
     }
 }
