@@ -55,6 +55,34 @@
         bottom: 10px;
     }
 
+    .overlay-save, .overlay-done {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        color: $gtx-color-primary;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .material-icons {
+            font-size: 10vw;
+        }
+    }
+
+    .overlay-save .material-icons {
+        animation: rotating 2s linear infinite;
+    }
+
+    .overlay-done {
+        color: $gtx-color-success;
+
+        .material-icons {
+            animation: grow 0.3s;
+        }
+    }
 
     &:hover {
         .button-close {
@@ -84,4 +112,24 @@
     opacity: 0.7;
     font-size: 32px;
 }
+
+
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+@keyframes grow {
+    from {
+        transform: scale(0.1);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+
 

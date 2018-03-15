@@ -1,5 +1,5 @@
  <div
-    gtxFileDropArea
+    [gtxFileDropArea]="{ disabled: isSaving }"
     (fileDragEnter)="draggingFileOnThis = true"
     (fileDragLeave)="draggingFileOnThis = false"
     (fileDrop)="onDropFiles($event)"
@@ -12,11 +12,11 @@
     </div>
 
     <div class="modal-content">
-        <gtx-select label="Schema" (change)="onSchemaChange($event)">
+        <gtx-select label="Schema" (change)="onSchemaChange($event)" [disabled]="isSaving">
             <gtx-option *ngFor="let schema of availableSchemas" [value]="schema">{{schema.name}}</gtx-option>
         </gtx-select>
 
-        <gtx-select label="Field" (change)="onFieldSelected($event)">
+        <gtx-select label="Field" (change)="onFieldSelected($event)" [disabled]="isSaving">
             <gtx-option *ngFor="let field of schemaFields" [value]="field">{{field.name}}</gtx-option>
         </gtx-select>
 
@@ -26,7 +26,16 @@
                     *ngFor="let fileWithBlob of filesWithBlobs"
                     class="media-box"
                 >
-                    <i class="material-icons button-close" (click)="onFileRemoved(fileWithBlob)">close</i>
+                    <i *ngIf="!isSaving" class="material-icons button-close" (click)="onFileRemoved(fileWithBlob)">close</i>
+
+                    <div *ngIf="fileWithBlob.progress === 'uploading'" class="overlay-save">
+                        <i class="material-icons">sync</i>
+                    </div>
+
+                    <div *ngIf="fileWithBlob.progress === 'done'" class="overlay-done">
+                            <i class="material-icons">done</i>
+                        </div>
+
                     <div [ngSwitch]="fileWithBlob.mediaType">
                         <div *ngSwitchCase="'image'">
                             <img class="preview" [src]="fileWithBlob.blob" alt="" />
@@ -49,14 +58,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="media-properties">{{fileWithBlob.file.name}}</div>
+                    <div class="media-properties">{{fileWithBlob.file.fileName}}</div>
                     <!--<binary-file-preview src-file="file" transform="vm.transform"></binary-file-preview>-->
                 </div>
             </div>
 
             <div
                 [@overlayVisible]
-                *ngIf="draggingFileOnPage === true"
+                *ngIf="draggingFileOnPage === true && isSaving === false"
                 class="drop-area-container-overlay">
                 {{ 'editor.drop_files_here' | i18n }}
             </div>
@@ -69,12 +78,13 @@
             type="secondary"
             class="button_cancel"
             (click)="cancelFn(false)"
+            [disabled]="isSaving"
         >{{ 'common.cancel_button' | i18n }}</gtx-button>
         <gtx-button
             type="primary"
             class="button_save"
             (click)="save()"
-            [disabled]="selectedSchema === null || selectedField === null"
+            [disabled]="selectedSchema === null || selectedField === null || isSaving === true"
         ><icon left>save</icon> {{ 'modal.save_and_close_button' | i18n }}</gtx-button>
     </div>
 </div>

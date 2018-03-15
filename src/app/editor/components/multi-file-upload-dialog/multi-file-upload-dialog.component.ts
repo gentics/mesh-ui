@@ -15,10 +15,12 @@ import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { MeshNode, BinaryField } from '../../../common/models/node.model';
 import { initializeNode } from '../../form-generator/common/initialize-node';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 
 interface FileWithBlob {
     file: BinaryField;
     blob: SafeUrl;
+    progress: 'none' | 'uploading' | 'done';
     mediaType: string;
 }
 @Component({
@@ -55,10 +57,13 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     private selectedField: SchemaField = null;
     private schemaFields: SchemaField[] = [];
 
+    private isSaving = false;
+
     constructor(
         private blobService: BlobService,
         private state: ApplicationStateService,
         private editorEffects: EditorEffectsService,
+        private listEffects: ListEffectsService,
     ) { }
 
     ngOnInit() {
@@ -90,10 +95,23 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     }
 
     save(): void {
-        this.filesWithBlobs.map(fileWithBlobs => {
+        this.isSaving = true;
+        const progress = this.filesWithBlobs.map<Promise<void | MeshNode>>(fileWithBlobs => {
+            fileWithBlobs.progress = 'uploading';
+
             const node = initializeNode(this.selectedSchema, this.parentUuid, this.language);
             node.fields[this.selectedField.name] = fileWithBlobs.file;
-            this.editorEffects.saveNewNode(this.project, node as MeshNode, null);
+            const promise = this.editorEffects.saveNewNode(this.project, node as MeshNode, null)
+            .then(response => {
+                fileWithBlobs.progress = 'done';
+                return Promise.resolve(response);
+            });
+            return promise;
+        });
+
+        Promise.all(progress).then((results) => {
+            this.listEffects.loadChildren(this.project, this.parentUuid, this.language);
+            this.closeFn(true);
         });
     }
 
@@ -110,7 +128,8 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
         return {
             file: { fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField,
             blob: this.blobService.createObjectURL(file),
-            mediaType: this.getBinaryMediaType(file)
+            mediaType: this.getBinaryMediaType(file),
+            progress: 'none'
         };
     }
 
