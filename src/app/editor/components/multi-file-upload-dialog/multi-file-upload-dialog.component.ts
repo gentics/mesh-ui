@@ -51,7 +51,7 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
 
     // We cache the blobs of images/videos/audios so it does not get rerendered everytime.
     private filesWithBlobs: FileWithBlob[];
-    private availableSchemas: Schema[] = [];
+    public availableSchemas: Schema[] = []; // Public because spec needs to access it.
 
     private selectedSchema: Schema = null;
     private selectedField: SchemaField = null;
@@ -75,10 +75,15 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
                 const latestVersionNumber: string  = Object.keys(schema).pop();
                 const latestSchema: Schema = schema[latestVersionNumber];
 
-                if (latestSchema.fields.some(field => field.type === 'binary') // Has some binaries.
-                && latestSchema.fields.some(field => field.type !== 'binary'
-                && field.required === true) === false) { // Does not have required fields that are NOT binaries.
-                    this.availableSchemas.push(latestSchema);
+                const schemaBinaryFields = latestSchema.fields.filter(field => field.type === 'binary');
+                if (schemaBinaryFields.length > 0) {
+                    // Only pick the shemas where one or less binaryies are reuired.
+                    if (schemaBinaryFields.filter(field => field.required === true).length <= 1) {
+                        // Only pick the schemas where there are no non-binary required fields
+                        if (latestSchema.fields.some(field => field.type !== 'binary' && field.required === true) === false) {
+                            this.availableSchemas.push(latestSchema);
+                        }
+                    }
                 }
             });
         });
@@ -139,7 +144,13 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
 
     onSchemaChange(schema: Schema) {
         this.selectedSchema = schema;
-        this.schemaFields =  this.selectedSchema.fields.filter(field => field.type === 'binary');
+
+        // If we have a required binary field - take it and ignore the others.
+        if (this.selectedSchema.fields.filter(field => field.type === 'binary' && field.required === true).length > 0) {
+            this.schemaFields =  this.selectedSchema.fields.filter(field => field.type === 'binary' && field.required === true);
+        } else { // Take all binary fields
+            this.schemaFields =  this.selectedSchema.fields.filter(field => field.type === 'binary');
+        }
     }
 
     onFieldSelected(field: SchemaField) {

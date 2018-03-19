@@ -27,17 +27,13 @@ import { ApplicationStateService } from '../../../state/providers/application-st
         ])
     ]
 })
-export class ContainerFileDropAreaComponent implements OnInit {
+export class ContainerFileDropAreaComponent {
     disabled = false;
     constructor(
         private modalService: ModalService,
         private state: ApplicationStateService,
     ) { }
 
-
-    ngOnInit() {
-        //this.onDropFiles([]);
-    }
 
     public onDropFiles(files: File[]) {
         this.disabled = true; // Keep this area disabled while the modal is open
