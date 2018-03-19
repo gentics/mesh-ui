@@ -117,6 +117,8 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
         Promise.all(progress).then((results) => {
             this.listEffects.loadChildren(this.project, this.parentUuid, this.language);
             this.closeFn(true);
+        }).catch(error => {
+            console.log('Failed with error', error);
         });
     }
 

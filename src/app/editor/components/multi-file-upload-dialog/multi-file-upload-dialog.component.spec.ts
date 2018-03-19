@@ -19,8 +19,6 @@ import { By } from '@angular/platform-browser';
 import { mockSchema } from '../../../../testing/mock-models';
 import { Schema } from '../../../common/models/schema.model';
 
-
-
 describe('MultiFileUploadDialogComponent', () => {
     let component: MultiFileUploadDialogComponent;
     let fixture: ComponentFixture<MultiFileUploadDialogComponent>;

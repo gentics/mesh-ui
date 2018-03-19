@@ -81,7 +81,9 @@ export class EditorEffectsService {
                     message: 'editor.node_save_error'
                 });
                 throw new Error('TODO: Error handling');
-            });
+            }).catch(error => {
+                console.log('Ive got an error', error);
+            })
     }
 
     /**
@@ -316,10 +318,10 @@ export class EditorEffectsService {
 
         return new Promise<MeshNode>(resolve => {
             Promise.all(promises)
-            .then(nodes => {
-                // return the node from the last successfull request
-                resolve(nodes.pop());
-            });
+                .then(nodes => {
+                    // return the node from the last successfull request
+                    resolve(nodes.pop());
+                });
         });
     }
 }
