@@ -35,7 +35,7 @@ export class ContainerFileDropAreaComponent {
     ) { }
 
 
-    public onDropFiles(files: File[]) {
+    public openModalDialog(files: File[]) {
         this.disabled = true; // Keep this area disabled while the modal is open
         this.modalService.fromComponent(
             MultiFileUploadDialogComponent,

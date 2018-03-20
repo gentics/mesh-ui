@@ -3,9 +3,10 @@
         [gtxFileDropArea]="{ disabled: disabled }"
         (fileDragEnter)="draggingFileOnThis = true"
         (fileDragLeave)="draggingFileOnThis = false"
-        (fileDrop)="onDropFiles($event)"
+        (fileDrop)="openModalDialog($event)"
         (pageDragEnter)="draggingFileOnPage = true"
         (pageDragLeave)="draggingFileOnPage = false"
+        class="gtx-file-drop-area"
     >
         <ng-content></ng-content>
     </div>
@@ -13,6 +14,6 @@
         [@overlayVisible]
         *ngIf="draggingFileOnPage === true && disabled === false"
         class="drop-area-container-overlay">
-        {{ 'editor.drop_files_here' | i18n }}
+        {{ 'list.choose_files' | i18n }}
     </div>
 </div>

@@ -32,6 +32,7 @@
         color: $gtx-color-secondary;
         cursor: pointer;
         animation: fadeOut 0.3s;
+        z-index: 1;
     }
 
     .preview {
@@ -92,8 +93,17 @@
     }
 }
 
+.button-upload {
+    margin-bottom: 10px;
+}
+
 .dropable-area {
     position: relative;
+    min-height: 100px;
+}
+
+.file-input {
+    display: none;
 }
 
 .drop-area-container-overlay {
@@ -113,7 +123,6 @@
     font-size: 32px;
 }
 
-
 @keyframes rotating {
     from {
         transform: rotate(0deg);
@@ -122,6 +131,7 @@
         transform: rotate(-360deg);
     }
 }
+
 @keyframes grow {
     from {
         transform: scale(0.1);
@@ -130,6 +140,3 @@
         transform: scale(1);
     }
 }
-
-
-

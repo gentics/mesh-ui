@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { IModalDialog } from 'gentics-ui-core';
 import { SafeUrl, SafeScript } from '@angular/platform-browser';
 import {
@@ -40,6 +40,7 @@ interface FileWithBlob {
     ]
 })
 export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
+    @ViewChild('fileInput') fileInput: ElementRef;
 
     closeFn: (val: any) => void;
     cancelFn: (val: any) => void;
@@ -129,6 +130,10 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
                 filesWithBlob.file.fileSize === droppedFile.size) === false);
 
         this.filesWithBlobs = [...this.filesWithBlobs, ...files.map(file => this.addBlobToFile(file))];
+    }
+
+    onFileInputChanged () {
+        this.onDropFiles(Array.from(this.fileInput.nativeElement.files));
     }
 
     addBlobToFile(file: File): FileWithBlob {

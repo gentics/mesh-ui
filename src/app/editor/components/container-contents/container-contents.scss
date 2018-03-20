@@ -14,6 +14,11 @@ icon {
     margin-top: 10px;
 }
 
+.button-upload {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
 gtx-contents-list-item {
     &.not-in-current-lang {
         .node-icon {

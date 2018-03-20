@@ -4,6 +4,10 @@
     position: relative;
 }
 
+.gtx-file-drop-area {
+    min-height: 300px;
+}
+
 .drop-area-container-overlay {
     display: flex;
     align-items: center;
