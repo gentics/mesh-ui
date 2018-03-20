@@ -65,10 +65,5 @@
     "tag_name": {
       "en": "Tag name",
       "de": "Tag hinzufügen"
-    },
-
-    "drop_files_here": {
-      "en": "drop_files_here",
-      "de": "drop_files_here"
     }
   }
