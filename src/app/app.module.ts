@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpModule } from '@angular/http';
 import { ApplicationRef, NgModule } from '@angular/core';
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
@@ -51,6 +52,7 @@ interface HmrStore {
     imports: [
         RouterModule.forRoot(ROUTER_CONFIG, { useHash: true, preloadingStrategy: PreloadAllModules }),
         BrowserModule,
+        BrowserAnimationsModule,
         HttpModule,
         CoreModule,
         SharedModule,

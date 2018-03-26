@@ -1,4 +1,4 @@
-import { ListTypeFieldType, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
+import { ListTypeFieldType, SchemaField, SchemaFieldType } from '../../common/models/schema.model';
 
 /**
  * Returns the default value for a new instance of a SchemaField

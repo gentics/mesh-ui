@@ -9,3 +9,9 @@ $roboto-font-path: '../../node_modules/gentics-ui-core/dist/fonts/';
 html, body {
     overflow-x: hidden;
 }
+
+gtx-toast {
+    > .gtx-toast {
+        z-index: 1000;
+    }
+}

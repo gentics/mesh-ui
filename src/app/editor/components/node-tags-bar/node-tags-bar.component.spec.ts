@@ -18,6 +18,7 @@ import { TagFamily } from '../../../common/models/tag-family.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { NodeTagsBarComponent } from './node-tags-bar.component';
+import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -163,14 +164,6 @@ function getDropDownList(fixture: ComponentFixture<TestComponent>): DropdownList
 })
 class TestComponent {
     node: MeshNode;
-}
-
-class MockEditorEffectsService {
-    saveNewNode = jasmine.createSpy('saveNewNode');
-    closeEditor = jasmine.createSpy('closeEditor');
-    openNode = jasmine.createSpy('openNode');
-    createNode = jasmine.createSpy('createNode');
-    saveNode = jasmine.createSpy('saveNode');
 }
 
 class MockModalService {

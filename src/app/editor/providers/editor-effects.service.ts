@@ -316,10 +316,10 @@ export class EditorEffectsService {
 
         return new Promise<MeshNode>(resolve => {
             Promise.all(promises)
-            .then(nodes => {
-                // return the node from the last successfull request
-                resolve(nodes.pop());
-            });
+                .then(nodes => {
+                    // return the node from the last successfull request
+                    resolve(nodes.pop());
+                });
         });
     }
 }

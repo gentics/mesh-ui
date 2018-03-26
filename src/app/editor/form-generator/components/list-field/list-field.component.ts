@@ -13,6 +13,7 @@ import {
     ViewChildren,
     ViewContainerRef
 } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { ISortableEvent, ISortableGroupOptions } from 'gentics-ui-core';
 import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { ListTypeFieldType, SchemaField } from '../../../../common/models/schema.model';
@@ -20,8 +21,8 @@ import { Microschema } from '../../../../common/models/microschema.model';
 import { ListField, ListNodeFieldType, NodeFieldType } from '../../../../common/models/node.model';
 import { FieldGenerator, FieldGeneratorService, FieldSet } from '../../providers/field-generator/field-generator.service';
 import { getControlType } from '../../common/get-control-type';
-import { initializeListValue } from '../../common/initialize-list-value';
-import { Observable, Subscription } from 'rxjs';
+import { initializeListValue } from '../../../common/initialize-list-value';
+
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, FIELD_HALF_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { MicronodeFieldComponent } from '../micronode-field/micronode-field.component';

@@ -1,10 +1,10 @@
-import { Microschema } from '../../../common/models/microschema.model';
-import { NodeFieldMicronode } from '../../../common/models/node.model';
+import { Microschema } from '../../common/models/microschema.model';
+import { NodeFieldMicronode } from '../../common/models/node.model';
 import { initializeFieldValue } from './initialize-field-value';
 
 /**
  * Initializes a new Micronode based on the associated Microschema.
- * 
+ *
  * TODO - verify what's the version number for NodeFieldMicronode.microschema
  */
 export function initializeMicronode(microschema: Microschema): NodeFieldMicronode {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -12,6 +12,7 @@ import { notNullOrUndefined } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { ContainerFileDropAreaComponent } from '../container-file-drop-area/container-file-drop-area.component';
 
 @Component({
     selector: 'container-contents',
@@ -20,6 +21,8 @@ import { fuzzyMatch } from '../../../common/util/fuzzy-search';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContainerContentsComponent implements OnInit, OnDestroy {
+
+    @ViewChild(ContainerFileDropAreaComponent) fileDropArea: ContainerFileDropAreaComponent
 
     /** @internal */
     public schemas$: Observable<SchemaReference[]>;
@@ -97,6 +100,10 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
         this.searching$ = searchParams$
             .map(({ keyword, tags }) => keyword !== '' || tags !== '');
+    }
+
+    onFileUploadClicked() {
+        this.fileDropArea.openModalDialog([]);
     }
 
     ngOnDestroy(): void {
