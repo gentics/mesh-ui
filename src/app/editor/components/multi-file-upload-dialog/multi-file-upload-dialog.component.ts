@@ -106,7 +106,10 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
             fileWithBlobs.progress = 'uploading';
 
             const node = initializeNode(this.selectedSchema, this.parentUuid, this.language);
+            const nodeName = fileWithBlobs.file.fileName.substr(0, fileWithBlobs.file.fileName.lastIndexOf('.'));
             node.fields[this.selectedField.name] = fileWithBlobs.file;
+            node.fields[this.selectedSchema.displayField] = nodeName;
+
             return this.editorEffects.saveNewNode(this.project, node as MeshNode, null)
                 .then(response => {
                     fileWithBlobs.progress = 'done';
@@ -150,7 +153,6 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
 
     onSchemaChange(schema: Schema) {
         this.selectedSchema = schema;
-
         // If we have a required binary field - take it and ignore the others.
         if (this.selectedSchema.fields.filter(field => field.type === 'binary' && field.required === true).length > 0) {
             this.schemaFields =  this.selectedSchema.fields.filter(field => field.type === 'binary' && field.required === true);
