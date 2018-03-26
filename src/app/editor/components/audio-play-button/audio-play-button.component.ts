@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { SafeUrl } from '@angular/platform-browser';
 
 @Component({
     selector: 'mesh-audio-play-button',
@@ -7,11 +8,12 @@ import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 })
 export class AudioPlayButtonComponent implements OnInit {
 
-    @Input() src: string;
+    @Input() src: SafeUrl;
     @Input() autoPlay: Boolean = false;
     @ViewChild('AudioElement') audio: ElementRef;
 
     ngOnInit() {
+        // This callback is needed to trigger the angular change detection so that it renders a paused state of the play button.
         this.audio.nativeElement.onended = () => {
             this.audio.nativeElement.pause();
         };

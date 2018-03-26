@@ -5,9 +5,6 @@ import { Icon } from 'gentics-ui-core';
 
 import { AudioPlayButtonComponent } from './audio-play-button.component';
 
-
-
-
 describe('AudioPlayButtonComponent', () => {
     let component: AudioPlayButtonComponent;
     let fixture: ComponentFixture<AudioPlayButtonComponent>;
@@ -39,7 +36,7 @@ describe('AudioPlayButtonComponent', () => {
     }));
 
     it('should play/pause the audio', () => {
-        const toggleButton: DebugElement = fixture.debugElement.query(By.css('Icon'));
+        const toggleButton: DebugElement = fixture.debugElement.query(By.css('icon'));
         toggleButton.triggerEventHandler('click', null);
         expect(component.onToggle).toHaveBeenCalled();
     });
