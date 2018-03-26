@@ -1,4 +1,4 @@
-import { SchemaField } from '../../../common/models/schema.model';
+import { SchemaField } from '../../common/models/schema.model';
 import { initializeListValue } from './initialize-list-value';
 
 describe('initializeListValue()', () => {

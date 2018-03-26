@@ -29,6 +29,7 @@ import { CreateTagDialogComponent } from './components/create-tag-dialog/create-
 import { ContainerFileDropAreaComponent } from './components/container-file-drop-area/container-file-drop-area.component';
 import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
 import { MultiFileUploadDialogComponent } from './components/multi-file-upload-dialog/multi-file-upload-dialog.component';
+import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { MultiFileUploadDialogComponent } from './components/multi-file-upload-d
         NodeTagsBarComponent,
         CreateTagDialogComponent,
         ContainerFileDropAreaComponent,
-        MultiFileUploadDialogComponent
+        MultiFileUploadDialogComponent,
+        AudioPlayButtonComponent
 
     ],
     entryComponents: [

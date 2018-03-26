@@ -13,9 +13,10 @@ import { BlobService } from '../../providers/blob.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { MeshNode, BinaryField } from '../../../common/models/node.model';
-import { initializeNode } from '../../form-generator/common/initialize-node';
+import { initializeNode } from '../../common/initialize-node';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 interface FileWithBlob {
     file: BinaryField;
@@ -65,6 +66,7 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
         private state: ApplicationStateService,
         private editorEffects: EditorEffectsService,
         private listEffects: ListEffectsService,
+        private entitiesService: EntitiesService,
     ) { }
 
     ngOnInit() {
@@ -72,17 +74,15 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
         .take(1)
         .subscribe((schemas) => {
             Object.keys(schemas).forEach(key => {
-                const schema = schemas[key];
-                const latestVersionNumber: string  = Object.keys(schema).pop();
-                const latestSchema: Schema = schema[latestVersionNumber];
+                const schema = this.entitiesService.getSchema(key);
 
-                const schemaBinaryFields = latestSchema.fields.filter(field => field.type === 'binary');
+                const schemaBinaryFields = schema.fields.filter(field => field.type === 'binary');
                 if (schemaBinaryFields.length > 0) {
-                    // Only pick the shemas where one or less binaryies are reuired.
+                    // Only pick the schemas where one or less binaries are required.
                     if (schemaBinaryFields.filter(field => field.required === true).length <= 1) {
                         // Only pick the schemas where there are no non-binary required fields
-                        if (latestSchema.fields.some(field => field.type !== 'binary' && field.required === true) === false) {
-                            this.availableSchemas.push(latestSchema);
+                        if (schema.fields.some(field => field.type !== 'binary' && field.required === true) === false) {
+                            this.availableSchemas.push(schema);
                         }
                     }
                 }
@@ -107,12 +107,11 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
 
             const node = initializeNode(this.selectedSchema, this.parentUuid, this.language);
             node.fields[this.selectedField.name] = fileWithBlobs.file;
-            const promise = this.editorEffects.saveNewNode(this.project, node as MeshNode, null)
-            .then(response => {
-                fileWithBlobs.progress = 'done';
-                return Promise.resolve(response);
-            });
-            return promise;
+            return this.editorEffects.saveNewNode(this.project, node as MeshNode, null)
+                .then(response => {
+                    fileWithBlobs.progress = 'done';
+                    return response;
+                });
         });
 
         Promise.all(progress).then((results) => {
@@ -126,8 +125,8 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     onDropFiles(files: File[]) {
         files = files.filter(droppedFile => // Filter out the duplicates by filename and the filesize.
             this.filesWithBlobs.some(filesWithBlob =>
-                filesWithBlob.file.fileName === droppedFile.name &&
-                filesWithBlob.file.fileSize === droppedFile.size) === false);
+                /* filesWithBlob.file.fileSize === droppedFile.size && */ // Files can be checked by the size as well if you need more uniquesness
+                filesWithBlob.file.fileName === droppedFile.name) === false);
 
         this.filesWithBlobs = [...this.filesWithBlobs, ...files.map(file => this.addBlobToFile(file))];
     }

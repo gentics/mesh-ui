@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { ModalService, GenticsUICoreModule, OverlayHostService, FileDropArea } from 'gentics-ui-core';
 
@@ -15,9 +16,10 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { By } from '@angular/platform-browser';
+
 import { mockSchema } from '../../../../testing/mock-models';
 import { Schema } from '../../../common/models/schema.model';
+import { AudioPlayButtonComponent } from '../audio-play-button/audio-play-button.component';
 
 describe('MultiFileUploadDialogComponent', () => {
     let component: MultiFileUploadDialogComponent;
@@ -28,6 +30,7 @@ describe('MultiFileUploadDialogComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 MultiFileUploadDialogComponent,
+                AudioPlayButtonComponent,
                 MockI18nPipe,
             ],
             providers: [
@@ -56,7 +59,6 @@ describe('MultiFileUploadDialogComponent', () => {
 
     it('Should display dropped files', fakeAsync(() => {
         const droppedFiles: File[] =  initializeComponentWithFiles(fixture);
-
         const renderedFiles = fixture.debugElement.queryAll(By.css('.media-box'));
         expect(renderedFiles.length).toEqual(droppedFiles.length);
     }));
@@ -87,6 +89,7 @@ describe('MultiFileUploadDialogComponent', () => {
 
         const filesAfterOneWasRemoved = fixture.debugElement.queryAll(By.css('.media-box'));
         expect(firstFile ===  filesAfterOneWasRemoved[0]).toEqual(false);
+        expect(renderedFiles.length - 1).toEqual(filesAfterOneWasRemoved.length);
     }));
 
     it('Should filter out the schemas with binary fields', fakeAsync(() => {

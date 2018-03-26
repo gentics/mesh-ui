@@ -27,7 +27,6 @@
             multiple
             #fileInput>
         <gtx-button
-            [disabled]="searching$ | async"
             size="small"
             class="button-upload"
             flat
@@ -36,21 +35,21 @@
             <icon left>file_upload</icon> {{ 'list.upload_files' | i18n }}
         </gtx-button>
 
-        <div class="dropable-area">
+        <div class="droppable-area">
             <div class="media-container">
                 <div
                     *ngFor="let fileWithBlob of filesWithBlobs"
                     class="media-box"
                 >
-                    <i *ngIf="!isSaving" class="material-icons button-close" (click)="onFileRemoved(fileWithBlob)">close</i>
+                    <icon *ngIf="!isSaving" class="button-close" (click)="onFileRemoved(fileWithBlob)">close</icon>
 
                     <div *ngIf="fileWithBlob.progress === 'uploading'" class="overlay-save">
-                        <i class="material-icons">sync</i>
+                        <icon class="material-icons">sync</icon>
                     </div>
 
                     <div *ngIf="fileWithBlob.progress === 'done'" class="overlay-done">
-                            <i class="material-icons">done</i>
-                        </div>
+                        <icon class="material-icons">done</icon>
+                    </div>
 
                     <div [ngSwitch]="fileWithBlob.mediaType">
                         <div *ngSwitchCase="'image'">
@@ -63,9 +62,7 @@
                         </div>
 
                         <div *ngSwitchCase="'audio'" class="preview audio">
-                            <audio controls="controls">
-                                <source [src]="fileWithBlob.blob">
-                            </audio>
+                            <mesh-audio-play-button [src]="fileWithBlob.blob" [autoPlay]="false"></mesh-audio-play-button>
                         </div>
 
                         <div *ngSwitchDefault>

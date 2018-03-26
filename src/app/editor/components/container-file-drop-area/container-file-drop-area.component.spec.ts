@@ -54,7 +54,6 @@ describe('ContainerFileDropAreaComponent', () => {
     }));
 });
 
-
 @Pipe({
     name: 'i18n'
 })
