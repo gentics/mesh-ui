@@ -199,6 +199,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         }
                     }, error => {
                         this.isSaving = false;
+                        this.changeDetector.detectChanges();
                     });
             } else {
                 saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)

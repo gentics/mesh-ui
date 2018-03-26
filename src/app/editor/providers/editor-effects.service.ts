@@ -74,13 +74,19 @@ export class EditorEffectsService {
                         message: 'editor.node_saved'
                     });
                     return savedNode;
-                }, error => {
+                }, (error: {node: MeshNode, error: any}) => {
                 this.state.actions.editor.saveNodeError();
                 this.notification.show({
                     type: 'error',
                     message: 'editor.node_save_error'
                 });
-                throw new Error('TODO: Error handling');
+
+                /**
+                 * For the new nodes, if something got wrong while saving - delete the node immediatly.
+                 * That way the editor will decide what to do next (stay in an unchanged state?),
+                 */
+                this.api.project.deleteNode({ project: projectName, nodeUuid: error.node.uuid}).take(1).subscribe();
+                throw error.error;
             });
     }
 
@@ -314,11 +320,14 @@ export class EditorEffectsService {
         }, []);
 
 
-        return new Promise<MeshNode>(resolve => {
+        return new Promise<MeshNode>((resolve, reject) => {
             Promise.all(promises)
                 .then(nodes => {
                     // return the node from the last successfull request
                     resolve(nodes.pop());
+                })
+                .catch(error => {
+                    reject({node, error});
                 });
         });
     }

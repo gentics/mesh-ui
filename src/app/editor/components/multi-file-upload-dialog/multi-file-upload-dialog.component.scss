@@ -20,6 +20,10 @@
         margin-right: 0;
     }
 
+    &.error {
+        border: 1px solid $gtx-color-alert;
+    }
+
     .button-close {
         display: none;
         position: absolute;
