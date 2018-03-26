@@ -54,6 +54,10 @@
         position: absolute;
         width:100%;
         bottom: 10px;
+        padding-right: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .overlay-save, .overlay-done {
