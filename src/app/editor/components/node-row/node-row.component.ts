@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ModalService, IDialogConfig } from 'gentics-ui-core';
@@ -32,7 +33,9 @@ export class NodeRowComponent implements OnInit, OnDestroy {
                 private i18n: I18nService,
                 private listEffects: ListEffectsService,
                 private entities: EntitiesService,
-                private api: ApiService) {
+                private api: ApiService,
+                private activatedRoute: ActivatedRoute,
+                private router: Router ) {
     }
 
     ngOnInit() {
@@ -42,11 +45,6 @@ export class NodeRowComponent implements OnInit, OnDestroy {
             this.routerLink = this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).commands();
         }
 
-        /*this.subscription.add(this.state.select(state => state.list.filterTerm)
-            .subscribe(filter => {
-                this.filterTerm$.next(filter);
-                console.log('Im filtering the stuff', this.filterTerm$);
-            }));*/
         this.filterTerm$ = this.state.select(state => state.list.filterTerm);
     }
 
@@ -79,8 +77,31 @@ export class NodeRowComponent implements OnInit, OnDestroy {
             });
     }
 
+    /**
+     * Focuses the editor if the clicked node is opened already.
+     * Otherwise does nothing...
+     */
     focusEditor() {
-        this.state.actions.editor.focusEditor();
+        if (this.node.container) { // Don't focus container on folder click.
+            return;
+        }
+
+        // Since the activated route of container-contents component does not know of other parts of url - we have traverse it manually from the root node.
+        const activeDetailRoute = this.activatedRoute.pathFromRoot.filter(router => {
+            return router.firstChild &&  router.firstChild.outlet === 'detail';
+        });
+
+        if (activeDetailRoute.length) { // There is a node open already.
+            const childRoute = activeDetailRoute[0].firstChild;
+            const { projectName, nodeUuid, language } = childRoute.snapshot.params;
+
+            // If open node params match with my params,
+            if (projectName === this.node.project.name &&
+                nodeUuid === this.node.uuid &&
+                language === this.node.language) {
+                }
+                this.state.actions.editor.focusEditor();
+        }
     }
 
 
