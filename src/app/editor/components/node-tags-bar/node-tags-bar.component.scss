@@ -15,21 +15,18 @@ gtx-dropdown-content {
     max-height: 300px !important; /* !important because the gtx-dropdown-list will try to overwrite it */
 }
 
-.search-bar-container {
-    display: flex;
+.tags-list {
+    margin-top: 5px;
+}
 
-    .contents {
-        display: flex;
-        max-width: 50%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        align-self: center;
-    }
+.search-chip {
+    display: inline-block;
 }
 
 gtx-input {
-    flex-grow: 1;
+    width: 100%;
     border: none;
+    box-shadow: rgba(0, 0, 0, 0.87) 1px 3px 7px -5px;
 }
 
 gtx-input /deep/ input {
