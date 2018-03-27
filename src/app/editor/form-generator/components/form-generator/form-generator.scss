@@ -1,3 +1,4 @@
+@import "variables";
 @import "../../common-styles";
 
 :host {
@@ -16,8 +17,8 @@
 
     /deep/ & > .mesh-field {
         display: block;
-        margin-left: 20px;
-        margin-right: 20px;
+        padding-left: $gtx-block-padding-h;
+        padding-right: $gtx-block-padding-h;
         width: $half-width;
         transition: width 0.2s;
 

@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding } fr
 import { MeshControlErrors, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 
-export const FIELD_FULL_WIDTH = '96%';
-export const FIELD_HALF_WIDTH = '60%';
+export const FIELD_FULL_WIDTH = '100%';
+export const FIELD_HALF_WIDTH = '100%';
 export const SMALL_SCREEN_LIMIT = 800;
 
 /**

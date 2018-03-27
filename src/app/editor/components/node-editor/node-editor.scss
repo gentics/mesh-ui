@@ -19,7 +19,7 @@
 
 .title-row {
     display: flex;
-    padding: 5px;
+    padding: $gtx-block-padding;
     background-color: lighten(desaturate($gtx-color-primary, 60%), 40%);
     padding-right: 30px;
     height: 40px;
@@ -45,11 +45,13 @@
     }
 }
 .info-row {
-    padding: 5px;
+    padding: $gtx-block-padding;
     background-color: lighten(desaturate($gtx-color-primary, 80%), 50%);
     display: flex;
+    line-height: 2em;
     justify-content: space-between;
     .path {
+
         a:hover {
             text-decoration: underline;
         }
