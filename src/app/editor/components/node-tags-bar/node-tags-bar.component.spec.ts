@@ -20,6 +20,7 @@ import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { NodeTagsBarComponent } from './node-tags-bar.component';
+import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -43,6 +44,7 @@ describe('NodeTagsBarComponent', () => {
             declarations: [
                 NodeTagsBarComponent,
                 TestComponent,
+                BackgroundFromDirective,
                 HighlightPipe
             ],
             providers: [

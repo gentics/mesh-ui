@@ -10,7 +10,6 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { stringToColor } from '../../../common/util/util';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
-import { SafeStyle } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
@@ -34,7 +33,6 @@ export class NodeTagsBarComponent implements OnChanges {
         private changeDetector: ChangeDetectorRef,
         private state: ApplicationStateService,
         private editorEffects: EditorEffectsService,
-        private sanitized: DomSanitizer,
         private modalService: ModalService,
         private entities: EntitiesService ) { }
 
@@ -47,7 +45,7 @@ export class NodeTagsBarComponent implements OnChanges {
         }
     }
 
-    onFilterChange(term: string) {
+    onFilterChange(term: string): void {
         this.filterTerm = term;
 
         this.filteredTags = this.filterTags(term);
@@ -67,7 +65,21 @@ export class NodeTagsBarComponent implements OnChanges {
         this.dropDown.resize();
     }
 
-    onTagSelected(tag: Tag) {
+    displayAllTags(): void {
+         // If no filter is typed in - we display the all the tags
+         this.filteredTags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
+
+         if (!this.dropDown.isOpen) {
+             this.dropDown.openDropdown();
+         }
+         this.dropDown.resize();
+    }
+
+    onInputFocus(event): void {
+        this.onFilterChange(this.filterTerm);
+    }
+
+    onTagSelected(tag: Tag): void {
         const { name, tagFamily, uuid } = tag;
         this.nodeTags = [...this.nodeTags, { name, tagFamily: tagFamily.name, uuid }];
         this.filteredTags = [];
@@ -76,7 +88,7 @@ export class NodeTagsBarComponent implements OnChanges {
         this.checkIfDirty();
     }
 
-    onTagDeleted(deletedTag: Tag) {
+    onTagDeleted(deletedTag: Tag): void {
         const tagIndex = this.nodeTags.findIndex(tag => tag.uuid === deletedTag.uuid);
         this.nodeTags.splice(tagIndex, 1);
         this.checkIfDirty();
@@ -120,20 +132,16 @@ export class NodeTagsBarComponent implements OnChanges {
         return { deletedTags, newTags };
     }
 
-    getTagBackgroundColor(familyName: string): SafeStyle {
-        return this.sanitized.bypassSecurityTrustStyle(stringToColor(familyName));
-    }
-
-    private checkIfDirty() {
+    private checkIfDirty(): void {
         const oldUuids = (this.node.tags || []).map(tag => tag.uuid).sort().join(',');
         const newUuids = this.nodeTags.map(tag => tag.uuid).sort().join(',');
         this.isDirty = newUuids !== oldUuids;
     }
 
     private filterTags(term: string): Tag[] {
-        if (term.trim() === '') {
+        /*if (term.trim() === '') {
             return [];
-        }
+        }*/
 
         const tags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
         const filteredTags = tags.reduce<Tag[]>((filteredTags, tag) => {

@@ -11,6 +11,10 @@ gtx-dropdown-list, gtx-dropdown-trigger {
     display: block;
 }
 
+gtx-dropdown-content {
+    max-height: 300px !important; /* !important because the gtx-dropdown-list will try to overwrite it */
+}
+
 .search-bar-container {
     display: flex;
 
