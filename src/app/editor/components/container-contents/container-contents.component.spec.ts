@@ -1,19 +1,16 @@
-import { componentTest } from '../../../../testing/component-test';
-import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { ContainerContentsComponent } from './container-contents.component';
-import { GenticsUICoreModule, ModalService, OverlayHostService, DropdownTriggerDirective, DropdownItem } from 'gentics-ui-core';
-import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { Component } from '@angular/core';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PipeTransform } from '@angular/core';
-import { Pipe } from '@angular/core';
-import { mockSchema, mockProject, mockMeshNode } from '../../../../testing/mock-models';
-import { Schema } from '../../../common/models/schema.model';
+import { Observable } from 'rxjs/Observable';
+
+import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { mockMeshNode, mockProject, mockSchema } from '../../../../testing/mock-models';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { CreateNodeButtonComponent } from '../create-node-button/create-node-button.component';
 import { ContainerLanguageSwitcherComponent } from '../container-language-switcher/container-language-switcher.component';
-import { MeshNode } from '../../../common/models/node.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { AvailableLanguagesListComponent } from '../available-languages-list/available-languages-list.component';
 import { ProjectSwitcherComponent } from '../project-switcher/project-switcher.component';
@@ -21,17 +18,14 @@ import { NodeLanguageLabelComponent } from '../language-label/language-label.com
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { NeverObservable } from 'rxjs/Observable/NeverObservable';
-import { Observable } from 'rxjs/Observable';
+
+
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
-import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { DebugElement } from '@angular/core';
-import { Component } from '@angular/core';
+
+import { ContainerContentsComponent } from './container-contents.component';
 
 
 describe('ContainerContentsComponent', () => {
@@ -81,7 +75,7 @@ describe('ContainerContentsComponent', () => {
             },
             list: {
                 language: 'en',
-                children: ['node_uuid'],
+                items: ['node_uuid'],
                 currentProject: 'demo_project',
                 currentNode: 'current_node_uuid'
             },

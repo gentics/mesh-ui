@@ -26,7 +26,10 @@ import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.c
 import { ProjectEffectsService } from '../admin/providers/effects/project-effects.service';
 import { BlobService } from './providers/blob.service';
 import { CreateTagDialogComponent } from './components/create-tag-dialog/create-tag-dialog.component';
+import { ContainerFileDropAreaComponent } from './components/container-file-drop-area/container-file-drop-area.component';
 import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
+import { MultiFileUploadDialogComponent } from './components/multi-file-upload-dialog/multi-file-upload-dialog.component';
+import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
 
 
 @NgModule({
@@ -52,12 +55,17 @@ import { TagsEffectsService } from '../core/providers/effects/tags-effects.servi
         NodeRowComponent,
         ProgressbarModalComponent,
         NodeTagsBarComponent,
-        CreateTagDialogComponent
+        CreateTagDialogComponent,
+        ContainerFileDropAreaComponent,
+        MultiFileUploadDialogComponent,
+        AudioPlayButtonComponent
+
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,
         ProgressbarModalComponent,
         CreateTagDialogComponent,
+        MultiFileUploadDialogComponent
     ],
     providers: [
         EditorEffectsService,

@@ -1,0 +1,17 @@
+@import 'variables';
+.container {
+    text-align: center;
+}
+
+icon {
+    font-size: 50px;
+    opacity: 0.6;
+    color: $gtx-color-primary;
+    transition: opacity 0.3s;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+

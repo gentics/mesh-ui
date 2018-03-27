@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute } from '@angular/router';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { Project } from '../../../common/models/project.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+
 
 @Component({
     selector: 'master-detail',
@@ -17,7 +19,8 @@ export class MasterDetailComponent implements OnInit {
 
     constructor(private state: ApplicationStateService,
                 private listEffects: ListEffectsService,
-                private navigationService: NavigationService) {
+                private navigationService: NavigationService,
+                private route: ActivatedRoute) {
         this.editorFocused$ = state.select(state => state.editor.editorIsFocused);
         this.editorOpen$ = state.select(state => state.editor.editorIsOpen);
     }
@@ -38,7 +41,8 @@ export class MasterDetailComponent implements OnInit {
             .filter(Boolean)
             .take(1)
             .subscribe((firstProject: Project) => {
-                this.navigationService.list(firstProject.name, firstProject.rootNode.uuid).navigate();
+                this.navigationService.list(firstProject.name, firstProject.rootNode.uuid)
+                    .navigate({queryParams: this.route.snapshot.queryParams});
             });
     }
 

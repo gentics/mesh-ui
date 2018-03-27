@@ -1,0 +1,27 @@
+@import "variables";
+
+.drop-area-container {
+    position: relative;
+}
+
+.gtx-file-drop-area {
+    min-height: 300px;
+}
+
+.drop-area-container-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gray;
+    border: 3px solid $gtx-color-primary;
+    color: $gtx-color-secondary;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.7;
+    font-size: 32px;
+    min-height: 300px;
+}

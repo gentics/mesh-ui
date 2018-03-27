@@ -1,18 +1,35 @@
 {
     "copy_button": {
-      "en": "Copy",
-      "de": "Kopieren"
+        "en": "Copy",
+        "de": "Kopieren"
     },
     "language_select_switch_to": {
-      "en": "Display nodes in {{language}}",
-      "de": "Nodes in {{language}} zeigen"
+        "en": "Display nodes in {{language}}",
+        "de": "Nodes in {{language}} zeigen"
     },
     "move_button": {
-      "en": "Move",
-      "de": "Verschieben"
+        "en": "Move",
+        "de": "Verschieben"
     },
     "delete_button": {
-      "en": "Delete",
-      "de": "Löschen"
+        "en": "Delete",
+        "de": "Löschen"
+    },
+    "no_results": {
+        "en": "No results",
+        "de": "Keine Ergebnisse"
+    },
+    "search_error_occured": {
+        "en": "An error has occurred while performing search",
+        "de": "Ein Fehler ist aufgetreten"
+    },
+    "upload_files": {
+        "en": "Upload files",
+        "de": "Dateien hochladen"
+    },
+
+    "choose_files": {
+        "en": "Select or drop files...",
+        "de": "Dateien auswählen oder hier ablegen..."
     }
-  }
+}

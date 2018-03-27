@@ -24,7 +24,7 @@ export class ContainerLanguageSwitcherComponent {
 
         this.currentLanguage$ = this.state.select(state => state.list.language);
 
-        this.availableLanguages$ = this.state.select(state => state.list.children)
+        this.availableLanguages$ = this.state.select(state => state.list.items)
             .filter(notNullOrUndefined)
             .combineLatest(this.currentLanguage$)
             .map(([childrenUuids, language]) => this.uuidsToUniqueLanguages(childrenUuids, language))

@@ -1,0 +1,146 @@
+@import "variables";
+@import "animations";
+
+.media-container{
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.media-box {
+    width: 32%;
+    margin-right: 1%;
+    height: 300px;
+    border: 1px solid $gtx-color-primary;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    position: relative;
+
+    &:nth-of-type(3n) {
+        margin-right: 0;
+    }
+
+    .button-close {
+        display: none;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background-color: $gtx-color-alert;
+        border-radius: 50%;
+        padding: 3px;
+        font-weight: bold;
+        color: $gtx-color-secondary;
+        cursor: pointer;
+        animation: fadeOut 0.3s;
+        z-index: 1;
+    }
+
+    .preview {
+        max-height: 270px;
+        max-width: 100%;
+    }
+
+    .audio {
+        margin-top: 120px;
+    }
+
+    .node-icon {
+        font-size: 20vw;
+        width: 100%;
+        text-align: center;
+    }
+
+    .media-properties {
+        position: absolute;
+        width:100%;
+        bottom: 10px;
+        padding-right: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .overlay-save, .overlay-done {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        color: $gtx-color-primary;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .material-icons {
+            font-size: 10vw;
+        }
+    }
+
+    .overlay-save .material-icons {
+        animation: rotating 2s linear infinite;
+    }
+
+    .overlay-done {
+        color: $gtx-color-success;
+
+        .material-icons {
+            animation: grow 0.3s;
+        }
+    }
+
+    &:hover {
+        .button-close {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+    }
+}
+
+.button-upload {
+    margin-bottom: 10px;
+}
+
+.droppable-area {
+    position: relative;
+    min-height: 100px;
+}
+
+.file-input {
+    display: none;
+}
+
+.drop-area-container-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gray;
+    border: 3px solid $gtx-color-primary;
+    color: $gtx-color-secondary;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.7;
+    font-size: 32px;
+}
+
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes grow {
+    from {
+        transform: scale(0.1);
+    }
+    to {
+        transform: scale(1);
+    }
+}

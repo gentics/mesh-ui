@@ -28,6 +28,7 @@ export interface BinaryField {
     dominantColor?: string;
     height?: number;
     width?: number;
+    file?: File;
 }
 export interface NodeField {
     uuid: string;

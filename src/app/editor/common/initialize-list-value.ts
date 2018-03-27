@@ -1,5 +1,5 @@
-import { SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
-import { Microschema } from '../../../common/models/microschema.model';
+import { SchemaField, SchemaFieldType } from '../../common/models/schema.model';
+import { Microschema } from '../../common/models/microschema.model';
 import { typeToDefault } from './initialize-field-value';
 import { initializeMicronode } from './initialize-micronode';
 

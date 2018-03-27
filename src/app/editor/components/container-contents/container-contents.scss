@@ -11,12 +11,15 @@ icon {
 .detail-bar {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
+}
+
+.button-upload {
+    flex-grow: 1;
+    margin-left: 10px;
 }
 
 gtx-contents-list-item {
-    &.container-node {
-
-    }
     &.not-in-current-lang {
         .node-icon {
             color: $gtx-color-light-gray;

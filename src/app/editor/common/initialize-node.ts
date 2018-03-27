@@ -1,7 +1,7 @@
-import { NodeFieldMicronode, MeshNode } from '../../../common/models/node.model';
 import { initializeFieldValue } from './initialize-field-value';
-import { Schema } from '../../../common/models/schema.model';
-import { NodeCreateRequest } from '../../../common/models/server-models';
+import { NodeFieldMicronode, MeshNode } from '../../common/models/node.model';
+import { Schema } from '../../common/models/schema.model';
+import { NodeCreateRequest } from '../../common/models/server-models';
 
 /**
  * Initializes a new Micronode based on the associated Microschema.

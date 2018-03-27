@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { ModalService, IDialogConfig, IModalOptions, IModalInstance } from 'gentics-ui-core';
 
 import { NavigationService, ValidDetailCommands } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
@@ -12,11 +13,11 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { simpleCloneDeep, getMeshNodeBinaryFields } from '../../../common/util/util';
-import { initializeNode } from '../../form-generator/common/initialize-node';
+import { initializeNode } from '../../common/initialize-node';
 import { NodeReferenceFromServer, NodeResponse, FieldMapFromServer } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { ModalService, IDialogConfig, IModalOptions, IModalInstance } from 'gentics-ui-core';
+
 import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
 import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 

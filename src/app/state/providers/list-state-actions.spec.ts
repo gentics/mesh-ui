@@ -1,7 +1,7 @@
-import { ListStateActions } from "./list-state-actions";
-import { mockMeshNode } from "../../../testing/mock-models";
-import { MeshNode } from "../../common/models/node.model";
-import { TestApplicationState } from "../testing/test-application-state.mock";
+import { ListStateActions } from './list-state-actions';
+import { mockMeshNode } from '../../../testing/mock-models';
+import { MeshNode } from '../../common/models/node.model';
+import { TestApplicationState } from '../testing/test-application-state.mock';
 
 describe('ListStateActions', () => {
 
@@ -12,8 +12,15 @@ describe('ListStateActions', () => {
     });
 
     it('fetchChildrenSuccess updates the list', () => {
-        const mockNodes: MeshNode[] = [ mockMeshNode({ uuid : 'uuid1'})['en']['0.2'], mockMeshNode({ uuid : 'uuid2' })['en']['0.2']];
+        const mockNodes: MeshNode[] = [
+            mockMeshNode({
+                uuid : 'uuid1'
+            })['en']['0.2'],
+            mockMeshNode({
+                uuid : 'uuid2'
+            })['en']['0.2']
+        ];
         state.actions.list.fetchChildrenSuccess('123', mockNodes);
-        expect(state.now.list.children).toEqual(['uuid1', 'uuid2'])
+        expect(state.now.list.items).toEqual(['uuid1', 'uuid2']);
     });
-})
+});

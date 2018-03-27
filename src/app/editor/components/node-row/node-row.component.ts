@@ -1,4 +1,6 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ModalService, IDialogConfig } from 'gentics-ui-core';
 import { MeshNode } from '../../../common/models/node.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -14,9 +16,13 @@ import { ApiService } from '../../../core/providers/api/api.service';
     styleUrls: ['./node-row.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodeRowComponent implements OnInit {
+export class NodeRowComponent implements OnInit, OnDestroy {
     @Input() node: MeshNode;
     @Input() listLanguage: string;
+
+    private subscription: Subscription =  new Subscription();
+
+    filterTerm$: Observable<string>;
 
     routerLink: any[] = null;
 
@@ -35,6 +41,13 @@ export class NodeRowComponent implements OnInit {
         } else {
             this.routerLink = this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).commands();
         }
+
+        /*this.subscription.add(this.state.select(state => state.list.filterTerm)
+            .subscribe(filter => {
+                this.filterTerm$.next(filter);
+                console.log('Im filtering the stuff', this.filterTerm$);
+            }));*/
+        this.filterTerm$ = this.state.select(state => state.list.filterTerm);
     }
 
     editNode(): void {
@@ -68,5 +81,10 @@ export class NodeRowComponent implements OnInit {
 
     focusEditor() {
         this.state.actions.editor.focusEditor();
+    }
+
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

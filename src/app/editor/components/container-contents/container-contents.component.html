@@ -1,12 +1,30 @@
 <breadcrumbs></breadcrumbs>
-<search-bar></search-bar>
+<mesh-search-bar></mesh-search-bar>
 <div class="detail-bar">
-    <create-node-button></create-node-button>
+    <create-node-button [disabled]="searching$ | async"></create-node-button>
+    <gtx-button
+        [disabled]="searching$ | async"
+        size="small"
+        class="button-upload"
+        flat
+        (click)="onFileUploadClicked()"
+    >
+        <icon left>file_upload</icon> {{ 'list.upload_files' | i18n }}
+    </gtx-button>
     <container-language-switcher></container-language-switcher>
 </div>
-<ng-template ngFor let-schema [ngForOf]="schemas">
-    <gtx-contents-list-item class="group-header">
-        {{schema.name}}
-    </gtx-contents-list-item>
-    <app-node-row *ngFor="let child of childrenBySchema[schema.uuid]" [node]="child"></app-node-row>
-</ng-template>
+
+<mesh-container-file-drop-area>
+    <ng-template [ngIf]="(schemas$ | async).length > 0" [ngIfElse]="noResults">
+        <ng-template ngFor let-schema [ngForOf]="schemas$ | async">
+            <gtx-contents-list-item class="group-header">
+                {{schema.name}}
+            </gtx-contents-list-item>
+            <app-node-row *ngFor="let child of (childrenBySchema$ | async)[schema.uuid]" [node]="child"></app-node-row>
+        </ng-template>
+    </ng-template>
+
+    <ng-template #noResults>
+        <gtx-contents-list-item *ngIf="searching$ | async" class="group-header">{{ 'list.no_results' | i18n }}</gtx-contents-list-item>
+    </ng-template>
+</mesh-container-file-drop-area>

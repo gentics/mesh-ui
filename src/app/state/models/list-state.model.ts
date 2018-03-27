@@ -3,5 +3,6 @@ export interface ListState {
     currentNode: string | undefined;
     loadCount: number;
     language: string;
-    children: string[];
+    items: string[];
+    filterTerm: string;
 }
