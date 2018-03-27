@@ -13,6 +13,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { ContainerFileDropAreaComponent } from '../container-file-drop-area/container-file-drop-area.component';
+import { SchemaReferenceFromServer } from '../../../common/models/server-models';
 
 @Component({
     selector: 'container-contents',
@@ -96,7 +97,12 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .map(this.groupNodesBySchema);
 
         this.schemas$ = this.childrenBySchema$
-            .map(childrenBySchema => Object.values(childrenBySchema).map(nodes => nodes[0].schema));
+            .map(childrenBySchema =>
+                Object.values(childrenBySchema)
+                .map(nodes =>
+                    nodes[0].schema).sort((a: SchemaReferenceFromServer, b: SchemaReferenceFromServer) => {
+                        return a.name > b.name ? 1 : -1;
+                    }));
 
         this.searching$ = searchParams$
             .map(({ keyword, tags }) => keyword !== '' || tags !== '');
@@ -112,6 +118,10 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     private groupNodesBySchema(nodes: MeshNode[]): { [schemaUuid: string]: MeshNode[]; } {
+        nodes = nodes.sort((a: MeshNode, b: MeshNode) => {
+            return a.displayName > b.displayName ? 1 : -1;
+        });
+
         const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
         for (const node of nodes || []) {
             if (!childrenBySchema[node.schema.uuid]) {
