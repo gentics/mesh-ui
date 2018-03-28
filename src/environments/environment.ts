@@ -48,11 +48,6 @@ export const environment = {
     production: false
 };
 
-export function setupHotModuleReloadingProd(hotModule: any, appModule: any, routerToken: any, stateServiceToken: any) {
-    return Promise.resolve();
-}
-
-
 export function setupHotModuleReloading(hotModule: any, appModule: any, routerToken: any, stateServiceToken: any) {
     let router: Router;
     let stateService: ApplicationStateService;
@@ -88,7 +83,6 @@ export function setupHotModuleReloading(hotModule: any, appModule: any, routerTo
             if (stateService && stateService.now && previousState) {
                 previousState = { ...previousState };
                 stateService['store'].replaceState(previousState);
-   //             stateService['state'].next(stateService.now = previousState);
                 router.navigateByUrl(previousUrl);
             }
         });

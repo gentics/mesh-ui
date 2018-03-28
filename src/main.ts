@@ -22,7 +22,3 @@ if (module.hot) {
     platformBrowserDynamic().bootstrapModule(AppModule)
         .catch(err => console.log(err));
 }
-
-
-/*platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.log(err));*/
