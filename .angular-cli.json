@@ -65,5 +65,8 @@
       "showCircularDependencies": false
     },
     "component": {}
+  },
+  "warnings": {
+    "hmrWarning": false
   }
 }

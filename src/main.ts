@@ -5,11 +5,24 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import 'rxjs/Rx';
 
 import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+import { environment, setupHotModuleReloading } from './environments/environment';
+import { Router } from '@angular/router';
+import { ApplicationStateService } from './app/state/providers/application-state.service';
 
 if (environment.production) {
-  enableProdMode();
+    enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.log(err));
+declare var module: any;
+
+if (module.hot) {
+    setupHotModuleReloading(module.hot, AppModule, Router, ApplicationStateService)
+        .catch(err => console.log(err));
+} else {
+    platformBrowserDynamic().bootstrapModule(AppModule)
+        .catch(err => console.log(err));
+}
+
+
+/*platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.log(err));*/
