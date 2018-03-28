@@ -136,7 +136,7 @@ export class EditorEffectsService {
                     type: 'error',
                     message: 'editor.node_save_error'
                 });
-                throw new Error('TODO: Error handling');
+                throw error;
             });
     }
 

@@ -30,6 +30,7 @@ import { ContainerFileDropAreaComponent } from './components/container-file-drop
 import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
 import { MultiFileUploadDialogComponent } from './components/multi-file-upload-dialog/multi-file-upload-dialog.component';
 import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
+import { NodeConflictDialogComponent } from './components/node-conflict-dialog/node-conflict-dialog.component';
 
 
 @NgModule({
@@ -58,14 +59,16 @@ import { AudioPlayButtonComponent } from './components/audio-play-button/audio-p
         CreateTagDialogComponent,
         ContainerFileDropAreaComponent,
         MultiFileUploadDialogComponent,
-        AudioPlayButtonComponent
+        AudioPlayButtonComponent,
+        NodeConflictDialogComponent
 
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,
         ProgressbarModalComponent,
         CreateTagDialogComponent,
-        MultiFileUploadDialogComponent
+        MultiFileUploadDialogComponent,
+        NodeConflictDialogComponent
     ],
     providers: [
         EditorEffectsService,

@@ -20,6 +20,9 @@ import { ListEffectsService } from '../../../core/providers/effects/list-effects
 
 import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
 import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
+import { ApiError } from '../../../core/providers/api/api-error';
+import { ApiService } from '../../../core/providers/api/api.service';
+import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
 
 @Component({
     selector: 'node-editor',
@@ -51,7 +54,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private navigationService: NavigationService,
         private route: ActivatedRoute,
         private i18n: I18nService,
-        private modalService: ModalService) { }
+        private modalService: ModalService,
+        private api: ApiService) { }
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -201,6 +205,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         this.isSaving = false;
                     });
             } else {
+
                 saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
@@ -210,10 +215,50 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         }
                     }, error => {
                         this.isSaving = false;
+
+                        if (error instanceof ApiError) {
+                            switch (error.response.status) {
+                                case 409:
+                                    this.handleSaveConflicts(error);
+                                break;
+
+                                default:
+                                break;
+                            }
+                        }
                     });
             }
             this.saveNodeWithProgress(saveFn);
         }
+    }
+
+    handleSaveConflicts(error: ApiError): void {
+        const conflict: any = error.response.json();
+
+        this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
+            .take(1)
+            .subscribe((response: NodeResponse) => {
+                console.log(this.node, response);
+                this.modalService.fromComponent(
+                    NodeConflictDialogComponent,
+                    {
+                        closeOnOverlayClick: false,
+                        width: '90%',
+                        onClose: (reason: any): void => {
+
+                        }
+                    },
+                    {
+                        mineNode: this.node,
+                        theirsNode : response as MeshNode,
+                        conflict
+                    }
+                )
+                .then(modal => modal.open())
+                .then(result => {
+
+                });
+            });
     }
 
     /**
