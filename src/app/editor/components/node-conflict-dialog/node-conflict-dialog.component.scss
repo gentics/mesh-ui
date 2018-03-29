@@ -1,0 +1,22 @@
+@import "variables";
+.change-item {
+    display: flex;
+
+    .path {
+        min-width: 250px;
+        margin-right: 10px;
+        &:after {
+            content: ': '
+        }
+    }
+
+    .old-val {
+        text-decoration: line-through;
+        color: $gtx-color-alert;
+        margin-right: 10px;
+    }
+
+    .new-val {
+
+    }
+}

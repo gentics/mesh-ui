@@ -112,7 +112,7 @@ export class EditorEffectsService {
                     throw new Error('saveNode was rejected');
                 } else if (response.node) {
                     return this.assignTagsToNode(response.node, tags)
-                    .then(node => this.uploadBinaries(node, getMeshNodeBinaryFields(node)));
+                        .then(newNode => this.uploadBinaries(node, getMeshNodeBinaryFields(node)));
 
                 } else {
                     this.state.actions.editor.saveNodeError();

@@ -188,7 +188,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             this.isSaving = true;
             let saveFn: Promise<any>;
 
-            if (!this.node.uuid) {
+            if (!this.node.uuid) { // Create new node.
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
                 saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
@@ -204,9 +204,32 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     }, error => {
                         this.isSaving = false;
                     });
-            } else {
 
-                saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
+                this.saveNodeWithProgress(saveFn);
+            } else { // Update node.
+
+                this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
+                    .take(1)
+                    .subscribe(nodeFromServer => {
+                        if (parseFloat(nodeFromServer.version) > parseFloat(this.node.version)) {
+                            this.handleSaveConflicts(nodeFromServer);
+                        } else {
+                            saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
+                            .then(node => {
+                                this.isSaving = false;
+                                if (node) {
+                                    this.formGenerator.setPristine(node);
+                                    this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
+                                }
+                            }, error => {
+                                this.isSaving = false;
+                            });
+
+                            this.saveNodeWithProgress(saveFn);
+                        }
+                    });
+
+                /*saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
@@ -226,19 +249,15 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                                 break;
                             }
                         }
-                    });
+                    });*/
             }
-            this.saveNodeWithProgress(saveFn);
         }
     }
 
-    handleSaveConflicts(error: ApiError): void {
-        const conflict: any = error.response.json();
-
+    handleSaveConflicts(nodeFromServer: NodeResponse): void {
         this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
             .take(1)
             .subscribe((response: NodeResponse) => {
-                console.log(this.node, response);
                 this.modalService.fromComponent(
                     NodeConflictDialogComponent,
                     {
@@ -250,8 +269,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     },
                     {
                         mineNode: this.node,
-                        theirsNode : response as MeshNode,
-                        conflict
+                        theirsNode : nodeFromServer as MeshNode,
                     }
                 )
                 .then(modal => modal.open())
