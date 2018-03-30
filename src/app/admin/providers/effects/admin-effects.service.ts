@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Notification } from 'gentics-ui-core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
+import { ProjectResponse } from '../../../common/models/server-models';
 
 @Injectable()
 export class AdminEffectsService {
@@ -24,51 +25,29 @@ export class AdminEffectsService {
         const actions = this.state.actions.admin;
         actions.loadEntityAssignmentsStart();
 
-        this.api.project.getProjects({}).subscribe(projects => {
-            actions.loadEntityAssignmentProjectsSuccess(projects.data);
-            if (projects.data.length === 0) {
-                actions.loadEntityAssignmentsSuccess({});
-            } else {
-                // We use GraphQL here because otherwise we would have to do multiple requests
-                this.api.graphQL({project: projects.data[0].name}, {
-                    query: `
-                    query($uuid: String)
-                    {
-                      entity: ${type}(uuid: $uuid) {
-                        projects {
-                          elements {
-                            uuid
-                          }
-                        }
-                      }
-                    }
-                    `,
-                    variables: {
-                        uuid
-                    }
-                }).subscribe(response => {
-                    const entity = response.data.entity;
-                    if (!entity) {
-                        this.i18nNotification.show({
-                            type: 'error',
-                            message: 'common.not_found'
-                        });
-                        actions.loadEntityAssignmentsError();
-                        return;
-                    }
-                    const allProjects =
-                    projects.data
-                        .map(project => project.uuid)
-                        .reduce(reduceTo(false), {});
-                    const assignedProjects =
-                    entity.projects.elements
-                        .map(elements => elements.uuid)
-                        .reduce(reduceTo(true), {});
+        const loadEntities = (project: ProjectResponse) => type === 'schema' ?
+            this.api.project.getProjectSchemas({project: project.name}) :
+            this.api.project.getProjectMicroschemas({project: project.name});
 
-                    actions.loadEntityAssignmentsSuccess({...allProjects, ...assignedProjects});
-                });
-            }
-        });
+        // TODO consider paging
+        // Get all projects
+        this.api.project.getProjects({}).flatMap(projects => {
+            actions.loadEntityAssignmentProjectsSuccess(projects.data);
+            return Observable.from(projects.data);
+        })
+        .flatMap(project =>
+            // TODO again, consider paging
+            // Get all schemas/microschemas from the projects
+            loadEntities(project)
+                .map(schemas => ({
+                    [project.uuid]: schemas.data.some(schema => schema.uuid === uuid)
+                }))
+        )
+        .reduce(merge)
+        .subscribe(
+            assignments => actions.loadEntityAssignmentsSuccess(assignments),
+            error => actions.loadEntityAssignmentsError()
+        );
     }
 
     assignEntityToProject(type: 'schema' | 'microschema', entityUuid: string, projectName: string) {
@@ -116,6 +95,9 @@ export class AdminEffectsService {
     }
 }
 
-function reduceTo<T>(val: T) {
-    return (obj, uuid) => ({...obj, [uuid]: val});
+/**
+ * Merges two objects. Useful as a reducer.
+ */
+function merge<T extends object, R extends object>(obj1: T, obj2: R): T & R {
+    return Object.assign({}, obj1, obj2);
 }

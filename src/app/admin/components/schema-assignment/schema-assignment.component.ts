@@ -1,9 +1,10 @@
 import { Component, ChangeDetectionStrategy, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AdminEffectsService } from '../../providers/effects/admin-effects.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ProjectAssignments } from '../../../state/models/admin-state.model';
-import difference from 'lodash/difference';
+import * as difference from 'ramda/src/difference';
 
 interface Assignment {
     projectUuid: string;
@@ -16,7 +17,7 @@ interface Assignment {
     selector: 'schema-assignment',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SchemaAssignmentComponent implements OnChanges, OnDestroy {
+export class SchemaAssignmentComponent implements OnChanges, OnDestroy, OnInit {
     @Input() type: 'schema' | 'microschema';
     @Input() uuid: string;
 
@@ -28,12 +29,15 @@ export class SchemaAssignmentComponent implements OnChanges, OnDestroy {
 
     constructor(private state: ApplicationStateService,
                 private admin: AdminEffectsService) {
-        const stateAssignments$ = state.select(state => state.admin.assignedToProject).filter(Boolean);
+    }
+
+    ngOnInit() {
+        const stateAssignments$ = this.state.select(state => state.admin.assignedToProject).filter(Boolean);
 
         this.assignments$ = stateAssignments$.map(assignments => Object.keys(assignments).map(uuid => ({
             projectUuid: uuid,
             assigned: assignments[uuid],
-            projectName: state.now.entities.project[uuid].name
+            projectName: this.state.now.entities.project[uuid].name
         })));
 
         this.subscription = stateAssignments$.map(assignments => Object.keys(assignments).filter(uuid => assignments[uuid]))

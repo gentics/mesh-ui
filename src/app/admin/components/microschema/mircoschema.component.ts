@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ModalService } from 'gentics-ui-core';
 import { hashValues, filenameExtension } from '../../../common/util/util';
 import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
@@ -19,7 +20,9 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
     microschema$: Observable<MicroschemaResponse>;
     version$: Observable<string>;
 
-    microschemaJson: string = '';
+    uuid$: Observable<string>;
+
+    microschemaJson = '';
     // TODO load json schema from mesh instead of static file
     schema = require('./microschema.schema.json');
 
@@ -42,7 +45,7 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.loading$ = this.state.select(state => state.admin.loadCount > 0);
 
-        const uuid$ = this.route.paramMap
+        this.uuid$ = this.route.paramMap
             .map(map => map.get('uuid'))
             .distinctUntilChanged()
             .do(route => {
@@ -54,10 +57,10 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
             // This will cause all the stuff below to not trigger when a new microschema is made.
             .filter(route => route !== 'new');
 
-        this.microschema$ = uuid$
+        this.microschema$ = this.uuid$
             .switchMap(uuid => {
                 if (uuid) {
-                    return this.entities.selectSchema(uuid);
+                    return this.entities.selectMicroschema(uuid);
                 } else {
                     // TODO handle this?
                     throw Error('uuid not set');
@@ -66,7 +69,7 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
 
         this.version$ = this.microschema$.map(it => it.version);
 
-        uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
+        this.uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
             // TODO handle 404 or other errors
             this.microschemaEffects.openMicroschema(uuid);
         });
