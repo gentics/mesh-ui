@@ -12,7 +12,7 @@ gtx-dropdown-list, gtx-dropdown-trigger {
 }
 
 gtx-dropdown-content {
-    max-height: 300px !important; /* !important because the gtx-dropdown-list will try to overwrite it */
+    max-height: 300px !important; // !important because the gtx-dropdown-list will try to overwrite it.
 }
 
 .tags-list {

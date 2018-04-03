@@ -65,16 +65,6 @@ export class NodeTagsBarComponent implements OnChanges {
         this.dropDown.resize();
     }
 
-    displayAllTags(): void {
-         // If no filter is typed in - we display the all the tags
-         this.filteredTags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
-
-         if (!this.dropDown.isOpen) {
-             this.dropDown.openDropdown();
-         }
-         this.dropDown.resize();
-    }
-
     onInputFocus(event): void {
         this.onFilterChange(this.filterTerm);
     }
