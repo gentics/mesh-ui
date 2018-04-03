@@ -58,6 +58,11 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         }
     }
 
+    ngOnDestroy(): void {
+        this.destroyed$.next();
+        this.destroyed$.complete();
+    }
+
     onFilterChange(term: string): void {
         this.filterTerm = term;
 
@@ -149,10 +154,5 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
             return filteredTags;
         }, []);
         return filteredTags;
-    }
-
-    ngOnDestroy(): void {
-        this.destroyed$.next();
-        this.destroyed$.complete();
     }
 }
