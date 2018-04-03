@@ -81,10 +81,9 @@ export class EditorEffectsService {
                     message: 'editor.node_save_error'
                 });
 
-                /**
-                 * For the new nodes, if something got wrong while saving - delete the node immediatly.
-                 * That way the editor will decide what to do next (stay in an unchanged state?),
-                 */
+
+                // For the new nodes, if something went wrong while saving - delete the node immediately.
+                // That way the editor will decide what to do next (stay in an unchanged state?),
                 this.api.project.deleteNode({ project: projectName, nodeUuid: error.node.uuid}).take(1).subscribe();
                 throw error.error;
             });
