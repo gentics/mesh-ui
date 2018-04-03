@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap, NavigationEnd } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ModalService, IDialogConfig } from 'gentics-ui-core';
@@ -8,8 +7,6 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
-import { ApiService } from '../../../core/providers/api/api.service';
 
 @Component({
     selector: 'app-node-row',
@@ -31,11 +28,7 @@ export class NodeRowComponent implements OnInit, OnDestroy {
                 private navigationService: NavigationService,
                 private modalService: ModalService,
                 private i18n: I18nService,
-                private listEffects: ListEffectsService,
-                private entities: EntitiesService,
-                private api: ApiService,
-                private activatedRoute: ActivatedRoute,
-                private router: Router ) {
+                private listEffects: ListEffectsService) {
     }
 
     ngOnInit() {
