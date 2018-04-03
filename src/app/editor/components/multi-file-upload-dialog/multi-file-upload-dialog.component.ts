@@ -21,7 +21,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 interface FileWithBlob {
     file: BinaryField;
     blob: SafeUrl;
-    progress: 'none' | 'uploading' | 'done';
+    progress: 'none' | 'uploading' | 'done' | 'error';
     mediaType: string;
 }
 @Component({
@@ -114,6 +114,9 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
                 .then(response => {
                     fileWithBlobs.progress = 'done';
                     return response;
+                }).catch(error => {
+                    fileWithBlobs.progress = 'error';
+                    throw error;
                 });
         });
 
@@ -121,7 +124,10 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
             this.listEffects.loadChildren(this.project, this.parentUuid, this.language);
             this.closeFn(true);
         }).catch(error => {
-            console.log('Failed with error', error);
+            // Remove the uploaded files. The failed ones will have an indicator displayed.
+            this.filesWithBlobs = this.filesWithBlobs.filter(fileWitBlob => fileWitBlob.progress !== 'done');
+            this.isSaving = false;
+            this.listEffects.loadChildren(this.project, this.parentUuid, this.language);
         });
     }
 
