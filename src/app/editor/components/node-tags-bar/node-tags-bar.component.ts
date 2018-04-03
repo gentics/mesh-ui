@@ -1,4 +1,4 @@
-import { Input, ChangeDetectorRef, ContentChild, ViewChild, Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Input, ChangeDetectorRef, ContentChild, ViewChild, Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { DropdownList, InputField, ModalService } from 'gentics-ui-core';
@@ -11,13 +11,14 @@ import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { stringToColor } from '../../../common/util/util';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-node-tags-bar',
     templateUrl: './node-tags-bar.component.html',
     styleUrls: ['./node-tags-bar.component.scss']
 })
-export class NodeTagsBarComponent implements OnChanges {
+export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
     @ViewChild('DropdownList') dropDown: DropdownList;
     @ViewChild('InputField') inputField: InputField;
@@ -29,12 +30,22 @@ export class NodeTagsBarComponent implements OnChanges {
     filteredTags: Tag[] = [];
     filterTerm = '';
 
+    stateTags: Tag[] = [];
+    private tags$: Subscription;
+
     constructor(
         private changeDetector: ChangeDetectorRef,
         private state: ApplicationStateService,
         private editorEffects: EditorEffectsService,
         private modalService: ModalService,
         private entities: EntitiesService ) { }
+
+    ngOnInit(): void {
+        this.tags$ = this.state.select(state => state.tags.tags)
+            .subscribe(tags => {
+                this.stateTags = tags.map(uuid => this.entities.getTag(uuid));
+            });
+    }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.node && changes.node.currentValue) {
@@ -50,10 +61,10 @@ export class NodeTagsBarComponent implements OnChanges {
 
         this.filteredTags = this.filterTags(term);
 
-        const tags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
+        this.stateTags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
 
         // If the term does NOT perfectly match any of existing tags - we will show an option to create one
-        if (!tags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
+        if (!this.stateTags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
             this.newTagName = term;
         } else {
             this.newTagName = '';
@@ -74,6 +85,7 @@ export class NodeTagsBarComponent implements OnChanges {
         this.nodeTags = [...this.nodeTags, { name, tagFamily: tagFamily.name, uuid }];
         this.filteredTags = [];
         this.inputField.writeValue('');
+        this.filterTerm = '';
         this.newTagName = '';
         this.checkIfDirty();
     }
@@ -103,8 +115,7 @@ export class NodeTagsBarComponent implements OnChanges {
     }
 
     /**
-     * Get the diff of the original tags and the modified ones
-     * return and
+     * Get the diff of the original tags and the modified ones.
      */
     changesSinceLastSave(): { deletedTags: string[], newTags: string[] } {
         let deletedTags: string[] = [];
@@ -129,12 +140,7 @@ export class NodeTagsBarComponent implements OnChanges {
     }
 
     private filterTags(term: string): Tag[] {
-        /*if (term.trim() === '') {
-            return [];
-        }*/
-
-        const tags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
-        const filteredTags = tags.reduce<Tag[]>((filteredTags, tag) => {
+        const filteredTags = this.stateTags.reduce<Tag[]>((filteredTags, tag) => {
             if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) === -1) {
                 if(fuzzyMatch(term, tag.name)) {
                    filteredTags.push(tag) ;
@@ -143,5 +149,9 @@ export class NodeTagsBarComponent implements OnChanges {
             return filteredTags;
         }, []);
         return filteredTags;
+    }
+
+    ngOnDestroy(): void {
+        this.tags$.unsubscribe();
     }
 }
