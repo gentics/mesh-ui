@@ -11,7 +11,7 @@ import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { stringToColor } from '../../../common/util/util';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 @Component({
     selector: 'app-node-tags-bar',
@@ -31,7 +31,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     filterTerm = '';
 
     stateTags: Tag[] = [];
-    private tags$: Subscription;
+    private destroyed$: Subject<void> = new Subject();
 
     constructor(
         private changeDetector: ChangeDetectorRef,
@@ -41,7 +41,9 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         private entities: EntitiesService ) { }
 
     ngOnInit(): void {
-        this.tags$ = this.state.select(state => state.tags.tags)
+
+        this.state.select(state => state.tags.tags)
+            .takeUntil(this.destroyed$)
             .subscribe(tags => {
                 this.stateTags = tags.map(uuid => this.entities.getTag(uuid));
             });
@@ -60,8 +62,6 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.filterTerm = term;
 
         this.filteredTags = this.filterTags(term);
-
-        this.stateTags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
 
         // If the term does NOT perfectly match any of existing tags - we will show an option to create one
         if (!this.stateTags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
@@ -152,6 +152,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.tags$.unsubscribe();
+        this.destroyed$.next();
+        this.destroyed$.complete();
     }
 }
