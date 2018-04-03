@@ -3,6 +3,11 @@
 </div>
 <div class="modal-content">
     <ul class="changes">
+        <li *ngIf="conflictedTags">
+            <div class="path">Tags</div>
+            <div class="old-val">{{ conflictedTags.mineTags }}</div>
+            <div class="new-val">{{ conflictedTags.theirTags }}</div>
+        </li>
         <li *ngFor="let conflictedField of conflictedFields" class="change-item">
             <div class="path">{{ conflictedField.field.name }}</div>
             <div class="old-val">{{ conflictedField.mineValue }}</div>

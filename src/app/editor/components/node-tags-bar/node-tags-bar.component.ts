@@ -13,6 +13,7 @@ import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../cre
 import { FilterSelection } from '../../../common/models/common.model';
 import { SafeStyle } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
 
 @Component({
     selector: 'app-node-tags-bar',
@@ -124,9 +125,7 @@ export class NodeTagsBarComponent implements OnChanges {
     }
 
     private checkIfDirty() {
-        const oldUuids = (this.node.tags || []).map(tag => tag.uuid).sort().join(',');
-        const newUuids = this.nodeTags.map(tag => tag.uuid).sort().join(',');
-        this.isDirty = newUuids !== oldUuids;
+        return tagsAreEqual(this.node.tags, this.nodeTags);
     }
 
     private filterTags(term: string): FilterSelection[] {

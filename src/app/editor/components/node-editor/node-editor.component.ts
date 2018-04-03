@@ -23,6 +23,7 @@ import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 import { ApiError } from '../../../core/providers/api/api-error';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
+import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
 
 @Component({
     selector: 'node-editor',
@@ -207,11 +208,12 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
                 this.saveNodeWithProgress(saveFn);
             } else { // Update node.
-
                 this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
                     .take(1)
                     .subscribe(nodeFromServer => {
-                        if (parseFloat(nodeFromServer.version) > parseFloat(this.node.version)) {
+                        console.log('equual tags', tagsAreEqual(nodeFromServer.tags, this.node.tags))
+                        if (parseFloat(nodeFromServer.version) > parseFloat(this.node.version) ||
+                           !tagsAreEqual(nodeFromServer.tags, this.node.tags)) {
                             this.handleSaveConflicts(nodeFromServer);
                         } else {
                             saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
@@ -228,28 +230,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             this.saveNodeWithProgress(saveFn);
                         }
                     });
-
-                /*saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
-                    .then(node => {
-                        this.isSaving = false;
-                        if (node) {
-                            this.formGenerator.setPristine(node);
-                            this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
-                        }
-                    }, error => {
-                        this.isSaving = false;
-
-                        if (error instanceof ApiError) {
-                            switch (error.response.status) {
-                                case 409:
-                                    this.handleSaveConflicts(error);
-                                break;
-
-                                default:
-                                break;
-                            }
-                        }
-                    });*/
             }
         }
     }

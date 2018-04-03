@@ -6,6 +6,7 @@ import { MeshNode } from '../../../common/models/node.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { BlobService } from '../../providers/blob.service';
+import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-are-equal';
 
 
 interface ConflictedField {
@@ -26,6 +27,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     theirsNode: MeshNode;
 
     conflictedFields: ConflictedField[] = [];
+    conflictedTags: {mineTags: string, theirTags: string} = null;
 
     constructor(
         private i18n: I18nService,
@@ -65,10 +67,15 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                         field: schemaField,
                         mineValue: 'No Preview Available',
                         theirValue: 'No Preview Available'
-                    })
+                    });
                 break;
             }
         });
+
+
+        if (tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
+            this.conflictedTags = { mineTags: getJoinedTags(this.mineNode.tags), theirTags: getJoinedTags(this.theirsNode.tags) };
+        }
     }
 
     saveAndClose(): void {
