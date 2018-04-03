@@ -7,8 +7,6 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
-import { ApiService } from '../../../core/providers/api/api.service';
 
 @Component({
     selector: 'app-node-row',
@@ -30,9 +28,7 @@ export class NodeRowComponent implements OnInit, OnDestroy {
                 private navigationService: NavigationService,
                 private modalService: ModalService,
                 private i18n: I18nService,
-                private listEffects: ListEffectsService,
-                private entities: EntitiesService,
-                private api: ApiService) {
+                private listEffects: ListEffectsService) {
     }
 
     ngOnInit() {
@@ -42,11 +38,6 @@ export class NodeRowComponent implements OnInit, OnDestroy {
             this.routerLink = this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).commands();
         }
 
-        /*this.subscription.add(this.state.select(state => state.list.filterTerm)
-            .subscribe(filter => {
-                this.filterTerm$.next(filter);
-                console.log('Im filtering the stuff', this.filterTerm$);
-            }));*/
         this.filterTerm$ = this.state.select(state => state.list.filterTerm);
     }
 
@@ -79,7 +70,15 @@ export class NodeRowComponent implements OnInit, OnDestroy {
             });
     }
 
+    /**
+     * Focuses the editor if the clicked node is opened already.
+     * Otherwise does nothing
+     */
     focusEditor() {
+        if (this.node.container) { // Don't focus container on folder click.
+            return;
+        }
+
         this.state.actions.editor.focusEditor();
     }
 

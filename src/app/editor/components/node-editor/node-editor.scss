@@ -29,7 +29,7 @@
         align-items: center;
     }
     .display-name {
-        font-size: $gtx-font-size-lead;
+        font-size: 5px;
         display: inline-block;
     }
     .schema {
@@ -50,6 +50,7 @@
     display: flex;
     justify-content: space-between;
     .path {
+
         a:hover {
             text-decoration: underline;
         }
