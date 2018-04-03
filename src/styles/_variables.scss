@@ -2,9 +2,8 @@
 // App-wide variables go here. Since this file also imports the GUIC variables file, any component needing to access
 // GUIC variables (e.g. $gtx-color-mid-gray) should import this file, rather than referencing the GUIC file directly.
 //
-@import "../../node_modules/gentics-ui-core/dist/styles/variables";
 @import "ui-core-overrides";
-
+@import "../../node_modules/gentics-ui-core/dist/styles/variables";
 @import "../../node_modules/gentics-ui-core/dist/styles/mixins";
 @import "./mixins";
 

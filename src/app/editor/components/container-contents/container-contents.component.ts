@@ -99,8 +99,9 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         this.schemas$ = this.childrenBySchema$
             .map(childrenBySchema =>
                 Object.values(childrenBySchema)
-                .map(nodes =>
-                    nodes[0].schema).sort((a: SchemaReferenceFromServer, b: SchemaReferenceFromServer) => {
+                    .map(nodes =>
+                        nodes[0].schema)
+                    .sort((a: SchemaReferenceFromServer, b: SchemaReferenceFromServer) => {
                         return a.name > b.name ? 1 : -1;
                     }));
 

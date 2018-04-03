@@ -17,8 +17,8 @@
 
     /deep/ & > .mesh-field {
         display: block;
-        padding-left: $gtx-block-padding-h;
-        padding-right: $gtx-block-padding-h;
+        margin-left: 20px;
+        margin-right: 20px;
         width: $half-width;
         transition: width 0.2s;
 

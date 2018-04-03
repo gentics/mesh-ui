@@ -79,29 +79,14 @@ export class NodeRowComponent implements OnInit, OnDestroy {
 
     /**
      * Focuses the editor if the clicked node is opened already.
-     * Otherwise does nothing...
+     * Otherwise does nothing
      */
     focusEditor() {
         if (this.node.container) { // Don't focus container on folder click.
             return;
         }
 
-        // Since the activated route of container-contents component does not know of other parts of url - we have traverse it manually from the root node.
-        const activeDetailRoute = this.activatedRoute.pathFromRoot.filter(router => {
-            return router.firstChild &&  router.firstChild.outlet === 'detail';
-        });
-
-        if (activeDetailRoute.length) { // There is a node open already.
-            const childRoute = activeDetailRoute[0].firstChild;
-            const { projectName, nodeUuid, language } = childRoute.snapshot.params;
-
-            // If open node params match with my params,
-            if (projectName === this.node.project.name &&
-                nodeUuid === this.node.uuid &&
-                language === this.node.language) {
-                }
-                this.state.actions.editor.focusEditor();
-        }
+        this.state.actions.editor.focusEditor();
     }
 
 

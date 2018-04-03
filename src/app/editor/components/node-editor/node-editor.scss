@@ -19,7 +19,7 @@
 
 .title-row {
     display: flex;
-    padding: $gtx-block-padding;
+    padding: 5px;
     background-color: lighten(desaturate($gtx-color-primary, 60%), 40%);
     padding-right: 30px;
     height: 40px;
@@ -29,7 +29,7 @@
         align-items: center;
     }
     .display-name {
-        font-size: $gtx-font-size-lead;
+        font-size: 5px;
         display: inline-block;
     }
     .schema {
@@ -45,10 +45,9 @@
     }
 }
 .info-row {
-    padding: $gtx-block-padding;
+    padding: 5px;
     background-color: lighten(desaturate($gtx-color-primary, 80%), 50%);
     display: flex;
-    line-height: 2em;
     justify-content: space-between;
     .path {
 
