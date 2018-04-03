@@ -1,4 +1,4 @@
-import { Input, ChangeDetectorRef, ContentChild, ViewChild, Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Input, ChangeDetectorRef, ContentChild, ViewChild, Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { DropdownList, InputField, ModalService } from 'gentics-ui-core';
@@ -10,33 +10,44 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { stringToColor } from '../../../common/util/util';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
-import { FilterSelection } from '../../../common/models/common.model';
-import { SafeStyle } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { Subscription, Subject } from 'rxjs';
 
 @Component({
     selector: 'app-node-tags-bar',
     templateUrl: './node-tags-bar.component.html',
     styleUrls: ['./node-tags-bar.component.scss']
 })
-export class NodeTagsBarComponent implements OnChanges {
+export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
     @ViewChild('DropdownList') dropDown: DropdownList;
     @ViewChild('InputField') inputField: InputField;
     @Input() node: MeshNode;
     isDirty = false;
     newTagName = ''; // Contains a name for a new tag.
-    nodeTags: TagReferenceFromServer[] = []; //tags for the current opened node
+    nodeTags: TagReferenceFromServer[] = []; // Tags for the current opened node.
 
-    filteredTags: FilterSelection[] = [];
+    filteredTags: Tag[] = [];
+    filterTerm = '';
+
+    stateTags: Tag[] = [];
+    private destroyed$: Subject<void> = new Subject();
 
     constructor(
         private changeDetector: ChangeDetectorRef,
         private state: ApplicationStateService,
         private editorEffects: EditorEffectsService,
-        private sanitized: DomSanitizer,
         private modalService: ModalService,
         private entities: EntitiesService ) { }
+
+    ngOnInit(): void {
+
+        this.state.select(state => state.tags.tags)
+            .takeUntil(this.destroyed$)
+            .subscribe(tags => {
+                this.stateTags = tags.map(uuid => this.entities.getTag(uuid));
+            });
+    }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.node && changes.node.currentValue) {
@@ -47,14 +58,18 @@ export class NodeTagsBarComponent implements OnChanges {
         }
     }
 
-    onFilterChange(term: string) {
+    ngOnDestroy(): void {
+        this.destroyed$.next();
+        this.destroyed$.complete();
+    }
+
+    onFilterChange(term: string): void {
+        this.filterTerm = term;
 
         this.filteredTags = this.filterTags(term);
 
-        const tags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
-
         // If the term does NOT perfectly match any of existing tags - we will show an option to create one
-        if (!tags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
+        if (!this.stateTags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
             this.newTagName = term;
         } else {
             this.newTagName = '';
@@ -66,16 +81,21 @@ export class NodeTagsBarComponent implements OnChanges {
         this.dropDown.resize();
     }
 
-    onTagSelected(tag: Tag) {
+    onInputFocus(event): void {
+        this.onFilterChange(this.filterTerm);
+    }
+
+    onTagSelected(tag: Tag): void {
         const { name, tagFamily, uuid } = tag;
         this.nodeTags = [...this.nodeTags, { name, tagFamily: tagFamily.name, uuid }];
         this.filteredTags = [];
         this.inputField.writeValue('');
+        this.filterTerm = '';
         this.newTagName = '';
         this.checkIfDirty();
     }
 
-    onTagDeleted(deletedTag: Tag) {
+    onTagDeleted(deletedTag: Tag): void {
         const tagIndex = this.nodeTags.findIndex(tag => tag.uuid === deletedTag.uuid);
         this.nodeTags.splice(tagIndex, 1);
         this.checkIfDirty();
@@ -100,8 +120,7 @@ export class NodeTagsBarComponent implements OnChanges {
     }
 
     /**
-     * Get the diff of the original tags and the modified ones
-     * return and
+     * Get the diff of the original tags and the modified ones.
      */
     changesSinceLastSave(): { deletedTags: string[], newTags: string[] } {
         let deletedTags: string[] = [];
@@ -119,27 +138,17 @@ export class NodeTagsBarComponent implements OnChanges {
         return { deletedTags, newTags };
     }
 
-    getTagBackgroundColor(familyName: string): SafeStyle {
-        return this.sanitized.bypassSecurityTrustStyle(stringToColor(familyName));
-    }
-
-    private checkIfDirty() {
+    private checkIfDirty(): void {
         const oldUuids = (this.node.tags || []).map(tag => tag.uuid).sort().join(',');
         const newUuids = this.nodeTags.map(tag => tag.uuid).sort().join(',');
         this.isDirty = newUuids !== oldUuids;
     }
 
-    private filterTags(term: string): FilterSelection[] {
-        if (term.trim() === '') {
-            return [];
-        }
-
-        const tags = this.state.now.tags.tags.map(uuid => this.entities.getTag(uuid));
-        const filteredTags = tags.reduce<FilterSelection[]>((filteredTags, tag) => {
+    private filterTags(term: string): Tag[] {
+        const filteredTags = this.stateTags.reduce<Tag[]>((filteredTags, tag) => {
             if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) === -1) {
-                const matchedName = fuzzyReplace(term, tag.name);
-                if (matchedName) {
-                    filteredTags.push({ ...matchedName, tag });
+                if(fuzzyMatch(term, tag.name)) {
+                   filteredTags.push(tag) ;
                 }
             }
             return filteredTags;

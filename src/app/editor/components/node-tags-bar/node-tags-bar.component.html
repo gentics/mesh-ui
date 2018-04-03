@@ -1,27 +1,31 @@
 <div class="search-bar-container">
-    <div class="contents">
-        <div *ngFor="let tag of nodeTags" class="search-chip" [style.background]="getTagBackgroundColor(tag.tagFamily)">
-            <span class="chip-contents">{{tag.name}}</span>
-            <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
-        </div>
-    </div>
-    <gtx-input #InputField placeholder="{{ 'editor.add_tag' | i18n }}" (change)="onFilterChange($event)">
-    </gtx-input>
+    <gtx-input
+        #InputField
+        placeholder="{{ 'editor.add_tag' | i18n }}"
+        (change)="onFilterChange($event)"
+        (focus)="onInputFocus($event)"
+    ></gtx-input>
 </div>
 <gtx-dropdown-list belowTrigger="true" #DropdownList width="trigger">
     <gtx-dropdown-trigger>
         <div></div>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
-        <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag.tag)">
-            <span class="tag-family">{{tag.tag.tagFamily.name}}</span>
-            <span class="tag-name" [style.background]="getTagBackgroundColor(tag.tag.tagFamily.name)">
-                <span [innerHTML]="tag.valueFormatted"></span>
+        <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag)">
+            <span class="tag-family">{{tag.tagFamily.name}}</span>
+            <span class="tag-name" [meshBackgroundFrom]="tag.tagFamily.name">
+                <span [innerHTML]="tag.name | highlight:filterTerm"></span>
             </span>
         </gtx-dropdown-item>
-
         <gtx-dropdown-item *ngIf="newTagName" class="create-new-tag" (click)="onCreateNewTagClick()">
             <span class="tag-family">{{ 'editor.create_new_tag' | i18n }} </span>{{newTagName}}
         </gtx-dropdown-item>
     </gtx-dropdown-content>
 </gtx-dropdown-list>
+
+<div class="tags-list">
+    <div *ngFor="let tag of nodeTags" class="search-chip" [meshBackgroundFrom]="tag.tagFamily">
+        <span class="chip-contents">{{tag.name}}</span>
+        <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
+    </div>
+</div>
