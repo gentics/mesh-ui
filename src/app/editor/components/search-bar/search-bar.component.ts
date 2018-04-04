@@ -1,5 +1,6 @@
 import { Component, ChangeDetectorRef, ViewChild, ContentChild, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -9,13 +10,12 @@ import { DropdownList } from 'gentics-ui-core';
 import { ListStateActions } from '../../../state/providers/list-state-actions';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { FilterSelection } from '../../../common/models/common.model';
-import { fuzzyReplace, fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { stringToColor } from '../../../common/util/util';
 import { Tag } from '../../../common/models/tag.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { Subject } from 'rxjs';
+
 
 @Component({
     selector: 'mesh-search-bar',

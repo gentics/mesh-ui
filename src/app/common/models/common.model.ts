@@ -19,10 +19,3 @@ export interface BaseProperties {
     rolePerms?: PermissionInfoFromServer;
     uuid: string;
 }
-
-/** Contains an original value and a value with special formatting applied. */
-export interface FilterSelection {
-    value: string;
-    valueFormatted: string;
-    [propName: string]: any;
-}
