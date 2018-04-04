@@ -110,7 +110,7 @@ export class SchemaEffectsService {
             this.state.actions.admin.actionError();
             this.i18nNotification.show({
                 type: 'error',
-                message: 'admin.schema_deleted_error'
+                message: error.toString()
             });
             subject.error(error);
         });

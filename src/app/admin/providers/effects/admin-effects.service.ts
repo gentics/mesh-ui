@@ -44,6 +44,7 @@ export class AdminEffectsService {
                 }))
         )
         .reduce(merge)
+        .defaultIfEmpty({})
         .subscribe(
             assignments => actions.loadEntityAssignmentsSuccess(assignments),
             error => actions.loadEntityAssignmentsError()

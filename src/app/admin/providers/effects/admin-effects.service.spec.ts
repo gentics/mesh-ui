@@ -4,7 +4,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { Notification, GenticsUICoreModule } from 'gentics-ui-core';
 import { AdminEffectsService } from './admin-effects.service';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { ProjectAssignments } from '../../../state/models/admin-state.model';
 
 describe('Admin Effects', () => {
@@ -15,13 +15,17 @@ describe('Admin Effects', () => {
 
     beforeEach(() => {
         apiServiceSpy = {
-            graphQL: jasmine.createSpy('graphQL'),
             project : {
-                getProjects: jasmine.createSpy('getProject')
+                getProjects: jasmine.createSpy('getProject'),
+                getProjectSchemas: jasmine.createSpy('getProjectSchemas')
             }
         };
-        adminActionsSpy = jasmine.createSpyObj('adminActions',
-        ['loadEntityAssignmentsStart', 'loadEntityAssignmentProjectsSuccess', 'loadEntityAssignmentsSuccess', 'loadEntityAssignmentsError']);
+        adminActionsSpy = jasmine.createSpyObj('adminActions', [
+            'loadEntityAssignmentsStart',
+            'loadEntityAssignmentProjectsSuccess',
+            'loadEntityAssignmentsSuccess',
+            'loadEntityAssignmentsError'
+        ]);
         i18nNotificationSpy = jasmine.createSpyObj('i18n notifications', ['show']);
 
 
@@ -60,7 +64,7 @@ describe('Admin Effects', () => {
             };
 
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
-            apiServiceSpy.graphQL.and.returnValue(Observable.of(GraphQLResponse(['uuid1', 'uuid2'])));
+            apiServiceSpy.project.getProjectSchemas.and.returnValue(Observable.of(schemasResponse(['test'])));
             adminEffects.loadEntityAssignments('schema', 'test');
             expect(adminActionsSpy.loadEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(adminActionsSpy.loadEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
@@ -73,7 +77,10 @@ describe('Admin Effects', () => {
             };
 
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
-            apiServiceSpy.graphQL.and.returnValue(Observable.of(GraphQLResponse(['uuid2'])));
+            apiServiceSpy.project.getProjectSchemas.and.returnValues(
+                Observable.of(schemasResponse([])),
+                Observable.of(schemasResponse(['test']))
+            );
             adminEffects.loadEntityAssignments('schema', 'test');
             expect(adminActionsSpy.loadEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(adminActionsSpy.loadEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
@@ -86,33 +93,15 @@ describe('Admin Effects', () => {
             };
 
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
-            apiServiceSpy.graphQL.and.returnValue(Observable.of(GraphQLResponse([])));
+            apiServiceSpy.project.getProjectSchemas.and.returnValue(Observable.of(schemasResponse([])));
             adminEffects.loadEntityAssignments('schema', 'test');
             expect(adminActionsSpy.loadEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(adminActionsSpy.loadEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
         });
 
-        it('shows an error if entity has not been found', () => {
-            apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
-            apiServiceSpy.graphQL.and.returnValue(Observable.of({data: {entity: null}}));
-            adminEffects.loadEntityAssignments('schema', 'test');
-            expect(adminActionsSpy.loadEntityAssignmentProjectsSuccess).toHaveBeenCalled();
-            expect(adminActionsSpy.loadEntityAssignmentsError).toHaveBeenCalled();
-            expect(i18nNotificationSpy.show).toHaveBeenCalledWith({
-                type: 'error',
-                message: 'common.not_found'
-            });
-        });
-
-        function GraphQLResponse(projectUuids: string[]) {
+        function schemasResponse(projectUuids: string[]) {
             return {
-                data: {
-                    entity: {
-                        projects: {
-                            elements: projectUuids.map(it => ({uuid: it}))
-                        }
-                    }
-                }
+                data: projectUuids.map(uuid => ({uuid}))
             };
         }
     });
