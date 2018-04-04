@@ -28,10 +28,10 @@
             <div class="dropdown-trigger"></div>
         </gtx-dropdown-trigger>
         <gtx-dropdown-content>
-            <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onSearchTagSelected(tag.tag)">
-                <span class="tag-family">{{tag.tag.tagFamily.name}}</span>
-                <span class="tag-name" [meshBackgroundFrom]="tag.tag.tagFamily.name">
-                    <span [innerHTML]="tag.valueFormatted"></span>
+            <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onSearchTagSelected(tag)">
+                <span class="tag-family">{{tag.tagFamily.name}}</span>
+                <span class="tag-name" [meshBackgroundFrom]="tag.tagFamily.name">
+                    <span [innerHTML]="tag.name | highlight:inputValue.substr(1)"></span>
                 </span>
             </gtx-dropdown-item>
         </gtx-dropdown-content>

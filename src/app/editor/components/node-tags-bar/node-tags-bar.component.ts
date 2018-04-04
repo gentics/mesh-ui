@@ -147,7 +147,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     private filterTags(term: string): Tag[] {
         const filteredTags = this.stateTags.reduce<Tag[]>((filteredTags, tag) => {
             if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) === -1) {
-                if(fuzzyMatch(term, tag.name)) {
+                if (fuzzyMatch(term, tag.name)) {
                    filteredTags.push(tag) ;
                 }
             }
