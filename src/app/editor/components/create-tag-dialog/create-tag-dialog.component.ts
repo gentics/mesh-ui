@@ -3,7 +3,7 @@ import { IModalDialog, InputField, DropdownList } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TagFamily } from '../../../common/models/tag-family.model';
-import { fuzzyMatch, fuzzyReplace } from '../../../common/util/fuzzy-search';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { EditorEffectsService } from '../../providers/editor-effects.service';

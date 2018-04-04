@@ -31,8 +31,10 @@ import { ApiService } from '../../../core/providers/api/api.service';
 
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
+import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 
 import { SearchBarComponent } from './search-bar.component';
+
 
 
 describe('Search-bar component:', () => {
@@ -78,6 +80,7 @@ describe('Search-bar component:', () => {
                 TestComponent,
                 SearchBarComponent,
                 BackgroundFromDirective,
+                HighlightPipe,
 
             ],
             providers: [

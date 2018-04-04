@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { DropdownList, InputField, ModalService } from 'gentics-ui-core';
 import { MeshNode } from '../../../common/models/node.model';
-import { fuzzyMatch, fuzzyReplace } from '../../../common/util/fuzzy-search';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Tag } from '../../../common/models/tag.model';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
@@ -147,7 +147,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     private filterTags(term: string): Tag[] {
         const filteredTags = this.stateTags.reduce<Tag[]>((filteredTags, tag) => {
             if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) === -1) {
-                if(fuzzyMatch(term, tag.name)) {
+                if (fuzzyMatch(term, tag.name)) {
                    filteredTags.push(tag) ;
                 }
             }
