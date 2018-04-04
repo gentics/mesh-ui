@@ -21,7 +21,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 interface FileWithBlob {
     file: BinaryField;
     blob: SafeUrl;
-    progress: 'none' | 'uploading' | 'done';
+    progress: 'none' | 'uploading' | 'done' | 'error';
     mediaType: string;
 }
 @Component({
@@ -106,11 +106,17 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
             fileWithBlobs.progress = 'uploading';
 
             const node = initializeNode(this.selectedSchema, this.parentUuid, this.language);
+            const nodeName = fileWithBlobs.file.fileName.substr(0, fileWithBlobs.file.fileName.lastIndexOf('.'));
             node.fields[this.selectedField.name] = fileWithBlobs.file;
+            node.fields[this.selectedSchema.displayField] = nodeName;
+
             return this.editorEffects.saveNewNode(this.project, node as MeshNode, null)
                 .then(response => {
                     fileWithBlobs.progress = 'done';
                     return response;
+                }).catch(error => {
+                    fileWithBlobs.progress = 'error';
+                    throw error;
                 });
         });
 
@@ -118,7 +124,10 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
             this.listEffects.loadChildren(this.project, this.parentUuid, this.language);
             this.closeFn(true);
         }).catch(error => {
-            console.log('Failed with error', error);
+            // Remove the uploaded files. The failed ones will have an indicator displayed.
+            this.filesWithBlobs = this.filesWithBlobs.filter(fileWitBlob => fileWitBlob.progress !== 'done');
+            this.isSaving = false;
+            this.listEffects.loadChildren(this.project, this.parentUuid, this.language);
         });
     }
 
@@ -150,7 +159,6 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
 
     onSchemaChange(schema: Schema) {
         this.selectedSchema = schema;
-
         // If we have a required binary field - take it and ignore the others.
         if (this.selectedSchema.fields.filter(field => field.type === 'binary' && field.required === true).length > 0) {
             this.schemaFields =  this.selectedSchema.fields.filter(field => field.type === 'binary' && field.required === true);

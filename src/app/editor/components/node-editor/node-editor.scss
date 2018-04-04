@@ -9,7 +9,6 @@
 .editor-header {
     flex-shrink: 1;
     position: relative;
-    box-shadow: 1px 3px 7px -5px;
     .close-button {
         position: absolute;
         right: 5px;
@@ -29,7 +28,7 @@
         align-items: center;
     }
     .display-name {
-        font-size: $gtx-font-size-lead;
+        font-size: 5px;
         display: inline-block;
     }
     .schema {
@@ -50,6 +49,7 @@
     display: flex;
     justify-content: space-between;
     .path {
+
         a:hover {
             text-decoration: underline;
         }

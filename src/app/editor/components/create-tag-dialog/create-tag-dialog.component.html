@@ -21,7 +21,7 @@
         <gtx-dropdown-content>
             <gtx-dropdown-item *ngFor="let family of filteredFamilies"
                                 (click)="onFamilySelected(family)"
-                                [innerHTML]="family.valueFormatted">
+                                [innerHTML]="family.name | highlight:inputTagFamilyValue">
             </gtx-dropdown-item>
         </gtx-dropdown-content>
     </gtx-dropdown-list>

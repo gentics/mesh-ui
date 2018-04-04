@@ -204,6 +204,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         }
                     }, error => {
                         this.isSaving = false;
+                        this.changeDetector.detectChanges();
                     });
 
                 this.saveNodeWithProgress(saveFn);

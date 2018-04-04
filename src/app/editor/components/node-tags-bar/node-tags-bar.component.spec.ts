@@ -16,9 +16,11 @@ import { mockMeshNode, mockSchema, mockTagFamily, mockTag } from '../../../../te
 import { Tag } from '../../../common/models/tag.model';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-import { NodeTagsBarComponent } from './node-tags-bar.component';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
+import { NodeTagsBarComponent } from './node-tags-bar.component';
+import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -42,6 +44,8 @@ describe('NodeTagsBarComponent', () => {
             declarations: [
                 NodeTagsBarComponent,
                 TestComponent,
+                BackgroundFromDirective,
+                HighlightPipe
             ],
             providers: [
                 OverlayHostService,
@@ -104,9 +108,11 @@ describe('NodeTagsBarComponent', () => {
 
         it('it filters matching tags',
             componentTest(() => TestComponent, (fixture, instance) => {
+                fixture.detectChanges();
+                tick();
                 typeSearchTerm(fixture, 'mock');
                 const tagBarComponent = getTagsBarComponent(fixture);
-                expect(tagBarComponent.filteredTags[0].tag).toEqual(tag);
+                expect(tagBarComponent.filteredTags[0]).toEqual(tag);
             })
         );
 
@@ -114,6 +120,10 @@ describe('NodeTagsBarComponent', () => {
             componentTest(() => TestComponent, (fixture, instance) => {
                 const tagBarComponent = getTagsBarComponent(fixture);
                 tagBarComponent.node = node['en']['1'];
+
+                fixture.detectChanges();
+                tick();
+
                 typeSearchTerm(fixture, tag2.name);
                 fixture.detectChanges();
                 tick();

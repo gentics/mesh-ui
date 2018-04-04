@@ -1,5 +1,6 @@
 import { Component, ChangeDetectorRef, ViewChild, ContentChild, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -9,12 +10,12 @@ import { DropdownList } from 'gentics-ui-core';
 import { ListStateActions } from '../../../state/providers/list-state-actions';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { FilterSelection } from '../../../common/models/common.model';
-import { fuzzyReplace } from '../../../common/util/fuzzy-search';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { stringToColor } from '../../../common/util/util';
 import { Tag } from '../../../common/models/tag.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+
 
 @Component({
     selector: 'mesh-search-bar',
@@ -26,14 +27,16 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
     private subscription: Subscription =  new Subscription();
 
+    stateTags: Tag[] = [];
+    private destroyed$: Subject<void> = new Subject();
+
     private searching = false;
 
     inputValue = '';
     searchQuery = '';
 
     searchTags: Tag[] = [];
-
-    filteredTags: FilterSelection[];
+    filteredTags: Tag[];
 
     @ViewChild(DropdownList)
     dropDownList: DropdownList;
@@ -49,14 +52,23 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.subscription.add(combineLatest(this.route.queryParamMap, this.state.select(state => state.entities.tag))
+
+        combineLatest(this.route.queryParamMap, this.state.select(state => state.entities.tag))
+            .takeUntil(this.destroyed$)
             .subscribe(([paramMap, tagUuids]) => {
                 this.searchParamsChanged(paramMap);
-            }));
+            });
+
+        this.state.select(state => state.tags.tags)
+            .takeUntil(this.destroyed$)
+            .subscribe(tags => {
+                this.stateTags = tags.map(uuid => this.entities.getTag(uuid));
+            });
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.destroyed$.next();
+        this.destroyed$.complete();
     }
 
     filterTermChanged(): void {
@@ -113,18 +125,20 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         this.changeDetectorRef.detectChanges(); // If the browser 'back' was clicked
     }
 
-    private filterTags(term: string): FilterSelection[] {
+    private filterTags(term: string): Tag[] {
         if (term.trim() === '') {
             return [];
         }
 
-        const tags = this.state.now.tags.tags
-                        .map(uuid => this.entities.getTag(uuid))
-                        .filter(tag => this.searchTags.every(searchTag => searchTag.uuid !== tag.uuid));
+        const tags = this.stateTags.filter(tag => this.searchTags.every(searchTag => searchTag.uuid !== tag.uuid));
 
-        const filteredTags = tags.reduce<FilterSelection[]>((filteredTags, tag) => {
-            const matchedName = fuzzyReplace(term, tag.name);
-            return (matchedName === null) ? filteredTags : [...filteredTags, { ...matchedName, tag }];
+        const filteredTags = tags.reduce<Tag[]>((filteredTags, tag) => {
+
+            if (fuzzyMatch(term, tag.name)) {
+                filteredTags.push(tag) ;
+            }
+            return filteredTags;
+
         }, []);
         return filteredTags;
     }

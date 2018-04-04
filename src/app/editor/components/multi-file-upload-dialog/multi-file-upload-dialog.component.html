@@ -40,6 +40,7 @@
                 <div
                     *ngFor="let fileWithBlob of filesWithBlobs"
                     class="media-box"
+                    [class.error]="fileWithBlob.progress === 'error'"
                 >
                     <icon *ngIf="!isSaving" class="button-close" (click)="onFileRemoved(fileWithBlob)">close</icon>
 

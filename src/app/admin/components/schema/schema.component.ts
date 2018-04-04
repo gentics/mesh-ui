@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ModalService } from 'gentics-ui-core';
@@ -22,7 +23,7 @@ export class SchemaComponent implements OnInit, OnDestroy {
 
     uuid$: Observable<string>;
 
-    schemaJson: string = '';
+    schemaJson = '';
     // TODO load json schema from mesh instead of static file
     schema = require('./schema.schema.json');
 
