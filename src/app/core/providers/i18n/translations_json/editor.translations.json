@@ -1,7 +1,23 @@
 {
+    "add_tag": {
+      "en": "Add tag",
+      "de": "Tag hinzufügen"
+    },
+    "binary_info": {
+      "en": "File info",
+      "de": "Datei-Info"
+    },
     "create_node": {
       "en": "Create node",
       "de": "Node erstellen"
+    },
+    "create_new_tag": {
+        "en": "Create new tag",
+        "de": "Neuen Tag erstellen"
+    },
+    "edit_image": {
+      "en": "Edit image",
+      "de": "Bild bearbeiten"
     },
     "error_max_value": {
       "en": "The value is greater than the maximum",
@@ -47,21 +63,14 @@
       "en": "Drop here to remove",
       "de": "Zum Entfernen hier ablegen"
     },
+    "replace_file": {
+      "en": "Replace file",
+      "de": "Datei ersetzen"
+    },
     "save_button": {
       "en": "Save",
       "de": "Speichern"
     },
-
-    "add_tag": {
-      "en": "Add tag",
-      "de": "Tag hinzufügen"
-    },
-
-    "create_new_tag": {
-      "en": "Create new tag",
-      "de": "Neuen Tag erstellen"
-    },
-
     "tag_name": {
       "en": "Tag name",
       "de": "Tag hinzufügen"

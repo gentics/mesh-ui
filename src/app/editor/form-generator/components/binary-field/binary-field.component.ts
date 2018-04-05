@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
-import { NodeFieldType, BinaryField, MeshNode } from '../../../../common/models/node.model';
+import { BinaryField, MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { ApiService } from '../../../../core/providers/api/api.service';
 import { BlobService } from '../../../providers/blob.service';
-
+import { ModalService } from 'gentics-ui-core';
+import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-modal.component';
 
 
 @Component({
@@ -27,6 +27,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
 
     constructor(private apiService: ApiService,
                 private blobService: BlobService,
+                private modalService: ModalService,
                 protected changeDetector: ChangeDetectorRef) {
         super(changeDetector);
     }
@@ -64,6 +65,13 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.api.setValue({ fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField);
     }
 
+    editImage(imageUrl: string): void {
+        this.modalService.fromComponent(ImageEditorModalComponent, null, { imageUrl })
+            .then(modal => modal.open())
+            .then(params => {
+                console.log(`edited image`, params);
+            });
+    }
 
      /**
      * returns a 'type' part of the mimeType header
