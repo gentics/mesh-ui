@@ -1,0 +1,40 @@
+@import 'variables';
+
+@mixin flex-modal {
+    :host {
+        display: flex;
+        flex-direction: column;
+        // the following is needed because IE11 does not correctly handle
+        // heights when using flexbox and a parent with min- or max-height.
+        // see https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
+        // The result is uglier but at least usable.
+        overflow-y: auto;
+        max-width: 100%;
+    }
+
+    .modal-title {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 0 10px;
+        position: relative;
+        flex-shrink: 0;
+
+        h5 {
+            font-size: 24px;
+            margin-top: 12px;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+    }
+
+
+    .modal-content {
+        padding-top: 0;
+        padding-bottom: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        @media screen and (max-width: $small-screen) {
+            max-height: calc(85vh - 100px);
+        }
+    }
+}
