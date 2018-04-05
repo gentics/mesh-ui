@@ -104,7 +104,7 @@ export class EditorEffectsService {
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const updateRequest: NodeUpdateRequest = {
-            fields: getMeshNodeNonBinaryFields(node),
+            fields: node.fields,
             version: node.version,
             language: language
         };
@@ -117,7 +117,7 @@ export class EditorEffectsService {
                     throw new Error('saveNode was rejected');
                 } else if (response.node) {
                     return this.assignTagsToNode(response.node, tags)
-                        .then(newNode => this.uploadBinaries(node, getMeshNodeBinaryFields(node)));
+                        .then(newNode => this.uploadBinaries(response.node, getMeshNodeBinaryFields(node))); // api.project.updateNode does not upload the actual binary data - just updates the filename, filesize .etc attributes. We upload the real data here.
 
                 } else {
                     this.state.actions.editor.saveNodeError();

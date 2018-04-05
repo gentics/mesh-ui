@@ -3,16 +3,26 @@
     display: flex;
 
     .path {
-        min-width: 250px;
+        flex: 0 0 100px;
         margin-right: 10px;
         &:after {
             content: ': '
         }
     }
 
-    .old-val {
-        text-decoration: line-through;
+    .mine-val {
+        color: $gtx-color-success;
+        margin-right: 10px;
+        flex: 1 0 auto;
+    }
+
+    .their-val {
         color: $gtx-color-alert;
         margin-right: 10px;
+        flex: 1 0 auto;
+    }
+
+    .action {
+        flex: 0 0 100px;
     }
 }

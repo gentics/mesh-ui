@@ -209,7 +209,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
                 this.saveNodeWithProgress(saveFn);
             } else { // Update node.
-                this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
+                /*this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
                     .take(1)
                     .subscribe(nodeFromServer => {
                         console.log('equual tags', tagsAreEqual(nodeFromServer.tags, this.node.tags))
@@ -227,15 +227,36 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             }, error => {
                                 this.isSaving = false;
                             });
-
                             this.saveNodeWithProgress(saveFn);
                         }
+                    });*/
+
+                saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
+                    .then(node => {
+                        this.isSaving = false;
+                        if (node) {
+
+                            console.log('setting pristine', node);
+                            this.formGenerator.setPristine(node);
+                            this.formGenerator.generateForm();
+                            this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
+                            this.changeDetector.markForCheck();
+                        }
+                    }, error => {
+                        if (error.response) {
+                            const errorResponse = error.response.json();
+                            if (errorResponse.type === 'node_version_conflict') {
+                                this.handleSaveConflicts(errorResponse.properties.conflicts);
+                            }
+                        }
+                        this.isSaving = false;
                     });
+                this.saveNodeWithProgress(saveFn);
             }
         }
     }
 
-    handleSaveConflicts(nodeFromServer: NodeResponse): void {
+    handleSaveConflicts(conflicts: string[]): void {
         this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
             .take(1)
             .subscribe((response: NodeResponse) => {
@@ -245,17 +266,19 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         closeOnOverlayClick: false,
                         width: '90%',
                         onClose: (reason: any): void => {
-
+                            console.log('closed the thing', reason);
                         }
                     },
                     {
+                        conflicts,
                         mineNode: this.node,
-                        theirsNode : nodeFromServer as MeshNode,
+                        theirsNode : response as MeshNode,
                     }
                 )
                 .then(modal => modal.open())
-                .then(result => {
-
+                .then(resolvedNode => {
+                    this.node = resolvedNode;
+                    this.saveNode();
                 });
             });
     }

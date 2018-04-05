@@ -13,6 +13,7 @@ interface ConflictedField {
     field: SchemaField;
     mineValue: any;
     theirValue: any;
+    overwrite: boolean;
 }
 @Component({
     selector: 'mesh-node-conflict-dialog',
@@ -21,13 +22,16 @@ interface ConflictedField {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeConflictDialogComponent implements IModalDialog, OnInit {
-    closeFn: (result: boolean) => void;
+    closeFn: (node: MeshNode) => void;
     cancelFn: (val?: any) => void;
-    mineNode: MeshNode;
-    theirsNode: MeshNode;
+    mineNode: MeshNode; // Passed from the dialog opener.
+    theirsNode: MeshNode; // Passed from the dialog opener.
+    conflicts: string[]; // Passed from the dialog opener.
 
     conflictedFields: ConflictedField[] = [];
+
     conflictedTags: {mineTags: string, theirTags: string} = null;
+    overwriteTags = true;
 
     constructor(
         private i18n: I18nService,
@@ -37,52 +41,61 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
     ngOnInit(): void {
         const schema: Schema = this.entities.getSchema(this.mineNode.schema.uuid);
-        schema.fields.map(schemaField => {
+        this.conflicts.map(fieldName => {
+            const schemaField = schema.fields.find(field => field.name === fieldName);
             const mineField = this.mineNode.fields[schemaField.name];
             const theirField = this.theirsNode.fields[schemaField.name];
             switch (schemaField.type) {
                 case 'binary':
-                    if (mineField.fileName !== theirField.fileName) {
                         this.conflictedFields.push({
                             field: schemaField,
                             mineValue: mineField.fileName,
-                            theirValue: theirField.fileName
+                            theirValue: theirField.fileName,
+                            overwrite: true
                          });
-                    }
                 break;
 
                 case 'string':
                 case 'number':
-                    if (mineField !== theirField) {
                         this.conflictedFields.push({
                             field: schemaField,
                             mineValue: mineField,
-                            theirValue: theirField
+                            theirValue: theirField,
+                            overwrite: true
                         });
-                    }
                 break;
 
                 default:
                     this.conflictedFields.push({
                         field: schemaField,
                         mineValue: 'No Preview Available',
-                        theirValue: 'No Preview Available'
+                        theirValue: 'No Preview Available',
+                        overwrite: true
                     });
                 break;
             }
         });
 
 
-        if (tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
-            this.conflictedTags = { mineTags: getJoinedTags(this.mineNode.tags), theirTags: getJoinedTags(this.theirsNode.tags) };
+        if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
+            this.conflictedTags = {
+                mineTags: getJoinedTags(this.mineNode.tags, 'name'),
+                theirTags: getJoinedTags(this.theirsNode.tags, 'name')
+            };
         }
     }
 
     saveAndClose(): void {
-        this.closeFn(true);
+        this.conflictedFields.map(conflictedField => {
+            if (conflictedField.overwrite === true) {
+                this.theirsNode.fields[conflictedField.field.name] = this.mineNode.fields[conflictedField.field.name];
+            }
+        });
+
+        this.closeFn(this.theirsNode);
     }
 
-    registerCloseFn(close: (val: boolean) => void): void {
+    registerCloseFn(close: (node: MeshNode) => void): void {
         this.closeFn = close;
     }
 

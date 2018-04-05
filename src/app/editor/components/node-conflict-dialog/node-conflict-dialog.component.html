@@ -3,21 +3,41 @@
 </div>
 <div class="modal-content">
     <ul class="changes">
-        <li *ngIf="conflictedTags">
+        <li class="change-item">
+            <div class="path"><strong>Field</strong></div>
+            <div class="mine-val"><strong>My version: {{mineNode.version}}</strong></div>
+            <div class="their-val"><strong>Their version: {{theirsNode.version}}</strong></div>
+            <div class="action" title="Overwrite"><strong>Overwrite?</strong></div>
+        </li>
+        <li *ngIf="conflictedTags" class="change-item">
             <div class="path">Tags</div>
-            <div class="old-val">{{ conflictedTags.mineTags }}</div>
-            <div class="new-val">{{ conflictedTags.theirTags }}</div>
+            <div class="mine-val">{{ conflictedTags.mineTags }}</div>
+            <div class="their-val">{{ conflictedTags.theirTags }}</div>
+
+            <div class="action">
+                <gtx-checkbox
+                    [checked]="overwriteTags"
+                    (change)="overwriteTags = $event"
+                >
+                </gtx-checkbox>
+            </div>
         </li>
         <li *ngFor="let conflictedField of conflictedFields" class="change-item">
             <div class="path">{{ conflictedField.field.name }}</div>
-            <div class="old-val">{{ conflictedField.mineValue }}</div>
-            <div class="new-val">{{ conflictedField.theirValue }}</div>
+            <div class="mine-val">{{ conflictedField.mineValue }}</div>
+            <div class="their-val">{{ conflictedField.theirValue }}</div>
+            <div class="action">
+                <gtx-checkbox
+                    [checked]="conflictedField.overwrite"
+                    (change)="conflictedField.overwrite = $event"
+                >
+                </gtx-checkbox>
+            </div>
         </li>
     </ul>
 
 </div>
 <div class="modal-footer">
     <gtx-button type="secondary" flat (click)="closeFn(false)">{{ 'common.cancel_button' | i18n }}</gtx-button>
-    <gtx-button type="alert" (click)="closeFn(true)">{{ 'modal.discard_changes_button' | i18n }}</gtx-button>
-    <gtx-button type="primary" (click)="saveAndClose()"><icon left>save</icon> {{ 'modal.save_and_close_button' | i18n }}</gtx-button>
+    <gtx-button type="primary" (click)="saveAndClose()"><icon left>save</icon> {{ 'modal.overwrite_selected' | i18n }}</gtx-button>
 </div>
