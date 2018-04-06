@@ -24,7 +24,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     field: SchemaField;
     objectUrl: string | SafeUrl = null;
     loadingImagePreview = false;
-
+    private transformParams: ImageTransformParams;
     private readonly maxImageWidth = 750;
     private readonly maxImageHeight = 800;
 
@@ -72,12 +72,16 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         const node = this.api.getNodeValue() as MeshNode;
         const imageUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
 
-        this.modalService.fromComponent(ImageEditorModalComponent, null, { imageUrl })
+        this.modalService.fromComponent(ImageEditorModalComponent, null, { imageUrl, params: this.transformParams })
             .then(modal => modal.open())
             .then(params => {
-                this.objectUrl = this.getBinaryUrl(this.binaryProperties, params);
-                this.loadingImagePreview = true;
-                this.changeDetector.markForCheck();
+                this.transformParams = params;
+                const newObjectUrl = this.getBinaryUrl(this.binaryProperties, params);
+                if (newObjectUrl !== this.objectUrl) {
+                    this.objectUrl = newObjectUrl;
+                    this.loadingImagePreview = true;
+                    this.changeDetector.markForCheck();
+                }
             });
     }
 
