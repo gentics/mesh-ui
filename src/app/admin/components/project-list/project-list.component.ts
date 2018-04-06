@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { ModalService } from 'gentics-ui-core';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -7,6 +7,7 @@ import { CreateProjectModalComponent } from '../create-project-modal/create-proj
 import { hashValues } from '../../../common/util/util';
 import { Project } from '../../../common/models/project.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
     templateUrl: './project-list.component.html',
@@ -18,12 +19,12 @@ export class ProjectListComponent {
     projectsLoading$: Observable<boolean>;
 
     constructor(private state: ApplicationStateService,
+                private entities: EntitiesService,
                 private modal: ModalService,
                 private listEffects: ListEffectsService) {
-        this.projects$ = state.select(state => state.admin.displayedProjects)
-            .map(uuids => uuids.map(uuid => state.now.entities.project[uuid]));
+        this.projects$ = entities.selectAllProjects();
 
-        this.projectsLoading$ = state.select(state => state.list.loadCount > 0);
+        this.projectsLoading$ = state.select(s => s.list.loadCount > 0);
         this.listEffects.loadProjects();
     }
 

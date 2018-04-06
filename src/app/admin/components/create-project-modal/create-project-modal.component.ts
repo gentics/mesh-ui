@@ -21,8 +21,8 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     name: FormControl;
     form: FormGroup;
 
-    creating: boolean = false;
-    conflict: boolean = false;
+    creating = false;
+    conflict = false;
 
     constructor(entities: EntitiesService,
                 private notification: Notification,
@@ -75,9 +75,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
                 name: this.name.value,
                 schema: {
                     uuid: this.schema.value.uuid,
-                    name: this.schema.value.name,
-                    // TODO: this is required per the generated models, but not needed per the Mesh docs.
-                    version: ''
+                    name: this.schema.value.name
                 }
             };
 

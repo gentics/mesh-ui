@@ -183,8 +183,7 @@ describe('CreateProjectModal', () => {
                 name: projectName,
                 schema: {
                     uuid: testSchema.uuid,
-                    name: testSchema.name,
-                    version: ''
+                    name: testSchema.name
                 }
             });
         })

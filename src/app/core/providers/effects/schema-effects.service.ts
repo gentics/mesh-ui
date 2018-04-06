@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -98,22 +98,19 @@ export class SchemaEffectsService {
         this.state.actions.admin.actionStart();
 
         this.api.admin.deleteSchema({schemaUuid})
-        .subscribe(() => {
+        .do(() => {
             this.state.actions.admin.deleteSchemaSuccess(schemaUuid);
             this.i18nNotification.show({
                 type: 'success',
                 message: 'admin.schema_deleted'
             });
-            subject.next();
-            subject.complete();
         }, error => {
             this.state.actions.admin.actionError();
             this.i18nNotification.show({
                 type: 'error',
                 message: error.toString()
             });
-            subject.error(error);
-        });
+        }).subscribe(subject);
 
         return subject.asObservable();
     }

@@ -67,6 +67,14 @@ export class EntitiesService {
         return this.selectWithFilter(state => this.getProjectFromState(state, uuid));
     }
 
+    selectAllProjects(): Observable<Project[]> {
+        return this.state.select(state => this.getAllProjectsFromState(state));
+    }
+
+    private getAllProjectsFromState(state: AppState): Project[] {
+        return Object.keys(state.entities.project).map(uuid => this.getProjectFromState(state, uuid)!);
+    }
+
     private getProjectFromState(state: AppState, uuid: string): Project | undefined {
         return getNestedEntity<'project'>(
             state.entities.project,

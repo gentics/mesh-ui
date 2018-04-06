@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Notification } from 'gentics-ui-core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { ApiService } from '../../../core/providers/api/api.service';
@@ -96,22 +96,20 @@ export class MicroschemaEffectsService {
         this.state.actions.admin.actionStart();
 
         this.api.admin.deleteMicroschema({microschemaUuid})
-        .subscribe(() => {
+        .do(() => {
             this.state.actions.admin.deleteMicroschemaSuccess(microschemaUuid);
             this.i18nNotification.show({
                 type: 'success',
                 message: 'admin.microschema_deleted'
             });
-            subject.next();
-            subject.complete();
         }, error => {
             this.state.actions.admin.actionError();
             this.notification.show({
                 type: 'error',
                 message: error.toString()
             });
-            subject.error(error);
-        });
+        })
+        .subscribe(subject);
 
         return subject.asObservable();
     }

@@ -225,3 +225,15 @@ export function stringToColor(input: string): string {
     }, 0);
     return safeColors[value % safeColors.length];
 }
+
+/**
+ * Remove entries from an object. This does not modify the original object,
+ * but instead creates a new object with the entries removed.
+ * @param input any object
+ * @param keys the keys of the entries to be removed
+ */
+export function removeEntries<T extends object, K extends keyof T>(input: T, ...keys: K[]): any {
+    return Object.keys(input)
+        .filter(key => keys.indexOf(key as K) < 0)
+        .reduce((obj, key) => ({... obj, [key]: input[key]}), {}) as any;
+}

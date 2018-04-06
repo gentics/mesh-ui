@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { hashValues } from '../../../common/util/util';
@@ -22,7 +22,7 @@ export class SchemaListComponent {
                 private schemaEffects: SchemaEffectsService,
                 private router: Router) {
         this.schemas$ = entities.selectAllSchemas();
-        this.loading$ = state.select(state => state.admin.loadCount > 0);
+        this.loading$ = state.select(s => s.admin.loadCount > 0);
         this.schemaEffects.loadSchemas();
     }
 

@@ -15,7 +15,4 @@ export interface AdminState {
     openEntity?: AdminStateEntity;
     /** Assignment of the currently open (micro-)schema to projects. */
     assignedToProject: ProjectAssignments;
-    displayedProjects: string[];
-    displayedSchemas: string[];
-    displayedMicroschemas: string[];
 }

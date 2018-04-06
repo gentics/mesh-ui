@@ -8,6 +8,7 @@ import { MicroschemaResponse, ProjectResponse, SchemaResponse } from '../../comm
 import { mergeEntityState } from './entity-state-actions';
 import { Schema } from '../../common/models/schema.model';
 import { Microschema } from '../../common/models/microschema.model';
+import { removeEntries } from '../../common/util/util';
 
 @Injectable()
 @Immutable()
@@ -21,10 +22,7 @@ export class AdminStateActions extends StateActionBranch<AppState> {
             initialState: {
                 admin: {
                     loadCount: 0,
-                    assignedToProject: {},
-                    displayedProjects: [],
-                    displayedSchemas: [],
-                    displayedMicroschemas: []
+                    assignedToProject: {}
                 }
             }
         });
@@ -44,7 +42,6 @@ export class AdminStateActions extends StateActionBranch<AppState> {
 
     loadSchemasSuccess(schemas: Schema[]) {
         this.admin.loadCount--;
-        this.admin.displayedSchemas = schemas.map(schema => schema.uuid);
         this.entities = mergeEntityState(this.entities, {
             schema: schemas
         });
@@ -55,21 +52,29 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         this.entities = mergeEntityState(this.entities, {
             project: [project]
         });
-        this.admin.displayedProjects = [...this.admin.displayedProjects, project.uuid];
-    }
-
-    deleteProjectSuccess(projectUuid: string) {
-        this.admin.displayedProjects = this.admin.displayedProjects.filter(uuid => uuid !== projectUuid);
-    }
-
-    deleteMicroschemaSuccess(microschemaUuid: string) {
-        this.admin.loadCount--;
-        this.admin.displayedMicroschemas = this.admin.displayedMicroschemas.filter(uuid => uuid !== microschemaUuid);
     }
 
     deleteSchemaSuccess(schemaUuid: string) {
         this.admin.loadCount--;
-        this.admin.displayedSchemas = this.admin.displayedSchemas.filter(uuid => uuid !== schemaUuid);
+        this.entities = {
+            ... this.entities,
+            schema: removeEntries(this.entities.schema, schemaUuid)
+        };
+    }
+
+    deleteMicroschemaSuccess(microschemaUuid: string) {
+        this.admin.loadCount--;
+        this.entities = {
+            ... this.entities,
+            microschema: removeEntries(this.entities.microschema, microschemaUuid)
+        };
+    }
+
+    deleteProjectSuccess(uuid: string) {
+        this.entities = {
+            ... this.entities,
+            project: removeEntries(this.entities.project, uuid)
+        };
     }
 
     updateMicroschemaSuccess(response: MicroschemaResponse) {
@@ -84,7 +89,6 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         this.entities = mergeEntityState(this.entities, {
             microschema: [response as Microschema]
         });
-        this.admin.displayedMicroschemas = [...this.admin.displayedMicroschemas, response.uuid];
     }
 
     openMicroschemaStart() {
@@ -127,7 +131,6 @@ export class AdminStateActions extends StateActionBranch<AppState> {
         this.entities = mergeEntityState(this.entities, {
             schema: [response as Schema]
         });
-        this.admin.displayedSchemas = [...this.admin.displayedSchemas, response.uuid];
     }
 
     openSchemaStart() {

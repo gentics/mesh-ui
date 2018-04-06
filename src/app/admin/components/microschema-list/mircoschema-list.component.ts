@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 import { Microschema } from '../../../common/models/microschema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -22,7 +22,7 @@ export class MicroschemaListComponent {
                 private state: ApplicationStateService,
                 private router: Router) {
         this.microschemas$ = entities.selectAllMicroschemas();
-        this.loading$ = state.select(state => state.list.loadCount > 0);
+        this.loading$ = state.select(s => s.list.loadCount > 0);
         this.microschemaEffects.loadMicroschemas();
     }
 
