@@ -43,8 +43,11 @@ $preview-max-width: 54%;
     border-bottom-width: 0;
 }
 
-img.image-preview {
-    max-width: 100%;
+.image-preview {
+    text-align: center;
+    img {
+        max-width: 100%;
+    }
 }
 
 .default-preview {
@@ -80,6 +83,7 @@ img.image-preview {
 
 .binary-controls {
     max-width: $preview-max-width;
+    position: relative;
     border: 1px solid $gtx-color-very-light-gray;
     border-top-width: 0;
     padding: 4px 10px 10px;

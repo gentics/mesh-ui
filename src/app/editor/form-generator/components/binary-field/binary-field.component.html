@@ -1,17 +1,17 @@
 <label>{{ api.field.label || api.field.name }}</label>
 <div class="binary-preview">
     <div *ngIf="binaryProperties" class="media-preview">
-        <div [ngSwitch]="binaryMediaType">
-            <div *ngSwitchCase="'image'">
-                <img class="image-preview" [src]="objectUrl" alt="" />
+        <ng-container [ngSwitch]="binaryMediaType">
+            <div *ngSwitchCase="'image'" class="image-preview">
+                <img [src]="objectUrl" (load)="loadingImagePreview = false" />
             </div>
             <div *ngSwitchCase="'video'">
-                <video width="100%" controls>
+                <video width="100%" controls class="video-preview">
                     <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </video>
             </div>
 
-            <div *ngSwitchCase="'audio'">
+            <div *ngSwitchCase="'audio'" class="audio-preview">
                 <audio controls="controls">
                     <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </audio>
@@ -27,15 +27,16 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </ng-container>
     </div>
     <div class="binary-controls">
+        <gtx-progress-bar [active]="loadingImagePreview"></gtx-progress-bar>
         <div class="basic-info">
             <div class="file-name">
-                <a [href]="objectUrl"><icon>file_download</icon><span>{{ binaryProperties.fileName }}</span></a>
+                <a [href]="objectUrl"><icon>file_download</icon><span>{{ binaryProperties?.fileName }}</span></a>
             </div>
-            <div class="file-size">{{ binaryProperties.fileSize | filesize }}</div>
-            <div class="image-dimensions" *ngIf="binaryProperties.width">
+            <div class="file-size">{{ binaryProperties?.fileSize | filesize }}</div>
+            <div class="image-dimensions" *ngIf="binaryProperties?.width">
                 {{ binaryProperties.width | number }} x {{ binaryProperties.height | number }}
             </div>
         </div>

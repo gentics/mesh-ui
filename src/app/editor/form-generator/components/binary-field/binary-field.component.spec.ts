@@ -1,18 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Icon } from 'gentics-ui-core';
+import { Button, Icon, ModalService, ProgressBar } from 'gentics-ui-core';
+import { ImageTransformParams } from 'gentics-ui-image-editor/models';
 
 import { MockApiService } from '../../../../core/providers/api/api.service.mock';
 import { configureComponentTest } from '../../../../../testing/configure-component-test';
 import { componentTest } from '../../../../../testing/component-test';
 import { BinaryFieldComponent } from './binary-field.component';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { ApiService } from '../../../../core/providers/api/api.service';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
 import { MockBlobService } from '../../../providers/blob.service.mock';
 import { BlobService } from '../../../providers/blob.service';
-import { BinaryField, NodeFieldType } from '../../../../common/models/node.model';
+import { BinaryField } from '../../../../common/models/node.model';
+import { FileSizePipe } from '../../../../shared/pipes/file-size/file-size.pipe';
 
 describe('BinaryFieldComponent:', () => {
 
@@ -22,11 +23,15 @@ describe('BinaryFieldComponent:', () => {
                 TestComponent,
                 BinaryFieldComponent,
                 MockFilePickerComponent,
-                Icon
+                FileSizePipe,
+                Icon,
+                Button,
+                ProgressBar
             ],
             providers: [
                 { provide: ApiService, useClass: MockApiService },
-                { provide: BlobService, useClass: MockBlobService }
+                { provide: BlobService, useClass: MockBlobService },
+                { provide: ModalService, useClass: MockModalService }
             ]
         });
     });
@@ -73,7 +78,6 @@ describe('BinaryFieldComponent:', () => {
         })
     );
 
-
     it('when an existing image is opened - a component is displayed',
         componentTest(() => TestComponent, (fixture, instance) => {
             fixture.detectChanges();
@@ -95,8 +99,6 @@ describe('BinaryFieldComponent:', () => {
         })
     );
 
-
-
     it('when new video is received - a component is displayed',
         componentTest(() => TestComponent, (fixture, instance) => {
             fixture.detectChanges();
@@ -116,7 +118,6 @@ describe('BinaryFieldComponent:', () => {
             expect(fixture.debugElement.query(By.css('video')).nativeElement).toBeDefined();
         })
     );
-
 
     it('when an existing video is received - a component is displayed',
         componentTest(() => TestComponent, (fixture, instance) => {
@@ -177,14 +178,163 @@ describe('BinaryFieldComponent:', () => {
             expect(fixture.debugElement.query(By.css('.default-preview')).nativeElement).toBeDefined();
         })
     );
+
+    describe('url handling', () => {
+
+        const mockBinaryFileUrl = 'mockBinaryFileUrl';
+        let mockFile: BinaryField;
+        let mockImage: BinaryField;
+        let apiService: MockApiService;
+
+        beforeEach(() => {
+            apiService = TestBed.get(ApiService);
+            apiService.project.getBinaryFileUrl = jasmine.createSpy('getBinaryFileUrl').and.returnValue(mockBinaryFileUrl);
+            mockFile = {
+                fileName: 'file.txt',
+                fileSize: 42,
+                mimeType:  'plain/text'
+            };
+            mockImage = {
+                fileName: 'photo.jpg',
+                fileSize: 420000,
+                mimeType:  'image/jpg',
+                height: 2000,
+                width: 3600,
+            };
+        });
+
+        it('sets the objectUrl to the correct value for an existing non-image binary',
+            componentTest(() => TestComponent, (fixture, instance) => {
+                fixture.detectChanges();
+                instance.binaryFieldComponent.valueChange(mockFile);
+                fixture.detectChanges();
+
+                expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl);
+            }));
+
+        it('adds dimension constraints to the objectUrl for images (landscape)',
+            componentTest(() => TestComponent, (fixture, instance) => {
+                fixture.detectChanges();
+                instance.binaryFieldComponent.valueChange(mockImage);
+                fixture.detectChanges();
+
+                expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=750&h=417');
+            }));
+
+        it('adds dimension constraints to the objectUrl for images (portrait)',
+            componentTest(() => TestComponent, (fixture, instance) => {
+                fixture.detectChanges();
+                mockImage.width = 500;
+                mockImage.height = 5000;
+                instance.binaryFieldComponent.valueChange(mockImage);
+                fixture.detectChanges();
+
+                expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=80&h=800');
+            }));
+
+        describe('after image editing', () => {
+
+            function editImageAndResolveWithParams(fixture: ComponentFixture<TestComponent>, params: ImageTransformParams): void {
+                const modalService: MockModalService = TestBed.get(ModalService);
+                fixture.detectChanges();
+                fixture.componentInstance.binaryFieldComponent.valueChange(mockImage);
+                fixture.detectChanges();
+                modalService.resolveWithParams(params);
+                fixture.componentInstance.binaryFieldComponent.editImage();
+                tick();
+            }
+
+            it('adds dimension constraints the objectUrl after resizing image',
+                componentTest(() => TestComponent, (fixture, instance) => {
+                    editImageAndResolveWithParams(fixture, {
+                        width: 3060,
+                        height: 1000,
+                        cropRect: {
+                            width: mockImage.width,
+                            height: mockImage.height,
+                            startX: 0,
+                            startY: 0
+                        },
+                        scaleX: 0.85,
+                        scaleY: 0.5,
+                        focalPointX: 0.5,
+                        focalPointY: 0.5
+                    });
+
+                    expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=750&h=245');
+                }));
+
+            it('adds crop params to the objectUrl after cropping image',
+                componentTest(() => TestComponent, (fixture, instance) => {
+                    editImageAndResolveWithParams(fixture, {
+                        width: 500,
+                        height: 600,
+                        cropRect: {
+                            width: 500,
+                            height: 600,
+                            startX: 10,
+                            startY: 20
+                        },
+                        scaleX: 1,
+                        scaleY: 1,
+                        focalPointX: 0.5,
+                        focalPointY: 0.5
+                    });
+
+                    expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=500&h=600&crop=rect&rect=10,20,500,600');
+                }));
+
+            it('adds crop params and constrained dimensions to the objectUrl after cropping image',
+                componentTest(() => TestComponent, (fixture, instance) => {
+                    editImageAndResolveWithParams(fixture, {
+                        width: 1000,
+                        height: 900,
+                        cropRect: {
+                            width: 1000,
+                            height: 900,
+                            startX: 0,
+                            startY: 0
+                        },
+                        scaleX: 1,
+                        scaleY: 1,
+                        focalPointX: 0.5,
+                        focalPointY: 0.5
+                    });
+
+                    expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=750&h=675&crop=rect&rect=0,0,1000,900');
+                }));
+
+            it('rounds all pixel values',
+                componentTest(() => TestComponent, (fixture, instance) => {
+                    editImageAndResolveWithParams(fixture, {
+                        width: 500.123,
+                        height: 499.6776,
+                        cropRect: {
+                            width: 1000.354,
+                            height: 999.566,
+                            startX: 0.2,
+                            startY: 0.1
+                        },
+                        scaleX: 1,
+                        scaleY: 1,
+                        focalPointX: 0.5,
+                        focalPointY: 0.5
+                    });
+
+                    expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=500&h=500&crop=rect&rect=0,0,1000,1000');
+                }));
+        });
+
+    });
+
 });
 
 /**
  *
- * @param Partial - File data
- * @param newUpload - if the file was just selecte from the <input type=file> or it is fetched from the api
+ * @param mockFile - File data
+ * @param newUpload - if the file was just selected from the <input type=file> or it is fetched from the api
  */
-function getBinaryField(mockFile: Partial<File>, newUpload:boolean): BinaryField & { file?: File } {
+function getBinaryField(mockFile: Partial<File>, newUpload: boolean): BinaryField & { file?: File } {
 
     const mockBinaryField: BinaryField & { file?: File } = {
         fileName: mockFile.name,
@@ -234,8 +384,17 @@ class MockFilePickerComponent {
     @Input() multiple: boolean;
 }
 
-class MockSanitizer {
-    bypassSecurityTrustUrl(url: string): string {
-        return url;
+class MockModalService {
+
+    transformParams: ImageTransformParams;
+
+    resolveWithParams(params: ImageTransformParams): void {
+        this.transformParams = params;
+    }
+
+    fromComponent(): any {
+        return Promise.resolve({
+            open: () => Promise.resolve(this.transformParams)
+        });
     }
 }

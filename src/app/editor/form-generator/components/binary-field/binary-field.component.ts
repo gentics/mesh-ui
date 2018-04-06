@@ -1,14 +1,15 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
+import { ModalService } from 'gentics-ui-core';
+import { ImageTransformParams } from 'gentics-ui-image-editor/models';
+
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
 import { BinaryField, MeshNode, NodeFieldType } from '../../../../common/models/node.model';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { ApiService } from '../../../../core/providers/api/api.service';
 import { BlobService } from '../../../providers/blob.service';
-import { ModalService } from 'gentics-ui-core';
 import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-modal.component';
-
 
 @Component({
     selector: 'binary-field',
@@ -17,13 +18,15 @@ import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-mo
 })
 export class BinaryFieldComponent extends BaseFieldComponent {
 
+    public api: MeshFieldControlApi;
     binaryProperties: BinaryField & { file?: File };
-    binaryPropertiesArray: Array<{ key: string; value: any }>;
     binaryMediaType: string;
     field: SchemaField;
     objectUrl: string | SafeUrl = null;
+    loadingImagePreview = false;
 
-    public api: MeshFieldControlApi;
+    private readonly maxImageWidth = 750;
+    private readonly maxImageHeight = 800;
 
     constructor(private apiService: ApiService,
                 private blobService: BlobService,
@@ -43,15 +46,15 @@ export class BinaryFieldComponent extends BaseFieldComponent {
             this.objectUrl = null;
             return;
         }
-
-        this.binaryPropertiesArray = this.getBinaryPropertiesAsArray();
-        this.binaryMediaType = this.getBinaryMediaType();
+        this.binaryMediaType = this.getBinaryMediaType(this.binaryProperties);
 
         if (this.binaryProperties.file) {
             this.objectUrl = this.blobService.createObjectURL(this.binaryProperties.file);
         } else {
-            const node = this.api.getNodeValue() as MeshNode;
-            this.objectUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
+            if (this.binaryMediaType === 'image') {
+                this.loadingImagePreview = true;
+            }
+            this.objectUrl = this.getBinaryUrl(this.binaryProperties);
         }
     }
 
@@ -65,32 +68,76 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.api.setValue({ fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField);
     }
 
-    editImage(imageUrl: string): void {
+    editImage(): void {
+        const node = this.api.getNodeValue() as MeshNode;
+        const imageUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
+
         this.modalService.fromComponent(ImageEditorModalComponent, null, { imageUrl })
             .then(modal => modal.open())
             .then(params => {
-                console.log(`edited image`, params);
+                this.objectUrl = this.getBinaryUrl(this.binaryProperties, params);
+                this.loadingImagePreview = true;
+                this.changeDetector.markForCheck();
             });
     }
 
+    private getBinaryUrl(binaryField: BinaryField, transformParams?: ImageTransformParams): string {
+        const node = this.api.getNodeValue() as MeshNode;
+        let binaryUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
+        if (this.binaryMediaType === 'image') {
+            binaryUrl += this.addImageTransformQueryParams(binaryField, transformParams);
+        }
+        return binaryUrl;
+    }
+
+    private addImageTransformQueryParams(imageField: BinaryField, transformParams?: ImageTransformParams): string {
+        let ratio = 1;
+        let cropped = false;
+        let width = imageField.width;
+        let height = imageField.height;
+
+        if (transformParams) {
+            width = transformParams.width;
+            height = transformParams.height;
+            if (transformParams.cropRect.width !== imageField.width || transformParams.cropRect.height !== imageField.height) {
+                cropped = true;
+            }
+        }
+
+        if (this.maxImageWidth < width) {
+            ratio = this.maxImageWidth / width;
+            width = this.maxImageWidth;
+            height *= ratio;
+        }
+
+        if (this.maxImageHeight < height) {
+            ratio = this.maxImageHeight / height;
+            height = this.maxImageHeight;
+            width *= ratio;
+        }
+
+        const round = num => Math.round(num);
+
+        let queryString = `?w=${round(width)}&h=${round(height)}`;
+
+        if (cropped) {
+            const rect = transformParams.cropRect;
+            queryString += `&crop=rect&rect=${round(rect.startX)},${round(rect.startY)},${round(rect.width)},${round(rect.height)}`;
+        }
+
+        return queryString;
+    }
+
      /**
-     * returns a 'type' part of the mimeType header
+     * Returns a 'type' part of the mimeType header
      * image/jpeg => image
      * video/ogg => video
      */
-    private getBinaryMediaType(): string {
-        const mimeType: string = this.binaryProperties.mimeType;
+    private getBinaryMediaType(binaryField: BinaryField): string | null {
+        const mimeType: string = binaryField.mimeType;
         if (!mimeType) {
             return null;
         }
-        const type = (mimeType.split('/')[0] as string).toLowerCase();
-        return type;
+        return (mimeType.split('/')[0] as string).toLowerCase();
     }
-
-    private getBinaryPropertiesAsArray(): Array<{ key: string; value: any }> {
-        return Object.keys(this.binaryProperties || {})
-            .filter(key => key !== 'file')
-            .map(key => ({ key, value: this.binaryProperties[key] }));
-    }
-
 }
