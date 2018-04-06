@@ -8,7 +8,6 @@ import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { BlobService } from '../../providers/blob.service';
 import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-are-equal';
 
-
 interface ConflictedField {
     field: SchemaField;
     mineValue: any;
@@ -36,15 +35,23 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     constructor(
         private i18n: I18nService,
         private entities: EntitiesService,
-        private blobService: BlobService,
+        private blobService: BlobService
     ) {}
 
     ngOnInit(): void {
+
         const schema: Schema = this.entities.getSchema(this.mineNode.schema.uuid);
-        this.conflicts.map(fieldName => {
+        this.conflicts.map(conflict => {
+
+            const conflictPath = conflict.split('.'); // Because we might have microschema fields defined by microschema.fieldName.
+            const fieldName = conflictPath[0];
+
             const schemaField = schema.fields.find(field => field.name === fieldName);
             const mineField = this.mineNode.fields[schemaField.name];
             const theirField = this.theirsNode.fields[schemaField.name];
+
+            console.log('comparing schemafield', schemaField);
+
             switch (schemaField.type) {
                 case 'binary':
                         this.conflictedFields.push({
@@ -57,12 +64,33 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
                 case 'string':
                 case 'number':
+                case 'boolean':
+                case 'html':
+                case 'date':
                         this.conflictedFields.push({
                             field: schemaField,
                             mineValue: mineField,
                             theirValue: theirField,
                             overwrite: true
                         });
+                break;
+
+                case 'list':
+                    this.conflictedFields.push({
+                        field: schemaField,
+                        mineValue: mineField.join(', '),
+                        theirValue: theirField.join(', '),
+                        overwrite: true
+                    });
+                break;
+
+                case 'micronode':
+                    /*this.conflictedFields.push({
+                        field: schemaField,
+                        mineValue: mineField,
+                        theirValue: theirField,
+                        overwrite: true
+                    });*/
                 break;
 
                 default:
@@ -75,7 +103,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 break;
             }
         });
-
 
         if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
             this.conflictedTags = {

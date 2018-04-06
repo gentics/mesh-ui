@@ -5,15 +5,19 @@
     <ul class="changes">
         <li class="change-item">
             <div class="path"><strong>Field</strong></div>
-            <div class="mine-val"><strong>My version: {{mineNode.version}}</strong></div>
-            <div class="their-val"><strong>Their version: {{theirsNode.version}}</strong></div>
+            <div class="diffs">
+                <div class="mine-val"><strong>My version: {{mineNode.version}}</strong></div>
+                <div class="their-val"><strong>Their version: {{theirsNode.version}}</strong></div>
+            </div>
             <div class="action" title="Overwrite"><strong>Overwrite?</strong></div>
         </li>
         <li *ngIf="conflictedTags" class="change-item">
             <div class="path">Tags</div>
-            <div class="mine-val">{{ conflictedTags.mineTags }}</div>
-            <div class="their-val">{{ conflictedTags.theirTags }}</div>
 
+            <div class="diffs">
+                <div class="mine-val">{{ conflictedTags.mineTags }}</div>
+                <div class="their-val">{{ conflictedTags.theirTags }}</div>
+            </div>
             <div class="action">
                 <gtx-checkbox
                     [checked]="overwriteTags"
@@ -24,8 +28,25 @@
         </li>
         <li *ngFor="let conflictedField of conflictedFields" class="change-item">
             <div class="path">{{ conflictedField.field.name }}</div>
-            <div class="mine-val">{{ conflictedField.mineValue }}</div>
-            <div class="their-val">{{ conflictedField.theirValue }}</div>
+
+
+            <div [ngSwitch]="conflictedField.field.type" class="diffs">
+                <div *ngSwitchCase="'html'">
+                    <div class="mine-val" [innerHTML]="conflictedField.mineValue"></div>
+                    <div class="their-val" [innerHTML]="conflictedField.theirValue"></div>
+                </div>
+
+                <div *ngSwitchCase="'date'">
+                    <div *ngSwitchCase="'date'" class="mine-val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+                    <div *ngSwitchCase="'date'" class="their-val">{{ conflictedField.theirValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                </div>
+
+                <div *ngSwitchDefault>
+                    <div class="mine-val">{{ conflictedField.mineValue }}</div>
+                    <div class="their-val">{{ conflictedField.theirValue }}</div>
+                </div>
+            </div>
+
             <div class="action">
                 <gtx-checkbox
                     [checked]="conflictedField.overwrite"
@@ -38,6 +59,6 @@
 
 </div>
 <div class="modal-footer">
-    <gtx-button type="secondary" flat (click)="closeFn(false)">{{ 'common.cancel_button' | i18n }}</gtx-button>
+    <gtx-button type="secondary" flat (click)="cancelFn(false)">{{ 'common.cancel_button' | i18n }}</gtx-button>
     <gtx-button type="primary" (click)="saveAndClose()"><icon left>save</icon> {{ 'modal.overwrite_selected' | i18n }}</gtx-button>
 </div>

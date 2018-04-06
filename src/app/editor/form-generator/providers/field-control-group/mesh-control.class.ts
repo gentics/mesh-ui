@@ -90,6 +90,9 @@ export class MeshControl<T extends NodeFieldType> {
      * all descendants.
      */
     reset(value: T): void {
+        if (this.meshField) {
+            this.meshField.valueChange(value, this.lastValue);
+        }
         this.initialValue = this.lastValue = value;
 
         if (0 < this.children.size) {

@@ -181,6 +181,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      */
     saveNode(navigateOnSave = true): void {
 
+        console.log('saving node', this.node, this.isDirty, this.isSaving);
         if (!this.node) {
             return;
         }
@@ -209,36 +210,11 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
                 this.saveNodeWithProgress(saveFn);
             } else { // Update node.
-                /*this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
-                    .take(1)
-                    .subscribe(nodeFromServer => {
-                        console.log('equual tags', tagsAreEqual(nodeFromServer.tags, this.node.tags))
-                        if (parseFloat(nodeFromServer.version) > parseFloat(this.node.version) ||
-                           !tagsAreEqual(nodeFromServer.tags, this.node.tags)) {
-                            this.handleSaveConflicts(nodeFromServer);
-                        } else {
-                            saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
-                            .then(node => {
-                                this.isSaving = false;
-                                if (node) {
-                                    this.formGenerator.setPristine(node);
-                                    this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
-                                }
-                            }, error => {
-                                this.isSaving = false;
-                            });
-                            this.saveNodeWithProgress(saveFn);
-                        }
-                    });*/
-
                 saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
-
-                            console.log('setting pristine', node);
-                            this.formGenerator.setPristine(node);
-                            this.formGenerator.generateForm();
+                            this.formGenerator.setPristine(node, true);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                             this.changeDetector.markForCheck();
                         }
@@ -266,7 +242,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         closeOnOverlayClick: false,
                         width: '90%',
                         onClose: (reason: any): void => {
-                            console.log('closed the thing', reason);
+
                         }
                     },
                     {
