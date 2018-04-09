@@ -3,7 +3,10 @@
     <div *ngIf="binaryProperties" class="media-preview">
         <ng-container [ngSwitch]="binaryMediaType">
             <div *ngSwitchCase="'image'" class="image-preview">
-                <img [src]="objectUrl" (load)="loadingImagePreview = false" />
+                <gentics-ui-image-preview [src]="objectUrl"
+                                          [maxHeight]="binaryProperties.height"
+                                          [transform]="scaledTransform"
+                                          (imageLoad)="onImageLoad()"></gentics-ui-image-preview>
             </div>
             <div *ngSwitchCase="'video'">
                 <video width="100%" controls class="video-preview">
@@ -33,9 +36,9 @@
         <gtx-progress-bar [active]="loadingImagePreview"></gtx-progress-bar>
         <div class="basic-info">
             <div class="file-name">
-                <a [href]="objectUrl"><icon>file_download</icon><span>{{ binaryProperties?.fileName }}</span></a>
+                <a [href]="objectUrl"><icon>file_download</icon><span>{{ binaryProperties?.file?.name || binaryProperties?.fileName }}</span></a>
             </div>
-            <div class="file-size">{{ binaryProperties?.fileSize | filesize }}</div>
+            <div class="file-size">{{ binaryProperties?.file?.size || binaryProperties?.fileSize | filesize }}</div>
             <div class="image-dimensions" *ngIf="binaryProperties?.width">
                 {{ binaryProperties.width | number }} x {{ binaryProperties.height | number }}
             </div>

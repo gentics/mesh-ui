@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IModalDialog } from 'gentics-ui-core';
-import { ImageTransformParams } from 'gentics-ui-image-editor/models';
+import { ImageTransformParams } from 'gentics-ui-image-editor';
 
 @Component({
     selector: 'mesh-image-editor-modal',
@@ -12,6 +12,7 @@ export class ImageEditorModalComponent implements OnInit, IModalDialog {
     cancelFn: (val?: any) => void;
     imageUrl: string;
     params: ImageTransformParams | undefined;
+    isEditing = false;
 
     constructor() { }
 

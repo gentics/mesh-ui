@@ -1,4 +1,4 @@
-import { FieldMapFromServer, ReleaseMicroschemaInfoFromServer, NodeResponse } from './server-models';
+import { FieldMapFromServer, NodeResponse, ReleaseMicroschemaInfoFromServer } from './server-models';
 
 /* tslint:disable:no-empty-interface */
 
@@ -12,6 +12,19 @@ export interface NodeChildrenInfo {
 export interface Version {
     uuid: string;
     number: string;
+}
+
+export interface ImageTransform {
+    width: number;
+    height: number;
+    cropRect: {
+        startX: number;
+        startY: number;
+        width: number;
+        height: number;
+    };
+    focalPointX: number;
+    focalPointY: number;
 }
 
 export type StringField = string;
@@ -29,6 +42,7 @@ export interface BinaryField {
     height?: number;
     width?: number;
     file?: File;
+    transform?: ImageTransform;
 }
 export interface NodeField {
     uuid: string;

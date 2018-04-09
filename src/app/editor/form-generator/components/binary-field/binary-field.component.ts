@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { ModalService } from 'gentics-ui-core';
-import { ImageTransformParams } from 'gentics-ui-image-editor/models';
+import { ImageTransformParams } from 'gentics-ui-image-editor';
 
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
@@ -24,6 +24,8 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     field: SchemaField;
     objectUrl: string | SafeUrl = null;
     loadingImagePreview = false;
+    scaledTransform: Partial<ImageTransformParams> = {};
+    private lastParams: ImageTransformParams;
     private transformParams: ImageTransformParams;
     private readonly maxImageWidth = 750;
     private readonly maxImageHeight = 800;
@@ -51,9 +53,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         if (this.binaryProperties.file) {
             this.objectUrl = this.blobService.createObjectURL(this.binaryProperties.file);
         } else {
-            if (this.binaryMediaType === 'image') {
-                this.loadingImagePreview = true;
-            }
             this.objectUrl = this.getBinaryUrl(this.binaryProperties);
         }
     }
@@ -68,45 +67,82 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.api.setValue({ fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField);
     }
 
+    onImageLoad(): void {
+        this.loadingImagePreview = false;
+        if (this.binaryProperties.file && this.lastParams) {
+            this.scaledTransform = this.lastParams;
+            this.lastParams = undefined;
+        }
+    }
+
     editImage(): void {
         const node = this.api.getNodeValue() as MeshNode;
-        const imageUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
+        let imageUrl: string | SafeUrl;
+        const newFile = this.binaryProperties.file;
+        if (newFile) {
+            imageUrl = this.blobService.createObjectURL(this.binaryProperties.file);
+        } else {
+            imageUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
+        }
 
         this.modalService.fromComponent(ImageEditorModalComponent, null, { imageUrl, params: this.transformParams })
             .then(modal => modal.open())
             .then(params => {
-                this.transformParams = params;
-                const newObjectUrl = this.getBinaryUrl(this.binaryProperties, params);
-                if (newObjectUrl !== this.objectUrl) {
-                    this.objectUrl = newObjectUrl;
-                    this.loadingImagePreview = true;
-                    this.changeDetector.markForCheck();
+                const value = this.api.getValue();
+                const newValue = { ...value, ...{ transform: params } };
+                if (newFile) {
+                    newValue.file = newFile;
+                    // We defer updating the scaledTransform value until after the preview image has loaded,
+                    // otherwise the parameters will be overwritten by defaults. This only needs to be done
+                    // when working with new files (and consequently binary objectUrls) since the image load
+                    // event does not re-fire for urls which have already been loaded once.
+                    this.lastParams = params;
+                } else {
+                    this.scaledTransform = this.calculateScaledTransformParams(this.binaryProperties, params);
                 }
+                this.transformParams = params;
+                this.changeDetector.markForCheck();
+                this.api.setValue(newValue);
             });
     }
 
-    private getBinaryUrl(binaryField: BinaryField, transformParams?: ImageTransformParams): string {
+    private calculateScaledTransformParams(imageField: BinaryField, params: ImageTransformParams): ImageTransformParams {
+        const { ratio } = this.getConstrainedDimensions(imageField);
+        const round = val => Math.round(val);
+        return {
+            width: round(params.width * ratio),
+            height: round(params.height * ratio),
+            scaleX: params.scaleX,
+            scaleY: params.scaleY,
+            cropRect: {
+                startX: round(params.cropRect.startX * ratio),
+                startY: round(params.cropRect.startY * ratio),
+                width: round(params.cropRect.width * ratio),
+                height: round(params.cropRect.height * ratio)
+            },
+            focalPointX: params.focalPointX,
+            focalPointY: params.focalPointY
+        };
+    }
+
+    private getBinaryUrl(binaryField: BinaryField): string {
         const node = this.api.getNodeValue() as MeshNode;
         let binaryUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
         if (this.binaryMediaType === 'image') {
-            binaryUrl += this.addImageTransformQueryParams(binaryField, transformParams);
+            binaryUrl += this.getDimensionQueryParams(binaryField);
         }
         return binaryUrl;
     }
 
-    private addImageTransformQueryParams(imageField: BinaryField, transformParams?: ImageTransformParams): string {
+    private getDimensionQueryParams(imageField: BinaryField): string {
+        const { width, height } = this.getConstrainedDimensions(imageField);
+        return`?w=${Math.round(width)}&h=${Math.round(height)}`;
+    }
+
+    private getConstrainedDimensions(imageField: BinaryField): { width: number; height: number; ratio: number; } {
         let ratio = 1;
-        let cropped = false;
         let width = imageField.width;
         let height = imageField.height;
-
-        if (transformParams) {
-            width = transformParams.width;
-            height = transformParams.height;
-            if (transformParams.cropRect.width !== imageField.width || transformParams.cropRect.height !== imageField.height) {
-                cropped = true;
-            }
-        }
 
         if (this.maxImageWidth < width) {
             ratio = this.maxImageWidth / width;
@@ -120,16 +156,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
             width *= ratio;
         }
 
-        const round = num => Math.round(num);
-
-        let queryString = `?w=${round(width)}&h=${round(height)}`;
-
-        if (cropped) {
-            const rect = transformParams.cropRect;
-            queryString += `&crop=rect&rect=${round(rect.startX)},${round(rect.startY)},${round(rect.width)},${round(rect.height)}`;
-        }
-
-        return queryString;
+        return { width, height, ratio };
     }
 
      /**

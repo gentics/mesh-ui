@@ -23,6 +23,7 @@ describe('BinaryFieldComponent:', () => {
                 TestComponent,
                 BinaryFieldComponent,
                 MockFilePickerComponent,
+                MockImagePreviewComponent,
                 FileSizePipe,
                 Icon,
                 Button,
@@ -232,99 +233,44 @@ describe('BinaryFieldComponent:', () => {
                 expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=80&h=800');
             }));
 
-        describe('after image editing', () => {
-
-            function editImageAndResolveWithParams(fixture: ComponentFixture<TestComponent>, params: ImageTransformParams): void {
+        it('scales the transform params after resizing image',
+            componentTest(() => TestComponent, (fixture, instance) => {
                 const modalService: MockModalService = TestBed.get(ModalService);
                 fixture.detectChanges();
                 fixture.componentInstance.binaryFieldComponent.valueChange(mockImage);
                 fixture.detectChanges();
-                modalService.resolveWithParams(params);
+                modalService.resolveWithParams({
+                    width: 1000,
+                    height: 700,
+                    cropRect: {
+                        width: 1000,
+                        height: 1000,
+                        startX: 100,
+                        startY: 100
+                    },
+                    scaleX: 0.85,
+                    scaleY: 0.5,
+                    focalPointX: 0.5,
+                    focalPointY: 0.5
+                });
                 fixture.componentInstance.binaryFieldComponent.editImage();
                 tick();
-            }
 
-            it('adds dimension constraints the objectUrl after resizing image',
-                componentTest(() => TestComponent, (fixture, instance) => {
-                    editImageAndResolveWithParams(fixture, {
-                        width: 3060,
-                        height: 1000,
-                        cropRect: {
-                            width: mockImage.width,
-                            height: mockImage.height,
-                            startX: 0,
-                            startY: 0
-                        },
-                        scaleX: 0.85,
-                        scaleY: 0.5,
-                        focalPointX: 0.5,
-                        focalPointY: 0.5
-                    });
-
-                    expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=750&h=245');
-                }));
-
-            it('adds crop params to the objectUrl after cropping image',
-                componentTest(() => TestComponent, (fixture, instance) => {
-                    editImageAndResolveWithParams(fixture, {
-                        width: 500,
-                        height: 600,
-                        cropRect: {
-                            width: 500,
-                            height: 600,
-                            startX: 10,
-                            startY: 20
-                        },
-                        scaleX: 1,
-                        scaleY: 1,
-                        focalPointX: 0.5,
-                        focalPointY: 0.5
-                    });
-
-                    expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=500&h=600&crop=rect&rect=10,20,500,600');
-                }));
-
-            it('adds crop params and constrained dimensions to the objectUrl after cropping image',
-                componentTest(() => TestComponent, (fixture, instance) => {
-                    editImageAndResolveWithParams(fixture, {
-                        width: 1000,
-                        height: 900,
-                        cropRect: {
-                            width: 1000,
-                            height: 900,
-                            startX: 0,
-                            startY: 0
-                        },
-                        scaleX: 1,
-                        scaleY: 1,
-                        focalPointX: 0.5,
-                        focalPointY: 0.5
-                    });
-
-                    expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=750&h=675&crop=rect&rect=0,0,1000,900');
-                }));
-
-            it('rounds all pixel values',
-                componentTest(() => TestComponent, (fixture, instance) => {
-                    editImageAndResolveWithParams(fixture, {
-                        width: 500.123,
-                        height: 499.6776,
-                        cropRect: {
-                            width: 1000.354,
-                            height: 999.566,
-                            startX: 0.2,
-                            startY: 0.1
-                        },
-                        scaleX: 1,
-                        scaleY: 1,
-                        focalPointX: 0.5,
-                        focalPointY: 0.5
-                    });
-
-                    expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=500&h=500&crop=rect&rect=0,0,1000,1000');
-                }));
-        });
-
+                expect(instance.binaryFieldComponent.scaledTransform).toEqual({
+                    width: 208,
+                    height: 146,
+                    cropRect: {
+                        width: 208,
+                        height: 208,
+                        startX: 21,
+                        startY: 21
+                    },
+                    scaleX: 0.85,
+                    scaleY: 0.5,
+                    focalPointX: 0.5,
+                    focalPointY: 0.5
+                });
+            }));
     });
 
 });
@@ -382,6 +328,18 @@ class TestComponent implements OnInit {
 class MockFilePickerComponent {
     @Output() fileSelect = new EventEmitter<any>();
     @Input() multiple: boolean;
+}
+
+@Component({
+    // tslint:disable component-selector
+    selector: 'gentics-ui-image-preview',
+    template: ``
+})
+class MockImagePreviewComponent {
+    @Input() src: string;
+    @Input() maxHeight: number;
+    @Input() transform: ImageTransformParams;
+    @Output() imageLoad = new EventEmitter<any>();
 }
 
 class MockModalService {
