@@ -55,16 +55,19 @@ export class BinaryFieldComponent extends BaseFieldComponent {
             this.objectUrl = null;
             return;
         }
-        this.binaryMediaType = this.getMimeType(this.binaryProperties.mimeType);
+        const type = this.getMimeType(this.binaryProperties.mimeType);
+        this.binaryMediaType = type;
 
         if (this.binaryProperties.file) {
             this.objectUrl = this.blobService.createObjectURL(this.binaryProperties.file);
+            if (type === 'image' || type === 'audio' || type === 'video') {
+                this.loadingPreview = true;
+            }
         } else {
             this.objectUrl = this.getBinaryUrl(this.binaryProperties);
-        }
-        const type = this.binaryMediaType;
-        if (type === 'image' || type === 'audio' || type === 'video') {
-            this.loadingPreview = true;
+            if (type === 'audio' || type === 'video') {
+                this.loadingPreview = true;
+            }
         }
     }
 
