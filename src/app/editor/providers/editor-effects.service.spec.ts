@@ -13,7 +13,7 @@ import { mockMeshNode } from '../../../testing/mock-models';
 import { FieldMapFromServer } from '../../common/models/server-models';
 import { MeshNode } from '../../common/models/node.model';
 
-fdescribe('EditorEffectsService', () => {
+describe('EditorEffectsService', () => {
 
     let editorEffectsService: EditorEffectsService;
     let state: TestApplicationState;

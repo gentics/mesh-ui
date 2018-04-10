@@ -23,7 +23,7 @@ describe('CreateProjectModal', () => {
     const mockNotification = jasmine.createSpyObj('Notification', ['show']);
 
     @NgModule(provideMockI18n({
-        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule, TestStateModule],
+        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule.forRoot(), TestStateModule],
         providers: [
             { provide: SchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
             { provide: ProjectEffectsService, useValue: mockProjectEffectsService},
