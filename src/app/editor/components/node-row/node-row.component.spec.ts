@@ -1,11 +1,10 @@
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
 import { By } from '@angular/platform-browser';
-import { DebugElement, Pipe, PipeTransform, Component } from '@angular/core';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { Component, DebugElement, Pipe, PipeTransform } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DropdownTriggerDirective, GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
 
-import { ModalService, GenticsUICoreModule, DropdownTriggerDirective, DropdownItem, OverlayHostService } from 'gentics-ui-core';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -22,6 +21,7 @@ import { AvailableLanguagesListComponent } from '../available-languages-list/ava
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockMeshNode } from '../../../../testing/mock-models';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 describe('NodeRowComponent', () => {
     let api: MockApiService;
@@ -46,7 +46,7 @@ describe('NodeRowComponent', () => {
                 { provide: ApiService, useClass: MockApiService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: I18nService, useClass: MockI18nService },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: ActivatedRoute }
             ],
             imports: [

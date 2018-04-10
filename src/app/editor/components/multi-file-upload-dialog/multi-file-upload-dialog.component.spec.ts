@@ -1,8 +1,7 @@
-import { Pipe, PipeTransform, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { DebugElement, Pipe, PipeTransform } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-
-import { ModalService, GenticsUICoreModule, OverlayHostService, FileDropArea } from 'gentics-ui-core';
+import { FileDropArea, GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
 
 import { MultiFileUploadDialogComponent } from './multi-file-upload-dialog.component';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -16,10 +15,10 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
-
 import { mockSchema } from '../../../../testing/mock-models';
 import { Schema } from '../../../common/models/schema.model';
 import { AudioPlayButtonComponent } from '../audio-play-button/audio-play-button.component';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 describe('MultiFileUploadDialogComponent', () => {
     let component: MultiFileUploadDialogComponent;
@@ -41,7 +40,7 @@ describe('MultiFileUploadDialogComponent', () => {
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: EditorEffectsService, useClass: MockEditorEffectsService },
                 { provide: ListEffectsService, useClass: MockListEffectsService },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: BlobService, useClass: MockBlobService }
             ],
             imports: [

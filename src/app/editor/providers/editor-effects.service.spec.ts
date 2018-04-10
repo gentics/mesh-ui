@@ -12,6 +12,7 @@ import { MockApiService } from '../../core/providers/api/api.service.mock';
 import { mockMeshNode } from '../../../testing/mock-models';
 import { FieldMapFromServer } from '../../common/models/server-models';
 import { MeshNode } from '../../common/models/node.model';
+import { MockConfigService } from '../../core/providers/config/config.service.mock';
 
 describe('EditorEffectsService', () => {
 
@@ -237,11 +238,4 @@ describe('EditorEffectsService', () => {
 class MockEntitiesService {}
 class MockI18nNotification {
     show = jasmine.createSpy('show');
-}
-class MockConfigService implements ConfigService {
-    readonly ANONYMOUS_USER_NAME: any;
-    readonly UI_LANGUAGES: any;
-
-    FALLBACK_LANGUAGE: any = 'en';
-    CONTENT_LANGUAGES: any = ['en', 'de'];
 }

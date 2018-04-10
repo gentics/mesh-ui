@@ -174,10 +174,10 @@ export class BinaryFieldComponent extends BaseFieldComponent {
      * Returns the constrained dimensions of the image as defined by the maxImageWidth & maxImageHeight fields. Also
      * returns the ratio by which the natural dimensions have been scaled down.
      */
-    private getConstrainedDimensions(imageField: BinaryField): { width: number; height: number; ratio: number; } {
+    private getConstrainedDimensions(image: { width?: number; height?: number; }): { width: number; height: number; ratio: number; } {
         let ratio = 1;
-        let width = imageField.width;
-        let height = imageField.height;
+        let width = image.width || 0;
+        let height = image.height || 0;
 
         if (this.maxImageWidth < width) {
             ratio = this.maxImageWidth / width;
