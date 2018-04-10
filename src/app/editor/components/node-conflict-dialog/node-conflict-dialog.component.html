@@ -7,8 +7,8 @@
             <div class="path"><strong>Field</strong></div>
             <div class="diffs">
                 <div class="preview-container">
-                    <div class="mine-val"><strong>My version: {{mineNode.version}}</strong></div>
                     <div class="their-val"><strong>Their version: {{theirsNode.version}}</strong></div>
+                    <div class="mine-val"><strong>My version: {{mineNode.version}}</strong></div>
                 </div>
             </div>
             <div class="action" title="Overwrite"><strong>Overwrite?</strong></div>
@@ -18,8 +18,8 @@
 
             <div class="diffs">
                 <div class="preview-container">
-                    <div class="mine-val">{{ conflictedTags.mineTags }}</div>
                     <div class="their-val">{{ conflictedTags.theirTags }}</div>
+                    <div class="mine-val">{{ conflictedTags.mineTags }}</div>
                 </div>
             </div>
             <div class="action">
@@ -35,23 +35,23 @@
 
             <div [ngSwitch]="conflictedField.field.type" class="diffs">
                 <div *ngSwitchCase="'html'">
-                    <div class="mine-val" [innerHTML]="conflictedField.mineValue"></div>
                     <div class="their-val" [innerHTML]="conflictedField.theirValue"></div>
+                    <div class="mine-val" [innerHTML]="conflictedField.mineValue"></div>
                 </div>
 
                 <div *ngSwitchCase="'date'">
-                    <div class="mine-val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss' }}</div>
                     <div class="their-val">{{ conflictedField.theirValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                    <div class="mine-val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss' }}</div>
                 </div>
 
                 <div *ngSwitchCase="'binary'">
-                    <div class="mine-val"><img class="image-preview" [src]="conflictedField.mineURL" alt="" /></div>
                     <div class="their-val"><img class="image-preview" [src]="conflictedField.theirURL" alt="" /></div>
+                    <div class="mine-val"><img class="image-preview" [src]="conflictedField.mineURL" alt="" /></div>
                 </div>
 
                 <div *ngSwitchDefault>
-                    <div class="mine-val">{{ conflictedField.mineValue }}</div>
                     <div class="their-val">{{ conflictedField.theirValue }}</div>
+                    <div class="mine-val">{{ conflictedField.mineValue }}</div>
                 </div>
             </div>
 

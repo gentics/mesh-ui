@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { SafeUrl } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { IModalDialog } from 'gentics-ui-core';
 import { NodeEditorComponent } from '../node-editor/node-editor.component';
@@ -9,7 +10,6 @@ import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { BlobService } from '../../providers/blob.service';
 import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-are-equal';
 import { ApiService } from '../../../core/providers/api/api.service';
-import { SafeUrl } from '@angular/platform-browser';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
 
 
@@ -20,6 +20,7 @@ interface ConflictedField {
     overwrite: boolean;
     mineURL?: string | SafeUrl;
     theirURL?: string | SafeUrl;
+    loading?: boolean;
 
 }
 @Component({
@@ -64,7 +65,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
             switch (schemaField.type) {
                 case 'binary':
-
                     const conflictedField = {
                         field: schemaField,
                         mineValue: mineField,
@@ -86,45 +86,9 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                     });
 
                     this.httpClient.get(url, { observe: 'response', responseType: 'blob'})
-                        .subscribe(response => {
-                            console.log('just got response', response);
+                        .subscribe(result => {
+                            (mineField as BinaryField).file = new File([result.body], (mineField as BinaryField).fileName, { type: result.body.type});
                     });
-
-
-
-                    /*this.apiBase.get('/{project}/nodes/{nodeUuid}/binary/{fieldName}', {
-                        project: this.mineNode.project.name,
-                        nodeUuid: this.mineNode.uuid,
-                        fieldName: schemaField.name,
-                        version: this.mineNode.version
-                    }, {
-                        responseType: 'blob',
-
-                        TestHEader: 'yo',
-                    }).subscribe((response: Blob) => {
-                        console.log('ive got a response', response);
-                    })*/
-
-                    /*this.apiService.project.downloadBinaryField({
-                            project: this.mineNode.project.name,
-                            nodeUuid: this.mineNode.uuid,
-                            fieldName: schemaField.name,
-                            version: this.mineNode.version})
-                        .subscribe((result: Blob) => {
-                            console.log('whats my result', result);
-                            (mineField as BinaryField).file = new File([result], (mineField as BinaryField).fileName, { type: result.type});
-                            conflictedField.mineURL = this.blobService.createObjectURL((mineField as BinaryField).file);
-                            console.log('just createt it', conflictedField.mineURL);
-
-                            this.changeDetector.detectChanges();
-
-                            this.mineNode.fields[schemaField.name] = {
-                                mimeType: result.type,
-                                fileSize: result.size,
-                                fileName: mineField.name,
-                                file: new File([result], (mineField as BinaryField).fileName, { type: result.type})
-                            };
-                    });*/
                 break;
 
                 case 'string':
