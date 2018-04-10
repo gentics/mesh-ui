@@ -1,8 +1,7 @@
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
-import { Component } from '@angular/core';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { Component, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { GenticsUICoreModule, ModalService, OverlayHostService, DropdownList, InputField } from 'gentics-ui-core';
+import { DropdownList, GenticsUICoreModule, InputField, ModalService, OverlayHostService } from 'gentics-ui-core';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
@@ -12,7 +11,7 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { componentTest } from '../../../../testing/component-test';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
-import { mockMeshNode, mockSchema, mockTagFamily, mockTag } from '../../../../testing/mock-models';
+import { mockMeshNode, mockSchema, mockTag, mockTagFamily } from '../../../../testing/mock-models';
 import { Tag } from '../../../common/models/tag.model';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -21,6 +20,7 @@ import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock'
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { NodeTagsBarComponent } from './node-tags-bar.component';
 import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -54,7 +54,7 @@ describe('NodeTagsBarComponent', () => {
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: EditorEffectsService, useClass: MockEditorEffectsService },
                 { provide: I18nService, useClass: MockI18nService },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+                { provide: ConfigService, useClass: MockConfigService },
             ],
             imports: [
                 GenticsUICoreModule

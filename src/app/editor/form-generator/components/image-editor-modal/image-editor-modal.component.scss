@@ -1,0 +1,16 @@
+@import 'flex-modal';
+@include flex-modal;
+
+:host {
+    position: relative;
+    height: 70vh;
+    width: 100%;
+    max-width: 98vw;
+}
+
+.modal-content {
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+}

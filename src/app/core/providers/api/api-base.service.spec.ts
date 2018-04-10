@@ -310,36 +310,52 @@ describe('ApiBase', () => {
     describe('formatUrl', () => {
 
         it('adds the API base URL to the input', () => {
-            const result = apiBase['formatUrl']('/some/api-endpoint', undefined);
+            const result = apiBase.formatUrl('/some/api-endpoint', undefined);
             expect(result).toBe('/api/v1/some/api-endpoint');
         });
 
         it('correctly inserts one parameter', () => {
-            const result = apiBase['formatUrl']('/users/{username}/info', {
+            const result = apiBase.formatUrl('/users/{username}/info', {
                 username: 'mkkittrick'
             });
             expect(result).toBe('/api/v1/users/mkkittrick/info');
         });
 
         it('url-encodes inserted parameters', () => {
-            const result = apiBase['formatUrl']('/users/{username}/info', {
+            const result = apiBase.formatUrl('/users/{username}/info', {
                 username: `'; DROP TABLE users; --`
             });
             expect(result).toBe(`/api/v1/users/'%3B%20DROP%20TABLE%20users%3B%20--/info`);
         });
 
         it('correctly inserts multiple parameters', () => {
-            const result = apiBase['formatUrl']('/users/{username}/{prop}', {
+            const result = apiBase.formatUrl('/users/{username}/{prop}', {
                 username: 'mkkittrick',
                 prop: 'info'
             });
             expect(result).toBe('/api/v1/users/mkkittrick/info');
         });
 
+        it('adds un-parameterized values as query params', () => {
+            const result = apiBase.formatUrl('/users', {
+                version: '1.1',
+                lang: 'en'
+            });
+            expect(result).toBe('/api/v1/users?version=1.1&lang=en');
+        });
+
+        it('omits undefined query params', () => {
+            const result = apiBase.formatUrl('/users', {
+                version: '1.1',
+                lang: undefined
+            });
+            expect(result).toBe('/api/v1/users?version=1.1');
+        });
+
         it('throws when not all url parameters are passed', () => {
             let errorWasThrown = false;
             try {
-                const result = apiBase['formatUrl']('/search/{query}', {
+                const result = apiBase.formatUrl('/search/{query}', {
                     tableName: 'BEKANT'
                 });
             } catch (ex) {

@@ -1,40 +1,33 @@
-import { Component, Injectable, DebugElement } from '@angular/core';
-import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
+import { Component, DebugElement } from '@angular/core';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-
 import { Observable } from 'rxjs/Observable';
-
-import { GenticsUICoreModule, OverlayHostService, SearchBar, InputField } from 'gentics-ui-core';
+import { GenticsUICoreModule, InputField, OverlayHostService } from 'gentics-ui-core';
 
 import { componentTest } from '../../../../testing/component-test';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { SharedModule } from '../../../shared/shared.module';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { mockProject, mockTagFamily, mockTag, mockMeshNode, mockSchema } from '../../../../testing/mock-models';
-import { TestStateModule } from '../../../state/testing/test-state.module';
+import { mockMeshNode, mockSchema, mockTag, mockTagFamily } from '../../../../testing/mock-models';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-
 import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
-
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
-
 import { SearchBarComponent } from './search-bar.component';
-
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 
 describe('Search-bar component:', () => {
@@ -94,7 +87,7 @@ describe('Search-bar component:', () => {
                 { provide: NavigationService, useClass: MockNavigationService },
                 { provide: Router, useValue: MockRouter },
                 { provide: ActivatedRoute, useValue: activeRoute},
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+                { provide: ConfigService, useClass: MockConfigService },
             ],
             imports: [
                 GenticsUICoreModule,

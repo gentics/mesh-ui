@@ -13,6 +13,7 @@ import { ScrollFrameHeadingDirective } from './components/scroll-frame/scroll-fr
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
 import { BackgroundFromDirective } from './directives/background-from.directive';
 import { HighlightPipe } from './pipes/highlight/highlight.pipe';
+import { FileSizePipe } from './pipes/file-size/file-size.pipe';
 
 const SHARED_COMPONENTS = [
     NoContentComponent,
@@ -28,6 +29,7 @@ const SHARED_DIRECTIVES = [
 
 const SHARED_PIPES = [
     DisplayFieldPipe,
+    FileSizePipe,
     I18nPipe,
     HighlightPipe
 ];

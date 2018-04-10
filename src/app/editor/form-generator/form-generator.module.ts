@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
+import { GenticsUIImageEditorModule } from 'gentics-ui-image-editor';
 
 import { FormGeneratorComponent } from './components/form-generator/form-generator.component';
 import { StringFieldComponent } from './components/string-field/string-field.component';
@@ -19,6 +20,7 @@ import { CustomFieldComponent } from './components/custom-field/custom-field.com
 import { SharedModule } from '../../shared/shared.module';
 import { FieldErrorsComponent } from './components/field-errors/field-errors.component';
 import { BaseFieldComponent } from './components/base-field/base-field.component';
+import { ImageEditorModalComponent } from './components/image-editor-modal/image-editor-modal.component';
 
 const ENTRY_COMPONENTS = [
     BinaryFieldComponent,
@@ -31,11 +33,12 @@ const ENTRY_COMPONENTS = [
     MicronodeFieldComponent,
     NodeFieldComponent,
     NumberFieldComponent,
-    StringFieldComponent
+    StringFieldComponent,
+    ImageEditorModalComponent
 ];
 
 @NgModule({
-    imports: [GenticsUICoreModule, CommonModule, FormsModule, SharedModule],
+    imports: [GenticsUICoreModule, GenticsUIImageEditorModule, CommonModule, FormsModule, SharedModule],
     declarations: [BaseFieldComponent, FormGeneratorComponent, ...ENTRY_COMPONENTS],
     entryComponents: ENTRY_COMPONENTS,
     providers: [FieldGeneratorService, MeshControlGroupService],

@@ -1,37 +1,68 @@
 <label>{{ api.field.label || api.field.name }}</label>
 <div class="binary-preview">
-    <div *ngIf="binaryProperties">
-        <div [ngSwitch]="binaryMediaType">
-            <div *ngSwitchCase="'image'">
-                <img class="image-preview" [src]="objectUrl" alt="" />
+    <div *ngIf="binaryProperties" class="media-preview">
+        <ng-container [ngSwitch]="binaryMediaType">
+            <div *ngSwitchCase="'image'" class="image-preview" [class.loading]="loadingPreview">
+                <gentics-ui-image-preview [src]="objectUrl"
+                                          [maxHeight]="800"
+                                          [transform]="scaledTransform"
+                                          (imageLoad)="onImageLoad()"></gentics-ui-image-preview>
             </div>
-            <div *ngSwitchCase="'video'">
-                <video width="100%" controls>
+            <div *ngSwitchCase="'video'" class="video-preview">
+                <video controls
+                       preload="metadata"
+                       class="video-preview"
+                       controlsList="nodownload"
+                       (loadedmetadata)="loadingPreview = false">
                     <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </video>
             </div>
 
-            <div *ngSwitchCase="'audio'">
-                <audio controls="controls">
+            <div *ngSwitchCase="'audio'" class="audio-preview">
+                <audio controls
+                       preload="metadata"
+                       controlsList="nodownload"
+                       (loadedmetadata)="loadingPreview = false">
                     <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </audio>
             </div>
 
             <div *ngSwitchDefault>
                 <div class="default-preview">
-                    <icon class="node-icon">insert_drive_file</icon>{{ binaryProperties.fileName }}
+                    <div class="file-icon">
+                        <icon>insert_drive_file</icon>
+                    </div>
+                    <div class="mime-wrapper">
+                        <div class="mime-type">{{ binaryProperties.mimeType }}</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <ul class="property-list">
-            <li *ngFor="let prop of binaryPropertiesArray">
-                {{ prop.key }}: {{ prop.value }}
-            </li>
-        </ul>
+        </ng-container>
     </div>
-    <gtx-file-picker (fileSelect)="onFilesSelected($event)"
-                     flat="true"
-                     [multiple]="false">
-        Pick a file
-    </gtx-file-picker>
+    <div class="binary-controls" [class.no-binary]="!binaryProperties">
+        <gtx-progress-bar [active]="loadingPreview"></gtx-progress-bar>
+        <div class="basic-info">
+            <div class="file-name">
+                <a [href]="objectUrl"><icon>file_download</icon><span>{{ binaryProperties?.file?.name || binaryProperties?.fileName }}</span></a>
+            </div>
+            <div class="file-size">{{ binaryProperties?.file?.size || binaryProperties?.fileSize | filesize }}</div>
+            <div class="image-dimensions" *ngIf="binaryProperties?.width">
+                {{ binaryProperties.width | number }} x {{ binaryProperties.height | number }}
+            </div>
+        </div>
+        <gtx-file-picker (fileSelect)="onFilesSelected($event)"
+                         size="small"
+                         flat
+                         type="secondary"
+                         [multiple]="false">
+            <icon left>file_upload</icon>
+            <ng-container *ngIf="binaryProperties">{{ 'editor.replace_file' | i18n }}</ng-container>
+            <ng-container *ngIf="!binaryProperties">{{ 'editor.select_file' | i18n }}</ng-container>
+        </gtx-file-picker>
+        <gtx-button *ngIf="binaryMediaType === 'image'"
+                    size="small"
+                    flat
+                    type="secondary"
+                    (click)="editImage(objectUrl)"><icon left>crop</icon> {{ 'editor.edit_image' | i18n }}</gtx-button>
+    </div>
 </div>

@@ -1,5 +1,5 @@
-import { PipeTransform, Pipe } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { Pipe, PipeTransform } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FileDropArea, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
@@ -10,6 +10,7 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { ConfigService } from '../../../core/providers/config/config.service';
 
 import { ContainerFileDropAreaComponent } from './container-file-drop-area.component';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 
 describe('ContainerFileDropAreaComponent', () => {
@@ -27,7 +28,7 @@ describe('ContainerFileDropAreaComponent', () => {
                 { provide: I18nService, useClass: MockI18nService },
                 { provide: ModalService, useClass: MockModalService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+                { provide: ConfigService, useClass: MockConfigService },
             ],
             imports: [
                 GenticsUICoreModule
