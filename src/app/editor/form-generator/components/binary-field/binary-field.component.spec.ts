@@ -213,7 +213,7 @@ describe('BinaryFieldComponent:', () => {
                 expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl);
             }));
 
-        it('adds dimension constraints to the objectUrl for images (landscape)',
+        it('adds correct dimension constraints to the objectUrl for images (landscape)',
             componentTest(() => TestComponent, (fixture, instance) => {
                 fixture.detectChanges();
                 instance.binaryFieldComponent.valueChange(mockImage);
@@ -222,7 +222,7 @@ describe('BinaryFieldComponent:', () => {
                 expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=750&h=417');
             }));
 
-        it('adds dimension constraints to the objectUrl for images (portrait)',
+        it('adds correct dimension constraints to the objectUrl for images (portrait)',
             componentTest(() => TestComponent, (fixture, instance) => {
                 fixture.detectChanges();
                 mockImage.width = 500;
@@ -231,6 +231,17 @@ describe('BinaryFieldComponent:', () => {
                 fixture.detectChanges();
 
                 expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=80&h=800');
+            }));
+
+        it('adds correct dimension constraints to the objectUrl for images (downscaled by width and then height)',
+            componentTest(() => TestComponent, (fixture, instance) => {
+                fixture.detectChanges();
+                mockImage.width = 1000;
+                mockImage.height = 5000;
+                instance.binaryFieldComponent.valueChange(mockImage);
+                fixture.detectChanges();
+
+                expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=160&h=800');
             }));
 
         it('joins dimension constraints with ampersand if url already has query params',
@@ -247,7 +258,7 @@ describe('BinaryFieldComponent:', () => {
 
     describe('image editing', () => {
 
-        it('scales the transform params after resizing image',
+        it('scales the transform params after resizing image (landscape)',
             componentTest(() => TestComponent, (fixture, instance) => {
                 const modalService: MockModalService = TestBed.get(ModalService);
                 fixture.detectChanges();
@@ -284,6 +295,51 @@ describe('BinaryFieldComponent:', () => {
                         height: 208,
                         startX: 21,
                         startY: 21
+                    },
+                    scaleX: 0.85,
+                    scaleY: 0.5,
+                    focalPointX: 0.5,
+                    focalPointY: 0.5
+                });
+            }));
+
+        it('scales the transform params after resizing image (portrait)',
+            componentTest(() => TestComponent, (fixture, instance) => {
+                const modalService: MockModalService = TestBed.get(ModalService);
+                fixture.detectChanges();
+                fixture.componentInstance.binaryFieldComponent.valueChange({
+                    fileName: 'photo.jpg',
+                    fileSize: 420000,
+                    mimeType:  'image/jpg',
+                    height: 3600,
+                    width: 2000,
+                });
+                fixture.detectChanges();
+                modalService.resolveWithParams({
+                    width: 1000,
+                    height: 1000,
+                    cropRect: {
+                        width: 1000,
+                        height: 1000,
+                        startX: 100,
+                        startY: 100
+                    },
+                    scaleX: 0.85,
+                    scaleY: 0.5,
+                    focalPointX: 0.5,
+                    focalPointY: 0.5
+                });
+                fixture.componentInstance.binaryFieldComponent.editImage();
+                tick();
+
+                expect(instance.binaryFieldComponent.scaledTransform).toEqual({
+                    width: 222,
+                    height: 222,
+                    cropRect: {
+                        width: 222,
+                        height: 222,
+                        startX: 22,
+                        startY: 22
                     },
                     scaleX: 0.85,
                     scaleY: 0.5,
