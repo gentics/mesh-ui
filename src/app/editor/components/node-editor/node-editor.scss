@@ -12,15 +12,14 @@
     .close-button {
         position: absolute;
         right: 5px;
-        top: 6px;
+        top: 8px;
     }
 }
 
 .title-row {
     display: flex;
-    padding: 5px;
-    background-color: lighten(desaturate($gtx-color-primary, 60%), 40%);
-    padding-right: 30px;
+    background-color: $gtx-color-light-gray;
+    padding: 5px 30px 5px 10px;
     height: 40px;
     .main {
         flex-grow: 1;
@@ -28,7 +27,7 @@
         align-items: center;
     }
     .display-name {
-        font-size: 5px;
+        font-size: $gtx-font-size-lead;
         display: inline-block;
     }
     .schema {
@@ -45,13 +44,23 @@
 }
 .info-row {
     padding: 5px;
-    background-color: lighten(desaturate($gtx-color-primary, 80%), 50%);
+    background-color: $gtx-color-very-light-gray;
     display: flex;
     justify-content: space-between;
     .path {
-
-        a:hover {
-            text-decoration: underline;
+        margin-left: 5px;
+        display: flex;
+        align-items: center;
+        icon {
+            font-size: 16px;
+            margin-right: 5px;
+        }
+        a {
+            display: flex;
+            align-items: center;
+            &:hover {
+                color: lighten($gtx-color-primary, 10%);
+            }
         }
     }
 }
