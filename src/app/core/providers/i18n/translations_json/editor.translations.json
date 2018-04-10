@@ -71,6 +71,10 @@
       "en": "Save",
       "de": "Speichern"
     },
+    "select_file": {
+      "en": "Select file",
+      "de": "Datei auswählen"
+    },
     "tag_name": {
       "en": "Tag name",
       "de": "Tag hinzufügen"

@@ -41,6 +41,7 @@ $preview-max-width: 54%;
     max-width: $preview-max-width;
     border: 1px solid $gtx-color-very-light-gray;
     border-bottom-width: 0;
+    background-color: $gtx-color-off-white;
 }
 
 .image-preview {
@@ -51,23 +52,29 @@ $preview-max-width: 54%;
     }
 }
 
+.audio-preview {
+    audio {
+        width: 100%;
+    }
+}
+
 .default-preview {
     text-align: center;
     position: relative;
-    background-color: $gtx-color-off-white;
     .file-icon {
         position: relative;
-        font-size: 12rem;
+        font-size: 8rem;
         line-height: 1;
         display: inline-block;
+        @include noselect;
     }
     icon {
         color: $gtx-color-dark-gray;
-        font-size: 12rem;
+        font-size: 8rem;
     }
     .mime-wrapper {
         position: absolute;
-        bottom: 5.3rem;
+        bottom: 3.3rem;
         width: 100%;
         text-align: center;
     }
@@ -88,6 +95,14 @@ $preview-max-width: 54%;
     border: 1px solid $gtx-color-very-light-gray;
     border-top-width: 0;
     padding: 4px 10px 10px;
+
+    &.no-binary {
+        border-top-width: 1px;
+        padding-top: 10px;
+        .basic-info {
+            display: none;
+        }
+    }
 }
 
 .basic-info {

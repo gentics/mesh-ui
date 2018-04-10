@@ -9,13 +9,13 @@
                                           (imageLoad)="onImageLoad()"></gentics-ui-image-preview>
             </div>
             <div *ngSwitchCase="'video'">
-                <video width="100%" controls class="video-preview">
+                <video width="100%" preload="metadata" controls class="video-preview" controlsList="nodownload">
                     <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </video>
             </div>
 
             <div *ngSwitchCase="'audio'" class="audio-preview">
-                <audio controls="controls">
+                <audio controls preload="metadata" controlsList="nodownload">
                     <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </audio>
             </div>
@@ -32,7 +32,7 @@
             </div>
         </ng-container>
     </div>
-    <div class="binary-controls">
+    <div class="binary-controls" [class.no-binary]="!binaryProperties">
         <gtx-progress-bar [active]="loadingImagePreview"></gtx-progress-bar>
         <div class="basic-info">
             <div class="file-name">
@@ -48,7 +48,9 @@
                          flat
                          type="secondary"
                          [multiple]="false">
-            <icon left>file_upload</icon> {{ 'editor.replace_file' | i18n }}
+            <icon left>file_upload</icon>
+            <ng-container *ngIf="binaryProperties">{{ 'editor.replace_file' | i18n }}</ng-container>
+            <ng-container *ngIf="!binaryProperties">{{ 'editor.select_file' | i18n }}</ng-container>
         </gtx-file-picker>
         <gtx-button *ngIf="binaryMediaType === 'image'"
                     size="small"
