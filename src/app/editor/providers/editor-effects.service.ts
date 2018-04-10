@@ -355,6 +355,10 @@ export class EditorEffectsService {
                 }).toPromise();
             });
 
+        if (!promises.length) {
+            return Promise.resolve(node);
+        }
+
         return Promise.all(promises)
             // return the node from the last successful request
             .then(nodes => nodes[nodes.length - 1])
