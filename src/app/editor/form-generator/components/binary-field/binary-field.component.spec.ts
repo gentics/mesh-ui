@@ -232,12 +232,21 @@ describe('BinaryFieldComponent:', () => {
 
                 expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=80&h=800');
             }));
+    });
+
+    describe('image editing', () => {
 
         it('scales the transform params after resizing image',
             componentTest(() => TestComponent, (fixture, instance) => {
                 const modalService: MockModalService = TestBed.get(ModalService);
                 fixture.detectChanges();
-                fixture.componentInstance.binaryFieldComponent.valueChange(mockImage);
+                fixture.componentInstance.binaryFieldComponent.valueChange({
+                    fileName: 'photo.jpg',
+                    fileSize: 420000,
+                    mimeType:  'image/jpg',
+                    height: 2000,
+                    width: 3600,
+                });
                 fixture.detectChanges();
                 modalService.resolveWithParams({
                     width: 1000,
@@ -269,6 +278,28 @@ describe('BinaryFieldComponent:', () => {
                     scaleY: 0.5,
                     focalPointX: 0.5,
                     focalPointY: 0.5
+                });
+            }));
+
+        it('sets the fileName, fileSize and mimeType of a new image after edit',
+            componentTest(() => TestComponent, (fixture, instance) => {
+                const modalService: MockModalService = TestBed.get(ModalService);
+                const mockFile: Partial<File> = {
+                    name: 'newImage.jpg',
+                    type: 'image/jpg',
+                    size: 1000
+                };
+                instance.binaryFieldComponent.binaryProperties = { file: mockFile } as any;
+                fixture.detectChanges();
+                modalService.resolveWithParams({} as any);
+                fixture.componentInstance.binaryFieldComponent.editImage();
+                tick();
+
+                expect(instance.api.setValue).toHaveBeenCalledWith({
+                    fileName: mockFile.name,
+                    fileSize: mockFile.size,
+                    mimeType: mockFile.type,
+                    file: mockFile
                 });
             }));
     });

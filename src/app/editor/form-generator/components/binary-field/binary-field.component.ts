@@ -19,7 +19,7 @@ import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-mo
 export class BinaryFieldComponent extends BaseFieldComponent {
 
     public api: MeshFieldControlApi;
-    binaryProperties: BinaryField & { file?: File };
+    binaryProperties: BinaryField;
     binaryMediaType: string;
     field: SchemaField;
     objectUrl: string | SafeUrl = null;
@@ -64,7 +64,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
 
     onFilesSelected(files: any[]): void {
         const file = files[0];
-        this.api.setValue({ fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField);
+        this.api.setValue(this.binaryFieldFromFile(file));
         this.scaledTransform = {};
         this.transformParams = undefined;
     }
@@ -90,24 +90,39 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.modalService.fromComponent(ImageEditorModalComponent, null, { imageUrl, params: this.transformParams })
             .then(modal => modal.open())
             .then(params => {
-                const value = this.api.getValue();
-                const newValue = { ...value, ...{ transform: params } };
                 if (newFile) {
-                    newValue.file = newFile;
+                    this.api.setValue(this.binaryFieldFromFile(newFile));
                     // We defer updating the scaledTransform value until after the preview image has loaded,
                     // otherwise the parameters will be overwritten by defaults. This only needs to be done
                     // when working with new files (and consequently binary objectUrls) since the image load
                     // event does not re-fire for urls which have already been loaded once.
                     this.lastParams = params;
                 } else {
+                    const value = this.api.getValue();
                     this.scaledTransform = this.calculateScaledTransformParams(this.binaryProperties, params);
+                    this.api.setValue({ ...value, ...{ transform: params } });
                 }
                 this.transformParams = params;
                 this.changeDetector.markForCheck();
-                this.api.setValue(newValue);
             });
     }
 
+    /**
+     * Creates a BinaryField object from a File which is to be uploaded.
+     */
+    private binaryFieldFromFile(file: File): BinaryField {
+        return {
+            fileName: file.name,
+            fileSize: file.size,
+            mimeType: file.type,
+            file
+        };
+    }
+
+    /**
+     * Scales the ImageTransformParams from editing an image down to the correct proportions to fit the size-constrained
+     * version which is used as a preview.
+     */
     private calculateScaledTransformParams(imageField: BinaryField, params: ImageTransformParams): ImageTransformParams {
         const { ratio } = this.getConstrainedDimensions(imageField);
         const round = val => Math.round(val);
@@ -141,6 +156,10 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         return`?w=${Math.round(width)}&h=${Math.round(height)}`;
     }
 
+    /**
+     * Returns the constrained dimensions of the image as defined by the maxImageWidth & maxImageHeight fields. Also
+     * returns the ratio by which the natural dimensions have been scaled down.
+     */
     private getConstrainedDimensions(imageField: BinaryField): { width: number; height: number; ratio: number; } {
         let ratio = 1;
         let width = imageField.width;
