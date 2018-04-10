@@ -4,7 +4,7 @@
         <ng-container [ngSwitch]="binaryMediaType">
             <div *ngSwitchCase="'image'" class="image-preview">
                 <gentics-ui-image-preview [src]="objectUrl"
-                                          [maxHeight]="binaryProperties.height"
+                                          [maxHeight]="800"
                                           [transform]="scaledTransform"
                                           (imageLoad)="onImageLoad()"></gentics-ui-image-preview>
             </div>

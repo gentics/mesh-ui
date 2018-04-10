@@ -1,4 +1,4 @@
-import { BinaryField, ListNodeFieldType, MicronodeFieldMap, MicronodeFieldType, NodeFieldType, MeshNode } from '../models/node.model';
+import { BinaryField, ListNodeFieldType, MeshNode, MicronodeFieldMap, MicronodeFieldType, NodeFieldType } from '../models/node.model';
 import { FieldMapFromServer } from '../models/server-models';
 
 // Pure functions for utility
@@ -198,7 +198,7 @@ export function getMeshNodeBinaryFields(node: MeshNode): FieldMapFromServer {
         return {} as FieldMapFromServer;
     }
 
-    return Object.keys(node.fields).reduce((fields, key, index) => {
+    return Object.keys(node.fields).reduce((fields, key) => {
         const field = node.fields[key];
         if (field && (field.file && field.file instanceof File) === true) {
             fields[key] = field;

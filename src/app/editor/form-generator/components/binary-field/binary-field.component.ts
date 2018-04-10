@@ -26,7 +26,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     loadingImagePreview = false;
     scaledTransform: Partial<ImageTransformParams> = {};
     private lastParams: ImageTransformParams;
-    private transformParams: ImageTransformParams;
+    private transformParams: ImageTransformParams | undefined;
     private readonly maxImageWidth = 750;
     private readonly maxImageHeight = 800;
 
@@ -65,6 +65,8 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     onFilesSelected(files: any[]): void {
         const file = files[0];
         this.api.setValue({ fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField);
+        this.scaledTransform = {};
+        this.transformParams = undefined;
     }
 
     onImageLoad(): void {

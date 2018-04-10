@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { ModalService, IDialogConfig, IModalOptions, IModalInstance } from 'gentics-ui-core';
+import { ModalService } from 'gentics-ui-core';
 
 import { NavigationService, ValidDetailCommands } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
@@ -12,9 +12,9 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { simpleCloneDeep, getMeshNodeBinaryFields } from '../../../common/util/util';
+import { getMeshNodeBinaryFields, simpleCloneDeep } from '../../../common/util/util';
 import { initializeNode } from '../../common/initialize-node';
-import { NodeReferenceFromServer, NodeResponse, FieldMapFromServer } from '../../../common/models/server-models';
+import { NodeReferenceFromServer } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 
@@ -186,7 +186,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
             if (!this.node.uuid) {
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
+                const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null;
+                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, tags)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
@@ -222,9 +223,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      */
     publishNode(): void {
         if (this.node && this.isDraft()) {
-            const promise = this.isDirty ?
-                this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null) :
-                Promise.resolve(this.node);
+            const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null;
+            const promise = this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
 
             promise.then(node => {
                 if (node) {

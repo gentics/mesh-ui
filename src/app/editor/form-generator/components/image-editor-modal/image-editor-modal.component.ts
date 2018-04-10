@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SafeUrl } from '@angular/platform-browser';
 import { IModalDialog } from 'gentics-ui-core';
 import { ImageTransformParams } from 'gentics-ui-image-editor';
 
@@ -10,7 +11,7 @@ import { ImageTransformParams } from 'gentics-ui-image-editor';
 export class ImageEditorModalComponent implements OnInit, IModalDialog {
     closeFn: (val: any) => void;
     cancelFn: (val?: any) => void;
-    imageUrl: string;
+    imageUrl: string | SafeUrl;
     params: ImageTransformParams | undefined;
     isEditing = false;
 

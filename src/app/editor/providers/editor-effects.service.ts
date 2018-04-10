@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { ApiService } from '../../core/providers/api/api.service';
 import { BinaryField, MeshNode } from '../../common/models/node.model';
-import { FieldMapFromServer, NodeCreateRequest, NodeResponse, NodeUpdateRequest, TagReferenceFromServer } from '../../common/models/server-models';
+import {
+    FieldMapFromServer,
+    NodeCreateRequest,
+    NodeResponse,
+    NodeUpdateRequest,
+    TagReferenceFromServer
+} from '../../common/models/server-models';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { getMeshNodeBinaryFields, getMeshNodeNonBinaryFields, simpleCloneDeep } from '../../common/util/util';
@@ -19,7 +25,6 @@ export class EditorEffectsService {
                 private api: ApiService) {}
 
     openNode(projectName: string, nodeUuid: string, language?: string): void {
-        // TODO: Make API call to get the node
         const lang = language || this.config.FALLBACK_LANGUAGE;
         this.state.actions.editor.openNode(projectName, nodeUuid, lang);
 
@@ -65,8 +70,7 @@ export class EditorEffectsService {
 
         return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
-            .then(newNode => this.assignTagsToNode(newNode, tags))
-            .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(node)))
+            .then(updatedNode => this.processTagsAndBinaries(node, updatedNode, tags))
             .then(savedNode => {
                     this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
                     this.notification.show({
@@ -90,19 +94,16 @@ export class EditorEffectsService {
     }
 
     /**
-     * Save (or update) an existing node
-     * @param node
+     * Update an existing node
      */
     saveNode(node: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode | void> {
         if (!node.project.name) {
             throw new Error('Project name is not available');
         }
 
-
         this.state.actions.editor.saveNodeStart();
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
-
         const updateRequest: NodeUpdateRequest = {
             fields: getMeshNodeNonBinaryFields(node),
             version: node.version,
@@ -116,9 +117,7 @@ export class EditorEffectsService {
                     // TODO: conflict resolution handling
                     throw new Error('saveNode was rejected');
                 } else if (response.node) {
-                    return this.assignTagsToNode(response.node, tags)
-                    .then(node => this.uploadBinaries(node, getMeshNodeBinaryFields(node)));
-
+                    return this.processTagsAndBinaries(node, response.node, tags);
                 } else {
                     this.state.actions.editor.saveNodeError();
                     this.notification.show({
@@ -154,7 +153,7 @@ export class EditorEffectsService {
             .map(response => {
                 let newVersion: string | undefined;
                 if (response.availableLanguages && node.language) {
-                    newVersion = response.availableLanguages[node.language!].version;
+                    newVersion = response.availableLanguages[node.language].version;
                 }
                 if (newVersion) {
                     return newVersion;
@@ -181,15 +180,6 @@ export class EditorEffectsService {
                 });
     }
 
-    assignTagsToNode(node: NodeResponse, tags?: TagReferenceFromServer[]): Promise<NodeResponse> {
-        if (tags === null) {
-            return Promise.resolve(node);
-        }
-
-        return this.api.project.assignTagsToNode({project: node.project.name, nodeUuid: node.uuid}, { tags }).toPromise()
-            .then(tagListResponse => node);
-    }
-
     closeEditor(): void {
         this.state.actions.editor.closeEditor();
     }
@@ -207,6 +197,28 @@ export class EditorEffectsService {
         } else {
             return Promise.reject(`Could not create translation`);
         }
+    }
+
+    /**
+     * After creating or updating a node, a common set of operations needs to be performed, namely:
+     * * Updating the node's tags
+     * * Uploading any new binary files that have been selected for the node
+     * * Applying any binary transforms
+     */
+    private processTagsAndBinaries(originalNode: MeshNode, updatedNode: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode> {
+        return this.assignTagsToNode(updatedNode, tags)
+            .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(originalNode)))
+            .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
+    }
+
+    private assignTagsToNode(node: NodeResponse, tags?: TagReferenceFromServer[]): Promise<NodeResponse> {
+        if (tags === null) {
+            return Promise.resolve(node);
+        }
+
+        return this.api.project.assignTagsToNode({project: node.project.name, nodeUuid: node.uuid}, { tags })
+            .toPromise()
+            .then(() => node);
     }
 
 
@@ -289,45 +301,63 @@ export class EditorEffectsService {
         }
     }
 
-    uploadBinary(project: string,
-        nodeUuid: string,
-        fieldName: string,
-        binary: File,
-        language: string,
-        version: string): Promise<MeshNode | void> {
-            return this.api.project.updateBinaryField({
-                project,
-                nodeUuid,
-                fieldName,
-            }, {
-                binary,
-                language,
-                version
-            })
-            .toPromise();
-        }
-
-    uploadBinaries(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode> {
+    private uploadBinaries(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode | void> {
         // if no binaries are present - return the same node
         if (Object.keys(fields).length === 0) {
             return Promise.resolve(node);
         }
 
-        const promises: Promise<MeshNode>[] = Object.keys(fields).reduce((promises: any[], key, index) => {
-            promises.push(this.uploadBinary(node.project.name, node.uuid, key, fields[key].file, node.language, node.version));
-            return promises;
-        }, []);
+        const promises = Object.keys(fields)
+            .map(key => this.uploadBinary(node.project.name, node.uuid, key, fields[key].file, node.language, node.version));
 
+        return Promise.all(promises)
+            // return the node from the last successful request
+            .then(nodes => nodes[nodes.length - 1])
+            .catch(error => { throw { node, error }; });
+    }
 
-        return new Promise<MeshNode>((resolve, reject) => {
-            Promise.all(promises)
-                .then(nodes => {
-                    // return the node from the last successfull request
-                    resolve(nodes.pop());
-                })
-                .catch(error => {
-                    reject({node, error});
-                });
-        });
+    private uploadBinary(project: string,
+                         nodeUuid: string,
+                         fieldName: string,
+                         binary: File,
+                         language: string,
+                         version: string): Promise<MeshNode | void> {
+        return this.api.project.updateBinaryField({
+            project,
+            nodeUuid,
+            fieldName,
+        }, {
+            binary,
+            language,
+            version
+        }).toPromise();
+    }
+
+    private applyBinaryTransforms(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode> {
+        const project = node.project.name;
+        const nodeUuid = node.uuid;
+
+        const promises = Object.keys(fields)
+            .filter(fieldName => !!fields[fieldName].transform)
+            .map(fieldName => {
+                const value = fields[fieldName] as BinaryField;
+                const transform = value.transform;
+                return this.api.project.transformBinaryField({
+                    project,
+                    nodeUuid,
+                    fieldName
+                }, {
+                    version: node.version,
+                    language: node.language,
+                    width: transform.width,
+                    height: transform.height,
+                    cropRect: transform.cropRect
+                }).toPromise();
+            });
+
+        return Promise.all(promises)
+            // return the node from the last successful request
+            .then(nodes => nodes[nodes.length - 1])
+            .catch(error => { throw { node, error }; });
     }
 }
