@@ -2,20 +2,27 @@
 <div class="binary-preview">
     <div *ngIf="binaryProperties" class="media-preview">
         <ng-container [ngSwitch]="binaryMediaType">
-            <div *ngSwitchCase="'image'" class="image-preview">
+            <div *ngSwitchCase="'image'" class="image-preview" [class.loading]="loadingPreview">
                 <gentics-ui-image-preview [src]="objectUrl"
                                           [maxHeight]="800"
                                           [transform]="scaledTransform"
                                           (imageLoad)="onImageLoad()"></gentics-ui-image-preview>
             </div>
-            <div *ngSwitchCase="'video'">
-                <video width="100%" preload="metadata" controls class="video-preview" controlsList="nodownload">
+            <div *ngSwitchCase="'video'" class="video-preview">
+                <video controls
+                       preload="metadata"
+                       class="video-preview"
+                       controlsList="nodownload"
+                       (loadedmetadata)="loadingPreview = false">
                     <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </video>
             </div>
 
             <div *ngSwitchCase="'audio'" class="audio-preview">
-                <audio controls preload="metadata" controlsList="nodownload">
+                <audio controls
+                       preload="metadata"
+                       controlsList="nodownload"
+                       (loadedmetadata)="loadingPreview = false">
                     <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
                 </audio>
             </div>
@@ -33,7 +40,7 @@
         </ng-container>
     </div>
     <div class="binary-controls" [class.no-binary]="!binaryProperties">
-        <gtx-progress-bar [active]="loadingImagePreview"></gtx-progress-bar>
+        <gtx-progress-bar [active]="loadingPreview"></gtx-progress-bar>
         <div class="basic-info">
             <div class="file-name">
                 <a [href]="objectUrl"><icon>file_download</icon><span>{{ binaryProperties?.file?.name || binaryProperties?.fileName }}</span></a>

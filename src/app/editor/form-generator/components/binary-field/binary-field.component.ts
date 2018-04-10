@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { ModalService } from 'gentics-ui-core';
-import { ImageTransformParams } from 'gentics-ui-image-editor';
+import { GenticsImagePreviewComponent, ImageTransformParams } from 'gentics-ui-image-editor';
 
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../../common/models/schema.model';
@@ -23,8 +23,10 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     binaryMediaType: string;
     field: SchemaField;
     objectUrl: string | SafeUrl = null;
-    loadingImagePreview = false;
+    loadingPreview = false;
     scaledTransform: Partial<ImageTransformParams> = {};
+
+    @ViewChild(GenticsImagePreviewComponent) private imagePreview: GenticsImagePreviewComponent;
     private lastParams: ImageTransformParams;
     private transformParams: ImageTransformParams | undefined;
     private readonly maxImageWidth = 750;
@@ -40,6 +42,11 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     init(api: MeshFieldControlApi): void {
         this.api = api;
         this.valueChange(api.getValue());
+        this.api.onFormWidthChange(() => {
+            if (this.imagePreview) {
+                this.imagePreview.resizeHandler();
+            }
+        });
     }
 
     valueChange(value: NodeFieldType | null | undefined): void {
@@ -48,12 +55,16 @@ export class BinaryFieldComponent extends BaseFieldComponent {
             this.objectUrl = null;
             return;
         }
-        this.binaryMediaType = this.getBinaryMediaType(this.binaryProperties);
+        this.binaryMediaType = this.getMimeType(this.binaryProperties.mimeType);
 
         if (this.binaryProperties.file) {
             this.objectUrl = this.blobService.createObjectURL(this.binaryProperties.file);
         } else {
             this.objectUrl = this.getBinaryUrl(this.binaryProperties);
+        }
+        const type = this.binaryMediaType;
+        if (type === 'image' || type === 'audio' || type === 'video') {
+            this.loadingPreview = true;
         }
     }
 
@@ -62,7 +73,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         this.isCompact = width <= SMALL_SCREEN_LIMIT;
     }
 
-    onFilesSelected(files: any[]): void {
+    onFilesSelected(files: File[]): void {
         const file = files[0];
         this.api.setValue(this.binaryFieldFromFile(file));
         this.scaledTransform = {};
@@ -70,7 +81,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     onImageLoad(): void {
-        this.loadingImagePreview = false;
+        this.loadingPreview = false;
         if (this.binaryProperties.file && this.lastParams) {
             this.scaledTransform = this.lastParams;
             this.lastParams = undefined;
@@ -185,8 +196,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
      * image/jpeg => image
      * video/ogg => video
      */
-    private getBinaryMediaType(binaryField: BinaryField): string | null {
-        const mimeType: string = binaryField.mimeType;
+    private getMimeType(mimeType: string): 'image' | 'video' | 'audio' | string | null {
         if (!mimeType) {
             return null;
         }

@@ -49,6 +49,26 @@ $preview-max-width: 54%;
     gentics-ui-image-preview {
         display: flex;
         justify-content: center;
+        opacity: 1;
+        transition: opacity 0.2s;
+    }
+    max-height: 800px;
+    transition: max-height 0.2s;
+
+    &.loading {
+        max-height: 300px;
+        overflow: hidden;
+
+        gentics-ui-image-preview {
+            opacity: 0;
+            transition: opacity 0s;
+        }
+    }
+}
+
+.video-preview {
+    video {
+        width: 100%;
     }
 }
 
