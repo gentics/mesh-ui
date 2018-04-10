@@ -93,7 +93,6 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
                 this.windowResize$,
                 this.formGenerated$,
                 this.splitViewContainer && this.splitViewContainer.splitDragEnd || [])
-            .startWith(true)
             .debounceTime(200)
             .map(() => this.formContainer.nativeElement.offsetWidth)
             .subscribe(widthInPixels => {

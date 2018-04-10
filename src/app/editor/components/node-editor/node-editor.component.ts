@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { ModalService } from 'gentics-ui-core';
 
-import { NavigationService, ValidDetailCommands } from '../../../core/providers/navigation/navigation.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
@@ -34,8 +34,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     nodePathRouterLink: any[];
     nodePath: string;
     nodeTitle = '';
-    //TODO: make a fullscreen non-closable dialog for binary files preventing user from navigating away while file is uploading
-    //isSaving$: Observable<boolean>;
+    // TODO: make a fullscreen non-closable dialog for binary files preventing user from navigating away while file is uploading
+    // isSaving$: Observable<boolean>;
     isSaving = false;
 
     private openNode$: Subscription;
@@ -59,11 +59,16 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             const nodeUuid = paramMap.get('nodeUuid');
             const schemaUuid = paramMap.get('schemaUuid');
             const parentNodeUuid = paramMap.get('parentNodeUuid');
-            const command = paramMap.get('command') as ValidDetailCommands;
             const language = paramMap.get('language');
 
             if (projectName && nodeUuid && language) {
-                this.editorEffects.openNode(projectName, nodeUuid, language);
+                setTimeout(() => {
+                    // Opening the node needs to be done on the next change detection tick,
+                    // otherwise the parent component (MasterDetailComponent) will report
+                    // a change detection error in dev mode.
+                    this.editorEffects.openNode(projectName, nodeUuid, language);
+                });
+
             } else {
                 this.editorEffects.createNode(projectName, schemaUuid, parentNodeUuid, language);
             }
