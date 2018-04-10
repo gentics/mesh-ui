@@ -98,7 +98,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         if (newFile) {
             imageUrl = this.blobService.createObjectURL(this.binaryProperties.file);
         } else {
-            imageUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
+            imageUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name, node.version);
         }
 
         this.modalService.fromComponent(ImageEditorModalComponent, null, { imageUrl, params: this.transformParams })
@@ -158,16 +158,17 @@ export class BinaryFieldComponent extends BaseFieldComponent {
 
     private getBinaryUrl(binaryField: BinaryField): string {
         const node = this.api.getNodeValue() as MeshNode;
-        let binaryUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
+        let binaryUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name, node.version);
         if (this.binaryMediaType === 'image') {
-            binaryUrl += this.getDimensionQueryParams(binaryField);
+            binaryUrl = this.addDimensionQueryParams(binaryUrl, binaryField);
         }
         return binaryUrl;
     }
 
-    private getDimensionQueryParams(imageField: BinaryField): string {
+    private addDimensionQueryParams(imageUrl: string, imageField: BinaryField): string {
         const { width, height } = this.getConstrainedDimensions(imageField);
-        return`?w=${Math.round(width)}&h=${Math.round(height)}`;
+        const glue = /\?\w+=/.test(imageUrl) ? '&' : '?';
+        return`${imageUrl}${glue}w=${Math.round(width)}&h=${Math.round(height)}`;
     }
 
     /**

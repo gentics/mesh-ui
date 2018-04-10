@@ -232,6 +232,17 @@ describe('BinaryFieldComponent:', () => {
 
                 expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=80&h=800');
             }));
+
+        it('joins dimension constraints with ampersand if url already has query params',
+            componentTest(() => TestComponent, (fixture, instance) => {
+                const imageUrlWithQueryParams = '/binary/image?version=1.1';
+                apiService.project.getBinaryFileUrl = jasmine.createSpy('getBinaryFileUrl').and.returnValue(imageUrlWithQueryParams);
+                fixture.detectChanges();
+                instance.binaryFieldComponent.valueChange(mockImage);
+                fixture.detectChanges();
+
+                expect(instance.binaryFieldComponent.objectUrl).toBe(imageUrlWithQueryParams + '&w=750&h=417');
+            }));
     });
 
     describe('image editing', () => {
