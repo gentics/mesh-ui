@@ -63,8 +63,7 @@ import { NodeConflictDialogComponent } from './components/node-conflict-dialog/n
         ContainerFileDropAreaComponent,
         MultiFileUploadDialogComponent,
         AudioPlayButtonComponent,
-        NodeConflictDialogComponent
-
+        NodeConflictDialogComponent,
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,

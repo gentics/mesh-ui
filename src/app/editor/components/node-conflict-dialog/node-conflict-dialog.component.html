@@ -45,8 +45,14 @@
                 </div>
 
                 <div *ngSwitchCase="'binary'">
-                    <div class="their-val"><img class="image-preview" [src]="conflictedField.theirURL" alt="" /></div>
-                    <div class="mine-val"><img class="image-preview" [src]="conflictedField.mineURL" alt="" /></div>
+                    <div class="their-val">
+                        <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
+                        {{ conflictedField.theirValue.name }}
+                    </div>
+                    <div class="mine-val">
+                        <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
+                        {{ conflictedField.mineValue.name }}
+                    </div>
                 </div>
 
                 <div *ngSwitchDefault>
