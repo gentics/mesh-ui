@@ -1,18 +1,26 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { IModalDialog } from 'gentics-ui-core';
 import { NodeEditorComponent } from '../node-editor/node-editor.component';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { MeshNode } from '../../../common/models/node.model';
+import { MeshNode, BinaryField } from '../../../common/models/node.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { BlobService } from '../../providers/blob.service';
 import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-are-equal';
+import { ApiService } from '../../../core/providers/api/api.service';
+import { SafeUrl } from '@angular/platform-browser';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
+
 
 interface ConflictedField {
     field: SchemaField;
     mineValue: any;
     theirValue: any;
     overwrite: boolean;
+    mineURL?: string | SafeUrl;
+    theirURL?: string | SafeUrl;
+
 }
 @Component({
     selector: 'mesh-node-conflict-dialog',
@@ -35,7 +43,11 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     constructor(
         private i18n: I18nService,
         private entities: EntitiesService,
-        private blobService: BlobService
+        private blobService: BlobService,
+        private apiService: ApiService,
+        private changeDetector: ChangeDetectorRef,
+        private apiBase: ApiBase,
+        private httpClient: HttpClient,
     ) {}
 
     ngOnInit(): void {
@@ -50,16 +62,69 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             const mineField = this.mineNode.fields[schemaField.name];
             const theirField = this.theirsNode.fields[schemaField.name];
 
-            console.log('comparing schemafield', schemaField);
-
             switch (schemaField.type) {
                 case 'binary':
-                        this.conflictedFields.push({
-                            field: schemaField,
-                            mineValue: mineField.fileName,
-                            theirValue: theirField.fileName,
-                            overwrite: true
-                         });
+
+                    const conflictedField = {
+                        field: schemaField,
+                        mineValue: mineField,
+                        theirValue: theirField,
+                        mineURL: (mineField as BinaryField).file
+                            ? this.blobService.createObjectURL((mineField as BinaryField).file)
+                            : this.apiService.project.getBinaryFileUrl(this.mineNode.project.name, this.mineNode.uuid, schemaField.name, this.mineNode.version),
+                        theirURL: this.apiService.project.getBinaryFileUrl(this.theirsNode.project.name, this.theirsNode.uuid, schemaField.name, this.theirsNode.version),
+                        overwrite: true
+                    };
+
+                    this.conflictedFields.push(conflictedField);
+
+                    const url = this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{fieldName}', {
+                        project: this.mineNode.project.name,
+                        nodeUuid: this.mineNode.uuid,
+                        fieldName: schemaField.name,
+                        version: this.mineNode.version,
+                    });
+
+                    this.httpClient.get(url, { observe: 'response', responseType: 'blob'})
+                        .subscribe(response => {
+                            console.log('just got response', response);
+                    });
+
+
+
+                    /*this.apiBase.get('/{project}/nodes/{nodeUuid}/binary/{fieldName}', {
+                        project: this.mineNode.project.name,
+                        nodeUuid: this.mineNode.uuid,
+                        fieldName: schemaField.name,
+                        version: this.mineNode.version
+                    }, {
+                        responseType: 'blob',
+
+                        TestHEader: 'yo',
+                    }).subscribe((response: Blob) => {
+                        console.log('ive got a response', response);
+                    })*/
+
+                    /*this.apiService.project.downloadBinaryField({
+                            project: this.mineNode.project.name,
+                            nodeUuid: this.mineNode.uuid,
+                            fieldName: schemaField.name,
+                            version: this.mineNode.version})
+                        .subscribe((result: Blob) => {
+                            console.log('whats my result', result);
+                            (mineField as BinaryField).file = new File([result], (mineField as BinaryField).fileName, { type: result.type});
+                            conflictedField.mineURL = this.blobService.createObjectURL((mineField as BinaryField).file);
+                            console.log('just createt it', conflictedField.mineURL);
+
+                            this.changeDetector.detectChanges();
+
+                            this.mineNode.fields[schemaField.name] = {
+                                mimeType: result.type,
+                                fileSize: result.size,
+                                fileName: mineField.name,
+                                file: new File([result], (mineField as BinaryField).fileName, { type: result.type})
+                            };
+                    });*/
                 break;
 
                 case 'string':
@@ -67,12 +132,12 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 case 'boolean':
                 case 'html':
                 case 'date':
-                        this.conflictedFields.push({
-                            field: schemaField,
-                            mineValue: mineField,
-                            theirValue: theirField,
-                            overwrite: true
-                        });
+                    this.conflictedFields.push({
+                        field: schemaField,
+                        mineValue: mineField,
+                        theirValue: theirField,
+                        overwrite: true
+                    });
                 break;
 
                 case 'list':
@@ -103,7 +168,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 break;
             }
         });
-
         if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
             this.conflictedTags = {
                 mineTags: getJoinedTags(this.mineNode.tags, 'name'),
@@ -113,8 +177,21 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     }
 
     saveAndClose(): void {
+        /*this.api.project.downloadBinaryField({ project: this.node.project.name, nodeUuid: this.node.uuid, fieldName: 'binary', version: 1.42} ).subscribe(result => {
+            console.log('got result', result);
+        })
+        return;*/
+
         this.conflictedFields.map(conflictedField => {
             if (conflictedField.overwrite === true) {
+                /*switch (conflictedField.field.type) {
+                    case 'binary':
+                    break;
+                    default:
+                        this.theirsNode.fields[conflictedField.field.name] = this.mineNode.fields[conflictedField.field.name];
+                    break;
+                }*/
+
                 this.theirsNode.fields[conflictedField.field.name] = this.mineNode.fields[conflictedField.field.name];
             }
         });

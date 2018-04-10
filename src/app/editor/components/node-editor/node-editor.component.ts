@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+
 import { ModalService, IDialogConfig, IModalOptions, IModalInstance } from 'gentics-ui-core';
 
 import { NavigationService, ValidDetailCommands } from '../../../core/providers/navigation/navigation.service';
@@ -24,6 +25,7 @@ import { ApiError } from '../../../core/providers/api/api-error';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
 
 @Component({
     selector: 'node-editor',
@@ -56,6 +58,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private i18n: I18nService,
         private modalService: ModalService,
+        private apiBase: ApiBase,
         private api: ApiService) { }
 
     ngOnInit(): void {
@@ -180,8 +183,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
-
-        console.log('saving node', this.node, this.isDirty, this.isSaving);
         if (!this.node) {
             return;
         }

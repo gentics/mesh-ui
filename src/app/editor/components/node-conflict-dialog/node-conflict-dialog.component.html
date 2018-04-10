@@ -6,8 +6,10 @@
         <li class="change-item">
             <div class="path"><strong>Field</strong></div>
             <div class="diffs">
-                <div class="mine-val"><strong>My version: {{mineNode.version}}</strong></div>
-                <div class="their-val"><strong>Their version: {{theirsNode.version}}</strong></div>
+                <div class="preview-container">
+                    <div class="mine-val"><strong>My version: {{mineNode.version}}</strong></div>
+                    <div class="their-val"><strong>Their version: {{theirsNode.version}}</strong></div>
+                </div>
             </div>
             <div class="action" title="Overwrite"><strong>Overwrite?</strong></div>
         </li>
@@ -15,8 +17,10 @@
             <div class="path">Tags</div>
 
             <div class="diffs">
-                <div class="mine-val">{{ conflictedTags.mineTags }}</div>
-                <div class="their-val">{{ conflictedTags.theirTags }}</div>
+                <div class="preview-container">
+                    <div class="mine-val">{{ conflictedTags.mineTags }}</div>
+                    <div class="their-val">{{ conflictedTags.theirTags }}</div>
+                </div>
             </div>
             <div class="action">
                 <gtx-checkbox
@@ -29,7 +33,6 @@
         <li *ngFor="let conflictedField of conflictedFields" class="change-item">
             <div class="path">{{ conflictedField.field.name }}</div>
 
-
             <div [ngSwitch]="conflictedField.field.type" class="diffs">
                 <div *ngSwitchCase="'html'">
                     <div class="mine-val" [innerHTML]="conflictedField.mineValue"></div>
@@ -37,8 +40,13 @@
                 </div>
 
                 <div *ngSwitchCase="'date'">
-                    <div *ngSwitchCase="'date'" class="mine-val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss' }}</div>
-                    <div *ngSwitchCase="'date'" class="their-val">{{ conflictedField.theirValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                    <div class="mine-val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+                    <div class="their-val">{{ conflictedField.theirValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                </div>
+
+                <div *ngSwitchCase="'binary'">
+                    <div class="mine-val"><img class="image-preview" [src]="conflictedField.mineURL" alt="" /></div>
+                    <div class="their-val"><img class="image-preview" [src]="conflictedField.theirURL" alt="" /></div>
                 </div>
 
                 <div *ngSwitchDefault>
