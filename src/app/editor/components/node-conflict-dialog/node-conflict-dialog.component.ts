@@ -11,19 +11,8 @@ import { BlobService } from '../../providers/blob.service';
 import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-are-equal';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
+import { ConflictedField } from '../../../common/models/common.model';
 
-
-interface ConflictedField {
-    field: SchemaField;
-    mineValue: any;
-    theirValue: any;
-    overwrite: boolean;
-    conflictedFields?: ConflictedField[]; // Yeah baby, recursion. Needed for micronodes
-    mineURL?: string | SafeUrl;
-    theirURL?: string | SafeUrl;
-    loading?: boolean;
-
-}
 @Component({
     selector: 'mesh-node-conflict-dialog',
     templateUrl: './node-conflict-dialog.component.html',
@@ -55,8 +44,27 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     ngOnInit(): void {
 
         const schema: Schema = this.entities.getSchema(this.mineNode.schema.uuid);
-        this.conflicts.map(conflict => {
 
+        if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
+            /*const conflictedTags = {
+                mineTags: getJoinedTags(this.mineNode.tags, 'name'),
+                theirTags: getJoinedTags(this.theirsNode.tags, 'name')
+            };*/
+
+            const conflictedTags: ConflictedField = {
+                field: {
+                    type: '__TAGS__',
+                    name: 'Tags'
+                },
+                mineValue: getJoinedTags(this.mineNode.tags, 'name'),
+                theirValue: getJoinedTags(this.theirsNode.tags, 'name'),
+                overwrite: true
+            };
+
+            this.conflictedFields.push(conflictedTags);
+        }
+
+        this.conflicts.map(conflict => {
             const conflictPath = conflict.split('.'); // Because we might have microschema fields defined by microschema.fieldName.
             const fieldName = conflictPath[0];
 
@@ -65,6 +73,16 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             const theirField = this.theirsNode.fields[schemaField.name];
 
             if (schemaField.type === 'micronode') {
+                debugger;
+
+                let f = this.conflictedFields.find(field => {
+                    console.log('checking ', schemaField.name, fieldName);
+                    return schemaField.name === fieldName;
+                });
+
+                console.log(f);
+
+
                 const conflictingField = this.conflictedFields.find(field => schemaField.name === fieldName) || {
                     field: schemaField,
                     mineValue: mineField,
@@ -73,31 +91,22 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                     conflictedFields: []
                 };
 
-                debugger;
-
                 const microSchema = this.entities.getMicroschema(mineField.microschema.uuid);
                 const microNodeFieldName = conflictPath[1];
                 const microSchemaField = microSchema.fields.find(field => field.name === microNodeFieldName);
                 const mineMicroschemaField = (mineField as NodeFieldMicronode).fields[microNodeFieldName];
                 const theirMicroschemaField = (theirField as NodeFieldMicronode).fields[microNodeFieldName];
+                const conflictingMicroschemaField = this.getConflictedField(microSchemaField, mineMicroschemaField, theirMicroschemaField);
+                console.log(conflictingField);
+                conflictingField.conflictedFields.push(conflictingMicroschemaField);
 
-                conflictingField.conflictedFields.push(this.getConflictedField(microSchemaField, mineMicroschemaField, theirMicroschemaField));
-                console.log('got conflict in micronode', conflictingField);
-
-                //this.conflictedFields.conflictedFields.push(this.getConflictedField(schema))
             } else {
                 this.conflictedFields.push(this.getConflictedField(schemaField, mineField, theirField));
             }
-
-
         });
 
-        if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
-            this.conflictedTags = {
-                mineTags: getJoinedTags(this.mineNode.tags, 'name'),
-                theirTags: getJoinedTags(this.theirsNode.tags, 'name')
-            };
-        }
+
+        console.log(this.conflictedFields);
     }
 
 
@@ -169,7 +178,11 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     saveAndClose(): void {
         this.conflictedFields.map(conflictedField => {
             if (conflictedField.overwrite === true) {
-                this.theirsNode.fields[conflictedField.field.name] = this.mineNode.fields[conflictedField.field.name];
+                if (conflictedField.field.type === '__TAGS__') {
+                    // TODO:
+                } else {
+                    this.theirsNode.fields[conflictedField.field.name] = this.mineNode.fields[conflictedField.field.name];
+                }
             }
         });
         this.closeFn(this.theirsNode);

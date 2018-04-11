@@ -33,6 +33,7 @@ import { TagsEffectsService } from '../core/providers/effects/tags-effects.servi
 import { MultiFileUploadDialogComponent } from './components/multi-file-upload-dialog/multi-file-upload-dialog.component';
 import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
 import { NodeConflictDialogComponent } from './components/node-conflict-dialog/node-conflict-dialog.component';
+import { ConflictedFieldComponent } from './components/conflicted-field/conflicted-field.component';
 
 
 @NgModule({
@@ -64,6 +65,7 @@ import { NodeConflictDialogComponent } from './components/node-conflict-dialog/n
         MultiFileUploadDialogComponent,
         AudioPlayButtonComponent,
         NodeConflictDialogComponent,
+        ConflictedFieldComponent,
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,

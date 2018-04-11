@@ -183,9 +183,13 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
+
+        //this.handleSaveConflicts(['name', 'number', 'microschema.name', 'microschema.number']);
+        //return;
         if (!this.node) {
             return;
         }
+
 
         if (this.isDirty) {
             this.isSaving = true;
