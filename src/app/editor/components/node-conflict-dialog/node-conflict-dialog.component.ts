@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { IModalDialog } from 'gentics-ui-core';
 import { NodeEditorComponent } from '../node-editor/node-editor.component';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { MeshNode, BinaryField, NodeFieldMicronode } from '../../../common/models/node.model';
+import { MeshNode, BinaryField, NodeFieldMicronode, NodeField } from '../../../common/models/node.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { BlobService } from '../../providers/blob.service';
@@ -73,23 +73,18 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             const theirField = this.theirsNode.fields[schemaField.name];
 
             if (schemaField.type === 'micronode') {
-                debugger;
 
-                let f = this.conflictedFields.find(field => {
-                    console.log('checking ', schemaField.name, fieldName);
-                    return schemaField.name === fieldName;
-                });
-
-                console.log(f);
-
-
-                const conflictingField = this.conflictedFields.find(field => schemaField.name === fieldName) || {
-                    field: schemaField,
-                    mineValue: mineField,
-                    theirValue: theirField,
-                    overwrite: false,
-                    conflictedFields: []
-                };
+                let conflictingField = this.conflictedFields.find(field => field.field.name === fieldName);
+                if (!conflictingField) {
+                    conflictingField = {
+                        field: schemaField,
+                        mineValue: mineField,
+                        theirValue: theirField,
+                        overwrite: true,
+                        conflictedFields: []
+                    };
+                    this.conflictedFields.push(conflictingField);
+                }
 
                 const microSchema = this.entities.getMicroschema(mineField.microschema.uuid);
                 const microNodeFieldName = conflictPath[1];
@@ -97,16 +92,11 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 const mineMicroschemaField = (mineField as NodeFieldMicronode).fields[microNodeFieldName];
                 const theirMicroschemaField = (theirField as NodeFieldMicronode).fields[microNodeFieldName];
                 const conflictingMicroschemaField = this.getConflictedField(microSchemaField, mineMicroschemaField, theirMicroschemaField);
-                console.log(conflictingField);
                 conflictingField.conflictedFields.push(conflictingMicroschemaField);
-
             } else {
                 this.conflictedFields.push(this.getConflictedField(schemaField, mineField, theirField));
             }
         });
-
-
-        console.log(this.conflictedFields);
     }
 
 
@@ -126,18 +116,20 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                     overwrite: true
                 };
 
-                // We preload the old version of the file in cate the user desides to overwrite the server version.
-                const url = this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{fieldName}', {
-                    project: this.mineNode.project.name,
-                    nodeUuid: this.mineNode.uuid,
-                    fieldName: schemaField.name,
-                    version: this.mineNode.version,
-                });
+                // We preload the old version of the file in case the user desides to overwrite the server version.
+                if (!(mineField as BinaryField).file) { // Only download the server version if the user did NOT actually select a new file
+                    const url = this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{fieldName}', {
+                        project: this.mineNode.project.name,
+                        nodeUuid: this.mineNode.uuid,
+                        fieldName: schemaField.name,
+                        version: this.mineNode.version,
+                    });
 
-                this.httpClient.get(url, { observe: 'response', responseType: 'blob'})
-                    .subscribe(result => {
-                        (mineField as BinaryField).file = new File([result.body], (mineField as BinaryField).fileName, { type: result.body.type});
-                });
+                    this.httpClient.get(url, { observe: 'response', responseType: 'blob'})
+                        .subscribe(result => {
+                            (mineField as BinaryField).file = new File([result.body], (mineField as BinaryField).fileName, { type: result.body.type});
+                    });
+                }
             break;
 
             case 'string':
@@ -151,6 +143,29 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                     theirValue: theirField,
                     overwrite: true
                 };
+            break;
+
+            case 'node':
+                conflictedField = {
+                    field: schemaField,
+                    mineValue: (mineField as NodeField).uuid,
+                    theirValue: (theirField as NodeField).uuid,
+                    overwrite: true,
+                    preload: true,
+                };
+
+                // Download the nodes so that we can display it's data in the diff
+                this.apiService.project.getNode({ project: this.mineNode.project.name, nodeUuid: (mineField as NodeField).uuid})
+                    .subscribe(node => {
+                        conflictedField.mineValue = node.breadcrumb.map(crumb => crumb.displayName + '/') + node.displayName;
+                        this.changeDetector.markForCheck();
+                    });
+
+                this.apiService.project.getNode({ project: this.mineNode.project.name, nodeUuid: (theirField as NodeField).uuid})
+                    .subscribe(node => {
+                        conflictedField.theirValue = node.breadcrumb.map(crumb => crumb.displayName + '/') + node.displayName;
+                        this.changeDetector.markForCheck();
+                    });
             break;
 
             case 'list':
@@ -176,16 +191,27 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     }
 
     saveAndClose(): void {
+        // The final node will contain all out fields (because we might have had changes
+        // that are not marked by the mesh as a conflict) and we will just overwrite the
+        // values with the their values of it was indicated by the user.
+        const mergedNode = {...this.theirsNode, fields: this.mineNode.fields };
+
         this.conflictedFields.map(conflictedField => {
-            if (conflictedField.overwrite === true) {
+            if (conflictedField.overwrite === false) { // Overwrute means 'overwrite the serer version with ours. So if it's false - we take the server version and dump it into our mergeNode
                 if (conflictedField.field.type === '__TAGS__') {
                     // TODO:
+                } else if (conflictedField.field.type === 'micronode') {
+                    conflictedField.conflictedFields.map(conflictedMicronodeField => {
+                        if (conflictedMicronodeField.overwrite === false) {
+                            mergedNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name] = this.theirsNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name];
+                        }
+                    });
                 } else {
-                    this.theirsNode.fields[conflictedField.field.name] = this.mineNode.fields[conflictedField.field.name];
+                    mergedNode.fields[conflictedField.field.name] = this.theirsNode.fields[conflictedField.field.name];
                 }
             }
         });
-        this.closeFn(this.theirsNode);
+        this.closeFn(mergedNode);
     }
 
     registerCloseFn(close: (node: MeshNode) => void): void {

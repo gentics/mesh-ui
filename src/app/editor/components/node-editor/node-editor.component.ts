@@ -183,14 +183,11 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
-
         //this.handleSaveConflicts(['name', 'number', 'microschema.name', 'microschema.number']);
         //return;
         if (!this.node) {
             return;
         }
-
-
         if (this.isDirty) {
             this.isSaving = true;
             let saveFn: Promise<any>;
@@ -257,8 +254,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     }
                 )
                 .then(modal => modal.open())
-                .then(resolvedNode => {
-                    this.node = resolvedNode;
+                .then(mergedNode => {
+                    console.log('will save the merged node', mergedNode);
+                    this.node = mergedNode;
                     this.saveNode();
                 });
             });

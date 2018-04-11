@@ -21,16 +21,13 @@
         </div>
     </div>
 
-    <div *ngSwitchCase="'micronode'">
-            <div class="their-val">
-                <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
-                {{ conflictedField.theirValue.name }}
-            </div>
-            <div class="mine-val">
-                <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
-                {{ conflictedField.mineValue.name }}
-            </div>
-        </div>
+    <div *ngSwitchCase="'micronode'" class="micronode-row">
+        <ul>
+            <li *ngFor="let conflictedMicronodeField of conflictedField.conflictedFields">
+                <mesh-conflicted-field [conflictedField]="conflictedMicronodeField"></mesh-conflicted-field>
+            </li>
+        </ul>
+    </div>
 
     <div *ngSwitchDefault>
         <div class="their-val">{{ conflictedField.theirValue }}</div>
@@ -38,8 +35,9 @@
     </div>
 </div>
 
-<div class="action">
+<div  class="action">
     <gtx-checkbox
+        *ngIf="conflictedField.field.type !== 'micronode'"
         [checked]="conflictedField.overwrite"
         (change)="conflictedField.overwrite = $event"
     >
