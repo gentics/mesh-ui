@@ -15,10 +15,9 @@
         ></gtx-input>
     </div>
     <div class="tags-list">
-        <div *ngFor="let tag of nodeTags" class="search-chip" [meshBackgroundFrom]="tag.tagFamily">
-            <span class="chip-contents">{{tag.name}}</span>
-            <icon class="remove-button" (click)="onTagDeleted(tag)">close</icon>
-        </div>
+        <mesh-tag *ngFor="let tag of nodeTags"
+                  [tag]="tag"
+                  (removeClick)="onTagDeleted(tag)"></mesh-tag>
     </div>
 </div>
 <gtx-dropdown-list belowTrigger="true" width="trigger">

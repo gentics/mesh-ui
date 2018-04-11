@@ -1,6 +1,5 @@
 @import "variables";
 @import "search-bar-styles";
-@include search-chip;
 @include tag-filter;
 
 :host::shadow {

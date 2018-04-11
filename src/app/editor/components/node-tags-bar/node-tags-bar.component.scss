@@ -1,7 +1,6 @@
 @import "variables";
 @import "search-bar-styles";
 @include filter-selection;
-@include search-chip;
 @include tag-filter;
 
 $add-tag-button-width: 100px;

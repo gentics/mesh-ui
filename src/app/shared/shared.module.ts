@@ -14,10 +14,14 @@ import { SchemaLabelComponent } from './components/schema-label/schema-label.com
 import { BackgroundFromDirective } from './directives/background-from.directive';
 import { HighlightPipe } from './pipes/highlight/highlight.pipe';
 import { FileSizePipe } from './pipes/file-size/file-size.pipe';
+import { TagComponent } from './components/tag/tag.component';
+import { ChipComponent } from './components/chip/chip.component';
 
 const SHARED_COMPONENTS = [
+    ChipComponent,
     NoContentComponent,
     SchemaLabelComponent,
+    TagComponent,
     ThumbnailComponent
 ];
 
@@ -49,7 +53,7 @@ const SHARED_PIPES = [
     declarations: [
         ...SHARED_COMPONENTS,
         ...SHARED_PIPES,
-        ...SHARED_DIRECTIVES,
+        ...SHARED_DIRECTIVES
     ],
     exports: [
         ...SHARED_COMPONENTS,
