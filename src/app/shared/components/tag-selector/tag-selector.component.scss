@@ -13,6 +13,10 @@ gtx-dropdown-content {
     max-height: 300px !important; // !important because the gtx-dropdown-list will try to overwrite it.
 }
 
+gtx-dropdown-item.selected {
+    background-color: $gtx-color-very-light-gray;
+}
+
 .tag-family {
     color: $gtx-color-off-black;
     font-size: 12px;

@@ -1,7 +1,19 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { Tag } from '../../../common/models/tag.model';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges,
+    ViewChild
+} from '@angular/core';
 import { DropdownList } from 'gentics-ui-core';
+
+import { Tag } from '../../../common/models/tag.model';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
+import { KeyCode } from '../../../common/util/keycode';
 
 /**
  * A drop-down tag selector component.
@@ -29,8 +41,9 @@ export class TagSelectorComponent implements OnChanges {
     /** Fired when the underlying DropdownList closes */
     @Output() close = new EventEmitter<void>();
 
-    @ViewChild(DropdownList) dropDown: DropdownList;
+    @ViewChild(DropdownList) private dropDown: DropdownList;
     newTagName = '';
+    selectedIndex = -1;
 
     ngOnChanges(changes: SimpleChanges): void {
         if ('active' in changes) {
@@ -42,18 +55,90 @@ export class TagSelectorComponent implements OnChanges {
             } else {
                 this.dropDown.closeDropdown();
             }
+            this.selectedIndex = -1;
         }
         if ('filterTerm' in changes) {
             this.dropDown.resize();
+            this.selectedIndex = -1;
             this.checkForUnknownTagName(this.filterTerm);
         }
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onKeydown(event: KeyboardEvent): void {
+        if (!this.active) {
+            return;
+        }
+
+        switch (event.keyCode) {
+            case KeyCode.DownArrow:
+            case KeyCode.RightArrow:
+                this.selectNext();
+                break;
+            case KeyCode.UpArrow:
+            case KeyCode.LeftArrow:
+                this.selectPrevious();
+                break;
+            case KeyCode.Enter:
+                this.selectWithKeyboard();
+                break;
+            default:
+        }
+    }
+
+    private selectNext(): void {
+        const total = this.newTagName !== '' ? this.tags.length + 1 : this.tags.length;
+        this.selectedIndex = (this.selectedIndex + 1) % total;
+        this.scrollToSelectedOption();
+    }
+
+    private selectPrevious(): void {
+        const total = this.newTagName !== '' ? this.tags.length + 1 : this.tags.length;
+        this.selectedIndex = (this.selectedIndex === 0) ? total - 1 : this.selectedIndex - 1;
+        this.scrollToSelectedOption();
+    }
+
+    private selectWithKeyboard(): void {
+        if (this.selectedIndex === -1) {
+            return;
+        }
+        if (this.selectedIndex < this.tags.length) {
+            const tag = this.tags[this.selectedIndex];
+            this.selectTag.emit(tag);
+            this.dropDown.closeDropdown();
+        } else if (this.selectedIndex === this.tags.length) {
+            this.createNewTag.emit(this.newTagName);
+            this.dropDown.closeDropdown();
+        }
+    }
+
+    /**
+     * When a list of options is too long, there will be a scroll bar. This method ensures that the currently-selected
+     * options is scrolled into view in the options list.
+     */
+    private scrollToSelectedOption(): void {
+        setTimeout(() => {
+            const container = this.dropDown.content.elementRef.nativeElement;
+            const selectedItem = container.querySelector('.selected');
+            if (selectedItem) {
+                const belowContainer = container.offsetHeight + container.scrollTop < selectedItem.offsetTop + selectedItem.offsetHeight;
+                const aboveContainer = selectedItem.offsetTop < container.scrollTop;
+
+                if (belowContainer) {
+                    container.scrollTop = selectedItem.offsetTop + selectedItem.offsetHeight - container.offsetHeight;
+                }
+                if (aboveContainer) {
+                    container.scrollTop = selectedItem.offsetTop;
+                }
+            }
+        });
     }
 
     private checkForUnknownTagName(filterTerm: string): void {
         if (!this.canCreate) {
             return;
         }
-        // If the term does NOT perfectly match any of existing tags - we will show an option to create one
+        // If the term does not perfectly match any of existing tags - we will show an option to create one
         if (!this.tags.some(tag => tag.name.toLowerCase() === filterTerm.toLowerCase())) {
             this.newTagName = filterTerm;
         } else {

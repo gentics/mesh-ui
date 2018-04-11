@@ -87,6 +87,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.filteredTags = [];
         this.filterTerm = '';
         this.displayTagSelection = false;
+        this.inputField.nativeElement.querySelector('input').blur();
         this.checkIfDirty();
     }
 

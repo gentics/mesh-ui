@@ -4,13 +4,19 @@
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
         <span></span>
-        <gtx-dropdown-item *ngFor="let tag of tags" (click)="selectTag.emit(tag)">
+        <gtx-dropdown-item *ngFor="let tag of tags; index as i"
+                           [class.selected]="selectedIndex === i"
+                           (mouseover)="selectedIndex = i"
+                           (click)="selectTag.emit(tag)">
             <span class="tag-family">{{tag.tagFamily.name}}</span>
             <span class="tag-name" [meshBackgroundFrom]="tag.tagFamily.name || tag.tagFamily">
                 <span [innerHTML]="tag.name | highlight:filterTerm"></span>
             </span>
         </gtx-dropdown-item>
-        <gtx-dropdown-item *ngIf="newTagName !== ''" class="create-new-tag" (click)="createNewTag.emit(newTagName)">
+        <gtx-dropdown-item *ngIf="newTagName !== ''"
+                           [class.selected]="selectedIndex === tags.length"
+                           class="create-new-tag"
+                           (click)="createNewTag.emit(newTagName)">
             <span class="tag-family">{{ 'editor.create_new_tag' | i18n }} </span>{{newTagName}}
         </gtx-dropdown-item>
     </gtx-dropdown-content>
