@@ -1,16 +1,32 @@
 <div class="search-bar-container">
-    <gtx-input
-        #InputField
-        placeholder="{{ 'editor.add_tag' | i18n }}"
-        (change)="onFilterChange($event)"
-        (focus)="onInputFocus($event)"
-    ></gtx-input>
+    <div class="add-tag"
+         [class.active]="inputIsFocused"
+         (click)="addTagClick()">
+        <gtx-button type="secondary"
+                    size="small"
+                    class="add-tag-button">
+            <icon left>add</icon> {{ 'editor.add_tag' | i18n }}
+        </gtx-button>
+        <gtx-input [(ngModel)]="filterTerm"
+                   placeholder="{{ 'editor.add_tag' | i18n }}"
+                   (change)="onFilterChange($event)"
+                   (focus)="onInputFocus($event)"
+                   (blur)="onInputBlur()"
+        ></gtx-input>
+    </div>
+    <div class="tags-list">
+        <div *ngFor="let tag of nodeTags" class="search-chip" [meshBackgroundFrom]="tag.tagFamily">
+            <span class="chip-contents">{{tag.name}}</span>
+            <icon class="remove-button" (click)="onTagDeleted(tag)">close</icon>
+        </div>
+    </div>
 </div>
-<gtx-dropdown-list belowTrigger="true" #DropdownList width="trigger">
+<gtx-dropdown-list belowTrigger="true" width="trigger">
     <gtx-dropdown-trigger>
         <div></div>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
+        <span></span>
         <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag)">
             <span class="tag-family">{{tag.tagFamily.name}}</span>
             <span class="tag-name" [meshBackgroundFrom]="tag.tagFamily.name">
@@ -22,10 +38,3 @@
         </gtx-dropdown-item>
     </gtx-dropdown-content>
 </gtx-dropdown-list>
-
-<div class="tags-list">
-    <div *ngFor="let tag of nodeTags" class="search-chip" [meshBackgroundFrom]="tag.tagFamily">
-        <span class="chip-contents">{{tag.name}}</span>
-        <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
-    </div>
-</div>

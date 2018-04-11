@@ -4,37 +4,76 @@
 @include search-chip;
 @include tag-filter;
 
+$add-tag-button-width: 100px;
 
+:host {
+}
 
 gtx-dropdown-list, gtx-dropdown-trigger {
     width: 100%;
     display: block;
+    margin-top: 3px;
 }
 
 gtx-dropdown-content {
     max-height: 300px !important; // !important because the gtx-dropdown-list will try to overwrite it.
 }
 
+.search-bar-container {
+    position: relative;
+}
+
+.add-tag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: $add-tag-button-width;
+    z-index: 1;
+    background-color: white;
+
+    .add-tag-button {
+        position: absolute;
+        left: 0;
+        top: 2px;
+        will-change: transform;
+        transition: opacity 0.2s, transform 0s;
+    }
+
+    gtx-input {
+        max-width: 0;
+        opacity: 0;
+        will-change: max-width;
+        transition: max-width 0.2s, opacity 0.2s;
+        color: $gtx-color-off-black;
+
+        /deep/ input {
+            margin: 0 !important;
+        }
+    }
+
+    &.active {
+        width: 100%;
+
+        .add-tag-button {
+            opacity: 0;
+            transform: translateX(-$add-tag-button-width);
+            transition: opacity 0.2s, transform 0s 0.2s;
+        }
+        gtx-input {
+            max-width: 100%;
+            opacity: 1;
+        }
+    }
+}
+
 .tags-list {
+    margin-left: $add-tag-button-width;
     margin-top: 5px;
 }
 
 .search-chip {
     display: inline-block;
-}
-
-gtx-input {
-    width: 100%;
-    border: none;
-    box-shadow: rgba(0, 0, 0, 0.87) 1px 3px 7px -5px;
-}
-
-gtx-input /deep/ input {
-    margin: 0 !important;
-    border: none;
-    padding-left: 15px;
-    outline: none !important;
-    color: $gtx-color-off-black;
 }
 
 .create-new-tag {

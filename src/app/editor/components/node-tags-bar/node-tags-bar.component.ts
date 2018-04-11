@@ -1,31 +1,42 @@
-import { Input, ChangeDetectorRef, ContentChild, ViewChild, Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Observable } from 'rxjs/Observable';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges,
+    ViewChild
+} from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 import { DropdownList, InputField, ModalService } from 'gentics-ui-core';
+
 import { MeshNode } from '../../../common/models/node.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Tag } from '../../../common/models/tag.model';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
-import { stringToColor } from '../../../common/util/util';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { Subscription, Subject } from 'rxjs';
 
 @Component({
-    selector: 'app-node-tags-bar',
+    selector: 'mesh-node-tags-bar',
     templateUrl: './node-tags-bar.component.html',
-    styleUrls: ['./node-tags-bar.component.scss']
+    styleUrls: ['./node-tags-bar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
-    @ViewChild('DropdownList') dropDown: DropdownList;
-    @ViewChild('InputField') inputField: InputField;
+    @ViewChild(DropdownList) dropDown: DropdownList;
+    @ViewChild(InputField, { read: ElementRef }) inputField: ElementRef;
     @Input() node: MeshNode;
+    inputIsFocused = false;
     isDirty = false;
-    newTagName = ''; // Contains a name for a new tag.
-    nodeTags: TagReferenceFromServer[] = []; // Tags for the current opened node.
+    newTagName = '';
+    nodeTags: TagReferenceFromServer[] = [];
 
     filteredTags: Tag[] = [];
     filterTerm = '';
@@ -54,7 +65,6 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
             const node = changes.node.currentValue as MeshNode;
             this.nodeTags = node.tags ? [...node.tags] : [];
             this.isDirty = false;
-            this.inputField.writeValue('');
         }
     }
 
@@ -64,8 +74,6 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     onFilterChange(term: string): void {
-        this.filterTerm = term;
-
         this.filteredTags = this.filterTags(term);
 
         // If the term does NOT perfectly match any of existing tags - we will show an option to create one
@@ -81,15 +89,18 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.dropDown.resize();
     }
 
-    onInputFocus(event): void {
+    onInputFocus(): void {
         this.onFilterChange(this.filterTerm);
+    }
+
+    onInputBlur(): void {
+        this.inputIsFocused = false;
     }
 
     onTagSelected(tag: Tag): void {
         const { name, tagFamily, uuid } = tag;
         this.nodeTags = [...this.nodeTags, { name, tagFamily: tagFamily.name, uuid }];
         this.filteredTags = [];
-        this.inputField.writeValue('');
         this.filterTerm = '';
         this.newTagName = '';
         this.checkIfDirty();
@@ -136,6 +147,13 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
                 .map(tag => tag.name);
         }
         return { deletedTags, newTags };
+    }
+
+    addTagClick() {
+        this.inputIsFocused = true;
+        setTimeout(() => {
+            this.inputField.nativeElement.querySelector('input').focus();
+        }, 200);
     }
 
     private checkIfDirty(): void {
