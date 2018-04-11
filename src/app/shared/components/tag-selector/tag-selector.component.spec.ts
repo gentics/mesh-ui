@@ -1,28 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Icon } from 'gentics-ui-core';
+import { GenticsUICoreModule } from 'gentics-ui-core';
 
-import { TagComponent } from './tag.component';
-import { ChipComponent } from '../chip/chip.component';
+import { TagSelectorComponent } from './tag-selector.component';
 import { BackgroundFromDirective } from '../../directives/background-from.directive';
+import { HighlightPipe } from '../../pipes/highlight/highlight.pipe';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 
-describe('TagComponent', () => {
-    let component: TagComponent;
-    let fixture: ComponentFixture<TagComponent>;
+describe('TagSelectorComponent', () => {
+    let component: TagSelectorComponent;
+    let fixture: ComponentFixture<TagSelectorComponent>;
 
     beforeEach(() => {
         configureComponentTest({
             declarations: [
-                TagComponent,
-                ChipComponent,
+                TagSelectorComponent,
                 BackgroundFromDirective,
-                Icon
+                HighlightPipe
+            ],
+            imports: [
+                GenticsUICoreModule.forRoot()
             ]
         });
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(TagComponent);
+        fixture = TestBed.createComponent(TagSelectorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

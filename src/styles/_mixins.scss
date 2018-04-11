@@ -8,18 +8,3 @@
         margin: 0 1px;
     }
 }
-
-
-@mixin tag-filter {
-    .tag-family {
-        color: $gtx-color-off-black;
-        font-size: 12px;
-    }
-
-    .tag-name {
-        padding: 2px 5px;
-        font-size: 14px;
-        border-radius: 3px;
-        color: $gtx-color-off-white;
-    }
-}

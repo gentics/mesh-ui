@@ -11,7 +11,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { DropdownList, InputField, ModalService } from 'gentics-ui-core';
+import { InputField, ModalService } from 'gentics-ui-core';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
@@ -30,33 +30,28 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 })
 export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
-    @ViewChild(DropdownList) dropDown: DropdownList;
     @ViewChild(InputField, { read: ElementRef }) inputField: ElementRef;
     @Input() node: MeshNode;
     inputIsFocused = false;
     isDirty = false;
-    newTagName = '';
     nodeTags: TagReferenceFromServer[] = [];
-
+    displayTagSelection = false;
     filteredTags: Tag[] = [];
     filterTerm = '';
-
-    stateTags: Tag[] = [];
+    allTags: Tag[] = [];
     private destroyed$: Subject<void> = new Subject();
 
-    constructor(
-        private changeDetector: ChangeDetectorRef,
-        private state: ApplicationStateService,
-        private editorEffects: EditorEffectsService,
-        private modalService: ModalService,
-        private entities: EntitiesService ) { }
+    constructor(private changeDetector: ChangeDetectorRef,
+                private state: ApplicationStateService,
+                private editorEffects: EditorEffectsService,
+                private modalService: ModalService,
+                private entities: EntitiesService ) { }
 
     ngOnInit(): void {
-
         this.state.select(state => state.tags.tags)
             .takeUntil(this.destroyed$)
             .subscribe(tags => {
-                this.stateTags = tags.map(uuid => this.entities.getTag(uuid));
+                this.allTags = tags.map(uuid => this.entities.getTag(uuid));
             });
     }
 
@@ -74,22 +69,11 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     onFilterChange(term: string): void {
-        this.filteredTags = this.filterTags(term);
-
-        // If the term does NOT perfectly match any of existing tags - we will show an option to create one
-        if (!this.stateTags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
-            this.newTagName = term;
-        } else {
-            this.newTagName = '';
-        }
-
-        if (!this.dropDown.isOpen) {
-            this.dropDown.openDropdown();
-        }
-        this.dropDown.resize();
+        this.filteredTags = this.filterTags(this.allTags, this.nodeTags, term);
     }
 
     onInputFocus(): void {
+        this.displayTagSelection = true;
         this.onFilterChange(this.filterTerm);
     }
 
@@ -102,7 +86,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.nodeTags = [...this.nodeTags, { name, tagFamily: tagFamily.name, uuid }];
         this.filteredTags = [];
         this.filterTerm = '';
-        this.newTagName = '';
+        this.displayTagSelection = false;
         this.checkIfDirty();
     }
 
@@ -112,14 +96,14 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.checkIfDirty();
     }
 
-    onCreateNewTagClick(): void {
+    onCreateNewTagClick(newTagName: string): void {
         this.modalService.fromComponent(
             CreateTagDialogComponent,
             {
                 closeOnOverlayClick: false
             },
             {
-                newTagName: this.newTagName,
+                newTagName,
                 projectName: this.state.now.editor.openNode.projectName
             }
         )
@@ -162,15 +146,13 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.isDirty = newUuids !== oldUuids;
     }
 
-    private filterTags(term: string): Tag[] {
-        const filteredTags = this.stateTags.reduce<Tag[]>((filteredTags, tag) => {
-            if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) === -1) {
-                if (fuzzyMatch(term, tag.name)) {
-                   filteredTags.push(tag) ;
-                }
-            }
-            return filteredTags;
-        }, []);
-        return filteredTags;
+    /**
+     * Filters allTags by the filterTerm, but also omits any currentTags (tags which already apply to the node)
+     */
+    private filterTags(allTags: Tag[], currentTags: TagReferenceFromServer[], filterTerm: string): Tag[] {
+        function isIsCurrentTags(tag: Tag): boolean {
+            return currentTags.findIndex(existingTag => existingTag.uuid === tag.uuid) !== -1;
+        }
+        return allTags.filter(tag => !!(!isIsCurrentTags(tag) && fuzzyMatch(filterTerm, tag.name)));
     }
 }

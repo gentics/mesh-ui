@@ -1,68 +1,51 @@
-import { Component, ChangeDetectorRef, ViewChild, ContentChild, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { DropdownList } from 'gentics-ui-core';
-
-import { ListStateActions } from '../../../state/providers/list-state-actions';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { stringToColor } from '../../../common/util/util';
 import { Tag } from '../../../common/models/tag.model';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 
 
 @Component({
     selector: 'mesh-search-bar',
     templateUrl: './search-bar.component.html',
-    styleUrls: ['./search-bar.scss']
+    styleUrls: ['./search-bar.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class SearchBarComponent implements OnInit, OnDestroy {
 
-    private subscription: Subscription =  new Subscription();
-
-    stateTags: Tag[] = [];
-    private destroyed$: Subject<void> = new Subject();
-
-    private searching = false;
-
+    allTags: Tag[] = [];
     inputValue = '';
     searchQuery = '';
-
+    displayTagSelection = false;
     searchTags: Tag[] = [];
-    filteredTags: Tag[];
+    filteredTags: Tag[] = [];
+    private destroyed$: Subject<void> = new Subject();
 
-    @ViewChild(DropdownList)
-    dropDownList: DropdownList;
-
-    constructor(
-        private changeDetectorRef: ChangeDetectorRef,
-        private listEffects: ListEffectsService,
-        private state: ApplicationStateService,
-        private entities: EntitiesService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private navigationService: NavigationService,
-    ) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef,
+                private listEffects: ListEffectsService,
+                private state: ApplicationStateService,
+                private entities: EntitiesService,
+                private route: ActivatedRoute,
+                private router: Router) {}
 
     ngOnInit(): void {
 
         combineLatest(this.route.queryParamMap, this.state.select(state => state.entities.tag))
             .takeUntil(this.destroyed$)
-            .subscribe(([paramMap, tagUuids]) => {
+            .subscribe(([paramMap]) => {
                 this.searchParamsChanged(paramMap);
             });
 
         this.state.select(state => state.tags.tags)
             .takeUntil(this.destroyed$)
             .subscribe(tags => {
-                this.stateTags = tags.map(uuid => this.entities.getTag(uuid));
+                this.allTags = tags.map(uuid => this.entities.getTag(uuid));
             });
     }
 
@@ -74,12 +57,8 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     filterTermChanged(): void {
         const firstChar = this.inputValue.charAt(0);
         if (firstChar === '#') {
-            this.filteredTags = this.filterTags(this.inputValue.substr(1));
-            if (!this.dropDownList.isOpen) {
-                this.dropDownList.openDropdown();
-            } else {
-                this.dropDownList.resize();
-            }
+            this.filteredTags = this.filterTags(this.allTags, this.searchTags, this.inputValue.substr(1));
+            this.displayTagSelection = true;
         } else {
             this.listEffects.setFilterTerm(this.inputValue);
         }
@@ -119,28 +98,21 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
     private searchParamsChanged(params: ParamMap) {
         this.searchQuery = params.get('q') || '';
-        this.searchTags = (params.get('t') || '').split(',')
-                                .map(uuid => this.state.now.entities.tag[uuid])
-                                .filter(tag => !!tag !== false);
-        this.changeDetectorRef.detectChanges(); // If the browser 'back' was clicked
+        this.searchTags = (params.get('t') || '')
+            .split(',')
+            .map(uuid => this.entities.getTag(uuid))
+            .filter(tag => !!tag !== false);
+
+        // Required if the browser 'back' was clicked
+        this.changeDetectorRef.detectChanges();
     }
 
-    private filterTags(term: string): Tag[] {
-        if (term.trim() === '') {
+    private filterTags(allTags: Tag[], selectedTags: Tag[], filterTerm: string): Tag[] {
+        if (filterTerm.trim() === '') {
             return [];
         }
-
-        const tags = this.stateTags.filter(tag => this.searchTags.every(searchTag => searchTag.uuid !== tag.uuid));
-
-        const filteredTags = tags.reduce<Tag[]>((filteredTags, tag) => {
-
-            if (fuzzyMatch(term, tag.name)) {
-                filteredTags.push(tag) ;
-            }
-            return filteredTags;
-
-        }, []);
-        return filteredTags;
+        const availableTags = allTags.filter(tag => selectedTags.every(searchTag => searchTag.uuid !== tag.uuid));
+        return availableTags.filter(tag => fuzzyMatch(filterTerm, tag.name));
     }
 
     private updateSearchParams(query: string, tags: Tag[]): void {

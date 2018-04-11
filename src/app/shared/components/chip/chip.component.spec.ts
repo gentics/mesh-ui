@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Icon } from 'gentics-ui-core';
 
 import { ChipComponent } from './chip.component';
 
@@ -8,7 +9,10 @@ describe('ChipComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ ChipComponent ]
+            declarations: [
+                ChipComponent,
+                Icon
+            ]
         })
             .compileComponents();
     }));

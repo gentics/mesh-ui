@@ -44,12 +44,13 @@
     </div>
     <div class="tags-row">
         <div class="tags">
-            <mesh-node-tags-bar [node]="node"></mesh-node-tags-bar>
+            <mesh-node-tags-bar #tagsBar [node]="node"></mesh-node-tags-bar>
         </div>
     </div>
 </div>
 
 <div class="editor-body" scrollFrame>
-    <form-generator [schema]="schema"
+    <form-generator #formGenerator
+                    [schema]="schema"
                     [node]="node"></form-generator>
 </div>

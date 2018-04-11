@@ -40,8 +40,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     private openNode$: Subscription;
 
-    @ViewChild(FormGeneratorComponent) formGenerator?: FormGeneratorComponent;
-    @ViewChild(NodeTagsBarComponent) tagsBar?: NodeTagsBarComponent;
+    @ViewChild('formGenerator') formGenerator?: FormGeneratorComponent;
+    @ViewChild('tagsBar') tagsBar?: NodeTagsBarComponent;
 
     constructor(private state: ApplicationStateService,
         private entities: EntitiesService,
@@ -98,7 +98,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 }
             })
             .subscribe(([node, schema]) => {
-                this.formGenerator.setPristine(node);
+                if (this.formGenerator) {
+                    this.formGenerator.setPristine(node);
+                }
                 this.node = node;
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();

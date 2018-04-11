@@ -1,25 +1,12 @@
 @import "variables";
 @import "search-bar-styles";
 @include filter-selection;
-@include tag-filter;
 
 $add-tag-button-width: 100px;
 
-:host {
-}
-
-gtx-dropdown-list, gtx-dropdown-trigger {
-    width: 100%;
-    display: block;
-    margin-top: 3px;
-}
-
-gtx-dropdown-content {
-    max-height: 300px !important; // !important because the gtx-dropdown-list will try to overwrite it.
-}
-
 .search-bar-container {
     position: relative;
+    height: 2.5rem;
 }
 
 .add-tag {
@@ -73,8 +60,4 @@ gtx-dropdown-content {
 
 .search-chip {
     display: inline-block;
-}
-
-.create-new-tag {
-    border-top: 2px solid rgba($gtx-color-off-black, 0.2);
 }

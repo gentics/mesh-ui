@@ -16,12 +16,14 @@ import { HighlightPipe } from './pipes/highlight/highlight.pipe';
 import { FileSizePipe } from './pipes/file-size/file-size.pipe';
 import { TagComponent } from './components/tag/tag.component';
 import { ChipComponent } from './components/chip/chip.component';
+import { TagSelectorComponent } from './components/tag-selector/tag-selector.component';
 
 const SHARED_COMPONENTS = [
     ChipComponent,
     NoContentComponent,
     SchemaLabelComponent,
     TagComponent,
+    TagSelectorComponent,
     ThumbnailComponent
 ];
 
