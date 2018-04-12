@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http/src/static_response';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { ProjectCreateRequest, ProjectResponse, TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
+import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
 
 

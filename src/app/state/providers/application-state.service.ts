@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { AdminStateActions } from './admin-state-actions';
 import { AppState } from '../models/app-state.model';
 import { AuthStateActions } from './auth-state-actions';
 import { EditorStateActions } from './editor-state-actions';
@@ -13,13 +12,16 @@ import { ListStateActions } from './list-state-actions';
 import { UIStateActions } from './ui-state-actions';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { TagsStateActions } from './tags-state-actions';
+import { AdminProjectsStateActions } from './admin-projects-state-actions';
+import { AdminSchemasStateActions } from './admin-schemas-state-actions';
 
 
 // TODO: re-enable this rule once immutablets has been updated
 // This needs to be a "type" vs "interface" becuase of limitations of mapped types.
 /* tslint:disable interface-over-type-literal */
 type ActionBranches = {
-    admin: AdminStateActions;
+    adminProjects: AdminProjectsStateActions;
+    adminSchemas: AdminSchemasStateActions;
     auth: AuthStateActions;
     editor: EditorStateActions;
     entity: EntityStateActions;
@@ -46,7 +48,8 @@ export class ApplicationStateService {
 
     constructor(config: ConfigService) {
         this.store = new ImmutableStateStore<AppState, ActionBranches>({
-            admin: new AdminStateActions(),
+            adminProjects: new AdminProjectsStateActions(),
+            adminSchemas: new AdminSchemasStateActions(),
             auth: new AuthStateActions(),
             entity: new EntityStateActions(),
             editor: new EditorStateActions(config),

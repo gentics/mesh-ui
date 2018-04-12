@@ -11,9 +11,9 @@ import { componentTest } from '../../../../testing/component-test';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { CoreModule } from '../../../core/core.module';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { mockProject } from '../../../../testing/mock-models';
 import { TestStateModule } from '../../../state/testing/test-state.module';
+import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 
 describe('ProjectListComponent', () => {
 
@@ -28,7 +28,7 @@ describe('ProjectListComponent', () => {
             imports: [GenticsUICoreModule, FormsModule, SharedModule, CoreModule, TestStateModule],
             providers: [
                 { provide: ModalService, useValue: mockModal },
-                { provide: ListEffectsService, useValue: jasmine.createSpyObj('stub', ['loadProjects'])}
+                { provide: AdminProjectEffectsService, useValue: jasmine.createSpyObj('stub', ['loadProjects'])}
             ]
         });
     }));
@@ -37,8 +37,8 @@ describe('ProjectListComponent', () => {
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
         appState.mockState({
-            admin: {
-                displayedProjects: ['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5']
+            adminProjects: {
+                projectList: ['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5']
             },
             auth: {
                 currentUser: 'd8b043e818144e27b043e81814ae2713'
@@ -86,8 +86,8 @@ describe('ProjectListComponent', () => {
         componentTest(() => ProjectListComponent, fixture => {
             fixture.detectChanges();
             appState.mockState({
-                admin: {
-                    displayedProjects: [...appState.now.admin.displayedProjects, 'test3']
+                adminProjects: {
+                    projectList: [...appState.now.adminProjects.projectList, 'test3']
                 },
                 entities: {
                     project: {
@@ -97,7 +97,8 @@ describe('ProjectListComponent', () => {
                 }
             });
             fixture.detectChanges();
-            expect(getListedProjectUuids(fixture)).toEqual(['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5', 'test3']);
+            expect(getListedProjectUuids(fixture))
+                .toEqual(['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5', 'test3']);
         })
     );
 

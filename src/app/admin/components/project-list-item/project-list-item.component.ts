@@ -1,11 +1,12 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import { ModalService, Notification } from 'gentics-ui-core';
+
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { Subscription } from 'rxjs';
-import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 import { Project } from '../../../common/models/project.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 
 
 @Component({
@@ -27,7 +28,7 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
                 private i18n: I18nService,
                 private state: ApplicationStateService,
                 private entities: EntitiesService,
-                private ProjectEffectsService: ProjectEffectsService) {
+                private adminProjectEffects: AdminProjectEffectsService) {
     }
 
     ngOnInit(): void {
@@ -64,7 +65,7 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
             ]
         })
         .then(modal => modal.open())
-        .then(() => this.ProjectEffectsService.deleteProject(this.projectUuid));
+        .then(() => this.adminProjectEffects.deleteProject(this.projectUuid));
     }
 
     /**

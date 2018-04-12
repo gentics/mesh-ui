@@ -1,29 +1,30 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 
 import { Microschema } from '../../../common/models/microschema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { ModalService } from 'gentics-ui-core';
-import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
-import { Router } from '@angular/router';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
     templateUrl: './microschema-list.component.html',
     styleUrls: ['./microschema-list.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MicroschemaListComponent {
+export class MicroschemaListComponent implements OnInit {
     microschemas$: Observable<Microschema[]>;
     loading$: Observable<boolean>;
 
-    constructor(entities: EntitiesService,
-                private microschemaEffects: MicroschemaEffectsService,
+    constructor(private entities: EntitiesService,
+                private adminSchemaEffects: AdminSchemaEffectsService,
                 private state: ApplicationStateService,
-                private router: Router) {
-        this.microschemas$ = entities.selectAllMicroschemas();
-        this.loading$ = state.select(state => state.list.loadCount > 0);
-        this.microschemaEffects.loadMicroschemas();
+                private router: Router) {}
+
+    ngOnInit(): void {
+        this.microschemas$ = this.entities.selectAllMicroschemas();
+        this.loading$ = this.state.select(state => state.list.loadCount > 0);
+        this.adminSchemaEffects.loadMicroschemas();
     }
 
     createMicroschema() {

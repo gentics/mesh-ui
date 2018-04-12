@@ -7,38 +7,55 @@ import { ProjectCreateRequest, ProjectResponse } from '../../../common/models/se
 
 
 @Injectable()
-export class ProjectEffectsService {
+export class AdminProjectEffectsService {
 
     constructor(private api: ApiService,
                 private notification: I18nNotification,
                 private state: ApplicationStateService) {
     }
 
+    loadProjects(): void {
+        this.state.actions.adminProjects.fetchProjectsStart();
+
+        this.api.project.getProjects({})
+            .subscribe(
+                response => {
+                    this.state.actions.adminProjects.fetchProjectsSuccess(response.data);
+                },
+                error => {
+                    this.state.actions.adminProjects.fetchProjectsError();
+                }
+            );
+    }
+
     createProject(projectRequest: ProjectCreateRequest): Promise<ProjectResponse> {
-        this.state.actions.admin.actionStart();
+        this.state.actions.adminProjects.createProjectStart();
         return this.api.admin.createProject({}, projectRequest)
-        .do(project => {
-            this.state.actions.admin.createProjectSuccess(project);
-            this.notification.show({
-                type: 'success',
-                message: 'admin.project_created'
-            });
-        }, this.state.actions.admin.actionError)
-        .toPromise();
+            .do(
+                project => {
+                    this.state.actions.adminProjects.createProjectSuccess(project);
+                    this.notification.show({
+                        type: 'success',
+                        message: 'admin.project_created'
+                    });
+                },
+                () => this.state.actions.adminProjects.createProjectError()
+            )
+            .toPromise();
     }
 
     deleteProject(projectUuid: string): void {
-        this.state.actions.admin.actionStart();
+        this.state.actions.adminProjects.deleteProjectStart();
 
         this.api.admin.deleteProject({projectUuid})
         .subscribe(() => {
-            this.state.actions.admin.deleteProjectSuccess(projectUuid);
+            this.state.actions.adminProjects.deleteProjectSuccess(projectUuid);
             this.notification.show({
                 type: 'success',
                 message: 'admin.project_deleted'
             });
         }, error => {
-            this.state.actions.admin.actionError();
+            this.state.actions.adminProjects.deleteProjectError();
             this.notification.show({
                 type: 'error',
                 message: 'admin.project_deleted_error'

@@ -1,15 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ModalService } from 'gentics-ui-core';
-import { hashValues, filenameExtension } from '../../../common/util/util';
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 import { SchemaResponse } from '../../../common/models/server-models';
-import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
     templateUrl: './schema.component.html',
@@ -37,14 +36,13 @@ export class SchemaComponent implements OnInit, OnDestroy {
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
                 private modal: ModalService,
-                private schemaEffects: SchemaEffectsService,
+                private schemaEffects: AdminSchemaEffectsService,
                 private route: ActivatedRoute,
                 private router: Router,
-                private ref: ChangeDetectorRef) {
-    }
+                private ref: ChangeDetectorRef) {}
 
     ngOnInit() {
-        this.loading$ = this.state.select(state => state.admin.loadCount > 0);
+        this.loading$ = this.state.select(state => state.adminSchemas.loadCount > 0);
 
         this.uuid$ = this.route.paramMap
             .map(map => map.get('uuid'))
@@ -52,7 +50,7 @@ export class SchemaComponent implements OnInit, OnDestroy {
             .do(route => {
                 this.isNew = route === 'new';
                 if (this.isNew) {
-                    this.state.actions.admin.newSchema();
+                    this.state.actions.adminSchemas.newSchema();
                 }
             })
             // This will cause all the stuff below to not trigger when a new schema is made.
@@ -90,8 +88,10 @@ export class SchemaComponent implements OnInit, OnDestroy {
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.schemaJson);
             if (this.isNew) {
-                this.schemaEffects.createSchema(changedSchema).subscribe(schema => {
-                    this.router.navigate(['admin', 'schemas', schema.uuid]);
+                this.schemaEffects.createSchema(changedSchema).then(schema => {
+                    if (schema) {
+                        this.router.navigate(['admin', 'schemas', schema.uuid]);
+                    }
                 });
             } else {
                 this.schema$.take(1).subscribe(schema => {

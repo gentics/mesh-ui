@@ -1,15 +1,19 @@
 import { TestBed } from '@angular/core/testing';
+import { Observable } from 'rxjs/Observable';
+import { Notification } from 'gentics-ui-core';
+
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
-import { Notification, GenticsUICoreModule } from 'gentics-ui-core';
-import { AdminEffectsService } from './admin-effects.service';
-import { Observable } from 'rxjs/Observable';
-import { ProjectAssignments } from '../../../state/models/admin-state.model';
+import { ProjectAssignments } from '../../../state/models/admin-schemas-state.model';
+import { AdminSchemaEffectsService } from './admin-schema-effects.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
-describe('Admin Effects', () => {
-    let adminEffects: AdminEffectsService;
-    let adminActionsSpy;
+describe('AdminSchemaEffects', () => {
+    let adminSchemaEffects: AdminSchemaEffectsService;
+    let state: TestApplicationState;
     let apiServiceSpy;
     let i18nNotificationSpy;
 
@@ -20,26 +24,24 @@ describe('Admin Effects', () => {
                 getProjectSchemas: jasmine.createSpy('getProjectSchemas')
             }
         };
-        adminActionsSpy = jasmine.createSpyObj('adminActions', [
-            'loadEntityAssignmentsStart',
-            'loadEntityAssignmentProjectsSuccess',
-            'loadEntityAssignmentsSuccess',
-            'loadEntityAssignmentsError'
-        ]);
         i18nNotificationSpy = jasmine.createSpyObj('i18n notifications', ['show']);
 
 
         TestBed.configureTestingModule({
             providers: [
+                AdminSchemaEffectsService,
                 { provide: ApiService, useValue: apiServiceSpy},
-                { provide: ApplicationStateService, useValue: {actions: {admin: adminActionsSpy}}},
+                { provide: ApplicationStateService, useClass: TestApplicationState },
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: I18nNotification, useValue: i18nNotificationSpy},
-                { provide: Notification, useValue: {}},
-                AdminEffectsService
+                { provide: Notification, useValue: {}}
             ]
         });
 
-        adminEffects = TestBed.get(AdminEffectsService);
+        state = TestBed.get(ApplicationStateService);
+        adminSchemaEffects = TestBed.get(AdminSchemaEffectsService);
+
+        state.trackAllActionCalls();
     });
 
     describe('loadEntityAssignments', () => {
@@ -52,9 +54,9 @@ describe('Admin Effects', () => {
 
         it('sends empty object on no projects', () => {
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of({data: []}));
-            adminEffects.loadEntityAssignments('schema', 'test');
-            expect(adminActionsSpy.loadEntityAssignmentProjectsSuccess).toHaveBeenCalled();
-            expect(adminActionsSpy.loadEntityAssignmentsSuccess).toHaveBeenCalledWith({});
+            adminSchemaEffects.loadEntityAssignments('schema', 'test');
+            expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
+            expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith({});
         });
 
         it('returns correct assignments 1', () => {
@@ -65,9 +67,9 @@ describe('Admin Effects', () => {
 
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
             apiServiceSpy.project.getProjectSchemas.and.returnValue(Observable.of(schemasResponse(['test'])));
-            adminEffects.loadEntityAssignments('schema', 'test');
-            expect(adminActionsSpy.loadEntityAssignmentProjectsSuccess).toHaveBeenCalled();
-            expect(adminActionsSpy.loadEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
+            adminSchemaEffects.loadEntityAssignments('schema', 'test');
+            expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
+            expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
         });
 
         it('returns correct assignments 2', () => {
@@ -81,9 +83,9 @@ describe('Admin Effects', () => {
                 Observable.of(schemasResponse([])),
                 Observable.of(schemasResponse(['test']))
             );
-            adminEffects.loadEntityAssignments('schema', 'test');
-            expect(adminActionsSpy.loadEntityAssignmentProjectsSuccess).toHaveBeenCalled();
-            expect(adminActionsSpy.loadEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
+            adminSchemaEffects.loadEntityAssignments('schema', 'test');
+            expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
+            expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
         });
 
         it('returns correct assignments 3', () => {
@@ -94,9 +96,9 @@ describe('Admin Effects', () => {
 
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
             apiServiceSpy.project.getProjectSchemas.and.returnValue(Observable.of(schemasResponse([])));
-            adminEffects.loadEntityAssignments('schema', 'test');
-            expect(adminActionsSpy.loadEntityAssignmentProjectsSuccess).toHaveBeenCalled();
-            expect(adminActionsSpy.loadEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
+            adminSchemaEffects.loadEntityAssignments('schema', 'test');
+            expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
+            expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
         });
 
         function schemasResponse(projectUuids: string[]) {

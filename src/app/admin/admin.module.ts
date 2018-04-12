@@ -9,15 +9,14 @@ import { ProjectListComponent } from './components/project-list/project-list.com
 import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
 import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
-import { ProjectEffectsService } from './providers/effects/project-effects.service';
 import { MicroschemaListComponent } from './components/microschema-list/mircoschema-list.component';
-import { MicroschemaEffectsService } from './providers/effects/microschema-effects.service';
 import { MicroschemaComponent } from './components/microschema/mircoschema.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { SchemaComponent } from './components/schema/schema.component';
 import { SchemaAssignmentComponent } from './components/schema-assignment/schema-assignment.component';
-import { AdminEffectsService } from './providers/effects/admin-effects.service';
+import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
+import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
 
 @NgModule({
     declarations: [
@@ -42,9 +41,8 @@ import { AdminEffectsService } from './providers/effects/admin-effects.service';
     ],
     providers: [
         ModalService,
-        ProjectEffectsService,
-        MicroschemaEffectsService,
-        AdminEffectsService
+        AdminSchemaEffectsService,
+        AdminProjectEffectsService
     ]
 })
 export class AdminModule {

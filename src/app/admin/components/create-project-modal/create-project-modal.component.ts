@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { IModalDialog, Notification } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import { IModalDialog, Notification } from 'gentics-ui-core';
+
 import { ProjectCreateRequest, ProjectResponse, SchemaResponse } from '../../../common/models/server-models';
-import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
-import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 import { ApiError } from '../../../core/providers/api/api-error';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
+import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 
 @Component({
     selector: 'create-project-modal',
@@ -21,13 +22,13 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     name: FormControl;
     form: FormGroup;
 
-    creating: boolean = false;
-    conflict: boolean = false;
+    creating = false;
+    conflict = false;
 
     constructor(entities: EntitiesService,
                 private notification: Notification,
-                private schemaEffects: SchemaEffectsService,
-                private projectEffects: ProjectEffectsService) {
+                private adminSchemaEffects: AdminSchemaEffectsService,
+                private adminProjectEffects: AdminProjectEffectsService) {
 
         this.schemas$ = entities.selectAllSchemas();
         this.name = new FormControl('', Validators.compose([Validators.required, this.conflictValidator]));
@@ -40,7 +41,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     }
 
     ngOnInit(): void {
-        this.schemaEffects.loadSchemas();
+        this.adminSchemaEffects.loadSchemas();
 
         this.setDefaultSchema();
     }
@@ -84,7 +85,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
             this.form.markAsPristine();
             this.creating = true;
             this.conflict = false;
-            this.projectEffects.createProject(request).then(response => {
+            this.adminProjectEffects.createProject(request).then(response => {
                 this.closeFn(response);
                 this.creating = false;
             }).catch(err => {

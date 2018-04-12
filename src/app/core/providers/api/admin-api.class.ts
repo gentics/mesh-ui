@@ -73,11 +73,17 @@ export class AdminApi {
     /** Compare the provided schema with the schema which is currently stored. */
     diffSchemaChanges = apiPost('/schemas/{schemaUuid}/diff');
 
-    /** Delete the microschema with the given uuid */
+    /** Fetch the microschema with the given uuid */
     getMicroschema = apiGet('/microschemas/{microschemaUuid}');
 
     /** Load all microschemas. */
     getMicroschemas = apiGet('/microschemas');
+
+    /** Load all schemas. */
+    getSchemas = apiGet('/schemas');
+
+    /** Load a schema */
+    getSchema = apiGet('/schemas/{schemaUuid}');
 
     /** Get the current schema or node migration status. */
     // getMigrationStatus = apiGet('/admin/status/migrations');
