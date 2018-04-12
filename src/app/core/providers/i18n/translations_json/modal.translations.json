@@ -79,9 +79,17 @@
         "en": "Edit Image",
         "de": "Bild bearbeiten"
     },
+    "image_edited_label": {
+        "en": "image edited",
+        "de": "Bild bearbeitet"
+    },
     "list_changed_label": {
         "en": "list changed",
         "de": "Liste geändert"
+    },
+    "new_file_selected_label": {
+        "en": "new file selected",
+        "de": "Neue Datei ausgewählt"
     },
     "new_password_label": {
         "en": "New password",
