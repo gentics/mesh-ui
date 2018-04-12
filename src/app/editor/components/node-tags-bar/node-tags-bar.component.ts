@@ -11,7 +11,6 @@ import {
     ViewChild
 } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
 import { InputField, ModalService } from 'gentics-ui-core';
 
 import { MeshNode } from '../../../common/models/node.model';
@@ -41,8 +40,8 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     filteredTags: Tag[] = [];
     filterTerm = '';
     allTags: Tag[] = [];
-    buttonWidth$: Observable<number>;
     private destroyed$: Subject<void> = new Subject();
+    private focusTimer: any;
 
     constructor(private changeDetector: ChangeDetectorRef,
                 private state: ApplicationStateService,
@@ -56,9 +55,6 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
             .subscribe(tags => {
                 this.allTags = tags.map(uuid => this.entities.getTag(uuid));
             });
-
-        this.buttonWidth$ = this.state.select(state => state.ui.currentLanguage)
-            .map(lang => lang === 'en' ? 100 : 150);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -72,6 +68,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroyed$.next();
         this.destroyed$.complete();
+        clearTimeout(this.focusTimer);
     }
 
     onFilterChange(term: string): void {
@@ -85,6 +82,11 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
     onInputBlur(): void {
         this.inputIsFocused = false;
+    }
+
+    onInputEscape(): void {
+        this.displayTagSelection = false;
+        this.inputField.nativeElement.querySelector('input').blur();
     }
 
     onTagSelected(tag: Tag): void {
@@ -142,7 +144,8 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
     addTagClick() {
         this.inputIsFocused = true;
-        setTimeout(() => {
+        clearTimeout(this.focusTimer);
+        this.focusTimer = setTimeout(() => {
             this.inputField.nativeElement.querySelector('input').focus();
         }, 200);
     }

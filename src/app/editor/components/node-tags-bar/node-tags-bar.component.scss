@@ -6,6 +6,7 @@ $add-tag-button-width: 100px;
 
 :host {
     display: block;
+    position: relative;
     padding: 0 5px;
     box-shadow: $header-box-shadow;
 }
@@ -13,60 +14,53 @@ $add-tag-button-width: 100px;
 .tag-bar-container {
     position: relative;
     min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .add-tag {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+}
+
+gtx-input {
     position: absolute;
     top: 0;
-    left: 0;
-    bottom: 0;
+    width: 100%;
+    max-width: 0;
+    opacity: 0;
     z-index: 1;
-    background-color: $gtx-color-very-light-gray;
-    height: 2.5rem;
+    will-change: max-width, opacity;
+    transition: max-width 0.2s, opacity 0.2s;
+    color: $gtx-color-off-black;
 
-    .add-tag-button {
-        position: absolute;
-        left: 0;
-        top: 6px;
-        will-change: transform;
-        transition: opacity 0.2s, transform 0s;
-    }
-
-    gtx-input {
-        max-width: 0;
-        opacity: 0;
-        will-change: max-width;
-        transition: max-width 0.2s, opacity 0.2s;
-        color: $gtx-color-off-black;
-
-        /deep/ input[type=text],
-        /deep/ input[type=number]:focus:not([readonly]) {
-            margin: 0 !important;
-            border-color: transparent;
-            background-color: white;
-        }
+    /deep/ input[type=text],
+    /deep/ input[type=text]:focus:not([readonly]) {
+        margin: 0 !important;
+        border-color: transparent;
+        background-color: white;
     }
 
     &.active {
-        width: 100% !important;
-
-        .add-tag-button {
-            opacity: 0;
-            transform: translateX(-200px);
-            transition: opacity 0.2s, transform 0s 0.2s;
-        }
-        gtx-input {
-            max-width: 100%;
-            opacity: 1;
-        }
+        max-width: 100%;
+        opacity: 1;
     }
 }
 
 .tags-list {
-    margin-top: 2px;
     line-height: 2.5rem;
 }
 
 .search-chip {
     display: inline-block;
+}
+
+mesh-tag-selector {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 2.5rem;
 }

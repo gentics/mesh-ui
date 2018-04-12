@@ -102,8 +102,8 @@ export class SearchBarComponent implements OnInit, OnDestroy {
             .map(uuid => this.entities.getTag(uuid))
             .filter(tag => !!tag !== false);
 
-        // Required if the browser 'back' was clicked
-        this.changeDetectorRef.detectChanges();
+        // Required if the browser 'back' or 'forward' button was clicked
+        this.changeDetectorRef.markForCheck();
     }
 
     private filterTags(allTags: Tag[], selectedTags: Tag[], filterTerm: string): Tag[] {

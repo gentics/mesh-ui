@@ -5,6 +5,7 @@ import {
     HostListener,
     Input,
     OnChanges,
+    OnDestroy,
     Output,
     SimpleChanges,
     ViewChild
@@ -24,7 +25,7 @@ import { KeyCode } from '../../../common/util/keycode';
     styleUrls: ['./tag-selector.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TagSelectorComponent implements OnChanges {
+export class TagSelectorComponent implements OnChanges, OnDestroy {
 
     /** The tags to display. No filtering is done within this component. */
     @Input() tags: Array<Tag | TagReferenceFromServer>;
@@ -45,6 +46,8 @@ export class TagSelectorComponent implements OnChanges {
     newTagName = '';
     selectedIndex = -1;
 
+    private scrollTimer: number;
+
     ngOnChanges(changes: SimpleChanges): void {
         if ('active' in changes) {
             if (this.active) {
@@ -62,6 +65,10 @@ export class TagSelectorComponent implements OnChanges {
             this.selectedIndex = -1;
             this.checkForUnknownTagName(this.filterTerm);
         }
+    }
+
+    ngOnDestroy(): void {
+        clearTimeout(this.scrollTimer);
     }
 
     @HostListener('window:keydown', ['$event'])
@@ -117,7 +124,8 @@ export class TagSelectorComponent implements OnChanges {
      * options is scrolled into view in the options list.
      */
     private scrollToSelectedOption(): void {
-        setTimeout(() => {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(() => {
             const container = this.dropDown.content.elementRef.nativeElement;
             const selectedItem = container.querySelector('.selected');
             if (selectedItem) {

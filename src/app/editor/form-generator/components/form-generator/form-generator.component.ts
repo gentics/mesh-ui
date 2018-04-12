@@ -69,6 +69,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     private formGenerated$ = new Subject<void>();
     private windowResize$ = new Subject<void>();
     private containerResizeSub: Subscription;
+    private timer: any;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
                 private meshControlGroup: MeshControlGroupService,
@@ -106,6 +107,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         if (this.containerResizeSub) {
             this.containerResizeSub.unsubscribe();
         }
+        clearTimeout(this.timer);
     }
 
     @HostListener('window:resize')
@@ -152,7 +154,8 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
             this.meshControlGroup.formWidthChanged(initialWidth);
             this.changeDetector.markForCheck();
 
-            setTimeout(() => {
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
                 this.isInvisible = false;
                 this.changeDetector.markForCheck();
             }, 200);
