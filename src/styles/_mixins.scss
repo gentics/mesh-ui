@@ -1,58 +1,10 @@
-
 @mixin filter-selection {
     /deep/ .filter-selection,
-    /deep/ .hl-pipe,
+    /deep/ .hl-pipe
     {
         background-color: $gtx-color-primary !important;
         color: #fff;
         padding: 0 1px;
         margin: 0 1px;
-    }
-}
-
-
-@mixin tag-filter {
-    .tag-family {
-        color: $gtx-color-off-black;
-        font-size: 12px;
-    }
-
-    .tag-name {
-       padding: 2px 5px;
-       font-size: 14px;
-       color: $gtx-color-off-black;
-    }
-}
-
-@mixin search-chip {
-    .search-chip {
-        position: relative;
-        display: flex;
-
-        font-size: 13px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.6);
-        line-height: 28px;
-        padding: 0 12px;
-        background-color: #e4e4e4;
-        overflow: hidden;
-        white-space: nowrap;
-        border-radius: 16px;
-        margin-right: 5px;
-
-        .chip-contents {
-            margin-right: 16px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        > .remove-button {
-            cursor: pointer;
-            position: absolute;
-            top: 0;
-            right: 5px;
-            font-size: 16px;
-            line-height: 28px;
-        }
     }
 }

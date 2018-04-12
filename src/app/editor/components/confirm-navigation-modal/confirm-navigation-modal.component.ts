@@ -23,13 +23,12 @@ export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
     constructor(private i18n: I18nService) {}
 
     ngOnInit(): void {
-        const listChangedLabel = this.i18n.translate('modal.list_changed_label');
 
         this.changes = this.nodeEditor.formGenerator.getChangesByPath()
             .map(change => {
                 const path = change.path.join(' › ');
-                const oldValue = typeof change.initialValue !== 'object' ? change.initialValue.toString() : '';
-                const newValue = typeof change.currentValue !== 'object' ? change.currentValue.toString() : listChangedLabel;
+                const oldValue = this.getInitialValueString(change.initialValue);
+                const newValue = this.getCurrentValueString(change.currentValue);
                 return { path, oldValue, newValue };
             });
 
@@ -66,5 +65,21 @@ export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
 
     registerCancelFn(cancel: (val: any) => void): void {
         this.cancelFn = cancel;
+    }
+
+    private getInitialValueString(initialValue: any): string {
+        return typeof initialValue !== 'object' ? initialValue.toString() : '';
+    }
+
+    private getCurrentValueString(currentValue: any): string {
+        if (typeof currentValue !== 'object') {
+            return currentValue.toString();
+        } else if (currentValue.file) {
+            return this.i18n.translate('modal.new_file_selected_label');
+        } else if (currentValue.transform) {
+            return this.i18n.translate('modal.image_edited_label');
+        } else {
+            return this.i18n.translate('modal.list_changed_label');
+        }
     }
 }

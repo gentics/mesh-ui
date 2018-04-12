@@ -28,6 +28,9 @@ import { Tag } from '../../../common/models/tag.model';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { SearchBarComponent } from './search-bar.component';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { ChipComponent } from '../../../shared/components/chip/chip.component';
+import { TagComponent } from '../../../shared/components/tag/tag.component';
+import { MockTagSelectorComponent } from '../../../shared/components/tag-selector/tag-selector.component.mock';
 
 
 describe('Search-bar component:', () => {
@@ -74,7 +77,9 @@ describe('Search-bar component:', () => {
                 SearchBarComponent,
                 BackgroundFromDirective,
                 HighlightPipe,
-
+                ChipComponent,
+                TagComponent,
+                MockTagSelectorComponent
             ],
             providers: [
                 OverlayHostService,
@@ -137,63 +142,59 @@ describe('Search-bar component:', () => {
 
 
     describe('Reads the URL parameters to display', () => {
-        it('search keyword',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                fixture.detectChanges();
-                const chip: DebugElement = fixture.debugElement.query(By.css('.search-query'));
-                activeRoute.queryParamMap.take(1).subscribe(urlParams => {
-                    expect(chip.nativeElement.innerHTML).toEqual(urlParams.get('q'));
-                });
-            })
-        );
 
-        it('searched tags',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                fixture.detectChanges();
-                const tagChips: DebugElement[] = fixture.debugElement.queryAll(By.css('.chip-tags'));
-                expect(tagChips.length).toEqual(2); //thats how much we set in the activatedQuery mock config
-            })
-        );
+        it('search keyword', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+            const searchBar: SearchBarComponent = fixture.debugElement.query(By.directive(SearchBarComponent)).componentInstance;
+            activeRoute.queryParamMap.take(1).subscribe(urlParams => {
+                expect(searchBar.searchQuery).toEqual(urlParams.get('q'));
+            });
+        }));
+
+        it('searched tags', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+            const tagChips: DebugElement[] = fixture.debugElement.queryAll(By.css('mesh-tag'));
+            expect(tagChips.length).toEqual(2); // that's how much we set in the activatedQuery mock config
+        }));
+
     });
 
     describe('Start typing', () => {
-        it('updates the state filter term',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                fixture.detectChanges();
-                typeSearchTerm(fixture, 'ford');
-                expect(listService.setFilterTerm).toHaveBeenCalledWith('ford')
-            })
-        );
+
+        it('updates the state filter term', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+            typeSearchTerm(fixture, 'ford');
+            expect(listService.setFilterTerm).toHaveBeenCalledWith('ford');
+        }));
 
         it('displays tags drop box if a first character is "#" followed by the name of tag',
-            componentTest(() => TestComponent, (fixture, instance) => {
+            componentTest(() => TestComponent, fixture => {
                 fixture.detectChanges();
                 typeSearchTerm(fixture, '#mock');
                 fixture.detectChanges();
                 tick();
-                const filteredTagItem: DebugElement = fixture.debugElement.queryAll(By.css('gtx-dropdown-item'))[0];
-                expect(filteredTagItem).toBeDefined();
-            })
-        );
+                const searchBar: SearchBarComponent = fixture.debugElement.query(By.directive(SearchBarComponent)).componentInstance;
+                expect(searchBar.displayTagSelection).toBe(true);
+            }));
+
     });
 
     describe('Submitting the search', () => {
-        it('sets the search keyword if "search" is clicked',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                fixture.detectChanges();
-                typeSearchTerm(fixture, 'some search');
-                fixture.debugElement.query(By.css('gtx-search-bar')).triggerEventHandler('search', null);
-                tick();
-                expect(MockRouter.navigate)
-                    .toHaveBeenCalledWith(
-                            [],
-                            {
-                                relativeTo: activeRoute,
-                                queryParams: { q: 'some search', t: 'tagUuid,tagUuid2' }
-                            }
-                    );
-            })
-        );
+
+        it('sets the search keyword if "search" is clicked', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+            typeSearchTerm(fixture, 'some search');
+            fixture.debugElement.query(By.css('gtx-search-bar')).triggerEventHandler('search', null);
+            tick();
+            expect(MockRouter.navigate).toHaveBeenCalledWith(
+                [],
+                {
+                    relativeTo: activeRoute,
+                    queryParams: { q: 'some search', t: 'tagUuid,tagUuid2' }
+                }
+            );
+        }));
+
     });
 });
 
@@ -211,13 +212,6 @@ function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string):
         <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent { }
-
-function getSearchBarComponent(fixture: ComponentFixture<TestComponent>): SearchBarComponent {
-    const tagBarComponent: SearchBarComponent = fixture.debugElement.query(By.css('mesh-search-bar'))
-                                                                            .componentInstance as SearchBarComponent;
-    return tagBarComponent;
-}
-
 
 class MockListEffectsService {
     loadChildren = jasmine.createSpy('loadChildren');

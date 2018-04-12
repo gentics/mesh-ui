@@ -34,6 +34,7 @@
     <div class="info-row">
         <div class="path">
             <a [routerLink]="nodePathRouterLink" (click)="focusList()">
+                <icon>folder_open</icon>
                 {{ nodePath }}
             </a>
         </div>
@@ -43,12 +44,13 @@
     </div>
     <div class="tags-row">
         <div class="tags">
-            <app-node-tags-bar [node]="node"></app-node-tags-bar>
+            <mesh-node-tags-bar #tagsBar [node]="node"></mesh-node-tags-bar>
         </div>
     </div>
 </div>
 
 <div class="editor-body" scrollFrame>
-    <form-generator [schema]="schema"
+    <form-generator #formGenerator
+                    [schema]="schema"
                     [node]="node"></form-generator>
 </div>

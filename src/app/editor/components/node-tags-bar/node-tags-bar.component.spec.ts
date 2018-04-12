@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { DropdownList, GenticsUICoreModule, InputField, ModalService, OverlayHostService } from 'gentics-ui-core';
+import { Button, GenticsUICoreModule, InputField, ModalService, OverlayHostService } from 'gentics-ui-core';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
@@ -15,12 +16,11 @@ import { mockMeshNode, mockSchema, mockTag, mockTagFamily } from '../../../../te
 import { Tag } from '../../../common/models/tag.model';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { NodeTagsBarComponent } from './node-tags-bar.component';
-import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { MockTagSelectorComponent } from '../../../shared/components/tag-selector/tag-selector.component.mock';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -44,8 +44,8 @@ describe('NodeTagsBarComponent', () => {
             declarations: [
                 NodeTagsBarComponent,
                 TestComponent,
-                BackgroundFromDirective,
-                HighlightPipe
+                MockTagComponent,
+                MockTagSelectorComponent
             ],
             providers: [
                 OverlayHostService,
@@ -57,7 +57,8 @@ describe('NodeTagsBarComponent', () => {
                 { provide: ConfigService, useClass: MockConfigService },
             ],
             imports: [
-                GenticsUICoreModule
+                GenticsUICoreModule,
+                FormsModule
             ]
         });
 
@@ -97,17 +98,25 @@ describe('NodeTagsBarComponent', () => {
         });
     });
 
-    describe('Start typing', () => {
-        it('it shows dropdown',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                typeSearchTerm(fixture, 'mock');
-                const dropDown: DropdownList = getDropDownList(fixture);
-                expect(dropDown.isOpen).toBe(true);
-            })
-        );
+    describe('clicking the add-tag-button', () => {
 
-        it('it filters matching tags',
-            componentTest(() => TestComponent, (fixture, instance) => {
+        it('sets focus on the input', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+
+            const addTagButton = fixture.debugElement.query(By.directive(Button)).nativeElement;
+            const nativeInput: HTMLInputElement = fixture.debugElement.query(By.css('gtx-input input')).nativeElement;
+            nativeInput.focus = jasmine.createSpy('focus');
+            addTagButton.click();
+            tick(200);
+
+            expect(nativeInput.focus).toHaveBeenCalled();
+        }));
+
+    });
+
+    describe('Start typing', () => {
+
+        it('it filters matching tags', componentTest(() => TestComponent, fixture => {
                 fixture.detectChanges();
                 tick();
                 typeSearchTerm(fixture, 'mock');
@@ -116,33 +125,30 @@ describe('NodeTagsBarComponent', () => {
             })
         );
 
-        it('it requires saving if things change',
-            componentTest(() => TestComponent, (fixture, instance) => {
+        it('it requires saving if things change', componentTest(() => TestComponent, fixture => {
                 const tagBarComponent = getTagsBarComponent(fixture);
                 tagBarComponent.node = node['en']['1'];
-
                 fixture.detectChanges();
                 tick();
 
-                typeSearchTerm(fixture, tag2.name);
-                fixture.detectChanges();
+                const tagSelector = getTagSelector(fixture);
+                tagSelector.selectTag.emit({
+                    uuid: 'new_tag_uuid',
+                    name: 'new tag',
+                    tagFamily: { name: 'tag family', uuid: 'tag_family_uuid' }
+                } as Tag);
                 tick();
-                const filteredTagItem: DebugElement = fixture.debugElement.queryAll(By.css('gtx-dropdown-item'))[0];
-                filteredTagItem.triggerEventHandler('click', tag2);
                 expect(tagBarComponent.isDirty).toEqual(true);
             })
         );
 
-        it('it opens a dialog to create a new tag',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                const tagBarComponent = getTagsBarComponent(fixture);
+        it('it opens a dialog to create a new tag', componentTest(() => TestComponent, fixture => {
                 typeSearchTerm(fixture, 'new-tag');
 
                 fixture.detectChanges();
                 tick();
-                const dropDownItemForNewTag: DebugElement = fixture.debugElement.query(By.css('gtx-dropdown-item'));
-                dropDownItemForNewTag.triggerEventHandler('click', null);
-                fixture.detectChanges();
+                const tagSelector = getTagSelector(fixture);
+                tagSelector.createNewTag.emit('new tag name');
                 tick();
                 expect(modalService.fromComponent).toHaveBeenCalled();
             })
@@ -151,9 +157,11 @@ describe('NodeTagsBarComponent', () => {
 });
 
 function getTagsBarComponent(fixture: ComponentFixture<TestComponent>): NodeTagsBarComponent {
-    const tagBarComponent: NodeTagsBarComponent = fixture.debugElement.query(By.css('app-node-tags-bar'))
-                                                                            .componentInstance as NodeTagsBarComponent;
-    return tagBarComponent;
+    return fixture.debugElement.query(By.directive(NodeTagsBarComponent)).componentInstance;
+}
+
+function getTagSelector(fixture: ComponentFixture<TestComponent>): MockTagSelectorComponent {
+    return fixture.debugElement.query(By.css('mesh-tag-selector')).componentInstance;
 }
 
 function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string): void {
@@ -163,17 +171,18 @@ function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string):
     tick();
 }
 
-function getDropDownList(fixture: ComponentFixture<TestComponent>): DropdownList {
-    const dropDown: DropdownList = fixture.debugElement.query(By.css('gtx-dropdown-list')).componentInstance as DropdownList;
-    return dropDown;
-}
 @Component({
     template: `
-    <app-node-tags-bar></app-node-tags-bar>
+    <mesh-node-tags-bar></mesh-node-tags-bar>
     <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent {
     node: MeshNode;
+}
+
+@Component({ selector: 'mesh-tag', template: '' })
+class MockTagComponent {
+    @Input() tag: any;
 }
 
 class MockModalService {

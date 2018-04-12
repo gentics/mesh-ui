@@ -1,0 +1,34 @@
+@import "variables";
+
+:host {
+    display: block;
+}
+
+gtx-dropdown-list, gtx-dropdown-trigger {
+    width: 100%;
+    display: block;
+}
+
+gtx-dropdown-content {
+    max-height: 300px !important; // !important because the gtx-dropdown-list will try to overwrite it.
+}
+
+gtx-dropdown-item.selected {
+    background-color: $gtx-color-very-light-gray;
+}
+
+.tag-family {
+    color: $gtx-color-off-black;
+    font-size: 12px;
+}
+
+.tag-name {
+    padding: 2px 5px;
+    font-size: 14px;
+    border-radius: 3px;
+    color: $gtx-color-off-white;
+}
+
+.create-new-tag {
+    border-top: 1px solid $gtx-color-light-gray;
+}
