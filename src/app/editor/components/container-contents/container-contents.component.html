@@ -1,17 +1,18 @@
-<breadcrumbs></breadcrumbs>
-<mesh-search-bar></mesh-search-bar>
-<div class="detail-bar">
-    <create-node-button [disabled]="searching$ | async"></create-node-button>
-    <gtx-button
-        [disabled]="searching$ | async"
-        size="small"
-        class="button-upload"
-        flat
-        (click)="onFileUploadClicked()"
-    >
-        <icon left>file_upload</icon> {{ 'list.upload_files' | i18n }}
-    </gtx-button>
-    <container-language-switcher></container-language-switcher>
+<div class="container-header">
+    <breadcrumbs></breadcrumbs>
+    <mesh-search-bar></mesh-search-bar>
+    <div class="detail-bar">
+        <create-node-button [disabled]="searching$ | async"></create-node-button>
+        <gtx-button
+            [disabled]="searching$ | async"
+            size="small"
+            class="button-upload"
+            flat
+            (click)="onFileUploadClicked()">
+            <icon left>file_upload</icon> {{ 'list.upload_files' | i18n }}
+        </gtx-button>
+        <container-language-switcher></container-language-switcher>
+    </div>
 </div>
 
 <mesh-container-file-drop-area>

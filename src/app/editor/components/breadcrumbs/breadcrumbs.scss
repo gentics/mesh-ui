@@ -1,18 +1,18 @@
 @import "variables";
 
 :host {
-   /* .container {
-        display: flex;
+    gtx-breadcrumbs {
         height: 40px;
-        background-color: $gtx-color-light-gray;
-        text-align: center;
-        font-size: 32px;
-        color: $gtx-color-mid-gray;*/
+        line-height: 40px;
+        width: 100%;
 
-        gtx-breadcrumbs {
-            height: 40px;
-            line-height: 40px;
-            width: 100%;
+        /deep/ nav {
+            box-shadow: none;
         }
-   // }
+    }
+
+    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
+    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
+        color: white;
+    }
 }

@@ -11,6 +11,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 import { InputField, ModalService } from 'gentics-ui-core';
 
 import { MeshNode } from '../../../common/models/node.model';
@@ -31,6 +32,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
     @ViewChild(InputField, { read: ElementRef }) inputField: ElementRef;
+
     @Input() node: MeshNode;
     inputIsFocused = false;
     isDirty = false;
@@ -39,6 +41,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     filteredTags: Tag[] = [];
     filterTerm = '';
     allTags: Tag[] = [];
+    buttonWidth$: Observable<number>;
     private destroyed$: Subject<void> = new Subject();
 
     constructor(private changeDetector: ChangeDetectorRef,
@@ -53,6 +56,9 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
             .subscribe(tags => {
                 this.allTags = tags.map(uuid => this.entities.getTag(uuid));
             });
+
+        this.buttonWidth$ = this.state.select(state => state.ui.currentLanguage)
+            .map(lang => lang === 'en' ? 100 : 150);
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -108,11 +114,11 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
                 projectName: this.state.now.editor.openNode.projectName
             }
         )
-        .then(modal => modal.open())
-        .then((result: CreateTagDialogComponentResult) => {
-            this.onTagSelected(result.tag);
-            this.changeDetector.markForCheck();
-        });
+            .then(modal => modal.open())
+            .then((result: CreateTagDialogComponentResult) => {
+                this.onTagSelected(result.tag);
+                this.changeDetector.markForCheck();
+            });
     }
 
     /**

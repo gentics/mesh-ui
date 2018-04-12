@@ -16,7 +16,6 @@ import { Tag } from '../../../common/models/tag.model';
     styleUrls: ['./search-bar.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class SearchBarComponent implements OnInit, OnDestroy {
 
     allTags: Tag[] = [];

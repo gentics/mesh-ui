@@ -219,9 +219,26 @@ export function getMeshNodeNonBinaryFields(node: MeshNode): FieldMapFromServer {
 
 
 export function stringToColor(input: string): string {
-    const safeColors = ['#303952', '#596275', '#574b90', '#6D214F', '#182C61', '#2C3A47', '#34495e', '#2c3e50'];
-    const value = input.split('').reduce((prev, curr) => {
-        return prev + curr.charCodeAt(0);
+    const safeColors = [
+        '#022b3a',
+        '#3a435e',
+        '#455561',
+        '#4f5d75',
+        '#555b6e',
+        '#013d27',
+        '#2F5646',
+        '#5a5353',
+        '#3d3b30',
+        '#4e4a59',
+        '#65334d',
+        '#474127',
+        '#2F5356',
+        '#82592A',
+        '#7F5F33',
+        '#633009',
+    ];
+    const value = input.split('').reduce((prev, curr, index) => {
+        return prev + Math.round(curr.charCodeAt(0) * Math.log(index + 2));
     }, 0);
     return safeColors[value % safeColors.length];
 }

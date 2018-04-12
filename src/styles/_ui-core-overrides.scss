@@ -4,15 +4,28 @@
 
 // adjust media query break points
 $small-screen-up: 801px;
-$medium-screen-up: 1201px;
-$large-screen-up: 1601px;
+$medium-screen-up: 1001px;
+$large-screen-up: 1401px;
 $small-screen: 800px;
-$medium-screen: 1200px;
-$large-screen: 1600px;
+$medium-screen: 1000px;
+$large-screen: 1400px;
 
 // color overrides
 $gtx-color-primary: #0096DC;
-$gtx-color-secondary: #d8d7cb;
+$gtx-color-secondary: #b5b4ba;
 $gtx-color-success: #449d44;
 $gtx-color-warning: #ec971f;
 $gtx-color-alert: #c9302c;
+
+$gtx-color-off-white: #f5f5fa !default;
+$gtx-color-very-light-gray: #ededf3 !default;
+$gtx-color-light-gray: #d6d6da !default;
+$gtx-color-mid-gray: #b5b5b9 !default;
+$gtx-color-dark-gray: #79797d !default;
+$gtx-color-very-dark-gray: #3d3d42 !default;
+$gtx-color-off-black: #222226 !default;
+
+// ui-core component-specific overrides
+$gtx-breadcrumbs-background-color: $gtx-color-very-dark-gray;
+$gtx-breadcrumbs-active-color: #444449;
+$gtx-breadcrumbs-inactive-color: $gtx-color-dark-gray;

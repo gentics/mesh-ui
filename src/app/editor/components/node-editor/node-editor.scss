@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: white;
 }
 
 .editor-header {
@@ -18,7 +19,8 @@
 
 .title-row {
     display: flex;
-    background-color: $gtx-color-light-gray;
+    background-color: $gtx-color-very-dark-gray;
+    color: white;
     padding: 5px 30px 5px 10px;
     height: 40px;
     .main {
@@ -67,6 +69,7 @@
 .tags-row {
     display: flex;
     justify-content: space-between;
+    background-color: $gtx-color-very-light-gray;
 
     .tags {
         color: $gtx-color-light-gray;

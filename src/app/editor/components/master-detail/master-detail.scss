@@ -4,6 +4,10 @@
     height: 100%;
 }
 
+/deep/ .left-panel {
+    background-color: white;
+}
+
 /deep/ .right-panel {
     position: relative;
     transform: translateX(0);

@@ -1,11 +1,13 @@
-<div class="search-bar-container">
+<div class="tag-bar-container">
     <div class="add-tag"
+         [style.width.px]="buttonWidth$ | async"
          [class.active]="inputIsFocused || displayTagSelection"
          (click)="addTagClick()">
-        <gtx-button type="secondary"
+        <gtx-button type="primary"
+                    flat
                     size="small"
                     class="add-tag-button">
-            <icon left>add</icon> {{ 'editor.add_tag' | i18n }}
+            <icon left>label_outline</icon>{{ 'editor.add_tag' | i18n }}
         </gtx-button>
         <gtx-input [(ngModel)]="filterTerm"
                    placeholder="{{ 'editor.add_tag' | i18n }}"
@@ -15,7 +17,8 @@
         ></gtx-input>
     </div>
     <div class="tags-list">
-        <mesh-tag *ngFor="let tag of nodeTags"
+        <mesh-tag *ngFor="let tag of nodeTags; index as i"
+                  [style.marginLeft.px]="i === 0 ? (buttonWidth$ | async) : 0"
                   [tag]="tag"
                   (removeClick)="onTagDeleted(tag)"></mesh-tag>
     </div>

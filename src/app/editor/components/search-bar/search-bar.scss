@@ -20,5 +20,11 @@ gtx-dropdown-trigger {
 gtx-search-bar {
     flex-grow: 1;
     z-index: 1;
-    margin-bottom: 1px;
+    margin: 3px;
+    box-shadow: none;
+    background-color: $gtx-color-off-white;
+
+    &.focused {
+        background-color: white;
+    }
 }

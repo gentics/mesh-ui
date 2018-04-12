@@ -4,9 +4,15 @@
 
 $add-tag-button-width: 100px;
 
-.search-bar-container {
+:host {
+    display: block;
+    padding: 0 5px;
+    box-shadow: $header-box-shadow;
+}
+
+.tag-bar-container {
     position: relative;
-    height: 2.5rem;
+    min-height: 2.5rem;
 }
 
 .add-tag {
@@ -14,14 +20,14 @@ $add-tag-button-width: 100px;
     top: 0;
     left: 0;
     bottom: 0;
-    width: $add-tag-button-width;
     z-index: 1;
-    background-color: white;
+    background-color: $gtx-color-very-light-gray;
+    height: 2.5rem;
 
     .add-tag-button {
         position: absolute;
         left: 0;
-        top: 2px;
+        top: 6px;
         will-change: transform;
         transition: opacity 0.2s, transform 0s;
     }
@@ -33,17 +39,20 @@ $add-tag-button-width: 100px;
         transition: max-width 0.2s, opacity 0.2s;
         color: $gtx-color-off-black;
 
-        /deep/ input {
+        /deep/ input[type=text],
+        /deep/ input[type=number]:focus:not([readonly]) {
             margin: 0 !important;
+            border-color: transparent;
+            background-color: white;
         }
     }
 
     &.active {
-        width: 100%;
+        width: 100% !important;
 
         .add-tag-button {
             opacity: 0;
-            transform: translateX(-$add-tag-button-width);
+            transform: translateX(-200px);
             transition: opacity 0.2s, transform 0s 0.2s;
         }
         gtx-input {
@@ -54,8 +63,8 @@ $add-tag-button-width: 100px;
 }
 
 .tags-list {
-    margin-left: $add-tag-button-width;
-    margin-top: 5px;
+    margin-top: 2px;
+    line-height: 2.5rem;
 }
 
 .search-chip {
