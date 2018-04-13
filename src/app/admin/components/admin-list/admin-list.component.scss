@@ -1,0 +1,39 @@
+@import "variables";
+
+:host {
+    display: block;
+}
+
+.list-header {
+    display: flex;
+    padding: 10px;
+    background-color: $gtx-color-very-light-gray;
+}
+
+.total-selected {
+    display: flex;
+    font-size: $gtx-font-size-small;
+    margin-left: 36px;
+
+    .checked-count {
+        color: $gtx-color-very-dark-gray;
+    }
+    .clear-selection {
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    &.hidden {
+        visibility: hidden;
+    }
+}
+
+.list-body {
+    padding: 10px;
+}
+
+.list-footer {
+    padding: 10px;
+    background-color: $gtx-color-very-light-gray;
+    text-align: center;
+}

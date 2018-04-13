@@ -1,0 +1,30 @@
+<div class="list-header">
+    <div class="selection-controls" *ngIf="selectable">
+        <gtx-checkbox [label]="'admin.select_all' | i18n"
+                      class="select-all"
+                      [checked]="allSelected()"
+                      (change)="toggleSelectAll()"></gtx-checkbox>
+        <div class="total-selected" [class.hidden]="checkedCount === 0">
+            <div class="checked-count">{{ 'admin.list_items_selected' | i18n: { count: checkedCount } }}</div>
+            <a class="clear-selection" (click)="clearSelection()">{{ 'admin.list_clear_selection' | i18n }}</a>
+        </div>
+    </div>
+    <div class="user-controls">
+        <ng-content></ng-content>
+    </div>
+</div>
+<div class="list-body">
+    <mesh-admin-list-item *ngFor="let item of items | paginate: paginationConfig; index as i"
+                          [@listAnimation]
+                          [checked]="!!checked[itemId(i)]"
+                          [selectable]="selectable"
+                          (checkboxClick)="onItemCheckboxClick(i, $event)">
+        <ng-template [ngTemplateOutlet]="templateRef"
+                     [ngTemplateOutletContext]="{ $implicit: item, item: item }">
+        </ng-template>
+    </mesh-admin-list-item>
+</div>
+<div class="list-footer">
+    <mesh-pagination-controls *ngIf="displayPaginationControls()"
+                              (pageChange)="onPageChange($event)"></mesh-pagination-controls>
+</div>

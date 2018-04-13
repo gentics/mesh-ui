@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { NoContentComponent } from './components/no-content/no-content.component';
@@ -17,6 +18,7 @@ import { FileSizePipe } from './pipes/file-size/file-size.pipe';
 import { TagComponent } from './components/tag/tag.component';
 import { ChipComponent } from './components/chip/chip.component';
 import { TagSelectorComponent } from './components/tag-selector/tag-selector.component';
+import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
 
 const SHARED_COMPONENTS = [
     ChipComponent,
@@ -24,7 +26,8 @@ const SHARED_COMPONENTS = [
     SchemaLabelComponent,
     TagComponent,
     TagSelectorComponent,
-    ThumbnailComponent
+    ThumbnailComponent,
+    PaginationControlsComponent
 ];
 
 const SHARED_DIRECTIVES = [
@@ -51,6 +54,7 @@ const SHARED_PIPES = [
         ReactiveFormsModule,
         GenticsUICoreModule,
         RouterModule.forChild([]),
+        NgxPaginationModule
     ],
     declarations: [
         ...SHARED_COMPONENTS,
@@ -61,6 +65,7 @@ const SHARED_PIPES = [
         ...SHARED_COMPONENTS,
         ...SHARED_PIPES,
         ...SHARED_DIRECTIVES,
+        PaginatePipe,
         GenticsUICoreModule,
         FormsModule,
         ReactiveFormsModule,
