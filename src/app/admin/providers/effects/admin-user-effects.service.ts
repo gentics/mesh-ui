@@ -4,6 +4,7 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { UserCreateRequest, UserResponse } from '../../../common/models/server-models';
+import { User } from '../../../common/models/user.model';
 
 
 @Injectable()
@@ -24,6 +25,26 @@ export class AdminUserEffectsService {
                 },
                 error => {
                     this.state.actions.adminUsers.fetchUsersError();
+                }
+            );
+    }
+
+    newUser(): void {
+        this.state.actions.adminUsers.newUser();
+    }
+
+    openUser(uuid: string): Promise<User | void> {
+        this.state.actions.adminUsers.openUserStart();
+
+        return this.api.user.getUser({ userUuid: uuid})
+            .toPromise()
+            .then(
+                response => {
+                    this.state.actions.adminUsers.openUserSuccess(response);
+                    return response;
+                },
+                error => {
+                    this.state.actions.adminUsers.openUserError();
                 }
             );
     }

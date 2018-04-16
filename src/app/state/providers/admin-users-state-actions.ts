@@ -6,6 +6,7 @@ import { EntityState } from '../models/entity-state.model';
 import { UserListResponse, UserResponse } from '../../common/models/server-models';
 import { mergeEntityState } from './entity-state-actions';
 import { AdminUsersState } from '../models/admin-users-state.model';
+import { User } from '../../common/models/user.model';
 
 @Injectable()
 @Immutable()
@@ -51,6 +52,27 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
     }
 
     fetchUsersError() {
+        this.adminUsers.loadCount--;
+    }
+
+    newUser() {
+        this.adminUsers.userDetail = null;
+    }
+
+    openUserStart() {
+        this.adminUsers.loadCount++;
+        this.adminUsers.userDetail = null;
+    }
+
+    openUserSuccess(user: UserResponse) {
+        this.adminUsers.loadCount--;
+        this.adminUsers.userDetail = user.uuid;
+        this.entities = mergeEntityState(this.entities, {
+            user: [user as User]
+        });
+    }
+
+    openUserError() {
         this.adminUsers.loadCount--;
     }
 

@@ -1,5 +1,3 @@
-<gtx-progress-bar [for]="loading$"></gtx-progress-bar>
-
 <div class="not-found" *ngIf="(schemas$ | async).length === 0 && !(loading$ | async)">
     <div><icon>sentiment_very_dissatisfied</icon></div>
     <p>{{ 'admin.schema_none_found' | i18n }}</p>

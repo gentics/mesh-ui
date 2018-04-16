@@ -3,6 +3,18 @@
         "en": "Assigned to projects",
         "de": "Zugewiesen zu Projekte"
     },
+    "email_address_label": {
+        "en": "Email address",
+        "de": "Email-Addresse"
+    },
+    "first_name_label": {
+        "en": "First name",
+        "de": "Vorname"
+    },
+    "last_name_label": {
+        "en": "Last name",
+        "de": "Nachname"
+    },
     "list_clear_selection": {
         "en": "clear selection",
         "de": "Auswahl aufheben"
@@ -34,6 +46,18 @@
     "microschema_none_found": {
         "en": "No microschemas found",
         "de": "Keine Microschemas gefunden"
+    },
+    "new_user": {
+        "en": "New user",
+        "de": "Neuer Benutzer"
+    },
+    "new_microschema": {
+        "en": "New microschema",
+        "de": "Neues Microschema"
+    },
+    "new_schema": {
+        "en": "New schema",
+        "de": "Neues Schema"
     },
     "projects_create": {
         "en": "Create project",
@@ -82,5 +106,9 @@
     "select_all": {
         "en": "Select all",
         "de": "Alle auswählen"
+    },
+    "user_name_label": {
+        "en": "Username",
+        "de": "Benutzername"
     }
 }

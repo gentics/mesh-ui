@@ -1,14 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Icon } from 'gentics-ui-core';
 
 import { UserListComponent } from './user-list.component';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { ConfigService } from '../../../core/providers/config/config.service';
-import { MockConfigService } from '../../../core/providers/config/config.service.mock';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ChipComponent } from '../../../shared/components/chip/chip.component';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('UserListComponent', () => {
     let component: UserListComponent;
@@ -17,17 +15,17 @@ describe('UserListComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
-                RouterTestingModule.withRoutes([])
+                RouterTestingModule.withRoutes([]),
+                TestStateModule
             ],
             declarations: [
                 UserListComponent,
-                MockAdminListComponent
+                MockAdminListComponent,
+                ChipComponent,
+                Icon
             ],
             providers: [
-                EntitiesService,
-                { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService },
-                { provide: ConfigService, useClass: MockConfigService }
+                { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService }
             ]
         });
     }));

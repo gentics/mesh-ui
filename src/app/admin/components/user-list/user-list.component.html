@@ -5,8 +5,10 @@
                  (pageChange)="onPageChange($event)">
     <ng-template let-user="item">
         <div class="user-row">
-            <div class="name" *ngIf="user.firstname || user.lastname">{{ user.firstname }} {{ user.lastname }}</div>
-            <div class="user-name">{{ user.username }}</div>
+            <a [routerLink]="['/admin/users', user.uuid]">
+                <div class="name" *ngIf="user.firstname || user.lastname">{{ user.firstname }} {{ user.lastname }}</div>
+                <div class="user-name">{{ user.username }}</div>
+            </a>
             <ng-container *ngFor="let group of user.groups">
                 <mesh-chip>
                     {{ group.name }}
