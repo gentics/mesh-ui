@@ -1,0 +1,17 @@
+<mesh-admin-list [items]="users$ | async"
+                 [itemsPerPage]="itemsPerPage$ | async"
+                 [currentPage]="currentPage$ | async"
+                 [totalItems]="totalItems$ | async"
+                 (pageChange)="onPageChange($event)">
+    <ng-template let-user="item">
+        <div class="user-row">
+            <div class="name" *ngIf="user.firstname || user.lastname">{{ user.firstname }} {{ user.lastname }}</div>
+            <div class="user-name">{{ user.username }}</div>
+            <ng-container *ngFor="let group of user.groups">
+                <mesh-chip>
+                    {{ group.name }}
+                </mesh-chip>
+            </ng-container>
+        </div>
+    </ng-template>
+</mesh-admin-list>

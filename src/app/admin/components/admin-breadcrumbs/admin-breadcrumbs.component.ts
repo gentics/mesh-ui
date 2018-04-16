@@ -20,6 +20,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 })
 export class AdminBreadcrumbsComponent implements OnInit {
     breadcrumbs$: Observable<IBreadcrumbRouterLink[]>;
+    loading$: Observable<boolean>;
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
@@ -34,6 +35,12 @@ export class AdminBreadcrumbsComponent implements OnInit {
                     .filter(getBreadcrumbText)                  // that have breadcrumb options set
                     .map(it => this.toBreadcrumb(it))           // and map them to breadcrumbs
             ));
+
+        this.loading$ = this.state.select(state =>
+            0 < state.adminUsers.loadCount ||
+            0 < state.adminSchemas.loadCount ||
+            0 < state.adminProjects.loadCount
+        );
     }
 
     /**

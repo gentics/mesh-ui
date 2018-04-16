@@ -14,6 +14,7 @@ import { ConfigService } from '../../core/providers/config/config.service';
 import { TagsStateActions } from './tags-state-actions';
 import { AdminProjectsStateActions } from './admin-projects-state-actions';
 import { AdminSchemasStateActions } from './admin-schemas-state-actions';
+import { AdminUsersStateActions } from './admin-users-state-actions';
 
 
 // TODO: re-enable this rule once immutablets has been updated
@@ -22,6 +23,7 @@ import { AdminSchemasStateActions } from './admin-schemas-state-actions';
 type ActionBranches = {
     adminProjects: AdminProjectsStateActions;
     adminSchemas: AdminSchemasStateActions;
+    adminUsers: AdminUsersStateActions;
     auth: AuthStateActions;
     editor: EditorStateActions;
     entity: EntityStateActions;
@@ -50,6 +52,7 @@ export class ApplicationStateService {
         this.store = new ImmutableStateStore<AppState, ActionBranches>({
             adminProjects: new AdminProjectsStateActions(),
             adminSchemas: new AdminSchemasStateActions(),
+            adminUsers: new AdminUsersStateActions(),
             auth: new AuthStateActions(),
             entity: new EntityStateActions(),
             editor: new EditorStateActions(config),

@@ -1,0 +1,18 @@
+@import "variables";
+
+.user-row {
+    display: flex;
+    align-items: center;
+}
+
+.name {
+    margin-right: 15px;
+}
+
+.user-name {
+    color: $gtx-color-dark-gray;
+}
+
+mesh-chip {
+    margin-left: 15px;
+}

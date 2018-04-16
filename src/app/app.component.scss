@@ -5,6 +5,12 @@ html, body{
     background-color: $gtx-color-off-white;
 }
 
+app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
 gtx-top-bar {
     padding: 5px 0;
 

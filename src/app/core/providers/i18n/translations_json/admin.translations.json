@@ -3,6 +3,14 @@
         "en": "Assigned to projects",
         "de": "Zugewiesen zu Projekte"
     },
+    "list_clear_selection": {
+        "en": "clear selection",
+        "de": "Auswahl aufheben"
+    },
+    "list_items_selected": {
+        "en": "Selected: {{ count }}",
+        "de": "Ausgewählt: {{ count }}"
+    },
     "microschema_create": {
         "en": "Create Microschema",
         "de": "Microschema erstellen"
@@ -70,5 +78,9 @@
     "schema_none_found": {
         "en": "No schemas found",
         "de": "Keine Schemas gefunden"
+    },
+    "select_all": {
+        "en": "Select all",
+        "de": "Alle auswählen"
     }
 }

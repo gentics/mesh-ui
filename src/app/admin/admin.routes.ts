@@ -9,20 +9,37 @@ import { SchemaListComponent } from './components/schema-list/schema-list.compon
 import { SchemaComponent } from './components/schema/schema.component';
 import { EntitiesService } from '../state/providers/entities.service';
 import { BreadcrumbTextFunction } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 export const routes: Route[] = [
     { path: '', component: AdminShellComponent, children: [
-        { path: '', pathMatch: 'full', redirectTo: 'projects' },
-        { path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } },
-        { path: 'microschemas', data: { breadcrumb: 'Microschemas' }, children: [
-            { path: '', component: MicroschemaListComponent },
-            { path: ':uuid', component: MicroschemaComponent, data: { breadcrumb: microschemaName('New Microschema') }}
-        ]},
-        { path: 'schemas', data: { breadcrumb: 'Schemas' }, children: [
-            { path: '', component: SchemaListComponent },
-            { path: ':uuid', component: SchemaComponent, data: { breadcrumb: schemaName('New Schema') }}
-        ]},
-    ] }
+            { path: '', pathMatch: 'full', redirectTo: 'projects' },
+            { path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } },
+            {
+                path: 'microschemas',
+                data: { breadcrumb: 'Microschemas' },
+                children: [
+                    { path: '', component: MicroschemaListComponent },
+                    { path: ':uuid', component: MicroschemaComponent, data: { breadcrumb: microschemaName('New Microschema') }}
+                ]
+            },
+            {
+                path: 'schemas',
+                data: { breadcrumb: 'Schemas' },
+                children: [
+                    { path: '', component: SchemaListComponent },
+                    { path: ':uuid', component: SchemaComponent, data: { breadcrumb: schemaName('New Schema') }}
+                ]
+            },
+            {
+                path: 'users',
+                data: { breadcrumb: 'Users' },
+                children: [
+                    { path: '', component: UserListComponent },
+                    // { path: ':uuid', component: SchemaComponent, data: { breadcrumb: schemaName('New Schema') }}
+                ]
+            },
+        ] }
 ];
 
 // TODO: needs improvement:

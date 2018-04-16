@@ -17,6 +17,9 @@ import { SchemaComponent } from './components/schema/schema.component';
 import { SchemaAssignmentComponent } from './components/schema-assignment/schema-assignment.component';
 import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
 import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
+import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
+import { AdminListComponent } from './components/admin-list/admin-list.component';
+import { AdminListItemComponent } from './components/admin-list-item/admin-list-item.component';
 
 @NgModule({
     declarations: [
@@ -31,18 +34,22 @@ import { AdminProjectEffectsService } from './providers/effects/admin-project-ef
         SchemaComponent,
         MonacoEditorComponent,
         SchemaAssignmentComponent
+        UserListComponent,
+        AdminListComponent,
+        AdminListItemComponent
     ],
     entryComponents: [
         CreateProjectModalComponent
     ],
     imports: [
         SharedModule,
-        RouterModule.forChild(routes),
+        RouterModule.forChild(routes)
     ],
     providers: [
         ModalService,
         AdminSchemaEffectsService,
-        AdminProjectEffectsService
+        AdminProjectEffectsService,
+        AdminUserEffectsService
     ]
 })
 export class AdminModule {
