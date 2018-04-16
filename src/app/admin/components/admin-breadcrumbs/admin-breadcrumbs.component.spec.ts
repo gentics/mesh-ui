@@ -1,7 +1,7 @@
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
-import { Router, ActivatedRouteSnapshot } from '@angular/router';
-import { ComponentFixture, fakeAsync, TestBed, tick, async } from '@angular/core/testing';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { AdminBreadcrumbsComponent } from './admin-breadcrumbs.component';
@@ -62,7 +62,7 @@ describe('AdminBreadcrumbsComponent', () => {
                         component: MockRouteComponent,
                         data: {
                             breadcrumb: (route: ActivatedRouteSnapshot, state: AppState) => {
-                                return state.admin.openEntity!.uuid;
+                                return state.adminSchemas.microschemaDetail;
                             }
                         }
                     }
@@ -80,12 +80,8 @@ describe('AdminBreadcrumbsComponent', () => {
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
         appState.mockState({
-            admin: {
-                openEntity: {
-                    type: 'microschema',
-                    uuid: 'testuuid',
-                    isNew: true
-                }
+            adminSchemas: {
+                microschemaDetail: 'testuuid'
             }
         });
 

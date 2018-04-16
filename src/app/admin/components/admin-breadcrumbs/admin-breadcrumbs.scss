@@ -1,3 +1,9 @@
 gtx-breadcrumbs {
     height: 40px;
 }
+
+/deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
+/deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb:last-child,
+/deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
+    color: white;
+}

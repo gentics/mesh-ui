@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IModalDialog, InputField, DropdownList } from 'gentics-ui-core';
+import { DropdownList, IModalDialog, InputField } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { EditorEffectsService } from '../../providers/editor-effects.service';
-import { ProjectEffectsService } from '../../../admin/providers/effects/project-effects.service';
 import { Tag } from '../../../common/models/tag.model';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -86,7 +84,7 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
                     this.saveTagToFamily(newFamily, this.newTagName);
                 })
                 .catch(error => {
-                    this.cancelFn(false)
+                    this.cancelFn(false);
                 });
         } else {
             this.saveTagToFamily(family, this.newTagName);

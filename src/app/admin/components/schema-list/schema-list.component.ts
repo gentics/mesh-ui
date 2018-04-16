@@ -1,29 +1,30 @@
 import { Router } from '@angular/router';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { hashValues } from '../../../common/util/util';
 import { Schema } from '../../../common/models/schema.model';
-import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
     templateUrl: './schema-list.component.html',
     styleUrls: ['./schema-list.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SchemaListComponent {
+export class SchemaListComponent implements OnInit {
     schemas$: Observable<Schema[]>;
     loading$: Observable<boolean>;
 
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
-                private schemaEffects: SchemaEffectsService,
-                private router: Router) {
-        this.schemas$ = entities.selectAllSchemas();
-        this.loading$ = state.select(state => state.admin.loadCount > 0);
-        this.schemaEffects.loadSchemas();
+                private adminSchemaEffects: AdminSchemaEffectsService,
+                private router: Router) {}
+
+    ngOnInit(): void {
+        this.schemas$ = this.entities.selectAllSchemas();
+        this.loading$ = this.state.select(state => state.adminSchemas.loadCount > 0);
+        this.adminSchemaEffects.loadSchemas();
     }
 
     createSchema() {

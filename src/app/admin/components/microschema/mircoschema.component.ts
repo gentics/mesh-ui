@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ModalService } from 'gentics-ui-core';
-import { hashValues, filenameExtension } from '../../../common/util/util';
-import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
-import { MicroschemaResponse, MicroschemaUpdateRequest } from '../../../common/models/server-models';
+
+import { MicroschemaResponse } from '../../../common/models/server-models';
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
     templateUrl: './microschema.component.html',
@@ -36,14 +36,14 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
                 private modal: ModalService,
-                private microschemaEffects: MicroschemaEffectsService,
+                private adminSchemaEffects: AdminSchemaEffectsService,
                 private route: ActivatedRoute,
                 private router: Router,
                 private ref: ChangeDetectorRef) {
     }
 
     ngOnInit() {
-        this.loading$ = this.state.select(state => state.admin.loadCount > 0);
+        this.loading$ = this.state.select(state => state.adminSchemas.loadCount > 0);
 
         this.uuid$ = this.route.paramMap
             .map(map => map.get('uuid'))
@@ -51,7 +51,7 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
             .do(route => {
                 this.isNew = route === 'new';
                 if (this.isNew) {
-                    this.state.actions.admin.newMicroschema();
+                    this.state.actions.adminSchemas.newMicroschema();
                 }
             })
             // This will cause all the stuff below to not trigger when a new microschema is made.
@@ -71,7 +71,7 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
 
         this.uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
             // TODO handle 404 or other errors
-            this.microschemaEffects.openMicroschema(uuid);
+            this.adminSchemaEffects.openMicroschema(uuid);
         });
 
         this.subscription = this.microschema$
@@ -95,12 +95,14 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.microschemaJson);
             if (this.isNew) {
-                this.microschemaEffects.createMicroschema(changedSchema).subscribe(microschema => {
-                    this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                this.adminSchemaEffects.createMicroschema(changedSchema).then(microschema => {
+                    if (microschema) {
+                        this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                    }
                 });
             } else {
                 this.microschema$.take(1).subscribe(microschema => {
-                    this.microschemaEffects.updateMicroschema({...microschema, ...changedSchema});
+                    this.adminSchemaEffects.updateMicroschema({...microschema, ...changedSchema});
                 });
             }
         }
@@ -108,7 +110,7 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
 
     delete() {
         this.microschema$.take(1)
-        .switchMap(microschema => this.microschemaEffects.deleteMicroschema(microschema.uuid))
+        .switchMap(microschema => this.adminSchemaEffects.deleteMicroschema(microschema.uuid))
         .subscribe(() => this.router.navigate(['admin', 'microschemas']));
     }
 }

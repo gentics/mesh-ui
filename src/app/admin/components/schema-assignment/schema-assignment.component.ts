@@ -1,10 +1,10 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit, OnChanges, OnDestroy } from '@angular/core';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { AdminEffectsService } from '../../providers/effects/admin-effects.service';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { ProjectAssignments } from '../../../state/models/admin-state.model';
 import * as difference from 'ramda/src/difference';
+
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 interface Assignment {
     projectUuid: string;
@@ -28,11 +28,10 @@ export class SchemaAssignmentComponent implements OnChanges, OnDestroy, OnInit {
     subscription: Subscription;
 
     constructor(private state: ApplicationStateService,
-                private admin: AdminEffectsService) {
-    }
+                private adminSchemaEffects: AdminSchemaEffectsService) {}
 
     ngOnInit() {
-        const stateAssignments$ = this.state.select(state => state.admin.assignedToProject).filter(Boolean);
+        const stateAssignments$ = this.state.select(state => state.adminSchemas.assignedToProject).filter(Boolean);
 
         this.assignments$ = stateAssignments$.map(assignments => Object.keys(assignments).map(uuid => ({
             projectUuid: uuid,
@@ -62,17 +61,17 @@ export class SchemaAssignmentComponent implements OnChanges, OnDestroy, OnInit {
         this.subscription.unsubscribe();
         if (changedProjectUuids.length > this.assignedProjects.length) {
             const projectAdded = difference(changedProjectUuids, this.assignedProjects)[0];
-            this.admin.assignEntityToProject(this.type, this.uuid, this.state.now.entities.project[projectAdded].name);
+            this.adminSchemaEffects.assignEntityToProject(this.type, this.uuid, this.state.now.entities.project[projectAdded].name);
         } else if (changedProjectUuids.length < this.assignedProjects.length) {
             const projectRemoved = difference(this.assignedProjects, changedProjectUuids)[0];
-            this.admin.removeEntityFromProject(this.type, this.uuid, this.state.now.entities.project[projectRemoved].name);
+            this.adminSchemaEffects.removeEntityFromProject(this.type, this.uuid, this.state.now.entities.project[projectRemoved].name);
         }
         this.assignedProjects = changedProjectUuids;
     }
 
     load(): void {
         if (this.type && this.uuid) {
-            this.admin.loadEntityAssignments(this.type, this.uuid);
+            this.adminSchemaEffects.loadEntityAssignments(this.type, this.uuid);
         }
     }
 }
