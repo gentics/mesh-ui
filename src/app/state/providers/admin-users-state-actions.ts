@@ -90,6 +90,19 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
         this.adminUsers.loadCount--;
     }
 
+    updateUserStart(): void {
+        this.adminUsers.loadCount++;
+    }
+
+    updateUserSuccess(user: UserResponse) {
+        this.adminUsers.loadCount--;
+        this.entities = mergeEntityState(this.entities, { user: [user] });
+    }
+
+    updateUserError(): void {
+        this.adminUsers.loadCount--;
+    }
+
     deleteUserStart(): void {
         this.adminUsers.loadCount++;
     }

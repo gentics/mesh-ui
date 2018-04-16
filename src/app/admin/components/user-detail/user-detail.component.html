@@ -6,3 +6,7 @@
         <gtx-input formControlName="emailAddress" [label]="'admin.email_address_label' | i18n"></gtx-input>
     </form>
 </div>
+
+<div class="actions">
+    <gtx-button type="primary" [disabled]="form.pristine" (click)="updateUser()">{{ 'admin.update_user' | i18n }}</gtx-button>
+</div>

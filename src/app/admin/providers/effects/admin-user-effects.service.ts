@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { UserCreateRequest, UserResponse } from '../../../common/models/server-models';
+import { UserCreateRequest, UserResponse, UserUpdateRequest } from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
 
 
@@ -63,6 +63,24 @@ export class AdminUserEffectsService {
                 () => this.state.actions.adminUsers.createUserError()
             )
             .toPromise();
+    }
+
+    updateUser(userUuid: string, user: UserUpdateRequest): Promise<User | void> {
+        this.state.actions.adminUsers.updateUserStart();
+
+        return this.api.admin.updateUser({ userUuid }, user)
+            .toPromise()
+            .then(
+                response => {
+                    this.state.actions.adminUsers.updateUserSuccess(response);
+                    this.notification.show({
+                        type: 'success',
+                        message: 'admin.user_updated'
+                    });
+                    return response;
+                },
+                error => this.state.actions.adminUsers.updateUserError()
+            );
     }
 
     deleteUser(userUuid: string): void {

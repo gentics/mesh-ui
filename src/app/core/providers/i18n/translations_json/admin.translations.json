@@ -107,8 +107,20 @@
         "en": "Select all",
         "de": "Alle auswählen"
     },
+    "update_user": {
+        "en": "Update user",
+        "de": "Benutzer speichern"
+    },
+    "user_created": {
+        "en": "New user created",
+        "de": "Neuer Benutzer erstellt"
+    },
     "user_name_label": {
         "en": "Username",
         "de": "Benutzername"
+    },
+    "user_updated": {
+        "en": "User updated",
+        "de": "Benutzer gespeichert"
     }
 }

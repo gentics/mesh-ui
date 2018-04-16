@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InputField } from 'gentics-ui-core';
+import { Button, InputField } from 'gentics-ui-core';
 
 import { UserDetailComponent } from './user-detail.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 
 describe('UserDetailComponent', () => {
     let component: UserDetailComponent;
@@ -14,11 +15,15 @@ describe('UserDetailComponent', () => {
         configureComponentTest({
             declarations: [
                 UserDetailComponent,
-                InputField
+                InputField,
+                Button
             ],
             imports: [
                 RouterTestingModule.withRoutes([]),
                 ReactiveFormsModule
+            ],
+            providers: [
+                { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService }
             ]
         });
     }));
@@ -33,3 +38,5 @@ describe('UserDetailComponent', () => {
         expect(component).toBeTruthy();
     });
 });
+
+class MockAdminUserEffectsService {}
