@@ -3,15 +3,15 @@
 </div>
 <div class="modal-content">
     <ul class="changes">
-        <li class="change-item">
-            <div class="path"><strong>Field</strong></div>
+        <li class="change-item header">
+            <div class="path"><strong>{{ 'editor.field_name' | i18n }}</strong></div>
             <div class="diffs">
                 <div class="preview-container">
-                    <div class="their-val"><strong>Their version: {{theirsNode.version}}</strong></div>
-                    <div class="mine-val"><strong>My version: {{mineNode.version}}</strong></div>
+                    <div class="their-val"><strong>{{ 'editor.theirs_version' | i18n }}: {{theirsNode.version}}</strong></div>
+                    <div class="mine-val"><strong>{{ 'editor.my_version' | i18n }}: {{mineNode.version}}</strong></div>
                 </div>
             </div>
-            <div class="action" title="Overwrite"><strong>Overwrite?</strong></div>
+            <!--<div class="action" title="Overwrite"><strong>Overwrite?</strong></div>-->
         </li>
         <li *ngFor="let conflictedField of conflictedFields">
             <mesh-conflicted-field [conflictedField]="conflictedField"></mesh-conflicted-field>

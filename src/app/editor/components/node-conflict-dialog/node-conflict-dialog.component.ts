@@ -73,7 +73,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             const theirField = this.theirsNode.fields[schemaField.name];
 
             if (schemaField.type === 'micronode') {
-
                 let conflictingField = this.conflictedFields.find(field => field.field.name === fieldName);
                 if (!conflictingField) {
                     conflictingField = {

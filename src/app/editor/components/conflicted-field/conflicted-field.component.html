@@ -1,45 +1,104 @@
-<div class="path">{{ conflictedField.field.name }}</div>
-<div [ngSwitch]="conflictedField.field.type" class="diffs">
-    <div *ngSwitchCase="'html'">
-        <div class="their-val" [innerHTML]="conflictedField.theirValue"></div>
-        <div class="mine-val" [innerHTML]="conflictedField.mineValue"></div>
-    </div>
-
-    <div *ngSwitchCase="'date'">
-        <div class="their-val">{{ conflictedField.theirValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
-        <div class="mine-val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss' }}</div>
-    </div>
-
-    <div *ngSwitchCase="'binary'">
-        <div class="their-val">
-            <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
-            {{ conflictedField.theirValue.name }}
+<div class="change-item">
+    <div class="path">{{ conflictedField.field.name }}</div>
+    <div [ngSwitch]="conflictedField.field.type" class="diffs">
+        <div *ngSwitchCase="'html'">
+            <div
+                class="their-val"
+                [class.selected]="conflictedField.overwrite === false"
+            >
+                <div
+                    class="val"
+                    [innerHTML]="conflictedField.theirValue">
+                </div>
+            </div>
+            <div
+                class="mine-val"
+                [class.selected]="conflictedField.overwrite === true"
+            >
+                <div
+                    class="val"
+                    [innerHTML]="conflictedField.mineValue">
+                </div>
+            </div>
         </div>
-        <div class="mine-val">
-            <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
-            {{ conflictedField.mineValue.name }}
+
+        <div *ngSwitchCase="'date'">
+            <div
+                class="their-val"
+                [class.selected]="conflictedField.overwrite === false"
+            >
+                <div class="val">{{ conflictedField.theirValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+            </div>
+            <div
+                class="mine-val"
+                [class.selected]="conflictedField.overwrite === true"
+            >
+                <div class="val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+            </div>
+        </div>
+
+        <div *ngSwitchCase="'binary'">
+            <div
+                class="their-val"
+                [class.selected]="conflictedField.overwrite === false"
+            >
+                <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
+                <div class="val">{{ conflictedField.theirValue.name }}</div>
+            </div>
+            <div
+                class="mine-val"
+                [class.selected]="conflictedField.overwrite === true"
+            >
+                <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
+                <div class="val">{{ conflictedField.mineValue.name }}</div>
+            </div>
+        </div>
+
+        <div *ngSwitchCase="'micronode'" class="micronode-row">
+            <ul>
+                <li *ngFor="let conflictedMicronodeField of conflictedField.conflictedFields">
+                    <mesh-conflicted-field [conflictedField]="conflictedMicronodeField"></mesh-conflicted-field>
+                </li>
+            </ul>
+        </div>
+
+        <div *ngSwitchDefault>
+            <div
+                class="their-val"
+                [class.selected]="conflictedField.overwrite === false"
+                (click)="conflictedField.overwrite = false"
+            >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === true"
+                    (click)="conflictedField.overwrite = false"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
+                <div class="val">{{ conflictedField.theirValue }}</div>
+            </div>
+            <div
+                class="mine-val"
+                (click)="conflictedField.overwrite = true"
+                [class.selected]="conflictedField.overwrite === true"
+            >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === false"
+                    (click)="conflictedField.overwrite = true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
+                <div class="val">{{ conflictedField.mineValue }}</div>
+            </div>
         </div>
     </div>
-
-    <div *ngSwitchCase="'micronode'" class="micronode-row">
-        <ul>
-            <li *ngFor="let conflictedMicronodeField of conflictedField.conflictedFields">
-                <mesh-conflicted-field [conflictedField]="conflictedMicronodeField"></mesh-conflicted-field>
-            </li>
-        </ul>
-    </div>
-
-    <div *ngSwitchDefault>
-        <div class="their-val">{{ conflictedField.theirValue }}</div>
-        <div class="mine-val">{{ conflictedField.mineValue }}</div>
-    </div>
-</div>
-
-<div  class="action">
-    <gtx-checkbox
-        *ngIf="conflictedField.field.type !== 'micronode'"
-        [checked]="conflictedField.overwrite"
-        (change)="conflictedField.overwrite = $event"
-    >
-    </gtx-checkbox>
+    <!--<div  class="action">
+        <gtx-checkbox
+            *ngIf="conflictedField.field.type !== 'micronode'"
+            [checked]="conflictedField.overwrite"
+            (change)="conflictedField.overwrite = $event"
+        >
+        </gtx-checkbox>
+    </div>-->
 </div>

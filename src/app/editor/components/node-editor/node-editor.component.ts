@@ -183,9 +183,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
-        //this.handleSaveConflicts(['name', 'number', 'microschema.name', 'microschema.number']);
-        //return;
-        if (!this.node) {
+        this.handleSaveConflicts(['name', 'microschema.name', 'microschema.number', 'number', 'pets']);
+
+        /*if (!this.node) {
             return;
         }
         if (this.isDirty) {
@@ -231,7 +231,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     });
                 this.saveNodeWithProgress(saveFn);
             }
-        }
+        }*/
     }
 
     handleSaveConflicts(conflicts: string[]): void {

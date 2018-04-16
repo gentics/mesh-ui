@@ -7,7 +7,6 @@ import { ConflictedField } from '../../../common/models/common.model';
     styleUrls: ['./conflicted-field.component.scss']
 })
 export class ConflictedFieldComponent {
-
     @Input() conflictedField: ConflictedField;
     constructor() { }
 }

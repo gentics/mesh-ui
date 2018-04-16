@@ -94,13 +94,13 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.inputField.writeValue('');
         this.filterTerm = '';
         this.newTagName = '';
-        this.checkIfDirty();
+        this.isDirty = this.checkIfDirty();
     }
 
     onTagDeleted(deletedTag: Tag): void {
         const tagIndex = this.nodeTags.findIndex(tag => tag.uuid === deletedTag.uuid);
         this.nodeTags.splice(tagIndex, 1);
-        this.checkIfDirty();
+        this.isDirty = this.checkIfDirty();
     }
 
     onCreateNewTagClick(): void {
@@ -141,7 +141,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     private checkIfDirty() {
-        return tagsAreEqual(this.node.tags, this.nodeTags);
+        return tagsAreEqual(this.node.tags, this.nodeTags) === false;
     }
 
     private filterTags(term: string): Tag[] {
