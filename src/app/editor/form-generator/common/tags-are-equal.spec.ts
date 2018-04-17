@@ -10,7 +10,7 @@ import { Tag } from '../../../common/models/tag.model';
 import { tagsAreEqual } from './tags-are-equal';
 import { ConfigService } from '../../../core/providers/config/config.service';
 
-fdescribe('tagsAreEqual()', () => {
+describe('tagsAreEqual()', () => {
 
     let state: TestApplicationState;
     const tagFamily: TagFamily = mockTagFamily({uuid: 'tagFamilyUuid', name: 'mockFamily' });
