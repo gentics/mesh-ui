@@ -6,7 +6,6 @@ import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
 import { mergeEntityState } from './entity-state-actions';
-import { AdminState } from '../models/admin-state.model';
 import { Microschema } from '../../common/models/microschema.model';
 import { Schema } from '../../common/models/schema.model';
 import { ConfigService } from '../../core/providers/config/config.service';
@@ -17,11 +16,10 @@ import { MeshNode } from '../../common/models/node.model';
 export class ListStateActions extends StateActionBranch<AppState> {
     @CloneDepth(0) private entities: EntityState;
     @CloneDepth(1) private list: ListState;
-    @CloneDepth(1) private admin: AdminState;
 
     constructor(private config: ConfigService) {
         super({
-            uses: ['entities', 'list', 'admin'],
+            uses: ['entities', 'list'],
             initialState: {
                 list: {
                     currentNode: undefined,
@@ -78,7 +76,6 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.entities = mergeEntityState(this.entities, {
             project: projects
         });
-        this.admin.displayedProjects = projects.map(project => project.uuid);
     }
 
     fetchProjectsError() {
@@ -91,7 +88,6 @@ export class ListStateActions extends StateActionBranch<AppState> {
 
     fetchMicroschemasSuccess(microschemas: MicroschemaResponse[]) {
         this.list.loadCount--;
-        this.admin.displayedMicroschemas = microschemas.map(schema => schema.uuid);
         this.entities = mergeEntityState(this.entities, {
             microschema: microschemas as Microschema[]
         });

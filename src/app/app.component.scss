@@ -1,11 +1,16 @@
+@import "variables";
+
 html, body{
-  height: 100%;
+    height: 100%;
+    background-color: $gtx-color-off-white;
 }
 
 gtx-top-bar {
     padding: 5px 0;
+
+    .gtx-top-bar-left {
+        text-align: left !important;
+    }
 }
 
-a.active {
-  background-color: gray;
-}
+

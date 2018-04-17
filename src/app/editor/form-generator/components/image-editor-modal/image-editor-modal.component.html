@@ -1,0 +1,12 @@
+<div class="modal-content">
+    <gentics-ui-image-editor [src]="imageUrl"
+                             (editing)="isEditing = $event"
+                             [(transform)]="params"></gentics-ui-image-editor>
+</div>
+<div class="modal-footer">
+    <gtx-button type="secondary" flat
+                (click)="cancelFn()">{{ 'common.cancel_button' | i18n }}</gtx-button>
+    <gtx-button type="primary"
+                [disabled]="!params || isEditing"
+                (click)="applyEdits()">{{ 'modal.apply_edits' | i18n }}</gtx-button>
+</div>

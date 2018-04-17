@@ -21,11 +21,12 @@ export class MasterDetailComponent implements OnInit {
                 private listEffects: ListEffectsService,
                 private navigationService: NavigationService,
                 private route: ActivatedRoute) {
-        this.editorFocused$ = state.select(state => state.editor.editorIsFocused);
-        this.editorOpen$ = state.select(state => state.editor.editorIsOpen);
     }
 
     ngOnInit(): void {
+        this.editorFocused$ = this.state.select(state => state.editor.editorIsFocused);
+        this.editorOpen$ = this.state.select(state => state.editor.editorIsOpen);
+
         this.listEffects.loadProjects();
 
         // TODO: We need to determine a "default" project to load up on init, fetch it from the

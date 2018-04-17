@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Pipe, PipeTransform } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -7,7 +7,7 @@ import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
 
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { provideMockI18n, configureComponentTest } from '../../../../testing/configure-component-test';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { CreateTagDialogComponent } from './create-tag-dialog.component';
 import { ConfigService } from '../../../core/providers/config/config.service';
 
@@ -15,6 +15,7 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 describe('CreateTagDialogComponent', () => {
     let component: CreateTagDialogComponent;
@@ -35,7 +36,7 @@ describe('CreateTagDialogComponent', () => {
                 { provide: TagsEffectsService, useClass: MockTagsEffectsService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: I18nService, useClass: MockI18nService },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+                { provide: ConfigService, useClass: MockConfigService },
             ],
             imports: [
                 FormsModule,

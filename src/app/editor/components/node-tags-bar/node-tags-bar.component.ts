@@ -1,53 +1,63 @@
-import { Input, ChangeDetectorRef, ContentChild, ViewChild, Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Observable } from 'rxjs/Observable';
-import { DropdownList, InputField, ModalService } from 'gentics-ui-core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges,
+    ViewChild
+} from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
+import { InputField, ModalService } from 'gentics-ui-core';
+
 import { MeshNode } from '../../../common/models/node.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Tag } from '../../../common/models/tag.model';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
-import { stringToColor } from '../../../common/util/util';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
-import { Subscription, Subject } from 'rxjs';
+;
 
 
 @Component({
-    selector: 'app-node-tags-bar',
+    selector: 'mesh-node-tags-bar',
     templateUrl: './node-tags-bar.component.html',
-    styleUrls: ['./node-tags-bar.component.scss']
+    styleUrls: ['./node-tags-bar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
-    @ViewChild('DropdownList') dropDown: DropdownList;
-    @ViewChild('InputField') inputField: InputField;
-    @Input() node: MeshNode;
-    isDirty = false;
-    newTagName = ''; // Contains a name for a new tag.
-    nodeTags: TagReferenceFromServer[] = []; // Tags for the current opened node.
+    @ViewChild(InputField, { read: ElementRef }) inputField: ElementRef;
 
+    @Input() node: MeshNode;
+    inputIsFocused = false;
+    isDirty = false;
+    nodeTags: TagReferenceFromServer[] = [];
+    displayTagSelection = false;
     filteredTags: Tag[] = [];
     filterTerm = '';
-
-    stateTags: Tag[] = [];
+    allTags: Tag[] = [];
     private destroyed$: Subject<void> = new Subject();
+    private focusTimer: any;
 
-    constructor(
-        private changeDetector: ChangeDetectorRef,
-        private state: ApplicationStateService,
-        private editorEffects: EditorEffectsService,
-        private modalService: ModalService,
-        private entities: EntitiesService ) { }
+    constructor(private changeDetector: ChangeDetectorRef,
+                private state: ApplicationStateService,
+                private editorEffects: EditorEffectsService,
+                private modalService: ModalService,
+                private entities: EntitiesService ) { }
 
     ngOnInit(): void {
-
         this.state.select(state => state.tags.tags)
             .takeUntil(this.destroyed$)
             .subscribe(tags => {
-                this.stateTags = tags.map(uuid => this.entities.getTag(uuid));
+                this.allTags = tags.map(uuid => this.entities.getTag(uuid));
             });
     }
 
@@ -56,44 +66,40 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
             const node = changes.node.currentValue as MeshNode;
             this.nodeTags = node.tags ? [...node.tags] : [];
             this.isDirty = false;
-            this.inputField.writeValue('');
         }
     }
 
     ngOnDestroy(): void {
         this.destroyed$.next();
         this.destroyed$.complete();
+        clearTimeout(this.focusTimer);
     }
 
     onFilterChange(term: string): void {
-        this.filterTerm = term;
-
-        this.filteredTags = this.filterTags(term);
-
-        // If the term does NOT perfectly match any of existing tags - we will show an option to create one
-        if (!this.stateTags.some(tag => tag.name.toLowerCase() === term.toLowerCase())) {
-            this.newTagName = term;
-        } else {
-            this.newTagName = '';
-        }
-
-        if (!this.dropDown.isOpen) {
-            this.dropDown.openDropdown();
-        }
-        this.dropDown.resize();
+        this.filteredTags = this.filterTags(this.allTags, this.nodeTags, term);
     }
 
-    onInputFocus(event): void {
+    onInputFocus(): void {
+        this.displayTagSelection = true;
         this.onFilterChange(this.filterTerm);
+    }
+
+    onInputBlur(): void {
+        this.inputIsFocused = false;
+    }
+
+    onInputEscape(): void {
+        this.displayTagSelection = false;
+        this.inputField.nativeElement.querySelector('input').blur();
     }
 
     onTagSelected(tag: Tag): void {
         const { name, tagFamily, uuid } = tag;
         this.nodeTags = [...this.nodeTags, { name, tagFamily: tagFamily.name, uuid }];
         this.filteredTags = [];
-        this.inputField.writeValue('');
         this.filterTerm = '';
-        this.newTagName = '';
+        this.displayTagSelection = false;
+        this.inputField.nativeElement.querySelector('input').blur();
         this.isDirty = this.checkIfDirty();
     }
 
@@ -103,22 +109,22 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.isDirty = this.checkIfDirty();
     }
 
-    onCreateNewTagClick(): void {
+    onCreateNewTagClick(newTagName: string): void {
         this.modalService.fromComponent(
             CreateTagDialogComponent,
             {
                 closeOnOverlayClick: false
             },
             {
-                newTagName: this.newTagName,
+                newTagName,
                 projectName: this.state.now.editor.openNode.projectName
             }
         )
-        .then(modal => modal.open())
-        .then((result: CreateTagDialogComponentResult) => {
-            this.onTagSelected(result.tag);
-            this.changeDetector.markForCheck();
-        });
+            .then(modal => modal.open())
+            .then((result: CreateTagDialogComponentResult) => {
+                this.onTagSelected(result.tag);
+                this.changeDetector.markForCheck();
+            });
     }
 
     /**
@@ -140,19 +146,25 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         return { deletedTags, newTags };
     }
 
-    private checkIfDirty() {
+    addTagClick() {
+        this.inputIsFocused = true;
+        clearTimeout(this.focusTimer);
+        this.focusTimer = setTimeout(() => {
+            this.inputField.nativeElement.querySelector('input').focus();
+        }, 200);
+    }
+
+    private checkIfDirty(): boolean {
         return tagsAreEqual(this.node.tags, this.nodeTags) === false;
     }
 
-    private filterTags(term: string): Tag[] {
-        const filteredTags = this.stateTags.reduce<Tag[]>((filteredTags, tag) => {
-            if (this.nodeTags.findIndex(existingTag => existingTag.uuid === tag.uuid) === -1) {
-                if (fuzzyMatch(term, tag.name)) {
-                   filteredTags.push(tag) ;
-                }
-            }
-            return filteredTags;
-        }, []);
-        return filteredTags;
+    /**
+     * Filters allTags by the filterTerm, but also omits any currentTags (tags which already apply to the node)
+     */
+    private filterTags(allTags: Tag[], currentTags: TagReferenceFromServer[], filterTerm: string): Tag[] {
+        function isIsCurrentTags(tag: Tag): boolean {
+            return currentTags.findIndex(existingTag => existingTag.uuid === tag.uuid) !== -1;
+        }
+        return allTags.filter(tag => !!(!isIsCurrentTags(tag) && fuzzyMatch(filterTerm, tag.name)));
     }
 }

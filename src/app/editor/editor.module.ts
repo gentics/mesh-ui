@@ -25,7 +25,6 @@ import { AvailableLanguagesListComponent } from './components/available-language
 import { NodeRowComponent } from './components/node-row/node-row.component';
 import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
 import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.component';
-import { ProjectEffectsService } from '../admin/providers/effects/project-effects.service';
 import { BlobService } from './providers/blob.service';
 import { CreateTagDialogComponent } from './components/create-tag-dialog/create-tag-dialog.component';
 import { ContainerFileDropAreaComponent } from './components/container-file-drop-area/container-file-drop-area.component';
@@ -76,7 +75,6 @@ import { ConflictedFieldComponent } from './components/conflicted-field/conflict
     ],
     providers: [
         EditorEffectsService,
-        ProjectEffectsService,
         TagsEffectsService,
         NodeEditorGuard,
         ModalService,

@@ -92,8 +92,8 @@
       "de": "Suche"
     },
     "searching": {
-      "en": "Searching:",
-      "de": "Suche:"
+      "en": "Searching: '{{ term }}'",
+      "de": "Suche: '{{ term }}'"
     },
     "select_all_label": {
       "en": "Select all",

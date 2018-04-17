@@ -1,39 +1,26 @@
 <div class="search-row">
-  <gtx-progress-bar [active]="searching"></gtx-progress-bar>
+    <!--<gtx-progress-bar></gtx-progress-bar>-->
     <gtx-search-bar [(ngModel)]="inputValue"
                     [placeholder]="'common.search_placeholder' | i18n"
                     (ngModelChange)="filterTermChanged()"
                     (search)="searchTermChanged()"
-                    (clear)="clearFilter()"
-                    name="search-bar">
+                    (clear)="clearFilter()">
 
-        <div class="search-chip" *ngIf="searchQuery">
-            <span class="chip-contents">
-                <span class="searching">{{ 'common.searching' | i18n }} "</span>
-                <span class="search-query">{{ this.searchQuery }}</span>
-                <span class="searching">"</span>
-            </span>
-            <i class="remove-button material-icons" (click)="clearSearch()">close</i>
-        </div>
+        <mesh-chip *ngIf="searchQuery"
+                   class="search-term"
+                   (removeClick)="clearSearch()">
+            {{ 'common.searching' | i18n:{ term: this.searchQuery } }}
+        </mesh-chip>
 
-        <div *ngFor="let tag of searchTags" class="search-chip" [meshBackgroundFrom]="tag.tagFamily.name">
-            <span class="chip-contents chip-tags">{{tag.name}}</span>
-            <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
-        </div>
+        <mesh-tag *ngFor="let tag of searchTags"
+                  [tag]="tag"
+                  (removeClick)="onTagDeleted(tag)"></mesh-tag>
+
     </gtx-search-bar>
 
-
-    <gtx-dropdown-list belowTrigger="true" width="expand">
-        <gtx-dropdown-trigger>
-            <div class="dropdown-trigger"></div>
-        </gtx-dropdown-trigger>
-        <gtx-dropdown-content>
-            <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onSearchTagSelected(tag)">
-                <span class="tag-family">{{tag.tagFamily.name}}</span>
-                <span class="tag-name" [meshBackgroundFrom]="tag.tagFamily.name">
-                    <span [innerHTML]="tag.name | highlight:inputValue.substr(1)"></span>
-                </span>
-            </gtx-dropdown-item>
-        </gtx-dropdown-content>
-  </gtx-dropdown-list>
+    <mesh-tag-selector [tags]="filteredTags"
+                       [filterTerm]="inputValue.substr(1)"
+                       [active]="displayTagSelection"
+                       (close)="displayTagSelection = false"
+                       (selectTag)="onSearchTagSelected($event)"></mesh-tag-selector>
 </div>

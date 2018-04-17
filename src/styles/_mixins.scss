@@ -1,7 +1,6 @@
-
 @mixin filter-selection {
     /deep/ .filter-selection,
-    /deep/ .hl-pipe,
+    /deep/ .hl-pipe
     {
         background-color: $gtx-color-primary !important;
         color: #fff;
@@ -11,7 +10,7 @@
 }
 
 
-@mixin tag-filter {
+/*@mixin tag-filter {
     .tag-family {
         color: $gtx-color-off-black;
         font-size: 12px;
@@ -55,7 +54,7 @@
             line-height: 28px;
         }
     }
-}
+}*/
 
 
 @mixin conflict-row {

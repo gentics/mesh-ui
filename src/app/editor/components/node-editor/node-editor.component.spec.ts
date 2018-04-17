@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { TestBed, tick, ComponentFixture } from '@angular/core/testing';
+import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
+import { GenticsUICoreModule } from 'gentics-ui-core';
+import { FormsModule } from '@angular/forms';
 
-import { NavigationService, InstructionActions } from '../../../core/providers/navigation/navigation.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { NodeEditorComponent } from './node-editor.component';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -15,18 +16,11 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { componentTest } from '../../../../testing/component-test';
 import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
 import { VersionLabelComponent } from '../version-label/version-label.component';
-import { NodeLanguageSwitcherComponent } from '../node-language-switcher/node-language-switcher.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
 import { ConfigService } from '../../../core/providers/config/config.service';
-import { mockSchema, mockMeshNode } from '../../../../testing/mock-models';
-import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
-import { FieldGeneratorService } from '../../form-generator/providers/field-generator/field-generator.service';
-import { MeshControlGroupService } from '../../form-generator/providers/field-control-group/mesh-control-group.service';
-import { TagReferenceFromServer } from '../../../common/models/server-models';
-import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
-import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
-import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
+import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
@@ -42,27 +36,22 @@ describe('NodeEditorComponent', () => {
                 VersionLabelComponent,
                 NodeLanguageLabelComponent,
                 MockLanguageSwitcherComponent,
-                NodeTagsBarComponent,
-                FormGeneratorComponent,
-                HighlightPipe,
-                BackgroundFromDirective,
+                MockNodeTagsBarComponent,
+                MockFormGeneratorComponent
             ],
             providers: [
-                { provide: ApplicationStateService, useClass: TestApplicationState },
                 EntitiesService,
+                { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: EditorEffectsService, useClass: MockEditorEffectsService },
                 { provide: ListEffectsService, useClass: MockListEffectsService },
                 { provide: NavigationService, useClass: MockNavigationService },
                 { provide: I18nService, useClass: MockI18nService },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
-                { provide: FieldGeneratorService, useClass: MockFieldGeneratorService },
-                { provide: MeshControlGroupService, useClass: MockMeshControlGroupService },
-                ModalService,
-                OverlayHostService,
+                { provide: ConfigService, useClass: MockConfigService }
             ],
             imports: [
                 RouterTestingModule.withRoutes([]),
-                GenticsUICoreModule,
+                GenticsUICoreModule.forRoot(),
+                FormsModule
             ]
         });
         editorEffectsService = TestBed.get(EditorEffectsService);
@@ -250,26 +239,22 @@ class MockI18nService {
     }
 }
 
-class MockFieldGeneratorService {
-    create() { }
-}
-
-class MockMeshControlGroupService {
-    reset() { }
-    isDirty() { return true; }
-}
-
 @Component({ selector: 'node-language-switcher', template: '' })
 class MockLanguageSwitcherComponent {
-    @Input()
-    node: any;
+    @Input() node: any;
 }
 
 @Component({ selector: 'form-generator', template: '' })
 class MockFormGeneratorComponent {
-    @Input()
-    schema: any;
+    @Input()schema: any;
+    @Input() node: any;
+    isDirty = true;
+    setPristine = jasmine.createSpy('setPristine');
+}
 
-    @Input()
-    node: any;
+@Component({ selector: 'mesh-node-tags-bar', template: '' })
+class MockNodeTagsBarComponent {
+    @Input() node: any;
+    isDirty = true;
+    nodeTags = [];
 }

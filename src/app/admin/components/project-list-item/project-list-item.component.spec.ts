@@ -12,15 +12,15 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ProjectResponse } from '../../../common/models/server-models';
 import { mockProject } from '../../../../testing/mock-models';
-import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 import { TestStateModule } from '../../../state/testing/test-state.module';
+import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 
 describe('ProjectListItemComponent', () => {
 
     let appState: TestApplicationState;
     let mockModal;
     let mockNotification;
-    const mockProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['deleteProject']);
+    const mockAdminProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['deleteProject']);
 
     beforeEach(() => {
         mockModal = { dialog() { } };
@@ -35,7 +35,7 @@ describe('ProjectListItemComponent', () => {
                 { provide: ModalService, useValue: mockModal },
                 { provide: Notification, useValue: mockNotification },
                 { provide: I18nService, useValue: { translate() { } } },
-                { provide: ProjectEffectsService, useValue: mockProjectEffectsService}
+                { provide: AdminProjectEffectsService, useValue: mockAdminProjectEffectsService}
             ],
             declarations: [TestComponent, ProjectListItemComponent]
         });
@@ -126,7 +126,7 @@ describe('ProjectListItemComponent', () => {
             fixture.detectChanges();
             expect(mockModal.dialog).toHaveBeenCalled();
             tick();
-            expect(mockProjectEffectsService.deleteProject).toHaveBeenCalled();
+            expect(mockAdminProjectEffectsService.deleteProject).toHaveBeenCalled();
         })
     );
 

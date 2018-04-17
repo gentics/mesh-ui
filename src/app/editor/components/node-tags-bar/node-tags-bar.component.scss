@@ -1,42 +1,66 @@
 @import "variables";
 @import "search-bar-styles";
 @include filter-selection;
-@include search-chip;
-@include tag-filter;
 
+$add-tag-button-width: 100px;
 
-
-gtx-dropdown-list, gtx-dropdown-trigger {
-    width: 100%;
+:host {
     display: block;
+    position: relative;
+    padding: 0 5px;
+    box-shadow: $header-box-shadow;
 }
 
-gtx-dropdown-content {
-    max-height: 300px !important; // !important because the gtx-dropdown-list will try to overwrite it.
+.tag-bar-container {
+    position: relative;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.add-tag {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+}
+
+gtx-input {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    max-width: 0;
+    opacity: 0;
+    z-index: 1;
+    will-change: max-width, opacity;
+    transition: max-width 0.2s, opacity 0.2s;
+    color: $gtx-color-off-black;
+
+    /deep/ input[type=text],
+    /deep/ input[type=text]:focus:not([readonly]) {
+        margin: 0 !important;
+        border-color: transparent;
+        background-color: white;
+    }
+
+    &.active {
+        max-width: 100%;
+        opacity: 1;
+    }
 }
 
 .tags-list {
-    margin-top: 5px;
+    line-height: 2.5rem;
 }
 
 .search-chip {
     display: inline-block;
 }
 
-gtx-input {
-    width: 100%;
-    border: none;
-    box-shadow: rgba(0, 0, 0, 0.87) 1px 3px 7px -5px;
-}
-
-gtx-input /deep/ input {
-    margin: 0 !important;
-    border: none;
-    padding-left: 15px;
-    outline: none !important;
-    color: $gtx-color-off-black;
-}
-
-.create-new-tag {
-    border-top: 2px solid rgba($gtx-color-off-black, 0.2);
+mesh-tag-selector {
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 2.5rem;
 }

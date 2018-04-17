@@ -10,23 +10,23 @@ import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { provideMockI18n } from '../../../../testing/configure-component-test';
-import { SchemaEffectsService } from '../../../core/providers/effects/schema-effects.service';
 import { mockMeshNode, mockProject, mockSchema, mockUser } from '../../../../testing/mock-models';
-import { ProjectEffectsService } from '../../providers/effects/project-effects.service';
 import { ApiError } from '../../../core/providers/api/api-error';
 import { TestStateModule } from '../../../state/testing/test-state.module';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
+import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 
 describe('CreateProjectModal', () => {
 
     let appState: TestApplicationState;
-    const mockProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['createProject']);
+    const mockAdminProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['createProject']);
     const mockNotification = jasmine.createSpyObj('Notification', ['show']);
 
     @NgModule(provideMockI18n({
-        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule, TestStateModule],
+        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule.forRoot(), TestStateModule],
         providers: [
-            { provide: SchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
-            { provide: ProjectEffectsService, useValue: mockProjectEffectsService},
+            { provide: AdminSchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
+            { provide: AdminProjectEffectsService, useValue: mockAdminProjectEffectsService},
             { provide: Notification, useValue: mockNotification},
             OverlayHostService
         ],
@@ -175,11 +175,11 @@ describe('CreateProjectModal', () => {
             instance.name.setValue(projectName);
             instance.schema.setValue(testSchema);
 
-            mockProjectEffectsService.createProject.and.returnValue(Promise.resolve(null));
+            mockAdminProjectEffectsService.createProject.and.returnValue(Promise.resolve(null));
 
             triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
             fixture.detectChanges();
-            expect(mockProjectEffectsService.createProject).toHaveBeenCalledWith({
+            expect(mockAdminProjectEffectsService.createProject).toHaveBeenCalledWith({
                 name: projectName,
                 schema: {
                     uuid: testSchema.uuid,
@@ -208,7 +208,7 @@ describe('CreateProjectModal', () => {
 
             error = Object.setPrototypeOf(error, ApiError.prototype);
 
-            mockProjectEffectsService.createProject.and.returnValue(Promise.reject(error));
+            mockAdminProjectEffectsService.createProject.and.returnValue(Promise.reject(error));
 
             triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
             fixture.detectChanges();
@@ -227,7 +227,7 @@ describe('CreateProjectModal', () => {
             instance.name.setValue('testproject1');
             instance.schema.setValue(testSchema);
 
-            mockProjectEffectsService.createProject.and.returnValue(Promise.reject('test error'));
+            mockAdminProjectEffectsService.createProject.and.returnValue(Promise.reject('test error'));
 
             triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
             fixture.detectChanges();

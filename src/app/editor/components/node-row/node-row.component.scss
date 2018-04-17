@@ -1,2 +1,6 @@
 @import "variables";
 @include filter-selection;
+
+.node-icon {
+    color: $gtx-color-very-dark-gray;
+}

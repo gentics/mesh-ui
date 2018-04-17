@@ -15,7 +15,6 @@ import { I18nService } from './providers/i18n/i18n.service';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 import { NavigationService } from './providers/navigation/navigation.service';
 import { ListEffectsService } from './providers/effects/list-effects.service';
-import { SchemaEffectsService } from './providers/effects/schema-effects.service';
 import { SharedModule } from '../shared/shared.module';
 import { UserDropdownComponent } from './components/user-dropdown/user-dropdown.component';
 import { ConfigService } from './providers/config/config.service';
@@ -30,7 +29,6 @@ const CORE_PROVIDERS = [
     NavigationService,
     AuthEffectsService,
     ListEffectsService,
-    SchemaEffectsService,
     ApiService,
     ApiBase,
 ];

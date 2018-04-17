@@ -1,6 +1,8 @@
 @import "variables";
 @import "../../common-styles";
 
+$preview-max-width: 54%;
+
 :host.mesh-field {
     display: flex;
     justify-content: space-between;
@@ -21,6 +23,10 @@
             width: $full-width;
             margin-top: 0;
         }
+        .binary-controls,
+        .media-preview {
+            max-width: 100%;
+        }
     }
 }
 
@@ -31,16 +37,111 @@
     transition: width 0.2s;
 }
 
-.property-list {
-    font-size: $gtx-font-size-small;
-    background-color: $gtx-color-very-light-gray;
-    margin-top: 0;
-    li {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+.media-preview {
+    max-width: $preview-max-width;
+    border: 1px solid $gtx-color-very-light-gray;
+    border-bottom-width: 0;
+    background-color: $gtx-color-off-white;
 }
 
 .image-preview {
-    max-width: 100%;
+    text-align: center;
+    gentics-ui-image-preview {
+        display: flex;
+        justify-content: center;
+        opacity: 1;
+        transition: opacity 0.2s;
+    }
+    max-height: 800px;
+    transition: max-height 0.2s;
+
+    &.loading {
+        max-height: 300px;
+        overflow: hidden;
+
+        gentics-ui-image-preview {
+            opacity: 0;
+            transition: opacity 0s;
+        }
+    }
+}
+
+.video-preview {
+    video {
+        width: 100%;
+    }
+}
+
+.audio-preview {
+    audio {
+        width: 100%;
+    }
+}
+
+.default-preview {
+    text-align: center;
+    position: relative;
+    .file-icon {
+        position: relative;
+        font-size: 8rem;
+        line-height: 1;
+        display: inline-block;
+        @include noselect;
+    }
+    icon {
+        color: $gtx-color-dark-gray;
+        font-size: 8rem;
+    }
+    .mime-wrapper {
+        position: absolute;
+        bottom: 3.3rem;
+        width: 100%;
+        text-align: center;
+    }
+    .mime-type {
+        display: inline-block;
+        padding: 1px 5px;
+        background-color: $gtx-color-off-white;
+        border: 2px solid $gtx-color-dark-gray;
+        text-align: center;
+        font-size: $gtx-font-size-regular;
+        border-radius: 8px;
+    }
+}
+
+.binary-controls {
+    max-width: $preview-max-width;
+    position: relative;
+    border: 1px solid $gtx-color-very-light-gray;
+    border-top-width: 0;
+    padding: 4px 10px 10px;
+
+    &.no-binary {
+        border-top-width: 1px;
+        padding-top: 10px;
+        .basic-info {
+            display: none;
+        }
+    }
+}
+
+.basic-info {
+    display: flex;
+    flex-wrap: wrap;
+    color: $gtx-color-dark-gray;
+    margin-bottom: 10px;
+
+    & > * {
+        margin-right: 10px;
+    }
+
+    .file-name {
+        a {
+            display: flex;
+            align-items: flex-end;
+        }
+        icon {
+            font-size: $gtx-font-size-regular;
+        }
+    }
 }

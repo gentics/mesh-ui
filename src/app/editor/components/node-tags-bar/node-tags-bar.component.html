@@ -1,31 +1,28 @@
-<div class="search-bar-container">
-    <gtx-input
-        #InputField
-        placeholder="{{ 'editor.add_tag' | i18n }}"
-        (change)="onFilterChange($event)"
-        (focus)="onInputFocus($event)"
-    ></gtx-input>
-</div>
-<gtx-dropdown-list belowTrigger="true" #DropdownList width="trigger">
-    <gtx-dropdown-trigger>
-        <div></div>
-    </gtx-dropdown-trigger>
-    <gtx-dropdown-content>
-        <gtx-dropdown-item *ngFor="let tag of filteredTags" (click)="onTagSelected(tag)">
-            <span class="tag-family">{{tag.tagFamily.name}}</span>
-            <span class="tag-name" [meshBackgroundFrom]="tag.tagFamily.name">
-                <span [innerHTML]="tag.name | highlight:filterTerm"></span>
-            </span>
-        </gtx-dropdown-item>
-        <gtx-dropdown-item *ngIf="newTagName" class="create-new-tag" (click)="onCreateNewTagClick()">
-            <span class="tag-family">{{ 'editor.create_new_tag' | i18n }} </span>{{newTagName}}
-        </gtx-dropdown-item>
-    </gtx-dropdown-content>
-</gtx-dropdown-list>
-
-<div class="tags-list">
-    <div *ngFor="let tag of nodeTags" class="search-chip" [meshBackgroundFrom]="tag.tagFamily">
-        <span class="chip-contents">{{tag.name}}</span>
-        <i class="material-icons remove-button" (click)="onTagDeleted(tag)">close</i>
+<div class="tag-bar-container">
+    <gtx-input [(ngModel)]="filterTerm"
+               [class.active]="inputIsFocused || displayTagSelection"
+               placeholder="{{ 'editor.add_tag' | i18n }}"
+               (keydown.escape)="onInputEscape()"
+               (change)="onFilterChange($event)"
+               (focus)="onInputFocus($event)"
+               (blur)="onInputBlur()"></gtx-input>
+    <div class="add-tag">
+        <gtx-button type="primary"
+                    flat
+                    size="small"
+                    class="add-tag-button"
+                    (click)="addTagClick()">
+            <icon left>label_outline</icon>{{ 'editor.add_tag' | i18n }}
+        </gtx-button>
     </div>
+    <mesh-tag *ngFor="let tag of nodeTags; index as i"
+              [tag]="tag"
+              (removeClick)="onTagDeleted(tag)"></mesh-tag>
 </div>
+<mesh-tag-selector [tags]="filteredTags"
+                   [active]="displayTagSelection"
+                   [filterTerm]="filterTerm"
+                   [canCreate]="true"
+                   (selectTag)="onTagSelected($event)"
+                   (close)="displayTagSelection = false"
+                   (createNewTag)="onCreateNewTagClick($event)"></mesh-tag-selector>

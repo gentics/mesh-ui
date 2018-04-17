@@ -26,6 +26,7 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 import { ContainerContentsComponent } from './container-contents.component';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 
 describe('ContainerContentsComponent', () => {
@@ -53,7 +54,7 @@ describe('ContainerContentsComponent', () => {
                 { provide: ListEffectsService, useClass: MockListEffectsService },
                 { provide: ApiService, useClass: MockApiService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: ActivatedRoute, useValue: { paramMap: Observable.of(convertToParamMap({
                     containerUuid: 'container_uuid',
                     projectName: 'demo_project',

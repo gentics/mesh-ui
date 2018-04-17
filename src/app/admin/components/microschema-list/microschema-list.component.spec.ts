@@ -7,27 +7,27 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { componentTest } from '../../../../testing/component-test';
 import { MicroschemaListComponent } from './mircoschema-list.component';
 import { Router, RouterModule } from '@angular/router';
-import { MicroschemaEffectsService } from '../../providers/effects/microschema-effects.service';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 describe('MicroSchemaListComponent', () => {
 
     let appState: TestApplicationState;
     const mockModal = { fromComponent() { } };
-    let mockMicroSchemaEffects;
+    let mockAdminSchemaEffects;
     let mockRouter;
 
     beforeEach(async(() => {
         spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() { } }));
-        mockMicroSchemaEffects = jasmine.createSpyObj('MicroSchemaEffects', ['loadMicroschemas']);
+        mockAdminSchemaEffects = jasmine.createSpyObj('MicroSchemaEffects', ['loadMicroschemas']);
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
         configureComponentTest({
             declarations: [MicroschemaListComponent],
             imports: [GenticsUICoreModule, RouterModule, TestStateModule],
             providers: [
-                { provide: MicroschemaEffectsService, useValue: mockMicroSchemaEffects },
+                { provide: AdminSchemaEffectsService, useValue: mockAdminSchemaEffects },
                 { provide: Router, useValue: mockRouter },
             ]
         });
@@ -40,7 +40,7 @@ describe('MicroSchemaListComponent', () => {
     it(`loads the microschemas`,
         componentTest(() => MicroschemaListComponent, fixture => {
             fixture.detectChanges();
-            expect(mockMicroSchemaEffects.loadMicroschemas).toHaveBeenCalled();
+            expect(mockAdminSchemaEffects.loadMicroschemas).toHaveBeenCalled();
         })
     );
 
