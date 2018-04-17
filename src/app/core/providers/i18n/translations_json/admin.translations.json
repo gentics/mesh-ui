@@ -3,9 +3,17 @@
         "en": "Assigned to projects",
         "de": "Zugewiesen zu Projekte"
     },
+    "create_user": {
+        "en": "Create user",
+        "de": "Benutzer erstellen"
+    },
     "email_address_label": {
         "en": "Email address",
         "de": "Email-Addresse"
+    },
+    "filter_users": {
+        "en": "Filter users",
+        "de": "Benutzer durchsuchen"
     },
     "first_name_label": {
         "en": "First name",
@@ -58,6 +66,14 @@
     "new_schema": {
         "en": "New schema",
         "de": "Neues Schema"
+    },
+    "no_results": {
+        "en": "No results",
+        "de": "Keine Ergebnisse"
+    },
+    "password_label": {
+        "en": "Password",
+        "de": "Kennwort"
     },
     "projects_create": {
         "en": "Create project",

@@ -69,6 +69,22 @@ describe('AdminListComponent', () => {
         expect(paginationControls === null).toBe(false);
     });
 
+    it('shows the placeholder if items array is empty', () => {
+        instance.users = [];
+        fixture.detectChanges();
+
+        const placeholder = fixture.debugElement.query(By.css('.no-results'));
+        expect(placeholder === null).toBe(false);
+    });
+
+    it('shows the placeholder if items array is empty', () => {
+        instance.users = [];
+        fixture.detectChanges();
+
+        const placeholder = fixture.debugElement.query(By.css('.no-results'));
+        expect(placeholder === null).toBe(false);
+    });
+
     describe('checkbox selection', () => {
 
         function allItemsOnPageAreChecked(_fixture: ComponentFixture<TestComponent>): boolean {
@@ -91,6 +107,15 @@ describe('AdminListComponent', () => {
         function getCheckedCount(_fixture: ComponentFixture<TestComponent>): number {
             return _fixture.debugElement.query(By.directive(AdminListComponent)).componentInstance.checkedCount;
         }
+
+
+        it('"select all" is not checked if there are no results', () => {
+            instance.users = [];
+            fixture.detectChanges();
+
+            const selectAll = getSelectAllCheckbox(fixture);
+            expect(selectAll.checked).toBe(false);
+        });
 
         it('checking "select all" selects all rows on current page', fakeAsync(() => {
             fixture.detectChanges();

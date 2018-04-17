@@ -23,6 +23,9 @@
                      [ngTemplateOutletContext]="{ $implicit: item, item: item }">
         </ng-template>
     </mesh-admin-list-item>
+    <div class="no-results" *ngIf="items.length === 0">
+        {{ 'admin.no_results' | i18n }}
+    </div>
 </div>
 <div class="list-footer">
     <mesh-pagination-controls *ngIf="displayPaginationControls()"

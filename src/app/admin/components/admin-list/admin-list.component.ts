@@ -113,6 +113,9 @@ export class AdminListComponent implements OnChanges {
     }
 
     allSelected(): boolean {
+        if (this.items.length === 0) {
+            return false;
+        }
         return this.currentPageIndices
             .every((_, i) => this.checked[this.itemId(i)]);
     }
