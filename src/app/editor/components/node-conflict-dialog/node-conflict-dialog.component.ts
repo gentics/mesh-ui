@@ -12,6 +12,7 @@ import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-ar
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { ConflictedField } from '../../../common/models/common.model';
+import { TagReferenceFromServer } from '../../../common/models/server-models';
 
 @Component({
     selector: 'mesh-node-conflict-dialog',
@@ -25,9 +26,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     mineNode: MeshNode; // Passed from the dialog opener.
     theirsNode: MeshNode; // Passed from the dialog opener.
     conflicts: string[]; // Passed from the dialog opener.
-
+    mineTags: TagReferenceFromServer[]; // Passed from the dialog opener.
     conflictedFields: ConflictedField[] = [];
-
     conflictedTags: {mineTags: string, theirTags: string} = null;
     overwriteTags = true;
 
@@ -46,18 +46,13 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
         const schema: Schema = this.entities.getSchema(this.mineNode.schema.uuid);
 
         if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
-            /*const conflictedTags = {
-                mineTags: getJoinedTags(this.mineNode.tags, 'name'),
-                theirTags: getJoinedTags(this.theirsNode.tags, 'name')
-            };*/
-
             const conflictedTags: ConflictedField = {
                 field: {
                     type: '__TAGS__',
                     name: 'Tags'
                 },
-                mineValue: getJoinedTags(this.mineNode.tags, 'name'),
-                theirValue: getJoinedTags(this.theirsNode.tags, 'name'),
+                mineValue: getJoinedTags(this.mineTags, 'name', ', '),
+                theirValue: getJoinedTags(this.theirsNode.tags, 'name', ', '),
                 overwrite: true
             };
 
@@ -170,8 +165,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             case 'list':
                 conflictedField = {
                     field: schemaField,
-                    mineValue: mineField.join(', '),
-                    theirValue: theirField.join(', '),
+                    mineValue: mineField.join('<br />'),
+                    theirValue: theirField.join('<br />'),
                     overwrite: true
                 };
             break;
@@ -193,13 +188,12 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
         // The final node will contain all out fields (because we might have had changes
         // that are not marked by the mesh as a conflict) and we will just overwrite the
         // values with the their values of it was indicated by the user.
-        const mergedNode = {...this.theirsNode, fields: this.mineNode.fields };
+        const tagsField = this.conflictedFields.find(f => f.overwrite === false && f.field.type === '__TAGS__');
+        const mergedNode = {...this.theirsNode, fields: this.mineNode.fields, tags: tagsField !== null ? this.mineTags : this.theirsNode.tags };
 
         this.conflictedFields.map(conflictedField => {
             if (conflictedField.overwrite === false) { // Overwrute means 'overwrite the serer version with ours. So if it's false - we take the server version and dump it into our mergeNode
-                if (conflictedField.field.type === '__TAGS__') {
-                    // TODO:
-                } else if (conflictedField.field.type === 'micronode') {
+                if (conflictedField.field.type === 'micronode') {
                     conflictedField.conflictedFields.map(conflictedMicronodeField => {
                         if (conflictedMicronodeField.overwrite === false) {
                             mergedNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name] = this.theirsNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name];

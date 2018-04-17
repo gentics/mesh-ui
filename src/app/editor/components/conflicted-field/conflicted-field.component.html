@@ -1,7 +1,42 @@
 <div class="change-item">
     <div class="path">{{ conflictedField.field.name }}</div>
     <div [ngSwitch]="conflictedField.field.type" class="diffs">
-        <div *ngSwitchCase="'html'">
+        <div *ngSwitchCase="'html'" class='preview-container'>
+            <div
+                class="their-val html"
+                [class.selected]="conflictedField.overwrite === false"
+            >
+                <div
+                    class="val"
+                    [innerHTML]="conflictedField.theirValue">
+                </div>
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === true"
+                    (click)="conflictedField.overwrite = false"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
+            </div>
+            <div
+                class="mine-val html"
+                [class.selected]="conflictedField.overwrite === true"
+            >
+                <div
+                    class="val"
+                    [innerHTML]="conflictedField.mineValue">
+                </div>
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === false"
+                    (click)="conflictedField.overwrite = true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
+            </div>
+        </div>
+
+        <div *ngSwitchCase="'list'" class='preview-container'>
             <div
                 class="their-val"
                 [class.selected]="conflictedField.overwrite === false"
@@ -10,6 +45,13 @@
                     class="val"
                     [innerHTML]="conflictedField.theirValue">
                 </div>
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === true"
+                    (click)="conflictedField.overwrite = false"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
             </div>
             <div
                 class="mine-val"
@@ -19,10 +61,17 @@
                     class="val"
                     [innerHTML]="conflictedField.mineValue">
                 </div>
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === false"
+                    (click)="conflictedField.overwrite = true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
             </div>
         </div>
 
-        <div *ngSwitchCase="'date'">
+        <div *ngSwitchCase="'date'" class='preview-container'>
             <div
                 class="their-val"
                 [class.selected]="conflictedField.overwrite === false"
@@ -34,16 +83,30 @@
                 [class.selected]="conflictedField.overwrite === true"
             >
                 <div class="val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === false"
+                    (click)="conflictedField.overwrite = true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
             </div>
         </div>
 
-        <div *ngSwitchCase="'binary'">
+        <div *ngSwitchCase="'binary'" class='preview-container'>
             <div
                 class="their-val"
                 [class.selected]="conflictedField.overwrite === false"
             >
                 <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
                 <div class="val">{{ conflictedField.theirValue.name }}</div>
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === true"
+                    (click)="conflictedField.overwrite = false"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
             </div>
             <div
                 class="mine-val"
@@ -51,10 +114,17 @@
             >
                 <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
                 <div class="val">{{ conflictedField.mineValue.name }}</div>
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === false"
+                    (click)="conflictedField.overwrite = true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'common.use_this_version' | i18n }}
+                </gtx-button>
             </div>
         </div>
 
-        <div *ngSwitchCase="'micronode'" class="micronode-row">
+        <div *ngSwitchCase="'micronode'" class="micronode-row preview-container">
             <ul>
                 <li *ngFor="let conflictedMicronodeField of conflictedField.conflictedFields">
                     <mesh-conflicted-field [conflictedField]="conflictedMicronodeField"></mesh-conflicted-field>
@@ -62,11 +132,10 @@
             </ul>
         </div>
 
-        <div *ngSwitchDefault>
+        <div *ngSwitchDefault class="preview-container">
             <div
                 class="their-val"
                 [class.selected]="conflictedField.overwrite === false"
-                (click)="conflictedField.overwrite = false"
             >
                 <gtx-button
                     *ngIf="conflictedField.overwrite === true"
@@ -79,7 +148,6 @@
             </div>
             <div
                 class="mine-val"
-                (click)="conflictedField.overwrite = true"
                 [class.selected]="conflictedField.overwrite === true"
             >
                 <gtx-button

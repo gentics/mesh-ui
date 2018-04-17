@@ -183,9 +183,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Open a file upload progress if binary fields are present upload
      */
     saveNode(navigateOnSave = true): void {
-        this.handleSaveConflicts(['name', 'microschema.name', 'microschema.number', 'number', 'pets']);
+        //this.handleSaveConflicts(['name', 'microschema.name', 'microschema.number', 'Html', 'number', 'pets']);
 
-        /*if (!this.node) {
+        if (!this.node) {
             return;
         }
         if (this.isDirty) {
@@ -194,7 +194,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
             if (!this.node.uuid) { // Create new node.
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
+                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, this.tagsBar.nodeTags)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
@@ -231,7 +231,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     });
                 this.saveNodeWithProgress(saveFn);
             }
-        }*/
+        }
     }
 
     handleSaveConflicts(conflicts: string[]): void {
@@ -244,18 +244,18 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         closeOnOverlayClick: false,
                         width: '90%',
                         onClose: (reason: any): void => {
-
+                            this.changeDetector.detectChanges();
                         }
                     },
                     {
                         conflicts,
+                        mineTags: this.tagsBar.nodeTags,
                         mineNode: this.node,
                         theirsNode : response as MeshNode,
                     }
                 )
                 .then(modal => modal.open())
                 .then(mergedNode => {
-                    console.log('will save the merged node', mergedNode);
                     this.node = mergedNode;
                     this.saveNode();
                 });

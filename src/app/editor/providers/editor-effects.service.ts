@@ -101,17 +101,6 @@ export class EditorEffectsService {
 
         this.state.actions.editor.saveNodeStart();
 
-        /*this.api.project.getNodeTags({project: node.project.name, nodeUuid: node.uuid})
-            .subscribe(tagsResponse => {
-                const tagsOnServer: TagReferenceFromServer[] = tagsResponse.data
-                    .map((tagResponse) => {
-                        const { name, uuid, tagFamily } = tagResponse;
-                        return {name, uuid, tagFamily: tagFamily.uuid};
-                    });
-
-                console.log(tagsAreEqual(tags, tagsOnServer));
-            });*/
-
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const updateRequest: NodeUpdateRequest = {
@@ -127,10 +116,11 @@ export class EditorEffectsService {
                     // TODO: conflict resolution handling
                     throw new Error('saveNode was rejected');
                 } else if (response.node) {
+                    // Assign tags to the node only when the node is saved without any conflicts.
                     return this.assignTagsToNode(response.node, tags)
-                        .then(newNode => this.uploadBinaries(response.node, getMeshNodeBinaryFields(node))); // api.project.updateNode does not upload the actual binary data - just updates the filename, filesize .etc attributes. We upload the real data here.
-
-                    //return this.uploadBinaries(response.node, getMeshNodeBinaryFields(node)); // Use this if you want to do the seperate tag conflict validation.
+                        // api.project.updateNode does not upload the actual binary data - just updates the filename,
+                        // filesize .etc attributes. We upload the real data here.
+                        .then(newNode => this.uploadBinaries(response.node, getMeshNodeBinaryFields(node)));
                 } else {
                     this.state.actions.editor.saveNodeError();
                     this.notification.show({
@@ -141,28 +131,12 @@ export class EditorEffectsService {
                 }
             })
             .then(savedNode => {
-
-                /*if (!tagsAreEqual(tags, savedNode.tags)) { // We use this block if we want to make a separate tag validation.
-                    throw {
-                        response: {
-                            json: () => {
-                                return {
-                                    type: 'node_version_conflict',
-                                    properties: {
-                                        conflicts: [],
-                                    }
-                                };
-                            }
-                        }
-                    };
-                } else */{
-                    this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
-                    this.notification.show({
-                        type: 'success',
-                        message: 'editor.node_saved'
-                    });
-                    return savedNode;
-                }
+                this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
+                this.notification.show({
+                    type: 'success',
+                    message: 'editor.node_saved'
+                });
+                return savedNode;
             }, error => {
                 this.state.actions.editor.saveNodeError();
                 this.notification.show({
