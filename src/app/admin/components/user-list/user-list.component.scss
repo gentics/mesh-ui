@@ -1,5 +1,19 @@
 @import "variables";
 
+.list-controls {
+    display: flex;
+    align-items: center;
+}
+
+.filter {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.group-filter {
+    margin-right: 10px;
+}
+
 .user-row {
     display: flex;
     align-items: center;

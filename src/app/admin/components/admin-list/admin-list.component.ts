@@ -1,12 +1,14 @@
 import {
+    AfterContentInit,
     ChangeDetectionStrategy,
     Component,
-    ContentChild,
+    ContentChildren,
     ElementRef,
     EventEmitter,
     Input,
     OnChanges,
     Output,
+    QueryList,
     TemplateRef
 } from '@angular/core';
 import { PaginationInstance, PaginationService } from 'ngx-pagination';
@@ -50,7 +52,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
         ])
     ]
 })
-export class AdminListComponent implements OnChanges {
+export class AdminListComponent implements OnChanges, AfterContentInit {
 
     /** An array of objects to be listed */
     @Input() items: any = [];
@@ -72,7 +74,10 @@ export class AdminListComponent implements OnChanges {
     /** Emits an array of the indexes of all selected items. Only applicable if `selectable` is true.*/
     @Output() selectionChange = new EventEmitter<number[]>();
 
-    @ContentChild(TemplateRef) templateRef: TemplateRef<any>;
+    // Using ContentChildren rather than ContentChild because only ContentChildren
+    // currently supports the { descendants: false } option.
+    @ContentChildren(TemplateRef, { descendants: false }) templateRefs: QueryList<TemplateRef<any>>;
+    templateRef: TemplateRef<any>;
 
     paginationConfig: PaginationInstance;
     checked: { [id: string]: boolean } = {};
@@ -99,6 +104,10 @@ export class AdminListComponent implements OnChanges {
         if (this.totalItems) {
             this.paginationConfig.totalItems = this.totalItems;
         }
+    }
+
+    ngAfterContentInit(): void {
+        this.templateRef = this.templateRefs.toArray()[0];
     }
 
     onItemCheckboxClick(index: number, checked: boolean): void {

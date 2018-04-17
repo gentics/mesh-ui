@@ -1,8 +1,21 @@
 <mesh-admin-list [items]="users$ | async"
-                 [itemsPerPage]="itemsPerPage$ | async"
+                 [itemsPerPage]="25"
                  [currentPage]="currentPage$ | async"
-                 [totalItems]="totalItems$ | async"
                  (pageChange)="onPageChange($event)">
+    <div class="list-controls">
+        <div class="filter">
+            <gtx-input [label]="'admin.filter_by_name' | i18n"
+                       [formControl]="filterInput"></gtx-input>
+        </div>
+        <div class="group-filter">
+            <gtx-select [label]="'admin.filter_by_group' | i18n" [formControl]="filterGroups">
+                <gtx-option value="">{{ 'admin.all_groups' | i18n }}</gtx-option>
+                <gtx-option *ngFor="let group of allGroups$ | async" [value]="group?.uuid">{{ group?.name }}</gtx-option>
+            </gtx-select>
+        </div>
+        <gtx-button size="regular" [routerLink]="['/admin/users/new']">{{ 'admin.new_user' | i18n }}</gtx-button>
+    </div>
+
     <ng-template let-user="item">
         <div class="user-row">
             <a [routerLink]="['/admin/users', user.uuid]">
@@ -16,4 +29,5 @@
             </ng-container>
         </div>
     </ng-template>
+
 </mesh-admin-list>

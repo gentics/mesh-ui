@@ -3,7 +3,7 @@ import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
-import { UserListResponse, UserResponse } from '../../common/models/server-models';
+import { GroupResponse, UserListResponse, UserResponse } from '../../common/models/server-models';
 import { mergeEntityState } from './entity-state-actions';
 import { AdminUsersState } from '../models/admin-users-state.model';
 import { User } from '../../common/models/user.model';
@@ -25,8 +25,10 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
                     pagination: {
                         currentPage: 1,
                         itemsPerPage: 25,
-                        totalItems: 0
-                    }
+                        totalItems: null
+                    },
+                    filterTerm: '',
+                    filterGroups: []
                 }
             }
         });
@@ -53,6 +55,40 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
 
     fetchUsersError() {
         this.adminUsers.loadCount--;
+    }
+
+    fetchAllGroupsStart(): void {
+        this.adminUsers.loadCount ++;
+    }
+
+    fetchAllGroupsSuccess(groups: GroupResponse[]): void {
+        this.adminUsers.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            group: groups
+        });
+    }
+
+    fetchAllGroupsError(): void {
+        this.adminUsers.loadCount--;
+    }
+
+    /**
+     * To be used only when client-side paging strategy is used.
+     */
+    setUserListPagination(currentPage: number, itemsPerPage: number): void {
+        this.adminUsers.pagination = {
+            currentPage,
+            itemsPerPage,
+            totalItems: null
+        };
+    }
+
+    setFilterTerm(term: string): void {
+        this.adminUsers.filterTerm = term;
+    }
+
+    setFilterGroups(groups: string[]): void {
+        this.adminUsers.filterGroups = groups;
     }
 
     newUser() {

@@ -5,5 +5,6 @@ export interface AdminUsersState {
     userList: string[];
     userDetail: string | null;
     pagination: PaginationConfig;
+    filterTerm: string;
+    filterGroups: string[];
 }
-

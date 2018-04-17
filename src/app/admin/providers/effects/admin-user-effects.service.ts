@@ -29,6 +29,53 @@ export class AdminUserEffectsService {
             );
     }
 
+    /**
+     * Loads *all* users, not paginated. This is used because there is currently no facility to filter
+     * users on the server-side in Mesh. Once this capability is implemented in Mesh (e.g. via the Graphql endpoint)
+     * then we should switch to server-side paging to avoid perf issues on instances with many (thousands or millions) of users.
+     */
+    loadAllUsers(): void {
+        this.state.actions.adminUsers.fetchUsersStart();
+
+        this.api.user.getUsers({ page: 1, perPage: 9999999 })
+            .subscribe(
+                response => {
+                    this.state.actions.adminUsers.fetchUsersSuccess(response);
+                },
+                error => {
+                    this.state.actions.adminUsers.fetchUsersError();
+                }
+            );
+    }
+
+    loadAllGroups(): void {
+        this.state.actions.adminUsers.fetchAllGroupsStart();
+
+        this.api.user.getGroups({ page: 1, perPage: 9999999 })
+            .subscribe(
+                response => {
+                    this.state.actions.adminUsers.fetchAllGroupsSuccess(response.data);
+                },
+                error => {
+                    this.state.actions.adminUsers.fetchAllGroupsError();
+                });
+    }
+
+    /**
+     * This is only needed when using client-side pagination. See note above loadAllUsers().
+     */
+    setListPagination(currentPage: number, itemsPerPage: number): void {
+        this.state.actions.adminUsers.setUserListPagination(currentPage, itemsPerPage);
+    }
+
+    setFilterTerm(term: string): void {
+        this.state.actions.adminUsers.setFilterTerm(term);
+    }
+
+    setFilterGroups(groups: string[]): void {
+        this.state.actions.adminUsers.setFilterGroups(groups);
+    }
+
     newUser(): void {
         this.state.actions.adminUsers.newUser();
     }

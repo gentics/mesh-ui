@@ -1,22 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
-import { Observable } from 'rxjs/Observable';
 import { User } from '../../../common/models/user.model';
+import { Group } from '../../../common/models/group.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'mesh-user-list',
     templateUrl: './user-list.component.html',
-    styleUrls: ['./user-list.component.scss']
+    styleUrls: ['./user-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent implements OnInit, OnDestroy {
 
     users$: Observable<User[]>;
     currentPage$: Observable<number>;
     itemsPerPage$: Observable<number>;
     totalItems$: Observable<number>;
+    allGroups$: Observable<Group[]>;
+    filterInput = new FormControl('');
+    filterGroups = new FormControl('');
+
+    private destroy$ = new Subject<void>();
 
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
@@ -25,23 +36,114 @@ export class UserListComponent implements OnInit {
                 private adminUserEffects: AdminUserEffectsService) { }
 
     ngOnInit() {
-        this.route.queryParamMap
-            .subscribe(paramMap => {
-                const page = paramMap.get('p') || 1;
-                const perPage = paramMap.get('perPage') || 25;
-                this.adminUserEffects.loadUsers(+page, +perPage);
+        this.adminUserEffects.loadAllUsers();
+        this.adminUserEffects.loadAllGroups();
+
+        combineLatest(
+            this.observeParam('p', 1),
+            this.observeParam('perPage', 25)
+        )
+            .subscribe(([page, perPage]) => { this.adminUserEffects.setListPagination(page, perPage); });
+
+        this.observeParam('q', '').subscribe(filterTerm => {
+            this.adminUserEffects.setFilterTerm(filterTerm);
+            this.filterInput.setValue(filterTerm, { emitEvent: false });
+        });
+
+        this.observeParam('group', '').subscribe(groupUuid => {
+            this.adminUserEffects.setFilterGroups([groupUuid]);
+
+            // setTimeout prevent an error where the Select component has not yet
+            // got a reference to the <gtx-option> elements at init time, which prevents
+            // the default value from being selected.
+            setTimeout(() => {
+                this.filterGroups.setValue(groupUuid, { emitEvent: false });
+            });
+        });
+
+        this.filterInput.valueChanges
+            .debounceTime(300)
+            .takeUntil(this.destroy$)
+            .subscribe(term => {
+                this.setQueryParams({ q: term });
             });
 
-        this.users$ = this.state.select(state => state.adminUsers.userList)
-            .map(uuids => uuids.map(uuid => this.entities.getUser(uuid)));
+        this.filterGroups.valueChanges
+            .takeUntil(this.destroy$)
+            .subscribe(groupUuid => {
+                this.setQueryParams({ group: groupUuid });
+            });
 
+        const allUsers$ = this.state.select(state => state.adminUsers.userList)
+            .map(uuids => uuids.map(uuid => this.entities.getUser(uuid)));
+        const filterTerm$ = this.state.select(state => state.adminUsers.filterTerm);
+        const filterGroups$ = this.state.select(state => state.adminUsers.filterGroups);
+
+        this.users$ = combineLatest(allUsers$, filterTerm$, filterGroups$)
+            .map(([users, filterTerm, filterGroups]) => this.filterUsers(users, filterTerm, filterGroups));
+
+        this.allGroups$ = this.entities.selectAllGroups();
         this.currentPage$ = this.state.select(state => state.adminUsers.pagination.currentPage);
         this.itemsPerPage$ = this.state.select(state => state.adminUsers.pagination.itemsPerPage);
         this.totalItems$ = this.state.select(state => state.adminUsers.pagination.totalItems);
     }
 
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
     onPageChange(newPage: number): void {
-        this.router.navigate(['/admin/users'], { queryParams: { p: newPage } });
+        this.setQueryParams({ p: newPage });
+    }
+
+    /**
+     * Returns an Observable which emits whenever a route query param with the given name changes.
+     */
+    private observeParam<T extends string | number>(paramName: string, defaultValue: T): Observable<T> {
+        return this.route.queryParamMap
+            .map(paramMap => {
+                const value = paramMap.get(paramName) as T || defaultValue;
+                return (typeof defaultValue === 'number' ? +value : value) as T;
+            })
+            .distinctUntilChanged()
+            .takeUntil(this.destroy$);
+    }
+
+    private filterUsers(users: User[], filterTerm: string, filterGroups: string[]): User[] {
+        const groupUuid = filterGroups[0];
+        if (filterTerm.trim() === '' && !groupUuid) {
+            return users;
+        }
+        return users.filter(user => this.userMatchesTerm(user, filterTerm) && this.userIsInGroup(user, groupUuid));
+    }
+
+    private userMatchesTerm(user: User, filterTerm: string): boolean {
+        return this.lowercaseMatch(filterTerm, user.username) ||
+            this.lowercaseMatch(filterTerm, user.firstname) ||
+            this.lowercaseMatch(filterTerm, user.lastname);
+    }
+
+    private lowercaseMatch(needle: string, haystack?: string): boolean {
+        return haystack && -1 < haystack.toLowerCase().indexOf(needle.toLowerCase());
+    }
+
+    private userIsInGroup(user: User, groupUuid: string | undefined): boolean {
+        if (!groupUuid) {
+            return true;
+        }
+        return user.groups.some(group => group.uuid === groupUuid);
+    }
+
+    /**
+     * Updates the query params whilst preserving existing params.
+     */
+    private setQueryParams(params: { [key: string]: string | number; }): void {
+        this.router.navigate(['./'], {
+            queryParams: params,
+            queryParamsHandling: 'merge',
+            relativeTo: this.route
+        });
     }
 
 }

@@ -1,4 +1,8 @@
 {
+    "all_groups": {
+        "en": "All groups",
+        "de": "Alle Gruppen"
+    },
     "assigned_to_projects": {
         "en": "Assigned to projects",
         "de": "Zugewiesen zu Projekte"
@@ -11,9 +15,13 @@
         "en": "Email address",
         "de": "Email-Addresse"
     },
-    "filter_users": {
-        "en": "Filter users",
-        "de": "Benutzer durchsuchen"
+    "filter_by_group": {
+        "en": "Filter by group",
+        "de": "nach Gruppe durchsuchen"
+    },
+    "filter_by_name": {
+        "en": "Filter by name",
+        "de": "nach Name durchsuchen"
     },
     "first_name_label": {
         "en": "First name",

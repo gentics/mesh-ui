@@ -11,6 +11,7 @@ import { User } from '../../common/models/user.model';
 import { BaseProperties } from '../../common/models/common.model';
 import { Tag } from '../../common/models/tag.model';
 import { TagFamily } from '../../common/models/tag-family.model';
+import { Group } from '../../common/models/group.model';
 
 @Injectable()
 @Immutable()
@@ -22,6 +23,7 @@ export class EntityStateActions extends StateActionBranch<AppState> {
             uses: 'entities',
             initialState: {
                 entities: {
+                    group: {},
                     project: {},
                     node: {},
                     user: {},
@@ -36,6 +38,7 @@ export class EntityStateActions extends StateActionBranch<AppState> {
 }
 
 export interface EntityStateType {
+    group: Group;
     project: Project;
     node: MeshNode;
     user: User;
