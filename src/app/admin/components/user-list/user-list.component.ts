@@ -10,6 +10,8 @@ import { AdminUserEffectsService } from '../../providers/effects/admin-user-effe
 import { User } from '../../../common/models/user.model';
 import { Group } from '../../../common/models/group.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { ModalService } from 'gentics-ui-core';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 
 @Component({
     selector: 'mesh-user-list',
@@ -33,6 +35,8 @@ export class UserListComponent implements OnInit, OnDestroy {
                 private entities: EntitiesService,
                 private route: ActivatedRoute,
                 private router: Router,
+                private modalService: ModalService,
+                private i18n: I18nService,
                 private adminUserEffects: AdminUserEffectsService) { }
 
     ngOnInit() {
@@ -97,6 +101,12 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.setQueryParams({ p: newPage });
     }
 
+    deleteUser(user: User): void {
+        this.displayDeleteUserModal(user).then(() => {
+            this.adminUserEffects.deleteUser(user.uuid);
+        });
+    }
+
     /**
      * Returns an Observable which emits whenever a route query param with the given name changes.
      */
@@ -144,6 +154,18 @@ export class UserListComponent implements OnInit, OnDestroy {
             queryParamsHandling: 'merge',
             relativeTo: this.route
         });
+    }
+
+    private displayDeleteUserModal(user: User): Promise<any> {
+        return  this.modalService.dialog({
+            title: this.i18n.translate('admin.delete_user') + '?',
+            body: this.i18n.translate('admin.delete_user_confirmation', { username: user.username }),
+            buttons: [
+                { type: 'secondary', flat: true, shouldReject: true, label: this.i18n.translate('common.cancel_button') },
+                { type: 'alert', label: this.i18n.translate('admin.delete_user') }
+            ]
+        })
+            .then(modal => modal.open());
     }
 
 }

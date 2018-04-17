@@ -144,6 +144,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
     }
 
     deleteUserSuccess(userUuid: string) {
+        this.adminUsers.loadCount--;
         this.adminUsers.userList = this.adminUsers.userList.filter(uuid => uuid !== userUuid);
     }
 

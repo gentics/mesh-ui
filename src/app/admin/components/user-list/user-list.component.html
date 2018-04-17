@@ -27,6 +27,19 @@
                     {{ group.name }}
                 </mesh-chip>
             </ng-container>
+
+            <div class="row-actions">
+                <gtx-dropdown-list>
+                    <gtx-dropdown-trigger>
+                        <gtx-button icon type="secondary"><icon>more_vert</icon></gtx-button>
+                    </gtx-dropdown-trigger>
+                    <gtx-dropdown-content>
+                        <gtx-dropdown-item class="alert" (click)="deleteUser(user)">
+                            <icon>delete</icon> {{ 'admin.delete_user' | i18n }}
+                        </gtx-dropdown-item>
+                    </gtx-dropdown-content>
+                </gtx-dropdown-list>
+            </div>
         </div>
     </ng-template>
 

@@ -30,3 +30,17 @@
 mesh-chip {
     margin-left: 15px;
 }
+
+.row-actions {
+    flex: 1;
+    text-align: right;
+}
+
+gtx-dropdown-item {
+    display: flex;
+    align-items: center;
+
+    &.alert {
+        color: $gtx-color-alert;
+    }
+}

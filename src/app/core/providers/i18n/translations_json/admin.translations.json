@@ -11,6 +11,14 @@
         "en": "Create user",
         "de": "Benutzer erstellen"
     },
+    "delete_user": {
+        "en": "Delete user",
+        "de": "Benutzer löschen"
+    },
+    "delete_user_confirmation": {
+        "en": "You are about to permanently delete user '{{ username }}'.",
+        "de": "Wollen Sie '{{ username }}' permanent löschen?"
+    },
     "email_address_label": {
         "en": "Email address",
         "de": "Email-Addresse"
@@ -138,6 +146,14 @@
     "user_created": {
         "en": "New user created",
         "de": "Neuer Benutzer erstellt"
+    },
+    "user_deleted": {
+        "en": "User deleted",
+        "de": "Benutzer gelöscht"
+    },
+    "user_deleted_error": {
+        "en": "User could not be deleted",
+        "de": "Benutzer könnte nicht gelöscht werden"
     },
     "user_name_label": {
         "en": "Username",
