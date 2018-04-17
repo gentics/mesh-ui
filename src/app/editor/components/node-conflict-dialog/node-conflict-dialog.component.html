@@ -1,18 +1,9 @@
 <div class="modal-title">
-    <h5>{{ 'modal.node_conflict_title' | i18n }}</h5>
+    <h5>{{ 'modal.node_conflict' | i18n }}: <span class="their-val">{{theirsNode.version}}</span> / <span class="mine-val">{{mineNode.version}}</span></h5>
+    <strong>{{ 'modal.node_conflict_description' | i18n }} </strong>
 </div>
 <div class="modal-content">
     <ul class="changes">
-        <li class="change-item header">
-            <div class="path"><strong>{{ 'editor.field_name' | i18n }}</strong></div>
-            <div class="diffs">
-                <div class="preview-container">
-                    <div class="their-val"><strong>{{ 'editor.theirs_version' | i18n }}: {{theirsNode.version}}</strong></div>
-                    <div class="mine-val"><strong>{{ 'editor.my_version' | i18n }}: {{mineNode.version}}</strong></div>
-                </div>
-            </div>
-            <!--<div class="action" title="Overwrite"><strong>Overwrite?</strong></div>-->
-        </li>
         <li *ngFor="let conflictedField of conflictedFields">
             <mesh-conflicted-field [conflictedField]="conflictedField"></mesh-conflicted-field>
         </li>
@@ -21,5 +12,5 @@
 </div>
 <div class="modal-footer">
     <gtx-button type="secondary" flat (click)="cancelFn(false)">{{ 'common.cancel_button' | i18n }}</gtx-button>
-    <gtx-button type="primary" (click)="saveAndClose()"><icon left>save</icon> {{ 'modal.overwrite_selected' | i18n }}</gtx-button>
+    <gtx-button type="primary" (click)="saveAndClose()"><icon left>save</icon> {{ 'modal.save_changes' | i18n }}</gtx-button>
 </div>

@@ -1,8 +1,10 @@
 @import "variables";
 @include conflict-row;
 
-.header {
-    pointer-events: none;
-    background-color: $gtx-color-light-gray;
-    border-top: 1px solid $gtx-color-off-black;
+.their-val {
+    color: $gtx-color-alert;
+}
+
+.mine-val {
+    color: $gtx-color-success;
 }

@@ -5,34 +5,34 @@
             <div
                 class="their-val html"
                 [class.selected]="conflictedField.overwrite === false"
+                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'modal.use_this_version' | i18n }}
+                </gtx-button>
                 <div
                     class="val"
                     [innerHTML]="conflictedField.theirValue">
                 </div>
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === true"
-                    (click)="conflictedField.overwrite = false"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
-                </gtx-button>
             </div>
             <div
                 class="mine-val html"
                 [class.selected]="conflictedField.overwrite === true"
+                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === false"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'modal.use_this_version' | i18n }}
+                </gtx-button>
                 <div
                     class="val"
                     [innerHTML]="conflictedField.mineValue">
                 </div>
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === false"
-                    (click)="conflictedField.overwrite = true"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
-                </gtx-button>
             </div>
         </div>
 
@@ -40,34 +40,34 @@
             <div
                 class="their-val"
                 [class.selected]="conflictedField.overwrite === false"
+                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'modal.use_this_version' | i18n }}
+                </gtx-button>
                 <div
                     class="val"
                     [innerHTML]="conflictedField.theirValue">
                 </div>
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === true"
-                    (click)="conflictedField.overwrite = false"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
-                </gtx-button>
             </div>
             <div
                 class="mine-val"
                 [class.selected]="conflictedField.overwrite === true"
+                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === false"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'modal.use_this_version' | i18n }}
+                </gtx-button>
                 <div
                     class="val"
                     [innerHTML]="conflictedField.mineValue">
                 </div>
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === false"
-                    (click)="conflictedField.overwrite = true"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
-                </gtx-button>
             </div>
         </div>
 
@@ -75,21 +75,28 @@
             <div
                 class="their-val"
                 [class.selected]="conflictedField.overwrite === false"
+                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'modal.use_this_version' | i18n }}
+                </gtx-button>
                 <div class="val">{{ conflictedField.theirValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
             </div>
             <div
                 class="mine-val"
                 [class.selected]="conflictedField.overwrite === true"
+                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
-                <div class="val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
                 <gtx-button
                     *ngIf="conflictedField.overwrite === false"
-                    (click)="conflictedField.overwrite = true"
                     size="small"
                     class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
+                    flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
+                <div class="val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
             </div>
         </div>
 
@@ -97,30 +104,30 @@
             <div
                 class="their-val"
                 [class.selected]="conflictedField.overwrite === false"
+                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
-                <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
-                <div class="val">{{ conflictedField.theirValue.name }}</div>
                 <gtx-button
                     *ngIf="conflictedField.overwrite === true"
-                    (click)="conflictedField.overwrite = false"
                     size="small"
                     class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
+                    flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
+                <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
+                <div class="val">{{ conflictedField.theirValue.name }}</div>
             </div>
             <div
                 class="mine-val"
                 [class.selected]="conflictedField.overwrite === true"
+                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
-                <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
-                <div class="val">{{ conflictedField.mineValue.name }}</div>
                 <gtx-button
                     *ngIf="conflictedField.overwrite === false"
-                    (click)="conflictedField.overwrite = true"
                     size="small"
                     class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
+                    flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
+                <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
+                <div class="val">{{ conflictedField.mineValue.name }}</div>
             </div>
         </div>
 
@@ -136,37 +143,29 @@
             <div
                 class="their-val"
                 [class.selected]="conflictedField.overwrite === false"
+                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
                 <gtx-button
                     *ngIf="conflictedField.overwrite === true"
-                    (click)="conflictedField.overwrite = false"
                     size="small"
                     class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
+                    flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <div class="val">{{ conflictedField.theirValue }}</div>
             </div>
             <div
                 class="mine-val"
                 [class.selected]="conflictedField.overwrite === true"
+                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
                 <gtx-button
                     *ngIf="conflictedField.overwrite === false"
-                    (click)="conflictedField.overwrite = true"
                     size="small"
                     class="button-select"
-                    flat>{{ 'common.use_this_version' | i18n }}
+                    flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <div class="val">{{ conflictedField.mineValue }}</div>
             </div>
         </div>
     </div>
-    <!--<div  class="action">
-        <gtx-checkbox
-            *ngIf="conflictedField.field.type !== 'micronode'"
-            [checked]="conflictedField.overwrite"
-            (change)="conflictedField.overwrite = $event"
-        >
-        </gtx-checkbox>
-    </div>-->
 </div>
