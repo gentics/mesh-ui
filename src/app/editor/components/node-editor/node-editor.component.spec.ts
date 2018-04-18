@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { GenticsUICoreModule } from 'gentics-ui-core';
+import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { FormsModule } from '@angular/forms';
 
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
@@ -25,12 +25,14 @@ import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
+import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
     let state: TestApplicationState;
     let listEffectsService: MockListEffectsService;
     let navigationService: MockNavigationService;
+    let modalService: MockModalService;
 
     beforeEach(() => {
         configureComponentTest({
@@ -45,6 +47,7 @@ describe('NodeEditorComponent', () => {
             ],
             providers: [
                 EntitiesService,
+                { provide: ModalService, useClass: MockModalService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: EditorEffectsService, useClass: MockEditorEffectsService },
                 { provide: ListEffectsService, useClass: MockListEffectsService },
@@ -64,6 +67,7 @@ describe('NodeEditorComponent', () => {
         state = TestBed.get(ApplicationStateService);
         listEffectsService = TestBed.get(ListEffectsService);
         navigationService = TestBed.get(NavigationService);
+        modalService = TestBed.get(ModalService);
     });
 
     const clickSave = (fixture: ComponentFixture<NodeEditorComponent>) => {
@@ -207,6 +211,30 @@ describe('NodeEditorComponent', () => {
                 expect(listEffectsService.loadChildren).toHaveBeenCalledWith(node.project.name, node.parentNode.uuid, node.language);
             })
         );
+
+        it('handles conflicts from the server',
+            componentTest(() => NodeEditorComponent, (fixture, instance) => {
+                editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.callFake(() => {
+                    const errorResponse =  {
+                        response: {
+                            json: () => {
+                                return {
+                                    type: 'node_version_conflict',
+                                    properties: {
+                                        conflicts: []
+                                    }
+                                };
+                            }
+                        }
+                    }
+                    return Promise.reject(errorResponse);
+                });
+
+                instance.handleSaveConflicts = jasmine.createSpy('handleSaveConflicts');
+                clickSave(fixture);
+                expect(instance.handleSaveConflicts).toHaveBeenCalled();
+            })
+        );
     });
 
 
@@ -263,4 +291,17 @@ class MockNodeTagsBarComponent {
     @Input() node: any;
     isDirty = true;
     nodeTags = [];
+}
+
+class MockModalService {
+    dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
+    fromComponent = jasmine.createSpy('fromComponent').and.callFake(() => Promise.resolve(this.fakeDialog));
+    fakeDialog = {
+        open: jasmine.createSpy('open').and.callFake(() => {
+            return new Promise(resolve => {
+                this.confirmLastModal = () => { resolve(); tick(); };
+            });
+        })
+    };
+    confirmLastModal: () => void;
 }
