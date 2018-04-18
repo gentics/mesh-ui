@@ -21,6 +21,10 @@ import { NodeLanguageLabelComponent } from '../language-label/language-label.com
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
+import { MockApiBase } from '../../../core/providers/api/api-base.mock';
+import { ApiService } from '../../../core/providers/api/api.service';
+import { MockApiService } from '../../../core/providers/api/api.service.mock';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
@@ -46,7 +50,9 @@ describe('NodeEditorComponent', () => {
                 { provide: ListEffectsService, useClass: MockListEffectsService },
                 { provide: NavigationService, useClass: MockNavigationService },
                 { provide: I18nService, useClass: MockI18nService },
-                { provide: ConfigService, useClass: MockConfigService }
+                { provide: ConfigService, useClass: MockConfigService },
+                { provide: ApiBase, useClass: MockApiBase },
+                { provide: ApiService, useClass: MockApiService }
             ],
             imports: [
                 RouterTestingModule.withRoutes([]),

@@ -44,7 +44,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     ngOnInit(): void {
 
         const schema: Schema = this.entities.getSchema(this.mineNode.schema.uuid);
-
         if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
             const conflictedTags: ConflictedField = {
                 field: {
