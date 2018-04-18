@@ -11,6 +11,7 @@ export declare class MockedApiRequest {
     url: string;
     params: any;
     body: any;
+    headers: any;
     respond<T>(status: number, responseBody: T): void;
     respond(status: number, responseBody: any): void;
 }
@@ -38,15 +39,16 @@ export class MockApiBase extends ApiBase {
         } as any as Http;
     }
 
-    protected request(method: RequestMethod, url: string, params: any = {}, body: any): any {
+    protected request(method: RequestMethod, url: string, params: any = {}, body?: any, extraHeaders?: any): any {
         const result = super.request(method, url, params, body);
 
         // Add the passed arguments to the tracked request.
         // They are not available on the actual `Request` object.
         this.lastRequest.method = requestMethodToString(method);
-        this.lastRequest.body = body;
+        this.lastRequest.body = body === null ? undefined : body;
         this.lastRequest.url = url;
         this.lastRequest.params = params;
+        this.lastRequest.headers = extraHeaders;
 
         return result;
     }
