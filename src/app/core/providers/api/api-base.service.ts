@@ -299,14 +299,7 @@ export class ApiBase {
         } else if (response.status === 204) { // No content (happens on delete)
             return null;
         } else {
-            /*console.log('the size of the arrayBuffer is', response.arrayBuffer.length);
-            const buffer: ArrayBuffer = response.arrayBuffer();
-            const uint8Array  = new Uint8Array(buffer);
-            const arrayBuffer = uint8Array.buffer;
-            const blob  = new Blob([arrayBuffer], {type: contentType || '', endings: 'transparent'});
-            return new Blob([buffer], {type: contentType || '', endings: 'transparent'}); // Server is returning binaries as an ArrayBuffers.*/
-
-            return response;
+            return response.blob();
         }
     }
 }

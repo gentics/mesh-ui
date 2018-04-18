@@ -2,11 +2,11 @@ import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { FormsModule } from '@angular/forms';
+import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
+import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { NodeEditorComponent } from './node-editor.component';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -25,7 +25,7 @@ import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
-import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
+import { NodeEditorComponent } from './node-editor.component';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;

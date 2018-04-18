@@ -22,7 +22,6 @@ export interface BaseProperties {
     uuid: string;
 }
 
-
 export interface ConflictedField {
     field: SchemaField | { type: '__TAGS__', name: string }; // We want to reuse the same structure to hold the diff of the Tags of node
     mineValue: any;

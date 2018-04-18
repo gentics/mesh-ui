@@ -54,7 +54,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 theirValue: getJoinedTags(this.theirsNode.tags, 'name', ', '),
                 overwrite: true
             };
-
             this.conflictedFields.push(conflictedTags);
         }
 
@@ -91,7 +90,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             }
         });
     }
-
 
     getConflictedField(schemaField: SchemaField, mineField: any, theirField: any): ConflictedField {
         let conflictedField = null;
@@ -179,7 +177,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 };
             break;
         }
-
         return conflictedField;
     }
 

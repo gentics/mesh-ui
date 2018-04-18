@@ -3,10 +3,10 @@ import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Observable } from 'rxjs/Observable';
-import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
+import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
+
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
@@ -19,9 +19,9 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
-
 import { mockMeshNode, mockProject, mockSchema, mockTag } from '../../../../testing/mock-models';
 import { FieldMapFromServer } from '../../../common/models/server-models';
+import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
 
 let state: TestApplicationState;
 
@@ -29,7 +29,6 @@ describe('NodeConflictDialogComponent', () => {
     let component: NodeConflictDialogComponent;
     let fixture: ComponentFixture<NodeConflictDialogComponent>;
 
-    //const httpMock = TestBed.get(HttpTestingController);
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [

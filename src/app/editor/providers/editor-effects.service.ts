@@ -206,7 +206,6 @@ export class EditorEffectsService {
      * * Uploading any new binary files that have been selected for the node
      * * Applying any binary transforms
      */
-
     private processTagsAndBinaries(originalNode: MeshNode, updatedNode: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode> {
         return this.assignTagsToNode(updatedNode, tags)
             .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(originalNode)))

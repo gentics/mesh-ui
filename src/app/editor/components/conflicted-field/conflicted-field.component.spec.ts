@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { Pipe, PipeTransform, DebugElement } from '@angular/core';
 import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
+import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -10,7 +11,7 @@ import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 import { ConflictedFieldComponent } from './conflicted-field.component';
-import { By } from '@angular/platform-browser';
+
 
 describe('ConflictedFieldComponent', () => {
     let component: ConflictedFieldComponent;
