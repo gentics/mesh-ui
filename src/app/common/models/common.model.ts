@@ -2,8 +2,6 @@ import {
     ReleaseMicroschemaInfoFromServer, NodeReferenceFromServer, PermissionInfoFromServer, SchemaReferenceFromServer,
     UserReferenceFromServer
 } from './server-models';
-import { BinaryField } from './node.model';
-import { SafeUrl } from '@angular/platform-browser';
 
 export interface NodeReference extends NodeReferenceFromServer {}
 

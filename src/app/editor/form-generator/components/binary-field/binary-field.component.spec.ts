@@ -18,7 +18,6 @@ import { FilePreviewComponent } from '../../../../shared/components/file-preview
 import { AudioPlayButtonComponent } from '../../../../shared/components/audio-play-button/audio-play-button.component';
 
 describe('BinaryFieldComponent:', () => {
-
     beforeEach(() => {
         configureComponentTest({
             declarations: [

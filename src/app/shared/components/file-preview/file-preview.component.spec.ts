@@ -4,7 +4,6 @@ import { AudioPlayButtonComponent } from '../audio-play-button/audio-play-button
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { By } from '@angular/platform-browser';
 
-
 describe('FilePreviewComponent', () => {
     let component: FilePreviewComponent;
     let fixture: ComponentFixture<FilePreviewComponent>;
