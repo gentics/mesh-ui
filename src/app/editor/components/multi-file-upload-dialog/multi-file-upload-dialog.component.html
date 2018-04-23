@@ -51,28 +51,10 @@
                     <div *ngIf="fileWithBlob.progress === 'done'" class="overlay-done">
                         <icon class="material-icons">done</icon>
                     </div>
-
-                    <div [ngSwitch]="fileWithBlob.mediaType">
-                        <div *ngSwitchCase="'image'">
-                            <img class="preview" [src]="fileWithBlob.blob" alt="" />
-                        </div>
-                        <div *ngSwitchCase="'video'">
-                            <video class="preview" width="100%" controls>
-                                <source [src]="fileWithBlob.blob">
-                            </video>
-                        </div>
-
-                        <div *ngSwitchCase="'audio'" class="preview audio">
-                            <mesh-audio-play-button [src]="fileWithBlob.blob" [autoPlay]="false"></mesh-audio-play-button>
-                        </div>
-
-                        <div *ngSwitchDefault>
-                            <div class="default-preview preview">
-                                <icon class="node-icon">insert_drive_file</icon>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="media-properties">{{fileWithBlob.file.fileName}}</div>
+                    <mesh-media-element [mediaType]="fileWithBlob.mediaType"
+                                        [url]="fileWithBlob.url"
+                                        [fileName]="fileWithBlob.fileName">
+                    </mesh-media-element>
                 </div>
             </div>
 

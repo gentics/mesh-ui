@@ -1,3 +1,26 @@
-<p>
-  media-element works!
-</p>
+<div [ngSwitch]="mediaType">
+    <div *ngSwitchCase="'image'">
+        <img class="preview" [src]="url" alt="" />
+    </div>
+    <div *ngSwitchCase="'video'">
+        <video class="preview"
+               width="100%"
+               controls
+               preload="metadata"
+               controlsList="nodownload"
+               (loadedmetadata)="loadingPreview = false">
+            <source [src]="url">
+        </video>
+    </div>
+
+    <div *ngSwitchCase="'audio'" class="preview audio">
+        <mesh-audio-play-button [src]="url" [autoPlay]="false"></mesh-audio-play-button>
+    </div>
+
+    <div *ngSwitchDefault>
+        <div class="default-preview preview">
+            <icon class="node-icon">insert_drive_file</icon>
+        </div>
+    </div>
+</div>
+<div class="media-properties">{{fileName}}</div>

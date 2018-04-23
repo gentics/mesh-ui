@@ -18,9 +18,10 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
+
 interface FileWithBlob {
     file: BinaryField;
-    blob: SafeUrl;
+    url: SafeUrl;
     progress: 'none' | 'uploading' | 'done' | 'error';
     mediaType: string;
 }
@@ -147,7 +148,7 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     addBlobToFile(file: File): FileWithBlob {
         return {
             file: { fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField,
-            blob: this.blobService.createObjectURL(file),
+            url: this.blobService.createObjectURL(file),
             mediaType: this.getBinaryMediaType(file),
             progress: 'none'
         };

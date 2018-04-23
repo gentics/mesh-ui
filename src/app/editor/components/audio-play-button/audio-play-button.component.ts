@@ -12,6 +12,8 @@ export class AudioPlayButtonComponent implements OnInit {
     @Input() autoPlay: Boolean = false;
     @ViewChild('AudioElement') audio: ElementRef;
 
+    loadingPreview = false;
+
     ngOnInit() {
         // This callback is needed to trigger the angular change detection so that it renders a paused state of the play button.
         this.audio.nativeElement.onended = () => {
