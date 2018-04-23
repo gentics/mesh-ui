@@ -45,6 +45,7 @@ $preview-max-width: 54%;
 }
 
 .image-preview {
+    position: relative;
     text-align: center;
     gentics-ui-image-preview {
         display: flex;

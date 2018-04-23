@@ -17,6 +17,8 @@ import { FileSizePipe } from './pipes/file-size/file-size.pipe';
 import { TagComponent } from './components/tag/tag.component';
 import { ChipComponent } from './components/chip/chip.component';
 import { TagSelectorComponent } from './components/tag-selector/tag-selector.component';
+import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
+import { FilePreviewComponent } from './components/file-preview/file-preview.component';
 
 const SHARED_COMPONENTS = [
     ChipComponent,
@@ -24,7 +26,9 @@ const SHARED_COMPONENTS = [
     SchemaLabelComponent,
     TagComponent,
     TagSelectorComponent,
-    ThumbnailComponent
+    ThumbnailComponent,
+    AudioPlayButtonComponent,
+    FilePreviewComponent
 ];
 
 const SHARED_DIRECTIVES = [

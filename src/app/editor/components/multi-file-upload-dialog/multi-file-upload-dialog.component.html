@@ -51,10 +51,10 @@
                     <div *ngIf="fileWithBlob.progress === 'done'" class="overlay-done">
                         <icon class="material-icons">done</icon>
                     </div>
-                    <mesh-media-element [mediaType]="fileWithBlob.mediaType"
-                                        [url]="fileWithBlob.url"
-                                        [fileName]="fileWithBlob.fileName">
-                    </mesh-media-element>
+                    <mesh-file-preview [mediaType]="fileWithBlob.mediaType"
+                                        [url]="fileWithBlob.url">
+                    </mesh-file-preview>
+                    <div class="media-properties">{{fileWithBlob.file.fileName}}</div>
                 </div>
             </div>
 

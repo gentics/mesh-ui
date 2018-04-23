@@ -14,6 +14,8 @@ import { MockBlobService } from '../../../providers/blob.service.mock';
 import { BlobService } from '../../../providers/blob.service';
 import { BinaryField } from '../../../../common/models/node.model';
 import { FileSizePipe } from '../../../../shared/pipes/file-size/file-size.pipe';
+import { FilePreviewComponent } from '../../../../shared/components/file-preview/file-preview.component';
+import { AudioPlayButtonComponent } from '../../../../shared/components/audio-play-button/audio-play-button.component';
 
 describe('BinaryFieldComponent:', () => {
 
@@ -27,7 +29,9 @@ describe('BinaryFieldComponent:', () => {
                 FileSizePipe,
                 Icon,
                 Button,
-                ProgressBar
+                ProgressBar,
+                FilePreviewComponent,
+                AudioPlayButtonComponent,
             ],
             providers: [
                 { provide: ApiService, useClass: MockApiService },

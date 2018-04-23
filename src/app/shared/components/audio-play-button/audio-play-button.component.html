@@ -3,7 +3,7 @@
     <audio  #AudioElement
             [attr.autoplay]="autoPlay ? 'autoplay' : null"
             preload="metadata"
-            (loadedmetadata)="loadingPreview = false">
+            (loadedmetadata)="load.emit()">
         <source [src]="src">
     </audio>
 </div>

@@ -1,0 +1,18 @@
+:host {
+    position: relative;
+    display: block;
+}
+.preview {
+    max-height: 270px;
+    max-width: 100%;
+}
+
+.audio {
+   padding: 10px;
+}
+
+.node-icon {
+    font-size: 10vw;
+    width: 100%;
+    text-align: center;
+}

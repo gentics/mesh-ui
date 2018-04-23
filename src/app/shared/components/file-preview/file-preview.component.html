@@ -1,6 +1,9 @@
 <div [ngSwitch]="mediaType">
     <div *ngSwitchCase="'image'">
-        <img class="preview" [src]="url" alt="" />
+        <img class="preview"
+            [src]="url"
+            (load)="loadingPreview = false"
+            alt="" />
     </div>
     <div *ngSwitchCase="'video'">
         <video class="preview"
@@ -14,7 +17,9 @@
     </div>
 
     <div *ngSwitchCase="'audio'" class="preview audio">
-        <mesh-audio-play-button [src]="url" [autoPlay]="false"></mesh-audio-play-button>
+        <mesh-audio-play-button [src]="url"
+                                [autoPlay]="false"
+                                (load)="loadingPreview = false"></mesh-audio-play-button>
     </div>
 
     <div *ngSwitchDefault>
@@ -23,4 +28,4 @@
         </div>
     </div>
 </div>
-<div class="media-properties">{{fileName}}</div>
+<gtx-progress-bar [active]="loadingPreview"></gtx-progress-bar>
