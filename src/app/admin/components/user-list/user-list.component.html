@@ -13,7 +13,10 @@
                 <gtx-option *ngFor="let group of allGroups$ | async" [value]="group?.uuid">{{ group?.name }}</gtx-option>
             </gtx-select>
         </div>
-        <gtx-button size="regular" [routerLink]="['/admin/users/new']">{{ 'admin.new_user' | i18n }}</gtx-button>
+        <gtx-button size="regular" [routerLink]="['/admin/users/new']">
+            <icon left>person_add</icon>
+            {{ 'admin.new_user' | i18n }}
+        </gtx-button>
     </div>
 
     <ng-template let-user="item">
@@ -34,7 +37,9 @@
                         <gtx-button icon type="secondary"><icon>more_vert</icon></gtx-button>
                     </gtx-dropdown-trigger>
                     <gtx-dropdown-content>
-                        <gtx-dropdown-item class="alert" (click)="deleteUser(user)">
+                        <gtx-dropdown-item class="alert"
+                                           [class.disabled]="!user.permissions.delete"
+                                           (click)="user.permissions.delete && deleteUser(user)">
                             <icon>delete</icon> {{ 'admin.delete_user' | i18n }}
                         </gtx-dropdown-item>
                     </gtx-dropdown-content>

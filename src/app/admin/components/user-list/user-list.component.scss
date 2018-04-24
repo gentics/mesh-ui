@@ -43,4 +43,9 @@ gtx-dropdown-item {
     &.alert {
         color: $gtx-color-alert;
     }
+
+    &.disabled {
+        color: $gtx-color-mid-gray;
+        cursor: not-allowed;
+    }
 }

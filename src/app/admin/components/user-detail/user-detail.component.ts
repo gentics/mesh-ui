@@ -16,6 +16,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
     form: FormGroup;
     isNew = false;
+    readOnly = true;
     private destroy$ = new Subject<void>();
 
     constructor(private route: ActivatedRoute,
@@ -29,6 +30,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             .subscribe(data => {
                 const user: User | undefined = data.user;
                 this.isNew = !user;
+                this.readOnly = !!user && !user.permissions.update;
                 this.form = this.formBuilder.group({
                     userName: [user ? user.username : '', Validators.required],
                     password: ['', user ? undefined : Validators.required],
