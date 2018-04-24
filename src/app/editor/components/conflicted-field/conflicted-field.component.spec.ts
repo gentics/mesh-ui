@@ -11,6 +11,7 @@ import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 
 import { ConflictedFieldComponent } from './conflicted-field.component';
+import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 
 
 describe('ConflictedFieldComponent', () => {
@@ -43,9 +44,9 @@ describe('ConflictedFieldComponent', () => {
 
     it('should create', () => {
         component.conflictedField = {
-            field: { type: '__TAGS__', name: 'somename' },
-            mineValue: 'somavalue',
-            theirValue: 'somevalue',
+            field: { type: TAGS_FIELD_TYPE, name: 'somename' },
+            localValue: 'somavalue',
+            remoteValue: 'somevalue',
             overwrite: false,
             conflictedFields: []
         };
@@ -56,21 +57,21 @@ describe('ConflictedFieldComponent', () => {
     it('should render recursively for the micronode', () => {
         component.conflictedField = {
             field: { type: 'micronode', name: 'micronode' },
-            mineValue: 'somavalue',
-            theirValue: 'somevalue',
+            localValue: 'somavalue',
+            remoteValue: 'somevalue',
             overwrite: false,
             conflictedFields: [
                 {
                     field: { type: 'number', name: 'number' },
-                    mineValue: '1',
-                    theirValue: '2',
+                    localValue: '1',
+                    remoteValue: '2',
                     overwrite: false
                 },
 
                 {
                     field: { type: 'string', name: 'title' },
-                    mineValue: 'mine title',
-                    theirValue: 'theirs title',
+                    localValue: 'mine title',
+                    remoteValue: 'theirs title',
                     overwrite: true
                 }
             ]
@@ -84,9 +85,9 @@ describe('ConflictedFieldComponent', () => {
 
     it('should allow the user to select the prefered version', () => {
         component.conflictedField = {
-            field: { type: '__TAGS__', name: 'somename' },
-            mineValue: 'somavalue',
-            theirValue: 'somevalue',
+            field: { type: TAGS_FIELD_TYPE, name: 'somename' },
+            localValue: 'somavalue',
+            remoteValue: 'somevalue',
             overwrite: false,
             conflictedFields: []
         };

@@ -15,7 +15,7 @@
                 </gtx-button>
                 <div
                     class="val"
-                    [innerHTML]="conflictedField.theirValue">
+                    [innerHTML]="conflictedField.remoteValue">
                 </div>
             </div>
             <div
@@ -31,7 +31,7 @@
                 </gtx-button>
                 <div
                     class="val"
-                    [innerHTML]="conflictedField.mineValue">
+                    [innerHTML]="conflictedField.localValue">
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
                 </gtx-button>
                 <div
                     class="val"
-                    [innerHTML]="conflictedField.theirValue">
+                    [innerHTML]="conflictedField.remoteValue">
                 </div>
             </div>
             <div
@@ -66,7 +66,7 @@
                 </gtx-button>
                 <div
                     class="val"
-                    [innerHTML]="conflictedField.mineValue">
+                    [innerHTML]="conflictedField.localValue">
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                     class="button-select"
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div class="val">{{ conflictedField.theirValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                <div class="val">{{ conflictedField.remoteValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
             </div>
             <div
                 class="mine-val"
@@ -96,7 +96,7 @@
                     class="button-select"
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div class="val">{{ conflictedField.mineValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                <div class="val">{{ conflictedField.localValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
             </div>
         </div>
 
@@ -113,7 +113,7 @@
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
-                <div class="val">{{ conflictedField.theirValue.name }}</div>
+                <div class="val">{{ conflictedField.remoteValue.label || conflictedField.remoteValue.name }}</div>
             </div>
             <div
                 class="mine-val"
@@ -127,7 +127,7 @@
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
-                <div class="val">{{ conflictedField.mineValue.name }}</div>
+                <div class="val">{{ conflictedField.localValue.label || conflictedField.localValue.name }}</div>
             </div>
         </div>
 
@@ -151,7 +151,7 @@
                     class="button-select"
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div class="val">{{ conflictedField.theirValue }}</div>
+                <div class="val">{{ conflictedField.remoteValue }}</div>
             </div>
             <div
                 class="mine-val"
@@ -164,7 +164,7 @@
                     class="button-select"
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div class="val">{{ conflictedField.mineValue }}</div>
+                <div class="val">{{ conflictedField.localValue }}</div>
             </div>
         </div>
     </div>

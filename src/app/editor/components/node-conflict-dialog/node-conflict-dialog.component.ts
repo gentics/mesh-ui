@@ -11,7 +11,7 @@ import { BlobService } from '../../providers/blob.service';
 import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-are-equal';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
-import { ConflictedField } from '../../../common/models/common.model';
+import { ConflictedField, TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
 
 @Component({
@@ -47,11 +47,11 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
         if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
             const conflictedTags: ConflictedField = {
                 field: {
-                    type: '__TAGS__',
+                    type: TAGS_FIELD_TYPE,
                     name: 'Tags'
                 },
-                mineValue: getJoinedTags(this.mineTags, 'name', ', '),
-                theirValue: getJoinedTags(this.theirsNode.tags, 'name', ', '),
+                localValue: getJoinedTags(this.mineTags, 'name', ', '),
+                remoteValue: getJoinedTags(this.theirsNode.tags, 'name', ', '),
                 overwrite: true
             };
             this.conflictedFields.push(conflictedTags);
@@ -70,8 +70,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 if (!conflictingField) {
                     conflictingField = {
                         field: schemaField,
-                        mineValue: mineField,
-                        theirValue: theirField,
+                        localValue: mineField,
+                        remoteValue: theirField,
                         overwrite: true,
                         conflictedFields: []
                     };
@@ -92,18 +92,18 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     }
 
     getConflictedField(schemaField: SchemaField, mineField: any, theirField: any): ConflictedField {
-        let conflictedField = null;
+        let conflictedField:ConflictedField = null;
 
         switch (schemaField.type) {
             case 'binary':
                 conflictedField = {
                     field: schemaField,
-                    mineValue: mineField,
-                    theirValue: theirField,
-                    mineURL: (mineField as BinaryField).file
+                    localValue: mineField,
+                    remoteValue: theirField,
+                    localURL: (mineField as BinaryField).file
                         ? this.blobService.createObjectURL((mineField as BinaryField).file)
                         : this.apiService.project.getBinaryFileUrl(this.mineNode.project.name, this.mineNode.uuid, schemaField.name, this.mineNode.version),
-                    theirURL: this.apiService.project.getBinaryFileUrl(this.theirsNode.project.name, this.theirsNode.uuid, schemaField.name, this.theirsNode.version),
+                    remoteURL: this.apiService.project.getBinaryFileUrl(this.theirsNode.project.name, this.theirsNode.uuid, schemaField.name, this.theirsNode.version),
                     overwrite: true
                 };
 
@@ -130,8 +130,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             case 'date':
                 conflictedField = {
                     field: schemaField,
-                    mineValue: mineField,
-                    theirValue: theirField,
+                    localValue: mineField,
+                    remoteValue: theirField,
                     overwrite: true
                 };
             break;
@@ -139,22 +139,21 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             case 'node':
                 conflictedField = {
                     field: schemaField,
-                    mineValue: (mineField as NodeField).uuid,
-                    theirValue: (theirField as NodeField).uuid,
+                    localValue: (mineField as NodeField).uuid,
+                    remoteValue: (theirField as NodeField).uuid,
                     overwrite: true,
-                    preload: true,
                 };
 
                 // Download the nodes so that we can display it's data in the diff
                 this.apiService.project.getNode({ project: this.mineNode.project.name, nodeUuid: (mineField as NodeField).uuid})
                     .subscribe(node => {
-                        conflictedField.mineValue = node.breadcrumb.map(crumb => crumb.displayName + '/') + node.displayName;
+                        conflictedField.localValue = node.breadcrumb.map(crumb => crumb.displayName + '/') + node.displayName;
                         this.changeDetector.markForCheck();
                     });
 
                 this.apiService.project.getNode({ project: this.mineNode.project.name, nodeUuid: (theirField as NodeField).uuid})
                     .subscribe(node => {
-                        conflictedField.theirValue = node.breadcrumb.map(crumb => crumb.displayName + '/') + node.displayName;
+                        conflictedField.remoteValue = node.breadcrumb.map(crumb => crumb.displayName + '/') + node.displayName;
                         this.changeDetector.markForCheck();
                     });
             break;
@@ -162,8 +161,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             case 'list':
                 conflictedField = {
                     field: schemaField,
-                    mineValue: mineField.join('<br />'),
-                    theirValue: theirField.join('<br />'),
+                    localValue: mineField.join('<br />'),
+                    remoteValue: theirField.join('<br />'),
                     overwrite: true
                 };
             break;
@@ -171,8 +170,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             default:
                 conflictedField = {
                     field: schemaField,
-                    mineValue: 'No Preview Available',
-                    theirValue: 'No Preview Available',
+                    localValue: 'No Preview Available',
+                    remoteValue: 'No Preview Available',
                     overwrite: true
                 };
             break;
@@ -184,7 +183,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
         // The final node will contain all out fields (because we might have had changes
         // that are not marked by the mesh as a conflict) and we will just overwrite the
         // values with the their values of it was indicated by the user.
-        const tagsField = this.conflictedFields.find(f => f.overwrite === false && f.field.type === '__TAGS__');
+        const tagsField = this.conflictedFields.find(f => f.overwrite === false && f.field.type === TAGS_FIELD_TYPE);
         const mergedNode = {...this.theirsNode, fields: this.mineNode.fields, tags: tagsField !== null ? this.mineTags : this.theirsNode.tags };
 
         this.conflictedFields.map(conflictedField => {

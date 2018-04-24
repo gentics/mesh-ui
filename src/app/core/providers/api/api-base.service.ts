@@ -144,7 +144,12 @@ export class ApiBase {
     }
 
     /** Use the parameters to create a request and handle critical errors. */
-    protected request(method: RequestMethod, url: string, params: QueryParams & UrlParams, body?: any, extraHeaders?: any): ResponseObservable<any> {
+    protected request(method: RequestMethod,
+                      url: string,
+                      params: QueryParams & UrlParams,
+                      body?: any,
+                      extraHeaders?: { [key: string]: string | number }
+                    ): ResponseObservable<any> {
         // Append request headers
         const headers = new Headers({
             'Accept': 'application/json',

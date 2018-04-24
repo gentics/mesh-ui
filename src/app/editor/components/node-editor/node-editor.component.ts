@@ -244,7 +244,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
             .take(1)
             .subscribe((response: NodeResponse) => {
-                debugger;
                 this.modalService.fromComponent(
                     NodeConflictDialogComponent,
                     {

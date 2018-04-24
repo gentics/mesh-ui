@@ -22,6 +22,7 @@ import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 import { mockMeshNode, mockProject, mockSchema, mockTag } from '../../../../testing/mock-models';
 import { FieldMapFromServer } from '../../../common/models/server-models';
 import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
+import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 
 let state: TestApplicationState;
 
@@ -174,7 +175,7 @@ describe('NodeConflictDialogComponent', () => {
         component.mineTags = state.now.entities.node['current_node_with_tags_uuid']['en']['0'].tags;
         component.conflicts = ['slug', 'amount'];
         fixture.detectChanges();
-        expect(component.conflictedFields.some(field => field.field.type === '__TAGS__')).toBeTruthy();
+        expect(component.conflictedFields.some(field => field.field.type === TAGS_FIELD_TYPE)).toBeTruthy();
     });
 
     it('should download an old version of the binary file', () => {

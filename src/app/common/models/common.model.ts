@@ -1,9 +1,10 @@
+import { SafeUrl } from '@angular/platform-browser';
 import {
     ReleaseMicroschemaInfoFromServer, NodeReferenceFromServer, PermissionInfoFromServer, SchemaReferenceFromServer,
     UserReferenceFromServer
 } from './server-models';
 import { SchemaField } from './schema.model';
-import { SafeUrl } from '@angular/platform-browser';
+
 
 export interface NodeReference extends NodeReferenceFromServer {}
 
@@ -22,13 +23,16 @@ export interface BaseProperties {
     uuid: string;
 }
 
+export const TAGS_FIELD_TYPE = '__TAGS__';
+export type TAG_FIELD_TYPE = '__TAGS__';
+
 export interface ConflictedField {
-    field: SchemaField | { type: '__TAGS__', name: string }; // We want to reuse the same structure to hold the diff of the Tags of node
-    mineValue: any;
-    theirValue: any;
+    field: SchemaField | { type: TAG_FIELD_TYPE, name: string }; // We want to reuse the same structure to hold the diff of the Tags of node
+    localValue: any;
+    remoteValue: any;
     overwrite: boolean;
     conflictedFields?: ConflictedField[]; // Yeah baby, recursion. Needed for micronodes
-    mineURL?: string | SafeUrl;
-    theirURL?: string | SafeUrl;
+    localURL?: string | SafeUrl;
+    remoteURL?: string | SafeUrl;
     loading?: boolean;
 }
