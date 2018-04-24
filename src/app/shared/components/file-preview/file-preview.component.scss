@@ -1,5 +1,4 @@
 @import "variables";
-//@import "common-styles";
 
 :host {
     position: relative;
@@ -23,7 +22,7 @@
         font-size: 8rem;
         line-height: 1;
         display: inline-block;
-        //@include noselect;
+        @include noselect;
     }
     icon {
         color: $gtx-color-dark-gray;

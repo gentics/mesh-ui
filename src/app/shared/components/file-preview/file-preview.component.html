@@ -1,4 +1,4 @@
-<div [ngSwitch]="mediaType">
+<div [ngSwitch]="fileType">
     <div *ngSwitchCase="'image'">
         <img class="preview"
             [src]="url"
@@ -28,7 +28,7 @@
                 <icon>insert_drive_file</icon>
             </div>
             <div class="mime-wrapper">
-                <div class="mime-type">{{ mediaType }}</div>
+                <div class="mime-type">{{ fileType }}</div>
             </div>
         </div>
     </div>

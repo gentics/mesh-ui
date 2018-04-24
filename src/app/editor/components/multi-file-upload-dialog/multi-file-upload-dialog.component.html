@@ -43,15 +43,13 @@
                     [class.error]="fileWithBlob.progress === 'error'"
                 >
                     <icon *ngIf="!isSaving" class="button-close" (click)="onFileRemoved(fileWithBlob)">close</icon>
-
                     <div *ngIf="fileWithBlob.progress === 'uploading'" class="overlay-save">
                         <icon class="material-icons">sync</icon>
                     </div>
-
                     <div *ngIf="fileWithBlob.progress === 'done'" class="overlay-done">
                         <icon class="material-icons">done</icon>
                     </div>
-                    <mesh-file-preview [mediaType]="fileWithBlob.mediaType"
+                    <mesh-file-preview [mimeType]="fileWithBlob.file.mimeType"
                                         [url]="fileWithBlob.url">
                     </mesh-file-preview>
                     <div class="media-properties">{{fileWithBlob.file.fileName}}</div>

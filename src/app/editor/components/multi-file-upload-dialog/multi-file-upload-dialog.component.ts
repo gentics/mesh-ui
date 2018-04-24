@@ -23,7 +23,6 @@ interface FileWithBlob {
     file: BinaryField;
     url: SafeUrl;
     progress: 'none' | 'uploading' | 'done' | 'error';
-    mediaType: string;
 }
 @Component({
     selector: 'mesh-multi-file-upload-dialog',
@@ -149,7 +148,6 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
         return {
             file: { fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField,
             url: this.blobService.createObjectURL(file),
-            mediaType: this.getBinaryMediaType(file),
             progress: 'none'
         };
     }
@@ -170,14 +168,5 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
 
     onFieldSelected(field: SchemaField) {
         this.selectedField = field;
-    }
-
-    private getBinaryMediaType(file: File): string {
-        const mimeType: string = file.type;
-        if (!mimeType) {
-            return null;
-        }
-        const type = (mimeType.split('/')[0] as string).toLowerCase();
-        return type;
     }
 }

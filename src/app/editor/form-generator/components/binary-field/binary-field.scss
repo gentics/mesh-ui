@@ -73,43 +73,6 @@ $preview-max-width: 54%;
     }
 }
 
-.audio-preview {
-    audio {
-        width: 100%;
-    }
-}
-
-.default-preview {
-    text-align: center;
-    position: relative;
-    .file-icon {
-        position: relative;
-        font-size: 8rem;
-        line-height: 1;
-        display: inline-block;
-        @include noselect;
-    }
-    icon {
-        color: $gtx-color-dark-gray;
-        font-size: 8rem;
-    }
-    .mime-wrapper {
-        position: absolute;
-        bottom: 3.3rem;
-        width: 100%;
-        text-align: center;
-    }
-    .mime-type {
-        display: inline-block;
-        padding: 1px 5px;
-        background-color: $gtx-color-off-white;
-        border: 2px solid $gtx-color-dark-gray;
-        text-align: center;
-        font-size: $gtx-font-size-regular;
-        border-radius: 8px;
-    }
-}
-
 .binary-controls {
     max-width: $preview-max-width;
     position: relative;

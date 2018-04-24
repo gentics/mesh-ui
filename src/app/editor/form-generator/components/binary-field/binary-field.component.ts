@@ -10,6 +10,7 @@ import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../bas
 import { ApiService } from '../../../../core/providers/api/api.service';
 import { BlobService } from '../../../providers/blob.service';
 import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-modal.component';
+import { getFileType } from '../../../../shared/common/get-file-type';
 
 @Component({
     selector: 'binary-field',
@@ -55,7 +56,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
             this.objectUrl = null;
             return;
         }
-        const type = this.getMimeType(this.binaryProperties.mimeType);
+        const type = getFileType(this.binaryProperties.mimeType);
         this.binaryMediaType = type;
 
         if (this.binaryProperties.file) {
@@ -193,17 +194,5 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         }
 
         return { width, height, ratio: width / image.width };
-    }
-
-     /**
-     * Returns a 'type' part of the mimeType header
-     * image/jpeg => image
-     * video/ogg => video
-     */
-    private getMimeType(mimeType: string): 'image' | 'video' | 'audio' | string | null {
-        if (!mimeType) {
-            return null;
-        }
-        return (mimeType.split('/')[0] as string).toLowerCase();
     }
 }

@@ -11,8 +11,8 @@
             </div>
 
             <div *ngSwitchDefault>
-                <mesh-file-preview [mediaType]="binaryMediaType"
-                                    [url]="objectUrl">
+                <mesh-file-preview [mimeType]="binaryProperties.mimeType"
+                                   [url]="objectUrl">
                 </mesh-file-preview>
             </div>
         </ng-container>
@@ -20,7 +20,7 @@
     <div class="binary-controls" [class.no-binary]="!binaryProperties">
         <div class="basic-info">
             <div class="file-name">
-                <a [href]="objectUrl"><icon>file_download</icon><span>{{ binaryProperties?.file?.name || binaryProperties?.fileName }}</span></a>
+                <a [href]="objectUrl" [download]="binaryProperties?.file?.name || binaryProperties?.fileName"><icon>file_download</icon><span>{{ binaryProperties?.file?.name || binaryProperties?.fileName }}</span></a>
             </div>
             <div class="file-size">{{ binaryProperties?.file?.size || binaryProperties?.fileSize | filesize }}</div>
             <div class="image-dimensions" *ngIf="binaryProperties?.width">

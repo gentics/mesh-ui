@@ -29,28 +29,28 @@ describe('FilePreviewComponent', () => {
     });
 
     it('should render a video component', () => {
-        component.mediaType = 'video';
+        component.mimeType = 'video';
         fixture.detectChanges();
         const video = fixture.debugElement.query(By.css('video'));
         expect(video).toBeTruthy();
     });
 
     it('should render an audio component', () => {
-        component.mediaType = 'audio';
+        component.mimeType = 'audio';
         fixture.detectChanges();
         const video = fixture.debugElement.query(By.css('audio'));
         expect(video).toBeTruthy();
     });
 
     it('should render an image component', () => {
-        component.mediaType = 'image';
+        component.mimeType = 'image';
         fixture.detectChanges();
         const video = fixture.debugElement.query(By.css('img.preview'));
         expect(video).toBeTruthy();
     });
 
     it('should render a default placeholder', () => {
-        component.mediaType = 'whatever';
+        component.mimeType = 'whatever';
         fixture.detectChanges();
         const video = fixture.debugElement.query(By.css('.default-preview'));
         expect(video).toBeTruthy();

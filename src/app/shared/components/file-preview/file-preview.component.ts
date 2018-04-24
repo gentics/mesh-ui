@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
+import { getFileType } from '../../common/get-file-type';
 
 const typesThatPreload = ['video', 'audio', 'image'];
 @Component({
@@ -8,13 +9,16 @@ const typesThatPreload = ['video', 'audio', 'image'];
     styleUrls: ['./file-preview.component.scss']
 })
 export class FilePreviewComponent implements OnInit {
-    @Input() mediaType: string;
+    @Input() mimeType: string;
     @Input() url: SafeUrl;
 
     protected loadingPreview = false;
+    protected fileType: string;
 
     ngOnInit() {
-        if ( typesThatPreload.indexOf(this.mediaType) !== -1) {
+
+        this.fileType = getFileType(this.mimeType);
+        if ( typesThatPreload.indexOf(this.mimeType) !== -1) {
             this.loadingPreview = true;
         }
     }
