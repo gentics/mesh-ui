@@ -151,4 +151,30 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
     deleteUserError(): void {
         this.adminUsers.loadCount--;
     }
+
+    addUserToGroupStart(): void {
+        this.adminUsers.loadCount++;
+    }
+
+    addUserToGroupSuccess(user: UserResponse) {
+        this.adminUsers.loadCount--;
+        this.entities = mergeEntityState(this.entities, { user: [user] });
+    }
+
+    addUserToGroupError(): void {
+        this.adminUsers.loadCount--;
+    }
+
+    removeUserFromGroupStart(): void {
+        this.adminUsers.loadCount++;
+    }
+
+    removeUserFromGroupSuccess(user: UserResponse) {
+        this.adminUsers.loadCount--;
+        this.entities = mergeEntityState(this.entities, { user: [user] });
+    }
+
+    removeUserFromGroupError(): void {
+        this.adminUsers.loadCount--;
+    }
 }

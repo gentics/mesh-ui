@@ -107,6 +107,14 @@ export class UserListComponent implements OnInit, OnDestroy {
         });
     }
 
+    addUserToGroup(user: User, group: Group): void {
+        this.adminUserEffects.addUserToGroup(user, group.uuid);
+    }
+
+    removeUserFromGroup(user: User, group: Group): void {
+        this.adminUserEffects.removeUserFromGroup(user, group.uuid);
+    }
+
     /**
      * Returns an Observable which emits whenever a route query param with the given name changes.
      */

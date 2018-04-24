@@ -25,9 +25,12 @@
 
 .user-name {
     color: $gtx-color-dark-gray;
+    @media screen and (min-width: $medium-screen-up){
+        min-width: 150px;
+    }
 }
 
-mesh-chip {
+.group-wrapper {
     margin-left: 15px;
 }
 

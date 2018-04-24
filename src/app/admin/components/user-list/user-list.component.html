@@ -25,12 +25,17 @@
                 <div class="name" *ngIf="user.firstname || user.lastname">{{ user.firstname }} {{ user.lastname }}</div>
                 <div class="user-name">{{ user.username }}</div>
             </a>
-            <ng-container *ngFor="let group of user.groups">
-                <mesh-chip>
-                    {{ group.name }}
-                </mesh-chip>
-            </ng-container>
-
+            <div class="group-wrapper">
+                <ng-container *ngFor="let group of user.groups">
+                    <mesh-chip [removeTitle]="'admin.remove_user_from_group' | i18n"
+                               (removeClick)="removeUserFromGroup(user, group)">
+                        {{ group.name }}
+                    </mesh-chip>
+                </ng-container>
+                <mesh-add-to-group-button [groups]="allGroups$ | async"
+                                          [omit]="user.groups"
+                                          (select)="addUserToGroup(user, $event)"></mesh-add-to-group-button>
+            </div>
             <div class="row-actions">
                 <gtx-dropdown-list>
                     <gtx-dropdown-trigger>

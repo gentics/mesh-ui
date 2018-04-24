@@ -1,4 +1,8 @@
 {
+    "add_user_to_group": {
+        "en": "Assign to group",
+        "de": "Zu Gruppe zuweisen"
+    },
     "all_groups": {
         "en": "All groups",
         "de": "Alle Gruppen"
@@ -83,6 +87,10 @@
         "en": "New schema",
         "de": "Neues Schema"
     },
+    "no_available_groups": {
+        "en": "No available groups",
+        "de": "Keine gültige Gruppen"
+    },
     "no_results": {
         "en": "No results",
         "de": "Keine Ergebnisse"
@@ -110,6 +118,10 @@
     "projects_none_found": {
         "en": "No projects found",
         "de": "Keine Projekte gefunden"
+    },
+    "remove_user_from_group": {
+        "en": "Remove from group",
+        "de": "Von Gruppe entfernen"
     },
     "schema_create": {
         "en": "Create Schema",

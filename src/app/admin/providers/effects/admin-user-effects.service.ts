@@ -148,4 +148,36 @@ export class AdminUserEffectsService {
             });
         });
     }
+
+    addUserToGroup(user: User, groupUuid: string): void {
+        this.state.actions.adminUsers.addUserToGroupStart();
+
+        this.api.admin.addUserToGroup({ userUuid: user.uuid, groupUuid })
+            .subscribe(
+                group => {
+                    user.groups.push({
+                        name: group.name,
+                        uuid: group.uuid
+                    });
+                    this.state.actions.adminUsers.addUserToGroupSuccess(user);
+                },
+                error => {
+                    this.state.actions.adminUsers.addUserToGroupError();
+                });
+    }
+
+    removeUserFromGroup(user: User, groupUuid: string): void {
+        this.state.actions.adminUsers.removeUserFromGroupStart();
+
+        this.api.admin.removeUserFromGroup({ userUuid: user.uuid, groupUuid })
+            .subscribe(
+                () => {
+                    const index = user.groups.findIndex(g => g.uuid === groupUuid);
+                    user.groups.splice(index, 1);
+                    this.state.actions.adminUsers.removeUserFromGroupSuccess(user);
+                },
+                error => {
+                    this.state.actions.adminUsers.removeUserFromGroupError();
+                });
+    }
 }
