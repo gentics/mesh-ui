@@ -23,8 +23,13 @@
     </div>
 
     <div *ngSwitchDefault>
-        <div class="default-preview preview">
-            <icon class="node-icon">insert_drive_file</icon>
+        <div class="default-preview">
+            <div class="file-icon">
+                <icon>insert_drive_file</icon>
+            </div>
+            <div class="mime-wrapper">
+                <div class="mime-type">{{ mediaType }}</div>
+            </div>
         </div>
     </div>
 </div>

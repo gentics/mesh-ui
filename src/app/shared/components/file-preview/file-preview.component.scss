@@ -1,3 +1,6 @@
+@import "variables";
+//@import "common-styles";
+
 :host {
     position: relative;
     display: block;
@@ -11,8 +14,35 @@
    padding: 10px;
 }
 
-.node-icon {
-    font-size: 10vw;
-    width: 100%;
+
+.default-preview {
     text-align: center;
+    position: relative;
+    .file-icon {
+        position: relative;
+        font-size: 8rem;
+        line-height: 1;
+        display: inline-block;
+        //@include noselect;
+    }
+    icon {
+        color: $gtx-color-dark-gray;
+        font-size: 8rem;
+    }
+    .mime-wrapper {
+        position: absolute;
+        bottom: 3.3rem;
+        width: 100%;
+        text-align: center;
+    }
+    .mime-type {
+        display: inline-block;
+        padding: 1px 5px;
+        background-color: $gtx-color-off-white;
+        border: 2px solid $gtx-color-dark-gray;
+        text-align: center;
+        font-size: $gtx-font-size-regular;
+        border-radius: 8px;
+    }
 }
+
