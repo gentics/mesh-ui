@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs/Subject';
 
 import { User } from '../../../common/models/user.model';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs/Subject';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
-import { UserUpdateRequest } from '../../../common/models/server-models';
+import { UserCreateRequest, UserUpdateRequest } from '../../../common/models/server-models';
 
 @Component({
     selector: 'mesh-user-detail',
@@ -15,10 +15,11 @@ import { UserUpdateRequest } from '../../../common/models/server-models';
 export class UserDetailComponent implements OnInit, OnDestroy {
 
     form: FormGroup;
-
+    isNew = false;
     private destroy$ = new Subject<void>();
 
     constructor(private route: ActivatedRoute,
+                private router: Router,
                 private formBuilder: FormBuilder,
                 private adminUserEffects: AdminUserEffectsService) { }
 
@@ -27,9 +28,10 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             .takeUntil(this.destroy$)
             .subscribe(data => {
                 const user: User | undefined = data.user;
-
+                this.isNew = !user;
                 this.form = this.formBuilder.group({
-                    userName: user ? user.username : '',
+                    userName: [user ? user.username : '', Validators.required],
+                    password: ['', user ? undefined : Validators.required],
                     firstName: user ? user.firstname : '',
                     lastName: user ? user.lastname : '',
                     emailAddress: user ? user.emailAddress : ''
@@ -42,16 +44,18 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    updateUser(): void {
+    persistUser(): void {
+        if (this.isNew) {
+            this.createUser();
+        } else {
+            this.updateUser();
+        }
+    }
+
+    private updateUser(): void {
         const uuid = this.route.snapshot.paramMap.get('uuid');
-        const formValue = this.form.value;
-        const userUpdateRequest: UserUpdateRequest = {
-            username: formValue.userName,
-            firstname: formValue.firstName,
-            lastname: formValue.lastName,
-            emailAddress: formValue.emailAddress
-        };
-        this.adminUserEffects.updateUser(uuid, userUpdateRequest)
+        const updateRequest = this.getUserFromForm();
+        this.adminUserEffects.updateUser(uuid, updateRequest)
             .then(user => {
                 if (user) {
                     this.form.markAsPristine();
@@ -59,4 +63,24 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             });
     }
 
+    private createUser(): void {
+        const updateRequest = this.getUserFromForm() as UserCreateRequest;
+        this.adminUserEffects.createUser(updateRequest)
+            .then(user => {
+                if (user) {
+                    this.router.navigate(['/admin/users', user.uuid]);
+                }
+            });
+    }
+
+    private getUserFromForm(): UserUpdateRequest | UserCreateRequest {
+        const formValue = this.form.value;
+        return {
+            username: formValue.userName,
+            password: formValue.password,
+            firstname: formValue.firstName,
+            lastname: formValue.lastName,
+            emailAddress: formValue.emailAddress
+        };
+    }
 }

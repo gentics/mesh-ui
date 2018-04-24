@@ -1,6 +1,11 @@
 <div class="user-details">
     <form [formGroup]="form">
         <gtx-input formControlName="userName" [label]="'admin.user_name_label' | i18n"></gtx-input>
+        <ng-container *ngIf="isNew">
+            <gtx-input formControlName="password"
+                       type="password"
+                       [label]="'admin.password_label' | i18n"></gtx-input>
+        </ng-container>
         <gtx-input formControlName="firstName" [label]="'admin.first_name_label' | i18n"></gtx-input>
         <gtx-input formControlName="lastName" [label]="'admin.last_name_label' | i18n"></gtx-input>
         <gtx-input formControlName="emailAddress" [label]="'admin.email_address_label' | i18n"></gtx-input>
@@ -8,5 +13,8 @@
 </div>
 
 <div class="actions">
-    <gtx-button type="primary" [disabled]="form.pristine" (click)="updateUser()">{{ 'admin.update_user' | i18n }}</gtx-button>
+    <gtx-button type="primary" [disabled]="form.pristine || !form.valid" (click)="persistUser()">
+        <ng-container *ngIf="!isNew">{{ 'admin.update_user' | i18n }}</ng-container>
+        <ng-container *ngIf="isNew">{{ 'admin.create_user' | i18n }}</ng-container>
+    </gtx-button>
 </div>
