@@ -255,9 +255,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     },
                     {
                         conflicts,
-                        mineTags: this.tagsBar.nodeTags,
-                        mineNode: this.node,
-                        theirsNode : response as MeshNode,
+                        localTags: this.tagsBar.nodeTags,
+                        localNode: this.node,
+                        remoteNode : response as MeshNode,
                     }
                 )
                 .then(modal => modal.open())

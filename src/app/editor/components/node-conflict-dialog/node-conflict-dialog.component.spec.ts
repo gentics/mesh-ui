@@ -151,9 +151,9 @@ describe('NodeConflictDialogComponent', () => {
     });
 
     it('should create', () => {
-        component.theirsNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
-        component.mineNode = state.now.entities.node['current_node_uuid']['en']['0'];
-        component.mineTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
+        component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
+        component.localNode = state.now.entities.node['current_node_uuid']['en']['0'];
+        component.localTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
         component.conflicts = ['slug', 'amount'];
         fixture.detectChanges();
 
@@ -161,18 +161,18 @@ describe('NodeConflictDialogComponent', () => {
     });
 
     it('should generate objects with conflicted values', () => {
-        component.theirsNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
-        component.mineNode = state.now.entities.node['current_node_uuid']['en']['0'];
-        component.mineTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
+        component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
+        component.localNode = state.now.entities.node['current_node_uuid']['en']['0'];
+        component.localTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
         component.conflicts = ['slug', 'amount'];
         fixture.detectChanges();
         expect(component.conflictedFields.length).toEqual(component.conflicts.length);
     });
 
     it('should generate extra conflict for conflicted tags', () => {
-        component.theirsNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
-        component.mineNode = state.now.entities.node['current_node_with_tags_uuid']['en']['0'];
-        component.mineTags = state.now.entities.node['current_node_with_tags_uuid']['en']['0'].tags;
+        component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
+        component.localNode = state.now.entities.node['current_node_with_tags_uuid']['en']['0'];
+        component.localTags = state.now.entities.node['current_node_with_tags_uuid']['en']['0'].tags;
         component.conflicts = ['slug', 'amount'];
         fixture.detectChanges();
         expect(component.conflictedFields.some(field => field.field.type === TAGS_FIELD_TYPE)).toBeTruthy();
@@ -184,9 +184,9 @@ describe('NodeConflictDialogComponent', () => {
 
         const mineNode = state.now.entities.node['current_node_with_tags_uuid']['en']['0'];
 
-        component.theirsNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
-        component.mineNode = mineNode;
-        component.mineTags = state.now.entities.node['current_node_with_tags_uuid']['en']['0'].tags;
+        component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
+        component.localNode = mineNode;
+        component.localTags = state.now.entities.node['current_node_with_tags_uuid']['en']['0'].tags;
         component.conflicts = ['slug', 'amount', 'image'];
         fixture.detectChanges();
 

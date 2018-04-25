@@ -113,7 +113,7 @@
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
-                <div class="val">{{ conflictedField.remoteValue.label || conflictedField.remoteValue.name }}</div>
+                <div class="val">{{ conflictedField.remoteValue.fileName }}</div>
             </div>
             <div
                 class="mine-val"
@@ -127,7 +127,7 @@
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
-                <div class="val">{{ conflictedField.localValue.label || conflictedField.localValue.name }}</div>
+                <div class="val">{{ conflictedField.localValue.fileName }}</div>
             </div>
         </div>
 

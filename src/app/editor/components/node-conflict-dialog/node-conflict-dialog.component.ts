@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+
 import { IModalDialog } from 'gentics-ui-core';
 import { NodeEditorComponent } from '../node-editor/node-editor.component';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -10,9 +12,9 @@ import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { BlobService } from '../../providers/blob.service';
 import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-are-equal';
 import { ApiService } from '../../../core/providers/api/api.service';
-import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { ConflictedField, TAGS_FIELD_TYPE } from '../../../common/models/common.model';
-import { TagReferenceFromServer } from '../../../common/models/server-models';
+import { TagReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
+
 
 @Component({
     selector: 'mesh-node-conflict-dialog',
@@ -23,10 +25,10 @@ import { TagReferenceFromServer } from '../../../common/models/server-models';
 export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     closeFn: (node: MeshNode) => void;
     cancelFn: (val?: any) => void;
-    mineNode: MeshNode; // Passed from the dialog opener.
-    theirsNode: MeshNode; // Passed from the dialog opener.
+    localNode: MeshNode; // Passed from the dialog opener.
+    remoteNode: MeshNode; // Passed from the dialog opener.
     conflicts: string[]; // Passed from the dialog opener.
-    mineTags: TagReferenceFromServer[]; // Passed from the dialog opener.
+    localTags: TagReferenceFromServer[]; // Passed from the dialog opener.
     conflictedFields: ConflictedField[] = [];
     conflictedTags: {mineTags: string, theirTags: string} = null;
     overwriteTags = true;
@@ -36,22 +38,19 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
         private entities: EntitiesService,
         private blobService: BlobService,
         private apiService: ApiService,
-        private changeDetector: ChangeDetectorRef,
-        private apiBase: ApiBase,
-        private httpClient: HttpClient,
+        private changeDetector: ChangeDetectorRef
     ) {}
 
     ngOnInit(): void {
-
-        const schema: Schema = this.entities.getSchema(this.mineNode.schema.uuid);
-        if (!tagsAreEqual(this.theirsNode.tags, this.mineNode.tags)) {
+        const schema: Schema = this.entities.getSchema(this.localNode.schema.uuid);
+        if (!tagsAreEqual(this.remoteNode.tags, this.localNode.tags)) {
             const conflictedTags: ConflictedField = {
                 field: {
                     type: TAGS_FIELD_TYPE,
                     name: 'Tags'
                 },
-                localValue: getJoinedTags(this.mineTags, 'name', ', '),
-                remoteValue: getJoinedTags(this.theirsNode.tags, 'name', ', '),
+                localValue: getJoinedTags(this.localTags, 'name', ', '),
+                remoteValue: getJoinedTags(this.remoteNode.tags, 'name', ', '),
                 overwrite: true
             };
             this.conflictedFields.push(conflictedTags);
@@ -62,64 +61,63 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             const fieldName = conflictPath[0];
 
             const schemaField = schema.fields.find(field => field.name === fieldName);
-            const mineField = this.mineNode.fields[schemaField.name];
-            const theirField = this.theirsNode.fields[schemaField.name];
-
             if (schemaField.type === 'micronode') {
-                let conflictingField = this.conflictedFields.find(field => field.field.name === fieldName);
-                if (!conflictingField) {
-                    conflictingField = {
-                        field: schemaField,
-                        localValue: mineField,
-                        remoteValue: theirField,
-                        overwrite: true,
-                        conflictedFields: []
-                    };
-                    this.conflictedFields.push(conflictingField);
-                }
-
-                const microSchema = this.entities.getMicroschema(mineField.microschema.uuid);
-                const microNodeFieldName = conflictPath[1];
-                const microSchemaField = microSchema.fields.find(field => field.name === microNodeFieldName);
-                const mineMicroschemaField = (mineField as NodeFieldMicronode).fields[microNodeFieldName];
-                const theirMicroschemaField = (theirField as NodeFieldMicronode).fields[microNodeFieldName];
-                const conflictingMicroschemaField = this.getConflictedField(microSchemaField, mineMicroschemaField, theirMicroschemaField);
-                conflictingField.conflictedFields.push(conflictingMicroschemaField);
+                this.handleConflictedMicroNode(schemaField, conflictPath[1]);
             } else {
-                this.conflictedFields.push(this.getConflictedField(schemaField, mineField, theirField));
+                this.conflictedFields.push(this.getConflictedField(schemaField, this.localNode.fields[schemaField.name], this.remoteNode.fields[schemaField.name]));
             }
         });
     }
 
-    getConflictedField(schemaField: SchemaField, mineField: any, theirField: any): ConflictedField {
-        let conflictedField:ConflictedField = null;
+    private handleConflictedMicroNode(schemaField: SchemaField, microNodeFieldName: string): void {
+        const localField = this.localNode.fields[schemaField.name];
+        const remoteField = this.remoteNode.fields[schemaField.name];
+
+         // If this micronode had conflicts already - it will be already pushed onto this.conflictedFields array, so we can take it and continue working with it
+         // Otherwise we create a new object and push it onto this.conflictedFields
+        let conflictingField = this.conflictedFields.find(field => field.field.name === schemaField.name);
+        if (!conflictingField) { // Othwerwise we create an new object for it
+            conflictingField = {
+                field: schemaField,
+                localValue: localField,
+                remoteValue: remoteField,
+                overwrite: true,
+                conflictedFields: []
+            };
+            this.conflictedFields.push(conflictingField);
+        }
+
+        const microSchema = this.entities.getMicroschema(localField.microschema.uuid);
+        const microSchemaField = microSchema.fields.find(field => field.name === microNodeFieldName);
+        const localMicroschemaField = (localField as NodeFieldMicronode).fields[microNodeFieldName];
+        const remoteMicroschemaField = (remoteField as NodeFieldMicronode).fields[microNodeFieldName];
+        const conflictingMicroschemaField = this.getConflictedField(microSchemaField, localMicroschemaField, remoteMicroschemaField);
+        conflictingField.conflictedFields.push(conflictingMicroschemaField);
+    }
+
+    private getConflictedField(schemaField: SchemaField, localField: any, remoteField: any): ConflictedField {
+        let conflictedField: ConflictedField = null;
 
         switch (schemaField.type) {
             case 'binary':
                 conflictedField = {
                     field: schemaField,
-                    localValue: mineField,
-                    remoteValue: theirField,
-                    localURL: (mineField as BinaryField).file
-                        ? this.blobService.createObjectURL((mineField as BinaryField).file)
-                        : this.apiService.project.getBinaryFileUrl(this.mineNode.project.name, this.mineNode.uuid, schemaField.name, this.mineNode.version),
-                    remoteURL: this.apiService.project.getBinaryFileUrl(this.theirsNode.project.name, this.theirsNode.uuid, schemaField.name, this.theirsNode.version),
+                    localValue: localField,
+                    remoteValue: remoteField,
+                    localURL: (localField as BinaryField).file
+                        ? this.blobService.createObjectURL((localField as BinaryField).file)
+                        : this.apiService.project.getBinaryFileUrl(this.localNode.project.name, this.localNode.uuid, schemaField.name, this.localNode.version, {w: 200, h: 200}),
+                    remoteURL: this.apiService.project.getBinaryFileUrl(this.remoteNode.project.name, this.remoteNode.uuid, schemaField.name, this.remoteNode.version, { w: 200, h: 200}),
                     overwrite: true
                 };
 
                 // We preload the old version of the file in case the user desides to overwrite the server version.
-                if (!(mineField as BinaryField).file) { // Only download the server version if the user did NOT actually select a new file
-                    const url = this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{fieldName}', {
-                        project: this.mineNode.project.name,
-                        nodeUuid: this.mineNode.uuid,
-                        fieldName: schemaField.name,
-                        version: this.mineNode.version,
-                    });
-
-                    this.httpClient.get(url, { observe: 'response', responseType: 'blob'})
-                        .subscribe(result => {
-                            (mineField as BinaryField).file = new File([result.body], (mineField as BinaryField).fileName, { type: result.body.type});
-                    });
+                if (!(localField as BinaryField).file) { // Only download the server version if the user did NOT actually select a new file
+                    const url = this.apiService.project.getBinaryFileUrl(this.localNode.project.name, this.localNode.uuid, schemaField.name, this.localNode.version, {w: 200,h: 200})
+                    this.blobService.downloadFile(url, (localField as BinaryField).fileName)
+                        .then((file: File) => {
+                            (localField as BinaryField).file = file;
+                        });
                 }
             break;
 
@@ -130,8 +128,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             case 'date':
                 conflictedField = {
                     field: schemaField,
-                    localValue: mineField,
-                    remoteValue: theirField,
+                    localValue: localField,
+                    remoteValue: remoteField,
                     overwrite: true
                 };
             break;
@@ -139,30 +137,25 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             case 'node':
                 conflictedField = {
                     field: schemaField,
-                    localValue: (mineField as NodeField).uuid,
-                    remoteValue: (theirField as NodeField).uuid,
+                    localValue: (localField as NodeField).uuid,
+                    remoteValue: (remoteField as NodeField).uuid,
                     overwrite: true,
                 };
 
                 // Download the nodes so that we can display it's data in the diff
-                this.apiService.project.getNode({ project: this.mineNode.project.name, nodeUuid: (mineField as NodeField).uuid})
-                    .subscribe(node => {
-                        conflictedField.localValue = node.breadcrumb.map(crumb => crumb.displayName + '/') + node.displayName;
-                        this.changeDetector.markForCheck();
-                    });
-
-                this.apiService.project.getNode({ project: this.mineNode.project.name, nodeUuid: (theirField as NodeField).uuid})
-                    .subscribe(node => {
-                        conflictedField.remoteValue = node.breadcrumb.map(crumb => crumb.displayName + '/') + node.displayName;
-                        this.changeDetector.markForCheck();
+                forkJoin(this.apiService.project.getNode({ project: this.localNode.project.name, nodeUuid: (localField as NodeField).uuid}),
+                        this.apiService.project.getNode({ project: this.localNode.project.name, nodeUuid: (remoteField as NodeField).uuid}))
+                    .subscribe((results: NodeResponse[] ) => {
+                        conflictedField.localValue = results[0].breadcrumb.map(crumb => crumb.displayName + '/') + results[0].displayName;
+                        conflictedField.remoteValue = results[1].breadcrumb.map(crumb => crumb.displayName + '/') + results[1].displayName;
                     });
             break;
 
             case 'list':
                 conflictedField = {
                     field: schemaField,
-                    localValue: mineField.join('<br />'),
-                    remoteValue: theirField.join('<br />'),
+                    localValue: localField.join('<br />'),
+                    remoteValue: remoteField.join('<br />'),
                     overwrite: true
                 };
             break;
@@ -170,8 +163,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             default:
                 conflictedField = {
                     field: schemaField,
-                    localValue: 'No Preview Available',
-                    remoteValue: 'No Preview Available',
+                    localValue: this.i18n.translate('no_preview_available'),
+                    remoteValue: this.i18n.translate('no_preview_available'),
                     overwrite: true
                 };
             break;
@@ -180,22 +173,22 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     }
 
     saveAndClose(): void {
-        // The final node will contain all out fields (because we might have had changes
+        // The final node will contain all our fields (because we might have had changes
         // that are not marked by the mesh as a conflict) and we will just overwrite the
-        // values with the their values of it was indicated by the user.
+        // values with the remote values if it was indicated by the user.
         const tagsField = this.conflictedFields.find(f => f.overwrite === false && f.field.type === TAGS_FIELD_TYPE);
-        const mergedNode = {...this.theirsNode, fields: this.mineNode.fields, tags: tagsField !== null ? this.mineTags : this.theirsNode.tags };
+        const mergedNode = {...this.remoteNode, fields: this.localNode.fields, tags: tagsField !== null ? this.localTags : this.remoteNode.tags };
 
         this.conflictedFields.map(conflictedField => {
             if (conflictedField.overwrite === false) { // Overwrute means 'overwrite the serer version with ours. So if it's false - we take the server version and dump it into our mergeNode
                 if (conflictedField.field.type === 'micronode') {
                     conflictedField.conflictedFields.map(conflictedMicronodeField => {
                         if (conflictedMicronodeField.overwrite === false) {
-                            mergedNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name] = this.theirsNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name];
+                            mergedNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name] = this.remoteNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name];
                         }
                     });
                 } else {
-                    mergedNode.fields[conflictedField.field.name] = this.theirsNode.fields[conflictedField.field.name];
+                    mergedNode.fields[conflictedField.field.name] = this.remoteNode.fields[conflictedField.field.name];
                 }
             }
         });

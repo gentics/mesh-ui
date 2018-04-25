@@ -158,17 +158,12 @@ export class BinaryFieldComponent extends BaseFieldComponent {
 
     private getBinaryUrl(binaryField: BinaryField): string {
         const node = this.api.getNodeValue() as MeshNode;
-        let binaryUrl = this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name, node.version);
         if (this.binaryMediaType === 'image') {
-            binaryUrl = this.addDimensionQueryParams(binaryUrl, binaryField);
+            const { width, height } = this.getConstrainedDimensions(binaryField);
+            return this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name, null, { w: width, h: height });
+        } else {
+            return this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
         }
-        return binaryUrl;
-    }
-
-    private addDimensionQueryParams(imageUrl: string, imageField: BinaryField): string {
-        const { width, height } = this.getConstrainedDimensions(imageField);
-        const glue = /\?\w+=/.test(imageUrl) ? '&' : '?';
-        return`${imageUrl}${glue}w=${Math.round(width)}&h=${Math.round(height)}`;
     }
 
     /**

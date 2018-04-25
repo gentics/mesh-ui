@@ -8,6 +8,6 @@ export function tagsAreEqual(prevTags: TagReferenceFromServer[], nextTags: TagRe
     return getJoinedTags(prevTags) === getJoinedTags(nextTags);
 }
 
-export function getJoinedTags(tags: TagReferenceFromServer[], field = 'uuid', separator = ','): string {
+export function getJoinedTags(tags: TagReferenceFromServer[], field: keyof TagReferenceFromServer = 'uuid', separator = ','): string {
     return (tags || []).map(tag => tag[field]).sort().join(separator);
 }

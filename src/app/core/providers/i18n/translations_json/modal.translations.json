@@ -134,5 +134,9 @@
     "use_this_version": {
         "en": "Apply",
         "de": "Übernehmen"
+    },
+    "no_preview_available": {
+        "en": "No Preview Available",
+        "de": "Keine Vorschau verfügbar"
     }
 }
