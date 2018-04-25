@@ -251,6 +251,23 @@ describe('AdminListComponent', () => {
             expect(listItems[1].checked).toBe(false);
             expect(listItems[2].checked).toBe(true);
         }));
+
+        it('binding to selection checks the selected indices with multiple pages', fakeAsync(() => {
+            instance.itemsPerPage = 2;
+            instance.selection = [1, 2];
+            fixture.detectChanges();
+
+            const listItemsPage1 = getAdminListItems(fixture);
+
+            expect(listItemsPage1[0].checked).toBe(false);
+            expect(listItemsPage1[1].checked).toBe(true);
+
+            instance.currentPage = 2;
+            fixture.detectChanges();
+            const listItemsPage2 = getAdminListItems(fixture);
+
+            expect(listItemsPage2[0].checked).toBe(true);
+        }));
     });
 
 });

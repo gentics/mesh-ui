@@ -109,10 +109,7 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         }
 
         if ('selection' in changes) {
-            this.checked = {};
-            for (const index of this.selection) {
-                this.checked[this.itemId(index)] = true;
-            }
+            this.checked = this.selectionToCheckedHash(this.selection, this.itemsPerPage);
         }
     }
 
@@ -162,8 +159,8 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         this.emitSelectionChange();
     }
 
-    itemId(index: number): string {
-        return `${this.currentPage}-${index}`;
+    itemId(index: number, currentPage?: number): string {
+        return `${currentPage || this.currentPage}-${index}`;
     }
 
     displayPaginationControls(): boolean {
@@ -171,6 +168,20 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
             return true;
         }
         return this.itemsPerPage < Math.max(this.totalItems, this.items.length);
+    }
+
+    /**
+     * Converts the `selection` array (and array of absolute indices of selected items) into the page-aware
+     * `checked` hash map used to mark the checkbox state in the list.
+     */
+    private selectionToCheckedHash(selection: number[], itemsPerPage: number): { [id: string]: boolean } {
+        const checkedHash = {};
+        for (const index of selection) {
+            const currentPage = Math.floor(index / itemsPerPage) + 1;
+            const indexOnPage = index % itemsPerPage;
+            checkedHash[this.itemId(indexOnPage, currentPage)] = true;
+        }
+        return checkedHash;
     }
 
     private emitSelectionChange(): void {
