@@ -77,14 +77,6 @@ describe('AdminListComponent', () => {
         expect(placeholder === null).toBe(false);
     });
 
-    it('shows the placeholder if items array is empty', () => {
-        instance.users = [];
-        fixture.detectChanges();
-
-        const placeholder = fixture.debugElement.query(By.css('.no-results'));
-        expect(placeholder === null).toBe(false);
-    });
-
     describe('checkbox selection', () => {
 
         function allItemsOnPageAreChecked(_fixture: ComponentFixture<TestComponent>): boolean {
@@ -248,6 +240,17 @@ describe('AdminListComponent', () => {
             checkAllListItems(fixture);
             expect(instance.onSelectionChange).toHaveBeenCalledWith([0, 1, 2]);
         }));
+
+        it('binding to selection checks the selected indices', fakeAsync(() => {
+            instance.selection = [0, 2];
+            fixture.detectChanges();
+
+            const listItems = getAdminListItems(fixture);
+
+            expect(listItems[0].checked).toBe(true);
+            expect(listItems[1].checked).toBe(false);
+            expect(listItems[2].checked).toBe(true);
+        }));
     });
 
 });
@@ -269,6 +272,7 @@ function getAdminListItems(fixture: ComponentFixture<TestComponent>): AdminListI
                          [itemsPerPage]="itemsPerPage"
                          [currentPage]="currentPage"
                          [autoHidePagination]="autoHidePagination"
+                         [selection]="selection"
                          (selectionChange)="onSelectionChange($event)"
                          (pageChange)="currentPage = $event">
             <ng-template let-user="item">
@@ -287,6 +291,7 @@ class TestComponent {
     ];
     autoHidePagination = false;
     onSelectionChange = jasmine.createSpy('onSelectionChange');
+    selection = [];
 }
 
 @Component({

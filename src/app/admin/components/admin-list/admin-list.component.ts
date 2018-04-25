@@ -9,10 +9,11 @@ import {
     OnChanges,
     Output,
     QueryList,
+    SimpleChanges,
     TemplateRef
 } from '@angular/core';
-import { PaginationInstance, PaginationService } from 'ngx-pagination';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { PaginationInstance, PaginationService } from 'ngx-pagination';
 
 /**
  * A paginated, selectable list for admin list views.
@@ -67,6 +68,8 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
     @Input() totalItems: number;
     /** Controls whether each row is selectable with a checkbox */
     @Input() selectable = true;
+    /** An array of the selected indices */
+    @Input() selection: number[] = [];
     /** If true, no pagination will be displayed if there is only a single page  */
     @Input() autoHidePagination = false;
     /** Emits the page number of the page being switched to */
@@ -86,7 +89,7 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
 
     constructor(private elementRef: ElementRef) {}
 
-    ngOnChanges(): void {
+    ngOnChanges(changes: SimpleChanges): void {
         const totalItems = this.totalItems || this.items.length;
         const currentPageMax = this.currentPage * this.itemsPerPage;
         let length;
@@ -103,6 +106,13 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         };
         if (this.totalItems) {
             this.paginationConfig.totalItems = this.totalItems;
+        }
+
+        if ('selection' in changes) {
+            this.checked = {};
+            for (const index of this.selection) {
+                this.checked[this.itemId(index)] = true;
+            }
         }
     }
 
