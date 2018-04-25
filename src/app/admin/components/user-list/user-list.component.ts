@@ -12,6 +12,7 @@ import { Group } from '../../../common/models/group.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { ModalService } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { ADMIN_USER_NAME } from '../../../common/constants';
 
 @Component({
     selector: 'mesh-user-list',
@@ -103,12 +104,32 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
 
     deleteUser(user: User): void {
-        if (!user.permissions.delete || user.username === 'admin') {
+        if (!user.permissions.delete || user.username === ADMIN_USER_NAME) {
             return;
         }
-        this.displayDeleteUserModal(user).then(() => {
-            this.adminUserEffects.deleteUser(user.uuid);
+        this.displayDeleteUserModal(
+            { token: 'admin.delete_user' },
+            { token: 'admin.delete_user_confirmation', params: { username: user.username }}
+        ).then(() => {
+            this.adminUserEffects.deleteUser(user);
         });
+    }
+
+    deleteUsers(selectedIndices: number[]): void {
+        this.selectedUsersFromIndices(selectedIndices)
+            .flatMap(selectedUsers => {
+                const deletableUsers = selectedUsers.filter(user => user.permissions.delete && user.username !== ADMIN_USER_NAME);
+                return this.displayDeleteUserModal(
+                    { token: 'admin.delete_selected_users', params: { count: deletableUsers.length } },
+                    { token: 'admin.delete_selected_users_confirmation', params: { count: deletableUsers.length }}
+                ).then(() => deletableUsers);
+            })
+            .subscribe(deletableUsers => {
+                deletableUsers.forEach(user => {
+                    this.adminUserEffects.deleteUser(user);
+                });
+                this.selectedIndices = [];
+            });
     }
 
     addUserToGroup(user: User, group: Group): void {
@@ -120,21 +141,23 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
 
     addUsersToGroup(selectedIndices: number[], group: Group): void {
-        this.users$
-            .take(1)
-            .subscribe(users => {
-                const selectedUsers = users.filter((user, index) => selectedIndices.includes(index));
+        this.selectedUsersFromIndices(selectedIndices)
+            .subscribe(selectedUsers => {
                 this.adminUserEffects.addUsersToGroup(selectedUsers, group.uuid);
             });
     }
 
     removeUsersFromGroup(selectedIndices: number[], group: Group): void {
-        this.users$
-            .take(1)
-            .subscribe(users => {
-                const selectedUsers = users.filter((user, index) => selectedIndices.includes(index));
+        this.selectedUsersFromIndices(selectedIndices)
+            .subscribe(selectedUsers => {
                 this.adminUserEffects.removeUsersFromGroup(selectedUsers, group.uuid);
             });
+    }
+
+    private selectedUsersFromIndices(selectedIndices: number[]): Observable<User[]> {
+        return this.users$
+            .take(1)
+            .map(users => users.filter((user, index) => selectedIndices.includes(index)));
     }
 
     /**
@@ -186,13 +209,14 @@ export class UserListComponent implements OnInit, OnDestroy {
         });
     }
 
-    private displayDeleteUserModal(user: User): Promise<any> {
+    private displayDeleteUserModal(title: { token: string; params?: { [key: string]: any } },
+                                   body: { token: string; params?: { [key: string]: any } }): Promise<any> {
         return  this.modalService.dialog({
-            title: this.i18n.translate('admin.delete_user') + '?',
-            body: this.i18n.translate('admin.delete_user_confirmation', { username: user.username }),
+            title: this.i18n.translate(title.token, title.params) + '?',
+            body: this.i18n.translate(body.token, body.params),
             buttons: [
                 { type: 'secondary', flat: true, shouldReject: true, label: this.i18n.translate('common.cancel_button') },
-                { type: 'alert', label: this.i18n.translate('admin.delete_user') }
+                { type: 'alert', label: this.i18n.translate('admin.delete_label') }
             ]
         })
             .then(modal => modal.open());

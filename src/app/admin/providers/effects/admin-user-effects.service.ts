@@ -131,21 +131,23 @@ export class AdminUserEffectsService {
             );
     }
 
-    deleteUser(userUuid: string): void {
+    deleteUser(user: User): void {
         this.state.actions.adminUsers.deleteUserStart();
 
-        this.api.admin.deactivateUser({userUuid})
+        this.api.admin.deactivateUser({ userUuid: user.uuid })
         .subscribe(() => {
-            this.state.actions.adminUsers.deleteUserSuccess(userUuid);
+            this.state.actions.adminUsers.deleteUserSuccess(user.uuid);
             this.notification.show({
                 type: 'success',
-                message: 'admin.user_deleted'
+                message: 'admin.user_deleted',
+                translationParams: { username: user.username }
             });
         }, error => {
             this.state.actions.adminUsers.deleteUserError();
             this.notification.show({
                 type: 'error',
-                message: 'admin.user_deleted_error'
+                message: 'admin.user_deleted_error',
+                translationParams: { username: user.username }
             });
         });
     }

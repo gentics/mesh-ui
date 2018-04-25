@@ -1,7 +1,7 @@
 <mesh-admin-list [items]="users$ | async"
                  [itemsPerPage]="25"
                  [currentPage]="currentPage$ | async"
-                 (selectionChange)="selectedIndices = $event"
+                 [(selection)]="selectedIndices"
                  (pageChange)="onPageChange($event)">
     <div class="list-controls">
         <div class="with-selected" [class.hidden]="selectedIndices.length === 0">
@@ -13,6 +13,11 @@
                                     icon="remove"
                                     [title]="'admin.remove_selected_users_from_group' | i18n: { count: selectedIndices.length }"
                                     (select)="removeUsersFromGroup(selectedIndices, $event)"></mesh-user-group-select>
+            <gtx-button flat
+                        type="alert"
+                        [title]="'admin.delete_selected_users' | i18n: { count: selectedIndices.length }"
+                        (click)="deleteUsers(selectedIndices)"
+                        size="small"><icon>delete</icon></gtx-button>
         </div>
         <div class="filter">
             <gtx-input [label]="'admin.filter_by_name' | i18n"
@@ -26,7 +31,7 @@
         </div>
         <gtx-button size="regular" [routerLink]="['/admin/users/new']">
             <icon left>person_add</icon>
-            {{ 'admin.new_user' | i18n }}
+            <span class="new-user-label">{{ 'admin.new_user' | i18n }}</span>
         </gtx-button>
     </div>
 

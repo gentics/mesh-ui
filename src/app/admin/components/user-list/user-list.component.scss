@@ -9,7 +9,7 @@
     overflow: hidden;
     display: flex;
     transition: visibility 0s, max-width 0.2s, opacity 0.2s, margin 0.2s;
-    max-width: 100px;
+    max-width: 130px;
     margin: 0 10px;
 
     &.hidden {
@@ -32,6 +32,12 @@
 
 .group-filter {
     margin-right: 10px;
+}
+
+.new-user-label {
+    @media screen and (max-width: $small-screen) {
+        display: none;
+    }
 }
 
 .user-row {

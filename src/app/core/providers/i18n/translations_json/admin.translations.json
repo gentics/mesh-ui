@@ -19,6 +19,18 @@
         "en": "Create user",
         "de": "Benutzer erstellen"
     },
+    "delete_label": {
+        "en": "Delete",
+        "de": "Löschen"
+    },
+    "delete_selected_users": {
+        "en": "Delete {{count}} users",
+        "de": "{{count }} Benutzer löschen"
+    },
+    "delete_selected_users_confirmation": {
+        "en": "You are about to permanently delete {{ count }} users.",
+        "de": "Wollen Sie {{ count }} Benutzer permanent löschen?"
+    },
     "delete_user": {
         "en": "Delete user",
         "de": "Benutzer löschen"
@@ -168,12 +180,12 @@
         "de": "Neuer Benutzer erstellt"
     },
     "user_deleted": {
-        "en": "User deleted",
-        "de": "Benutzer gelöscht"
+        "en": "User '{{username}}' deleted",
+        "de": "Benutzer '{{username}}' gelöscht"
     },
     "user_deleted_error": {
-        "en": "User could not be deleted",
-        "de": "Benutzer könnte nicht gelöscht werden"
+        "en": "User '{{username}}' could not be deleted",
+        "de": "Benutzer '{{username}}' könnte nicht gelöscht werden"
     },
     "user_name_label": {
         "en": "Username",
