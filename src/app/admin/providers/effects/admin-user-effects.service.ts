@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
@@ -166,6 +167,18 @@ export class AdminUserEffectsService {
                 });
     }
 
+
+    addUsersToGroup(users: User[], groupUuid: string): void {
+        const usersNotAlreadyInGroup = users.filter(user => {
+            return !user.groups.map(group => group.uuid).includes(groupUuid);
+        });
+
+        Observable.from(usersNotAlreadyInGroup)
+            .subscribe(user => {
+                this.addUserToGroup(user, groupUuid);
+            });
+    }
+
     removeUserFromGroup(user: User, groupUuid: string): void {
         this.state.actions.adminUsers.removeUserFromGroupStart();
 
@@ -179,5 +192,16 @@ export class AdminUserEffectsService {
                 error => {
                     this.state.actions.adminUsers.removeUserFromGroupError();
                 });
+    }
+
+    removeUsersFromGroup(users: User[], groupUuid: string): void {
+        const usersInGroup = users.filter(user => {
+            return user.groups.map(group => group.uuid).includes(groupUuid);
+        });
+
+        Observable.from(usersInGroup)
+            .subscribe(user => {
+                this.removeUserFromGroup(user, groupUuid);
+            });
     }
 }

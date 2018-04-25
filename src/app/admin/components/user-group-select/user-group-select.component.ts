@@ -3,17 +3,21 @@ import { Group } from '../../../common/models/group.model';
 import { GroupReferenceFromServer } from '../../../common/models/server-models';
 
 @Component({
-    selector: 'mesh-add-to-group-button',
-    templateUrl: './add-to-group-button.component.html',
-    styleUrls: ['./add-to-group-button.component.scss'],
+    selector: 'mesh-user-group-select',
+    templateUrl: './user-group-select.component.html',
+    styleUrls: ['./user-group-select.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddToGroupButtonComponent implements OnChanges {
+export class UserGroupSelectComponent implements OnChanges {
 
     /** Available groups to display in the dropdown */
     @Input() groups: Group[];
     /** Any groups that should be omitted from the dropdown */
     @Input() omit: Array<Group | GroupReferenceFromServer> = [];
+    /** Optional title for the button. Defaults to "admin.add_user_to_group" */
+    @Input() title: string;
+    /** Specify the icon on the button, either an "add" or a "remove" icon */
+    @Input() icon: 'add' | 'remove' = 'add';
     /** Emits when a group is selected from the dropdown */
     @Output() select = new EventEmitter<Group>();
 

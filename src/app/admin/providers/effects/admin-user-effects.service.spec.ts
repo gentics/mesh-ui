@@ -65,6 +65,32 @@ describe('AdminUserEffects', () => {
         });
     });
 
+    it('addUsersToGroup() only adds users to groups where they are not already assigned to that group', () => {
+        const mockGroup1: any = {
+            name: 'group1',
+            uuid: 'group1_uuid'
+        };
+        const mockUser1: any = {
+            uuid: 'mock_user1_uuid',
+            groups: [{
+                name: 'group1',
+                uuid: 'group1_uuid'
+            }]
+        };
+        const mockUser2: any = {
+            uuid: 'mock_user2_uuid',
+            groups: []
+        };
+
+        api.admin.addUserToGroup = jasmine.createSpy('addUserToGroup')
+            .and.returnValue(Observable.of(mockGroup1));
+
+        adminUserEffects.addUsersToGroup([mockUser1, mockUser2], mockGroup1.uuid);
+
+        expect(api.admin.addUserToGroup).toHaveBeenCalledWith({ userUuid: mockUser2.uuid, groupUuid: mockGroup1.uuid });
+        expect(api.admin.addUserToGroup).toHaveBeenCalledTimes(1);
+    });
+
     it('removeUserFromGroup() removes the group from the user groups array', () => {
         const mockUser: any = {
             uuid: 'mock_user_uuid',
@@ -82,6 +108,32 @@ describe('AdminUserEffects', () => {
             uuid: 'mock_user_uuid',
             groups: []
         });
+    });
+
+    it('removeUserFromGroup() only removes users from groups where they are already assigned to that group', () => {
+        const mockGroup1: any = {
+            name: 'group1',
+            uuid: 'group1_uuid'
+        };
+        const mockUser1: any = {
+            uuid: 'mock_user1_uuid',
+            groups: [{
+                name: 'group1',
+                uuid: 'group1_uuid'
+            }]
+        };
+        const mockUser2: any = {
+            uuid: 'mock_user2_uuid',
+            groups: []
+        };
+
+        api.admin.removeUserFromGroup = jasmine.createSpy('removeUserFromGroup')
+            .and.returnValue(Observable.of({}));
+
+        adminUserEffects.removeUsersFromGroup([mockUser1, mockUser2], mockGroup1.uuid);
+
+        expect(api.admin.removeUserFromGroup).toHaveBeenCalledWith({ userUuid: mockUser1.uuid, groupUuid: mockGroup1.uuid });
+        expect(api.admin.removeUserFromGroup).toHaveBeenCalledTimes(1);
     });
 });
 

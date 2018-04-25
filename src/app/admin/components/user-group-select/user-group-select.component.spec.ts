@@ -1,23 +1,23 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
 
-import { AddToGroupButtonComponent } from './add-to-group-button.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { UserGroupSelectComponent } from './user-group-select.component';
 
-describe('AddToGroupButtonComponent', () => {
-    let component: AddToGroupButtonComponent;
-    let fixture: ComponentFixture<AddToGroupButtonComponent>;
+describe('UserGroupSelectComponent', () => {
+    let component: UserGroupSelectComponent;
+    let fixture: ComponentFixture<UserGroupSelectComponent>;
 
     beforeEach(async(() => {
         configureComponentTest({
-            declarations: [ AddToGroupButtonComponent ],
+            declarations: [ UserGroupSelectComponent ],
             imports: [ GenticsUICoreModule ],
             providers: [ OverlayHostService ]
         });
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AddToGroupButtonComponent);
+        fixture = TestBed.createComponent(UserGroupSelectComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

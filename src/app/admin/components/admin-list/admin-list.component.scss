@@ -22,7 +22,6 @@
 }
 
 .total-selected {
-    display: flex;
     font-size: $gtx-font-size-small;
     margin-left: 36px;
 
@@ -32,7 +31,6 @@
     }
     .clear-selection {
         cursor: pointer;
-        margin-left: 10px;
         opacity: 1;
         transition: opacity 0.2s, visibility 0s;
     }

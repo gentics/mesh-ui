@@ -28,6 +28,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     allGroups$: Observable<Group[]>;
     filterInput = new FormControl('');
     filterGroups = new FormControl('');
+    selectedIndices: number[] = [];
 
     private destroy$ = new Subject<void>();
 
@@ -102,6 +103,9 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
 
     deleteUser(user: User): void {
+        if (!user.permissions.delete || user.username === 'admin') {
+            return;
+        }
         this.displayDeleteUserModal(user).then(() => {
             this.adminUserEffects.deleteUser(user.uuid);
         });
@@ -113,6 +117,24 @@ export class UserListComponent implements OnInit, OnDestroy {
 
     removeUserFromGroup(user: User, group: Group): void {
         this.adminUserEffects.removeUserFromGroup(user, group.uuid);
+    }
+
+    addUsersToGroup(selectedIndices: number[], group: Group): void {
+        this.users$
+            .take(1)
+            .subscribe(users => {
+                const selectedUsers = users.filter((user, index) => selectedIndices.includes(index));
+                this.adminUserEffects.addUsersToGroup(selectedUsers, group.uuid);
+            });
+    }
+
+    removeUsersFromGroup(selectedIndices: number[], group: Group): void {
+        this.users$
+            .take(1)
+            .subscribe(users => {
+                const selectedUsers = users.filter((user, index) => selectedIndices.includes(index));
+                this.adminUserEffects.removeUsersFromGroup(selectedUsers, group.uuid);
+            });
     }
 
     /**

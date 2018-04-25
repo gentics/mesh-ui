@@ -8,5 +8,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 })
 export class ChipComponent {
     @Input() removeTitle = '';
+    @Input() removable = true;
     @Output() removeClick = new EventEmitter<void>();
 }

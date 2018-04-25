@@ -1,4 +1,8 @@
 {
+    "add_selected_users_to_group": {
+        "en": "Assign {{count}} users to group",
+        "de": "{{count}} Benutzer zu Gruppe zuweisen"
+    },
     "add_user_to_group": {
         "en": "Assign to group",
         "de": "Zu Gruppe zuweisen"
@@ -118,6 +122,10 @@
     "projects_none_found": {
         "en": "No projects found",
         "de": "Keine Projekte gefunden"
+    },
+    "remove_selected_users_from_group": {
+        "en": "Remove {{count}} users from group",
+        "de": "{{count}} Benutzer von Gruppe entfernen"
     },
     "remove_user_from_group": {
         "en": "Remove from group",

@@ -1,8 +1,19 @@
 <mesh-admin-list [items]="users$ | async"
                  [itemsPerPage]="25"
                  [currentPage]="currentPage$ | async"
+                 (selectionChange)="selectedIndices = $event"
                  (pageChange)="onPageChange($event)">
     <div class="list-controls">
+        <div class="with-selected" [class.hidden]="selectedIndices.length === 0">
+            <mesh-user-group-select [groups]="allGroups$ | async"
+                                    [title]="'admin.add_selected_users_to_group' | i18n: { count: selectedIndices.length }"
+                                    (select)="addUsersToGroup(selectedIndices, $event)"></mesh-user-group-select>
+            <mesh-user-group-select [groups]="allGroups$ | async"
+                                    class="warning"
+                                    icon="remove"
+                                    [title]="'admin.remove_selected_users_from_group' | i18n: { count: selectedIndices.length }"
+                                    (select)="removeUsersFromGroup(selectedIndices, $event)"></mesh-user-group-select>
+        </div>
         <div class="filter">
             <gtx-input [label]="'admin.filter_by_name' | i18n"
                        [formControl]="filterInput"></gtx-input>
@@ -28,13 +39,14 @@
             <div class="group-wrapper">
                 <ng-container *ngFor="let group of user.groups">
                     <mesh-chip [removeTitle]="'admin.remove_user_from_group' | i18n"
+                               [removable]="user.username !== 'admin'"
                                (removeClick)="removeUserFromGroup(user, group)">
                         {{ group.name }}
                     </mesh-chip>
                 </ng-container>
-                <mesh-add-to-group-button [groups]="allGroups$ | async"
-                                          [omit]="user.groups"
-                                          (select)="addUserToGroup(user, $event)"></mesh-add-to-group-button>
+                <mesh-user-group-select [groups]="allGroups$ | async"
+                                        [omit]="user.groups"
+                                        (select)="addUserToGroup(user, $event)"></mesh-user-group-select>
             </div>
             <div class="row-actions">
                 <gtx-dropdown-list>
@@ -43,8 +55,8 @@
                     </gtx-dropdown-trigger>
                     <gtx-dropdown-content>
                         <gtx-dropdown-item class="alert"
-                                           [class.disabled]="!user.permissions.delete"
-                                           (click)="user.permissions.delete && deleteUser(user)">
+                                           [class.disabled]="!user.permissions.delete || user.username === 'admin'"
+                                           (click)="deleteUser(user)">
                             <icon>delete</icon> {{ 'admin.delete_user' | i18n }}
                         </gtx-dropdown-item>
                     </gtx-dropdown-content>

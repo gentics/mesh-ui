@@ -1,10 +1,14 @@
 <gtx-dropdown-list>
      <gtx-dropdown-trigger>
          <gtx-button size="small"
-                     [title]="'admin.add_user_to_group' | i18n"
+                     [title]="title || ('admin.add_user_to_group' | i18n)"
                      flat
-                     type="secondary">
-             <icon>group_add</icon>
+                     [type]="icon === 'remove' ? 'warning' : 'secondary'">
+             <div class="icon-wrapper">
+                 <icon class="add-remove-icon" *ngIf="icon === 'add'">add</icon>
+                 <icon class="add-remove-icon" *ngIf="icon === 'remove'">remove</icon>
+                 <icon>group</icon>
+             </div>
          </gtx-button>
      </gtx-dropdown-trigger>
     <gtx-dropdown-content>

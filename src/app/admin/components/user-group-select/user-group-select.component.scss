@@ -1,0 +1,15 @@
+@import "variables";
+
+.not-available {
+    color: $gtx-color-mid-gray;
+}
+
+.icon-wrapper {
+    display: flex;
+    align-items: center;
+
+    .add-remove-icon {
+        font-size: 12px;
+        margin-right: -3px;
+    }
+}

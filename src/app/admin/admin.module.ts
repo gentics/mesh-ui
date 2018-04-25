@@ -25,7 +25,7 @@ import { SchemaResolver } from './providers/resolvers/schema-resolver';
 import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
 import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
 import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
-import { AddToGroupButtonComponent } from './components/add-to-group-button/add-to-group-button.component';
+import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
 
 @NgModule({
     declarations: [
@@ -44,7 +44,7 @@ import { AddToGroupButtonComponent } from './components/add-to-group-button/add-
         AdminListComponent,
         AdminListItemComponent,
         UserDetailComponent,
-        AddToGroupButtonComponent
+        UserGroupSelectComponent
     ],
     entryComponents: [
         CreateProjectModalComponent

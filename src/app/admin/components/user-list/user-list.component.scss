@@ -5,6 +5,26 @@
     align-items: center;
 }
 
+.with-selected {
+    overflow: hidden;
+    display: flex;
+    transition: visibility 0s, max-width 0.2s, opacity 0.2s, margin 0.2s;
+    max-width: 100px;
+    margin: 0 10px;
+
+    &.hidden {
+        opacity: 0;
+        visibility: hidden;
+        max-width: 0;
+        margin: 0;
+        transition: visibility 0s 0.2s, max-width 0.2s, opacity 0.2s, margin 0.2s;
+    }
+
+    > * {
+        margin-right: 5px;
+    }
+}
+
 .filter {
     flex: 1;
     margin-right: 10px;

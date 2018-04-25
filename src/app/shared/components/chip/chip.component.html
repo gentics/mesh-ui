@@ -1,6 +1,7 @@
-<div class="search-chip">
+<div class="search-chip" [class.removable]="removable">
     <div class="chip-contents"><ng-content></ng-content></div>
     <icon class="remove-button"
+          *ngIf="removable"
           [title]="removeTitle"
           (click)="removeClick.emit()">close</icon>
 </div>
