@@ -4041,6 +4041,10 @@ neo-async@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.5.0.tgz#76b1c823130cca26acfbaccc8fbaf0a2fa33b18f"
 
+ngx-pagination@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/ngx-pagination/-/ngx-pagination-3.1.0.tgz#66018bca39158215d66211b2b2cf368848b7d9d8"
+
 no-case@^2.2.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-2.3.2.tgz#60b813396be39b3f1288a4c1ed5d1e7d28b464ac"

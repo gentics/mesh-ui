@@ -21,6 +21,7 @@ import { MockEditorEffectsService } from '../../providers/editor-effects.service
 import { NodeTagsBarComponent } from './node-tags-bar.component';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { MockTagSelectorComponent } from '../../../shared/components/tag-selector/tag-selector.component.mock';
+import { MockModalService } from '../../../../testing/modal.service.mock';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -150,7 +151,7 @@ describe('NodeTagsBarComponent', () => {
                 const tagSelector = getTagSelector(fixture);
                 tagSelector.createNewTag.emit('new tag name');
                 tick();
-                expect(modalService.fromComponent).toHaveBeenCalled();
+                expect(modalService.fromComponentSpy).toHaveBeenCalled();
             })
         );
     });
@@ -183,17 +184,4 @@ class TestComponent {
 @Component({ selector: 'mesh-tag', template: '' })
 class MockTagComponent {
     @Input() tag: any;
-}
-
-class MockModalService {
-    dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fromComponent = jasmine.createSpy('fromComponent').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fakeDialog = {
-        open: jasmine.createSpy('open').and.callFake(() => {
-            return new Promise(resolve => {
-                this.confirmLastModal = () => { resolve(); tick(); };
-            });
-        })
-    };
-    confirmLastModal: () => void;
 }

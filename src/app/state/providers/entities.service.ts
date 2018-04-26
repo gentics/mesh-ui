@@ -13,6 +13,7 @@ import { AppState } from '../models/app-state.model';
 import { concatUnique } from '../../common/util/util';
 import { TagFamily } from '../../common/models/tag-family.model';
 import { Tag } from '../../common/models/tag.model';
+import { Group } from '../../common/models/group.model';
 
 export interface NodeDiscriminatorOptions {
     /**
@@ -43,6 +44,7 @@ export interface NodeDiscriminatorOptions {
 export class EntitiesService {
 
     discriminator: { [K in keyof EntityDiscriminators]: EntityDiscriminators[K]; } = {
+        group: [],
         project: [],
         node: [],
         user: [],
@@ -253,6 +255,35 @@ export class EntitiesService {
         return getNestedEntity<'tag'>(
             state.entities.tag,
             this.discriminator.tag,
+            { uuid }
+        );
+    }
+
+    getGroup(uuid: string): Group | undefined {
+        return this.getGroupFromState(this.state.now, uuid);
+    }
+
+    // TODO: version should be of type string, it was fixed in Mesh 0.9.20
+    selectGroup(uuid: string): Observable<Group> {
+        return this.selectWithFilter(state => this.getGroupFromState(state, uuid));
+    }
+
+    getAllGroups(): Group[] {
+        return this.getAllGroupsFromState(this.state.now);
+    }
+
+    selectAllGroups(): Observable<Group[]> {
+        return this.state.select(state => this.getAllGroupsFromState(state));
+    }
+
+    private getAllGroupsFromState(state: AppState): Group[] {
+        return Object.keys(state.entities.group).map(uuid => this.getGroupFromState(state, uuid));
+    }
+
+    private getGroupFromState(state: AppState, uuid: string): Group | undefined {
+        return getNestedEntity<'group'>(
+            state.entities.group,
+            this.discriminator.group,
             { uuid }
         );
     }

@@ -14,7 +14,6 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 })
 export class MicroschemaListComponent implements OnInit {
     microschemas$: Observable<Microschema[]>;
-    loading$: Observable<boolean>;
 
     constructor(private entities: EntitiesService,
                 private adminSchemaEffects: AdminSchemaEffectsService,
@@ -23,7 +22,6 @@ export class MicroschemaListComponent implements OnInit {
 
     ngOnInit(): void {
         this.microschemas$ = this.entities.selectAllMicroschemas();
-        this.loading$ = this.state.select(state => state.list.loadCount > 0);
         this.adminSchemaEffects.loadMicroschemas();
     }
 

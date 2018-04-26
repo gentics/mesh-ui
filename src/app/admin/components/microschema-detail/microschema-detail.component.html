@@ -1,12 +1,10 @@
-<gtx-progress-bar [for]="loading$"></gtx-progress-bar>
-
 <div *ngIf="version">
     Version: {{version$ | async}}
 </div>
 
-<monaco-editor [(ngModel)]="schemaJson" language="json" [jsonSchema]="schema" (errors)="onErrorChange($event)"></monaco-editor>
+<monaco-editor [(ngModel)]="microschemaJson" language="json" [jsonSchema]="schema" (errors)="onErrorChange($event)"></monaco-editor>
 
-<schema-assignment *ngIf="!isNew" type="schema" [uuid]="uuid$ | async"></schema-assignment>
+<schema-assignment *ngIf="!isNew" type="microschema" [uuid]="uuid$ | async"></schema-assignment>
 
 <gtx-button [disabled]="errors.length > 0 || (loading$ | async)" (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
 <gtx-button type="alert" *ngIf="!isNew" (click)="delete()">{{ 'common.delete_button' | i18n }}</gtx-button>

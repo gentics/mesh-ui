@@ -5,10 +5,16 @@ import { Microschema } from '../../common/models/microschema.model';
 import { Project } from '../../common/models/project.model';
 import { TagFamily } from '../../common/models/tag-family.model';
 import { Tag } from '../../common/models/tag.model';
+import { Group } from '../../common/models/group.model';
 
 export interface EntityState {
-    project: {
-        [uuid: string]: Project
+    group: {
+        [uuid: string]: Group
+    };
+    microschema: {
+        [uuid: string]: {
+            [version: string]: Microschema;
+        };
     };
     node: {
         [uuid: string]: {
@@ -17,17 +23,12 @@ export interface EntityState {
             };
         };
     };
-    user: {
-        [uuid: string]: User;
+    project: {
+        [uuid: string]: Project
     };
     schema: {
         [uuid: string]: {
             [version: string]: Schema;
-        };
-    };
-    microschema: {
-        [uuid: string]: {
-            [version: string]: Microschema;
         };
     };
     tagFamily: {
@@ -36,5 +37,7 @@ export interface EntityState {
     tag: {
         [uuid: string]: Tag;
     };
-    // loadCount: number;
+    user: {
+        [uuid: string]: User;
+    };
 }

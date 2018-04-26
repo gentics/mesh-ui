@@ -1,0 +1,73 @@
+<mesh-admin-list [items]="users$ | async"
+                 [itemsPerPage]="25"
+                 [currentPage]="currentPage$ | async"
+                 [(selection)]="selectedIndices"
+                 (pageChange)="onPageChange($event)">
+    <div class="list-controls">
+        <div class="with-selected" [class.hidden]="selectedIndices.length === 0">
+            <mesh-user-group-select [groups]="allGroups$ | async"
+                                    [title]="'admin.add_selected_users_to_group' | i18n: { count: selectedIndices.length }"
+                                    (select)="addUsersToGroup(selectedIndices, $event)"></mesh-user-group-select>
+            <mesh-user-group-select [groups]="allGroups$ | async"
+                                    class="warning"
+                                    icon="remove"
+                                    [title]="'admin.remove_selected_users_from_group' | i18n: { count: selectedIndices.length }"
+                                    (select)="removeUsersFromGroup(selectedIndices, $event)"></mesh-user-group-select>
+            <gtx-button flat
+                        type="alert"
+                        [title]="'admin.delete_selected_users' | i18n: { count: selectedIndices.length }"
+                        (click)="deleteUsers(selectedIndices)"
+                        size="small"><icon>delete</icon></gtx-button>
+        </div>
+        <div class="filter">
+            <gtx-input [label]="'admin.filter_by_name' | i18n"
+                       [formControl]="filterInput"></gtx-input>
+        </div>
+        <div class="group-filter">
+            <gtx-select [label]="'admin.filter_by_group' | i18n" [formControl]="filterGroupSelect">
+                <gtx-option value="">{{ 'admin.all_groups' | i18n }}</gtx-option>
+                <gtx-option *ngFor="let group of allGroups$ | async" [value]="group.uuid">{{ group.name }}</gtx-option>
+            </gtx-select>
+        </div>
+        <gtx-button size="regular" [routerLink]="['/admin/users/new']">
+            <icon left>person_add</icon>
+            <span class="new-user-label">{{ 'admin.new_user' | i18n }}</span>
+        </gtx-button>
+    </div>
+
+    <ng-template let-user="item">
+        <div class="user-row">
+            <a [routerLink]="['/admin/users', user.uuid]">
+                <div class="name" *ngIf="user.firstname || user.lastname">{{ user.firstname }} {{ user.lastname }}</div>
+                <div class="user-name">{{ user.username }}</div>
+            </a>
+            <div class="group-wrapper">
+                <ng-container *ngFor="let group of user.groups">
+                    <mesh-chip [removeTitle]="'admin.remove_user_from_group' | i18n"
+                               [removable]="!(group.name === ADMIN_GROUP_NAME && user.username === ADMIN_USER_NAME)"
+                               (removeClick)="removeUserFromGroup(user, group)">
+                        {{ group.name }}
+                    </mesh-chip>
+                </ng-container>
+                <mesh-user-group-select [groups]="allGroups$ | async"
+                                        [omit]="user.groups"
+                                        (select)="addUserToGroup(user, $event)"></mesh-user-group-select>
+            </div>
+            <div class="row-actions">
+                <gtx-dropdown-list>
+                    <gtx-dropdown-trigger>
+                        <gtx-button icon type="secondary"><icon>more_vert</icon></gtx-button>
+                    </gtx-dropdown-trigger>
+                    <gtx-dropdown-content>
+                        <gtx-dropdown-item class="alert"
+                                           [class.disabled]="!user.permissions.delete || user.username === ADMIN_USER_NAME"
+                                           (click)="deleteUser(user)">
+                            <icon>delete</icon> {{ 'admin.delete_user' | i18n }}
+                        </gtx-dropdown-item>
+                    </gtx-dropdown-content>
+                </gtx-dropdown-list>
+            </div>
+        </div>
+    </ng-template>
+
+</mesh-admin-list>

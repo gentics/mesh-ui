@@ -2,36 +2,30 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { ModalService } from 'gentics-ui-core';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { ModalService } from 'gentics-ui-core';
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 import { SchemaResponse } from '../../../common/models/server-models';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
-    templateUrl: './schema.component.html',
+    templateUrl: './schema-detail.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SchemaComponent implements OnInit, OnDestroy {
+export class SchemaDetailComponent implements OnInit, OnDestroy {
     // TODO Disable save button when editor is pristine
     // TODO Show message on save when schema has not changed
     schema$: Observable<SchemaResponse>;
     version$: Observable<string>;
-
     uuid$: Observable<string>;
-
     schemaJson = '';
     // TODO load json schema from mesh instead of static file
     schema = require('./schema.schema.json');
-
     errors: MarkerData[] = [];
     isNew = true;
-
-    loading$: Observable<boolean>;
-
-    subscription: Subscription;
+    private subscription: Subscription;
 
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
@@ -42,37 +36,17 @@ export class SchemaComponent implements OnInit, OnDestroy {
                 private ref: ChangeDetectorRef) {}
 
     ngOnInit() {
-        this.loading$ = this.state.select(state => state.adminSchemas.loadCount > 0);
-
-        this.uuid$ = this.route.paramMap
-            .map(map => map.get('uuid'))
-            .distinctUntilChanged()
-            .do(route => {
-                this.isNew = route === 'new';
-                if (this.isNew) {
-                    this.state.actions.adminSchemas.newSchema();
-                }
-            })
-            // This will cause all the stuff below to not trigger when a new schema is made.
-            .filter(route => route != null && route !== 'new') as Observable<string>;
-
-        this.schema$ = this.uuid$
-            .switchMap(uuid => this.entities.selectSchema(uuid))
-            .filter(Boolean);
+        this.schema$ = this.route.data
+            .map(data => data.schema)
+            .do(schema => { this.isNew = !schema; });
 
         this.version$ = this.schema$.map(it => it.version);
 
-        this.uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
-            // TODO handle 404 or other errors
-            this.schemaEffects.openSchema(uuid);
-        });
-
         this.subscription = this.schema$
-        .subscribe(schema => {
-            const val = JSON.stringify(stripSchemaFields(schema), undefined, 4);
-            this.schemaJson = val;
-            this.ref.detectChanges();
-        });
+            .subscribe(schema => {
+                this.schemaJson = schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`;
+                this.ref.detectChanges();
+            });
     }
 
     ngOnDestroy(): void {

@@ -1,56 +1,59 @@
-import { ActivatedRouteSnapshot, Route } from '@angular/router';
+import { Route } from '@angular/router';
 
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
 import { MicroschemaListComponent } from './components/microschema-list/mircoschema-list.component';
-import { MicroschemaComponent } from './components/microschema/mircoschema.component';
-import { AppState } from '../state/models/app-state.model';
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
-import { SchemaComponent } from './components/schema/schema.component';
-import { EntitiesService } from '../state/providers/entities.service';
-import { BreadcrumbTextFunction } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
+import { UserListComponent } from './components/user-list/user-list.component';
+import { UserDetailComponent } from './components/user-detail/user-detail.component';
+import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
+import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
+import { userBreadcrumbFn, UserResolver } from './providers/resolvers/user-resolver';
+import { schemaBreadcrumbFn, SchemaResolver } from './providers/resolvers/schema-resolver';
+import { microschemaBreadcrumbFn, MicroschemaResolver } from './providers/resolvers/microschema-resolver';
 
 export const routes: Route[] = [
     { path: '', component: AdminShellComponent, children: [
-        { path: '', pathMatch: 'full', redirectTo: 'projects' },
-        { path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } },
-        { path: 'microschemas', data: { breadcrumb: 'Microschemas' }, children: [
-            { path: '', component: MicroschemaListComponent },
-            { path: ':uuid', component: MicroschemaComponent, data: { breadcrumb: microschemaName('New Microschema') }}
-        ]},
-        { path: 'schemas', data: { breadcrumb: 'Schemas' }, children: [
-            { path: '', component: SchemaListComponent },
-            { path: ':uuid', component: SchemaComponent, data: { breadcrumb: schemaName('New Schema') }}
-        ]},
-    ] }
+            { path: '', pathMatch: 'full', redirectTo: 'projects' },
+            { path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } },
+            {
+                path: 'microschemas',
+                data: { breadcrumb: 'Microschemas' },
+                children: [
+                    { path: '', component: MicroschemaListComponent },
+                    {
+                        path: ':uuid',
+                        component: MicroschemaDetailComponent,
+                        resolve: { microschema: MicroschemaResolver },
+                        data: { breadcrumb: microschemaBreadcrumbFn }
+                    }
+                ]
+            },
+            {
+                path: 'schemas',
+                data: { breadcrumb: 'Schemas' },
+                children: [
+                    { path: '', component: SchemaListComponent },
+                    {
+                        path: ':uuid',
+                        component: SchemaDetailComponent,
+                        resolve: {schema: SchemaResolver },
+                        data: { breadcrumb: schemaBreadcrumbFn }
+                    }
+                ]
+            },
+            {
+                path: 'users',
+                data: { breadcrumb: 'Users' },
+                children: [
+                    { path: '', component: UserListComponent },
+                    {
+                        path: ':uuid',
+                        component: UserDetailComponent,
+                        resolve: { user: UserResolver },
+                        data: { breadcrumb: userBreadcrumbFn }
+                    }
+                ]
+            },
+        ] }
 ];
-
-// TODO: needs improvement:
-// - support i18n for newName
-// - Possibly return an Observable to prevent race conditions as the entity is loaded (currently always flashes newName before
-//   resolving to the correct entity name.
-export function schemaName(newName: string): BreadcrumbTextFunction {
-    return (route: ActivatedRouteSnapshot, state: AppState, entities: EntitiesService): string => {
-        const schemaUuid = state.adminSchemas.schemaDetail;
-        const isNew = !schemaUuid;
-        if (isNew) {
-            return newName;
-        } else {
-            const schema = entities.getSchema(schemaUuid);
-            return schema && schema.name;
-        }
-    };
-}
-
-export function microschemaName(newName: string): BreadcrumbTextFunction {
-    return (route: ActivatedRouteSnapshot, state: AppState, entities: EntitiesService): string => {
-        const microschemaUuid = state.adminSchemas.microschemaDetail;
-        const isNew = !microschemaUuid;
-        if (isNew) {
-            return newName;
-        } else {
-            const microschema = entities.getMicroschema(microschemaUuid);
-            return microschema && microschema.name;
-        }
-    };
-}

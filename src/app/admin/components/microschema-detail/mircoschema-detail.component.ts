@@ -11,10 +11,10 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
-    templateUrl: './microschema.component.html',
+    templateUrl: './microschema-detail.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MicroschemaComponent implements OnInit, OnDestroy {
+export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     // TODO Disable save button when editor is pristine
     // TODO Show message on save when schema has not changed
     microschema$: Observable<MicroschemaResponse>;
@@ -43,41 +43,15 @@ export class MicroschemaComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.loading$ = this.state.select(state => state.adminSchemas.loadCount > 0);
-
-        this.uuid$ = this.route.paramMap
-            .map(map => map.get('uuid'))
-            .distinctUntilChanged()
-            .do(route => {
-                this.isNew = route === 'new';
-                if (this.isNew) {
-                    this.state.actions.adminSchemas.newMicroschema();
-                }
-            })
-            // This will cause all the stuff below to not trigger when a new microschema is made.
-            .filter(route => route !== 'new');
-
-        this.microschema$ = this.uuid$
-            .switchMap(uuid => {
-                if (uuid) {
-                    return this.entities.selectMicroschema(uuid);
-                } else {
-                    // TODO handle this?
-                    throw Error('uuid not set');
-                }
-            });
+        this.microschema$ = this.route.data
+            .map(data => data.microschema)
+            .do(microschema => { this.isNew = !microschema; });
 
         this.version$ = this.microschema$.map(it => it.version);
 
-        this.uuid$.filter(Boolean).take(1).filter(route => route !== 'new').subscribe(uuid => {
-            // TODO handle 404 or other errors
-            this.adminSchemaEffects.openMicroschema(uuid);
-        });
-
         this.subscription = this.microschema$
         .subscribe(microschema => {
-            const val = JSON.stringify(stripMicroschemaFields(microschema), undefined, 4);
-            this.microschemaJson = val;
+            this.microschemaJson = microschema ? JSON.stringify(stripMicroschemaFields(microschema), undefined, 4) : `{}`;
             this.ref.detectChanges();
         });
     }

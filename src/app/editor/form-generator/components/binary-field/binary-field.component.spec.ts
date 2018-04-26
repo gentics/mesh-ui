@@ -14,6 +14,7 @@ import { MockBlobService } from '../../../providers/blob.service.mock';
 import { BlobService } from '../../../providers/blob.service';
 import { BinaryField } from '../../../../common/models/node.model';
 import { FileSizePipe } from '../../../../shared/pipes/file-size/file-size.pipe';
+import { MockModalService } from '../../../../../testing/modal.service.mock';
 
 describe('BinaryFieldComponent:', () => {
 
@@ -260,7 +261,7 @@ describe('BinaryFieldComponent:', () => {
 
         it('scales the transform params after resizing image (landscape)',
             componentTest(() => TestComponent, (fixture, instance) => {
-                const modalService: MockModalService = TestBed.get(ModalService);
+                const mockModalService: MockModalService = TestBed.get(ModalService);
                 fixture.detectChanges();
                 fixture.componentInstance.binaryFieldComponent.valueChange({
                     fileName: 'photo.jpg',
@@ -270,7 +271,9 @@ describe('BinaryFieldComponent:', () => {
                     width: 3600,
                 });
                 fixture.detectChanges();
-                modalService.resolveWithParams({
+                fixture.componentInstance.binaryFieldComponent.editImage();
+                tick();
+                mockModalService.confirmLastModal({
                     width: 1000,
                     height: 700,
                     cropRect: {
@@ -284,8 +287,6 @@ describe('BinaryFieldComponent:', () => {
                     focalPointX: 0.5,
                     focalPointY: 0.5
                 });
-                fixture.componentInstance.binaryFieldComponent.editImage();
-                tick();
 
                 expect(instance.binaryFieldComponent.scaledTransform).toEqual({
                     width: 208,
@@ -305,7 +306,7 @@ describe('BinaryFieldComponent:', () => {
 
         it('scales the transform params after resizing image (portrait)',
             componentTest(() => TestComponent, (fixture, instance) => {
-                const modalService: MockModalService = TestBed.get(ModalService);
+                const mockModalService: MockModalService = TestBed.get(ModalService);
                 fixture.detectChanges();
                 fixture.componentInstance.binaryFieldComponent.valueChange({
                     fileName: 'photo.jpg',
@@ -315,7 +316,10 @@ describe('BinaryFieldComponent:', () => {
                     width: 2000,
                 });
                 fixture.detectChanges();
-                modalService.resolveWithParams({
+
+                fixture.componentInstance.binaryFieldComponent.editImage();
+                tick();
+                mockModalService.confirmLastModal({
                     width: 1000,
                     height: 1000,
                     cropRect: {
@@ -329,8 +333,6 @@ describe('BinaryFieldComponent:', () => {
                     focalPointX: 0.5,
                     focalPointY: 0.5
                 });
-                fixture.componentInstance.binaryFieldComponent.editImage();
-                tick();
 
                 expect(instance.binaryFieldComponent.scaledTransform).toEqual({
                     width: 222,
@@ -350,7 +352,7 @@ describe('BinaryFieldComponent:', () => {
 
         it('sets the fileName, fileSize and mimeType of a new image after edit',
             componentTest(() => TestComponent, (fixture, instance) => {
-                const modalService: MockModalService = TestBed.get(ModalService);
+                const mockModalService: MockModalService = TestBed.get(ModalService);
                 const mockFile: Partial<File> = {
                     name: 'newImage.jpg',
                     type: 'image/jpg',
@@ -358,9 +360,10 @@ describe('BinaryFieldComponent:', () => {
                 };
                 instance.binaryFieldComponent.binaryProperties = { file: mockFile } as any;
                 fixture.detectChanges();
-                modalService.resolveWithParams({} as any);
+
                 fixture.componentInstance.binaryFieldComponent.editImage();
                 tick();
+                mockModalService.confirmLastModal({} as any);
 
                 expect(instance.api.setValue).toHaveBeenCalledWith({
                     fileName: mockFile.name,
@@ -438,19 +441,4 @@ class MockImagePreviewComponent {
     @Input() maxHeight: number;
     @Input() transform: ImageTransformParams;
     @Output() imageLoad = new EventEmitter<any>();
-}
-
-class MockModalService {
-
-    transformParams: ImageTransformParams;
-
-    resolveWithParams(params: ImageTransformParams): void {
-        this.transformParams = params;
-    }
-
-    fromComponent(): any {
-        return Promise.resolve({
-            open: () => Promise.resolve(this.transformParams)
-        });
-    }
 }

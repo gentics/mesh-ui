@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
     selector: 'mesh-chip',
@@ -7,5 +7,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChipComponent {
+    @Input() removeTitle = '';
+    @Input() removable = true;
     @Output() removeClick = new EventEmitter<void>();
 }

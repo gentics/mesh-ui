@@ -6,10 +6,12 @@ import { ListState } from './list-state.model';
 import { TagState } from './tags-state.model';
 import { AdminSchemasState } from './admin-schemas-state.model';
 import { AdminProjectsState } from './admin-projects-state.model';
+import { AdminUsersState } from './admin-users-state.model';
 
 export interface AppState {
     adminSchemas: AdminSchemasState;
     adminProjects: AdminProjectsState;
+    adminUsers: AdminUsersState;
     auth: AuthState;
     editor: EditorState;
     entities: EntityState;

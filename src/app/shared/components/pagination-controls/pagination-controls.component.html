@@ -1,0 +1,33 @@
+<pagination-template #p="paginationApi"
+                     [id]="id"
+                     (pageChange)="pageChange.emit($event)">
+    <div class="pagination-links">
+
+        <div class="page-link previous"
+             *ngIf="directionLinks"
+             (click)="!p.isFirstPage() && p.previous()"
+             [class.disabled]="p.isFirstPage()">
+            <a> &laquo; </a>
+        </div>
+
+        <div *ngFor="let page of p.pages"
+             class="page-link"
+             (click)="p.setCurrent(page.value)"
+             [class.current]="p.getCurrent() === page.value">
+            <a *ngIf="p.getCurrent() !== page.value">
+                <span>{{ page.label }}</span>
+            </a>
+            <ng-container *ngIf="p.getCurrent() === page.value">
+                <span>{{ page.label }}</span>
+            </ng-container>
+        </div>
+
+        <div class="page-link next"
+             *ngIf="directionLinks"
+             (click)="!p.isLastPage() && p.next()"
+             [class.disabled]="p.isLastPage()">
+            <a> &raquo; </a>
+        </div>
+
+    </div>
+</pagination-template>

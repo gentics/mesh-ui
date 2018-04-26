@@ -1,0 +1,6 @@
+<gtx-checkbox *ngIf="selectable"
+              [checked]="checked"
+              (change)="checkboxClick.emit($event)"></gtx-checkbox>
+<div class="content">
+    <ng-content></ng-content>
+</div>

@@ -1,7 +1,71 @@
 {
+    "add_selected_users_to_group": {
+        "en": "Assign {{count}} users to group",
+        "de": "{{count}} Benutzer zu Gruppe zuweisen"
+    },
+    "add_user_to_group": {
+        "en": "Assign to group",
+        "de": "Zu Gruppe zuweisen"
+    },
+    "all_groups": {
+        "en": "All groups",
+        "de": "Alle Gruppen"
+    },
     "assigned_to_projects": {
         "en": "Assigned to projects",
         "de": "Zugewiesen zu Projekte"
+    },
+    "create_user": {
+        "en": "Create user",
+        "de": "Benutzer erstellen"
+    },
+    "delete_label": {
+        "en": "Delete",
+        "de": "Löschen"
+    },
+    "delete_selected_users": {
+        "en": "Delete {{count}} users",
+        "de": "{{count }} Benutzer löschen"
+    },
+    "delete_selected_users_confirmation": {
+        "en": "You are about to permanently delete {{ count }} users.",
+        "de": "Wollen Sie {{ count }} Benutzer permanent löschen?"
+    },
+    "delete_user": {
+        "en": "Delete user",
+        "de": "Benutzer löschen"
+    },
+    "delete_user_confirmation": {
+        "en": "You are about to permanently delete user '{{ username }}'.",
+        "de": "Wollen Sie '{{ username }}' permanent löschen?"
+    },
+    "email_address_label": {
+        "en": "Email address",
+        "de": "Email-Addresse"
+    },
+    "filter_by_group": {
+        "en": "Filter by group",
+        "de": "nach Gruppe durchsuchen"
+    },
+    "filter_by_name": {
+        "en": "Filter by name",
+        "de": "nach Name durchsuchen"
+    },
+    "first_name_label": {
+        "en": "First name",
+        "de": "Vorname"
+    },
+    "last_name_label": {
+        "en": "Last name",
+        "de": "Nachname"
+    },
+    "list_clear_selection": {
+        "en": "clear selection",
+        "de": "Auswahl aufheben"
+    },
+    "list_items_selected": {
+        "en": "Selected: {{ count }}",
+        "de": "Ausgewählt: {{ count }}"
     },
     "microschema_create": {
         "en": "Create Microschema",
@@ -27,6 +91,30 @@
         "en": "No microschemas found",
         "de": "Keine Microschemas gefunden"
     },
+    "new_user": {
+        "en": "New user",
+        "de": "Neuer Benutzer"
+    },
+    "new_microschema": {
+        "en": "New microschema",
+        "de": "Neues Microschema"
+    },
+    "new_schema": {
+        "en": "New schema",
+        "de": "Neues Schema"
+    },
+    "no_available_groups": {
+        "en": "No available groups",
+        "de": "Keine gültige Gruppen"
+    },
+    "no_results": {
+        "en": "No results",
+        "de": "Keine Ergebnisse"
+    },
+    "password_label": {
+        "en": "Password",
+        "de": "Kennwort"
+    },
     "projects_create": {
         "en": "Create project",
         "de": "Projekt erstellen"
@@ -46,6 +134,14 @@
     "projects_none_found": {
         "en": "No projects found",
         "de": "Keine Projekte gefunden"
+    },
+    "remove_selected_users_from_group": {
+        "en": "Remove {{count}} users from group",
+        "de": "{{count}} Benutzer von Gruppe entfernen"
+    },
+    "remove_user_from_group": {
+        "en": "Remove from group",
+        "de": "Von Gruppe entfernen"
     },
     "schema_create": {
         "en": "Create Schema",
@@ -70,5 +166,33 @@
     "schema_none_found": {
         "en": "No schemas found",
         "de": "Keine Schemas gefunden"
+    },
+    "select_all": {
+        "en": "Select all",
+        "de": "Alle auswählen"
+    },
+    "update_user": {
+        "en": "Update user",
+        "de": "Benutzer speichern"
+    },
+    "user_created": {
+        "en": "New user created",
+        "de": "Neuer Benutzer erstellt"
+    },
+    "user_deleted": {
+        "en": "User '{{username}}' deleted",
+        "de": "Benutzer '{{username}}' gelöscht"
+    },
+    "user_deleted_error": {
+        "en": "User '{{username}}' could not be deleted",
+        "de": "Benutzer '{{username}}' könnte nicht gelöscht werden"
+    },
+    "user_name_label": {
+        "en": "Username",
+        "de": "Benutzername"
+    },
+    "user_updated": {
+        "en": "User updated",
+        "de": "Benutzer gespeichert"
     }
 }

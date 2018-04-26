@@ -14,7 +14,6 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 })
 export class SchemaListComponent implements OnInit {
     schemas$: Observable<Schema[]>;
-    loading$: Observable<boolean>;
 
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
@@ -23,7 +22,6 @@ export class SchemaListComponent implements OnInit {
 
     ngOnInit(): void {
         this.schemas$ = this.entities.selectAllSchemas();
-        this.loading$ = this.state.select(state => state.adminSchemas.loadCount > 0);
         this.adminSchemaEffects.loadSchemas();
     }
 
