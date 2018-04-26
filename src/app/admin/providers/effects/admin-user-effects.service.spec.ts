@@ -110,6 +110,28 @@ describe('AdminUserEffects', () => {
         });
     });
 
+    it('removeUserFromGroup() leaves the user intact if the user is not actually assigned to the group', () => {
+        const mockUser: any = {
+            uuid: 'mock_user_uuid',
+            groups: [{
+                name: 'group1',
+                uuid: 'group1_uuid'
+            }]
+        };
+        api.admin.removeUserFromGroup = jasmine.createSpy('removeUserFromGroup')
+            .and.returnValue(Observable.of({}));
+
+        adminUserEffects.removeUserFromGroup(mockUser, 'group3_uuid');
+
+        expect(state.actions.adminUsers.removeUserFromGroupSuccess).toHaveBeenCalledWith({
+            uuid: 'mock_user_uuid',
+            groups: [{
+                name: 'group1',
+                uuid: 'group1_uuid'
+            }]
+        });
+    });
+
     it('removeUserFromGroup() only removes users from groups where they are already assigned to that group', () => {
         const mockGroup1: any = {
             name: 'group1',

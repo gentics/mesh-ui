@@ -13,7 +13,9 @@ export class MicroschemaResolver implements Resolve<Microschema> {
     resolve(route: ActivatedRouteSnapshot): Promise<Microschema | undefined> {
         const uuid = route.paramMap.get('uuid');
 
-        if (uuid !== 'new') {
+        if (uuid === 'new') {
+            this.adminSchemaEffects.newMicroschema();
+        } else {
             return this.adminSchemaEffects.openMicroschema(uuid)
                 .then(schema => {
                     if (!schema) {
@@ -22,8 +24,6 @@ export class MicroschemaResolver implements Resolve<Microschema> {
                     }
                     return schema;
                 });
-        } else {
-            this.adminSchemaEffects.newMicroschema();
         }
     }
 }

@@ -12,7 +12,7 @@ import { Group } from '../../../common/models/group.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { ModalService } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { ADMIN_USER_NAME } from '../../../common/constants';
+import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
 
 @Component({
     selector: 'mesh-user-list',
@@ -28,8 +28,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     totalItems$: Observable<number>;
     allGroups$: Observable<Group[]>;
     filterInput = new FormControl('');
-    filterGroups = new FormControl('');
+    filterGroupSelect = new FormControl('');
     selectedIndices: number[] = [];
+    ADMIN_USER_NAME = ADMIN_USER_NAME;
+    ADMIN_GROUP_NAME = ADMIN_GROUP_NAME;
 
     private destroy$ = new Subject<void>();
 
@@ -63,7 +65,7 @@ export class UserListComponent implements OnInit, OnDestroy {
             // got a reference to the <gtx-option> elements at init time, which prevents
             // the default value from being selected.
             setTimeout(() => {
-                this.filterGroups.setValue(groupUuid, { emitEvent: false });
+                this.filterGroupSelect.setValue(groupUuid, { emitEvent: false });
             });
         });
 
@@ -74,7 +76,7 @@ export class UserListComponent implements OnInit, OnDestroy {
                 this.setQueryParams({ q: term });
             });
 
-        this.filterGroups.valueChanges
+        this.filterGroupSelect.valueChanges
             .takeUntil(this.destroy$)
             .subscribe(groupUuid => {
                 this.setQueryParams({ group: groupUuid });
@@ -119,10 +121,14 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.selectedUsersFromIndices(selectedIndices)
             .flatMap(selectedUsers => {
                 const deletableUsers = selectedUsers.filter(user => user.permissions.delete && user.username !== ADMIN_USER_NAME);
-                return this.displayDeleteUserModal(
-                    { token: 'admin.delete_selected_users', params: { count: deletableUsers.length } },
-                    { token: 'admin.delete_selected_users_confirmation', params: { count: deletableUsers.length }}
-                ).then(() => deletableUsers);
+                if (deletableUsers.length === 0) {
+                    return Observable.empty<any[]>();
+                } else {
+                    return this.displayDeleteUserModal(
+                        {token: 'admin.delete_selected_users', params: {count: deletableUsers.length}},
+                        {token: 'admin.delete_selected_users_confirmation', params: {count: deletableUsers.length}}
+                    ).then(() => deletableUsers);
+                }
             })
             .subscribe(deletableUsers => {
                 deletableUsers.forEach(user => {
@@ -150,6 +156,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     removeUsersFromGroup(selectedIndices: number[], group: Group): void {
         this.selectedUsersFromIndices(selectedIndices)
             .subscribe(selectedUsers => {
+                if (group.name === ADMIN_GROUP_NAME) {
+                    // Prevent the admin user from being removed from the admin group.
+                    selectedUsers = selectedUsers.filter(user => user.username !== ADMIN_USER_NAME);
+                }
                 this.adminUserEffects.removeUsersFromGroup(selectedUsers, group.uuid);
             });
     }

@@ -24,9 +24,9 @@
                        [formControl]="filterInput"></gtx-input>
         </div>
         <div class="group-filter">
-            <gtx-select [label]="'admin.filter_by_group' | i18n" [formControl]="filterGroups">
+            <gtx-select [label]="'admin.filter_by_group' | i18n" [formControl]="filterGroupSelect">
                 <gtx-option value="">{{ 'admin.all_groups' | i18n }}</gtx-option>
-                <gtx-option *ngFor="let group of allGroups$ | async" [value]="group?.uuid">{{ group?.name }}</gtx-option>
+                <gtx-option *ngFor="let group of allGroups$ | async" [value]="group.uuid">{{ group.name }}</gtx-option>
             </gtx-select>
         </div>
         <gtx-button size="regular" [routerLink]="['/admin/users/new']">
@@ -44,7 +44,7 @@
             <div class="group-wrapper">
                 <ng-container *ngFor="let group of user.groups">
                     <mesh-chip [removeTitle]="'admin.remove_user_from_group' | i18n"
-                               [removable]="user.username !== 'admin'"
+                               [removable]="!(group.name === ADMIN_GROUP_NAME && user.username === ADMIN_USER_NAME)"
                                (removeClick)="removeUserFromGroup(user, group)">
                         {{ group.name }}
                     </mesh-chip>
@@ -60,7 +60,7 @@
                     </gtx-dropdown-trigger>
                     <gtx-dropdown-content>
                         <gtx-dropdown-item class="alert"
-                                           [class.disabled]="!user.permissions.delete || user.username === 'admin'"
+                                           [class.disabled]="!user.permissions.delete || user.username === ADMIN_USER_NAME"
                                            (click)="deleteUser(user)">
                             <icon>delete</icon> {{ 'admin.delete_user' | i18n }}
                         </gtx-dropdown-item>

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
@@ -175,10 +174,9 @@ export class AdminUserEffectsService {
             return !user.groups.map(group => group.uuid).includes(groupUuid);
         });
 
-        Observable.from(usersNotAlreadyInGroup)
-            .subscribe(user => {
-                this.addUserToGroup(user, groupUuid);
-            });
+        usersNotAlreadyInGroup.forEach(user => {
+            this.addUserToGroup(user, groupUuid);
+        });
     }
 
     removeUserFromGroup(user: User, groupUuid: string): void {
@@ -188,7 +186,9 @@ export class AdminUserEffectsService {
             .subscribe(
                 () => {
                     const index = user.groups.findIndex(g => g.uuid === groupUuid);
-                    user.groups.splice(index, 1);
+                    if (-1 < index) {
+                        user.groups.splice(index, 1);
+                    }
                     this.state.actions.adminUsers.removeUserFromGroupSuccess(user);
                 },
                 error => {
@@ -201,9 +201,8 @@ export class AdminUserEffectsService {
             return user.groups.map(group => group.uuid).includes(groupUuid);
         });
 
-        Observable.from(usersInGroup)
-            .subscribe(user => {
-                this.removeUserFromGroup(user, groupUuid);
-            });
+        usersInGroup.forEach(user => {
+            this.removeUserFromGroup(user, groupUuid);
+        });
     }
 }

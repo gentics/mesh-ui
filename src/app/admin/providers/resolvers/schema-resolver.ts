@@ -13,7 +13,9 @@ export class SchemaResolver implements Resolve<Schema> {
     resolve(route: ActivatedRouteSnapshot): Promise<Schema | undefined> {
         const uuid = route.paramMap.get('uuid');
 
-        if (uuid !== 'new') {
+        if (uuid === 'new') {
+            this.adminSchemaEffects.newSchema();
+        } else {
             return this.adminSchemaEffects.openSchema(uuid)
                 .then(schema => {
                     if (!schema) {
@@ -22,8 +24,6 @@ export class SchemaResolver implements Resolve<Schema> {
                     }
                     return schema;
                 });
-        } else {
-            this.adminSchemaEffects.newSchema();
         }
     }
 }

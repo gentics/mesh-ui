@@ -13,7 +13,9 @@ export class UserResolver implements Resolve<User> {
     resolve(route: ActivatedRouteSnapshot): Promise<User | undefined> {
         const uuid = route.paramMap.get('uuid');
 
-        if (uuid !== 'new') {
+        if (uuid === 'new') {
+            this.adminUserEffects.newUser();
+        } else {
             return this.adminUserEffects.openUser(uuid)
                 .then(user => {
                     if (!user) {
@@ -22,8 +24,6 @@ export class UserResolver implements Resolve<User> {
                     }
                     return user;
                 });
-        } else {
-            this.adminUserEffects.newUser();
         }
     }
 }
