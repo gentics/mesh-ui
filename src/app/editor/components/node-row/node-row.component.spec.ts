@@ -22,6 +22,7 @@ import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockMeshNode } from '../../../../testing/mock-models';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { MockModalService } from '../../../../testing/modal.service.mock';
 
 describe('NodeRowComponent', () => {
     let api: MockApiService;
@@ -67,8 +68,8 @@ describe('NodeRowComponent', () => {
                 instance.node = mockMeshNode({language: 'en', version: '1'})['en']['1'];
                 openDropdownAndDeleteFirstItem(fixture);
 
-                expect(modalService.dialog).toHaveBeenCalled();
-                expect(modalService.fakeDialog.open).toHaveBeenCalled();
+                expect(modalService.dialogSpy).toHaveBeenCalled();
+                expect(modalService.fakeModalInstance.open).toHaveBeenCalled();
             })
         );
 
@@ -93,8 +94,6 @@ class TestComponent {
     node: MeshNode;
     listLanguage: string;
 }
-
-const routerLinkOf = (node: MeshNode): any[] => [];
 
 @Pipe({ name: 'displayField' })
 class MockDisplayFieldPipe implements PipeTransform {
@@ -122,19 +121,6 @@ class MockI18nService {
         return str;
     }
 }
-
-class MockModalService {
-    dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fakeDialog = {
-        open: jasmine.createSpy('open').and.callFake(() => {
-            return new Promise(resolve => {
-                this.confirmLastModal = () => { resolve(); tick(); };
-            });
-        })
-    };
-    confirmLastModal: () => void;
-}
-
 
 function findDeleteButton(fixture: ComponentFixture<any>): DebugElement {
     return fixture.debugElement.query(By.css('.item-delete'));

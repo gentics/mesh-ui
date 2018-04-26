@@ -19,6 +19,7 @@ import { mockSchema } from '../../../../testing/mock-models';
 import { Schema } from '../../../common/models/schema.model';
 import { AudioPlayButtonComponent } from '../audio-play-button/audio-play-button.component';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { MockModalService } from '../../../../testing/modal.service.mock';
 
 describe('MultiFileUploadDialogComponent', () => {
     let component: MultiFileUploadDialogComponent;
@@ -224,20 +225,6 @@ class MockI18nPipe implements PipeTransform {
         return `translated ${arg}`;
     }
 }
-
-class MockModalService {
-    dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fromComponent = jasmine.createSpy('fromComponent').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fakeDialog = {
-        open: jasmine.createSpy('open').and.callFake(() => {
-            return new Promise(resolve => {
-                this.confirmLastModal = () => { resolve(); tick(); };
-            });
-        })
-    };
-    confirmLastModal: () => void;
-}
-
 
 class MockListEffectsService {
     loadChildren = jasmine.createSpy('loadChildren');
