@@ -337,7 +337,6 @@ export class EditorEffectsService {
     private applyBinaryTransforms(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode> {
         const project = node.project.name;
         const nodeUuid = node.uuid;
-        debugger;
         const promises = Object.keys(fields)
             .filter(fieldName => !!fields[fieldName].transform)
             .map(fieldName => {

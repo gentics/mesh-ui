@@ -3,22 +3,20 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
-import { ModalService, IDialogConfig, IModalOptions, IModalInstance } from 'gentics-ui-core';
+import { ModalService, IModalInstance } from 'gentics-ui-core';
 
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-
 import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { getMeshNodeBinaryFields, simpleCloneDeep } from '../../../common/util/util';
 import { initializeNode } from '../../common/initialize-node';
-import { NodeReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
+import { NodeReferenceFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-
 import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
 import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 import { ApiError } from '../../../core/providers/api/api-error';
@@ -187,9 +185,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     /**
      * Validate if saving is required.
-     * Open a file upload progress if binary fields are present upload
+     * Open a file upload progress if binary fields are present upload.
+     * Tags might be explicitly passed in if we are solving the conflicts and we chose the tags from the remote version. Otherwise look if tags were edited or not (tagsBar.isDirty)
      */
-    saveNode(navigateOnSave = true): void {
+    saveNode(navigateOnSave = true, tags: TagReferenceFromServer[] = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null): void {
         if (!this.node) {
             return;
         }
@@ -199,7 +198,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
             if (!this.node.uuid) { // Create new node.
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null;
                 saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, tags)
                     .then(node => {
                         this.isSaving = false;
@@ -218,11 +216,12 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
                 this.saveNodeWithProgress(saveFn);
             } else { // Update node.
-                saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.nodeTags)
+                saveFn = this.editorEffects.saveNode(this.node, tags)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
-                            this.formGenerator.setPristine(node, true);
+                            this.formGenerator.update(node);
+                            this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                             this.changeDetector.markForCheck();
                         }
@@ -263,7 +262,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 .then(modal => modal.open())
                 .then(mergedNode => {
                     this.node = mergedNode;
-                    this.saveNode();
+                    this.saveNode(true, this.node.tags);
                 });
             });
     }

@@ -131,6 +131,36 @@
             </div>
         </div>
 
+
+        <div *ngSwitchCase="'boolean'" class='preview-container'>
+            <div
+                class="their-val"
+                [class.selected]="conflictedField.overwrite === false"
+                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
+            >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === true"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'modal.use_this_version' | i18n }}
+                </gtx-button>
+                <div class="val"><gtx-checkbox [checked]="conflictedField.remoteValue"></gtx-checkbox></div>
+            </div>
+            <div
+                class="mine-val"
+                [class.selected]="conflictedField.overwrite === true"
+                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
+            >
+                <gtx-button
+                    *ngIf="conflictedField.overwrite === false"
+                    size="small"
+                    class="button-select"
+                    flat>{{ 'modal.use_this_version' | i18n }}
+                </gtx-button>
+                <div class="val"><gtx-checkbox [checked]="conflictedField.localValue"></gtx-checkbox></div>
+            </div>
+        </div>
+
         <div *ngSwitchCase="'micronode'" class="micronode-row preview-container">
             <ul>
                 <li *ngFor="let conflictedMicronodeField of conflictedField.conflictedFields">

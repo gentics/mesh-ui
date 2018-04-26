@@ -75,8 +75,8 @@ export class MeshControlGroupService {
      * Resets all controls to the values defined in the values object (which should be the
      * map from the MeshNode.fields property).
      */
-    reset(values: { [p: string]: NodeFieldType }, force = false): void {
-        if (this._rootControl && (force || this.isDirty())) {
+    reset(values: { [p: string]: NodeFieldType }): void {
+        if (this._rootControl && this.isDirty()) {
             this.rootControl.reset(values);
         }
     }

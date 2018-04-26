@@ -63,6 +63,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.node && changes.node.currentValue) {
+            console.log('got changes in the tag bar');
             const node = changes.node.currentValue as MeshNode;
             this.nodeTags = node.tags ? [...node.tags] : [];
             this.isDirty = false;
