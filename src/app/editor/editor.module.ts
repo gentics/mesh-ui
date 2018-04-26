@@ -6,7 +6,7 @@ import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.compo
 import { ConfirmNavigationModalComponent } from './components/confirm-navigation-modal/confirm-navigation-modal.component';
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
 import { EditorEffectsService } from './providers/editor-effects.service';
-import { FormGeneratorModule } from './form-generator/form-generator.module';
+import { FormGeneratorModule } from '../form-generator/form-generator.module';
 import { MasterDetailComponent } from './components/master-detail/master-detail.component';
 import { NodeEditorComponent } from './components/node-editor/node-editor.component';
 import { NodeEditorGuard } from './providers/node-editor-guard';
@@ -23,7 +23,7 @@ import { AvailableLanguagesListComponent } from './components/available-language
 import { NodeRowComponent } from './components/node-row/node-row.component';
 import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
 import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.component';
-import { BlobService } from './providers/blob.service';
+import { BlobService } from '../core/providers/blob/blob.service';
 import { CreateTagDialogComponent } from './components/create-tag-dialog/create-tag-dialog.component';
 import { ContainerFileDropAreaComponent } from './components/container-file-drop-area/container-file-drop-area.component';
 import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';

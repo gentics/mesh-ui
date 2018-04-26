@@ -10,10 +10,10 @@ import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
-import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
+import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { getMeshNodeBinaryFields, simpleCloneDeep } from '../../../common/util/util';
-import { initializeNode } from '../../common/initialize-node';
+import { initializeNode } from '../../../common/util/initialize-node';
 import { NodeReferenceFromServer } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
