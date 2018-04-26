@@ -43,7 +43,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
     ngOnInit(): void {
         const schema: Schema = this.entities.getSchema(this.localNode.schema.uuid);
-        if (!tagsAreEqual(this.remoteNode.tags, this.localNode.tags)) {
+        if (!tagsAreEqual(this.remoteNode.tags, this.localTags)) {
             const conflictedTags: ConflictedField = {
                 field: {
                     type: TAGS_FIELD_TYPE,
@@ -144,7 +144,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
                 // Download the nodes so that we can display it's data in the diff
                 forkJoin(this.apiService.project.getNode({ project: this.localNode.project.name, nodeUuid: (localField as NodeField).uuid}),
-                        this.apiService.project.getNode({ project: this.localNode.project.name, nodeUuid: (remoteField as NodeField).uuid}))
+                        this.apiService.project.getNode({ project: this.remoteNode.project.name, nodeUuid: (remoteField as NodeField).uuid}))
                     .subscribe((results: NodeResponse[] ) => {
                         conflictedField.localValue = results[0].breadcrumb.map(crumb => crumb.displayName + '/') + results[0].displayName;
                         conflictedField.remoteValue = results[1].breadcrumb.map(crumb => crumb.displayName + '/') + results[1].displayName;
@@ -177,10 +177,10 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
         // that are not marked by the mesh as a conflict) and we will just overwrite the
         // values with the remote values if it was indicated by the user.
         const tagsField = this.conflictedFields.find(f => f.overwrite === false && f.field.type === TAGS_FIELD_TYPE);
-        const mergedNode = {...this.remoteNode, fields: this.localNode.fields, tags: tagsField !== null ? this.localTags : this.remoteNode.tags };
+        const mergedNode = {...this.remoteNode, fields: this.localNode.fields, tags: tagsField ? this.remoteNode.tags : this.localTags};
 
         this.conflictedFields.map(conflictedField => {
-            if (conflictedField.overwrite === false) { // Overwrute means 'overwrite the serer version with ours. So if it's false - we take the server version and dump it into our mergeNode
+            if (conflictedField.overwrite === false && conflictedField.field.type !== TAGS_FIELD_TYPE) { // Overwrute means 'overwrite the serer version with ours. So if it's false - we take the server version and dump it into our mergeNode
                 if (conflictedField.field.type === 'micronode') {
                     conflictedField.conflictedFields.map(conflictedMicronodeField => {
                         if (conflictedMicronodeField.overwrite === false) {
