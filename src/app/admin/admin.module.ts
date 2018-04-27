@@ -26,6 +26,7 @@ import { MicroschemaResolver } from './providers/resolvers/microschema-resolver'
 import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
 import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
+import { FormGeneratorModule } from '../form-generator/form-generator.module';
 
 @NgModule({
     declarations: [
@@ -51,7 +52,8 @@ import { UserGroupSelectComponent } from './components/user-group-select/user-gr
     ],
     imports: [
         SharedModule,
-        RouterModule.forChild(routes)
+        RouterModule.forChild(routes),
+        FormGeneratorModule
     ],
     providers: [
         ModalService,

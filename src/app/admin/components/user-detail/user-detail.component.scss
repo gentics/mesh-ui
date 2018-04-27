@@ -1,0 +1,18 @@
+@import "variables";
+
+/deep/ gtx-input > input[type] {
+    background-color: white;
+}
+
+.node-reference {
+    padding: 0 14px;
+    @media screen and (max-width: $small-screen) {
+        padding: 0 10px;
+    }
+
+    form-generator {
+        border: 1px solid $gtx-color-light-gray;
+        background-color: #fcfcfe;
+        border-radius: 3px;
+    }
+}

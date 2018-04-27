@@ -191,6 +191,10 @@
         "en": "Username",
         "de": "Benutzername"
     },
+    "user_node_reference_label": {
+        "en": "User Node Reference",
+        "de": "Benutzer Node Referenz"
+    },
     "user_updated": {
         "en": "User updated",
         "de": "Benutzer gespeichert"

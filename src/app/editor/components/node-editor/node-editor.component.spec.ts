@@ -21,6 +21,7 @@ import { NodeLanguageLabelComponent } from '../language-label/language-label.com
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
@@ -242,14 +243,6 @@ class MockI18nService {
 @Component({ selector: 'node-language-switcher', template: '' })
 class MockLanguageSwitcherComponent {
     @Input() node: any;
-}
-
-@Component({ selector: 'form-generator', template: '' })
-class MockFormGeneratorComponent {
-    @Input()schema: any;
-    @Input() node: any;
-    isDirty = true;
-    setPristine = jasmine.createSpy('setPristine');
 }
 
 @Component({ selector: 'mesh-node-tags-bar', template: '' })

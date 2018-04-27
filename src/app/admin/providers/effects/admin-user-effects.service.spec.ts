@@ -9,6 +9,9 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
+import { User } from '../../../common/models/user.model';
+import { MeshNode } from '../../../common/models/node.model';
+import { Schema } from '../../../common/models/schema.model';
 
 describe('AdminUserEffects', () => {
     let adminUserEffects: AdminUserEffectsService;
@@ -36,6 +39,64 @@ describe('AdminUserEffects', () => {
 
         state.trackAllActionCalls();
     });
+
+    describe('openUser()', () => {
+
+        let mockUser: Partial<User>;
+        let mockUserNode: Partial<MeshNode>;
+        let mockUserNodeSchema: Partial<Schema>;
+
+        function setUpSpies() {
+            api.user.getUser = jasmine.createSpy('user.getUser').and.returnValue(Observable.of(mockUser));
+            api.project.getNode = jasmine.createSpy('project.getNode').and.returnValue(Observable.of(mockUserNode));
+            api.admin.getSchema = jasmine.createSpy('admin.getSchema').and.returnValue(Observable.of(mockUserNodeSchema));
+        }
+
+        beforeEach(() => {
+            mockUser = { uuid: 'mock_user_uuid' };
+            mockUserNode = { uuid: 'mock_user_node_uuid' };
+            mockUserNodeSchema = { uuid: 'mock_user_node_schema_uuid' };
+        });
+
+        it('calls api.user.getUser with correct arg', () => {
+            setUpSpies();
+
+            adminUserEffects.openUser(mockUser.uuid);
+            expect(api.user.getUser).toHaveBeenCalledWith({ userUuid: mockUser.uuid });
+        });
+
+        it('does not make further API calls if user has no nodeReference', () => {
+            setUpSpies();
+
+            adminUserEffects.openUser(mockUser.uuid);
+            expect(api.project.getNode).not.toHaveBeenCalled();
+            expect(api.admin.getSchema).not.toHaveBeenCalled();
+        });
+
+        it('fetches the Node and Schema if user has a nodeReference', () => {
+            mockUser.nodeReference = {
+                uuid: mockUserNode.uuid,
+                projectName: 'test_project',
+                schema: {
+                    uuid: mockUserNodeSchema.uuid
+                }
+            } as any;
+            setUpSpies();
+
+            adminUserEffects.openUser(mockUser.uuid);
+            expect(api.project.getNode).toHaveBeenCalledWith({ nodeUuid: mockUserNode.uuid, project: 'test_project' });
+            expect(api.admin.getSchema).toHaveBeenCalledWith({ schemaUuid: mockUserNodeSchema.uuid });
+        });
+
+        it('returns a promise which resolves with the User object', async () => {
+            setUpSpies();
+
+            const result = await adminUserEffects.openUser(mockUser.uuid);
+            expect(result).toBe(mockUser);
+        });
+    });
+
+
 
     it('addUserToGroup() adds the new group to the user groups array', () => {
         const mockUser: any = {

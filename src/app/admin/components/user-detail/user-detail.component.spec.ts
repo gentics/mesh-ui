@@ -1,42 +1,217 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { Button, InputField } from 'gentics-ui-core';
 
 import { UserDetailComponent } from './user-detail.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
+import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
+import { TestStateModule } from '../../../state/testing/test-state.module';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
+import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
 
 describe('UserDetailComponent', () => {
-    let component: UserDetailComponent;
-    let fixture: ComponentFixture<UserDetailComponent>;
+    let instance: UserDetailComponent;
+    let fixture: ComponentFixture<TestHostComponent>;
+    let state: TestApplicationState;
+    let activatedRoute: MockActivatedRoute;
 
     beforeEach(async(() => {
         configureComponentTest({
             declarations: [
+                TestHostComponent,
                 UserDetailComponent,
                 InputField,
-                Button
+                Button,
+                MockFormGeneratorComponent
             ],
             imports: [
                 RouterTestingModule.withRoutes([]),
-                ReactiveFormsModule
+                ReactiveFormsModule,
+                TestStateModule
             ],
             providers: [
-                { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService }
+                { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService },
+                { provide: ActivatedRoute, useClass: MockActivatedRoute }
             ]
         });
+
+        state = TestBed.get(ApplicationStateService);
+        activatedRoute = TestBed.get(ActivatedRoute);
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(UserDetailComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        fixture = TestBed.createComponent(TestHostComponent);
+        instance = fixture.debugElement.query(By.directive(UserDetailComponent)).componentInstance;
     });
 
     it('should create', () => {
-        expect(component).toBeTruthy();
+        expect(instance).toBeTruthy();
+    });
+
+    it('does not display the FormGenerator if user does not have a nodeReference', () => {
+        activatedRoute.setData('user', {
+            uuid: 'user_uuid',
+            permissions: {}
+        });
+        fixture.detectChanges();
+
+        const formGenerator = getFormGenerator(fixture);
+        expect(formGenerator === null).toBe(true);
+    });
+
+    it('displays the FormGenerator if user has a nodeReference', () => {
+        setStateForUserWithNodeReference(activatedRoute, state);
+        fixture.detectChanges();
+
+        const formGenerator = getFormGenerator(fixture);
+        expect(formGenerator === null).toBe(false);
+    });
+
+    describe('save button', () => {
+
+        describe('for user without nodeReference', () => {
+
+            beforeEach(() => {
+                activatedRoute.setData('user', {
+                    uuid: 'user_uuid',
+                    permissions: { update: true }
+                });
+                fixture.detectChanges();
+            });
+
+            it('is initially disabled', () => {
+                const saveButton = getSaveButton(fixture);
+                expect(saveButton.disabled).toBe(true);
+            });
+
+            it('is enabled if the form is dirty and valid', () => {
+                fixture.detectChanges();
+                instance.form.patchValue({
+                    userName: 'some_user'
+                }, { emitEvent: true });
+                instance.form.markAsDirty();
+
+                // Cannot currently test the actual save button in the DOM due to this issue:
+                // https://github.com/angular/angular/issues/12313#issuecomment-384926337
+                // const saveButton = getSaveButton(fixture);
+                // expect(saveButton.disabled).toBe(false);
+
+                expect(instance.isSaveButtonEnabled()).toBe(true);
+            });
+
+            it('is disabled if the form is dirty and invalid', () => {
+                fixture.detectChanges();
+                instance.form.patchValue({
+                    userName: ''
+                }, { emitEvent: true });
+                instance.form.markAsDirty();
+
+                expect(instance.isSaveButtonEnabled()).toBe(false);
+            });
+
+        });
+
+        describe('for user with nodeReference', () => {
+
+            beforeEach(() => {
+                setStateForUserWithNodeReference(activatedRoute, state);
+                fixture.detectChanges();
+            });
+
+            it('is initially disabled', () => {
+                const saveButton = getSaveButton(fixture);
+                expect(saveButton.disabled).toBe(true);
+            });
+
+            it('is enabled when form dirty & valid, formGenerator pristine', () => {
+                const formGenerator = getFormGenerator(fixture);
+
+                instance.form.patchValue({
+                    userName: 'some_user'
+                }, { emitEvent: true });
+                instance.form.markAsDirty();
+                formGenerator.isDirty = false;
+                formGenerator.isValid = true;
+
+                expect(instance.isSaveButtonEnabled()).toBe(true);
+            });
+
+            it('is enabled when form pristine, formGenerator dirty & valid', () => {
+                const formGenerator = getFormGenerator(fixture);
+                formGenerator.isDirty = true;
+                formGenerator.isValid = true;
+
+                expect(instance.isSaveButtonEnabled()).toBe(true);
+            });
+            it('is disabled when form pristine, formGenerator dirty & invalid', () => {
+                const formGenerator = getFormGenerator(fixture);
+                formGenerator.isDirty = true;
+                formGenerator.isValid = false;
+
+                expect(instance.isSaveButtonEnabled()).toBe(false);
+            });
+
+            it('is disabled when form dirty & valid, formGenerator invalid', () => {
+                const formGenerator = getFormGenerator(fixture);
+
+                instance.form.patchValue({
+                    userName: 'some_user'
+                }, { emitEvent: true });
+                instance.form.markAsDirty();
+                formGenerator.isDirty = true;
+                formGenerator.isValid = false;
+
+                expect(instance.isSaveButtonEnabled()).toBe(false);
+            });
+        });
     });
 });
 
+function getSaveButton(fixture: ComponentFixture<TestHostComponent>): Button {
+    return fixture.debugElement.query(By.css('.save-button')).componentInstance;
+}
+
+function getFormGenerator(fixture: ComponentFixture<TestHostComponent>): MockFormGeneratorComponent | null {
+    const formGenerator = fixture.debugElement.query(By.css('form-generator'));
+    return formGenerator && formGenerator.componentInstance;
+}
+
+function setStateForUserWithNodeReference(activatedRoute: MockActivatedRoute, state: TestApplicationState): void {
+    const USER_NODE_UUID = 'user_node_uuid';
+    const USER_NODE_SCHEMA_UUID = 'user_node_schema_uuid';
+    activatedRoute.setData('user', {
+        uuid: 'user_uuid',
+        nodeReference: {
+            uuid: USER_NODE_UUID,
+            schema: {
+                uuid: USER_NODE_SCHEMA_UUID
+            }
+        },
+        permissions: { update: true }
+    });
+    state.mockState({
+        entities: {
+            node: {
+                [USER_NODE_UUID]: mockMeshNode({ uuid: USER_NODE_UUID })
+            },
+            schema: {
+                [USER_NODE_SCHEMA_UUID]: mockSchema({ uuid: USER_NODE_SCHEMA_UUID })
+            }
+        }
+    });
+}
+
 class MockAdminUserEffectsService {}
+
+@Component({
+    selector: 'test-host',
+    template: `<mesh-user-detail></mesh-user-detail>`
+})
+class TestHostComponent {}

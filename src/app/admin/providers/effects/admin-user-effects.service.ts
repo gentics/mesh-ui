@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { UserCreateRequest, UserResponse, UserUpdateRequest } from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
+import { Schema } from '../../../common/models/schema.model';
+import { MeshNode } from '../../../common/models/node.model';
 
 
 @Injectable()
@@ -84,11 +88,23 @@ export class AdminUserEffectsService {
         this.state.actions.adminUsers.openUserStart();
 
         return this.api.user.getUser({ userUuid: uuid})
+            .flatMap<UserResponse, [User, MeshNode | undefined, Schema | undefined]>((userResponse: User) => {
+                if (userResponse.nodeReference) {
+                    const { uuid: nodeUuid, projectName, schema } = userResponse.nodeReference;
+                    return forkJoin(
+                        Observable.of(userResponse),
+                        this.api.project.getNode({ nodeUuid, project: projectName }),
+                        this.api.admin.getSchema({ schemaUuid: schema.uuid })
+                    );
+                } else {
+                    return [[userResponse, undefined, undefined]];
+                }
+            })
             .toPromise()
             .then(
-                response => {
-                    this.state.actions.adminUsers.openUserSuccess(response);
-                    return response;
+                ([user, node, schema]) => {
+                    this.state.actions.adminUsers.openUserSuccess(user, node, schema);
+                    return user;
                 },
                 error => {
                     this.state.actions.adminUsers.openUserError();
@@ -124,7 +140,7 @@ export class AdminUserEffectsService {
                         type: 'success',
                         message: 'admin.user_updated'
                     });
-                    return response;
+                    return response as User;
                 },
                 error => this.state.actions.adminUsers.updateUserError()
             );
