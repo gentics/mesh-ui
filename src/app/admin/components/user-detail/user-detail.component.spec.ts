@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { Button, InputField } from 'gentics-ui-core';
+import { Button, Icon, InputField } from 'gentics-ui-core';
 
 import { UserDetailComponent } from './user-detail.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
@@ -15,6 +15,8 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 
 describe('UserDetailComponent', () => {
     let instance: UserDetailComponent;
@@ -29,6 +31,7 @@ describe('UserDetailComponent', () => {
                 UserDetailComponent,
                 InputField,
                 Button,
+                Icon,
                 MockFormGeneratorComponent
             ],
             imports: [
@@ -38,7 +41,8 @@ describe('UserDetailComponent', () => {
             ],
             providers: [
                 { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService },
-                { provide: ActivatedRoute, useClass: MockActivatedRoute }
+                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: NavigationService, useClass: MockNavigationService }
             ]
         });
 

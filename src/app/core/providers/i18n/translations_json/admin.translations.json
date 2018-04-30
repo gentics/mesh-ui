@@ -39,6 +39,10 @@
         "en": "You are about to permanently delete user '{{ username }}'.",
         "de": "Wollen Sie '{{ username }}' permanent löschen?"
     },
+    "edit_user_node": {
+        "en": "Edit node",
+        "de": "Node bearbeiten"
+    },
     "email_address_label": {
         "en": "Email address",
         "de": "Email-Addresse"
@@ -170,6 +174,14 @@
     "select_all": {
         "en": "Select all",
         "de": "Alle auswählen"
+    },
+    "select_node_reference": {
+        "en": "Select node",
+        "de": "Node auswählen"
+    },
+    "select_new_node_reference": {
+        "en": "Select a different node",
+        "de": "Andere Node auswählen"
     },
     "update_user": {
         "en": "Update user",

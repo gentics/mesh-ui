@@ -150,14 +150,13 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
                 }
             });
 
-            this.formGenerated$.next();
-
             const initialWidth = this.formContainer.nativeElement.offsetWidth;
             this.meshControlGroup.formWidthChanged(initialWidth);
             this.changeDetector.markForCheck();
 
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {
+                this.formGenerated$.next();
                 this.isInvisible = false;
                 this.changeDetector.markForCheck();
             }, 200);

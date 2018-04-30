@@ -11,6 +11,7 @@ import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 
 @Component({
     selector: 'mesh-user-detail',
@@ -25,6 +26,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     readOnly = true;
     userNode$: Observable<MeshNode>;
     userNodeSchema$: Observable<Schema>;
+    userNodeLink$: Observable<any[]>;
 
     @ViewChild('formGenerator')
     private formGenerator: FormGeneratorComponent;
@@ -33,6 +35,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private formBuilder: FormBuilder,
+                private navigationService: NavigationService,
                 private entities: EntitiesService,
                 private adminUserEffects: AdminUserEffectsService) { }
 
@@ -45,7 +48,23 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
          this.userNodeSchema$ = user$
             .filter(user => user && !!user.nodeReference)
-            .map(user => this.entities.getSchema(user.nodeReference.schema.uuid));
+             .map(user => this.entities.getSchema(user.nodeReference.schema.uuid));
+
+        this.userNodeLink$ = this.userNode$
+            .map(node => {
+                return this.navigationService.instruction({
+                    detail: {
+                        projectName: node.project.name,
+                        nodeUuid: node.uuid,
+                        language: node.language
+                    },
+                    list: {
+                        containerUuid: node.parentNode.uuid,
+                        projectName: node.project.name,
+                        language: node.language
+                    }
+                }).commands();
+            });
 
         user$.takeUntil(this.destroy$)
             .subscribe(user => {
@@ -74,6 +93,10 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         }
     }
 
+    selectNodeReference(): void {
+        alert('Requires Repository Browser!');
+    }
+
     isSaveButtonEnabled(): boolean {
         const basicFormIsSavable = this.form.dirty && this.form.valid && !this.readOnly;
         if (this.formGenerator) {
@@ -85,14 +108,16 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     }
 
     private updateUser(): void {
-        const uuid = this.route.snapshot.paramMap.get('uuid');
-        const updateRequest = this.getUserFromForm();
-        this.adminUserEffects.updateUser(uuid, updateRequest)
-            .then(user => {
-                if (user) {
-                    this.form.markAsPristine();
-                }
-            });
+        if (this.form.dirty) {
+            const uuid = this.route.snapshot.paramMap.get('uuid');
+            const updateRequest = this.getUserFromForm();
+            this.adminUserEffects.updateUser(uuid, updateRequest)
+                .then(user => {
+                    if (user) {
+                        this.form.markAsPristine();
+                    }
+                });
+        }
     }
 
     private createUser(): void {

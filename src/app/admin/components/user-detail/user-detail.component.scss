@@ -4,15 +4,17 @@
     background-color: white;
 }
 
-.node-reference {
-    padding: 0 14px;
-    @media screen and (max-width: $small-screen) {
-        padding: 0 10px;
-    }
+.node-reference-form {
+    border: 1px solid $gtx-color-light-gray;
+    background-color: #fcfcfe;
+    border-radius: 3px;
+}
 
-    form-generator {
-        border: 1px solid $gtx-color-light-gray;
-        background-color: #fcfcfe;
-        border-radius: 3px;
-    }
+.select-new-node {
+    padding: 10px 10px 0 10px;
+    text-align: right;
+}
+
+form-generator {
+
 }

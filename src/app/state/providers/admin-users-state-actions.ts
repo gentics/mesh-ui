@@ -9,6 +9,7 @@ import { AdminUsersState } from '../models/admin-users-state.model';
 import { User } from '../../common/models/user.model';
 import { MeshNode } from '../../common/models/node.model';
 import { Schema } from '../../common/models/schema.model';
+import { Microschema } from '../../common/models/microschema.model';
 
 @Injectable()
 @Immutable()
@@ -102,7 +103,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
         this.adminUsers.userDetail = null;
     }
 
-    openUserSuccess(user: UserResponse, userNode?: MeshNode, userNodeSchema?: Schema) {
+    openUserSuccess(user: UserResponse, userNode?: MeshNode, userNodeSchema?: Schema, microschemas?: Microschema[]) {
         this.adminUsers.loadCount--;
         this.adminUsers.userDetail = user.uuid;
         const changes: {[K in keyof EntityState]?: Array<Partial<EntityStateType[K]>>; } = {
@@ -113,6 +114,9 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
         }
         if (userNodeSchema) {
             changes.schema = [userNodeSchema];
+        }
+        if (microschemas) {
+            changes.microschema = microschemas;
         }
 
         this.entities = mergeEntityState(this.entities, changes);

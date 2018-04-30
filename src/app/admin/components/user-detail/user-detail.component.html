@@ -38,11 +38,43 @@
 </div>
 
 <div class="node-reference row">
-    <label>{{ 'admin.user_node_reference_label' | i18n }}</label>
-    <form-generator #formGenerator
-                    *ngIf="userNode$ | async as node"
-                    [node]="node"
-                    [schema]="userNodeSchema$ | async"></form-generator>
+    <div class="small-12 column">
+        <label>{{ 'admin.user_node_reference_label' | i18n }}</label>
+    </div>
+
+    <div class="small-12 column">
+        <div class="node-reference-form"
+             scrollFrame
+             *ngIf="userNode$ | async as node; else placeholder">
+            <div class="select-new-node">
+                <gtx-button type="primary"
+                            size="small"
+                            [routerLink]="userNodeLink$ | async"
+                            flat>
+                    <icon left>edit</icon> {{ 'admin.edit_user_node' |i18n }}
+                </gtx-button>
+                <gtx-button type="secondary"
+                            size="small"
+                            (click)="selectNodeReference()"
+                            flat>
+                    <icon left>add</icon> {{ 'admin.select_new_node_reference' |i18n }}
+                </gtx-button>
+            </div>
+            <form-generator #formGenerator
+                            [readOnly]="true"
+                            [node]="node"
+                            [schema]="userNodeSchema$ | async"></form-generator>
+        </div>
+    </div>
+
+    <ng-template #placeholder>
+        <gtx-button type="secondary"
+                    size="small"
+                    (click)="selectNodeReference()"
+                    flat>
+            <icon left>add</icon> {{ 'admin.select_node_reference' |i18n }}
+        </gtx-button>
+    </ng-template>
 </div>
 
 <div class="actions">

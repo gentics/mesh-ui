@@ -67,6 +67,7 @@ export interface MeshNode extends NodeResponse {
      * are created.
      */
     language?: string;
+    fields: { [name: string]: any };
 }
 
 export interface FieldMap extends FieldMapFromServer { }

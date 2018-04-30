@@ -90,10 +90,75 @@ describe('AdminUserEffects', () => {
 
         it('returns a promise which resolves with the User object', async () => {
             setUpSpies();
-
             const result = await adminUserEffects.openUser(mockUser.uuid);
             expect(result).toBe(mockUser);
         });
+
+
+        describe('nodeReference with micronode fields', () => {
+
+            beforeEach(() => {
+                mockUser.nodeReference = {
+                    uuid: mockUserNode.uuid,
+                    projectName: 'test_project',
+                    schema: {
+                        uuid: mockUserNodeSchema.uuid
+                    }
+                } as any;
+                mockUserNode = {
+                    uuid: 'mock_user_node_uuid',
+                    fields: {
+                        field1: {
+                            microschema: {
+                                uuid: 'microschema1_uuid',
+                                version: '1.0'
+                            }
+                        },
+                        field2: [{
+                            microschema: {
+                                uuid: 'microschema2_uuid',
+                                version: '1.0'
+                            }
+                        }, {
+                            microschema: {
+                                uuid: 'microschema1_uuid',
+                                version: '1.0'
+                            }
+                        }, {
+                            microschema: {
+                                uuid: 'microschema1_uuid',
+                                version: '2.0'
+                            }
+                        }]
+                    }
+                } as any;
+                setUpSpies();
+                api.admin.getMicroschema = jasmine.createSpy('admin.getMicroschema').and.callFake(({ microschemaUuid, version }) => {
+                    return Observable.of({ uuid: microschemaUuid, version });
+                });
+            });
+
+            it('fetches unique microschemas (uuid & version)', () => {
+                adminUserEffects.openUser(mockUser.uuid);
+                expect(api.admin.getMicroschema).toHaveBeenCalledTimes(3);
+                expect(api.admin.getMicroschema).toHaveBeenCalledWith({ microschemaUuid: 'microschema1_uuid', version: '1.0' });
+                expect(api.admin.getMicroschema).toHaveBeenCalledWith({ microschemaUuid: 'microschema1_uuid', version: '2.0' });
+                expect(api.admin.getMicroschema).toHaveBeenCalledWith({ microschemaUuid: 'microschema2_uuid', version: '1.0' });
+            });
+
+            it('calls openUserSuccess() action with user, node, schema and microschemas', async () => {
+                const mockMicroschemas = [
+                    { uuid: 'microschema1_uuid', version: '1.0' },
+                    { uuid: 'microschema2_uuid', version: '1.0' },
+                    { uuid: 'microschema1_uuid', version: '2.0' }
+                ];
+                await adminUserEffects.openUser(mockUser.uuid);
+                expect(state.actions.adminUsers.openUserSuccess)
+                    .toHaveBeenCalledWith(mockUser, mockUserNode, mockUserNodeSchema, mockMicroschemas);
+            });
+
+        });
+
     });
 
 

@@ -87,7 +87,7 @@ export class NavigationService {
     /**
      * This is the generic method for generating commands based on the NavigationInstruction config object.
      */
-    private instruction(instruction: NavigationInstruction): InstructionActions {
+    instruction(instruction: NavigationInstruction): InstructionActions {
         const commands = this.commands(instruction);
 
         return {
@@ -105,6 +105,10 @@ export class NavigationService {
      */
     private commands(instruction: NavigationInstruction): any[] {
         const outlets = {} as any;
+        if (instruction.list) {
+            const { projectName, containerUuid, language } = instruction.list;
+            outlets.list = [projectName, containerUuid, language];
+        }
         if (instruction.detail === null) {
             outlets.detail = null;
         }
@@ -113,16 +117,11 @@ export class NavigationService {
             switch (command) {
                 case 'createNode':
                     outlets.detail = [projectName, command, schemaUuid, parentNodeUuid, language];
-                break;
+                    break;
                 default:
                     outlets.detail = [projectName, nodeUuid, language];
-                break;
+                    break;
             }
-        }
-
-        if (instruction.list) {
-            const { projectName, containerUuid, language } = instruction.list;
-            outlets.list = [projectName, containerUuid, language];
         }
 
         return ['/editor', 'project', { outlets }];
