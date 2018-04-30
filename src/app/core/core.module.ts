@@ -18,6 +18,7 @@ import { ListEffectsService } from './providers/effects/list-effects.service';
 import { SharedModule } from '../shared/shared.module';
 import { UserDropdownComponent } from './components/user-dropdown/user-dropdown.component';
 import { ConfigService } from './providers/config/config.service';
+import { ContentPortalService } from './providers/content-portal/content-portal.service';
 
 // Application wide providers
 const CORE_PROVIDERS = [
@@ -31,6 +32,7 @@ const CORE_PROVIDERS = [
     ListEffectsService,
     ApiService,
     ApiBase,
+    ContentPortalService
 ];
 
 const CORE_COMPONENTS = [

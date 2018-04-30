@@ -19,6 +19,8 @@ import { TagComponent } from './components/tag/tag.component';
 import { ChipComponent } from './components/chip/chip.component';
 import { TagSelectorComponent } from './components/tag-selector/tag-selector.component';
 import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
+import { ContentPortalComponent } from './components/content-portal/content-portal.component';
+import { ProjectContentDirective } from './directives/project-content.directive';
 
 const SHARED_COMPONENTS = [
     ChipComponent,
@@ -27,13 +29,15 @@ const SHARED_COMPONENTS = [
     TagComponent,
     TagSelectorComponent,
     ThumbnailComponent,
-    PaginationControlsComponent
+    PaginationControlsComponent,
+    ContentPortalComponent
 ];
 
 const SHARED_DIRECTIVES = [
     ScrollFrameDirective,
     ScrollFrameHeadingDirective,
-    BackgroundFromDirective
+    BackgroundFromDirective,
+    ProjectContentDirective
 ];
 
 const SHARED_PIPES = [
