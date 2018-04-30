@@ -26,7 +26,6 @@ import { initializeListValue } from '../../../common/util/initialize-list-value'
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, FIELD_HALF_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { MicronodeFieldComponent } from '../micronode-field/micronode-field.component';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 function randomId(): string {
@@ -69,13 +68,13 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     private fieldSets: Array<FieldSet<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
     private subscription: Subscription;
+    private timer: number;
 
     constructor(private fieldGeneratorService: FieldGeneratorService,
                 private meshControlGroup: MeshControlGroupService,
                 private viewContainerRef: ViewContainerRef,
-                private state: ApplicationStateService,
                 private entities: EntitiesService,
-                changeDetector: ChangeDetectorRef,
+                protected changeDetector: ChangeDetectorRef,
                 public elementRef: ElementRef,
                 @Optional() private micronodeField?: MicronodeFieldComponent
     ) {
@@ -93,7 +92,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         // Instantiating the dynamic child components inside the ngAfterViewInit hook will lead to
         // change detection errors, hence the setTimeout. See https://github.com/angular/angular/issues/10131
         this.subscription = this.listItems.changes.subscribe((val) => {
-            setTimeout(() => {
+            this.timer = setTimeout(() => {
                 this.createListItems();
                 setTimeout(() => {
                     this.listHeight = 'auto';
@@ -107,7 +106,10 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
+        clearTimeout(this.timer);
         this.fieldSets.forEach(componentRef => componentRef.destroy());
     }
 
@@ -214,6 +216,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                         field: pseudoField,
                         value,
                         fieldComponent: controlType,
+                        readOnly: this.api.readOnly,
                         viewContainerRef
                     });
                     fieldSet.field.instance.isListItem = true;

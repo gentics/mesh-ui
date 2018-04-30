@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
+
 import { HtmlFieldComponent } from './html-field.component';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
 import { ErrorCode, errorHashFor } from '../../common/form-errors';
@@ -39,6 +40,29 @@ describe('HtmlFieldComponent:', () => {
         expect(api.setValue).not.toHaveBeenCalled();
         insertText(fixture, 0, 'foo');
         expect(api.setValue).toHaveBeenCalledWith('<p>foo</p>');
+    });
+
+    it('sets focus when editor div is clicked', () => {
+        const api = new MockMeshFieldControlApi();
+        api.getValue = createSpy('getValue').and.returnValue('');
+        instance.init(api);
+        fixture.detectChanges();
+
+        getQuillInstance(fixture).setSelection(0, 0);
+
+        expect(api.setFocus).toHaveBeenCalledWith(true);
+    });
+
+    it('does not set focus when editor div is clicked in readOnly mode', () => {
+        const api = new MockMeshFieldControlApi();
+        api.readOnly = true;
+        api.getValue = createSpy('getValue').and.returnValue('');
+        instance.init(api);
+        fixture.detectChanges();
+
+        getQuillInstance(fixture).setSelection(0, 0);
+
+        expect(api.setFocus).not.toHaveBeenCalled();
     });
 
     describe('validity', () => {

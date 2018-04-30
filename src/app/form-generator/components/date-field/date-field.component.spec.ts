@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
+
 import { DateFieldComponent } from './date-field.component';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
 import createSpy = jasmine.createSpy;
@@ -50,5 +52,15 @@ describe('DateFieldComponent:', () => {
         expect(api.setValue).not.toHaveBeenCalled();
         instance.onChange(testTimestamp);
         expect(api.setValue).toHaveBeenCalledWith(testTimestampIsoString);
+    });
+
+    it('sets date picker to disabled if in readOnly mode', () => {
+        const api = new MockMeshFieldControlApi();
+        api.readOnly = true;
+        instance.init(api);
+        const datePickerInput: HTMLInputElement = fixture.debugElement.query(By.css('input')).nativeElement;
+        fixture.detectChanges();
+
+        expect(datePickerInput.disabled).toBe(true);
     });
 });

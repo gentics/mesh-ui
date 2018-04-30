@@ -50,6 +50,7 @@ describe('FieldGeneratorService', () => {
             path: any[];
             field: any;
             value: any;
+            readOnly: boolean;
             fieldComponent: Type<MockFieldComponent>;
         };
 
@@ -69,6 +70,7 @@ describe('FieldGeneratorService', () => {
                     path: mockPath,
                     field: mockField,
                     value: mockValue,
+                    readOnly: false,
                     fieldComponent: MockFieldComponent
                 };
             });
@@ -104,6 +106,16 @@ describe('FieldGeneratorService', () => {
 
                 api.setValue('foo');
                 expect(fixture.componentInstance.onChangeFn).toHaveBeenCalledWith(mockPath, 'foo');
+            });
+
+            it('api.setValue() does not invoke the onChange function when in readOnly mode', () => {
+                const result = fieldGenerator.attachField({ ...fieldConfig, readOnly: true }).field;
+                const api = result.instance.api;
+
+                expect(fixture.componentInstance.onChangeFn).not.toHaveBeenCalled();
+
+                api.setValue('foo');
+                expect(fixture.componentInstance.onChangeFn).not.toHaveBeenCalled();
             });
 
             it('api.setError() invokes the setError function', () => {

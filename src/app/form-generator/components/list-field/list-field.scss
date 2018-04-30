@@ -204,6 +204,10 @@
     gtx-drag-handle {
         color: $gtx-color-mid-gray;
         transition: color 0.3s;
+
+        &.hidden {
+            display: none;
+        }
     }
 }
 

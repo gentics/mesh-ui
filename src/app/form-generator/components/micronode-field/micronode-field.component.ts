@@ -68,6 +68,7 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
                             path: this.api.path.concat(['fields', field.name]),
                             field,
                             value,
+                            readOnly: this.api.readOnly,
                             fieldComponent: controlType
                         }).field;
                         newContainer.registerMeshFieldInstance(componentRef.instance);

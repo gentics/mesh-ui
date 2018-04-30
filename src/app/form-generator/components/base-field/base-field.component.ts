@@ -132,7 +132,7 @@ export class BaseFieldComponent  {
         let errorHash: { [errorCode: string]: string | false };
 
         if (typeof errorsOrErrorCode === 'string') {
-            errorHash = { [errorsOrErrorCode]: errorMessage! };
+            errorHash = { [errorsOrErrorCode]: errorMessage };
         } else {
             errorHash = errorsOrErrorCode;
         }

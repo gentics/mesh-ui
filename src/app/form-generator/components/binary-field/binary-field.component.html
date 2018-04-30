@@ -50,7 +50,8 @@
                 {{ binaryProperties.width | number }} x {{ binaryProperties.height | number }}
             </div>
         </div>
-        <gtx-file-picker (fileSelect)="onFilesSelected($event)"
+        <gtx-file-picker *ngIf="!api.readOnly"
+                         (fileSelect)="onFilesSelected($event)"
                          size="small"
                          flat
                          type="secondary"
@@ -59,10 +60,11 @@
             <ng-container *ngIf="binaryProperties">{{ 'editor.replace_file' | i18n }}</ng-container>
             <ng-container *ngIf="!binaryProperties">{{ 'editor.select_file' | i18n }}</ng-container>
         </gtx-file-picker>
-        <gtx-button *ngIf="binaryMediaType === 'image'"
+        <gtx-button *ngIf="binaryMediaType === 'image' && !api.readOnly"
                     size="small"
                     flat
                     type="secondary"
+                    class="edit-image"
                     (click)="editImage(objectUrl)"><icon left>crop</icon> {{ 'editor.edit_image' | i18n }}</gtx-button>
     </div>
 </div>

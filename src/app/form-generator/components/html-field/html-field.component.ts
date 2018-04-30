@@ -30,14 +30,24 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     ngAfterViewInit(): void {
         const editorElement = this.editorRef.nativeElement;
         this.editor = new Quill(editorElement, {
-            theme: 'snow'
+            theme: 'snow',
+            modules: {
+                toolbar: !this.api.readOnly
+            }
         });
         this.editor.clipboard.dangerouslyPasteHTML(this.value as string);
 
         this.editor.on('text-change', this.onTextChangeHandler);
         this.editor.on('selection-change', this.onSelectionChangeHandler);
-        this.elementRef.nativeElement.querySelector('.ql-toolbar').addEventListener('click', this.focusHandler);
+        const qlToolBar = this.elementRef.nativeElement.querySelector('.ql-toolbar');
+        if (qlToolBar) {
+            qlToolBar.addEventListener('click', this.focusHandler);
+        }
         this.editorRef.nativeElement.querySelector('.ql-editor').addEventListener('blur', this.blurHandler);
+
+        if (this.api.readOnly) {
+            this.editor.disable();
+        }
     }
 
     ngOnDestroy(): void {
@@ -48,7 +58,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
 
         const qlToolBar = this.elementRef.nativeElement.querySelector('.ql-toolbar');
         if (qlToolBar) {
-            this.elementRef.nativeElement.querySelector('.ql-toolbar').removeEventListener('click', this.focusHandler);
+            qlToolBar.removeEventListener('click', this.focusHandler);
             this.editorRef.nativeElement.querySelector('.ql-editor').removeEventListener('blur', this.blurHandler);
         }
 
@@ -74,9 +84,11 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     private focusHandler = () => {
-        this.api.setFocus(true);
-        this.editor.focus();
-        clearTimeout(this.blurTimer);
+        if (!this.api.readOnly) {
+            this.api.setFocus(true);
+            this.editor.focus();
+            clearTimeout(this.blurTimer);
+        }
     }
 
     private blurHandler = () => {
@@ -92,7 +104,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     private onSelectionChangeHandler = range => {
-        if (range !== null) {
+        if (range !== null && !this.api.readOnly) {
             this.api.setFocus(true);
         } else {
             this.blurHandler();

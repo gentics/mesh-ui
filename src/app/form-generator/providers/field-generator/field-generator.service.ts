@@ -42,6 +42,7 @@ export class FieldGenerator {
             field: SchemaField;
             value: NodeFieldType;
             fieldComponent: Type<T>;
+            readOnly: boolean;
             viewContainerRef?: ViewContainerRef;
         }): FieldSet<T> {
 
@@ -59,15 +60,18 @@ export class FieldGenerator {
         const meshControlFieldInstance: MeshFieldControlApi = {
             path: fieldConfig.path,
             field: fieldConfig.field,
+            readOnly: fieldConfig.readOnly,
             getValue(): any {
                 return fieldConfig.value;
             },
             setValue(value: any, pathOverride?: SchemaFieldPath): void {
-                update(pathOverride || fieldConfig.path, value);
+                if (!this.readOnly) {
+                    update(pathOverride || fieldConfig.path, value);
+                }
             },
             setError(errorCodeOrHash: string | ErrorCodeHash, errorMessage?: string | false): void {
                 if (typeof errorCodeOrHash === 'string') {
-                    instance.setError(errorCodeOrHash, errorMessage!);
+                    instance.setError(errorCodeOrHash, errorMessage);
                 } else {
                     instance.setError(errorCodeOrHash);
                 }

@@ -2,8 +2,9 @@
 <div class="uuid-form">
     <!-- TODO: re-enable the thumbnail once we have wired up real data -->
     <!--<thumbnail [nodeUuid]="userValue"></thumbnail>-->
-    <gtx-input [(ngModel)]="userValue"></gtx-input>
+    <gtx-input [(ngModel)]="userValue" [readonly]="api.readOnly"></gtx-input>
     <gtx-button [disabled]="!isValidUuid()"
+                *ngIf="!api.readOnly"
                 flat="true"
                 (click)="doUpdate()">Set</gtx-button>
 </div>

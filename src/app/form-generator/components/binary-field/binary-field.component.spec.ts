@@ -374,6 +374,56 @@ describe('BinaryFieldComponent:', () => {
             }));
     });
 
+    describe('readOnly mode', () => {
+
+        const image = {
+            fileName: 'photo.jpg',
+            fileSize: 420000,
+            mimeType: 'image/jpg',
+            height: 2000,
+            width: 3600,
+        };
+
+        it('displays file picker when not in readOnly mode', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+            fixture.componentInstance.api.readOnly = false;
+            fixture.componentInstance.binaryFieldComponent.valueChange(image);
+            fixture.detectChanges();
+
+            const filePicker = fixture.debugElement.query(By.css('gtx-file-picker'));
+            expect(filePicker === null).toBe(false);
+        }));
+
+        it('displays edit image button when not in readOnly mode', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+            fixture.componentInstance.api.readOnly = false;
+            fixture.componentInstance.binaryFieldComponent.valueChange(image);
+            fixture.detectChanges();
+
+            const editImageButton = fixture.debugElement.query(By.css('.edit-image'));
+            expect(editImageButton === null).toBe(false);
+        }));
+
+        it('does not display file picker when in readOnly mode', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+            fixture.componentInstance.api.readOnly = true;
+            fixture.componentInstance.binaryFieldComponent.valueChange(image);
+            fixture.detectChanges();
+
+            const filePicker = fixture.debugElement.query(By.css('gtx-file-picker'));
+            expect(filePicker === null).toBe(true);
+        }));
+
+        it('does not display edit image button when in readOnly mode', componentTest(() => TestComponent, fixture => {
+            fixture.detectChanges();
+            fixture.componentInstance.api.readOnly = true;
+            fixture.componentInstance.binaryFieldComponent.valueChange(image);
+            fixture.detectChanges();
+
+            const editImageButton = fixture.debugElement.query(By.css('.edit-image'));
+            expect(editImageButton === null).toBe(true);
+        }));
+    });
 });
 
 /**

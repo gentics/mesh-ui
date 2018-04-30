@@ -17,6 +17,10 @@ html-field.mesh-field {
         transition: width 0.2s;
     }
 
+    .ql-disabled {
+        color: $gtx-color-dark-gray;
+    }
+
     .ql-snow.ql-toolbar button:focus {
         outline: 1px solid transparentize($gtx-color-primary, 0.7);
     }

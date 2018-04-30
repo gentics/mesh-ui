@@ -39,6 +39,7 @@ import { Observable } from 'rxjs/Observable';
 export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestroy {
     @Input() schema: Schema;
     @Input() node: MeshNode;
+    @Input() readOnly = false;
 
     @HostBinding('class.compact')
     isCompact: boolean = false;
@@ -139,6 +140,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
                         path: [field.name],
                         field,
                         value,
+                        readOnly: this.readOnly,
                         fieldComponent: controlType
                     });
                     if (fieldSet) {

@@ -40,6 +40,10 @@ export interface MeshFieldControlApi {
      */
     field: SchemaField;
     /**
+     * Whether this field should be read only
+     */
+    readOnly: boolean;
+    /**
      * Returns the current value of the field.
      */
     getValue: () => any;

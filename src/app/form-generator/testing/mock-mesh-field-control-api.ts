@@ -10,6 +10,7 @@ export class MockMeshFieldControlApi implements MeshFieldControlApi {
         name: 'test',
         type: 'string'
     };
+    readOnly = false;
     getValue = createSpy('getValue');
     setValue = createSpy('setValue');
     onValueChange = createSpy('onValueChange');

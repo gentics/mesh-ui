@@ -7,6 +7,7 @@ export class MockFormGeneratorComponent {
 
     @Input() schema: any;
     @Input() node: any;
+    @Input() readOnly: boolean;
     isValid = true;
     isDirty = true;
     setPristine = jasmine.createSpy('setPristine')
