@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, Directive, Input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -32,7 +32,8 @@ describe('UserDetailComponent', () => {
                 InputField,
                 Button,
                 Icon,
-                MockFormGeneratorComponent
+                MockFormGeneratorComponent,
+                MockProjectContentDirective
             ],
             imports: [
                 RouterTestingModule.withRoutes([]),
@@ -91,8 +92,7 @@ describe('UserDetailComponent', () => {
             });
 
             it('is initially disabled', () => {
-                const saveButton = getSaveButton(fixture);
-                expect(saveButton.disabled).toBe(true);
+                expect(instance.isSaveButtonEnabled()).toBe(false);
             });
 
             it('is enabled if the form is dirty and valid', () => {
@@ -130,8 +130,9 @@ describe('UserDetailComponent', () => {
             });
 
             it('is initially disabled', () => {
-                const saveButton = getSaveButton(fixture);
-                expect(saveButton.disabled).toBe(true);
+                const formGenerator = getFormGenerator(fixture);
+                formGenerator.isDirty = false;
+                expect(instance.isSaveButtonEnabled()).toBe(false);
             });
 
             it('is enabled when form dirty & valid, formGenerator pristine', () => {
@@ -178,10 +179,6 @@ describe('UserDetailComponent', () => {
     });
 });
 
-function getSaveButton(fixture: ComponentFixture<TestHostComponent>): Button {
-    return fixture.debugElement.query(By.css('.save-button')).componentInstance;
-}
-
 function getFormGenerator(fixture: ComponentFixture<TestHostComponent>): MockFormGeneratorComponent | null {
     const formGenerator = fixture.debugElement.query(By.css('form-generator'));
     return formGenerator && formGenerator.componentInstance;
@@ -219,3 +216,10 @@ class MockAdminUserEffectsService {}
     template: `<mesh-user-detail></mesh-user-detail>`
 })
 class TestHostComponent {}
+
+@Directive({
+    selector: '[meshProjectTo]'
+})
+class MockProjectContentDirective {
+    @Input() meshProjectTo;
+}

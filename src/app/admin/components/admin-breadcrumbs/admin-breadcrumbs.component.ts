@@ -7,6 +7,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { AppState } from '../../../state/models/app-state.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 
 export type BreadcrumbTextFunction =
     (route: ActivatedRouteSnapshot, state: AppState, entities: EntitiesService) => string | Observable<string>;
@@ -26,6 +27,7 @@ export type BreadcrumbTextFunction =
 export class AdminBreadcrumbsComponent implements OnInit {
     breadcrumbs$: Observable<IBreadcrumbRouterLink[]>;
     loading$: Observable<boolean>;
+    BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
 
     constructor(private router: Router,
                 private route: ActivatedRoute,

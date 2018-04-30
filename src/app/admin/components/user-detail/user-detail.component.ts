@@ -12,6 +12,7 @@ import { Schema } from '../../../common/models/schema.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 
 @Component({
     selector: 'mesh-user-detail',
@@ -27,6 +28,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     userNode$: Observable<MeshNode>;
     userNodeSchema$: Observable<Schema>;
     userNodeLink$: Observable<any[]>;
+    BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
 
     @ViewChild('formGenerator')
     private formGenerator: FormGeneratorComponent;

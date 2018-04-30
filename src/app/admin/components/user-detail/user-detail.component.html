@@ -77,8 +77,9 @@
     </ng-template>
 </div>
 
-<div class="actions">
+<div class="actions" *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
     <gtx-button type="primary"
+                size="small"
                 class="save-button"
                 [disabled]="!isSaveButtonEnabled()"
                 (click)="persistUser()">
