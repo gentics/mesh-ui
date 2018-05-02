@@ -204,8 +204,8 @@
         "de": "Benutzername"
     },
     "user_node_reference_label": {
-        "en": "User Node Reference",
-        "de": "Benutzer Node Referenz"
+        "en": "User Node",
+        "de": "Benutzer Node"
     },
     "user_updated": {
         "en": "User updated",

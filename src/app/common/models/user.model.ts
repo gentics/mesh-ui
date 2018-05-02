@@ -7,6 +7,7 @@ export interface User extends UserResponse {
     rolePerms: PermissionInfoFromServer;
     // This is being overridden from the UserResponse because the interface
     // for nodeReference is incomplete in the RAML
+    // See: https://github.com/gentics/mesh/issues/399
     nodeReference?: {
         projectName: string;
         uuid: string;

@@ -5,13 +5,23 @@ import { Observable } from 'rxjs/Observable';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { MicroschemaResponse, UserCreateRequest, UserResponse, UserUpdateRequest } from '../../../common/models/server-models';
+import {
+    MicroschemaResponse, SchemaResponse, UserCreateRequest, UserResponse,
+    UserUpdateRequest
+} from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
 import { Schema } from '../../../common/models/schema.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { Microschema } from '../../../common/models/microschema.model';
-import { MicroschemaReference } from '../../../common/models/common.model';
+import { MicroschemaReference, SchemaReference } from '../../../common/models/common.model';
 
+
+interface UserWithNodeReferenceEntities {
+    user: User;
+    node?: MeshNode;
+    nodeSchema?: Schema;
+    microschemas?: Microschema[];
+}
 
 @Injectable()
 export class AdminUserEffectsService {
@@ -90,49 +100,59 @@ export class AdminUserEffectsService {
         this.state.actions.adminUsers.openUserStart();
 
         return this.api.user.getUser({ userUuid: uuid})
-            .flatMap<UserResponse, [User, MeshNode | undefined, Schema | undefined, Microschema[] | undefined]>((userResponse: User) => {
+            .flatMap<UserResponse, UserWithNodeReferenceEntities>((userResponse: User) => {
                 if (userResponse.nodeReference) {
-                    // The user has a node reference, so we need to also fetch that node and its
-                    // corresponding schema so we can render to the node data with the correct fields.
-                    const { uuid: nodeUuid, projectName, schema } = userResponse.nodeReference;
-                    return forkJoin(
-                        Observable.of(userResponse),
-                        this.api.project.getNode({ nodeUuid, project: projectName }),
-                        this.api.admin.getSchema({ schemaUuid: schema.uuid })
-                    )
-                        .flatMap(([user, node, nodeSchema]) => {
-                            // We also need to check whether this node contains any micronodes.
-                            // If so we must additionally fetch the corresponding microschemas
-                            // in order to render the node data.
-                            const requiredMicroschemaUuids = this.getMicroschemasUsedInNode(node);
-                            let microSchemasObservable: Observable<MicroschemaResponse[] | undefined>;
-                            if (0 < requiredMicroschemaUuids.length) {
-                                microSchemasObservable = forkJoin(
-                                    requiredMicroschemaUuids.map(({ uuid: microschemaUuid, version }) =>
-                                        this.api.admin.getMicroschema({ microschemaUuid, version }))
-                                );
-                            } else {
-                                microSchemasObservable = Observable.of(undefined);
-                            }
-                            return microSchemasObservable
-                                .map(microschemas => {
-                                    return [user, node, nodeSchema, microschemas];
-                                });
-                        });
+                    return this.fetchNodeReferenceEntities(userResponse);
                 } else {
-                    return [[userResponse, undefined, undefined, undefined]];
+                    return Observable.of({ user: userResponse });
                 }
             })
             .toPromise()
             .then(
-                ([user, node, schema, microschemas]) => {
-                    this.state.actions.adminUsers.openUserSuccess(user, node, schema, microschemas);
+                ({ user, node, nodeSchema, microschemas }) => {
+                    this.state.actions.adminUsers.openUserSuccess(user, node, nodeSchema, microschemas);
                     return user;
                 },
                 error => {
                     this.state.actions.adminUsers.openUserError();
                 }
             );
+    }
+
+
+    /**
+     * If a user has a nodeReference, we need to fetch all the associated entities (the Node, Schema and potentially
+     * one or more Microschemas) in order to be able to display the node.
+     */
+    private fetchNodeReferenceEntities(user: User): Observable<UserWithNodeReferenceEntities> {
+        const { uuid, projectName, schema } = user.nodeReference;
+
+        return forkJoin(
+            Observable.of(user),
+            this.api.project.getNode({ nodeUuid: uuid, project: projectName }),
+            this.api.admin.getSchema({ schemaUuid: schema.uuid })
+        )
+            .flatMap(([user, node, nodeSchema]) => {
+                // We also need to check whether this node contains any micronodes.
+                // If so we must additionally fetch the corresponding microschemas
+                // in order to render the node data.
+                const requiredMicroschemas = this.getMicroschemasUsedInNode(node);
+                let microSchemasObservable: Observable<MicroschemaResponse[] | undefined>;
+
+                if (0 < requiredMicroschemas.length) {
+                    microSchemasObservable = forkJoin(
+                        requiredMicroschemas.map(({ uuid: microschemaUuid, version }) =>
+                            this.api.admin.getMicroschema({ microschemaUuid, version }))
+                    );
+                } else {
+                    microSchemasObservable = Observable.of(undefined);
+                }
+
+                return microSchemasObservable
+                    .map((microschemas: Microschema[]) => {
+                        return { user, node, nodeSchema: nodeSchema as Schema, microschemas };
+                    });
+            });
     }
 
     /**

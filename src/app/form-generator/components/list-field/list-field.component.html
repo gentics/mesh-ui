@@ -62,7 +62,7 @@
         <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">
             <div class="item-row">
                 <div #listItem class="list-item"></div>
-                <gtx-drag-handle [class.hidden]="api.readOnly"
+                <gtx-drag-handle [hidden]="api.readOnly"
                                  (mousedown)="dragging = true"
                                  (mouseup)="dragging = false"></gtx-drag-handle>
             </div>

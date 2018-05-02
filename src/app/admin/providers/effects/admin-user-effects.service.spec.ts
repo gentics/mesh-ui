@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, async } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import { Notification } from 'gentics-ui-core';
 
@@ -88,7 +88,7 @@ describe('AdminUserEffects', () => {
             expect(api.admin.getSchema).toHaveBeenCalledWith({ schemaUuid: mockUserNodeSchema.uuid });
         });
 
-        it('calls openUserSuccess() action with user, node and schema', async () => {
+        it('calls openUserSuccess() action with user, node and schema', fakeAsync(() => {
             mockUser.nodeReference = {
                 uuid: mockUserNode.uuid,
                 projectName: 'test_project',
@@ -97,17 +97,20 @@ describe('AdminUserEffects', () => {
                 }
             } as any;
             setUpSpies();
-            await adminUserEffects.openUser(mockUser.uuid);
+            adminUserEffects.openUser(mockUser.uuid);
+            tick();
 
             expect(state.actions.adminUsers.openUserSuccess)
                 .toHaveBeenCalledWith(mockUser, mockUserNode, mockUserNodeSchema, undefined);
-        });
+        }));
 
-        it('returns a promise which resolves with the User object', async () => {
+        it('returns a promise which resolves with the User object', async(() => {
             setUpSpies();
-            const result = await adminUserEffects.openUser(mockUser.uuid);
-            expect(result).toBe(mockUser as any);
-        });
+            adminUserEffects.openUser(mockUser.uuid)
+                .then(result => {
+                    expect(result).toBe(mockUser as any);
+                });
+        }));
 
 
         describe('nodeReference with micronode fields', () => {
@@ -161,16 +164,18 @@ describe('AdminUserEffects', () => {
                 expect(api.admin.getMicroschema).toHaveBeenCalledWith({ microschemaUuid: 'microschema2_uuid', version: '1.0' });
             });
 
-            it('calls openUserSuccess() action with user, node, schema and microschemas', async () => {
+            it('calls openUserSuccess() action with user, node, schema and microschemas', fakeAsync(() => {
                 const mockMicroschemas = [
                     { uuid: 'microschema1_uuid', version: '1.0' },
                     { uuid: 'microschema2_uuid', version: '1.0' },
                     { uuid: 'microschema1_uuid', version: '2.0' }
                 ];
-                await adminUserEffects.openUser(mockUser.uuid);
+                adminUserEffects.openUser(mockUser.uuid);
+                tick();
+
                 expect(state.actions.adminUsers.openUserSuccess)
                     .toHaveBeenCalledWith(mockUser, mockUserNode, mockUserNodeSchema, mockMicroschemas);
-            });
+            }));
 
         });
 
