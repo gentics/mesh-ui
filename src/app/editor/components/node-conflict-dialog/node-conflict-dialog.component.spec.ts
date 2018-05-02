@@ -1,7 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Observable } from 'rxjs/Observable';
 import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
 
@@ -29,6 +27,7 @@ let state: TestApplicationState;
 describe('NodeConflictDialogComponent', () => {
     let component: NodeConflictDialogComponent;
     let fixture: ComponentFixture<NodeConflictDialogComponent>;
+    const imageField = {fileName: 'mock.jpg'};
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -45,13 +44,11 @@ describe('NodeConflictDialogComponent', () => {
                 { provide: EntitiesService, useClass: MockEntitiesService },
                 { provide: BlobService, useClass: MockBlobService },
                 { provide: ApiService, useClass: MockApiService },
-                { provide: ApiBase, useClass: MockApiBase },
-                { provide: HttpClient, useClass: MockHttpClient }
+                { provide: ApiBase, useClass: MockApiBase }
 
             ],
             imports: [
                 GenticsUICoreModule,
-                HttpClientTestingModule
             ],
         })
             .compileComponents();
@@ -76,7 +73,7 @@ describe('NodeConflictDialogComponent', () => {
                         displayName: 'node_display_field',
                         schema: { uuid: 'schema_uuid', version: '0' },
                         fields: {
-                            'image': {},
+                            'image': imageField,
                         } as Partial<FieldMapFromServer>
                     }),
                     'current_node_uuid': mockMeshNode({
@@ -86,7 +83,7 @@ describe('NodeConflictDialogComponent', () => {
                         displayName: 'current_node_display_field',
                         schema: { uuid: 'schema_uuid', version: '0' },
                         fields: {
-                            'image': {},
+                            'image': imageField,
                         } as Partial<FieldMapFromServer>
                     }),
 
@@ -97,7 +94,7 @@ describe('NodeConflictDialogComponent', () => {
                         displayName: 'current_node_display_field',
                         schema: { uuid: 'schema_uuid', version: '0' },
                         fields: {
-                            'image': {},
+                            'image': imageField,
                         } as Partial<FieldMapFromServer>,
                         tags: [
                             {
@@ -179,9 +176,8 @@ describe('NodeConflictDialogComponent', () => {
     });
 
     it('should download an old version of the binary file', () => {
-        const httpClient = TestBed.get(HttpClient);
         const apiBase: MockApiBase = TestBed.get(ApiBase);
-
+        const blobService: MockBlobService = TestBed.get(BlobService);
         const mineNode = state.now.entities.node['current_node_with_tags_uuid']['en']['0'];
 
         component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
@@ -194,11 +190,12 @@ describe('NodeConflictDialogComponent', () => {
             project: mineNode.project.name,
             nodeUuid: mineNode.uuid,
             fieldName: 'image',
-            version: mineNode.version
+            version: mineNode.version,
+            w: 200,
+            h: 200,
         });
-        const requestParams = { observe: 'response', responseType: 'blob' };
 
-        expect(httpClient.get).toHaveBeenCalledWith(requestURL, requestParams);
+        expect(blobService.downloadFile).toHaveBeenCalledWith(requestURL, imageField.fileName);
     });
 });
 
@@ -228,12 +225,4 @@ class MockEntitiesService {
     getSchema = (id) => {
         return state.now.entities.schema[id]['0'];
     }
-}
-
-class MockHttpClient {
-    /*get(url: string, o: object): Observable<any> {
-        console.log(url, o);
-        return Observable.of({ body: {type: 'image/jpeg'}});
-    }*/
-    get = jasmine.createSpy('get').and.returnValue(Observable.of({ body: {type: 'image/jpeg'}}));
 }

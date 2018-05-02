@@ -114,6 +114,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 // We preload the old version of the file in case the user desides to overwrite the server version.
                 if (!(localField as BinaryField).file) { // Only download the server version if the user did NOT actually select a new file
                     const url = this.apiService.project.getBinaryFileUrl(this.localNode.project.name, this.localNode.uuid, schemaField.name, this.localNode.version, {w: 200,h: 200})
+
                     this.blobService.downloadFile(url, (localField as BinaryField).fileName)
                         .then((file: File) => {
                             (localField as BinaryField).file = file;

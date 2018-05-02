@@ -187,7 +187,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
             width *= ratio;
         }
 
-        return { width, height, ratio: width / image.width };
+        return { width: Math.round(width), height: Math.round(height), ratio: width / image.width };
     }
 
      /**

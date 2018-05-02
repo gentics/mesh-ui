@@ -24,6 +24,7 @@ describe('TagComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TagComponent);
         component = fixture.componentInstance;
+        component.tag = { uuid: 'uuid', tagFamily: 'tagFamily'};
         fixture.detectChanges();
     });
 

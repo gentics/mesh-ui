@@ -283,6 +283,7 @@ class MockFormGeneratorComponent {
     @Input() node: any;
     isDirty = true;
     setPristine = jasmine.createSpy('setPristine');
+    update = jasmine.createSpy('update');
 }
 
 @Component({ selector: 'mesh-node-tags-bar', template: '' })
