@@ -72,9 +72,10 @@ describe('AdminBreadcrumbsComponent', () => {
                 GenticsUICoreModule
             ],
             declarations: [
+                TestComponent,
                 AdminBreadcrumbsComponent,
                 MockRouteComponent,
-                TestComponent,
+                MockContentPortalComponent
             ],
             providers: [
                 { provide: I18nService, useClass: MockI18nService }
@@ -189,14 +190,16 @@ describe('AdminBreadcrumbsComponent', () => {
     template: `<mesh-admin-breadcrumbs></mesh-admin-breadcrumbs>
     <router-outlet></router-outlet>`
 })
-class TestComponent {
-
-}
+class TestComponent {}
 
 @Component({
     selector: 'mock-route-component',
     template: `<router-outlet></router-outlet>`
 })
-class MockRouteComponent {
+class MockRouteComponent {}
 
-}
+@Component({
+    selector: 'mesh-content-portal',
+    template: ``
+})
+class MockContentPortalComponent {}

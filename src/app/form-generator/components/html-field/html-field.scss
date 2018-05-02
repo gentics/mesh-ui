@@ -1,0 +1,85 @@
+@import "~quill/dist/quill.snow.css";
+@import "variables";
+@import "../../common-styles";
+
+html-field.mesh-field {
+    padding-bottom: 68px;
+    display: flex !important;
+    justify-content: space-between;
+
+    label {
+        @include label-style-full;
+    }
+
+    .editor-container {
+        width: $full-width-right;
+        margin-top: 20px;
+        transition: width 0.2s;
+    }
+
+    .ql-disabled {
+        color: $gtx-color-dark-gray;
+    }
+
+    .ql-snow.ql-toolbar button:focus {
+        outline: 1px solid transparentize($gtx-color-primary, 0.7);
+    }
+
+    .ql-toolbar.ql-snow {
+        border: 2px solid $gtx-color-light-gray;
+        border-bottom-width: 1px;
+        border-radius: 3px 3px 0 0;
+        transition: border 0.2s;
+    }
+    .ql-snow.ql-container {
+        border: 2px solid $gtx-color-light-gray;
+        border-top-width: 1px;
+        border-radius: 0 0 3px 3px;
+        transition: border 0.2s;
+    }
+
+    .ql-editor {
+        background-color: white;
+    }
+
+    strong {
+        font-weight: bold;
+    }
+
+    &.focus {
+        label {
+            color: $gtx-color-primary;
+        }
+        .ql-toolbar.ql-snow {
+            border-color: $gtx-color-primary;
+            border-bottom-color: $gtx-color-light-gray;
+        }
+        .ql-snow.ql-container {
+            border-color: $gtx-color-primary;
+            border-top-color: $gtx-color-light-gray;
+        }
+    }
+
+    &.invalid {
+        .ql-toolbar.ql-snow {
+            border-color: $gtx-color-alert;
+            border-bottom-color: $gtx-color-light-gray;
+        }
+        .ql-snow.ql-container {
+            border-color: $gtx-color-alert;
+            border-top-color: $gtx-color-light-gray;
+        }
+    }
+}
+list-field html-field.mesh-field,
+micronode-field html-field.mesh-field,
+html-field.mesh-field.compact {
+    padding-bottom: 18px;
+    flex-direction: column;
+    label {
+        @include label-style-compact;
+    }
+    .editor-container {
+        width: $full-width;
+    }
+}

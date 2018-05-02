@@ -4,9 +4,12 @@ import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { GroupResponse, UserListResponse, UserResponse } from '../../common/models/server-models';
-import { mergeEntityState } from './entity-state-actions';
+import { EntityStateType, mergeEntityState } from './entity-state-actions';
 import { AdminUsersState } from '../models/admin-users-state.model';
 import { User } from '../../common/models/user.model';
+import { MeshNode } from '../../common/models/node.model';
+import { Schema } from '../../common/models/schema.model';
+import { Microschema } from '../../common/models/microschema.model';
 
 @Injectable()
 @Immutable()
@@ -43,7 +46,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
         const metaInfo = response._metainfo;
         this.adminUsers.loadCount--;
         this.entities = mergeEntityState(this.entities, {
-            user: users
+            user: users as User[]
         });
         this.adminUsers.userList = users.map(user => user.uuid);
         this.adminUsers.pagination = {
@@ -100,12 +103,23 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
         this.adminUsers.userDetail = null;
     }
 
-    openUserSuccess(user: UserResponse) {
+    openUserSuccess(user: UserResponse, userNode?: MeshNode, userNodeSchema?: Schema, microschemas?: Microschema[]) {
         this.adminUsers.loadCount--;
         this.adminUsers.userDetail = user.uuid;
-        this.entities = mergeEntityState(this.entities, {
-            user: [user as User]
-        });
+        const changes: {[K in keyof EntityState]?: Array<Partial<EntityStateType[K]>>; } = {
+            user: [user as User],
+        };
+        if (userNode) {
+            changes.node = [userNode];
+        }
+        if (userNodeSchema) {
+            changes.schema = [userNodeSchema];
+        }
+        if (microschemas) {
+            changes.microschema = microschemas;
+        }
+
+        this.entities = mergeEntityState(this.entities, changes);
     }
 
     openUserError() {
@@ -118,7 +132,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
 
     createUserSuccess(user: UserResponse) {
         this.adminUsers.loadCount--;
-        this.entities = mergeEntityState(this.entities, { user: [user] });
+        this.entities = mergeEntityState(this.entities, { user: [user as User] });
         this.adminUsers.userList = [...this.adminUsers.userList, user.uuid];
     }
 
@@ -132,7 +146,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
 
     updateUserSuccess(user: UserResponse) {
         this.adminUsers.loadCount--;
-        this.entities = mergeEntityState(this.entities, { user: [user] });
+        this.entities = mergeEntityState(this.entities, { user: [user as User] });
     }
 
     updateUserError(): void {
@@ -158,7 +172,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
 
     addUserToGroupSuccess(user: UserResponse) {
         this.adminUsers.loadCount--;
-        this.entities = mergeEntityState(this.entities, { user: [user] });
+        this.entities = mergeEntityState(this.entities, { user: [user as User] });
     }
 
     addUserToGroupError(): void {
@@ -171,7 +185,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
 
     removeUserFromGroupSuccess(user: UserResponse) {
         this.adminUsers.loadCount--;
-        this.entities = mergeEntityState(this.entities, { user: [user] });
+        this.entities = mergeEntityState(this.entities, { user: [user as User] });
     }
 
     removeUserFromGroupError(): void {

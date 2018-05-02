@@ -1,11 +1,27 @@
 import { Injectable } from '@angular/core';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { UserCreateRequest, UserResponse, UserUpdateRequest } from '../../../common/models/server-models';
+import {
+    MicroschemaResponse, SchemaResponse, UserCreateRequest, UserResponse,
+    UserUpdateRequest
+} from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
+import { Schema } from '../../../common/models/schema.model';
+import { MeshNode } from '../../../common/models/node.model';
+import { Microschema } from '../../../common/models/microschema.model';
+import { MicroschemaReference, SchemaReference } from '../../../common/models/common.model';
 
+
+interface UserWithNodeReferenceEntities {
+    user: User;
+    node?: MeshNode;
+    nodeSchema?: Schema;
+    microschemas?: Microschema[];
+}
 
 @Injectable()
 export class AdminUserEffectsService {
@@ -84,16 +100,81 @@ export class AdminUserEffectsService {
         this.state.actions.adminUsers.openUserStart();
 
         return this.api.user.getUser({ userUuid: uuid})
+            .flatMap<UserResponse, UserWithNodeReferenceEntities>((userResponse: User) => {
+                if (userResponse.nodeReference) {
+                    return this.fetchNodeReferenceEntities(userResponse);
+                } else {
+                    return Observable.of({ user: userResponse });
+                }
+            })
             .toPromise()
             .then(
-                response => {
-                    this.state.actions.adminUsers.openUserSuccess(response);
-                    return response;
+                ({ user, node, nodeSchema, microschemas }) => {
+                    this.state.actions.adminUsers.openUserSuccess(user, node, nodeSchema, microschemas);
+                    return user;
                 },
                 error => {
                     this.state.actions.adminUsers.openUserError();
                 }
             );
+    }
+
+
+    /**
+     * If a user has a nodeReference, we need to fetch all the associated entities (the Node, Schema and potentially
+     * one or more Microschemas) in order to be able to display the node.
+     */
+    private fetchNodeReferenceEntities(user: User): Observable<UserWithNodeReferenceEntities> {
+        const { uuid, projectName, schema } = user.nodeReference;
+
+        return forkJoin(
+            Observable.of(user),
+            this.api.project.getNode({ nodeUuid: uuid, project: projectName }),
+            this.api.admin.getSchema({ schemaUuid: schema.uuid })
+        )
+            .flatMap(([user, node, nodeSchema]) => {
+                // We also need to check whether this node contains any micronodes.
+                // If so we must additionally fetch the corresponding microschemas
+                // in order to render the node data.
+                const requiredMicroschemas = this.getMicroschemasUsedInNode(node);
+                let microSchemasObservable: Observable<MicroschemaResponse[] | undefined>;
+
+                if (0 < requiredMicroschemas.length) {
+                    microSchemasObservable = forkJoin(
+                        requiredMicroschemas.map(({ uuid: microschemaUuid, version }) =>
+                            this.api.admin.getMicroschema({ microschemaUuid, version }))
+                    );
+                } else {
+                    microSchemasObservable = Observable.of(undefined);
+                }
+
+                return microSchemasObservable
+                    .map((microschemas: Microschema[]) => {
+                        return { user, node, nodeSchema: nodeSchema as Schema, microschemas };
+                    });
+            });
+    }
+
+    /**
+     * Returns an array of the unique uuid & version references of any microschemas used in the node.
+     */
+    private getMicroschemasUsedInNode(node: MeshNode): MicroschemaReference[] {
+        const microschemaRefs: MicroschemaReference[] = [];
+
+        function concatMicroschemaRefs(fieldValue: any): void {
+            if (fieldValue.hasOwnProperty('microschema')) {
+                const { uuid, version } = fieldValue.microschema;
+                const alreadyInArray = !!microschemaRefs.find(ref => ref.uuid === uuid && ref.version === version);
+                if (!alreadyInArray) {
+                    microschemaRefs.push({ uuid, version });
+                }
+            } else if (Array.isArray(fieldValue)) {
+                fieldValue.forEach(val => concatMicroschemaRefs(val));
+            }
+        }
+
+        Object.values(node.fields || {}).forEach(fieldValue => concatMicroschemaRefs(fieldValue));
+        return microschemaRefs;
     }
 
     createUser(userRequest: UserCreateRequest): Promise<UserResponse> {
@@ -124,7 +205,7 @@ export class AdminUserEffectsService {
                         type: 'success',
                         message: 'admin.user_updated'
                     });
-                    return response;
+                    return response as User;
                 },
                 error => this.state.actions.adminUsers.updateUserError()
             );

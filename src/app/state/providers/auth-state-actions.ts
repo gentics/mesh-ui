@@ -6,6 +6,7 @@ import { AuthState } from '../models/auth-state.model';
 import { UserResponse } from '../../common/models/server-models';
 import { EntityState } from '../models/entity-state.model';
 import { mergeEntityState } from './entity-state-actions';
+import { User } from '../../common/models/user.model';
 
 
 @Injectable()
@@ -51,7 +52,7 @@ export class AuthStateActions extends StateActionBranch<AppState> {
         this.auth.loggingIn = false;
         this.auth.currentUser = user.uuid;
         this.entities = mergeEntityState(this.entities, {
-            user: [user]
+            user: [user as User]
         });
     }
 

@@ -9,8 +9,8 @@ import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock'
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
-import { BlobService } from '../../providers/blob.service';
-import { MockBlobService } from '../../providers/blob.service.mock';
+import { BlobService } from '../../../core/providers/blob/blob.service';
+import { MockBlobService } from '../../../core/providers/blob/blob.service.mock';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
