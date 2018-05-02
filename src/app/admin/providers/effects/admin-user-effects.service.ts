@@ -105,14 +105,16 @@ export class AdminUserEffectsService {
                             // If so we must additionally fetch the corresponding microschemas
                             // in order to render the node data.
                             const requiredMicroschemaUuids = this.getMicroschemasUsedInNode(node);
-                            let microSchemasObservable: Observable<MicroschemaResponse>[];
+                            let microSchemasObservable: Observable<MicroschemaResponse[] | undefined>;
                             if (0 < requiredMicroschemaUuids.length) {
-                                microSchemasObservable = requiredMicroschemaUuids.map(({ uuid: microschemaUuid, version }) =>
-                                    this.api.admin.getMicroschema({ microschemaUuid, version }));
+                                microSchemasObservable = forkJoin(
+                                    requiredMicroschemaUuids.map(({ uuid: microschemaUuid, version }) =>
+                                        this.api.admin.getMicroschema({ microschemaUuid, version }))
+                                );
                             } else {
-                                microSchemasObservable = [Observable.empty()];
+                                microSchemasObservable = Observable.of(undefined);
                             }
-                            return forkJoin(microSchemasObservable)
+                            return microSchemasObservable
                                 .map(microschemas => {
                                     return [user, node, nodeSchema, microschemas];
                                 });
@@ -151,7 +153,7 @@ export class AdminUserEffectsService {
             }
         }
 
-        Object.values(node.fields).forEach(fieldValue => concatMicroschemaRefs(fieldValue));
+        Object.values(node.fields || {}).forEach(fieldValue => concatMicroschemaRefs(fieldValue));
         return microschemaRefs;
     }
 

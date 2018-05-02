@@ -88,10 +88,25 @@ describe('AdminUserEffects', () => {
             expect(api.admin.getSchema).toHaveBeenCalledWith({ schemaUuid: mockUserNodeSchema.uuid });
         });
 
+        it('calls openUserSuccess() action with user, node and schema', async () => {
+            mockUser.nodeReference = {
+                uuid: mockUserNode.uuid,
+                projectName: 'test_project',
+                schema: {
+                    uuid: mockUserNodeSchema.uuid
+                }
+            } as any;
+            setUpSpies();
+            await adminUserEffects.openUser(mockUser.uuid);
+
+            expect(state.actions.adminUsers.openUserSuccess)
+                .toHaveBeenCalledWith(mockUser, mockUserNode, mockUserNodeSchema, undefined);
+        });
+
         it('returns a promise which resolves with the User object', async () => {
             setUpSpies();
             const result = await adminUserEffects.openUser(mockUser.uuid);
-            expect(result).toBe(mockUser);
+            expect(result).toBe(mockUser as any);
         });
 
 
