@@ -191,6 +191,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      *
      */
     saveNode(navigateOnSave = true, tags: TagReferenceFromServer[] = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null): void {
+        // TODO: remove the test case when done with conflict resolution.
         // To quickly test the handleSaveConflicts, uncomment bellow:
         /*
             this.handleSaveConflicts(['name', 'pets', 'number', 'Html', 'Adate', 'othernode', 'Bool', 'microschema.name', 'microschema.number']);

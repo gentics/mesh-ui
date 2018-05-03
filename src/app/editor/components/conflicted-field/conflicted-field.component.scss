@@ -29,7 +29,7 @@
             position: relative;
         }
 
-        .their-val, .mine-val {
+        .remote-val, .local-val {
             transition: 0.2s all;
             color: $gtx-color-alert;
             padding: 10px;
@@ -71,14 +71,14 @@
             }
         }
 
-        .their-val {
+        .remote-val {
             &.selected {
                 box-shadow: rgba(0, 0, 0, 0.26) 0px 0 2px 1px;
                 z-index: 1;
             }
         }
 
-        .mine-val {
+        .local-val {
             color: $gtx-color-success;
             &.selected {
                 box-shadow: rgba(0, 0, 0, 0.26) 0px 0 2px 1px;
@@ -93,7 +93,8 @@
 
     .micronode-row {
         width: 100%;
-        box-shadow: $gtx-color-very-dark-gray 0 -1px 10px 0px inset;
+        box-shadow: #3d3d427d 0 0 10px 0px inset;
+
 
         > ul {
             width: 100%;

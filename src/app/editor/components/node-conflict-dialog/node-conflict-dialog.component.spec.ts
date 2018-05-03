@@ -226,7 +226,7 @@ describe('NodeConflictDialogComponent', () => {
         expect(apiService.project.getNode).toHaveBeenCalled();
     });
 
-    it('should generate objects with conflicted values for microscemas', () => {
+    it('should generate objects with conflicted values for microschemas', () => {
         component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
         component.localNode = state.now.entities.node['current_node_uuid']['en']['0'];
         component.localTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
@@ -234,7 +234,7 @@ describe('NodeConflictDialogComponent', () => {
         fixture.detectChanges();
         expect(component.conflictedFields.length).toEqual(component.conflicts.length - 1); //-1 since 'microschema.name' and 'microschema.number' will be grouped into one field
         const renderedConflictedFields = fixture.debugElement.queryAll(By.css('mesh-conflicted-field'));
-        expect(renderedConflictedFields.length).toEqual(component.conflicts.length + 1); // +2 since 'microschema.name' and 'microschema.number' are rendered as children inside another mesh-conflicted-field which acts as a container
+        expect(renderedConflictedFields.length).toEqual(component.conflicts.length + 1); // +1 since 'microschema.name' and 'microschema.number' are rendered as children inside another mesh-conflicted-field which acts as a container
     });
 
     it('should generate extra conflict for conflicted tags', () => {

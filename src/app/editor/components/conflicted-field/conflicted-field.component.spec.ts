@@ -2,7 +2,7 @@ import { Pipe, PipeTransform, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
+import { ModalService, GenticsUICoreModule, Checkbox } from 'gentics-ui-core';
 
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -65,8 +65,8 @@ describe('ConflictedFieldComponent', () => {
         };
         fixture.detectChanges();
 
-        const mineElement: DebugElement = fixture.debugElement.query(By.css('.mine-val'));
-        const theirElement: DebugElement = fixture.debugElement.query(By.css('.their-val'));
+        const mineElement: DebugElement = fixture.debugElement.query(By.css('.local-val'));
+        const theirElement: DebugElement = fixture.debugElement.query(By.css('.remote-val'));
 
         expect(mineElement.nativeElement.innerHTML).toContain(component.conflictedField.localValue);
         expect(theirElement.nativeElement.innerHTML).toContain(component.conflictedField.remoteValue);
@@ -83,13 +83,13 @@ describe('ConflictedFieldComponent', () => {
         };
         fixture.detectChanges();
 
-        const mineElement: DebugElement = fixture.debugElement.query(By.css('.mine-val gtx-checkbox'));
+        const mineElement: DebugElement = fixture.debugElement.query(By.css('.local-val gtx-checkbox'));
         expect(mineElement).toBeDefined();
-        expect(mineElement.attributes['ng-reflect-checked'].toString()).toEqual('true');
+        expect((mineElement.componentInstance as Checkbox).checked).toBeTruthy();
 
-        const theirElement: DebugElement = fixture.debugElement.query(By.css('.their-val gtx-checkbox'));
+        const theirElement: DebugElement = fixture.debugElement.query(By.css('.remote-val gtx-checkbox'));
         expect(theirElement).toBeDefined();
-        expect(theirElement.attributes['ng-reflect-checked'].toString()).toEqual('false');
+        expect((theirElement.componentInstance as Checkbox).checked).toBeFalsy();
     });
 
     it('should render recursively for the micronode', () => {
@@ -131,8 +131,8 @@ describe('ConflictedFieldComponent', () => {
         };
         fixture.detectChanges();
 
-        const theirElement: DebugElement = fixture.debugElement.query(By.css('.their-val'));
-        const mineElement: DebugElement = fixture.debugElement.query(By.css('.mine-val'));
+        const theirElement: DebugElement = fixture.debugElement.query(By.css('.remote-val'));
+        const mineElement: DebugElement = fixture.debugElement.query(By.css('.local-val'));
 
         // First their version is selected because of overwrite: false in the conflictedField definition
         expect(theirElement.classes['selected']).toBeTruthy();

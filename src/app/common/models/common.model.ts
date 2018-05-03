@@ -5,7 +5,6 @@ import {
 } from './server-models';
 import { SchemaField } from './schema.model';
 
-
 export interface NodeReference extends NodeReferenceFromServer {}
 
 export interface SchemaReference extends SchemaReferenceFromServer {}

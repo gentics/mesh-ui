@@ -3,7 +3,7 @@
     <div [ngSwitch]="conflictedField.field.type" class="diffs">
         <div *ngSwitchCase="'html'" class='preview-container'>
             <div
-                class="their-val html"
+                class="remote-val html"
                 [class.selected]="conflictedField.overwrite === false"
                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div
-                class="mine-val html"
+                class="local-val html"
                 [class.selected]="conflictedField.overwrite === true"
                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
@@ -38,7 +38,7 @@
 
         <div *ngSwitchCase="'list'" class='preview-container'>
             <div
-                class="their-val"
+                class="remote-val"
                 [class.selected]="conflictedField.overwrite === false"
                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
@@ -54,7 +54,7 @@
                 </div>
             </div>
             <div
-                class="mine-val"
+                class="local-val"
                 [class.selected]="conflictedField.overwrite === true"
                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
@@ -73,7 +73,7 @@
 
         <div *ngSwitchCase="'date'" class='preview-container'>
             <div
-                class="their-val"
+                class="remote-val"
                 [class.selected]="conflictedField.overwrite === false"
                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
@@ -86,7 +86,7 @@
                 <div class="val">{{ conflictedField.remoteValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
             </div>
             <div
-                class="mine-val"
+                class="local-val"
                 [class.selected]="conflictedField.overwrite === true"
                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
@@ -102,7 +102,7 @@
 
         <div *ngSwitchCase="'binary'" class='preview-container'>
             <div
-                class="their-val"
+                class="remote-val"
                 [class.selected]="conflictedField.overwrite === false"
                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
@@ -116,7 +116,7 @@
                 <div class="val">{{ conflictedField.remoteValue.fileName }}</div>
             </div>
             <div
-                class="mine-val"
+                class="local-val"
                 [class.selected]="conflictedField.overwrite === true"
                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
@@ -134,7 +134,7 @@
 
         <div *ngSwitchCase="'boolean'" class='preview-container'>
             <div
-                class="their-val"
+                class="remote-val"
                 [class.selected]="conflictedField.overwrite === false"
                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
@@ -147,7 +147,7 @@
                 <div class="val"><gtx-checkbox [checked]="conflictedField.remoteValue"></gtx-checkbox></div>
             </div>
             <div
-                class="mine-val"
+                class="local-val"
                 [class.selected]="conflictedField.overwrite === true"
                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
@@ -171,7 +171,7 @@
 
         <div *ngSwitchDefault class="preview-container">
             <div
-                class="their-val"
+                class="remote-val"
                 [class.selected]="conflictedField.overwrite === false"
                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
             >
@@ -184,7 +184,7 @@
                 <div class="val">{{ conflictedField.remoteValue }}</div>
             </div>
             <div
-                class="mine-val"
+                class="local-val"
                 [class.selected]="conflictedField.overwrite === true"
                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
             >
