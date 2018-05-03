@@ -17,17 +17,31 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
-import { mockMeshNode, mockProject, mockSchema, mockTag } from '../../../../testing/mock-models';
+import { mockMeshNode, mockProject, mockSchema, mockTag, mockMicroschema } from '../../../../testing/mock-models';
 import { FieldMapFromServer } from '../../../common/models/server-models';
 import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
 import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
+import { By } from '@angular/platform-browser';
 
 let state: TestApplicationState;
 
 describe('NodeConflictDialogComponent', () => {
     let component: NodeConflictDialogComponent;
     let fixture: ComponentFixture<NodeConflictDialogComponent>;
-    const imageField = {fileName: 'mock.jpg'};
+    const imageField = { fileName: 'mock.jpg' };
+    const nodeField = { uuid: '123' };
+    const microschemaField = {
+        uuid: 'microschema_uuid',
+        microschema: {
+            name: 'Microschema',
+            uuid: 'microschema_uuid',
+            version: '0'
+        },
+        fields: {
+            name: 'name6ssfss',
+            number: 162
+        }
+    };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -73,7 +87,9 @@ describe('NodeConflictDialogComponent', () => {
                         displayName: 'node_display_field',
                         schema: { uuid: 'schema_uuid', version: '0' },
                         fields: {
-                            'image': imageField,
+                            image: imageField,
+                            microschema: microschemaField,
+                            node: nodeField,
                         } as Partial<FieldMapFromServer>
                     }),
                     'current_node_uuid': mockMeshNode({
@@ -83,7 +99,9 @@ describe('NodeConflictDialogComponent', () => {
                         displayName: 'current_node_display_field',
                         schema: { uuid: 'schema_uuid', version: '0' },
                         fields: {
-                            'image': imageField,
+                            image: imageField,
+                            microschema: microschemaField,
+                            node: nodeField,
                         } as Partial<FieldMapFromServer>
                     }),
 
@@ -94,7 +112,9 @@ describe('NodeConflictDialogComponent', () => {
                         displayName: 'current_node_display_field',
                         schema: { uuid: 'schema_uuid', version: '0' },
                         fields: {
-                            'image': imageField,
+                            image: imageField,
+                            microschema: microschemaField,
+                            node: nodeField,
                         } as Partial<FieldMapFromServer>,
                         tags: [
                             {
@@ -107,9 +127,9 @@ describe('NodeConflictDialogComponent', () => {
                     }),
                 },
                 tag: {
-                    'tag1_uuid':  mockTag({uuid: 'tag1_uuid', name: 'tag1'}),
-                    'tag2_uuid':  mockTag({uuid: 'tag2_uuid', name: 'tag2'}),
-                    'tag3_uuid':  mockTag({uuid: 'tag3_uuid', name: 'tag3'}),
+                    'tag1_uuid': mockTag({ uuid: 'tag1_uuid', name: 'tag1' }),
+                    'tag2_uuid': mockTag({ uuid: 'tag2_uuid', name: 'tag2' }),
+                    'tag3_uuid': mockTag({ uuid: 'tag3_uuid', name: 'tag3' }),
                 },
                 project: {
                     'project_uuid': mockProject({ uuid: 'project_uuid', name: 'demo_project' }),
@@ -134,8 +154,37 @@ describe('NodeConflictDialogComponent', () => {
                                 name: 'image',
                                 label: 'image',
                                 type: 'binary'
+                            },
+                            {
+                                name: 'node',
+                                label: 'node',
+                                type: 'node'
+                            },
+                            {
+                                name: 'microschema',
+                                label: 'microschema',
+                                required: false,
+                                type: 'micronode',
+                                allow: ['Microschema']
                             }
                         ]
+                    })
+                },
+                microschema: {
+                    'microschema_uuid': mockMicroschema({
+                        uuid: 'microschema_uuid',
+                        version: '0',
+                        fields: [{
+                            name: 'name',
+                            label: 'name',
+                            required: false,
+                            type: 'string'
+                        }, {
+                            name: 'number',
+                            label: 'number',
+                            required: false,
+                            type: 'number'
+                        }],
                     })
                 }
             }
@@ -153,7 +202,6 @@ describe('NodeConflictDialogComponent', () => {
         component.localTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
         component.conflicts = ['slug', 'amount'];
         fixture.detectChanges();
-
         expect(component).toBeTruthy();
     });
 
@@ -164,6 +212,28 @@ describe('NodeConflictDialogComponent', () => {
         component.conflicts = ['slug', 'amount'];
         fixture.detectChanges();
         expect(component.conflictedFields.length).toEqual(component.conflicts.length);
+        const renderedConflictedFields = fixture.debugElement.queryAll(By.css('mesh-conflicted-field'));
+        expect(renderedConflictedFields.length).toEqual(component.conflicts.length);
+    });
+
+    it('should retrieve data for the "node" field', () => {
+        const apiService:MockApiService = TestBed.get(ApiService);
+        component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
+        component.localNode = state.now.entities.node['current_node_uuid']['en']['0'];
+        component.conflicts = ['slug', 'amount', 'node'];
+        fixture.detectChanges();
+        expect(apiService.project.getNode).toHaveBeenCalled();
+    });
+
+    it('should generate objects with conflicted values for microscemas', () => {
+        component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
+        component.localNode = state.now.entities.node['current_node_uuid']['en']['0'];
+        component.localTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
+        component.conflicts = ['slug', 'amount', 'microschema.name', 'microschema.number'];
+        fixture.detectChanges();
+        expect(component.conflictedFields.length).toEqual(component.conflicts.length - 1); //-1 since 'microschema.name' and 'microschema.number' will be grouped into one field
+        const renderedConflictedFields = fixture.debugElement.queryAll(By.css('mesh-conflicted-field'));
+        expect(renderedConflictedFields.length).toEqual(component.conflicts.length + 1); // +2 since 'microschema.name' and 'microschema.number' are rendered as children inside another mesh-conflicted-field which acts as a container
     });
 
     it('should generate extra conflict for conflicted tags', () => {
@@ -224,5 +294,9 @@ class MockModalService {
 class MockEntitiesService {
     getSchema = (id) => {
         return state.now.entities.schema[id]['0'];
+    }
+
+    getMicroschema = (id) => {
+        return state.now.entities.microschema[id]['0'];
     }
 }

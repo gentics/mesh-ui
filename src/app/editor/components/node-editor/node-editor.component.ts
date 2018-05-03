@@ -187,8 +187,14 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Validate if saving is required.
      * Open a file upload progress if binary fields are present upload.
      * Tags might be explicitly passed in if we are solving the conflicts and we chose the tags from the remote version. Otherwise look if tags were edited or not (tagsBar.isDirty)
+     *
      */
     saveNode(navigateOnSave = true, tags: TagReferenceFromServer[] = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null): void {
+        // To quickly test the handleSaveConflicts, uncomment bellow:
+        /*
+            this.handleSaveConflicts(['name', 'pets', 'number', 'Html', 'Adate', 'othernode', 'Bool', 'microschema.name', 'microschema.number']);
+            return;
+        */
         if (!this.node) {
             return;
         }

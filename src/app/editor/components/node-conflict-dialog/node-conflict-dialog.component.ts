@@ -149,6 +149,11 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                     .subscribe((results: NodeResponse[] ) => {
                         conflictedField.localValue = results[0].breadcrumb.map(crumb => crumb.displayName + '/') + results[0].displayName;
                         conflictedField.remoteValue = results[1].breadcrumb.map(crumb => crumb.displayName + '/') + results[1].displayName;
+
+                        conflictedField.localValue = results[0].breadcrumb.map(crumb => crumb.displayName + '/') + results[0].displayName;
+                        conflictedField.remoteValue = results[1].breadcrumb.map(crumb => crumb.displayName + '/') + results[1].displayName;
+
+                        this.changeDetector.markForCheck();
                     });
             break;
 

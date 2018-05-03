@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform, DebugElement } from '@angular/core';
-import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+
+import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
 
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -9,10 +10,9 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
-
-import { ConflictedFieldComponent } from './conflicted-field.component';
 import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 
+import { ConflictedFieldComponent } from './conflicted-field.component';
 
 describe('ConflictedFieldComponent', () => {
     let component: ConflictedFieldComponent;
@@ -52,6 +52,44 @@ describe('ConflictedFieldComponent', () => {
         };
         fixture.detectChanges();
         expect(component).toBeTruthy();
+    });
+
+
+    it('should render simple text', () => {
+        component.conflictedField = {
+            field: { type: 'string', name: 'somename' },
+            localValue: 'local value',
+            remoteValue: 'remote value',
+            overwrite: false,
+            conflictedFields: []
+        };
+        fixture.detectChanges();
+
+        const mineElement: DebugElement = fixture.debugElement.query(By.css('.mine-val'));
+        const theirElement: DebugElement = fixture.debugElement.query(By.css('.their-val'));
+
+        expect(mineElement.nativeElement.innerHTML).toContain(component.conflictedField.localValue);
+        expect(theirElement.nativeElement.innerHTML).toContain(component.conflictedField.remoteValue);
+    });
+
+
+    it('should render checkboxes for boolean conflicts', () => {
+        component.conflictedField = {
+            field: { type: 'boolean', name: 'somename' },
+            localValue: true,
+            remoteValue: false,
+            overwrite: false,
+            conflictedFields: []
+        };
+        fixture.detectChanges();
+
+        const mineElement: DebugElement = fixture.debugElement.query(By.css('.mine-val gtx-checkbox'));
+        expect(mineElement).toBeDefined();
+        expect(mineElement.attributes['ng-reflect-checked'].toString()).toEqual('true');
+
+        const theirElement: DebugElement = fixture.debugElement.query(By.css('.their-val gtx-checkbox'));
+        expect(theirElement).toBeDefined();
+        expect(theirElement.attributes['ng-reflect-checked'].toString()).toEqual('false');
     });
 
     it('should render recursively for the micronode', () => {

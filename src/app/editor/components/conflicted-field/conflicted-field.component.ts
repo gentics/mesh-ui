@@ -9,9 +9,4 @@ import { ConflictedField } from '../../../common/models/common.model';
 export class ConflictedFieldComponent {
     @Input() conflictedField: ConflictedField;
     constructor() { }
-
-
-    log(ob: any) {
-        console.log(ob);
-    }
 }
