@@ -15,8 +15,10 @@ export class TagComponent {
     tagFamilyName(): string {
         if (typeof this.tag.tagFamily === 'string') {
             return this.tag.tagFamily;
+        } else if (this.tag.tagFamily) {
+            return this.tag.tagFamily.name!;
         } else {
-            return this.tag.tagFamily.name;
+            throw new Error(`Tag ${this.tag.name} has no tagFamily property.`);
         }
     }
 }

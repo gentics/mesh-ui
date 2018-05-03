@@ -433,7 +433,7 @@ describe('BinaryFieldComponent:', () => {
  */
 function getBinaryField(mockFile: Partial<File>, newUpload: boolean): BinaryField & { file?: File } {
 
-    const mockBinaryField: BinaryField & { file?: File } = {
+    const mockBinaryField: Partial<BinaryField> & { file?: File } = {
         fileName: mockFile.name,
         mimeType: mockFile.type,
         fileSize: 42
@@ -443,7 +443,7 @@ function getBinaryField(mockFile: Partial<File>, newUpload: boolean): BinaryFiel
         mockBinaryField.file = mockFile as File;
     }
 
-    return mockBinaryField;
+    return mockBinaryField as BinaryField;
 }
 
 function pretendUserUploadsFile(fixture: ComponentFixture<any>, file: Partial<File>) {

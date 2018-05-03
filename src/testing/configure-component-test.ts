@@ -3,6 +3,8 @@ import { getTestBed, TestModuleMetadata } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
+import { MockI18nPipe } from "../app/shared/pipes/i18n/i18n.pipe.mock";
+
 /**
  * Wraps the TestBed.configureTestingModule() and provides a mocked implementation of the i18n pipe/service, which
  * is used it virtually every component.
@@ -31,13 +33,6 @@ export function provideMockI18n(config: NgModule): NgModule {
         schemas: mergeUnique(defaultConfig.schemas, config.schemas),
         entryComponents: config.entryComponents
     };
-}
-
-@Pipe({
-    name: 'i18n'
-})
-class MockI18nPipe implements PipeTransform {
-    transform(): void {}
 }
 
 class MockTranslateService {

@@ -6,14 +6,14 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import {
-    MicroschemaResponse, SchemaResponse, UserCreateRequest, UserResponse,
+    MicroschemaResponse, UserCreateRequest, UserResponse,
     UserUpdateRequest
 } from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
 import { Schema } from '../../../common/models/schema.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { Microschema } from '../../../common/models/microschema.model';
-import { MicroschemaReference, SchemaReference } from '../../../common/models/common.model';
+import { MicroschemaReference } from '../../../common/models/common.model';
 
 
 interface UserWithNodeReferenceEntities {
@@ -125,6 +125,10 @@ export class AdminUserEffectsService {
      * one or more Microschemas) in order to be able to display the node.
      */
     private fetchNodeReferenceEntities(user: User): Observable<UserWithNodeReferenceEntities> {
+        if (!user.nodeReference) {
+            return Observable.of({ user });
+        }
+
         const { uuid, projectName, schema } = user.nodeReference;
 
         return forkJoin(

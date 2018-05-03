@@ -126,13 +126,13 @@ export class BaseFieldComponent  {
      * Sets an error on the current control. If the message is "false", this signifies that the given errorCode
      * is no longer in the error state. Alternatively, a hash of { errorCode: message } can be passed in.
      */
-    setError(errors: { [errorCode: string]: string | false });
-    setError(errorCode: string, errorMessage: string | false);
-    setError(errorsOrErrorCode: string | { [errorCode: string]: string | false }, errorMessage?: string | false) {
+    setError(errors: { [errorCode: string]: string | false }): void;
+    setError(errorCode: string, errorMessage: string | false): void;
+    setError(errorsOrErrorCode: string | { [errorCode: string]: string | false }, errorMessage?: string | false): void {
         let errorHash: { [errorCode: string]: string | false };
 
         if (typeof errorsOrErrorCode === 'string') {
-            errorHash = { [errorsOrErrorCode]: errorMessage };
+            errorHash = { [errorsOrErrorCode]: errorMessage === undefined ? 'Error message not specified' : errorMessage};
         } else {
             errorHash = errorsOrErrorCode;
         }

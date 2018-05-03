@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { ActivatedRoute } from "@angular/router";
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
@@ -26,6 +28,7 @@ import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
+import { MockActivatedRoute } from "../../../../testing/router-testing-mocks";
 
 import { NodeEditorComponent } from './node-editor.component';
 
@@ -35,6 +38,7 @@ describe('NodeEditorComponent', () => {
     let listEffectsService: MockListEffectsService;
     let navigationService: MockNavigationService;
     let modalService: MockModalService;
+    let activatedRoute: MockActivatedRoute;
 
     beforeEach(() => {
         configureComponentTest({
@@ -51,6 +55,7 @@ describe('NodeEditorComponent', () => {
                 EntitiesService,
                 { provide: ModalService, useClass: MockModalService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
+                { provide: ActivatedRoute, useClass: MockActivatedRoute },
                 { provide: EditorEffectsService, useClass: MockEditorEffectsService },
                 { provide: ListEffectsService, useClass: MockListEffectsService },
                 { provide: NavigationService, useClass: MockNavigationService },
@@ -70,6 +75,13 @@ describe('NodeEditorComponent', () => {
         listEffectsService = TestBed.get(ListEffectsService);
         navigationService = TestBed.get(NavigationService);
         modalService = TestBed.get(ModalService);
+        activatedRoute = TestBed.get(ActivatedRoute);
+
+        activatedRoute.setParamMap({
+            projectName: 'test_project',
+            nodeUuid: 'test_node_uuid',
+            language: 'en'
+        });
     });
 
     const clickSave = (fixture: ComponentFixture<NodeEditorComponent>) => {
@@ -88,6 +100,7 @@ describe('NodeEditorComponent', () => {
 
     describe('saving a new node', () => {
         const newNode = { language: 'en', uuid: 'new_node_uuid' };
+
         beforeEach(() => {
             editorEffectsService.saveNewNode = jasmine.createSpy('saveNewNode').and.returnValue(Promise.resolve(newNode));
             state.mockState({
@@ -120,15 +133,15 @@ describe('NodeEditorComponent', () => {
 
         it('calls formGenerator.setPristine',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.formGenerator.setPristine = jasmine.createSpy('setPristine');
+                instance.formGenerator!.setPristine = jasmine.createSpy('setPristine');
                 clickSave(fixture);
-                expect(instance.formGenerator.setPristine).toHaveBeenCalledWith(newNode);
+                expect(instance.formGenerator!.setPristine).toHaveBeenCalledWith(newNode);
             })
         );
 
         it('calls listEffects.loadChildren',
             componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.formGenerator.setPristine = jasmine.createSpy('setPristine');
+                instance.formGenerator!.setPristine = jasmine.createSpy('setPristine');
                 clickSave(fixture);
                 expect(listEffectsService.loadChildren).toHaveBeenCalledWith('demo', 'uuid_parentNode', 'en');
             })

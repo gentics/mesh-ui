@@ -18,6 +18,9 @@ import { User } from '../../../common/models/user.model';
 import { Group } from '../../../common/models/group.model';
 import { MockModalService } from '../../../../testing/modal.service.mock';
 
+type MockUser = Partial<User> & { uuid: string; };
+type MockGroup = Partial<Group> & { uuid: string; };
+
 describe('UserListComponent', () => {
     let instance: UserListComponent;
     let fixture: ComponentFixture<UserListComponent>;
@@ -25,11 +28,11 @@ describe('UserListComponent', () => {
     let state: TestApplicationState;
     let mockModalService: MockModalService;
 
-    let mockAdminUser: Partial<User>;
-    let mockUser1: Partial<User>;
-    let mockUser2: Partial<User>;
-    let mockAdminGroup: Partial<Group>;
-    let mockGroup1: Partial<Group>;
+    let mockAdminUser: MockUser;
+    let mockUser1: MockUser;
+    let mockUser2: MockUser;
+    let mockAdminGroup: MockGroup;
+    let mockGroup1: MockGroup;
 
     beforeEach(async(() => {
         configureComponentTest({

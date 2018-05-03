@@ -10,7 +10,7 @@ import { User } from '../../common/models/user.model';
 import { Schema } from '../../common/models/schema.model';
 import { Microschema } from '../../common/models/microschema.model';
 import { AppState } from '../models/app-state.model';
-import { concatUnique } from '../../common/util/util';
+import { concatUnique, notNullOrUndefined } from '../../common/util/util';
 import { TagFamily } from '../../common/models/tag-family.model';
 import { Tag } from '../../common/models/tag.model';
 import { Group } from '../../common/models/group.model';
@@ -140,12 +140,11 @@ export class EntitiesService {
         );
     }
 
-    getSchema(uuid: string, version?: any): Schema | undefined {
+    getSchema(uuid: string, version?: string): Schema | undefined {
         return this.getSchemaFromState(this.state.now, uuid, version);
     }
 
-    // TODO: version should be of type string, it was fixed in Mesh 0.9.20
-    selectSchema(uuid: string, version?: any): Observable<Schema> {
+    selectSchema(uuid: string, version?: string): Observable<Schema> {
         return this.selectWithFilter(state => this.getSchemaFromState(state, uuid, version));
     }
 
@@ -161,7 +160,7 @@ export class EntitiesService {
         return Object.keys(state.entities.schema).map(uuid => this.getSchemaFromState(state, uuid)!);
     }
 
-    private getSchemaFromState(state: AppState, uuid: string, version?: any): Schema | undefined {
+    private getSchemaFromState(state: AppState, uuid: string, version?: string): Schema | undefined {
         return getNestedEntity<'schema'>(
             state.entities.schema,
             this.discriminator.schema,
@@ -277,7 +276,9 @@ export class EntitiesService {
     }
 
     private getAllGroupsFromState(state: AppState): Group[] {
-        return Object.keys(state.entities.group).map(uuid => this.getGroupFromState(state, uuid));
+        return Object.keys(state.entities.group)
+            .map(uuid => this.getGroupFromState(state, uuid))
+            .filter(notNullOrUndefined);
     }
 
     private getGroupFromState(state: AppState, uuid: string): Group | undefined {
@@ -292,7 +293,6 @@ export class EntitiesService {
      * Applies the selectorFn to the AppState and filters out any undefined values.
      */
     private selectWithFilter<T>(selectorFn: (state: AppState) => T | undefined): Observable<T> {
-        return this.state.select(selectorFn)
-            .filter(entity => entity !== undefined) as Observable<T>;
+        return this.state.select(selectorFn).filter(notNullOrUndefined);
     }
 }

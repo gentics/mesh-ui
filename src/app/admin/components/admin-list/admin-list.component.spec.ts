@@ -308,7 +308,7 @@ class TestComponent {
     ];
     autoHidePagination = false;
     onSelectionChange = jasmine.createSpy('onSelectionChange');
-    selection = [];
+    selection: number[] = [];
 }
 
 @Component({

@@ -21,6 +21,7 @@ import { MockConfigService } from '../../../core/providers/config/config.service
 import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
 import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
 import { MockModalService } from '../../../../testing/modal.service.mock';
+import { MockI18nPipe } from "../../../shared/pipes/i18n/i18n.pipe.mock";
 
 describe('MultiFileUploadDialogComponent', () => {
     let component: MultiFileUploadDialogComponent;
@@ -217,15 +218,6 @@ function initializeComponentWithFiles(fixture: ComponentFixture<MultiFileUploadD
     fixture.componentInstance.files = droppedFiles;
     fixture.detectChanges();
     return droppedFiles;
-}
-
-@Pipe({
-    name: 'i18n'
-})
-class MockI18nPipe implements PipeTransform {
-    transform(arg) {
-        return `translated ${arg}`;
-    }
 }
 
 class MockListEffectsService {

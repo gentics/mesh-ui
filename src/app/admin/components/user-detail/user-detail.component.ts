@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-import { User } from '../../../common/models/user.model';
+import { User, UserNodeReference } from '../../../common/models/user.model';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 import { UserCreateRequest, UserUpdateRequest } from '../../../common/models/server-models';
 import { MeshNode } from '../../../common/models/node.model';
@@ -13,6 +13,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
+import { notNullOrUndefined } from "../../../common/util/util";
 
 @Component({
     selector: 'mesh-user-detail',
@@ -42,30 +43,35 @@ export class UserDetailComponent implements OnInit, OnDestroy {
                 private adminUserEffects: AdminUserEffectsService) { }
 
     ngOnInit() {
-        const user$: Observable<User | undefined> = this.route.data.map(data => data.user);
+        const user$: Observable<User> = this.route.data.map(data => data.user).filter(notNullOrUndefined);
+        const nodeReference$ = user$.map(user => user.nodeReference).filter(notNullOrUndefined);
 
-        this.userNode$ = user$
-            .filter(user => user && !!user.nodeReference)
-            .map(user => this.entities.getNode(user.nodeReference.uuid, { strictLanguageMatch: false }));
+        this.userNode$ = nodeReference$
+            .map(nodeReference => this.entities.getNode(nodeReference.uuid, { strictLanguageMatch: false }))
+            .filter(notNullOrUndefined);
 
-         this.userNodeSchema$ = user$
-            .filter(user => user && !!user.nodeReference)
-             .map(user => this.entities.getSchema(user.nodeReference.schema.uuid));
+        this.userNodeSchema$ = nodeReference$
+            .map(nodeReference => this.entities.getSchema(nodeReference.schema.uuid || ''))
+            .filter(notNullOrUndefined);
 
         this.userNodeLink$ = this.userNode$
             .map(node => {
-                return this.navigationService.instruction({
-                    detail: {
-                        projectName: node.project.name,
-                        nodeUuid: node.uuid,
-                        language: node.language
-                    },
-                    list: {
-                        containerUuid: node.parentNode.uuid,
-                        projectName: node.project.name,
-                        language: node.language
-                    }
-                }).commands();
+                if (node.language && node.project && node.project.name) {
+                    return this.navigationService.instruction({
+                        detail: {
+                            projectName: node.project.name,
+                            nodeUuid: node.uuid,
+                            language: node.language
+                        },
+                        list: {
+                            containerUuid: node.parentNode.uuid,
+                            projectName: node.project.name,
+                            language: node.language
+                        }
+                    }).commands();
+                } else {
+                    return [];
+                }
             });
 
         user$.takeUntil(this.destroy$)
@@ -112,13 +118,15 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     private updateUser(): void {
         if (this.form.dirty) {
             const uuid = this.route.snapshot.paramMap.get('uuid');
-            const updateRequest = this.getUserFromForm();
-            this.adminUserEffects.updateUser(uuid, updateRequest)
-                .then(user => {
-                    if (user) {
-                        this.form.markAsPristine();
-                    }
-                });
+            if (uuid) {
+                const updateRequest = this.getUserFromForm();
+                this.adminUserEffects.updateUser(uuid, updateRequest)
+                    .then(user => {
+                        if (user) {
+                            this.form.markAsPristine();
+                        }
+                    });
+            }
         }
     }
 

@@ -49,7 +49,7 @@ export function mockMeshNode(properties?: Partial<MeshNode>): { [language: strin
         }
     };
     const mockNode = { ...defaultMockNode, ...properties };
-    return { [mockNode.language]: { [mockNode.version]: mockNode } };
+    return { [mockNode.language!]: { [mockNode.version]: mockNode } };
 }
 
 /**

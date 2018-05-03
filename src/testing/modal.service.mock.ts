@@ -37,12 +37,12 @@ export class MockModalService extends ModalService {
          super({} as any, {} as any);
     }
 
-    dialog(...args): Promise<IModalInstance<ModalDialog>> {
+    dialog(...args: any[]): Promise<IModalInstance<ModalDialog>> {
         this.dialogSpy(...args);
         return Promise.resolve(this.fakeModalInstance);
     }
 
-    fromComponent<T extends IModalDialog>(...args): Promise<IModalInstance<T>> {
+    fromComponent<T extends IModalDialog>(...args: any[]): Promise<IModalInstance<T>> {
         this.fromComponentSpy(...args);
         return Promise.resolve(this.fakeModalInstance);
     }

@@ -23,6 +23,7 @@ import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
+import { notNullOrUndefined } from "../../../common/util/util";
 ;
 
 
@@ -57,7 +58,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.state.select(state => state.tags.tags)
             .takeUntil(this.destroyed$)
             .subscribe(tags => {
-                this.allTags = tags.map(uuid => this.entities.getTag(uuid));
+                this.allTags = tags.map(uuid => this.entities.getTag(uuid)).filter(notNullOrUndefined);
             });
     }
 
@@ -110,21 +111,25 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     onCreateNewTagClick(newTagName: string): void {
-        this.modalService.fromComponent(
-            CreateTagDialogComponent,
-            {
-                closeOnOverlayClick: false
-            },
-            {
-                newTagName,
-                projectName: this.state.now.editor.openNode.projectName
-            }
-        )
-            .then(modal => modal.open())
-            .then((result: CreateTagDialogComponentResult) => {
-                this.onTagSelected(result.tag);
-                this.changeDetector.markForCheck();
-            });
+        const openNode = this.state.now.editor.openNode;
+
+        if (openNode) {
+            this.modalService.fromComponent(
+                CreateTagDialogComponent,
+                {
+                    closeOnOverlayClick: false
+                },
+                {
+                    newTagName,
+                    projectName: openNode.projectName
+                }
+            )
+                .then(modal => modal.open())
+                .then((result: CreateTagDialogComponentResult) => {
+                    this.onTagSelected(result.tag);
+                    this.changeDetector.markForCheck();
+                });
+        }
     }
 
     /**
@@ -137,11 +142,13 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         if (this.node.tags) {
             deletedTags = this.node.tags
                 .filter(tag => this.nodeTags.every(t => t.uuid !== tag.uuid))
-                .map(tag => tag.name);
+                .map(tag => tag.name)
+                .filter(notNullOrUndefined);
 
             newTags = this.nodeTags
                 .filter(tag => this.node.tags.every(t => t.uuid !== tag.uuid))
-                .map(tag => tag.name);
+                .map(tag => tag.name)
+                .filter(notNullOrUndefined);
         }
         return { deletedTags, newTags };
     }

@@ -14,7 +14,7 @@ import { MockConfigService } from '../../../core/providers/config/config.service
 describe('AdminSchemaEffects', () => {
     let adminSchemaEffects: AdminSchemaEffectsService;
     let state: TestApplicationState;
-    let apiServiceSpy;
+    let apiServiceSpy: any;
     let i18nNotificationSpy;
 
     beforeEach(() => {

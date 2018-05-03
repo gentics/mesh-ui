@@ -175,7 +175,7 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
      * `checked` hash map used to mark the checkbox state in the list.
      */
     private selectionToCheckedHash(selection: number[], itemsPerPage: number): { [id: string]: boolean } {
-        const checkedHash = {};
+        const checkedHash: { [id: string]: boolean } = {};
         for (const index of selection) {
             const currentPage = Math.floor(index / itemsPerPage) + 1;
             const indexOnPage = index % itemsPerPage;

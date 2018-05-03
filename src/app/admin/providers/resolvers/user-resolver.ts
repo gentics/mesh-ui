@@ -6,16 +6,16 @@ import { AdminUserEffectsService } from '../effects/admin-user-effects.service';
 import { BreadcrumbTextFunction } from '../../components/admin-breadcrumbs/admin-breadcrumbs.component';
 
 @Injectable()
-export class UserResolver implements Resolve<User> {
+export class UserResolver implements Resolve<User | undefined> {
 
     constructor(private adminUserEffects: AdminUserEffectsService) {}
 
-    resolve(route: ActivatedRouteSnapshot): Promise<User | undefined> {
+    resolve(route: ActivatedRouteSnapshot): Promise<User> | undefined {
         const uuid = route.paramMap.get('uuid');
 
         if (uuid === 'new') {
             this.adminUserEffects.newUser();
-        } else {
+        } else if (uuid) {
             return this.adminUserEffects.openUser(uuid)
                 .then(user => {
                     if (!user) {

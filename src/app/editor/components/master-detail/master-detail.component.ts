@@ -49,8 +49,10 @@ export class MasterDetailComponent implements OnInit {
                 const containerUuid = listRoute ? listRoute.paramMap.get('containerUuid') : firstProject.rootNode.uuid;
                 const language = listRoute ? listRoute.paramMap.get('language') : undefined;
 
-                this.navigationService.list(projectName, containerUuid, language)
-                    .navigate({ queryParams: this.route.snapshot.queryParams });
+                if (projectName && containerUuid) {
+                    this.navigationService.list(projectName, containerUuid, language || undefined)
+                        .navigate({queryParams: this.route.snapshot.queryParams});
+                }
             });
     }
 

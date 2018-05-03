@@ -106,7 +106,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
     openUserSuccess(user: UserResponse, userNode?: MeshNode, userNodeSchema?: Schema, microschemas?: Microschema[]) {
         this.adminUsers.loadCount--;
         this.adminUsers.userDetail = user.uuid;
-        const changes: {[K in keyof EntityState]?: Array<Partial<EntityStateType[K]>>; } = {
+        const changes: {[K in keyof EntityState]?: Array<EntityStateType[K]>; } = {
             user: [user as User],
         };
         if (userNode) {

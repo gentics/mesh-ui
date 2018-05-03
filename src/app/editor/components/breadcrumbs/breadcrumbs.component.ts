@@ -54,7 +54,7 @@ export class BreadcrumbsComponent {
 
         const breadcrumbs = node.breadcrumb.map(ascendant => ({
             route: this.navigationService.list(project.name, ascendant.uuid, language).commands(),
-            text: ascendant.displayName
+            text: ascendant.displayName || ascendant.uuid
         }));
 
         // TODO: currently Mesh returns the breadcrumbs reversed, but this behaviour will change in

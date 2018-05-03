@@ -18,11 +18,10 @@ export class NodeRowComponent implements OnInit, OnDestroy {
     @Input() node: MeshNode;
     @Input() listLanguage: string;
 
-    private subscription: Subscription =  new Subscription();
-
     filterTerm$: Observable<string>;
+    routerLink: any[] | null = null;
 
-    routerLink: any[] = null;
+    private subscription: Subscription =  new Subscription();
 
     constructor(private state: ApplicationStateService,
                 private navigationService: NavigationService,
@@ -33,16 +32,16 @@ export class NodeRowComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         if (this.node.container) {
-            this.routerLink = this.navigationService.list(this.node.project.name, this.node.uuid, this.listLanguage).commands();
+            this.routerLink = this.navigationService.list(this.node.project.name!, this.node.uuid, this.listLanguage).commands();
         } else {
-            this.routerLink = this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).commands();
+            this.routerLink = this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).commands();
         }
 
         this.filterTerm$ = this.state.select(state => state.list.filterTerm);
     }
 
     editNode(): void {
-        this.navigationService.detail(this.node.project.name, this.node.uuid, this.node.language).navigate();
+        this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).navigate();
     }
 
     copyNode(): void {

@@ -317,7 +317,7 @@ class MockFieldComponent extends BaseFieldComponent {
     api: MeshFieldControlApi;
     constructor() {
         super({ markForCheck() {} } as any);
-        this.init = createSpy('init').and.callFake((api) => {
+        this.init = createSpy('init').and.callFake((api: MeshFieldControlApi) => {
             this.api = api;
         });
         this.setWidth = createSpy('setWidth');

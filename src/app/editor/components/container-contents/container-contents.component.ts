@@ -72,14 +72,14 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                     const searchedTags = tags
                         .split(',')
                         .map(uuid => this.entities.getTag(uuid))
-                        .filter(tag => !!tag);
+                        .filter(notNullOrUndefined);
                     this.listEffects.searchNodes(keyword, searchedTags, projectName, language);
                 }
             });
 
         this.state
             .select(state => state.list.currentProject)
-            .filter<string>(notNullOrUndefined)
+            .filter(notNullOrUndefined)
             .takeUntil(this.destroy$)
             .subscribe(projectName => {
                 this.listEffects.loadSchemasForProject(projectName);
@@ -91,7 +91,10 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             this.state.select(state => state.list.items),
             this.state.select(state => state.ui.currentLanguage)
         )
-            .map(([items, language]) => items.map(uuid => this.entities.getNode(uuid, { language })))
+            .map(([items, language]) => items
+                .map(uuid => this.entities.getNode(uuid, { language }))
+                .filter(notNullOrUndefined)
+            )
             .combineLatest(this.state.select(state => state.list.filterTerm))
             .map(([items, filterTerm]) => this.filterNodes(items, filterTerm))
             .map(this.groupNodesBySchema);
@@ -101,17 +104,19 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 Object.values(childrenBySchema)
                     .map(nodes => nodes[0])
                     .sort((a: MeshNode, b: MeshNode) => {
-                        if (a.container === true && b.container === false) { // Push containers to the top.
+                        if (a.container === true && b.container === false) {
+                            // Push containers to the top.
                             return -1;
-                        } else if (a.container === false && b.container === true) { // Push container to the top.
+                        } else if (a.container === false && b.container === true) {
+                            // Push containers to the top.
                             return 1;
                         } else {
-                            return a.schema.name > b.schema.name ? 1 : -1; // If both nodes are containers or both are not - order by name.
+                            // If both nodes are containers or both are not - order by name.
+                            return a.schema.name! > b.schema.name! ? 1 : -1;
                         }
                     })
-                    .map(node => {
-                        return node.schema;
-                    }));
+                    .map(node => node.schema as SchemaReference)
+            );
 
         this.searching$ = searchParams$
             .map(({ keyword, tags }) => keyword !== '' || tags !== '');
@@ -127,16 +132,17 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     private groupNodesBySchema(nodes: MeshNode[]): { [schemaUuid: string]: MeshNode[]; } {
-        nodes = nodes.sort((a: MeshNode, b: MeshNode) => {
-            return a.displayName > b.displayName ? 1 : -1;
+        nodes.sort((a: MeshNode, b: MeshNode) => {
+            return (a.displayName || '') > (b.displayName || '') ? 1 : -1;
         });
 
         const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
+
         for (const node of nodes || []) {
-            if (!childrenBySchema[node.schema.uuid]) {
-                childrenBySchema[node.schema.uuid] = [];
+            if (!childrenBySchema[node.schema.uuid!]) {
+                childrenBySchema[node.schema.uuid!] = [];
             }
-            childrenBySchema[node.schema.uuid].push(node);
+            childrenBySchema[node.schema.uuid!].push(node);
         }
         return childrenBySchema;
     }
@@ -153,9 +159,10 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 params.has('language')
             )
             .map(paramMap => ({
-                containerUuid: paramMap.get('containerUuid'),
-                projectName: paramMap.get('projectName'),
-                language: paramMap.get('language')
+                // https://github.com/Microsoft/TypeScript/issues/9619
+                containerUuid: paramMap.get('containerUuid')!,
+                projectName: paramMap.get('projectName')!,
+                language: paramMap.get('language')!
             }))
             .distinctUntilChanged((a, b) =>
                 a.containerUuid === b.containerUuid &&
@@ -166,7 +173,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
     private filterNodes (childNodes: MeshNode[], filterTerm: string): MeshNode[] {
         return childNodes.reduce((filteredNodes, node) => {
-            const matchedNode = fuzzyMatch(filterTerm, node.displayName);
+            const matchedNode = fuzzyMatch(filterTerm, node.displayName || '');
             return matchedNode ? [...filteredNodes, node] : filteredNodes;
         }, []);
     }

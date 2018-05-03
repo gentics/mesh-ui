@@ -167,7 +167,7 @@ describe('EntityStateActions', () => {
             it('throws when missing uuid and strict = true', () => {
                 const before = empty;
                 function doMergeStrict() {
-                    mergeEntityState(before, { node: [{ version: 'en' }] }, true);
+                    mergeEntityState(before, { node: [{ version: 'en' }] } as any, true);
                 }
                 expect(doMergeStrict).toThrow();
             });
@@ -175,7 +175,7 @@ describe('EntityStateActions', () => {
             it('throws when missing uuid and strict = false', () => {
                 const before = empty;
                 function doMergeStrict() {
-                    mergeEntityState(before, { node: [{ version: 'en' }] }, false);
+                    mergeEntityState(before, { node: [{ version: 'en' }] } as any, false);
                 }
                 expect(doMergeStrict).toThrow();
             });

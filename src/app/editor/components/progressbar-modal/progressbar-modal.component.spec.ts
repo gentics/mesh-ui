@@ -5,6 +5,7 @@ import { Pipe } from '@angular/core';
 import { ProgressbarModalComponent } from './progressbar-modal.component';
 import { ProgressBar, OverlayHostService } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MockI18nPipe } from "../../../shared/pipes/i18n/i18n.pipe.mock";
 
 
 describe('ModalProgressbarComponent', () => {
@@ -17,7 +18,7 @@ describe('ModalProgressbarComponent', () => {
         declarations: [
             ProgressbarModalComponent,
             ProgressBar,
-            Mocki18nPipe
+            MockI18nPipe
         ],
         providers: [
             OverlayHostService,
@@ -36,10 +37,3 @@ describe('ModalProgressbarComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
-@Pipe({ name: 'i18n' })
-class Mocki18nPipe implements PipeTransform {
-    transform(a: any): any {
-        return a;
-    }
-}

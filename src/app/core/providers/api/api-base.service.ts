@@ -228,7 +228,7 @@ export class ApiBase {
      *     formatUrl('/project/{project}/tags', { project: 'MyProject', perPage: 50 })
      *     // => '/api/v1/project/MyProject/tags?perPage=50
      */
-    formatUrl(url: string, params: UrlParams & QueryParams = {}): string {
+    formatUrl(url: string, params: Partial<UrlParams & QueryParams> = {}): string {
         const separator = url[0] === '/' ? '' : '/';
         const urlParams: string[] = [];
         let filledUrl = url.replace(/\{([^}]+)\}/g, (substring, paramName) => {
@@ -277,7 +277,7 @@ export class ApiBase {
             return inputObservable.map((response, index) => {
                 if (response.status in mapping || (response.ok && (mapping as any).success)) {
                     const mappedTo: any = response.status in mapping
-                        ? mapping[response.status]
+                        ? (mapping as any)[response.status]
                         : (mapping as any).success;
 
                     if (typeof mappedTo === 'function') {

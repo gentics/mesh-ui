@@ -179,7 +179,7 @@ describe('UserDetailComponent', () => {
     });
 });
 
-function getFormGenerator(fixture: ComponentFixture<TestHostComponent>): MockFormGeneratorComponent | null {
+function getFormGenerator(fixture: ComponentFixture<TestHostComponent>): MockFormGeneratorComponent {
     const formGenerator = fixture.debugElement.query(By.css('form-generator'));
     return formGenerator && formGenerator.componentInstance;
 }
@@ -221,5 +221,5 @@ class TestHostComponent {}
     selector: '[meshProjectTo]'
 })
 class MockProjectContentDirective {
-    @Input() meshProjectTo;
+    @Input() meshProjectTo: any;
 }

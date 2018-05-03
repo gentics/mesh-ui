@@ -93,9 +93,9 @@ export class MeshControl<T extends NodeFieldType> {
         this.initialValue = this.lastValue = value;
 
         if (0 < this.children.size) {
-            const valueContainer = isMicronode(value) ? value.fields : value;
+            const valueContainer = isMicronode(value) ? value.fields : value as any;
             if (valueContainer) {
-                this.children.forEach((meshControl, key) => {
+                this.children.forEach((meshControl, key: number) => {
                     meshControl.reset(valueContainer[key]);
                 });
             }
@@ -120,7 +120,7 @@ export class MeshControl<T extends NodeFieldType> {
         this.lastValue = value;
 
         if (recursive && 0 < this.children.size) {
-            const valueContainer = isMicronode(value) ? value.fields : value;
+            const valueContainer = isMicronode(value) ? value.fields : value as any;
             if (valueContainer) {
                 this.children.forEach((meshControl, key) => {
                     meshControl.checkValue(valueContainer[key], true);

@@ -39,8 +39,10 @@ export class CreateNodeButtonComponent {
 
     itemClick(schema: SchemaDisplayProperties): void {
         const {currentProject, currentNode, language} = this.state.now.list;
-        this.navigationService.createNode(currentProject, schema.uuid, currentNode, language).navigate();
-        this.state.actions.editor.focusEditor();
+        if (currentProject && currentNode) {
+            this.navigationService.createNode(currentProject, schema.uuid, currentNode, language).navigate();
+            this.state.actions.editor.focusEditor();
+        }
     }
 
     private nameSort(a: Schema, b: Schema): number {

@@ -49,8 +49,8 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     private filesWithBlobs: FileWithBlob[];
     public availableSchemas: Schema[] = []; // Public because spec needs to access it.
 
-    private selectedSchema: Schema = null;
-    private selectedField: SchemaField = null;
+    private selectedSchema: Schema | null = null;
+    private selectedField: SchemaField | null = null;
     private schemaFields: SchemaField[] = [];
 
     private isSaving = false;
@@ -70,13 +70,15 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
             Object.keys(schemas).forEach(key => {
                 const schema = this.entitiesService.getSchema(key);
 
-                const schemaBinaryFields = schema.fields.filter(field => field.type === 'binary');
-                if (schemaBinaryFields.length > 0) {
-                    // Only pick the schemas where one or less binaries are required.
-                    if (schemaBinaryFields.filter(field => field.required === true).length <= 1) {
-                        // Only pick the schemas where there are no non-binary required fields
-                        if (schema.fields.some(field => field.type !== 'binary' && field.required === true) === false) {
-                            this.availableSchemas.push(schema);
+                if (schema) {
+                    const schemaBinaryFields = schema.fields.filter(field => field.type === 'binary');
+                    if (schemaBinaryFields.length > 0) {
+                        // Only pick the schemas where one or less binaries are required.
+                        if (schemaBinaryFields.filter(field => field.required === true).length <= 1) {
+                            // Only pick the schemas where there are no non-binary required fields
+                            if (!schema.fields.some(field => field.type !== 'binary' && field.required === true)) {
+                                this.availableSchemas.push(schema);
+                            }
                         }
                     }
                 }
@@ -95,16 +97,22 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     }
 
     save(): void {
+        const selectedSchema = this.selectedSchema;
+        const selectedField = this.selectedField;
+        if (!selectedField || !selectedSchema) {
+            throw new Error('A schema and a field must be selected before saving.');
+        }
+
         this.isSaving = true;
         const progress = this.filesWithBlobs.map<Promise<void | MeshNode>>(fileWithBlobs => {
             fileWithBlobs.progress = 'uploading';
 
-            const node = initializeNode(this.selectedSchema, this.parentUuid, this.language);
+            const node = initializeNode(selectedSchema, this.parentUuid, this.language);
             const nodeName = fileWithBlobs.file.fileName.substr(0, fileWithBlobs.file.fileName.lastIndexOf('.'));
-            node.fields[this.selectedField.name] = fileWithBlobs.file;
-            node.fields[this.selectedSchema.displayField] = nodeName;
+            node.fields[selectedField.name] = fileWithBlobs.file;
+            node.fields[selectedSchema.displayField] = nodeName;
 
-            return this.editorEffects.saveNewNode(this.project, node as MeshNode, null)
+            return this.editorEffects.saveNewNode(this.project, node as MeshNode)
                 .then(response => {
                     fileWithBlobs.progress = 'done';
                     return response;

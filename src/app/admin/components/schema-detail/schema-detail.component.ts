@@ -82,7 +82,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     }
 }
 
-const updateFields = ['name', 'description', 'fields'];
+const updateFields: Array<keyof SchemaResponse> = ['name', 'description', 'fields'];
 
 function stripSchemaFields(schema: SchemaResponse): any {
     return updateFields.reduce((obj, key) => ({...obj, [key]: schema[key]}), {});

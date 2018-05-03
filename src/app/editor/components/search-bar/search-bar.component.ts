@@ -8,6 +8,7 @@ import { ListEffectsService } from '../../../core/providers/effects/list-effects
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { Tag } from '../../../common/models/tag.model';
+import { notNullOrUndefined } from "../../../common/util/util";
 
 
 @Component({
@@ -44,7 +45,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         this.state.select(state => state.tags.tags)
             .takeUntil(this.destroyed$)
             .subscribe(tags => {
-                this.allTags = tags.map(uuid => this.entities.getTag(uuid));
+                this.allTags = tags.map(uuid => this.entities.getTag(uuid)).filter(notNullOrUndefined);
             });
     }
 
@@ -100,7 +101,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         this.searchTags = (params.get('t') || '')
             .split(',')
             .map(uuid => this.entities.getTag(uuid))
-            .filter(tag => !!tag !== false);
+            .filter(notNullOrUndefined);
 
         // Required if the browser 'back' or 'forward' button was clicked
         this.changeDetectorRef.markForCheck();

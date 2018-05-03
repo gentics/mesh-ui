@@ -14,7 +14,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { ISortableEvent, ISortableGroupOptions } from 'gentics-ui-core';
+import { ISortableEvent, ISortableGroupOptions, ISortableMoveEvent } from 'gentics-ui-core';
 import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { ListTypeFieldType, SchemaField } from '../../../common/models/schema.model';
 import { Microschema } from '../../../common/models/microschema.model';
@@ -113,13 +113,13 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         this.fieldSets.forEach(componentRef => componentRef.destroy());
     }
 
-    onMove = (e): boolean => {
+    onMove = (e: ISortableMoveEvent): boolean => {
         this.hoverRemoveArea = e.to.classList.contains('remove-area');
         this.changeDetector.markForCheck();
         return true;
     }
 
-    trackByFn(index): number {
+    trackByFn(index: number): number {
         return index;
     }
 

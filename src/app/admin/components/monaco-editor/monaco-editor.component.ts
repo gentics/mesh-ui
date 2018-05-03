@@ -4,6 +4,8 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 // import 'monaco-editor';
 
 declare const window: Window & { require: any };
+// TODO: use the actual typings which are shipped with the monaco editor, get rid of the
+// "any" types in the code below where possible.
 declare const monaco: any;
 
 
@@ -137,12 +139,12 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         // This is a hack to get errors from the validation in the editor.
         // https://github.com/Microsoft/monaco-editor/issues/30
         const setModelMarkers = monaco.editor.setModelMarkers;
-        monaco.editor.setModelMarkers = (model, owner, markers: MarkerData[]) => {
+        monaco.editor.setModelMarkers = (model: any, owner: any, markers: MarkerData[]) => {
             setModelMarkers.call(monaco.editor, model, owner, markers);
             this.errors.emit(markers);
         };
 
-        this._editor.getModel().onDidChangeContent((e) => {
+        this._editor.getModel().onDidChangeContent((e: any) => {
             this.updateValue(this._editor.getModel().getValue());
         });
     }
@@ -194,9 +196,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         }
     }
 
-    onChange(_) { }
+    onChange(_: any) { }
     onTouched() { }
-    registerOnChange(fn) { this.onChange = fn; }
-    registerOnTouched(fn) { this.onTouched = fn; }
+    registerOnChange(fn: (value?: any) => void) { this.onChange = fn; }
+    registerOnTouched(fn: () => void) { this.onTouched = fn; }
 
 }

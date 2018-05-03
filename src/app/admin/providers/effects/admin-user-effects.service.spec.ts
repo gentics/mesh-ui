@@ -42,9 +42,9 @@ describe('AdminUserEffects', () => {
 
     describe('openUser()', () => {
 
-        let mockUser: Partial<User>;
-        let mockUserNode: Partial<MeshNode>;
-        let mockUserNodeSchema: Partial<Schema>;
+        let mockUser: Partial<User> & { uuid: string; };
+        let mockUserNode: Partial<MeshNode> & { uuid: string; };
+        let mockUserNodeSchema: Partial<Schema> & { uuid: string; };
 
         function setUpSpies() {
             api.user.getUser = jasmine.createSpy('user.getUser').and.returnValue(Observable.of(mockUser));
@@ -151,9 +151,10 @@ describe('AdminUserEffects', () => {
                     }
                 } as any;
                 setUpSpies();
-                api.admin.getMicroschema = jasmine.createSpy('admin.getMicroschema').and.callFake(({ microschemaUuid, version }) => {
-                    return Observable.of({ uuid: microschemaUuid, version });
-                });
+                api.admin.getMicroschema = jasmine.createSpy('admin.getMicroschema').and
+                    .callFake(({ microschemaUuid, version }: { microschemaUuid: string; version: string; }) => {
+                        return Observable.of({ uuid: microschemaUuid, version });
+                    });
             });
 
             it('fetches unique microschemas (uuid & version)', () => {

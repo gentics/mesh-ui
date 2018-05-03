@@ -18,8 +18,8 @@ import { AdminProjectEffectsService } from '../../providers/effects/admin-projec
 describe('ProjectListItemComponent', () => {
 
     let appState: TestApplicationState;
-    let mockModal;
-    let mockNotification;
+    let mockModal: any;
+    let mockNotification: any;
     const mockAdminProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['deleteProject']);
 
     beforeEach(() => {

@@ -147,7 +147,7 @@ describe('Search-bar component:', () => {
             fixture.detectChanges();
             const searchBar: SearchBarComponent = fixture.debugElement.query(By.directive(SearchBarComponent)).componentInstance;
             activeRoute.queryParamMap.take(1).subscribe(urlParams => {
-                expect(searchBar.searchQuery).toEqual(urlParams.get('q'));
+                expect(searchBar.searchQuery).toEqual(urlParams.get('q')!);
             });
         }));
 

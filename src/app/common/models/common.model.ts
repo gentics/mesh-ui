@@ -7,7 +7,9 @@ import { SchemaField } from './schema.model';
 
 export interface NodeReference extends NodeReferenceFromServer {}
 
-export interface SchemaReference extends SchemaReferenceFromServer {}
+export interface SchemaReference extends SchemaReferenceFromServer {
+    uuid: string;
+}
 
 export interface MicroschemaReference extends ReleaseMicroschemaInfoFromServer {}
 

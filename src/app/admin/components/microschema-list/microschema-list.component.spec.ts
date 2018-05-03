@@ -15,8 +15,8 @@ describe('MicroSchemaListComponent', () => {
 
     let appState: TestApplicationState;
     const mockModal = { fromComponent() { } };
-    let mockAdminSchemaEffects;
-    let mockRouter;
+    let mockAdminSchemaEffects: any;
+    let mockRouter: any;
 
     beforeEach(async(() => {
         spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() { } }));

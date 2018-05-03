@@ -14,8 +14,8 @@ import { TestStateModule } from '../../../state/testing/test-state.module';
 
 describe('ChangePasswordModal', () => {
 
-    let authEffectSpy;
-    let notificationSpy;
+    let authEffectSpy: any;
+    let notificationSpy: any;
     let appState: TestApplicationState;
 
 
@@ -29,7 +29,7 @@ describe('ChangePasswordModal', () => {
             providers: [
                 { provide: AuthEffectsService, useValue: authEffectSpy },
                 { provide: Notification, useValue: notificationSpy },
-                { provide: I18nService, useValue: { translate(key) { return key; } } }
+                { provide: I18nService, useValue: { translate(key: string) { return key; } } }
             ],
             declarations: [ChangePasswordModalComponent]
         });

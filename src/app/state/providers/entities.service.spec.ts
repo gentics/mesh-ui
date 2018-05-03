@@ -43,7 +43,7 @@ describe('EntitiesService', () => {
             expect(entities.getProject(undefined as any)).toBeUndefined();
         });
 
-        it('selectProject() emits on changes to selected project', (done) => {
+        it('selectProject() emits on changes to selected project', (done: DoneFn) => {
             let count = 0;
 
             const sub = entities.selectProject('project1')
@@ -221,7 +221,7 @@ describe('EntitiesService', () => {
             ]);
         });
 
-        it('selectAllSchemas() emits when a schema is added', (done) => {
+        it('selectAllSchemas() emits when a schema is added', (done: DoneFn) => {
             let count = 0;
             const mockSchema3 = mockSchema({ uuid: 'mockSchema3', name: 'Schema3', version: '1.0' as any });
 

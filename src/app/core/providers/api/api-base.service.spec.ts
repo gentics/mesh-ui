@@ -347,7 +347,7 @@ describe('ApiBase', () => {
         it('omits undefined query params', () => {
             const result = apiBase.formatUrl('/users', {
                 version: '1.1',
-                lang: undefined
+                lang: undefined as any
             });
             expect(result).toBe('/api/v1/users?version=1.1');
         });
@@ -398,9 +398,9 @@ describe('ApiBase', () => {
             it('can map a response code to a result', () => {
                 const emittedValues: any[] = [];
                 observable.mapResponses({
-                    200: responseText => 'twohundred: ' + responseText,
-                    201: responseText => 'twohundredone: ' + responseText,
-                    404: responseText => 'fourofour: ' + responseText
+                    200: (responseText: string) => 'twohundred: ' + responseText,
+                    201: (responseText: string) => 'twohundredone: ' + responseText,
+                    404: (responseText: string) => 'fourofour: ' + responseText
                 })
                 .subscribe(v => {
                     emittedValues.push(v);

@@ -51,7 +51,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         const node$ = this.entities.selectNode(this.nodeUuid, { strictLanguageMatch: false })
             // Does not emit node if it was not found
             .filter(node => !!node);
-        const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid));
+        const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid!));
 
         // Update binary properties when node or schema changes
         this.subscription = Observable.combineLatest(node$, schema$)
@@ -101,7 +101,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         let firstImageField: BinaryField | undefined;
         let firstImageFieldName: string | undefined;
 
-        let binaryProperties;
+        let binaryProperties: BinaryProperties;
 
         schema.fields
             .filter(field => this.binaryFilter(field))

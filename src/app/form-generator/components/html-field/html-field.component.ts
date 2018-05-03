@@ -103,7 +103,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         this.setValidity(value);
     }
 
-    private onSelectionChangeHandler = range => {
+    private onSelectionChangeHandler = (range: any) => {
         if (range !== null && !this.api.readOnly) {
             this.api.setFocus(true);
         } else {

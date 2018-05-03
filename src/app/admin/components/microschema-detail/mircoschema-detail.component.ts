@@ -89,7 +89,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     }
 }
 
-const updateFields = ['name', 'description', 'fields'];
+const updateFields: Array<keyof MicroschemaResponse> = ['name', 'description', 'fields'];
 
 function stripMicroschemaFields(microschema: MicroschemaResponse): any {
     return updateFields.reduce((obj, key) => ({...obj, [key]: microschema[key]}), {});

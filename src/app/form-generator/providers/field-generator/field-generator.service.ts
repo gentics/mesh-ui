@@ -71,7 +71,7 @@ export class FieldGenerator {
             },
             setError(errorCodeOrHash: string | ErrorCodeHash, errorMessage?: string | false): void {
                 if (typeof errorCodeOrHash === 'string') {
-                    instance.setError(errorCodeOrHash, errorMessage);
+                    instance.setError(errorCodeOrHash, errorMessage!);
                 } else {
                     instance.setError(errorCodeOrHash);
                 }

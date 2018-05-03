@@ -6,16 +6,16 @@ import { AdminSchemaEffectsService } from '../effects/admin-schema-effects.servi
 import { Microschema } from '../../../common/models/microschema.model';
 
 @Injectable()
-export class MicroschemaResolver implements Resolve<Microschema> {
+export class MicroschemaResolver implements Resolve<Microschema | undefined> {
 
     constructor(private adminSchemaEffects: AdminSchemaEffectsService) {}
 
-    resolve(route: ActivatedRouteSnapshot): Promise<Microschema | undefined> {
+    resolve(route: ActivatedRouteSnapshot): Promise<Microschema> | undefined {
         const uuid = route.paramMap.get('uuid');
 
         if (uuid === 'new') {
             this.adminSchemaEffects.newMicroschema();
-        } else {
+        } else if (uuid) {
             return this.adminSchemaEffects.openMicroschema(uuid)
                 .then(schema => {
                     if (!schema) {

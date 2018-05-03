@@ -147,7 +147,7 @@ export class TagSelectorComponent implements OnChanges, OnDestroy {
             return;
         }
         // If the term does not perfectly match any of existing tags - we will show an option to create one
-        if (!this.tags.some(tag => tag.name.toLowerCase() === filterTerm.toLowerCase())) {
+        if (!this.tags.some(tag => tag.name!.toLowerCase() === filterTerm.toLowerCase())) {
             this.newTagName = filterTerm;
         } else {
             this.newTagName = '';

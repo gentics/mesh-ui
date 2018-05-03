@@ -6,16 +6,16 @@ import { Schema } from '../../../common/models/schema.model';
 import { AdminSchemaEffectsService } from '../effects/admin-schema-effects.service';
 
 @Injectable()
-export class SchemaResolver implements Resolve<Schema> {
+export class SchemaResolver implements Resolve<Schema | undefined> {
 
     constructor(private adminSchemaEffects: AdminSchemaEffectsService) {}
 
-    resolve(route: ActivatedRouteSnapshot): Promise<Schema | undefined> {
+    resolve(route: ActivatedRouteSnapshot): Promise<Schema> | undefined {
         const uuid = route.paramMap.get('uuid');
 
         if (uuid === 'new') {
             this.adminSchemaEffects.newSchema();
-        } else {
+        } else if (uuid) {
             return this.adminSchemaEffects.openSchema(uuid)
                 .then(schema => {
                     if (!schema) {

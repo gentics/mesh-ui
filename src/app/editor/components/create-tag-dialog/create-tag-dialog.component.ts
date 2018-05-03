@@ -9,6 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Tag } from '../../../common/models/tag.model';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { notNullOrUndefined } from "../../../common/util/util";
 
 export interface CreateTagDialogComponentResult {
     tag: Tag;
@@ -44,7 +45,9 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
         private entities: EntitiesService) { }
 
     ngOnInit() {
-        this.tagFamilies = this.state.now.tags.tagFamilies.map(uuid => this.entities.getTagFamily(uuid));
+        this.tagFamilies = this.state.now.tags.tagFamilies
+            .map(uuid => this.entities.getTagFamily(uuid))
+            .filter(notNullOrUndefined);
     }
 
     onFamilyNameInputChange(term: string): void {
@@ -56,7 +59,9 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
     }
 
     onFamilySelected(tagFamily: TagFamily): void {
-        this.inputTagFamilyValue = tagFamily.name;
+        if (tagFamily.name) {
+            this.inputTagFamilyValue = tagFamily.name;
+        }
     }
 
     saveTagToFamily(family: TagFamily, tagName: string) {
@@ -75,7 +80,7 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
         }
 
         const familyName = this.inputTagFamilyValue.toLowerCase();
-        const family = this.tagFamilies.find(f => f.name.toLowerCase() === familyName);
+        const family = this.tagFamilies.find(f => !!f.name && f.name.toLowerCase() === familyName);
 
         if (!family) {
             // save a new family
@@ -106,7 +111,7 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
             filterFamilies = [...this.tagFamilies];
         } else {
             filterFamilies = this.tagFamilies.reduce<TagFamily[]>((filteredFamilies, family) => {
-                if (fuzzyMatch(this.inputTagFamilyValue, family.name)) {
+                if (fuzzyMatch(this.inputTagFamilyValue, family.name || '')) {
                     return [...filteredFamilies, family];
                 } else {
                     return filteredFamilies;

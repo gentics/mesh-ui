@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import * as difference from 'ramda/src/difference';
+import { difference } from 'ramda';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';

@@ -13,6 +13,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { ModalService } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
+import { notNullOrUndefined } from "../../../common/util/util";
 
 @Component({
     selector: 'mesh-user-list',
@@ -25,7 +26,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     users$: Observable<User[]>;
     currentPage$: Observable<number>;
     itemsPerPage$: Observable<number>;
-    totalItems$: Observable<number>;
+    totalItems$: Observable<number | null>;
     allGroups$: Observable<Group[]>;
     filterInput = new FormControl('');
     filterGroupSelect = new FormControl('');
@@ -83,7 +84,10 @@ export class UserListComponent implements OnInit, OnDestroy {
             });
 
         const allUsers$ = this.state.select(state => state.adminUsers.userList)
-            .map(uuids => uuids.map(uuid => this.entities.getUser(uuid)));
+            .map(uuids => uuids
+                .map(uuid => this.entities.getUser(uuid))
+                .filter(notNullOrUndefined)
+            );
         const filterTerm$ = this.state.select(state => state.adminUsers.filterTerm);
         const filterGroups$ = this.state.select(state => state.adminUsers.filterGroups);
 
@@ -198,7 +202,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
 
     private lowercaseMatch(needle: string, haystack?: string): boolean {
-        return haystack && -1 < haystack.toLowerCase().indexOf(needle.toLowerCase());
+        return !!(haystack && -1 < haystack.toLowerCase().indexOf(needle.toLowerCase()));
     }
 
     private userIsInGroup(user: User, groupUuid: string | undefined): boolean {

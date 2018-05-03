@@ -29,7 +29,7 @@ export class ContentPortalService {
 
     getTemplates(id: string): TemplateRef<any>[] {
         this.checkId(id);
-        return this.portalMap.get(id);
+        return this.portalMap.get(id) || [];
     }
 
     private checkId(id: string): void {

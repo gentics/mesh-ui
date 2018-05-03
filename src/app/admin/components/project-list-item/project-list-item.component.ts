@@ -72,7 +72,7 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
      * Updates the project.
      * Happens on input blur
      */
-    update(event): void {
+    update(event: string): void {
         // TODO actually update
         // TODO maybe not check state but something different because it might get updated later (after api call is done)
         // TODO Implement as soon as double firing of this event is fixed
