@@ -10,6 +10,7 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import { InputField, ModalService } from 'gentics-ui-core';
 
@@ -21,6 +22,9 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
+;
+
 
 @Component({
     selector: 'mesh-node-tags-bar',
@@ -96,13 +100,13 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         this.filterTerm = '';
         this.displayTagSelection = false;
         this.inputField.nativeElement.querySelector('input').blur();
-        this.checkIfDirty();
+        this.isDirty = this.checkIfDirty();
     }
 
     onTagDeleted(deletedTag: Tag): void {
         const tagIndex = this.nodeTags.findIndex(tag => tag.uuid === deletedTag.uuid);
         this.nodeTags.splice(tagIndex, 1);
-        this.checkIfDirty();
+        this.isDirty = this.checkIfDirty();
     }
 
     onCreateNewTagClick(newTagName: string): void {
@@ -150,10 +154,8 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         }, 200);
     }
 
-    private checkIfDirty(): void {
-        const oldUuids = (this.node.tags || []).map(tag => tag.uuid).sort().join(',');
-        const newUuids = this.nodeTags.map(tag => tag.uuid).sort().join(',');
-        this.isDirty = newUuids !== oldUuids;
+    private checkIfDirty(): boolean {
+        return tagsAreEqual(this.node.tags, this.nodeTags) === false;
     }
 
     /**

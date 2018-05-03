@@ -15,6 +15,7 @@ import {
     SchemaUpdateRequest
 } from '../../../common/models/server-models';
 import { Schema } from '../../../common/models/schema.model';
+import { Microschema } from '../../../common/models/microschema.model';
 
 @Injectable()
 export class AdminSchemaEffectsService {
@@ -36,11 +37,17 @@ export class AdminSchemaEffectsService {
             });
     }
 
-    openSchema(schemaUuid: string) {
+    newSchema(): void {
+        this.state.actions.adminSchemas.newSchema();
+    }
+
+    openSchema(schemaUuid: string): Promise<Schema | void> {
         this.state.actions.adminSchemas.openSchemaStart();
-        this.api.admin.getSchema({schemaUuid})
-            .subscribe(schema => {
+        return this.api.admin.getSchema({schemaUuid})
+            .toPromise()
+            .then(schema => {
                 this.state.actions.adminSchemas.openSchemaSuccess(schema);
+                return schema as Schema;
             }, error => {
                 this.state.actions.adminSchemas.openSchemaError();
             });
@@ -113,11 +120,17 @@ export class AdminSchemaEffectsService {
             });
     }
 
-    openMicroschema(microschemaUuid: string): void {
+    newMicroschema(): void {
+        this.state.actions.adminSchemas.newMicroschema();
+    }
+
+    openMicroschema(microschemaUuid: string): Promise<Microschema | void> {
         this.state.actions.adminSchemas.openMicroschemaStart();
-        this.api.admin.getMicroschema({microschemaUuid})
-            .subscribe(microschema => {
+        return this.api.admin.getMicroschema({microschemaUuid})
+            .toPromise()
+            .then(microschema => {
                 this.state.actions.adminSchemas.openMicroschemaSuccess(microschema);
+                return microschema as Microschema;
             }, error => {
                 this.state.actions.adminSchemas.openMicroschemaError();
                 this.notification.show({

@@ -11,6 +11,9 @@ export class AdminApi {
     /** Add a user to an existing group. */
     addUserToGroup = apiPostWithoutBody('/groups/{groupUuid}/users/{userUuid}');
 
+    /** Remove a user from the given group. */
+    removeUserFromGroup = apiDelete('/groups/{groupUuid}/users/{userUuid}');
+
     /**
      * Apply the provided changes on the latest version of the microschema and migrate all
      * nodes which are based on the microschema. This operation is non-blocking

@@ -50,6 +50,7 @@
                         <icon class="material-icons">done</icon>
                     </div>
                     <mesh-file-preview [mimeType]="fileWithBlob.file.mimeType"
+                                        [fileName]="fileWithBlob.file.fileName"
                                         [url]="fileWithBlob.url">
                     </mesh-file-preview>
                     <div class="media-properties">{{fileWithBlob.file.fileName}}</div>

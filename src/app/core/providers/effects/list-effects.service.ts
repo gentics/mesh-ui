@@ -8,7 +8,6 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { ConfigService } from '../config/config.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshNode } from '../../../common/models/node.model';
-import { NodeResponse } from '../../../common/models/server-models';
 import { Tag } from '../../../common/models/tag.model';
 
 

@@ -8,6 +8,7 @@ describe('EntityStateActions', () => {
     describe('mergeEntityState()', () => {
 
         const empty: EntityState = {
+            group: {},
             microschema: {},
             node: {},
             project: {},
@@ -47,6 +48,7 @@ describe('EntityStateActions', () => {
             });
 
             expect(before).toEqual({
+                group: {},
                 microschema: {},
                 node: {},
                 project: {},
@@ -316,6 +318,7 @@ describe('EntityStateActions', () => {
         const node5: any = { uuid: 'nodeUuid1', language: 'de', version: '1.1' };
 
         const state: EntityState = {
+            group: {},
             microschema: {},
             node: {
                 nodeUuid1: {

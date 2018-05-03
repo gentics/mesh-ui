@@ -1,0 +1,80 @@
+@import "variables";
+
+:host {
+    display: block;
+}
+
+.list-header {
+    display: flex;
+    padding: 10px;
+    background-color: $gtx-color-very-light-gray;
+
+    ::ng-deep gtx-input input,
+    ::ng-deep gtx-select .view-value {
+        background-color: white;
+    }
+}
+
+.selection-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    @media screen and (max-width: $small-screen){
+        gtx-checkbox {
+            overflow: hidden;
+            width: 24px;
+        }
+        .total-selected {
+            display: none;
+        }
+    }
+}
+
+.total-selected {
+    font-size: $gtx-font-size-small;
+    margin-left: 36px;
+
+    .checked-count {
+        color: $gtx-color-very-dark-gray;
+        transition: color 0.2s;
+    }
+    .clear-selection {
+        cursor: pointer;
+        opacity: 1;
+        transition: opacity 0.2s, visibility 0s;
+    }
+
+    &.hidden {
+        .checked-count {
+            color: $gtx-color-mid-gray;
+        }
+        .clear-selection {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s, visibility 0s 0.2s;
+        }
+    }
+}
+
+.user-controls {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.list-body {
+    padding: 10px;
+}
+
+.no-results {
+    font-size: $gtx-font-size-lead;
+    color: $gtx-color-mid-gray;
+    text-align: center;
+    padding: 20px;
+}
+
+.list-footer {
+    padding: 10px;
+    background-color: $gtx-color-very-light-gray;
+    text-align: center;
+}

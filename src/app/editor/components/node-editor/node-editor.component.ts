@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
-import { ModalService } from 'gentics-ui-core';
+
+import { ModalService, IModalInstance } from 'gentics-ui-core';
 
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
@@ -10,16 +11,20 @@ import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
-import { FormGeneratorComponent } from '../../form-generator/components/form-generator/form-generator.component';
+import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { getMeshNodeBinaryFields, simpleCloneDeep } from '../../../common/util/util';
-import { initializeNode } from '../../common/initialize-node';
-import { NodeReferenceFromServer } from '../../../common/models/server-models';
+import { initializeNode } from '../../../common/util/initialize-node';
+import { NodeReferenceFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-
 import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
 import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
+import { ApiError } from '../../../core/providers/api/api-error';
+import { ApiService } from '../../../core/providers/api/api.service';
+import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
+import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
 
 @Component({
     selector: 'node-editor',
@@ -51,7 +56,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private navigationService: NavigationService,
         private route: ActivatedRoute,
         private i18n: I18nService,
-        private modalService: ModalService) { }
+        private modalService: ModalService,
+        private apiBase: ApiBase,
+        private api: ApiService) { }
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -122,7 +129,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
         const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
         // const parentDisplayNode: any = { displayName: parentNode.displayName || '' };
-        const parentDisplayNode: NodeReferenceFromServer = { displayName: parentNode.displayName || '' } as NodeReferenceFromServer;
+        const parentDisplayNode = { displayName: parentNode ? parentNode.displayName : '' } as NodeReferenceFromServer;
         let breadcrumb = this.node.breadcrumb;
 
         if (!breadcrumb && parentNode) {
@@ -179,21 +186,26 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     /**
      * Validate if saving is required.
-     * Open a file upload progress if binary fields are present upload
+     * Open a file upload progress if binary fields are present upload.
+     * Tags might be explicitly passed in if we are solving the conflicts and we chose the tags from the remote version. Otherwise look if tags were edited or not (tagsBar.isDirty)
+     *
      */
-    saveNode(navigateOnSave = true): void {
-
+    saveNode(navigateOnSave = true, tags: TagReferenceFromServer[] = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null): void {
+        // TODO: remove the test case when done with conflict resolution.
+        // To quickly test the handleSaveConflicts, uncomment bellow:
+        /*
+            this.handleSaveConflicts(['name', 'pets', 'number', 'Html', 'Adate', 'othernode', 'Bool', 'microschema.name', 'microschema.number']);
+            return;
+        */
         if (!this.node) {
             return;
         }
-
         if (this.isDirty) {
             this.isSaving = true;
             let saveFn: Promise<any>;
 
-            if (!this.node.uuid) {
+            if (!this.node.uuid) { // Create new node.
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null;
                 saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, tags)
                     .then(node => {
                         this.isSaving = false;
@@ -209,20 +221,58 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         this.isSaving = false;
                         this.changeDetector.detectChanges();
                     });
-            } else {
-                saveFn = this.editorEffects.saveNode(this.node, this.tagsBar.isDirty ? this.tagsBar.nodeTags : null)
+
+                this.saveNodeWithProgress(saveFn);
+            } else { // Update node.
+                saveFn = this.editorEffects.saveNode(this.node, tags)
                     .then(node => {
                         this.isSaving = false;
                         if (node) {
+                            this.formGenerator.update(node);
                             this.formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
+                            this.changeDetector.markForCheck();
                         }
                     }, error => {
+                        if (error.response) {
+                            const errorResponse = error.response.json();
+                            if (errorResponse.type === 'node_version_conflict') {
+                                this.handleSaveConflicts(errorResponse.properties.conflicts);
+                            }
+                        }
                         this.isSaving = false;
                     });
+                this.saveNodeWithProgress(saveFn);
             }
-            this.saveNodeWithProgress(saveFn);
         }
+    }
+
+    handleSaveConflicts(conflicts: string[]): void {
+        this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
+            .take(1)
+            .subscribe((response: NodeResponse) => {
+                this.modalService.fromComponent(
+                    NodeConflictDialogComponent,
+                    {
+                        closeOnOverlayClick: false,
+                        width: '90%',
+                        onClose: (reason: any): void => {
+                            this.changeDetector.detectChanges();
+                        }
+                    },
+                    {
+                        conflicts,
+                        localTags: this.tagsBar.nodeTags,
+                        localNode: this.node,
+                        remoteNode : response as MeshNode,
+                    }
+                )
+                .then(modal => modal.open())
+                .then(mergedNode => {
+                    this.node = mergedNode;
+                    this.saveNode(true, this.node.tags);
+                });
+            });
     }
 
     /**

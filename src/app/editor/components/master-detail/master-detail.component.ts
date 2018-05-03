@@ -42,8 +42,15 @@ export class MasterDetailComponent implements OnInit {
             .filter(Boolean)
             .take(1)
             .subscribe((firstProject: Project) => {
-                this.navigationService.list(firstProject.name, firstProject.rootNode.uuid)
-                    .navigate({queryParams: this.route.snapshot.queryParams});
+                // If the list params are already set in the URL, use those. Otherwise
+                // default to the first project.
+                const listRoute = this.route.snapshot.children.find(route => route.outlet === 'list');
+                const projectName = listRoute ? listRoute.paramMap.get('projectName') : firstProject.name;
+                const containerUuid = listRoute ? listRoute.paramMap.get('containerUuid') : firstProject.rootNode.uuid;
+                const language = listRoute ? listRoute.paramMap.get('language') : undefined;
+
+                this.navigationService.list(projectName, containerUuid, language)
+                    .navigate({ queryParams: this.route.snapshot.queryParams });
             });
     }
 

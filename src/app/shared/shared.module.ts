@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { NoContentComponent } from './components/no-content/no-content.component';
@@ -19,6 +20,9 @@ import { ChipComponent } from './components/chip/chip.component';
 import { TagSelectorComponent } from './components/tag-selector/tag-selector.component';
 import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
 import { FilePreviewComponent } from './components/file-preview/file-preview.component';
+import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
+import { ContentPortalComponent } from './components/content-portal/content-portal.component';
+import { ProjectContentDirective } from './directives/project-content.directive';
 
 const SHARED_COMPONENTS = [
     ChipComponent,
@@ -28,13 +32,16 @@ const SHARED_COMPONENTS = [
     TagSelectorComponent,
     ThumbnailComponent,
     AudioPlayButtonComponent,
-    FilePreviewComponent
+    FilePreviewComponent,
+    PaginationControlsComponent,
+    ContentPortalComponent
 ];
 
 const SHARED_DIRECTIVES = [
     ScrollFrameDirective,
     ScrollFrameHeadingDirective,
-    BackgroundFromDirective
+    BackgroundFromDirective,
+    ProjectContentDirective
 ];
 
 const SHARED_PIPES = [
@@ -55,6 +62,7 @@ const SHARED_PIPES = [
         ReactiveFormsModule,
         GenticsUICoreModule,
         RouterModule.forChild([]),
+        NgxPaginationModule
     ],
     declarations: [
         ...SHARED_COMPONENTS,
@@ -65,6 +73,7 @@ const SHARED_PIPES = [
         ...SHARED_COMPONENTS,
         ...SHARED_PIPES,
         ...SHARED_DIRECTIVES,
+        PaginatePipe,
         GenticsUICoreModule,
         FormsModule,
         ReactiveFormsModule,

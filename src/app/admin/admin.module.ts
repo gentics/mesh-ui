@@ -10,13 +10,23 @@ import { ProjectListItemComponent } from './components/project-list-item/project
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
 import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
 import { MicroschemaListComponent } from './components/microschema-list/mircoschema-list.component';
-import { MicroschemaComponent } from './components/microschema/mircoschema.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
-import { SchemaComponent } from './components/schema/schema.component';
 import { SchemaAssignmentComponent } from './components/schema-assignment/schema-assignment.component';
 import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
 import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
+import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
+import { AdminListComponent } from './components/admin-list/admin-list.component';
+import { AdminListItemComponent } from './components/admin-list-item/admin-list-item.component';
+import { UserListComponent } from './components/user-list/user-list.component';
+import { UserDetailComponent } from './components/user-detail/user-detail.component';
+import { UserResolver } from './providers/resolvers/user-resolver';
+import { SchemaResolver } from './providers/resolvers/schema-resolver';
+import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
+import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
+import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
+import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
+import { FormGeneratorModule } from '../form-generator/form-generator.module';
 
 @NgModule({
     declarations: [
@@ -26,11 +36,16 @@ import { AdminProjectEffectsService } from './providers/effects/admin-project-ef
         ProjectListItemComponent,
         CreateProjectModalComponent,
         MicroschemaListComponent,
-        MicroschemaComponent,
+        MicroschemaDetailComponent,
         SchemaListComponent,
-        SchemaComponent,
+        SchemaDetailComponent,
         MonacoEditorComponent,
-        SchemaAssignmentComponent
+        SchemaAssignmentComponent,
+        UserListComponent,
+        AdminListComponent,
+        AdminListItemComponent,
+        UserDetailComponent,
+        UserGroupSelectComponent
     ],
     entryComponents: [
         CreateProjectModalComponent
@@ -38,11 +53,16 @@ import { AdminProjectEffectsService } from './providers/effects/admin-project-ef
     imports: [
         SharedModule,
         RouterModule.forChild(routes),
+        FormGeneratorModule
     ],
     providers: [
         ModalService,
         AdminSchemaEffectsService,
-        AdminProjectEffectsService
+        AdminProjectEffectsService,
+        AdminUserEffectsService,
+        UserResolver,
+        SchemaResolver,
+        MicroschemaResolver
     ]
 })
 export class AdminModule {

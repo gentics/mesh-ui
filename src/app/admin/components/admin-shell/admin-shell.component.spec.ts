@@ -1,9 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AdminShellComponent } from './admin-shell.component';
-import { AdminBreadcrumbsComponent } from '../admin-breadcrumbs/admin-breadcrumbs.component';
-import { configureComponentTest, provideMockI18n } from '../../../../testing/configure-component-test';
-import { SharedModule } from '../../../shared/shared.module';
+import { Component } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { AdminShellComponent } from './admin-shell.component';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 
@@ -15,7 +16,7 @@ describe('AdminShellComponent', () => {
     beforeEach(() => {
         configureComponentTest({
             imports: [SharedModule, RouterTestingModule, TestStateModule],
-            declarations: [AdminShellComponent, AdminBreadcrumbsComponent],
+            declarations: [AdminShellComponent, MockAdminBreadcrumbsComponent],
             providers: [ApplicationStateService]
         });
     });
@@ -32,3 +33,9 @@ describe('AdminShellComponent', () => {
         expect(comp).toBeDefined();
     });
 });
+
+@Component({
+    selector: 'mesh-admin-breadcrumbs',
+    template: ''
+})
+class MockAdminBreadcrumbsComponent {}

@@ -1,5 +1,28 @@
+@import "variables";
+
+:host {
+    display: block;
+    position: relative;
+}
+
+.bar-wrapper {
+    display: flex;
+    background-color: $gtx-breadcrumbs-background-color;
+}
+
 gtx-breadcrumbs {
     height: 40px;
+    flex: 1;
+}
+
+mesh-content-portal {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+/deep/ gtx-breadcrumbs > nav {
+    box-shadow: none;
 }
 
 /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,

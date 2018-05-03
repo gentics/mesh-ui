@@ -10,6 +10,7 @@ const typesThatPreload = ['video', 'audio', 'image'];
 })
 export class FilePreviewComponent implements OnInit {
     @Input() mimeType: string;
+    @Input() fileName: string;
     @Input() url: SafeUrl;
 
     protected loadingPreview = false;
@@ -17,7 +18,7 @@ export class FilePreviewComponent implements OnInit {
 
     ngOnInit() {
 
-        this.fileType = getFileType(this.mimeType);
+        this.fileType = getFileType(this.mimeType, this.fileName);
         if ( typesThatPreload.indexOf(this.mimeType) !== -1) {
             this.loadingPreview = true;
         }

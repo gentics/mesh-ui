@@ -1,19 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IModalDialog } from 'gentics-ui-core';
-import { SafeUrl, SafeScript } from '@angular/platform-browser';
-import {
-    trigger,
-    state,
-    style,
-    animate,
-    transition
-  } from '@angular/animations';
+import { SafeUrl } from '@angular/platform-browser';
+import { animate, style, transition, trigger } from '@angular/animations';
 
-import { BlobService } from '../../providers/blob.service';
+import { BlobService } from '../../../core/providers/blob/blob.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
-import { MeshNode, BinaryField } from '../../../common/models/node.model';
-import { initializeNode } from '../../common/initialize-node';
+import { BinaryField, MeshNode } from '../../../common/models/node.model';
+import { initializeNode } from '../../../common/util/initialize-node';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
