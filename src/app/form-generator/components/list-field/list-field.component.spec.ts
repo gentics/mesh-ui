@@ -84,4 +84,6 @@ class TestHostComponent {}
 class MockFieldGeneratorService {
     create = jasmine.createSpy('create');
 }
-class MockMeshControlGroupService {}
+class MockMeshControlGroupService {
+    getMeshControlAtPath = jasmine.createSpy('getMeshControlAtPath');
+}
