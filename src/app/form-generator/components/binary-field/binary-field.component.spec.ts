@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+
 import { Button, Icon, ModalService, ProgressBar } from 'gentics-ui-core';
 import { ImageTransformParams } from 'gentics-ui-image-editor/models';
 
@@ -15,6 +16,8 @@ import { BlobService } from '../../../core/providers/blob/blob.service';
 import { BinaryField } from '../../../common/models/node.model';
 import { FileSizePipe } from '../../../shared/pipes/file-size/file-size.pipe';
 import { MockModalService } from '../../../../testing/modal.service.mock';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
+import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 
 describe('BinaryFieldComponent:', () => {
 
@@ -32,6 +35,7 @@ describe('BinaryFieldComponent:', () => {
             ],
             providers: [
                 { provide: ApiService, useClass: MockApiService },
+                { provide: ApiBase, useClass: MockApiBase },
                 { provide: BlobService, useClass: MockBlobService },
                 { provide: ModalService, useClass: MockModalService }
             ]
@@ -183,14 +187,18 @@ describe('BinaryFieldComponent:', () => {
 
     describe('url handling', () => {
 
-        const mockBinaryFileUrl = 'mockBinaryFileUrl';
+        const mockBinaryFileUrl = '/api/v1/demo/nodes/node_uuid/binary/test';
         let mockFile: BinaryField;
         let mockImage: BinaryField;
         let apiService: MockApiService;
+        let apiBase: MockApiBase;
 
         beforeEach(() => {
             apiService = TestBed.get(ApiService);
-            apiService.project.getBinaryFileUrl = jasmine.createSpy('getBinaryFileUrl').and.returnValue(mockBinaryFileUrl);
+            apiBase = TestBed.get(ApiBase);
+            apiService.project.getBinaryFileUrl = jasmine.createSpy('getBinaryFileUrl').and.callFake((project: string, nodeUuid: string, name: string, version?: string, params?: {w?: number, h?: number, fpx?: number, fpy?: number, fpz?: number, crop?: string,  rect?: string }) => {
+                return apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', { project, nodeUuid, name, version, ...params });
+            })
             mockFile = {
                 fileName: 'file.txt',
                 fileSize: 42,
@@ -211,7 +219,7 @@ describe('BinaryFieldComponent:', () => {
                 instance.binaryFieldComponent.valueChange(mockFile);
                 fixture.detectChanges();
 
-                expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl);
+                expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?');
             }));
 
         it('adds correct dimension constraints to the objectUrl for images (landscape)',
@@ -243,17 +251,6 @@ describe('BinaryFieldComponent:', () => {
                 fixture.detectChanges();
 
                 expect(instance.binaryFieldComponent.objectUrl).toBe(mockBinaryFileUrl + '?w=160&h=800');
-            }));
-
-        it('joins dimension constraints with ampersand if url already has query params',
-            componentTest(() => TestComponent, (fixture, instance) => {
-                const imageUrlWithQueryParams = '/binary/image?version=1.1';
-                apiService.project.getBinaryFileUrl = jasmine.createSpy('getBinaryFileUrl').and.returnValue(imageUrlWithQueryParams);
-                fixture.detectChanges();
-                instance.binaryFieldComponent.valueChange(mockImage);
-                fixture.detectChanges();
-
-                expect(instance.binaryFieldComponent.objectUrl).toBe(imageUrlWithQueryParams + '&w=750&h=417');
             }));
     });
 

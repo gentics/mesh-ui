@@ -973,6 +973,7 @@ export interface ApiEndpoints {
                      * @example 0.1
                      */
                     fpx?: number;
+                    version?: string;
                 };
                 body?: undefined;
             };

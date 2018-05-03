@@ -1,5 +1,5 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Headers, Http, Request, RequestMethod, Response, URLSearchParams } from '@angular/http';
+import { Headers, Http, Request, RequestMethod, Response, URLSearchParams, ResponseContentType } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import { ApiError } from './api-error';
@@ -71,9 +71,10 @@ export class ApiBase {
      */
     get<U extends keyof ApiEndpoints['GET']>(
         url: U,
-        params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams']
+        params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams'],
+        headers?: any
     ): ResponseObservable<ApiEndpoints['GET'][U]['responseTypes']> {
-        return this.request(RequestMethod.Get, url, params as any);
+        return this.request(RequestMethod.Get, url, params as any, null, headers);
     }
 
     /**
@@ -143,11 +144,17 @@ export class ApiBase {
     }
 
     /** Use the parameters to create a request and handle critical errors. */
-    protected request(method: RequestMethod, url: string, params: QueryParams & UrlParams, body?: any): ResponseObservable<any> {
+    protected request(method: RequestMethod,
+                      url: string,
+                      params: QueryParams & UrlParams,
+                      body?: any,
+                      extraHeaders?: { [key: string]: string | number }
+                    ): ResponseObservable<any> {
         // Append request headers
         const headers = new Headers({
             'Accept': 'application/json',
-            'Accept-Language': this.requestLanguage
+            'Accept-Language': this.requestLanguage,
+            ...extraHeaders,
         });
 
         // Determine which body type to use.
@@ -238,6 +245,9 @@ export class ApiBase {
             const queryParams = new URLSearchParams();
             for (const key of queryParamNames) {
                 const value = params[key];
+                if (value === null) {
+                    continue;
+                }
                 if (Array.isArray(value)) {
                     value.forEach(v => queryParams.append(key, String(v)));
                 } else if (value !== undefined) {

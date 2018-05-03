@@ -171,6 +171,10 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         this.meshControlGroup.reset(node.fields as any);
     }
 
+    update(node: MeshNode): void {
+        this.meshControlGroup.checkValue(node.fields as any);
+    }
+
     /**
      * Returns a list of fields which have changed, including the object path to that field, and the old and new values.
      */

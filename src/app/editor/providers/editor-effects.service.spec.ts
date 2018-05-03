@@ -13,6 +13,8 @@ import { mockMeshNode } from '../../../testing/mock-models';
 import { FieldMapFromServer } from '../../common/models/server-models';
 import { MeshNode } from '../../common/models/node.model';
 import { MockConfigService } from '../../core/providers/config/config.service.mock';
+import { ApiBase } from '../../core/providers/api/api-base.service';
+import { MockApiBase } from '../../core/providers/api/api-base.mock';
 
 describe('EditorEffectsService', () => {
 
@@ -29,6 +31,7 @@ describe('EditorEffectsService', () => {
                 { provide: I18nNotification, useClass: MockI18nNotification },
                 { provide: ConfigService, useClass: MockConfigService },
                 { provide: ApiService, useClass: MockApiService },
+                { provide: ApiBase, useClass: MockApiBase },
             ]
         });
 

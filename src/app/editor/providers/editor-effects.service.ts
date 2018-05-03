@@ -13,6 +13,7 @@ import { I18nNotification } from '../../core/providers/i18n-notification/i18n-no
 import { ConfigService } from '../../core/providers/config/config.service';
 import { getMeshNodeBinaryFields, getMeshNodeNonBinaryFields, simpleCloneDeep } from '../../common/util/util';
 import { EntitiesService } from '../../state/providers/entities.service';
+import { tagsAreEqual } from '../form-generator/common/tags-are-equal';
 
 
 @Injectable()
@@ -105,7 +106,7 @@ export class EditorEffectsService {
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
         const updateRequest: NodeUpdateRequest = {
-            fields: getMeshNodeNonBinaryFields(node),
+            fields: node.fields,
             version: node.version,
             language: language
         };
@@ -140,7 +141,7 @@ export class EditorEffectsService {
                     type: 'error',
                     message: 'editor.node_save_error'
                 });
-                throw new Error('TODO: Error handling');
+                throw error;
             });
     }
 
@@ -336,7 +337,6 @@ export class EditorEffectsService {
     private applyBinaryTransforms(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode> {
         const project = node.project.name;
         const nodeUuid = node.uuid;
-
         const promises = Object.keys(fields)
             .filter(fieldName => !!fields[fieldName].transform)
             .map(fieldName => {

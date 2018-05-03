@@ -110,5 +110,33 @@
     "uploading_files": {
         "en": "Uploading files…",
         "de": "Lade Dateien hoch …"
+    },
+    "node_conflict": {
+        "en": "Resolve conflicts",
+        "de": "Änderungskonflikte beheben"
+    },
+    "node_conflict_description": {
+        "en": "Your changes conflict with the saved version on the server.",
+        "de": "Ihre Änderungen würden Änderungen am Server überschreiben."
+    },
+    "theirs_version": {
+        "en": "Changes on the server",
+        "de": "Änderungen am Server"
+    },
+    "my_version": {
+        "en": "Your changes",
+        "de": "Ihre Änderungen"
+    },
+    "save_changes": {
+        "en": "Save changes",
+        "de": "Änderungen übernehmen"
+    },
+    "use_this_version": {
+        "en": "Apply",
+        "de": "Übernehmen"
+    },
+    "no_preview_available": {
+        "en": "No Preview Available",
+        "de": "Keine Vorschau verfügbar"
     }
 }

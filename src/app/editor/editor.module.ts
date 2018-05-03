@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+
 import { ModalService, OverlayHostService } from 'gentics-ui-core';
 
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
@@ -29,11 +31,14 @@ import { ContainerFileDropAreaComponent } from './components/container-file-drop
 import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
 import { MultiFileUploadDialogComponent } from './components/multi-file-upload-dialog/multi-file-upload-dialog.component';
 import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
+import { NodeConflictDialogComponent } from './components/node-conflict-dialog/node-conflict-dialog.component';
+import { ConflictedFieldComponent } from './components/conflicted-field/conflicted-field.component';
 
 
 @NgModule({
     imports: [
         SharedModule,
+        HttpClientModule,
         RouterModule.forChild(routes),
         FormGeneratorModule
     ],
@@ -57,14 +62,16 @@ import { AudioPlayButtonComponent } from './components/audio-play-button/audio-p
         CreateTagDialogComponent,
         ContainerFileDropAreaComponent,
         MultiFileUploadDialogComponent,
-        AudioPlayButtonComponent
-
+        AudioPlayButtonComponent,
+        NodeConflictDialogComponent,
+        ConflictedFieldComponent,
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,
         ProgressbarModalComponent,
         CreateTagDialogComponent,
-        MultiFileUploadDialogComponent
+        MultiFileUploadDialogComponent,
+        NodeConflictDialogComponent
     ],
     providers: [
         EditorEffectsService,
@@ -73,6 +80,7 @@ import { AudioPlayButtonComponent } from './components/audio-play-button/audio-p
         ModalService,
         OverlayHostService,
         BlobService,
+        HttpClientModule
     ]
 })
 export class EditorModule {
