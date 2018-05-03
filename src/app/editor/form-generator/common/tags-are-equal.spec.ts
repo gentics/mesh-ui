@@ -1,14 +1,15 @@
-import { fieldsAreEqual } from './fields-are-equal';
+import { TestBed } from '@angular/core/testing';
+
 import { NodeFieldMicronode, MeshNode } from '../../../common/models/node.model';
 import { mockMeshNode, mockTag, mockTagFamily } from '../../../../testing/mock-models';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { TestBed } from '@angular/core/testing';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
-import { tagsAreEqual } from './tags-are-equal';
 import { ConfigService } from '../../../core/providers/config/config.service';
+
+import { tagsAreEqual } from './tags-are-equal';
 
 describe('tagsAreEqual()', () => {
 

@@ -1,6 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
+
 import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
 
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -11,8 +13,6 @@ import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ConflictedFieldComponent } from '../conflicted-field/conflicted-field.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { BlobService } from '../../providers/blob.service';
-import { MockBlobService } from '../../providers/blob.service.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
@@ -21,7 +21,8 @@ import { mockMeshNode, mockProject, mockSchema, mockTag, mockMicroschema } from 
 import { FieldMapFromServer } from '../../../common/models/server-models';
 import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
 import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
-import { By } from '@angular/platform-browser';
+import { BlobService } from '../../../core/providers/blob/blob.service';
+import { MockBlobService } from '../../../core/providers/blob/blob.service.mock';
 
 let state: TestApplicationState;
 

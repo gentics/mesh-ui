@@ -1,0 +1,20 @@
+@import "variables";
+
+:host {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid $gtx-color-light-gray;
+    &:last-of-type {
+        border-color: transparent;
+    }
+
+}
+
+gtx-checkbox {
+    height: 24px;
+}
+
+.content {
+    flex: 1;
+}

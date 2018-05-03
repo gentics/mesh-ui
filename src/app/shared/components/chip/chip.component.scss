@@ -14,9 +14,12 @@
 }
 
 .chip-contents {
-    margin-right: 16px;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    .removable & {
+        margin-right: 16px;
+    }
 }
 
 .remove-button {

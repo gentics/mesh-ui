@@ -67,6 +67,9 @@ export interface MeshNode extends NodeResponse {
      * are created.
      */
     language?: string;
+    // Override the RAML-based `fields` definition because it is incorrect.
+    // See: https://github.com/gentics/mesh/issues/67
+    fields: { [name: string]: any };
 }
 
 export interface FieldMap extends FieldMapFromServer { }

@@ -9,11 +9,11 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MeshNode, BinaryField, NodeFieldMicronode, NodeField } from '../../../common/models/node.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
-import { BlobService } from '../../providers/blob.service';
 import { tagsAreEqual, getJoinedTags } from '../../form-generator/common/tags-are-equal';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ConflictedField, TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { TagReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
+import { BlobService } from '../../../core/providers/blob/blob.service';
 
 
 @Component({

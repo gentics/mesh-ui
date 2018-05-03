@@ -1,0 +1,33 @@
+@import "variables";
+
+.pagination-links {
+    margin: auto;
+}
+
+.page-link {
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 2px;
+    border-radius: 3px;
+    @include noselect;
+    transition: background-color 0.3s;
+
+    &.current {
+        cursor: default;
+        background-color: $gtx-color-primary;
+        color: white;
+    }
+
+    &:not(.current):hover {
+        background-color: $gtx-color-light-gray;
+    }
+
+    &.disabled {
+        cursor: default;
+
+        a {
+            color: $gtx-color-mid-gray;
+        }
+    }
+}

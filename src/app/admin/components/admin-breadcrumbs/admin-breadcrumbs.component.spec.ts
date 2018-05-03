@@ -1,16 +1,18 @@
-import { RouterTestingModule } from '@angular/router/testing';
-import { Component } from '@angular/core';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { AdminBreadcrumbsComponent } from './admin-breadcrumbs.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { By } from '@angular/platform-browser';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AppState } from '../../../state/models/app-state.model';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 
 describe('AdminBreadcrumbsComponent', () => {
 
@@ -70,11 +72,14 @@ describe('AdminBreadcrumbsComponent', () => {
                 GenticsUICoreModule
             ],
             declarations: [
+                TestComponent,
                 AdminBreadcrumbsComponent,
                 MockRouteComponent,
-                TestComponent,
+                MockContentPortalComponent
             ],
-            providers: []
+            providers: [
+                { provide: I18nService, useClass: MockI18nService }
+            ]
         });
 
         appState = TestBed.get(ApplicationStateService);
@@ -182,17 +187,19 @@ describe('AdminBreadcrumbsComponent', () => {
 
 @Component({
     selector: 'test-component',
-    template: `<admin-breadcrumbs></admin-breadcrumbs>
+    template: `<mesh-admin-breadcrumbs></mesh-admin-breadcrumbs>
     <router-outlet></router-outlet>`
 })
-class TestComponent {
-
-}
+class TestComponent {}
 
 @Component({
     selector: 'mock-route-component',
     template: `<router-outlet></router-outlet>`
 })
-class MockRouteComponent {
+class MockRouteComponent {}
 
-}
+@Component({
+    selector: 'mesh-content-portal',
+    template: ``
+})
+class MockContentPortalComponent {}

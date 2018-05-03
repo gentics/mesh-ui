@@ -1,0 +1,89 @@
+<div class="user-details">
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="small-12 medium-6 columns">
+                <gtx-input formControlName="userName"
+                           [readonly]="readOnly"
+                           [label]="'admin.user_name_label' | i18n"></gtx-input>
+            </div>
+            <div class="small-12 medium-6 columns">
+                <ng-container *ngIf="isNew">
+                    <gtx-input formControlName="password"
+                               type="password"
+                               [readonly]="readOnly"
+                               [label]="'admin.password_label' | i18n"></gtx-input>
+                </ng-container>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-12 medium-6 columns">
+                <gtx-input formControlName="firstName"
+                           [readonly]="readOnly"
+                           [label]="'admin.first_name_label' | i18n"></gtx-input>
+            </div>
+            <div class="small-12 medium-6 columns">
+                <gtx-input formControlName="lastName"
+                           [readonly]="readOnly"
+                           [label]="'admin.last_name_label' | i18n"></gtx-input>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-12 columns">
+                <gtx-input formControlName="emailAddress"
+                           [readonly]="readOnly"
+                           [label]="'admin.email_address_label' | i18n"></gtx-input>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="node-reference row">
+    <div class="small-12 column">
+        <label>{{ 'admin.user_node_reference_label' | i18n }}</label>
+    </div>
+
+    <div class="small-12 column">
+        <div class="node-reference-form"
+             scrollFrame
+             *ngIf="userNode$ | async as node; else placeholder">
+            <div class="select-new-node">
+                <gtx-button type="primary"
+                            size="small"
+                            [routerLink]="userNodeLink$ | async"
+                            flat>
+                    <icon left>edit</icon> {{ 'admin.edit_user_node' |i18n }}
+                </gtx-button>
+                <gtx-button type="secondary"
+                            size="small"
+                            (click)="selectNodeReference()"
+                            flat>
+                    <icon left>add</icon> {{ 'admin.select_new_node_reference' |i18n }}
+                </gtx-button>
+            </div>
+            <form-generator #formGenerator
+                            [readOnly]="true"
+                            [node]="node"
+                            [schema]="userNodeSchema$ | async"></form-generator>
+        </div>
+    </div>
+
+    <ng-template #placeholder>
+        <gtx-button type="secondary"
+                    size="small"
+                    (click)="selectNodeReference()"
+                    flat>
+            <icon left>add</icon> {{ 'admin.select_node_reference' |i18n }}
+        </gtx-button>
+    </ng-template>
+</div>
+
+<div class="actions" *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
+    <gtx-button type="primary"
+                size="small"
+                class="save-button"
+                [disabled]="!isSaveButtonEnabled()"
+                (click)="persistUser()">
+        <ng-container *ngIf="!isNew">{{ 'admin.update_user' | i18n }}</ng-container>
+        <ng-container *ngIf="isNew">{{ 'admin.create_user' | i18n }}</ng-container>
+    </gtx-button>
+</div>

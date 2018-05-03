@@ -1,0 +1,23 @@
+<gtx-dropdown-list>
+     <gtx-dropdown-trigger>
+         <gtx-button size="small"
+                     [title]="title || ('admin.add_user_to_group' | i18n)"
+                     flat
+                     [type]="icon === 'remove' ? 'warning' : 'secondary'">
+             <div class="icon-wrapper">
+                 <icon class="add-remove-icon" *ngIf="icon === 'add'">add</icon>
+                 <icon class="add-remove-icon" *ngIf="icon === 'remove'">remove</icon>
+                 <icon>group</icon>
+             </div>
+         </gtx-button>
+     </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+        <gtx-dropdown-item *ngFor="let group of filteredGroups"
+                           (click)="select.emit(group)">
+            {{ group.name }}
+        </gtx-dropdown-item>
+        <gtx-dropdown-item *ngIf="filteredGroups.length === 0" class="not-available">
+            {{ 'admin.no_available_groups' | i18n }}
+        </gtx-dropdown-item>
+    </gtx-dropdown-content>
+</gtx-dropdown-list>

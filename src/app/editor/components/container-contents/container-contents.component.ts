@@ -99,10 +99,18 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         this.schemas$ = this.childrenBySchema$
             .map(childrenBySchema =>
                 Object.values(childrenBySchema)
-                    .map(nodes =>
-                        nodes[0].schema)
-                    .sort((a: SchemaReferenceFromServer, b: SchemaReferenceFromServer) => {
-                        return a.name > b.name ? 1 : -1;
+                    .map(nodes => nodes[0])
+                    .sort((a: MeshNode, b: MeshNode) => {
+                        if (a.container === true && b.container === false) { // Push containers to the top.
+                            return -1;
+                        } else if (a.container === false && b.container === true) { // Push container to the top.
+                            return 1;
+                        } else {
+                            return a.schema.name > b.schema.name ? 1 : -1; // If both nodes are containers or both are not - order by name.
+                        }
+                    })
+                    .map(node => {
+                        return node.schema;
                     }));
 
         this.searching$ = searchParams$

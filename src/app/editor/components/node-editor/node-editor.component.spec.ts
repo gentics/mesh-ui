@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+
 import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
@@ -24,6 +25,8 @@ import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
+import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
+
 import { NodeEditorComponent } from './node-editor.component';
 
 describe('NodeEditorComponent', () => {
@@ -275,15 +278,6 @@ class MockI18nService {
 @Component({ selector: 'node-language-switcher', template: '' })
 class MockLanguageSwitcherComponent {
     @Input() node: any;
-}
-
-@Component({ selector: 'form-generator', template: '' })
-class MockFormGeneratorComponent {
-    @Input()schema: any;
-    @Input() node: any;
-    isDirty = true;
-    setPristine = jasmine.createSpy('setPristine');
-    update = jasmine.createSpy('update');
 }
 
 @Component({ selector: 'mesh-node-tags-bar', template: '' })
