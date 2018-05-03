@@ -6,7 +6,7 @@
     justify-content: space-between;
     width: $full-width;
 
-    :host-context(list-field),
+    :host-context(mesh-list-field),
     &.compact {
         flex-direction: column;
 

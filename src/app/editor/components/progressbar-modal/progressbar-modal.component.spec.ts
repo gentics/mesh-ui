@@ -5,7 +5,7 @@ import { Pipe } from '@angular/core';
 import { ProgressbarModalComponent } from './progressbar-modal.component';
 import { ProgressBar, OverlayHostService } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { MockI18nPipe } from "../../../shared/pipes/i18n/i18n.pipe.mock";
+import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
 
 
 describe('ModalProgressbarComponent', () => {

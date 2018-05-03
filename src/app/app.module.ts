@@ -8,8 +8,6 @@ import { PreloadAllModules, Router, RouterModule } from '@angular/router';
  * Platform and Environment providers/directives/pipes
  */
 
-//import { ROUTER_CONFIG } from './app.routes';
-
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/providers/guards/auth-guard';
 

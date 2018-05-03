@@ -31,7 +31,7 @@ import { Observable } from 'rxjs/Observable';
  * Generates a form based on a schema and populates with data from the node.
  */
 @Component({
-    selector: 'form-generator',
+    selector: 'mesh-form-generator',
     templateUrl: 'form-generator.component.html',
     styleUrls: ['form-generator.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -42,10 +42,10 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     @Input() readOnly = false;
 
     @HostBinding('class.compact')
-    isCompact: boolean = false;
+    isCompact = false;
 
     @HostBinding('class.invisible')
-    isInvisible: boolean = false;
+    isInvisible = false;
 
     /**
      * True if all form controls are valid.

@@ -7,7 +7,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { concatUnique, notNullOrUndefined } from '../../../common/util/util';
 
 @Component({
-    selector: 'container-language-switcher',
+    selector: 'mesh-container-language-switcher',
     templateUrl: 'container-language-switcher.component.html',
     styleUrls: ['container-language-switcher.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

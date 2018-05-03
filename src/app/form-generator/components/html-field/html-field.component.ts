@@ -8,7 +8,7 @@ import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../bas
 import { ErrorCode, errorHashFor } from '../../common/form-errors';
 
 @Component({
-    selector: 'html-field',
+    selector: 'mesh-html-field',
     templateUrl: './html-field.component.html',
     styleUrls: ['./html-field.scss'],
     // required for the Quill.js styles to work correctly

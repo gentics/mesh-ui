@@ -70,6 +70,6 @@ describe('tagsAreEqual()', () => {
             tags: [ { uuid: tag.uuid }, { uuid: tag2.uuid } ],
         })['en']['0.2'];
 
-        expect(tagsAreEqual(oldNode.tags, null)).toEqual(false);
+        expect(tagsAreEqual(oldNode.tags, null as any)).toEqual(false);
     });
 });

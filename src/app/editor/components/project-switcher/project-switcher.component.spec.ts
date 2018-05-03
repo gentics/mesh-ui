@@ -117,7 +117,7 @@ describe('ProjectSwitcherComponent:', () => {
 @Component({
     template: `
         <gtx-overlay-host></gtx-overlay-host>
-        <project-switcher></project-switcher>`
+        <mesh-project-switcher></mesh-project-switcher>`
 })
 class TestComponent { }
 

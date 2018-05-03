@@ -1,9 +1,9 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { getTestBed, TestModuleMetadata } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
-import { MockI18nPipe } from "../app/shared/pipes/i18n/i18n.pipe.mock";
+import { MockI18nPipe } from '../app/shared/pipes/i18n/i18n.pipe.mock';
 
 /**
  * Wraps the TestBed.configureTestingModule() and provides a mocked implementation of the i18n pipe/service, which

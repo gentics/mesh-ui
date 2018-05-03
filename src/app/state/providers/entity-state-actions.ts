@@ -110,7 +110,9 @@ function mergeBranch<B extends keyof EntityState>(oldBranch: EntityState[B],
         if (strict) {
             const missing = missingProperties(change, discriminator);
             if (0 < missing.length) {
-                throw new Error(`mergeBranch: Required discriminator properties not found: ${missing.join(', ')} on ${JSON.stringify(change, null, 4)}`);
+                const missingString = missing.join(', ');
+                const changeString = JSON.stringify(change, null, 4);
+                throw new Error(`mergeBranch: Required discriminator properties not found: ${missingString} on ${changeString}`);
             }
         }
         if (!change.uuid) {

@@ -8,7 +8,7 @@ import { ListEffectsService } from '../../../core/providers/effects/list-effects
 
 
 @Component({
-    selector: 'master-detail',
+    selector: 'mesh-master-detail',
     templateUrl: './master-detail.component.html',
     styleUrls: ['./master-detail.scss']
 })

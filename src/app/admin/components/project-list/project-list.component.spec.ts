@@ -117,7 +117,7 @@ function getListedProjectUuids(fixture: ComponentFixture<ProjectListComponent>):
 }
 
 @Component({
-    selector: 'project-list-item',
+    selector: 'mesh-project-list-item',
     template: `-`
 })
 class MockProjectItemComponent {

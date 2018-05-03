@@ -2,7 +2,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
-
 import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
 
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -222,7 +221,7 @@ describe('NodeConflictDialogComponent', () => {
     });
 
     it('should retrieve data for the "node" field', () => {
-        const apiService:MockApiService = TestBed.get(ApiService);
+        const apiService: MockApiService = TestBed.get(ApiService);
         component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
         component.localNode = state.now.entities.node['current_node_uuid']['en']['0'];
         component.conflicts = ['slug', 'amount', 'node'];
@@ -236,9 +235,11 @@ describe('NodeConflictDialogComponent', () => {
         component.localTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
         component.conflicts = ['slug', 'amount', 'microschema.name', 'microschema.number'];
         fixture.detectChanges();
-        expect(component.conflictedFields.length).toEqual(component.conflicts.length - 1); //-1 since 'microschema.name' and 'microschema.number' will be grouped into one field
+        // -1 since 'microschema.name' and 'microschema.number' will be grouped into one field
+        expect(component.conflictedFields.length).toEqual(component.conflicts.length - 1);
         const renderedConflictedFields = fixture.debugElement.queryAll(By.css('mesh-conflicted-field'));
-        expect(renderedConflictedFields.length).toEqual(component.conflicts.length + 1); // +1 since 'microschema.name' and 'microschema.number' are rendered as children inside another mesh-conflicted-field which acts as a container
+        // +1 since 'microschema.name' and 'microschema.number' are rendered as children inside another mesh-conflicted-field which acts as a container
+        expect(renderedConflictedFields.length).toEqual(component.conflicts.length + 1);
     });
 
     it('should generate extra conflict for conflicted tags', () => {
@@ -274,16 +275,6 @@ describe('NodeConflictDialogComponent', () => {
     });
 });
 
-
-@Pipe({
-    name: 'i18n'
-})
-class MockI18nPipe implements PipeTransform {
-    transform(arg) {
-        return `translated ${arg}`;
-    }
-}
-
 class MockModalService {
     dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
     fromComponent = jasmine.createSpy('fromComponent').and.callFake(() => Promise.resolve(this.fakeDialog));
@@ -297,11 +288,11 @@ class MockModalService {
     confirmLastModal: () => void;
 }
 class MockEntitiesService {
-    getSchema = (id) => {
+    getSchema = (id: string) => {
         return state.now.entities.schema[id]['0'];
     }
 
-    getMicroschema = (id) => {
+    getMicroschema = (id: string) => {
         return state.now.entities.microschema[id]['0'];
     }
 }

@@ -8,7 +8,7 @@ import { ListEffectsService } from '../../../core/providers/effects/list-effects
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { Tag } from '../../../common/models/tag.model';
-import { notNullOrUndefined } from "../../../common/util/util";
+import { notNullOrUndefined } from '../../../common/util/util';
 
 
 @Component({

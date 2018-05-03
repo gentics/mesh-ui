@@ -10,7 +10,7 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 
 @Component({
-    selector: 'create-project-modal',
+    selector: 'mesh-create-project-modal',
     templateUrl: './create-project-modal.component.html',
     styleUrls: ['./create-project-modal.scss'],
     // changeDetection: ChangeDetectionStrategy.OnPush

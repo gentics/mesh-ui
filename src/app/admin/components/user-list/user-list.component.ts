@@ -13,7 +13,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { ModalService } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
-import { notNullOrUndefined } from "../../../common/util/util";
+import { notNullOrUndefined } from '../../../common/util/util';
 
 @Component({
     selector: 'mesh-user-list',

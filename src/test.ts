@@ -9,6 +9,7 @@ import 'zone.js/dist/fake-async-test';
 import { getTestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 // TODO: remove this once we switch to pipable operators in rxjs v6
+// tslint:disable-next-line:import-blacklist
 import 'rxjs/Rx';
 
 // Unfortunately there's no typing for the `__karma__` variable. Just declare it as any.

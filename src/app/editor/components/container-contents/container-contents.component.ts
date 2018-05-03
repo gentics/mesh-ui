@@ -16,14 +16,14 @@ import { ContainerFileDropAreaComponent } from '../container-file-drop-area/cont
 import { SchemaReferenceFromServer } from '../../../common/models/server-models';
 
 @Component({
-    selector: 'container-contents',
+    selector: 'mesh-container-contents',
     templateUrl: './container-contents.component.html',
     styleUrls: ['./container-contents.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContainerContentsComponent implements OnInit, OnDestroy {
 
-    @ViewChild(ContainerFileDropAreaComponent) fileDropArea: ContainerFileDropAreaComponent
+    @ViewChild(ContainerFileDropAreaComponent) fileDropArea: ContainerFileDropAreaComponent;
 
     /** @internal */
     public schemas$: Observable<SchemaReference[]>;

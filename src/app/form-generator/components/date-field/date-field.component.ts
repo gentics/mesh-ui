@@ -4,7 +4,7 @@ import { DateField } from '../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
-    selector: 'date-field',
+    selector: 'mesh-date-field',
     templateUrl: './date-field.component.html',
     styleUrls: ['./date-field.scss']
 })

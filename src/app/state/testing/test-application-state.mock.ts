@@ -1,4 +1,5 @@
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 import { ApplicationStateService } from '../providers/application-state.service';
 import { AppState } from '../models/app-state.model';

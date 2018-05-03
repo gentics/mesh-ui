@@ -388,7 +388,7 @@ function getThumbnail(fixture: ComponentFixture<TestComponent>) {
 
 @Component({
     template: `
-        <thumbnail [width]="width" [height]="height" [nodeUuid]="nodeUuid" [fieldName]="fieldName"></thumbnail>`
+        <mesh-thumbnail [width]="width" [height]="height" [nodeUuid]="nodeUuid" [fieldName]="fieldName"></mesh-thumbnail>`
 })
 class TestComponent {
     width?: number;

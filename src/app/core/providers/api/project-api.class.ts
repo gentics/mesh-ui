@@ -2,6 +2,17 @@ import { ApiBase } from './api-base.service';
 import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 import { GenericMessageResponse, NodeResponse, NodeUpdateRequest } from '../../../common/models/server-models';
 
+
+export interface ImageTransformQueryParams {
+    w?: number;
+    h?: number;
+    fpx?: number;
+    fpy?: number;
+    fpz?: number;
+    crop?: string;
+    rect?: string;
+}
+
 export class ProjectApi {
     constructor(private apiBase: ApiBase) { }
 
@@ -169,10 +180,19 @@ export class ProjectApi {
     /** Update the release with the given uuid. */
     updateRelease = apiPost('/{project}/releases/{releaseUuid}');
 
+    /** Create a new tag for a givn tag family. */
+    createTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags');
+
+    /** Update the specified tag. */
+    updateTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags/{tagUuid}');
+
+    /** Update the tag family with the given uuid. */
+    updateTagFamily = apiPost('/{project}/tagFamilies/{tagFamilyUuid}');
+
     /**
      * Returns a url to a node binary file
      */
-    getBinaryFileUrl(project: string, nodeUuid: string, name: string, version?: string, params?: {w?: number, h?: number, fpx?: number, fpy?: number, fpz?: number, crop?: string,  rect?: string }): string {
+    getBinaryFileUrl(project: string, nodeUuid: string, name: string, version?: string, params: ImageTransformQueryParams = {}): string {
         return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', { project, nodeUuid, name, version, ...params });
     }
 
@@ -190,13 +210,4 @@ export class ProjectApi {
                 409: conflict => ({ node: null, conflict })
             });
     }
-
-    /** Create a new tag for a givn tag family. */
-    createTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags');
-
-    /** Update the specified tag. */
-    updateTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags/{tagUuid}');
-
-    /** Update the tag family with the given uuid. */
-    updateTagFamily = apiPost('/{project}/tagFamilies/{tagFamilyUuid}');
 }

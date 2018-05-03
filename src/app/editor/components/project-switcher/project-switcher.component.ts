@@ -11,7 +11,7 @@ interface ProjectHash {
 }
 
 @Component({
-    selector: 'project-switcher',
+    selector: 'mesh-project-switcher',
     templateUrl: './project-switcher.component.html',
     styleUrls: ['./project-switcher.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

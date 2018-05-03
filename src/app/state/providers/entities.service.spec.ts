@@ -144,12 +144,14 @@ describe('EntitiesService', () => {
 
         it('getNode() returns default content language when no languages match in not strict mode', () => {
             config.FALLBACK_LANGUAGE = 'de';
-            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false })).toEqual(mockNode1['de']['0.1']);
+            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false }))
+                .toEqual(mockNode1['de']['0.1']);
         });
 
         it('getNode() returns alphabetically first language when no languages match and default not found in not strict mode', () => {
             config.FALLBACK_LANGUAGE = 'zulu';
-            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false })).toEqual(mockNode1['en']['2.0']);
+            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false }))
+                .toEqual(mockNode1['en']['2.0']);
         });
     });
 

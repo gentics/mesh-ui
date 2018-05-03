@@ -18,7 +18,11 @@ export class BlobService {
         return new Promise((resolve, reject) => {
             this.httpClient.get(url, { observe: 'response', responseType: 'blob'})
             .subscribe(result => {
-                resolve(new File([result.body], fileName, { type: result.body.type}));
+                if (result.body) {
+                    resolve(new File([result.body], fileName, {type: result.body.type}));
+                } else {
+                    reject('Binary body was empty.');
+                }
             });
         });
     }

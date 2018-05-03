@@ -20,7 +20,7 @@ describe('AdminListComponent', () => {
                 AdminListComponent,
                 AdminListItemComponent,
                 Checkbox,
-                MockPaginationControls
+                MockPaginationControlsComponent
             ],
             imports: [
                 NgxPaginationModule,
@@ -283,7 +283,7 @@ function getAdminListItems(fixture: ComponentFixture<TestComponent>): AdminListI
 }
 
 @Component({
-    selector: 'test-component',
+    selector: 'mesh-test-component',
     template: `
         <mesh-admin-list [items]="users"
                          [itemsPerPage]="itemsPerPage"
@@ -315,6 +315,6 @@ class TestComponent {
     selector: 'mesh-pagination-controls',
     template: ``
 })
-class MockPaginationControls {
+class MockPaginationControlsComponent {
     @Output() pageChange = new EventEmitter<number>();
 }

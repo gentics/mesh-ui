@@ -6,7 +6,7 @@
             <a href [routerLink]="routerLink" (click)="focusEditor()" [innerHTML]="node.displayName | highlight:(filterTerm$ | async)"></a>
         </div>
         <div class="available-languages">
-            <available-languages-list [available]="node.availableLanguages" [current]="listLanguage"></available-languages-list>
+            <mesh-available-languages-list [available]="node.availableLanguages" [current]="listLanguage"></mesh-available-languages-list>
         </div>
     </div>
     <div class="show-on-hover">

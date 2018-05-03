@@ -49,6 +49,7 @@ describe('ChangePasswordModal', () => {
     describe('form validation', () => {
 
         it('should allow valid characters', componentTest(() => ChangePasswordModalComponent, fixture => {
+            fixture.detectChanges();
             const instance: ChangePasswordModalComponent = fixture.componentInstance;
             const password1 = instance.form.controls['password1'] as FormControl;
 
@@ -59,6 +60,7 @@ describe('ChangePasswordModal', () => {
         }));
 
         it('should require both passwords to match', componentTest(() => ChangePasswordModalComponent, fixture => {
+            fixture.detectChanges();
             const instance: ChangePasswordModalComponent = fixture.componentInstance;
             const form = instance.form;
             const password1 = form.get('password1');
@@ -78,6 +80,7 @@ describe('ChangePasswordModal', () => {
 
         it('calls change password effect and shows a notification',
             componentTest(() => ChangePasswordModalComponent, fixture => {
+                fixture.detectChanges();
                 const instance: ChangePasswordModalComponent = fixture.componentInstance;
                 const form = instance.form;
                 const password1 = form.get('password1');

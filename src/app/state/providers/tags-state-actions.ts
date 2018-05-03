@@ -75,6 +75,6 @@ export class TagsStateActions extends StateActionBranch<AppState> {
             ]
         }, false);
 
-        this.tags.tags = [...this.tags.tags, ...tags.map(tag => tag.uuid)]
+        this.tags.tags = [...this.tags.tags, ...tags.map(tag => tag.uuid)];
     }
 }

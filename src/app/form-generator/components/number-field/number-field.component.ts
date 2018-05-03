@@ -6,7 +6,7 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
 import { ErrorCode, errorHashFor } from '../../common/form-errors';
 
 @Component({
-    selector: 'number-field',
+    selector: 'mesh-number-field',
     templateUrl: './number-field.component.html',
     styleUrls: ['./number-field.scss']
 })

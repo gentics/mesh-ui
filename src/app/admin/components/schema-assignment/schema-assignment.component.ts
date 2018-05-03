@@ -14,7 +14,7 @@ interface Assignment {
 
 @Component({
     templateUrl: './schema-assignment.component.html',
-    selector: 'schema-assignment',
+    selector: 'mesh-schema-assignment',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SchemaAssignmentComponent implements OnChanges, OnDestroy, OnInit {

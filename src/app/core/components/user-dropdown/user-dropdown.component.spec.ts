@@ -111,7 +111,7 @@ function getTextFromElement(element: HTMLElement): string[] {
 
 @Component({
     template: `
-        <user-dropdown></user-dropdown>`
+        <mesh-user-dropdown></mesh-user-dropdown>`
 })
 class TestComponent { }
 

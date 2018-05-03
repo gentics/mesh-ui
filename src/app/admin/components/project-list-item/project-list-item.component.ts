@@ -10,7 +10,7 @@ import { AdminProjectEffectsService } from '../../providers/effects/admin-projec
 
 
 @Component({
-    selector: 'project-list-item',
+    selector: 'mesh-project-list-item',
     templateUrl: './project-list-item.component.html',
     styleUrls: ['./project-list-item.scss']
 })

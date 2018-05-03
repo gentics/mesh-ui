@@ -16,7 +16,7 @@ export interface SchemaDisplayProperties {
 }
 
 @Component({
-    selector: 'create-node-button',
+    selector: 'mesh-create-node-button',
     templateUrl: 'create-node-button.component.html',
     styleUrls: ['create-node-button.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

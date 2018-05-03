@@ -87,7 +87,7 @@ describe('NodeRowComponent', () => {
 
 @Component({
     template: `
-        <app-node-row [node]="node" [listLanguage]="listLanguage"></app-node-row>
+        <mesh-node-row [node]="node" [listLanguage]="listLanguage"></mesh-node-row>
         <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent {

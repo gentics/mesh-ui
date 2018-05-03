@@ -5,7 +5,7 @@ import { NodeField, NodeFieldType } from '../../../common/models/node.model';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
-    selector: 'node-field',
+    selector: 'mesh-node-field',
     templateUrl: './node-field.component.html',
     styleUrls: ['./node-field.scss']
 })

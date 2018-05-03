@@ -5,7 +5,7 @@ export interface UserNodeReference {
     projectName: string;
     uuid: string;
     displayName: string;
-    schema: SchemaReference
+    schema: SchemaReference;
 }
 
 export interface User extends UserResponse {

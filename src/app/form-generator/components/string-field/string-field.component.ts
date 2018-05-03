@@ -5,7 +5,7 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
 import { ErrorCode, errorHashFor } from '../../common/form-errors';
 
 @Component({
-    selector: 'string-field',
+    selector: 'mesh-string-field',
     templateUrl: './string-field.component.html',
     styleUrls: ['./string-field.scss']
 })

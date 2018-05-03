@@ -27,7 +27,7 @@ import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
 
 @Component({
-    selector: 'node-editor',
+    selector: 'mesh-node-editor',
     templateUrl: './node-editor.component.html',
     styleUrls: ['./node-editor.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -78,7 +78,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             } else if (projectName && schemaUuid && parentNodeUuid && language) {
                 this.editorEffects.createNode(projectName, schemaUuid, parentNodeUuid, language);
             } else {
-                throw new Error(`Cannot open or create a node. Required parameters are missing.`)
+                throw new Error(`Cannot open or create a node. Required parameters are missing.`);
             }
         });
 
@@ -86,7 +86,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             .filter(notNullOrUndefined)
             .switchMap(openNode => {
                 const schemaUuid = openNode.schemaUuid;
-                const parentNodeUuid = openNode.parentNodeUuid
+                const parentNodeUuid = openNode.parentNodeUuid;
                 if (schemaUuid && parentNodeUuid) {
                     return this.entities.selectSchema(schemaUuid).map((schema) => {
                         const node = initializeNode(schema, parentNodeUuid, openNode.language);
@@ -257,7 +257,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     }
 
     handleSaveConflicts(conflicts: string[]): void {
-        this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
+        if (!this.node) {
+            throw new Error('Cannot handle save conflicts because this.node is undefined.');
+        }
+        this.api.project.getNode({ project: this.node.project.name!, nodeUuid: this.node.uuid})
             .take(1)
             .subscribe((response: NodeResponse) => {
                 this.modalService.fromComponent(
@@ -271,7 +274,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     },
                     {
                         conflicts,
-                        localTags: this.tagsBar.nodeTags,
+                        localTags: this.tagsBar ? this.tagsBar.nodeTags : [],
                         localNode: this.node,
                         remoteNode : response as MeshNode,
                     }
@@ -279,7 +282,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 .then(modal => modal.open())
                 .then(mergedNode => {
                     this.node = mergedNode;
-                    this.saveNode(true, this.node.tags);
+                    this.saveNode(true, mergedNode.tags);
                 });
             });
     }

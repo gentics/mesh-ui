@@ -172,17 +172,18 @@ function getBreadcrumbText(fixture: ComponentFixture<TestComponent>): string[] {
 }
 
 @Component({
-    template: `<breadcrumbs></breadcrumbs>`
+    template: `<mesh-breadcrumbs></mesh-breadcrumbs>`
 })
 class TestComponent { }
 
 @Component({
-    selector: 'project-switcher',
+    selector: 'mesh-project-switcher',
     template: `-`
 })
 class MockProjectSwitcherComponent { }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'gtx-breadcrumbs',
     template: `-`
 })

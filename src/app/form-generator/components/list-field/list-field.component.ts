@@ -13,7 +13,8 @@ import {
     ViewChildren,
     ViewContainerRef
 } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ISortableEvent, ISortableGroupOptions, ISortableMoveEvent } from 'gentics-ui-core';
 import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 import { ListTypeFieldType, SchemaField } from '../../../common/models/schema.model';
@@ -33,7 +34,7 @@ function randomId(): string {
 }
 
 @Component({
-    selector: 'list-field',
+    selector: 'mesh-list-field',
     templateUrl: './list-field.component.html',
     styleUrls: ['./list-field.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -48,13 +49,13 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     @ViewChild('listContainer', { read: ElementRef })
     listContainer: ElementRef;
     @HostBinding('class.micronode-list')
-    isMicronodeList: boolean = false;
-    listHeight: string = 'auto';
-    updating: boolean = false;
+    isMicronodeList = false;
+    listHeight = 'auto';
+    updating = false;
     groupId: string = randomId();
     removeGroupId: string = randomId();
-    dragging: boolean = false;
-    hoverRemoveArea: boolean = false;
+    dragging = false;
+    hoverRemoveArea = false;
     mainGroup: ISortableGroupOptions = {
         name: this.groupId,
         pull: e => e.options.group.name === this.removeGroupId ? 'clone' : true,

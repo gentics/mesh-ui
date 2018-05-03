@@ -3,6 +3,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { getFileType } from '../../common/get-file-type';
 
 const typesThatPreload = ['video', 'audio', 'image'];
+
 @Component({
     selector: 'mesh-file-preview',
     templateUrl: './file-preview.component.html',
@@ -13,8 +14,8 @@ export class FilePreviewComponent implements OnInit {
     @Input() fileName: string;
     @Input() url: SafeUrl;
 
-    protected loadingPreview = false;
-    protected fileType: string;
+    fileType: string;
+    loadingPreview = false;
 
     ngOnInit() {
 

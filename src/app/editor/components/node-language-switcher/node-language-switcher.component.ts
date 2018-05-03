@@ -5,7 +5,7 @@ import { NavigationService } from '../../../core/providers/navigation/navigation
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 
 @Component({
-    selector: 'node-language-switcher',
+    selector: 'mesh-node-language-switcher',
     templateUrl: 'node-language-switcher.component.html',
     styleUrls: ['node-language-switcher.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

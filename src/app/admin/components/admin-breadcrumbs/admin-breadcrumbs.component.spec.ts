@@ -186,14 +186,14 @@ describe('AdminBreadcrumbsComponent', () => {
 });
 
 @Component({
-    selector: 'test-component',
+    selector: 'mesh-test-component',
     template: `<mesh-admin-breadcrumbs></mesh-admin-breadcrumbs>
     <router-outlet></router-outlet>`
 })
 class TestComponent {}
 
 @Component({
-    selector: 'mock-route-component',
+    selector: 'mesh-mock-route-component',
     template: `<router-outlet></router-outlet>`
 })
 class MockRouteComponent {}

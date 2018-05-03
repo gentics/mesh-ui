@@ -9,7 +9,7 @@ import { Project } from '../../../common/models/project.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
-    selector: 'breadcrumbs',
+    selector: 'mesh-breadcrumbs',
     templateUrl: './breadcrumbs.component.html',
     styleUrls: ['./breadcrumbs.scss']
 })

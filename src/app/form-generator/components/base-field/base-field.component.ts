@@ -10,7 +10,7 @@ export const SMALL_SCREEN_LIMIT = 800;
  * This is the base class from which all of the built-in form controls inherit.
  */
 @Component({
-    selector: 'base-field',
+    selector: 'mesh-base-field',
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -22,7 +22,7 @@ export class BaseFieldComponent  {
     isCompact = false;
 
     @HostBinding('class.focus')
-    isFocused: boolean = false;
+    isFocused = false;
 
     /** This is set by the ListFieldComponent when creating new list items */
     @HostBinding('class.list-item')

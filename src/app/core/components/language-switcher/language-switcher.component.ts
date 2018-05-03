@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { I18nService, UILanguage } from '../../providers/i18n/i18n.service';
@@ -7,7 +7,7 @@ import { ConfigService } from '../../providers/config/config.service';
 
 
 @Component({
-    selector: 'language-switcher',
+    selector: 'mesh-language-switcher',
     templateUrl: './language-switcher.component.html'
 })
 export class LanguageSwitcherComponent {

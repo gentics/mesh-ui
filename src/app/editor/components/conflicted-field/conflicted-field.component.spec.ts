@@ -1,7 +1,6 @@
 import { Pipe, PipeTransform, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-
 import { ModalService, GenticsUICoreModule, Checkbox } from 'gentics-ui-core';
 
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
@@ -14,6 +13,7 @@ import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
 import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
 import { ConflictedFieldComponent } from './conflicted-field.component';
+import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
 
 describe('ConflictedFieldComponent', () => {
     let component: ConflictedFieldComponent;
@@ -120,7 +120,7 @@ describe('ConflictedFieldComponent', () => {
         fixture.detectChanges();
         expect(fixture.debugElement.queryAll(By.css('.micronode-row')).length).toEqual(1);
         expect(fixture.debugElement.queryAll(By.css('.micronode-row .change-item')).length)
-            .toEqual(component.conflictedField.conflictedFields.length);
+            .toEqual(component.conflictedField.conflictedFields!.length);
     });
 
 
@@ -150,14 +150,6 @@ describe('ConflictedFieldComponent', () => {
     });
 });
 
-@Pipe({
-    name: 'i18n'
-})
-class MockI18nPipe implements PipeTransform {
-    transform(arg) {
-        return `translated ${arg}`;
-    }
-}
 class MockModalService {
     dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
     fromComponent = jasmine.createSpy('fromComponent').and.callFake(() => Promise.resolve(this.fakeDialog));

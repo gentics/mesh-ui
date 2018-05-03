@@ -292,7 +292,7 @@ describe('FieldGeneratorService', () => {
 });
 
 @Component({
-    selector: 'test-component',
+    selector: 'mesh-test-component',
     template: '<div class="test-component" #insertionPoint></div>'
 })
 class TestComponent implements AfterViewInit {
@@ -310,7 +310,7 @@ class TestComponent implements AfterViewInit {
 
 /* tslint:disable:no-empty */
 @Component({
-    selector: 'mock-field-component',
+    selector: 'mesh-mock-field-component',
     template: '<div class="mock-field-component"></div>'
 })
 class MockFieldComponent extends BaseFieldComponent {

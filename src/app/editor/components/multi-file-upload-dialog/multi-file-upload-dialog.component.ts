@@ -136,7 +136,8 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     onDropFiles(files: File[]) {
         files = files.filter(droppedFile => // Filter out the duplicates by filename and the filesize.
             this.filesWithBlobs.some(filesWithBlob =>
-                /* filesWithBlob.file.fileSize === droppedFile.size && */ // Files can be checked by the size as well if you need more uniquesness
+                // Files can be checked by the size as well if you need more uniquesness
+                // filesWithBlob.file.fileSize === droppedFile.size &&
                 filesWithBlob.file.fileName === droppedFile.name) === false);
 
         this.filesWithBlobs = [...this.filesWithBlobs, ...files.map(file => this.addBlobToFile(file))];

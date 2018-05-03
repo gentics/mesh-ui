@@ -9,7 +9,7 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 
 @Component({
-    selector: 'app-node-row',
+    selector: 'mesh-node-row',
     templateUrl: './node-row.component.html',
     styleUrls: ['./node-row.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

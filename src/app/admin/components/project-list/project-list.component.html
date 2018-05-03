@@ -6,7 +6,7 @@
 </div>
 
 <div class="project-list">
-    <project-list-item *ngFor="let project of projects$ | async" [projectUuid]="project.uuid"></project-list-item>
+    <mesh-project-list-item *ngFor="let project of projects$ | async" [projectUuid]="project.uuid"></mesh-project-list-item>
 </div>
 
 <gtx-button (click)="create()">{{ 'admin.projects_create' | i18n }}</gtx-button>

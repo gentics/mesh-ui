@@ -23,9 +23,7 @@ import { TagReferenceFromServer } from '../../../common/models/server-models';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
-import { notNullOrUndefined } from "../../../common/util/util";
-;
-
+import { notNullOrUndefined } from '../../../common/util/util';
 
 @Component({
     selector: 'mesh-node-tags-bar',

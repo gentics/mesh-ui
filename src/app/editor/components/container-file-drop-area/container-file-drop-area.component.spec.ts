@@ -11,7 +11,7 @@ import { ConfigService } from '../../../core/providers/config/config.service';
 import { ContainerFileDropAreaComponent } from './container-file-drop-area.component';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { MockModalService } from '../../../../testing/modal.service.mock';
-import { MockI18nPipe } from "../../../shared/pipes/i18n/i18n.pipe.mock";
+import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
 
 describe('ContainerFileDropAreaComponent', () => {
     let component: ContainerFileDropAreaComponent;

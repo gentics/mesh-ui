@@ -9,7 +9,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
-    selector: 'micronode-field',
+    selector: 'mesh-micronode-field',
     templateUrl: 'micronode-field.component.html',
     styleUrls: ['micronode-field.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

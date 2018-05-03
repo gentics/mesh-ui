@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { I18nService } from '../../providers/i18n/i18n.service';
 
 @Component({
-    selector: 'change-password-modal',
+    selector: 'mesh-change-password-modal',
     templateUrl: './change-password-modal.component.html',
     styleUrls: ['./change-password-modal.scss']
 })
-export class ChangePasswordModalComponent implements IModalDialog {
+export class ChangePasswordModalComponent implements IModalDialog, OnInit {
 
     form: FormGroup;
     password1: FormControl;
@@ -23,8 +23,9 @@ export class ChangePasswordModalComponent implements IModalDialog {
     constructor(private effects: AuthEffectsService,
                 private state: ApplicationStateService,
                 private notification: Notification,
-                private i18n: I18nService) {
+                private i18n: I18nService) {}
 
+    ngOnInit(): void {
         const passwordValidators = [
             Validators.required
         ];

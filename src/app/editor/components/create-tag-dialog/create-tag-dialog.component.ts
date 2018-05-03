@@ -9,14 +9,14 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Tag } from '../../../common/models/tag.model';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { notNullOrUndefined } from "../../../common/util/util";
+import { notNullOrUndefined } from '../../../common/util/util';
 
 export interface CreateTagDialogComponentResult {
     tag: Tag;
     family: TagFamily;
 }
 @Component({
-    selector: 'app-create-tag-dialog',
+    selector: 'mesh-create-tag-dialog',
     templateUrl: './create-tag-dialog.component.html',
     styleUrls: ['./create-tag-dialog.component.scss']
 })

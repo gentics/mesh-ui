@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { ConnectionBackend, Headers, Http, HttpModule, Request, RequestMethod, Response, ResponseOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
 
 import { ApiBase, ResponseObservable } from './api-base.service';
 import { ApiError } from './api-error';
-import { Subject } from 'rxjs/Subject';
 
 
 describe('ApiBase', () => {

@@ -8,7 +8,7 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
  * A modal for the user to confirm navigation despite unsaved changes.
  */
 @Component({
-    selector: 'confirm-navigation-modal',
+    selector: 'mesh-confirm-navigation-modal',
     templateUrl: './confirm-navigation-modal.tpl.html',
     styleUrls: ['./confirm-navigation-modal.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,7 +19,7 @@ export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
     nodeEditor: NodeEditorComponent;
     changes: Array<{ path: string; oldValue: string; newValue: string; }> = [];
     displayLimit = 10;
-    additionalChangesCount: number = 0;
+    additionalChangesCount = 0;
 
     constructor(private i18n: I18nService) {}
 

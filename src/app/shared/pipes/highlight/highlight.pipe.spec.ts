@@ -6,14 +6,14 @@ describe('HighlightPipe:', () => {
     const open = '<span class="hl-pipe">';
     const close = '</span>';
     let highlightPipe: HighlightPipe;
-    let testString = 'Those who believe in telekinetics, raise my hand';
+    const testString = 'Those who believe in telekinetics, raise my hand';
 
     /**
      * Since the pipe returns a SafeHtml value, we need to manually unwrap this in order to
      * test it.
      */
     function transformAndUnwrap(testString: string, term: string): string {
-        let safeHtml: any = highlightPipe.transform(testString, term);
+        const safeHtml: any = highlightPipe.transform(testString, term);
         return safeHtml.changingThisBreaksApplicationSecurity;
     }
 

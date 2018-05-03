@@ -180,7 +180,7 @@ describe('UserDetailComponent', () => {
 });
 
 function getFormGenerator(fixture: ComponentFixture<TestHostComponent>): MockFormGeneratorComponent {
-    const formGenerator = fixture.debugElement.query(By.css('form-generator'));
+    const formGenerator = fixture.debugElement.query(By.css('mesh-form-generator'));
     return formGenerator && formGenerator.componentInstance;
 }
 
@@ -212,7 +212,7 @@ function setStateForUserWithNodeReference(activatedRoute: MockActivatedRoute, st
 class MockAdminUserEffectsService {}
 
 @Component({
-    selector: 'test-host',
+    selector: 'mesh-test-host',
     template: `<mesh-user-detail></mesh-user-detail>`
 })
 class TestHostComponent {}

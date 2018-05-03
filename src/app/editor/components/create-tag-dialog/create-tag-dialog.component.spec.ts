@@ -16,7 +16,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
-import { MockI18nPipe } from "../../../shared/pipes/i18n/i18n.pipe.mock";
+import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
 
 describe('CreateTagDialogComponent', () => {
     let component: CreateTagDialogComponent;

@@ -11,14 +11,14 @@ interface CustomControlWindow extends Window {
 }
 
 @Component({
-    selector: 'custom-field',
+    selector: 'mesh-custom-field',
     templateUrl: './custom-field.component.html',
     styleUrls: ['./custom-field.scss']
 })
 export class CustomFieldComponent extends BaseFieldComponent implements AfterViewInit {
     api: MeshFieldControlApi;
-    iframeHeight: string = '150px';
-    iframeWidth: string = '100%';
+    iframeHeight = '150px';
+    iframeWidth = '100%';
     @ViewChild('iframe')
     private iframe: ElementRef;
 

@@ -1,11 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { GenticsUICoreModule } from 'gentics-ui-core';
-
 import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
@@ -28,8 +26,7 @@ import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
-import { MockActivatedRoute } from "../../../../testing/router-testing-mocks";
-
+import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { NodeEditorComponent } from './node-editor.component';
 
 describe('NodeEditorComponent', () => {
@@ -241,7 +238,7 @@ describe('NodeEditorComponent', () => {
                                 };
                             }
                         }
-                    }
+                    };
                     return Promise.reject(errorResponse);
                 });
 
@@ -288,7 +285,7 @@ class MockI18nService {
     }
 }
 
-@Component({ selector: 'node-language-switcher', template: '' })
+@Component({ selector: 'mesh-node-language-switcher', template: '' })
 class MockLanguageSwitcherComponent {
     @Input() node: any;
 }

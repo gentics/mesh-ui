@@ -48,6 +48,7 @@ describe('ListFieldComponent', () => {
 
         expect(addItemButton === null).toBe(true);
     });
+
     it('does not display the remove area when in readOnly mode', () => {
         const api = new MockMeshFieldControlApi();
         api.readOnly = true;
@@ -73,10 +74,10 @@ describe('ListFieldComponent', () => {
 });
 
 @Component({
-    selector: 'test-host',
+    selector: 'mesh-test-host',
     template: `
-        <div scrollFrame>
-            <list-field></list-field>
+        <div meshScrollFrame>
+            <mesh-list-field></mesh-list-field>
         </div>`
 })
 class TestHostComponent {}

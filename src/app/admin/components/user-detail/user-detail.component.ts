@@ -13,7 +13,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
-import { notNullOrUndefined } from "../../../common/util/util";
+import { notNullOrUndefined } from '../../../common/util/util';
 
 @Component({
     selector: 'mesh-user-detail',

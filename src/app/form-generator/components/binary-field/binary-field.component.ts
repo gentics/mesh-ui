@@ -16,7 +16,7 @@ import { getConstrainedDimensions } from '../../../shared/common/get-constrained
 type ImageBinary = BinaryField & { width: number; height: number; };
 
 @Component({
-    selector: 'binary-field',
+    selector: 'mesh-binary-field',
     templateUrl: './binary-field.component.html',
     styleUrls: ['./binary-field.scss']
 })

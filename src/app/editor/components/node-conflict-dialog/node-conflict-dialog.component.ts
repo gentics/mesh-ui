@@ -32,7 +32,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     conflicts: string[]; // Passed from the dialog opener.
     localTags: TagReferenceFromServer[]; // Passed from the dialog opener.
     conflictedFields: ConflictedField[] = [];
-    conflictedTags: {mineTags: string, theirTags: string} = null;
+    conflictedTags: { mineTags: string; theirTags: string; } | null = null;
     overwriteTags = true;
 
     constructor(
@@ -44,7 +44,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
     ) {}
 
     ngOnInit(): void {
-        const schema: Schema = this.entities.getSchema(this.localNode.schema.uuid);
+        const schema = this.entities.getSchema(this.localNode.schema.uuid!) as Schema;
         if (!tagsAreEqual(this.remoteNode.tags, this.localTags)) {
             const conflictedTags: ConflictedField = {
                 field: {
@@ -63,6 +63,9 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             const fieldName = conflictPath[0];
 
             const schemaField = schema.fields.find(field => field.name === fieldName);
+            if (!schemaField) {
+                throw new Error(`Could not find a schema field "${fieldName}"`);
+            }
             if (schemaField.type === 'micronode') {
                 this.handleConflictedMicroNode(schemaField, conflictPath[1]);
             } else {
@@ -90,25 +93,34 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
         }
 
         const microSchema = this.entities.getMicroschema(localField.microschema.uuid);
+        if (!microSchema) {
+            throw new Error(`Could not find Microschema with the uuid ${localField.microschema.uuid}`);
+        }
         const microSchemaField = microSchema.fields.find(field => field.name === microNodeFieldName);
+        if (!microSchemaField) {
+            throw new Error(`Could not find micronode field "${microNodeFieldName}"`);
+        }
         const localMicroschemaField = (localField as NodeFieldMicronode).fields[microNodeFieldName];
         const remoteMicroschemaField = (remoteField as NodeFieldMicronode).fields[microNodeFieldName];
         const conflictingMicroschemaField = this.getConflictedField(microSchemaField, localMicroschemaField, remoteMicroschemaField);
-        conflictingField.conflictedFields.push(conflictingMicroschemaField);
+
+        if (Array.isArray(conflictingField.conflictedFields)) {
+            conflictingField.conflictedFields.push(conflictingMicroschemaField);
+        }
     }
 
     private getConflictedField(schemaField: SchemaField, localField: any, remoteField: any): ConflictedField {
-        let conflictedField: ConflictedField = null;
+        let conflictedField: ConflictedField;
 
         switch (schemaField.type) {
             case 'binary':
-                console.log(localField, remoteField);
+                const file = (localField as BinaryField).file;
                 conflictedField = {
                     field: schemaField,
                     localValue: localField,
                     remoteValue: remoteField,
-                    localURL: (localField as BinaryField).file
-                        ? this.blobService.createObjectURL((localField as BinaryField).file)
+                    localURL: file
+                        ? this.blobService.createObjectURL(file)
                         : this.getBinaryUrl(this.localNode, schemaField.name, localField as BinaryField),
                     remoteURL: this.getBinaryUrl(this.remoteNode, schemaField.name, remoteField as BinaryField),
                     overwrite: true
@@ -116,14 +128,14 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
                 // We preload the old version of the file in case the user desides to overwrite the server version.
                 if (!(localField as BinaryField).file) { // Only download the server version if the user did NOT actually select a new file
-                    const url = this.apiService.project.getBinaryFileUrl(this.localNode.project.name, this.localNode.uuid, schemaField.name, this.localNode.version, {w: 200,h: 200})
+                    const url = this.apiService.project.getBinaryFileUrl(this.localNode.project.name!, this.localNode.uuid, schemaField.name, this.localNode.version, {w: 200, h: 200});
 
                     this.blobService.downloadFile(url, (localField as BinaryField).fileName)
                         .then((file: File) => {
                             (localField as BinaryField).file = file;
                         });
                 }
-            break;
+                break;
 
             case 'string':
             case 'number':
@@ -136,7 +148,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                     remoteValue: remoteField,
                     overwrite: true
                 };
-            break;
+                break;
 
             case 'node':
                 conflictedField = {
@@ -147,15 +159,16 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 };
 
                 // Download the nodes so that we can display it's data in the diff
-                forkJoin(this.apiService.project.getNode({ project: this.localNode.project.name, nodeUuid: (localField as NodeField).uuid}),
-                        this.apiService.project.getNode({ project: this.remoteNode.project.name, nodeUuid: (remoteField as NodeField).uuid}))
-                    .subscribe((results: NodeResponse[] ) => {
-                        conflictedField.localValue = results[0].breadcrumb.map(crumb => crumb.displayName + '/') + results[0].displayName;
-                        conflictedField.remoteValue = results[1].breadcrumb.map(crumb => crumb.displayName + '/') + results[1].displayName;
-
+                forkJoin(
+                    this.apiService.project.getNode({ project: this.localNode.project.name!, nodeUuid: (localField as NodeField).uuid}),
+                    this.apiService.project.getNode({ project: this.remoteNode.project.name!, nodeUuid: (remoteField as NodeField).uuid})
+                )
+                    .subscribe(([localNode, remoteNode]) => {
+                        conflictedField.localValue = this.getBreadcrumbPathString(localNode);
+                        conflictedField.remoteValue = this.getBreadcrumbPathString(remoteNode);
                         this.changeDetector.markForCheck();
                     });
-            break;
+                break;
 
             case 'list':
                 conflictedField = {
@@ -164,8 +177,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                     remoteValue: remoteField.join('<br />'),
                     overwrite: true
                 };
-            break;
-
+                break;
+            case 'micronode':
             default:
                 conflictedField = {
                     field: schemaField,
@@ -173,8 +186,9 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                     remoteValue: this.i18n.translate('no_preview_available'),
                     overwrite: true
                 };
-            break;
+                break;
         }
+
         return conflictedField;
     }
 
@@ -196,7 +210,7 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
         this.conflictedFields.map(conflictedField => {
             if (conflictedField.overwrite === false && conflictedField.field.type !== TAGS_FIELD_TYPE) { // Overwrute means 'overwrite the serer version with ours. So if it's false - we take the server version and dump it into our mergeNode
-                if (conflictedField.field.type === 'micronode') {
+                if (conflictedField.field.type === 'micronode' && conflictedField.conflictedFields) {
                     conflictedField.conflictedFields.map(conflictedMicronodeField => {
                         if (conflictedMicronodeField.overwrite === false) {
                             mergedNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name] = this.remoteNode.fields[conflictedField.field.name].fields[conflictedMicronodeField.field.name];
@@ -216,5 +230,14 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
     registerCancelFn(cancel: (val: any) => void): void {
         this.cancelFn = cancel;
+    }
+
+    /**
+     * Converts the path of the node into a slash-separated string
+     */
+    private getBreadcrumbPathString(node: MeshNode): string {
+        return node.breadcrumb.map(crumb => crumb.displayName)
+            .concat(node.displayName)
+            .join('/');
     }
 }

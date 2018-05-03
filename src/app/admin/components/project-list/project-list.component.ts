@@ -7,7 +7,7 @@ import { CreateProjectModalComponent } from '../create-project-modal/create-proj
 import { Project } from '../../../common/models/project.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
-import { notNullOrUndefined } from "../../../common/util/util";
+import { notNullOrUndefined } from '../../../common/util/util';
 
 @Component({
     templateUrl: './project-list.component.html',

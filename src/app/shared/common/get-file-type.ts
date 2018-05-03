@@ -3,7 +3,7 @@
  * image/jpeg => image
  * video/ogg => video
  */
-export function getFileType(mimeType: string, fileName: string): 'image' | 'video' | 'audio' | string | null {
+export function getFileType(mimeType: string, fileName: string): 'image' | 'video' | 'audio' | string {
     if (!mimeType) {
         return getExtension(fileName);
     }

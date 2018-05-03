@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+
 import { BinaryField, MeshNode } from '../../../common/models/node.model';
 import { filenameExtension, isImageField, queryString } from '../../../common/util/util';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
@@ -17,7 +19,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
  * If neither width nor height is provided, this will default to be undefined (will be calculated by aspect ratio).
  */
 @Component({
-    selector: 'thumbnail',
+    selector: 'mesh-thumbnail',
     templateUrl: './thumbnail.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

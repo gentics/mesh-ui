@@ -31,7 +31,7 @@ export enum Severity {
 }
 
 @Component({
-    selector: 'monaco-editor',
+    selector: 'mesh-monaco-editor',
     template: `<div (window:resize)="onResize()" id='editor' #editor class="monaco-editor"></div>`,
     styleUrls: ['./monaco-editor.scss'],
     providers: [

@@ -19,6 +19,7 @@ import { MockModalService } from '../../../../testing/modal.service.mock';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
+import { ImageTransformQueryParams } from '../../../core/providers/api/project-api.class';
 import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
 
 describe('BinaryFieldComponent:', () => {
@@ -199,9 +200,10 @@ describe('BinaryFieldComponent:', () => {
         beforeEach(() => {
             apiService = TestBed.get(ApiService);
             apiBase = TestBed.get(ApiBase);
-            apiService.project.getBinaryFileUrl = jasmine.createSpy('getBinaryFileUrl').and.callFake((project: string, nodeUuid: string, name: string, version?: string, params?: {w?: number, h?: number, fpx?: number, fpy?: number, fpz?: number, crop?: string,  rect?: string }) => {
-                return apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', { project, nodeUuid, name, version, ...params });
-            })
+            apiService.project.getBinaryFileUrl = jasmine.createSpy('getBinaryFileUrl')
+                .and.callFake((project: string, nodeUuid: string, name: string, version?: string, params: ImageTransformQueryParams = {}) => {
+                    return apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', { project, nodeUuid, name, version, ...params });
+                });
             mockFile = {
                 fileName: 'file.txt',
                 fileSize: 42,
@@ -454,7 +456,7 @@ function pretendUserUploadsFile(fixture: ComponentFixture<any>, file: Partial<Fi
 
 
 @Component({
-    template: `<binary-field></binary-field>`
+    template: `<mesh-binary-field></mesh-binary-field>`
 })
 class TestComponent implements OnInit {
     api: MockMeshFieldControlApi;

@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { PublishStatusModelFromServer } from '../../../common/models/server-models';
 
 @Component({
-    selector: 'available-languages-list',
+    selector: 'mesh-available-languages-list',
     templateUrl: 'available-languages-list.component.html',
     styleUrls: ['available-languages-list.scss']
 })

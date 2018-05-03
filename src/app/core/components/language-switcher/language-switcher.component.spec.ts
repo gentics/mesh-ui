@@ -12,7 +12,7 @@ import { LanguageSwitcherComponent } from './language-switcher.component';
 import { I18nService } from '../../providers/i18n/i18n.service';
 import { ConfigService } from '../../providers/config/config.service';
 import { TestStateModule } from '../../../state/testing/test-state.module';
-import { MockI18nPipe } from "../../../shared/pipes/i18n/i18n.pipe.mock";
+import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
 
 describe('LanguageSwitcherComponent:', () => {
 
@@ -118,7 +118,7 @@ describe('LanguageSwitcherComponent:', () => {
 @Component({
     template: `
         <gtx-overlay-host></gtx-overlay-host>
-        <language-switcher></language-switcher>`
+        <mesh-language-switcher></mesh-language-switcher>`
 })
 class TestComponent { }
 

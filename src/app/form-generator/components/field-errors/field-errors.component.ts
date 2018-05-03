@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MeshControlErrors } from '../../common/form-generator-models';
 
 @Component({
-    selector: 'field-errors',
+    selector: 'mesh-field-errors',
     templateUrl: './field-errors.component.html',
     styleUrls: ['./field-errors.scss']
 })
