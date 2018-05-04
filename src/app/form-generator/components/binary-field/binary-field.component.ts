@@ -11,6 +11,7 @@ import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../bas
 import { ApiService } from '../../../core/providers/api/api.service';
 import { BlobService } from '../../../core/providers/blob/blob.service';
 import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-modal.component';
+import { getConstrainedDimensions } from '../../../shared/common/get-constrained-dimensions';
 
 
 
@@ -141,7 +142,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
      * version which is used as a preview.
      */
     private calculateScaledTransformParams(imageField: BinaryField, params: ImageTransformParams): ImageTransformParams {
-        const { ratio } = this.getConstrainedDimensions(imageField);
+        const { ratio } = getConstrainedDimensions(imageField.width, imageField.height, this.maxImageWidth, this.maxImageHeight);
         const round = val => Math.round(val);
         return {
             width: round(params.width * ratio),
@@ -162,34 +163,10 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     private getBinaryUrl(binaryField: BinaryField): string {
         const node = this.api.getNodeValue() as MeshNode;
         if (this.binaryMediaType === 'image') {
-            const { width, height } = this.getConstrainedDimensions(binaryField);
+            const { width, height } = getConstrainedDimensions(binaryField.width, binaryField.height, this.maxImageWidth, this.maxImageHeight);
             return this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name, null, { w: width, h: height });
         } else {
             return this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, this.api.field.name);
         }
-    }
-
-    /**
-     * Returns the constrained dimensions of the image as defined by the maxImageWidth & maxImageHeight fields. Also
-     * returns the ratio by which the natural dimensions have been scaled down.
-     */
-    private getConstrainedDimensions(image: { width?: number; height?: number; }): { width: number; height: number; ratio: number; } {
-        let ratio = 1;
-        let width = image.width || 0;
-        let height = image.height || 0;
-
-        if (this.maxImageWidth < width) {
-            ratio = this.maxImageWidth / width;
-            width = this.maxImageWidth;
-            height *= ratio;
-        }
-
-        if (this.maxImageHeight < height) {
-            ratio = this.maxImageHeight / height;
-            height = this.maxImageHeight;
-            width *= ratio;
-        }
-
-        return { width: Math.round(width), height: Math.round(height), ratio: width / image.width };
     }
 }

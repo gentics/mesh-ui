@@ -11,7 +11,8 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
-
+import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
+import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
 import { ConflictedFieldComponent } from './conflicted-field.component';
 
 describe('ConflictedFieldComponent', () => {
@@ -22,6 +23,8 @@ describe('ConflictedFieldComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 ConflictedFieldComponent,
+                FilePreviewComponent,
+                AudioPlayButtonComponent,
                 MockI18nPipe
             ],
             providers: [

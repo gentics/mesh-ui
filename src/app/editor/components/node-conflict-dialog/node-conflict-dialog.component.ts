@@ -14,6 +14,8 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { ConflictedField, TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { TagReferenceFromServer, NodeResponse } from '../../../common/models/server-models';
 import { BlobService } from '../../../core/providers/blob/blob.service';
+import { getFileType } from '../../../shared/common/get-file-type';
+import { getConstrainedDimensions } from '../../../shared/common/get-constrained-dimensions';
 
 
 @Component({
@@ -100,14 +102,15 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
         switch (schemaField.type) {
             case 'binary':
+                console.log(localField, remoteField);
                 conflictedField = {
                     field: schemaField,
                     localValue: localField,
                     remoteValue: remoteField,
                     localURL: (localField as BinaryField).file
                         ? this.blobService.createObjectURL((localField as BinaryField).file)
-                        : this.apiService.project.getBinaryFileUrl(this.localNode.project.name, this.localNode.uuid, schemaField.name, this.localNode.version, {w: 200, h: 200}),
-                    remoteURL: this.apiService.project.getBinaryFileUrl(this.remoteNode.project.name, this.remoteNode.uuid, schemaField.name, this.remoteNode.version, { w: 200, h: 200}),
+                        : this.getBinaryUrl(this.localNode, schemaField.name, localField as BinaryField),
+                    remoteURL: this.getBinaryUrl(this.remoteNode, schemaField.name, remoteField as BinaryField),
                     overwrite: true
                 };
 
@@ -173,6 +176,15 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             break;
         }
         return conflictedField;
+    }
+
+    private getBinaryUrl(node: MeshNode, schemaFieldName: string, field: BinaryField): string {
+        if (getFileType(field.mimeType, field.fileName) === 'image') {
+            const { width, height } = getConstrainedDimensions(field.width, field.height, 500, 270);
+            return this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, schemaFieldName, node.version, { w: width, h: height })
+        } else {
+            return this.apiService.project.getBinaryFileUrl(node.project.name, node.uuid, schemaFieldName, node.version);
+        }
     }
 
     saveAndClose(): void {

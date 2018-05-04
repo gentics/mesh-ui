@@ -112,8 +112,13 @@
                     class="button-select"
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <!--<img class="image-preview" [src]="conflictedField.theirURL" alt="" />-->
-                <div class="val">{{ conflictedField.remoteValue.fileName }}</div>
+                <div class="val">
+                    <mesh-file-preview [mimeType]="conflictedField.remoteValue.mimeType"
+                                       [fileName]="conflictedField.remoteValue.fileName"
+                                       [url]="conflictedField.remoteURL">
+                    </mesh-file-preview>
+                    {{ conflictedField.remoteValue.fileName }}
+                </div>
             </div>
             <div
                 class="local-val"
@@ -126,8 +131,13 @@
                     class="button-select"
                     flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <!--<img class="image-preview" [src]="conflictedField.mineURL" alt="" />-->
-                <div class="val">{{ conflictedField.localValue.fileName }}</div>
+                <div class="val">
+                        <mesh-file-preview [mimeType]="conflictedField.localValue.mimeType"
+                                           [fileName]="conflictedField.localValue.fileName"
+                                           [url]="conflictedField.localURL">
+                        </mesh-file-preview>
+                        {{ conflictedField.localValue.fileName }}
+                </div>
             </div>
         </div>
 
