@@ -1,32 +1,33 @@
 import { Component, Input } from '@angular/core';
-import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { tick, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { By } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
-import { EditorEffectsService } from '../../providers/editor-effects.service';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { componentTest } from '../../../../testing/component-test';
-import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
-import { VersionLabelComponent } from '../version-label/version-label.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
-import { ConfigService } from '../../../core/providers/config/config.service';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
-import { MockConfigService } from '../../../core/providers/config/config.service.mock';
-import { ApiBase } from '../../../core/providers/api/api-base.service';
+import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
-import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
+import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { EditorEffectsService } from '../../providers/editor-effects.service';
+import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
+import { VersionLabelComponent } from '../version-label/version-label.component';
+
 import { NodeEditorComponent } from './node-editor.component';
 
 describe('NodeEditorComponent', () => {
@@ -61,11 +62,7 @@ describe('NodeEditorComponent', () => {
                 { provide: ApiBase, useClass: MockApiBase },
                 { provide: ApiService, useClass: MockApiService }
             ],
-            imports: [
-                RouterTestingModule.withRoutes([]),
-                GenticsUICoreModule.forRoot(),
-                FormsModule
-            ]
+            imports: [RouterTestingModule.withRoutes([]), GenticsUICoreModule.forRoot(), FormsModule]
         });
         editorEffectsService = TestBed.get(EditorEffectsService);
         state = TestBed.get(ApplicationStateService);
@@ -99,7 +96,9 @@ describe('NodeEditorComponent', () => {
         const newNode = { language: 'en', uuid: 'new_node_uuid' };
 
         beforeEach(() => {
-            editorEffectsService.saveNewNode = jasmine.createSpy('saveNewNode').and.returnValue(Promise.resolve(newNode));
+            editorEffectsService.saveNewNode = jasmine
+                .createSpy('saveNewNode')
+                .and.returnValue(Promise.resolve(newNode));
             state.mockState({
                 editor: {
                     openNode: {
@@ -107,51 +106,70 @@ describe('NodeEditorComponent', () => {
                         uuid: '',
                         projectName: '',
                         language: 'en',
-                        parentNodeUuid: 'uuid_parentNode',
+                        parentNodeUuid: 'uuid_parentNode'
                     }
                 },
                 entities: {
                     schema: {
-                        uuid1: mockSchema({ uuid: 'uuid1', version: '0.1' }),
+                        uuid1: mockSchema({ uuid: 'uuid1', version: '0.1' })
                     },
                     node: {
-                        uuid_parentNode: mockMeshNode({ uuid: 'uuid_parentNode', project: { name: 'demo', uuid: 'demo_uuid' } })
+                        uuid_parentNode: mockMeshNode({
+                            uuid: 'uuid_parentNode',
+                            project: { name: 'demo', uuid: 'demo_uuid' }
+                        })
                     }
                 }
             });
         });
 
-        it('calls EditorEffectsService.saveNewNode',
-            componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                clickSave(fixture);
-                expect(editorEffectsService.saveNewNode).toHaveBeenCalled();
-            })
+        it(
+            'calls EditorEffectsService.saveNewNode',
+            componentTest(
+                () => NodeEditorComponent,
+                (fixture, instance) => {
+                    clickSave(fixture);
+                    expect(editorEffectsService.saveNewNode).toHaveBeenCalled();
+                }
+            )
         );
 
-        it('calls formGenerator.setPristine',
-            componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.formGenerator!.setPristine = jasmine.createSpy('setPristine');
-                clickSave(fixture);
-                expect(instance.formGenerator!.setPristine).toHaveBeenCalledWith(newNode);
-            })
+        it(
+            'calls formGenerator.setPristine',
+            componentTest(
+                () => NodeEditorComponent,
+                (fixture, instance) => {
+                    instance.formGenerator!.setPristine = jasmine.createSpy('setPristine');
+                    clickSave(fixture);
+                    expect(instance.formGenerator!.setPristine).toHaveBeenCalledWith(newNode);
+                }
+            )
         );
 
-        it('calls listEffects.loadChildren',
-            componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                instance.formGenerator!.setPristine = jasmine.createSpy('setPristine');
-                clickSave(fixture);
-                expect(listEffectsService.loadChildren).toHaveBeenCalledWith('demo', 'uuid_parentNode', 'en');
-            })
+        it(
+            'calls listEffects.loadChildren',
+            componentTest(
+                () => NodeEditorComponent,
+                (fixture, instance) => {
+                    instance.formGenerator!.setPristine = jasmine.createSpy('setPristine');
+                    clickSave(fixture);
+                    expect(listEffectsService.loadChildren).toHaveBeenCalledWith('demo', 'uuid_parentNode', 'en');
+                }
+            )
         );
 
-        it('calls navigationService.detail and navigationService.navigate',
-            componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                const navigateSpy = jasmine.createSpy('navigate');
-                navigationService.detail = jasmine.createSpy('detail').and.returnValue({ navigate: navigateSpy });
-                clickSave(fixture);
-                expect(navigationService.detail).toHaveBeenCalledWith('demo', 'new_node_uuid', 'en');
-                expect(navigateSpy).toHaveBeenCalled();
-            })
+        it(
+            'calls navigationService.detail and navigationService.navigate',
+            componentTest(
+                () => NodeEditorComponent,
+                (fixture, instance) => {
+                    const navigateSpy = jasmine.createSpy('navigate');
+                    navigationService.detail = jasmine.createSpy('detail').and.returnValue({ navigate: navigateSpy });
+                    clickSave(fixture);
+                    expect(navigationService.detail).toHaveBeenCalledWith('demo', 'new_node_uuid', 'en');
+                    expect(navigateSpy).toHaveBeenCalled();
+                }
+            )
         );
     });
 
@@ -165,7 +183,7 @@ describe('NodeEditorComponent', () => {
             parentNode: {
                 uuid: 'uuid_parentNode'
             },
-            language: 'en',
+            language: 'en'
         };
 
         beforeEach(() => {
@@ -175,26 +193,26 @@ describe('NodeEditorComponent', () => {
                         uuid: node.uuid,
                         projectName: node.project.name,
                         language: node.language,
-                        parentNodeUuid: node.parentNode.uuid,
+                        parentNodeUuid: node.parentNode.uuid
                     }
                 },
                 entities: {
                     schema: {
-                        uuid1: mockSchema({ uuid: 'uuid1', version: '0.1' }),
+                        uuid1: mockSchema({ uuid: 'uuid1', version: '0.1' })
                     },
                     node: {
                         [node.parentNode.uuid]: mockMeshNode({
                             uuid: node.parentNode.uuid,
                             project: {
                                 name: node.project.name,
-                                uuid: node.project.uuid,
+                                uuid: node.project.uuid
                             }
                         }),
                         [node.uuid]: mockMeshNode({
                             uuid: node.uuid,
                             project: {
                                 name: node.project.name,
-                                uuid: node.project.uuid,
+                                uuid: node.project.uuid
                             },
                             parentNode: {
                                 uuid: node.parentNode.uuid,
@@ -202,64 +220,86 @@ describe('NodeEditorComponent', () => {
                                 schema: { uuid: 'uuid1' }
                             },
                             schema: { uuid: 'uuid1' }
-                        }),
+                        })
                     }
                 }
             });
         });
 
-        it('calls editorEffects.saveNode',
-            componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.returnValue(Promise.resolve(node));
-                clickSave(fixture);
-                expect(editorEffectsService.saveNode).toHaveBeenCalled();
-            })
+        it(
+            'calls editorEffects.saveNode',
+            componentTest(
+                () => NodeEditorComponent,
+                (fixture, instance) => {
+                    editorEffectsService.saveNode = jasmine
+                        .createSpy('saveNode')
+                        .and.returnValue(Promise.resolve(node));
+                    clickSave(fixture);
+                    expect(editorEffectsService.saveNode).toHaveBeenCalled();
+                }
+            )
         );
 
-        it('calls listEffects.loadChildren',
-            componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.returnValue(Promise.resolve(node));
-                clickSave(fixture);
-                expect(listEffectsService.loadChildren).toHaveBeenCalledWith(node.project.name, node.parentNode.uuid, node.language);
-            })
+        it(
+            'calls listEffects.loadChildren',
+            componentTest(
+                () => NodeEditorComponent,
+                (fixture, instance) => {
+                    editorEffectsService.saveNode = jasmine
+                        .createSpy('saveNode')
+                        .and.returnValue(Promise.resolve(node));
+                    clickSave(fixture);
+                    expect(listEffectsService.loadChildren).toHaveBeenCalledWith(
+                        node.project.name,
+                        node.parentNode.uuid,
+                        node.language
+                    );
+                }
+            )
         );
 
-        it('handles conflicts from the server',
-            componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.callFake(() => {
-                    const errorResponse =  {
-                        response: {
-                            json: () => {
-                                return {
-                                    type: 'node_version_conflict',
-                                    properties: {
-                                        conflicts: []
-                                    }
-                                };
+        it(
+            'handles conflicts from the server',
+            componentTest(
+                () => NodeEditorComponent,
+                (fixture, instance) => {
+                    editorEffectsService.saveNode = jasmine.createSpy('saveNode').and.callFake(() => {
+                        const errorResponse = {
+                            response: {
+                                json: () => {
+                                    return {
+                                        type: 'node_version_conflict',
+                                        properties: {
+                                            conflicts: []
+                                        }
+                                    };
+                                }
                             }
-                        }
-                    };
-                    return Promise.reject(errorResponse);
-                });
+                        };
+                        return Promise.reject(errorResponse);
+                    });
 
-                instance.handleSaveConflicts = jasmine.createSpy('handleSaveConflicts');
-                clickSave(fixture);
-                expect(instance.handleSaveConflicts).toHaveBeenCalled();
-            })
+                    instance.handleSaveConflicts = jasmine.createSpy('handleSaveConflicts');
+                    clickSave(fixture);
+                    expect(instance.handleSaveConflicts).toHaveBeenCalled();
+                }
+            )
         );
     });
 
-
     describe('closing editor', () => {
-        it('calls navigationService.clearDetail',
-            componentTest(() => NodeEditorComponent, (fixture, instance) => {
-                clickClose(fixture);
-                expect(navigationService.clearDetail).toHaveBeenCalled();
-            })
+        it(
+            'calls navigationService.clearDetail',
+            componentTest(
+                () => NodeEditorComponent,
+                (fixture, instance) => {
+                    clickClose(fixture);
+                    expect(navigationService.clearDetail).toHaveBeenCalled();
+                }
+            )
         );
     });
 });
-
 
 class MockEditorEffectsService {
     saveNewNode = jasmine.createSpy('saveNewNode');
@@ -274,9 +314,9 @@ class MockListEffectsService {
 }
 
 class MockNavigationService {
-    detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => { } });
-    clearDetail = jasmine.createSpy('clearDetail').and.returnValue({ navigate: () => { } });
-    list = jasmine.createSpy('list').and.returnValue({ commands: () => { } });
+    detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => {} });
+    clearDetail = jasmine.createSpy('clearDetail').and.returnValue({ navigate: () => {} });
+    list = jasmine.createSpy('list').and.returnValue({ commands: () => {} });
 }
 
 class MockI18nService {
@@ -303,7 +343,10 @@ class MockModalService {
     fakeDialog = {
         open: jasmine.createSpy('open').and.callFake(() => {
             return new Promise(resolve => {
-                this.confirmLastModal = () => { resolve(); tick(); };
+                this.confirmLastModal = () => {
+                    resolve();
+                    tick();
+                };
             });
         })
     };

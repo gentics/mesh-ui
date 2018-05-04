@@ -1,5 +1,6 @@
-import { initializeFieldValue } from './initialize-field-value';
 import { SchemaField } from '../../common/models/schema.model';
+
+import { initializeFieldValue } from './initialize-field-value';
 
 describe('initializeFieldValue()', () => {
     it('returns correct value for string field', () => {

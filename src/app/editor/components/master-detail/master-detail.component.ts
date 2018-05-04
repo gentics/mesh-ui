@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { Observable } from 'rxjs/Observable';
+
 import { Project } from '../../../common/models/project.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Component({
     selector: 'mesh-master-detail',
@@ -13,15 +13,15 @@ import { ListEffectsService } from '../../../core/providers/effects/list-effects
     styleUrls: ['./master-detail.scss']
 })
 export class MasterDetailComponent implements OnInit {
-
     editorFocused$: Observable<boolean>;
     editorOpen$: Observable<boolean>;
 
-    constructor(private state: ApplicationStateService,
-                private listEffects: ListEffectsService,
-                private navigationService: NavigationService,
-                private route: ActivatedRoute) {
-    }
+    constructor(
+        private state: ApplicationStateService,
+        private listEffects: ListEffectsService,
+        private navigationService: NavigationService,
+        private route: ActivatedRoute
+    ) {}
 
     ngOnInit(): void {
         this.editorFocused$ = this.state.select(state => state.editor.editorIsFocused);
@@ -32,13 +32,16 @@ export class MasterDetailComponent implements OnInit {
         // TODO: We need to determine a "default" project to load up on init, fetch it from the
         // API and navigate to its baseNode.
         // this.navigationService.list('demo', 'container_uuid').navigate();
-        this.state.select(state => state.auth.loggedIn)
+        this.state
+            .select(state => state.auth.loggedIn)
             .filter(Boolean)
-            .switchMap(() => this.state.select(state => {
-                const projects = state.entities.project;
-                const firstProjectUuid = Object.keys(projects)[0];
-                return firstProjectUuid && projects[firstProjectUuid];
-            }))
+            .switchMap(() =>
+                this.state.select(state => {
+                    const projects = state.entities.project;
+                    const firstProjectUuid = Object.keys(projects)[0];
+                    return firstProjectUuid && projects[firstProjectUuid];
+                })
+            )
             .filter(Boolean)
             .take(1)
             .subscribe((firstProject: Project) => {
@@ -50,8 +53,9 @@ export class MasterDetailComponent implements OnInit {
                 const language = listRoute ? listRoute.paramMap.get('language') : undefined;
 
                 if (projectName && containerUuid) {
-                    this.navigationService.list(projectName, containerUuid, language || undefined)
-                        .navigate({queryParams: this.route.snapshot.queryParams});
+                    this.navigationService
+                        .list(projectName, containerUuid, language || undefined)
+                        .navigate({ queryParams: this.route.snapshot.queryParams });
                 }
             });
     }
@@ -63,5 +67,4 @@ export class MasterDetailComponent implements OnInit {
             this.state.actions.editor.focusList();
         }
     }
-
 }

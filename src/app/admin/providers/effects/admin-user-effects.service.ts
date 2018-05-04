@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { ApiService } from '../../../core/providers/api/api.service';
-import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { MicroschemaReference } from '../../../common/models/common.model';
+import { Microschema } from '../../../common/models/microschema.model';
+import { MeshNode } from '../../../common/models/node.model';
+import { Schema } from '../../../common/models/schema.model';
 import {
-    MicroschemaResponse, UserCreateRequest, UserResponse,
+    MicroschemaResponse,
+    UserCreateRequest,
+    UserResponse,
     UserUpdateRequest
 } from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
-import { Schema } from '../../../common/models/schema.model';
-import { MeshNode } from '../../../common/models/node.model';
-import { Microschema } from '../../../common/models/microschema.model';
-import { MicroschemaReference } from '../../../common/models/common.model';
-
+import { ApiService } from '../../../core/providers/api/api.service';
+import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 interface UserWithNodeReferenceEntities {
     user: User;
@@ -25,24 +26,23 @@ interface UserWithNodeReferenceEntities {
 
 @Injectable()
 export class AdminUserEffectsService {
-
-    constructor(private api: ApiService,
-                private notification: I18nNotification,
-                private state: ApplicationStateService) {
-    }
+    constructor(
+        private api: ApiService,
+        private notification: I18nNotification,
+        private state: ApplicationStateService
+    ) {}
 
     loadUsers(page: number, perPage: number): void {
         this.state.actions.adminUsers.fetchUsersStart();
 
-        this.api.user.getUsers({ page, perPage })
-            .subscribe(
-                response => {
-                    this.state.actions.adminUsers.fetchUsersSuccess(response);
-                },
-                error => {
-                    this.state.actions.adminUsers.fetchUsersError();
-                }
-            );
+        this.api.user.getUsers({ page, perPage }).subscribe(
+            response => {
+                this.state.actions.adminUsers.fetchUsersSuccess(response);
+            },
+            error => {
+                this.state.actions.adminUsers.fetchUsersError();
+            }
+        );
     }
 
     /**
@@ -53,28 +53,27 @@ export class AdminUserEffectsService {
     loadAllUsers(): void {
         this.state.actions.adminUsers.fetchUsersStart();
 
-        this.api.user.getUsers({ page: 1, perPage: 9999999 })
-            .subscribe(
-                response => {
-                    this.state.actions.adminUsers.fetchUsersSuccess(response);
-                },
-                error => {
-                    this.state.actions.adminUsers.fetchUsersError();
-                }
-            );
+        this.api.user.getUsers({ page: 1, perPage: 9999999 }).subscribe(
+            response => {
+                this.state.actions.adminUsers.fetchUsersSuccess(response);
+            },
+            error => {
+                this.state.actions.adminUsers.fetchUsersError();
+            }
+        );
     }
 
     loadAllGroups(): void {
         this.state.actions.adminUsers.fetchAllGroupsStart();
 
-        this.api.user.getGroups({ page: 1, perPage: 9999999 })
-            .subscribe(
-                response => {
-                    this.state.actions.adminUsers.fetchAllGroupsSuccess(response.data);
-                },
-                error => {
-                    this.state.actions.adminUsers.fetchAllGroupsError();
-                });
+        this.api.user.getGroups({ page: 1, perPage: 9999999 }).subscribe(
+            response => {
+                this.state.actions.adminUsers.fetchAllGroupsSuccess(response.data);
+            },
+            error => {
+                this.state.actions.adminUsers.fetchAllGroupsError();
+            }
+        );
     }
 
     /**
@@ -99,7 +98,8 @@ export class AdminUserEffectsService {
     openUser(uuid: string): Promise<User | void> {
         this.state.actions.adminUsers.openUserStart();
 
-        return this.api.user.getUser({ userUuid: uuid})
+        return this.api.user
+            .getUser({ userUuid: uuid })
             .flatMap<UserResponse, UserWithNodeReferenceEntities>((userResponse: User) => {
                 if (userResponse.nodeReference) {
                     return this.fetchNodeReferenceEntities(userResponse);
@@ -119,7 +119,6 @@ export class AdminUserEffectsService {
             );
     }
 
-
     /**
      * If a user has a nodeReference, we need to fetch all the associated entities (the Node, Schema and potentially
      * one or more Microschemas) in order to be able to display the node.
@@ -135,28 +134,27 @@ export class AdminUserEffectsService {
             Observable.of(user),
             this.api.project.getNode({ nodeUuid: uuid, project: projectName }),
             this.api.admin.getSchema({ schemaUuid: schema.uuid })
-        )
-            .flatMap(([user, node, nodeSchema]) => {
-                // We also need to check whether this node contains any micronodes.
-                // If so we must additionally fetch the corresponding microschemas
-                // in order to render the node data.
-                const requiredMicroschemas = this.getMicroschemasUsedInNode(node);
-                let microSchemasObservable: Observable<MicroschemaResponse[] | undefined>;
+        ).flatMap(([user, node, nodeSchema]) => {
+            // We also need to check whether this node contains any micronodes.
+            // If so we must additionally fetch the corresponding microschemas
+            // in order to render the node data.
+            const requiredMicroschemas = this.getMicroschemasUsedInNode(node);
+            let microSchemasObservable: Observable<MicroschemaResponse[] | undefined>;
 
-                if (0 < requiredMicroschemas.length) {
-                    microSchemasObservable = forkJoin(
-                        requiredMicroschemas.map(({ uuid: microschemaUuid, version }) =>
-                            this.api.admin.getMicroschema({ microschemaUuid, version }))
-                    );
-                } else {
-                    microSchemasObservable = Observable.of(undefined);
-                }
+            if (0 < requiredMicroschemas.length) {
+                microSchemasObservable = forkJoin(
+                    requiredMicroschemas.map(({ uuid: microschemaUuid, version }) =>
+                        this.api.admin.getMicroschema({ microschemaUuid, version })
+                    )
+                );
+            } else {
+                microSchemasObservable = Observable.of(undefined);
+            }
 
-                return microSchemasObservable
-                    .map((microschemas: Microschema[]) => {
-                        return { user, node, nodeSchema: nodeSchema as Schema, microschemas };
-                    });
+            return microSchemasObservable.map((microschemas: Microschema[]) => {
+                return { user, node, nodeSchema: nodeSchema as Schema, microschemas };
             });
+        });
     }
 
     /**
@@ -183,7 +181,8 @@ export class AdminUserEffectsService {
 
     createUser(userRequest: UserCreateRequest): Promise<UserResponse> {
         this.state.actions.adminUsers.createUserStart();
-        return this.api.admin.createUser({}, userRequest)
+        return this.api.admin
+            .createUser({}, userRequest)
             .do(
                 user => {
                     this.state.actions.adminUsers.createUserSuccess(user);
@@ -200,7 +199,8 @@ export class AdminUserEffectsService {
     updateUser(userUuid: string, user: UserUpdateRequest): Promise<User | void> {
         this.state.actions.adminUsers.updateUserStart();
 
-        return this.api.admin.updateUser({ userUuid }, user)
+        return this.api.admin
+            .updateUser({ userUuid }, user)
             .toPromise()
             .then(
                 response => {
@@ -218,41 +218,42 @@ export class AdminUserEffectsService {
     deleteUser(user: User): void {
         this.state.actions.adminUsers.deleteUserStart();
 
-        this.api.admin.deactivateUser({ userUuid: user.uuid })
-        .subscribe(() => {
-            this.state.actions.adminUsers.deleteUserSuccess(user.uuid);
-            this.notification.show({
-                type: 'success',
-                message: 'admin.user_deleted',
-                translationParams: { username: user.username }
-            });
-        }, error => {
-            this.state.actions.adminUsers.deleteUserError();
-            this.notification.show({
-                type: 'error',
-                message: 'admin.user_deleted_error',
-                translationParams: { username: user.username }
-            });
-        });
+        this.api.admin.deactivateUser({ userUuid: user.uuid }).subscribe(
+            () => {
+                this.state.actions.adminUsers.deleteUserSuccess(user.uuid);
+                this.notification.show({
+                    type: 'success',
+                    message: 'admin.user_deleted',
+                    translationParams: { username: user.username }
+                });
+            },
+            error => {
+                this.state.actions.adminUsers.deleteUserError();
+                this.notification.show({
+                    type: 'error',
+                    message: 'admin.user_deleted_error',
+                    translationParams: { username: user.username }
+                });
+            }
+        );
     }
 
     addUserToGroup(user: User, groupUuid: string): void {
         this.state.actions.adminUsers.addUserToGroupStart();
 
-        this.api.admin.addUserToGroup({ userUuid: user.uuid, groupUuid })
-            .subscribe(
-                group => {
-                    user.groups.push({
-                        name: group.name,
-                        uuid: group.uuid
-                    });
-                    this.state.actions.adminUsers.addUserToGroupSuccess(user);
-                },
-                error => {
-                    this.state.actions.adminUsers.addUserToGroupError();
+        this.api.admin.addUserToGroup({ userUuid: user.uuid, groupUuid }).subscribe(
+            group => {
+                user.groups.push({
+                    name: group.name,
+                    uuid: group.uuid
                 });
+                this.state.actions.adminUsers.addUserToGroupSuccess(user);
+            },
+            error => {
+                this.state.actions.adminUsers.addUserToGroupError();
+            }
+        );
     }
-
 
     addUsersToGroup(users: User[], groupUuid: string): void {
         const usersNotAlreadyInGroup = users.filter(user => {
@@ -267,18 +268,18 @@ export class AdminUserEffectsService {
     removeUserFromGroup(user: User, groupUuid: string): void {
         this.state.actions.adminUsers.removeUserFromGroupStart();
 
-        this.api.admin.removeUserFromGroup({ userUuid: user.uuid, groupUuid })
-            .subscribe(
-                () => {
-                    const index = user.groups.findIndex(g => g.uuid === groupUuid);
-                    if (-1 < index) {
-                        user.groups.splice(index, 1);
-                    }
-                    this.state.actions.adminUsers.removeUserFromGroupSuccess(user);
-                },
-                error => {
-                    this.state.actions.adminUsers.removeUserFromGroupError();
-                });
+        this.api.admin.removeUserFromGroup({ userUuid: user.uuid, groupUuid }).subscribe(
+            () => {
+                const index = user.groups.findIndex(g => g.uuid === groupUuid);
+                if (-1 < index) {
+                    user.groups.splice(index, 1);
+                }
+                this.state.actions.adminUsers.removeUserFromGroupSuccess(user);
+            },
+            error => {
+                this.state.actions.adminUsers.removeUserFromGroupError();
+            }
+        );
     }
 
     removeUsersFromGroup(users: User[], groupUuid: string): void {

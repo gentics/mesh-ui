@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
+
 import { NodeFieldType } from '../../../common/models/node.model';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
 // TODO: this needs to be configurable
@@ -19,8 +20,7 @@ export class CustomFieldComponent extends BaseFieldComponent implements AfterVie
     api: MeshFieldControlApi;
     iframeHeight = '150px';
     iframeWidth = '100%';
-    @ViewChild('iframe')
-    private iframe: ElementRef;
+    @ViewChild('iframe') private iframe: ElementRef;
 
     constructor(changeDetector: ChangeDetectorRef, private ngZone: NgZone) {
         super(changeDetector);
@@ -75,5 +75,4 @@ export class CustomFieldComponent extends BaseFieldComponent implements AfterVie
     onChange(value: string): void {
         this.api.setValue(value);
     }
-
 }

@@ -1,30 +1,30 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
-import { ModalService, IModalInstance } from 'gentics-ui-core';
+import { IModalInstance, ModalService } from 'gentics-ui-core';
 
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EditorEffectsService } from '../../providers/editor-effects.service';
 
-import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
-import { EntitiesService } from '../../../state/providers/entities.service';
-import { getMeshNodeBinaryFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
-import { initializeNode } from '../../../common/util/initialize-node';
 import { NodeReferenceFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
-import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
+import { initializeNode } from '../../../common/util/initialize-node';
+import { getMeshNodeBinaryFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { ApiError } from '../../../core/providers/api/api-error';
 import { ApiService } from '../../../core/providers/api/api.service';
-import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
+import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
-import { ApiBase } from '../../../core/providers/api/api-base.service';
+import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
+import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
+import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
 
 @Component({
     selector: 'mesh-node-editor',
@@ -32,7 +32,6 @@ import { ApiBase } from '../../../core/providers/api/api-base.service';
     styleUrls: ['./node-editor.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class NodeEditorComponent implements OnInit, OnDestroy {
     node: MeshNode | undefined;
     schema: Schema | undefined;
@@ -48,7 +47,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     @ViewChild('formGenerator') formGenerator?: FormGeneratorComponent;
     @ViewChild('tagsBar') tagsBar?: NodeTagsBarComponent;
 
-    constructor(private state: ApplicationStateService,
+    constructor(
+        private state: ApplicationStateService,
         private entities: EntitiesService,
         private changeDetector: ChangeDetectorRef,
         private editorEffects: EditorEffectsService,
@@ -58,7 +58,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private i18n: I18nService,
         private modalService: ModalService,
         private apiBase: ApiBase,
-        private api: ApiService) { }
+        private api: ApiService
+    ) {}
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -82,13 +83,14 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.openNode$ = this.state.select(state => state.editor.openNode)
+        this.openNode$ = this.state
+            .select(state => state.editor.openNode)
             .filter(notNullOrUndefined)
             .switchMap(openNode => {
                 const schemaUuid = openNode.schemaUuid;
                 const parentNodeUuid = openNode.parentNodeUuid;
                 if (schemaUuid && parentNodeUuid) {
-                    return this.entities.selectSchema(schemaUuid).map((schema) => {
+                    return this.entities.selectSchema(schemaUuid).map(schema => {
                         const node = initializeNode(schema, parentNodeUuid, openNode.language);
                         return [node, schema] as [MeshNode, Schema];
                     });
@@ -144,7 +146,11 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
         // TODO: remove this once Mesh fixes the order of the breadcrumbs
         // https://github.com/gentics/mesh/issues/398
-        return breadcrumb.slice().reverse().map(b => b.displayName).join(' › ');
+        return breadcrumb
+            .slice()
+            .reverse()
+            .map(b => b.displayName)
+            .join(' › ');
     }
 
     getNodePathRouterLink(): any[] {
@@ -170,14 +176,17 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         const numBinaryFields = Object.keys(getMeshNodeBinaryFields(node)).length;
 
         if (numBinaryFields > 0) {
-            return this.modalService.fromComponent(ProgressbarModalComponent,
-                {
-                    closeOnOverlayClick: false,
-                    closeOnEscape: false
-                },
-                {
-                    translateToPlural: numBinaryFields > 1
-                })
+            return this.modalService
+                .fromComponent(
+                    ProgressbarModalComponent,
+                    {
+                        closeOnOverlayClick: false,
+                        closeOnEscape: false
+                    },
+                    {
+                        translateToPlural: numBinaryFields > 1
+                    }
+                )
                 .then(modal => {
                     modal.open();
                     if (saveFn) {
@@ -212,12 +221,13 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             let saveFn: Promise<any> | null = null;
             tags = !!tags ? tags : tagsBar.isDirty ? tagsBar.nodeTags : undefined;
 
-            if (!this.node.uuid) { // Create new node.
-                const parentNode = this.entities.getNode(this.node.parentNode.uuid, {language: this.node.language});
+            if (!this.node.uuid) {
+                // Create new node.
+                const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
                 const projectName = parentNode && parentNode.project.name;
                 if (parentNode && projectName) {
-                    saveFn = this.editorEffects.saveNewNode(projectName, this.node, tags)
-                        .then(node => {
+                    saveFn = this.editorEffects.saveNewNode(projectName, this.node, tags).then(
+                        node => {
                             this.isSaving = false;
                             if (node && node.language) {
                                 formGenerator.setPristine(node);
@@ -227,22 +237,24 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                                     this.navigationService.detail(projectName, node.uuid, node.language).navigate();
                                 }
                             }
-                        }, error => {
+                        },
+                        error => {
                             this.isSaving = false;
                             this.changeDetector.detectChanges();
-                        });
-
+                        }
+                    );
                 }
             } else {
-                saveFn = this.editorEffects.saveNode(this.node, tags)
-                    .then(node => {
+                saveFn = this.editorEffects.saveNode(this.node, tags).then(
+                    node => {
                         this.isSaving = false;
                         if (node && node.project.name && node.language) {
                             formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                             this.changeDetector.markForCheck();
                         }
-                    }, error => {
+                    },
+                    error => {
                         if (error.response) {
                             const errorResponse = error.response.json();
                             if (errorResponse.type === 'node_version_conflict') {
@@ -250,7 +262,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             }
                         }
                         this.isSaving = false;
-                    });
+                    }
+                );
             }
             this.saveNodeWithProgress(saveFn, this.node);
         }
@@ -260,30 +273,32 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         if (!this.node) {
             throw new Error('Cannot handle save conflicts because this.node is undefined.');
         }
-        this.api.project.getNode({ project: this.node.project.name!, nodeUuid: this.node.uuid})
+        this.api.project
+            .getNode({ project: this.node.project.name!, nodeUuid: this.node.uuid })
             .take(1)
             .subscribe((response: NodeResponse) => {
-                this.modalService.fromComponent(
-                    NodeConflictDialogComponent,
-                    {
-                        closeOnOverlayClick: false,
-                        width: '90%',
-                        onClose: (reason: any): void => {
-                            this.changeDetector.detectChanges();
+                this.modalService
+                    .fromComponent(
+                        NodeConflictDialogComponent,
+                        {
+                            closeOnOverlayClick: false,
+                            width: '90%',
+                            onClose: (reason: any): void => {
+                                this.changeDetector.detectChanges();
+                            }
+                        },
+                        {
+                            conflicts,
+                            localTags: this.tagsBar ? this.tagsBar.nodeTags : [],
+                            localNode: this.node,
+                            remoteNode: response as MeshNode
                         }
-                    },
-                    {
-                        conflicts,
-                        localTags: this.tagsBar ? this.tagsBar.nodeTags : [],
-                        localNode: this.node,
-                        remoteNode : response as MeshNode,
-                    }
-                )
-                .then(modal => modal.open())
-                .then(mergedNode => {
-                    this.node = mergedNode;
-                    this.saveNode(true, mergedNode.tags);
-                });
+                    )
+                    .then(modal => modal.open())
+                    .then(mergedNode => {
+                        this.node = mergedNode;
+                        this.saveNode(true, mergedNode.tags);
+                    });
             });
     }
 
@@ -310,7 +325,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     focusList(): void {
         this.state.actions.editor.focusList();
     }
-
 
     get isDirty(): boolean {
         return (!!this.formGenerator && this.formGenerator.isDirty) || (!!this.tagsBar && this.tagsBar.isDirty);

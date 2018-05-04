@@ -1,15 +1,15 @@
-import { MeshNode } from '../../common/models/node.model';
-import { User } from '../../common/models/user.model';
-import { Schema } from '../../common/models/schema.model';
+import { Group } from '../../common/models/group.model';
 import { Microschema } from '../../common/models/microschema.model';
+import { MeshNode } from '../../common/models/node.model';
 import { Project } from '../../common/models/project.model';
+import { Schema } from '../../common/models/schema.model';
 import { TagFamily } from '../../common/models/tag-family.model';
 import { Tag } from '../../common/models/tag.model';
-import { Group } from '../../common/models/group.model';
+import { User } from '../../common/models/user.model';
 
 export interface EntityState {
     group: {
-        [uuid: string]: Group
+        [uuid: string]: Group;
     };
     microschema: {
         [uuid: string]: {
@@ -24,7 +24,7 @@ export interface EntityState {
         };
     };
     project: {
-        [uuid: string]: Project
+        [uuid: string]: Project;
     };
     schema: {
         [uuid: string]: {

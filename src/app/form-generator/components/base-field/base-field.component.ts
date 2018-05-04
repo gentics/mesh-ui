@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding } from '@angular/core';
-import { MeshControlErrors, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+
 import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
+import { MeshControlErrors, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 
 export const FIELD_FULL_WIDTH = '96%';
 export const FIELD_HALF_WIDTH = '60%';
@@ -14,25 +15,19 @@ export const SMALL_SCREEN_LIMIT = 800;
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BaseFieldComponent  {
-    @HostBinding('class.mesh-field')
-    readonly isMeshField = true;
+export class BaseFieldComponent {
+    @HostBinding('class.mesh-field') readonly isMeshField = true;
 
-    @HostBinding('class.compact')
-    isCompact = false;
+    @HostBinding('class.compact') isCompact = false;
 
-    @HostBinding('class.focus')
-    isFocused = false;
+    @HostBinding('class.focus') isFocused = false;
 
     /** This is set by the ListFieldComponent when creating new list items */
-    @HostBinding('class.list-item')
-    isListItem = false;
+    @HostBinding('class.list-item') isListItem = false;
 
-    @HostBinding('style.width')
-    width: string;
+    @HostBinding('style.width') width: string;
 
-    @HostBinding('style.height')
-    height: string;
+    @HostBinding('style.height') height: string;
 
     /** Returns true is the control is in a valid state */
     get isValid(): boolean {
@@ -132,7 +127,9 @@ export class BaseFieldComponent  {
         let errorHash: { [errorCode: string]: string | false };
 
         if (typeof errorsOrErrorCode === 'string') {
-            errorHash = { [errorsOrErrorCode]: errorMessage === undefined ? 'Error message not specified' : errorMessage};
+            errorHash = {
+                [errorsOrErrorCode]: errorMessage === undefined ? 'Error message not specified' : errorMessage
+            };
         } else {
             errorHash = errorsOrErrorCode;
         }

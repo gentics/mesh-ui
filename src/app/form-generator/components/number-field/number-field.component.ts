@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
-import { SchemaField } from '../../../common/models/schema.model';
+
 import { NodeFieldType } from '../../../common/models/node.model';
+import { SchemaField } from '../../../common/models/schema.model';
+import { errorHashFor, ErrorCode } from '../../common/form-errors';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
-import { ErrorCode, errorHashFor } from '../../common/form-errors';
 
 @Component({
     selector: 'mesh-number-field',
@@ -37,8 +38,8 @@ export class NumberFieldComponent extends BaseFieldComponent {
         const min = this.api.field.min;
         const max = this.api.field.max;
         const requiredError = this.api.field.required && (typeof value !== 'number' || Number.isNaN(value));
-        const minError = (min !== undefined && value < min);
-        const maxError = (max !== undefined && max < value);
+        const minError = min !== undefined && value < min;
+        const maxError = max !== undefined && max < value;
 
         const errors = {
             ...errorHashFor(ErrorCode.REQUIRED, requiredError),

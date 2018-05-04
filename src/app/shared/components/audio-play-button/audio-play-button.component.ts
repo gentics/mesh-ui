@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
-
 
 @Component({
     selector: 'mesh-audio-play-button',
@@ -8,7 +7,6 @@ import { SafeUrl } from '@angular/platform-browser';
     styleUrls: ['./audio-play-button.component.scss']
 })
 export class AudioPlayButtonComponent implements OnInit {
-
     @Input() src: SafeUrl;
     @Input() autoPlay = false;
     @Output() load = new EventEmitter<void>();

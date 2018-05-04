@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
-import { SchemaField } from '../../../common/models/schema.model';
+
 import { NodeField, NodeFieldType } from '../../../common/models/node.model';
+import { SchemaField } from '../../../common/models/schema.model';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
@@ -21,7 +22,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value: NodeField): void {
-        this.userValue = value && value.uuid || '';
+        this.userValue = (value && value.uuid) || '';
     }
 
     isValidUuid(): boolean {

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { Tag } from '../../../common/models/tag.model';
+
 import { TagReferenceFromServer } from '../../../common/models/server-models';
+import { Tag } from '../../../common/models/tag.model';
 
 @Component({
     selector: 'mesh-tag',

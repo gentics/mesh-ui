@@ -3,12 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
 
-import { DateFieldComponent } from './date-field.component';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
+
+import { DateFieldComponent } from './date-field.component';
 import createSpy = jasmine.createSpy;
 
 describe('DateFieldComponent:', () => {
-
     let fixture: ComponentFixture<DateFieldComponent>;
     let instance: DateFieldComponent;
 

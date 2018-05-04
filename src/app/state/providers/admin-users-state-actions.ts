@@ -1,21 +1,24 @@
 import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
-import { AppState } from '../models/app-state.model';
-import { EntityState } from '../models/entity-state.model';
-import { GroupResponse, UserListResponse, UserResponse } from '../../common/models/server-models';
-import { EntityStateType, mergeEntityState } from './entity-state-actions';
-import { AdminUsersState } from '../models/admin-users-state.model';
-import { User } from '../../common/models/user.model';
+import { Microschema } from '../../common/models/microschema.model';
 import { MeshNode } from '../../common/models/node.model';
 import { Schema } from '../../common/models/schema.model';
-import { Microschema } from '../../common/models/microschema.model';
+import { GroupResponse, UserListResponse, UserResponse } from '../../common/models/server-models';
+import { User } from '../../common/models/user.model';
+import { AdminUsersState } from '../models/admin-users-state.model';
+import { AppState } from '../models/app-state.model';
+import { EntityState } from '../models/entity-state.model';
+
+import { mergeEntityState, EntityStateType } from './entity-state-actions';
 
 @Injectable()
 @Immutable()
 export class AdminUsersStateActions extends StateActionBranch<AppState> {
-    @CloneDepth(1) private adminUsers: AdminUsersState;
-    @CloneDepth(0) private entities: EntityState;
+    @CloneDepth(1)
+    private adminUsers: AdminUsersState;
+    @CloneDepth(0)
+    private entities: EntityState;
 
     constructor() {
         super({
@@ -61,7 +64,7 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
     }
 
     fetchAllGroupsStart(): void {
-        this.adminUsers.loadCount ++;
+        this.adminUsers.loadCount++;
     }
 
     fetchAllGroupsSuccess(groups: GroupResponse[]): void {
@@ -106,8 +109,8 @@ export class AdminUsersStateActions extends StateActionBranch<AppState> {
     openUserSuccess(user: UserResponse, userNode?: MeshNode, userNodeSchema?: Schema, microschemas?: Microschema[]) {
         this.adminUsers.loadCount--;
         this.adminUsers.userDetail = user.uuid;
-        const changes: {[K in keyof EntityState]?: Array<EntityStateType[K]>; } = {
-            user: [user as User],
+        const changes: { [K in keyof EntityState]?: Array<EntityStateType[K]> } = {
+            user: [user as User]
         };
         if (userNode) {
             changes.node = [userNode];

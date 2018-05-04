@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
 import { MeshNode } from '../../../common/models/node.model';
+import { concatUnique, notNullOrUndefined } from '../../../common/util/util';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { Observable } from 'rxjs/Observable';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { concatUnique, notNullOrUndefined } from '../../../common/util/util';
 
 @Component({
     selector: 'mesh-container-language-switcher',
@@ -12,19 +13,19 @@ import { concatUnique, notNullOrUndefined } from '../../../common/util/util';
     styleUrls: ['container-language-switcher.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class ContainerLanguageSwitcherComponent {
-
     currentLanguage$: Observable<string>;
     availableLanguages$: Observable<string[]>;
 
-    constructor(private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private navigationService: NavigationService) {
-
+    constructor(
+        private state: ApplicationStateService,
+        private entities: EntitiesService,
+        private navigationService: NavigationService
+    ) {
         this.currentLanguage$ = this.state.select(state => state.list.language);
 
-        this.availableLanguages$ = this.state.select(state => state.list.items)
+        this.availableLanguages$ = this.state
+            .select(state => state.list.items)
             .filter(notNullOrUndefined)
             .combineLatest(this.currentLanguage$)
             .map(([childrenUuids, language]) => this.uuidsToUniqueLanguages(childrenUuids, language))

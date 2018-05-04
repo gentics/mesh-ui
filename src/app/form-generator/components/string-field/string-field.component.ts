@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
+
 import { NodeFieldType } from '../../../common/models/node.model';
+import { errorHashFor, ErrorCode } from '../../common/form-errors';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
-import { ErrorCode, errorHashFor } from '../../common/form-errors';
 
 @Component({
     selector: 'mesh-string-field',
@@ -35,5 +36,4 @@ export class StringFieldComponent extends BaseFieldComponent {
         const requiredError = this.api.field.required === true && !value;
         this.api.setError(errorHashFor(ErrorCode.REQUIRED, requiredError));
     }
-
 }

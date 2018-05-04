@@ -1,25 +1,25 @@
+import { BaseProperties } from '../app/common/models/common.model';
+import { Microschema } from '../app/common/models/microschema.model';
 import { MeshNode } from '../app/common/models/node.model';
 import { Project } from '../app/common/models/project.model';
-import { BaseProperties } from '../app/common/models/common.model';
-import { User } from '../app/common/models/user.model';
 import { Schema } from '../app/common/models/schema.model';
-import { Microschema } from '../app/common/models/microschema.model';
-import { simpleMergeDeep } from '../app/common/util/util';
 import { TagFamily } from '../app/common/models/tag-family.model';
 import { Tag } from '../app/common/models/tag.model';
+import { User } from '../app/common/models/user.model';
+import { simpleMergeDeep } from '../app/common/util/util';
 
 /**
  * Returns a mock MeshNode for use in testing. Any properties may be overridden by passing the
  * properties argument.
  */
-export function mockMeshNode(properties?: Partial<MeshNode>): { [language: string]: { [version: string]: MeshNode; }; } {
+export function mockMeshNode(properties?: Partial<MeshNode>): { [language: string]: { [version: string]: MeshNode } } {
     const defaultMockNode: MeshNode = {
         ...mockBaseProperties(),
         ...{
             uuid: 'default000mock000meshnode0000000',
             project: {
                 uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
-                name: 'demo',
+                name: 'demo'
             },
             language: 'en',
             availableLanguages: ['en'],
@@ -77,7 +77,6 @@ export function mockProject(properties?: Partial<Project>): Project {
     return { ...defaultMockProject, ...properties };
 }
 
-
 /**
  * Returns a mock tag family for use in testing. Any properties may be overridden by passing the
  * properties argument.
@@ -87,7 +86,7 @@ export function mockTagFamily(properties?: Partial<TagFamily>): TagFamily {
         ...mockBaseProperties(),
         ...{
             uuid: 'default000mock000TagFamily0',
-            name: 'mockFamily',
+            name: 'mockFamily'
         }
     };
 
@@ -104,9 +103,8 @@ export function mockTag(properties?: Partial<Tag>): Tag {
         ...{
             uuid: 'default000mock000Tag0',
             name: 'mockFamily',
-            tagFamily: 'tagFamily',
-        },
-
+            tagFamily: 'tagFamily'
+        }
     };
 
     return { ...defaultMockTag, ...properties };
@@ -116,7 +114,7 @@ export function mockTag(properties?: Partial<Tag>): Tag {
  * Returns a mock Schema for use in testing. Any properties may be overridden by passing the
  * properties argument.
  */
-export function mockSchema(properties?: Partial<Schema>): { [version: string]: Schema; } {
+export function mockSchema(properties?: Partial<Schema>): { [version: string]: Schema } {
     const defaultMockSchema: Schema = {
         ...mockBaseProperties(),
         ...{
@@ -126,7 +124,7 @@ export function mockSchema(properties?: Partial<Schema>): { [version: string]: S
             fields: [],
             displayField: '',
             segmentField: '',
-            container: false,
+            container: false
         }
     };
 
@@ -138,7 +136,7 @@ export function mockSchema(properties?: Partial<Schema>): { [version: string]: S
  * Returns a mock Microschema for use in testing. Any properties may be overridden by passing the
  * properties argument.
  */
-export function mockMicroschema(properties?: Partial<Microschema>): { [version: string]: Microschema; } {
+export function mockMicroschema(properties?: Partial<Microschema>): { [version: string]: Microschema } {
     const defaultMockMicroschema: Microschema = {
         ...mockBaseProperties(),
         ...{
@@ -146,14 +144,13 @@ export function mockMicroschema(properties?: Partial<Microschema>): { [version: 
             name: 'mockMicroschema',
             version: 1,
             fields: [],
-            container: false,
+            container: false
         }
     };
 
     const mockMicroschema = { ...defaultMockMicroschema, ...properties };
     return { [mockMicroschema.version!]: mockMicroschema };
 }
-
 
 /**
  * Returns a mock User for use in testing. Any properties may be overridden by passing the

@@ -1,5 +1,5 @@
-import { PermissionInfoFromServer, UserReferenceFromServer, UserResponse } from './server-models';
 import { SchemaReference } from './common.model';
+import { PermissionInfoFromServer, UserReferenceFromServer, UserResponse } from './server-models';
 
 export interface UserNodeReference {
     projectName: string;

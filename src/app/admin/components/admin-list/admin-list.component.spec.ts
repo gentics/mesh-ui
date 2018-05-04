@@ -1,13 +1,14 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { Checkbox } from 'gentics-ui-core';
+import { NgxPaginationModule } from 'ngx-pagination';
+
+import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
 
 import { AdminListComponent } from './admin-list.component';
-import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
-import { configureComponentTest } from '../../../../testing/configure-component-test';
 
 describe('AdminListComponent', () => {
     let instance: TestComponent;
@@ -22,10 +23,7 @@ describe('AdminListComponent', () => {
                 Checkbox,
                 MockPaginationControlsComponent
             ],
-            imports: [
-                NgxPaginationModule,
-                NoopAnimationsModule
-            ]
+            imports: [NgxPaginationModule, NoopAnimationsModule]
         });
     });
 
@@ -78,7 +76,6 @@ describe('AdminListComponent', () => {
     });
 
     describe('checkbox selection', () => {
-
         function allItemsOnPageAreChecked(_fixture: ComponentFixture<TestComponent>): boolean {
             return getAdminListItems(_fixture).every(listItem => listItem.checked);
         }
@@ -100,7 +97,6 @@ describe('AdminListComponent', () => {
             return _fixture.debugElement.query(By.directive(AdminListComponent)).componentInstance.checkedCount;
         }
 
-
         it('"select all" is not checked if there are no results', () => {
             instance.users = [];
             fixture.detectChanges();
@@ -109,177 +105,201 @@ describe('AdminListComponent', () => {
             expect(selectAll.checked).toBe(false);
         });
 
-        it('checking "select all" selects all rows on current page', fakeAsync(() => {
-            fixture.detectChanges();
+        it(
+            'checking "select all" selects all rows on current page',
+            fakeAsync(() => {
+                fixture.detectChanges();
 
-            const selectAll = getSelectAllCheckbox(fixture);
-            selectAll.change.emit(true);
-            tick();
-            fixture.detectChanges();
+                const selectAll = getSelectAllCheckbox(fixture);
+                selectAll.change.emit(true);
+                tick();
+                fixture.detectChanges();
 
-            expect(allItemsOnPageAreChecked(fixture)).toBe(true);
-        }));
+                expect(allItemsOnPageAreChecked(fixture)).toBe(true);
+            })
+        );
 
-        it('checking "select all" deselects all rows on current page if all are already selected', fakeAsync(() => {
-            fixture.detectChanges();
+        it(
+            'checking "select all" deselects all rows on current page if all are already selected',
+            fakeAsync(() => {
+                fixture.detectChanges();
 
-            checkAllListItems(fixture);
-            fixture.detectChanges();
-            expect(allItemsOnPageAreChecked(fixture)).toBe(true, 'all items checked');
+                checkAllListItems(fixture);
+                fixture.detectChanges();
+                expect(allItemsOnPageAreChecked(fixture)).toBe(true, 'all items checked');
 
-            const selectAll = getSelectAllCheckbox(fixture);
-            selectAll.change.emit(false);
-            tick();
-            fixture.detectChanges();
+                const selectAll = getSelectAllCheckbox(fixture);
+                selectAll.change.emit(false);
+                tick();
+                fixture.detectChanges();
 
-            expect(noItemsOnPageAreChecked(fixture)).toBe(true, 'no items checked');
-        }));
+                expect(noItemsOnPageAreChecked(fixture)).toBe(true, 'no items checked');
+            })
+        );
 
-        it('"select all" becomes checked when all rows on current page are checked', fakeAsync(() => {
-            fixture.detectChanges();
+        it(
+            '"select all" becomes checked when all rows on current page are checked',
+            fakeAsync(() => {
+                fixture.detectChanges();
 
-            const selectAll = getSelectAllCheckbox(fixture);
-            expect(selectAll.checked).toBe(false);
+                const selectAll = getSelectAllCheckbox(fixture);
+                expect(selectAll.checked).toBe(false);
 
-            const listItems = getAdminListItems(fixture);
-            listItems.forEach(listItem => listItem.checkboxClick.emit(true));
-            tick();
-            fixture.detectChanges();
+                const listItems = getAdminListItems(fixture);
+                listItems.forEach(listItem => listItem.checkboxClick.emit(true));
+                tick();
+                fixture.detectChanges();
 
-            expect(selectAll.checked).toBe(true);
-        }));
+                expect(selectAll.checked).toBe(true);
+            })
+        );
 
-        it('selections persist when changing page', fakeAsync(() => {
-            instance.itemsPerPage = 2;
-            fixture.detectChanges();
+        it(
+            'selections persist when changing page',
+            fakeAsync(() => {
+                instance.itemsPerPage = 2;
+                fixture.detectChanges();
 
-            // check all items on the first page
-            checkAllListItems(fixture);
-            fixture.detectChanges();
+                // check all items on the first page
+                checkAllListItems(fixture);
+                fixture.detectChanges();
 
-            // all items on page 1 are checked
-            expect(allItemsOnPageAreChecked(fixture)).toBe(true);
+                // all items on page 1 are checked
+                expect(allItemsOnPageAreChecked(fixture)).toBe(true);
 
-            // move to page 2
-            instance.currentPage = 2;
-            fixture.detectChanges();
+                // move to page 2
+                instance.currentPage = 2;
+                fixture.detectChanges();
 
-            // no items are checked on page 2
-            expect(allItemsOnPageAreChecked(fixture)).toBe(false);
+                // no items are checked on page 2
+                expect(allItemsOnPageAreChecked(fixture)).toBe(false);
 
-            // move back to page 1
-            instance.currentPage = 1;
-            fixture.detectChanges();
+                // move back to page 1
+                instance.currentPage = 1;
+                fixture.detectChanges();
 
-            // all items on page 1 are still checked
-            expect(allItemsOnPageAreChecked(fixture)).toBe(true);
-        }));
+                // all items on page 1 are still checked
+                expect(allItemsOnPageAreChecked(fixture)).toBe(true);
+            })
+        );
 
-        it('checkedCount updates when list items are checked and unchecked', fakeAsync(() => {
-            instance.itemsPerPage = 2;
-            fixture.detectChanges();
+        it(
+            'checkedCount updates when list items are checked and unchecked',
+            fakeAsync(() => {
+                instance.itemsPerPage = 2;
+                fixture.detectChanges();
 
-            expect(getCheckedCount(fixture)).toBe(0);
+                expect(getCheckedCount(fixture)).toBe(0);
 
-            // check all items on the first page
-            checkAllListItems(fixture);
-            fixture.detectChanges();
-            expect(getCheckedCount(fixture)).toBe(2);
+                // check all items on the first page
+                checkAllListItems(fixture);
+                fixture.detectChanges();
+                expect(getCheckedCount(fixture)).toBe(2);
 
-            // move to page 2 and check all items
-            instance.currentPage = 2;
-            fixture.detectChanges();
+                // move to page 2 and check all items
+                instance.currentPage = 2;
+                fixture.detectChanges();
 
-            checkAllListItems(fixture);
-            fixture.detectChanges();
-            expect(getCheckedCount(fixture)).toBe(3);
+                checkAllListItems(fixture);
+                fixture.detectChanges();
+                expect(getCheckedCount(fixture)).toBe(3);
 
-            // move back to page 1 and uncheck all page 1 items
-            instance.currentPage = 1;
-            fixture.detectChanges();
+                // move back to page 1 and uncheck all page 1 items
+                instance.currentPage = 1;
+                fixture.detectChanges();
 
-            const selectAll = getSelectAllCheckbox(fixture);
-            selectAll.change.emit(false);
-            tick();
-            fixture.detectChanges();
-            expect(getCheckedCount(fixture)).toBe(1);
-        }));
+                const selectAll = getSelectAllCheckbox(fixture);
+                selectAll.change.emit(false);
+                tick();
+                fixture.detectChanges();
+                expect(getCheckedCount(fixture)).toBe(1);
+            })
+        );
 
-        it('clear-selection clears the selection', fakeAsync(() => {
-            instance.itemsPerPage = 2;
-            fixture.detectChanges();
+        it(
+            'clear-selection clears the selection',
+            fakeAsync(() => {
+                instance.itemsPerPage = 2;
+                fixture.detectChanges();
 
-            // check all items on the first page
-            checkAllListItems(fixture);
-            // move to page 2 and check all items
-            instance.currentPage = 2;
-            fixture.detectChanges();
-            checkAllListItems(fixture);
-            fixture.detectChanges();
+                // check all items on the first page
+                checkAllListItems(fixture);
+                // move to page 2 and check all items
+                instance.currentPage = 2;
+                fixture.detectChanges();
+                checkAllListItems(fixture);
+                fixture.detectChanges();
 
-            expect(getCheckedCount(fixture)).toBe(3);
+                expect(getCheckedCount(fixture)).toBe(3);
 
-            const clearSelection = fixture.debugElement.query(By.css('.clear-selection'));
-            clearSelection.triggerEventHandler('click', {});
-            tick();
+                const clearSelection = fixture.debugElement.query(By.css('.clear-selection'));
+                clearSelection.triggerEventHandler('click', {});
+                tick();
 
-            expect(getCheckedCount(fixture)).toBe(0);
-        }));
+                expect(getCheckedCount(fixture)).toBe(0);
+            })
+        );
 
-        it('selectionChange event emits the selected indices when selection changes', fakeAsync(() => {
-            instance.itemsPerPage = 2;
-            fixture.detectChanges();
+        it(
+            'selectionChange event emits the selected indices when selection changes',
+            fakeAsync(() => {
+                instance.itemsPerPage = 2;
+                fixture.detectChanges();
 
-            // check all items on the first page
-            checkAllListItems(fixture);
+                // check all items on the first page
+                checkAllListItems(fixture);
 
-            expect(instance.onSelectionChange).toHaveBeenCalledWith([0, 1]);
+                expect(instance.onSelectionChange).toHaveBeenCalledWith([0, 1]);
 
-            instance.currentPage = 2;
-            fixture.detectChanges();
-            checkAllListItems(fixture);
-            expect(instance.onSelectionChange).toHaveBeenCalledWith([0, 1, 2]);
-        }));
+                instance.currentPage = 2;
+                fixture.detectChanges();
+                checkAllListItems(fixture);
+                expect(instance.onSelectionChange).toHaveBeenCalledWith([0, 1, 2]);
+            })
+        );
 
-        it('binding to selection checks the selected indices', fakeAsync(() => {
-            instance.selection = [0, 2];
-            fixture.detectChanges();
+        it(
+            'binding to selection checks the selected indices',
+            fakeAsync(() => {
+                instance.selection = [0, 2];
+                fixture.detectChanges();
 
-            const listItems = getAdminListItems(fixture);
+                const listItems = getAdminListItems(fixture);
 
-            expect(listItems[0].checked).toBe(true);
-            expect(listItems[1].checked).toBe(false);
-            expect(listItems[2].checked).toBe(true);
-        }));
+                expect(listItems[0].checked).toBe(true);
+                expect(listItems[1].checked).toBe(false);
+                expect(listItems[2].checked).toBe(true);
+            })
+        );
 
-        it('binding to selection checks the selected indices with multiple pages', fakeAsync(() => {
-            instance.itemsPerPage = 2;
-            instance.selection = [1, 2];
-            fixture.detectChanges();
+        it(
+            'binding to selection checks the selected indices with multiple pages',
+            fakeAsync(() => {
+                instance.itemsPerPage = 2;
+                instance.selection = [1, 2];
+                fixture.detectChanges();
 
-            const listItemsPage1 = getAdminListItems(fixture);
+                const listItemsPage1 = getAdminListItems(fixture);
 
-            expect(listItemsPage1[0].checked).toBe(false);
-            expect(listItemsPage1[1].checked).toBe(true);
+                expect(listItemsPage1[0].checked).toBe(false);
+                expect(listItemsPage1[1].checked).toBe(true);
 
-            instance.currentPage = 2;
-            fixture.detectChanges();
-            const listItemsPage2 = getAdminListItems(fixture);
+                instance.currentPage = 2;
+                fixture.detectChanges();
+                const listItemsPage2 = getAdminListItems(fixture);
 
-            expect(listItemsPage2[0].checked).toBe(true);
-        }));
+                expect(listItemsPage2[0].checked).toBe(true);
+            })
+        );
     });
-
 });
 
 function getRowElements(fixture: ComponentFixture<TestComponent>): HTMLElement[] {
-    return fixture.debugElement.queryAll(By.css('.row'))
-        .map(de => de.nativeElement);
+    return fixture.debugElement.queryAll(By.css('.row')).map(de => de.nativeElement);
 }
 
 function getAdminListItems(fixture: ComponentFixture<TestComponent>): AdminListItemComponent[] {
-    return fixture.debugElement.queryAll(By.directive(AdminListItemComponent))
-        .map(de => de.componentInstance);
+    return fixture.debugElement.queryAll(By.directive(AdminListItemComponent)).map(de => de.componentInstance);
 }
 
 @Component({

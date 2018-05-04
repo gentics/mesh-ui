@@ -1,32 +1,32 @@
-import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
-import { GenticsUICoreModule, ModalService, Notification } from 'gentics-ui-core';
 import { Component } from '@angular/core';
+import { tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { GenticsUICoreModule, ModalService, Notification } from 'gentics-ui-core';
 
-import { ProjectListItemComponent } from './project-list-item.component';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { componentTest } from '../../../../testing/component-test';
+import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { mockProject } from '../../../../testing/mock-models';
+import { ProjectResponse } from '../../../common/models/server-models';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { componentTest } from '../../../../testing/component-test';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { ProjectResponse } from '../../../common/models/server-models';
-import { mockProject } from '../../../../testing/mock-models';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 
-describe('ProjectListItemComponent', () => {
+import { ProjectListItemComponent } from './project-list-item.component';
 
+describe('ProjectListItemComponent', () => {
     let appState: TestApplicationState;
     let mockModal: any;
     let mockNotification: any;
     const mockAdminProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['deleteProject']);
 
     beforeEach(() => {
-        mockModal = { dialog() { } };
-        spyOn(mockModal, 'dialog').and.returnValue(Promise.resolve({ open() { } }));
+        mockModal = { dialog() {} };
+        spyOn(mockModal, 'dialog').and.returnValue(Promise.resolve({ open() {} }));
 
-        mockNotification = { show() { } };
+        mockNotification = { show() {} };
         spyOn(mockNotification, 'show');
 
         configureComponentTest({
@@ -34,8 +34,8 @@ describe('ProjectListItemComponent', () => {
             providers: [
                 { provide: ModalService, useValue: mockModal },
                 { provide: Notification, useValue: mockNotification },
-                { provide: I18nService, useValue: { translate() { } } },
-                { provide: AdminProjectEffectsService, useValue: mockAdminProjectEffectsService}
+                { provide: I18nService, useValue: { translate() {} } },
+                { provide: AdminProjectEffectsService, useValue: mockAdminProjectEffectsService }
             ],
             declarations: [TestComponent, ProjectListItemComponent]
         });
@@ -62,7 +62,7 @@ describe('ProjectListItemComponent', () => {
                             readPublished: true
                         }
                     }),
-                    'b5eba09ef1554337aba09ef155d337a5': mockProject({
+                    b5eba09ef1554337aba09ef155d337a5: mockProject({
                         uuid: 'b5eba09ef1554337aba09ef155d337a5',
                         name: 'tvc',
                         permissions: {
@@ -91,74 +91,98 @@ describe('ProjectListItemComponent', () => {
         });
     });
 
-    it(`shows the project name and icons`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
-            fixture.detectChanges();
-            tick();
-            expect(projectName(fixture)).toBe('tvc');
-            expect(getButton(fixture, 'edit')).toBeDefined();
-            expect(getButton(fixture, 'delete')).toBeDefined();
-        })
+    it(
+        `shows the project name and icons`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
+                fixture.detectChanges();
+                tick();
+                expect(projectName(fixture)).toBe('tvc');
+                expect(getButton(fixture, 'edit')).toBeDefined();
+                expect(getButton(fixture, 'delete')).toBeDefined();
+            }
+        )
     );
 
-    it(`does not show edit button if update permission is missing`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['55f6a4666eb8467ab6a4666eb8867a84'];
-            fixture.detectChanges();
-            expect(getButton(fixture, 'edit')).toBeUndefined();
-        })
+    it(
+        `does not show edit button if update permission is missing`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                fixture.componentInstance.project = appState.now.entities.project['55f6a4666eb8467ab6a4666eb8867a84'];
+                fixture.detectChanges();
+                expect(getButton(fixture, 'edit')).toBeUndefined();
+            }
+        )
     );
 
-    it(`does not show delete button if delete permission is missing`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['1fdb2624b6cb4b3a8ef7b5baabe47c74'];
-            fixture.detectChanges();
-            expect(getButton(fixture, 'delete')).toBeUndefined();
-        })
+    it(
+        `does not show delete button if delete permission is missing`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                fixture.componentInstance.project = appState.now.entities.project['1fdb2624b6cb4b3a8ef7b5baabe47c74'];
+                fixture.detectChanges();
+                expect(getButton(fixture, 'delete')).toBeUndefined();
+            }
+        )
     );
 
-    it(`opens confirmation dialog when delete button is clicked`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
-            fixture.detectChanges();
-            getButton(fixture, 'delete').click();
-            fixture.detectChanges();
-            expect(mockModal.dialog).toHaveBeenCalled();
-            tick();
-            expect(mockAdminProjectEffectsService.deleteProject).toHaveBeenCalled();
-        })
+    it(
+        `opens confirmation dialog when delete button is clicked`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
+                fixture.detectChanges();
+                getButton(fixture, 'delete').click();
+                fixture.detectChanges();
+                expect(mockModal.dialog).toHaveBeenCalled();
+                tick();
+                expect(mockAdminProjectEffectsService.deleteProject).toHaveBeenCalled();
+            }
+        )
     );
 
-    it(`updates the state on blur`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
-            fixture.detectChanges();
+    it(
+        `updates the state on blur`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
+                fixture.detectChanges();
 
-            const input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
-            input.value = 'abcdef';
-            triggerEvent(input, 'input');
-            fixture.detectChanges();
-            triggerEvent(input, 'blur');
-            fixture.detectChanges();
-            // TODO maybe remove this if state and api is implemented and notification is not done in this component
-            tick();
-            expect(mockNotification.show).toHaveBeenCalled();
-        })
+                const input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
+                input.value = 'abcdef';
+                triggerEvent(input, 'input');
+                fixture.detectChanges();
+                triggerEvent(input, 'blur');
+                fixture.detectChanges();
+                // TODO maybe remove this if state and api is implemented and notification is not done in this component
+                tick();
+                expect(mockNotification.show).toHaveBeenCalled();
+            }
+        )
     );
 
-    it(`must not update the state on blur if no changes are made`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
-            fixture.detectChanges();
+    it(
+        `must not update the state on blur if no changes are made`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                fixture.componentInstance.project = appState.now.entities.project['b5eba09ef1554337aba09ef155d337a5'];
+                fixture.detectChanges();
 
-            const input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
-            triggerEvent(input, 'blur');
-            fixture.detectChanges();
-            // TODO maybe remove this if state and api is implemented and notification is not done in this component
-            tick();
-            expect(mockNotification.show).not.toHaveBeenCalled();
-        })
+                const input: HTMLInputElement = fixture.nativeElement.querySelector('gtx-input input');
+                triggerEvent(input, 'blur');
+                fixture.detectChanges();
+                // TODO maybe remove this if state and api is implemented and notification is not done in this component
+                tick();
+                expect(mockNotification.show).not.toHaveBeenCalled();
+            }
+        )
     );
 });
 
@@ -181,8 +205,9 @@ function projectName(fixture: ComponentFixture<TestComponent>): string {
 
 function getButton(fixture: ComponentFixture<TestComponent>, iconName: string): HTMLElement {
     const element: HTMLElement = fixture.nativeElement;
-    return Array.from(element.querySelectorAll('gtx-button'))
-        .filter(it => it.textContent === iconName)[0] as HTMLElement;
+    return Array.from(element.querySelectorAll('gtx-button')).filter(
+        it => it.textContent === iconName
+    )[0] as HTMLElement;
 }
 
 @Component({

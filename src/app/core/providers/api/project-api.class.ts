@@ -1,7 +1,7 @@
-import { ApiBase } from './api-base.service';
-import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 import { GenericMessageResponse, NodeResponse, NodeUpdateRequest } from '../../../common/models/server-models';
 
+import { ApiBase } from './api-base.service';
+import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 
 export interface ImageTransformQueryParams {
     w?: number;
@@ -14,7 +14,7 @@ export interface ImageTransformQueryParams {
 }
 
 export class ProjectApi {
-    constructor(private apiBase: ApiBase) { }
+    constructor(private apiBase: ApiBase) {}
 
     /** Assign a microschema version to a release. */
     assignMicroschemaToRelease = apiPostWithoutBody('/{project}/releases/{releaseUuid}/microschemas');
@@ -192,8 +192,20 @@ export class ProjectApi {
     /**
      * Returns a url to a node binary file
      */
-    getBinaryFileUrl(project: string, nodeUuid: string, name: string, version?: string, params: ImageTransformQueryParams = {}): string {
-        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', { project, nodeUuid, name, version, ...params });
+    getBinaryFileUrl(
+        project: string,
+        nodeUuid: string,
+        name: string,
+        version?: string,
+        params: ImageTransformQueryParams = {}
+    ): string {
+        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', {
+            project,
+            nodeUuid,
+            name,
+            version,
+            ...params
+        });
     }
 
     /**
@@ -202,10 +214,14 @@ export class ProjectApi {
      * and return a 409 error if a conflict has been detected. Additional conflict
      * checks for webrootpath conflicts will also be performed.
      */
-    updateNode({ project, nodeUuid, language }: { project: string, nodeUuid: string, language: string }, updateRequest: NodeUpdateRequest) {
+    updateNode(
+        { project, nodeUuid, language }: { project: string; nodeUuid: string; language: string },
+        updateRequest: NodeUpdateRequest
+    ) {
         // TODO: remove the "any" cast in the .post() call below once (https://jira.gentics.com/browse/CL-604) is resolved.
-        return this.apiBase.post('/{project}/nodes/{nodeUuid}', { project, nodeUuid, lang: language } as any, updateRequest)
-            .mapResponses<{ conflict: GenericMessageResponse | null; node: NodeResponse | null; }>({
+        return this.apiBase
+            .post('/{project}/nodes/{nodeUuid}', { project, nodeUuid, lang: language } as any, updateRequest)
+            .mapResponses<{ conflict: GenericMessageResponse | null; node: NodeResponse | null }>({
                 200: node => ({ node, conflict: null }),
                 409: conflict => ({ node: null, conflict })
             });

@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { AdminShellComponent } from './admin-shell.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 
-describe('AdminShellComponent', () => {
+import { AdminShellComponent } from './admin-shell.component';
 
+describe('AdminShellComponent', () => {
     let comp: AdminShellComponent;
     let fixture: ComponentFixture<AdminShellComponent>;
 

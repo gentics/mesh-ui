@@ -3,8 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { BinaryField, MeshNode } from '../../../common/models/node.model';
-import { filenameExtension, isImageField, queryString } from '../../../common/util/util';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
+import { filenameExtension, isImageField, queryString } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 /**
@@ -24,17 +24,13 @@ import { EntitiesService } from '../../../state/providers/entities.service';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
-    @Input()
-    nodeUuid: string;
+    @Input() nodeUuid: string;
 
-    @Input()
-    fieldName?: string;
+    @Input() fieldName?: string;
 
-    @Input()
-    width?: number;
+    @Input() width?: number;
 
-    @Input()
-    height?: number;
+    @Input() height?: number;
 
     binaryProperties: BinaryProperties = {
         type: 'noBinary'
@@ -50,7 +46,8 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     constructor(private entities: EntitiesService) {}
 
     ngOnInit(): void {
-        const node$ = this.entities.selectNode(this.nodeUuid, { strictLanguageMatch: false })
+        const node$ = this.entities
+            .selectNode(this.nodeUuid, { strictLanguageMatch: false })
             // Does not emit node if it was not found
             .filter(node => !!node);
         const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid!));
@@ -58,7 +55,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         // Update binary properties when node or schema changes
         this.subscription = Observable.combineLatest(node$, schema$)
             .map(value => this.getBinaryProperties(value))
-            .subscribe(binaryProperties => this.binaryProperties = binaryProperties);
+            .subscribe(binaryProperties => (this.binaryProperties = binaryProperties));
 
         this.setDisplaySize();
     }
@@ -88,7 +85,6 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-
     /**
      * Gets all the information from a node to display the thumbnail.
      * Choosing the field follows these rules:
@@ -105,20 +101,18 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
 
         let binaryProperties: BinaryProperties;
 
-        schema.fields
-            .filter(field => this.binaryFilter(field))
-            .forEach(field => {
-                // TODO Remove exclamation mark as soon as mesh typing is fixed
-                const nodeField: BinaryField = node.fields[field.name!] as BinaryField;
-                if (!firstBinaryField) {
-                    firstBinaryField = nodeField;
-                    firstBinaryFieldName = field.name;
-                }
-                if (!firstImageField && isImageField(nodeField)) {
-                    firstImageField = nodeField;
-                    firstImageFieldName = field.name;
-                }
-            });
+        schema.fields.filter(field => this.binaryFilter(field)).forEach(field => {
+            // TODO Remove exclamation mark as soon as mesh typing is fixed
+            const nodeField: BinaryField = node.fields[field.name!] as BinaryField;
+            if (!firstBinaryField) {
+                firstBinaryField = nodeField;
+                firstBinaryFieldName = field.name;
+            }
+            if (!firstImageField && isImageField(nodeField)) {
+                firstImageField = nodeField;
+                firstImageFieldName = field.name;
+            }
+        });
 
         if (firstImageField && firstImageFieldName) {
             binaryProperties = {

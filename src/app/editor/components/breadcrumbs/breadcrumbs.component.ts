@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
 
 import { MeshNode } from '../../../common/models/node.model';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { Project } from '../../../common/models/project.model';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
@@ -14,29 +14,26 @@ import { EntitiesService } from '../../../state/providers/entities.service';
     styleUrls: ['./breadcrumbs.scss']
 })
 export class BreadcrumbsComponent {
-
     routerLinks$: Observable<IBreadcrumbRouterLink[]>;
 
-    constructor(private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private navigationService: NavigationService) {
-
-        this.routerLinks$ = state.select(state => state.list)
-            .map(({ currentNode, language }) => {
-                let node: MeshNode | undefined;
-                if (currentNode) {
-                    node = entities.getNode(currentNode, { language, strictLanguageMatch: false });
-                }
-                return this.toRouterLinks(node, language);
-            });
+    constructor(
+        private state: ApplicationStateService,
+        private entities: EntitiesService,
+        private navigationService: NavigationService
+    ) {
+        this.routerLinks$ = state.select(state => state.list).map(({ currentNode, language }) => {
+            let node: MeshNode | undefined;
+            if (currentNode) {
+                node = entities.getNode(currentNode, { language, strictLanguageMatch: false });
+            }
+            return this.toRouterLinks(node, language);
+        });
     }
-
 
     /**
      * Turns a node to breadcrumb router links, which are used for the gtx-breadcrumbs directive.
      */
     private toRouterLinks(node: MeshNode | undefined, language: string): IBreadcrumbRouterLink[] {
-
         const currentProject = this.state.now.list.currentProject;
         const project = this.getProjectByName(currentProject);
         if (!currentProject || !project) {

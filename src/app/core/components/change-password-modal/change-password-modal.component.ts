@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IModalDialog, Notification } from 'gentics-ui-core';
-
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
 import { Observable } from 'rxjs/Observable';
+
+import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { I18nService } from '../../providers/i18n/i18n.service';
 
 @Component({
@@ -13,30 +13,32 @@ import { I18nService } from '../../providers/i18n/i18n.service';
     styleUrls: ['./change-password-modal.scss']
 })
 export class ChangePasswordModalComponent implements IModalDialog, OnInit {
-
     form: FormGroup;
     password1: FormControl;
     password2: FormControl;
 
     passwordChanging$: Observable<boolean>;
 
-    constructor(private effects: AuthEffectsService,
-                private state: ApplicationStateService,
-                private notification: Notification,
-                private i18n: I18nService) {}
+    constructor(
+        private effects: AuthEffectsService,
+        private state: ApplicationStateService,
+        private notification: Notification,
+        private i18n: I18nService
+    ) {}
 
     ngOnInit(): void {
-        const passwordValidators = [
-            Validators.required
-        ];
+        const passwordValidators = [Validators.required];
 
         this.password1 = new FormControl('', passwordValidators);
         this.password2 = new FormControl('', passwordValidators);
 
-        this.form = new FormGroup({
-            password1: this.password1,
-            password2: this.password2
-        }, this.areEqual);
+        this.form = new FormGroup(
+            {
+                password1: this.password1,
+                password2: this.password2
+            },
+            this.areEqual
+        );
 
         this.passwordChanging$ = this.state.select(state => state.auth.changingPassword);
     }
@@ -62,11 +64,13 @@ export class ChangePasswordModalComponent implements IModalDialog, OnInit {
                 return;
             }
 
-            this.effects.changePassword(user, this.password1.value)
-                .then(() => {
-                    this.notification.show({ type: 'success', message: this.i18n.translate('modal.change_password_success') });
-                    this.closeFn();
+            this.effects.changePassword(user, this.password1.value).then(() => {
+                this.notification.show({
+                    type: 'success',
+                    message: this.i18n.translate('modal.change_password_success')
                 });
+                this.closeFn();
+            });
         }
     }
 

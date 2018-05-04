@@ -16,16 +16,21 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { SplitViewContainer } from 'gentics-ui-core';
-import { Schema } from '../../../common/models/schema.model';
-import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
-import { FieldGenerator, FieldGeneratorService, FieldSet } from '../../providers/field-generator/field-generator.service';
-import { getControlType } from '../../common/get-control-type';
-import { ChangesByPath, MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
-import { SchemaFieldPath } from '../../common/form-generator-models';
-import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+
+import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
+import { Schema } from '../../../common/models/schema.model';
+import { SchemaFieldPath } from '../../common/form-generator-models';
+import { getControlType } from '../../common/get-control-type';
+import { ChangesByPath, MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
+import {
+    FieldGenerator,
+    FieldGeneratorService,
+    FieldSet
+} from '../../providers/field-generator/field-generator.service';
+import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
 /**
  * Generates a form based on a schema and populates with data from the node.
@@ -41,11 +46,9 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     @Input() node: MeshNode;
     @Input() readOnly = false;
 
-    @HostBinding('class.compact')
-    isCompact = false;
+    @HostBinding('class.compact') isCompact = false;
 
-    @HostBinding('class.invisible')
-    isInvisible = false;
+    @HostBinding('class.invisible') isInvisible = false;
 
     /**
      * True if all form controls are valid.
@@ -72,10 +75,12 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     private containerResizeSub: Subscription;
     private timer: any;
 
-    constructor(private fieldGeneratorService: FieldGeneratorService,
-                private meshControlGroup: MeshControlGroupService,
-                private changeDetector: ChangeDetectorRef,
-                @Optional() private splitViewContainer: SplitViewContainer) {}
+    constructor(
+        private fieldGeneratorService: FieldGeneratorService,
+        private meshControlGroup: MeshControlGroupService,
+        private changeDetector: ChangeDetectorRef,
+        @Optional() private splitViewContainer: SplitViewContainer
+    ) {}
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.schema || this.nodeHasChanged(changes.node)) {
@@ -90,11 +95,11 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         this.fieldGenerator = this.fieldGeneratorService.create(this.formRoot, updateFn);
         this.generateForm();
 
-        this.containerResizeSub = Observable
-            .merge(
-                this.windowResize$,
-                this.formGenerated$,
-                this.splitViewContainer && this.splitViewContainer.splitDragEnd || [])
+        this.containerResizeSub = Observable.merge(
+            this.windowResize$,
+            this.formGenerated$,
+            (this.splitViewContainer && this.splitViewContainer.splitDragEnd) || []
+        )
             .debounceTime(200)
             .map(() => this.formContainer.nativeElement.offsetWidth)
             .subscribe(widthInPixels => {
@@ -192,8 +197,10 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         if (!nodeChanges.previousValue) {
             return true;
         }
-        return nodeChanges.previousValue.uuid !== nodeChanges.currentValue.uuid ||
-            nodeChanges.previousValue.language !== nodeChanges.currentValue.language;
+        return (
+            nodeChanges.previousValue.uuid !== nodeChanges.currentValue.uuid ||
+            nodeChanges.previousValue.language !== nodeChanges.currentValue.language
+        );
     }
 
     private onChange(path: SchemaFieldPath, value: any): void {
@@ -213,7 +220,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
      */
     private updateAtPath(object: any, path: Array<string | number>, value: any): any {
         const pointer = this.getPointerByPath(object, path);
-        return pointer[path[path.length - 1]] = this.clone(value);
+        return (pointer[path[path.length - 1]] = this.clone(value));
     }
 
     /**

@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
+import { UserResponse } from '../../common/models/server-models';
+import { User } from '../../common/models/user.model';
 import { AppState } from '../models/app-state.model';
 import { AuthState } from '../models/auth-state.model';
-import { UserResponse } from '../../common/models/server-models';
 import { EntityState } from '../models/entity-state.model';
-import { mergeEntityState } from './entity-state-actions';
-import { User } from '../../common/models/user.model';
 
+import { mergeEntityState } from './entity-state-actions';
 
 @Injectable()
 @Immutable()
 export class AuthStateActions extends StateActionBranch<AppState> {
-    @CloneDepth(1) private auth: AuthState;
-    @CloneDepth(0) private entities: EntityState;
+    @CloneDepth(1)
+    private auth: AuthState;
+    @CloneDepth(0)
+    private entities: EntityState;
 
     constructor() {
         super({

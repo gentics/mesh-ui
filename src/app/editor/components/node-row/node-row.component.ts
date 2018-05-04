@@ -1,12 +1,13 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { IDialogConfig, ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { ModalService, IDialogConfig } from 'gentics-ui-core';
+
 import { MeshNode } from '../../../common/models/node.model';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Component({
     selector: 'mesh-node-row',
@@ -21,20 +22,25 @@ export class NodeRowComponent implements OnInit, OnDestroy {
     filterTerm$: Observable<string>;
     routerLink: any[] | null = null;
 
-    private subscription: Subscription =  new Subscription();
+    private subscription: Subscription = new Subscription();
 
-    constructor(private state: ApplicationStateService,
-                private navigationService: NavigationService,
-                private modalService: ModalService,
-                private i18n: I18nService,
-                private listEffects: ListEffectsService) {
-    }
+    constructor(
+        private state: ApplicationStateService,
+        private navigationService: NavigationService,
+        private modalService: ModalService,
+        private i18n: I18nService,
+        private listEffects: ListEffectsService
+    ) {}
 
     ngOnInit() {
         if (this.node.container) {
-            this.routerLink = this.navigationService.list(this.node.project.name!, this.node.uuid, this.listLanguage).commands();
+            this.routerLink = this.navigationService
+                .list(this.node.project.name!, this.node.uuid, this.listLanguage)
+                .commands();
         } else {
-            this.routerLink = this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).commands();
+            this.routerLink = this.navigationService
+                .detail(this.node.project.name!, this.node.uuid, this.node.language)
+                .commands();
         }
 
         this.filterTerm$ = this.state.select(state => state.list.filterTerm);
@@ -62,7 +68,8 @@ export class NodeRowComponent implements OnInit, OnDestroy {
             ]
         };
 
-        this.modalService.dialog(dialogConfig)
+        this.modalService
+            .dialog(dialogConfig)
             .then(modal => modal.open())
             .then(() => {
                 this.listEffects.deleteNode(this.node, true);
@@ -74,13 +81,13 @@ export class NodeRowComponent implements OnInit, OnDestroy {
      * Otherwise does nothing
      */
     focusEditor() {
-        if (this.node.container) { // Don't focus container on folder click.
+        if (this.node.container) {
+            // Don't focus container on folder click.
             return;
         }
 
         this.state.actions.editor.focusEditor();
     }
-
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();

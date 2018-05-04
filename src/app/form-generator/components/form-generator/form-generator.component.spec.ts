@@ -1,43 +1,42 @@
-import { NgModule, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule, Type } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
-import { FormGeneratorComponent } from './form-generator.component';
-import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
-import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
+import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
-import { StringFieldComponent } from '../string-field/string-field.component';
-import { NumberFieldComponent } from '../number-field/number-field.component';
-import { FieldErrorsComponent } from '../field-errors/field-errors.component';
-import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { TestStateModule } from '../../../state/testing/test-state.module';
+import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
+import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
+import { FieldErrorsComponent } from '../field-errors/field-errors.component';
+import { NumberFieldComponent } from '../number-field/number-field.component';
+import { StringFieldComponent } from '../string-field/string-field.component';
+
+import { FormGeneratorComponent } from './form-generator.component';
 
 describe('FormGeneratorComponent:', () => {
-
     let instance: FormGeneratorComponent;
     let fixture: ComponentFixture<FormGeneratorComponent>;
     let meshControlGroup: MeshControlGroupService;
 
-    @NgModule(provideMockI18n({
-        imports: [GenticsUICoreModule, FormsModule, CommonModule],
-        declarations: [StringFieldComponent, NumberFieldComponent, FieldErrorsComponent],
-        entryComponents: [StringFieldComponent, NumberFieldComponent, FieldErrorsComponent],
-        exports: [StringFieldComponent, NumberFieldComponent]
-    }))
-    class TestModule { }
+    @NgModule(
+        provideMockI18n({
+            imports: [GenticsUICoreModule, FormsModule, CommonModule],
+            declarations: [StringFieldComponent, NumberFieldComponent, FieldErrorsComponent],
+            entryComponents: [StringFieldComponent, NumberFieldComponent, FieldErrorsComponent],
+            exports: [StringFieldComponent, NumberFieldComponent]
+        })
+    )
+    class TestModule {}
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [TestModule, TestStateModule],
             declarations: [FormGeneratorComponent],
-            providers: [
-                FieldGeneratorService,
-                MeshControlGroupService
-            ]
+            providers: [FieldGeneratorService, MeshControlGroupService]
         });
         fixture = TestBed.createComponent(FormGeneratorComponent);
         instance = fixture.componentInstance;
@@ -100,7 +99,6 @@ describe('FormGeneratorComponent:', () => {
     });
 
     describe('MeshControlGroupService interop', () => {
-
         it('should invoke MeshControlGroupService.init() with a getNodeFn', () => {
             const initSpy = spyOn(meshControlGroup, 'init').and.callThrough();
             populateMockData(fixture);
@@ -126,10 +124,7 @@ describe('FormGeneratorComponent:', () => {
                             fields: {
                                 latitude: 48.208330230278,
                                 longitude: 16.373063840833,
-                                addresses: [
-                                    '22 Acacia Avenue',
-                                    '42 Deepthought Lane'
-                                ]
+                                addresses: ['22 Acacia Avenue', '42 Deepthought Lane']
                             },
                             type: 'micronode'
                         }
@@ -163,7 +158,9 @@ describe('FormGeneratorComponent:', () => {
             });
 
             it('should return the field value for a valid deeply-nested path', () => {
-                expect(getNodeFn(['locations', 0, 'fields', 'addresses', 1])).toEqual(complexNode.fields.locations[0].fields.addresses[1]);
+                expect(getNodeFn(['locations', 0, 'fields', 'addresses', 1])).toEqual(
+                    complexNode.fields.locations[0].fields.addresses[1]
+                );
             });
 
             it('should return undefined for invalid top-level path ', () => {
@@ -174,9 +171,7 @@ describe('FormGeneratorComponent:', () => {
                 expect(getNodeFn(['nonexistent', 1, 'bar', 'baz'])).toBeUndefined();
             });
         });
-
     });
-
 });
 
 function getFormField<T>(fixture: ComponentFixture<FormGeneratorComponent>, type: Type<T>): T {
@@ -193,7 +188,7 @@ const mockNode: MeshNode = {
     displayField: 'name',
     project: {
         uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
-        name: 'demo',
+        name: 'demo'
     },
     language: 'en',
     creator: mockUser,
@@ -236,7 +231,7 @@ const mockNode: MeshNode = {
     },
     fields: {
         name: 'Ada',
-        age: 42,
+        age: 42
     } as any,
     languagePaths: {
         en: ''

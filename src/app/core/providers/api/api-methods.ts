@@ -1,6 +1,6 @@
-import { ApiEndpoints } from '../../../common/models/server-models';
 import { Observable } from 'rxjs/Observable';
 
+import { ApiEndpoints } from '../../../common/models/server-models';
 
 /**
  * Creates a method that is a typed wrapper to `this.apiBase.get()`.

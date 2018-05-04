@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { ApplicationStateService } from './application-state.service';
-import { MeshNode } from '../../common/models/node.model';
-import { EntityDiscriminators, getDiscriminator, getNestedEntity } from './entity-state-actions';
-import { ConfigService } from '../../core/providers/config/config.service';
-import { Project } from '../../common/models/project.model';
-import { User } from '../../common/models/user.model';
-import { Schema } from '../../common/models/schema.model';
+import { Group } from '../../common/models/group.model';
 import { Microschema } from '../../common/models/microschema.model';
-import { AppState } from '../models/app-state.model';
-import { concatUnique, notNullOrUndefined } from '../../common/util/util';
+import { MeshNode } from '../../common/models/node.model';
+import { Project } from '../../common/models/project.model';
+import { Schema } from '../../common/models/schema.model';
 import { TagFamily } from '../../common/models/tag-family.model';
 import { Tag } from '../../common/models/tag.model';
-import { Group } from '../../common/models/group.model';
+import { User } from '../../common/models/user.model';
+import { concatUnique, notNullOrUndefined } from '../../common/util/util';
+import { ConfigService } from '../../core/providers/config/config.service';
+import { AppState } from '../models/app-state.model';
+
+import { ApplicationStateService } from './application-state.service';
+import { getDiscriminator, getNestedEntity, EntityDiscriminators } from './entity-state-actions';
 
 export interface NodeDiscriminatorOptions {
     /**
@@ -42,8 +43,7 @@ export interface NodeDiscriminatorOptions {
  */
 @Injectable()
 export class EntitiesService {
-
-    discriminator: { [K in keyof EntityDiscriminators]: EntityDiscriminators[K]; } = {
+    discriminator: { [K in keyof EntityDiscriminators]: EntityDiscriminators[K] } = {
         group: [],
         project: [],
         node: [],
@@ -51,11 +51,10 @@ export class EntitiesService {
         schema: [],
         microschema: [],
         tag: [],
-        tagFamily: [],
+        tagFamily: []
     };
 
-    constructor(private state: ApplicationStateService,
-                private config: ConfigService) {
+    constructor(private state: ApplicationStateService, private config: ConfigService) {
         Object.keys(this.discriminator).forEach((key: keyof EntityDiscriminators) => {
             this.discriminator[key] = getDiscriminator(key);
         });
@@ -70,11 +69,7 @@ export class EntitiesService {
     }
 
     private getProjectFromState(state: AppState, uuid: string): Project | undefined {
-        return getNestedEntity<'project'>(
-            state.entities.project,
-            this.discriminator.project,
-            { uuid }
-        );
+        return getNestedEntity<'project'>(state.entities.project, this.discriminator.project, { uuid });
     }
 
     getNode(uuid: string, options: NodeDiscriminatorOptions = { strictLanguageMatch: true }): MeshNode | undefined {
@@ -109,13 +104,19 @@ export class EntitiesService {
             return languageArray;
         }
 
-        const defaultFallbacks = this.config.CONTENT_LANGUAGES
-            .sort((a, b) => a === this.config.FALLBACK_LANGUAGE ? -1 : 1);
+        const defaultFallbacks = this.config.CONTENT_LANGUAGES.sort(
+            (a, b) => (a === this.config.FALLBACK_LANGUAGE ? -1 : 1)
+        );
 
         return concatUnique(languageArray || [], defaultFallbacks);
     }
 
-    private getNodeFromState(state: AppState, uuid: string, languageFallbacks?: string[], version?: string): MeshNode | undefined {
+    private getNodeFromState(
+        state: AppState,
+        uuid: string,
+        languageFallbacks?: string[],
+        version?: string
+    ): MeshNode | undefined {
         return getNestedEntity<'node'>(
             state.entities.node,
             this.discriminator.node,
@@ -133,11 +134,7 @@ export class EntitiesService {
     }
 
     private getUserFromState(state: AppState, uuid: string): User | undefined {
-        return getNestedEntity<'user'>(
-            state.entities.user,
-            this.discriminator.user,
-            { uuid }
-        );
+        return getNestedEntity<'user'>(state.entities.user, this.discriminator.user, { uuid });
     }
 
     getSchema(uuid: string, version?: string): Schema | undefined {
@@ -161,11 +158,7 @@ export class EntitiesService {
     }
 
     private getSchemaFromState(state: AppState, uuid: string, version?: string): Schema | undefined {
-        return getNestedEntity<'schema'>(
-            state.entities.schema,
-            this.discriminator.schema,
-            { uuid, version }
-        );
+        return getNestedEntity<'schema'>(state.entities.schema, this.discriminator.schema, { uuid, version });
     }
 
     getMicroschema(uuid: string, version?: any): Microschema | undefined {
@@ -190,13 +183,11 @@ export class EntitiesService {
     }
 
     private getMicroschemaFromState(state: AppState, uuid: string, version?: any): Microschema | undefined {
-        return getNestedEntity<'microschema'>(
-            state.entities.microschema,
-            this.discriminator.microschema,
-            { uuid, version }
-        );
+        return getNestedEntity<'microschema'>(state.entities.microschema, this.discriminator.microschema, {
+            uuid,
+            version
+        });
     }
-
 
     getTagFamily(uuid: string): TagFamily | undefined {
         return this.getTagFamilyFromState(this.state.now, uuid);
@@ -220,14 +211,8 @@ export class EntitiesService {
     }
 
     private getTagFamilyFromState(state: AppState, uuid: string): TagFamily | undefined {
-        return getNestedEntity<'tagFamily'>(
-            state.entities.tagFamily,
-            this.discriminator.tagFamily,
-            { uuid }
-        );
+        return getNestedEntity<'tagFamily'>(state.entities.tagFamily, this.discriminator.tagFamily, { uuid });
     }
-
-
 
     getTag(uuid: string): Tag | undefined {
         return this.getTagFromState(this.state.now, uuid);
@@ -251,11 +236,7 @@ export class EntitiesService {
     }
 
     private getTagFromState(state: AppState, uuid: string): Tag | undefined {
-        return getNestedEntity<'tag'>(
-            state.entities.tag,
-            this.discriminator.tag,
-            { uuid }
-        );
+        return getNestedEntity<'tag'>(state.entities.tag, this.discriminator.tag, { uuid });
     }
 
     getGroup(uuid: string): Group | undefined {
@@ -282,11 +263,7 @@ export class EntitiesService {
     }
 
     private getGroupFromState(state: AppState, uuid: string): Group | undefined {
-        return getNestedEntity<'group'>(
-            state.entities.group,
-            this.discriminator.group,
-            { uuid }
-        );
+        return getNestedEntity<'group'>(state.entities.group, this.discriminator.group, { uuid });
     }
 
     /**

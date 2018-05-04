@@ -1,18 +1,16 @@
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { ApplicationStateService } from '../providers/application-state.service';
 import { AppState } from '../models/app-state.model';
-
+import { ApplicationStateService } from '../providers/application-state.service';
 
 /** Only available in testing. A partial type that can be used to mock application state. */
 export type MockAppState = Partial<AppState> | TwoLevelsPartial<AppState>;
 
 /** ApplicationStateService for tests. */
 export class TestApplicationState extends ApplicationStateService {
-
     /** Only available in testing. All tracked method calls will be saved in this array. */
-    public trackedActionCalls: Array<{ method: string, args: any[] }> = [];
+    public trackedActionCalls: Array<{ method: string; args: any[] }> = [];
 
     /** Only available in testing. All subscribed select() calls will be saved in this array. */
     private trackedSubscriptions: Array<(state: AppState) => any> = [];
@@ -36,7 +34,8 @@ export class TestApplicationState extends ApplicationStateService {
             const observable = super.select(selector);
             const originalSubscribe = observable.subscribe;
             const self = this;
-            observable.subscribe = jasmine.createSpy('subscribe')
+            observable.subscribe = jasmine
+                .createSpy('subscribe')
                 .and.callFake(function fakeSubscribe(...args: any[]): any {
                     subscriptionList.push(selector);
 
@@ -44,7 +43,8 @@ export class TestApplicationState extends ApplicationStateService {
                     const originalUnsubscribe = subscription.unsubscribe;
                     let unsubscribed = false;
 
-                    subscription.unsubscribe = jasmine.createSpy('unsubscribe')
+                    subscription.unsubscribe = jasmine
+                        .createSpy('unsubscribe')
                         .and.callFake(function fakeUnsubscribe(): void {
                             const index = subscriptionList.indexOf(selector);
                             if (!unsubscribed && index >= 0) {
@@ -82,7 +82,9 @@ export class TestApplicationState extends ApplicationStateService {
             // Get name of first function argument from function body
             const source: string = Function.prototype.toString.call(selectorFunction);
             const parsed = source.match(/^function\s*[\(]*\(\s*([^,\)\s]+)[^\)]*\)\s*\{(.+)\}$/);
-            if (!parsed) { continue; }
+            if (!parsed) {
+                continue;
+            }
             const [, firstParam, functionBody] = parsed;
             // Search for "state.something" in the function body
             const regex = new RegExp(`(?:^|[^.\[])${firstParam}\.([a-zA-Z0-9_$]+)`, 'g');
@@ -116,23 +118,26 @@ export class TestApplicationState extends ApplicationStateService {
                     const method = branchName + '.' + key;
 
                     // Overwrite the original action method with a jasmine spy and a custom function
-                    actionBranch[key] = jasmine.createSpy(method).and.callFake(
-                        function(this: any, ...args: any[]): any {
+                    actionBranch[key] = jasmine
+                        .createSpy(method)
+                        .and.callFake(function(this: any, ...args: any[]): any {
                             self.trackedActionCalls = self.trackedActionCalls.concat({ method, args });
 
                             switch (behavior) {
-                                case 'original': return originalMethod.call(this, ...args);
-                                case 'stub': return undefined;
-                                case 'throw': throw new Error('TestApplicationState: ' + method + ' called, but not mocked');
-                                default: return undefined;
+                                case 'original':
+                                    return originalMethod.call(this, ...args);
+                                case 'stub':
+                                    return undefined;
+                                case 'throw':
+                                    throw new Error('TestApplicationState: ' + method + ' called, but not mocked');
+                                default:
+                                    return undefined;
                             }
-                        }
-                    );
+                        });
                 }
             }
         }
     }
-
 }
 
 type ThreeLevelsPartial<T> = { [K in keyof T]?: TwoLevelsPartial<T[K]> };

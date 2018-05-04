@@ -1,19 +1,20 @@
-import { Pipe, PipeTransform, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { DebugElement, Pipe, PipeTransform } from '@angular/core';
+import { async, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ModalService, GenticsUICoreModule, Checkbox } from 'gentics-ui-core';
+import { Checkbox, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
-import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
-import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
-import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
-import { ConflictedFieldComponent } from './conflicted-field.component';
+import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
 import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+
+import { ConflictedFieldComponent } from './conflicted-field.component';
 
 describe('ConflictedFieldComponent', () => {
     let component: ConflictedFieldComponent;
@@ -21,23 +22,15 @@ describe('ConflictedFieldComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                ConflictedFieldComponent,
-                FilePreviewComponent,
-                AudioPlayButtonComponent,
-                MockI18nPipe
-            ],
+            declarations: [ConflictedFieldComponent, FilePreviewComponent, AudioPlayButtonComponent, MockI18nPipe],
             providers: [
                 { provide: I18nService, useClass: MockI18nService },
                 { provide: ModalService, useClass: MockModalService },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: ConfigService, useClass: MockConfigService },
+                { provide: ConfigService, useClass: MockConfigService }
             ],
-            imports: [
-                GenticsUICoreModule
-            ],
-        })
-            .compileComponents();
+            imports: [GenticsUICoreModule]
+        }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -57,7 +50,6 @@ describe('ConflictedFieldComponent', () => {
         expect(component).toBeTruthy();
     });
 
-
     it('should render simple text', () => {
         component.conflictedField = {
             field: { type: 'string', name: 'somename' },
@@ -74,7 +66,6 @@ describe('ConflictedFieldComponent', () => {
         expect(mineElement.nativeElement.innerHTML).toContain(component.conflictedField.localValue);
         expect(theirElement.nativeElement.innerHTML).toContain(component.conflictedField.remoteValue);
     });
-
 
     it('should render checkboxes for boolean conflicts', () => {
         component.conflictedField = {
@@ -119,10 +110,10 @@ describe('ConflictedFieldComponent', () => {
         };
         fixture.detectChanges();
         expect(fixture.debugElement.queryAll(By.css('.micronode-row')).length).toEqual(1);
-        expect(fixture.debugElement.queryAll(By.css('.micronode-row .change-item')).length)
-            .toEqual(component.conflictedField.conflictedFields!.length);
+        expect(fixture.debugElement.queryAll(By.css('.micronode-row .change-item')).length).toEqual(
+            component.conflictedField.conflictedFields!.length
+        );
     });
-
 
     it('should allow the user to select the prefered version', () => {
         component.conflictedField = {
@@ -156,7 +147,10 @@ class MockModalService {
     fakeDialog = {
         open: jasmine.createSpy('open').and.callFake(() => {
             return new Promise(resolve => {
-                this.confirmLastModal = () => { resolve(); tick(); };
+                this.confirmLastModal = () => {
+                    resolve();
+                    tick();
+                };
             });
         })
     };

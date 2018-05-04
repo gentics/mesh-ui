@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+
 import { MeshControlErrors } from '../../common/form-generator-models';
 
 @Component({
@@ -7,7 +8,6 @@ import { MeshControlErrors } from '../../common/form-generator-models';
     styleUrls: ['./field-errors.scss']
 })
 export class FieldErrorsComponent {
-
     errors: MeshControlErrors = {};
 
     get errorMessages(): string[] {

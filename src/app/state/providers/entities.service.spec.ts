@@ -1,13 +1,20 @@
-import { EntitiesService } from './entities.service';
-import { TestApplicationState } from '../testing/test-application-state.mock';
+import {
+    mergeMocks,
+    mockMeshNode,
+    mockMicroschema,
+    mockProject,
+    mockSchema,
+    mockUser
+} from '../../../testing/mock-models';
 import { ConfigService } from '../../core/providers/config/config.service';
-import { mergeMocks, mockMeshNode, mockMicroschema, mockProject, mockSchema, mockUser } from '../../../testing/mock-models';
+import { TestApplicationState } from '../testing/test-application-state.mock';
+
+import { EntitiesService } from './entities.service';
 
 const CONTENT_LANGUAGES = ['en', 'de'];
 const FALLBACK_LANGUAGE = 'en';
 
 describe('EntitiesService', () => {
-
     let entities: EntitiesService;
     let state: TestApplicationState;
     let config: MockConfigService;
@@ -46,18 +53,17 @@ describe('EntitiesService', () => {
         it('selectProject() emits on changes to selected project', (done: DoneFn) => {
             let count = 0;
 
-            const sub = entities.selectProject('project1')
-                .subscribe(project => {
-                    count ++;
+            const sub = entities.selectProject('project1').subscribe(project => {
+                count++;
 
-                    if (count === 1) {
-                        expect(project.name).toBe('Project One');
-                    } else if (count === 2) {
-                        expect(project.name).toBe('Project One Changed');
-                        sub.unsubscribe();
-                        done();
-                    }
-                });
+                if (count === 1) {
+                    expect(project.name).toBe('Project One');
+                } else if (count === 2) {
+                    expect(project.name).toBe('Project One Changed');
+                    sub.unsubscribe();
+                    done();
+                }
+            });
 
             state.mockState({
                 entities: {
@@ -69,15 +75,14 @@ describe('EntitiesService', () => {
         });
 
         it('selectProject() does not emit for invalid uuid', () => {
-            entities.selectProject('bad_uuid')
-                .subscribe(project => {
-                    fail('Should not emit a value');
-                });
+            entities.selectProject('bad_uuid').subscribe(project => {
+                fail('Should not emit a value');
+            });
         });
     });
 
     describe('Node', () => {
-        const mockNode1 =  mergeMocks(
+        const mockNode1 = mergeMocks(
             mockMeshNode({ uuid: 'mockNode1', language: 'de', version: '0.1' }),
             mockMeshNode({ uuid: 'mockNode1', language: 'en', version: '1.0' }),
             mockMeshNode({ uuid: 'mockNode1', language: 'en', version: '1.1' }),
@@ -129,7 +134,9 @@ describe('EntitiesService', () => {
         });
 
         it('getNode() returns undefined when no languages match in strict mode', () => {
-            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: true })).toBeUndefined();
+            expect(
+                entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: true })
+            ).toBeUndefined();
         });
 
         it('getNode() returns default content language with missing language array in not strict mode', () => {
@@ -139,19 +146,23 @@ describe('EntitiesService', () => {
 
         it('getNode() returns default content language with empty language array in not strict mode', () => {
             config.FALLBACK_LANGUAGE = 'de';
-            expect(entities.getNode('mockNode1', { language: [], strictLanguageMatch: false })).toEqual(mockNode1['de']['0.1']);
+            expect(entities.getNode('mockNode1', { language: [], strictLanguageMatch: false })).toEqual(
+                mockNode1['de']['0.1']
+            );
         });
 
         it('getNode() returns default content language when no languages match in not strict mode', () => {
             config.FALLBACK_LANGUAGE = 'de';
-            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false }))
-                .toEqual(mockNode1['de']['0.1']);
+            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false })).toEqual(
+                mockNode1['de']['0.1']
+            );
         });
 
         it('getNode() returns alphabetically first language when no languages match and default not found in not strict mode', () => {
             config.FALLBACK_LANGUAGE = 'zulu';
-            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false }))
-                .toEqual(mockNode1['en']['2.0']);
+            expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false })).toEqual(
+                mockNode1['en']['2.0']
+            );
         });
     });
 
@@ -189,7 +200,7 @@ describe('EntitiesService', () => {
         );
         const mockSchema2 = mergeMocks(
             mockSchema({ uuid: 'mockSchema2', name: 'Schema2', version: '2.1' as any }),
-            mockSchema({ uuid: 'mockSchema2', name: 'Schema2', version: '2.3' as any }),
+            mockSchema({ uuid: 'mockSchema2', name: 'Schema2', version: '2.3' as any })
         );
 
         beforeEach(() => {
@@ -217,35 +228,24 @@ describe('EntitiesService', () => {
         });
 
         it('getAllSchemas() returns all latest schemas', () => {
-            expect(entities.getAllSchemas()).toEqual([
-                mockSchema1['1.0'],
-                mockSchema2['2.3']
-            ]);
+            expect(entities.getAllSchemas()).toEqual([mockSchema1['1.0'], mockSchema2['2.3']]);
         });
 
         it('selectAllSchemas() emits when a schema is added', (done: DoneFn) => {
             let count = 0;
             const mockSchema3 = mockSchema({ uuid: 'mockSchema3', name: 'Schema3', version: '1.0' as any });
 
-            const sub = entities.selectAllSchemas()
-                .subscribe(schemas => {
-                    count ++;
-                    if (count === 1) {
-                        expect(schemas).toEqual([
-                            mockSchema1['1.0'],
-                            mockSchema2['2.3']
-                        ]);
-                    }
-                    if (count === 2) {
-                        sub.unsubscribe();
-                        expect(schemas).toEqual([
-                            mockSchema1['1.0'],
-                            mockSchema2['2.3'],
-                            mockSchema3['1.0']
-                        ]);
-                        done();
-                    }
-                });
+            const sub = entities.selectAllSchemas().subscribe(schemas => {
+                count++;
+                if (count === 1) {
+                    expect(schemas).toEqual([mockSchema1['1.0'], mockSchema2['2.3']]);
+                }
+                if (count === 2) {
+                    sub.unsubscribe();
+                    expect(schemas).toEqual([mockSchema1['1.0'], mockSchema2['2.3'], mockSchema3['1.0']]);
+                    done();
+                }
+            });
 
             state.mockState({
                 entities: {
@@ -261,19 +261,19 @@ describe('EntitiesService', () => {
 
     describe('Microschema', () => {
         const mockMicroschema1 = mergeMocks(
-            mockMicroschema({uuid: 'mockMicroschema1', name: 'Microschema1', version: '0.1' as any}),
-            mockMicroschema({uuid: 'mockMicroschema1', name: 'Microschema1', version: '0.3' as any}),
-            mockMicroschema({uuid: 'mockMicroschema1', name: 'Microschema1', version: '1.0' as any})
+            mockMicroschema({ uuid: 'mockMicroschema1', name: 'Microschema1', version: '0.1' as any }),
+            mockMicroschema({ uuid: 'mockMicroschema1', name: 'Microschema1', version: '0.3' as any }),
+            mockMicroschema({ uuid: 'mockMicroschema1', name: 'Microschema1', version: '1.0' as any })
         );
         const mockMicroschema2 = mergeMocks(
-            mockMicroschema({uuid: 'mockMicroschema2', name: 'Microschema2', version: '2.1' as any}),
-            mockMicroschema({uuid: 'mockMicroschema2', name: 'Microschema2', version: '2.3' as any}),
+            mockMicroschema({ uuid: 'mockMicroschema2', name: 'Microschema2', version: '2.1' as any }),
+            mockMicroschema({ uuid: 'mockMicroschema2', name: 'Microschema2', version: '2.3' as any })
         );
 
         beforeEach(() => {
             state.mockState({
                 entities: {
-                    microschema: {mockMicroschema1, mockMicroschema2}
+                    microschema: { mockMicroschema1, mockMicroschema2 }
                 }
             });
         });
@@ -295,10 +295,7 @@ describe('EntitiesService', () => {
         });
 
         it('getAllMicroschemas() returns all latest microschemas', () => {
-            expect(entities.getAllMicroschemas()).toEqual([
-                mockMicroschema1['1.0'],
-                mockMicroschema2['2.3']
-            ]);
+            expect(entities.getAllMicroschemas()).toEqual([mockMicroschema1['1.0'], mockMicroschema2['2.3']]);
         });
     });
 });

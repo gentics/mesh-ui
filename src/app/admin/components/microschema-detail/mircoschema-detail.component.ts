@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { ModalService } from 'gentics-ui-core';
 
 import { MicroschemaResponse } from '../../../common/models/server-models';
-import { MarkerData } from '../monaco-editor/monaco-editor.component';
-import { EntitiesService } from '../../../state/providers/entities.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
+import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
     templateUrl: './microschema-detail.component.html',
@@ -33,25 +33,27 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     subscription: Subscription;
 
-    constructor(private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private modal: ModalService,
-                private adminSchemaEffects: AdminSchemaEffectsService,
-                private route: ActivatedRoute,
-                private router: Router,
-                private ref: ChangeDetectorRef) {
-    }
+    constructor(
+        private state: ApplicationStateService,
+        private entities: EntitiesService,
+        private modal: ModalService,
+        private adminSchemaEffects: AdminSchemaEffectsService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private ref: ChangeDetectorRef
+    ) {}
 
     ngOnInit() {
-        this.microschema$ = this.route.data
-            .map(data => data.microschema)
-            .do(microschema => { this.isNew = !microschema; });
+        this.microschema$ = this.route.data.map(data => data.microschema).do(microschema => {
+            this.isNew = !microschema;
+        });
 
         this.version$ = this.microschema$.map(it => it.version);
 
-        this.subscription = this.microschema$
-        .subscribe(microschema => {
-            this.microschemaJson = microschema ? JSON.stringify(stripMicroschemaFields(microschema), undefined, 4) : `{}`;
+        this.subscription = this.microschema$.subscribe(microschema => {
+            this.microschemaJson = microschema
+                ? JSON.stringify(stripMicroschemaFields(microschema), undefined, 4)
+                : `{}`;
             this.ref.detectChanges();
         });
     }
@@ -76,21 +78,22 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
                 });
             } else {
                 this.microschema$.take(1).subscribe(microschema => {
-                    this.adminSchemaEffects.updateMicroschema({...microschema, ...changedSchema});
+                    this.adminSchemaEffects.updateMicroschema({ ...microschema, ...changedSchema });
                 });
             }
         }
     }
 
     delete() {
-        this.microschema$.take(1)
-        .switchMap(microschema => this.adminSchemaEffects.deleteMicroschema(microschema.uuid))
-        .subscribe(() => this.router.navigate(['admin', 'microschemas']));
+        this.microschema$
+            .take(1)
+            .switchMap(microschema => this.adminSchemaEffects.deleteMicroschema(microschema.uuid))
+            .subscribe(() => this.router.navigate(['admin', 'microschemas']));
     }
 }
 
 const updateFields: Array<keyof MicroschemaResponse> = ['name', 'description', 'fields'];
 
 function stripMicroschemaFields(microschema: MicroschemaResponse): any {
-    return updateFields.reduce((obj, key) => ({...obj, [key]: microschema[key]}), {});
+    return updateFields.reduce((obj, key) => ({ ...obj, [key]: microschema[key] }), {});
 }

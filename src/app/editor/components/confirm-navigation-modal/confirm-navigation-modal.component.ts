@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { IModalDialog } from 'gentics-ui-core';
 
-import { NodeEditorComponent } from '../node-editor/node-editor.component';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { NodeEditorComponent } from '../node-editor/node-editor.component';
 
 /**
  * A modal for the user to confirm navigation despite unsaved changes.
@@ -17,22 +17,20 @@ export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
     closeFn: (result: boolean) => void;
     cancelFn: (val?: any) => void;
     nodeEditor: NodeEditorComponent;
-    changes: Array<{ path: string; oldValue: string; newValue: string; }> = [];
+    changes: Array<{ path: string; oldValue: string; newValue: string }> = [];
     displayLimit = 10;
     additionalChangesCount = 0;
 
     constructor(private i18n: I18nService) {}
 
     ngOnInit(): void {
-
         if (this.nodeEditor.formGenerator) {
-            this.changes = this.nodeEditor.formGenerator.getChangesByPath()
-                .map(change => {
-                    const path = change.path.join(' › ');
-                    const oldValue = this.getInitialValueString(change.initialValue);
-                    const newValue = this.getCurrentValueString(change.currentValue);
-                    return {path, oldValue, newValue};
-                });
+            this.changes = this.nodeEditor.formGenerator.getChangesByPath().map(change => {
+                const path = change.path.join(' › ');
+                const oldValue = this.getInitialValueString(change.initialValue);
+                const newValue = this.getCurrentValueString(change.currentValue);
+                return { path, oldValue, newValue };
+            });
         }
 
         if (this.nodeEditor.tagsBar) {

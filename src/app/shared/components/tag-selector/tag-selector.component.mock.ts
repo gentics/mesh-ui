@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+
 import { Tag } from '../../../common/models/tag.model';
 
 @Component({ selector: 'mesh-tag-selector', template: '' })

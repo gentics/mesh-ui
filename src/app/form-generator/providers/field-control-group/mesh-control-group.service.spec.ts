@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+
 import { checkForChanges, getChangesByPath, MeshControlGroupService } from './mesh-control-group.service';
 import { ControlChanges, MeshControl } from './mesh-control.class';
 import createSpy = jasmine.createSpy;
 import Spy = jasmine.Spy;
 
 describe('MeshControlGroupService', () => {
-
     let meshControlGroup: MeshControlGroupService;
     let mockGetNodeFn: Spy;
     const INIT_ERROR = 'No rootControl was set. Did you forget to call MeshControlGroup.init()?';
@@ -53,12 +53,13 @@ describe('MeshControlGroupService', () => {
         meshControlGroup.addControl(mockFieldDef, 'foo', mockMeshField);
 
         expect((meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.size).toBe(1);
-        const meshControl = (meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.get('test') as MeshControl<any>;
+        const meshControl = (meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.get(
+            'test'
+        ) as MeshControl<any>;
         expect(meshControl.meshField).toBe(mockMeshField);
     });
 
     describe('checkValue()', () => {
-
         let nameControl: MeshControl<any>;
         let friendsControl: MeshControl<any>;
         let friend1Control: MeshControl<any>;
@@ -71,10 +72,16 @@ describe('MeshControlGroupService', () => {
 
             const mockMeshField: any = { valueChange: () => undefined };
             meshControlGroup.addControl({ name: 'name', type: 'string' }, 'joe', mockMeshField);
-            meshControlGroup.addControl({ name: 'friends', type: 'list', listType: 'string' }, ['peter', 'susan'], mockMeshField);
+            meshControlGroup.addControl(
+                { name: 'friends', type: 'list', listType: 'string' },
+                ['peter', 'susan'],
+                mockMeshField
+            );
 
             function getChildControl(name: string): MeshControl<any> {
-                return (meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.get(name) as MeshControl<any>;
+                return (meshControlGroup.getMeshControlAtPath([]) as MeshControl<any>).children.get(
+                    name
+                ) as MeshControl<any>;
             }
 
             nameControl = getChildControl('name');
@@ -122,11 +129,9 @@ describe('MeshControlGroupService', () => {
             expect(nameControl.checkValue).toHaveBeenCalledTimes(0);
             expect(friendsControl.checkValue).toHaveBeenCalledTimes(0);
         });
-
     });
 
     describe('getNodeValue()', () => {
-
         it('invokes the getNodeFn registered in the init() method', () => {
             const path = ['foo'];
             meshControlGroup.init(mockGetNodeFn);
@@ -138,7 +143,6 @@ describe('MeshControlGroupService', () => {
     });
 
     describe('nodeChanged()', () => {
-
         it('invokes nodeChanged() on the root MeshControl<any>', () => {
             const path = ['foo'];
             const value = 'bar';
@@ -150,7 +154,6 @@ describe('MeshControlGroupService', () => {
             meshControlGroup.nodeChanged(path, value, node);
             expect(rootControl.nodeChanged).toHaveBeenCalledWith(path, value, node);
         });
-
     });
 
     it('formWidthChanged() invokes formWidthChanged() on root MeshControl<any>', () => {
@@ -173,7 +176,6 @@ describe('MeshControlGroupService', () => {
     });
 
     describe('checkForChanges()', () => {
-
         it('returns correct value for 1 level deep', () => {
             const changes: ControlChanges<string> = {
                 changed: false,
@@ -257,12 +259,9 @@ describe('MeshControlGroupService', () => {
                 expect(checkForChanges(changes)).toBe(true);
             });
         });
-
-
     });
 
     describe('getChangesByPath()', () => {
-
         it('returns correct value for 2 levels deep', () => {
             const changes: ControlChanges<undefined> = {
                 changed: false,
@@ -345,8 +344,5 @@ describe('MeshControlGroupService', () => {
                 ]);
             });
         });
-
-
     });
-
 });

@@ -1,5 +1,16 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Input, Output, forwardRef, EventEmitter, OnDestroy } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import {
+    forwardRef,
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 // import 'monaco-editor';
 
@@ -7,7 +18,6 @@ declare const window: Window & { require: any };
 // TODO: use the actual typings which are shipped with the monaco editor, get rid of the
 // "any" types in the code below where possible.
 declare const monaco: any;
-
 
 /**
  * A structure defining a problem/warning/etc.
@@ -27,7 +37,7 @@ export enum Severity {
     Ignore = 0,
     Info = 1,
     Warning = 2,
-    Error = 3,
+    Error = 3
 }
 
 @Component({
@@ -40,21 +50,23 @@ export enum Severity {
             useExisting: MonacoEditorComponent,
             multi: true
         }
-    ],
+    ]
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
-
     @ViewChild('editor') editorContent: ElementRef;
     @Input() language: string;
     @Input() options: any = {};
     @Input() jsonSchema: any;
-    @Input() set value(v: string) {
+    @Input()
+    set value(v: string) {
         if (v !== this._value) {
             this._value = v;
             this.onChange(v);
         }
     }
-    get value(): string { return this._value; }
+    get value(): string {
+        return this._value;
+    }
     @Output() change = new EventEmitter();
     @Output() instance: any = null;
     @Output() errors = new EventEmitter<MarkerData[]>();
@@ -64,11 +76,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
     private _javascriptExtraLibs: any = null;
     private _typescriptExtraLibs: any = null;
 
-    constructor() { }
+    constructor() {}
 
-
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     ngAfterViewInit() {
         const onGotAmdLoader = () => {
@@ -112,7 +122,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         options.value = this._value;
         options.language = this.language;
 
-
         if (this.jsonSchema) {
             monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
                 validate: true,
@@ -153,9 +162,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         this._editor.layout();
     }
 
-    componentDidMount() {
-
-    }
+    componentDidMount() {}
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions.bind(this));
@@ -196,9 +203,12 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         }
     }
 
-    onChange(_: any) { }
-    onTouched() { }
-    registerOnChange(fn: (value?: any) => void) { this.onChange = fn; }
-    registerOnTouched(fn: () => void) { this.onTouched = fn; }
-
+    onChange(_: any) {}
+    onTouched() {}
+    registerOnChange(fn: (value?: any) => void) {
+        this.onChange = fn;
+    }
+    registerOnTouched(fn: () => void) {
+        this.onTouched = fn;
+    }
 }

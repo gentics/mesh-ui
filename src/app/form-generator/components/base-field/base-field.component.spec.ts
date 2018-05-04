@@ -1,9 +1,9 @@
-import { BaseFieldComponent } from './base-field.component';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { NodeFieldType } from '../../../common/models/node.model';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
+
+import { BaseFieldComponent } from './base-field.component';
 
 describe('BaseFieldComponent', () => {
-
     it('errors initially returns empty object', () => {
         const testComponent = new TestComponent();
 
@@ -41,7 +41,6 @@ describe('BaseFieldComponent', () => {
 
         expect(testComponent.errors).toEqual({});
     });
-
 
     it('setError() with hash set to false removes the error', () => {
         const testComponent = new TestComponent();
@@ -89,7 +88,6 @@ describe('BaseFieldComponent', () => {
 });
 
 class TestComponent extends BaseFieldComponent {
-
     constructor() {
         super({ markForCheck() {} } as any);
     }

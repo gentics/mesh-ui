@@ -2,9 +2,10 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { firstNames, lastNames } from './mock-data';
 import { UserCreateRequest } from '../../../common/models/server-models';
 import { AdminUserEffectsService } from '../effects/admin-user-effects.service';
+
+import { firstNames, lastNames } from './mock-data';
 
 /**
  * This service should only be used at development time. It exposes methods for quickly creating mock data in bulk
@@ -12,10 +13,9 @@ import { AdminUserEffectsService } from '../effects/admin-user-effects.service';
  */
 @Injectable()
 export class MockDataService implements OnDestroy {
-
     private destroy$ = new Subject<void>();
 
-    constructor(private adminUserEffects: AdminUserEffectsService) { }
+    constructor(private adminUserEffects: AdminUserEffectsService) {}
 
     ngOnDestroy(): void {
         this.destroy$.next();
@@ -31,18 +31,21 @@ export class MockDataService implements OnDestroy {
             return;
         }
 
-        const userCreateRequests = firstNames.reduce((requests, firstName) => {
-            const lastName = randomElement(lastNames);
-            const userName = `${firstName}${lastName}`.toLowerCase();
-            const email = `${firstName}.${lastName}@test.com`.toLowerCase();
-            return requests.concat({
-                firstname: firstName,
-                lastname: lastName,
-                username: userName,
-                emailAddress: email,
-                password: 'test'
-            });
-        }, [] as UserCreateRequest[]);
+        const userCreateRequests = firstNames.reduce(
+            (requests, firstName) => {
+                const lastName = randomElement(lastNames);
+                const userName = `${firstName}${lastName}`.toLowerCase();
+                const email = `${firstName}.${lastName}@test.com`.toLowerCase();
+                return requests.concat({
+                    firstname: firstName,
+                    lastname: lastName,
+                    username: userName,
+                    emailAddress: email,
+                    password: 'test'
+                });
+            },
+            [] as UserCreateRequest[]
+        );
 
         Observable.from(userCreateRequests)
             .takeUntil(this.destroy$)
@@ -51,7 +54,6 @@ export class MockDataService implements OnDestroy {
                 console.log(`Created a new mock user:`, result);
             });
     }
-
 }
 
 /**

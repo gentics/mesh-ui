@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+
 import { ConfigService } from '../config/config.service';
 
 export type UILanguage = 'en' | 'de';
 
 @Injectable()
 export class I18nService {
-
-    constructor(private ngxTranslate: TranslateService,
-                private config: ConfigService) {
+    constructor(private ngxTranslate: TranslateService, private config: ConfigService) {
         ngxTranslate.setDefaultLang(config.FALLBACK_LANGUAGE);
     }
 

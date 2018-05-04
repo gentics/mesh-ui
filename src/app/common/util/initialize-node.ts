@@ -1,9 +1,10 @@
-import { initializeFieldValue } from './initialize-field-value';
 import { Schema } from '../models/schema.model';
 import { NodeCreateRequest } from '../models/server-models';
 
+import { initializeFieldValue } from './initialize-field-value';
+
 export type NodeCreateRequestWithFields = NodeCreateRequest & {
-    fields: { [key: string]: any; };
+    fields: { [key: string]: any };
 };
 
 /**
@@ -13,7 +14,7 @@ export type NodeCreateRequestWithFields = NodeCreateRequest & {
 export function initializeNode(schema: Schema, parentNodeUuid: string, language: string): NodeCreateRequestWithFields {
     const node: NodeCreateRequestWithFields = {
         language,
-        parentNode: { uuid : parentNodeUuid } as any,
+        parentNode: { uuid: parentNodeUuid } as any,
         schema: {
             name: schema.name,
             uuid: schema.uuid,

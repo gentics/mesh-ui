@@ -10,20 +10,23 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
 import { InputField, ModalService } from 'gentics-ui-core';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 
 import { MeshNode } from '../../../common/models/node.model';
-import { fuzzyMatch } from '../../../common/util/fuzzy-search';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { Tag } from '../../../common/models/tag.model';
-import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
-import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
+import { Tag } from '../../../common/models/tag.model';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { notNullOrUndefined } from '../../../common/util/util';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
-import { notNullOrUndefined } from '../../../common/util/util';
+import { EditorEffectsService } from '../../providers/editor-effects.service';
+import {
+    CreateTagDialogComponent,
+    CreateTagDialogComponentResult
+} from '../create-tag-dialog/create-tag-dialog.component';
 
 @Component({
     selector: 'mesh-node-tags-bar',
@@ -32,8 +35,8 @@ import { notNullOrUndefined } from '../../../common/util/util';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
-
-    @ViewChild(InputField, { read: ElementRef }) inputField: ElementRef;
+    @ViewChild(InputField, { read: ElementRef })
+    inputField: ElementRef;
 
     @Input() node: MeshNode;
     inputIsFocused = false;
@@ -46,14 +49,17 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     private destroyed$: Subject<void> = new Subject();
     private focusTimer: any;
 
-    constructor(private changeDetector: ChangeDetectorRef,
-                private state: ApplicationStateService,
-                private editorEffects: EditorEffectsService,
-                private modalService: ModalService,
-                private entities: EntitiesService ) { }
+    constructor(
+        private changeDetector: ChangeDetectorRef,
+        private state: ApplicationStateService,
+        private editorEffects: EditorEffectsService,
+        private modalService: ModalService,
+        private entities: EntitiesService
+    ) {}
 
     ngOnInit(): void {
-        this.state.select(state => state.tags.tags)
+        this.state
+            .select(state => state.tags.tags)
             .takeUntil(this.destroyed$)
             .subscribe(tags => {
                 this.allTags = tags.map(uuid => this.entities.getTag(uuid)).filter(notNullOrUndefined);
@@ -112,16 +118,17 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
         const openNode = this.state.now.editor.openNode;
 
         if (openNode) {
-            this.modalService.fromComponent(
-                CreateTagDialogComponent,
-                {
-                    closeOnOverlayClick: false
-                },
-                {
-                    newTagName,
-                    projectName: openNode.projectName
-                }
-            )
+            this.modalService
+                .fromComponent(
+                    CreateTagDialogComponent,
+                    {
+                        closeOnOverlayClick: false
+                    },
+                    {
+                        newTagName,
+                        projectName: openNode.projectName
+                    }
+                )
                 .then(modal => modal.open())
                 .then((result: CreateTagDialogComponentResult) => {
                     this.onTagSelected(result.tag);
@@ -133,7 +140,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     /**
      * Get the diff of the original tags and the modified ones.
      */
-    changesSinceLastSave(): { deletedTags: string[], newTags: string[] } {
+    changesSinceLastSave(): { deletedTags: string[]; newTags: string[] } {
         let deletedTags: string[] = [];
         let newTags: string[] = [];
 

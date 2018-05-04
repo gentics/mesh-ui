@@ -1,22 +1,23 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, Directive, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Button, Icon, InputField } from 'gentics-ui-core';
 
-import { UserDetailComponent } from './user-detail.component';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
-import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
-import { TestStateModule } from '../../../state/testing/test-state.module';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
+import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
+import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { TestStateModule } from '../../../state/testing/test-state.module';
+import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
+
+import { UserDetailComponent } from './user-detail.component';
 
 describe('UserDetailComponent', () => {
     let instance: UserDetailComponent;
@@ -35,11 +36,7 @@ describe('UserDetailComponent', () => {
                 MockFormGeneratorComponent,
                 MockProjectContentDirective
             ],
-            imports: [
-                RouterTestingModule.withRoutes([]),
-                ReactiveFormsModule,
-                TestStateModule
-            ],
+            imports: [RouterTestingModule.withRoutes([]), ReactiveFormsModule, TestStateModule],
             providers: [
                 { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService },
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
@@ -80,9 +77,7 @@ describe('UserDetailComponent', () => {
     });
 
     describe('save button', () => {
-
         describe('for user without nodeReference', () => {
-
             beforeEach(() => {
                 activatedRoute.setData('user', {
                     uuid: 'user_uuid',
@@ -97,9 +92,12 @@ describe('UserDetailComponent', () => {
 
             it('is enabled if the form is dirty and valid', () => {
                 fixture.detectChanges();
-                instance.form.patchValue({
-                    userName: 'some_user'
-                }, { emitEvent: true });
+                instance.form.patchValue(
+                    {
+                        userName: 'some_user'
+                    },
+                    { emitEvent: true }
+                );
                 instance.form.markAsDirty();
 
                 // Cannot currently test the actual save button in the DOM due to this issue:
@@ -112,18 +110,19 @@ describe('UserDetailComponent', () => {
 
             it('is disabled if the form is dirty and invalid', () => {
                 fixture.detectChanges();
-                instance.form.patchValue({
-                    userName: ''
-                }, { emitEvent: true });
+                instance.form.patchValue(
+                    {
+                        userName: ''
+                    },
+                    { emitEvent: true }
+                );
                 instance.form.markAsDirty();
 
                 expect(instance.isSaveButtonEnabled()).toBe(false);
             });
-
         });
 
         describe('for user with nodeReference', () => {
-
             beforeEach(() => {
                 setStateForUserWithNodeReference(activatedRoute, state);
                 fixture.detectChanges();
@@ -138,9 +137,12 @@ describe('UserDetailComponent', () => {
             it('is enabled when form dirty & valid, formGenerator pristine', () => {
                 const formGenerator = getFormGenerator(fixture);
 
-                instance.form.patchValue({
-                    userName: 'some_user'
-                }, { emitEvent: true });
+                instance.form.patchValue(
+                    {
+                        userName: 'some_user'
+                    },
+                    { emitEvent: true }
+                );
                 instance.form.markAsDirty();
                 formGenerator.isDirty = false;
                 formGenerator.isValid = true;
@@ -166,9 +168,12 @@ describe('UserDetailComponent', () => {
             it('is disabled when form dirty & valid, formGenerator invalid', () => {
                 const formGenerator = getFormGenerator(fixture);
 
-                instance.form.patchValue({
-                    userName: 'some_user'
-                }, { emitEvent: true });
+                instance.form.patchValue(
+                    {
+                        userName: 'some_user'
+                    },
+                    { emitEvent: true }
+                );
                 instance.form.markAsDirty();
                 formGenerator.isDirty = true;
                 formGenerator.isValid = false;

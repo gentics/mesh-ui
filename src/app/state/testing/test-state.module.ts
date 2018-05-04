@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
-import { ApplicationStateService } from '../providers/application-state.service';
-import { TestApplicationState } from './test-application-state.mock';
-import { EntitiesService } from '../providers/entities.service';
+
 import { ConfigService } from '../../core/providers/config/config.service';
+import { ApplicationStateService } from '../providers/application-state.service';
+import { EntitiesService } from '../providers/entities.service';
+
+import { TestApplicationState } from './test-application-state.mock';
 
 /**
  * This should be used in tests for components which interact with the app state in some way.
@@ -10,10 +12,6 @@ import { ConfigService } from '../../core/providers/config/config.service';
  * test file itself.
  */
 @NgModule({
-    providers: [
-        { provide: ApplicationStateService, useClass: TestApplicationState},
-        EntitiesService,
-        ConfigService
-    ]
+    providers: [{ provide: ApplicationStateService, useClass: TestApplicationState }, EntitiesService, ConfigService]
 })
 export class TestStateModule {}

@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { ModalService } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
 
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { User } from '../../../common/models/user.model';
-import { ChangePasswordModalComponent } from '../change-password-modal/change-password-modal.component';
 import { UserResponse } from '../../../common/models/server-models';
+import { User } from '../../../common/models/user.model';
 import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { ChangePasswordModalComponent } from '../change-password-modal/change-password-modal.component';
 
 @Component({
     selector: 'mesh-user-dropdown',
@@ -17,12 +17,15 @@ import { AuthEffectsService } from '../../../login/providers/auth-effects.servic
 export class UserDropdownComponent implements OnInit {
     currentUsername$: Observable<string>;
 
-    constructor(private state: ApplicationStateService,
-                private modal: ModalService,
-                private authEffects: AuthEffectsService) {}
+    constructor(
+        private state: ApplicationStateService,
+        private modal: ModalService,
+        private authEffects: AuthEffectsService
+    ) {}
 
     ngOnInit(): void {
-        this.currentUsername$ = this.state.select(state => state.auth.currentUser)
+        this.currentUsername$ = this.state
+            .select(state => state.auth.currentUser)
             // Filter so that nothing emits if no user is logged in
             .filter(user => !!user)
             .switchMap((userUuid: string) => this.state.select(state => state.entities.user[userUuid]))
@@ -35,8 +38,7 @@ export class UserDropdownComponent implements OnInit {
     }
 
     changePassword(): void {
-        this.modal.fromComponent(ChangePasswordModalComponent)
-            .then(modal => modal.open());
+        this.modal.fromComponent(ChangePasswordModalComponent).then(modal => modal.open());
     }
 
     /**

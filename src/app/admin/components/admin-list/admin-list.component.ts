@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import {
     AfterContentInit,
     ChangeDetectionStrategy,
@@ -12,7 +13,6 @@ import {
     SimpleChanges,
     TemplateRef
 } from '@angular/core';
-import { animate, style, transition, trigger } from '@angular/animations';
 import { PaginationInstance, PaginationService } from 'ngx-pagination';
 
 /**
@@ -44,17 +44,9 @@ import { PaginationInstance, PaginationService } from 'ngx-pagination';
     styleUrls: ['./admin-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [PaginationService],
-    animations: [
-        trigger('listAnimation', [
-            transition(':enter', [
-                style({ opacity: 0 }),
-                animate(300)
-            ])
-        ])
-    ]
+    animations: [trigger('listAnimation', [transition(':enter', [style({ opacity: 0 }), animate(300)])])]
 })
 export class AdminListComponent implements OnChanges, AfterContentInit {
-
     /** An array of objects to be listed */
     @Input() items: any = [];
     /** Number of items on each paginated page */
@@ -79,7 +71,8 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
 
     // Using ContentChildren rather than ContentChild because only ContentChildren
     // currently supports the { descendants: false } option.
-    @ContentChildren(TemplateRef, { descendants: false }) templateRefs: QueryList<TemplateRef<any>>;
+    @ContentChildren(TemplateRef, { descendants: false })
+    templateRefs: QueryList<TemplateRef<any>>;
     templateRef: TemplateRef<any>;
 
     paginationConfig: PaginationInstance;
@@ -98,7 +91,7 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         } else {
             length = this.itemsPerPage;
         }
-        this.currentPageIndices =  Array.from({ length }, (_, i) => i);
+        this.currentPageIndices = Array.from({ length }, (_, i) => i);
 
         this.paginationConfig = {
             currentPage: this.currentPage,
@@ -132,29 +125,25 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         if (this.items.length === 0) {
             return false;
         }
-        return this.currentPageIndices
-            .every((_, i) => this.checked[this.itemId(i)]);
+        return this.currentPageIndices.every((_, i) => this.checked[this.itemId(i)]);
     }
 
     toggleSelectAll(): void {
         if (this.allSelected()) {
-            this.currentPageIndices
-                .forEach((_, i) => {
-                    this.checked[this.itemId(i)] = false;
-                });
+            this.currentPageIndices.forEach((_, i) => {
+                this.checked[this.itemId(i)] = false;
+            });
         } else {
-            this.currentPageIndices
-                .forEach((_, i) => {
-                    this.checked[this.itemId(i)] = true;
-                });
+            this.currentPageIndices.forEach((_, i) => {
+                this.checked[this.itemId(i)] = true;
+            });
         }
         this.calculateCheckedCount();
         this.emitSelectionChange();
     }
 
     clearSelection(): void {
-        Object.keys(this.checked)
-            .forEach(key => this.checked[key] = false);
+        Object.keys(this.checked).forEach(key => (this.checked[key] = false));
         this.calculateCheckedCount();
         this.emitSelectionChange();
     }
@@ -188,7 +177,7 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         const selectedIndices = Object.keys(this.checked)
             .filter(key => this.checked[key] === true)
             .map(key => {
-                const [ page, index ] = key.split('-').map(val => +val);
+                const [page, index] = key.split('-').map(val => +val);
                 return (page - 1) * this.itemsPerPage + index;
             });
         this.selectionChange.emit(selectedIndices);

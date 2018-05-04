@@ -3,13 +3,12 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { fuzzyMatch } from '../../../common/util/fuzzy-search';
-import { EntitiesService } from '../../../state/providers/entities.service';
 import { Tag } from '../../../common/models/tag.model';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
-
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Component({
     selector: 'mesh-search-bar',
@@ -18,7 +17,6 @@ import { notNullOrUndefined } from '../../../common/util/util';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchBarComponent implements OnInit, OnDestroy {
-
     allTags: Tag[] = [];
     inputValue = '';
     searchQuery = '';
@@ -27,22 +25,24 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     filteredTags: Tag[] = [];
     private destroyed$: Subject<void> = new Subject();
 
-    constructor(private changeDetectorRef: ChangeDetectorRef,
-                private listEffects: ListEffectsService,
-                private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private route: ActivatedRoute,
-                private router: Router) {}
+    constructor(
+        private changeDetectorRef: ChangeDetectorRef,
+        private listEffects: ListEffectsService,
+        private state: ApplicationStateService,
+        private entities: EntitiesService,
+        private route: ActivatedRoute,
+        private router: Router
+    ) {}
 
     ngOnInit(): void {
-
         combineLatest(this.route.queryParamMap, this.state.select(state => state.entities.tag))
             .takeUntil(this.destroyed$)
             .subscribe(([paramMap]) => {
                 this.searchParamsChanged(paramMap);
             });
 
-        this.state.select(state => state.tags.tags)
+        this.state
+            .select(state => state.tags.tags)
             .takeUntil(this.destroyed$)
             .subscribe(tags => {
                 this.allTags = tags.map(uuid => this.entities.getTag(uuid)).filter(notNullOrUndefined);
@@ -76,7 +76,8 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
     searchTermChanged(): void {
         const firstChar = this.inputValue.charAt(0);
-        if (firstChar === '#') { // In tag mode search - ignore this event
+        if (firstChar === '#') {
+            // In tag mode search - ignore this event
             return;
         }
 
@@ -97,7 +98,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     }
 
     private searchParamsChanged(params: ParamMap) {
-        this.searchQuery = params.get('q') || '';
+        this.searchQuery = params.get('q') || '';
         this.searchTags = (params.get('t') || '')
             .split(',')
             .map(uuid => this.entities.getTag(uuid))
@@ -118,6 +119,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     private updateSearchParams(query: string, tags: Tag[]): void {
         const q = query.trim();
         const t = tags.map(tag => tag.uuid).join(','); // Tags
-        this.router.navigate([], { relativeTo: this.route, queryParams: {q, t}});
+        this.router.navigate([], { relativeTo: this.route, queryParams: { q, t } });
     }
 }

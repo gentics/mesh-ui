@@ -3,17 +3,17 @@ import { SafeUrl } from '@angular/platform-browser';
 import { ModalService } from 'gentics-ui-core';
 import { GenticsImagePreviewComponent, ImageTransformParams } from 'gentics-ui-image-editor';
 
-import { getFileType } from '../../../shared/common/get-file-type';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
-import { SchemaField } from '../../../common/models/schema.model';
 import { BinaryField, MeshNode, NodeFieldType } from '../../../common/models/node.model';
-import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
+import { SchemaField } from '../../../common/models/schema.model';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { BlobService } from '../../../core/providers/blob/blob.service';
-import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-modal.component';
 import { getConstrainedDimensions } from '../../../shared/common/get-constrained-dimensions';
+import { getFileType } from '../../../shared/common/get-file-type';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
+import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
+import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-modal.component';
 
-type ImageBinary = BinaryField & { width: number; height: number; };
+type ImageBinary = BinaryField & { width: number; height: number };
 
 @Component({
     selector: 'mesh-binary-field',
@@ -21,7 +21,6 @@ type ImageBinary = BinaryField & { width: number; height: number; };
     styleUrls: ['./binary-field.scss']
 })
 export class BinaryFieldComponent extends BaseFieldComponent {
-
     public api: MeshFieldControlApi;
     binaryProperties: BinaryField;
     binaryMediaType: string | null;
@@ -36,10 +35,12 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     private readonly maxImageWidth = 750;
     private readonly maxImageHeight = 800;
 
-    constructor(private apiService: ApiService,
-                private blobService: BlobService,
-                private modalService: ModalService,
-                protected changeDetector: ChangeDetectorRef) {
+    constructor(
+        private apiService: ApiService,
+        private blobService: BlobService,
+        private modalService: ModalService,
+        protected changeDetector: ChangeDetectorRef
+    ) {
         super(changeDetector);
     }
 
@@ -103,10 +104,16 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         if (newFile) {
             imageUrl = this.blobService.createObjectURL(newFile);
         } else {
-            imageUrl = this.apiService.project.getBinaryFileUrl(node.project.name!, node.uuid, this.api.field.name, node.version);
+            imageUrl = this.apiService.project.getBinaryFileUrl(
+                node.project.name!,
+                node.uuid,
+                this.api.field.name,
+                node.version
+            );
         }
 
-        this.modalService.fromComponent(ImageEditorModalComponent, undefined, { imageUrl, params: this.transformParams })
+        this.modalService
+            .fromComponent(ImageEditorModalComponent, undefined, { imageUrl, params: this.transformParams })
             .then(modal => modal.open())
             .then(params => {
                 if (newFile) {
@@ -142,8 +149,16 @@ export class BinaryFieldComponent extends BaseFieldComponent {
      * Scales the ImageTransformParams from editing an image down to the correct proportions to fit the size-constrained
      * version which is used as a preview.
      */
-    private calculateScaledTransformParams(imageField: ImageBinary, params: ImageTransformParams): ImageTransformParams {
-        const { ratio } = getConstrainedDimensions(imageField.width, imageField.height, this.maxImageWidth, this.maxImageHeight);
+    private calculateScaledTransformParams(
+        imageField: ImageBinary,
+        params: ImageTransformParams
+    ): ImageTransformParams {
+        const { ratio } = getConstrainedDimensions(
+            imageField.width,
+            imageField.height,
+            this.maxImageWidth,
+            this.maxImageHeight
+        );
         const round = (val: number) => Math.round(val);
         return {
             width: round(params.width * ratio),
@@ -163,9 +178,20 @@ export class BinaryFieldComponent extends BaseFieldComponent {
 
     private getBinaryUrl(binaryField: BinaryField): string {
         const node = this.api.getNodeValue() as MeshNode;
-        if (this.binaryMediaType === 'image') {
-            const { width, height } = getConstrainedDimensions(binaryField.width, binaryField.height, this.maxImageWidth, this.maxImageHeight);
-            return this.apiService.project.getBinaryFileUrl(node.project.name!, node.uuid, this.api.field.name, undefined, { w: width, h: height });
+        if (this.binaryMediaType === 'image' && binaryField.width !== undefined && binaryField.height !== undefined) {
+            const { width, height } = getConstrainedDimensions(
+                binaryField.width,
+                binaryField.height,
+                this.maxImageWidth,
+                this.maxImageHeight
+            );
+            return this.apiService.project.getBinaryFileUrl(
+                node.project.name!,
+                node.uuid,
+                this.api.field.name,
+                undefined,
+                { w: width, h: height }
+            );
         } else {
             return this.apiService.project.getBinaryFileUrl(node.project.name!, node.uuid, this.api.field.name);
         }
