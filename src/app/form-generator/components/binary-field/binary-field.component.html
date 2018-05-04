@@ -3,47 +3,25 @@
     <div *ngIf="binaryProperties" class="media-preview">
         <ng-container [ngSwitch]="binaryMediaType">
             <div *ngSwitchCase="'image'" class="image-preview" [class.loading]="loadingPreview">
+                <gtx-progress-bar [active]="loadingPreview"></gtx-progress-bar>
                 <gentics-ui-image-preview [src]="objectUrl"
                                           [maxHeight]="800"
                                           [transform]="scaledTransform"
                                           (imageLoad)="onImageLoad()"></gentics-ui-image-preview>
             </div>
-            <div *ngSwitchCase="'video'" class="video-preview">
-                <video controls
-                       preload="metadata"
-                       class="video-preview"
-                       controlsList="nodownload"
-                       (loadedmetadata)="loadingPreview = false">
-                    <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
-                </video>
-            </div>
-
-            <div *ngSwitchCase="'audio'" class="audio-preview">
-                <audio controls
-                       preload="metadata"
-                       controlsList="nodownload"
-                       (loadedmetadata)="loadingPreview = false">
-                    <source [src]="objectUrl" type="{{ binaryProperties.mimeType }}">
-                </audio>
-            </div>
 
             <div *ngSwitchDefault>
-                <div class="default-preview">
-                    <div class="file-icon">
-                        <icon>insert_drive_file</icon>
-                    </div>
-                    <div class="mime-wrapper">
-                        <div class="mime-type">{{ binaryProperties.mimeType }}</div>
-                    </div>
-                </div>
+                <mesh-file-preview [mimeType]="binaryProperties.mimeType"
+                                    [fileName]="binaryProperties.fileName"
+                                   [url]="objectUrl">
+                </mesh-file-preview>
             </div>
         </ng-container>
     </div>
     <div class="binary-controls" [class.no-binary]="!binaryProperties">
-        <gtx-progress-bar [active]="loadingPreview"></gtx-progress-bar>
         <div class="basic-info">
             <div class="file-name">
-                <a [href]="objectUrl"><icon>file_download</icon><span>{{ binaryProperties?.file?.name || binaryProperties?.fileName }}</span></a>
+                <a [href]="objectUrl" [download]="binaryProperties?.file?.name || binaryProperties?.fileName"><icon>file_download</icon><span>{{ binaryProperties?.file?.name || binaryProperties?.fileName }}</span></a>
             </div>
             <div class="file-size">{{ binaryProperties?.file?.size || binaryProperties?.fileSize | filesize }}</div>
             <div class="image-dimensions" *ngIf="binaryProperties?.width">

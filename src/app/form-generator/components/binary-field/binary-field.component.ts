@@ -3,6 +3,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { ModalService } from 'gentics-ui-core';
 import { GenticsImagePreviewComponent, ImageTransformParams } from 'gentics-ui-image-editor';
 
+import { getFileType } from '../../../shared/common/get-file-type';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { SchemaField } from '../../../common/models/schema.model';
 import { BinaryField, MeshNode, NodeFieldType } from '../../../common/models/node.model';
@@ -10,6 +11,8 @@ import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../bas
 import { ApiService } from '../../../core/providers/api/api.service';
 import { BlobService } from '../../../core/providers/blob/blob.service';
 import { ImageEditorModalComponent } from '../image-editor-modal/image-editor-modal.component';
+
+
 
 @Component({
     selector: 'binary-field',
@@ -55,7 +58,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
             this.objectUrl = null;
             return;
         }
-        const type = this.getMimeType(this.binaryProperties.mimeType);
+        const type = getFileType(this.binaryProperties.mimeType, this.binaryProperties.fileName);
         this.binaryMediaType = type;
 
         if (this.binaryProperties.file) {
@@ -188,17 +191,5 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         }
 
         return { width: Math.round(width), height: Math.round(height), ratio: width / image.width };
-    }
-
-     /**
-     * Returns a 'type' part of the mimeType header
-     * image/jpeg => image
-     * video/ogg => video
-     */
-    private getMimeType(mimeType: string): 'image' | 'video' | 'audio' | string | null {
-        if (!mimeType) {
-            return null;
-        }
-        return (mimeType.split('/')[0] as string).toLowerCase();
     }
 }

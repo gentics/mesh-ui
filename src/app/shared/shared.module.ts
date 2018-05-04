@@ -18,6 +18,8 @@ import { FileSizePipe } from './pipes/file-size/file-size.pipe';
 import { TagComponent } from './components/tag/tag.component';
 import { ChipComponent } from './components/chip/chip.component';
 import { TagSelectorComponent } from './components/tag-selector/tag-selector.component';
+import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
+import { FilePreviewComponent } from './components/file-preview/file-preview.component';
 import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
 import { ContentPortalComponent } from './components/content-portal/content-portal.component';
 import { ProjectContentDirective } from './directives/project-content.directive';
@@ -29,6 +31,8 @@ const SHARED_COMPONENTS = [
     TagComponent,
     TagSelectorComponent,
     ThumbnailComponent,
+    AudioPlayButtonComponent,
+    FilePreviewComponent,
     PaginationControlsComponent,
     ContentPortalComponent
 ];

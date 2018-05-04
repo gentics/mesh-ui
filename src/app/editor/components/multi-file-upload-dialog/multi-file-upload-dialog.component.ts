@@ -12,11 +12,11 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
+
 interface FileWithBlob {
     file: BinaryField;
-    blob: SafeUrl;
+    url: SafeUrl;
     progress: 'none' | 'uploading' | 'done' | 'error';
-    mediaType: string;
 }
 @Component({
     selector: 'mesh-multi-file-upload-dialog',
@@ -141,8 +141,7 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     addBlobToFile(file: File): FileWithBlob {
         return {
             file: { fileName: file.name, fileSize: file.size, mimeType: file.type, file } as BinaryField,
-            blob: this.blobService.createObjectURL(file),
-            mediaType: this.getBinaryMediaType(file),
+            url: this.blobService.createObjectURL(file),
             progress: 'none'
         };
     }
@@ -163,14 +162,5 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
 
     onFieldSelected(field: SchemaField) {
         this.selectedField = field;
-    }
-
-    private getBinaryMediaType(file: File): string {
-        const mimeType: string = file.type;
-        if (!mimeType) {
-            return null;
-        }
-        const type = (mimeType.split('/')[0] as string).toLowerCase();
-        return type;
     }
 }

@@ -43,35 +43,16 @@
                     [class.error]="fileWithBlob.progress === 'error'"
                 >
                     <icon *ngIf="!isSaving" class="button-close" (click)="onFileRemoved(fileWithBlob)">close</icon>
-
                     <div *ngIf="fileWithBlob.progress === 'uploading'" class="overlay-save">
                         <icon class="material-icons">sync</icon>
                     </div>
-
                     <div *ngIf="fileWithBlob.progress === 'done'" class="overlay-done">
                         <icon class="material-icons">done</icon>
                     </div>
-
-                    <div [ngSwitch]="fileWithBlob.mediaType">
-                        <div *ngSwitchCase="'image'">
-                            <img class="preview" [src]="fileWithBlob.blob" alt="" />
-                        </div>
-                        <div *ngSwitchCase="'video'">
-                            <video class="preview" width="100%" controls>
-                                <source [src]="fileWithBlob.blob">
-                            </video>
-                        </div>
-
-                        <div *ngSwitchCase="'audio'" class="preview audio">
-                            <mesh-audio-play-button [src]="fileWithBlob.blob" [autoPlay]="false"></mesh-audio-play-button>
-                        </div>
-
-                        <div *ngSwitchDefault>
-                            <div class="default-preview preview">
-                                <icon class="node-icon">insert_drive_file</icon>
-                            </div>
-                        </div>
-                    </div>
+                    <mesh-file-preview [mimeType]="fileWithBlob.file.mimeType"
+                                        [fileName]="fileWithBlob.file.fileName"
+                                        [url]="fileWithBlob.url">
+                    </mesh-file-preview>
                     <div class="media-properties">{{fileWithBlob.file.fileName}}</div>
                 </div>
             </div>

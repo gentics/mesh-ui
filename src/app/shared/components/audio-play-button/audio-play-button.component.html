@@ -1,6 +1,9 @@
 <div class="container">
     <icon (click)="onToggle()">{{audio.nativeElement.paused ? 'play_circle_filled' : 'pause_circle_filled'}}</icon>
-    <audio #AudioElement [attr.autoplay]="autoPlay ? 'autoplay' : null">
+    <audio  #AudioElement
+            [attr.autoplay]="autoPlay ? 'autoplay' : null"
+            preload="metadata"
+            (loadedmetadata)="load.emit()">
         <source [src]="src">
     </audio>
 </div>

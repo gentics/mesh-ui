@@ -18,9 +18,10 @@ import { FileSizePipe } from '../../../shared/pipes/file-size/file-size.pipe';
 import { MockModalService } from '../../../../testing/modal.service.mock';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
+import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
+import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
 
 describe('BinaryFieldComponent:', () => {
-
     beforeEach(() => {
         configureComponentTest({
             declarations: [
@@ -31,7 +32,9 @@ describe('BinaryFieldComponent:', () => {
                 FileSizePipe,
                 Icon,
                 Button,
-                ProgressBar
+                ProgressBar,
+                FilePreviewComponent,
+                AudioPlayButtonComponent,
             ],
             providers: [
                 { provide: ApiService, useClass: MockApiService },
@@ -355,7 +358,7 @@ describe('BinaryFieldComponent:', () => {
                     type: 'image/jpg',
                     size: 1000
                 };
-                instance.binaryFieldComponent.binaryProperties = { file: mockFile } as any;
+                instance.binaryFieldComponent.binaryProperties = { file: mockFile, fileName: mockFile.name } as any;
                 fixture.detectChanges();
 
                 fixture.componentInstance.binaryFieldComponent.editImage();

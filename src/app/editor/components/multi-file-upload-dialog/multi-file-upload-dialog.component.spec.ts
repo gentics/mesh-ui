@@ -17,8 +17,9 @@ import { ListEffectsService } from '../../../core/providers/effects/list-effects
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { mockSchema } from '../../../../testing/mock-models';
 import { Schema } from '../../../common/models/schema.model';
-import { AudioPlayButtonComponent } from '../audio-play-button/audio-play-button.component';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
+import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
 import { MockModalService } from '../../../../testing/modal.service.mock';
 
 describe('MultiFileUploadDialogComponent', () => {
@@ -32,6 +33,7 @@ describe('MultiFileUploadDialogComponent', () => {
                 MultiFileUploadDialogComponent,
                 AudioPlayButtonComponent,
                 MockI18nPipe,
+                FilePreviewComponent,
             ],
             providers: [
                 OverlayHostService,

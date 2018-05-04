@@ -39,15 +39,6 @@
         z-index: 1;
     }
 
-    .preview {
-        max-height: 270px;
-        max-width: 100%;
-    }
-
-    .audio {
-        margin-top: 120px;
-    }
-
     .node-icon {
         font-size: 10vw;
         width: 100%;
@@ -99,7 +90,6 @@
             animation: fadeIn 0.3s;
         }
     }
-
 
     @media screen and (max-width: $medium-screen) {
         width: 32%;

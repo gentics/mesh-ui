@@ -1,0 +1,36 @@
+<div [ngSwitch]="fileType">
+    <div *ngSwitchCase="'image'">
+        <img class="preview"
+            [src]="url"
+            (load)="loadingPreview = false"
+            alt="" />
+    </div>
+    <div *ngSwitchCase="'video'">
+        <video class="preview"
+               width="100%"
+               controls
+               preload="metadata"
+               controlsList="nodownload"
+               (loadedmetadata)="loadingPreview = false">
+            <source [src]="url">
+        </video>
+    </div>
+
+    <div *ngSwitchCase="'audio'" class="preview audio">
+        <mesh-audio-play-button [src]="url"
+                                [autoPlay]="false"
+                                (load)="loadingPreview = false"></mesh-audio-play-button>
+    </div>
+
+    <div *ngSwitchDefault>
+        <div class="default-preview">
+            <div class="file-icon">
+                <icon>insert_drive_file</icon>
+            </div>
+            <div class="mime-wrapper">
+                <div class="mime-type">{{ fileType }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+<gtx-progress-bar [active]="loadingPreview"></gtx-progress-bar>
