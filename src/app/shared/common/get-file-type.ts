@@ -8,6 +8,7 @@ export function getFileType(mimeType: string, fileName: string): 'image' | 'vide
         return getExtension(fileName);
     }
 
+
     switch (mimeType.toLocaleLowerCase()) {
         case 'text/plain':
         case 'application/plain':
@@ -17,9 +18,10 @@ export function getFileType(mimeType: string, fileName: string): 'image' | 'vide
             break;
     }
 
+
     const parts = mimeType.split('/');
     const type = parts[0].toLowerCase();
-    const description = parts[1].toLowerCase();
+    const description = parts[1] ? parts[1].toLowerCase() : getExtension(fileName);
 
     switch (type) {
         case 'image':
@@ -48,5 +50,9 @@ export function getFileType(mimeType: string, fileName: string): 'image' | 'vide
 
 function getExtension (fileName: string): string {
     const extension = fileName.split('.');
+    if (extension.length === 1) {
+        return fileName;
+    }
+
     return '.' + extension.pop();
 }
