@@ -22,6 +22,16 @@ $ yarn test
 
 ## Developer Notes
 
+### Code Formatting
+
+This project uses [TSLint](https://palantir.github.io/tslint/) and [Prettier](https://prettier.io/) to automatically format the TypeScript code, 
+and [js-beautify](https://github.com/beautify-web/js-beautify) to format the HTML templates.
+
+Formatting is performed automatically with every commit (by means of [lint-staged](https://github.com/okonet/lint-staged)). This means that
+only well-formatted code should ever make it into the repo. In the event that there is a TSLint failure which cannot be automatically
+fixed, the commit will fail with an error message from TSLint explaining what needs to be fixed manually.
+
+
 ### Strict null checks and the `!` operator
 
 This project makes use of TypeScript's `strictNullChecks`. In general, we should avoid the use of the `!` non-null
