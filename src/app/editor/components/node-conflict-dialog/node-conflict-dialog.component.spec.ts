@@ -23,6 +23,8 @@ import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
 import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { BlobService } from '../../../core/providers/blob/blob.service';
 import { MockBlobService } from '../../../core/providers/blob/blob.service.mock';
+import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
+import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
 
 let state: TestApplicationState;
 
@@ -49,6 +51,8 @@ describe('NodeConflictDialogComponent', () => {
             declarations: [
                 NodeConflictDialogComponent,
                 ConflictedFieldComponent,
+                FilePreviewComponent,
+                AudioPlayButtonComponent,
                 MockI18nPipe
             ],
             providers: [
