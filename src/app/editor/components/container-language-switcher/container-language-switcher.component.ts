@@ -1,10 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { Observable } from 'rxjs/Observable';
 import { MeshNode } from '../../../common/models/node.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { Observable } from 'rxjs/Observable';
+
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { concatUnique, notNullOrUndefined } from '../../../common/util/util';
+import { ConfigService } from '../../../core/providers/config/config.service';
+
 
 @Component({
     selector: 'container-language-switcher',
@@ -19,17 +23,15 @@ export class ContainerLanguageSwitcherComponent {
     availableLanguages$: Observable<string[]>;
 
     constructor(private state: ApplicationStateService,
+                private config: ConfigService,
                 private entities: EntitiesService,
                 private navigationService: NavigationService) {
 
         this.currentLanguage$ = this.state.select(state => state.list.language);
 
-        this.availableLanguages$ = this.state.select(state => state.list.items)
-            .filter(notNullOrUndefined)
-            .combineLatest(this.currentLanguage$)
-            .map(([childrenUuids, language]) => this.uuidsToUniqueLanguages(childrenUuids, language))
-            .combineLatest(this.currentLanguage$)
+        this.availableLanguages$ = combineLatest([Observable.of(config.UI_LANGUAGES), this.currentLanguage$])
             .map(([languages, currentLanguage]) => this.removeCurrentLanguage(languages, currentLanguage));
+
     }
 
     /**
@@ -46,10 +48,12 @@ export class ContainerLanguageSwitcherComponent {
 
     private removeCurrentLanguage(languages: string[], currentLanguage: string): string[] {
         const index = languages.indexOf(currentLanguage);
+        const languagesWithoutCurrentLanguage = [...languages];
         if (-1 < index) {
-            languages.splice(index, 1);
+            languagesWithoutCurrentLanguage.splice(index, 1);
         }
-        return languages;
+
+        return languagesWithoutCurrentLanguage;
     }
 
     itemClick(languageCode: string): void {

@@ -14,6 +14,10 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 export class NodeLanguageSwitcherComponent {
     @Input() node: MeshNode | undefined;
 
+    constructor(private config: ConfigService,
+                private editorEffects: EditorEffectsService,
+                private navigationService: NavigationService) {}
+
     get availableLanguages(): Array<{ code: string; translationExists: boolean; }> {
         return this.config.CONTENT_LANGUAGES
             .filter(lang => {
@@ -29,10 +33,6 @@ export class NodeLanguageSwitcherComponent {
                 };
             });
     }
-
-    constructor(private config: ConfigService,
-                private editorEffects: EditorEffectsService,
-                private navigationService: NavigationService) {}
 
     itemClick(language: { code: string; translationExists: boolean; }): void {
         if (this.node) {

@@ -69,7 +69,7 @@ export class EditorEffectsService {
             language: language,
         };
 
-        return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
+        return this.api.project.createNode({ project: projectName, lang: language } as any, nodeCreateRequest)
             .toPromise()
             .then(updatedNode => this.processTagsAndBinaries(node, updatedNode, tags))
             .then(savedNode => {
@@ -327,7 +327,8 @@ export class EditorEffectsService {
             project,
             nodeUuid,
             fieldName,
-        }, {
+            lang: language
+        } as any, {
             binary,
             language,
             version

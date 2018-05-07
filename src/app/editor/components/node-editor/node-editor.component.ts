@@ -111,9 +111,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 this.node = node;
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();
-                this.changeDetector.markForCheck();
                 this.nodePathRouterLink = this.getNodePathRouterLink();
                 this.nodePath = this.getNodePath();
+                this.changeDetector.markForCheck();
             });
     }
 
@@ -224,6 +224,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
                 this.saveNodeWithProgress(saveFn);
             } else { // Update node.
+
                 saveFn = this.editorEffects.saveNode(this.node, tags)
                     .then(node => {
                         this.isSaving = false;
