@@ -29,21 +29,10 @@ export class ContainerLanguageSwitcherComponent {
 
         this.currentLanguage$ = this.state.select(state => state.list.language);
 
-        this.availableLanguages$ = combineLatest([Observable.of(config.UI_LANGUAGES), this.currentLanguage$])
-            .map(([languages, currentLanguage]) => this.removeCurrentLanguage(languages, currentLanguage));
-
-    }
-
-    /**
-     * Given an array of node uuids, this concatenates all unique langauges in which
-     * those nodes are available.
-     */
-    private uuidsToUniqueLanguages(uuids: string[], language: string): string[] {
-        return uuids
-            .map(uuid => this.entities.getNode(uuid, { language, strictLanguageMatch: false }))
-            .filter<MeshNode>(notNullOrUndefined)
-            .map(node => node.availableLanguages)
-            .reduce((unique, curr) => concatUnique(unique, Object.keys(curr)), []);
+        this.availableLanguages$ = combineLatest([Observable.of(config.CONTENT_LANGUAGES), this.currentLanguage$])
+            .map(([languages, currentLanguage]) => {
+                return this.removeCurrentLanguage(languages, currentLanguage)
+            });
     }
 
     private removeCurrentLanguage(languages: string[], currentLanguage: string): string[] {
@@ -58,6 +47,6 @@ export class ContainerLanguageSwitcherComponent {
 
     itemClick(languageCode: string): void {
         const listState = this.state.now.list;
-        this.navigationService.list(listState.currentProject!, listState.currentNode!, languageCode).navigate();
+        this.navigationService.list(listState.currentProject, listState.currentNode, languageCode).navigate();
     }
 }

@@ -224,7 +224,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
                 this.saveNodeWithProgress(saveFn);
             } else { // Update node.
-
                 saveFn = this.editorEffects.saveNode(this.node, tags)
                     .then(node => {
                         this.isSaving = false;

@@ -95,7 +95,7 @@ describe('EditorEffectsService', () => {
             it('calls api.project.createNode() with correct args', () => {
                 editorEffectsService.saveNewNode('project', originalNode);
 
-                expect(api.project.createNode).toHaveBeenCalledWith({ project: 'project' }, {
+                expect(api.project.createNode).toHaveBeenCalledWith({ project: 'project', lang: 'en' }, {
                     fields: { foo: 'bar' },
                     parentNode: mockParentNode,
                     schema: mockSchema,
@@ -128,6 +128,7 @@ describe('EditorEffectsService', () => {
                         project: createdNode.project.name,
                         nodeUuid: createdNode.uuid,
                         fieldName: 'image',
+                        lang: 'en'
                     }, {
                         binary: mockFile,
                         language: 'en',
@@ -205,6 +206,7 @@ describe('EditorEffectsService', () => {
                         project: updatedNode.project.name,
                         nodeUuid: updatedNode.uuid,
                         fieldName: 'image',
+                        lang: 'en'
                     }, {
                         binary: mockFile,
                         language: 'en',

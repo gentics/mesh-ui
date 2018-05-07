@@ -102,7 +102,6 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
 
         switch (schemaField.type) {
             case 'binary':
-                console.log(localField, remoteField);
                 conflictedField = {
                     field: schemaField,
                     localValue: localField,
