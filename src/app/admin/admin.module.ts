@@ -29,6 +29,7 @@ import { UserGroupSelectComponent } from './components/user-group-select/user-gr
 import { FormGeneratorModule } from '../form-generator/form-generator.module';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectResolver } from './providers/resolvers/project-resolver';
+import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
 
 @NgModule({
     declarations: [
@@ -63,6 +64,7 @@ import { ProjectResolver } from './providers/resolvers/project-resolver';
         AdminSchemaEffectsService,
         AdminProjectEffectsService,
         AdminUserEffectsService,
+        TagsEffectsService,
         UserResolver,
         SchemaResolver,
         MicroschemaResolver,

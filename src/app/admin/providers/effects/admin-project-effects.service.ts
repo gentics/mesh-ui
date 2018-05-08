@@ -30,7 +30,7 @@ export class AdminProjectEffectsService {
             .then(response => {
                 this.api.project.getTagFamilies({project: response.name})
                     .subscribe(families => {
-
+                        console.log('those are the families', families);
                     })
                 this.state.actions.adminProjects.openProjectSuccess(response);
                 return response;

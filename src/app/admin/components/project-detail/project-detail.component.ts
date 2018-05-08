@@ -9,6 +9,9 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
+import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
+import { TagFamily } from '../../../common/models/tag-family.model';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 
 @Component({
@@ -24,6 +27,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     isNew = false;
     readOnly = true;
 
+    private tagFamilies$: Observable<TagFamily>;
+
     private destroy$ = new Subject<void>();
 
     constructor(
@@ -32,12 +37,13 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private navigationService: NavigationService,
         private entities: EntitiesService,
-        private adminUserEffects: AdminUserEffectsService
+        private adminUserEffects: AdminUserEffectsService,
+        private tagEffects: TagsEffectsService,
+        private state: ApplicationStateService,
     ) { }
 
     ngOnInit() {
         const project$: Observable <Project | undefined> = this.route.data.map(data => data.project);
-
 
         project$.takeUntil(this.destroy$)
             .subscribe(project => {
@@ -46,9 +52,18 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 this.form = this.formBuilder.group({
                     name: [project ? project.name : '', Validators.required],
                 });
-            });
 
-        console.log('tag families', this.entities.getAllTagFamilies());
+                if (!this.isNew) {
+                    this.tagEffects.loadTagFamiliesAndTheirTags(project.name);
+                }
+            });
+        
+        this.state.select(state => state.entities.tag)
+            .takeUntil(this.destroy$)
+            .subscribe(tags => {
+                //console.log('Just received tags', tags);
+                //TODO: group tags here
+            })
     }
 
     ngOnDestroy(): void {
