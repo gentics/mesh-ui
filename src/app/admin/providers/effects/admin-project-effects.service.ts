@@ -6,6 +6,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { ProjectCreateRequest, ProjectResponse } from '../../../common/models/server-models';
 import { Project } from '../../../common/models/project.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 
 @Injectable()
@@ -22,30 +23,20 @@ export class AdminProjectEffectsService {
     }
 
     openProject(uuid: string): Promise<Project | void> {
-        const project = this.entities.getProject(uuid);
         this.state.actions.adminProjects.openProjectStart();
-        this.state.actions.adminProjects.openProjectSuccess(project);
-        return Promise.resolve(project);
-        /*this.state.actions.adminProjects.();
 
-        return this.api.user.getUser({ userUuid: uuid})
-            .flatMap<UserResponse, UserWithNodeReferenceEntities>((userResponse: User) => {
-                if (userResponse.nodeReference) {
-                    return this.fetchNodeReferenceEntities(userResponse);
-                } else {
-                    return Observable.of({ user: userResponse });
-                }
-            })
+        return this.api.project.getProjectByUuid({projectUuid: uuid})
             .toPromise()
-            .then(
-                ({ user, node, nodeSchema, microschemas }) => {
-                    this.state.actions.adminUsers.openUserSuccess(user, node, nodeSchema, microschemas);
-                    return user;
-                },
-                error => {
-                    this.state.actions.adminUsers.openUserError();
-                }
-            );*/
+            .then(response => {
+                this.api.project.getTagFamilies({project: response.name})
+                    .subscribe(families => {
+
+                    })
+                this.state.actions.adminProjects.openProjectSuccess(response);
+                return response;
+            }, error => {
+                this.state.actions.adminProjects.openProjectError();
+            });
     }
 
     loadProjects(): void {

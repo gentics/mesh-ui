@@ -1,0 +1,24 @@
+<div>
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="small-12 medium-12 columns">
+                <gtx-input formControlName="name"
+                           [readonly]="readOnly"
+                           [label]="'admin.project_label' | i18n">
+                </gtx-input>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="actions" *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
+    <gtx-button type="primary"
+                size="small"
+                class="save-button"
+                [disabled]="!isSaveButtonEnabled()"
+                (click)="persistUser()">
+        <ng-container *ngIf="!isNew">{{ 'admin.update_project' | i18n }}</ng-container>
+        <ng-container *ngIf="isNew">{{ 'admin.create_project' | i18n }}</ng-container>
+    </gtx-button>
+</div>
+

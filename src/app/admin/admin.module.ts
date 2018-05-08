@@ -27,6 +27,8 @@ import { MicroschemaDetailComponent } from './components/microschema-detail/mirc
 import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
 import { FormGeneratorModule } from '../form-generator/form-generator.module';
+import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
+import { ProjectResolver } from './providers/resolvers/project-resolver';
 
 @NgModule({
     declarations: [
@@ -45,7 +47,8 @@ import { FormGeneratorModule } from '../form-generator/form-generator.module';
         AdminListComponent,
         AdminListItemComponent,
         UserDetailComponent,
-        UserGroupSelectComponent
+        UserGroupSelectComponent,
+        ProjectDetailComponent
     ],
     entryComponents: [
         CreateProjectModalComponent
@@ -62,7 +65,8 @@ import { FormGeneratorModule } from '../form-generator/form-generator.module';
         AdminUserEffectsService,
         UserResolver,
         SchemaResolver,
-        MicroschemaResolver
+        MicroschemaResolver,
+        ProjectResolver
     ]
 })
 export class AdminModule {

@@ -95,6 +95,10 @@
         "en": "No microschemas found",
         "de": "Keine Microschemas gefunden"
     },
+    "new_project": {
+        "en": "New project",
+        "de": "Neues Projekt"
+    },
     "new_user": {
         "en": "New user",
         "de": "Neuer Benutzer"

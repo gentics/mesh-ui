@@ -82,6 +82,10 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
     openProjectSuccess(project: Project) {
         this.adminProjects.loadCount--;
         this.adminProjects.projectDetail = project.uuid;
+
+        this.entities = mergeEntityState(this.entities, {
+            project: [project]
+        });
     }
 
     openProjectError() {

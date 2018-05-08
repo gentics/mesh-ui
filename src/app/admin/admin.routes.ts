@@ -12,12 +12,13 @@ import { userBreadcrumbFn, UserResolver } from './providers/resolvers/user-resol
 import { schemaBreadcrumbFn, SchemaResolver } from './providers/resolvers/schema-resolver';
 import { microschemaBreadcrumbFn, MicroschemaResolver } from './providers/resolvers/microschema-resolver';
 import { ProjectResolver, projectBreadcrumbFn } from './providers/resolvers/project-resolver';
+import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 
 export const routes: Route[] = [
     { path: '', component: AdminShellComponent, children: [
             { path: '', pathMatch: 'full', redirectTo: 'projects' },
-            { path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } },
-            /*{
+            /*{ path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } },*/
+            {
                 path: 'projects',
                 data: { breadcrumb: 'Projects' },
                 children: [
@@ -25,11 +26,11 @@ export const routes: Route[] = [
                     {
                         path: ':uuid',
                         component: ProjectDetailComponent,
-                        resolve: { microschema: ProjectResolver },
+                        resolve: { project: ProjectResolver },
                         data: { breadcrumb: projectBreadcrumbFn }
                     }
                 ]
-            },*/
+            },
             {
                 path: 'microschemas',
                 data: { breadcrumb: 'Microschemas' },
