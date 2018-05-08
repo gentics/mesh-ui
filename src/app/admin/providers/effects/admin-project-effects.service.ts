@@ -4,6 +4,8 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ProjectCreateRequest, ProjectResponse } from '../../../common/models/server-models';
+import { Project } from '../../../common/models/project.model';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 
 @Injectable()
@@ -11,7 +13,39 @@ export class AdminProjectEffectsService {
 
     constructor(private api: ApiService,
                 private notification: I18nNotification,
+                private entities: EntitiesService,
                 private state: ApplicationStateService) {
+    }
+
+    newProject(): void {
+        this.state.actions.adminProjects.newProject();
+    }
+
+    openProject(uuid: string): Promise<Project | void> {
+        const project = this.entities.getProject(uuid);
+        this.state.actions.adminProjects.openProjectStart();
+        this.state.actions.adminProjects.openProjectSuccess(project);
+        return Promise.resolve(project);
+        /*this.state.actions.adminProjects.();
+
+        return this.api.user.getUser({ userUuid: uuid})
+            .flatMap<UserResponse, UserWithNodeReferenceEntities>((userResponse: User) => {
+                if (userResponse.nodeReference) {
+                    return this.fetchNodeReferenceEntities(userResponse);
+                } else {
+                    return Observable.of({ user: userResponse });
+                }
+            })
+            .toPromise()
+            .then(
+                ({ user, node, nodeSchema, microschemas }) => {
+                    this.state.actions.adminUsers.openUserSuccess(user, node, nodeSchema, microschemas);
+                    return user;
+                },
+                error => {
+                    this.state.actions.adminUsers.openUserError();
+                }
+            );*/
     }
 
     loadProjects(): void {

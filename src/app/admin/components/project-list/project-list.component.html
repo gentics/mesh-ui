@@ -5,8 +5,45 @@
     <p>{{ 'admin.projects_none_found' | i18n }}</p>
 </div>
 
-<div class="project-list">
+<mesh-admin-list [items]="projects$ | async"
+                 [selectable]=false>
+    <div class="list-controls">
+        <div class="filter">
+            <gtx-input [label]="'admin.filter_by_name' | i18n"
+                        [formControl]="filterInput"></gtx-input>
+        </div>
+
+        <gtx-button size="regular" [routerLink]="['/admin/projects/new']">
+            <icon left>person_add</icon>
+            <span class="new-item-label">{{ 'admin.projects_create' | i18n }}</span>
+        </gtx-button>
+    </div>
+
+    <ng-template let-project="item">
+        <!--<project-list-item [projectUuid]="project.uuid"></project-list-item>-->
+        <div class="item-row">
+            <a [routerLink]="['/admin/projects', project.uuid]">
+                <div class="name">{{ project.name }}</div>
+            </a>
+
+            <div class="row-actions">
+                <gtx-dropdown-list>
+                    <gtx-dropdown-trigger>
+                        <gtx-button icon type="secondary"><icon>more_vert</icon></gtx-button>
+                    </gtx-dropdown-trigger>
+                    <gtx-dropdown-content>
+                        <gtx-dropdown-item class="alert"
+                                            [class.disabled]="!project.permissions.delete"
+                                            (click)="deleteProject(project)">
+                            <icon>delete</icon> {{ 'admin.delete_project' | i18n }}
+                        </gtx-dropdown-item>
+                    </gtx-dropdown-content>
+                </gtx-dropdown-list>
+            </div>
+        </div>
+    </ng-template>
+</mesh-admin-list>
+<!--<div class="project-list">
     <project-list-item *ngFor="let project of projects$ | async" [projectUuid]="project.uuid"></project-list-item>
 </div>
-
-<gtx-button (click)="create()">{{ 'admin.projects_create' | i18n }}</gtx-button>
+<gtx-button (click)="create()">{{ 'admin.projects_create' | i18n }}</gtx-button>-->

@@ -11,11 +11,25 @@ import { SchemaDetailComponent } from './components/schema-detail/schema-detail.
 import { userBreadcrumbFn, UserResolver } from './providers/resolvers/user-resolver';
 import { schemaBreadcrumbFn, SchemaResolver } from './providers/resolvers/schema-resolver';
 import { microschemaBreadcrumbFn, MicroschemaResolver } from './providers/resolvers/microschema-resolver';
+import { ProjectResolver, projectBreadcrumbFn } from './providers/resolvers/project-resolver';
 
 export const routes: Route[] = [
     { path: '', component: AdminShellComponent, children: [
             { path: '', pathMatch: 'full', redirectTo: 'projects' },
             { path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } },
+            /*{
+                path: 'projects',
+                data: { breadcrumb: 'Projects' },
+                children: [
+                    { path: '', component: ProjectListComponent },
+                    {
+                        path: ':uuid',
+                        component: ProjectDetailComponent,
+                        resolve: { microschema: ProjectResolver },
+                        data: { breadcrumb: projectBreadcrumbFn }
+                    }
+                ]
+            },*/
             {
                 path: 'microschemas',
                 data: { breadcrumb: 'Microschemas' },

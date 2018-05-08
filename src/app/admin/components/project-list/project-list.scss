@@ -1,9 +1,46 @@
-@import '../common-styles';
+@import "variables";
+@import "variables";
 
-.container {
-    margin-top: 20px;
+.list-controls {
+    display: flex;
+    align-items: center;
 }
 
-.project-list {
-    margin-bottom: 30px;
+.filter {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.new-item-label {
+    @media screen and (max-width: $small-screen) {
+        display: none;
+    }
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+}
+
+.name {
+    margin-right: 15px;
+}
+
+.row-actions {
+    flex: 1;
+    text-align: right;
+}
+
+gtx-dropdown-item {
+    display: flex;
+    align-items: center;
+
+    &.alert {
+        color: $gtx-color-alert;
+    }
+
+    &.disabled {
+        color: $gtx-color-mid-gray;
+        cursor: not-allowed;
+    }
 }

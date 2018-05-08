@@ -6,6 +6,7 @@ import { EntityState } from '../models/entity-state.model';
 import { ProjectResponse } from '../../common/models/server-models';
 import { mergeEntityState } from './entity-state-actions';
 import { AdminProjectsState } from '../models/admin-projects-state.model';
+import { Project } from '../../common/models/project.model';
 
 @Injectable()
 @Immutable()
@@ -65,6 +66,25 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
     }
 
     deleteProjectError(): void {
+        this.adminProjects.loadCount--;
+    }
+
+    newProject() {
+        this.adminProjects.projectDetail = null;
+    }
+
+
+    openProjectStart() {
+        this.adminProjects.loadCount++;
+        this.adminProjects.projectDetail = null;
+    }
+
+    openProjectSuccess(project: Project) {
+        this.adminProjects.loadCount--;
+        this.adminProjects.projectDetail = project.uuid;
+    }
+
+    openProjectError() {
         this.adminProjects.loadCount--;
     }
 }
