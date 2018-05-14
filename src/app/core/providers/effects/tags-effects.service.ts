@@ -5,6 +5,7 @@ import { I18nNotification } from '../../../core/providers/i18n-notification/i18n
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
+import { Tag } from '../../../common/models/tag.model';
 
 
 @Injectable()
@@ -58,7 +59,7 @@ export class TagsEffectsService {
             this.state.actions.tag.actionError();
             this.notification.show({
                 type: 'error',
-                message: 'editor.load_tags_error'
+                message: 'editor.load_tag_families_error'
             });
         });
     }
@@ -74,6 +75,48 @@ export class TagsEffectsService {
             this.notification.show({
                 type: 'error',
                 message: 'editor.load_tags_error'
+            });
+        });
+    }
+
+
+    deleteTag(project: string, tag: Tag): void {
+        this.state.actions.tag.deleteTagStart();
+        this.api.project.removeTagFromTagFamily({ project, tagFamilyUuid: tag.tagFamily.uuid, tagUuid: tag.uuid})
+        .subscribe(() => {
+            this.state.actions.tag.deleteTagSuccess(tag.uuid);
+            this.notification.show({
+                type: 'success',
+                message: 'admin.tag_deleted',
+                translationParams: { tagName: tag.name }
+            });
+        }, error => {
+            this.state.actions.tag.deleteTagError();
+            this.notification.show({
+                type: 'error',
+                message: 'admin.tag_deleted_error',
+                translationParams: { tagName: tag.name }
+            });
+        });
+    }
+
+
+    deleteTagFamily(project: string, tagFamily: TagFamily): void {
+        this.state.actions.tag.deleteTagFamilyStart();
+        this.api.project.deleteTagFamily({ project, tagFamilyUuid: tagFamily.uuid})
+        .subscribe(() => {
+            this.state.actions.tag.deleteTagFamilySuccess(tagFamily.uuid);
+            this.notification.show({
+                type: 'success',
+                message: 'admin.tag_deleted',
+                translationParams: { tagFamilyName: tagFamily.name }
+            });
+        }, error => {
+            this.state.actions.tag.deleteTagFamilyError();
+            this.notification.show({
+                type: 'error',
+                message: 'admin.tag_family_deleted_error',
+                translationParams: { tagFamilyName: tagFamily.name }
             });
         });
     }

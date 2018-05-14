@@ -87,4 +87,43 @@ export class TagsStateActions extends StateActionBranch<AppState> {
                 .map(family => family.uuid)
         ];
     }
+
+    deleteTagStart(): void {
+        this.tags.loadCount++;
+    }
+
+    deleteTagSuccess(tagUuid: string) {
+        this.tags.loadCount--;
+        this.tags.tags = this.tags.tags.filter(uuid => uuid !== tagUuid);
+
+        /*
+        const entityTags = { ...this.entities.tag };
+        delete entityTags[tagUuid];
+
+        console.log('merging', entityTags);
+
+        this.entities.tag
+        this.entities = mergeEntityState(this.entities, {
+            tag: [
+                ...Object.values(entityTags),
+            ]
+        }, false);*/
+    }
+
+    deleteTagError(): void {
+        this.tags.loadCount--;
+    }
+
+    deleteTagFamilyStart(): void {
+        this.tags.loadCount++;
+    }
+
+    deleteTagFamilySuccess(tagFamilyUuid: string) {
+        this.tags.loadCount--;
+        this.tags.tagFamilies = this.tags.tagFamilies.filter(uuid => uuid !== tagFamilyUuid);
+    }
+
+    deleteTagFamilyError(): void {
+        this.tags.loadCount--;
+    }
 }

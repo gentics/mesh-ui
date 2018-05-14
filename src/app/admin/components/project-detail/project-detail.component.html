@@ -40,7 +40,7 @@
 
                             <gtx-dropdown-item class="alert"
                                                [class.disabled]="!family.familyData.permissions.delete"
-                                               (click)="deleteTagFamilyClick(family.familyData.uuid)">
+                                               (click)="deleteTagFamilyClick(family.familyData)">
                                 <icon>delete</icon> {{ 'admin.delete_tag_family' | i18n }}
                             </gtx-dropdown-item>
                         </gtx-dropdown-content>

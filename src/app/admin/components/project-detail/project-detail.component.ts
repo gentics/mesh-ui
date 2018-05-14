@@ -18,6 +18,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { ModalService } from 'gentics-ui-core';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../../../shared/components/create-tag-dialog/create-tag-dialog.component';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 
 
 
@@ -48,6 +49,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private tagEffects: TagsEffectsService,
         private state: ApplicationStateService,
         private modalService: ModalService,
+        private i18n: I18nService,
     ) { }
 
     ngOnInit() {
@@ -68,14 +70,15 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             });
 
         this.tagFamilies$ = combineLatest(
-                this.state.select(state => state.entities.tagFamily),
-                this.state.select(state => state.entities.tag)
+                this.state.select(state => state.tags.tagFamilies),
+                this.state.select(state => state.tags.tags),
             )
             .map(([families, tags]) => {
+                const allTags = this.entities.getAllTags();
                 return Object.values(families).map(family => {
                     return {
-                        familyData: family,
-                        tags: this.entities.getAllTags().filter(tag => tag.tagFamily.uuid === family.uuid)
+                        familyData: this.entities.getTagFamily(family),
+                        tags: allTags.filter(tag => tag.tagFamily.uuid === family)
                     };
                 });
             });
@@ -111,19 +114,37 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 inputTagFamilyValue: tagFamilyName
             }
         )
-            .then(modal => modal.open())
-            .then((result: CreateTagDialogComponentResult) => {
-                //this.onTagSelected(result.tag);
-                //this.changeDetector.markForCheck();
-            });
+        .then(modal => modal.open());
     }
 
-    deleteTagClick(uuid: String): void {
-
+    deleteTagClick(tag: Tag): void {
+        this.modalService.dialog({
+            title: this.i18n.translate('admin.delete_tag') + '?',
+            body: this.i18n.translate('admin.delete_tag_confirmation', tag.name),
+            buttons: [
+                { type: 'secondary', flat: true, shouldReject: true, label: this.i18n.translate('common.cancel_button') },
+                { type: 'alert', label: this.i18n.translate('admin.delete_label') }
+            ]
+        })
+        .then(modal => modal.open())
+        .then(() => {
+            this.tagEffects.deleteTag(this.project.name, tag);
+        });
     }
 
-    deleteTagFamilyClick(uuid: String): void {
-
+    deleteTagFamilyClick(tagFamily: TagFamily): void {
+        this.modalService.dialog({
+            title: this.i18n.translate('admin.delete_tag_family') + '?',
+            body: this.i18n.translate('admin.delete_tag_family_confirmation', tagFamily.name),
+            buttons: [
+                { type: 'secondary', flat: true, shouldReject: true, label: this.i18n.translate('common.cancel_button') },
+                { type: 'alert', label: this.i18n.translate('admin.delete_label') }
+            ]
+        })
+        .then(modal => modal.open())
+        .then(() => {
+            this.tagEffects.deleteTagFamily(this.project.name, tagFamily);
+        });
     }
 
     updateTagFamilyClick(uuid: String): void {

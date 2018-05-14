@@ -217,7 +217,7 @@ export class EntitiesService {
     }
 
     private getAllTagFamiliesFromState(state: AppState): TagFamily[] {
-        return Object.keys(state.entities.tagFamily).map(uuid => this.getTagFamilyFromState(state, uuid)!);
+        return Object.values(state.tags.tagFamilies).map(uuid => this.getTagFamilyFromState(state, uuid));
     }
 
     private getTagFamilyFromState(state: AppState, uuid: string): TagFamily | undefined {
@@ -248,7 +248,7 @@ export class EntitiesService {
     }
 
     private getAllTagsFromState(state: AppState): Tag[] {
-        return Object.keys(state.entities.tag).map(uuid => this.getTagFromState(state, uuid)!);
+        return Object.values(state.tags.tags).map(uuid => this.getTagFromState(state, uuid));
     }
 
     private getTagFromState(state: AppState, uuid: string): Tag | undefined {
