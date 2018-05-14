@@ -28,9 +28,9 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
     closeFn: (result: CreateTagDialogComponentResult) => void;
     cancelFn: (val?: any) => void;
 
-    projectName: string;
-    newTagName: string;
-    inputTagFamilyValue = '';
+    projectName: string; // Passed from the dialog opener
+    newTagName: string; // Passed from the dialog opener
+    inputTagFamilyValue = ''; // Passed from the dialog opener
 
     filteredFamilies: TagFamily[] = [];
 
@@ -44,7 +44,9 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
         private entities: EntitiesService) { }
 
     ngOnInit() {
-        this.tagFamilies = this.state.now.tags.tagFamilies.map(uuid => this.entities.getTagFamily(uuid));
+        this.tagFamilies = this.state.now.tags.tagFamilies.map(uuid => {
+            return this.entities.getTagFamily(uuid);
+        });
     }
 
     onFamilyNameInputChange(term: string): void {

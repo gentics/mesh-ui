@@ -57,24 +57,34 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         this.tags.tags = [...this.tags.tags, tag.uuid];
     }
 
-    fetchTagFamiliesSuccess(tagFamilies: TagFamilyResponse[]) {
+    fetchTagFamiliesSuccess(fetchedFamilies: TagFamilyResponse[]) {
         this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tagFamily: [
-                ...tagFamilies
+                ...fetchedFamilies
             ]
         }, false);
-        this.tags.tagFamilies = [...this.tags.tagFamilies, ...tagFamilies.map(family => family.uuid)];
+        this.tags.tagFamilies = [
+            ...this.tags.tagFamilies,
+            ...fetchedFamilies.filter(fetchedFamily => !this.tags.tagFamilies
+                                .some(existingFamilyUuid => existingFamilyUuid === fetchedFamily.uuid))
+                .map(family => family.uuid)
+            ];
     }
 
-    fetchTagsOfTagFamilySuccess(tags: TagResponse[]) {
+    fetchTagsOfTagFamilySuccess(fetchedTags: TagResponse[]) {
         this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             tag: [
-                ...tags
+                ...fetchedTags
             ]
         }, false);
 
-        this.tags.tags = [...this.tags.tags, ...tags.map(tag => tag.uuid)]
+        this.tags.tags = [
+            ...this.tags.tags,
+            ...fetchedTags.filter(fetchedTag => !this.tags.tags
+                                .some(existingTagUuid => existingTagUuid === fetchedTag.uuid))
+                .map(family => family.uuid)
+        ];
     }
 }

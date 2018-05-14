@@ -12,6 +12,13 @@ import { Project } from '../../../common/models/project.model';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { hashValues } from '../../../common/util/util';
+import { Tag } from '../../../common/models/tag.model';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { ModalService } from 'gentics-ui-core';
+import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../../../shared/components/create-tag-dialog/create-tag-dialog.component';
+
 
 
 @Component({
@@ -23,12 +30,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
 
+    project: Project;
     form: FormGroup;
     isNew = false;
     readOnly = true;
 
-    private tagFamilies$: Observable<TagFamily>;
-
+    private tagFamilies$: Observable<{familyData: TagFamily, tags: Tag[]}[]>;
     private destroy$ = new Subject<void>();
 
     constructor(
@@ -40,6 +47,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private adminUserEffects: AdminUserEffectsService,
         private tagEffects: TagsEffectsService,
         private state: ApplicationStateService,
+        private modalService: ModalService,
     ) { }
 
     ngOnInit() {
@@ -47,6 +55,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
         project$.takeUntil(this.destroy$)
             .subscribe(project => {
+                this.project = project;
                 this.isNew = !project;
                 this.readOnly = !!project && !project.permissions.update;
                 this.form = this.formBuilder.group({
@@ -57,20 +66,25 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                     this.tagEffects.loadTagFamiliesAndTheirTags(project.name);
                 }
             });
-        
-        this.state.select(state => state.entities.tag)
-            .takeUntil(this.destroy$)
-            .subscribe(tags => {
-                //console.log('Just received tags', tags);
-                //TODO: group tags here
-            })
+
+        this.tagFamilies$ = combineLatest(
+                this.state.select(state => state.entities.tagFamily),
+                this.state.select(state => state.entities.tag)
+            )
+            .map(([families, tags]) => {
+                return Object.values(families).map(family => {
+                    return {
+                        familyData: family,
+                        tags: this.entities.getAllTags().filter(tag => tag.tagFamily.uuid === family.uuid)
+                    };
+                });
+            });
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
     }
-
 
     isSaveButtonEnabled(): boolean {
         /*const basicFormIsSavable = this.form.dirty && this.form.valid && !this.readOnly;
@@ -82,5 +96,41 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         }*/
 
         return false;
+    }
+
+    addTagClick(tagFamilyName: string): void {
+
+        this.modalService.fromComponent(
+            CreateTagDialogComponent,
+            {
+                closeOnOverlayClick: false
+            },
+            {
+                newTagName: '',
+                projectName: this.project.name,
+                inputTagFamilyValue: tagFamilyName
+            }
+        )
+            .then(modal => modal.open())
+            .then((result: CreateTagDialogComponentResult) => {
+                //this.onTagSelected(result.tag);
+                //this.changeDetector.markForCheck();
+            });
+    }
+
+    deleteTagClick(uuid: String): void {
+
+    }
+
+    deleteTagFamilyClick(uuid: String): void {
+
+    }
+
+    updateTagFamilyClick(uuid: String): void {
+
+    }
+
+    createTagFamilyClick(): void {
+
     }
 }

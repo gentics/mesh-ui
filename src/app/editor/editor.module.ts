@@ -27,11 +27,11 @@ import { AvailableLanguagesListComponent } from './components/available-language
 import { NodeRowComponent } from './components/node-row/node-row.component';
 import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
 import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.component';
-import { CreateTagDialogComponent } from './components/create-tag-dialog/create-tag-dialog.component';
 import { ContainerFileDropAreaComponent } from './components/container-file-drop-area/container-file-drop-area.component';
 import { MultiFileUploadDialogComponent } from './components/multi-file-upload-dialog/multi-file-upload-dialog.component';
 import { NodeConflictDialogComponent } from './components/node-conflict-dialog/node-conflict-dialog.component';
 import { ConflictedFieldComponent } from './components/conflicted-field/conflicted-field.component';
+import { CreateTagDialogComponent } from '../shared/components/create-tag-dialog/create-tag-dialog.component';
 
 @NgModule({
     imports: [
@@ -57,7 +57,6 @@ import { ConflictedFieldComponent } from './components/conflicted-field/conflict
         NodeRowComponent,
         ProgressbarModalComponent,
         NodeTagsBarComponent,
-        CreateTagDialogComponent,
         ContainerFileDropAreaComponent,
         MultiFileUploadDialogComponent,
         NodeConflictDialogComponent,
@@ -66,7 +65,6 @@ import { ConflictedFieldComponent } from './components/conflicted-field/conflict
     entryComponents: [
         ConfirmNavigationModalComponent,
         ProgressbarModalComponent,
-        CreateTagDialogComponent,
         MultiFileUploadDialogComponent,
         NodeConflictDialogComponent
     ],

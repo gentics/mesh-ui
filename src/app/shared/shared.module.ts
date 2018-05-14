@@ -23,6 +23,7 @@ import { FilePreviewComponent } from './components/file-preview/file-preview.com
 import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
 import { ContentPortalComponent } from './components/content-portal/content-portal.component';
 import { ProjectContentDirective } from './directives/project-content.directive';
+import { CreateTagDialogComponent } from './components/create-tag-dialog/create-tag-dialog.component';
 
 const SHARED_COMPONENTS = [
     ChipComponent,
@@ -34,7 +35,8 @@ const SHARED_COMPONENTS = [
     AudioPlayButtonComponent,
     FilePreviewComponent,
     PaginationControlsComponent,
-    ContentPortalComponent
+    ContentPortalComponent,
+    CreateTagDialogComponent,
 ];
 
 const SHARED_DIRECTIVES = [
@@ -68,6 +70,9 @@ const SHARED_PIPES = [
         ...SHARED_COMPONENTS,
         ...SHARED_PIPES,
         ...SHARED_DIRECTIVES
+    ],
+    entryComponents: [
+        CreateTagDialogComponent,
     ],
     exports: [
         ...SHARED_COMPONENTS,

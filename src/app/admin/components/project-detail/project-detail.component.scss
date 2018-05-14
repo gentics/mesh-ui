@@ -1,0 +1,33 @@
+@import "variables";
+
+.item-row {
+    display: flex;
+    align-items: center;
+}
+
+.name {
+    width: 100px;
+    margin-right: 15px;
+    color: $gtx-color-primary;
+}
+
+.row-actions {
+    flex: 1;
+    text-align: right;
+}
+
+
+gtx-dropdown-item {
+    display: flex;
+    align-items: center;
+
+    &.alert {
+        color: $gtx-color-alert;
+    }
+
+    &.disabled {
+        color: $gtx-color-mid-gray;
+        cursor: not-allowed;
+    }
+}
+
