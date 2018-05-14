@@ -41,22 +41,6 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         this.tags.loadCount--;
     }
 
-    createTagFamilySuccess(tagFamily: TagFamilyResponse) {
-        this.tags.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            tagFamily: [tagFamily]
-        }, false);
-        this.tags.tagFamilies = [...this.tags.tagFamilies, tagFamily.uuid];
-    }
-
-    createTagSuccess(tag: TagResponse) {
-        this.tags.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            tag: [tag]
-        }, false);
-        this.tags.tags = [...this.tags.tags, tag.uuid];
-    }
-
     fetchTagFamiliesSuccess(fetchedFamilies: TagFamilyResponse[]) {
         this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
@@ -88,6 +72,37 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         ];
     }
 
+    createTagStart() {
+        this.tags.loadCount++;
+    }
+
+    createTagSuccess(tag: TagResponse) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tag: [tag]
+        }, false);
+        this.tags.tags = [...this.tags.tags, tag.uuid];
+    }
+
+    createTagError() {
+        this.tags.loadCount--;
+    }
+
+    updateTagStart() {
+        this.tags.loadCount++;
+    }
+
+    updateTagSuccess(tag: TagResponse) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tag: [tag]
+        }, false);
+    }
+
+    updateTagError(): void {
+        this.tags.loadCount--;
+    }
+
     deleteTagStart(): void {
         this.tags.loadCount++;
     }
@@ -95,22 +110,40 @@ export class TagsStateActions extends StateActionBranch<AppState> {
     deleteTagSuccess(tagUuid: string) {
         this.tags.loadCount--;
         this.tags.tags = this.tags.tags.filter(uuid => uuid !== tagUuid);
-
-        /*
-        const entityTags = { ...this.entities.tag };
-        delete entityTags[tagUuid];
-
-        console.log('merging', entityTags);
-
-        this.entities.tag
-        this.entities = mergeEntityState(this.entities, {
-            tag: [
-                ...Object.values(entityTags),
-            ]
-        }, false);*/
     }
 
     deleteTagError(): void {
+        this.tags.loadCount--;
+    }
+
+    createTagFamilyStart() {
+        this.tags.loadCount++;
+    }
+
+    createTagFamilySuccess(tagFamily: TagFamilyResponse) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tagFamily: [tagFamily]
+        }, false);
+        this.tags.tagFamilies = [...this.tags.tagFamilies, tagFamily.uuid];
+    }
+
+    createTagFamilyError() {
+        this.tags.loadCount--;
+    }
+
+    updateTagFamilyStart() {
+        this.tags.loadCount++;
+    }
+
+    updateTagFamilySuccess(tagFamily: TagFamilyResponse) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tagFamily: [tagFamily]
+        }, false);
+    }
+
+    updateTagFamilyError() {
         this.tags.loadCount--;
     }
 

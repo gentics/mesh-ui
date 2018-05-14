@@ -57,6 +57,20 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
         this.adminProjects.loadCount--;
     }
 
+
+    updateProjectStart(): void {
+        this.adminProjects.loadCount++;
+    }
+
+    updateProjectSuccess(project: ProjectResponse) {
+        this.adminProjects.loadCount--;
+        this.entities = mergeEntityState(this.entities, { project: [project] });
+    }
+
+    updateProjectError(): void {
+        this.adminProjects.loadCount--;
+    }
+
     deleteProjectStart(): void {
         this.adminProjects.loadCount++;
     }

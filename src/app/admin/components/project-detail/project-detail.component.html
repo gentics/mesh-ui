@@ -9,16 +9,28 @@
             </div>
         </div>
     </form>
-
     <mesh-admin-list [items]="tagFamilies$ | async"
                      [autoHidePagination]=true
                      [selectable]=false>
+
+        <div class="list-controls">
+            <div class="list-controls-title">{{ 'admin.project_tags' | i18n }}</div>
+            <gtx-button size="regular" (click)="createTagFamilyClick()">
+                <icon left>label_outline</icon>
+                <span class="new-item-label">{{ 'admin.create_tag_family' | i18n }}</span>
+            </gtx-button>
+        </div>
 
         <ng-template let-family="item">
             <div class="item-row">
                 <div class="name">{{ family.familyData.name }}</div>
                 <div class="tags">
-                    <mesh-tag *ngFor="let tag of family.tags" [tag]="tag" (removeClick)="deleteTagClick(tag)"></mesh-tag>
+                    <mesh-tag *ngFor="let tag of family.tags"
+                                [tag]="tag"
+                                (removeClick)="deleteTagClick(tag)"
+                                [editable]="true"
+                                (editClick)="updateTagClick(tag)"
+                    ></mesh-tag>
                     <gtx-button type="primary"
                                 flat
                                 size="small"
@@ -34,7 +46,7 @@
                         </gtx-dropdown-trigger>
                         <gtx-dropdown-content>
                             <gtx-dropdown-item [class.disabled]="!family.familyData.permissions.update"
-                                               (click)="updateTagFamilyClick(family.familyData.uuid)">
+                                               (click)="updateTagFamilyClick(family.familyData)">
                                 <icon>edit</icon> {{ 'admin.edit_tag_family' | i18n }}
                             </gtx-dropdown-item>
 
@@ -56,7 +68,7 @@
                 size="small"
                 class="save-button"
                 [disabled]="!isSaveButtonEnabled()"
-                (click)="persistUser()">
+                (click)="persistProject()">
         <ng-container *ngIf="!isNew">{{ 'admin.update_project' | i18n }}</ng-container>
         <ng-container *ngIf="isNew">{{ 'admin.create_project' | i18n }}</ng-container>
     </gtx-button>

@@ -16,6 +16,17 @@
     text-align: right;
 }
 
+.list-controls {
+    display: flex;
+    width: 100%;
+}
+
+.list-controls-title
+{
+    flex-grow: 1;
+    text-align: left;
+    line-height: 35px;
+}
 
 gtx-dropdown-item {
     display: flex;

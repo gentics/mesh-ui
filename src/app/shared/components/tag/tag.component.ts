@@ -10,7 +10,12 @@ import { TagReferenceFromServer } from '../../../common/models/server-models';
 })
 export class TagComponent {
     @Input() tag: Tag | TagReferenceFromServer;
+
+    @Input() removable = true;
     @Output() removeClick = new EventEmitter<void>();
+
+    @Input() editable = false;
+    @Output() editClick = new EventEmitter<void>();
 
     tagFamilyName(): string {
         if (typeof this.tag.tagFamily === 'string') {

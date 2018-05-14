@@ -6,6 +6,7 @@
 </div>
 
 <mesh-admin-list [items]="projects$ | async"
+                 [autoHidePagination]=true
                  [selectable]=false>
     <div class="list-controls">
         <div class="filter">
@@ -13,7 +14,7 @@
                         [formControl]="filterInput"></gtx-input>
         </div>
 
-        <gtx-button size="regular" [routerLink]="['/admin/projects/new']">
+        <gtx-button size="regular" (click)="onCreateProjectClick()">
             <icon left>folder</icon>
             <span class="new-item-label">{{ 'admin.projects_create' | i18n }}</span>
         </gtx-button>

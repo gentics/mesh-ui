@@ -12,6 +12,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 import { Subject } from 'rxjs';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { ProjectResponse } from '../../../common/models/server-models';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
                 private route: ActivatedRoute,
                 private router: Router,
                 private i18n: I18nService,
+                private modalService: ModalService,
                 private adminProjectEffects: AdminProjectEffectsService) {}
 
     ngOnInit(): void {
@@ -41,11 +43,35 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
         this.projectsLoading$ = this.state.select(state => state.list.loadCount > 0);
         this.adminProjectEffects.loadProjects();
+
+
+        this.filterInput.valueChanges
+            .debounceTime(300)
+            .takeUntil(this.destroy$)
+            .subscribe(term => {
+                this.setQueryParams({ q: term });
+            });
+
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+    }
+
+    onCreateProjectClick() {
+        this.modalService.fromComponent(
+            CreateProjectModalComponent,
+            {
+                closeOnOverlayClick: false,
+                width: '90%',
+                onClose: (reason: any): void => {}
+            }
+        )
+        .then(modal => modal.open())
+        .then((project: ProjectResponse) => {
+            this.router.navigate(['/admin/projects', project.uuid]);
+        });
     }
 
     deleteProject(project: Project): void {
@@ -58,7 +84,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             ]
         })
         .then(modal => modal.open())
-        .then(() => 1/*this.adminProjectEffects.deleteProject(project.uuid)*/);
+        .then(() => this.adminProjectEffects.deleteProject(project.uuid));
     }
 
     /**

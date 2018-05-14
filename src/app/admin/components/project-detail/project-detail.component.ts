@@ -6,7 +6,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
@@ -19,6 +18,10 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { ModalService } from 'gentics-ui-core';
 import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../../../shared/components/create-tag-dialog/create-tag-dialog.component';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { NameInputDialogComponent } from '../name-input-dialog/name-input-dialog.component';
+import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
+import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
+
 
 
 
@@ -45,7 +48,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private navigationService: NavigationService,
         private entities: EntitiesService,
-        private adminUserEffects: AdminUserEffectsService,
+        private projectEffect: AdminProjectEffectsService,
         private tagEffects: TagsEffectsService,
         private state: ApplicationStateService,
         private modalService: ModalService,
@@ -72,10 +75,14 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.tagFamilies$ = combineLatest(
                 this.state.select(state => state.tags.tagFamilies),
                 this.state.select(state => state.tags.tags),
+                this.state.select(state => state.entities.tagFamily),  // We need to subscribe to entities because editing of a family name does not alter the state.tag[s] state
+                this.state.select(state => state.entities.tag) // We need to subscribe to entities because editing of a tag name of does not alter the state.tag[s] state
             )
             .map(([families, tags]) => {
                 const allTags = this.entities.getAllTags();
-                return Object.values(families).map(family => {
+                return Object.values(families)
+                    .sort((fam1, fam2) => this.entities.getTagFamily(fam1).name < this.entities.getTagFamily(fam2).name ? -1 : 1)
+                    .map(family => {
                     return {
                         familyData: this.entities.getTagFamily(family),
                         tags: allTags.filter(tag => tag.tagFamily.uuid === family)
@@ -90,19 +97,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     }
 
     isSaveButtonEnabled(): boolean {
-        /*const basicFormIsSavable = this.form.dirty && this.form.valid && !this.readOnly;
-        if (this.formGenerator) {
-            const formGeneratorIsSavable = this.formGenerator.isDirty && this.formGenerator.isValid;
-            return (basicFormIsSavable && this.formGenerator.isValid) || formGeneratorIsSavable;
-        } else {
-            return basicFormIsSavable;
-        }*/
-
-        return false;
+        return this.form.dirty && this.form.valid && !this.readOnly;
     }
 
     addTagClick(tagFamilyName: string): void {
-
         this.modalService.fromComponent(
             CreateTagDialogComponent,
             {
@@ -115,6 +113,28 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             }
         )
         .then(modal => modal.open());
+    }
+
+    updateTagClick(tag: Tag): void {
+        this.modalService.fromComponent(
+            NameInputDialogComponent,
+            {
+                closeOnOverlayClick: false,
+                width: '90%',
+                onClose: (reason: any): void => {
+
+                }
+            },
+            {
+                title: this.i18n.translate('admin.update_tag'),
+                label: this.i18n.translate('admin.tag'),
+                value: tag.name,
+            }
+        )
+        .then(modal => modal.open())
+        .then(result => {
+            this.tagEffects.updateTag(this.project.name, tag.tagFamily.uuid, tag.uuid, result);
+        });
     }
 
     deleteTagClick(tag: Tag): void {
@@ -147,11 +167,57 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    updateTagFamilyClick(uuid: String): void {
+    updateTagFamilyClick(family: TagFamily): void {
+        this.modalService.fromComponent(
+            NameInputDialogComponent,
+            {
+                closeOnOverlayClick: false,
+                width: '90%',
+                onClose: (reason: any): void => {
 
+                }
+            },
+            {
+                title: this.i18n.translate('admin.update_tag_family'),
+                label: this.i18n.translate('admin.tag_family'),
+                value: family.name,
+            }
+        )
+        .then(modal => modal.open())
+        .then(result => {
+            this.tagEffects.updateTagFamily(this.project.name, family.uuid, result)
+        });
     }
 
     createTagFamilyClick(): void {
+        this.modalService.fromComponent(
+            NameInputDialogComponent,
+            {
+                closeOnOverlayClick: false,
+                width: '90%',
+                onClose: (reason: any): void => {
 
+                }
+            },
+            {
+                title: this.i18n.translate('admin.create_tag_family'),
+                label: this.i18n.translate('admin.tag_family'),
+                value: ''
+            }
+        )
+        .then(modal => modal.open())
+        .then(result => {
+            this.tagEffects.createTagFamily(this.project.name, result);
+        });
+    }
+
+    persistProject() {
+        const formValue = this.form.value;
+        this.projectEffect.updateProject(this.project.uuid, { name: formValue.name})
+            .then(project => {
+                if (project) {
+                    this.form.markAsPristine();
+                }
+            });
     }
 }

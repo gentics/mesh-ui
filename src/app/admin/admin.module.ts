@@ -31,6 +31,7 @@ import { ProjectDetailComponent } from './components/project-detail/project-deta
 import { ProjectResolver } from './providers/resolvers/project-resolver';
 import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
 import { CreateTagDialogComponent } from '../shared/components/create-tag-dialog/create-tag-dialog.component';
+import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';
 
 @NgModule({
     declarations: [
@@ -50,10 +51,12 @@ import { CreateTagDialogComponent } from '../shared/components/create-tag-dialog
         AdminListItemComponent,
         UserDetailComponent,
         UserGroupSelectComponent,
-        ProjectDetailComponent
+        ProjectDetailComponent,
+        NameInputDialogComponent
     ],
     entryComponents: [
         CreateProjectModalComponent,
+        NameInputDialogComponent
     ],
     imports: [
         SharedModule,

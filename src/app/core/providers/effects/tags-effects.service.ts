@@ -15,39 +15,6 @@ export class TagsEffectsService {
                 private notification: I18nNotification,
                 private state: ApplicationStateService) {
     }
-
-    createTagFamily(project: string, name: string): Promise<TagFamilyResponse > {
-        this.state.actions.tag.actionStart();
-        return this.api.project.createTagFamily({ project }, { name }).toPromise()
-        .then(response => {
-            this.state.actions.tag.createTagFamilySuccess(response);
-            return response;
-        }, error => {
-            this.state.actions.tag.actionError();
-            this.notification.show({
-                type: 'error',
-                message: 'project.create_tag_family_error'
-            });
-            throw error;
-        });
-    }
-
-    createTag(project: string, tagFamilyUuid: string, name: string): Promise<TagResponse> {
-        this.state.actions.tag.actionStart();
-        return this.api.project.createTag({project, tagFamilyUuid}, { name }).toPromise()
-        .then(response => {
-            this.state.actions.tag.createTagSuccess(response);
-            return response;
-        }, error => {
-            this.state.actions.tag.actionError();
-            this.notification.show({
-                type: 'error',
-                message: 'project.create_tag_error'
-            });
-            throw error;
-        });
-    }
-
     // Load tag families and their sibling tags for a project
     loadTagFamiliesAndTheirTags(project: string): void {
         this.state.actions.tag.actionStart();
@@ -64,7 +31,6 @@ export class TagsEffectsService {
         });
     }
 
-
     loadTagsOfTagFamily(project: string, tagFamilyUuid: string): void {
         this.state.actions.tag.actionStart();
         this.api.project.getTagsOfTagFamily({project, tagFamilyUuid})
@@ -79,6 +45,38 @@ export class TagsEffectsService {
         });
     }
 
+    createTag(project: string, tagFamilyUuid: string, name: string): Promise<TagResponse> {
+        this.state.actions.tag.createTagStart();
+        return this.api.project.createTag({project, tagFamilyUuid}, { name }).toPromise()
+        .then(response => {
+            this.state.actions.tag.createTagSuccess(response);
+            return response;
+        }, error => {
+            this.state.actions.tag.createTagError();
+            this.notification.show({
+                type: 'error',
+                message: 'project.create_tag_error'
+            });
+            throw error;
+        });
+    }
+
+
+    updateTag(project: string, tagFamilyUuid: string, tagUuid:string, name: string): Promise<TagResponse> {
+        this.state.actions.tag.updateTagStart();
+        return this.api.project.updateTag({project, tagFamilyUuid, tagUuid}, { name }).toPromise()
+        .then(response => {
+            this.state.actions.tag.updateTagSuccess(response);
+            return response;
+        }, error => {
+            this.state.actions.tag.updateTagError();
+            this.notification.show({
+                type: 'error',
+                message: 'project.update_tag_error'
+            });
+            throw error;
+        });
+    }
 
     deleteTag(project: string, tag: Tag): void {
         this.state.actions.tag.deleteTagStart();
@@ -100,6 +98,37 @@ export class TagsEffectsService {
         });
     }
 
+    createTagFamily(project: string, name: string): Promise<TagFamilyResponse > {
+        this.state.actions.tag.createTagFamilyStart();
+        return this.api.project.createTagFamily({ project }, { name }).toPromise()
+        .then(response => {
+            this.state.actions.tag.createTagFamilySuccess(response);
+            return response;
+        }, error => {
+            this.state.actions.tag.createTagFamilyError();
+            this.notification.show({
+                type: 'error',
+                message: 'project.create_tag_family_error'
+            });
+            throw error;
+        });
+    }
+
+    updateTagFamily(project: string, tagFamilyUuid: string, name: string): Promise<TagFamilyResponse > {
+        this.state.actions.tag.updateTagFamilyStart();
+        return this.api.project.updateTagFamily({ project, tagFamilyUuid }, { name }).toPromise()
+        .then(response => {
+            this.state.actions.tag.updateTagFamilySuccess(response);
+            return response;
+        }, error => {
+            this.state.actions.tag.updateTagFamilyError();
+            this.notification.show({
+                type: 'error',
+                message: 'project.create_tag_family_error'
+            });
+            throw error;
+        });
+    }
 
     deleteTagFamily(project: string, tagFamily: TagFamily): void {
         this.state.actions.tag.deleteTagFamilyStart();

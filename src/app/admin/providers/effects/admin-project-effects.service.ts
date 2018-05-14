@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { ProjectCreateRequest, ProjectResponse } from '../../../common/models/server-models';
+import { ProjectCreateRequest, ProjectResponse, ProjectUpdateRequest } from '../../../common/models/server-models';
 import { Project } from '../../../common/models/project.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
@@ -61,6 +61,22 @@ export class AdminProjectEffectsService {
                     });
                 },
                 () => this.state.actions.adminProjects.createProjectError()
+            )
+            .toPromise();
+    }
+
+    updateProject(projectUuid: string, projectRequest: ProjectUpdateRequest): Promise<ProjectResponse> {
+        this.state.actions.adminProjects.updateProjectStart();
+        return this.api.admin.updateProject({ projectUuid }, projectRequest)
+            .do(
+                project => {
+                    this.state.actions.adminProjects.updateProjectSuccess(project);
+                    this.notification.show({
+                        type: 'success',
+                        message: 'admin.project_updated'
+                    });
+                },
+                () => this.state.actions.adminProjects.updateProjectError()
             )
             .toPromise();
     }
