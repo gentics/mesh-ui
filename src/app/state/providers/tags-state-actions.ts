@@ -41,6 +41,16 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         this.tags.loadCount--;
     }
 
+    clearAll() {
+        this.entities = mergeEntityState(this.entities, {
+            tagFamily: [],
+            tag: [],
+        }, false);
+
+        this.tags.tagFamilies = [];
+        this.tags.tags = [];
+    }
+
     fetchTagFamiliesSuccess(fetchedFamilies: TagFamilyResponse[]) {
         this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
@@ -48,6 +58,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
                 ...fetchedFamilies
             ]
         }, false);
+
         this.tags.tagFamilies = [
             ...this.tags.tagFamilies,
             ...fetchedFamilies.filter(fetchedFamily => !this.tags.tagFamilies

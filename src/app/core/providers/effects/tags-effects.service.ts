@@ -6,6 +6,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
+import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
 
 
 @Injectable()
@@ -17,6 +18,7 @@ export class TagsEffectsService {
     }
     // Load tag families and their sibling tags for a project
     loadTagFamiliesAndTheirTags(project: string): void {
+        this.state.actions.tag.clearAll();
         this.state.actions.tag.actionStart();
         this.api.project.getTagFamilies({ project })
         .subscribe(tagFamiesResponse => {
@@ -78,16 +80,13 @@ export class TagsEffectsService {
         });
     }
 
-    deleteTag(project: string, tag: Tag): void {
+    deleteTag(project: string, tag: Tag): Promise<null> {
         this.state.actions.tag.deleteTagStart();
-        this.api.project.removeTagFromTagFamily({ project, tagFamilyUuid: tag.tagFamily.uuid, tagUuid: tag.uuid})
-        .subscribe(() => {
+        return this.api.project.removeTagFromTagFamily({ project, tagFamilyUuid: tag.tagFamily.uuid, tagUuid: tag.uuid})
+        .toPromise()
+        .then(() => {
             this.state.actions.tag.deleteTagSuccess(tag.uuid);
-            this.notification.show({
-                type: 'success',
-                message: 'admin.tag_deleted',
-                translationParams: { tagName: tag.name }
-            });
+            return null;
         }, error => {
             this.state.actions.tag.deleteTagError();
             this.notification.show({
@@ -95,6 +94,7 @@ export class TagsEffectsService {
                 message: 'admin.tag_deleted_error',
                 translationParams: { tagName: tag.name }
             });
+            throw error;
         });
     }
 
@@ -130,16 +130,13 @@ export class TagsEffectsService {
         });
     }
 
-    deleteTagFamily(project: string, tagFamily: TagFamily): void {
+    deleteTagFamily(project: string, tagFamily: TagFamily): Promise<null> {
         this.state.actions.tag.deleteTagFamilyStart();
-        this.api.project.deleteTagFamily({ project, tagFamilyUuid: tagFamily.uuid})
-        .subscribe(() => {
+        return this.api.project.deleteTagFamily({ project, tagFamilyUuid: tagFamily.uuid})
+        .toPromise()
+        .then(() => {
             this.state.actions.tag.deleteTagFamilySuccess(tagFamily.uuid);
-            this.notification.show({
-                type: 'success',
-                message: 'admin.tag_deleted',
-                translationParams: { tagFamilyName: tagFamily.name }
-            });
+            return null;
         }, error => {
             this.state.actions.tag.deleteTagFamilyError();
             this.notification.show({
@@ -147,6 +144,7 @@ export class TagsEffectsService {
                 message: 'admin.tag_family_deleted_error',
                 translationParams: { tagFamilyName: tagFamily.name }
             });
+            throw error;
         });
     }
 }

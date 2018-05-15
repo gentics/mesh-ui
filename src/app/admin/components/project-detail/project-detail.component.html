@@ -9,7 +9,8 @@
             </div>
         </div>
     </form>
-    <mesh-admin-list [items]="tagFamilies$ | async"
+    <mesh-admin-list *ngIf="tagFamilies"
+                     [items]="tagFamilies"
                      [autoHidePagination]=true
                      [selectable]=false>
 
@@ -22,20 +23,22 @@
         </div>
 
         <ng-template let-family="item">
-            <div class="item-row">
-                <div class="name">{{ family.familyData.name }}</div>
+            <div class="item-row" *ngIf="family.status !== 'deleted'">
+                <div class="name">{{ family.data.name }} {{ family.status }} </div>
                 <div class="tags">
-                    <mesh-tag *ngFor="let tag of family.tags"
-                                [tag]="tag"
-                                (removeClick)="deleteTagClick(tag)"
-                                [editable]="true"
-                                (editClick)="updateTagClick(tag)"
-                    ></mesh-tag>
+                    <ng-container *ngFor="let tag of family.tags">
+                        <mesh-tag *ngIf="tag.status !== 'deleted'"
+                                  [tag]="tag.data"
+                                  (removeClick)="deleteTagClick(tag, family)"
+                                  [editable]="true"
+                                  (editClick)="updateTagClick(tag)">
+                        </mesh-tag>
+                    </ng-container>
                     <gtx-button type="primary"
                                 flat
                                 size="small"
                                 class="add-tag-button"
-                                (click)="addTagClick(family.familyData.name)">
+                                (click)="addTagClick(family)">
                         <icon left>label_outline</icon>{{ 'editor.add_tag' | i18n }}
                     </gtx-button>
                 </div>
@@ -45,14 +48,14 @@
                             <gtx-button icon type="secondary"><icon>more_vert</icon></gtx-button>
                         </gtx-dropdown-trigger>
                         <gtx-dropdown-content>
-                            <gtx-dropdown-item [class.disabled]="!family.familyData.permissions.update"
-                                               (click)="updateTagFamilyClick(family.familyData)">
+                            <gtx-dropdown-item [class.disabled]="!family.data.permissions.update"
+                                               (click)="updateTagFamilyClick(family)">
                                 <icon>edit</icon> {{ 'admin.edit_tag_family' | i18n }}
                             </gtx-dropdown-item>
 
                             <gtx-dropdown-item class="alert"
-                                               [class.disabled]="!family.familyData.permissions.delete"
-                                               (click)="deleteTagFamilyClick(family.familyData)">
+                                               [class.disabled]="!family.data.permissions.delete"
+                                               (click)="deleteTagFamilyClick(family)">
                                 <icon>delete</icon> {{ 'admin.delete_tag_family' | i18n }}
                             </gtx-dropdown-item>
                         </gtx-dropdown-content>
