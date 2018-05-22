@@ -22,6 +22,7 @@ import { NodeTagsBarComponent } from './node-tags-bar.component';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { MockTagSelectorComponent } from '../../../shared/components/tag-selector/tag-selector.component.mock';
 import { MockModalService } from '../../../../testing/modal.service.mock';
+import { MockTagComponent } from '../../../shared/components/tag/tag.component.mock';
 
 describe('NodeTagsBarComponent', () => {
     let state: TestApplicationState;
@@ -179,9 +180,4 @@ function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string):
 })
 class TestComponent {
     node: MeshNode;
-}
-
-@Component({ selector: 'mesh-tag', template: '' })
-class MockTagComponent {
-    @Input() tag: any;
 }

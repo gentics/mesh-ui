@@ -59,7 +59,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
     private TagStatus = TagStatus;
 
-    private project: Project;
+    public project: Project;
+
     private form: FormGroup = null;
     private filterInput = new FormControl('');
     private tagFilterTerm = '';

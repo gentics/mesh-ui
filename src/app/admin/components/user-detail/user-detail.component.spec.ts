@@ -17,6 +17,7 @@ import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
+import { MockProjectContentDirective } from '../../../shared/directives/project-content.directive.mock';
 
 describe('UserDetailComponent', () => {
     let instance: UserDetailComponent;
@@ -216,10 +217,3 @@ class MockAdminUserEffectsService {}
     template: `<mesh-user-detail></mesh-user-detail>`
 })
 class TestHostComponent {}
-
-@Directive({
-    selector: '[meshProjectTo]'
-})
-class MockProjectContentDirective {
-    @Input() meshProjectTo;
-}

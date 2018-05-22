@@ -17,6 +17,7 @@ import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
 import { User } from '../../../common/models/user.model';
 import { Group } from '../../../common/models/group.model';
 import { MockModalService } from '../../../../testing/modal.service.mock';
+import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 
 describe('UserListComponent', () => {
     let instance: UserListComponent;
@@ -170,19 +171,6 @@ describe('UserListComponent', () => {
         });
     }
 });
-
-@Component({
-    selector: 'mesh-admin-list',
-    template: ``
-})
-class MockAdminListComponent {
-    @Input() items: any;
-    @Input() itemsPerPage: any;
-    @Input() totalItems: any;
-    @Input() currentPage: any;
-    @Input() selection: any;
-    @Output() pageChange = new EventEmitter<any>();
-}
 
 @Component({
     selector: 'mesh-user-group-select',

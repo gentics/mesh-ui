@@ -15,6 +15,7 @@ export class MockActivatedRoute {
 
     /** The mock paramMap observable */
     readonly paramMap = this.paramMapSubject.asObservable();
+    readonly queryParamMap = this.paramMapSubject.asObservable();
     readonly data = this.dataSubject.asObservable();
 
     /** Set the paramMap observables's next value */
