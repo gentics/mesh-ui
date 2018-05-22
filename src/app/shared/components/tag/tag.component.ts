@@ -10,6 +10,7 @@ import { TagReferenceFromServer } from '../../../common/models/server-models';
 })
 export class TagComponent {
     @Input() tag: Tag | TagReferenceFromServer;
+    @Input() filterTerm: String = '';
 
     @Input() removable = true;
     @Output() removeClick = new EventEmitter<void>();

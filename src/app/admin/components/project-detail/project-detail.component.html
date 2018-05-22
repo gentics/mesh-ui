@@ -14,8 +14,12 @@
                      [autoHidePagination]=true
                      [selectable]=false>
 
+        <div class="list-controls-title">{{ 'admin.project_tags' | i18n }}</div>
         <div class="list-controls">
-            <div class="list-controls-title">{{ 'admin.project_tags' | i18n }}</div>
+            <div class="filter">
+                <gtx-input [label]="'admin.filter_by_name' | i18n"
+                            [formControl]="filterInput"></gtx-input>
+            </div>
             <gtx-button size="regular" (click)="createTagFamilyClick()">
                 <icon left>label_outline</icon>
                 <span class="new-item-label">{{ 'admin.create_tag_family' | i18n }}</span>
@@ -29,9 +33,10 @@
                     <ng-container *ngFor="let tag of getFilteredTags(family.tags)">
                         <mesh-tag *ngIf="tag.status !== TagStatus.DELETED"
                                   [tag]="tag.data"
-                                  (removeClick)="deleteTagClick(tag, family)"
+                                  [filterTerm]="tagFilterTerm"
                                   [editable]="true"
-                                  (editClick)="updateTagClick(tag)">
+                                  (removeClick)="deleteTagClick(tag, family)"
+                                  (editClick)="updateTagClick(tag, family)">
                         </mesh-tag>
                     </ng-container>
                     <gtx-button type="primary"

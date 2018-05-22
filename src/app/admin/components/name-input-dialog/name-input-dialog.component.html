@@ -5,6 +5,8 @@
     <gtx-input [label]="label"
                 [(ngModel)]="value">
     </gtx-input>
+
+    <div *ngIf="error" class="error">{{ error }}</div>
 </div>
 <div class="modal-footer">
     <gtx-button type="secondary" flat (click)="this.onCancelClick()" class="button_cancel">{{ 'common.cancel_button' | i18n }}</gtx-button>

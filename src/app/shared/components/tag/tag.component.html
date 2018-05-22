@@ -3,5 +3,5 @@
             [editable]="editable"
             (editClick)="editClick.emit()"
             [meshBackgroundFrom]="tagFamilyName()">
-    <span class="tag-name">{{ tag.name }}</span>
+    <span class="tag-name" [innerHTML]="tag.name | highlight:filterTerm"></span>
 </mesh-chip>

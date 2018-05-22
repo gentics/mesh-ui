@@ -99,4 +99,8 @@ export class AdminProjectEffectsService {
             });
         });
     }
+
+    setTagFilterTerm(term: string): void {
+        this.state.actions.adminProjects.setTagFilterTerm(term);
+    }
 }

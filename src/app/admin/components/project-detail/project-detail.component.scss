@@ -3,6 +3,7 @@
 .item-row {
     display: flex;
     align-items: center;
+    max-width: 100%;
 }
 
 .name {
@@ -11,21 +12,30 @@
     color: $gtx-color-primary;
 }
 
-.row-actions {
+.tags {
     flex: 1;
-    text-align: right;
 }
 
-.list-controls {
-    display: flex;
-    width: 100%;
+.row-actions {
+    text-align: right;
 }
 
 .list-controls-title
 {
-    flex-grow: 1;
     text-align: left;
-    line-height: 35px;
+    margin-bottom: 10px;
+}
+
+.list-controls {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .filter {
+        flex: 1;
+        margin-right: 10px;
+    }
+
 }
 
 gtx-dropdown-item {

@@ -179,6 +179,14 @@
         "en": "Delete this tag?",
         "de": "Tag löschen?"
     },
+    "duplicate_tag": {
+        "en": "Tag \"{{tag}}\" already exists",
+        "de": "Der Tag \"{{tag}}\" existiert bereits."
+    },
+    "duplicate_tag_family": {
+        "en": "Tag family \"{{family}}\" already exists",
+        "de": "Die Tagfamillie \"{{family}}\" existiert bereits."
+    },
     "update_project": {
         "en": "Update Project",
         "de": "Projekt speichern"
