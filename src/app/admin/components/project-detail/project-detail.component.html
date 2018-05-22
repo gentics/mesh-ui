@@ -10,7 +10,7 @@
         </div>
     </form>
     <mesh-admin-list *ngIf="tagFamilies"
-                     [items]="tagFamilies"
+                     [items]="getFilteredFamilies()"
                      [autoHidePagination]=true
                      [selectable]=false>
 
@@ -23,11 +23,11 @@
         </div>
 
         <ng-template let-family="item">
-            <div class="item-row" *ngIf="family.status !== 'deleted'">
-                <div class="name">{{ family.data.name }} {{ family.status }} </div>
+            <div class="item-row">
+                <div class="name">{{ family.data.name }}</div>
                 <div class="tags">
-                    <ng-container *ngFor="let tag of family.tags">
-                        <mesh-tag *ngIf="tag.status !== 'deleted'"
+                    <ng-container *ngFor="let tag of getFilteredTags(family.tags)">
+                        <mesh-tag *ngIf="tag.status !== TagStatus.DELETED"
                                   [tag]="tag.data"
                                   (removeClick)="deleteTagClick(tag, family)"
                                   [editable]="true"
@@ -72,8 +72,7 @@
                 class="save-button"
                 [disabled]="!isSaveButtonEnabled()"
                 (click)="persistProject()">
-        <ng-container *ngIf="!isNew">{{ 'admin.update_project' | i18n }}</ng-container>
-        <ng-container *ngIf="isNew">{{ 'admin.create_project' | i18n }}</ng-container>
+        <ng-container>{{ 'admin.update_project' | i18n }}</ng-container>
     </gtx-button>
 </div>
 

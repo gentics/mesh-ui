@@ -23,18 +23,17 @@ import { AdminProjectEffectsService } from '../../providers/effects/admin-projec
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { ProjectResponse, TagFamilyResponse } from '../../../common/models/server-models';
 
+enum TagStatus { // The numbers indicate the order the tags and families will be saved
+    DELETED = 1,
+    EDITED = 2,
+    NEW = 3,
+    PRISTINE = 4,
+}
 
-/*enum TagStatus {
-    PRISTINE,
-    EDITED,
-    DELETED,
-    NEW,
-}*/
-
-type TagStatus = 'pristine' | 'edited' | 'deleted' | 'new';
+//type TagStatus = TagStatus.PRISTINE | TagStatus.EDITED | deleted | TagStatus.NEW;
 
 interface LocalTag {
-    status: TagStatus;
+    status: TagStatus,
     data: Tag | {
         name: string,
         tagFamily: TagFamily | { name: string },
@@ -59,6 +58,7 @@ interface LocalTagFamily {
 export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
+    TagStatus = TagStatus;
 
     project: Project;
     form: FormGroup = null;
@@ -67,6 +67,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     private tagFamilies: LocalTagFamily[] = null;
     private destroy$ = new Subject<void>();
+    private tagListener$: Subject<void> = null;
 
     constructor(
         private route: ActivatedRoute,
@@ -93,17 +94,26 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                     name: [project ? project.name : '', Validators.required],
                 });
 
-                console.log('i will load the families again', project.name);
                 this.tagEffects.loadTagFamiliesAndTheirTags(project.name);
             });
 
+        this.fetchTags();
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    fetchTags(): void {
+        this.tagListener$ = new Subject<void>();
         combineLatest(
             this.state.select(state => state.tags.tagFamilies),
             this.state.select(state => state.tags.tags),
             this.state.select(state => state.entities.tagFamily),  // We need to subscribe to entities because editing of a family name does not alter the state.tag[s] state
             this.state.select(state => state.entities.tag) // We need to subscribe to entities because editing of a tag name of does not alter the state.tag[s] state
         )
-            .takeUntil(this.destroy$)
+            .takeUntil(this.tagListener$)
             .map(([families, tags]) => {
                 const allTags = this.entities.getAllTags();
                 return Object.values(families)
@@ -113,7 +123,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                         const familyTags = allTags.filter(tag => tag.tagFamily.uuid === family)
                             .map(tag => {
                                 const localTag: LocalTag = {
-                                    status: 'pristine',
+                                    status: TagStatus.PRISTINE,
                                     data: tag
                                 };
                                 return localTag;
@@ -121,7 +131,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
                         const familyData = this.entities.getTagFamily(family);
                         const localTagFamily: LocalTagFamily = {
-                            status: 'pristine',
+                            status: TagStatus.PRISTINE,
                             data: familyData,
                             tags: familyTags
                         };
@@ -133,11 +143,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 this.tagFamilies = families;
                 this.changeDetector.markForCheck();
             });
-    }
-
-    ngOnDestroy(): void {
-        this.destroy$.next();
-        this.destroy$.complete();
     }
 
     addTagClick(tagFamily: LocalTagFamily): void {
@@ -160,7 +165,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .then(result => {
                 //this.tagEffects.createTag(this.project.name, tagFamily.data.uuid, result);
                 const newLocalTag: LocalTag = {
-                    status: 'new',
+                    status: TagStatus.NEW,
                     data: {
                         name: result,
                         tagFamily: tagFamily.data,
@@ -172,7 +177,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                     }
                 };
 
-                newLocalTag.status = 'new';
+                newLocalTag.status = TagStatus.NEW;
                 tagFamily.tags = [...tagFamily.tags, newLocalTag];
                 this.flagIfTagsHasChanged();
             });
@@ -189,8 +194,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 }
             },
             {
-                title: this.i18n.translate('admin.update_tag'),
-                label: this.i18n.translate('admin.tag'),
+                title: this.i18n.translate('admin.edit_tag'),
+                label: this.i18n.translate('common.title_label'),
                 value: tag.data.name,
             }
         )
@@ -199,8 +204,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 //this.tagEffects.updateTag(this.project.name, tag.data.tagFamily.uuid, tag.data.uuid, result);
 
                 // If this was a newly created tag, leave it marked as new, so that the saving mechanism know it has to create it
-                if (tag.status !== 'new') {
-                    tag.status = 'edited';
+                if (tag.status !== TagStatus.NEW) {
+                    tag.status = TagStatus.EDITED;
                 }
 
                 tag.data = { ...tag.data, name: result };
@@ -221,10 +226,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .then(() => {
                 //this.tagEffects.deleteTag(this.project.name, tag);
 
-                if (tag.status === 'new') { // If this was a newly created tag, delete it out of awarness right away.
+                if (tag.status === TagStatus.NEW) { // If this was a newly created tag, delete it out of awarness right away.
                     family.tags = family.tags.filter(familyTag => familyTag !== tag);
                 } else {
-                    tag.status = 'deleted';
+                    tag.status = TagStatus.DELETED;
                 }
 
                 this.flagIfTagsHasChanged();
@@ -243,7 +248,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             },
             {
                 title: this.i18n.translate('admin.create_tag_family'),
-                label: this.i18n.translate('admin.tag_family'),
+                label: this.i18n.translate('common.title_label'),
                 value: ''
             }
         )
@@ -251,7 +256,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .then(result => {
                 //this.tagEffects.createTagFamily(this.project.name, result);
                 const newLocalTagFamily: LocalTagFamily = {
-                    status: 'new',
+                    status: TagStatus.NEW,
                     data: {
                         name: result,
                         permissions: {
@@ -278,8 +283,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 }
             },
             {
-                title: this.i18n.translate('admin.update_tag_family'),
-                label: this.i18n.translate('admin.tag_family'),
+                title: this.i18n.translate('admin.edit_tag_family'),
+                label: this.i18n.translate('common.title_label'),
                 value: family.data.name,
             }
         )
@@ -287,10 +292,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .then(result => {
                 //this.tagEffects.updateTagFamily(this.project.name, family.uuid, result)
 
-                 // If it's a newly created family, leave it marked as 'new' anyways,
+                 // If it's a newly created family, leave it marked as TagStatus.NEW anyways,
                  // so that the saving mechanism knows it has to be created instead of updated.
-                if (family.status !== 'new') {
-                    family.status = 'edited';
+                if (family.status !== TagStatus.NEW) {
+                    family.status = TagStatus.EDITED;
                 }
 
                 family.data = { ...family.data, name: result };
@@ -310,10 +315,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .then(modal => modal.open())
             .then(() => {
                 //this.tagEffects.deleteTagFamily(this.project.name, tagFamily);
-                if (tagFamily.status === 'new') { // If this is a newly created family, delete it out of awarnes.
+                if (tagFamily.status === TagStatus.NEW) { // If this is a newly created family, delete it out of awarnes.
                     this.tagFamilies = this.tagFamilies.filter(fam => fam !== tagFamily);
                 } else { //otherwise mark as deleted
-                    tagFamily.status = 'deleted';
+                    tagFamily.status = TagStatus.DELETED;
                 }
                 this.flagIfTagsHasChanged();
             });
@@ -330,27 +335,41 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     syncFamilyTags(project:Project, localFamily: LocalTagFamily, remoteFamily: TagFamily): Promise<any | void>[] {
         const tagRequests: Promise<any | void>[] = [];
-        if (localFamily.status !== 'deleted') {
-            localFamily.tags.map(tag => {
+        if (localFamily.status !== TagStatus.DELETED) {
+            localFamily.tags = localFamily.tags.sort((tag1, tag2) => {
+                return tag1.status < tag2.status ? -1 : 1;
+            })
+            .filter(tag => { // We will instantely remove the deleted tags.
                 switch (tag.status) {
-                    case 'new':
-                        tagRequests.push(this.tagEffects.createTag(project.name, remoteFamily.uuid, tag.data.name));
-                    break;
+                    case TagStatus.NEW:
+                        tagRequests.push(this.tagEffects.createTag(project.name, remoteFamily.uuid, tag.data.name)
+                            .then(result => {
+                                tag.status = TagStatus.PRISTINE;
+                                tag.data = result;
+                                return result;
+                            }));
+                        return true;
 
-                    case 'edited':
-                        tagRequests.push(this.tagEffects.updateTag(project.name, remoteFamily.uuid, (tag.data as Tag).uuid, tag.data.name));
-                    break;
 
-                    case 'deleted':
+                    case TagStatus.EDITED:
+                        tagRequests.push(this.tagEffects.updateTag(project.name, remoteFamily.uuid, (tag.data as Tag).uuid, tag.data.name)
+                            .then(result => {
+                                tag.status = TagStatus.PRISTINE;
+                                tag.data = result;
+                                return result;
+                            }));
+                        return true;
+
+
+                    case TagStatus.DELETED:
                         tagRequests.push(this.tagEffects.deleteTag(project.name, (tag.data as Tag)));
-                    break;
+                        return false;
 
                     default:
-                    break;
+                        return true;
                 }
             });
         }
-
         return tagRequests;
     }
 
@@ -358,36 +377,65 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         const tagRequests: Promise<any | void>[] = [];
 
         if (this.tagsChanged) {
-            this.tagFamilies.map((family) => {
+            this.tagFamilies = this.tagFamilies.sort((fam1, fam2) => {
+                return fam1.status < fam2.status ? -1 : 1;
+            })
+            .filter((family) => {
                 switch (family.status) {
-                    case 'new':
+                    case TagStatus.NEW:
                         const createRequest = this.tagEffects.createTagFamily(project.name, family.data.name)
                                                     .then(result => {
+                                                        family.status = TagStatus.PRISTINE;
+                                                        family.data = result;
                                                         tagRequests.push(...this.syncFamilyTags(project, family, result));
                                                     });
                         tagRequests.push(createRequest);
-                    break;
-                    case 'edited':
+                        return true;
+
+                        case TagStatus.EDITED:
                         const editRequest = this.tagEffects.updateTagFamily(project.name, (family.data as TagFamily).uuid, family.data.name)
                                                 .then(result => {
+                                                    family.status = TagStatus.PRISTINE;
+                                                    family.data = result;
                                                     tagRequests.push(...this.syncFamilyTags(project, family, result));
                                                 })
                         tagRequests.push(editRequest);
-                    break;
-                    case 'deleted':
+                        return true;
+
+                    case TagStatus.DELETED:
                         tagRequests.push(this.tagEffects.deleteTagFamily(project.name, family.data as TagFamily));
-                    break;
+                        return false;
 
                     default:
                         tagRequests.push(...this.syncFamilyTags(project, family, family.data as TagFamily));
-                    break;
+                        return true;
                 }
             });
         }
         return tagRequests;
     }
 
+    getFilteredFamilies(): LocalTagFamily[] {
+        return this.tagFamilies.filter(fam => {
+            return fam.status !== TagStatus.DELETED;
+        })
+        .sort((fam1, fam2) => {
+            return fam1.data.name < fam2.data.name ? -1 : 1;
+        });
+    }
+
+    getFilteredTags(tags: LocalTag[]): LocalTag[] {
+        return tags.filter(tag => {
+            return tag.status !== TagStatus.DELETED;
+        })
+        .sort((tag1, tag2) => {
+            return tag1.data.name < tag2.data.name ? -1 : 1;
+        });
+    }
     persistProject() {
+        this.tagListener$.next();
+        this.tagListener$.complete();
+
         const formValue = this.form.value;
         const queue: Promise<any | void>[] = [];
 
@@ -403,13 +451,9 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
         Promise.all(queue)
             .then(result => {
+                this.fetchTags();
+                this.tagsChanged = false;
                 this.form.markAsPristine();
-            })
-        /*this.projectEffect.updateProject(this.project.uuid, { name: formValue.name})
-            .then(project => {
-                if (project) {
-                    this.form.markAsPristine();
-                }
-            });*/
+            });
     }
 }

@@ -147,6 +147,42 @@
         "en": "No projects found",
         "de": "Keine Projekte gefunden"
     },
+    "project_label": {
+        "en": "Project",
+        "de": "Projekt"
+    },
+    "project_tags": {
+        "en": "Project tags",
+        "de": "Tags im Projekt"
+    },
+    "create_tag_family": {
+        "en": "Create new tag family",
+        "de": "Neue Tag-Familie erstellen"
+    },
+    "edit_tag_family": {
+        "en": "Edit tag family",
+        "de": "Tag-Familie bearbeiten"
+    },
+    "delete_tag_family": {
+        "en": "Delete tag family",
+        "de": "Tag-Familie löschen"
+    },
+    "delete_tag_family_confirmation": {
+        "en": "Delete this tag family and all tags?",
+        "de": "Diese Tag-Familie und all ihre Tags löschen?"
+    },
+    "edit_tag": {
+        "en": "Edit tag",
+        "de": "Tag bearbeiten"
+    },
+    "delete_tag_confirmation": {
+        "en": "Delete this tag?",
+        "de": "Tag löschen?"
+    },
+    "update_project": {
+        "en": "Update Project",
+        "de": "Projekt speichern"
+    },
     "remove_selected_users_from_group": {
         "en": "Remove {{count}} users from group",
         "de": "{{count}} Benutzer von Gruppe entfernen"

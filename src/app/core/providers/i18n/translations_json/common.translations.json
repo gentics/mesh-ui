@@ -274,5 +274,9 @@
     "usage_label": {
       "en": "Usage",
       "de": "Verwendung"
+    },
+    "title_label": {
+      "en": "Title",
+      "de": "Titel"
     }
 }
