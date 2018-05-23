@@ -56,10 +56,11 @@ interface LocalTagFamily {
 })
 export class ProjectDetailComponent implements OnInit, OnDestroy {
 
-    private BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
-    private TagStatus = TagStatus;
+    public BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
+    public TagStatus = TagStatus;
 
     public project: Project;
+    public tagFamilies: LocalTagFamily[] = null;
 
     private form: FormGroup = null;
     private filterInput = new FormControl('');
@@ -67,9 +68,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private readOnly = true;
     private tagsChanged = false;
 
-    private tagFamilies: LocalTagFamily[] = null;
     private destroy$ = new Subject<void>();
     private tagListener$: Subject<void> = null;
+
+
 
     constructor(
         private route: ActivatedRoute,
@@ -77,12 +79,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private navigationService: NavigationService,
         private entities: EntitiesService,
-        private projectEffect: AdminProjectEffectsService,
-        private tagEffects: TagsEffectsService,
         private state: ApplicationStateService,
         private modalService: ModalService,
         private i18n: I18nService,
         private changeDetector: ChangeDetectorRef,
+        public projectEffect: AdminProjectEffectsService,
+        public tagEffects: TagsEffectsService,
     ) { }
 
     ngOnInit() {
@@ -158,7 +160,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                             data: familyData,
                             tags: familyTags
                         };
-
                         return localTagFamily;
                     });
             })

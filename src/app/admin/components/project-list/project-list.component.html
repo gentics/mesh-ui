@@ -21,10 +21,9 @@
     </div>
 
     <ng-template let-project="item">
-        <!--<project-list-item [projectUuid]="project.uuid"></project-list-item>-->
         <div class="item-row">
             <a [routerLink]="['/admin/projects', project.uuid]">
-                <div class="name">{{ project.name }}</div>
+                <div class="name" [innerHTML]="project.name | highlight:filterTerm"></div>
             </a>
 
             <div class="row-actions">
@@ -44,7 +43,3 @@
         </div>
     </ng-template>
 </mesh-admin-list>
-<!--<div class="project-list">
-    <project-list-item *ngFor="let project of projects$ | async" [projectUuid]="project.uuid"></project-list-item>
-</div>
-<gtx-button (click)="create()">{{ 'admin.projects_create' | i18n }}</gtx-button>-->

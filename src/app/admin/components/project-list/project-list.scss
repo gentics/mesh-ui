@@ -1,5 +1,5 @@
 @import "variables";
-@import "variables";
+@include filter-selection;
 
 .list-controls {
     display: flex;

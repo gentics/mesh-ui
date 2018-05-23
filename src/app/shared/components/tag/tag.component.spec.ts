@@ -5,6 +5,7 @@ import { TagComponent } from './tag.component';
 import { ChipComponent } from '../chip/chip.component';
 import { BackgroundFromDirective } from '../../directives/background-from.directive';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { HighlightPipe } from '../../pipes/highlight/highlight.pipe';
 
 describe('TagComponent', () => {
     let component: TagComponent;
@@ -16,6 +17,7 @@ describe('TagComponent', () => {
                 TagComponent,
                 ChipComponent,
                 BackgroundFromDirective,
+                HighlightPipe,
                 Icon
             ]
         });

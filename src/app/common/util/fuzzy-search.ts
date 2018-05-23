@@ -1,5 +1,5 @@
 export function fuzzyEscapeRegExp(text: string): string {
-    return text.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    return (text || '').replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
 export function getFuzzyRegExp(term: string): RegExp {

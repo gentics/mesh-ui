@@ -169,7 +169,8 @@ describe('CreateProjectModal', () => {
             const projectName = 'testproject1';
             const testSchema = {
                 uuid: 'test_schema',
-                name: 'TestSchema'
+                name: 'TestSchema',
+                version: '',
             };
 
             instance.name.setValue(projectName);
@@ -184,7 +185,7 @@ describe('CreateProjectModal', () => {
                 schema: {
                     uuid: testSchema.uuid,
                     name: testSchema.name,
-                    version: ''
+                    version: testSchema.version
                 }
             });
         })

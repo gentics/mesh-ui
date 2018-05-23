@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProjectDetailComponent } from './project-detail.component';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
@@ -20,16 +21,28 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
-import { mockProject } from '../../../../testing/mock-models';
+import { mockProject, mockTagFamily, mockTag } from '../../../../testing/mock-models';
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { ActivatedRoute } from '@angular/router';
+import { TagFamily } from '../../../common/models/tag-family.model';
+import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.mock';
+import { AdminListComponent } from '../admin-list/admin-list.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CoreModule } from '../../../core/core.module';
+import { SharedModule } from '../../../shared/shared.module';
+import { PaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component';
+import { PaginatePipe } from 'ngx-pagination';
+import { MockPaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component.mock';
+import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
 
 
-fdescribe('ProjectDetailComponent', () => {
+let state: TestApplicationState;
+
+describe('ProjectDetailComponent', () => {
     let component: ProjectDetailComponent;
     let fixture: ComponentFixture<ProjectDetailComponent>;
 
-    let state: TestApplicationState;
+    let mockModalService: MockModalService;
     let activatedRoute: MockActivatedRoute;
 
     beforeEach(async(() => {
@@ -37,15 +50,19 @@ fdescribe('ProjectDetailComponent', () => {
             imports: [
                 GenticsUICoreModule.forRoot(),
                 RouterTestingModule.withRoutes([]),
-                ReactiveFormsModule
+                ReactiveFormsModule,
+                BrowserAnimationsModule,
             ],
             declarations: [
                 ProjectDetailComponent,
                 MockFormGeneratorComponent,
                 MockI18nPipe,
-                MockAdminListComponent,
+                AdminListComponent,
+                AdminListItemComponent,
                 MockTagComponent,
                 MockProjectContentDirective,
+                MockPaginationControlsComponent,
+                PaginatePipe,
             ],
             providers: [
                 { provide: I18nService, useClass: MockI18nService },
@@ -63,9 +80,55 @@ fdescribe('ProjectDetailComponent', () => {
     }));
 
     beforeEach(() => {
+
+        const project = mockProject({
+            uuid: '___mock_project_uuid___',
+        });
+
+        const tagFamily1 = getMockedTagFamily('family1');
+        const tagFamily2 = getMockedTagFamily('family2');
+
+        const tag1Fam1 = getMockedTag('tag1_Fam1', tagFamily1);
+        const tag2Fam1 = getMockedTag('tag2_Fam1', tagFamily1);
+        const tag3Fam1 = getMockedTag('tag3_Fam1', tagFamily1);
+
+        const tag1Fam2 = getMockedTag('tag1_Fam2', tagFamily2);
+        const tag2Fam2 = getMockedTag('tag2_Fam2', tagFamily2);
+        const tag3Fam2 = getMockedTag('tag3_Fam2', tagFamily2);
+
+        mockModalService = TestBed.get(ModalService);
+
         state = TestBed.get(ApplicationStateService);
+        state.mockState({
+            adminProjects: {
+                projectDetail: project.uuid,
+                filterTagsTerm: '',
+            },
+            entities: {
+                project: {
+                    [project.uuid] : project
+                },
+                tag: {
+                    [tag1Fam1.uuid]: tag1Fam1,
+                    [tag2Fam1.uuid]: tag2Fam1,
+                    [tag3Fam1.uuid]: tag3Fam1,
+
+                    [tag1Fam2.uuid]: tag1Fam2,
+                    [tag2Fam2.uuid]: tag2Fam2,
+                },
+                tagFamily: {
+                    [tagFamily1.uuid]: tagFamily1,
+                    [tagFamily2.uuid]: tagFamily2,
+                }
+            },
+            tags: {
+                tagFamilies: [tagFamily1.uuid, tagFamily2.uuid],
+                tags: [tag1Fam1.uuid, tag2Fam1.uuid, tag3Fam1.uuid, tag1Fam2.uuid, tag2Fam2.uuid]
+            }
+        });
+
         activatedRoute = TestBed.get(ActivatedRoute);
-        activatedRoute.setData('project', mockProject({}));
+        activatedRoute.setData('project', project);
 
         fixture = TestBed.createComponent(ProjectDetailComponent);
         component = fixture.componentInstance;
@@ -75,8 +138,226 @@ fdescribe('ProjectDetailComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should fetch tag families and nodes belonging to the project', fakeAsync(() => {
+        tick();
+        fixture.detectChanges();
+        expect(component.tagFamilies.length).toBe(2);
+        expect(component.tagFamilies[0].tags.length).toBe(3);
+        expect(component.tagFamilies[1].tags.length).toBe(2);
+    }));
+
+    it('should add a tag', fakeAsync(() => {
+        const tagsLengthBeforeAdding = component.tagFamilies[1].tags.length;
+        component.addTagClick(component.tagFamilies[1]);
+        tick();
+        fixture.detectChanges();
+
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal('new_tag');
+
+        tick();
+        fixture.detectChanges();
+
+        expect(component.tagFamilies[1].tags.length).toBe(tagsLengthBeforeAdding + 1);
+    }));
+
+    it('should NOT add a tag with a duplicate name', fakeAsync(() => {
+        const firstTag = component.tagFamilies[1].tags[0];
+        const tagsLengthBeforeAdding = component.tagFamilies[1].tags.length;
+        component.addTagClick(component.tagFamilies[1]);
+        tick();
+        fixture.detectChanges();
+
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal(firstTag.data.name);
+
+        tick();
+        fixture.detectChanges();
+
+        expect(component.tagFamilies[1].tags.length).toBe(tagsLengthBeforeAdding);
+    }));
+
+    it('should delete a tag', fakeAsync(() => {
+        const firstTag = component.tagFamilies[1].tags[0];
+
+        component.deleteTagClick(firstTag, component.tagFamilies[1]);
+        tick();
+        fixture.detectChanges();
+        expect(mockModalService.dialogSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal();
+
+        tick();
+        fixture.detectChanges();
+
+        expect(component.tagFamilies[1].tags
+            .filter(tag => tag.status !== component.TagStatus.DELETED)
+            .some(tag => tag === firstTag)).toBeFalsy();
+    }));
+
+    it('should update a tag', fakeAsync(() => {
+        const firstTag = component.tagFamilies[1].tags[0];
+
+        component.updateTagClick(firstTag, component.tagFamilies[1]);
+        tick();
+        fixture.detectChanges();
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal('changed_name');
+
+        tick();
+        fixture.detectChanges();
+
+        expect(firstTag.data.name).toEqual('changed_name');
+    }));
+
+    it('should NOT update a tag to a duplicating name', fakeAsync(() => {
+        const firstTag = component.tagFamilies[1].tags[0];
+        const secondTag = component.tagFamilies[1].tags[1];
+
+        component.updateTagClick(firstTag, component.tagFamilies[1]);
+        tick();
+        fixture.detectChanges();
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal(secondTag.data.name);
+
+        tick();
+        fixture.detectChanges();
+
+        expect(firstTag.data.name).not.toEqual(secondTag.data.name);
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalledTimes(2);
+    }));
+
+    it('should open a second dialog requiering to enter a different name if the duplicate name was entered before', fakeAsync(() => {
+        const firstTag = component.tagFamilies[1].tags[0];
+        const secondTag = component.tagFamilies[1].tags[1];
+
+        component.updateTagClick(firstTag, component.tagFamilies[1]);
+        tick();
+        fixture.detectChanges();
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal(secondTag.data.name);
+
+        tick();
+        fixture.detectChanges();
+
+        expect(firstTag.data.name).toEqual(firstTag.data.name);
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalledTimes(2);
+    }));
+
+    it('should add a tag family', fakeAsync(() => {
+        const familiesLengthBeforeAdding = component.tagFamilies.length;
+        component.createTagFamilyClick();
+        tick();
+        fixture.detectChanges();
+
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal('new_tag_family');
+
+        tick();
+        fixture.detectChanges();
+
+        expect(component.tagFamilies.length).toBe(familiesLengthBeforeAdding + 1);
+        expect(component.tagFamilies[2].data.name).toEqual('new_tag_family');
+    }));
+
+    it('should NOT add a family with a duplicate name', fakeAsync(() => {
+        const familiesLengthBeforeAdding = component.tagFamilies.length;
+        const family = component.tagFamilies[0];
+        component.createTagFamilyClick();
+        tick();
+        fixture.detectChanges();
+
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal(family.data.name);
+
+        tick();
+        fixture.detectChanges();
+
+        expect(component.tagFamilies.length).toBe(familiesLengthBeforeAdding);
+    }));
+
+    it('should delete a tag family', fakeAsync(() => {
+        const firstFamily = component.tagFamilies[0];
+        component.deleteTagFamilyClick(component.tagFamilies[0]);
+        tick();
+        fixture.detectChanges();
+        expect(mockModalService.dialogSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal();
+
+        tick();
+        fixture.detectChanges();
+
+        expect(component.tagFamilies
+            .filter(fam => fam.status !== component.TagStatus.DELETED)
+            .some(fam => fam === firstFamily)).toBeFalsy();
+    }));
+
+    it('should update a family name', fakeAsync(() => {
+        const firstFamily = component.tagFamilies[0];
+
+        component.updateTagFamilyClick(firstFamily);
+        tick();
+        fixture.detectChanges();
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal('changed_name');
+
+        tick();
+        fixture.detectChanges();
+
+        expect(firstFamily.data.name).toEqual('changed_name');
+    }));
+
+    it('should NOT update a tag family name to a duplicating name', fakeAsync(() => {
+        const firstFamily = component.tagFamilies[0];
+        const secondFamily = component.tagFamilies[1];
+
+        component.updateTagFamilyClick(firstFamily);
+        tick();
+        fixture.detectChanges();
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+        mockModalService.confirmLastModal(secondFamily.data.name);
+
+        tick();
+        fixture.detectChanges();
+
+        expect(firstFamily.data.name).not.toEqual(secondFamily.data.name);
+        expect(mockModalService.fromComponentSpy).toHaveBeenCalledTimes(2);
+    }));
+
+
+    it('filters the tags', fakeAsync(() => {
+
+        tick();
+        fixture.detectChanges();
+        const tagsBeforeFilter = fixture.debugElement.queryAll(By.css('mesh-tag'));
+
+        state.actions.adminProjects.setTagFilterTerm('tag1_Fam1');
+        tick();
+        fixture.detectChanges();
+
+        tick();
+        fixture.detectChanges();
+        const tagsAfterFilter = fixture.debugElement.queryAll(By.css('mesh-tag'));
+
+        expect(tagsBeforeFilter.length).not.toEqual(tagsAfterFilter.length);
+    }));
 });
 
+
+function getMockedTagFamily(name: string) {
+    return mockTagFamily({
+        uuid: `__mocked_tag_family_${name}__`,
+        name
+    });
+}
+
+function getMockedTag(name: string, tagFamily: TagFamily) {
+    return mockTag({
+        uuid: `__mocked_tag_${name}__`,
+        name,
+        tagFamily,
+    });
+}
 
 class MockTagEffectsService {
     loadTagFamiliesAndTheirTags = jasmine.createSpy('loadTagFamiliesAndTheirTags');
@@ -86,5 +367,11 @@ class MockAdminProjectEffectsService {
 
 }
 class MockEntitiesService {
-    getAllTags = jasmine.createSpy('getAllTags');
+    getAllTags = jasmine.createSpy('getAllTags').and.callFake(() => {
+        return state.now.tags.tags.map(uuid => state.now.entities.tag[uuid]);
+    });
+
+    getTagFamily = jasmine.createSpy('getTagFamily').and.callFake((uuid) => {
+        return state.now.entities.tagFamily[uuid];
+    });
 }

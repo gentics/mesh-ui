@@ -100,6 +100,10 @@ export class AdminProjectEffectsService {
         });
     }
 
+    setFilterTerm(term: string): void {
+        this.state.actions.adminProjects.setFilterTerm(term);
+    }
+
     setTagFilterTerm(term: string): void {
         this.state.actions.adminProjects.setTagFilterTerm(term);
     }

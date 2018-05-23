@@ -1,9 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Button, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
-import { Component, Input } from '@angular/core';
+import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { Component, Input, state } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 
+import { Button, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ProjectListComponent } from './project-list.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -14,21 +15,43 @@ import { CoreModule } from '../../../core/core.module';
 import { mockProject } from '../../../../testing/mock-models';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
+import { MockModalService } from '../../../../testing/modal.service.mock';
+import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
+
+import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AdminListComponent } from '../admin-list/admin-list.component';
+import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.mock';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
 
 describe('ProjectListComponent', () => {
 
     let appState: TestApplicationState;
-    const mockModal = { fromComponent() { } };
+    let mockModalService: MockModalService;
 
     beforeEach(async(() => {
-        spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() { } }));
 
         TestBed.configureTestingModule({
-            declarations: [ProjectListComponent, MockProjectItemComponent],
-            imports: [GenticsUICoreModule, FormsModule, SharedModule, CoreModule, TestStateModule],
+            declarations: [
+                ProjectListComponent,
+                AdminListComponent,
+                MockAdminListItem,
+                CreateProjectModalComponent,
+            ],
+            imports: [
+                GenticsUICoreModule,
+                FormsModule,
+                SharedModule,
+                CoreModule,
+                TestStateModule,
+                BrowserAnimationsModule,
+                RouterTestingModule
+            ],
             providers: [
-                { provide: ModalService, useValue: mockModal },
-                { provide: AdminProjectEffectsService, useValue: jasmine.createSpyObj('stub', ['loadProjects'])}
+                { provide: ModalService, useClass: MockModalService },
+                { provide: ActivatedRoute, useClass: MockActivatedRoute },
+                { provide: AdminProjectEffectsService, useValue: jasmine.createSpyObj('stub', ['loadProjects', 'deleteProject'])}
             ]
         });
     }));
@@ -38,7 +61,8 @@ describe('ProjectListComponent', () => {
         appState.trackAllActionCalls({ behavior: 'original' });
         appState.mockState({
             adminProjects: {
-                projectList: ['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5']
+                projectList: ['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5'],
+                filterTerm: '',
             },
             auth: {
                 currentUser: 'd8b043e818144e27b043e81814ae2713'
@@ -73,54 +97,72 @@ describe('ProjectListComponent', () => {
                 }
             }
         });
+
+        mockModalService = TestBed.get(ModalService);
     });
 
-    it(`shows the list of projects`,
+    it(`fetches the list of projects`,
         componentTest(() => ProjectListComponent, fixture => {
             fixture.detectChanges();
-            expect(getListedProjectUuids(fixture)).toEqual(['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5']);
-        })
-    );
-
-    it(`shows a new project after it was added`,
-        componentTest(() => ProjectListComponent, fixture => {
-            fixture.detectChanges();
-            appState.mockState({
-                adminProjects: {
-                    projectList: [...appState.now.adminProjects.projectList, 'test3']
-                },
-                entities: {
-                    project: {
-                        ...appState.now.entities.project,
-                        test3: mockProject({ name: 'test3', uuid: 'test3' })
-                    }
-                }
+            fixture.componentInstance.projects$.subscribe(result => {
+                expect(result.length).toBe(appState.now.adminProjects.projectList.length);
             });
-            fixture.detectChanges();
-            expect(getListedProjectUuids(fixture))
-                .toEqual(['55f6a4666eb8467ab6a4666eb8867a84', 'b5eba09ef1554337aba09ef155d337a5', 'test3']);
         })
     );
 
     it(`opens create project dialog when create button is clicked`,
         componentTest(() => ProjectListComponent, fixture => {
+            spyOn(fixture.componentInstance.router, 'navigate').and.returnValue(true);
             fixture.debugElement.query(By.directive(Button)).nativeElement.click();
+            tick();
             fixture.detectChanges();
-            expect(mockModal.fromComponent).toHaveBeenCalledWith(CreateProjectModalComponent);
+
+            expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
+            mockModalService.confirmLastModal(mockProject({uuid: '__NEW_PROJECT_UUID__'}));
+
+            expect(fixture.componentInstance.router.navigate).toHaveBeenCalledWith(['/admin/projects', '__NEW_PROJECT_UUID__']);
+        })
+    );
+
+    it(`deletes a project when delete project is clicked`,
+        componentTest(() => ProjectListComponent, fixture => {
+
+            tick();
+            fixture.detectChanges();
+
+            fixture.componentInstance.projects$
+                .take(1)
+                .subscribe(result => {
+                    fixture.componentInstance.deleteProject(result[0]);
+
+                    tick();
+                    fixture.detectChanges();
+
+                    expect(mockModalService.dialogSpy).toHaveBeenCalled();
+                    mockModalService.confirmLastModal();
+                    expect(fixture.componentInstance.adminProjectEffects.deleteProject).toHaveBeenCalledWith(result[0].uuid);
+                });
+        })
+    );
+
+    it(`filters the projects`,
+        componentTest(() => ProjectListComponent, fixture => {
+
+            tick();
+            fixture.detectChanges();
+
+            fixture.componentInstance.projects$
+                .take(1)
+                .subscribe(result => {
+                    const itemsBefore = fixture.debugElement.queryAll(By.css('mesh-admin-list-item'));
+                    appState.actions.adminProjects.setFilterTerm('tvc');
+
+                    tick();
+                    fixture.detectChanges();
+
+                    const items = fixture.debugElement.queryAll(By.css('mesh-admin-list-item'));
+                    expect(items.length).not.toBe(itemsBefore.length);
+                });
         })
     );
 });
-
-function getListedProjectUuids(fixture: ComponentFixture<ProjectListComponent>): string[] {
-    return fixture.debugElement.queryAll(By.directive(MockProjectItemComponent))
-        .map(it => it.componentInstance.projectUuid);
-}
-
-@Component({
-    selector: 'project-list-item',
-    template: `-`
-})
-class MockProjectItemComponent {
-    @Input()
-    public projectUuid: string;
-}

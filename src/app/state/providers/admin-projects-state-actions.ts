@@ -22,6 +22,7 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
                     loadCount: 0,
                     projectList: [],
                     projectDetail: null,
+                    filterTerm: '',
                     filterTagsTerm: '',
                 }
             }
@@ -110,5 +111,9 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
 
     setTagFilterTerm(term: string): void {
         this.adminProjects.filterTagsTerm = term;
+    }
+
+    setFilterTerm(term: string): void {
+        this.adminProjects.filterTerm = term;
     }
 }

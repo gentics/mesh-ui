@@ -13,6 +13,8 @@ import { AdminProjectEffectsService } from '../../providers/effects/admin-projec
 import { Subject } from 'rxjs';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ProjectResponse } from '../../../common/models/server-models';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 
 
 @Component({
@@ -22,6 +24,7 @@ import { ProjectResponse } from '../../../common/models/server-models';
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
     projects$: Observable<Project[]>;
+    filterTerm: string;
     projectsLoading$: Observable<boolean>;
 
     filterInput = new FormControl('');
@@ -30,26 +33,40 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
     constructor(private state: ApplicationStateService,
                 private entities: EntitiesService,
-                private modal: ModalService,
                 private route: ActivatedRoute,
-                private router: Router,
                 private i18n: I18nService,
                 private modalService: ModalService,
-                private adminProjectEffects: AdminProjectEffectsService) {}
+                public adminProjectEffects: AdminProjectEffectsService,
+                public router: Router) {}
 
     ngOnInit(): void {
-        this.projects$ = this.state.select(state => state.adminProjects.projectList)
-            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)));
+        /*this.projects$ = this.state.select(state => state.adminProjects.projectList)
+            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)));*/
 
         this.projectsLoading$ = this.state.select(state => state.list.loadCount > 0);
         this.adminProjectEffects.loadProjects();
 
-
         this.filterInput.valueChanges
-            .debounceTime(300)
+            .debounceTime(100)
             .takeUntil(this.destroy$)
             .subscribe(term => {
                 this.setQueryParams({ q: term });
+            });
+
+        this.observeParam('q', '').subscribe(filterTerm => {
+                this.adminProjectEffects.setFilterTerm(filterTerm);
+                this.filterInput.setValue(filterTerm, { emitEvent: false });
+            });
+
+        const allProjects$ = this.state.select(state => state.adminProjects.projectList)
+            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)));
+
+        const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
+
+        this.projects$ = combineLatest(allProjects$, filterTerm$)
+            .map(([projects, filterTerm]) => {
+                this.filterTerm = filterTerm;
+                return projects.filter(project => fuzzyMatch(filterTerm, project.name) !== null);
             });
 
     }
@@ -75,7 +92,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
 
     deleteProject(project: Project): void {
-        this.modal.dialog({
+        this.modalService.dialog({
             title: this.i18n.translate('modal.delete_project_title'),
             body: this.i18n.translate('modal.delete_project_body', { name: project.name }),
             buttons: [
