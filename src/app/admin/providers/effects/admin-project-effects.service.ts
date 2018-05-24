@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
@@ -6,7 +7,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { ProjectCreateRequest, ProjectResponse, ProjectUpdateRequest } from '../../../common/models/server-models';
 import { Project } from '../../../common/models/project.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+
 
 
 @Injectable()

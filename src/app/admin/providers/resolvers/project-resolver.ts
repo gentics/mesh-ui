@@ -13,18 +13,15 @@ export class ProjectResolver implements Resolve<Project> {
 
     resolve(route: ActivatedRouteSnapshot): Promise<Project | undefined> {
         const uuid = route.paramMap.get('uuid');
-        if (uuid === 'new') {
-            this.adminProjectEffects.newProject();
-        } else {
-            return this.adminProjectEffects.openProject(uuid)
-                .then(project => {
-                    if (!project) {
-                        // throw
-                        throw new Error(`Could not find a user with the uuid "${uuid}"`);
-                    }
-                    return project;
-                });
-        }
+       
+        return this.adminProjectEffects.openProject(uuid)
+            .then(project => {
+                if (!project) {
+                    // throw
+                    throw new Error(`Could not find a project with the uuid "${uuid}"`);
+                }
+                return project;
+            });
     }
 }
 

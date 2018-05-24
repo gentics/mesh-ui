@@ -89,7 +89,6 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
         this.adminProjects.projectDetail = null;
     }
 
-
     openProjectStart() {
         this.adminProjects.loadCount++;
         this.adminProjects.projectDetail = null;
@@ -107,7 +106,6 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
     openProjectError() {
         this.adminProjects.loadCount--;
     }
-
 
     setTagFilterTerm(term: string): void {
         this.adminProjects.filterTagsTerm = term;

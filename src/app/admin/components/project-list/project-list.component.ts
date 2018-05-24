@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { ModalService } from 'gentics-ui-core';
 
@@ -10,10 +13,9 @@ import { CreateProjectModalComponent } from '../create-project-modal/create-proj
 import { Project } from '../../../common/models/project.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
-import { Subject } from 'rxjs';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ProjectResponse } from '../../../common/models/server-models';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 
 
@@ -40,8 +42,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
                 public router: Router) {}
 
     ngOnInit(): void {
-        /*this.projects$ = this.state.select(state => state.adminProjects.projectList)
-            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)));*/
 
         this.projectsLoading$ = this.state.select(state => state.list.loadCount > 0);
         this.adminProjectEffects.loadProjects();
@@ -68,7 +68,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
                 this.filterTerm = filterTerm;
                 return projects.filter(project => fuzzyMatch(filterTerm, project.name) !== null);
             });
-
     }
 
     ngOnDestroy(): void {

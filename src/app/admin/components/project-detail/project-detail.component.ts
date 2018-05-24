@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { ModalService } from 'gentics-ui-core';
 
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -13,10 +16,6 @@ import { TagFamily } from '../../../common/models/tag-family.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { hashValues } from '../../../common/util/util';
 import { Tag } from '../../../common/models/tag.model';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { combineLatest } from 'rxjs/observable/combineLatest';
-import { ModalService } from 'gentics-ui-core';
-import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../../../shared/components/create-tag-dialog/create-tag-dialog.component';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { NameInputDialogComponent } from '../name-input-dialog/name-input-dialog.component';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
@@ -70,8 +69,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     private destroy$ = new Subject<void>();
     private tagListener$: Subject<void> = null;
-
-
 
     constructor(
         private route: ActivatedRoute,
@@ -144,7 +141,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 return Object.values(families)
                     .sort((fam1, fam2) => this.entities.getTagFamily(fam1).name < this.entities.getTagFamily(fam2).name ? -1 : 1)
                     .map(family => {
-
                         const familyTags = allTags.filter(tag => tag.tagFamily.uuid === family)
                             .map(tag => {
                                 const localTag: LocalTag = {
@@ -175,9 +171,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             {
                 closeOnOverlayClick: false,
                 width: '90%',
-                onClose: (reason: any): void => {
-
-                }
+                onClose: (reason: any): void => { }
             },
             {
                 title: this.i18n.translate('admin.create_tag'),
@@ -216,9 +210,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             {
                 closeOnOverlayClick: false,
                 width: '90%',
-                onClose: (reason: any): void => {
-
-                }
+                onClose: (reason: any): void => { }
             },
             {
                 title: this.i18n.translate('admin.edit_tag'),
@@ -273,9 +265,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             {
                 closeOnOverlayClick: false,
                 width: '90%',
-                onClose: (reason: any): void => {
-
-                }
+                onClose: (reason: any): void => { }
             },
             {
                 title: this.i18n.translate('admin.create_tag_family'),
@@ -314,9 +304,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             {
                 closeOnOverlayClick: false,
                 width: '90%',
-                onClose: (reason: any): void => {
-
-                }
+                onClose: (reason: any): void => { }
             },
             {
                 title: this.i18n.translate('admin.edit_tag_family'),

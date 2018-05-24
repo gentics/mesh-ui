@@ -17,7 +17,6 @@ import { ProjectDetailComponent } from './components/project-detail/project-deta
 export const routes: Route[] = [
     { path: '', component: AdminShellComponent, children: [
             { path: '', pathMatch: 'full', redirectTo: 'projects' },
-            /*{ path: 'projects', component: ProjectListComponent, data: { breadcrumb: 'Projects' } },*/
             {
                 path: 'projects',
                 data: { breadcrumb: 'Projects' },
@@ -70,5 +69,5 @@ export const routes: Route[] = [
                     }
                 ]
             },
-        ] }
+        ]}
 ];

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
@@ -6,8 +7,6 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
-import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
-
 
 @Injectable()
 export class TagsEffectsService {
@@ -62,7 +61,6 @@ export class TagsEffectsService {
             throw error;
         });
     }
-
 
     updateTag(project: string, tagFamilyUuid: string, tagUuid:string, name: string): Promise<TagResponse> {
         this.state.actions.tag.updateTagStart();

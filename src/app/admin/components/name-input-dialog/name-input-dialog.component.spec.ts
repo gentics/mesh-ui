@@ -1,13 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
-import { NameInputDialogComponent } from './name-input-dialog.component';
 import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
+import { NameInputDialogComponent } from './name-input-dialog.component';
 
 describe('NameInputDialogComponent', () => {
     let component: NameInputDialogComponent;

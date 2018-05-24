@@ -20,12 +20,9 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { Tag } from '../../../common/models/tag.model';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
-
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
-import { CreateTagDialogComponentResult, CreateTagDialogComponent } from '../../../shared/components/create-tag-dialog/create-tag-dialog.component';
-;
-
+import { CreateTagDialogComponent, CreateTagDialogComponentResult } from '../create-tag-dialog/create-tag-dialog.component';
 
 @Component({
     selector: 'mesh-node-tags-bar',

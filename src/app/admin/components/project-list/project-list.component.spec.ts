@@ -1,12 +1,13 @@
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { Component, Input, state } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { Button, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { ProjectListComponent } from './project-list.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
@@ -19,11 +20,10 @@ import { MockModalService } from '../../../../testing/modal.service.mock';
 import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
-import { RouterTestingModule } from '@angular/router/testing';
 import { AdminListComponent } from '../admin-list/admin-list.component';
 import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.mock';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
+import { ProjectListComponent } from './project-list.component';
 
 describe('ProjectListComponent', () => {
 
@@ -31,7 +31,6 @@ describe('ProjectListComponent', () => {
     let mockModalService: MockModalService;
 
     beforeEach(async(() => {
-
         TestBed.configureTestingModule({
             declarations: [
                 ProjectListComponent,
@@ -100,15 +99,6 @@ describe('ProjectListComponent', () => {
 
         mockModalService = TestBed.get(ModalService);
     });
-
-    it(`fetches the list of projects`,
-        componentTest(() => ProjectListComponent, fixture => {
-            fixture.detectChanges();
-            fixture.componentInstance.projects$.subscribe(result => {
-                expect(result.length).toBe(appState.now.adminProjects.projectList.length);
-            });
-        })
-    );
 
     it(`opens create project dialog when create button is clicked`,
         componentTest(() => ProjectListComponent, fixture => {

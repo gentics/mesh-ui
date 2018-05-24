@@ -1,15 +1,17 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ProjectDetailComponent } from './project-detail.component';
+import { By } from '@angular/platform-browser';
+import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PaginatePipe } from 'ngx-pagination';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
 import { MockModalService } from '../../../../testing/modal.service.mock';
-import { RouterTestingModule } from '@angular/router/testing';
+
 import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
-import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 import { MockTagComponent } from '../../../shared/components/tag/tag.component.mock';
 import { MockProjectContentDirective } from '../../../shared/directives/project-content.directive.mock';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
@@ -23,17 +25,14 @@ import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { mockProject, mockTagFamily, mockTag } from '../../../../testing/mock-models';
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
-import { ActivatedRoute } from '@angular/router';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.mock';
 import { AdminListComponent } from '../admin-list/admin-list.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CoreModule } from '../../../core/core.module';
-import { SharedModule } from '../../../shared/shared.module';
+import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 import { PaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component';
-import { PaginatePipe } from 'ngx-pagination';
 import { MockPaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component.mock';
 import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
+import { ProjectDetailComponent } from './project-detail.component';
 
 
 let state: TestApplicationState;
@@ -326,7 +325,6 @@ describe('ProjectDetailComponent', () => {
 
 
     it('filters the tags', fakeAsync(() => {
-
         tick();
         fixture.detectChanges();
         const tagsBeforeFilter = fixture.debugElement.queryAll(By.css('mesh-tag'));
@@ -342,7 +340,6 @@ describe('ProjectDetailComponent', () => {
         expect(tagsBeforeFilter.length).not.toEqual(tagsAfterFilter.length);
     }));
 });
-
 
 function getMockedTagFamily(name: string) {
     return mockTagFamily({
