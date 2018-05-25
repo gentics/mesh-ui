@@ -139,7 +139,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .map(([families, tags]) => {
                 const allTags = this.entities.getAllTags();
                 return Object.values(families)
-                    .sort((fam1, fam2) => this.entities.getTagFamily(fam1).name < this.entities.getTagFamily(fam2).name ? -1 : 1)
                     .map(family => {
                         const familyTags = allTags.filter(tag => tag.tagFamily.uuid === family)
                             .map(tag => {
@@ -170,8 +169,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             NameInputDialogComponent,
             {
                 closeOnOverlayClick: false,
-                width: '90%',
-                onClose: (reason: any): void => { }
+                width: '90%'
             },
             {
                 title: this.i18n.translate('admin.create_tag'),
@@ -209,8 +207,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             NameInputDialogComponent,
             {
                 closeOnOverlayClick: false,
-                width: '90%',
-                onClose: (reason: any): void => { }
+                width: '90%'
             },
             {
                 title: this.i18n.translate('admin.edit_tag'),
@@ -264,8 +261,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             NameInputDialogComponent,
             {
                 closeOnOverlayClick: false,
-                width: '90%',
-                onClose: (reason: any): void => { }
+                width: '90%'
             },
             {
                 title: this.i18n.translate('admin.create_tag_family'),
@@ -303,8 +299,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             NameInputDialogComponent,
             {
                 closeOnOverlayClick: false,
-                width: '90%',
-                onClose: (reason: any): void => { }
+                width: '90%'
             },
             {
                 title: this.i18n.translate('admin.edit_tag_family'),

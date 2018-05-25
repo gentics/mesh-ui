@@ -80,8 +80,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             CreateProjectModalComponent,
             {
                 closeOnOverlayClick: false,
-                width: '90%',
-                onClose: (reason: any): void => {}
+                width: '90%'
             }
         )
         .then(modal => modal.open())

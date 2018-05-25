@@ -15,7 +15,7 @@ export class TagsEffectsService {
                 private notification: I18nNotification,
                 private state: ApplicationStateService) {
     }
-    // Load tag families and their sibling tags for a project
+
     loadTagFamiliesAndTheirTags(project: string): void {
         this.state.actions.tag.clearAll();
         this.state.actions.tag.actionStart();
