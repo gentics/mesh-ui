@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
 import { logMethodCallToConsole } from 'immutablets';
+import { Subscription } from 'rxjs/Subscription';
+
+import { AppState } from '../models/app-state.model';
 
 import { ApplicationStateService } from './application-state.service';
-import { AppState } from '../models/app-state.model';
 
 declare var window: Window & {
     meshui: {
         logging: boolean;
         state: AppState;
-    }
+    };
 };
 
 /**
@@ -23,7 +24,6 @@ declare var window: Window & {
 @Injectable()
 export class ApplicationStateDevtools {
     constructor(private appState: ApplicationStateService) {
-
         if (!window.meshui) {
             window.meshui = {} as any;
         }
@@ -47,7 +47,9 @@ export class ApplicationStateDevtools {
 
         const toggle = (enable: boolean) => {
             loggingEnabled = enable;
-            if (subscription) { subscription.unsubscribe(); }
+            if (subscription) {
+                subscription.unsubscribe();
+            }
             if (enable) {
                 subscription = this.appState.observeMethodCalls().subscribe(logMethodCallToConsole);
             }
@@ -62,11 +64,9 @@ export class ApplicationStateDevtools {
                 } else {
                     localStorage.removeItem(LOCAL_STORAGE_KEY);
                 }
-
             }
         });
 
         toggle(loggingEnabled);
     }
-
 }

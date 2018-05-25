@@ -12,8 +12,8 @@ export class NameInputDialogComponent implements IModalDialog, OnInit {
 
     title = '';
     label = '';
-    value: string = null; //Passed from the caller
-    error: string = null;
+    value: string; //Passed from the caller
+    error: string | null;
     constructor() { }
 
     ngOnInit() {

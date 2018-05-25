@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
 
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+
 import { UserGroupSelectComponent } from './user-group-select.component';
 
 describe('UserGroupSelectComponent', () => {
@@ -10,9 +11,9 @@ describe('UserGroupSelectComponent', () => {
 
     beforeEach(async(() => {
         configureComponentTest({
-            declarations: [ UserGroupSelectComponent ],
-            imports: [ GenticsUICoreModule ],
-            providers: [ OverlayHostService ]
+            declarations: [UserGroupSelectComponent],
+            imports: [GenticsUICoreModule],
+            providers: [OverlayHostService]
         });
     }));
 

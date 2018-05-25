@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 import { fuzzyEscapeRegExp, getFuzzyRegExp } from '../../../common/util/fuzzy-search';
 
 /**

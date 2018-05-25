@@ -1,4 +1,4 @@
-import { convertToParamMap, Data, ParamMap, Params } from '@angular/router';
+import { convertToParamMap, Data, Params, ParamMap } from '@angular/router';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 /**
@@ -20,7 +20,7 @@ export class MockActivatedRoute {
 
     /** Set the paramMap observables's next value */
     setParamMap(params?: Params): void {
-        this.paramMapSubject.next(convertToParamMap(params));
+        this.paramMapSubject.next(convertToParamMap(params || {}));
     }
 
     /** Set the data observable's next value */

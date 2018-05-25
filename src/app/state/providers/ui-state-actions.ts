@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
+import { UILanguage } from '../../core/providers/i18n/i18n.service';
 import { AppState } from '../models/app-state.model';
 import { UIState } from '../models/ui-state.model';
-import { UILanguage } from '../../core/providers/i18n/i18n.service';
-
 
 @Injectable()
 @Immutable()
 export class UIStateActions extends StateActionBranch<AppState> {
-    @CloneDepth(1) private ui: UIState;
+    @CloneDepth(1)
+    private ui: UIState;
 
     constructor() {
         super({

@@ -1,32 +1,29 @@
-import { Component, Input, state } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { state, Component, Input } from '@angular/core';
+import { async, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Button, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
-import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
-import { SharedModule } from '../../../shared/shared.module';
-import { CoreModule } from '../../../core/core.module';
 import { mockProject } from '../../../../testing/mock-models';
+import { MockModalService } from '../../../../testing/modal.service.mock';
+import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
+import { CoreModule } from '../../../core/core.module';
+import { SharedModule } from '../../../shared/shared.module';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
-import { MockModalService } from '../../../../testing/modal.service.mock';
-import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
-
-import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
-import { AdminListComponent } from '../admin-list/admin-list.component';
-import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.mock';
 import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
+import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.mock';
+import { AdminListComponent } from '../admin-list/admin-list.component';
+import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
+import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { ProjectListComponent } from './project-list.component';
 
 describe('ProjectListComponent', () => {
-
     let appState: TestApplicationState;
     let mockModalService: MockModalService;
 
@@ -65,7 +62,8 @@ describe('ProjectListComponent', () => {
             },
             auth: {
                 currentUser: 'd8b043e818144e27b043e81814ae2713'
-            }, entities: {
+            },
+            entities: {
                 project: {
                     '55f6a4666eb8467ab6a4666eb8867a84': mockProject({
                         uuid: '55f6a4666eb8467ab6a4666eb8867a84',
@@ -78,9 +76,9 @@ describe('ProjectListComponent', () => {
                                 uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
                                 version: '1.0'
                             }
-                        },
+                        }
                     }),
-                    'b5eba09ef1554337aba09ef155d337a5': mockProject({
+                    b5eba09ef1554337aba09ef155d337a5: mockProject({
                         uuid: 'b5eba09ef1554337aba09ef155d337a5',
                         name: 'tvc',
                         rootNode: {
@@ -91,7 +89,7 @@ describe('ProjectListComponent', () => {
                                 uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
                                 version: '1.0'
                             }
-                        },
+                        }
                     })
                 }
             }

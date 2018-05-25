@@ -2,7 +2,7 @@
 @import "variables";
 @import "../../common-styles";
 
-html-field.mesh-field {
+mesh-html-field.mesh-field {
     padding-bottom: 68px;
     display: flex !important;
     justify-content: space-between;
@@ -71,9 +71,9 @@ html-field.mesh-field {
         }
     }
 }
-list-field html-field.mesh-field,
-micronode-field html-field.mesh-field,
-html-field.mesh-field.compact {
+mesh-list-field mesh-html-field.mesh-field,
+mesh-micronode-field mesh-html-field.mesh-field,
+mesh-html-field.mesh-field.compact {
     padding-bottom: 18px;
     flex-direction: column;
     label {

@@ -6,7 +6,7 @@
     justify-content: space-between;
     margin: 0 20px;
 
-    :host-context(micronode-field),
+    :host-context(mesh-micronode-field),
     &.compact {
         flex-direction: column;
 
@@ -182,10 +182,10 @@
         border-left: $left-bar-width solid $gtx-color-very-light-gray;
         transition: background-color 0.3s, border-color 0.3s;
 
-        /deep/ & > micronode-field,
-        /deep/ & > number-field,
-        /deep/ & > html-field,
-        /deep/ & > string-field {
+        /deep/ & > mesh-micronode-field,
+        /deep/ & > mesh-number-field,
+        /deep/ & > mesh-html-field,
+        /deep/ & > mesh-string-field {
             flex-grow: 1;
         }
     }

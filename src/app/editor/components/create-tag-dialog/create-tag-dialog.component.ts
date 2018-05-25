@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DropdownList, IModalDialog, InputField } from 'gentics-ui-core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DropdownList, InputField, IModalDialog } from 'gentics-ui-core';
+
+import { TagFamily } from '../../../common/models/tag-family.model';
+import { Tag } from '../../../common/models/tag.model';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { notNullOrUndefined } from '../../../common/util/util';
+import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { TagFamily } from '../../../common/models/tag-family.model';
-import { fuzzyMatch } from '../../../common/util/fuzzy-search';
-import { DomSanitizer } from '@angular/platform-browser';
-
-import { Tag } from '../../../common/models/tag.model';
-import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 export interface CreateTagDialogComponentResult {
@@ -15,12 +16,11 @@ export interface CreateTagDialogComponentResult {
     family: TagFamily;
 }
 @Component({
-    selector: 'app-create-tag-dialog',
+    selector: 'mesh-create-tag-dialog',
     templateUrl: './create-tag-dialog.component.html',
     styleUrls: ['./create-tag-dialog.component.scss']
 })
 export class CreateTagDialogComponent implements IModalDialog, OnInit {
-
     @ViewChild('InputTagName') inputTagName: InputField;
     @ViewChild('InputTagFamily') inputTagFamily: InputField;
     @ViewChild('TagFamilyList') familyDropDown: DropdownList;
@@ -41,12 +41,14 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
         private state: ApplicationStateService,
         private sanitizer: DomSanitizer,
         private tagsEffects: TagsEffectsService,
-        private entities: EntitiesService) { }
+        private entities: EntitiesService
+    ) {}
 
     ngOnInit() {
         this.tagFamilies = this.state.now.tags.tagFamilies.map(uuid => {
             return this.entities.getTagFamily(uuid);
-        });
+        })
+        .filter(notNullOrUndefined);
     }
 
     onFamilyNameInputChange(term: string): void {
@@ -58,11 +60,14 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
     }
 
     onFamilySelected(tagFamily: TagFamily): void {
-        this.inputTagFamilyValue = tagFamily.name;
+        if (tagFamily.name) {
+            this.inputTagFamilyValue = tagFamily.name;
+        }
     }
 
     saveTagToFamily(family: TagFamily, tagName: string) {
-        this.tagsEffects.createTag(this.projectName, family.uuid, tagName)
+        this.tagsEffects
+            .createTag(this.projectName, family.uuid, tagName)
             .then(tag => {
                 this.closeFn({ tag, family });
             })
@@ -77,11 +82,12 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
         }
 
         const familyName = this.inputTagFamilyValue.toLowerCase();
-        const family = this.tagFamilies.find(f => f.name.toLowerCase() === familyName);
+        const family = this.tagFamilies.find(f => !!f.name && f.name.toLowerCase() === familyName);
 
         if (!family) {
             // save a new family
-            this.tagsEffects.createTagFamily(this.projectName, familyName)
+            this.tagsEffects
+                .createTagFamily(this.projectName, familyName)
                 .then(newFamily => {
                     this.saveTagToFamily(newFamily, this.newTagName);
                 })
@@ -108,7 +114,7 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
             filterFamilies = [...this.tagFamilies];
         } else {
             filterFamilies = this.tagFamilies.reduce<TagFamily[]>((filteredFamilies, family) => {
-                if (fuzzyMatch(this.inputTagFamilyValue, family.name)) {
+                if (fuzzyMatch(this.inputTagFamilyValue, family.name || '')) {
                     return [...filteredFamilies, family];
                 } else {
                     return filteredFamilies;

@@ -2,19 +2,21 @@ import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
 import { NodeResponse, TagFamilyResponse, TagResponse } from '../../common/models/server-models';
+import { ConfigService } from '../../core/providers/config/config.service';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
 import { ListState } from '../models/list-state.model';
 import { TagState } from '../models/tags-state.model';
+
 import { mergeEntityState } from './entity-state-actions';
-import { ConfigService } from '../../core/providers/config/config.service';
 
 @Injectable()
 @Immutable()
 export class TagsStateActions extends StateActionBranch<AppState> {
-
-    @CloneDepth(0) private entities: EntityState;
-    @CloneDepth(1) private tags: TagState;
+    @CloneDepth(0)
+    private entities: EntityState;
+    @CloneDepth(1)
+    private tags: TagState;
 
     constructor() {
         super({
@@ -23,7 +25,7 @@ export class TagsStateActions extends StateActionBranch<AppState> {
                 tags: {
                     tagFamilies: [],
                     tags: [],
-                    loadCount: 0,
+                    loadCount: 0
                 }
             }
         });
@@ -89,9 +91,13 @@ export class TagsStateActions extends StateActionBranch<AppState> {
 
     createTagSuccess(tag: TagResponse) {
         this.tags.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            tag: [tag]
-        }, false);
+        this.entities = mergeEntityState(
+            this.entities,
+            {
+                tag: [tag]
+            },
+            false
+        );
         this.tags.tags = [...this.tags.tags, tag.uuid];
     }
 

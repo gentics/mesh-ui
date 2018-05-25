@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, getTestBed, TestBed } from '@angular/core/testing';
+import { fakeAsync, getTestBed, ComponentFixture, TestBed } from '@angular/core/testing';
 
 /**
  * Use to test a component in one consistent way. The passed callback
@@ -16,34 +16,34 @@ import { ComponentFixture, fakeAsync, getTestBed, TestBed } from '@angular/core/
  * needs to be updated, only this function needs to change.
  */
 export function componentTest<T>(
-        forComponent: () => ComponentType<T>,
-        test: (fixture: ComponentFixture<T>, instance: T) => (void | Promise<any>)
-    ): () => void;
+    forComponent: () => ComponentType<T>,
+    test: (fixture: ComponentFixture<T>, instance: T) => void | Promise<any>
+): () => void;
 
 /**
  * Defines a component unit test with a different template.
  */
 export function componentTest<T>(
-        forComponent: () => ComponentType<T>,
-        template: string,
-        test: (fixture: ComponentFixture<T>, instance: T) => (void | Promise<any>)
-    ): () => void;
+    forComponent: () => ComponentType<T>,
+    template: string,
+    test: (fixture: ComponentFixture<T>, instance: T) => void | Promise<any>
+): () => void;
 
 /**
  * Defines a component unit test with TestComponentBuilder overwrites,
  * e.g. using different providers / templates / directives.
  */
 export function componentTest<T>(
-        forComponent: () => ComponentType<T>,
-        overwrites: (testBed: TestBed) => TestBed,
-        test: (fixture: ComponentFixture<T>, instance: T) => (void | Promise<any>)
-    ): () => void;
+    forComponent: () => ComponentType<T>,
+    overwrites: (testBed: TestBed) => TestBed,
+    test: (fixture: ComponentFixture<T>, instance: T) => void | Promise<any>
+): () => void;
 
 export function componentTest<T>(componentFn: () => ComponentType<T>, second: any, third?: any): () => void {
     const args = Array.from(arguments);
     return () => {
         // Parse possible combination of arguments
-        const {template, overwritesFn, testFn} = parseOverloadArguments(args);
+        const { template, overwritesFn, testFn } = parseOverloadArguments(args);
 
         const fakeAsyncTest = fakeAsync(() => {
             let testBed: TestBed = getTestBed();
@@ -79,10 +79,12 @@ export interface ComponentType<T> {
     new (...args: any[]): T;
 }
 
-function parseOverloadArguments<T>(args: any[]): {
-    template?: string,
-    overwritesFn?: (testBed: TestBed) => TestBed,
-    testFn: (fixture: ComponentFixture<T>, instance: T | null) => (void | Promise<any>)
+function parseOverloadArguments<T>(
+    args: any[]
+): {
+    template?: string;
+    overwritesFn?: (testBed: TestBed) => TestBed;
+    testFn: (fixture: ComponentFixture<T>, instance: T | null) => void | Promise<any>;
 } {
     if (typeof args[1] === 'function' && !args[2]) {
         return { testFn: args[1] };

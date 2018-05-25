@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { deepApplyWithReuse, Immutable, StateActionBranch } from 'immutablets';
 
-import { EntityState } from '../models/entity-state.model';
-import { AppState } from '../models/app-state.model';
-import { MeshNode } from '../../common/models/node.model';
-import { Schema } from '../../common/models/schema.model';
-import { Microschema } from '../../common/models/microschema.model';
-import { Project } from '../../common/models/project.model';
-import { User } from '../../common/models/user.model';
 import { BaseProperties } from '../../common/models/common.model';
-import { Tag } from '../../common/models/tag.model';
-import { TagFamily } from '../../common/models/tag-family.model';
 import { Group } from '../../common/models/group.model';
+import { Microschema } from '../../common/models/microschema.model';
+import { MeshNode } from '../../common/models/node.model';
+import { Project } from '../../common/models/project.model';
+import { Schema } from '../../common/models/schema.model';
+import { TagFamily } from '../../common/models/tag-family.model';
+import { Tag } from '../../common/models/tag.model';
+import { User } from '../../common/models/user.model';
+import { AppState } from '../models/app-state.model';
+import { EntityState } from '../models/entity-state.model';
 
 @Injectable()
 @Immutable()
@@ -48,12 +48,10 @@ export interface EntityStateType {
     tagFamily: TagFamily;
 }
 
-
 type Discriminator<T extends BaseProperties> = Array<keyof T>;
+type PartialWithUuid<T extends { uuid?: string }> = Partial<T> & { uuid: string };
 
-export type EntityDiscriminators = {
-    [K in keyof EntityStateType]: Discriminator<EntityStateType[K]>;
-};
+export type EntityDiscriminators = { [K in keyof EntityStateType]: Discriminator<EntityStateType[K]> };
 
 const defaultDiscriminator: Discriminator<BaseProperties> = ['uuid'];
 const schemaDiscriminator: Discriminator<Schema> = ['uuid', 'version'];
@@ -70,20 +68,25 @@ const nodeDiscriminator: Discriminator<MeshNode> = ['uuid', 'language', 'version
  * When `strict` is set to false, then the entities in the `changes` object only need to include a uuid and
  * any missing parts of the discriminator will be guessed.
  */
-export function mergeEntityState(oldState: EntityState,
-                                 changes: {[K in keyof EntityState]?: Array<Partial<EntityStateType[K]>>; },
-                                 strict: boolean = true): EntityState {
+export function mergeEntityState(
+    oldState: EntityState,
+    changes: { [K in keyof EntityState]?: Array<PartialWithUuid<EntityStateType[K]>> },
+    strict: boolean = true
+): EntityState {
     const newState = Object.assign({}, oldState);
     let anyBranchChanged = false;
 
     for (const key of Object.keys(changes)) {
-        if (!oldState[key]) {
+        const oldBranch = oldState[key as keyof EntityState];
+        const branchChanges = changes[key as keyof EntityState]!;
+
+        if (!oldBranch) {
             throw new Error(`mergeEntityState: Trying to merge nonexisting entity key "${key}"`);
         }
         const discriminator = getDiscriminator(key as keyof EntityDiscriminators);
-        const branch = mergeBranch(oldState[key], changes[key], discriminator, strict);
-        if (branch !== oldState[key]) {
-            newState[key] = branch;
+        const branch = mergeBranch(oldBranch, branchChanges, discriminator, strict);
+        if (branch !== oldBranch) {
+            newState[key as keyof EntityState] = branch;
             anyBranchChanged = true;
         }
     }
@@ -95,10 +98,12 @@ export function mergeEntityState(oldState: EntityState,
  * Merge an entity branch with a set of changes.
  * Reuses references of unchanged objects.
  */
-function mergeBranch<B extends keyof EntityState>(oldBranch: EntityState[B],
-                                                  changes: Array<EntityStateType[B]>,
-                                                  discriminator: EntityDiscriminators[B],
-                                                  strict: boolean = true): EntityState[B] {
+function mergeBranch<B extends keyof EntityState>(
+    oldBranch: EntityState[B],
+    changes: Array<PartialWithUuid<EntityStateType[B]>>,
+    discriminator: EntityDiscriminators[B],
+    strict: boolean = true
+): EntityState[B] {
     let newBranch: EntityState[B] = Object.assign({}, oldBranch);
     let anyEntityChanged = false;
 
@@ -106,7 +111,11 @@ function mergeBranch<B extends keyof EntityState>(oldBranch: EntityState[B],
         if (strict) {
             const missing = missingProperties(change, discriminator);
             if (0 < missing.length) {
-                throw new Error(`mergeBranch: Required discriminator properties not found: ${missing.join(', ')} on ${JSON.stringify(change, null, 4)}`);
+                const missingString = missing.join(', ');
+                const changeString = JSON.stringify(change, null, 4);
+                throw new Error(
+                    `mergeBranch: Required discriminator properties not found: ${missingString} on ${changeString}`
+                );
             }
         }
         if (!change.uuid) {
@@ -114,12 +123,11 @@ function mergeBranch<B extends keyof EntityState>(oldBranch: EntityState[B],
         }
 
         const oldEntity = getNestedEntity(oldBranch, discriminator, change);
-        const newEntity = oldEntity ? deepApplyWithReuse(oldEntity, change) : change;
+        const newEntity = oldEntity ? deepApplyWithReuse(oldEntity, change) : (change as EntityStateType[B]);
         if (newEntity !== oldEntity) {
             newBranch = assignNestedEntity(newBranch, discriminator, newEntity);
             anyEntityChanged = true;
         }
-
     }
 
     return anyEntityChanged ? newBranch : oldBranch;
@@ -145,10 +153,12 @@ export function getDiscriminator<K extends keyof EntityDiscriminators>(type: K):
  * Retrieves a deeply-nested value from the branch, the value being located at the object path
  * defined by the discriminator array.
  */
-export function getNestedEntity<B extends keyof EntityState>(branch: EntityState[B],
-                                                             discriminator: EntityDiscriminators[B],
-                                                             source: Partial<EntityStateType[B]> & { uuid: string },
-                                                             languageFallbacks?: string[]): EntityStateType[B] | undefined {
+export function getNestedEntity<B extends keyof EntityState>(
+    branch: EntityState[B],
+    discriminator: EntityDiscriminators[B],
+    source: PartialWithUuid<EntityStateType[B]>,
+    languageFallbacks?: string[]
+): EntityStateType[B] | undefined {
     // for all entities, the uuid is required
     if (!source || !source.uuid) {
         return undefined;
@@ -156,7 +166,7 @@ export function getNestedEntity<B extends keyof EntityState>(branch: EntityState
 
     let o: any = branch;
     for (const k of discriminator) {
-        let key = source[k];
+        let key = source[k as keyof typeof source];
         if (k === 'language' && Array.isArray(languageFallbacks) && 0 < languageFallbacks.length) {
             const availableLanguages = Object.keys(o);
             key = getLanguageKeyFromFallbackArray(availableLanguages, languageFallbacks);
@@ -203,13 +213,15 @@ function getLanguageKeyFromFallbackArray(available: string[], fallbacks: string[
  * //   };
  * ```
  */
-function assignNestedEntity<B extends keyof EntityState>(branch: EntityState[B],
-                                                         discriminator: EntityDiscriminators[B],
-                                                         newValue: EntityStateType[B]): EntityState[B] {
+function assignNestedEntity<B extends keyof EntityState>(
+    branch: EntityState[B],
+    discriminator: EntityDiscriminators[B],
+    newValue: EntityStateType[B]
+): EntityState[B] {
     const mutateBranch: any = Object.assign({}, branch);
     let o: any = mutateBranch;
     for (const k of discriminator) {
-        const key = newValue[k];
+        const key = newValue[k as keyof EntityStateType[B]];
         o[key] = k === discriminator[discriminator.length - 1] ? newValue : {};
         o = o[key];
     }

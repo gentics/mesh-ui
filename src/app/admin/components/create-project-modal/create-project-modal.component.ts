@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
 import { IModalDialog, Notification } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
 
 import { ProjectCreateRequest, ProjectResponse, SchemaResponse } from '../../../common/models/server-models';
 import { ApiError } from '../../../core/providers/api/api-error';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
-    selector: 'create-project-modal',
+    selector: 'mesh-create-project-modal',
     templateUrl: './create-project-modal.component.html',
-    styleUrls: ['./create-project-modal.scss'],
+    styleUrls: ['./create-project-modal.scss']
     // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateProjectModalComponent implements IModalDialog, OnInit {
@@ -25,11 +25,12 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     creating = false;
     conflict = false;
 
-    constructor(entities: EntitiesService,
-                private notification: Notification,
-                private adminSchemaEffects: AdminSchemaEffectsService,
-                private adminProjectEffects: AdminProjectEffectsService) {
-
+    constructor(
+        entities: EntitiesService,
+        private notification: Notification,
+        private adminSchemaEffects: AdminSchemaEffectsService,
+        private adminProjectEffects: AdminProjectEffectsService
+    ) {
         this.schemas$ = entities.selectAllSchemas();
         this.name = new FormControl('', Validators.compose([Validators.required, this.conflictValidator]));
         this.schema = new FormControl('', Validators.required);
@@ -49,14 +50,14 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     /** Set folder schema as default if it exists. (It will be chosen most of the time) */
     setDefaultSchema() {
         this.schemas$
-        .skipWhile(schemas => schemas.length === 0)
-        .take(1)
-        .subscribe(schemas => {
-            const folderSchema = schemas.find(schema => schema.name === 'folder');
-            if (folderSchema) {
-                this.schema.setValue(folderSchema);
-            }
-        });
+            .skipWhile(schemas => schemas.length === 0)
+            .take(1)
+            .subscribe(schemas => {
+                const folderSchema = schemas.find(schema => schema.name === 'folder');
+                if (folderSchema) {
+                    this.schema.setValue(folderSchema);
+                }
+            });
     }
 
     closeFn = (val: ProjectResponse) => {};
@@ -85,29 +86,32 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
             this.form.markAsPristine();
             this.creating = true;
             this.conflict = false;
-            this.adminProjectEffects.createProject(request).then(response => {
-                this.closeFn(response);
-                this.creating = false;
-            }).catch(err => {
-                if (err instanceof ApiError && err.response && err.response.status === 409) {
-                    this.conflict = true;
-                    this.name.updateValueAndValidity();
-                } else {
-                    this.notification.show({
-                        type: 'error',
-                        message: err.toString()
-                    });
-                }
-                this.creating = false;
-            });
+            this.adminProjectEffects
+                .createProject(request)
+                .then(response => {
+                    this.closeFn(response);
+                    this.creating = false;
+                })
+                .catch(err => {
+                    if (err instanceof ApiError && err.response && err.response.status === 409) {
+                        this.conflict = true;
+                        this.name.updateValueAndValidity();
+                    } else {
+                        this.notification.show({
+                            type: 'error',
+                            message: err.toString()
+                        });
+                    }
+                    this.creating = false;
+                });
         }
     }
 
     private conflictValidator: (control: AbstractControl) => ValidationErrors | null = control => {
         if (control.pristine && this.conflict) {
-            return {conflict: true};
+            return { conflict: true };
         } else {
             return null;
         }
-    }
+    };
 }

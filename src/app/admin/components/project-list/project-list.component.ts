@@ -1,22 +1,20 @@
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { ModalService } from 'gentics-ui-core';
-
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { Project } from '../../../common/models/project.model';
+import { ProjectResponse } from '../../../common/models/server-models';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { notNullOrUndefined } from '../../../common/util/util';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { ProjectResponse } from '../../../common/models/server-models';
-
-import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 
 
 @Component({
@@ -34,12 +32,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();
 
     constructor(private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private route: ActivatedRoute,
-                private i18n: I18nService,
-                private modalService: ModalService,
-                public adminProjectEffects: AdminProjectEffectsService,
-                public router: Router) {}
+        private entities: EntitiesService,
+        private route: ActivatedRoute,
+        private i18n: I18nService,
+        private modalService: ModalService,
+        public adminProjectEffects: AdminProjectEffectsService,
+        public router: Router) { }
 
     ngOnInit(): void {
 
@@ -54,12 +52,13 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             });
 
         this.observeParam('q', '').subscribe(filterTerm => {
-                this.adminProjectEffects.setFilterTerm(filterTerm);
-                this.filterInput.setValue(filterTerm, { emitEvent: false });
-            });
+            this.adminProjectEffects.setFilterTerm(filterTerm);
+            this.filterInput.setValue(filterTerm, { emitEvent: false });
+        });
 
         const allProjects$ = this.state.select(state => state.adminProjects.projectList)
-            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)));
+            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid))
+                .filter(notNullOrUndefined));
 
         const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
 
@@ -83,10 +82,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
                 width: '90%'
             }
         )
-        .then(modal => modal.open())
-        .then((project: ProjectResponse) => {
-            this.router.navigate(['/admin/projects', project.uuid]);
-        });
+            .then(modal => modal.open())
+            .then((project: ProjectResponse) => {
+                this.router.navigate(['/admin/projects', project.uuid]);
+            });
     }
 
     deleteProject(project: Project): void {
@@ -98,8 +97,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
                 { label: this.i18n.translate('common.delete_button'), type: 'alert', returnValue: true }
             ]
         })
-        .then(modal => modal.open())
-        .then(() => this.adminProjectEffects.deleteProject(project.uuid));
+            .then(modal => modal.open())
+            .then(() => this.adminProjectEffects.deleteProject(project.uuid));
     }
 
     /**

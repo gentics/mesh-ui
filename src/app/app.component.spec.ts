@@ -1,14 +1,14 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { GenticsUICoreModule } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
 
 import { AppComponent } from './app.component';
-import { ApplicationStateService } from './state/providers/application-state.service';
+import { ConfigService } from './core/providers/config/config.service';
 import { SharedModule } from './shared/shared.module';
 import { ApplicationStateDevtools } from './state/providers/application-state-devtools';
-import { ConfigService } from './core/providers/config/config.service';
+import { ApplicationStateService } from './state/providers/application-state.service';
 
 describe(`App`, () => {
     let comp: AppComponent;
@@ -16,10 +16,7 @@ describe(`App`, () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [
-                SharedModule,
-                GenticsUICoreModule.forRoot()
-            ],
+            imports: [SharedModule, GenticsUICoreModule.forRoot()],
             declarations: [AppComponent],
             providers: [
                 ApplicationStateService,
@@ -33,7 +30,7 @@ describe(`App`, () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AppComponent);
-        comp    = fixture.componentInstance;
+        comp = fixture.componentInstance;
 
         fixture.detectChanges();
     });
@@ -42,7 +39,6 @@ describe(`App`, () => {
         expect(fixture).toBeDefined();
         expect(comp).toBeDefined();
     });
-
 });
 
 class MockRouter {

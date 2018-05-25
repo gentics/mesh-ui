@@ -1,37 +1,37 @@
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute } from '@angular/router';
+import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { PaginatePipe } from 'ngx-pagination';
-import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
+import { MockModalService } from '../../../../testing/modal.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-import { MockModalService } from '../../../../testing/modal.service.mock';
+import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
 
-import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
-import { MockTagComponent } from '../../../shared/components/tag/tag.component.mock';
-import { MockProjectContentDirective } from '../../../shared/directives/project-content.directive.mock';
-import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
-import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
-import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { ConfigService } from '../../../core/providers/config/config.service';
-import { MockConfigService } from '../../../core/providers/config/config.service.mock';
-import { mockProject, mockTagFamily, mockTag } from '../../../../testing/mock-models';
+import { mockProject, mockTag, mockTagFamily } from '../../../../testing/mock-models';
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { TagFamily } from '../../../common/models/tag-family.model';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
+import { PaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component';
+import { MockPaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component.mock';
+import { MockTagComponent } from '../../../shared/components/tag/tag.component.mock';
+import { MockProjectContentDirective } from '../../../shared/directives/project-content.directive.mock';
+import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
+import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
 import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.mock';
 import { AdminListComponent } from '../admin-list/admin-list.component';
 import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
-import { PaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component';
-import { MockPaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component.mock';
-import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
 import { ProjectDetailComponent } from './project-detail.component';
 
 
@@ -368,7 +368,7 @@ class MockEntitiesService {
         return state.now.tags.tags.map(uuid => state.now.entities.tag[uuid]);
     });
 
-    getTagFamily = jasmine.createSpy('getTagFamily').and.callFake((uuid) => {
+    getTagFamily = jasmine.createSpy('getTagFamily').and.callFake((uuid: string) => {
         return state.now.entities.tagFamily[uuid];
     });
 }

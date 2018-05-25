@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
+import { Microschema } from '../../common/models/microschema.model';
+import { Schema } from '../../common/models/schema.model';
+import { MicroschemaResponse, ProjectResponse, SchemaResponse } from '../../common/models/server-models';
+import { AdminSchemasState, ProjectAssignments } from '../models/admin-schemas-state.model';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
-import { MicroschemaResponse, ProjectResponse, SchemaResponse } from '../../common/models/server-models';
+
 import { mergeEntityState } from './entity-state-actions';
-import { Schema } from '../../common/models/schema.model';
-import { Microschema } from '../../common/models/microschema.model';
-import { AdminSchemasState, ProjectAssignments } from '../models/admin-schemas-state.model';
 
 @Injectable()
 @Immutable()
 export class AdminSchemasStateActions extends StateActionBranch<AppState> {
-    @CloneDepth(1) private adminSchemas: AdminSchemasState;
-    @CloneDepth(0) private entities: EntityState;
+    @CloneDepth(1)
+    private adminSchemas: AdminSchemasState;
+    @CloneDepth(0)
+    private entities: EntityState;
 
     constructor() {
         super({

@@ -1,13 +1,19 @@
 import { SafeUrl } from '@angular/platform-browser';
+
+import { SchemaField } from './schema.model';
 import {
-    ReleaseMicroschemaInfoFromServer, NodeReferenceFromServer, PermissionInfoFromServer, SchemaReferenceFromServer,
+    NodeReferenceFromServer,
+    PermissionInfoFromServer,
+    ReleaseMicroschemaInfoFromServer,
+    SchemaReferenceFromServer,
     UserReferenceFromServer
 } from './server-models';
-import { SchemaField } from './schema.model';
 
 export interface NodeReference extends NodeReferenceFromServer {}
 
-export interface SchemaReference extends SchemaReferenceFromServer {}
+export interface SchemaReference extends SchemaReferenceFromServer {
+    uuid: string;
+}
 
 export interface MicroschemaReference extends ReleaseMicroschemaInfoFromServer {}
 
@@ -25,7 +31,7 @@ export interface BaseProperties {
 export const TAGS_FIELD_TYPE = '__TAGS__';
 
 export interface ConflictedField {
-    field: SchemaField | { type: typeof TAGS_FIELD_TYPE, name: string }; // We want to reuse the same structure to hold the diff of the Tags of node
+    field: SchemaField | { type: typeof TAGS_FIELD_TYPE; name: string }; // We want to reuse the same structure to hold the diff of the Tags of node
     localValue: any;
     remoteValue: any;
     overwrite: boolean;

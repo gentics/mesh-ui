@@ -2,18 +2,18 @@ import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalService, OverlayHostService } from 'gentics-ui-core';
 
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { TestStateModule } from '../../../state/testing/test-state.module';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { SharedModule } from '../../../shared/shared.module';
-import { UserDropdownComponent } from './user-dropdown.component';
-import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
 import { mockUser } from '../../../../testing/mock-models';
+import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
+import { SharedModule } from '../../../shared/shared.module';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { TestStateModule } from '../../../state/testing/test-state.module';
+
+import { UserDropdownComponent } from './user-dropdown.component';
 
 describe('UserDropdownComponent:', () => {
-
     let appState: TestApplicationState;
 
     beforeEach(async(() => {
@@ -55,45 +55,56 @@ describe('UserDropdownComponent:', () => {
         });
     });
 
-    it(`shows the first name and last name of the user`,
-        componentTest(() => TestComponent, fixture => {
-            fixture.detectChanges();
-            expect(getDisplayedUsername(fixture)).toBe('Hans Maulwurf');
-        })
+    it(
+        `shows the first name and last name of the user`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                fixture.detectChanges();
+                expect(getDisplayedUsername(fixture)).toBe('Hans Maulwurf');
+            }
+        )
     );
 
-    it(`shows the username if real name is missing`,
-        componentTest(() => TestComponent, fixture => {
-            appState.mockState({
-                auth: {
-                    currentUser: 'b6f535db1751483ab535db1751e83afe'
-                }
-            });
-            fixture.detectChanges();
-            expect(getDisplayedUsername(fixture)).toBe('TestUser');
-        })
-    );
-
-    it(`updates the username if it was changed`,
-        componentTest(() => TestComponent, fixture => {
-            appState.mockState({
-                entities: {
-                    user: {
-                        d8b043e818144e27b043e81814ae2713: mockUser({
-                            uuid: 'd8b043e818144e27b043e81814ae2713',
-                            lastname: 'Maulwurf',
-                            firstname: 'Horst',
-                            username: 'HM'
-                        })
+    it(
+        `shows the username if real name is missing`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                appState.mockState({
+                    auth: {
+                        currentUser: 'b6f535db1751483ab535db1751e83afe'
                     }
-                }
-            });
-            fixture.detectChanges();
-            expect(getDisplayedUsername(fixture)).toBe('Horst Maulwurf');
-        })
+                });
+                fixture.detectChanges();
+                expect(getDisplayedUsername(fixture)).toBe('TestUser');
+            }
+        )
+    );
+
+    it(
+        `updates the username if it was changed`,
+        componentTest(
+            () => TestComponent,
+            fixture => {
+                appState.mockState({
+                    entities: {
+                        user: {
+                            d8b043e818144e27b043e81814ae2713: mockUser({
+                                uuid: 'd8b043e818144e27b043e81814ae2713',
+                                lastname: 'Maulwurf',
+                                firstname: 'Horst',
+                                username: 'HM'
+                            })
+                        }
+                    }
+                });
+                fixture.detectChanges();
+                expect(getDisplayedUsername(fixture)).toBe('Horst Maulwurf');
+            }
+        )
     );
 });
-
 
 function getDisplayedUsername(fixture: ComponentFixture<TestComponent>): string {
     return getTextFromElement(fixture.nativeElement.querySelector('gtx-button button'))[0];
@@ -101,17 +112,18 @@ function getDisplayedUsername(fixture: ComponentFixture<TestComponent>): string 
 
 // TODO move this to general util class
 function getTextFromElement(element: HTMLElement): string[] {
-    return Array.from(element.childNodes)
-    // type 3 is Text
-        .filter(node => node.nodeType === 3)
-        .map((node: Text) => node.textContent as string)
-        .map(text => text.trim())
-        .filter(text => text.length > 0);
+    return (
+        Array.from(element.childNodes)
+            // type 3 is Text
+            .filter(node => node.nodeType === 3)
+            .map((node: Text) => node.textContent as string)
+            .map(text => text.trim())
+            .filter(text => text.length > 0)
+    );
 }
 
 @Component({
     template: `
-        <user-dropdown></user-dropdown>`
+        <mesh-user-dropdown></mesh-user-dropdown>`
 })
-class TestComponent { }
-
+class TestComponent {}

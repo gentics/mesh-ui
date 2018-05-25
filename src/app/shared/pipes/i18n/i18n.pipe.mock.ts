@@ -1,11 +1,10 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
     name: 'i18n'
 })
 export class MockI18nPipe implements PipeTransform {
-    transform(arg) {
+    transform(arg: string) {
         return `translated ${arg}`;
     }
 }
-

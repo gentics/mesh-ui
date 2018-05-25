@@ -4,5 +4,5 @@ import { Directive, Input } from "@angular/core";
     selector: '[meshProjectTo]'
 })
 export class MockProjectContentDirective {
-    @Input() meshProjectTo;
+    @Input() meshProjectTo: string;
 }

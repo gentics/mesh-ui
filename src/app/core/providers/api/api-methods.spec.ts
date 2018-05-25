@@ -1,8 +1,7 @@
-import { apiDelete, apiGet, apiPatch, apiPost, apiPostWithoutBody, apiPut } from './api-methods';
 import { MockApiBase } from './api-base.mock';
+import { apiDelete, apiGet, apiPatch, apiPost, apiPostWithoutBody, apiPut } from './api-methods';
 
 describe('api-methods helper functions', () => {
-
     let apiBase: MockApiBase = undefined as any;
     let testApi: TestApi = undefined as any;
     beforeEach(() => {
@@ -22,8 +21,9 @@ describe('api-methods helper functions', () => {
 
         it('returns the return value of apiBase.get()', () => {
             const emitted: any[] = [];
-            testApi.getSomething({ a: 1, b: 'two', c: true })
-                .subscribe(v => { emitted.push(v); });
+            testApi.getSomething({ a: 1, b: 'two', c: true }).subscribe(v => {
+                emitted.push(v);
+            });
 
             expect(emitted).toEqual([]);
             expect(apiBase.allRequests.length).toBe(1);
@@ -44,8 +44,9 @@ describe('api-methods helper functions', () => {
 
         it('returns the return value of apiBase.post()', () => {
             const emitted: any[] = [];
-            testApi.postSomethingWithBody({ a: 1, b: 'two', c: true }, { body: 'as expected' })
-                .subscribe(v => { emitted.push(v); });
+            testApi.postSomethingWithBody({ a: 1, b: 'two', c: true }, { body: 'as expected' }).subscribe(v => {
+                emitted.push(v);
+            });
 
             expect(emitted).toEqual([]);
             expect(apiBase.allRequests.length).toBe(1);
@@ -66,8 +67,9 @@ describe('api-methods helper functions', () => {
 
         it('returns the return value of apiBase.post()', () => {
             const emitted: any[] = [];
-            testApi.postSomethingWithoutBody({ a: 1, b: 'two', c: true })
-                .subscribe(v => { emitted.push(v); });
+            testApi.postSomethingWithoutBody({ a: 1, b: 'two', c: true }).subscribe(v => {
+                emitted.push(v);
+            });
 
             expect(emitted).toEqual([]);
             expect(apiBase.allRequests.length).toBe(1);
@@ -88,8 +90,9 @@ describe('api-methods helper functions', () => {
 
         it('returns the return value of apiBase.delete()', () => {
             const emitted: any[] = [];
-            testApi.deleteSomething({ a: 1, b: 'two', c: true })
-                .subscribe(v => { emitted.push(v); });
+            testApi.deleteSomething({ a: 1, b: 'two', c: true }).subscribe(v => {
+                emitted.push(v);
+            });
 
             expect(emitted).toEqual([]);
             expect(apiBase.allRequests.length).toBe(1);
@@ -110,8 +113,9 @@ describe('api-methods helper functions', () => {
 
         it('returns the return value of apiBase.patch()', () => {
             const emitted: any[] = [];
-            testApi.patchSomething({ id: 314 }, { someData: 'to update somewhere' })
-                .subscribe(v => { emitted.push(v); });
+            testApi.patchSomething({ id: 314 }, { someData: 'to update somewhere' }).subscribe(v => {
+                emitted.push(v);
+            });
 
             expect(emitted).toEqual([]);
             expect(apiBase.allRequests.length).toBe(1);
@@ -132,8 +136,9 @@ describe('api-methods helper functions', () => {
 
         it('returns the return value of apiBase.put()', () => {
             const emitted: any[] = [];
-            testApi.putSomething({ id: 314 }, { someData: 'to be put somewhere' })
-                .subscribe(v => { emitted.push(v); });
+            testApi.putSomething({ id: 314 }, { someData: 'to be put somewhere' }).subscribe(v => {
+                emitted.push(v);
+            });
 
             expect(emitted).toEqual([]);
             expect(apiBase.allRequests.length).toBe(1);
@@ -141,11 +146,10 @@ describe('api-methods helper functions', () => {
             expect(emitted).toEqual([{ pi: 3.14 }]);
         });
     });
-
 });
 
 class TestApi {
-    constructor(private apiBase: MockApiBase) { }
+    constructor(private apiBase: MockApiBase) {}
 
     getSomething = apiGet('/some-api-endpoint' as any);
     postSomethingWithoutBody = apiPostWithoutBody('/some-api-endpoint' as any);
@@ -153,8 +157,8 @@ class TestApi {
     deleteSomething = apiDelete('/some-api-endpoint' as any);
 
     // `never` means there are no PATCH endpoints yet
-    patchSomething = apiPatch('/some-api-endpoint' as any as never);
+    patchSomething = apiPatch(('/some-api-endpoint' as any) as never);
 
     // `never` means there are no PUT endpoints yet
-    putSomething = apiPut('/some-api-endpoint' as any as never);
+    putSomething = apiPut(('/some-api-endpoint' as any) as never);
 }

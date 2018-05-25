@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { Tag } from '../../../common/models/tag.model';
+
 import { TagReferenceFromServer } from '../../../common/models/server-models';
+import { Tag } from '../../../common/models/tag.model';
 
 @Component({
     selector: 'mesh-tag',
@@ -21,8 +22,10 @@ export class TagComponent {
     tagFamilyName(): string {
         if (typeof this.tag.tagFamily === 'string') {
             return this.tag.tagFamily;
+        } else if (this.tag.tagFamily) {
+            return this.tag.tagFamily.name!;
         } else {
-            return this.tag.tagFamily.name;
+            throw new Error(`Tag ${this.tag.name} has no tagFamily property.`);
         }
     }
 }

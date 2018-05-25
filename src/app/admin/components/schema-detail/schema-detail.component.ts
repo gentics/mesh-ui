@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { ModalService } from 'gentics-ui-core';
 
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { MarkerData } from '../monaco-editor/monaco-editor.component';
 import { SchemaResponse } from '../../../common/models/server-models';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
+import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
     templateUrl: './schema-detail.component.html',
@@ -27,26 +27,27 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     isNew = true;
     private subscription: Subscription;
 
-    constructor(private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private modal: ModalService,
-                private schemaEffects: AdminSchemaEffectsService,
-                private route: ActivatedRoute,
-                private router: Router,
-                private ref: ChangeDetectorRef) {}
+    constructor(
+        private state: ApplicationStateService,
+        private entities: EntitiesService,
+        private modal: ModalService,
+        private schemaEffects: AdminSchemaEffectsService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private ref: ChangeDetectorRef
+    ) {}
 
     ngOnInit() {
-        this.schema$ = this.route.data
-            .map(data => data.schema)
-            .do(schema => { this.isNew = !schema; });
+        this.schema$ = this.route.data.map(data => data.schema).do(schema => {
+            this.isNew = !schema;
+        });
 
         this.version$ = this.schema$.map(it => it.version);
 
-        this.subscription = this.schema$
-            .subscribe(schema => {
-                this.schemaJson = schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`;
-                this.ref.detectChanges();
-            });
+        this.subscription = this.schema$.subscribe(schema => {
+            this.schemaJson = schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`;
+            this.ref.detectChanges();
+        });
     }
 
     ngOnDestroy(): void {
@@ -69,21 +70,22 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
                 });
             } else {
                 this.schema$.take(1).subscribe(schema => {
-                    this.schemaEffects.updateSchema({...schema, ...changedSchema});
+                    this.schemaEffects.updateSchema({ ...schema, ...changedSchema });
                 });
             }
         }
     }
 
     delete() {
-        this.schema$.take(1)
-        .switchMap(schema => this.schemaEffects.deleteSchema(schema.uuid))
-        .subscribe(() => this.router.navigate(['admin', 'schemas']));
+        this.schema$
+            .take(1)
+            .switchMap(schema => this.schemaEffects.deleteSchema(schema.uuid))
+            .subscribe(() => this.router.navigate(['admin', 'schemas']));
     }
 }
 
-const updateFields = ['name', 'description', 'fields'];
+const updateFields: Array<keyof SchemaResponse> = ['name', 'description', 'fields'];
 
 function stripSchemaFields(schema: SchemaResponse): any {
-    return updateFields.reduce((obj, key) => ({...obj, [key]: schema[key]}), {});
+    return updateFields.reduce((obj, key) => ({ ...obj, [key]: schema[key] }), {});
 }

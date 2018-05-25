@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
 
-import { ApiService } from '../../../core/providers/api/api.service';
-import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
+import { ApiService } from '../../../core/providers/api/api.service';
+import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Injectable()
 export class TagsEffectsService {
-
     constructor(private api: ApiService,
                 private notification: I18nNotification,
                 private state: ApplicationStateService) {
@@ -62,7 +61,7 @@ export class TagsEffectsService {
         });
     }
 
-    updateTag(project: string, tagFamilyUuid: string, tagUuid:string, name: string): Promise<TagResponse> {
+    updateTag(project: string, tagFamilyUuid: string, tagUuid: string, name: string): Promise<TagResponse> {
         this.state.actions.tag.updateTagStart();
         return this.api.project.updateTag({project, tagFamilyUuid, tagUuid}, { name }).toPromise()
         .then(response => {

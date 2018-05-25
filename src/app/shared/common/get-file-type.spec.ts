@@ -1,4 +1,4 @@
-import { getFileType } from "./get-file-type";
+import { getFileType } from './get-file-type';
 
 describe('getFileType()', () => {
     it('returns type "image"', () => {

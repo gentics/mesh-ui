@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding } from '@angular/core';
-import { MeshControlErrors, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+
 import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
+import { MeshControlErrors, MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
 
 export const FIELD_FULL_WIDTH = '96%';
 export const FIELD_HALF_WIDTH = '60%';
@@ -10,29 +11,23 @@ export const SMALL_SCREEN_LIMIT = 800;
  * This is the base class from which all of the built-in form controls inherit.
  */
 @Component({
-    selector: 'base-field',
+    selector: 'mesh-base-field',
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BaseFieldComponent  {
-    @HostBinding('class.mesh-field')
-    readonly isMeshField = true;
+export class BaseFieldComponent {
+    @HostBinding('class.mesh-field') readonly isMeshField = true;
 
-    @HostBinding('class.compact')
-    isCompact = false;
+    @HostBinding('class.compact') isCompact = false;
 
-    @HostBinding('class.focus')
-    isFocused: boolean = false;
+    @HostBinding('class.focus') isFocused = false;
 
     /** This is set by the ListFieldComponent when creating new list items */
-    @HostBinding('class.list-item')
-    isListItem = false;
+    @HostBinding('class.list-item') isListItem = false;
 
-    @HostBinding('style.width')
-    width: string;
+    @HostBinding('style.width') width: string;
 
-    @HostBinding('style.height')
-    height: string;
+    @HostBinding('style.height') height: string;
 
     /** Returns true is the control is in a valid state */
     get isValid(): boolean {
@@ -126,13 +121,15 @@ export class BaseFieldComponent  {
      * Sets an error on the current control. If the message is "false", this signifies that the given errorCode
      * is no longer in the error state. Alternatively, a hash of { errorCode: message } can be passed in.
      */
-    setError(errors: { [errorCode: string]: string | false });
-    setError(errorCode: string, errorMessage: string | false);
-    setError(errorsOrErrorCode: string | { [errorCode: string]: string | false }, errorMessage?: string | false) {
+    setError(errors: { [errorCode: string]: string | false }): void;
+    setError(errorCode: string, errorMessage: string | false): void;
+    setError(errorsOrErrorCode: string | { [errorCode: string]: string | false }, errorMessage?: string | false): void {
         let errorHash: { [errorCode: string]: string | false };
 
         if (typeof errorsOrErrorCode === 'string') {
-            errorHash = { [errorsOrErrorCode]: errorMessage };
+            errorHash = {
+                [errorsOrErrorCode]: errorMessage === undefined ? 'Error message not specified' : errorMessage
+            };
         } else {
             errorHash = errorsOrErrorCode;
         }

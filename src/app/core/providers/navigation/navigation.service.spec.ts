@@ -1,34 +1,32 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { InstructionActions, NavigationService } from './navigation.service';
+
 import { ConfigService } from '../config/config.service';
+
+import { InstructionActions, NavigationService } from './navigation.service';
 import createSpy = jasmine.createSpy;
 
 describe('NavigationService', () => {
-
     let navigationService: NavigationService;
     let router: MockRouter;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [
-                NavigationService,
-                { provide: Router, useClass: MockRouter },
-                ConfigService
-            ]
+            providers: [NavigationService, { provide: Router, useClass: MockRouter }, ConfigService]
         });
         navigationService = TestBed.get(NavigationService);
         router = TestBed.get(Router);
     });
 
     describe('list()', () => {
-
         let result: InstructionActions;
         const projectName = 'foo';
         const containerUuid = 'test_uuid';
         const language = 'en';
         const expectedCommands = [
-            '/editor', 'project', {
+            '/editor',
+            'project',
+            {
                 outlets: {
                     list: [projectName, containerUuid, language]
                 }
@@ -49,17 +47,17 @@ describe('NavigationService', () => {
             expect(router.navigate.calls.argsFor(0)[0]).toEqual(expectedCommands);
             expect(router.navigate.calls.argsFor(0)[1]).toEqual(extras);
         });
-
     });
 
     describe('detail()', () => {
-
         let result: InstructionActions;
         const projectName = 'foo';
         const nodeUuid = 'test_uuid';
         const lang = 'en';
         const expectedCommands = [
-            '/editor', 'project', {
+            '/editor',
+            'project',
+            {
                 outlets: {
                     detail: [projectName, nodeUuid, lang]
                 }
@@ -80,14 +78,14 @@ describe('NavigationService', () => {
             expect(router.navigate.calls.argsFor(0)[0]).toEqual(expectedCommands);
             expect(router.navigate.calls.argsFor(0)[1]).toEqual(extras);
         });
-
     });
 
     describe('clearDetail()', () => {
-
         let result: InstructionActions;
         const expectedCommands = [
-            '/editor', 'project', {
+            '/editor',
+            'project',
+            {
                 outlets: {
                     detail: null
                 }
@@ -108,7 +106,6 @@ describe('NavigationService', () => {
             expect(router.navigate.calls.argsFor(0)[0]).toEqual(expectedCommands);
             expect(router.navigate.calls.argsFor(0)[1]).toEqual(extras);
         });
-
     });
 });
 

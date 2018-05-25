@@ -1,28 +1,27 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NodeFieldMicronode, MeshNode } from '../../../common/models/node.model';
-import { mockMeshNode, mockTag, mockTagFamily } from '../../../../testing/mock-models';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { mockMeshNode, mockTag, mockTagFamily } from '../../../../testing/mock-models';
+import { MeshNode, NodeFieldMicronode } from '../../../common/models/node.model';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
 import { ConfigService } from '../../../core/providers/config/config.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 
 import { tagsAreEqual } from './tags-are-equal';
 
 describe('tagsAreEqual()', () => {
-
     let state: TestApplicationState;
-    const tagFamily: TagFamily = mockTagFamily({uuid: 'tagFamilyUuid', name: 'mockFamily' });
-    const tag: Tag = mockTag({uuid: 'tagUuid', name: 'mockTag', tagFamily});
-    const tag2: Tag = mockTag({uuid: 'tagUuid2', name: 'secondTag', tagFamily});
+    const tagFamily: TagFamily = mockTagFamily({ uuid: 'tagFamilyUuid', name: 'mockFamily' });
+    const tag: Tag = mockTag({ uuid: 'tagUuid', name: 'mockTag', tagFamily });
+    const tag2: Tag = mockTag({ uuid: 'tagUuid2', name: 'secondTag', tagFamily });
 
     beforeEach(() => {
         configureComponentTest({
             providers: [
                 { provide: ApplicationStateService, useClass: TestApplicationState },
-                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } },
+                { provide: ConfigService, useValue: { CONTENT_LANGUAGES: [] } }
             ]
         });
 
@@ -31,7 +30,7 @@ describe('tagsAreEqual()', () => {
             entities: {
                 tag: {
                     [tag.uuid]: tag,
-                    [tag2.uuid]: tag2,
+                    [tag2.uuid]: tag2
                 }
             },
             tags: {
@@ -43,11 +42,11 @@ describe('tagsAreEqual()', () => {
 
     it('works with equal tags.', () => {
         const oldNode = mockMeshNode({
-            tags: [ { uuid: tag.uuid }, { uuid: tag2.uuid } ],
+            tags: [{ uuid: tag.uuid }, { uuid: tag2.uuid }]
         })['en']['0.2'];
 
         const newNode = mockMeshNode({
-            tags: [ { uuid: tag.uuid }, { uuid: tag2.uuid } ],
+            tags: [{ uuid: tag.uuid }, { uuid: tag2.uuid }]
         })['en']['0.2'];
 
         expect(tagsAreEqual(oldNode.tags, newNode.tags)).toEqual(true);
@@ -55,11 +54,11 @@ describe('tagsAreEqual()', () => {
 
     it('works with not equal tags.', () => {
         const oldNode = mockMeshNode({
-            tags: [ { uuid: tag.uuid }, { uuid: tag2.uuid } ],
+            tags: [{ uuid: tag.uuid }, { uuid: tag2.uuid }]
         })['en']['0.2'];
 
         const newNode = mockMeshNode({
-            tags: [ { uuid: tag.uuid } ],
+            tags: [{ uuid: tag.uuid }]
         })['en']['0.2'];
 
         expect(tagsAreEqual(oldNode.tags, newNode.tags)).toEqual(false);
@@ -67,9 +66,9 @@ describe('tagsAreEqual()', () => {
 
     it('works with a new without any tags.', () => {
         const oldNode = mockMeshNode({
-            tags: [ { uuid: tag.uuid }, { uuid: tag2.uuid } ],
+            tags: [{ uuid: tag.uuid }, { uuid: tag2.uuid }]
         })['en']['0.2'];
 
-        expect(tagsAreEqual(oldNode.tags, null)).toEqual(false);
+        expect(tagsAreEqual(oldNode.tags, null as any)).toEqual(false);
     });
 });

@@ -14,7 +14,7 @@ import { Project } from '../../../common/models/project.model';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { hashValues } from '../../../common/util/util';
+import { hashValues, notNullOrUndefined } from '../../../common/util/util';
 import { Tag } from '../../../common/models/tag.model';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { NameInputDialogComponent } from '../name-input-dialog/name-input-dialog.component';
@@ -31,7 +31,7 @@ enum TagStatus { // The numbers indicate the order the tags and families will be
 }
 
 interface LocalTag {
-    status: TagStatus,
+    status: TagStatus;
     data: Tag | {
         name: string,
         tagFamily: TagFamily | { name: string },
@@ -59,16 +59,16 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public TagStatus = TagStatus;
 
     public project: Project;
-    public tagFamilies: LocalTagFamily[] = null;
+    public tagFamilies: LocalTagFamily[] = [];
 
-    private form: FormGroup = null;
+    private form: FormGroup;
     private filterInput = new FormControl('');
     private tagFilterTerm = '';
     private readOnly = true;
     private tagsChanged = false;
 
     private destroy$ = new Subject<void>();
-    private tagListener$: Subject<void> = null;
+    private tagListener$: Subject<void>;
 
     constructor(
         private route: ActivatedRoute,
@@ -85,7 +85,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        const project$: Observable<Project | undefined> = this.route.data.map(data => data.project);
+        const project$: Observable<Project> = this.route.data.map(data => data.project).filter(notNullOrUndefined);
 
         project$.takeUntil(this.destroy$)
             .subscribe(project => {
@@ -150,13 +150,19 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                             });
 
                         const familyData = this.entities.getTagFamily(family);
+
+                        if (!familyData) {
+                            return null;
+                        }
+
                         const localTagFamily: LocalTagFamily = {
                             status: TagStatus.PRISTINE,
                             data: familyData,
                             tags: familyTags
                         };
                         return localTagFamily;
-                    });
+                    })
+                    .filter(notNullOrUndefined)
             })
             .subscribe(families => {
                 this.tagFamilies = families;
@@ -181,7 +187,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .then(result => {
                 if (tagFamily.tags.some(tag => tag.data.name === result)) {
                     const tag = tagFamily.tags.find(tag => tag.data.name === result);
-                    tag.status = TagStatus.EDITED;
+                    tag!.status = TagStatus.EDITED;
                     this.flagIfTagsHasChanged();
                 } else {
                     const newLocalTag: LocalTag = {
@@ -202,7 +208,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             });
     }
 
-    updateTagClick(tag: LocalTag, family: LocalTagFamily, error: string = null): void {
+    updateTagClick(tag: LocalTag, family: LocalTagFamily, error: string | null = null): void {
         this.modalService.fromComponent(
             NameInputDialogComponent,
             {
@@ -273,7 +279,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .then(result => {
                 if (this.tagFamilies.some(family => family.data.name === result)) {
                     const family = this.tagFamilies.find(family => family.data.name === result);
-                    family.status = TagStatus.EDITED;
+                    family!.status = TagStatus.EDITED;
                     this.flagIfTagsHasChanged();
                 } else {
                     const newLocalTagFamily: LocalTagFamily = {
@@ -294,7 +300,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             });
     }
 
-    updateTagFamilyClick(family: LocalTagFamily, error: string = null): void {
+    updateTagFamilyClick(family: LocalTagFamily, error: string | null = null): void {
         this.modalService.fromComponent(
             NameInputDialogComponent,
             {
@@ -342,7 +348,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .then(() => {
                 if (tagFamily.status === TagStatus.NEW) { // If this is a newly created family, delete it out of awarnes.
                     this.tagFamilies = this.tagFamilies.filter(fam => fam !== tagFamily);
-                } else { //otherwise mark as deleted
+                } else { // otherwise mark as deleted
                     tagFamily.status = TagStatus.DELETED;
                 }
                 this.flagIfTagsHasChanged();
@@ -406,7 +412,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .filter((family) => {
                 switch (family.status) {
                     case TagStatus.NEW:
-                        const createRequest = this.tagEffects.createTagFamily(project.name, family.data.name)
+                        const createRequest = this.tagEffects.createTagFamily(project.name, family.data.name!)
                                                     .then(result => {
                                                         family.status = TagStatus.PRISTINE;
                                                         family.data = result;
@@ -416,12 +422,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                         return true;
 
                         case TagStatus.EDITED:
-                        const editRequest = this.tagEffects.updateTagFamily(project.name, (family.data as TagFamily).uuid, family.data.name)
+                        const editRequest = this.tagEffects.updateTagFamily(project.name, (family.data as TagFamily).uuid, family.data.name!)
                                                 .then(result => {
                                                     family.status = TagStatus.PRISTINE;
                                                     family.data = result;
                                                     tagRequests.push(...this.syncFamilyTags(project, family, result));
-                                                })
+                                                });
                         tagRequests.push(editRequest);
                         return true;
 
@@ -443,7 +449,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             return fam.status !== TagStatus.DELETED;
         })
         .sort((fam1, fam2) => {
-            return fam1.data.name.toLowerCase() < fam2.data.name.toLowerCase() ? -1 : 1;
+            return fam1.data.name!.toLowerCase() < fam2.data.name!.toLowerCase() ? -1 : 1;
         });
     }
 

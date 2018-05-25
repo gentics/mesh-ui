@@ -1,38 +1,49 @@
-import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { Component, NgModule } from '@angular/core';
+import { tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { Component, NgModule } from '@angular/core';
-import { DropdownTriggerDirective, GenticsUICoreModule, ModalService, Notification, OverlayHostService } from 'gentics-ui-core';
+import {
+    DropdownTriggerDirective,
+    GenticsUICoreModule,
+    ModalService,
+    Notification,
+    OverlayHostService
+} from 'gentics-ui-core';
 
-import { CreateProjectModalComponent } from './create-project-modal.component';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { SharedModule } from '../../../shared/shared.module';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { componentTest } from '../../../../testing/component-test';
 import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { mockMeshNode, mockProject, mockSchema, mockUser } from '../../../../testing/mock-models';
 import { ApiError } from '../../../core/providers/api/api-error';
+import { SharedModule } from '../../../shared/shared.module';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
-import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
+
+import { CreateProjectModalComponent } from './create-project-modal.component';
 
 describe('CreateProjectModal', () => {
-
     let appState: TestApplicationState;
     const mockAdminProjectEffectsService = jasmine.createSpyObj('ProjectEffectsService', ['createProject']);
     const mockNotification = jasmine.createSpyObj('Notification', ['show']);
 
-    @NgModule(provideMockI18n({
-        imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule.forRoot(), TestStateModule],
-        providers: [
-            { provide: AdminSchemaEffectsService, useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas']) },
-            { provide: AdminProjectEffectsService, useValue: mockAdminProjectEffectsService},
-            { provide: Notification, useValue: mockNotification},
-            OverlayHostService
-        ],
-        entryComponents: [CreateProjectModalComponent],
-        declarations: [CreateProjectModalComponent]
-    }))
+    @NgModule(
+        provideMockI18n({
+            imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule.forRoot(), TestStateModule],
+            providers: [
+                {
+                    provide: AdminSchemaEffectsService,
+                    useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas'])
+                },
+                { provide: AdminProjectEffectsService, useValue: mockAdminProjectEffectsService },
+                { provide: Notification, useValue: mockNotification },
+                OverlayHostService
+            ],
+            entryComponents: [CreateProjectModalComponent],
+            declarations: [CreateProjectModalComponent]
+        })
+    )
     class TestModule {}
 
     beforeEach(() => {
@@ -49,7 +60,8 @@ describe('CreateProjectModal', () => {
         appState.mockState({
             auth: {
                 currentUser: 'd8b043e818144e27b043e81814ae2713'
-            }, entities: {
+            },
+            entities: {
                 project: {
                     '55f6a4666eb8467ab6a4666eb8867a84': mockProject({
                         uuid: '55f6a4666eb8467ab6a4666eb8867a84',
@@ -63,7 +75,7 @@ describe('CreateProjectModal', () => {
                             }
                         }
                     }),
-                    'b5eba09ef1554337aba09ef155d337a5': mockProject({
+                    b5eba09ef1554337aba09ef155d337a5: mockProject({
                         uuid: 'b5eba09ef1554337aba09ef155d337a5',
                         name: 'tvc',
                         rootNode: {
@@ -92,14 +104,14 @@ describe('CreateProjectModal', () => {
                 },
                 node: {
                     '6adfe63bb9a34b8d9fe63bb9a30b8d8b': mockMeshNode({ uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b' }),
-                    'fdc937c9ce0440188937c9ce04b0185f': mockMeshNode({ uuid: 'fdc937c9ce0440188937c9ce04b0185f' })
+                    fdc937c9ce0440188937c9ce04b0185f: mockMeshNode({ uuid: 'fdc937c9ce0440188937c9ce04b0185f' })
                 },
                 user: {
                     d8b043e818144e27b043e81814ae2713: mockUser({
                         uuid: 'd8b043e818144e27b043e81814ae2713',
                         lastname: 'Maulwurf',
                         firstname: 'Hans',
-                        username: 'HM',
+                        username: 'HM'
                     })
                 },
                 schema: {
@@ -108,16 +120,16 @@ describe('CreateProjectModal', () => {
                         name: 'mockSchema1'
                     }),
 
-                    'b73bbc9adae94c88bbbc9adae99c88f5': mockSchema({
+                    b73bbc9adae94c88bbbc9adae99c88f5: mockSchema({
                         uuid: 'b73bbc9adae94c88bbbc9adae99c88f5',
                         name: 'mockSchema2'
                     }),
-                    'eb967a50be7e4602967a50be7ed60265': mockSchema({
+                    eb967a50be7e4602967a50be7ed60265: mockSchema({
                         uuid: 'eb967a50be7e4602967a50be7ed60265',
                         name: 'mockSchema3'
                     }),
 
-                    'a38a5c9af65844f28a5c9af65804f2e1': mockSchema({
+                    a38a5c9af65844f28a5c9af65804f2e1: mockSchema({
                         uuid: 'a38a5c9af65844f28a5c9af65804f2e1',
                         name: 'mockSchema4'
                     }),
@@ -134,34 +146,44 @@ describe('CreateProjectModal', () => {
         });
     });
 
-    it(`shows a warning if the schema is not a container`,
-        componentTest(() => CreateProjectModalComponent, fixture => {
-            fixture.componentInstance.schema.setValue(appState.now.entities.schema['832235ac0570435ea235ac0570b35e10']);
-            fixture.detectChanges();
+    it(
+        `shows a warning if the schema is not a container`,
+        componentTest(
+            () => CreateProjectModalComponent,
+            fixture => {
+                fixture.componentInstance.schema.setValue(
+                    appState.now.entities.schema['832235ac0570435ea235ac0570b35e10']
+                );
+                fixture.detectChanges();
 
-            const warning = fixture.nativeElement.querySelector('.non-container-warning');
-            expect(warning).toBeDefined();
-            tick(100);
-        })
+                const warning = fixture.nativeElement.querySelector('.non-container-warning');
+                expect(warning).toBeDefined();
+                tick(100);
+            }
+        )
     );
 
-    it(`shows changes in the schema entities`,
-        componentTest(() => TestComponent, (fixture, instance) => {
-            instance.openCreateProjectModal();
-            tick();
-            triggerEvent(fixture.debugElement.query(By.directive(DropdownTriggerDirective)).nativeElement, 'click');
-            fixture.detectChanges();
-            tick();
-            expect(getSelectOptions(fixture).length).toBe(6);
-            appState.mockState({
-                entities: {
-                    schema: {}
-                }
-            });
-            fixture.detectChanges();
-            tick();
-            expect(getSelectOptions(fixture).length).toBe(0);
-        })
+    it(
+        `shows changes in the schema entities`,
+        componentTest(
+            () => TestComponent,
+            (fixture, instance) => {
+                instance.openCreateProjectModal();
+                tick();
+                triggerEvent(fixture.debugElement.query(By.directive(DropdownTriggerDirective)).nativeElement, 'click');
+                fixture.detectChanges();
+                tick();
+                expect(getSelectOptions(fixture).length).toBe(6);
+                appState.mockState({
+                    entities: {
+                        schema: {}
+                    }
+                });
+                fixture.detectChanges();
+                tick();
+                expect(getSelectOptions(fixture).length).toBe(0);
+            }
+        )
     );
 
     it(`creates a new project`,
@@ -191,51 +213,56 @@ describe('CreateProjectModal', () => {
         })
     );
 
+    it(
+        `shows error message on conflict`,
+        componentTest(
+            () => CreateProjectModalComponent,
+            (fixture, instance) => {
+                const projectName = 'testproject1';
+                const testSchema = appState.now.entities.schema['5953336e4342498593336e4342398599'];
 
-    it(`shows error message on conflict`,
-        componentTest(() => CreateProjectModalComponent, (fixture, instance) => {
-            const projectName = 'testproject1';
-            const testSchema = appState.now.entities.schema['5953336e4342498593336e4342398599'];
+                instance.name.setValue('testproject1');
+                instance.schema.setValue(testSchema);
 
+                let error: any = {
+                    response: {
+                        status: 409
+                    }
+                };
 
-            instance.name.setValue('testproject1');
-            instance.schema.setValue(testSchema);
+                error = Object.setPrototypeOf(error, ApiError.prototype);
 
-            let error: any = {
-                response: {
-                    status: 409
-                }
-            };
+                mockAdminProjectEffectsService.createProject.and.returnValue(Promise.reject(error));
 
-            error = Object.setPrototypeOf(error, ApiError.prototype);
+                triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
+                fixture.detectChanges();
 
-            mockAdminProjectEffectsService.createProject.and.returnValue(Promise.reject(error));
-
-            triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
-            fixture.detectChanges();
-
-            const errorMessage = fixture.nativeElement.querySelector('.error');
-            expect(errorMessage).toBeDefined();
-        })
+                const errorMessage = fixture.nativeElement.querySelector('.error');
+                expect(errorMessage).toBeDefined();
+            }
+        )
     );
 
-    it(`shows notification on other error`,
-        componentTest(() => CreateProjectModalComponent, (fixture, instance) => {
-            const projectName = 'testproject1';
-            const testSchema = appState.now.entities.schema['5953336e4342498593336e4342398599'];
+    it(
+        `shows notification on other error`,
+        componentTest(
+            () => CreateProjectModalComponent,
+            (fixture, instance) => {
+                const projectName = 'testproject1';
+                const testSchema = appState.now.entities.schema['5953336e4342498593336e4342398599'];
 
+                instance.name.setValue('testproject1');
+                instance.schema.setValue(testSchema);
 
-            instance.name.setValue('testproject1');
-            instance.schema.setValue(testSchema);
+                mockAdminProjectEffectsService.createProject.and.returnValue(Promise.reject('test error'));
 
-            mockAdminProjectEffectsService.createProject.and.returnValue(Promise.reject('test error'));
+                triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
+                fixture.detectChanges();
 
-            triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
-            fixture.detectChanges();
-
-            tick();
-            expect(mockNotification.show).toHaveBeenCalled();
-        })
+                tick();
+                expect(mockNotification.show).toHaveBeenCalled();
+            }
+        )
     );
 });
 
@@ -256,7 +283,6 @@ class TestComponent {
     constructor(private modalService: ModalService) {}
 
     openCreateProjectModal(): Promise<any> {
-        return this.modalService.fromComponent(CreateProjectModalComponent)
-            .then(modal => modal.open());
+        return this.modalService.fromComponent(CreateProjectModalComponent).then(modal => modal.open());
     }
 }

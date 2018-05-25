@@ -2,13 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
-import { HtmlFieldComponent } from './html-field.component';
+import { errorHashFor, ErrorCode } from '../../common/form-errors';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
-import { ErrorCode, errorHashFor } from '../../common/form-errors';
+
+import { HtmlFieldComponent } from './html-field.component';
 import createSpy = jasmine.createSpy;
 
 describe('HtmlFieldComponent:', () => {
-
     let fixture: ComponentFixture<HtmlFieldComponent>;
     let instance: HtmlFieldComponent;
 
@@ -66,7 +66,6 @@ describe('HtmlFieldComponent:', () => {
     });
 
     describe('validity', () => {
-
         let api: MockMeshFieldControlApi;
 
         beforeEach(() => {

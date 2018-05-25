@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+
 import { ConfigService } from '../config/config.service';
 
 interface NavigationInstruction {
@@ -12,7 +13,7 @@ interface NavigationInstruction {
     detail?: {
         projectName: string;
         nodeUuid?: string;
-        parentNodeUuid?: string,
+        parentNodeUuid?: string;
         schemaUuid?: string;
         language?: string;
         command?: ValidDetailCommands;
@@ -31,8 +32,7 @@ export interface InstructionActions {
  */
 @Injectable()
 export class NavigationService {
-
-    constructor(private router: Router, private config: ConfigService) { }
+    constructor(private router: Router, private config: ConfigService) {}
 
     /**
      * Navigate to a container in the list outlet.
@@ -70,7 +70,7 @@ export class NavigationService {
                 command: 'createNode',
                 schemaUuid,
                 parentNodeUuid,
-                language,
+                language
             }
         });
     }
@@ -127,4 +127,3 @@ export class NavigationService {
         return ['/editor', 'project', { outlets }];
     }
 }
-

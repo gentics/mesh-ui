@@ -1,6 +1,10 @@
-import { ChangeDetectorRef, Directive, ElementRef, HostBinding, Input, OnChanges, OnDestroy, OnInit, Optional, SimpleChanges } from '@angular/core';
-import { ScrollFrameDirective } from './scroll-frame.directive';
+import {
+    ChangeDetectorRef, Directive, ElementRef, HostBinding, Input, OnChanges, OnDestroy, OnInit, Optional,
+    SimpleChanges
+} from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
+
+import { ScrollFrameDirective } from './scroll-frame.directive';
 
 interface Options {
     /** Debounce the scroll event - can increase this if performance is impacted */
@@ -38,10 +42,10 @@ const DEFAULT_OPTIONS: Options = {
  * </div>
  * ```
  */
-@Directive({selector: '[scrollFrameHeading]'})
+@Directive({selector: '[meshScrollFrameHeading]'})
 export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges {
 
-    @Input('scrollFrameHeading') options: ScrollFrameTrackingOptions;
+    @Input('meshScrollFrameHeading') options: ScrollFrameTrackingOptions;
     @Input() disableScrollTarget: boolean;
 
     @HostBinding('style.position')
@@ -54,7 +58,7 @@ export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges
     readonly fixedClass = true;
 
     @HostBinding('class.floating')
-    floating: boolean = false;
+    floating = false;
 
     private subscription: Subscription;
 
