@@ -11,16 +11,19 @@ export class ProjectResolver implements Resolve<Project> {
 
     constructor(private adminProjectEffects: AdminProjectEffectsService ) {}
 
-    resolve(route: ActivatedRouteSnapshot): Promise<Project | undefined> {
+    resolve(route: ActivatedRouteSnapshot): Promise<Project> {
         const uuid = route.paramMap.get('uuid');
-       
+        if (!uuid) {
+            throw new Error(`Could not find a project with the uuid "${uuid}"`);
+        }
+
         return this.adminProjectEffects.openProject(uuid)
-            .then(project => {
+            .then((project) => {
                 if (!project) {
                     // throw
                     throw new Error(`Could not find a project with the uuid "${uuid}"`);
                 }
-                return project;
+                return project!;
             });
     }
 }

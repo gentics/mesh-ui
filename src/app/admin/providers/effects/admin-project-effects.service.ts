@@ -7,8 +7,6 @@ import { I18nNotification } from '../../../core/providers/i18n-notification/i18n
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
-
-
 @Injectable()
 export class AdminProjectEffectsService {
 

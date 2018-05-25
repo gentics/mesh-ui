@@ -1,27 +1,27 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 import { ModalService } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
-import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
+import { ProjectResponse, TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { hashValues, notNullOrUndefined } from '../../../common/util/util';
 import { Tag } from '../../../common/models/tag.model';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { hashValues, notNullOrUndefined } from '../../../common/util/util';
+import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { NameInputDialogComponent } from '../name-input-dialog/name-input-dialog.component';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
-import { ProjectResponse, TagFamilyResponse } from '../../../common/models/server-models';
-import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { NameInputDialogComponent } from '../name-input-dialog/name-input-dialog.component';
 
 enum TagStatus { // The numbers indicate the order the tags and families will be saved
     DELETED = 1,
@@ -162,7 +162,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                         };
                         return localTagFamily;
                     })
-                    .filter(notNullOrUndefined)
+                    .filter(notNullOrUndefined);
             })
             .subscribe(families => {
                 this.tagFamilies = families;
@@ -364,86 +364,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         return (this.form.dirty && this.form.valid && !this.readOnly) || this.tagsChanged;
     }
 
-    syncFamilyTags(project:Project, localFamily: LocalTagFamily, remoteFamily: TagFamily): Promise<any | void>[] {
-        const tagRequests: Promise<any | void>[] = [];
-        if (localFamily.status !== TagStatus.DELETED) {
-
-            localFamily.tags = localFamily.tags.filter(tag => { // We will instantely remove the deleted tags.
-                switch (tag.status) {
-                    case TagStatus.NEW:
-                        tagRequests.push(this.tagEffects.createTag(project.name, remoteFamily.uuid, tag.data.name)
-                            .then(result => {
-                                tag.status = TagStatus.PRISTINE;
-                                tag.data = result;
-                                return result;
-                            }));
-                        return true;
-
-
-                    case TagStatus.EDITED:
-                        tagRequests.push(this.tagEffects.updateTag(project.name, remoteFamily.uuid, (tag.data as Tag).uuid, tag.data.name)
-                            .then(result => {
-                                tag.status = TagStatus.PRISTINE;
-                                tag.data = result;
-                                return result;
-                            }));
-                        return true;
-
-
-                    case TagStatus.DELETED:
-                        tagRequests.push(this.tagEffects.deleteTag(project.name, (tag.data as Tag)));
-                        return false;
-
-                    default:
-                        return true;
-                }
-            });
-        }
-        return tagRequests;
-    }
-
-    syncFamilies(project: Project): Promise<any | void>[] {
-        const tagRequests: Promise<any | void>[] = [];
-
-        if (this.tagsChanged) {
-            this.tagFamilies = this.tagFamilies.sort((fam1, fam2) => {
-                return fam1.status < fam2.status ? -1 : 1;
-            })
-            .filter((family) => {
-                switch (family.status) {
-                    case TagStatus.NEW:
-                        const createRequest = this.tagEffects.createTagFamily(project.name, family.data.name!)
-                                                    .then(result => {
-                                                        family.status = TagStatus.PRISTINE;
-                                                        family.data = result;
-                                                        tagRequests.push(...this.syncFamilyTags(project, family, result));
-                                                    });
-                        tagRequests.push(createRequest);
-                        return true;
-
-                        case TagStatus.EDITED:
-                        const editRequest = this.tagEffects.updateTagFamily(project.name, (family.data as TagFamily).uuid, family.data.name!)
-                                                .then(result => {
-                                                    family.status = TagStatus.PRISTINE;
-                                                    family.data = result;
-                                                    tagRequests.push(...this.syncFamilyTags(project, family, result));
-                                                });
-                        tagRequests.push(editRequest);
-                        return true;
-
-                    case TagStatus.DELETED:
-                        tagRequests.push(this.tagEffects.deleteTagFamily(project.name, family.data as TagFamily));
-                        return false;
-
-                    default:
-                        tagRequests.push(...this.syncFamilyTags(project, family, family.data as TagFamily));
-                        return true;
-                }
-            });
-        }
-        return tagRequests;
-    }
-
     getFilteredFamilies(): LocalTagFamily[] {
         return this.tagFamilies.filter(fam => {
             return fam.status !== TagStatus.DELETED;
@@ -462,6 +382,98 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         });
     }
 
+    updateTags (project: Project, family: LocalTagFamily): Promise<void> {
+        const tagRequests: Promise<any | void>[] = [];
+        family.tags.filter(tag => tag.status !== TagStatus.DELETED)
+            .map(async tag => {
+                let result: TagResponse | null;
+                switch (tag.status) {
+                    case TagStatus.NEW:
+                        result = await this.tagEffects.createTag(project.name, (family.data as TagFamily).uuid, tag.data.name);
+                        break;
+                    case TagStatus.EDITED:
+                        result = await this.tagEffects.updateTag(project.name, (family.data as TagFamily).uuid, (tag.data as Tag).uuid, tag.data.name!);
+                        break;
+                    default:
+                        result = null;
+                        break;
+                }
+
+                if (result) {
+                    tag.status = TagStatus.PRISTINE;
+                    tag.data = result;
+                }
+                tagRequests.push(Promise.resolve());
+            });
+
+        return Promise.all(tagRequests).then(() => Promise.resolve());
+    }
+
+    deleteMarkedTags(project: Project, localFamily: LocalTagFamily): Promise<void> {
+        const deleteRequests: Promise<any | void>[] = [];
+
+        localFamily.tags.filter(tag => tag.status === TagStatus.DELETED)
+            .map(tag => {
+                deleteRequests.push(this.tagEffects.deleteTag(project.name, (tag.data as Tag)));
+            });
+
+        return Promise.all(deleteRequests).then(() => Promise.resolve());
+    }
+
+    updateTagFamilies(project: Project): Promise<void> {
+        const tagRequests: Promise<any | void>[] = [];
+
+        this.tagFamilies.filter(family => family.status !== TagStatus.DELETED)
+            .map(async family => {
+                let result: TagFamilyResponse | null;
+                switch (family.status) {
+                    case TagStatus.NEW:
+                        result = await this.tagEffects.createTagFamily(project.name, family.data.name!);
+                        break;
+
+                    case TagStatus.EDITED:
+                        result = await this.tagEffects.updateTagFamily(project.name, (family.data as TagFamily).uuid, family.data.name!);
+                        break;
+                    default:
+                        result = null;
+                        break;
+                }
+
+                if (result) {
+                    family.status = TagStatus.PRISTINE;
+                    family.data = result;
+                }
+
+                await this.deleteMarkedTags(project, family);
+                await this.updateTags(project, family);
+                tagRequests.push(Promise.resolve());
+            });
+
+        return Promise.all(tagRequests).then(() => Promise.resolve());
+    }
+
+    deleteMarkedFamilies(project: Project): Promise<void> {
+        const deleteRequests: Promise<any | void>[] = [];
+
+        this.tagFamilies.filter(family => family.status === TagStatus.DELETED)
+            .map(family => {
+               deleteRequests.push(this.tagEffects.deleteTagFamily(project.name, family.data as TagFamily));
+            });
+        return Promise.all(deleteRequests).then(result => Promise.resolve());
+    }
+
+    async syncFamilies(project: Project): Promise<void> {
+        if (!this.tagsChanged) {
+            return Promise.resolve();
+        }
+
+        const tagRequests: Promise<any | void>[] = [];
+        await this.deleteMarkedFamilies(project);
+        await this.updateTagFamilies(project);
+
+        return Promise.all(tagRequests).then(() => Promise.resolve());
+    }
+
     persistProject() {
         this.tagListener$.next();
         this.tagListener$.complete();
@@ -472,11 +484,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         if (this.form.dirty && this.form.valid && !this.readOnly) {
             const projectUpdateRespose = this.projectEffect.updateProject(this.project.uuid, { name: formValue.name });
             projectUpdateRespose.then(response => {
-                queue.push(...this.syncFamilies(response));
+                queue.push(this.syncFamilies(response));
             });
             queue.push(projectUpdateRespose);
         } else {
-            queue.push(...this.syncFamilies(this.project));
+            queue.push(this.syncFamilies(this.project));
         }
 
         Promise.all(queue)
