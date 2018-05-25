@@ -30,7 +30,6 @@ import { FormGeneratorModule } from '../form-generator/form-generator.module';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectResolver } from './providers/resolvers/project-resolver';
 import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
-import { CreateTagDialogComponent } from '../shared/components/create-tag-dialog/create-tag-dialog.component';
 import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';
 
 @NgModule({
