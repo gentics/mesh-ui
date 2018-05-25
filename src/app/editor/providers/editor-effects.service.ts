@@ -69,6 +69,9 @@ export class EditorEffectsService {
             language: language,
         };
 
+        // TODO: remote lang lang: language from params.
+        // It is currently needed to overcome the https://github.com/gentics/mesh/issues/404 issue
+        // what it does now, it adds ?lang=language query param
         return this.api.project.createNode({ project: projectName, lang: language } as any, nodeCreateRequest)
             .toPromise()
             .then(updatedNode => this.processTagsAndBinaries(node, updatedNode, tags))
@@ -323,6 +326,9 @@ export class EditorEffectsService {
                          binary: File,
                          language: string,
                          version: string): Promise<MeshNode | void> {
+        // TODO: remote lang lang: language from params.
+        // It is currently needed to overcome the https://github.com/gentics/mesh/issues/404 issue
+        // what it does now, it adds ?lang=language query param
         return this.api.project.updateBinaryField({
             project,
             nodeUuid,
