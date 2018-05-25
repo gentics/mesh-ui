@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-
+import { combineLatest } from 'rxjs/observable/combineLatest';
 import { MeshNode } from '../../../common/models/node.model';
 import { concatUnique, notNullOrUndefined } from '../../../common/util/util';
+import { ConfigService } from '../../../core/providers/config/config.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+
 
 @Component({
     selector: 'mesh-container-language-switcher',
@@ -17,40 +19,27 @@ export class ContainerLanguageSwitcherComponent {
     currentLanguage$: Observable<string>;
     availableLanguages$: Observable<string[]>;
 
-    constructor(
-        private state: ApplicationStateService,
-        private entities: EntitiesService,
-        private navigationService: NavigationService
-    ) {
+    constructor(private state: ApplicationStateService,
+                private config: ConfigService,
+                private entities: EntitiesService,
+                private navigationService: NavigationService) {
+
         this.currentLanguage$ = this.state.select(state => state.list.language);
 
-        this.availableLanguages$ = this.state
-            .select(state => state.list.items)
-            .filter(notNullOrUndefined)
-            .combineLatest(this.currentLanguage$)
-            .map(([childrenUuids, language]) => this.uuidsToUniqueLanguages(childrenUuids, language))
-            .combineLatest(this.currentLanguage$)
-            .map(([languages, currentLanguage]) => this.removeCurrentLanguage(languages, currentLanguage));
-    }
-
-    /**
-     * Given an array of node uuids, this concatenates all unique langauges in which
-     * those nodes are available.
-     */
-    private uuidsToUniqueLanguages(uuids: string[], language: string): string[] {
-        return uuids
-            .map(uuid => this.entities.getNode(uuid, { language, strictLanguageMatch: false }))
-            .filter<MeshNode>(notNullOrUndefined)
-            .map(node => node.availableLanguages)
-            .reduce((unique, curr) => concatUnique(unique, Object.keys(curr)), []);
+        this.availableLanguages$ = combineLatest([Observable.of(config.CONTENT_LANGUAGES), this.currentLanguage$])
+            .map(([languages, currentLanguage]) => {
+                return this.removeCurrentLanguage(languages, currentLanguage);
+            });
     }
 
     private removeCurrentLanguage(languages: string[], currentLanguage: string): string[] {
         const index = languages.indexOf(currentLanguage);
+        const languagesWithoutCurrentLanguage = [...languages];
         if (-1 < index) {
-            languages.splice(index, 1);
+            languagesWithoutCurrentLanguage.splice(index, 1);
         }
-        return languages;
+
+        return languagesWithoutCurrentLanguage;
     }
 
     itemClick(languageCode: string): void {

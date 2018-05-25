@@ -71,6 +71,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
             const node = changes.node.currentValue as MeshNode;
             this.nodeTags = node.tags ? [...node.tags] : [];
             this.isDirty = false;
+            this.changeDetector.markForCheck();
         }
     }
 
