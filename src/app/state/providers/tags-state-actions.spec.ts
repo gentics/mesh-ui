@@ -1,14 +1,14 @@
-import { ListStateActions } from './list-state-actions';
-import { mockTagFamily, mockTag } from '../../../testing/mock-models';
+import { mockTag, mockTagFamily } from '../../../testing/mock-models';
 import { MeshNode } from '../../common/models/node.model';
 import { TestApplicationState } from '../testing/test-application-state.mock';
 
-describe('TagsStateActions', () => {
+import { ListStateActions } from './list-state-actions';
 
+describe('TagsStateActions', () => {
     let state: TestApplicationState;
 
     beforeEach(() => {
-        state = new TestApplicationState({ FALLBACK_LANGUAGE: 'en'} as any);
+        state = new TestApplicationState({ FALLBACK_LANGUAGE: 'en' } as any);
     });
 
     it('fetchTagFamiliesSuccess updates the list', () => {
@@ -31,7 +31,6 @@ describe('TagsStateActions', () => {
         ]);
         expect(state.now.tags.tagFamilies).toEqual(['uuid1_family', 'uuid2_family', 'uuid3_family']);
     });
-
 
     it('fetchTagsOfTagFamilySuccess updates the list', () => {
         // Populate the list.

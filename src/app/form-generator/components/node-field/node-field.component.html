@@ -1,7 +1,7 @@
 <label>{{ api.field.label || api.field.name }}</label>
 <div class="uuid-form">
-    <!-- TODO: re-enable the thumbnail once we have wired up real data -->
-    <!--<thumbnail [nodeUuid]="userValue"></thumbnail>-->
+    <!-- TODO: re-enable the mesh-thumbnail once we have wired up real data -->
+    <!--<mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>-->
     <gtx-input [(ngModel)]="userValue" [readonly]="api.readOnly"></gtx-input>
     <gtx-button [disabled]="!isValidUuid()"
                 *ngIf="!api.readOnly"

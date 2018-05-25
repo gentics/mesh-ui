@@ -1,12 +1,11 @@
-import { getNestedEntity, mergeEntityState } from './entity-state-actions';
-import { EntityState } from '../models/entity-state.model';
-import { User } from '../../common/models/user.model';
 import { MeshNode } from '../../common/models/node.model';
+import { User } from '../../common/models/user.model';
+import { EntityState } from '../models/entity-state.model';
+
+import { getNestedEntity, mergeEntityState } from './entity-state-actions';
 
 describe('EntityStateActions', () => {
-
     describe('mergeEntityState()', () => {
-
         const empty: EntityState = {
             group: {},
             microschema: {},
@@ -41,10 +40,12 @@ describe('EntityStateActions', () => {
         it('does not change the old state', () => {
             const before = empty;
             const after = mergeEntityState(before, {
-                user: [{
-                    uuid: 'admin-uuid',
-                    username: 'admin'
-                }]
+                user: [
+                    {
+                        uuid: 'admin-uuid',
+                        username: 'admin'
+                    }
+                ]
             });
 
             expect(before).toEqual({
@@ -55,7 +56,7 @@ describe('EntityStateActions', () => {
                 schema: {},
                 user: {},
                 tag: {},
-                tagFamily: {},
+                tagFamily: {}
             });
         });
 
@@ -70,17 +71,18 @@ describe('EntityStateActions', () => {
                 }
             };
             const after = mergeEntityState(before, {
-                user: [{
-                    uuid: 'admin-uuid',
-                    username: 'admin'
-                }]
+                user: [
+                    {
+                        uuid: 'admin-uuid',
+                        username: 'admin'
+                    }
+                ]
             });
 
             expect(after.user).toBe(before.user);
         });
 
         describe('reusing object references', () => {
-
             let before: EntityState;
             let after: EntityState;
 
@@ -101,20 +103,22 @@ describe('EntityStateActions', () => {
                     }
                 };
                 after = mergeEntityState(before, {
-                    user: [{
-                        uuid: 'admin-uuid',
-                        username: 'admin',
-                        groups: [
-                            {
-                                name: 'firstGroup',
-                                uuid: 'first-group-uuid'
-                            },
-                            {
-                                name: 'secondGroup',
-                                uuid: 'second-group-uuid'
-                            }
-                        ]
-                    }]
+                    user: [
+                        {
+                            uuid: 'admin-uuid',
+                            username: 'admin',
+                            groups: [
+                                {
+                                    name: 'firstGroup',
+                                    uuid: 'first-group-uuid'
+                                },
+                                {
+                                    name: 'secondGroup',
+                                    uuid: 'second-group-uuid'
+                                }
+                            ]
+                        }
+                    ]
                 });
             });
 
@@ -153,7 +157,6 @@ describe('EntityStateActions', () => {
         });
 
         describe('strictness', () => {
-
             const changes = {
                 node: [
                     {
@@ -167,7 +170,7 @@ describe('EntityStateActions', () => {
             it('throws when missing uuid and strict = true', () => {
                 const before = empty;
                 function doMergeStrict() {
-                    mergeEntityState(before, { node: [{ version: 'en' }] }, true);
+                    mergeEntityState(before, { node: [{ version: 'en' }] } as any, true);
                 }
                 expect(doMergeStrict).toThrow();
             });
@@ -175,7 +178,7 @@ describe('EntityStateActions', () => {
             it('throws when missing uuid and strict = false', () => {
                 const before = empty;
                 function doMergeStrict() {
-                    mergeEntityState(before, { node: [{ version: 'en' }] }, false);
+                    mergeEntityState(before, { node: [{ version: 'en' }] } as any, false);
                 }
                 expect(doMergeStrict).toThrow();
             });
@@ -198,7 +201,6 @@ describe('EntityStateActions', () => {
         });
 
         describe('entity-specific merges', () => {
-
             it('adds a new node', () => {
                 const before = empty;
                 const after = mergeEntityState(before, {
@@ -236,7 +238,8 @@ describe('EntityStateActions', () => {
                                     edited: 'yesterday'
                                 } as MeshNode
                             }
-                        }}
+                        }
+                    }
                 };
                 const after = mergeEntityState(before, {
                     node: [
@@ -275,7 +278,8 @@ describe('EntityStateActions', () => {
                                     edited: 'yesterday'
                                 } as MeshNode
                             }
-                        }}
+                        }
+                    }
                 };
                 const after = mergeEntityState(before, {
                     node: [
@@ -310,7 +314,6 @@ describe('EntityStateActions', () => {
     });
 
     describe('getNestedEntity()', () => {
-
         const node1: any = { uuid: 'nodeUuid1', language: 'en', version: '0.1' };
         const node2: any = { uuid: 'nodeUuid1', language: 'en', version: '0.2' };
         const node3: any = { uuid: 'nodeUuid1', language: 'en', version: '2.5' };
@@ -337,7 +340,7 @@ describe('EntityStateActions', () => {
             schema: {},
             user: {},
             tag: {},
-            tagFamily: {},
+            tagFamily: {}
         };
 
         it('should return exact entity when all discriminators present in source', () => {
@@ -362,7 +365,6 @@ describe('EntityStateActions', () => {
         });
 
         describe('language handling', () => {
-
             it('should return undefined if no language supplied', () => {
                 const source = {
                     uuid: 'nodeUuid1'
@@ -371,7 +373,6 @@ describe('EntityStateActions', () => {
 
                 expect(result).toBeUndefined();
             });
-
 
             it('should return undefined if language string does not match any available', () => {
                 const source = {
@@ -387,7 +388,11 @@ describe('EntityStateActions', () => {
                 const source = {
                     uuid: 'nodeUuid1'
                 } as any;
-                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, ['bad', 'de', 'en']);
+                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, [
+                    'bad',
+                    'de',
+                    'en'
+                ]);
 
                 expect(result).toBe(node5);
             });
@@ -397,7 +402,11 @@ describe('EntityStateActions', () => {
                     uuid: 'nodeUuid1',
                     language: 'en'
                 } as any;
-                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, ['bad', 'de', 'en']);
+                const result = getNestedEntity(state.node, ['uuid', 'language', 'version'], source, [
+                    'bad',
+                    'de',
+                    'en'
+                ]);
 
                 expect(result).toBe(node5);
             });
@@ -421,7 +430,5 @@ describe('EntityStateActions', () => {
                 expect(result).toBeUndefined();
             });
         });
-
-
     });
 });

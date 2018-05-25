@@ -1,5 +1,5 @@
-import { ApiService } from './api.service';
 import { MockApiBase } from './api-base.mock';
+import { ApiService } from './api.service';
 
 /**
  * An ApiService mock that can be provided in place of `ApiService` and spies on all method calls.

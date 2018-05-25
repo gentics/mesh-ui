@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+
 import { ContentPortalService } from '../../../core/providers/content-portal/content-portal.service';
 
 const DEFAULT_PORTAL_ID = '__default_portal__';
@@ -13,7 +14,6 @@ const DEFAULT_PORTAL_ID = '__default_portal__';
     changeDetection: ChangeDetectionStrategy.Default
 })
 export class ContentPortalComponent implements OnInit, OnDestroy {
-
     @Input() id: string = DEFAULT_PORTAL_ID;
 
     get templates(): TemplateRef<any>[] {

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'no-content',
+    selector: 'mesh-no-content',
     template: `
         <div>
             <h1>404: page missing</h1>

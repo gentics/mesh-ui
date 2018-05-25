@@ -1,8 +1,8 @@
-import { DisplayFieldPipe } from './display-field.pipe';
 import { MeshNode } from '../../../common/models/node.model';
 
-describe('DisplayFieldPipe', () => {
+import { DisplayFieldPipe } from './display-field.pipe';
 
+describe('DisplayFieldPipe', () => {
     it('transforms to an empty string for undefined input', () => {
         const pipe = new DisplayFieldPipe();
         expect(pipe.transform(undefined as any)).toEqual('');
@@ -60,5 +60,4 @@ describe('DisplayFieldPipe', () => {
         };
         expect(pipe.transform(input)).toEqual('uuid-1234');
     });
-
 });

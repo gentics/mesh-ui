@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Icon } from 'gentics-ui-core';
 
@@ -12,8 +12,7 @@ describe('AudioPlayButtonComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [AudioPlayButtonComponent, Icon]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -27,13 +26,16 @@ describe('AudioPlayButtonComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should render an autoPlay attribute if it was requested', fakeAsync(() => {
-        component.autoPlay = true;
-        fixture.detectChanges();
-        tick();
-        const audioElement: DebugElement = fixture.debugElement.query(By.css('audio'));
-        expect(audioElement.attributes['autoplay']).toEqual('autoplay');
-    }));
+    it(
+        'should render an autoPlay attribute if it was requested',
+        fakeAsync(() => {
+            component.autoPlay = true;
+            fixture.detectChanges();
+            tick();
+            const audioElement: DebugElement = fixture.debugElement.query(By.css('audio'));
+            expect(audioElement.attributes['autoplay']).toEqual('autoplay');
+        })
+    );
 
     it('should play/pause the audio', () => {
         const toggleButton: DebugElement = fixture.debugElement.query(By.css('icon'));

@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
+
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
+
 import { BooleanFieldComponent } from './boolean-field.component';
 
 describe('BooleanFieldComponent:', () => {
-
     let fixture: ComponentFixture<BooleanFieldComponent>;
     let instance: BooleanFieldComponent;
 

@@ -1,38 +1,37 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
-import { ModalService, IModalInstance } from 'gentics-ui-core';
+import { IModalInstance, ModalService } from 'gentics-ui-core';
 
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EditorEffectsService } from '../../providers/editor-effects.service';
 
-import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
-import { EntitiesService } from '../../../state/providers/entities.service';
-import { getMeshNodeBinaryFields, simpleCloneDeep } from '../../../common/util/util';
-import { initializeNode } from '../../../common/util/initialize-node';
 import { NodeReferenceFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
-import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
-import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
+import { initializeNode } from '../../../common/util/initialize-node';
+import { getMeshNodeBinaryFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { ApiError } from '../../../core/providers/api/api-error';
 import { ApiService } from '../../../core/providers/api/api.service';
-import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
+import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
-import { ApiBase } from '../../../core/providers/api/api-base.service';
+import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
+import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
+import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
 
 @Component({
-    selector: 'node-editor',
+    selector: 'mesh-node-editor',
     templateUrl: './node-editor.component.html',
     styleUrls: ['./node-editor.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class NodeEditorComponent implements OnInit, OnDestroy {
     node: MeshNode | undefined;
     schema: Schema | undefined;
@@ -48,7 +47,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     @ViewChild('formGenerator') formGenerator?: FormGeneratorComponent;
     @ViewChild('tagsBar') tagsBar?: NodeTagsBarComponent;
 
-    constructor(private state: ApplicationStateService,
+    constructor(
+        private state: ApplicationStateService,
         private entities: EntitiesService,
         private changeDetector: ChangeDetectorRef,
         private editorEffects: EditorEffectsService,
@@ -58,7 +58,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private i18n: I18nService,
         private modalService: ModalService,
         private apiBase: ApiBase,
-        private api: ApiService) { }
+        private api: ApiService
+    ) {}
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -75,20 +76,22 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     // a change detection error in dev mode.
                     this.editorEffects.openNode(projectName, nodeUuid, language);
                 });
-
-            } else {
+            } else if (projectName && schemaUuid && parentNodeUuid && language) {
                 this.editorEffects.createNode(projectName, schemaUuid, parentNodeUuid, language);
+            } else {
+                throw new Error(`Cannot open or create a node. Required parameters are missing.`);
             }
         });
 
-        this.openNode$ = this.state.select(state => state.editor.openNode)
-            .filter(Boolean)
+        this.openNode$ = this.state
+            .select(state => state.editor.openNode)
+            .filter(notNullOrUndefined)
             .switchMap(openNode => {
-                // const {uuid, language, schemaUuid, parentNodeUuid} = openNode;
-                const schemaUuid = openNode && openNode.schemaUuid;
-                if (schemaUuid) {
-                    return this.entities.selectSchema(schemaUuid).map((schema) => {
-                        const node = initializeNode(schema, openNode.parentNodeUuid, openNode.language);
+                const schemaUuid = openNode.schemaUuid;
+                const parentNodeUuid = openNode.parentNodeUuid;
+                if (schemaUuid && parentNodeUuid) {
+                    return this.entities.selectSchema(schemaUuid).map(schema => {
+                        const node = initializeNode(schema, parentNodeUuid, openNode.language);
                         return [node, schema] as [MeshNode, Schema];
                     });
                 } else {
@@ -98,7 +101,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             return simpleCloneDeep(node);
                         }),
                         node$.switchMap(node => {
-                            return this.entities.selectSchema(node.schema.uuid);
+                            return this.entities.selectSchema(node.schema.uuid!);
                         })
                     );
                     return latest;
@@ -128,7 +131,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
 
         const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-        // const parentDisplayNode: any = { displayName: parentNode.displayName || '' };
         const parentDisplayNode = { displayName: parentNode ? parentNode.displayName : '' } as NodeReferenceFromServer;
         let breadcrumb = this.node.breadcrumb;
 
@@ -137,13 +139,18 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 displayName: this.i18n.translate('editor.create_node')
             } as NodeReferenceFromServer;
             breadcrumb = [createNodeBreadcrumb, parentDisplayNode, ...parentNode.breadcrumb];
-        } else if (!breadcrumb) {
+        } else if (!breadcrumb && parentNode) {
             breadcrumb = [parentDisplayNode, ...parentNode.breadcrumb];
         } else {
             breadcrumb = [{ displayName: this.node.displayName } as NodeReferenceFromServer, ...breadcrumb];
         }
         // TODO: remove this once Mesh fixes the order of the breadcrumbs
-        return breadcrumb.slice().reverse().map(b => b.displayName).join(' › ');
+        // https://github.com/gentics/mesh/issues/398
+        return breadcrumb
+            .slice()
+            .reverse()
+            .map(b => b.displayName)
+            .join(' › ');
     }
 
     getNodePathRouterLink(): any[] {
@@ -165,22 +172,29 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     /**
      * Carries on the saving process and displays a loading overlay if any binary fields has to be uploaded.
      */
-    private saveNodeWithProgress(saveFn: Promise<any>): Promise<any> {
-        const numBinaryFields = Object.keys(getMeshNodeBinaryFields(this.node)).length;
+    private saveNodeWithProgress(saveFn: Promise<any> | null, node: MeshNode): Promise<any> {
+        const numBinaryFields = Object.keys(getMeshNodeBinaryFields(node)).length;
 
         if (numBinaryFields > 0) {
-            return this.modalService.fromComponent(ProgressbarModalComponent,
-                {
-                    closeOnOverlayClick: false,
-                    closeOnEscape: false
-                },
-                {
-                    translateToPlural: numBinaryFields > 1
-                })
+            return this.modalService
+                .fromComponent(
+                    ProgressbarModalComponent,
+                    {
+                        closeOnOverlayClick: false,
+                        closeOnEscape: false
+                    },
+                    {
+                        translateToPlural: numBinaryFields > 1
+                    }
+                )
                 .then(modal => {
                     modal.open();
-                    saveFn.then(() => modal.instance.closeFn(null));
+                    if (saveFn) {
+                        saveFn.then(() => modal.instance.closeFn(null));
+                    }
                 });
+        } else {
+            return Promise.resolve();
         }
     }
 
@@ -190,50 +204,57 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Tags might be explicitly passed in if we are solving the conflicts and we chose the tags from the remote version. Otherwise look if tags were edited or not (tagsBar.isDirty)
      *
      */
-    saveNode(navigateOnSave = true, tags: TagReferenceFromServer[] = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null): void {
+    saveNode(navigateOnSave = true, tags?: TagReferenceFromServer[]): void {
         // TODO: remove the test case when done with conflict resolution.
         // To quickly test the handleSaveConflicts, uncomment bellow:
         /*
             this.handleSaveConflicts(['name', 'pets', 'number', 'Html', 'Adate', 'othernode', 'Bool', 'microschema.name', 'microschema.number']);
             return;
         */
-        if (!this.node) {
-            return;
+        const formGenerator = this.formGenerator;
+        const tagsBar = this.tagsBar;
+        if (!this.node || !formGenerator || !tagsBar) {
+            throw new Error('Could not save node. One or more expected objects were not present.');
         }
         if (this.isDirty) {
             this.isSaving = true;
-            let saveFn: Promise<any>;
+            let saveFn: Promise<any> | null = null;
+            tags = !!tags ? tags : tagsBar.isDirty ? tagsBar.nodeTags : undefined;
 
-            if (!this.node.uuid) { // Create new node.
+            if (!this.node.uuid) {
+                // Create new node.
                 const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                saveFn = this.editorEffects.saveNewNode(parentNode.project.name, this.node, tags)
-                    .then(node => {
-                        this.isSaving = false;
-                        if (node) {
-                            this.formGenerator.setPristine(node);
-                            this.listEffects.loadChildren(parentNode.project.name, parentNode.uuid, node.language);
+                const projectName = parentNode && parentNode.project.name;
+                if (parentNode && projectName) {
+                    saveFn = this.editorEffects.saveNewNode(projectName, this.node, tags).then(
+                        node => {
+                            this.isSaving = false;
+                            if (node && node.language) {
+                                formGenerator.setPristine(node);
+                                this.listEffects.loadChildren(projectName, parentNode.uuid, node.language);
 
-                            if (navigateOnSave) {
-                                this.navigationService.detail(parentNode.project.name, node.uuid, node.language).navigate();
+                                if (navigateOnSave) {
+                                    this.navigationService.detail(projectName, node.uuid, node.language).navigate();
+                                }
                             }
+                        },
+                        error => {
+                            this.isSaving = false;
+                            this.changeDetector.detectChanges();
                         }
-                    }, error => {
+                    );
+                }
+            } else {
+                saveFn = this.editorEffects.saveNode(this.node, tags).then(
+                    node => {
                         this.isSaving = false;
-                        this.changeDetector.detectChanges();
-                    });
-
-                this.saveNodeWithProgress(saveFn);
-            } else { // Update node.
-                saveFn = this.editorEffects.saveNode(this.node, tags)
-                    .then(node => {
-                        this.isSaving = false;
-                        if (node) {
-                            this.formGenerator.update(node);
-                            this.formGenerator.setPristine(node);
+                        if (node && node.project.name && node.language) {
+                            formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                             this.changeDetector.markForCheck();
                         }
-                    }, error => {
+                    },
+                    error => {
                         if (error.response) {
                             const errorResponse = error.response.json();
                             if (errorResponse.type === 'node_version_conflict') {
@@ -241,37 +262,43 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             }
                         }
                         this.isSaving = false;
-                    });
-                this.saveNodeWithProgress(saveFn);
+                    }
+                );
             }
+            this.saveNodeWithProgress(saveFn, this.node);
         }
     }
 
     handleSaveConflicts(conflicts: string[]): void {
-        this.api.project.getNode({ project: this.node.project.name, nodeUuid: this.node.uuid})
+        if (!this.node) {
+            throw new Error('Cannot handle save conflicts because this.node is undefined.');
+        }
+        this.api.project
+            .getNode({ project: this.node.project.name!, nodeUuid: this.node.uuid })
             .take(1)
             .subscribe((response: NodeResponse) => {
-                this.modalService.fromComponent(
-                    NodeConflictDialogComponent,
-                    {
-                        closeOnOverlayClick: false,
-                        width: '90%',
-                        onClose: (reason: any): void => {
-                            this.changeDetector.detectChanges();
+                this.modalService
+                    .fromComponent(
+                        NodeConflictDialogComponent,
+                        {
+                            closeOnOverlayClick: false,
+                            width: '90%',
+                            onClose: (reason: any): void => {
+                                this.changeDetector.detectChanges();
+                            }
+                        },
+                        {
+                            conflicts,
+                            localTags: this.tagsBar ? this.tagsBar.nodeTags : [],
+                            localNode: this.node,
+                            remoteNode: response as MeshNode
                         }
-                    },
-                    {
-                        conflicts,
-                        localTags: this.tagsBar.nodeTags,
-                        localNode: this.node,
-                        remoteNode : response as MeshNode,
-                    }
-                )
-                .then(modal => modal.open())
-                .then(mergedNode => {
-                    this.node = mergedNode;
-                    this.saveNode(true, this.node.tags);
-                });
+                    )
+                    .then(modal => modal.open())
+                    .then(mergedNode => {
+                        this.node = mergedNode;
+                        this.saveNode(true, mergedNode.tags);
+                    });
             });
     }
 
@@ -279,8 +306,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Publish the node, and if there are changes, save first before publishing.
      */
     publishNode(): void {
-        if (this.node && this.isDraft()) {
-            const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : null;
+        if (this.node && this.tagsBar && this.isDraft()) {
+            const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : undefined;
             const promise = this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
 
             promise.then(node => {
@@ -299,9 +326,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.state.actions.editor.focusList();
     }
 
-
     get isDirty(): boolean {
-        return this.formGenerator.isDirty || this.tagsBar.isDirty;
+        return (!!this.formGenerator && this.formGenerator.isDirty) || (!!this.tagsBar && this.tagsBar.isDirty);
     }
 
     private getNodeTitle(): string {

@@ -13,33 +13,44 @@ import {
     ViewChildren,
     ViewContainerRef
 } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { ISortableEvent, ISortableGroupOptions } from 'gentics-ui-core';
-import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
-import { ListTypeFieldType, SchemaField } from '../../../common/models/schema.model';
+import { ISortableEvent, ISortableGroupOptions, ISortableMoveEvent } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+
 import { Microschema } from '../../../common/models/microschema.model';
 import { ListField, ListNodeFieldType, NodeFieldType } from '../../../common/models/node.model';
-import { FieldGenerator, FieldGeneratorService, FieldSet } from '../../providers/field-generator/field-generator.service';
-import { getControlType } from '../../common/get-control-type';
+import { ListTypeFieldType, SchemaField } from '../../../common/models/schema.model';
 import { initializeListValue } from '../../../common/util/initialize-list-value';
-
-import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
-import { BaseFieldComponent, FIELD_FULL_WIDTH, FIELD_HALF_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
-import { MicronodeFieldComponent } from '../micronode-field/micronode-field.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { getControlType } from '../../common/get-control-type';
+import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
+import {
+    FieldGenerator,
+    FieldGeneratorService,
+    FieldSet
+} from '../../providers/field-generator/field-generator.service';
+import {
+    BaseFieldComponent,
+    FIELD_FULL_WIDTH,
+    FIELD_HALF_WIDTH,
+    SMALL_SCREEN_LIMIT
+} from '../base-field/base-field.component';
+import { MicronodeFieldComponent } from '../micronode-field/micronode-field.component';
 
 function randomId(): string {
-    return Math.random().toString(36).substring(5);
+    return Math.random()
+        .toString(36)
+        .substring(5);
 }
 
 @Component({
-    selector: 'list-field',
+    selector: 'mesh-list-field',
     templateUrl: './list-field.component.html',
     styleUrls: ['./list-field.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ListFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy, OnInit  {
-
+export class ListFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy, OnInit {
     api: MeshFieldControlApi;
     field: SchemaField;
     value: ListField<ListNodeFieldType>;
@@ -47,17 +58,16 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     listItems: QueryList<ViewContainerRef>;
     @ViewChild('listContainer', { read: ElementRef })
     listContainer: ElementRef;
-    @HostBinding('class.micronode-list')
-    isMicronodeList: boolean = false;
-    listHeight: string = 'auto';
-    updating: boolean = false;
+    @HostBinding('class.micronode-list') isMicronodeList = false;
+    listHeight = 'auto';
+    updating = false;
     groupId: string = randomId();
     removeGroupId: string = randomId();
-    dragging: boolean = false;
-    hoverRemoveArea: boolean = false;
+    dragging = false;
+    hoverRemoveArea = false;
     mainGroup: ISortableGroupOptions = {
         name: this.groupId,
-        pull: e => e.options.group.name === this.removeGroupId ? 'clone' : true,
+        pull: e => (e.options.group.name === this.removeGroupId ? 'clone' : true),
         put: true,
         revertClone: false
     };
@@ -70,16 +80,16 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     private subscription: Subscription;
     private timer: number;
 
-    constructor(private fieldGeneratorService: FieldGeneratorService,
-                private meshControlGroup: MeshControlGroupService,
-                private viewContainerRef: ViewContainerRef,
-                private entities: EntitiesService,
-                protected changeDetector: ChangeDetectorRef,
-                public elementRef: ElementRef,
-                @Optional() private micronodeField?: MicronodeFieldComponent
+    constructor(
+        private fieldGeneratorService: FieldGeneratorService,
+        private meshControlGroup: MeshControlGroupService,
+        private viewContainerRef: ViewContainerRef,
+        private entities: EntitiesService,
+        protected changeDetector: ChangeDetectorRef,
+        public elementRef: ElementRef,
+        @Optional() private micronodeField?: MicronodeFieldComponent
     ) {
         super(changeDetector);
-
     }
 
     ngOnInit(): void {
@@ -91,7 +101,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         this.fieldGenerator = this.fieldGeneratorService.create(this.viewContainerRef, updateFn);
         // Instantiating the dynamic child components inside the ngAfterViewInit hook will lead to
         // change detection errors, hence the setTimeout. See https://github.com/angular/angular/issues/10131
-        this.subscription = this.listItems.changes.subscribe((val) => {
+        this.subscription = this.listItems.changes.subscribe(val => {
             this.timer = setTimeout(() => {
                 this.createListItems();
                 setTimeout(() => {
@@ -113,13 +123,13 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         this.fieldSets.forEach(componentRef => componentRef.destroy());
     }
 
-    onMove = (e): boolean => {
+    onMove = (e: ISortableMoveEvent): boolean => {
         this.hoverRemoveArea = e.to.classList.contains('remove-area');
         this.changeDetector.markForCheck();
         return true;
-    }
+    };
 
-    trackByFn(index): number {
+    trackByFn(index: number): number {
         return index;
     }
 
@@ -179,7 +189,8 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         let lookup: Observable<Microschema | undefined>;
         const insertIndex = typeof index === 'number' ? index : this.value.length;
         if (typeof microschemaName === 'string') {
-            lookup = this.entities.selectAllMicroschemas()
+            lookup = this.entities
+                .selectAllMicroschemas()
                 .map(microschemas => microschemas.find(microschema => microschema.name === microschemaName));
         } else {
             lookup = Observable.of(undefined);

@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 
-import { GetNodeValueFunction, GetNodeValueReturnType, SchemaFieldPath } from '../../common/form-generator-models';
 import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
-import { ControlChanges, MeshControl } from './mesh-control.class';
+import { GetNodeValueFunction, GetNodeValueReturnType, SchemaFieldPath } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
+
+import { ControlChanges, MeshControl } from './mesh-control.class';
 
 /**
  * A service which represents the root of the tree of MeshControls which make up the form in the editor.
  */
 @Injectable()
 export class MeshControlGroupService {
-
     get isValid(): boolean {
         return !!this._rootControl && this.rootControl.isValid;
     }

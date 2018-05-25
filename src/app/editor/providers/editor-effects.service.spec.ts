@@ -1,23 +1,23 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, tick, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 
-import { EditorEffectsService } from './editor-effects.service';
-import { ApplicationStateService } from '../../state/providers/application-state.service';
-import { TestApplicationState } from '../../state/testing/test-application-state.mock';
-import { EntitiesService } from '../../state/providers/entities.service';
-import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
-import { ConfigService } from '../../core/providers/config/config.service';
+import { mockMeshNode } from '../../../testing/mock-models';
+import { MeshNode } from '../../common/models/node.model';
+import { FieldMapFromServer } from '../../common/models/server-models';
+import { MockApiBase } from '../../core/providers/api/api-base.mock';
+import { ApiBase } from '../../core/providers/api/api-base.service';
 import { ApiService } from '../../core/providers/api/api.service';
 import { MockApiService } from '../../core/providers/api/api.service.mock';
-import { mockMeshNode } from '../../../testing/mock-models';
-import { FieldMapFromServer } from '../../common/models/server-models';
-import { MeshNode } from '../../common/models/node.model';
+import { ConfigService } from '../../core/providers/config/config.service';
 import { MockConfigService } from '../../core/providers/config/config.service.mock';
-import { ApiBase } from '../../core/providers/api/api-base.service';
-import { MockApiBase } from '../../core/providers/api/api-base.mock';
+import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
+import { ApplicationStateService } from '../../state/providers/application-state.service';
+import { EntitiesService } from '../../state/providers/entities.service';
+import { TestApplicationState } from '../../state/testing/test-application-state.mock';
+
+import { EditorEffectsService } from './editor-effects.service';
 
 describe('EditorEffectsService', () => {
-
     let editorEffectsService: EditorEffectsService;
     let state: TestApplicationState;
     let api: MockApiService;
@@ -31,7 +31,7 @@ describe('EditorEffectsService', () => {
                 { provide: I18nNotification, useClass: MockI18nNotification },
                 { provide: ConfigService, useClass: MockConfigService },
                 { provide: ApiService, useClass: MockApiService },
-                { provide: ApiBase, useClass: MockApiBase },
+                { provide: ApiBase, useClass: MockApiBase }
             ]
         });
 
@@ -53,7 +53,6 @@ describe('EditorEffectsService', () => {
     });
 
     describe('saving nodes', () => {
-
         const mockParentNode = { uuid: 'parent_uuid' } as any;
         const mockSchema = { uuid: 'schema_uuid' } as any;
         const mockTransform = {
@@ -63,10 +62,10 @@ describe('EditorEffectsService', () => {
                 startX: 10,
                 startY: 10,
                 width: 200,
-                height: 200,
+                height: 200
             },
             focalPointX: 0.5,
-            focalPointY: 0.5,
+            focalPointY: 0.5
         };
         let originalNode: MeshNode;
 
@@ -89,7 +88,9 @@ describe('EditorEffectsService', () => {
             beforeEach(() => {
                 createdNode = { ...originalNode, ...{ version: '1.1' } };
                 api.project.createNode = jasmine.createSpy('createNode').and.returnValue(Observable.of(createdNode));
-                api.project.assignTagsToNode = jasmine.createSpy('createNode').and.returnValue(Observable.of(createdNode));
+                api.project.assignTagsToNode = jasmine
+                    .createSpy('createNode')
+                    .and.returnValue(Observable.of(createdNode));
             });
 
             it('calls api.project.createNode() with correct args', () => {
@@ -158,27 +159,33 @@ describe('EditorEffectsService', () => {
         });
 
         describe('saveNode()', () => {
-
             let updatedNode: MeshNode;
 
             beforeEach(() => {
                 updatedNode = { ...originalNode, ...{ version: '1.1' } };
-                api.project.updateNode = jasmine.createSpy('createNode').and.returnValue(Observable.of({ node: updatedNode }));
-                api.project.assignTagsToNode = jasmine.createSpy('createNode').and.returnValue(Observable.of(updatedNode));
+                api.project.updateNode = jasmine
+                    .createSpy('createNode')
+                    .and.returnValue(Observable.of({ node: updatedNode }));
+                api.project.assignTagsToNode = jasmine
+                    .createSpy('createNode')
+                    .and.returnValue(Observable.of(updatedNode));
             });
 
             it('calls api.project.createNode() with correct args', () => {
                 editorEffectsService.saveNode(originalNode);
 
-                expect(api.project.updateNode).toHaveBeenCalledWith({
-                    project: 'project',
-                    nodeUuid: originalNode.uuid,
-                    language: originalNode.language
-                }, {
-                    fields: { foo: 'bar' },
-                    version: originalNode.version,
-                    language: 'en',
-                });
+                expect(api.project.updateNode).toHaveBeenCalledWith(
+                    {
+                        project: 'project',
+                        nodeUuid: originalNode.uuid,
+                        language: originalNode.language
+                    },
+                    {
+                        fields: { foo: 'bar' },
+                        version: originalNode.version,
+                        language: 'en'
+                    }
+                );
             });
 
             it('calls api.project.assignTagsToNode() with supplied tags', fakeAsync(() => {
@@ -234,10 +241,7 @@ describe('EditorEffectsService', () => {
             }));
 
         });
-
     });
-
-
 });
 
 class MockEntitiesService {}

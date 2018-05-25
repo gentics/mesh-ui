@@ -1,19 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ComponentRef, NgModule, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CommonModule } from '@angular/common';
 import { By } from '@angular/platform-browser';
 
-import { FieldGenerator, FieldGeneratorService } from './field-generator.service';
-import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../../components/base-field/base-field.component';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
+import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
-import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { FieldErrorsComponent } from '../../components/field-errors/field-errors.component';
-import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { TestStateModule } from '../../../state/testing/test-state.module';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
+import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../../components/base-field/base-field.component';
+import { FieldErrorsComponent } from '../../components/field-errors/field-errors.component';
+import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
+
+import { FieldGenerator, FieldGeneratorService } from './field-generator.service';
 import createSpy = jasmine.createSpy;
 
 describe('FieldGeneratorService', () => {
@@ -28,9 +29,7 @@ describe('FieldGeneratorService', () => {
                 FieldGeneratorService,
                 { provide: MeshControlGroupService, useClass: MockMeshControlGroupService }
             ],
-            declarations: [
-                TestComponent
-            ]
+            declarations: [TestComponent]
         });
 
         fieldGeneratorService = TestBed.get(FieldGeneratorService);
@@ -44,7 +43,6 @@ describe('FieldGeneratorService', () => {
     }));
 
     describe('FieldGenerator', () => {
-
         let fieldGenerator: FieldGenerator;
         let fieldConfig: {
             path: any[];
@@ -55,7 +53,6 @@ describe('FieldGeneratorService', () => {
         };
 
         describe('attachField()', () => {
-
             const mockPath = ['mockPath'];
             const mockField: SchemaField = {
                 name: 'mockField',
@@ -284,15 +281,12 @@ describe('FieldGeneratorService', () => {
                 result.instance.setError('ERR', 'test error');
                 expect(fieldErrorsInstance.errors).toEqual({ ERR: 'test error' });
             });
-
         });
-
     });
-
 });
 
 @Component({
-    selector: 'test-component',
+    selector: 'mesh-test-component',
     template: '<div class="test-component" #insertionPoint></div>'
 })
 class TestComponent implements AfterViewInit {
@@ -310,14 +304,14 @@ class TestComponent implements AfterViewInit {
 
 /* tslint:disable:no-empty */
 @Component({
-    selector: 'mock-field-component',
+    selector: 'mesh-mock-field-component',
     template: '<div class="mock-field-component"></div>'
 })
 class MockFieldComponent extends BaseFieldComponent {
     api: MeshFieldControlApi;
     constructor() {
         super({ markForCheck() {} } as any);
-        this.init = createSpy('init').and.callFake((api) => {
+        this.init = createSpy('init').and.callFake((api: MeshFieldControlApi) => {
             this.api = api;
         });
         this.setWidth = createSpy('setWidth');
@@ -331,12 +325,14 @@ class MockFieldComponent extends BaseFieldComponent {
     valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void {}
 }
 
-@NgModule(provideMockI18n({
-    imports: [CommonModule],
-    declarations: [MockFieldComponent, FieldErrorsComponent],
-    entryComponents: [MockFieldComponent, FieldErrorsComponent],
-    exports: [MockFieldComponent, FieldErrorsComponent]
-}))
+@NgModule(
+    provideMockI18n({
+        imports: [CommonModule],
+        declarations: [MockFieldComponent, FieldErrorsComponent],
+        entryComponents: [MockFieldComponent, FieldErrorsComponent],
+        exports: [MockFieldComponent, FieldErrorsComponent]
+    })
+)
 class TestModule {}
 
 class MockMeshControlGroupService {

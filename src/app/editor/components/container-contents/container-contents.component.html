@@ -1,8 +1,8 @@
 <div class="container-header">
-    <breadcrumbs></breadcrumbs>
+    <mesh-breadcrumbs></mesh-breadcrumbs>
     <mesh-search-bar></mesh-search-bar>
     <div class="detail-bar">
-        <create-node-button [disabled]="searching$ | async"></create-node-button>
+        <mesh-create-node-button [disabled]="searching$ | async"></mesh-create-node-button>
         <gtx-button
             [disabled]="searching$ | async"
             size="small"
@@ -11,7 +11,7 @@
             (click)="onFileUploadClicked()">
             <icon left>file_upload</icon> {{ 'list.upload_files' | i18n }}
         </gtx-button>
-        <container-language-switcher></container-language-switcher>
+        <mesh-container-language-switcher></mesh-container-language-switcher>
     </div>
 </div>
 
@@ -21,7 +21,7 @@
             <gtx-contents-list-item class="group-header">
                 {{schema.name}}
             </gtx-contents-list-item>
-            <app-node-row *ngFor="let child of (childrenBySchema$ | async)[schema.uuid]" [node]="child"></app-node-row>
+            <mesh-node-row *ngFor="let child of (childrenBySchema$ | async)[schema.uuid]" [node]="child"></mesh-node-row>
         </ng-template>
     </ng-template>
 

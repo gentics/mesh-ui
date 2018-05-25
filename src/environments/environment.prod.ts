@@ -1,12 +1,11 @@
+import { enableProdMode, ApplicationRef } from '@angular/core';
 import { disableDebugTools, enableDebugTools } from '@angular/platform-browser';
-import { ApplicationRef, enableProdMode } from '@angular/core';
 
 import { API_BASE_URL } from '../app/core/providers/api/api-di-tokens';
 
-
 // Environment Providers
 let PROVIDERS: any[] = [
-  // common env directives
+    // common env directives
 ];
 
 // Angular debug tools in the dev console
@@ -14,19 +13,18 @@ let PROVIDERS: any[] = [
 let _decorateModuleRef = <T>(value: T): T => value;
 
 _decorateModuleRef = (modRef: any) => {
-  disableDebugTools();
+    disableDebugTools();
 
-  return modRef;
+    return modRef;
 };
 
 PROVIDERS = [
-  ...PROVIDERS,
-  // custom providers in production
+    ...PROVIDERS
+    // custom providers in production
 ];
-
 
 export const decorateModuleRef = _decorateModuleRef;
 
 export const environment = {
-  production: true
+    production: true
 };

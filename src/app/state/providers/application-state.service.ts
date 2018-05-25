@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { ImmutableStateStore, TrackedMethodCall } from 'immutablets';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+import { ConfigService } from '../../core/providers/config/config.service';
 import { AppState } from '../models/app-state.model';
+
+import { AdminProjectsStateActions } from './admin-projects-state-actions';
+import { AdminSchemasStateActions } from './admin-schemas-state-actions';
+import { AdminUsersStateActions } from './admin-users-state-actions';
 import { AuthStateActions } from './auth-state-actions';
 import { EditorStateActions } from './editor-state-actions';
 import { EntityStateActions } from './entity-state-actions';
 import { ListStateActions } from './list-state-actions';
-import { UIStateActions } from './ui-state-actions';
-import { ConfigService } from '../../core/providers/config/config.service';
 import { TagsStateActions } from './tags-state-actions';
-import { AdminProjectsStateActions } from './admin-projects-state-actions';
-import { AdminSchemasStateActions } from './admin-schemas-state-actions';
-import { AdminUsersStateActions } from './admin-users-state-actions';
-
+import { UIStateActions } from './ui-state-actions';
 
 // TODO: re-enable this rule once immutablets has been updated
 // This needs to be a "type" vs "interface" becuase of limitations of mapped types.
@@ -35,7 +35,6 @@ type ActionBranches = {
 
 @Injectable()
 export class ApplicationStateService {
-
     /** Get the current application state object. */
     get now(): AppState {
         return this.stateSubject.value;
@@ -58,7 +57,7 @@ export class ApplicationStateService {
             editor: new EditorStateActions(config),
             list: new ListStateActions(config),
             ui: new UIStateActions(),
-            tag: new TagsStateActions(),
+            tag: new TagsStateActions()
         });
 
         this.actions = this.store.actions;

@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { ApplicationStateService } from './providers/application-state.service';
+
 import { ApplicationStateDevtools } from './providers/application-state-devtools';
+import { ApplicationStateService } from './providers/application-state.service';
 import { EntitiesService } from './providers/entities.service';
 
 @NgModule({
-    providers: [ApplicationStateService, EntitiesService, ApplicationStateDevtools],
+    providers: [ApplicationStateService, EntitiesService, ApplicationStateDevtools]
 })
-export class StateModule {
-}
+export class StateModule {}

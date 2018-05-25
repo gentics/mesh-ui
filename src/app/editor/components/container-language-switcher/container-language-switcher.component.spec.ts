@@ -1,21 +1,21 @@
 import { Component, Injectable } from '@angular/core';
-import { TestBed, tick } from '@angular/core/testing';
+import { tick, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
 
 import { componentTest } from '../../../../testing/component-test';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { SharedModule } from '../../../shared/shared.module';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { mockProject } from '../../../../testing/mock-models';
-import { TestStateModule } from '../../../state/testing/test-state.module';
-import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
+import { SharedModule } from '../../../shared/shared.module';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { TestStateModule } from '../../../state/testing/test-state.module';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
 import { ContainerLanguageSwitcherComponent } from './container-language-switcher.component';
 
@@ -59,7 +59,7 @@ describe('ContainerLanguageSwitcherComponent:', () => {
             tick();
 
             const items = fixture.debugElement.queryAll(By.css('gtx-dropdown-item'));
-            expect (items.length).toEqual(config.CONTENT_LANGUAGES.length - 1); //-1 because the current language should be excluded
+            expect (items.length).toEqual(config.CONTENT_LANGUAGES.length - 1); // -1 because the current language should be excluded
         })
     );
 
@@ -81,7 +81,7 @@ describe('ContainerLanguageSwitcherComponent:', () => {
 
 @Component({
     template: `
-    <container-language-switcher></container-language-switcher>
+    <mesh-container-language-switcher></mesh-container-language-switcher>
     <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent {

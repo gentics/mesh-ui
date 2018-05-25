@@ -1,24 +1,21 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Observable } from 'rxjs/Observable';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 import { MeshNode } from '../../../common/models/node.model';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-
-import { EntitiesService } from '../../../state/providers/entities.service';
 import { concatUnique, notNullOrUndefined } from '../../../common/util/util';
 import { ConfigService } from '../../../core/providers/config/config.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 
 @Component({
-    selector: 'container-language-switcher',
+    selector: 'mesh-container-language-switcher',
     templateUrl: 'container-language-switcher.component.html',
     styleUrls: ['container-language-switcher.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class ContainerLanguageSwitcherComponent {
-
     currentLanguage$: Observable<string>;
     availableLanguages$: Observable<string[]>;
 
@@ -31,7 +28,7 @@ export class ContainerLanguageSwitcherComponent {
 
         this.availableLanguages$ = combineLatest([Observable.of(config.CONTENT_LANGUAGES), this.currentLanguage$])
             .map(([languages, currentLanguage]) => {
-                return this.removeCurrentLanguage(languages, currentLanguage)
+                return this.removeCurrentLanguage(languages, currentLanguage);
             });
     }
 
@@ -47,6 +44,6 @@ export class ContainerLanguageSwitcherComponent {
 
     itemClick(languageCode: string): void {
         const listState = this.state.now.list;
-        this.navigationService.list(listState.currentProject, listState.currentNode, languageCode).navigate();
+        this.navigationService.list(listState.currentProject!, listState.currentNode!, languageCode).navigate();
     }
 }

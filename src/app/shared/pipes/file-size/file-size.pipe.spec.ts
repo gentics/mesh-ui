@@ -44,12 +44,12 @@ describe('FileSizePipe:', () => {
         });
 
         it('should handle an object', () => {
-            let obj = {};
+            const obj = {};
             expect(fileSizePipe.transform((<any> obj))).toBe(obj);
         });
 
         it('should handle a function', () => {
-            let fn = () => {};
+            const fn = () => {};
             expect(fileSizePipe.transform((<any> fn))).toBe(fn);
         });
     });

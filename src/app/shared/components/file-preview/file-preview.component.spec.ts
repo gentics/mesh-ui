@@ -1,8 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FilePreviewComponent } from './file-preview.component';
-import { AudioPlayButtonComponent } from '../audio-play-button/audio-play-button.component';
-import { GenticsUICoreModule } from 'gentics-ui-core';
 import { By } from '@angular/platform-browser';
+import { GenticsUICoreModule } from 'gentics-ui-core';
+
+import { AudioPlayButtonComponent } from '../audio-play-button/audio-play-button.component';
+
+import { FilePreviewComponent } from './file-preview.component';
 
 describe('FilePreviewComponent', () => {
     let component: FilePreviewComponent;
@@ -11,11 +13,8 @@ describe('FilePreviewComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [FilePreviewComponent, AudioPlayButtonComponent],
-            imports: [
-                GenticsUICoreModule
-            ],
-        })
-            .compileComponents();
+            imports: [GenticsUICoreModule]
+        }).compileComponents();
     }));
 
     beforeEach(() => {

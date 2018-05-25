@@ -1,5 +1,5 @@
 <div class="label-container">
-    <div class="floating-label" [scrollFrameHeading]="{ target: elementRef }" [disableScrollTarget]="disableScrollTarget">
+    <div class="floating-label" [meshScrollFrameHeading]="{ target: elementRef }" [disableScrollTarget]="disableScrollTarget">
         <label>{{ field.label || field.name }}</label>
 
         <div class="add-item-button" *ngIf="!api.readOnly">

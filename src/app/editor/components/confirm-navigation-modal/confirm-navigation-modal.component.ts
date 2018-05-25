@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { IModalDialog } from 'gentics-ui-core';
-import { NodeEditorComponent } from '../node-editor/node-editor.component';
+
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { NodeEditorComponent } from '../node-editor/node-editor.component';
 
 /**
- * A modal for the user to
+ * A modal for the user to confirm navigation despite unsaved changes.
  */
 @Component({
-    selector: 'confirm-navigation-modal',
+    selector: 'mesh-confirm-navigation-modal',
     templateUrl: './confirm-navigation-modal.tpl.html',
     styleUrls: ['./confirm-navigation-modal.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -16,37 +17,39 @@ export class ConfirmNavigationModalComponent implements IModalDialog, OnInit {
     closeFn: (result: boolean) => void;
     cancelFn: (val?: any) => void;
     nodeEditor: NodeEditorComponent;
-    changes: Array<{ path: string; oldValue: string; newValue: string; }>;
+    changes: Array<{ path: string; oldValue: string; newValue: string }> = [];
     displayLimit = 10;
-    additionalChangesCount: number = 0;
+    additionalChangesCount = 0;
 
     constructor(private i18n: I18nService) {}
 
     ngOnInit(): void {
-
-        this.changes = this.nodeEditor.formGenerator.getChangesByPath()
-            .map(change => {
+        if (this.nodeEditor.formGenerator) {
+            this.changes = this.nodeEditor.formGenerator.getChangesByPath().map(change => {
                 const path = change.path.join(' › ');
                 const oldValue = this.getInitialValueString(change.initialValue);
                 const newValue = this.getCurrentValueString(change.currentValue);
                 return { path, oldValue, newValue };
             });
-
-        const tagChanges = this.nodeEditor.tagsBar.changesSinceLastSave();
-        if (tagChanges.deletedTags.length) {
-            this.changes.push({
-                path: this.i18n.translate('modal.removed_tags'),
-                oldValue: tagChanges.deletedTags.join(', '),
-                newValue: ''
-            });
         }
 
-        if (tagChanges.newTags.length) {
-            this.changes.push({
-                path: this.i18n.translate('modal.added_tags'),
-                oldValue: '',
-                newValue: tagChanges.newTags.join(', ')
-            });
+        if (this.nodeEditor.tagsBar) {
+            const tagChanges = this.nodeEditor.tagsBar.changesSinceLastSave();
+            if (tagChanges.deletedTags.length) {
+                this.changes.push({
+                    path: this.i18n.translate('modal.removed_tags'),
+                    oldValue: tagChanges.deletedTags.join(', '),
+                    newValue: ''
+                });
+            }
+
+            if (tagChanges.newTags.length) {
+                this.changes.push({
+                    path: this.i18n.translate('modal.added_tags'),
+                    oldValue: '',
+                    newValue: tagChanges.newTags.join(', ')
+                });
+            }
         }
 
         if (this.displayLimit < this.changes.length) {

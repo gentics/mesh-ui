@@ -1,6 +1,8 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, NgZone, Type, ViewContainerRef } from '@angular/core';
-import { SchemaField } from '../../../common/models/schema.model';
+
 import { NodeFieldType } from '../../../common/models/node.model';
+import { SchemaField } from '../../../common/models/schema.model';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import {
     ErrorCodeHash,
     FormWidthChangeCallback,
@@ -12,9 +14,8 @@ import {
     ValueChangeCallback
 } from '../../common/form-generator-models';
 import { BaseFieldComponent, SMALL_SCREEN_LIMIT } from '../../components/base-field/base-field.component';
-import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { FieldErrorsComponent } from '../../components/field-errors/field-errors.component';
+import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
 
 type OnChangeFunction = (path: SchemaFieldPath, value: NodeFieldType) => void;
 
@@ -29,23 +30,22 @@ export interface FieldSet<T extends BaseFieldComponent> {
  * in the correct place in the DOM.
  */
 export class FieldGenerator {
+    constructor(
+        private resolver: ComponentFactoryResolver,
+        private viewContainerRef: ViewContainerRef,
+        private onChange: OnChangeFunction,
+        private getNodeFn: GetNodeValueFunction,
+        private state: ApplicationStateService
+    ) {}
 
-    constructor(private resolver: ComponentFactoryResolver,
-                private viewContainerRef: ViewContainerRef,
-                private onChange: OnChangeFunction,
-                private getNodeFn: GetNodeValueFunction,
-                private state: ApplicationStateService) {}
-
-    attachField<T extends BaseFieldComponent>(
-        fieldConfig: {
-            path: SchemaFieldPath;
-            field: SchemaField;
-            value: NodeFieldType;
-            fieldComponent: Type<T>;
-            readOnly: boolean;
-            viewContainerRef?: ViewContainerRef;
-        }): FieldSet<T> {
-
+    attachField<T extends BaseFieldComponent>(fieldConfig: {
+        path: SchemaFieldPath;
+        field: SchemaField;
+        value: NodeFieldType;
+        fieldComponent: Type<T>;
+        readOnly: boolean;
+        viewContainerRef?: ViewContainerRef;
+    }): FieldSet<T> {
         const _viewContainerRef = fieldConfig.viewContainerRef || this.viewContainerRef;
         const factory = this.resolver.resolveComponentFactory(fieldConfig.fieldComponent);
         const fieldErrorsFactory = this.resolver.resolveComponentFactory(FieldErrorsComponent);
@@ -71,7 +71,7 @@ export class FieldGenerator {
             },
             setError(errorCodeOrHash: string | ErrorCodeHash, errorMessage?: string | false): void {
                 if (typeof errorCodeOrHash === 'string') {
-                    instance.setError(errorCodeOrHash, errorMessage);
+                    instance.setError(errorCodeOrHash, errorMessage!);
                 } else {
                     instance.setError(errorCodeOrHash);
                 }
@@ -130,11 +130,12 @@ export class FieldGenerator {
  */
 @Injectable()
 export class FieldGeneratorService {
-
-    constructor(private resolver: ComponentFactoryResolver,
-                private meshControlGroup: MeshControlGroupService,
-                private state: ApplicationStateService,
-                private ngZone: NgZone) {}
+    constructor(
+        private resolver: ComponentFactoryResolver,
+        private meshControlGroup: MeshControlGroupService,
+        private state: ApplicationStateService,
+        private ngZone: NgZone
+    ) {}
 
     create(viewContainerRef: ViewContainerRef, onChange: OnChangeFunction): FieldGenerator {
         const zoneAwareChangeFn = (path: SchemaFieldPath, value: NodeFieldType) => {

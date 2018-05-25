@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+
 import { MeshNode } from '../../../common/models/node.model';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 
 @Component({
-    selector: 'node-language-switcher',
+    selector: 'mesh-node-language-switcher',
     templateUrl: 'node-language-switcher.component.html',
     styleUrls: ['node-language-switcher.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class NodeLanguageSwitcherComponent {
     @Input() node: MeshNode | undefined;
 
@@ -39,10 +39,9 @@ export class NodeLanguageSwitcherComponent {
             if (language.translationExists) {
                 this.navigateToLanguage(language.code);
             } else {
-                this.editorEffects.createTranslation(this.node, language.code)
-                    .then(() => {
-                        this.navigateToLanguage(language.code);
-                    });
+                this.editorEffects.createTranslation(this.node, language.code).then(() => {
+                    this.navigateToLanguage(language.code);
+                });
             }
         }
     }

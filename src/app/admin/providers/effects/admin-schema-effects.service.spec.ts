@@ -1,40 +1,40 @@
 import { TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
 import { Notification } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../../core/providers/api/api.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
-import { ProjectAssignments } from '../../../state/models/admin-schemas-state.model';
-import { AdminSchemaEffectsService } from './admin-schema-effects.service';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
+import { ProjectAssignments } from '../../../state/models/admin-schemas-state.model';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+
+import { AdminSchemaEffectsService } from './admin-schema-effects.service';
 
 describe('AdminSchemaEffects', () => {
     let adminSchemaEffects: AdminSchemaEffectsService;
     let state: TestApplicationState;
-    let apiServiceSpy;
+    let apiServiceSpy: any;
     let i18nNotificationSpy;
 
     beforeEach(() => {
         apiServiceSpy = {
-            project : {
+            project: {
                 getProjects: jasmine.createSpy('getProject'),
                 getProjectSchemas: jasmine.createSpy('getProjectSchemas')
             }
         };
         i18nNotificationSpy = jasmine.createSpyObj('i18n notifications', ['show']);
 
-
         TestBed.configureTestingModule({
             providers: [
                 AdminSchemaEffectsService,
-                { provide: ApiService, useValue: apiServiceSpy},
+                { provide: ApiService, useValue: apiServiceSpy },
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ConfigService, useClass: MockConfigService },
-                { provide: I18nNotification, useValue: i18nNotificationSpy},
-                { provide: Notification, useValue: {}}
+                { provide: I18nNotification, useValue: i18nNotificationSpy },
+                { provide: Notification, useValue: {} }
             ]
         });
 
@@ -46,14 +46,11 @@ describe('AdminSchemaEffects', () => {
 
     describe('loadEntityAssignments', () => {
         const projects = {
-            data: [
-                {uuid: 'uuid1', name: 'project1'},
-                {uuid: 'uuid2', name: 'project2'}
-            ]
+            data: [{ uuid: 'uuid1', name: 'project1' }, { uuid: 'uuid2', name: 'project2' }]
         };
 
         it('sends empty object on no projects', () => {
-            apiServiceSpy.project.getProjects.and.returnValue(Observable.of({data: []}));
+            apiServiceSpy.project.getProjects.and.returnValue(Observable.of({ data: [] }));
             adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith({});
@@ -103,7 +100,7 @@ describe('AdminSchemaEffects', () => {
 
         function schemasResponse(projectUuids: string[]) {
             return {
-                data: projectUuids.map(uuid => ({uuid}))
+                data: projectUuids.map(uuid => ({ uuid }))
             };
         }
     });

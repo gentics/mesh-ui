@@ -16,7 +16,7 @@ export function getFuzzyRegExp(term: string): RegExp {
     return new RegExp(`(${fuzzyEscapeRegExp(term)})`, 'gi');
 }
 
-export function fuzzyMatch(needle: string, haystack: string): string[] {
+export function fuzzyMatch(needle: string, haystack: string): string[] | null {
     const regex = getFuzzyRegExp(needle);
     return regex.exec(haystack);
 }

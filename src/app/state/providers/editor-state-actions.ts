@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
-import { CloneDepth, Immutable, StateActionBranch, withChanges } from 'immutablets';
+import { withChanges, CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
+import { MeshNode } from '../../common/models/node.model';
+import { ConfigService } from '../../core/providers/config/config.service';
 import { AppState } from '../models/app-state.model';
 import { EditorState } from '../models/editor-state.model';
 import { EntityState } from '../models/entity-state.model';
+
 import { mergeEntityState } from './entity-state-actions';
-import { MeshNode } from '../../common/models/node.model';
-import { ConfigService } from '../../core/providers/config/config.service';
 
 @Injectable()
 @Immutable()
 export class EditorStateActions extends StateActionBranch<AppState> {
-    @CloneDepth(1) private editor: EditorState;
-    @CloneDepth(0) private entities: EntityState;
+    @CloneDepth(1)
+    private editor: EditorState;
+    @CloneDepth(0)
+    private entities: EntityState;
 
     constructor(private config: ConfigService) {
         super({
@@ -35,7 +38,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
                 projectName,
                 language,
                 schemaUuid,
-                parentNodeUuid,
+                parentNodeUuid
             },
             editorIsOpen: true,
             editorIsFocused: true
@@ -69,30 +72,30 @@ export class EditorStateActions extends StateActionBranch<AppState> {
     }
 
     saveNodeStart(): void {
-        this.editor.loadCount ++;
+        this.editor.loadCount++;
     }
 
     saveNodeError(): void {
-        this.editor.loadCount --;
+        this.editor.loadCount--;
     }
 
     saveNodeSuccess(node: MeshNode): void {
-        this.editor.loadCount --;
+        this.editor.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             node: [node]
         });
     }
 
     publishNodeStart(): void {
-        this.editor.loadCount ++;
+        this.editor.loadCount++;
     }
 
     publishNodeError(): void {
-        this.editor.loadCount --;
+        this.editor.loadCount--;
     }
 
     publishNodeSuccess(node: MeshNode): void {
-        this.editor.loadCount --;
+        this.editor.loadCount--;
         this.entities = mergeEntityState(this.entities, {
             node: [node]
         });

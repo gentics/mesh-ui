@@ -1,21 +1,28 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
+
 import { NodeFieldMicronode, NodeFieldType } from '../../../common/models/node.model';
-import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
-import { getControlType } from '../../common/get-control-type';
-import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
-import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
+import { getControlType } from '../../common/get-control-type';
+import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
+import { FieldGenerator, FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
+import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
 @Component({
-    selector: 'micronode-field',
+    selector: 'mesh-micronode-field',
     templateUrl: 'micronode-field.component.html',
     styleUrls: ['micronode-field.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MicronodeFieldComponent extends BaseFieldComponent implements AfterViewInit {
-
     api: MeshFieldControlApi;
     value: NodeFieldMicronode;
 
@@ -23,11 +30,13 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     private micronodeControlAnchor: ViewContainerRef;
     private fieldGenerator: FieldGenerator;
 
-    constructor(changeDetector: ChangeDetectorRef,
-                private fieldGeneratorService: FieldGeneratorService,
-                private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private meshControlGroup: MeshControlGroupService) {
+    constructor(
+        changeDetector: ChangeDetectorRef,
+        private fieldGeneratorService: FieldGeneratorService,
+        private state: ApplicationStateService,
+        private entities: EntitiesService,
+        private meshControlGroup: MeshControlGroupService
+    ) {
         super(changeDetector);
     }
 

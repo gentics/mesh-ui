@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { AuthApi } from './auth-api.class';
+import { AdminApi } from './admin-api.class';
 import { ApiBase, RequestLanguage } from './api-base.service';
+import { apiPost } from './api-methods';
+import { AuthApi } from './auth-api.class';
 import { ProjectApi } from './project-api.class';
 import { UserApi } from './user-api.class';
-import { AdminApi } from './admin-api.class';
-import { apiPost } from './api-methods';
-
 
 @Injectable()
 export class ApiService {

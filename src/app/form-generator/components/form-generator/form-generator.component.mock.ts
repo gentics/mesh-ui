@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-@Component({ selector: 'form-generator', template: '' })
+@Component({ selector: 'mesh-form-generator', template: '' })
 export class MockFormGeneratorComponent {
     isCompact = false;
     isInvisible = false;

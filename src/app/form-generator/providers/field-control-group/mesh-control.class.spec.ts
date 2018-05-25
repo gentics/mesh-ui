@@ -1,13 +1,13 @@
-import { MeshControl, ROOT_NAME, ROOT_TYPE } from './mesh-control.class';
-import { MeshFieldControlApi } from '../../common/form-generator-models';
-import { SchemaField } from '../../../common/models/schema.model';
 import { NodeFieldMicronode, NodeFieldType } from '../../../common/models/node.model';
+import { SchemaField } from '../../../common/models/schema.model';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../../components/base-field/base-field.component';
+
 import { MeshControlGroupService } from './mesh-control-group.service';
+import { MeshControl, ROOT_NAME, ROOT_TYPE } from './mesh-control.class';
 import createSpy = jasmine.createSpy;
 
 describe('MeshControl class', () => {
-
     const mockControlGroup = new MeshControlGroupService();
 
     it('creates a root control when constructed with no arguments', () => {
@@ -80,7 +80,6 @@ describe('MeshControl class', () => {
     });
 
     describe('checkValue() with primitives', () => {
-
         let meshField: MockMeshField;
         let meshControl: MeshControl<any>;
 
@@ -106,7 +105,6 @@ describe('MeshControl class', () => {
     });
 
     describe('checkValue() with objects', () => {
-
         let meshField: MockMeshField;
         let meshControl: MeshControl<any>;
         let initialValue: string[];
@@ -135,11 +133,9 @@ describe('MeshControl class', () => {
             meshControl.checkValue(newValue);
             expect(meshField.valueChange).toHaveBeenCalledWith(newValue, initialValue);
         });
-
     });
 
     describe('nodeChange()', () => {
-
         let meshField: MockMeshField;
         let meshControl: MeshControl<any>;
 
@@ -176,7 +172,7 @@ describe('MeshControl class', () => {
             };
             const fieldDefString: SchemaField = {
                 name: 'chil',
-                type: 'string',
+                type: 'string'
             };
             initialValue = ['foo', 'bar', 'baz'];
             meshFieldParent = new MockMeshField();
@@ -199,7 +195,6 @@ describe('MeshControl class', () => {
     });
 
     describe('list type', () => {
-
         let meshField: MockMeshField;
         let meshControl: MeshControl<any>;
         let childMeshFields: BaseFieldComponent[];
@@ -281,11 +276,9 @@ describe('MeshControl class', () => {
             expect(spies[1]).toHaveBeenCalledWith(path, value, node);
             expect(spies[2]).toHaveBeenCalledWith(path, value, node);
         });
-
     });
 
     describe('simple micronode type', () => {
-
         let meshField: MockMeshField;
         let meshControl: MeshControl<any>;
         let childMeshFields: BaseFieldComponent[];
@@ -297,7 +290,7 @@ describe('MeshControl class', () => {
             childMeshControls = [];
             const fieldDef: SchemaField = {
                 name: 'test',
-                type: 'micronode',
+                type: 'micronode'
             };
             initialValue = {
                 uuid: '123123123',
@@ -378,7 +371,6 @@ describe('MeshControl class', () => {
     });
 
     describe('getMeshControlAtPath()', () => {
-
         let meshField: MockMeshField;
         let rootControl: MeshControl<any>;
         let childControls: { [id: string]: MeshControl<any> };
@@ -399,21 +391,21 @@ describe('MeshControl class', () => {
                 const childControl = parent.addChild(pseudoField, value, childField);
                 return childControl;
             }
-            childControls['0']              = addChild(rootControl, '0', 'micronode', {});
-            childControls['1']              = addChild(rootControl, '1', 'micronode', {});
-            childControls['2']              = addChild(rootControl, '2', 'micronode', {});
+            childControls['0'] = addChild(rootControl, '0', 'micronode', {});
+            childControls['1'] = addChild(rootControl, '1', 'micronode', {});
+            childControls['2'] = addChild(rootControl, '2', 'micronode', {});
 
-            childControls['0.latitude']     = addChild(childControls['0'], 'latitude', 'number', 0);
-            childControls['0.longitude']    = addChild(childControls['0'], 'longitude', 'number', 0);
-            childControls['0.names']        = addChild(childControls['0'], 'names', 'list', []);
-            childControls['0.names.0']      = addChild(childControls['0.names'], '0', 'string', 'name1');
-            childControls['0.names.1']      = addChild(childControls['0.names'], '1', 'string', 'name2');
+            childControls['0.latitude'] = addChild(childControls['0'], 'latitude', 'number', 0);
+            childControls['0.longitude'] = addChild(childControls['0'], 'longitude', 'number', 0);
+            childControls['0.names'] = addChild(childControls['0'], 'names', 'list', []);
+            childControls['0.names.0'] = addChild(childControls['0.names'], '0', 'string', 'name1');
+            childControls['0.names.1'] = addChild(childControls['0.names'], '1', 'string', 'name2');
 
-            childControls['1.latitude']     = addChild(childControls['1'], 'latitude', 'number', 0);
-            childControls['1.longitude']    = addChild(childControls['1'], 'longitude', 'number', 0);
-            childControls['1.names']        = addChild(childControls['1'], 'names', 'list', []);
-            childControls['1.names.0']      = addChild(childControls['1.names'], '0', 'string', 'name1');
-            childControls['1.names.1']      = addChild(childControls['1.names'], '1', 'string', 'name2');
+            childControls['1.latitude'] = addChild(childControls['1'], 'latitude', 'number', 0);
+            childControls['1.longitude'] = addChild(childControls['1'], 'longitude', 'number', 0);
+            childControls['1.names'] = addChild(childControls['1'], 'names', 'list', []);
+            childControls['1.names.0'] = addChild(childControls['1.names'], '0', 'string', 'name1');
+            childControls['1.names.1'] = addChild(childControls['1.names'], '1', 'string', 'name2');
         });
 
         it('gets top level control', () => {
@@ -429,44 +421,35 @@ describe('MeshControl class', () => {
         });
 
         it('gets child of first list item', () => {
-            expect(rootControl.getMeshControlAtPath([0, 'fields', 'latitude']))
-                .toBe(childControls['0.latitude']);
+            expect(rootControl.getMeshControlAtPath([0, 'fields', 'latitude'])).toBe(childControls['0.latitude']);
         });
 
         it('gets first item of child list of first list item', () => {
-            expect(rootControl.getMeshControlAtPath([0, 'fields', 'names', 0]))
-                .toBe(childControls['0.names.0']);
+            expect(rootControl.getMeshControlAtPath([0, 'fields', 'names', 0])).toBe(childControls['0.names.0']);
         });
 
         it('gets second item of child list of first list item', () => {
-            expect(rootControl.getMeshControlAtPath([0, 'fields', 'names', 1]))
-                .toBe(childControls['0.names.1']);
+            expect(rootControl.getMeshControlAtPath([0, 'fields', 'names', 1])).toBe(childControls['0.names.1']);
         });
 
         it('returns undefined for a top-level path which has no control', () => {
-            expect(rootControl.getMeshControlAtPath(['nonexitent']))
-                .toBe(undefined);
+            expect(rootControl.getMeshControlAtPath(['nonexitent'])).toBe(undefined);
         });
 
         it('returns undefined for a micronode field which has no control', () => {
-            expect(rootControl.getMeshControlAtPath([0, 'fields', 'nonexistent']))
-                .toBe(undefined);
+            expect(rootControl.getMeshControlAtPath([0, 'fields', 'nonexistent'])).toBe(undefined);
         });
 
         it('returns undefined for a leaf of a path which has no control', () => {
-            expect(rootControl.getMeshControlAtPath([0, 'fields', 'names', 1, 'nonexistent']))
-                .toBe(undefined);
+            expect(rootControl.getMeshControlAtPath([0, 'fields', 'names', 1, 'nonexistent'])).toBe(undefined);
         });
 
         it('returns undefined for a "fields" path of a micronode with no children', () => {
-            expect(rootControl.getMeshControlAtPath([2, 'fields']))
-                .toBe(undefined);
+            expect(rootControl.getMeshControlAtPath([2, 'fields'])).toBe(undefined);
         });
-
     });
 
     describe('validation', () => {
-
         it('isValid == false when no BaseMeshField has been registered', () => {
             const fieldDef: SchemaField = {
                 name: 'test',
@@ -572,7 +555,6 @@ describe('MeshControl class', () => {
     });
 
     describe('errors', () => {
-
         it('errors object is empty when there are no own validation errors', () => {
             const fieldDef: SchemaField = {
                 name: 'test',
@@ -595,7 +577,6 @@ describe('MeshControl class', () => {
     });
 
     describe('getChanges()', () => {
-
         describe('simple value', () => {
             let meshControl: MeshControl<string>;
             const initialValue = 'foo';
@@ -631,7 +612,6 @@ describe('MeshControl class', () => {
         });
 
         describe('object values', () => {
-
             it('compares lists by value equality, not by reference', () => {
                 const fieldDef: SchemaField = {
                     name: 'test',
@@ -648,7 +628,7 @@ describe('MeshControl class', () => {
             it('compares micronodes by value equality, not by reference', () => {
                 const fieldDef: SchemaField = {
                     name: 'test',
-                    type: 'micronode',
+                    type: 'micronode'
                 };
 
                 function getMicronodeValue(fields: { [key: string]: any }): NodeFieldMicronode {
@@ -658,17 +638,20 @@ describe('MeshControl class', () => {
                         fields
                     };
                 }
-                const meshControl = new MeshControl(fieldDef, getMicronodeValue({ test: 'foo' }), mockControlGroup, new MockMeshField());
+                const meshControl = new MeshControl(
+                    fieldDef,
+                    getMicronodeValue({ test: 'foo' }),
+                    mockControlGroup,
+                    new MockMeshField()
+                );
                 expect(meshControl.getChanges().changed).toBe(false);
 
                 meshControl.checkValue(getMicronodeValue({ test: 'foo' }));
                 expect(meshControl.getChanges().changed).toBe(false);
             });
-
         });
 
         describe('with children', () => {
-
             let meshControl: MeshControl<string[]>;
             let initialValue: string[];
 
@@ -756,15 +739,13 @@ describe('MeshControl class', () => {
                 expect(changes2.children[2].changed).toBe(false, 'child2');
             });
         });
-
     });
-
 });
 
 class MockMeshField extends BaseFieldComponent {
     constructor() {
-         super({ markForCheck() {} } as any);
-     }
+        super({ markForCheck() {} } as any);
+    }
     init(api: MeshFieldControlApi): void {}
     valueChange(value: NodeFieldType): void {}
 }

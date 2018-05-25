@@ -1,15 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-import { ConnectionBackend, Headers, Http, HttpModule, Request, RequestMethod, Response, ResponseOptions } from '@angular/http';
+import {
+    ConnectionBackend,
+    Headers,
+    Http,
+    HttpModule,
+    Request,
+    RequestMethod,
+    Response,
+    ResponseOptions
+} from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 
 import { ApiBase, ResponseObservable } from './api-base.service';
 import { ApiError } from './api-error';
-import { Subject } from 'rxjs/Subject';
-
 
 describe('ApiBase', () => {
-
     let apiBase: ApiBase;
     let backend: MockBackend;
     let subscription: Subscription | undefined;
@@ -17,11 +25,7 @@ describe('ApiBase', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpModule],
-            providers: [
-                ApiBase,
-                Http,
-                { provide: ConnectionBackend, useClass: MockBackend }
-            ]
+            providers: [ApiBase, Http, { provide: ConnectionBackend, useClass: MockBackend }]
         });
 
         apiBase = TestBed.get(ApiBase);
@@ -41,7 +45,6 @@ describe('ApiBase', () => {
     });
 
     describe('get()', () => {
-
         it('creates a GET request', () => {
             apiBase.get('/some-api-endpoint' as any, {}).subscribe();
             expect(backend.connectionsArray.length).toBe(1);
@@ -50,10 +53,12 @@ describe('ApiBase', () => {
 
         it('sets the passed properties on the request', () => {
             apiBase.setLanguageForServerMessages('en');
-            apiBase.get('/groups/{groupUuid}', {
-                groupUuid: 'some-uuid',
-                role: 'some-role'
-            }).subscribe();
+            apiBase
+                .get('/groups/{groupUuid}', {
+                    groupUuid: 'some-uuid',
+                    role: 'some-role'
+                })
+                .subscribe();
 
             expect(backend.connectionsArray.length).toBe(1);
             const request = backend.connectionsArray[0].request;
@@ -73,16 +78,20 @@ describe('ApiBase', () => {
             });
 
             expect(backend.connectionsArray.length).toBe(1);
-            backend.connectionsArray[0].mockRespond(new Response(new ResponseOptions({
-                status: 200,
-                statusText: 'OK',
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                }),
-                body: JSON.stringify({
-                    pi: 3.14
-                })
-            })));
+            backend.connectionsArray[0].mockRespond(
+                new Response(
+                    new ResponseOptions({
+                        status: 200,
+                        statusText: 'OK',
+                        headers: new Headers({
+                            'Content-Type': 'application/json'
+                        }),
+                        body: JSON.stringify({
+                            pi: 3.14
+                        })
+                    })
+                )
+            );
 
             expect(receivedResponse).toBe(true);
         });
@@ -98,22 +107,27 @@ describe('ApiBase', () => {
                 didThrow = true;
             });
 
-            backend.connectionsArray[0].mockRespond(new Response(new ResponseOptions({
-                status: 404,
-                statusText: 'Not Found',
-                headers: new Headers({
-                    'Content-Type': 'text/plain'
-                }),
-                body: 'Endpoint not found'
-            })));
+            backend.connectionsArray[0].mockRespond(
+                new Response(
+                    new ResponseOptions({
+                        status: 404,
+                        statusText: 'Not Found',
+                        headers: new Headers({
+                            'Content-Type': 'text/plain'
+                        }),
+                        body: 'Endpoint not found'
+                    })
+                )
+            );
 
             expect(didThrow).toBe(true);
         });
 
         it('emits an error when the request fails with a critical error', () => {
             let thrownError: ApiError = undefined as any;
-            apiBase.get('/some/endpoint' as any, {})
-                .subscribe(undefined, error => { thrownError = error; });
+            apiBase.get('/some/endpoint' as any, {}).subscribe(undefined, error => {
+                thrownError = error;
+            });
 
             backend.connectionsArray[0].mockError(new Error('some unexpected error'));
 
@@ -142,7 +156,6 @@ describe('ApiBase', () => {
             expect(typeof observable.mapResponses).toBe('function', 'mapResponses is not defined');
             expect(called).toBe(true);
         });
-
     });
 
     describe('post()', () => {
@@ -154,9 +167,15 @@ describe('ApiBase', () => {
 
         it('sets the passed properties on the request', () => {
             apiBase.setLanguageForServerMessages('en');
-            apiBase.post('/some-api-endpoint/{uuid}' as any, { uuid: 'some-uuid', pi: 3.14 }, {
-                unitTestPostBody: true
-            }).subscribe();
+            apiBase
+                .post(
+                    '/some-api-endpoint/{uuid}' as any,
+                    { uuid: 'some-uuid', pi: 3.14 },
+                    {
+                        unitTestPostBody: true
+                    }
+                )
+                .subscribe();
 
             const request = backend.connectionsArray[0].request;
             expect(request.method).toBe(RequestMethod.Post);
@@ -175,33 +194,42 @@ describe('ApiBase', () => {
             });
 
             expect(backend.connectionsArray.length).toBe(1);
-            backend.connectionsArray[0].mockRespond(new Response(new ResponseOptions({
-                status: 200,
-                statusText: 'OK',
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                }),
-                body: JSON.stringify({
-                    pi: 3.14
-                })
-            })));
+            backend.connectionsArray[0].mockRespond(
+                new Response(
+                    new ResponseOptions({
+                        status: 200,
+                        statusText: 'OK',
+                        headers: new Headers({
+                            'Content-Type': 'application/json'
+                        }),
+                        body: JSON.stringify({
+                            pi: 3.14
+                        })
+                    })
+                )
+            );
 
             expect(receivedResponse).toBe(true);
         });
 
         it('emits an error on error status codes', () => {
             let thrownError: ApiError = undefined as any;
-            apiBase.post('/some-api-endpoint' as any, {}, undefined)
-                .subscribe(undefined, error => { thrownError = error; });
+            apiBase.post('/some-api-endpoint' as any, {}, undefined).subscribe(undefined, error => {
+                thrownError = error;
+            });
 
-            backend.connectionsArray[0].mockRespond(new Response(new ResponseOptions({
-                status: 404,
-                statusText: 'Not Found',
-                headers: new Headers({
-                    'Content-Type': 'text/plain'
-                }),
-                body: 'Endpoint not found'
-            })));
+            backend.connectionsArray[0].mockRespond(
+                new Response(
+                    new ResponseOptions({
+                        status: 404,
+                        statusText: 'Not Found',
+                        headers: new Headers({
+                            'Content-Type': 'text/plain'
+                        }),
+                        body: 'Endpoint not found'
+                    })
+                )
+            );
 
             expect(thrownError).toBeDefined();
             expect(thrownError.response!.status).toBe(404);
@@ -212,8 +240,9 @@ describe('ApiBase', () => {
 
         it('emits an error when the request fails with a critical error', () => {
             let thrownError: ApiError = undefined as any;
-            apiBase.post('/some-api-endpoint' as any, {}, undefined)
-                .subscribe(undefined, error => { thrownError = error; });
+            apiBase.post('/some-api-endpoint' as any, {}, undefined).subscribe(undefined, error => {
+                thrownError = error;
+            });
 
             backend.connectionsArray[0].mockError(new Error('some unexpected error'));
 
@@ -278,11 +307,9 @@ describe('ApiBase', () => {
             expect(requestBody instanceof FormData).toBe(true, 'not a FormData instance');
             expect(requestBody.get('testfile') instanceof File).toBe(true, 'not a File instance');
         });
-
     });
 
     describe('setLanguageForServerMessages()', () => {
-
         it('changes the AcceptLanguage header of GET request', () => {
             apiBase.setLanguageForServerMessages('de');
             apiBase.get('/some-api-endpoint' as any, {}).subscribe();
@@ -290,8 +317,10 @@ describe('ApiBase', () => {
             apiBase.setLanguageForServerMessages('en');
             apiBase.get('/some-api-endpoint' as any, {}).subscribe();
 
-            expect(backend.connectionsArray.map(conn => conn.request.headers.get('Accept-Language')))
-                .toEqual(['de', 'en']);
+            expect(backend.connectionsArray.map(conn => conn.request.headers.get('Accept-Language'))).toEqual([
+                'de',
+                'en'
+            ]);
         });
 
         it('changes the AcceptLanguage header of POST request', () => {
@@ -301,14 +330,14 @@ describe('ApiBase', () => {
             apiBase.setLanguageForServerMessages('en');
             apiBase.post('/some-api-endpoint' as any, {}, undefined).subscribe();
 
-            expect(backend.connectionsArray.map(conn => conn.request.headers.get('Accept-Language')))
-                .toEqual(['de', 'en']);
+            expect(backend.connectionsArray.map(conn => conn.request.headers.get('Accept-Language'))).toEqual([
+                'de',
+                'en'
+            ]);
         });
-
     });
 
     describe('formatUrl', () => {
-
         it('adds the API base URL to the input', () => {
             const result = apiBase.formatUrl('/some/api-endpoint', undefined);
             expect(result).toBe('/api/v1/some/api-endpoint');
@@ -347,7 +376,7 @@ describe('ApiBase', () => {
         it('omits undefined query params', () => {
             const result = apiBase.formatUrl('/users', {
                 version: '1.1',
-                lang: undefined
+                lang: undefined as any
             });
             expect(result).toBe('/api/v1/users?version=1.1');
         });
@@ -363,13 +392,10 @@ describe('ApiBase', () => {
             }
             expect(errorWasThrown).toBe(true);
         });
-
     });
 
     describe('extendObservable()', () => {
-
         describe('mapResponses()', () => {
-
             let subject: Subject<any> = undefined as any;
             let observable: ResponseObservable<any> = undefined as any;
             beforeEach(() => {
@@ -387,8 +413,10 @@ describe('ApiBase', () => {
 
             it('does not subscribe automatically', () => {
                 let subscribed = false;
-                const inputObservable = new Observable<any>(() => { subscribed = true; });
-                observable = apiBase['toResponseObservable'](inputObservable, '/some/url', {} as any as Request);
+                const inputObservable = new Observable<any>(() => {
+                    subscribed = true;
+                });
+                observable = apiBase['toResponseObservable'](inputObservable, '/some/url', ({} as any) as Request);
 
                 expect(subscribed).toBe(false);
                 observable.subscribe();
@@ -397,46 +425,54 @@ describe('ApiBase', () => {
 
             it('can map a response code to a result', () => {
                 const emittedValues: any[] = [];
-                observable.mapResponses({
-                    200: responseText => 'twohundred: ' + responseText,
-                    201: responseText => 'twohundredone: ' + responseText,
-                    404: responseText => 'fourofour: ' + responseText
-                })
-                .subscribe(v => {
-                    emittedValues.push(v);
-                });
+                observable
+                    .mapResponses({
+                        200: (responseText: string) => 'twohundred: ' + responseText,
+                        201: (responseText: string) => 'twohundredone: ' + responseText,
+                        404: (responseText: string) => 'fourofour: ' + responseText
+                    })
+                    .subscribe(v => {
+                        emittedValues.push(v);
+                    });
 
                 expect(emittedValues).toEqual([]);
 
-                subject.next(new Response(new ResponseOptions({
-                    status: 200,
-                    statusText: 'OK',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: 'Everything OK'
-                })));
+                subject.next(
+                    new Response(
+                        new ResponseOptions({
+                            status: 200,
+                            statusText: 'OK',
+                            headers: new Headers({ 'Content-Type': 'text/plain' }),
+                            body: 'Everything OK'
+                        })
+                    )
+                );
 
-                expect(emittedValues).toEqual([
-                    'twohundred: Everything OK'
-                ]);
+                expect(emittedValues).toEqual(['twohundred: Everything OK']);
 
-                subject.next(new Response(new ResponseOptions({
-                    status: 201,
-                    statusText: 'Created',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: 'Something was created'
-                })));
+                subject.next(
+                    new Response(
+                        new ResponseOptions({
+                            status: 201,
+                            statusText: 'Created',
+                            headers: new Headers({ 'Content-Type': 'text/plain' }),
+                            body: 'Something was created'
+                        })
+                    )
+                );
 
-                expect(emittedValues).toEqual([
-                    'twohundred: Everything OK',
-                    'twohundredone: Something was created'
-                ]);
+                expect(emittedValues).toEqual(['twohundred: Everything OK', 'twohundredone: Something was created']);
 
-                subject.next(new Response(new ResponseOptions({
-                    status: 404,
-                    statusText: 'Not found',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: 'Something is missing'
-                })));
+                subject.next(
+                    new Response(
+                        new ResponseOptions({
+                            status: 404,
+                            statusText: 'Not found',
+                            headers: new Headers({ 'Content-Type': 'text/plain' }),
+                            body: 'Something is missing'
+                        })
+                    )
+                );
 
                 expect(emittedValues).toEqual([
                     'twohundred: Everything OK',
@@ -447,31 +483,40 @@ describe('ApiBase', () => {
 
             it('can map a response code to a fixed value', () => {
                 const emittedValues: any[] = [];
-                observable.mapResponses({
-                    200: 'ok200',
-                    404: 'notfound404'
-                })
-                .subscribe(v => {
-                    emittedValues.push(v);
-                });
+                observable
+                    .mapResponses({
+                        200: 'ok200',
+                        404: 'notfound404'
+                    })
+                    .subscribe(v => {
+                        emittedValues.push(v);
+                    });
 
                 expect(emittedValues).toEqual([]);
 
-                subject.next(new Response(new ResponseOptions({
-                    status: 200,
-                    statusText: 'OK',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: 'Everything OK'
-                })));
+                subject.next(
+                    new Response(
+                        new ResponseOptions({
+                            status: 200,
+                            statusText: 'OK',
+                            headers: new Headers({ 'Content-Type': 'text/plain' }),
+                            body: 'Everything OK'
+                        })
+                    )
+                );
 
                 expect(emittedValues).toEqual(['ok200']);
 
-                subject.next(new Response(new ResponseOptions({
-                    status: 404,
-                    statusText: 'Not found',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: 'Something is missing'
-                })));
+                subject.next(
+                    new Response(
+                        new ResponseOptions({
+                            status: 404,
+                            statusText: 'Not found',
+                            headers: new Headers({ 'Content-Type': 'text/plain' }),
+                            body: 'Something is missing'
+                        })
+                    )
+                );
 
                 expect(emittedValues).toEqual(['ok200', 'notfound404']);
             });
@@ -485,34 +530,43 @@ describe('ApiBase', () => {
                         success: (text: string) => 'successful: ' + text
                     })
                     .subscribe({
-                        next(value) { emittedValues.push(value); },
-                        error(error) { emittedErrors.push(error); }
+                        next(value) {
+                            emittedValues.push(value);
+                        },
+                        error(error) {
+                            emittedErrors.push(error);
+                        }
                     });
 
                 expect(emittedValues).toEqual([]);
 
-                subject.next(new Response(new ResponseOptions({
-                    status: 200,
-                    statusText: 'OK',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: 'Everything OK'
-                })));
+                subject.next(
+                    new Response(
+                        new ResponseOptions({
+                            status: 200,
+                            statusText: 'OK',
+                            headers: new Headers({ 'Content-Type': 'text/plain' }),
+                            body: 'Everything OK'
+                        })
+                    )
+                );
 
                 expect(emittedValues).toEqual(['successful: Everything OK']);
 
-                subject.next(new Response(new ResponseOptions({
-                    status: 404,
-                    statusText: 'Not found',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: 'Something is missing'
-                })));
+                subject.next(
+                    new Response(
+                        new ResponseOptions({
+                            status: 404,
+                            statusText: 'Not found',
+                            headers: new Headers({ 'Content-Type': 'text/plain' }),
+                            body: 'Something is missing'
+                        })
+                    )
+                );
 
                 expect(emittedValues).toEqual(['successful: Everything OK']);
                 expect(emittedErrors.length).toBe(1);
             });
-
         });
-
     });
-
 });

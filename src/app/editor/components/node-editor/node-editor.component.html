@@ -3,11 +3,11 @@
         <div class="main">
             <div class="display-name">{{ nodeTitle }}</div>
             <div class="schema">
-                <schema-label [schema]="node?.schema"></schema-label>
+                <mesh-schema-label [schema]="node?.schema"></mesh-schema-label>
             </div>
         </div>
         <div class="primary-buttons">
-            <version-label [version]="node?.version"></version-label>
+            <mesh-version-label [version]="node?.version"></mesh-version-label>
 
             <gtx-progress-bar [active]="isSaving"></gtx-progress-bar>
 
@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="language">
-            <node-language-switcher [node]="node"></node-language-switcher>
+            <mesh-node-language-switcher [node]="node"></mesh-node-language-switcher>
         </div>
     </div>
     <div class="tags-row">
@@ -49,8 +49,8 @@
     </div>
 </div>
 
-<div class="editor-body" scrollFrame>
-    <form-generator #formGenerator
+<div class="editor-body" meshScrollFrame>
+    <mesh-form-generator #formGenerator
                     [schema]="schema"
-                    [node]="node"></form-generator>
+                    [node]="node"></mesh-form-generator>
 </div>

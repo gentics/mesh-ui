@@ -1,30 +1,31 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import { async, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 
-import { ModalService, GenticsUICoreModule } from 'gentics-ui-core';
-
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { ConfigService } from '../../../core/providers/config/config.service';
-import { MockConfigService } from '../../../core/providers/config/config.service.mock';
-import { ConflictedFieldComponent } from '../conflicted-field/conflicted-field.component';
-import { EntitiesService } from '../../../state/providers/entities.service';
+import { mockMeshNode, mockMicroschema, mockProject, mockSchema, mockTag } from '../../../../testing/mock-models';
+import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
+import { FieldMapFromServer } from '../../../common/models/server-models';
+import { MockApiBase } from '../../../core/providers/api/api-base.mock';
+import { ApiBase } from '../../../core/providers/api/api-base.service';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
-import { ApiBase } from '../../../core/providers/api/api-base.service';
-import { MockApiBase } from '../../../core/providers/api/api-base.mock';
-import { mockMeshNode, mockProject, mockSchema, mockTag, mockMicroschema } from '../../../../testing/mock-models';
-import { FieldMapFromServer } from '../../../common/models/server-models';
-import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
-import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { BlobService } from '../../../core/providers/blob/blob.service';
 import { MockBlobService } from '../../../core/providers/blob/blob.service.mock';
-import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { AudioPlayButtonComponent } from '../../../shared/components/audio-play-button/audio-play-button.component';
+import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
+import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
+import { ConflictedFieldComponent } from '../conflicted-field/conflicted-field.component';
+
+import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
 
 let state: TestApplicationState;
 
@@ -64,13 +65,9 @@ describe('NodeConflictDialogComponent', () => {
                 { provide: BlobService, useClass: MockBlobService },
                 { provide: ApiService, useClass: MockApiService },
                 { provide: ApiBase, useClass: MockApiBase }
-
             ],
-            imports: [
-                GenticsUICoreModule,
-            ],
-        })
-            .compileComponents();
+            imports: [GenticsUICoreModule]
+        }).compileComponents();
 
         state = TestBed.get(ApplicationStateService);
         state.mockState({
@@ -85,7 +82,7 @@ describe('NodeConflictDialogComponent', () => {
             },
             entities: {
                 node: {
-                    'server_node_uuid': mockMeshNode({
+                    server_node_uuid: mockMeshNode({
                         uuid: 'server_node_uuid',
                         language: 'en',
                         version: '0.1',
@@ -94,10 +91,10 @@ describe('NodeConflictDialogComponent', () => {
                         fields: {
                             image: imageField,
                             microschema: microschemaField,
-                            node: nodeField,
+                            node: nodeField
                         } as Partial<FieldMapFromServer>
                     }),
-                    'current_node_uuid': mockMeshNode({
+                    current_node_uuid: mockMeshNode({
                         uuid: 'current_node_uuid',
                         language: 'en',
                         version: '0',
@@ -106,11 +103,11 @@ describe('NodeConflictDialogComponent', () => {
                         fields: {
                             image: imageField,
                             microschema: microschemaField,
-                            node: nodeField,
+                            node: nodeField
                         } as Partial<FieldMapFromServer>
                     }),
 
-                    'current_node_with_tags_uuid': mockMeshNode({
+                    current_node_with_tags_uuid: mockMeshNode({
                         uuid: 'current_node_with_tags_uuid',
                         language: 'en',
                         version: '0',
@@ -119,28 +116,28 @@ describe('NodeConflictDialogComponent', () => {
                         fields: {
                             image: imageField,
                             microschema: microschemaField,
-                            node: nodeField,
+                            node: nodeField
                         } as Partial<FieldMapFromServer>,
                         tags: [
                             {
-                                uuid: 'tag1_uuid',
+                                uuid: 'tag1_uuid'
                             },
                             {
-                                uuid: 'tag2_uuid',
+                                uuid: 'tag2_uuid'
                             }
                         ]
-                    }),
+                    })
                 },
                 tag: {
-                    'tag1_uuid': mockTag({ uuid: 'tag1_uuid', name: 'tag1' }),
-                    'tag2_uuid': mockTag({ uuid: 'tag2_uuid', name: 'tag2' }),
-                    'tag3_uuid': mockTag({ uuid: 'tag3_uuid', name: 'tag3' }),
+                    tag1_uuid: mockTag({ uuid: 'tag1_uuid', name: 'tag1' }),
+                    tag2_uuid: mockTag({ uuid: 'tag2_uuid', name: 'tag2' }),
+                    tag3_uuid: mockTag({ uuid: 'tag3_uuid', name: 'tag3' })
                 },
                 project: {
-                    'project_uuid': mockProject({ uuid: 'project_uuid', name: 'demo_project' }),
+                    project_uuid: mockProject({ uuid: 'project_uuid', name: 'demo_project' })
                 },
                 schema: {
-                    'schema_uuid': mockSchema({
+                    schema_uuid: mockSchema({
                         uuid: 'schema_uuid',
                         version: '0',
                         fields: [
@@ -176,20 +173,23 @@ describe('NodeConflictDialogComponent', () => {
                     })
                 },
                 microschema: {
-                    'microschema_uuid': mockMicroschema({
+                    microschema_uuid: mockMicroschema({
                         uuid: 'microschema_uuid',
                         version: '0',
-                        fields: [{
-                            name: 'name',
-                            label: 'name',
-                            required: false,
-                            type: 'string'
-                        }, {
-                            name: 'number',
-                            label: 'number',
-                            required: false,
-                            type: 'number'
-                        }],
+                        fields: [
+                            {
+                                name: 'name',
+                                label: 'name',
+                                required: false,
+                                type: 'string'
+                            },
+                            {
+                                name: 'number',
+                                label: 'number',
+                                required: false,
+                                type: 'number'
+                            }
+                        ]
                     })
                 }
             }
@@ -222,7 +222,7 @@ describe('NodeConflictDialogComponent', () => {
     });
 
     it('should retrieve data for the "node" field', () => {
-        const apiService:MockApiService = TestBed.get(ApiService);
+        const apiService: MockApiService = TestBed.get(ApiService);
         component.remoteNode = state.now.entities.node['server_node_uuid']['en']['0.1'];
         component.localNode = state.now.entities.node['current_node_uuid']['en']['0'];
         component.conflicts = ['slug', 'amount', 'node'];
@@ -236,9 +236,11 @@ describe('NodeConflictDialogComponent', () => {
         component.localTags = state.now.entities.node['current_node_uuid']['en']['0'].tags;
         component.conflicts = ['slug', 'amount', 'microschema.name', 'microschema.number'];
         fixture.detectChanges();
-        expect(component.conflictedFields.length).toEqual(component.conflicts.length - 1); //-1 since 'microschema.name' and 'microschema.number' will be grouped into one field
+        // -1 since 'microschema.name' and 'microschema.number' will be grouped into one field
+        expect(component.conflictedFields.length).toEqual(component.conflicts.length - 1);
         const renderedConflictedFields = fixture.debugElement.queryAll(By.css('mesh-conflicted-field'));
-        expect(renderedConflictedFields.length).toEqual(component.conflicts.length + 1); // +1 since 'microschema.name' and 'microschema.number' are rendered as children inside another mesh-conflicted-field which acts as a container
+        // +1 since 'microschema.name' and 'microschema.number' are rendered as children inside another mesh-conflicted-field which acts as a container
+        expect(renderedConflictedFields.length).toEqual(component.conflicts.length + 1);
     });
 
     it('should generate extra conflict for conflicted tags', () => {
@@ -267,22 +269,12 @@ describe('NodeConflictDialogComponent', () => {
             fieldName: 'image',
             version: mineNode.version,
             w: 200,
-            h: 200,
+            h: 200
         });
 
         expect(blobService.downloadFile).toHaveBeenCalledWith(requestURL, imageField.fileName);
     });
 });
-
-
-@Pipe({
-    name: 'i18n'
-})
-class MockI18nPipe implements PipeTransform {
-    transform(arg) {
-        return `translated ${arg}`;
-    }
-}
 
 class MockModalService {
     dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
@@ -290,18 +282,21 @@ class MockModalService {
     fakeDialog = {
         open: jasmine.createSpy('open').and.callFake(() => {
             return new Promise(resolve => {
-                this.confirmLastModal = () => { resolve(); tick(); };
+                this.confirmLastModal = () => {
+                    resolve();
+                    tick();
+                };
             });
         })
     };
     confirmLastModal: () => void;
 }
 class MockEntitiesService {
-    getSchema = (id) => {
+    getSchema = (id: string) => {
         return state.now.entities.schema[id]['0'];
-    }
+    };
 
-    getMicroschema = (id) => {
+    getMicroschema = (id: string) => {
         return state.now.entities.microschema[id]['0'];
-    }
+    };
 }
