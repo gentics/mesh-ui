@@ -1,45 +1,32 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PipeTransform } from '@angular/core';
 import { Pipe } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { OverlayHostService, ProgressBar } from 'gentics-ui-core';
+
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
 
 import { ProgressbarModalComponent } from './progressbar-modal.component';
-import { ProgressBar, OverlayHostService } from 'gentics-ui-core';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
-
 
 describe('ModalProgressbarComponent', () => {
-  let component: ProgressbarModalComponent;
+    let component: ProgressbarModalComponent;
 
-  let fixture: ComponentFixture<ProgressbarModalComponent>;
+    let fixture: ComponentFixture<ProgressbarModalComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-        declarations: [
-            ProgressbarModalComponent,
-            ProgressBar,
-            Mocki18nPipe
-        ],
-        providers: [
-            OverlayHostService,
-        ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [ProgressbarModalComponent, ProgressBar, MockI18nPipe],
+            providers: [OverlayHostService]
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ProgressbarModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ProgressbarModalComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
-
-@Pipe({ name: 'i18n' })
-class Mocki18nPipe implements PipeTransform {
-    transform(a: any): any {
-        return a;
-    }
-}

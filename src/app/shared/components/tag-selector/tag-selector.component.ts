@@ -12,8 +12,8 @@ import {
 } from '@angular/core';
 import { DropdownList } from 'gentics-ui-core';
 
-import { Tag } from '../../../common/models/tag.model';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
+import { Tag } from '../../../common/models/tag.model';
 import { KeyCode } from '../../../common/util/keycode';
 
 /**
@@ -26,7 +26,6 @@ import { KeyCode } from '../../../common/util/keycode';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TagSelectorComponent implements OnChanges, OnDestroy {
-
     /** The tags to display. No filtering is done within this component. */
     @Input() tags: Array<Tag | TagReferenceFromServer>;
     /** The term used to filter the tags, used to highlight the matches */
@@ -101,7 +100,7 @@ export class TagSelectorComponent implements OnChanges, OnDestroy {
 
     private selectPrevious(): void {
         const total = this.newTagName !== '' ? this.tags.length + 1 : this.tags.length;
-        this.selectedIndex = (this.selectedIndex === 0) ? total - 1 : this.selectedIndex - 1;
+        this.selectedIndex = this.selectedIndex === 0 ? total - 1 : this.selectedIndex - 1;
         this.scrollToSelectedOption();
     }
 
@@ -129,7 +128,8 @@ export class TagSelectorComponent implements OnChanges, OnDestroy {
             const container = this.dropDown.content.elementRef.nativeElement;
             const selectedItem = container.querySelector('.selected');
             if (selectedItem) {
-                const belowContainer = container.offsetHeight + container.scrollTop < selectedItem.offsetTop + selectedItem.offsetHeight;
+                const belowContainer =
+                    container.offsetHeight + container.scrollTop < selectedItem.offsetTop + selectedItem.offsetHeight;
                 const aboveContainer = selectedItem.offsetTop < container.scrollTop;
 
                 if (belowContainer) {
@@ -147,7 +147,7 @@ export class TagSelectorComponent implements OnChanges, OnDestroy {
             return;
         }
         // If the term does not perfectly match any of existing tags - we will show an option to create one
-        if (!this.tags.some(tag => tag.name.toLowerCase() === filterTerm.toLowerCase())) {
+        if (!this.tags.some(tag => tag.name!.toLowerCase() === filterTerm.toLowerCase())) {
             this.newTagName = filterTerm;
         } else {
             this.newTagName = '';

@@ -1,0 +1,15 @@
+{
+  "html": {
+    "indent_level": 0,
+    "indent_size": 4,
+    "indent_with_tabs": false,
+    "eol": "\n",
+    "end_with_newline": true,
+    "preserve_newlines": true,
+    "max_preserve_newlines": 2,
+    "wrap_attributes": "force-aligned",
+    "space_in_paren": false,
+    "contentUnformatted": "",
+    "unformatted": []
+  }
+}

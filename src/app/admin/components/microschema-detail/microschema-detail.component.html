@@ -2,9 +2,9 @@
     Version: {{version$ | async}}
 </div>
 
-<monaco-editor [(ngModel)]="microschemaJson" language="json" [jsonSchema]="schema" (errors)="onErrorChange($event)"></monaco-editor>
+<mesh-monaco-editor [(ngModel)]="microschemaJson" language="json" [jsonSchema]="schema" (errors)="onErrorChange($event)"></mesh-monaco-editor>
 
-<schema-assignment *ngIf="!isNew" type="microschema" [uuid]="uuid$ | async"></schema-assignment>
+<mesh-schema-assignment *ngIf="!isNew" type="microschema" [uuid]="uuid$ | async"></mesh-schema-assignment>
 
 <gtx-button [disabled]="errors.length > 0 || (loading$ | async)" (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
 <gtx-button type="alert" *ngIf="!isNew" (click)="delete()">{{ 'common.delete_button' | i18n }}</gtx-button>

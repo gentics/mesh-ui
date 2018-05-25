@@ -1,4 +1,5 @@
 import { Directive, HostBinding, Input, OnChanges } from '@angular/core';
+
 import { stringToColor } from '../../common/util/util';
 
 /**
@@ -9,11 +10,9 @@ import { stringToColor } from '../../common/util/util';
     selector: '[meshBackgroundFrom]'
 })
 export class BackgroundFromDirective implements OnChanges {
-    @HostBinding('style.backgroundColor')
-    private backgroundColor: string;
+    @HostBinding('style.backgroundColor') private backgroundColor: string;
 
-    @Input()
-    private meshBackgroundFrom: string;
+    @Input() private meshBackgroundFrom: string;
 
     ngOnChanges(): void {
         this.backgroundColor = stringToColor(this.meshBackgroundFrom);

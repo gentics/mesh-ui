@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, RouteConfigLoadEnd, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router, RouteConfigLoadEnd } from '@angular/router';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
 
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { AppState } from '../../../state/models/app-state.model';
-import { EntitiesService } from '../../../state/providers/entities.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { AppState } from '../../../state/models/app-state.model';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
-export type BreadcrumbTextFunction =
-    (route: ActivatedRouteSnapshot, state: AppState, entities: EntitiesService) => string | Observable<string>;
+export type BreadcrumbTextFunction = (
+    route: ActivatedRouteSnapshot,
+    state: AppState,
+    entities: EntitiesService
+) => string | Observable<string>;
 
 /**
  * A breadcrumbs component which reads the route config and any route that has a `data.breadcrumb` property will
@@ -29,25 +32,28 @@ export class AdminBreadcrumbsComponent implements OnInit {
     loading$: Observable<boolean>;
     BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
 
-    constructor(private router: Router,
-                private route: ActivatedRoute,
-                private entities: EntitiesService,
-                private i18nService: I18nService,
-                private state: ApplicationStateService) { }
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute,
+        private entities: EntitiesService,
+        private i18nService: I18nService,
+        private state: ApplicationStateService
+    ) {}
 
     ngOnInit() {
-        this.breadcrumbs$ = this.router.events                      // On router event
-            .filter(event => event instanceof NavigationEnd || event instanceof RouteConfigLoadEnd)   // when user navigated somewhere...
-            .switchMap(() => Observable.combineLatest(
-                ...flatRoute(this.route.root.snapshot)              // get the current route,
-                    .filter(getBreadcrumbSource)                    // that have breadcrumb options set
-                    .map(it => this.toBreadcrumb(it))     // and map them to breadcrumbs
-            ));
+        this.breadcrumbs$ = this.router.events // On router event
+            .filter(event => event instanceof NavigationEnd || event instanceof RouteConfigLoadEnd) // when user navigated somewhere...
+            .switchMap(() =>
+                Observable.combineLatest(
+                    ...flatRoute(this.route.root.snapshot) // get the current route,
+                        .filter(getBreadcrumbSource) // that have breadcrumb options set
+                        .map(it => this.toBreadcrumb(it)) // and map them to breadcrumbs
+                )
+            );
 
-        this.loading$ = this.state.select(state =>
-            0 < state.adminUsers.loadCount ||
-            0 < state.adminSchemas.loadCount ||
-            0 < state.adminProjects.loadCount
+        this.loading$ = this.state.select(
+            state =>
+                0 < state.adminUsers.loadCount || 0 < state.adminSchemas.loadCount || 0 < state.adminProjects.loadCount
         );
     }
 
@@ -64,7 +70,8 @@ export class AdminBreadcrumbsComponent implements OnInit {
         const paths = routeUrl(route);
 
         if (typeof breadcrumbSource === 'function') {
-            return this.state.select(state => state)
+            return this.state
+                .select(state => state)
                 .switchMap(state => {
                     const stringOrObservable = breadcrumbSource(route, state, this.entities);
                     return typeof stringOrObservable === 'string' ? [stringOrObservable] : stringOrObservable;

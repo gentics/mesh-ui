@@ -1,8 +1,8 @@
 import { EventEmitter } from '@angular/core';
+
 import { I18nPipe } from './i18n.pipe';
 
 describe('I18nPipe', () => {
-
     let i18nPipe: I18nPipe;
     let mockTranslatePipe: MockTranslatePipe;
     let mockTranslateService: MockTranslateService;

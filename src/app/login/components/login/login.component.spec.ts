@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { LoginComponent } from './login.component';
-import { SharedModule } from '../../../shared/shared.module';
 import { Router } from '@angular/router';
+
+import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { AuthEffectsService } from '../../providers/auth-effects.service';
 import { TestStateModule } from '../../../state/testing/test-state.module';
+import { AuthEffectsService } from '../../providers/auth-effects.service';
+
+import { LoginComponent } from './login.component';
 
 describe('LoginComponent:', () => {
-
     let comp: LoginComponent;
     let fixture: ComponentFixture<LoginComponent>;
     let appState: TestApplicationState;
@@ -22,8 +22,7 @@ describe('LoginComponent:', () => {
                 { provide: AuthEffectsService, useClass: MockAuthEffects }
             ],
             declarations: [LoginComponent]
-        })
-        .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -40,9 +39,7 @@ describe('LoginComponent:', () => {
     });
 
     // TODO: actual unit tests
-
 });
-
 
 class MockAuthEffects {
     login = jasmine.createSpy('login');

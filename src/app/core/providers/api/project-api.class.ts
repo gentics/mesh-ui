@@ -1,9 +1,20 @@
-import { ApiBase } from './api-base.service';
-import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 import { GenericMessageResponse, NodeResponse, NodeUpdateRequest } from '../../../common/models/server-models';
 
+import { ApiBase } from './api-base.service';
+import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
+
+export interface ImageTransformQueryParams {
+    w?: number;
+    h?: number;
+    fpx?: number;
+    fpy?: number;
+    fpz?: number;
+    crop?: string;
+    rect?: string;
+}
+
 export class ProjectApi {
-    constructor(private apiBase: ApiBase) { }
+    constructor(private apiBase: ApiBase) {}
 
     /** Assign a microschema version to a release. */
     assignMicroschemaToRelease = apiPostWithoutBody('/{project}/releases/{releaseUuid}/microschemas');
@@ -169,28 +180,6 @@ export class ProjectApi {
     /** Update the release with the given uuid. */
     updateRelease = apiPost('/{project}/releases/{releaseUuid}');
 
-    /**
-     * Returns a url to a node binary file
-     */
-    getBinaryFileUrl(project: string, nodeUuid: string, name: string, version?: string, params?: {w?: number, h?: number, fpx?: number, fpy?: number, fpz?: number, crop?: string,  rect?: string }): string {
-        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', { project, nodeUuid, name, version, ...params });
-    }
-
-    /**
-     * Update the node with the given uuid. It is mandatory to specify the version
-     * within the update request. Mesh will automatically check for version conflicts
-     * and return a 409 error if a conflict has been detected. Additional conflict
-     * checks for webrootpath conflicts will also be performed.
-     */
-    updateNode({ project, nodeUuid, language }: { project: string, nodeUuid: string, language: string }, updateRequest: NodeUpdateRequest) {
-        // TODO: remove the "any" cast in the .post() call below once (https://jira.gentics.com/browse/CL-604) is resolved.
-        return this.apiBase.post('/{project}/nodes/{nodeUuid}', { project, nodeUuid, lang: language } as any, updateRequest)
-            .mapResponses<{ conflict: GenericMessageResponse | null; node: NodeResponse | null; }>({
-                200: node => ({ node, conflict: null }),
-                409: conflict => ({ node: null, conflict })
-            });
-    }
-
     /** Create a new tag for a givn tag family. */
     createTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags');
 
@@ -199,4 +188,42 @@ export class ProjectApi {
 
     /** Update the tag family with the given uuid. */
     updateTagFamily = apiPost('/{project}/tagFamilies/{tagFamilyUuid}');
+
+    /**
+     * Returns a url to a node binary file
+     */
+    getBinaryFileUrl(
+        project: string,
+        nodeUuid: string,
+        name: string,
+        version?: string,
+        params: ImageTransformQueryParams = {}
+    ): string {
+        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', {
+            project,
+            nodeUuid,
+            name,
+            version,
+            ...params
+        });
+    }
+
+    /**
+     * Update the node with the given uuid. It is mandatory to specify the version
+     * within the update request. Mesh will automatically check for version conflicts
+     * and return a 409 error if a conflict has been detected. Additional conflict
+     * checks for webrootpath conflicts will also be performed.
+     */
+    updateNode(
+        { project, nodeUuid, language }: { project: string; nodeUuid: string; language: string },
+        updateRequest: NodeUpdateRequest
+    ) {
+        // TODO: remove the "any" cast in the .post() call below once (https://jira.gentics.com/browse/CL-604) is resolved.
+        return this.apiBase
+            .post('/{project}/nodes/{nodeUuid}', { project, nodeUuid, lang: language } as any, updateRequest)
+            .mapResponses<{ conflict: GenericMessageResponse | null; node: NodeResponse | null }>({
+                200: node => ({ node, conflict: null }),
+                409: conflict => ({ node: null, conflict })
+            });
+    }
 }

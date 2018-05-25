@@ -1,7 +1,7 @@
-import { AuthApi } from './auth-api.class';
-import { MockApiBase } from './api-base.mock';
 import { Observable } from 'rxjs/Observable';
 
+import { MockApiBase } from './api-base.mock';
+import { AuthApi } from './auth-api.class';
 
 describe('AuthApi', () => {
     let authApi: AuthApi;
@@ -13,7 +13,6 @@ describe('AuthApi', () => {
     });
 
     describe('login', () => {
-
         it('sends a POST request to /auth/login', () => {
             authApi.login({ username: 'McKittrick', password: '7KQ201' });
             expect(apiBase.allRequests.length).toBe(1);
@@ -27,8 +26,9 @@ describe('AuthApi', () => {
 
         it('emits "true" when the request succeeds', () => {
             let result: any;
-            authApi.login({ username: 'exampleuser', password: 'rosebud' })
-                .subscribe(r => { result = r; });
+            authApi.login({ username: 'exampleuser', password: 'rosebud' }).subscribe(r => {
+                result = r;
+            });
             expect(apiBase.lastRequest).toBeDefined();
             apiBase.lastRequest.respond(200, { token: 'very long session token' });
             expect(result).toBe(true);
@@ -36,8 +36,9 @@ describe('AuthApi', () => {
 
         it('emits "false" when the request returns a 401', () => {
             let result: any;
-            authApi.login({ username: 'exampleuser', password: 'rosebud' })
-                .subscribe(r => { result = r; });
+            authApi.login({ username: 'exampleuser', password: 'rosebud' }).subscribe(r => {
+                result = r;
+            });
             expect(apiBase.lastRequest).toBeDefined();
             apiBase.lastRequest.respond(401, {
                 properties: {},
@@ -49,7 +50,8 @@ describe('AuthApi', () => {
 
         it('throws on unexpected HTTP errors', () => {
             let emittedError = false;
-            authApi.login({ username: 'exampleuser', password: 'rosebud' })
+            authApi
+                .login({ username: 'exampleuser', password: 'rosebud' })
                 .catch(() => {
                     emittedError = true;
                     return Observable.never();
@@ -59,7 +61,5 @@ describe('AuthApi', () => {
             apiBase.lastRequest.respond(500, 'Internal Server Error');
             expect(emittedError).toBe(true);
         });
-
     });
-
 });

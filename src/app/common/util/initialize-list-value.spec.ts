@@ -1,8 +1,8 @@
 import { SchemaField } from '../models/schema.model';
+
 import { initializeListValue } from './initialize-list-value';
 
 describe('initializeListValue()', () => {
-
     it('should throw if not passed field of type "list"', () => {
         const field = { type: 'string' } as SchemaField;
         expect(() => initializeListValue(field)).toThrow();
@@ -30,13 +30,13 @@ describe('initializeListValue()', () => {
 
     it('returns correct value for listType micronode', () => {
         const microschema = {
-                   name: 'test',
-                   uuid: 'test_uuid',
-                   fields: [
-                       { name: 'field1', type: 'string' },
-                       { name: 'field2', type: 'list', listType: 'boolean' },
-                       { name: 'field3', type: 'html' }
-                   ]
+            name: 'test',
+            uuid: 'test_uuid',
+            fields: [
+                { name: 'field1', type: 'string' },
+                { name: 'field2', type: 'list', listType: 'boolean' },
+                { name: 'field3', type: 'html' }
+            ]
         } as any;
         const field = { type: 'list', listType: 'micronode' } as SchemaField;
         expect(initializeListValue(field, microschema)).toEqual({

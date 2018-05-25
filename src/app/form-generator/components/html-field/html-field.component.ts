@@ -1,25 +1,32 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    OnDestroy,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import * as Quill from 'quill';
 
-import { MeshFieldControlApi } from '../../common/form-generator-models';
-import { SchemaField } from '../../../common/models/schema.model';
 import { NodeFieldType } from '../../../common/models/node.model';
+import { SchemaField } from '../../../common/models/schema.model';
+import { errorHashFor, ErrorCode } from '../../common/form-errors';
+import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
-import { ErrorCode, errorHashFor } from '../../common/form-errors';
 
 @Component({
-    selector: 'html-field',
+    selector: 'mesh-html-field',
     templateUrl: './html-field.component.html',
     styleUrls: ['./html-field.scss'],
     // required for the Quill.js styles to work correctly
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewInit, OnDestroy {
     field: SchemaField;
     api: MeshFieldControlApi;
     value: NodeFieldType;
-    @ViewChild('editor')
-    private editorRef: ElementRef;
+    @ViewChild('editor') private editorRef: ElementRef;
     private editor: Quill.Quill;
     private blurTimer: any;
 
@@ -61,7 +68,6 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
             qlToolBar.removeEventListener('click', this.focusHandler);
             this.editorRef.nativeElement.querySelector('.ql-editor').removeEventListener('blur', this.blurHandler);
         }
-
     }
 
     init(api: MeshFieldControlApi): void {
@@ -89,27 +95,27 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
             this.editor.focus();
             clearTimeout(this.blurTimer);
         }
-    }
+    };
 
     private blurHandler = () => {
         this.blurTimer = setTimeout(() => {
             this.api.setFocus(false);
         }, 50);
-    }
+    };
 
     private onTextChangeHandler = () => {
         const value = this.editorRef.nativeElement.querySelector('.ql-editor').innerHTML;
         this.api.setValue(value);
         this.setValidity(value);
-    }
+    };
 
-    private onSelectionChangeHandler = range => {
+    private onSelectionChangeHandler = (range: any) => {
         if (range !== null && !this.api.readOnly) {
             this.api.setFocus(true);
         } else {
             this.blurHandler();
         }
-    }
+    };
 
     /**
      * Mark as invalid if field is required and has a falsy value

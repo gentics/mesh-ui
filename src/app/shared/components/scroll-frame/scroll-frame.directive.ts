@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
  * The ScrollFrame directive should be attached to scrollable divs (i.e. divs with `overflow-y: auto`).
  * See ScrollFrameTargetDirective for further usage.
  */
-@Directive({selector: '[scrollFrame]'})
+@Directive({selector: '[meshScrollFrame]'})
 export class ScrollFrameDirective {
     scrollEnd$: Observable<Event>;
     frameElement: HTMLElement;

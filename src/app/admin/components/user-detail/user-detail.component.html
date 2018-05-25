@@ -60,10 +60,10 @@
                     <icon left>add</icon> {{ 'admin.select_new_node_reference' |i18n }}
                 </gtx-button>
             </div>
-            <form-generator #formGenerator
+            <mesh-form-generator #formGenerator
                             [readOnly]="true"
                             [node]="node"
-                            [schema]="userNodeSchema$ | async"></form-generator>
+                            [schema]="userNodeSchema$ | async"></mesh-form-generator>
         </div>
     </div>
 

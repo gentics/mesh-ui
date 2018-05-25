@@ -44,8 +44,8 @@ $left-bar-width: 6px;
         }
     }
 
-    :host-context(micronode-field),
-    :host-context(list-field),
+    :host-context(mesh-micronode-field),
+    :host-context(mesh-list-field),
     &.compact {
         & /deep/ gtx-input {
             flex-direction: column-reverse;
@@ -55,7 +55,7 @@ $left-bar-width: 6px;
             input[type="password"] {
                 width: $full-width;
 
-                list-field & {
+                mesh-list-field & {
                     width: $full-width;
                 }
             }

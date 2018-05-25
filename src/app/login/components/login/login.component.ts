@@ -7,7 +7,7 @@ import { AuthEffectsService } from '../../providers/auth-effects.service';
 
 
 @Component({
-    selector: 'login',
+    selector: 'mesh-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.scss']
 })

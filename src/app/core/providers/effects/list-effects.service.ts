@@ -2,38 +2,38 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { I18nNotification } from '../i18n-notification/i18n-notification.service';
-import { ApiService } from '../api/api.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { ConfigService } from '../config/config.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshNode } from '../../../common/models/node.model';
 import { Tag } from '../../../common/models/tag.model';
-
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
+import { ApiService } from '../api/api.service';
+import { ConfigService } from '../config/config.service';
+import { I18nNotification } from '../i18n-notification/i18n-notification.service';
 
 @Injectable()
 export class ListEffectsService {
-
-    constructor(private api: ApiService,
-                private config: ConfigService,
-                private state: ApplicationStateService,
-                private notification: I18nNotification,
-                private entities: EntitiesService) {
-    }
+    constructor(
+        private api: ApiService,
+        private config: ConfigService,
+        private state: ApplicationStateService,
+        private notification: I18nNotification,
+        private entities: EntitiesService
+    ) {}
 
     /**
      * Load all projects
      */
     loadProjects() {
-
         this.state.actions.list.fetchProjectsStart();
         // TODO How to handle paging? Should all projects be loaded?
-        this.api.project.getProjects({})
-            .subscribe(projects => {
+        this.api.project.getProjects({}).subscribe(
+            projects => {
                 this.state.actions.list.fetchProjectsSuccess(projects.data);
-            }, error => {
+            },
+            error => {
                 this.state.actions.list.fetchProjectsError();
-            });
+            }
+        );
     }
 
     /**
@@ -41,10 +41,11 @@ export class ListEffectsService {
      */
     loadSchemasForProject(project: string) {
         this.state.actions.list.fetchSchemasStart(project);
-        this.api.project.getProjectSchemas({ project })
-            .subscribe(({data}) => {
+        this.api.project.getProjectSchemas({ project }).subscribe(
+            ({ data }) => {
                 return this.state.actions.list.fetchSchemasSuccess(project, data);
-            }, error => {
+            },
+            error => {
                 return this.state.actions.list.fetchSchemasError(); /* TODO: error handling */
             }
         );
@@ -55,10 +56,12 @@ export class ListEffectsService {
      */
     loadMicroschemasForProject(project: string) {
         this.state.actions.list.fetchMicroschemasStart();
-        this.api.project.getProjectMicroschemas({ project })
+        this.api.project
+            .getProjectMicroschemas({ project })
             .subscribe(
-                ({data}) => this.state.actions.list.fetchMicroschemasSuccess(data),
-                error => this.state.actions.list.fetchMicroschemasError() /* TODO: error handling */);
+                ({ data }) => this.state.actions.list.fetchMicroschemasSuccess(data),
+                error => this.state.actions.list.fetchMicroschemasError() /* TODO: error handling */
+            );
     }
     /**
      * Basicaly display the content of the folder in the list view
@@ -69,52 +72,65 @@ export class ListEffectsService {
 
         // Refresh the node
         this.state.actions.list.fetchNodeStart();
-        this.api.project.getNode({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })
-            .subscribe(response => {
-                this.state.actions.list.fetchNodeSuccess(response);
-            }, error => {
-                this.state.actions.list.fetchNodeError();
-                throw new Error('TODO: Error handling');
-            });
+        this.api.project
+            .getNode({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })
+            .subscribe(
+                response => {
+                    this.state.actions.list.fetchNodeSuccess(response);
+                },
+                error => {
+                    this.state.actions.list.fetchNodeError();
+                    throw new Error('TODO: Error handling');
+                }
+            );
 
-       this.loadChildren(projectName, containerUuid, language);
+        this.loadChildren(projectName, containerUuid, language);
     }
 
     /**
      * Load the children for the opened folder
      */
     loadChildren(projectName: string, containerUuid: string, language: string): void {
-         // Refresh child node list
+        // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
         this.api.project
-            .getNodeChildren({ project: projectName, nodeUuid: containerUuid, lang: this.languageWithFallbacks(language) })
-            .subscribe(response => {
-                this.state.actions.list.fetchChildrenSuccess(containerUuid, response.data);
-            }, error => {
-                this.state.actions.list.fetchChildrenError();
-                throw new Error('TODO: Error handling');
-            });
+            .getNodeChildren({
+                project: projectName,
+                nodeUuid: containerUuid,
+                lang: this.languageWithFallbacks(language)
+            })
+            .subscribe(
+                response => {
+                    this.state.actions.list.fetchChildrenSuccess(containerUuid, response.data);
+                },
+                error => {
+                    this.state.actions.list.fetchChildrenError();
+                    throw new Error('TODO: Error handling');
+                }
+            );
     }
 
-
     searchNodes(searchTerm: string, tags: Tag[], projectName: string, languageCode: string): void {
-
         this.state.actions.list.searchNodesStart();
         const hasTags = 0 < tags.length;
         const hasSearchTerm = 0 < searchTerm.trim().length;
 
         const searchRequests: Array<Observable<MeshNode[]>> = [
             hasTags ? this.searchNodesByTags(tags, projectName, languageCode) : Observable.of([]),
-            hasSearchTerm ? this.searchNodesByKeyword(searchTerm, projectName, languageCode) : Observable.of([]),
+            hasSearchTerm ? this.searchNodesByKeyword(searchTerm, projectName, languageCode) : Observable.of([])
         ];
 
-        forkJoin(searchRequests)
-            .subscribe(results => {
-                const nodesFromTagSearch = results[0];
-                const nodesFromKeywordSearch = results[1];
-                const finalResult = this.reconcileSearchResults(nodesFromKeywordSearch, nodesFromTagSearch, hasSearchTerm, hasTags);
-                this.state.actions.list.searchNodesSuccess(finalResult);
-            });
+        forkJoin(searchRequests).subscribe(results => {
+            const nodesFromTagSearch = results[0];
+            const nodesFromKeywordSearch = results[1];
+            const finalResult = this.reconcileSearchResults(
+                nodesFromKeywordSearch,
+                nodesFromTagSearch,
+                hasSearchTerm,
+                hasTags
+            );
+            this.state.actions.list.searchNodesSuccess(finalResult);
+        });
     }
 
     /**
@@ -123,20 +139,27 @@ export class ListEffectsService {
      * If The searchedNodes === null and searchedTags !== null - we return full searchedTags.
      * Otherwise we just return nodes of current selected parent node.
      */
-    private reconcileSearchResults(nodesFromKeywordSearch: MeshNode[], nodesFromTagSearch: MeshNode[], hasSearchTerm: boolean, hasTags: boolean): MeshNode[] {
+    private reconcileSearchResults(
+        nodesFromKeywordSearch: MeshNode[],
+        nodesFromTagSearch: MeshNode[],
+        hasSearchTerm: boolean,
+        hasTags: boolean
+    ): MeshNode[] {
         let finalResult: MeshNode[] = [];
 
         if (hasSearchTerm) {
-            if (hasTags) { // Intersect with searchedTags.
+            if (hasTags) {
+                // Intersect with searchedTags.
                 finalResult = nodesFromKeywordSearch.filter(nodeFromKeywordSearch =>
-                    nodesFromTagSearch.some(nodeFromTagSearch =>
-                        nodeFromKeywordSearch.uuid === nodeFromTagSearch.uuid));
+                    nodesFromTagSearch.some(nodeFromTagSearch => nodeFromKeywordSearch.uuid === nodeFromTagSearch.uuid)
+                );
             } else {
                 finalResult = nodesFromKeywordSearch;
             }
         } else if (hasTags) {
             finalResult = nodesFromTagSearch;
-        } else { // No searching is done at all.
+        } else {
+            // No searching is done at all.
             throw new Error('No search term or tags were specified');
         }
 
@@ -147,17 +170,17 @@ export class ListEffectsService {
         const tagNames: string = tags.map(tag => tag.name).join(' ');
 
         const query = {
-            'query': {
-                'bool': {
-                    'must': [
+            query: {
+                bool: {
+                    must: [
                         {
-                            'nested': {
-                                'path': 'tags',
-                                'query': {
-                                    'bool': {
-                                        'must': [
+                            nested: {
+                                path: 'tags',
+                                query: {
+                                    bool: {
+                                        must: [
                                             {
-                                                'term': {
+                                                term: {
                                                     'tags.name.raw': tagNames
                                                 }
                                             }
@@ -169,17 +192,16 @@ export class ListEffectsService {
                     ]
                 }
             },
-            'sort': [
+            sort: [
                 {
-                    'created': 'asc'
+                    created: 'asc'
                 }
             ]
         };
 
-        return this.api.project.searchNodes({ project }, query)
-            .map(results => {
-                return results.data as MeshNode[];
-            });
+        return this.api.project.searchNodes({ project }, query).map(results => {
+            return results.data as MeshNode[];
+        });
     }
 
     /**
@@ -190,8 +212,8 @@ export class ListEffectsService {
             query: {
                 query_string: {
                     query: term
-                },
-                 // Would search just in the 'name' field.
+                }
+                // Would search just in the 'name' field.
                 /*match_phrase: {
                     'displayField.value': term,
                 }*/
@@ -199,32 +221,33 @@ export class ListEffectsService {
             sort: [{ created: 'asc' }]
         };
 
-        return this.api.project.searchNodes({ project }, query)
-            .map(results => {
-                return results.data as MeshNode[];
-            });
+        return this.api.project.searchNodes({ project }, query).map(results => {
+            return results.data as MeshNode[];
+        });
     }
 
     /**
      * make a comma seperated list of langues. Put the passed language in front
      */
     private languageWithFallbacks(language: string): string {
-        return this.config.CONTENT_LANGUAGES
-            .sort((a, b) => a === language ? -1 : 1)
-            .join(',');
+        return this.config.CONTENT_LANGUAGES.sort((a, b) => (a === language ? -1 : 1)).join(',');
     }
 
     public deleteNode(node: MeshNode, recursive: boolean): void {
         this.state.actions.list.deleteNodeStart();
-        this.api.project.deleteNode({ project: node.project.name, nodeUuid: node.uuid, recursive })
-            .subscribe(result => {
+        this.api.project.deleteNode({ project: node.project.name!, nodeUuid: node.uuid, recursive }).subscribe(
+            result => {
                 this.state.actions.list.deleteNodeSuccess();
                 const parentNode = this.entities.getNode(node.parentNode.uuid, { language: node.language });
-                this.loadChildren(parentNode.project.name, parentNode.uuid, parentNode.language);
-        }, error => {
-            this.state.actions.list.deleteNodeError();
-            throw new Error('TODO: Error handling');
-        })
+                if (parentNode && parentNode.language) {
+                    this.loadChildren(parentNode.project.name!, parentNode.uuid, parentNode.language);
+                }
+            },
+            error => {
+                this.state.actions.list.deleteNodeError();
+                throw new Error('TODO: Error handling');
+            }
+        );
     }
 
     public setFilterTerm(term: string) {

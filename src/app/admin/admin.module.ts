@@ -2,31 +2,32 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 
-import { routes } from './admin.routes';
+import { FormGeneratorModule } from '../form-generator/form-generator.module';
 import { SharedModule } from '../shared/shared.module';
-import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
-import { ProjectListComponent } from './components/project-list/project-list.component';
-import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
-import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
+
+import { routes } from './admin.routes';
 import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
+import { AdminListItemComponent } from './components/admin-list-item/admin-list-item.component';
+import { AdminListComponent } from './components/admin-list/admin-list.component';
+import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
+import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
+import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/mircoschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
-import { SchemaListComponent } from './components/schema-list/schema-list.component';
+import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
+import { ProjectListComponent } from './components/project-list/project-list.component';
 import { SchemaAssignmentComponent } from './components/schema-assignment/schema-assignment.component';
-import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
-import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
-import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
-import { AdminListComponent } from './components/admin-list/admin-list.component';
-import { AdminListItemComponent } from './components/admin-list-item/admin-list-item.component';
-import { UserListComponent } from './components/user-list/user-list.component';
-import { UserDetailComponent } from './components/user-detail/user-detail.component';
-import { UserResolver } from './providers/resolvers/user-resolver';
-import { SchemaResolver } from './providers/resolvers/schema-resolver';
-import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
-import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
 import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
+import { SchemaListComponent } from './components/schema-list/schema-list.component';
+import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
-import { FormGeneratorModule } from '../form-generator/form-generator.module';
+import { UserListComponent } from './components/user-list/user-list.component';
+import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
+import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
+import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
+import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
+import { SchemaResolver } from './providers/resolvers/schema-resolver';
+import { UserResolver } from './providers/resolvers/user-resolver';
 
 @NgModule({
     declarations: [
@@ -47,14 +48,8 @@ import { FormGeneratorModule } from '../form-generator/form-generator.module';
         UserDetailComponent,
         UserGroupSelectComponent
     ],
-    entryComponents: [
-        CreateProjectModalComponent
-    ],
-    imports: [
-        SharedModule,
-        RouterModule.forChild(routes),
-        FormGeneratorModule
-    ],
+    entryComponents: [CreateProjectModalComponent],
+    imports: [SharedModule, RouterModule.forChild(routes), FormGeneratorModule],
     providers: [
         ModalService,
         AdminSchemaEffectsService,

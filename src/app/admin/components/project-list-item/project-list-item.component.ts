@@ -1,39 +1,39 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
 import { ModalService, Notification } from 'gentics-ui-core';
+import { Subscription } from 'rxjs/Subscription';
 
+import { Project } from '../../../common/models/project.model';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { Project } from '../../../common/models/project.model';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 
-
 @Component({
-    selector: 'project-list-item',
+    selector: 'mesh-project-list-item',
     templateUrl: './project-list-item.component.html',
     styleUrls: ['./project-list-item.scss']
 })
 export class ProjectListItemComponent implements OnInit, OnDestroy {
-    @Input()
-    projectUuid: string;
+    @Input() projectUuid: string;
 
     project: Project;
 
     private subscription: Subscription;
 
-    constructor(private elementRef: ElementRef,
-                private notification: Notification,
-                private modal: ModalService,
-                private i18n: I18nService,
-                private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private adminProjectEffects: AdminProjectEffectsService) {
-    }
+    constructor(
+        private elementRef: ElementRef,
+        private notification: Notification,
+        private modal: ModalService,
+        private i18n: I18nService,
+        private state: ApplicationStateService,
+        private entities: EntitiesService,
+        private adminProjectEffects: AdminProjectEffectsService
+    ) {}
 
     ngOnInit(): void {
-        this.subscription = this.entities.selectProject(this.projectUuid)
-            .subscribe(project => this.project = {...project});
+        this.subscription = this.entities
+            .selectProject(this.projectUuid)
+            .subscribe(project => (this.project = { ...project }));
     }
 
     ngOnDestroy(): void {
@@ -56,23 +56,24 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
      * Shows confirmation dialog, then deletes the project.
      */
     delete(): void {
-        this.modal.dialog({
-            title: this.i18n.translate('modal.delete_project_title'),
-            body: this.i18n.translate('modal.delete_project_body', { name: this.project.name }),
-            buttons: [
-                { label: this.i18n.translate('common.cancel_button'), type: 'secondary', shouldReject: true },
-                { label: this.i18n.translate('common.delete_button'), type: 'alert', returnValue: true }
-            ]
-        })
-        .then(modal => modal.open())
-        .then(() => this.adminProjectEffects.deleteProject(this.projectUuid));
+        this.modal
+            .dialog({
+                title: this.i18n.translate('modal.delete_project_title'),
+                body: this.i18n.translate('modal.delete_project_body', { name: this.project.name }),
+                buttons: [
+                    { label: this.i18n.translate('common.cancel_button'), type: 'secondary', shouldReject: true },
+                    { label: this.i18n.translate('common.delete_button'), type: 'alert', returnValue: true }
+                ]
+            })
+            .then(modal => modal.open())
+            .then(() => this.adminProjectEffects.deleteProject(this.projectUuid));
     }
 
     /**
      * Updates the project.
      * Happens on input blur
      */
-    update(event): void {
+    update(event: string): void {
         // TODO actually update
         // TODO maybe not check state but something different because it might get updated later (after api call is done)
         // TODO Implement as soon as double firing of this event is fixed

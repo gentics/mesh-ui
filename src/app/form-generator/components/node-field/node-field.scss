@@ -5,8 +5,8 @@
     display: flex;
     justify-content: space-between;
 
-    :host-context(micronode-field),
-    :host-context(list-field),
+    :host-context(mesh-micronode-field),
+    :host-context(mesh-list-field),
     &.compact {
         flex-direction: column;
 

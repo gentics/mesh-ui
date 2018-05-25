@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ApplicationStateService } from '../../state/providers/application-state.service';
-import { ApiService } from '../../core/providers/api/api.service';
-import { BinaryField, MeshNode } from '../../common/models/node.model';
+
+import { BinaryField, FieldMap, ImageTransform, MeshNode } from '../../common/models/node.model';
 import {
     FieldMapFromServer,
     NodeCreateRequest,
@@ -9,21 +8,23 @@ import {
     NodeUpdateRequest,
     TagReferenceFromServer
 } from '../../common/models/server-models';
-import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
-import { ConfigService } from '../../core/providers/config/config.service';
 import { getMeshNodeBinaryFields, getMeshNodeNonBinaryFields, simpleCloneDeep } from '../../common/util/util';
+import { ApiService } from '../../core/providers/api/api.service';
+import { ConfigService } from '../../core/providers/config/config.service';
+import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
+import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { EntitiesService } from '../../state/providers/entities.service';
 import { tagsAreEqual } from '../form-generator/common/tags-are-equal';
 
-
 @Injectable()
 export class EditorEffectsService {
-
-    constructor(private state: ApplicationStateService,
-                private entities: EntitiesService,
-                private notification: I18nNotification,
-                private config: ConfigService,
-                private api: ApiService) {}
+    constructor(
+        private state: ApplicationStateService,
+        private entities: EntitiesService,
+        private notification: I18nNotification,
+        private config: ConfigService,
+        private api: ApiService
+    ) {}
 
     openNode(projectName: string, nodeUuid: string, language?: string): void {
         const lang = language || this.config.FALLBACK_LANGUAGE;
@@ -31,13 +32,15 @@ export class EditorEffectsService {
 
         // Refresh the node
         this.state.actions.list.fetchNodeStart();
-        this.api.project.getNode({ project: projectName, nodeUuid, lang })
-            .subscribe(response => {
+        this.api.project.getNode({ project: projectName, nodeUuid, lang }).subscribe(
+            response => {
                 this.state.actions.list.fetchNodeSuccess(response);
-            }, error => {
+            },
+            error => {
                 this.state.actions.list.fetchChildrenError();
                 throw new Error('TODO: Error handling');
-            });
+            }
+        );
     }
 
     /**
@@ -45,14 +48,16 @@ export class EditorEffectsService {
      * and open dispatch an action to open it in the editor
      */
     createNode(projectName: string, schemaUuid: string, parentNodeUuid: string, language: string): void {
-        this.api.project.getNode({project: projectName, nodeUuid: parentNodeUuid})
-            .subscribe(response => {
+        this.api.project.getNode({ project: projectName, nodeUuid: parentNodeUuid }).subscribe(
+            response => {
                 this.state.actions.list.fetchNodeSuccess(response);
                 this.state.actions.editor.openNewNode(projectName, schemaUuid, parentNodeUuid, language);
-            }, error => {
+            },
+            error => {
                 this.state.actions.list.fetchChildrenError();
                 throw new Error('TODO: Error handling');
-            });
+            }
+        );
     }
 
     /**
@@ -66,32 +71,38 @@ export class EditorEffectsService {
             fields: getMeshNodeNonBinaryFields(node),
             parentNode: node.parentNode,
             schema: node.schema,
-            language: language,
+            language: language
         };
 
-        return this.api.project.createNode({ project: projectName }, nodeCreateRequest)
+        return this.api.project
+            .createNode({ project: projectName }, nodeCreateRequest)
             .toPromise()
             .then(updatedNode => this.processTagsAndBinaries(node, updatedNode, tags))
-            .then(savedNode => {
+            .then(
+                savedNode => {
                     this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
                     this.notification.show({
                         type: 'success',
                         message: 'editor.node_saved'
                     });
                     return savedNode;
-                }, (error: {node: MeshNode, error: any}) => {
-                this.state.actions.editor.saveNodeError();
-                this.notification.show({
-                    type: 'error',
-                    message: 'editor.node_save_error'
-                });
+                },
+                (error: { node: MeshNode; error: any }) => {
+                    this.state.actions.editor.saveNodeError();
+                    this.notification.show({
+                        type: 'error',
+                        message: 'editor.node_save_error'
+                    });
 
-
-                // For the new nodes, if something went wrong while saving - delete the node immediately.
-                // That way the editor will decide what to do next (stay in an unchanged state?),
-                this.api.project.deleteNode({ project: projectName, nodeUuid: error.node.uuid}).take(1).subscribe();
-                throw error.error;
-            });
+                    // For the new nodes, if something went wrong while saving - delete the node immediately.
+                    // That way the editor will decide what to do next (stay in an unchanged state?),
+                    this.api.project
+                        .deleteNode({ project: projectName, nodeUuid: error.node.uuid })
+                        .take(1)
+                        .subscribe();
+                    throw error.error;
+                }
+            );
     }
 
     /**
@@ -111,38 +122,34 @@ export class EditorEffectsService {
             language: language
         };
 
-        return this.api.project.updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
+        return this.api.project
+            .updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
             .toPromise()
             .then(response => {
-                if (response.conflict) {
-                    // TODO: conflict resolution handling
-                    throw new Error('saveNode was rejected');
-                } else if (response.node) {
+                if (response.node) {
                     return this.processTagsAndBinaries(node, response.node, tags);
                 } else {
+                    throw new Error('No node was returned from the updateNode API call.');
+                }
+            })
+            .then(
+                savedNode => {
+                    this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
+                    this.notification.show({
+                        type: 'success',
+                        message: 'editor.node_saved'
+                    });
+                    return savedNode;
+                },
+                error => {
                     this.state.actions.editor.saveNodeError();
                     this.notification.show({
                         type: 'error',
                         message: 'editor.node_save_error'
                     });
-                    return response.node;
+                    throw error;
                 }
-            })
-            .then(savedNode => {
-                this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
-                this.notification.show({
-                    type: 'success',
-                    message: 'editor.node_saved'
-                });
-                return savedNode;
-            }, error => {
-                this.state.actions.editor.saveNodeError();
-                this.notification.show({
-                    type: 'error',
-                    message: 'editor.node_save_error'
-                });
-                throw error;
-            });
+            );
     }
 
     publishNode(node: MeshNode): void {
@@ -150,7 +157,8 @@ export class EditorEffectsService {
             throw new Error('Project name is not available');
         }
         this.state.actions.editor.publishNodeStart();
-        this.api.project.publishNode({ project: node.project.name, nodeUuid: node.uuid })
+        this.api.project
+            .publishNode({ project: node.project.name, nodeUuid: node.uuid })
             .map(response => {
                 let newVersion: string | undefined;
                 if (response.availableLanguages && node.language) {
@@ -162,7 +170,8 @@ export class EditorEffectsService {
                     throw new Error('New version could not be retrieved');
                 }
             })
-            .subscribe(version => {
+            .subscribe(
+                version => {
                     this.notification.show({
                         type: 'success',
                         message: 'editor.node_published',
@@ -178,7 +187,8 @@ export class EditorEffectsService {
                         message: 'editor.node_publish_error'
                     });
                     throw new Error('TODO: Error handling');
-                });
+                }
+            );
     }
 
     closeEditor(): void {
@@ -206,22 +216,26 @@ export class EditorEffectsService {
      * * Uploading any new binary files that have been selected for the node
      * * Applying any binary transforms
      */
-    private processTagsAndBinaries(originalNode: MeshNode, updatedNode: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode> {
+    private processTagsAndBinaries(
+        originalNode: MeshNode,
+        updatedNode: MeshNode,
+        tags?: TagReferenceFromServer[]
+    ): Promise<MeshNode> {
         return this.assignTagsToNode(updatedNode, tags)
             .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(originalNode)))
             .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
     }
 
     private assignTagsToNode(node: NodeResponse, tags?: TagReferenceFromServer[]): Promise<NodeResponse> {
-        if (tags === null) {
+        if (!tags) {
             return Promise.resolve(node);
         }
 
-        return this.api.project.assignTagsToNode({project: node.project.name, nodeUuid: node.uuid}, { tags })
+        return this.api.project
+            .assignTagsToNode({ project: node.project.name!, nodeUuid: node.uuid }, { tags })
             .toPromise()
             .then(() => node);
     }
-
 
     /**
      * Clones a node and changes the fields which should be unique in a given parentNode (i.e. displayField,
@@ -229,7 +243,7 @@ export class EditorEffectsService {
      */
     private cloneNodeWithRename(node: MeshNode, suffix: string): MeshNode | undefined {
         const clone = simpleCloneDeep(node);
-        const schema = this.entities.getSchema(node.schema.uuid);
+        const schema = this.entities.getSchema(node.schema.uuid!);
         if (schema) {
             const displayField = schema.displayField;
             const segmentField = schema.segmentField;
@@ -239,7 +253,10 @@ export class EditorEffectsService {
             }
             if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
                 if (node.fields[segmentField].sha512sum) {
-                    clone.fields[segmentField].fileName = this.addSuffixToString(node.fields[segmentField].fileName, suffix);
+                    clone.fields[segmentField].fileName = this.addSuffixToString(
+                        node.fields[segmentField].fileName,
+                        suffix
+                    );
                 } else if (node.fields[segmentField] !== undefined) {
                     clone.fields[segmentField] = this.addSuffixToString(clone.fields[segmentField], suffix);
                 }
@@ -295,73 +312,104 @@ export class EditorEffectsService {
                 }
             }
 
-            return {
-                key: binaryFieldKey,
-                value: binaryFieldValue
-            };
+            if (binaryFieldKey && binaryFieldValue) {
+                return {
+                    key: binaryFieldKey,
+                    value: binaryFieldValue
+                };
+            }
         }
     }
 
-    private uploadBinaries(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode | void> {
+    private uploadBinaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
+        const projectName = node.project.name;
+        const language = node.language;
+
         // if no binaries are present - return the same node
-        if (Object.keys(fields).length === 0) {
+        if (Object.keys(fields).length === 0 || !projectName || !language) {
             return Promise.resolve(node);
         }
 
-        const promises = Object.keys(fields)
-            .map(key => this.uploadBinary(node.project.name, node.uuid, key, fields[key].file, node.language, node.version));
+        const promises = Object.keys(fields).map(key =>
+            this.uploadBinary(projectName, node.uuid, key, fields[key].file, language, node.version)
+        );
 
-        return Promise.all(promises)
-            // return the node from the last successful request
-            .then(nodes => nodes[nodes.length - 1])
-            .catch(error => { throw { node, error }; });
+        return (
+            Promise.all(promises)
+                // return the node from the last successful request
+                .then(nodes => nodes[nodes.length - 1])
+                .catch(error => {
+                    throw { node, error };
+                })
+        );
     }
 
-    private uploadBinary(project: string,
-                         nodeUuid: string,
-                         fieldName: string,
-                         binary: File,
-                         language: string,
-                         version: string): Promise<MeshNode | void> {
-        return this.api.project.updateBinaryField({
-            project,
-            nodeUuid,
-            fieldName,
-        }, {
-            binary,
-            language,
-            version
-        }).toPromise();
+    private uploadBinary(
+        project: string,
+        nodeUuid: string,
+        fieldName: string,
+        binary: File,
+        language: string,
+        version: string
+    ): Promise<MeshNode> {
+        return this.api.project
+            .updateBinaryField(
+                {
+                    project,
+                    nodeUuid,
+                    fieldName
+                },
+                {
+                    binary,
+                    language,
+                    version
+                }
+            )
+            .toPromise();
     }
 
-    private applyBinaryTransforms(node: MeshNode, fields: FieldMapFromServer): Promise<MeshNode> {
+    private applyBinaryTransforms(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
         const project = node.project.name;
         const nodeUuid = node.uuid;
+        const language = node.language;
+
+        if (!project || !nodeUuid || !language) {
+            return Promise.reject('Project name, node language or node uuid not available.');
+        }
         const promises = Object.keys(fields)
             .filter(fieldName => !!fields[fieldName].transform)
             .map(fieldName => {
                 const value = fields[fieldName] as BinaryField;
-                const transform = value.transform;
-                return this.api.project.transformBinaryField({
-                    project,
-                    nodeUuid,
-                    fieldName
-                }, {
-                    version: node.version,
-                    language: node.language,
-                    width: transform.width,
-                    height: transform.height,
-                    cropRect: transform.cropRect
-                }).toPromise();
+                const transform = value.transform as ImageTransform;
+                return this.api.project
+                    .transformBinaryField(
+                        {
+                            project,
+                            nodeUuid,
+                            fieldName
+                        },
+                        {
+                            version: node.version,
+                            language: language,
+                            width: transform.width,
+                            height: transform.height,
+                            cropRect: transform.cropRect
+                        }
+                    )
+                    .toPromise();
             });
 
         if (!promises.length) {
             return Promise.resolve(node);
         }
 
-        return Promise.all(promises)
-            // return the node from the last successful request
-            .then(nodes => nodes[nodes.length - 1])
-            .catch(error => { throw { node, error }; });
+        return (
+            Promise.all(promises)
+                // return the node from the last successful request
+                .then(nodes => nodes[nodes.length - 1])
+                .catch(error => {
+                    throw { node, error };
+                })
+        );
     }
 }

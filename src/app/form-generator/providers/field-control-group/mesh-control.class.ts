@@ -1,9 +1,10 @@
 import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
-import { MeshControlErrors, SchemaFieldPath } from '../../common/form-generator-models';
 import { SchemaField } from '../../../common/models/schema.model';
-import { BaseFieldComponent } from '../../components/base-field/base-field.component';
-import { MeshControlGroupService } from './mesh-control-group.service';
 import { fieldsAreEqual, isMicronode } from '../../common/fields-are-equal';
+import { MeshControlErrors, SchemaFieldPath } from '../../common/form-generator-models';
+import { BaseFieldComponent } from '../../components/base-field/base-field.component';
+
+import { MeshControlGroupService } from './mesh-control-group.service';
 
 export const ROOT_TYPE = 'root';
 export const ROOT_NAME = 'root';
@@ -47,9 +48,11 @@ export class MeshControl<T extends NodeFieldType> {
      */
     get isValid(): boolean {
         const isRootControl = this.fieldDef.type === ROOT_TYPE;
-        const selfValid = isRootControl || !!this.meshField && this.meshField.isValid;
-        const childrenValid = Array.from(this.children.values())
-            .reduce((valid, control) => !valid ? false : control.isValid, true);
+        const selfValid = isRootControl || (!!this.meshField && this.meshField.isValid);
+        const childrenValid = Array.from(this.children.values()).reduce(
+            (valid, control) => (!valid ? false : control.isValid),
+            true
+        );
         return selfValid && childrenValid;
     }
 
@@ -58,8 +61,18 @@ export class MeshControl<T extends NodeFieldType> {
     }
 
     constructor();
-    constructor(fieldDef: SchemaField, initialValue: T, group?: MeshControlGroupService, meshFieldInstance?: BaseFieldComponent);
-    constructor(fieldDef?: SchemaField, initialValue?: T, group?: MeshControlGroupService, meshFieldInstance?: BaseFieldComponent) {
+    constructor(
+        fieldDef: SchemaField,
+        initialValue: T,
+        group?: MeshControlGroupService,
+        meshFieldInstance?: BaseFieldComponent
+    );
+    constructor(
+        fieldDef?: SchemaField,
+        initialValue?: T,
+        group?: MeshControlGroupService,
+        meshFieldInstance?: BaseFieldComponent
+    ) {
         this.meshControlGroup = group;
         this.lastValue = this.initialValue = initialValue;
         this.fieldDef = fieldDef === undefined ? new RootFieldDefinition() : fieldDef;
@@ -77,11 +90,13 @@ export class MeshControl<T extends NodeFieldType> {
             changed: !fieldsAreEqual(this.initialValue, this.lastValue),
             initialValue: this.initialValue,
             currentValue: this.lastValue,
-            children: Array.from(this.children.keys())
-                .reduce((hash, key) => {
+            children: Array.from(this.children.keys()).reduce(
+                (hash, key) => {
                     hash[key] = this.children.get(key)!.getChanges();
                     return hash;
-                }, {} as { [key: string]: ControlChanges<any>; })
+                },
+                {} as { [key: string]: ControlChanges<any> }
+            )
         };
     }
 
@@ -93,9 +108,9 @@ export class MeshControl<T extends NodeFieldType> {
         this.initialValue = this.lastValue = value;
 
         if (0 < this.children.size) {
-            const valueContainer = isMicronode(value) ? value.fields : value;
+            const valueContainer = isMicronode(value) ? value.fields : (value as any);
             if (valueContainer) {
-                this.children.forEach((meshControl, key) => {
+                this.children.forEach((meshControl, key: number) => {
                     meshControl.reset(valueContainer[key]);
                 });
             }
@@ -120,7 +135,7 @@ export class MeshControl<T extends NodeFieldType> {
         this.lastValue = value;
 
         if (recursive && 0 < this.children.size) {
-            const valueContainer = isMicronode(value) ? value.fields : value;
+            const valueContainer = isMicronode(value) ? value.fields : (value as any);
             if (valueContainer) {
                 this.children.forEach((meshControl, key) => {
                     meshControl.checkValue(valueContainer[key], true);

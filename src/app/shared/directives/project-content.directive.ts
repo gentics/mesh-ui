@@ -1,4 +1,5 @@
 import { Directive, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+
 import { ContentPortalService } from '../../core/providers/content-portal/content-portal.service';
 
 /**
@@ -14,12 +15,10 @@ import { ContentPortalService } from '../../core/providers/content-portal/conten
  */
 @Directive({ selector: '[meshProjectTo]' })
 export class ProjectContentDirective implements OnInit, OnDestroy {
-
     // tslint:disable-next-line:no-input-rename
     @Input('meshProjectTo') portalId: string;
 
-    constructor(private contentPortalService: ContentPortalService,
-                private templateRef: TemplateRef<any>) {}
+    constructor(private contentPortalService: ContentPortalService, private templateRef: TemplateRef<any>) {}
 
     ngOnInit(): void {
         setTimeout(() => {
@@ -30,5 +29,4 @@ export class ProjectContentDirective implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.contentPortalService.removeTemplateRef(this.portalId, this.templateRef);
     }
-
 }

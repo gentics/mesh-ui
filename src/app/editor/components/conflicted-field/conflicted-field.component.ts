@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+
 import { ConflictedField } from '../../../common/models/common.model';
 
 @Component({
@@ -8,5 +9,5 @@ import { ConflictedField } from '../../../common/models/common.model';
 })
 export class ConflictedFieldComponent {
     @Input() conflictedField: ConflictedField;
-    constructor() { }
+    constructor() {}
 }

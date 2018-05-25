@@ -1,4 +1,7 @@
-import { BinaryField, ListNodeFieldType, MeshNode, MicronodeFieldMap, MicronodeFieldType, NodeFieldType } from '../models/node.model';
+import {
+    BinaryField, FieldMap, ListNodeFieldType, MeshNode, MicronodeFieldMap, MicronodeFieldType,
+    NodeFieldType
+} from '../models/node.model';
 import { FieldMapFromServer } from '../models/server-models';
 
 // Pure functions for utility
@@ -7,7 +10,7 @@ import { FieldMapFromServer } from '../models/server-models';
  * Retrieves all values of an object as an array.
  * @param object Any object
  */
-export function hashValues<T>(object: { [key: string]: T } | { [key: number]: T }): T[] {
+export function hashValues<T>(object: { [key: string]: T }): T[] {
     return Object.keys(object).map(key => object[key]);
 }
 
@@ -24,11 +27,7 @@ export function isImageField(field: BinaryField): boolean {
  *     appState.select(state => state.possiblyUndefinedValue)
  *         .filter(notNullOrUndefined)
  */
-export function notNullOrUndefined<T extends string | number | boolean | object>(input: T | null | undefined): input is T;
-export function notNullOrUndefined(input: boolean[]): input is boolean[];
-export function notNullOrUndefined(input: number[]): input is number[];
-export function notNullOrUndefined(input: string[]): input is string[];
-export function notNullOrUndefined(input: any): boolean {
+export function notNullOrUndefined<T extends string | number | boolean | object>(input: T | null | undefined): input is T {
     return input != null;
 }
 
@@ -98,7 +97,7 @@ export function uuidHash<T extends { uuid: string }>(elements: T[]): {[uuid: str
     return elements.reduce((hash, element) => {
         hash[element.uuid] = element;
         return hash;
-    }, {});
+    }, {} as { [uuid: string]: T });
 }
 
 export function noop() {}
@@ -130,7 +129,7 @@ export function simpleDeepEquals<T extends SimpleDeepEqualsType>(o1?: T, o2?: T)
     }
 
     for (let i = keys1.length - 1; i >= 0; i--) {
-        const key = keys1[i];
+        const key = keys1[i] as keyof T;
         if (!simpleDeepEquals(o1[key], o2[key])) {
             return false;
         }
@@ -156,7 +155,7 @@ function isObject(item: any): item is object {
  * Array values are overwritten rather than merged.
  * Based on: https://stackoverflow.com/a/34749873/772859
  */
-export function simpleMergeDeep(target: any, ...sources: any[]): any {
+export function simpleMergeDeep(target: { [key: string]: any; }, ...sources: { [key: string]: any; }[]): any {
     if (!sources.length) {
         return target;
     }
@@ -165,10 +164,10 @@ export function simpleMergeDeep(target: any, ...sources: any[]): any {
     if (isObject(target) && isObject(source)) {
         for (const key in source) {
             if (isObject(source[key])) {
-                if (!target[key]) {
+                if (!(target as any)[key]) {
                     Object.assign(target, { [key]: {} });
                 }
-                simpleMergeDeep(target[key], source[key]);
+                simpleMergeDeep((target as any)[key], source[key]);
             } else {
                 const value = Array.isArray(source[key]) ? source[key].slice(0) : source[key];
                 Object.assign(target, { [key]: value });
@@ -193,7 +192,7 @@ export function simpleCloneDeep<T>(target: T): T {
 /**
  * Filter all the binary fields from the node
  */
-export function getMeshNodeBinaryFields(node: MeshNode): FieldMapFromServer {
+export function getMeshNodeBinaryFields(node: MeshNode): FieldMap {
     if (!node.fields) {
         return {} as FieldMapFromServer;
     }
@@ -204,17 +203,17 @@ export function getMeshNodeBinaryFields(node: MeshNode): FieldMapFromServer {
             fields[key] = field;
         }
         return fields;
-    }, {} as FieldMapFromServer);
+    }, {} as FieldMap);
 }
 
-export function getMeshNodeNonBinaryFields(node: MeshNode): FieldMapFromServer {
+export function getMeshNodeNonBinaryFields(node: MeshNode): FieldMap {
     const binaryFields = getMeshNodeBinaryFields(node);
     return Object.keys(node.fields).reduce((nonBinaryFields, key) => {
         if (binaryFields[key] === undefined) {
             nonBinaryFields[key] = node.fields[key];
         }
         return nonBinaryFields;
-    }, {} as FieldMapFromServer);
+    }, {} as FieldMap);
 }
 
 

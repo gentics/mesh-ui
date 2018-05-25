@@ -1,8 +1,8 @@
-import { I18nService } from './i18n.service';
 import { ConfigService } from '../config/config.service';
 
-describe('I18nService', () => {
+import { I18nService } from './i18n.service';
 
+describe('I18nService', () => {
     let i18n: I18nService;
     let mockTranslateService: MockTranslateService;
     const config = new ConfigService();
@@ -26,7 +26,6 @@ describe('I18nService', () => {
     });
 
     describe('inferUserLanguage()', () => {
-
         let originalNavigator: Navigator;
         let mockNavigator: { language: string; languages: string[] | undefined };
         beforeEach(() => {
@@ -119,9 +118,7 @@ describe('I18nService', () => {
             mockNavigator.language = 'tlh'; // Klingon
             expect(i18n.inferUserLanguage()).toBe(FALLBACK_LANGUAGE);
         });
-
     });
-
 });
 
 class MockTranslateService {
