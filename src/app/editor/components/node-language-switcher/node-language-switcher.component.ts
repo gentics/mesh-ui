@@ -14,27 +14,27 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 export class NodeLanguageSwitcherComponent {
     @Input() node: MeshNode | undefined;
 
-    get availableLanguages(): Array<{ code: string; translationExists: boolean }> {
-        return this.config.CONTENT_LANGUAGES.filter(lang => {
-            if (!this.node) {
-                return false;
-            }
-            return lang !== this.node.language;
-        }).map(lang => {
-            return {
-                code: lang,
-                translationExists: !!this.node!.availableLanguages ? !!this.node!.availableLanguages[lang] : false
-            };
-        });
+    constructor(private config: ConfigService,
+                private editorEffects: EditorEffectsService,
+                private navigationService: NavigationService) {}
+
+    get availableLanguages(): Array<{ code: string; translationExists: boolean; }> {
+        return this.config.CONTENT_LANGUAGES
+            .filter(lang => {
+                if (!this.node) {
+                    return false;
+                }
+                return lang !== this.node.language;
+            })
+            .map(lang => {
+                return {
+                    code: lang,
+                    translationExists: !!this.node!.availableLanguages ? !!this.node!.availableLanguages[lang] : false
+                };
+            });
     }
 
-    constructor(
-        private config: ConfigService,
-        private editorEffects: EditorEffectsService,
-        private navigationService: NavigationService
-    ) {}
-
-    itemClick(language: { code: string; translationExists: boolean }): void {
+    itemClick(language: { code: string; translationExists: boolean; }): void {
         if (this.node) {
             if (language.translationExists) {
                 this.navigateToLanguage(language.code);

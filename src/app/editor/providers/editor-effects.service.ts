@@ -74,8 +74,10 @@ export class EditorEffectsService {
             language: language
         };
 
-        return this.api.project
-            .createNode({ project: projectName }, nodeCreateRequest)
+        // TODO: remote lang lang: language from params.
+        // It is currently needed to overcome the https://github.com/gentics/mesh/issues/404 issue
+        // what it does now, it adds ?lang=language query param
+        return this.api.project.createNode({ project: projectName, lang: language } as any, nodeCreateRequest)
             .toPromise()
             .then(updatedNode => this.processTagsAndBinaries(node, updatedNode, tags))
             .then(
@@ -344,28 +346,25 @@ export class EditorEffectsService {
         );
     }
 
-    private uploadBinary(
-        project: string,
-        nodeUuid: string,
-        fieldName: string,
-        binary: File,
-        language: string,
-        version: string
-    ): Promise<MeshNode> {
-        return this.api.project
-            .updateBinaryField(
-                {
-                    project,
-                    nodeUuid,
-                    fieldName
-                },
-                {
-                    binary,
-                    language,
-                    version
-                }
-            )
-            .toPromise();
+    private uploadBinary(project: string,
+                         nodeUuid: string,
+                         fieldName: string,
+                         binary: File,
+                         language: string,
+                         version: string): Promise<MeshNode> {
+        // TODO: remote lang lang: language from params.
+        // It is currently needed to overcome the https://github.com/gentics/mesh/issues/404 issue
+        // what it does now, it adds ?lang=language query param
+        return this.api.project.updateBinaryField({
+            project,
+            nodeUuid,
+            fieldName,
+            lang: language
+        } as any, {
+            binary,
+            language,
+            version
+        }).toPromise();
     }
 
     private applyBinaryTransforms(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
