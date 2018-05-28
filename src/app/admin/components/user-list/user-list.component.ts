@@ -14,6 +14,7 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 
 @Component({
     selector: 'mesh-user-list',
@@ -29,6 +30,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     allGroups$: Observable<Group[]>;
     filterInput = new FormControl('');
     filterGroupSelect = new FormControl('');
+    filterTerm = '';
     selectedIndices: number[] = [];
     ADMIN_USER_NAME = ADMIN_USER_NAME;
     ADMIN_GROUP_NAME = ADMIN_GROUP_NAME;
@@ -183,18 +185,15 @@ export class UserListComponent implements OnInit, OnDestroy {
 
     private filterUsers(users: User[], filterTerm: string, filterGroups: string[]): User[] {
         const groupUuid = filterGroups[0];
-        if (filterTerm.trim() === '' && !groupUuid) {
+        this.filterTerm = filterTerm.trim();
+        if (this.filterTerm === '' && !groupUuid) {
             return users;
         }
-        return users.filter(user => this.userMatchesTerm(user, filterTerm) && this.userIsInGroup(user, groupUuid));
+        return users.filter(user => this.userMatchesTerm(user, this.filterTerm) && this.userIsInGroup(user, groupUuid));
     }
 
     private userMatchesTerm(user: User, filterTerm: string): boolean {
-        return (
-            this.lowercaseMatch(filterTerm, user.username) ||
-            this.lowercaseMatch(filterTerm, user.firstname) ||
-            this.lowercaseMatch(filterTerm, user.lastname)
-        );
+        return fuzzyMatch(filterTerm, `${user.firstname} ${user.lastname} ${user.username}`) !== null;
     }
 
     private lowercaseMatch(needle: string, haystack?: string): boolean {
