@@ -1,53 +1,14 @@
 @import "variables";
+@import "../admin-list/admin-list.component.common-styles.scss";
+@include gtx-dropdown-item;
+@include list-controls;
+@include item-row;
 
-.item-row {
-    display: flex;
-    align-items: center;
-    max-width: 100%;
-}
-
-.name {
-    width: 100px;
-    margin-right: 15px;
-    color: $gtx-color-primary;
-}
 
 .tags {
     flex: 1;
 }
 
 .row-actions {
-    text-align: right;
+    flex: 0;
 }
-
-.list-controls-title
-{
-    text-align: left;
-    margin-bottom: 10px;
-}
-
-.list-controls {
-    display: flex;
-    align-items: center;
-    width: 100%;
-
-    .filter {
-        flex: 1;
-        margin-right: 10px;
-    }
-}
-
-gtx-dropdown-item {
-    display: flex;
-    align-items: center;
-
-    &.alert {
-        color: $gtx-color-alert;
-    }
-
-    &.disabled {
-        color: $gtx-color-mid-gray;
-        cursor: not-allowed;
-    }
-}
-

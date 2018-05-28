@@ -31,17 +31,9 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         });
     }
 
-    actionStart() {
-        this.tags.loadCount++;
-    }
-
-    actionSuccess() {
-        this.tags.loadCount--;
-    }
-
-    actionError() {
-        this.tags.loadCount--;
-    }
+    // TODO: remove the getNestedEntity reference to this.entities (in entities.service.ts)
+    // Remove all external reference to this.entities.tag/tagFamily. The outside world should only care about state.tags.tag/tagFamilies
+    // clearAll can be safely removed afterwards
 
     clearAll() {
         this.entities = mergeEntityState(this.entities, {
@@ -53,6 +45,10 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         this.tags.tags = [];
     }
 
+    loadTagFamiliesAndTheirTagsStart() {
+        this.tags.loadCount++;
+    }
+
     fetchTagFamiliesSuccess(fetchedFamilies: TagFamilyResponse[]) {
         this.tags.loadCount--;
         this.entities = mergeEntityState(this.entities, {
@@ -61,12 +57,15 @@ export class TagsStateActions extends StateActionBranch<AppState> {
             ]
         }, false);
 
-        this.tags.tagFamilies = [
-            ...this.tags.tagFamilies,
-            ...fetchedFamilies.filter(fetchedFamily => !this.tags.tagFamilies
-                                .some(existingFamilyUuid => existingFamilyUuid === fetchedFamily.uuid))
-                .map(family => family.uuid)
-            ];
+        this.tags.tagFamilies = Array.from(new Set([...this.tags.tagFamilies, ...fetchedFamilies.map(family => family.uuid)]));
+    }
+
+    loadTagFamiliesAndTheirTagsError() {
+        this.tags.loadCount--;
+    }
+
+    fetchTagsOfTagFamilyStart() {
+        this.tags.loadCount++;
     }
 
     fetchTagsOfTagFamilySuccess(fetchedTags: TagResponse[]) {
@@ -76,13 +75,11 @@ export class TagsStateActions extends StateActionBranch<AppState> {
                 ...fetchedTags
             ]
         }, false);
+        this.tags.tags = Array.from(new Set([...this.tags.tags, ...fetchedTags.map(tag => tag.uuid)]));
+    }
 
-        this.tags.tags = [
-            ...this.tags.tags,
-            ...fetchedTags.filter(fetchedTag => !this.tags.tags
-                                .some(existingTagUuid => existingTagUuid === fetchedTag.uuid))
-                .map(family => family.uuid)
-        ];
+    fetchTagsOfTagFamilyError() {
+        this.tags.loadCount--;
     }
 
     createTagStart() {

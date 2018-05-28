@@ -33,6 +33,7 @@ import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.
 import { AdminListComponent } from '../admin-list/admin-list.component';
 import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 import { ProjectDetailComponent } from './project-detail.component';
+import { Tag } from '../../../common/models/tag.model';
 
 
 let state: TestApplicationState;
@@ -226,23 +227,6 @@ describe('ProjectDetailComponent', () => {
         expect(mockModalService.fromComponentSpy).toHaveBeenCalledTimes(2);
     }));
 
-    it('should open a second dialog requiering to enter a different name if the duplicate name was entered before', fakeAsync(() => {
-        const firstTag = component.tagFamilies[1].tags[0];
-        const secondTag = component.tagFamilies[1].tags[1];
-
-        component.updateTagClick(firstTag, component.tagFamilies[1]);
-        tick();
-        fixture.detectChanges();
-        expect(mockModalService.fromComponentSpy).toHaveBeenCalled();
-        mockModalService.confirmLastModal(secondTag.data.name);
-
-        tick();
-        fixture.detectChanges();
-
-        expect(firstTag.data.name).toEqual(firstTag.data.name);
-        expect(mockModalService.fromComponentSpy).toHaveBeenCalledTimes(2);
-    }));
-
     it('should add a tag family', fakeAsync(() => {
         const familiesLengthBeforeAdding = component.tagFamilies.length;
         component.createTagFamilyClick();
@@ -329,15 +313,17 @@ describe('ProjectDetailComponent', () => {
         fixture.detectChanges();
         const tagsBeforeFilter = fixture.debugElement.queryAll(By.css('mesh-tag'));
 
-        state.actions.adminProjects.setTagFilterTerm('tag1_Fam1');
-        tick();
-        fixture.detectChanges();
+        state.actions.adminProjects.setTagFilterTerm('tag2');
 
         tick();
         fixture.detectChanges();
         const tagsAfterFilter = fixture.debugElement.queryAll(By.css('mesh-tag'));
 
         expect(tagsBeforeFilter.length).not.toEqual(tagsAfterFilter.length);
+        expect(tagsAfterFilter.length).toEqual(2); // tag2_Fam1, tag2_Fam2
+
+        expect((tagsAfterFilter[0].componentInstance as MockTagComponent).tag.name).toEqual('tag2_Fam1');
+        expect((tagsAfterFilter[1].componentInstance as MockTagComponent).tag.name).toEqual('tag2_Fam2');
     }));
 });
 

@@ -28,7 +28,10 @@
 
         <ng-template let-family="item">
             <div class="item-row">
-                <div class="name">{{ family.data.name }}</div>
+                <a (click)="updateTagFamilyClick(family)" [routerLink]="null">
+                    <div class="name"><a href="">{{ family.data.name }}</a></div>
+                </a>
+
                 <div class="tags">
                     <ng-container *ngFor="let tag of getFilteredTags(family.tags)">
                         <mesh-tag *ngIf="tag.status !== TagStatus.DELETED"

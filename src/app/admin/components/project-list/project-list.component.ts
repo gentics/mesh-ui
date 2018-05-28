@@ -15,6 +15,8 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
+import { observeQueryParam } from '../../../shared/common/observe-query-param';
+import { setQueryParams } from '../../../shared/common/set-query-param';
 
 
 @Component({
@@ -48,13 +50,16 @@ export class ProjectListComponent implements OnInit, OnDestroy {
             .debounceTime(100)
             .takeUntil(this.destroy$)
             .subscribe(term => {
-                this.setQueryParams({ q: term });
+                setQueryParams(this.router, this.route, { q: term });
             });
 
-        this.observeParam('q', '').subscribe(filterTerm => {
-            this.adminProjectEffects.setFilterTerm(filterTerm);
-            this.filterInput.setValue(filterTerm, { emitEvent: false });
-        });
+        observeQueryParam(this.route.queryParamMap, 'q', '')
+            .takeUntil(this.destroy$)
+            .subscribe(filterTerm => {
+                this.adminProjectEffects.setFilterTerm(filterTerm);
+                this.filterInput.setValue(filterTerm, { emitEvent: false });
+            });
+
 
         const allProjects$ = this.state.select(state => state.adminProjects.projectList)
             .map(uuids => uuids.map(uuid => this.entities.getProject(uuid))
@@ -65,7 +70,11 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this.projects$ = combineLatest(allProjects$, filterTerm$)
             .map(([projects, filterTerm]) => {
                 this.filterTerm = filterTerm;
-                return projects.filter(project => fuzzyMatch(filterTerm, project.name) !== null);
+                return projects
+                    .filter(project => fuzzyMatch(filterTerm, project.name) !== null)
+                    .sort((pro1, pro2) => {
+                        return pro1.name < pro2.name ? -1 : 1;
+                    });
             });
     }
 
@@ -99,29 +108,5 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         })
             .then(modal => modal.open())
             .then(() => this.adminProjectEffects.deleteProject(project.uuid));
-    }
-
-    /**
-     * Returns an Observable which emits whenever a route query param with the given name changes.
-     */
-    private observeParam<T extends string | number>(paramName: string, defaultValue: T): Observable<T> {
-        return this.route.queryParamMap
-            .map(paramMap => {
-                const value = paramMap.get(paramName) as T || defaultValue;
-                return (typeof defaultValue === 'number' ? +value : value) as T;
-            })
-            .distinctUntilChanged()
-            .takeUntil(this.destroy$);
-    }
-
-    /**
-     * Updates the query params whilst preserving existing params.
-     */
-    private setQueryParams(params: { [key: string]: string | number; }): void {
-        this.router.navigate(['./'], {
-            queryParams: params,
-            queryParamsHandling: 'merge',
-            relativeTo: this.route
-        });
     }
 }

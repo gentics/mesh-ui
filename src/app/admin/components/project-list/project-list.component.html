@@ -1,6 +1,6 @@
 <gtx-progress-bar [for]="projectsLoading$"></gtx-progress-bar>
 
-<div class="not-found" *ngIf="(projects$ | async).length === 0 && !(projectsLoading$ | async)">
+<div class="not-found" *ngIf="!(projectsLoading$ | async) && (projects$ | async).length === 0">
     <div><icon>sentiment_very_dissatisfied</icon></div>
     <p>{{ 'admin.projects_none_found' | i18n }}</p>
 </div>

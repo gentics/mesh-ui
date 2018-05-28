@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
 
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
@@ -17,13 +16,13 @@ export class TagsEffectsService {
 
     loadTagFamiliesAndTheirTags(project: string): void {
         this.state.actions.tag.clearAll();
-        this.state.actions.tag.actionStart();
+        this.state.actions.tag.loadTagFamiliesAndTheirTagsStart();
         this.api.project.getTagFamilies({ project })
         .subscribe(tagFamiesResponse => {
             this.state.actions.tag.fetchTagFamiliesSuccess(tagFamiesResponse.data);
             tagFamiesResponse.data.forEach((tagFamily: TagFamily) => this.loadTagsOfTagFamily(project, tagFamily.uuid));
         }, error => {
-            this.state.actions.tag.actionError();
+            this.state.actions.tag.loadTagFamiliesAndTheirTagsError();
             this.notification.show({
                 type: 'error',
                 message: 'editor.load_tag_families_error'
@@ -32,12 +31,12 @@ export class TagsEffectsService {
     }
 
     loadTagsOfTagFamily(project: string, tagFamilyUuid: string): void {
-        this.state.actions.tag.actionStart();
+        this.state.actions.tag.fetchTagsOfTagFamilyStart();
         this.api.project.getTagsOfTagFamily({project, tagFamilyUuid})
         .subscribe(response => {
             this.state.actions.tag.fetchTagsOfTagFamilySuccess(response.data);
         }, error => {
-            this.state.actions.tag.actionError();
+            this.state.actions.tag.fetchTagsOfTagFamilyError();
             this.notification.show({
                 type: 'error',
                 message: 'editor.load_tags_error'

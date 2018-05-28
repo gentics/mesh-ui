@@ -22,8 +22,10 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
 import { NameInputDialogComponent } from '../name-input-dialog/name-input-dialog.component';
+import { setQueryParams } from '../../../shared/common/set-query-param';
+import { observeQueryParam } from '../../../shared/common/observe-query-param';
 
-enum TagStatus { // The numbers indicate the order the tags and families will be saved
+enum TagStatus {
     DELETED = 1,
     EDITED = 2,
     NEW = 3,
@@ -68,7 +70,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private tagsChanged = false;
 
     private destroy$ = new Subject<void>();
-    private tagListener$: Subject<void>;
+    private preventTagFamiliesUpdate$: Subject<void>;
 
     constructor(
         private route: ActivatedRoute,
@@ -80,8 +82,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private modalService: ModalService,
         private i18n: I18nService,
         private changeDetector: ChangeDetectorRef,
-        public projectEffect: AdminProjectEffectsService,
-        public tagEffects: TagsEffectsService,
+        private projectEffect: AdminProjectEffectsService,
+        private tagEffects: TagsEffectsService,
     ) { }
 
     ngOnInit() {
@@ -102,10 +104,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             .debounceTime(100)
             .takeUntil(this.destroy$)
             .subscribe(term => {
-                this.setQueryParams({ q: term });
+                setQueryParams(this.router, this.route, { q: term });
             });
 
-        this.observeParam('q', '')
+        observeQueryParam(this.route.queryParamMap, 'q', '')
         .takeUntil(this.destroy$)
         .subscribe(filterTerm => {
             this.projectEffect.setTagFilterTerm(filterTerm);
@@ -128,14 +130,14 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     }
 
     fetchTags(): void {
-        this.tagListener$ = new Subject<void>();
+        this.preventTagFamiliesUpdate$ = new Subject<void>();
         combineLatest(
             this.state.select(state => state.tags.tagFamilies),
             this.state.select(state => state.tags.tags),
             this.state.select(state => state.entities.tagFamily),  // We need to subscribe to entities because editing of a family name does not alter the state.tag[s] state
             this.state.select(state => state.entities.tag) // We need to subscribe to entities because editing of a tag name of does not alter the state.tag[s] state
         )
-            .takeUntil(this.tagListener$)
+            .takeUntil(this.preventTagFamiliesUpdate$)
             .map(([families, tags]) => {
                 const allTags = this.entities.getAllTags();
                 return Object.values(families)
@@ -170,7 +172,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             });
     }
 
-    addTagClick(tagFamily: LocalTagFamily): void {
+    addTagClick(tagFamily: LocalTagFamily, error: string | null = null): void {
         this.modalService.fromComponent(
             NameInputDialogComponent,
             {
@@ -181,14 +183,14 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 title: this.i18n.translate('admin.create_tag'),
                 label: this.i18n.translate('admin.tag'),
                 value: '',
+                error
             }
         )
             .then(modal => modal.open())
             .then(result => {
                 if (tagFamily.tags.some(tag => tag.data.name === result)) {
                     const tag = tagFamily.tags.find(tag => tag.data.name === result);
-                    tag!.status = TagStatus.EDITED;
-                    this.flagIfTagsHasChanged();
+                    this.addTagClick(tagFamily, this.i18n.translate('admin.duplicate_tag', { tag: result }));
                 } else {
                     const newLocalTag: LocalTag = {
                         status: TagStatus.NEW,
@@ -262,7 +264,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             });
     }
 
-    createTagFamilyClick(): void {
+    createTagFamilyClick(error: string | null = null): void {
         this.modalService.fromComponent(
             NameInputDialogComponent,
             {
@@ -272,15 +274,15 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             {
                 title: this.i18n.translate('admin.create_tag_family'),
                 label: this.i18n.translate('common.title_label'),
-                value: ''
+                value: '',
+                error,
             }
         )
             .then(modal => modal.open())
             .then(result => {
                 if (this.tagFamilies.some(family => family.data.name === result)) {
                     const family = this.tagFamilies.find(family => family.data.name === result);
-                    family!.status = TagStatus.EDITED;
-                    this.flagIfTagsHasChanged();
+                    this.createTagFamilyClick(this.i18n.translate('admin.duplicate_tag_family', { family: result }));
                 } else {
                     const newLocalTagFamily: LocalTagFamily = {
                         status: TagStatus.NEW,
@@ -475,8 +477,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     }
 
     persistProject() {
-        this.tagListener$.next();
-        this.tagListener$.complete();
+        this.preventTagFamiliesUpdate$.next();
+        this.preventTagFamiliesUpdate$.complete();
 
         const formValue = this.form.value;
         const queue: Promise<any | void>[] = [];
@@ -497,26 +499,5 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 this.tagsChanged = false;
                 this.form.markAsPristine();
             });
-    }
-
-    /**
-     * Returns an Observable which emits whenever a route query param with the given name changes.
-     */
-    private observeParam<T extends string | number>(paramName: string, defaultValue: T): Observable<T> {
-        return this.route.queryParamMap
-            .map(paramMap => {
-                const value = paramMap.get(paramName) as T || defaultValue;
-                return (typeof defaultValue === 'number' ? +value : value) as T;
-            })
-            .distinctUntilChanged()
-            .takeUntil(this.destroy$);
-    }
-
-    private setQueryParams(params: { [key: string]: string | number; }): void {
-        this.router.navigate(['./'], {
-            queryParams: params,
-            queryParamsHandling: 'merge',
-            relativeTo: this.route
-        });
     }
 }

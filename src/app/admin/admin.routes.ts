@@ -22,7 +22,7 @@ export const routes: Route[] = [
             { path: '', pathMatch: 'full', redirectTo: 'projects' },
             {
                 path: 'projects',
-                data: { breadcrumb: 'Projects' },
+                data: { breadcrumb: 'common.projects' },
                 children: [
                     { path: '', component: ProjectListComponent },
                     {
@@ -35,7 +35,7 @@ export const routes: Route[] = [
             },
             {
                 path: 'microschemas',
-                data: { breadcrumb: 'Microschemas' },
+                data: { breadcrumb: 'common.microschemas' },
                 children: [
                     { path: '', component: MicroschemaListComponent },
                     {
@@ -48,7 +48,7 @@ export const routes: Route[] = [
             },
             {
                 path: 'schemas',
-                data: { breadcrumb: 'Schemas' },
+                data: { breadcrumb: 'common.schemas' },
                 children: [
                     { path: '', component: SchemaListComponent },
                     {
@@ -61,7 +61,7 @@ export const routes: Route[] = [
             },
             {
                 path: 'users',
-                data: { breadcrumb: 'Users' },
+                data: { breadcrumb: 'common.users' },
                 children: [
                     { path: '', component: UserListComponent },
                     {

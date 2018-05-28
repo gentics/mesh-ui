@@ -98,7 +98,7 @@ describe('ProjectListComponent', () => {
         mockModalService = TestBed.get(ModalService);
     });
 
-    it(`opens create project dialog when create button is clicked`,
+    it(`opens create project dialog when create button is clicked and navigates to a new created project`,
         componentTest(() => ProjectListComponent, fixture => {
             spyOn(fixture.componentInstance.router, 'navigate').and.returnValue(true);
             fixture.debugElement.query(By.directive(Button)).nativeElement.click();
@@ -150,6 +150,7 @@ describe('ProjectListComponent', () => {
 
                     const items = fixture.debugElement.queryAll(By.css('mesh-admin-list-item'));
                     expect(items.length).not.toBe(itemsBefore.length);
+                    expect(items.length).toBe(1);
                 });
         })
     );

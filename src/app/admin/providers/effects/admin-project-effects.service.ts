@@ -50,33 +50,37 @@ export class AdminProjectEffectsService {
         this.state.actions.adminProjects.createProjectStart();
         return this.api.admin
             .createProject({}, projectRequest)
-            .do(
-                project => {
-                    this.state.actions.adminProjects.createProjectSuccess(project);
+            .toPromise()
+            .then((project) => {
+                this.state.actions.adminProjects.createProjectSuccess(project);
                     this.notification.show({
                         type: 'success',
                         message: 'admin.project_created'
                     });
-                },
-                () => this.state.actions.adminProjects.createProjectError()
-            )
-            .toPromise();
+                return project;
+            })
+            .catch(error => {
+                this.state.actions.adminProjects.createProjectError();
+                throw error;
+            });
     }
 
     updateProject(projectUuid: string, projectRequest: ProjectUpdateRequest): Promise<ProjectResponse> {
         this.state.actions.adminProjects.updateProjectStart();
         return this.api.admin.updateProject({ projectUuid }, projectRequest)
-            .do(
-                project => {
-                    this.state.actions.adminProjects.updateProjectSuccess(project);
-                    this.notification.show({
-                        type: 'success',
-                        message: 'admin.project_updated'
-                    });
-                },
-                () => this.state.actions.adminProjects.updateProjectError()
-            )
-            .toPromise();
+            .toPromise()
+            .then(project => {
+                this.state.actions.adminProjects.updateProjectSuccess(project);
+                this.notification.show({
+                    type: 'success',
+                    message: 'admin.project_updated'
+                });
+                return project;
+            })
+            .catch(error => {
+                this.state.actions.adminProjects.updateProjectError();
+                throw error;
+            });
     }
 
     deleteProject(projectUuid: string): void {

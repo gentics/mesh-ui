@@ -1,46 +1,6 @@
 @import "variables";
+@import "../admin-list/admin-list.component.common-styles.scss";
 @include filter-selection;
-
-.list-controls {
-    display: flex;
-    align-items: center;
-}
-
-.filter {
-    flex: 1;
-    margin-right: 10px;
-}
-
-.new-item-label {
-    @media screen and (max-width: $small-screen) {
-        display: none;
-    }
-}
-
-.item-row {
-    display: flex;
-    align-items: center;
-}
-
-.name {
-    margin-right: 15px;
-}
-
-.row-actions {
-    flex: 1;
-    text-align: right;
-}
-
-gtx-dropdown-item {
-    display: flex;
-    align-items: center;
-
-    &.alert {
-        color: $gtx-color-alert;
-    }
-
-    &.disabled {
-        color: $gtx-color-mid-gray;
-        cursor: not-allowed;
-    }
-}
+@include gtx-dropdown-item;
+@include list-controls;
+@include item-row;
