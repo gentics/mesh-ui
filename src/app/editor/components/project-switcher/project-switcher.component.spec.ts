@@ -13,6 +13,7 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { TestStateModule } from '../../../state/testing/test-state.module';
 
 import { ProjectSwitcherComponent } from './project-switcher.component';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 
 describe('ProjectSwitcherComponent:', () => {
     let appState: TestApplicationState;
@@ -32,7 +33,6 @@ describe('ProjectSwitcherComponent:', () => {
 
     beforeEach(() => {
         navigation = TestBed.get(NavigationService);
-        spyOn(navigation, 'list').and.callThrough();
 
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
@@ -129,10 +129,3 @@ describe('ProjectSwitcherComponent:', () => {
         <mesh-project-switcher></mesh-project-switcher>`
 })
 class TestComponent {}
-
-@Injectable()
-class MockNavigationService {
-    list(projectName: string, containerUuid: string) {
-        return { navigate() {} };
-    }
-}

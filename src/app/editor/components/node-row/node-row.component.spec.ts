@@ -24,6 +24,9 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { AvailableLanguagesListComponent } from '../available-languages-list/available-languages-list.component';
 
 import { NodeRowComponent } from './node-row.component';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('NodeRowComponent', () => {
     let api: MockApiService;
@@ -107,25 +110,6 @@ class MockDisplayFieldPipe implements PipeTransform {
     }
 }
 
-class MockListEffectsService {
-    loadChildren = jasmine.createSpy('loadChildren');
-    // deleteNode = jasmine.createSpy('deleteNode');
-    deleteNode = jasmine.createSpy('deleteNode');
-    loadSchemasForProject = () => {};
-    loadMicroschemasForProject = () => {};
-    setActiveContainer = (projectName: string, containerUuid: string, language: string) => {};
-}
-
-class MockNavigationService {
-    list = jasmine.createSpy('list').and.returnValue({ commands: () => {} });
-    detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => {}, commands: () => {} });
-}
-
-class MockI18nService {
-    translate(str: string): string {
-        return str;
-    }
-}
 
 function findDeleteButton(fixture: ComponentFixture<any>): DebugElement {
     return fixture.debugElement.query(By.css('.item-delete'));

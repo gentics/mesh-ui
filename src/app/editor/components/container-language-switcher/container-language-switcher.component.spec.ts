@@ -46,8 +46,6 @@ describe('ContainerLanguageSwitcherComponent:', () => {
 
     beforeEach(() => {
         navigation = TestBed.get(NavigationService);
-        spyOn(navigation, 'list').and.callThrough();
-
         config = TestBed.get(ConfigService);
     });
 

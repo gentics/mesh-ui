@@ -25,6 +25,8 @@ import { ProjectSwitcherComponent } from '../project-switcher/project-switcher.c
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 import { ContainerContentsComponent } from './container-contents.component';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('ContainerContentsComponent', () => {
     let api: MockApiService;
@@ -112,15 +114,3 @@ describe('ContainerContentsComponent', () => {
         <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent {}
-
-class MockListEffectsService {
-    loadChildren = jasmine.createSpy('loadChildren');
-    loadSchemasForProject = () => {};
-    loadMicroschemasForProject = () => {};
-    setActiveContainer = (projectName: string, containerUuid: string, language: string) => {};
-}
-
-class MockNavigationService {
-    list = jasmine.createSpy('list').and.returnValue({ commands: () => {} });
-    detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => {}, commands: () => {} });
-}
