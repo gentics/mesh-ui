@@ -26,6 +26,7 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { ConflictedFieldComponent } from '../conflicted-field/conflicted-field.component';
 
 import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
+import { MockModalService } from '../../../../testing/modal.service.mock';
 
 let state: TestApplicationState;
 
@@ -276,27 +277,12 @@ describe('NodeConflictDialogComponent', () => {
     });
 });
 
-class MockModalService {
-    dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fromComponent = jasmine.createSpy('fromComponent').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fakeDialog = {
-        open: jasmine.createSpy('open').and.callFake(() => {
-            return new Promise(resolve => {
-                this.confirmLastModal = () => {
-                    resolve();
-                    tick();
-                };
-            });
-        })
-    };
-    confirmLastModal: () => void;
-}
 class MockEntitiesService {
     getSchema = (id: string) => {
         return state.now.entities.schema[id]['0'];
-    };
+    }
 
     getMicroschema = (id: string) => {
         return state.now.entities.microschema[id]['0'];
-    };
+    }
 }

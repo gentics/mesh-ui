@@ -32,6 +32,8 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 
 import { SearchBarComponent } from './search-bar.component';
+import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('Search-bar component:', () => {
     let appState: TestApplicationState;
@@ -231,19 +233,3 @@ function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string):
         <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent {}
-
-class MockListEffectsService {
-    loadChildren = jasmine.createSpy('loadChildren');
-    setFilterTerm = jasmine.createSpy('listEffects');
-    loadSchemasForProject = () => {};
-    loadMicroschemasForProject = () => {};
-    setActiveContainer = (projectName: string, containerUuid: string, language: string) => {};
-}
-
-class MockEditorEffectsService {
-    saveNewNode = jasmine.createSpy('saveNewNode');
-    closeEditor = jasmine.createSpy('closeEditor');
-    openNode = jasmine.createSpy('openNode');
-    createNode = jasmine.createSpy('createNode');
-    saveNode = jasmine.createSpy('saveNode');
-}

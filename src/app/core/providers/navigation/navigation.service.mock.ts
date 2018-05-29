@@ -13,15 +13,8 @@ export class MockNavigationService {
         }
     };
 
-    list(projectName: string, containerUuid: string) {
-        return this.mockInstructionActions;
-    }
-
-    detail(): any {
-        return this.mockInstructionActions;
-    }
-
-    instruction(): any {
-        return this.mockInstructionActions;
-    }
+    detail = jasmine.createSpy('detail').and.returnValue(this.mockInstructionActions);
+    clearDetail = jasmine.createSpy('clearDetail').and.returnValue(this.mockInstructionActions);
+    list = jasmine.createSpy('list').and.returnValue(this.mockInstructionActions);
+    instruction = jasmine.createSpy('instruction').and.returnValue(this.mockInstructionActions);
 }

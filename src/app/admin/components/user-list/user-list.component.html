@@ -38,8 +38,11 @@
     <ng-template let-user="item">
         <div class="item-row">
             <a [routerLink]="['/admin/users', user.uuid]">
-                <div class="name" *ngIf="user.firstname || user.lastname">{{ user.firstname }} {{ user.lastname }}</div>
-                <div class="user-name">{{ user.username }}</div>
+                <div class="name" *ngIf="user.firstname || user.lastname">
+                    <span [innerHTML]="user.firstname | highlight:filterTerm "></span>
+                    <span [innerHTML]="user.lastname | highlight:filterTerm "></span>
+                </div>
+                <div class="user-name" [innerHTML]="user.username | highlight:filterTerm"></div>
             </a>
             <div class="group-wrapper">
                 <ng-container *ngFor="let group of user.groups">

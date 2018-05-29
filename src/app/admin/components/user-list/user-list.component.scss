@@ -3,6 +3,7 @@
 @include gtx-dropdown-item;
 @include list-controls;
 @include item-row;
+@include filter-selection;
 
 .with-selected {
     overflow: hidden;

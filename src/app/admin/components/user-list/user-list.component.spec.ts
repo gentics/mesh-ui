@@ -18,6 +18,7 @@ import { TestStateModule } from '../../../state/testing/test-state.module';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 
+import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { UserListComponent } from './user-list.component';
 
 type MockUser = Partial<User> & { uuid: string };
@@ -44,7 +45,13 @@ describe('UserListComponent', () => {
                 TestStateModule,
                 ReactiveFormsModule
             ],
-            declarations: [UserListComponent, ChipComponent, MockAdminListComponent, MockMeshUserGroupSelectComponent],
+            declarations: [
+                UserListComponent,
+                ChipComponent,
+                MockAdminListComponent,
+                MockMeshUserGroupSelectComponent,
+                HighlightPipe,
+            ],
             providers: [
                 { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService },
                 { provide: I18nService, useClass: MockI18nService },

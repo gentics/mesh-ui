@@ -15,6 +15,8 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 
+import { MockTagsEffectsService } from '../../../core/providers/effects/tags-effects.service.mock';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { CreateTagDialogComponent } from './create-tag-dialog.component';
 
 describe('CreateTagDialogComponent', () => {
@@ -73,16 +75,3 @@ describe('CreateTagDialogComponent', () => {
         })
     );
 });
-
-class MockTagsEffectsService {
-    createTag = jasmine.createSpy('createTag').and.returnValue(Promise.resolve({ uuid: 'new_node_uuid' }));
-    createTagFamily = jasmine
-        .createSpy('createTagFamily')
-        .and.returnValue(Promise.resolve({ uuid: 'new_family_uuid' }));
-}
-
-class MockI18nService {
-    translate(str: string): string {
-        return str;
-    }
-}

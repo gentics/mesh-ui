@@ -28,7 +28,12 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
 import { VersionLabelComponent } from '../version-label/version-label.component';
 
+import { MockModalService } from '../../../../testing/modal.service.mock';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { NodeEditorComponent } from './node-editor.component';
+import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
@@ -301,30 +306,6 @@ describe('NodeEditorComponent', () => {
     });
 });
 
-class MockEditorEffectsService {
-    saveNewNode = jasmine.createSpy('saveNewNode');
-    closeEditor = jasmine.createSpy('closeEditor');
-    openNode = jasmine.createSpy('openNode');
-    createNode = jasmine.createSpy('createNode');
-    saveNode = jasmine.createSpy('saveNode');
-}
-
-class MockListEffectsService {
-    loadChildren = jasmine.createSpy('loadChildren');
-}
-
-class MockNavigationService {
-    detail = jasmine.createSpy('detail').and.returnValue({ navigate: () => {} });
-    clearDetail = jasmine.createSpy('clearDetail').and.returnValue({ navigate: () => {} });
-    list = jasmine.createSpy('list').and.returnValue({ commands: () => {} });
-}
-
-class MockI18nService {
-    translate(str: string): string {
-        return str;
-    }
-}
-
 @Component({ selector: 'mesh-node-language-switcher', template: '' })
 class MockLanguageSwitcherComponent {
     @Input() node: any;
@@ -335,20 +316,4 @@ class MockNodeTagsBarComponent {
     @Input() node: any;
     isDirty = true;
     nodeTags = [];
-}
-
-class MockModalService {
-    dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fromComponent = jasmine.createSpy('fromComponent').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fakeDialog = {
-        open: jasmine.createSpy('open').and.callFake(() => {
-            return new Promise(resolve => {
-                this.confirmLastModal = () => {
-                    resolve();
-                    tick();
-                };
-            });
-        })
-    };
-    confirmLastModal: () => void;
 }

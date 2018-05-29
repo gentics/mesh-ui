@@ -11,6 +11,7 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { TestStateModule } from '../../../state/testing/test-state.module';
 
 import { BreadcrumbsComponent } from './breadcrumbs.component';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 
 describe('BreadcrumbsComponent:', () => {
     let appState: TestApplicationState;
@@ -31,7 +32,6 @@ describe('BreadcrumbsComponent:', () => {
 
     beforeEach(() => {
         navigation = TestBed.get(NavigationService);
-        spyOn(navigation, 'list').and.callThrough();
 
         appState = TestBed.get(ApplicationStateService);
         appState.trackAllActionCalls({ behavior: 'original' });
@@ -219,11 +219,4 @@ class MockProjectSwitcherComponent {}
 })
 class MockGtxBreadcrumbsComponent {
     @Input() public routerLinks: IBreadcrumbRouterLink[];
-}
-
-@Injectable()
-class MockNavigationService {
-    list(projectName: string, containerUuid: string) {
-        return { commands: () => [] };
-    }
 }

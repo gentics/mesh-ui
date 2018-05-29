@@ -23,6 +23,7 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 
 import { MultiFileUploadDialogComponent } from './multi-file-upload-dialog.component';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('MultiFileUploadDialogComponent', () => {
     let component: MultiFileUploadDialogComponent;
@@ -239,11 +240,4 @@ function initializeComponentWithFiles(fixture: ComponentFixture<MultiFileUploadD
     fixture.componentInstance.files = droppedFiles;
     fixture.detectChanges();
     return droppedFiles;
-}
-
-class MockListEffectsService {
-    loadChildren = jasmine.createSpy('loadChildren');
-    loadSchemasForProject = () => {};
-    loadMicroschemasForProject = () => {};
-    setActiveContainer = (projectName: string, containerUuid: string, language: string) => {};
 }
