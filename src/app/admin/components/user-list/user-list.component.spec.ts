@@ -17,8 +17,8 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 
-import { UserListComponent } from './user-list.component';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
+import { UserListComponent } from './user-list.component';
 
 type MockUser = Partial<User> & { uuid: string };
 type MockGroup = Partial<Group> & { uuid: string };
