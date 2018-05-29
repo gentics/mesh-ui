@@ -5,13 +5,13 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Button, Icon, InputField } from 'gentics-ui-core';
-
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
+import { MockProjectContentDirective } from '../../../shared/directives/project-content.directive.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
@@ -221,10 +221,3 @@ class MockAdminUserEffectsService {}
     template: `<mesh-user-detail></mesh-user-detail>`
 })
 class TestHostComponent {}
-
-@Directive({
-    selector: '[meshProjectTo]'
-})
-class MockProjectContentDirective {
-    @Input() meshProjectTo: any;
-}

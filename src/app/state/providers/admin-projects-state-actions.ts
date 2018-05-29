@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
+import { Project } from '../../common/models/project.model';
 import { ProjectResponse } from '../../common/models/server-models';
 import { AdminProjectsState } from '../models/admin-projects-state.model';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
-
 import { mergeEntityState } from './entity-state-actions';
 
 @Injectable()
@@ -23,7 +23,9 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
                 adminProjects: {
                     loadCount: 0,
                     projectList: [],
-                    projectDetail: null
+                    projectDetail: null,
+                    filterTerm: '',
+                    filterTagsTerm: '',
                 }
             }
         });
@@ -59,6 +61,20 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
         this.adminProjects.loadCount--;
     }
 
+
+    updateProjectStart(): void {
+        this.adminProjects.loadCount++;
+    }
+
+    updateProjectSuccess(project: ProjectResponse) {
+        this.adminProjects.loadCount--;
+        this.entities = mergeEntityState(this.entities, { project: [project] });
+    }
+
+    updateProjectError(): void {
+        this.adminProjects.loadCount--;
+    }
+
     deleteProjectStart(): void {
         this.adminProjects.loadCount++;
     }
@@ -69,5 +85,35 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
 
     deleteProjectError(): void {
         this.adminProjects.loadCount--;
+    }
+
+    newProject() {
+        this.adminProjects.projectDetail = null;
+    }
+
+    openProjectStart() {
+        this.adminProjects.loadCount++;
+        this.adminProjects.projectDetail = null;
+    }
+
+    openProjectSuccess(project: Project) {
+        this.adminProjects.loadCount--;
+        this.adminProjects.projectDetail = project.uuid;
+
+        this.entities = mergeEntityState(this.entities, {
+            project: [project]
+        });
+    }
+
+    openProjectError() {
+        this.adminProjects.loadCount--;
+    }
+
+    setTagFilterTerm(term: string): void {
+        this.adminProjects.filterTagsTerm = term;
+    }
+
+    setFilterTerm(term: string): void {
+        this.adminProjects.filterTerm = term;
     }
 }

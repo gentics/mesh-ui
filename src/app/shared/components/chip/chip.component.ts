@@ -10,4 +10,8 @@ export class ChipComponent {
     @Input() removeTitle = '';
     @Input() removable = true;
     @Output() removeClick = new EventEmitter<void>();
+
+    @Input() editTitle = '';
+    @Input() editable = false;
+    @Output() editClick = new EventEmitter<void>();
 }

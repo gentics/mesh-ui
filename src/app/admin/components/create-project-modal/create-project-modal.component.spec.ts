@@ -186,34 +186,31 @@ describe('CreateProjectModal', () => {
         )
     );
 
-    it(
-        `creates a new project`,
-        componentTest(
-            () => CreateProjectModalComponent,
-            (fixture, instance) => {
-                const projectName = 'testproject1';
-                const testSchema = {
-                    uuid: 'test_schema',
-                    name: 'TestSchema'
-                };
+    it(`creates a new project`,
+        componentTest(() => CreateProjectModalComponent, (fixture, instance) => {
+            const projectName = 'testproject1';
+            const testSchema = {
+                uuid: 'test_schema',
+                name: 'TestSchema',
+                version: '',
+            };
 
-                instance.name.setValue(projectName);
-                instance.schema.setValue(testSchema);
+            instance.name.setValue(projectName);
+            instance.schema.setValue(testSchema);
 
-                mockAdminProjectEffectsService.createProject.and.returnValue(Promise.resolve(null));
+            mockAdminProjectEffectsService.createProject.and.returnValue(Promise.resolve(null));
 
-                triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
-                fixture.detectChanges();
-                expect(mockAdminProjectEffectsService.createProject).toHaveBeenCalledWith({
-                    name: projectName,
-                    schema: {
-                        uuid: testSchema.uuid,
-                        name: testSchema.name,
-                        version: ''
-                    }
-                });
-            }
-        )
+            triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
+            fixture.detectChanges();
+            expect(mockAdminProjectEffectsService.createProject).toHaveBeenCalledWith({
+                name: projectName,
+                schema: {
+                    uuid: testSchema.uuid,
+                    name: testSchema.name,
+                    version: testSchema.version
+                }
+            });
+        })
     );
 
     it(

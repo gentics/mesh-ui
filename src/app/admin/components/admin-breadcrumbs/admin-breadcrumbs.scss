@@ -21,12 +21,12 @@ mesh-content-portal {
     padding: 0 10px;
 }
 
-/deep/ gtx-breadcrumbs > nav {
+::ng-deep gtx-breadcrumbs > nav {
     box-shadow: none;
 }
 
-/deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
-/deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb:last-child,
-/deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
+::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
+::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb:last-child,
+::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
     color: white;
 }

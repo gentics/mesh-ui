@@ -14,6 +14,8 @@ import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
+import { observeQueryParam } from '../../../shared/common/observe-query-param';
+import { setQueryParams } from '../../../shared/common/set-query-param';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 
 @Component({
@@ -51,16 +53,22 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.adminUserEffects.loadAllUsers();
         this.adminUserEffects.loadAllGroups();
 
-        combineLatest(this.observeParam('p', 1), this.observeParam('perPage', 25)).subscribe(([page, perPage]) => {
-            this.adminUserEffects.setListPagination(page, perPage);
-        });
+        combineLatest(observeQueryParam(this.route.queryParamMap, 'p', 1), observeQueryParam(this.route.queryParamMap, 'perPage', 25))
+            .takeUntil(this.destroy$)
+            .subscribe(([page, perPage]) => {
+                this.adminUserEffects.setListPagination(page, perPage);
+            });
 
-        this.observeParam('q', '').subscribe(filterTerm => {
+        observeQueryParam(this.route.queryParamMap, 'q', '')
+            .takeUntil(this.destroy$)
+            .subscribe(filterTerm => {
             this.adminUserEffects.setFilterTerm(filterTerm);
             this.filterInput.setValue(filterTerm, { emitEvent: false });
-        });
+            });
 
-        this.observeParam('group', '').subscribe(groupUuid => {
+        observeQueryParam(this.route.queryParamMap, 'group', '')
+            .takeUntil(this.destroy$)
+            .subscribe(groupUuid => {
             this.adminUserEffects.setFilterGroups([groupUuid]);
 
             // setTimeout prevent an error where the Select component has not yet
@@ -75,11 +83,11 @@ export class UserListComponent implements OnInit, OnDestroy {
             .debounceTime(300)
             .takeUntil(this.destroy$)
             .subscribe(term => {
-                this.setQueryParams({ q: term });
+                setQueryParams(this.router, this.route, { q: term });
             });
 
         this.filterGroupSelect.valueChanges.takeUntil(this.destroy$).subscribe(groupUuid => {
-            this.setQueryParams({ group: groupUuid });
+            setQueryParams(this.router, this.route, { group: groupUuid });
         });
 
         const allUsers$ = this.state
@@ -104,7 +112,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
 
     onPageChange(newPage: number): void {
-        this.setQueryParams({ p: newPage });
+        setQueryParams(this.router, this.route, { p: newPage });
     }
 
     deleteUser(user: User): void {
@@ -170,19 +178,6 @@ export class UserListComponent implements OnInit, OnDestroy {
         return this.users$.take(1).map(users => users.filter((user, index) => selectedIndices.includes(index)));
     }
 
-    /**
-     * Returns an Observable which emits whenever a route query param with the given name changes.
-     */
-    private observeParam<T extends string | number>(paramName: string, defaultValue: T): Observable<T> {
-        return this.route.queryParamMap
-            .map(paramMap => {
-                const value = (paramMap.get(paramName) as T) || defaultValue;
-                return (typeof defaultValue === 'number' ? +value : value) as T;
-            })
-            .distinctUntilChanged()
-            .takeUntil(this.destroy$);
-    }
-
     private filterUsers(users: User[], filterTerm: string, filterGroups: string[]): User[] {
         const groupUuid = filterGroups[0];
         this.filterTerm = filterTerm.trim();
@@ -203,16 +198,6 @@ export class UserListComponent implements OnInit, OnDestroy {
         return user.groups.some(group => group.uuid === groupUuid);
     }
 
-    /**
-     * Updates the query params whilst preserving existing params.
-     */
-    private setQueryParams(params: { [key: string]: string | number }): void {
-        this.router.navigate(['./'], {
-            queryParams: params,
-            queryParamsHandling: 'merge',
-            relativeTo: this.route
-        });
-    }
 
     private displayDeleteUserModal(
         title: { token: string; params?: { [key: string]: any } },

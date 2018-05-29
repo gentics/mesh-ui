@@ -63,10 +63,6 @@
       "en": "Okay",
       "de": "OK"
     },
-    "project": {
-      "en": "Project",
-      "de": "Projekt"
-    },
     "publish_button": {
       "en": "Publish",
       "de": "Veröffentlichen"
@@ -274,5 +270,49 @@
     "usage_label": {
       "en": "Usage",
       "de": "Verwendung"
+    },
+    "title_label": {
+      "en": "Title",
+      "de": "Titel"
+    },
+    "project": {
+      "en": "Project",
+      "de": "Projekt"
+    },
+    "projects": {
+      "en": "Projects",
+      "de": "Projekte"
+    },
+    "user": {
+      "en": "User",
+      "de": "Benutzer"
+    },
+    "users": {
+      "en": "Users",
+      "de": "Benutzer"
+    },
+    "permission": {
+      "en": "Permission",
+      "de": "Berechtigung"
+    },
+    "permissions": {
+      "en": "Permissions",
+      "de": "Berchtigungen"
+    },
+    "schema": {
+      "en": "Schema",
+      "de": "Schema"
+    },
+    "schemas": {
+      "en": "Schemas",
+      "de": "Schemata"
+    },
+    "microschema": {
+      "en": "Microschema",
+      "de": "Mikroschema"
+    },
+    "microschemas": {
+      "en": "Microschemas",
+      "de": "Mikroschemen"
     }
 }

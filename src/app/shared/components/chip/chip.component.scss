@@ -11,6 +11,7 @@
     white-space: nowrap;
     border-radius: 3px;
     margin-right: 5px;
+    margin-bottom: 5px;
 }
 
 .chip-contents {
@@ -20,9 +21,18 @@
     .removable & {
         margin-right: 16px;
     }
+
+    .editable & {
+        margin-right: 16px;
+    }
+
+    .editable.removable & {
+        margin-right: 32px;
+    }
 }
 
-.remove-button {
+.remove-button,
+.edit-button {
     cursor: pointer;
     position: absolute;
     top: 0;
@@ -35,4 +45,8 @@
     &:hover {
         opacity: 1;
     }
+}
+
+.editable.removable .remove-button {
+    right: 23px;
 }

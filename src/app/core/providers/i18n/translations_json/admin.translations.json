@@ -95,6 +95,10 @@
         "en": "No microschemas found",
         "de": "Keine Microschemas gefunden"
     },
+    "new_project": {
+        "en": "New project",
+        "de": "Neues Projekt"
+    },
     "new_user": {
         "en": "New user",
         "de": "Neuer Benutzer"
@@ -127,6 +131,10 @@
         "en": "Project created",
         "de": "Projekt erstellt"
     },
+    "delete_project": {
+        "en": "Delete project",
+        "de": "Projekt löschen"
+    },
     "project_deleted": {
         "en": "Project deleted",
         "de": "Projekt gelöscht"
@@ -138,6 +146,50 @@
     "projects_none_found": {
         "en": "No projects found",
         "de": "Keine Projekte gefunden"
+    },
+    "project_label": {
+        "en": "Project",
+        "de": "Projekt"
+    },
+    "project_tags": {
+        "en": "Project tags",
+        "de": "Tags im Projekt"
+    },
+    "create_tag_family": {
+        "en": "Create new tag family",
+        "de": "Neue Tag-Familie erstellen"
+    },
+    "edit_tag_family": {
+        "en": "Edit tag family",
+        "de": "Tag-Familie bearbeiten"
+    },
+    "delete_tag_family": {
+        "en": "Delete tag family",
+        "de": "Tag-Familie löschen"
+    },
+    "delete_tag_family_confirmation": {
+        "en": "Delete this tag family and all tags?",
+        "de": "Diese Tag-Familie und all ihre Tags löschen?"
+    },
+    "edit_tag": {
+        "en": "Edit tag",
+        "de": "Tag bearbeiten"
+    },
+    "delete_tag_confirmation": {
+        "en": "Delete this tag?",
+        "de": "Tag löschen?"
+    },
+    "duplicate_tag": {
+        "en": "Tag \"{{tag}}\" already exists",
+        "de": "Der Tag \"{{tag}}\" existiert bereits."
+    },
+    "duplicate_tag_family": {
+        "en": "Tag family \"{{family}}\" already exists",
+        "de": "Die Tagfamillie \"{{family}}\" existiert bereits."
+    },
+    "update_project": {
+        "en": "Update Project",
+        "de": "Projekt speichern"
     },
     "remove_selected_users_from_group": {
         "en": "Remove {{count}} users from group",

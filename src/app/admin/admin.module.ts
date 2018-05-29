@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 
+import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
 import { FormGeneratorModule } from '../form-generator/form-generator.module';
 import { SharedModule } from '../shared/shared.module';
-
 import { routes } from './admin.routes';
 import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
 import { AdminListItemComponent } from './components/admin-list-item/admin-list-item.component';
@@ -14,6 +14,8 @@ import { CreateProjectModalComponent } from './components/create-project-modal/c
 import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/mircoschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
+import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';
+import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
 import { SchemaAssignmentComponent } from './components/schema-assignment/schema-assignment.component';
@@ -26,6 +28,7 @@ import { AdminProjectEffectsService } from './providers/effects/admin-project-ef
 import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
 import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
 import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
+import { ProjectResolver } from './providers/resolvers/project-resolver';
 import { SchemaResolver } from './providers/resolvers/schema-resolver';
 import { UserResolver } from './providers/resolvers/user-resolver';
 
@@ -46,18 +49,29 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         AdminListComponent,
         AdminListItemComponent,
         UserDetailComponent,
-        UserGroupSelectComponent
+        UserGroupSelectComponent,
+        ProjectDetailComponent,
+        NameInputDialogComponent
     ],
-    entryComponents: [CreateProjectModalComponent],
-    imports: [SharedModule, RouterModule.forChild(routes), FormGeneratorModule],
+    entryComponents: [
+        CreateProjectModalComponent,
+        NameInputDialogComponent
+    ],
+    imports: [
+        SharedModule,
+        RouterModule.forChild(routes),
+        FormGeneratorModule
+    ],
     providers: [
         ModalService,
         AdminSchemaEffectsService,
         AdminProjectEffectsService,
         AdminUserEffectsService,
+        TagsEffectsService,
         UserResolver,
         SchemaResolver,
-        MicroschemaResolver
+        MicroschemaResolver,
+        ProjectResolver
     ]
 })
 export class AdminModule {

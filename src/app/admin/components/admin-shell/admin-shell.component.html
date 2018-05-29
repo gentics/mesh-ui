@@ -5,12 +5,11 @@
 </div>
 <div class="container main">
     <ul class="main-menu">
-        <li routerLinkActive="active"><a routerLink="/admin/projects"><icon>folder</icon><span class="label">Projects</span></a></li>
-        <li routerLinkActive="active"><a routerLink="/admin/users"><icon>people</icon><span class="label">Users</span></a></li>
-        <li routerLinkActive="active"><a href="#/admin"><icon>lock</icon><span class="label">Permissions</span></a></li>
-        <li routerLinkActive="active"><a routerLink="/admin/schemas"><icon>view_quilt</icon><span class="label">Schemas</span></a></li>
-        <li routerLinkActive="active"><a routerLink="/admin/microschemas"><icon>line_style</icon><span class="label">Microschemas</span></a></li>
-        <li routerLinkActive="active"><a href="#/admin"><icon>label</icon><span class="label">Tags</span></a></li>
+        <li routerLinkActive="active"><a routerLink="/admin/projects"><icon>folder</icon><span class="label">{{"common.projects" | i18n}}</span></a></li>
+        <li routerLinkActive="active"><a routerLink="/admin/users"><icon>people</icon><span class="label">{{"common.users" | i18n}}</span></a></li>
+        <li routerLinkActive="active"><a href="#/admin"><icon>lock</icon><span class="label">{{"common.permissions" | i18n}}</span></a></li>
+        <li routerLinkActive="active"><a routerLink="/admin/schemas"><icon>view_quilt</icon><span class="label">{{"common.schemas" | i18n}}</span></a></li>
+        <li routerLinkActive="active"><a routerLink="/admin/microschemas"><icon>line_style</icon><span class="label">{{"common.microschemas" | i18n}}</span></a></li>
     </ul>
     <div class="content">
         <router-outlet></router-outlet>

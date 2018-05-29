@@ -79,7 +79,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
                     uuid: this.schema.value.uuid,
                     name: this.schema.value.name,
                     // TODO: this is required per the generated models, but not needed per the Mesh docs.
-                    version: ''
+                    version: this.schema.value.version
                 }
             };
 

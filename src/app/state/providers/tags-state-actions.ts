@@ -31,28 +31,59 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         });
     }
 
-    actionStart() {
+    // TODO: remove the getNestedEntity reference to this.entities (in entities.service.ts)
+    // Remove all external reference to this.entities.tag/tagFamily. The outside world should only care about state.tags.tag/tagFamilies
+    // clearAll can be safely removed afterwards
+
+    clearAll() {
+        this.entities = mergeEntityState(this.entities, {
+            tagFamily: [],
+            tag: [],
+        }, false);
+
+        this.tags.tagFamilies = [];
+        this.tags.tags = [];
+    }
+
+    loadTagFamiliesAndTheirTagsStart() {
         this.tags.loadCount++;
     }
 
-    actionSuccess() {
+    fetchTagFamiliesSuccess(fetchedFamilies: TagFamilyResponse[]) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tagFamily: [
+                ...fetchedFamilies
+            ]
+        }, false);
+
+        this.tags.tagFamilies = Array.from(new Set([...this.tags.tagFamilies, ...fetchedFamilies.map(family => family.uuid)]));
+    }
+
+    loadTagFamiliesAndTheirTagsError() {
         this.tags.loadCount--;
     }
 
-    actionError() {
+    fetchTagsOfTagFamilyStart() {
+        this.tags.loadCount++;
+    }
+
+    fetchTagsOfTagFamilySuccess(fetchedTags: TagResponse[]) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tag: [
+                ...fetchedTags
+            ]
+        }, false);
+        this.tags.tags = Array.from(new Set([...this.tags.tags, ...fetchedTags.map(tag => tag.uuid)]));
+    }
+
+    fetchTagsOfTagFamilyError() {
         this.tags.loadCount--;
     }
 
-    createTagFamilySuccess(tagFamily: TagFamilyResponse) {
-        this.tags.loadCount--;
-        this.entities = mergeEntityState(
-            this.entities,
-            {
-                tagFamily: [tagFamily]
-            },
-            false
-        );
-        this.tags.tagFamilies = [...this.tags.tagFamilies, tagFamily.uuid];
+    createTagStart() {
+        this.tags.loadCount++;
     }
 
     createTagSuccess(tag: TagResponse) {
@@ -67,28 +98,79 @@ export class TagsStateActions extends StateActionBranch<AppState> {
         this.tags.tags = [...this.tags.tags, tag.uuid];
     }
 
-    fetchTagFamiliesSuccess(tagFamilies: TagFamilyResponse[]) {
+    createTagError() {
         this.tags.loadCount--;
-        this.entities = mergeEntityState(
-            this.entities,
-            {
-                tagFamily: [...tagFamilies]
-            },
-            false
-        );
-        this.tags.tagFamilies = [...this.tags.tagFamilies, ...tagFamilies.map(family => family.uuid)];
     }
 
-    fetchTagsOfTagFamilySuccess(tags: TagResponse[]) {
-        this.tags.loadCount--;
-        this.entities = mergeEntityState(
-            this.entities,
-            {
-                tag: [...tags]
-            },
-            false
-        );
+    updateTagStart() {
+        this.tags.loadCount++;
+    }
 
-        this.tags.tags = [...this.tags.tags, ...tags.map(tag => tag.uuid)];
+    updateTagSuccess(tag: TagResponse) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tag: [tag]
+        }, false);
+    }
+
+    updateTagError(): void {
+        this.tags.loadCount--;
+    }
+
+    deleteTagStart(): void {
+        this.tags.loadCount++;
+    }
+
+    deleteTagSuccess(tagUuid: string) {
+        this.tags.loadCount--;
+        this.tags.tags = this.tags.tags.filter(uuid => uuid !== tagUuid);
+    }
+
+    deleteTagError(): void {
+        this.tags.loadCount--;
+    }
+
+    createTagFamilyStart() {
+        this.tags.loadCount++;
+    }
+
+    createTagFamilySuccess(tagFamily: TagFamilyResponse) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tagFamily: [tagFamily]
+        }, false);
+        this.tags.tagFamilies = [...this.tags.tagFamilies, tagFamily.uuid];
+    }
+
+    createTagFamilyError() {
+        this.tags.loadCount--;
+    }
+
+    updateTagFamilyStart() {
+        this.tags.loadCount++;
+    }
+
+    updateTagFamilySuccess(tagFamily: TagFamilyResponse) {
+        this.tags.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            tagFamily: [tagFamily]
+        }, false);
+    }
+
+    updateTagFamilyError() {
+        this.tags.loadCount--;
+    }
+
+    deleteTagFamilyStart(): void {
+        this.tags.loadCount++;
+    }
+
+    deleteTagFamilySuccess(tagFamilyUuid: string) {
+        this.tags.loadCount--;
+        this.tags.tagFamilies = this.tags.tagFamilies.filter(uuid => uuid !== tagFamilyUuid);
+    }
+
+    deleteTagFamilyError(): void {
+        this.tags.loadCount--;
     }
 }

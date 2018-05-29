@@ -1,6 +1,14 @@
 @import "variables";
 @import "../admin-list/admin-list.component.common-styles.scss";
-@include filter-selection;
 @include gtx-dropdown-item;
 @include list-controls;
 @include item-row;
+
+
+.tags {
+    flex: 1;
+}
+
+.row-actions {
+    flex: 0;
+}

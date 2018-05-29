@@ -16,12 +16,12 @@ import { MockConfigService } from '../../../core/providers/config/config.service
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { MockTagSelectorComponent } from '../../../shared/components/tag-selector/tag-selector.component.mock';
+import { MockTagComponent } from '../../../shared/components/tag/tag.component.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
-
 import { NodeTagsBarComponent } from './node-tags-bar.component';
 
 describe('NodeTagsBarComponent', () => {
@@ -191,9 +191,4 @@ function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string):
 })
 class TestComponent {
     node: MeshNode;
-}
-
-@Component({ selector: 'mesh-tag', template: '' })
-class MockTagComponent {
-    @Input() tag: any;
 }

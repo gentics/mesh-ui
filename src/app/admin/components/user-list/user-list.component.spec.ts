@@ -16,6 +16,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
+import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { UserListComponent } from './user-list.component';
@@ -186,19 +187,6 @@ describe('UserListComponent', () => {
         });
     }
 });
-
-@Component({
-    selector: 'mesh-admin-list',
-    template: ``
-})
-class MockAdminListComponent {
-    @Input() items: any;
-    @Input() itemsPerPage: any;
-    @Input() totalItems: any;
-    @Input() currentPage: any;
-    @Input() selection: any;
-    @Output() pageChange = new EventEmitter<any>();
-}
 
 @Component({
     selector: 'mesh-user-group-select',

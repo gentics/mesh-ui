@@ -16,6 +16,7 @@ export class HighlightPipe implements PipeTransform {
         if (typeof term !== 'string' || term === '') {
             return this.sanitizer.bypassSecurityTrustHtml(value);
         }
+
         const re = getFuzzyRegExp(term);
         const rawHtml = value.replace(re, `<span class="hl-pipe">$1</span>`);
         return this.sanitizer.bypassSecurityTrustHtml(rawHtml);

@@ -1,17 +1,37 @@
 import { Injectable } from '@angular/core';
-
-import { ProjectCreateRequest, ProjectResponse } from '../../../common/models/server-models';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { Project } from '../../../common/models/project.model';
+import { ProjectCreateRequest, ProjectResponse, ProjectUpdateRequest } from '../../../common/models/server-models';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Injectable()
 export class AdminProjectEffectsService {
-    constructor(
-        private api: ApiService,
-        private notification: I18nNotification,
-        private state: ApplicationStateService
-    ) {}
+
+    constructor(private api: ApiService,
+                private notification: I18nNotification,
+                private entities: EntitiesService,
+                private state: ApplicationStateService) {
+    }
+
+    newProject(): void {
+        this.state.actions.adminProjects.newProject();
+    }
+
+    openProject(uuid: string): Promise<Project | void> {
+        this.state.actions.adminProjects.openProjectStart();
+
+        return this.api.project.getProjectByUuid({projectUuid: uuid})
+            .toPromise()
+            .then(response => {
+                this.state.actions.adminProjects.openProjectSuccess(response);
+                return response;
+            }, error => {
+                this.state.actions.adminProjects.openProjectError();
+            });
+    }
 
     loadProjects(): void {
         this.state.actions.adminProjects.fetchProjectsStart();
@@ -30,17 +50,37 @@ export class AdminProjectEffectsService {
         this.state.actions.adminProjects.createProjectStart();
         return this.api.admin
             .createProject({}, projectRequest)
-            .do(
-                project => {
-                    this.state.actions.adminProjects.createProjectSuccess(project);
+            .toPromise()
+            .then((project) => {
+                this.state.actions.adminProjects.createProjectSuccess(project);
                     this.notification.show({
                         type: 'success',
                         message: 'admin.project_created'
                     });
-                },
-                () => this.state.actions.adminProjects.createProjectError()
-            )
-            .toPromise();
+                return project;
+            })
+            .catch(error => {
+                this.state.actions.adminProjects.createProjectError();
+                throw error;
+            });
+    }
+
+    updateProject(projectUuid: string, projectRequest: ProjectUpdateRequest): Promise<ProjectResponse> {
+        this.state.actions.adminProjects.updateProjectStart();
+        return this.api.admin.updateProject({ projectUuid }, projectRequest)
+            .toPromise()
+            .then(project => {
+                this.state.actions.adminProjects.updateProjectSuccess(project);
+                this.notification.show({
+                    type: 'success',
+                    message: 'admin.project_updated'
+                });
+                return project;
+            })
+            .catch(error => {
+                this.state.actions.adminProjects.updateProjectError();
+                throw error;
+            });
     }
 
     deleteProject(projectUuid: string): void {
@@ -62,5 +102,13 @@ export class AdminProjectEffectsService {
                 });
             }
         );
+    }
+
+    setFilterTerm(term: string): void {
+        this.state.actions.adminProjects.setFilterTerm(term);
+    }
+
+    setTagFilterTerm(term: string): void {
+        this.state.actions.adminProjects.setTagFilterTerm(term);
     }
 }

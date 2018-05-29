@@ -1,4 +1,5 @@
 @import "variables";
+@include filter-selection;
 
 :host {
     color: $gtx-color-off-white;

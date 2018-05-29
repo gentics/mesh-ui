@@ -3,6 +3,7 @@ import { Icon } from 'gentics-ui-core';
 
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { BackgroundFromDirective } from '../../directives/background-from.directive';
+import { HighlightPipe } from '../../pipes/highlight/highlight.pipe';
 import { ChipComponent } from '../chip/chip.component';
 
 import { TagComponent } from './tag.component';
@@ -13,7 +14,13 @@ describe('TagComponent', () => {
 
     beforeEach(() => {
         configureComponentTest({
-            declarations: [TagComponent, ChipComponent, BackgroundFromDirective, Icon]
+            declarations: [
+                TagComponent,
+                ChipComponent,
+                BackgroundFromDirective,
+                HighlightPipe,
+                Icon
+            ]
         });
     });
 

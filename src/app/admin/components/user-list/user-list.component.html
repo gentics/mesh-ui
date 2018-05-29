@@ -31,12 +31,12 @@
         </div>
         <gtx-button size="regular" [routerLink]="['/admin/users/new']">
             <icon left>person_add</icon>
-            <span class="new-user-label">{{ 'admin.new_user' | i18n }}</span>
+            <span class="new-item-label">{{ 'admin.new_user' | i18n }}</span>
         </gtx-button>
     </div>
 
     <ng-template let-user="item">
-        <div class="user-row">
+        <div class="item-row">
             <a [routerLink]="['/admin/users', user.uuid]">
                 <div class="name" *ngIf="user.firstname || user.lastname">
                     <span [innerHTML]="user.firstname | highlight:filterTerm "></span>

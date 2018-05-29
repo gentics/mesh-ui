@@ -1,4 +1,7 @@
-<mesh-chip (removeClick)="removeClick.emit()"
-           [meshBackgroundFrom]="tagFamilyName()">
-    <span class="tag-name">{{ tag.name }}</span>
+<mesh-chip  [removable]="removable"
+            (removeClick)="removeClick.emit()"
+            [editable]="editable"
+            (editClick)="editClick.emit()"
+            [meshBackgroundFrom]="tagFamilyName()">
+    <span class="tag-name" [innerHTML]="tag.name | highlight:filterTerm"></span>
 </mesh-chip>
