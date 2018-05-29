@@ -285,34 +285,34 @@
     },
     "user": {
       "en": "User",
-      "de": "__User"
+      "de": "Benutzer"
     },
     "users": {
       "en": "Users",
-      "de": "__Users"
+      "de": "Benutzer"
     },
     "permission": {
       "en": "Permission",
-      "de": "__Permission"
+      "de": "Berechtigung"
     },
     "permissions": {
       "en": "Permissions",
-      "de": "__Permissions"
+      "de": "Berchtigungen"
     },
     "schema": {
       "en": "Schema",
-      "de": "__Schema"
+      "de": "Schema"
     },
     "schemas": {
       "en": "Schemas",
-      "de": "__Schemas"
+      "de": "Schemata"
     },
     "microschema": {
       "en": "Microschema",
-      "de": "__Microschema"
+      "de": "Mikroschema"
     },
     "microschemas": {
       "en": "Microschemas",
-      "de": "__Microschemas"
+      "de": "Mikroschemen"
     }
 }

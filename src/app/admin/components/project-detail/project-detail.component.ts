@@ -384,9 +384,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    updateTags (project: Project, family: LocalTagFamily): Promise<void> {
-        const tagRequests: Promise<any | void>[] = [];
-        family.tags.filter(tag => tag.status !== TagStatus.DELETED)
+    updateTags (project: Project, family: LocalTagFamily): Promise<any> {
+        const tagRequests = family.tags.filter(tag => tag.status !== TagStatus.DELETED)
             .map(async tag => {
                 let result: TagResponse | null;
                 switch (tag.status) {
@@ -405,27 +404,23 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                     tag.status = TagStatus.PRISTINE;
                     tag.data = result;
                 }
-                tagRequests.push(Promise.resolve());
+                return Promise.resolve();
             });
 
-        return Promise.all(tagRequests).then(() => Promise.resolve());
+        return Promise.all(tagRequests);
     }
 
-    deleteMarkedTags(project: Project, localFamily: LocalTagFamily): Promise<void> {
-        const deleteRequests: Promise<any | void>[] = [];
-
-        localFamily.tags.filter(tag => tag.status === TagStatus.DELETED)
+    deleteMarkedTags(project: Project, localFamily: LocalTagFamily): Promise<any> {
+         const deleteRequests: Promise<any | void>[] = localFamily.tags.filter(tag => tag.status === TagStatus.DELETED)
             .map(tag => {
-                deleteRequests.push(this.tagEffects.deleteTag(project.name, (tag.data as Tag)));
+                return this.tagEffects.deleteTag(project.name, (tag.data as Tag));
             });
 
-        return Promise.all(deleteRequests).then(() => Promise.resolve());
+        return Promise.all(deleteRequests);
     }
 
-    updateTagFamilies(project: Project): Promise<void> {
-        const tagRequests: Promise<any | void>[] = [];
-
-        this.tagFamilies.filter(family => family.status !== TagStatus.DELETED)
+    updateTagFamilies(project: Project): Promise<any> {
+        const tagRequests = this.tagFamilies.filter(family => family.status !== TagStatus.DELETED)
             .map(async family => {
                 let result: TagFamilyResponse | null;
                 switch (family.status) {
@@ -447,20 +442,18 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 }
 
                 await this.deleteMarkedTags(project, family);
-                await this.updateTags(project, family);
-                tagRequests.push(Promise.resolve());
+                return this.updateTags(project, family);
             });
 
-        return Promise.all(tagRequests).then(() => Promise.resolve());
+        return Promise.all(tagRequests);
     }
 
     deleteMarkedFamilies(project: Project): Promise<void> {
-        const deleteRequests: Promise<any | void>[] = [];
-
-        this.tagFamilies.filter(family => family.status === TagStatus.DELETED)
+        const deleteRequests: Promise<any | void>[] = this.tagFamilies.filter(family => family.status === TagStatus.DELETED)
             .map(family => {
-               deleteRequests.push(this.tagEffects.deleteTagFamily(project.name, family.data as TagFamily));
+               return this.tagEffects.deleteTagFamily(project.name, family.data as TagFamily);
             });
+
         return Promise.all(deleteRequests).then(result => Promise.resolve());
     }
 

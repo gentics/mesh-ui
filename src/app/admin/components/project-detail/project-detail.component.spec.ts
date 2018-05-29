@@ -33,8 +33,6 @@ import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.
 import { AdminListComponent } from '../admin-list/admin-list.component';
 import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 import { ProjectDetailComponent } from './project-detail.component';
-import { Tag } from '../../../common/models/tag.model';
-
 
 let state: TestApplicationState;
 
