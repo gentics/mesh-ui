@@ -196,10 +196,6 @@ export class UserListComponent implements OnInit, OnDestroy {
         return fuzzyMatch(filterTerm, `${user.firstname} ${user.lastname} ${user.username}`) !== null;
     }
 
-    private lowercaseMatch(needle: string, haystack?: string): boolean {
-        return !!(haystack && -1 < haystack.toLowerCase().indexOf(needle.toLowerCase()));
-    }
-
     private userIsInGroup(user: User, groupUuid: string | undefined): boolean {
         if (!groupUuid) {
             return true;
