@@ -14,6 +14,7 @@ import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 
+import { MockModalService } from '../../../../testing/modal.service.mock';
 import { ConflictedFieldComponent } from './conflicted-field.component';
 
 describe('ConflictedFieldComponent', () => {
@@ -141,18 +142,3 @@ describe('ConflictedFieldComponent', () => {
     });
 });
 
-class MockModalService {
-    dialog = jasmine.createSpy('dialog').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fromComponent = jasmine.createSpy('fromComponent').and.callFake(() => Promise.resolve(this.fakeDialog));
-    fakeDialog = {
-        open: jasmine.createSpy('open').and.callFake(() => {
-            return new Promise(resolve => {
-                this.confirmLastModal = () => {
-                    resolve();
-                    tick();
-                };
-            });
-        })
-    };
-    confirmLastModal: () => void;
-}
