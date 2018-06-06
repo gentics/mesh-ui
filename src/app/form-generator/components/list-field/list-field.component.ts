@@ -134,7 +134,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     }
 
     init(api: MeshFieldControlApi): void {
-        this.value = api.getValue() as ListField<ListNodeFieldType>;
+        this.value = (api.getValue() as ListField<ListNodeFieldType>) || [];
         this.api = api;
         this.field = api.field;
     }

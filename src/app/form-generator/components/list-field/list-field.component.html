@@ -1,22 +1,31 @@
 <div class="label-container">
-    <div class="floating-label" [meshScrollFrameHeading]="{ target: elementRef }" [disableScrollTarget]="disableScrollTarget">
+    <div class="floating-label"
+         [meshScrollFrameHeading]="{ target: elementRef }"
+         [disableScrollTarget]="disableScrollTarget">
         <label>{{ field.label || field.name }}</label>
 
-        <div class="add-item-button" *ngIf="!api.readOnly">
+        <div class="add-item-button"
+             *ngIf="!api.readOnly">
             <gtx-sortable-list [group]="{ name: groupId, pull: 'clone', put: false }"
                                [disabled]="api.readOnly">
                 <ng-template [ngIf]="field.listType === 'micronode'">
                     <gtx-sortable-item *ngFor="let schemaName of field.allow"
                                        [attr.data-microschema-name]="schemaName">
                         <div class="new-item">
-                            <icon>add</icon>{{ schemaName }}
+                            <gtx-button (click)="addItem(schemaName)"
+                                        icon>
+                                <icon>add</icon>
+                            </gtx-button>{{ schemaName }}
                             <gtx-drag-handle></gtx-drag-handle>
                         </div>
                     </gtx-sortable-item>
                 </ng-template>
                 <gtx-sortable-item *ngIf="field.listType !== 'micronode'">
                     <div class="new-item">
-                        <icon>add</icon>{{ field.listType }}
+                        <gtx-button (click)="addItem()"
+                                    icon>
+                            <icon>add</icon>
+                        </gtx-button>{{ field.listType }}
                         <gtx-drag-handle></gtx-drag-handle>
                     </div>
                 </gtx-sortable-item>
@@ -54,14 +63,16 @@
                        [onMove]="onMove"
                        [group]="mainGroup">
 
-        <div class="empty-placeholder" *ngIf="!value || value.length === 0">
+        <div class="empty-placeholder"
+             *ngIf="!value || value.length === 0">
             <!-- this empty-placeholder is a work-around for an issue with gtx-sortable-list, do not remove -->
             <gtx-drag-handle></gtx-drag-handle>
         </div>
 
         <gtx-sortable-item *ngFor="let item of value; trackBy: trackByFn">
             <div class="item-row">
-                <div #listItem class="list-item"></div>
+                <div #listItem
+                     class="list-item"></div>
                 <gtx-drag-handle [hidden]="api.readOnly"
                                  (mousedown)="dragging = true"
                                  (mouseup)="dragging = false"></gtx-drag-handle>
@@ -69,6 +80,3 @@
         </gtx-sortable-item>
     </gtx-sortable-list>
 </div>
-
-
-
