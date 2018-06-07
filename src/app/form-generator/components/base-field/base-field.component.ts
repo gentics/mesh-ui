@@ -60,7 +60,7 @@ export class BaseFieldComponent {
      * also invoked when a child field has changed, e.g. when a list item is changed, `valueChange()` is called
      * on the list item *and* the list.
      */
-    valueChange(newValue: NodeFieldType, oldValue?: NodeFieldType): void {
+    valueChange(newValue?: NodeFieldType, oldValue?: NodeFieldType): void {
         throw new Error('valueChange method must be implemented.');
     }
 

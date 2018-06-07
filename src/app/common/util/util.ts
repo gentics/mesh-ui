@@ -1,8 +1,15 @@
 import {
-    BinaryField, FieldMap, ListNodeFieldType, MeshNode, MicronodeFieldMap, MicronodeFieldType,
+    BinaryField,
+    FieldMap,
+    ListNodeFieldType,
+    MeshNode,
+    MicronodeFieldMap,
+    MicronodeFieldType,
     NodeFieldType
 } from '../models/node.model';
 import { FieldMapFromServer } from '../models/server-models';
+
+type Supplier<T> = () => T;
 
 // Pure functions for utility
 
@@ -27,7 +34,9 @@ export function isImageField(field: BinaryField): boolean {
  *     appState.select(state => state.possiblyUndefinedValue)
  *         .filter(notNullOrUndefined)
  */
-export function notNullOrUndefined<T extends string | number | boolean | object>(input: T | null | undefined): input is T {
+export function notNullOrUndefined<T extends string | number | boolean | object>(
+    input: T | null | undefined
+): input is T {
     return input != null;
 }
 
@@ -38,9 +47,8 @@ export function notNullOrUndefined<T extends string | number | boolean | object>
  *         .distinctUntilChanged(arrayContentsEqual)
  */
 export function arrayContentsEqual<T>(a: T[], b: T[]): boolean {
-    return a === b || a && b && a.length === b.length && a.every((value, index) => b[index] === value);
+    return a === b || (a && b && a.length === b.length && a.every((value, index) => b[index] === value));
 }
-
 
 /**
  * Returns the extension of a filename.
@@ -62,13 +70,15 @@ export function filenameExtension(filename: string): string {
  * TODO Add url encode or use angular URLSearchParams
  */
 export function queryString(obj: any): string {
-    let qs = Object.keys(obj).reduce<string[]>((query, key) => {
-        const val = obj[key];
-        if (val !== undefined && val !== null) {
-            query.push(`${key}=${val}`);
-        }
-        return query;
-    }, []).join('&');
+    let qs = Object.keys(obj)
+        .reduce<string[]>((query, key) => {
+            const val = obj[key];
+            if (val !== undefined && val !== null) {
+                query.push(`${key}=${val}`);
+            }
+            return query;
+        }, [])
+        .join('&');
 
     if (qs.length > 0) {
         qs = '?' + qs;
@@ -93,21 +103,31 @@ export function concatUnique<T>(first: T[], ...rest: T[][]): T[] {
  * for the keys of the object.
  * This is useful for transforming a list response from mesh to a format suitable to the state.
  */
-export function uuidHash<T extends { uuid: string }>(elements: T[]): {[uuid: string]: T} {
-    return elements.reduce((hash, element) => {
-        hash[element.uuid] = element;
-        return hash;
-    }, {} as { [uuid: string]: T });
+export function uuidHash<T extends { uuid: string }>(elements: T[]): { [uuid: string]: T } {
+    return elements.reduce(
+        (hash, element) => {
+            hash[element.uuid] = element;
+            return hash;
+        },
+        {} as { [uuid: string]: T }
+    );
 }
 
 export function noop() {}
 
-
 export type Primitive = string | number | boolean;
-export interface SimpleObject { [key: string]: SimpleObject | Primitive | SimpleArray; }
+export interface SimpleObject {
+    [key: string]: SimpleObject | Primitive | SimpleArray;
+}
 export type SimpleArray = Array<SimpleObject | Primitive>;
-export type SimpleDeepEqualsType = Primitive | SimpleObject | SimpleArray |
-    NodeFieldType | ListNodeFieldType | MicronodeFieldType | MicronodeFieldMap;
+export type SimpleDeepEqualsType =
+    | Primitive
+    | SimpleObject
+    | SimpleArray
+    | NodeFieldType
+    | ListNodeFieldType
+    | MicronodeFieldType
+    | MicronodeFieldMap;
 
 /**
  * An simple object equality function designed for primitives (string, number, boolean), plain objects, arrays, or any combination thereof.
@@ -139,15 +159,11 @@ export function simpleDeepEquals<T extends SimpleDeepEqualsType>(o1?: T, o2?: T)
 }
 
 function isPrimitiveValue(arg: any): boolean {
-    return typeof arg === 'string' ||
-        typeof arg === 'number' ||
-        typeof arg === 'boolean' ||
-        arg === null;
+    return typeof arg === 'string' || typeof arg === 'number' || typeof arg === 'boolean' || arg === null;
 }
 
-
 function isObject(item: any): item is object {
-  return (item && typeof item === 'object' && !Array.isArray(item));
+    return item && typeof item === 'object' && !Array.isArray(item);
 }
 
 /**
@@ -155,7 +171,7 @@ function isObject(item: any): item is object {
  * Array values are overwritten rather than merged.
  * Based on: https://stackoverflow.com/a/34749873/772859
  */
-export function simpleMergeDeep(target: { [key: string]: any; }, ...sources: { [key: string]: any; }[]): any {
+export function simpleMergeDeep(target: { [key: string]: any }, ...sources: { [key: string]: any }[]): any {
     if (!sources.length) {
         return target;
     }
@@ -188,7 +204,6 @@ export function simpleCloneDeep<T>(target: T): T {
     return JSON.parse(JSON.stringify(target));
 }
 
-
 /**
  * Filter all the binary fields from the node
  */
@@ -197,25 +212,34 @@ export function getMeshNodeBinaryFields(node: MeshNode): FieldMap {
         return {} as FieldMapFromServer;
     }
 
-    return Object.keys(node.fields).reduce((fields, key) => {
-        const field = node.fields[key];
-        if (field && (field.file && field.file instanceof File) === true) {
-            fields[key] = field;
-        }
-        return fields;
-    }, {} as FieldMap);
+    return Object.keys(node.fields).reduce(
+        (fields, key) => {
+            const field = node.fields[key];
+            if (field && (field.file && field.file instanceof File) === true) {
+                fields[key] = field;
+            }
+            return fields;
+        },
+        {} as FieldMap
+    );
 }
 
 export function getMeshNodeNonBinaryFields(node: MeshNode): FieldMap {
     const binaryFields = getMeshNodeBinaryFields(node);
-    return Object.keys(node.fields).reduce((nonBinaryFields, key) => {
-        if (binaryFields[key] === undefined) {
-            nonBinaryFields[key] = node.fields[key];
-        }
-        return nonBinaryFields;
-    }, {} as FieldMap);
+    return Object.keys(node.fields).reduce(
+        (nonBinaryFields, key) => {
+            if (
+                binaryFields[key] === undefined ||
+                // A binary field should be included if it should be deleted
+                node.fields[key] === null
+            ) {
+                nonBinaryFields[key] = node.fields[key];
+            }
+            return nonBinaryFields;
+        },
+        {} as FieldMap
+    );
 }
-
 
 export function stringToColor(input: string): string {
     const safeColors = [
@@ -234,10 +258,23 @@ export function stringToColor(input: string): string {
         '#2F5356',
         '#82592A',
         '#7F5F33',
-        '#633009',
+        '#633009'
     ];
     const value = input.split('').reduce((prev, curr, index) => {
         return prev + Math.round(curr.charCodeAt(0) * Math.log(index + 2));
     }, 0);
     return safeColors[value % safeColors.length];
+}
+
+/**
+ * Executes functions that return promises one at a time
+ * @param promiseSuppliers Functions that return promises
+ * @returns An array of all promise results
+ */
+export async function promiseConcat<T>(promiseSuppliers: Supplier<T>[]): Promise<T[]> {
+    const results: T[] = [];
+    for (const supplier of promiseSuppliers) {
+        results.push(await supplier());
+    }
+    return results;
 }

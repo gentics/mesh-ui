@@ -8,7 +8,12 @@ import {
     NodeUpdateRequest,
     TagReferenceFromServer
 } from '../../common/models/server-models';
-import { getMeshNodeBinaryFields, getMeshNodeNonBinaryFields, simpleCloneDeep } from '../../common/util/util';
+import {
+    getMeshNodeBinaryFields,
+    getMeshNodeNonBinaryFields,
+    promiseConcat,
+    simpleCloneDeep
+} from '../../common/util/util';
 import { ApiService } from '../../core/providers/api/api.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
@@ -77,7 +82,8 @@ export class EditorEffectsService {
         // TODO: remote lang lang: language from params.
         // It is currently needed to overcome the https://github.com/gentics/mesh/issues/404 issue
         // what it does now, it adds ?lang=language query param
-        return this.api.project.createNode({ project: projectName, lang: language } as any, nodeCreateRequest)
+        return this.api.project
+            .createNode({ project: projectName, lang: language } as any, nodeCreateRequest)
             .toPromise()
             .then(updatedNode => this.processTagsAndBinaries(node, updatedNode, tags))
             .then(
@@ -119,7 +125,7 @@ export class EditorEffectsService {
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
         const updateRequest: NodeUpdateRequest = {
-            fields: node.fields,
+            fields: getMeshNodeNonBinaryFields(node),
             version: node.version,
             language: language
         };
@@ -332,12 +338,12 @@ export class EditorEffectsService {
             return Promise.resolve(node);
         }
 
-        const promises = Object.keys(fields).map(key =>
+        const promiseSuppliers = Object.keys(fields).map(key => () =>
             this.uploadBinary(projectName, node.uuid, key, fields[key].file, language, node.version)
         );
 
         return (
-            Promise.all(promises)
+            promiseConcat(promiseSuppliers)
                 // return the node from the last successful request
                 .then(nodes => nodes[nodes.length - 1])
                 .catch(error => {
@@ -346,25 +352,32 @@ export class EditorEffectsService {
         );
     }
 
-    private uploadBinary(project: string,
-                         nodeUuid: string,
-                         fieldName: string,
-                         binary: File,
-                         language: string,
-                         version: string): Promise<MeshNode> {
+    private uploadBinary(
+        project: string,
+        nodeUuid: string,
+        fieldName: string,
+        binary: File,
+        language: string,
+        version: string
+    ): Promise<MeshNode> {
         // TODO: remote lang lang: language from params.
         // It is currently needed to overcome the https://github.com/gentics/mesh/issues/404 issue
         // what it does now, it adds ?lang=language query param
-        return this.api.project.updateBinaryField({
-            project,
-            nodeUuid,
-            fieldName,
-            lang: language
-        } as any, {
-            binary,
-            language,
-            version
-        }).toPromise();
+        return this.api.project
+            .updateBinaryField(
+                {
+                    project,
+                    nodeUuid,
+                    fieldName,
+                    lang: language
+                } as any,
+                {
+                    binary,
+                    language,
+                    version
+                }
+            )
+            .toPromise();
     }
 
     private applyBinaryTransforms(node: MeshNode, fields: FieldMap): Promise<MeshNode> {

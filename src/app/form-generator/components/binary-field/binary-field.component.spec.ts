@@ -217,6 +217,20 @@ describe('BinaryFieldComponent:', () => {
         )
     );
 
+    it(
+        'works if there is no binary',
+        componentTest(
+            () => TestComponent,
+            (fixture, instance) => {
+                fixture.detectChanges();
+                tick();
+                instance.binaryFieldComponent.valueChange();
+                fixture.detectChanges();
+                tick();
+            }
+        )
+    );
+
     describe('url handling', () => {
         const mockBinaryFileUrl = '/api/v1/demo/nodes/node_uuid/binary/test';
         let mockFile: BinaryField;

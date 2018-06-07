@@ -240,6 +240,9 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
     }
 
     private clone<T>(value: T): T {
+        if (value === null) {
+            return value;
+        }
         const clone = JSON.parse(JSON.stringify(value));
 
         if ((value as any).file) {

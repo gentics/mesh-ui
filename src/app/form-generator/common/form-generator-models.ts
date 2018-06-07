@@ -23,7 +23,9 @@ export type NodeChangeCallback = (path: SchemaFieldPath, value: any, node: MeshN
 export type GetNodeValueReturnType = MeshNode | string | number | any[] | object | undefined;
 export type GetNodeValueFunction = (path?: SchemaFieldPath) => GetNodeValueReturnType;
 
-export interface ErrorCodeHash { [errorCode: string]: string | false; }
+export interface ErrorCodeHash {
+    [errorCode: string]: string | false;
+}
 type SetErrorFunction = (errorCode: string | ErrorCodeHash, errorMessage?: string | false) => void;
 
 export interface MeshControlErrors {
@@ -53,7 +55,7 @@ export interface MeshFieldControlApi {
      * the pre-configured value. This is really intended to be used for container types i.e. list and
      * micronode.
      */
-    setValue: (value: NodeFieldType, path?: SchemaFieldPath) => void;
+    setValue: (value: NodeFieldType | null, path?: SchemaFieldPath) => void;
     /**
      * Sets the error state of the field.
      */

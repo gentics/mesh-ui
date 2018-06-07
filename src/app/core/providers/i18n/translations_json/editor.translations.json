@@ -67,6 +67,10 @@
       "en": "Replace file",
       "de": "Datei ersetzen"
     },
+    "remove_file": {
+      "en": "Remove file",
+      "de": "Datei entfernen"
+    },
     "save_button": {
       "en": "Save",
       "de": "Speichern"

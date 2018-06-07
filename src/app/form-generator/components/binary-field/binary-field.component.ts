@@ -22,7 +22,7 @@ type ImageBinary = BinaryField & { width: number; height: number };
 })
 export class BinaryFieldComponent extends BaseFieldComponent {
     public api: MeshFieldControlApi;
-    binaryProperties: BinaryField;
+    binaryProperties?: BinaryField;
     binaryMediaType: string | null;
     field: SchemaField;
     objectUrl: string | SafeUrl | null = null;
@@ -54,8 +54,10 @@ export class BinaryFieldComponent extends BaseFieldComponent {
         });
     }
 
-    valueChange(value: BinaryField): void {
-        this.binaryProperties = { ...value };
+    valueChange(value?: BinaryField): void {
+        if (value) {
+            this.binaryProperties = { ...value };
+        }
         if (!this.binaryProperties || !this.binaryProperties.mimeType) {
             this.objectUrl = null;
             return;
@@ -90,7 +92,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
 
     onImageLoad(): void {
         this.loadingPreview = false;
-        if (this.binaryProperties.file && this.lastParams) {
+        if (this.binaryProperties && this.binaryProperties.file && this.lastParams) {
             this.scaledTransform = this.lastParams;
             this.lastParams = undefined;
         }
@@ -131,6 +133,14 @@ export class BinaryFieldComponent extends BaseFieldComponent {
                 this.transformParams = params;
                 this.changeDetector.markForCheck();
             });
+    }
+
+    deleteBinary() {
+        this.api.setValue(null);
+        this.scaledTransform = {};
+        this.transformParams = undefined;
+        this.binaryProperties = undefined;
+        this.binaryMediaType = null;
     }
 
     /**
