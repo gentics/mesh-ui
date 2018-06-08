@@ -165,6 +165,10 @@ export class EntitiesService {
         return this.getMicroschemaFromState(this.state.now, uuid, version);
     }
 
+    getMicroschemaByName(name: string): Microschema | undefined {
+        return this.getAllMicroschemasFromState(this.state.now).find(microschema => microschema.name === name);
+    }
+
     // TODO: version should be of type string, it was fixed in Mesh 0.9.20
     selectMicroschema(uuid: string, version?: any): Observable<Microschema> {
         return this.selectWithFilter(state => this.getMicroschemaFromState(state, uuid, version));
@@ -207,7 +211,9 @@ export class EntitiesService {
     }
 
     private getAllTagFamiliesFromState(state: AppState): TagFamily[] {
-        return Object.values(state.tags.tagFamilies).map(uuid => this.getTagFamilyFromState(state, uuid)).filter(notNullOrUndefined);
+        return Object.values(state.tags.tagFamilies)
+            .map(uuid => this.getTagFamilyFromState(state, uuid))
+            .filter(notNullOrUndefined);
     }
 
     private getTagFamilyFromState(state: AppState, uuid: string): TagFamily | undefined {
@@ -232,7 +238,9 @@ export class EntitiesService {
     }
 
     private getAllTagsFromState(state: AppState): Tag[] {
-        return Object.values(state.tags.tags).map(uuid => this.getTagFromState(state, uuid)).filter(notNullOrUndefined);
+        return Object.values(state.tags.tags)
+            .map(uuid => this.getTagFromState(state, uuid))
+            .filter(notNullOrUndefined);
     }
 
     private getTagFromState(state: AppState, uuid: string): Tag | undefined {

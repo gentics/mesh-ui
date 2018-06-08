@@ -46,3 +46,28 @@ label {
         margin-right: 20px;
     }
 }
+
+.new-item {
+    display: flex;
+    align-items: center;
+    color: $gtx-color-dark-gray;
+    justify-content: space-between;
+    border: 1px solid $gtx-color-very-light-gray;
+    border-radius: 3px;
+    height: 2em;
+    padding-right: 12px;
+    transition: height 0.2s;
+    > * {
+        padding: 0 5px;
+    }
+    icon {
+        color: $gtx-color-primary;
+    }
+    gtx-drag-handle {
+        color: $gtx-color-mid-gray;
+    }
+    .sortable-ghost & {
+        //padding: 0 3px;
+        height: inherit;
+    }
+}

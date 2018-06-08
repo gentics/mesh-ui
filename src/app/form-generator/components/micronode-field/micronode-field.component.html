@@ -1,4 +1,22 @@
-<label>{{ api.field.label || api.field.name }}</label>
+<div class="label-container">
+    <div class="floating-label"
+         [meshScrollFrameHeading]="{ target: elementRef }"
+         disableScrollTarget="true">
+        <label>{{ api.field.label || api.field.name }}</label>
+
+        <div class="add-item-button"
+             *ngIf="!value">
+            <div class="new-item"
+                 *ngFor="let schemaName of api.field.allow">
+                <gtx-button (click)="addItem(schemaName)"
+                            icon>
+                    <icon>add</icon>
+                </gtx-button>{{ schemaName }}
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="micronode-control-wrapper">
     <div #micronodeControlAnchor></div>
 </div>

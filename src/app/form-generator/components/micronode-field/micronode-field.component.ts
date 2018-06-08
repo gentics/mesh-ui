@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 
 import { NodeFieldMicronode, NodeFieldType } from '../../../common/models/node.model';
+import { initializeMicronode } from '../../../common/util/initialize-micronode';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshFieldControlApi, SchemaFieldPath } from '../../common/form-generator-models';
@@ -60,6 +61,15 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     formWidthChange(widthInPixels: number): void {
         this.setWidth(FIELD_FULL_WIDTH);
         this.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;
+    }
+
+    addItem(microschemaName: string): void {
+        const microschema = this.entities.getMicroschemaByName(microschemaName);
+        if (!microschema) {
+            throw new Error(`Could not find microschema with name ${microschemaName}`);
+        }
+        this.api.setValue(initializeMicronode(microschema));
+        this.createDefaultMicronodeComponent();
     }
 
     createDefaultMicronodeComponent(): void {
