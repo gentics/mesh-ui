@@ -10,7 +10,7 @@ import {
     OnChanges,
     Output,
     QueryList,
-    SimpleChange,
+    SimpleChanges,
     TemplateRef
 } from '@angular/core';
 import { PaginationInstance, PaginationService } from 'ngx-pagination';
@@ -82,7 +82,7 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
 
     constructor(private elementRef: ElementRef) {}
 
-    ngOnChanges(changes: { [K in keyof this]: SimpleChange }): void {
+    ngOnChanges(changes: SimpleChanges): void {
         if (changes.items && !changes.items.currentValue) {
             changes.items.currentValue = [];
             this.items = [];
