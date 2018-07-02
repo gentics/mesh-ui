@@ -1,0 +1,44 @@
+<div class="modal-title">
+    <gtx-progress-bar></gtx-progress-bar>
+
+    <h5>{{ options.titleKey | i18n:options.titleParams }}</h5>
+
+    <!-- <gtx-search-bar [ngModel]="filter$ | async"
+                    (ngModelChange)="setFilter($event)"
+                    [placeholder]="'common.search_placeholder' | i18n"
+                    (clear)="setFilter('')"
+                    (search)="setSearch($event)">
+        <div class="search-chip" *ngIf="search$ | async">
+            <span class="chip-contents">
+                <span class="searching">{{ 'common.searching' | i18n }} </span>"{{ search$ | async }}"</span>
+            <i class="remove-button material-icons" (click)="setSearch('')">close</i>
+        </div>
+    </gtx-search-bar> -->
+
+    <gtx-breadcrumbs [links]="breadcrumb$ | async"
+                     (linkClick)="currentNode.next($event.uuid)"></gtx-breadcrumbs>
+</div>
+<div class="modal-content">
+
+    <mesh-node-browser-list [items]="currentPageContent$ | async | paginate: {
+            itemsPerPage: perPage,
+            currentPage: currentPage$ | async,
+            id: 'nodebrowser',
+            totalItems: totalItems$ | async
+        }"
+                            [multiple]="options.multiple"
+                            (containerClicked)="currentNode.next($event.uuid)"
+                            (selectedChange)="selected = $event"></mesh-node-browser-list>
+
+    <pagination-controls (pageChange)="currentPage$.next($event)"
+                         id="nodebrowser"></pagination-controls>
+</div>
+<div class="modal-footer">
+    <gtx-button (click)="cancelFn()"
+                flat
+                type="secondary">{{ 'common.cancel_button' | i18n }}</gtx-button>
+    <gtx-button (click)="submitClicked()"
+                type="primary">
+        <span>{{ (options.submitLabelKey || 'common.choose') | i18n }}</span>
+    </gtx-button>
+</div>

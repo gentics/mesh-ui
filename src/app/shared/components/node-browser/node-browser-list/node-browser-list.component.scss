@@ -1,0 +1,13 @@
+gtx-contents-list-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(224, 224, 224);
+  padding: 10px;
+  &:hover {
+    background-color: #efefef;
+  }
+}
+
+.node-browser-container {
+  cursor: pointer;
+}

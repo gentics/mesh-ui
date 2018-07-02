@@ -15,6 +15,10 @@
       "en": "Cancel",
       "de": "Abbrechen"
     },
+    "choose": {
+      "en": "Choose",
+      "de": "Auswählen"
+    },
     "close_button": {
       "en": "Close",
       "de": "Schließen"

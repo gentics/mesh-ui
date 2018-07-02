@@ -15,6 +15,18 @@ import { errorHashFor, ErrorCode } from '../../common/form-errors';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
+const toolbarOptions = [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    ['bold', 'italic', 'underline'],
+
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ script: 'sub' }, { script: 'super' }],
+
+    [{ align: [] }],
+
+    ['clean']
+];
+
 @Component({
     selector: 'mesh-html-field',
     templateUrl: './html-field.component.html',
@@ -39,7 +51,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         this.editor = new Quill(editorElement, {
             theme: 'snow',
             modules: {
-                toolbar: !this.api.readOnly
+                toolbar: toolbarOptions
             }
         });
         this.editor.clipboard.dangerouslyPasteHTML(this.value as string);

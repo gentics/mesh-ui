@@ -10,6 +10,8 @@ import { ChipComponent } from './components/chip/chip.component';
 import { ContentPortalComponent } from './components/content-portal/content-portal.component';
 import { FilePreviewComponent } from './components/file-preview/file-preview.component';
 import { NoContentComponent } from './components/no-content/no-content.component';
+import { NodeBrowserListComponent } from './components/node-browser/node-browser-list/node-browser-list.component';
+import { NodeBrowserComponent } from './components/node-browser/node-browser.component';
 import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
 import { ScrollFrameHeadingDirective } from './components/scroll-frame/scroll-frame-heading.directive';
@@ -24,6 +26,8 @@ import { FileSizePipe } from './pipes/file-size/file-size.pipe';
 import { HighlightPipe } from './pipes/highlight/highlight.pipe';
 import { I18nPipe } from './pipes/i18n/i18n.pipe';
 
+const COMPONENTS = [NodeBrowserListComponent];
+
 const SHARED_COMPONENTS = [
     ChipComponent,
     NoContentComponent,
@@ -36,6 +40,8 @@ const SHARED_COMPONENTS = [
     PaginationControlsComponent,
     ContentPortalComponent
 ];
+
+const ENTRY_COMPONENTS = [NodeBrowserComponent];
 
 const SHARED_DIRECTIVES = [
     ScrollFrameDirective,
@@ -59,7 +65,7 @@ const SHARED_PIPES = [DisplayFieldPipe, FileSizePipe, I18nPipe, HighlightPipe];
         RouterModule.forChild([]),
         NgxPaginationModule
     ],
-    declarations: [...SHARED_COMPONENTS, ...SHARED_PIPES, ...SHARED_DIRECTIVES],
+    declarations: [...COMPONENTS, ...SHARED_COMPONENTS, ...ENTRY_COMPONENTS, ...SHARED_PIPES, ...SHARED_DIRECTIVES],
     exports: [
         ...SHARED_COMPONENTS,
         ...SHARED_PIPES,
@@ -69,6 +75,7 @@ const SHARED_PIPES = [DisplayFieldPipe, FileSizePipe, I18nPipe, HighlightPipe];
         FormsModule,
         ReactiveFormsModule,
         CommonModule
-    ]
+    ],
+    entryComponents: ENTRY_COMPONENTS
 })
 export class SharedModule {}

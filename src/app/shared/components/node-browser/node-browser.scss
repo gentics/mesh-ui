@@ -1,0 +1,19 @@
+@import "variables";
+
+:host {
+    gtx-breadcrumbs {
+        height: 40px;
+        line-height: 40px;
+        width: 100%;
+
+        /deep/ nav {
+            box-shadow: none;
+        }
+    }
+
+    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
+    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
+        color: white;
+        cursor: pointer;
+    }
+}
