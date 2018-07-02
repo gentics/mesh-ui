@@ -31,8 +31,12 @@
                             (selectedChange)="selected = $event"
                             [selectable]="selectableFn"></mesh-node-browser-list>
 
+<<<<<<< HEAD
     <pagination-controls *ngIf="(pageCount$ | async) > 1"
                          (pageChange)="currentPage$.next($event)"
+=======
+    <pagination-controls (pageChange)="currentPage$.next($event)"
+>>>>>>> Add node browser
                          id="nodebrowser"></pagination-controls>
 </div>
 <div class="modal-footer">

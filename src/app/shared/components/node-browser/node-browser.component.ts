@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { filter, flatMap, map, share } from 'rxjs/operators';
 
+import { JsonObjectFromServer } from '../../../common/models/server-models';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
 
