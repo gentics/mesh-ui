@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
@@ -36,7 +37,8 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
         private fieldGeneratorService: FieldGeneratorService,
         private state: ApplicationStateService,
         private entities: EntitiesService,
-        private meshControlGroup: MeshControlGroupService
+        private meshControlGroup: MeshControlGroupService,
+        public elementRef: ElementRef
     ) {
         super(changeDetector);
     }

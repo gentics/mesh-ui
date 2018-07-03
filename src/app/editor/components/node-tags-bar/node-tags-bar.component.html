@@ -4,7 +4,7 @@
                placeholder="{{ 'editor.add_tag' | i18n }}"
                (keydown.escape)="onInputEscape()"
                (change)="onFilterChange($event)"
-               (focus)="onInputFocus($event)"
+               (focus)="onInputFocus()"
                (blur)="onInputBlur()"></gtx-input>
     <div class="add-tag">
         <gtx-button type="primary"

@@ -1,10 +1,14 @@
-<div class="not-found" *ngIf="(microschemas$ | async).length === 0 && !(loading$ | async)">
-    <div><icon>sentiment_very_dissatisfied</icon></div>
+<div class="not-found"
+     *ngIf="(microschemas$ | async).length === 0">
+    <div>
+        <icon>sentiment_very_dissatisfied</icon>
+    </div>
     <p>{{ 'admin.microschema_none_found' | i18n }}</p>
 </div>
 
 <div>
-    <a [routerLink]="['/admin/microschemas', microschema.uuid]" *ngFor="let microschema of microschemas$ | async">
+    <a [routerLink]="['/admin/microschemas', microschema.uuid]"
+       *ngFor="let microschema of microschemas$ | async">
         <gtx-contents-list-item>
             <div class="item-primary">{{ microschema.name }}</div>
         </gtx-contents-list-item>

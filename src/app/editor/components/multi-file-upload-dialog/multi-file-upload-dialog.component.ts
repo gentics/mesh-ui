@@ -40,14 +40,16 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     project: string;
 
     // We cache the blobs of images/videos/audios so it does not get rerendered everytime.
-    private filesWithBlobs: FileWithBlob[];
+    filesWithBlobs: FileWithBlob[];
     public availableSchemas: Schema[] = []; // Public because spec needs to access it.
 
-    private selectedSchema: Schema | null = null;
-    private selectedField: SchemaField | null = null;
-    private schemaFields: SchemaField[] = [];
+    selectedSchema: Schema | null = null;
+    selectedField: SchemaField | null = null;
+    schemaFields: SchemaField[] = [];
 
-    private isSaving = false;
+    isSaving = false;
+    draggingFileOnPage: boolean;
+    draggingFileOnThis: boolean;
 
     constructor(
         private blobService: BlobService,

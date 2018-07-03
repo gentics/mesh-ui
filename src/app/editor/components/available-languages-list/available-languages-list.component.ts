@@ -11,7 +11,7 @@ export class AvailableLanguagesListComponent implements OnChanges {
     @Input() available: { [key: string]: PublishStatusModelFromServer };
     @Input() current: string;
 
-    private sortedLanguages: string[];
+    public sortedLanguages: string[];
 
     ngOnChanges(changes: SimpleChanges): void {
         // Sort languages alphabetically but put the current language first.
