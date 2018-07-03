@@ -19,6 +19,8 @@ import { MultiFileUploadDialogComponent } from '../multi-file-upload-dialog/mult
 })
 export class ContainerFileDropAreaComponent {
     disabled = false;
+    draggingFileOnPage: boolean;
+    draggingFileOnThis: boolean;
     constructor(private modalService: ModalService, private state: ApplicationStateService) {}
 
     public openModalDialog(files: File[]) {
