@@ -17,6 +17,7 @@ export interface QueryResult {
         displayName: string;
         children: {
             totalCount: number;
+            pageCount: number;
             elements: PageResult[];
         };
         breadcrumb: Breadcrumb[];

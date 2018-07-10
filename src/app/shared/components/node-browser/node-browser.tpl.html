@@ -30,7 +30,8 @@
                             (containerClicked)="currentNode.next($event.uuid)"
                             (selectedChange)="selected = $event"></mesh-node-browser-list>
 
-    <pagination-controls (pageChange)="currentPage$.next($event)"
+    <pagination-controls *ngIf="(pageCount$ | async) > 1"
+                         (pageChange)="currentPage$.next($event)"
                          id="nodebrowser"></pagination-controls>
 </div>
 <div class="modal-footer">

@@ -1,21 +1,21 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { IBreadcrumbLink, IModalDialog } from 'gentics-ui-core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { filter, flatMap, map, share } from 'rxjs/operators';
 
-import { JsonObjectFromServer } from '../../../common/models/server-models';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
 
-import { Breadcrumb, NodeBrowserOptions, PageResult, QueryResult } from './interfaces';
+import { NodeBrowserOptions, PageResult, QueryResult } from './interfaces';
 
 const query = `
 query($parent: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
 	node(uuid: $parent) {
 		children(filter: $filter, perPage: $perPage, page: $page) {
             totalCount
+            pageCount
 			elements {
 				uuid
 				displayName
@@ -52,10 +52,11 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     currentPageContent$: Observable<any[]>;
     breadcrumb$: Observable<IBreadcrumbLink[]>;
     totalItems$: Observable<number>;
+    pageCount$: Observable<number>;
     currentPage$ = new BehaviorSubject(1);
 
     closeFn(val: any): void {}
-    cancelFn(val?: any): void {}
+    cancelFn(val: any): void {}
 
     selected: PageResult[] = [];
 
@@ -90,6 +91,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
         this.currentPageContent$ = this.queryResult$.map(result => result.node.children.elements);
         this.breadcrumb$ = this.queryResult$.map(result => this.toBreadcrumb(result));
         this.totalItems$ = this.queryResult$.map(result => result.node.children.totalCount);
+        this.pageCount$ = this.queryResult$.map(result => result.node.children.pageCount);
     }
 
     toBreadcrumb(result: QueryResult): IBreadcrumbLink[] {
