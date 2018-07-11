@@ -1,31 +1,37 @@
 import { by } from 'protractor';
 
-import { createFolder, createVehicle } from './api';
-import { AppPage } from './app.po';
-import { NodeBrowserDialog } from './nodebrowser.po';
-import { temporaryFolder } from './testUtil';
+import { createFolder, createVehicle } from '../api';
+import { AppPage } from '../page-objects/app.po';
+import { NodeBrowserDialog } from '../page-objects/node-browser.po';
+import { NodeEditor } from '../page-objects/node-editor.po';
+import { MeshNodeList } from '../page-objects/node-list.po';
+import { temporaryFolder, toText } from '../testUtil';
 
 describe('node browser', () => {
     let page: AppPage;
+    let nodeList: MeshNodeList;
     let browser: NodeBrowserDialog;
+    let nodeEditor: NodeEditor;
 
     beforeAll(async () => {
         page = new AppPage();
         browser = new NodeBrowserDialog();
+        nodeList = new MeshNodeList();
+        nodeEditor = new NodeEditor();
     });
 
     describe('demo data', () => {
         beforeAll(async () => {
             await page.navigateToHome();
-            await page.openFolder('Automobiles');
-            await page.editNode('Ford GT');
-            await page.chooseNodeReference('Vehicle Image');
+            await nodeList.openFolder('Automobiles');
+            await nodeList.editNode('Ford GT');
+            await nodeEditor.chooseNodeReference('Vehicle Image');
         });
 
         it('shows breadcrumbs of current folder', async () => {
             const expected = ['demo', 'Automobiles'];
             const breadcrumbs = browser.getBreadcrumbLinks();
-            expect(await breadcrumbs.map(node => node!.getText())).toEqual(expected);
+            expect(await breadcrumbs.map(toText)).toEqual(expected);
         });
 
         it('shows contents of the folder', async () => {
@@ -38,7 +44,7 @@ describe('node browser', () => {
                 'Trabant'
             ];
             const nodes = browser.getNodes();
-            expect(await nodes.map(node => node!.getText())).toEqual(expected);
+            expect(await nodes.map(toText)).toEqual(expected);
         });
 
         it('does not show pagination for a single page', async () => {
@@ -79,7 +85,7 @@ describe('node browser', () => {
                 await createFolder(context.folder, `test${i}`);
             }
             await page.navigateToNodeEdit(vehicle);
-            await page.chooseNodeReference('Vehicle Image');
+            await nodeEditor.chooseNodeReference('Vehicle Image');
         });
 
         it('shows 10 items per page', async () => {

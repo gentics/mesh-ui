@@ -1,7 +1,7 @@
 import { by, element } from 'protractor';
 
 export class NodeBrowserDialog {
-    private nodeBrowser = element(by.css('mesh-node-browser'));
+    private readonly nodeBrowser = element(by.css('mesh-node-browser'));
 
     public getBreadcrumbLinks() {
         return this.nodeBrowser.all(by.css('gtx-breadcrumbs a.breadcrumb'));
