@@ -49,27 +49,13 @@ export class BreadcrumbsComponent {
             return [rootNodeLink];
         }
 
-        const breadcrumbs = node.breadcrumb.map(ascendant => ({
+        // Remove the first element (root node), we are showing the project name instead
+        const breadcrumbs = node.breadcrumb.slice(1).map(ascendant => ({
             route: this.navigationService.list(project.name, ascendant.uuid, language).commands(),
             text: ascendant.displayName || ascendant.uuid
         }));
 
-        // TODO: currently Mesh returns the breadcrumbs reversed, but this behaviour will change in
-        // the future. At that time, this line may be removed.
-        breadcrumbs.reverse();
-
-        const fullBreadcrumbs = [rootNodeLink, ...breadcrumbs];
-
-        if (node.uuid !== project.rootNode.uuid) {
-            const selfName = node.displayField ? node.fields[node.displayField] : node.uuid;
-            const selfLink: IBreadcrumbRouterLink = {
-                route: this.navigationService.list(project.name, node.uuid, node.language).commands(),
-                text: selfName
-            };
-            fullBreadcrumbs.push(selfLink);
-        }
-
-        return fullBreadcrumbs;
+        return [rootNodeLink, ...breadcrumbs];
     }
 
     private getProjectByName(projectName: string | undefined): Project | undefined {

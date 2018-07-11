@@ -8,8 +8,8 @@ export interface ApiEndpoints {
         /** Endpoint which returns version information */
         '/': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: MeshServerInfoModelFromServer;
@@ -21,8 +21,8 @@ export interface ApiEndpoints {
         /** Loads the cluster status information. */
         '/admin/cluster/status': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: ClusterStatusResponse;
@@ -37,8 +37,8 @@ export interface ApiEndpoints {
          */
         '/admin/consistency/check': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: ConsistencyCheckResponse;
@@ -50,8 +50,8 @@ export interface ApiEndpoints {
         /** List all currently queued jobs. */
         '/admin/jobs': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: JobListResponse;
@@ -70,7 +70,7 @@ export interface ApiEndpoints {
                      */
                     jobUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: JobResponse;
@@ -82,8 +82,8 @@ export interface ApiEndpoints {
         /** Return the Gentics Mesh server status. */
         '/admin/status': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: MeshStatusResponse;
@@ -95,8 +95,8 @@ export interface ApiEndpoints {
         /** Login via basic authentication. */
         '/auth/login': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -107,8 +107,8 @@ export interface ApiEndpoints {
         /** Logout and delete the currently active session. */
         '/auth/logout': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -120,8 +120,8 @@ export interface ApiEndpoints {
         /** Load your own user which is currently logged in. */
         '/auth/me': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: UserResponse;
@@ -133,7 +133,7 @@ export interface ApiEndpoints {
         /** Read multiple groups and return a paged list response. */
         '/groups': {
             request: {
-                urlParams?: { };
+                urlParams?: {};
                 queryParams?: {
                     /**
                      * Number of elements per page (default: 25).
@@ -247,7 +247,7 @@ export interface ApiEndpoints {
                      */
                     groupUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: UserListResponse;
@@ -259,7 +259,7 @@ export interface ApiEndpoints {
         /** Read multiple microschemas and return a paged list response. */
         '/microschemas': {
             request: {
-                urlParams?: { };
+                urlParams?: {};
                 queryParams?: {
                     /**
                      * Number of elements per page (default: 25).
@@ -315,7 +315,7 @@ export interface ApiEndpoints {
         /** Load multiple projects and return a paged response. */
         '/projects': {
             request: {
-                urlParams?: { };
+                urlParams?: {};
                 queryParams?: {
                     /**
                      * Number of elements per page (default: 25).
@@ -381,8 +381,8 @@ export interface ApiEndpoints {
         /** Endpoint which provides a RAML document for all registed endpoints. */
         '/raml': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -393,7 +393,7 @@ export interface ApiEndpoints {
         /** Load multiple roles and return a paged list response */
         '/roles': {
             request: {
-                urlParams?: { };
+                urlParams?: {};
                 queryParams?: {
                     /**
                      * Number of elements per page (default: 25).
@@ -424,7 +424,7 @@ export interface ApiEndpoints {
                      */
                     roleUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: RoleResponse;
@@ -451,7 +451,7 @@ export interface ApiEndpoints {
                      */
                     roleUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: RolePermissionResponse;
@@ -463,7 +463,7 @@ export interface ApiEndpoints {
         /** Read multiple schemas and return a paged list response. */
         '/schemas': {
             request: {
-                urlParams?: { };
+                urlParams?: {};
                 queryParams?: {
                     /**
                      * Number of elements per page (default: 25).
@@ -519,8 +519,8 @@ export interface ApiEndpoints {
         /** Returns the search index status. */
         '/search/status': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -532,7 +532,7 @@ export interface ApiEndpoints {
         /** Load multiple users and return a paged list response. */
         '/users': {
             request: {
-                urlParams?: { };
+                urlParams?: {};
                 queryParams?: {
                     /**
                      * The _role_ query parameter take a UUID of a role and may be used to add
@@ -677,7 +677,7 @@ export interface ApiEndpoints {
                      */
                     userUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: UserPermissionResponse;
@@ -696,7 +696,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: ProjectResponse;
@@ -715,7 +715,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: MicroschemaListResponse;
@@ -1069,7 +1069,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: PublishStatusModelFromServer;
@@ -1130,7 +1130,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: PublishStatusResponse;
@@ -1221,7 +1221,7 @@ export interface ApiEndpoints {
                      */
                     releaseUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: ReleaseResponse;
@@ -1313,7 +1313,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: SchemaListResponse;
@@ -1337,7 +1337,7 @@ export interface ApiEndpoints {
                      */
                     schemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: SchemaResponse;
@@ -1391,7 +1391,7 @@ export interface ApiEndpoints {
                      */
                     tagFamilyUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: TagFamilyResponse;
@@ -1458,7 +1458,7 @@ export interface ApiEndpoints {
                      */
                     tagUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: TagResponse;
@@ -1589,8 +1589,8 @@ export interface ApiEndpoints {
          */
         '/admin/graphdb/backup': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -1606,8 +1606,8 @@ export interface ApiEndpoints {
          */
         '/admin/graphdb/restore': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -1619,8 +1619,8 @@ export interface ApiEndpoints {
         /** Invoke the processing of remaining jobs. */
         '/admin/processJobs': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -1632,8 +1632,8 @@ export interface ApiEndpoints {
         /** Login via this dedicated login endpoint. */
         '/auth/login': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: LoginRequest;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1644,8 +1644,8 @@ export interface ApiEndpoints {
         /** Create a new group. */
         '/groups': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: GroupCreateRequest;
             };
             responseType: GroupResponse;
@@ -1667,7 +1667,7 @@ export interface ApiEndpoints {
                      */
                     groupUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: GroupUpdateRequest;
             };
             responseType: GroupResponse;
@@ -1691,7 +1691,7 @@ export interface ApiEndpoints {
                      */
                     roleUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GroupResponse;
@@ -1715,7 +1715,7 @@ export interface ApiEndpoints {
                      */
                     userUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GroupResponse;
@@ -1727,8 +1727,8 @@ export interface ApiEndpoints {
         /** Create a new microschema. */
         '/microschemas': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: MicroschemaCreateRequest;
             };
             responseType: MicroschemaResponse;
@@ -1747,7 +1747,7 @@ export interface ApiEndpoints {
                      */
                     microschemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: MicroschemaUpdateRequest;
             };
             responseType: GenericMessageResponse;
@@ -1770,7 +1770,7 @@ export interface ApiEndpoints {
                      */
                     microschemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: SchemaChangesListModelFromServer;
             };
             responseType: GenericMessageResponse;
@@ -1792,7 +1792,7 @@ export interface ApiEndpoints {
                      */
                     microschemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: MicroschemaCreateRequest;
             };
             responseType: SchemaChangesListModelFromServer;
@@ -1804,8 +1804,8 @@ export interface ApiEndpoints {
         /** Create a new project. */
         '/projects': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: ProjectCreateRequest;
             };
             responseType: ProjectResponse;
@@ -1827,7 +1827,7 @@ export interface ApiEndpoints {
                      */
                     projectUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: ProjectUpdateRequest;
             };
             responseType: ProjectResponse;
@@ -1843,8 +1843,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/groups': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1859,8 +1859,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/microschemas': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1874,8 +1874,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/nodes': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1890,8 +1890,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/projects': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1905,8 +1905,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/roles': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1921,8 +1921,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/schemas': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1937,8 +1937,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/tagFamilies': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1952,8 +1952,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/tags': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1967,8 +1967,8 @@ export interface ApiEndpoints {
          */
         '/rawSearch/users': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -1979,8 +1979,8 @@ export interface ApiEndpoints {
         /** Create a new role. */
         '/roles': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: RoleCreateRequest;
             };
             responseType: RoleResponse;
@@ -2002,7 +2002,7 @@ export interface ApiEndpoints {
                      */
                     roleUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: RoleUpdateRequest;
             };
             responseType: RoleResponse;
@@ -2029,7 +2029,7 @@ export interface ApiEndpoints {
                      */
                     roleUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: RolePermissionRequest;
             };
             responseType: GenericMessageResponse;
@@ -2041,8 +2041,8 @@ export interface ApiEndpoints {
         /** Create a new schema. */
         '/schemas': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: SchemaCreateRequest;
             };
             responseType: SchemaResponse;
@@ -2096,7 +2096,7 @@ export interface ApiEndpoints {
                      */
                     schemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: SchemaChangesListModelFromServer;
             };
             responseType: GenericMessageResponse;
@@ -2115,7 +2115,7 @@ export interface ApiEndpoints {
                      */
                     schemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: SchemaResponse;
             };
             responseType: SchemaChangesListModelFromServer;
@@ -2130,8 +2130,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for groups and return a paged list response. */
         '/search/groups': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GroupListResponse;
@@ -2143,8 +2143,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for microschemas and return a paged list response. */
         '/search/microschemas': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: MicroschemaListResponse;
@@ -2156,8 +2156,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for nodes and return a paged list response. */
         '/search/nodes': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: NodeListResponse;
@@ -2169,8 +2169,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for projects and return a paged list response. */
         '/search/projects': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: ProjectListResponse;
@@ -2185,8 +2185,8 @@ export interface ApiEndpoints {
          */
         '/search/reindex': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -2198,8 +2198,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for roles and return a paged list response. */
         '/search/roles': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: RoleListResponse;
@@ -2211,8 +2211,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for schemas and return a paged list response. */
         '/search/schemas': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: SchemaListResponse;
@@ -2224,8 +2224,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for tagFamilies and return a paged list response. */
         '/search/tagFamilies': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: TagFamilyListResponse;
@@ -2237,8 +2237,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for tags and return a paged list response. */
         '/search/tags': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: TagListResponse;
@@ -2250,8 +2250,8 @@ export interface ApiEndpoints {
         /** Invoke a search query for users and return a paged list response. */
         '/search/users': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: UserListResponse;
@@ -2263,8 +2263,8 @@ export interface ApiEndpoints {
         /** Create a new user. */
         '/users': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: UserCreateRequest;
             };
             responseType: UserResponse;
@@ -2315,7 +2315,7 @@ export interface ApiEndpoints {
                      */
                     userUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: UserResetTokenResponse;
@@ -2337,7 +2337,7 @@ export interface ApiEndpoints {
                      */
                     userUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: UserAPITokenResponse;
@@ -2352,7 +2352,7 @@ export interface ApiEndpoints {
          */
         '/utilities/linkResolver': {
             request: {
-                urlParams?: { };
+                urlParams?: {};
                 queryParams?: {
                     /**
                      * ISO 639-1 language tag of the language which should be loaded. Fallback handling
@@ -2385,8 +2385,8 @@ export interface ApiEndpoints {
         /** Validate the posted microschema and report errors. */
         '/utilities/validateMicroschema': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: MicroschemaCreateRequest;
             };
             responseType: SchemaValidationResponse;
@@ -2398,8 +2398,8 @@ export interface ApiEndpoints {
         /** Validate the posted schema and report errors. */
         '/utilities/validateSchema': {
             request: {
-                urlParams?: { };
-                queryParams?: { };
+                urlParams?: {};
+                queryParams?: {};
                 body: SchemaUpdateRequest;
             };
             responseType: SchemaValidationResponse;
@@ -2418,7 +2418,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: GraphQLRequest;
             };
             responseType: GraphQLResponse;
@@ -2442,7 +2442,7 @@ export interface ApiEndpoints {
                      */
                     microschemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: MicroschemaResponse;
@@ -2461,7 +2461,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: NodeCreateRequest;
             };
             responseType: NodeResponse;
@@ -2491,7 +2491,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: NodeUpdateRequest;
             };
             responseType: NodeResponse | GenericMessageResponse;
@@ -2522,7 +2522,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: {
                     /** Single binary file part. */
                     binary: File;
@@ -2569,7 +2569,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: BinaryFieldTransformRequest;
             };
             responseType: NodeResponse;
@@ -2601,7 +2601,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: PublishStatusModelFromServer;
@@ -2698,7 +2698,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: TagListUpdateRequest;
             };
             responseType: TagListResponse;
@@ -2762,7 +2762,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -2784,7 +2784,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -2805,7 +2805,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -2823,7 +2823,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: ReleaseCreateRequest;
             };
             responseType: ReleaseResponse;
@@ -2850,7 +2850,7 @@ export interface ApiEndpoints {
                      */
                     releaseUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: ReleaseUpdateRequest;
             };
             responseType: ReleaseResponse;
@@ -2874,7 +2874,7 @@ export interface ApiEndpoints {
                      */
                     releaseUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: ReleaseInfoMicroschemaListFromServer;
             };
             responseType: ReleaseInfoMicroschemaListFromServer;
@@ -2901,7 +2901,7 @@ export interface ApiEndpoints {
                      */
                     releaseUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -2928,7 +2928,7 @@ export interface ApiEndpoints {
                      */
                     releaseUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -2952,7 +2952,7 @@ export interface ApiEndpoints {
                      */
                     releaseUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: ReleaseInfoSchemaListFromServer;
             };
             responseType: ReleaseInfoSchemaListFromServer;
@@ -2979,7 +2979,7 @@ export interface ApiEndpoints {
                      */
                     schemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: SchemaResponse;
@@ -2998,7 +2998,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: any;
             };
             responseType: NodeListResponse;
@@ -3017,7 +3017,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: TagFamilyListResponse;
@@ -3036,7 +3036,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: any;
             };
             responseType: TagListResponse;
@@ -3055,7 +3055,7 @@ export interface ApiEndpoints {
                      */
                     project: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: TagFamilyCreateRequest;
             };
             responseType: TagFamilyResponse;
@@ -3079,7 +3079,7 @@ export interface ApiEndpoints {
                      */
                     tagFamilyUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: TagFamilyUpdateRequest;
             };
             responseType: TagFamilyResponse;
@@ -3103,7 +3103,7 @@ export interface ApiEndpoints {
                      */
                     tagFamilyUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: TagCreateRequest;
             };
             responseType: TagResponse;
@@ -3132,7 +3132,7 @@ export interface ApiEndpoints {
                      */
                     tagUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body: TagUpdateRequest;
             };
             responseType: TagResponse;
@@ -3142,8 +3142,8 @@ export interface ApiEndpoints {
             };
         };
     };
-    PATCH: { };
-    PUT: { };
+    PATCH: {};
+    PUT: {};
     DELETE: {
         /** Deletes the job. Note that it is only possible to delete failed jobs */
         '/admin/jobs/{jobUuid}': {
@@ -3155,7 +3155,7 @@ export interface ApiEndpoints {
                      */
                     jobUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -3176,7 +3176,7 @@ export interface ApiEndpoints {
                      */
                     jobUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: any; // TODO: This is not typed in the RAML
@@ -3194,7 +3194,7 @@ export interface ApiEndpoints {
                      */
                     groupUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3218,7 +3218,7 @@ export interface ApiEndpoints {
                      */
                     roleUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3242,7 +3242,7 @@ export interface ApiEndpoints {
                      */
                     userUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3261,7 +3261,7 @@ export interface ApiEndpoints {
                      */
                     microschemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3280,7 +3280,7 @@ export interface ApiEndpoints {
                      */
                     projectUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3299,7 +3299,7 @@ export interface ApiEndpoints {
                      */
                     roleUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3318,7 +3318,7 @@ export interface ApiEndpoints {
                      */
                     schemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3340,7 +3340,7 @@ export interface ApiEndpoints {
                      */
                     userUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3359,7 +3359,7 @@ export interface ApiEndpoints {
                      */
                     userUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: GenericMessageResponse;
@@ -3383,7 +3383,7 @@ export interface ApiEndpoints {
                      */
                     microschemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3442,7 +3442,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3471,7 +3471,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: PublishStatusModelFromServer;
@@ -3531,7 +3531,7 @@ export interface ApiEndpoints {
                      */
                     nodeUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3558,7 +3558,7 @@ export interface ApiEndpoints {
                      */
                     schemaUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3582,7 +3582,7 @@ export interface ApiEndpoints {
                      */
                     tagFamilyUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -3611,7 +3611,7 @@ export interface ApiEndpoints {
                      */
                     tagUuid: string;
                 };
-                queryParams?: { };
+                queryParams?: {};
                 body?: undefined;
             };
             responseType: undefined;
@@ -4100,8 +4100,7 @@ export interface NodeResponse {
     /** Map of languages for which content is available and their publish status. */
     readonly availableLanguages: { [key: string]: PublishStatusModelFromServer };
     /**
-     * List of nodes which construct the breadcrumb. Note that the start node will not
-     * be included in the list.
+     * List of nodes which construct the breadcrumb.
      */
     readonly breadcrumb: NodeReferenceFromServer[];
     /** Object which contains information about child elements. */

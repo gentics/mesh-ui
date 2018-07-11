@@ -2,7 +2,7 @@ import { AppPage } from '../page-objects/app.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 import { toText } from '../testUtil';
 
-fdescribe('node list', () => {
+describe('node list', () => {
     let page: AppPage;
     let nodeList: MeshNodeList;
 

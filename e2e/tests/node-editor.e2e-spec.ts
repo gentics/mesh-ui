@@ -1,7 +1,7 @@
 import { AppPage } from '../page-objects/app.po';
 import { NodeEditor } from '../page-objects/node-editor.po';
 
-fdescribe('node editor', () => {
+describe('node editor', () => {
     let page: AppPage;
     let editor: NodeEditor;
 
