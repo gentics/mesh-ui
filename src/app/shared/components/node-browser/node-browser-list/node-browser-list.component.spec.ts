@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { GenticsUICoreModule } from 'gentics-ui-core';
+
+import { MockI18nPipe } from '../../../pipes/i18n/i18n.pipe.mock';
 
 import { NodeBrowserListComponent } from './node-browser-list.component';
 
@@ -8,7 +11,8 @@ describe('NodeBrowserListComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [NodeBrowserListComponent]
+            declarations: [NodeBrowserListComponent, MockI18nPipe],
+            imports: [GenticsUICoreModule]
         }).compileComponents();
     }));
 
