@@ -24,4 +24,5 @@ export class MockMeshFieldControlApi implements MeshFieldControlApi {
     onFormWidthChange = createSpy('onFormWidthChange');
     appendDefaultStyles = createSpy('appendDefaultStyles');
     uiLanguage: UILanguage;
+    openNodeBrowser = createSpy('openNodeBrowser');
 }

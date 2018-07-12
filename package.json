@@ -12,7 +12,7 @@
     "test-no-sourcemaps": "ng test -sm=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "preinstall": "node ./check-if-yarn-is-used",
-    "e2e": "ng e2e",
+    "e2e": "ng e2e --proxy-config proxy.conf.json",
     "precommit": "lint-staged",
     "postcommit": "git update-index --again"
   },
@@ -70,6 +70,7 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
     "@types/ramda": "^0.25.21",
+    "@types/request-promise": "^4.1.41",
     "codelyzer": "^4.0.1",
     "husky": "^0.14.3",
     "jasmine-core": "~2.6.2",
@@ -85,8 +86,11 @@
     "mesh-model-generator": "^0.3.1",
     "prettier": "^1.12.1",
     "protractor": "~5.1.2",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.8.0",
-    "typescript": "~2.4.2"
+    "typescript": "~2.4.2",
+    "uuid-random": "^1.0.6"
   }
 }

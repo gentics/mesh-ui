@@ -2,8 +2,11 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ComponentRef, NgModule, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ModalService } from 'gentics-ui-core';
 
 import { provideMockI18n } from '../../../../testing/configure-component-test';
+import createSpy = jasmine.createSpy;
+import { MockModalService } from '../../../../testing/modal.service.mock';
 import { NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -15,7 +18,6 @@ import { FieldErrorsComponent } from '../../components/field-errors/field-errors
 import { MeshControlGroupService } from '../field-control-group/mesh-control-group.service';
 
 import { FieldGenerator, FieldGeneratorService } from './field-generator.service';
-import createSpy = jasmine.createSpy;
 
 describe('FieldGeneratorService', () => {
     let fieldGeneratorService: FieldGeneratorService;
@@ -27,7 +29,8 @@ describe('FieldGeneratorService', () => {
             imports: [TestModule, TestStateModule],
             providers: [
                 FieldGeneratorService,
-                { provide: MeshControlGroupService, useClass: MockMeshControlGroupService }
+                { provide: MeshControlGroupService, useClass: MockMeshControlGroupService },
+                { provide: ModalService, useClass: MockModalService }
             ],
             declarations: [TestComponent]
         });

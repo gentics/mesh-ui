@@ -1,0 +1,19 @@
+<ng-container *ngFor="let item of items">
+    <gtx-contents-list-item>
+        <gtx-checkbox *ngIf="selectable(item)"
+                      [checked]="!!selection[item.uuid]"
+                      (change)="handleSelect(item, $event)"></gtx-checkbox>
+        <icon *ngIf="item.isContainer">folder</icon>
+        <a *ngIf="item.isContainer"
+           (click)="containerClicked.emit(item)"
+           class="node-browser-container">
+            {{item.displayName || item.uuid}}
+        </a>
+        <ng-container *ngIf="!item.isContainer">{{item.displayName || item.uuid}}</ng-container>
+    </gtx-contents-list-item>
+</ng-container>
+
+<div class="no-results"
+     *ngIf="items?.length === 0">
+    {{ 'nodebrowser.no_children_found' | i18n }}
+</div>

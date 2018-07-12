@@ -3,9 +3,10 @@ import { NgModule, Type } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { GenticsUICoreModule } from 'gentics-ui-core';
+import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
 import { provideMockI18n } from '../../../../testing/configure-component-test';
+import { MockModalService } from '../../../../testing/modal.service.mock';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
 import { TestStateModule } from '../../../state/testing/test-state.module';
@@ -36,7 +37,11 @@ describe('FormGeneratorComponent:', () => {
         TestBed.configureTestingModule({
             imports: [TestModule, TestStateModule],
             declarations: [FormGeneratorComponent],
-            providers: [FieldGeneratorService, MeshControlGroupService]
+            providers: [
+                FieldGeneratorService,
+                MeshControlGroupService,
+                { provide: ModalService, useClass: MockModalService }
+            ]
         });
         fixture = TestBed.createComponent(FormGeneratorComponent);
         instance = fixture.componentInstance;

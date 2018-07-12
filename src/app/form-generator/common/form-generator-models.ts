@@ -1,6 +1,7 @@
 import { MeshNode, NodeFieldType } from '../../common/models/node.model';
 import { SchemaField } from '../../common/models/schema.model';
 import { UILanguage } from '../../core/providers/i18n/i18n.service';
+import { NodeBrowserOptions } from '../../shared/components/node-browser/interfaces';
 
 /**
  * An object path to a value contained in a MeshNode's fields.
@@ -104,4 +105,10 @@ export interface MeshFieldControlApi {
      * The current UI language.
      */
     uiLanguage: UILanguage | undefined;
+
+    /**
+     * Opens the node browser. Returns a promise that resolves with the uuids of the chosen
+     * nodes when the user has closed the dialog.
+     */
+    openNodeBrowser(options: NodeBrowserOptions): Promise<string[]>;
 }

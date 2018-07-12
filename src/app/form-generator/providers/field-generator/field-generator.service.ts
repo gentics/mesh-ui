@@ -1,7 +1,10 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, NgZone, Type, ViewContainerRef } from '@angular/core';
+import { ModalService } from 'gentics-ui-core';
 
 import { NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
+import { NodeBrowserOptions } from '../../../shared/components/node-browser/interfaces';
+import { NodeBrowserComponent } from '../../../shared/components/node-browser/node-browser.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import {
     ErrorCodeHash,
@@ -35,7 +38,8 @@ export class FieldGenerator {
         private viewContainerRef: ViewContainerRef,
         private onChange: OnChangeFunction,
         private getNodeFn: GetNodeValueFunction,
-        private state: ApplicationStateService
+        private state: ApplicationStateService,
+        private modalService: ModalService
     ) {}
 
     attachField<T extends BaseFieldComponent>(fieldConfig: {
@@ -111,7 +115,12 @@ export class FieldGenerator {
                 styleElement.innerText = defaultStyles;
                 parentElement.appendChild(styleElement);
             },
-            uiLanguage: this.state.now.ui.currentLanguage
+            uiLanguage: this.state.now.ui.currentLanguage,
+            openNodeBrowser: (options: NodeBrowserOptions) => {
+                return this.modalService
+                    .fromComponent(NodeBrowserComponent, { padding: true, width: '1000px' }, { options })
+                    .then(dialog => dialog.open());
+            }
         };
         componentRef.instance.init(meshControlFieldInstance);
         return {
@@ -134,7 +143,8 @@ export class FieldGeneratorService {
         private resolver: ComponentFactoryResolver,
         private meshControlGroup: MeshControlGroupService,
         private state: ApplicationStateService,
-        private ngZone: NgZone
+        private ngZone: NgZone,
+        private modalService: ModalService
     ) {}
 
     create(viewContainerRef: ViewContainerRef, onChange: OnChangeFunction): FieldGenerator {
@@ -142,6 +152,13 @@ export class FieldGeneratorService {
             this.ngZone.run(() => onChange(path, value));
         };
         const getNode = (path?: SchemaFieldPath) => this.meshControlGroup.getNodeValue(path);
-        return new FieldGenerator(this.resolver, viewContainerRef, zoneAwareChangeFn, getNode, this.state);
+        return new FieldGenerator(
+            this.resolver,
+            viewContainerRef,
+            zoneAwareChangeFn,
+            getNode,
+            this.state,
+            this.modalService
+        );
     }
 }
