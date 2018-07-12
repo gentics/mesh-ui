@@ -130,25 +130,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             return '';
         }
 
-        const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-        const parentDisplayNode = { displayName: parentNode ? parentNode.displayName : '' } as NodeReferenceFromServer;
-        let breadcrumb = this.node.breadcrumb;
-
-        if (!breadcrumb && parentNode) {
-            const createNodeBreadcrumb: NodeReferenceFromServer = {
-                displayName: this.i18n.translate('editor.create_node')
-            } as NodeReferenceFromServer;
-            breadcrumb = [createNodeBreadcrumb, parentDisplayNode, ...parentNode.breadcrumb];
-        } else if (!breadcrumb && parentNode) {
-            breadcrumb = [parentDisplayNode, ...parentNode.breadcrumb];
-        } else {
-            breadcrumb = [{ displayName: this.node.displayName } as NodeReferenceFromServer, ...breadcrumb];
-        }
-        // TODO: remove this once Mesh fixes the order of the breadcrumbs
-        // https://github.com/gentics/mesh/issues/398
-        return breadcrumb
-            .slice()
-            .reverse()
+        // We are using slice(1) here because we don't want to show the root node
+        return this.node.breadcrumb
+            .slice(1)
             .map(b => b.displayName)
             .join(' › ');
     }

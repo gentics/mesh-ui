@@ -1,3 +1,4 @@
+import { browser, ElementFinder, WebElement } from 'protractor';
 import * as uuid from 'uuid-random';
 
 import { MeshNode } from '../src/app/common/models/node.model';
@@ -29,4 +30,31 @@ export async function temporaryFolder(description: string, body: (context: { fol
 
         body(context);
     });
+}
+
+/**
+ * Maps an Element from Protractor to its text. Useful for .map
+ */
+export function toText(element: ElementFinder | undefined) {
+    return element!.getText();
+}
+
+/**
+ * Retrieves the text of the first text node inside an element.
+ * There is no other way in protractor to retrieve the text.
+ * See https://stackoverflow.com/questions/32479422/how-do-i-get-the-text-of-a-nested-element-in-html-for-automation-using-selenium
+ */
+export function getTextNodeText(el: WebElement) {
+    return browser.executeScript(function(elem: any) {
+        const children = elem.childNodes;
+        for (let i = 0; i < children.length; i++) {
+            // 3 == TEXT_NODE
+            if (children[i].nodeType === 3) {
+                const trimmed = children[i].textContent.trim();
+                if (trimmed.length > 0) {
+                    return trimmed;
+                }
+            }
+        }
+    }, el);
 }
