@@ -56,7 +56,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     currentPage$ = new BehaviorSubject(1);
 
     closeFn(val: any): void {}
-    cancelFn(val: any): void {}
+    cancelFn(val?: any): void {}
 
     selected: PageResult[] = [];
 
