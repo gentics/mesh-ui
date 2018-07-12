@@ -16,7 +16,8 @@ export class UIStateActions extends StateActionBranch<AppState> {
             uses: ['ui'],
             initialState: {
                 ui: {
-                    currentLanguage: 'en'
+                    currentLanguage: 'en',
+                    searchAvailable: false
                 }
             }
         });
@@ -24,5 +25,9 @@ export class UIStateActions extends StateActionBranch<AppState> {
 
     setLanguage(newUiLanguage: UILanguage): void {
         this.ui.currentLanguage = newUiLanguage;
+    }
+
+    setSearchAvailable(searchAvailable: boolean): void {
+        this.ui.searchAvailable = searchAvailable;
     }
 }

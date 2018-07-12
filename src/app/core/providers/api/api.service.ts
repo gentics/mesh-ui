@@ -5,6 +5,7 @@ import { ApiBase, RequestLanguage } from './api-base.service';
 import { apiPost } from './api-methods';
 import { AuthApi } from './auth-api.class';
 import { ProjectApi } from './project-api.class';
+import { SearchApi } from './search-api.service';
 import { UserApi } from './user-api.class';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class ApiService {
     public project: ProjectApi;
     public user: UserApi;
     public admin: AdminApi;
+    public search: SearchApi;
 
     graphQL = apiPost('/{project}/graphql');
 
@@ -21,6 +23,7 @@ export class ApiService {
         this.project = new ProjectApi(apiBase);
         this.user = new UserApi(apiBase);
         this.admin = new AdminApi(apiBase);
+        this.search = new SearchApi(apiBase);
     }
 
     public setLanguageForServerMessages(language: RequestLanguage) {

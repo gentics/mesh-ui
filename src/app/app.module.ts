@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { AuthGuard } from './core/providers/guards/auth-guard';
 import { I18nService } from './core/providers/i18n/i18n.service';
+import { SearchEffectsService } from './core/providers/search/search-effects.service';
 import { AuthEffectsService } from './login/providers/auth-effects.service';
 import { SharedModule } from './shared/shared.module';
 import { AppState } from './state/models/app-state.model';
@@ -57,12 +58,13 @@ export class AppModule {
     constructor(
         public appRef: ApplicationRef,
         public i18nService: I18nService,
-        private router: Router,
-        private authEffects: AuthEffectsService,
-        public appState: ApplicationStateService
+        public appState: ApplicationStateService,
+        authEffects: AuthEffectsService,
+        searchEffects: SearchEffectsService
     ) {
         i18nService.setLanguage('en');
         authEffects.validateSession();
+        searchEffects.checkSearchAvailability();
         // router.events.subscribe(event => console.log(event));
     }
 

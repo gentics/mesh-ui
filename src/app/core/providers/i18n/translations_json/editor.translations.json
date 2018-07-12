@@ -79,6 +79,10 @@
       "en": "Select file",
       "de": "Datei auswählen"
     },
+    "select_node": {
+      "en": "Select node",
+      "de": "Node auswählen"
+    },
     "tag_name": {
       "en": "Tag name",
       "de": "Tag hinzufügen"
