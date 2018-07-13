@@ -2,9 +2,9 @@ import { SafeUrl } from '@angular/platform-browser';
 
 import { SchemaField } from './schema.model';
 import {
+    BranchMicroschemaInfoFromServer,
     NodeReferenceFromServer,
     PermissionInfoFromServer,
-    ReleaseMicroschemaInfoFromServer,
     SchemaReferenceFromServer,
     UserReferenceFromServer
 } from './server-models';
@@ -15,7 +15,7 @@ export interface SchemaReference extends SchemaReferenceFromServer {
     uuid: string;
 }
 
-export interface MicroschemaReference extends ReleaseMicroschemaInfoFromServer {}
+export interface MicroschemaReference extends BranchMicroschemaInfoFromServer {}
 
 /** Common properties of all entities. */
 export interface BaseProperties {

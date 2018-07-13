@@ -16,11 +16,11 @@ export interface ImageTransformQueryParams {
 export class ProjectApi {
     constructor(private apiBase: ApiBase) {}
 
-    /** Assign a microschema version to a release. */
-    assignMicroschemaToRelease = apiPostWithoutBody('/{project}/releases/{releaseUuid}/microschemas');
+    /** Assign a microschema version to a branch. */
+    assignMicroschemaToBranch = apiPostWithoutBody('/{project}/branches/{branchUuid}/microschemas');
 
-    /** Assign a schema version to a release. */
-    assignSchemaToRelease = apiPostWithoutBody('/{project}/releases/{releaseUuid}/schemas');
+    /** Assign a schema version to a branch. */
+    assignSchemaToBranch = apiPostWithoutBody('/{project}/branches/{branchUuid}/schemas');
 
     /** Assign a single tag to a node, keeping other assigned tags. */
     assignTagToNode = apiPostWithoutBody('/{project}/nodes/{nodeUuid}/tags/{tagUuid}');
@@ -31,8 +31,8 @@ export class ProjectApi {
     /** Create a new node. */
     createNode = apiPost('/{project}/nodes');
 
-    /** Create a new project release and automatically invoke a node migration. */
-    createRelease = apiPost('/{project}/releases');
+    /** Create a new project branch and automatically invoke a node migration. */
+    createBranch = apiPost('/{project}/branches');
 
     /** Create a new tag family. */
     createTagFamily = apiPost('/{project}/tagFamilies');
@@ -94,17 +94,17 @@ export class ProjectApi {
     /** Get a list of projects as a paged response. */
     getProjects = apiGet('/projects');
 
-    /** Load the release with the given uuid. */
-    getRelease = apiGet('/{project}/releases/{releaseUuid}');
+    /** Load the branch with the given uuid. */
+    getBranch = apiGet('/{project}/branches/{branchUuid}');
 
-    /** Load microschemas that are assigned to the release and return a paged list response. */
-    getReleaseMicroschemas = apiGet('/{project}/releases/{releaseUuid}/microschemas');
+    /** Load microschemas that are assigned to the branch and return a paged list response. */
+    getBranchMicroschemas = apiGet('/{project}/branches/{branchUuid}/microschemas');
 
-    /** Load schemas that are assigned to the release and return a paged list response. */
-    getReleaseSchemas = apiGet('/{project}/releases/{releaseUuid}/schemas');
+    /** Load schemas that are assigned to the branch and return a paged list response. */
+    getBranchSchemas = apiGet('/{project}/branches/{branchUuid}/schemas');
 
-    /** Load multiple releases and return a paged list response. */
-    getReleases = apiGet('/{project}/releases');
+    /** Load multiple branches and return a paged list response. */
+    getBranches = apiGet('/{project}/branches');
 
     /** List a projects tag families and return a paged list response. */
     getTagFamilies = apiGet('/{project}/tagFamilies');
@@ -129,7 +129,7 @@ export class ProjectApi {
 
     /**
      * Remove the schema with the given uuid from the project. This will automatically
-     * remove all schema versions of the given schema from all releases of the project.
+     * remove all schema versions of the given schema from all branches of the project.
      */
     removeSchemaFromProject = apiDelete('/{project}/nodes/{nodeUuid}/tags/{tagUuid}');
 
@@ -177,8 +177,8 @@ export class ProjectApi {
     // TODO: This is not supported yet by the API service.
     updateBinaryField = apiPost('/{project}/nodes/{nodeUuid}/binary/{fieldName}');
 
-    /** Update the release with the given uuid. */
-    updateRelease = apiPost('/{project}/releases/{releaseUuid}');
+    /** Update the branch with the given uuid. */
+    updateBranch = apiPost('/{project}/branches/{branchUuid}');
 
     /** Create a new tag for a givn tag family. */
     createTag = apiPost('/{project}/tagFamilies/{tagFamilyUuid}/tags');

@@ -1,4 +1,4 @@
-import { FieldMapFromServer, NodeResponse, ReleaseMicroschemaInfoFromServer } from './server-models';
+import { BranchMicroschemaInfoFromServer, FieldMapFromServer, NodeResponse } from './server-models';
 
 /* tslint:disable:no-empty-interface */
 
@@ -52,7 +52,7 @@ export interface MicronodeFieldMap {
 }
 export interface NodeFieldMicronode {
     uuid: string;
-    microschema: ReleaseMicroschemaInfoFromServer;
+    microschema: BranchMicroschemaInfoFromServer;
     fields: MicronodeFieldMap;
 }
 
