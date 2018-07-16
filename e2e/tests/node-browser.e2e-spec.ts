@@ -113,4 +113,41 @@ describe('node browser', () => {
             ).not.toEqual(previousNode);
         });
     });
+
+    describe('search', () => {
+        beforeAll(async () => {
+            await page.navigateToHome();
+            await nodeList.openFolder('Automobiles');
+            await nodeList.editNode('Ford GT');
+            await nodeEditor.chooseNodeReference('Vehicle Image');
+        });
+
+        it('displays results correctly', async () => {
+            await browser.search('ford');
+            const result = await browser.getNodes().map(toText);
+            expect(result[0]).toBe('Ford GT');
+            expect(result[1]).toBe('Ford GT Image');
+        });
+
+        it('pages correctly', async () => {
+            await browser.search('folder');
+
+            const previousNode = await browser
+                .getNodes()
+                .get(0)
+                .getText();
+
+            await browser
+                .getPages()
+                .get(1)
+                .click();
+
+            expect(
+                await browser
+                    .getNodes()
+                    .get(0)
+                    .getText()
+            ).not.toEqual(previousNode);
+        });
+    });
 });

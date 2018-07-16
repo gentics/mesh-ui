@@ -66,7 +66,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the job.
-                     * @example "34caad38d9ef4ff18aad38d9effff18f"
+                     * @example "ae8ea9edd0af475b8ea9edd0afc75b0f"
                      */
                     jobUuid: string;
                 };
@@ -98,7 +98,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the plugin.
-                     * @example "264c046f878540e98c046f878590e9fc"
+                     * @example "79c973278d8c466f8973278d8ce66ff5"
                      */
                     uuid: string;
                 };
@@ -203,7 +203,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "9c60b858cc234caba0b858cc23ecab81"
+                     * @example "0f02358b9fa548d582358b9fa5d8d5c6"
                      */
                     groupUuid: string;
                 };
@@ -234,7 +234,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "0310100721cd43f590100721cd93f5b6"
+                     * @example "fba72edfc7bd41a0a72edfc7bd51a0e6"
                      */
                     groupUuid: string;
                 };
@@ -275,7 +275,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "1022665a3ed74a2ba2665a3ed7aa2bda"
+                     * @example "10e8e6e6979b4573a8e6e6979b357332"
                      */
                     groupUuid: string;
                 };
@@ -329,7 +329,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "bf2bce7f78134d1cabce7f7813ed1cf9"
+                     * @example "20893dcd3d644489893dcd3d6434891d"
                      */
                     microschemaUuid: string;
                 };
@@ -396,7 +396,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "96c125c0091543a68125c00915a3a6b7"
+                     * @example "aa2d2421ce06487cad2421ce06087c8a"
                      */
                     projectUuid: string;
                 };
@@ -463,7 +463,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "4dc9844621d5443a89844621d5743a81"
+                     * @example "4cfdd318868f4354bdd318868f435431"
                      */
                     roleUuid: string;
                 };
@@ -483,14 +483,14 @@ export interface ApiEndpoints {
                     /**
                      * API path to the element.
                      * @example
-                     *     "projects/766b9661ffd746c0ab9661ffd7c6c0e7"
-                     *     "projects/31846d319ccf4d09846d319ccf8d0920/nodes/cfaab8ec54dc4b2faab8ec54dcdb2fba"
+                     *     "projects/1452bf5893f842dd92bf5893f812dd82"
+                     *     "projects/87e5c286ed7a46cda5c286ed7a26cd43/nodes/ec5b4fda50c34ecf9b4fda50c37ecffd"
                      *     ""
                      */
                     path: string;
                     /**
                      * Uuid of the role.
-                     * @example "bbddee5cb69d4c839dee5cb69dbc83eb"
+                     * @example "59db1218b6ce4cb09b1218b6ceccb04d"
                      */
                     roleUuid: string;
                 };
@@ -533,7 +533,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "0afc4f4ed7264908bc4f4ed7261908dd"
+                     * @example "f41898e932414d079898e932413d07a0"
                      */
                     schemaUuid: string;
                 };
@@ -645,7 +645,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "a632f4f07b744609b2f4f07b74260948"
+                     * @example "43673ba298f34398a73ba298f303983b"
                      */
                     userUuid: string;
                 };
@@ -716,7 +716,7 @@ export interface ApiEndpoints {
                     path: string;
                     /**
                      * Uuid of the user.
-                     * @example "756374e407ac442fa374e407acc42fb1"
+                     * @example "d595f3309fb94ba795f3309fb99ba7d8"
                      */
                     userUuid: string;
                 };
@@ -789,7 +789,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the branch
-                     * @example "469431de9f8b43089431de9f8b13082f"
+                     * @example "e47186d5f0f24427b186d5f0f2e427b8"
                      */
                     branchUuid: string;
                 };
@@ -816,7 +816,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the branch
-                     * @example "a785ca2fe8ba41bd85ca2fe8ba51bd54"
+                     * @example "683bb3381d8d430cbbb3381d8d230cb1"
                      */
                     branchUuid: string;
                 };
@@ -851,7 +851,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the branch
-                     * @example "abe2d52004d64a42a2d52004d6aa42c2"
+                     * @example "cc5c470efa7441d59c470efa74d1d5ce"
                      */
                     branchUuid: string;
                 };
@@ -1015,7 +1015,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "6ae9c6a75dc8401fa9c6a75dc8401fb5"
+                     * @example "d46763a2cb5a4fb7a763a2cb5a1fb7ff"
                      */
                     nodeUuid: string;
                 };
@@ -1091,7 +1091,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "f73d58ed50614c48bd58ed50615c48d1"
+                     * @example "87a6c6088afa4f5fa6c6088afa2f5f33"
                      */
                     nodeUuid: string;
                 };
@@ -1174,7 +1174,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "a2ebc2bf57bf4e40abc2bf57bf7e409b"
+                     * @example "cb80cde5b57b4cda80cde5b57bacda6a"
                      */
                     nodeUuid: string;
                 };
@@ -1246,7 +1246,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "ef8448ff4c9f43ff8448ff4c9f73ff6a"
+                     * @example "4b97bb21b4594d3697bb21b4593d361c"
                      */
                     nodeUuid: string;
                 };
@@ -1270,7 +1270,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "5fa73108310145c1a73108310115c190"
+                     * @example "774bc609ae2d44648bc609ae2da46461"
                      */
                     nodeUuid: string;
                 };
@@ -1307,7 +1307,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "cdabb2f64d754ad3abb2f64d75aad36b"
+                     * @example "37421ba204434d18821ba20443cd18db"
                      */
                     nodeUuid: string;
                 };
@@ -1331,7 +1331,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "07d4fd86988148f194fd869881b8f1b2"
+                     * @example "6593bdb70944456393bdb70944d56340"
                      */
                     nodeUuid: string;
                 };
@@ -1387,7 +1387,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "5826d1ff19f04475a6d1ff19f034752b"
+                     * @example "ba1901cc79ec42249901cc79ec022430"
                      */
                     schemaUuid: string;
                 };
@@ -1441,7 +1441,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "7685e951682f4e0e85e951682f9e0ed6"
+                     * @example "fb206e4224aa4fcea06e4224aabfce1b"
                      */
                     tagFamilyUuid: string;
                 };
@@ -1468,7 +1468,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "ad73df5aaff84983b3df5aaff8e9833f"
+                     * @example "de71dc1ed4ac4658b1dc1ed4ac96581b"
                      */
                     tagFamilyUuid: string;
                 };
@@ -1503,12 +1503,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "8b5e229407e94ac69e229407e94ac6cb"
+                     * @example "0dbd803118c84c69bd803118c8ec6981"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "f1e3da7b684a4377a3da7b684a2377a4"
+                     * @example "0219964486e6401599964486e60015c7"
                      */
                     tagUuid: string;
                 };
@@ -1535,12 +1535,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "10884803209640818848032096d0810c"
+                     * @example "dcf253f352924cc4b253f35292bcc44b"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "cd3e5bb10f1e45debe5bb10f1e75de92"
+                     * @example "95f397d38b664b5cb397d38b660b5c42"
                      */
                     tagUuid: string;
                 };
@@ -1746,7 +1746,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "9c60b858cc234caba0b858cc23ecab81"
+                     * @example "0f02358b9fa548d582358b9fa5d8d5c6"
                      */
                     groupUuid: string;
                 };
@@ -1765,12 +1765,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "92fb84289def4762bb84289defb762d7"
+                     * @example "a7233ba6df804deca33ba6df806dec2a"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the role.
-                     * @example "523176ca11bf4b40b176ca11bf8b40ae"
+                     * @example "eff7860e746a4c7ab7860e746aac7ae1"
                      */
                     roleUuid: string;
                 };
@@ -1789,12 +1789,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "ca07e1dd824e4ca287e1dd824e7ca285"
+                     * @example "a85ef6865b594dcc9ef6865b594dcc59"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the user which should be removed from the group.
-                     * @example "273816da48104daab816da48106daad7"
+                     * @example "d8b25d6a7c7c4490b25d6a7c7ca490c1"
                      */
                     userUuid: string;
                 };
@@ -1826,7 +1826,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "bf2bce7f78134d1cabce7f7813ed1cf9"
+                     * @example "20893dcd3d644489893dcd3d6434891d"
                      */
                     microschemaUuid: string;
                 };
@@ -1849,7 +1849,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "acb0e8bfd506487eb0e8bfd506d87ebc"
+                     * @example "7ba2a4b71f7a445fa2a4b71f7a045f4b"
                      */
                     microschemaUuid: string;
                 };
@@ -1871,7 +1871,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "90b1307c57cd4e81b1307c57cd9e8153"
+                     * @example "cf996df98c8e4d40996df98c8efd40ae"
                      */
                     microschemaUuid: string;
                 };
@@ -1906,7 +1906,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "96c125c0091543a68125c00915a3a6b7"
+                     * @example "aa2d2421ce06487cad2421ce06087c8a"
                      */
                     projectUuid: string;
                 };
@@ -1928,7 +1928,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -1944,7 +1944,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -1959,7 +1959,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -1975,7 +1975,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -1990,7 +1990,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -2006,7 +2006,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -2022,7 +2022,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -2037,7 +2037,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -2052,7 +2052,7 @@ export interface ApiEndpoints {
             request: {
                 urlParams?: {};
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -2081,7 +2081,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "4dc9844621d5443a89844621d5743a81"
+                     * @example "4cfdd318868f4354bdd318868f435431"
                      */
                     roleUuid: string;
                 };
@@ -2101,14 +2101,14 @@ export interface ApiEndpoints {
                     /**
                      * API path to the element.
                      * @example
-                     *     "projects/766b9661ffd746c0ab9661ffd7c6c0e7"
-                     *     "projects/31846d319ccf4d09846d319ccf8d0920/nodes/cfaab8ec54dc4b2faab8ec54dcdb2fba"
+                     *     "projects/1452bf5893f842dd92bf5893f812dd82"
+                     *     "projects/87e5c286ed7a46cda5c286ed7a26cd43/nodes/ec5b4fda50c34ecf9b4fda50c37ecffd"
                      *     ""
                      */
                     path: string;
                     /**
                      * Uuid of the role.
-                     * @example "bbddee5cb69d4c839dee5cb69dbc83eb"
+                     * @example "59db1218b6ce4cb09b1218b6ceccb04d"
                      */
                     roleUuid: string;
                 };
@@ -2140,7 +2140,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "0afc4f4ed7264908bc4f4ed7261908dd"
+                     * @example "f41898e932414d079898e932413d07a0"
                      */
                     schemaUuid: string;
                 };
@@ -2175,7 +2175,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "affb9827bec84d1ebb9827bec8ad1ef1"
+                     * @example "129c496b4df64b779c496b4df60b77f3"
                      */
                     schemaUuid: string;
                 };
@@ -2194,7 +2194,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "52b7ed7226774d05b7ed7226771d055a"
+                     * @example "81f58e9844a3441bb58e9844a3241b79"
                      */
                     schemaUuid: string;
                 };
@@ -2242,7 +2242,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: GroupListResponse;
             responseTypes: {
@@ -2266,7 +2266,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: MicroschemaListResponse;
             responseTypes: {
@@ -2290,7 +2290,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: NodeListResponse;
             responseTypes: {
@@ -2314,7 +2314,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: ProjectListResponse;
             responseTypes: {
@@ -2338,7 +2338,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: RoleListResponse;
             responseTypes: {
@@ -2362,7 +2362,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: SchemaListResponse;
             responseTypes: {
@@ -2403,7 +2403,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: TagFamilyListResponse;
             responseTypes: {
@@ -2427,7 +2427,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: TagListResponse;
             responseTypes: {
@@ -2451,7 +2451,7 @@ export interface ApiEndpoints {
                      */
                     page?: number;
                 };
-                body?: undefined;
+                body: any;
             };
             responseType: UserListResponse;
             responseTypes: {
@@ -2481,7 +2481,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "a632f4f07b744609b2f4f07b74260948"
+                     * @example "43673ba298f34398a73ba298f303983b"
                      */
                     userUuid: string;
                 };
@@ -2489,7 +2489,7 @@ export interface ApiEndpoints {
                     /**
                      * Token code which can be used to update the user even if the connection is not
                      * authenticated. This can be used to implement a password recovery feature.
-                     * @example "cdu4UaqRTF7x"
+                     * @example "cGrv42FB8RkJ"
                      */
                     token?: string;
                 };
@@ -2510,7 +2510,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "db7baa40150149b7bbaa40150109b727"
+                     * @example "cfaaa63c0aa04f30aaa63c0aa01f301e"
                      */
                     userUuid: string;
                 };
@@ -2532,7 +2532,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "d5892adb32ac44c2892adb32acf4c2ed"
+                     * @example "2f6cfd4584cf4890acfd4584cf38903a"
                      */
                     userUuid: string;
                 };
@@ -2640,7 +2640,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the branch
-                     * @example "469431de9f8b43089431de9f8b13082f"
+                     * @example "e47186d5f0f24427b186d5f0f2e427b8"
                      */
                     branchUuid: string;
                 };
@@ -2664,7 +2664,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the branch
-                     * @example "a785ca2fe8ba41bd85ca2fe8ba51bd54"
+                     * @example "683bb3381d8d430cbbb3381d8d230cb1"
                      */
                     branchUuid: string;
                 };
@@ -2691,7 +2691,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the branch
-                     * @example "454a6028b10548928a6028b105c89202"
+                     * @example "117dce6865404265bdce6865402265a6"
                      */
                     branchUuid: string;
                 };
@@ -2718,7 +2718,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the branch
-                     * @example "3da21c837e634e48a21c837e633e4849"
+                     * @example "61878e7cff564150878e7cff56815078"
                      */
                     branchUuid: string;
                 };
@@ -2742,7 +2742,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the branch
-                     * @example "abe2d52004d64a42a2d52004d6aa42c2"
+                     * @example "cc5c470efa7441d59c470efa74d1d5ce"
                      */
                     branchUuid: string;
                 };
@@ -2785,7 +2785,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the microschema.
-                     * @example "7b6b8f75fb4a41afab8f75fb4a31af8c"
+                     * @example "3a2b70b5811f4d94ab70b5811f2d9478"
                      */
                     microschemaUuid: string;
                 };
@@ -2834,7 +2834,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "6ae9c6a75dc8401fa9c6a75dc8401fb5"
+                     * @example "d46763a2cb5a4fb7a763a2cb5a1fb7ff"
                      */
                     nodeUuid: string;
                 };
@@ -2865,7 +2865,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "f73d58ed50614c48bd58ed50615c48d1"
+                     * @example "87a6c6088afa4f5fa6c6088afa2f5f33"
                      */
                     nodeUuid: string;
                 };
@@ -2912,7 +2912,7 @@ export interface ApiEndpoints {
                     fieldName: string;
                     /**
                      * Uuid of the node.
-                     * @example "f479b5552f0c40ddb9b5552f0c70dd45"
+                     * @example "a57eb063c07446d9beb063c07466d94c"
                      */
                     nodeUuid: string;
                 };
@@ -2944,7 +2944,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "ef8448ff4c9f43ff8448ff4c9f73ff6a"
+                     * @example "4b97bb21b4594d3697bb21b4593d361c"
                      */
                     nodeUuid: string;
                 };
@@ -2968,12 +2968,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of target the node.
-                     * @example "5a1ff68611174ea59ff68611171ea540"
+                     * @example "bb30943a754f4e6db0943a754fae6da1"
                      */
                     toUuid: string;
                     /**
                      * Uuid of the node which should be moved.
-                     * @example "63eb9a4f6fd8477bab9a4f6fd8077b9c"
+                     * @example "a95b2b8fe7a548759b2b8fe7a5f875a1"
                      */
                     nodeUuid: string;
                 };
@@ -3010,7 +3010,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "cdabb2f64d754ad3abb2f64d75aad36b"
+                     * @example "37421ba204434d18821ba20443cd18db"
                      */
                     nodeUuid: string;
                 };
@@ -3041,7 +3041,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "07d4fd86988148f194fd869881b8f1b2"
+                     * @example "6593bdb70944456393bdb70944d56340"
                      */
                     nodeUuid: string;
                 };
@@ -3065,12 +3065,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag
-                     * @example "0587e1f5100f432f87e1f5100f432fde"
+                     * @example "084c1daa79364be08c1daa7936bbe0d5"
                      */
                     tagUuid: string;
                     /**
                      * Uuid of the node
-                     * @example "554aa89dae1243cf8aa89dae1243cf8e"
+                     * @example "6ea7175dbd24418aa7175dbd24818acb"
                      */
                     nodeUuid: string;
                 };
@@ -3110,7 +3110,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -3132,7 +3132,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -3153,7 +3153,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: any; // TODO: This is not typed in the RAML
             responseTypes: {
@@ -3174,7 +3174,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "5826d1ff19f04475a6d1ff19f034752b"
+                     * @example "ba1901cc79ec42249901cc79ec022430"
                      */
                     schemaUuid: string;
                 };
@@ -3198,7 +3198,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: NodeListResponse;
             responseTypes: {
@@ -3217,7 +3217,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: TagFamilyListResponse;
             responseTypes: {
@@ -3236,7 +3236,7 @@ export interface ApiEndpoints {
                     project: string;
                 };
                 queryParams?: {};
-                body?: undefined;
+                body: any;
             };
             responseType: TagListResponse;
             responseTypes: {
@@ -3274,7 +3274,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "7685e951682f4e0e85e951682f9e0ed6"
+                     * @example "fb206e4224aa4fcea06e4224aabfce1b"
                      */
                     tagFamilyUuid: string;
                 };
@@ -3298,7 +3298,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "ad73df5aaff84983b3df5aaff8e9833f"
+                     * @example "de71dc1ed4ac4658b1dc1ed4ac96581b"
                      */
                     tagFamilyUuid: string;
                 };
@@ -3322,12 +3322,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "8b5e229407e94ac69e229407e94ac6cb"
+                     * @example "0dbd803118c84c69bd803118c8ec6981"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "f1e3da7b684a4377a3da7b684a2377a4"
+                     * @example "0219964486e6401599964486e60015c7"
                      */
                     tagUuid: string;
                 };
@@ -3350,7 +3350,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the job.
-                     * @example "34caad38d9ef4ff18aad38d9effff18f"
+                     * @example "ae8ea9edd0af475b8ea9edd0afc75b0f"
                      */
                     jobUuid: string;
                 };
@@ -3371,7 +3371,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the job.
-                     * @example "b679b486dec7447ab9b486dec7b47af4"
+                     * @example "ab7bf4acbf1f4dacbbf4acbf1f6dacef"
                      */
                     jobUuid: string;
                 };
@@ -3389,7 +3389,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the plugin.
-                     * @example "264c046f878540e98c046f878590e9fc"
+                     * @example "79c973278d8c466f8973278d8ce66ff5"
                      */
                     uuid: string;
                 };
@@ -3408,7 +3408,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group which should be deleted.
-                     * @example "9c60b858cc234caba0b858cc23ecab81"
+                     * @example "0f02358b9fa548d582358b9fa5d8d5c6"
                      */
                     groupUuid: string;
                 };
@@ -3427,12 +3427,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "92fb84289def4762bb84289defb762d7"
+                     * @example "a7233ba6df804deca33ba6df806dec2a"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the role.
-                     * @example "523176ca11bf4b40b176ca11bf8b40ae"
+                     * @example "eff7860e746a4c7ab7860e746aac7ae1"
                      */
                     roleUuid: string;
                 };
@@ -3451,12 +3451,12 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the group.
-                     * @example "ca07e1dd824e4ca287e1dd824e7ca285"
+                     * @example "a85ef6865b594dcc9ef6865b594dcc59"
                      */
                     groupUuid: string;
                     /**
                      * Uuid of the user which should be removed from the group.
-                     * @example "273816da48104daab816da48106daad7"
+                     * @example "d8b25d6a7c7c4490b25d6a7c7ca490c1"
                      */
                     userUuid: string;
                 };
@@ -3475,7 +3475,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the microschema.
-                     * @example "bf2bce7f78134d1cabce7f7813ed1cf9"
+                     * @example "20893dcd3d644489893dcd3d6434891d"
                      */
                     microschemaUuid: string;
                 };
@@ -3494,7 +3494,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the project.
-                     * @example "96c125c0091543a68125c00915a3a6b7"
+                     * @example "aa2d2421ce06487cad2421ce06087c8a"
                      */
                     projectUuid: string;
                 };
@@ -3513,7 +3513,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the role
-                     * @example "4dc9844621d5443a89844621d5743a81"
+                     * @example "4cfdd318868f4354bdd318868f435431"
                      */
                     roleUuid: string;
                 };
@@ -3532,7 +3532,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the schema.
-                     * @example "0afc4f4ed7264908bc4f4ed7261908dd"
+                     * @example "f41898e932414d079898e932413d07a0"
                      */
                     schemaUuid: string;
                 };
@@ -3554,7 +3554,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "a632f4f07b744609b2f4f07b74260948"
+                     * @example "43673ba298f34398a73ba298f303983b"
                      */
                     userUuid: string;
                 };
@@ -3573,7 +3573,7 @@ export interface ApiEndpoints {
                 urlParams: {
                     /**
                      * Uuid of the user.
-                     * @example "d5892adb32ac44c2892adb32acf4c2ed"
+                     * @example "2f6cfd4584cf4890acfd4584cf38903a"
                      */
                     userUuid: string;
                 };
@@ -3597,7 +3597,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the microschema.
-                     * @example "7b6b8f75fb4a41afab8f75fb4a31af8c"
+                     * @example "3a2b70b5811f4d94ab70b5811f2d9478"
                      */
                     microschemaUuid: string;
                 };
@@ -3621,7 +3621,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node.
-                     * @example "6ae9c6a75dc8401fa9c6a75dc8401fb5"
+                     * @example "d46763a2cb5a4fb7a763a2cb5a1fb7ff"
                      */
                     nodeUuid: string;
                 };
@@ -3656,7 +3656,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node.
-                     * @example "6b24388d8d94464da4388d8d94864d45"
+                     * @example "8fa345a98b35476aa345a98b35b76a84"
                      */
                     nodeUuid: string;
                 };
@@ -3685,7 +3685,7 @@ export interface ApiEndpoints {
                     language: string;
                     /**
                      * Uuid of the node
-                     * @example "ef8448ff4c9f43ff8448ff4c9f73ff6a"
+                     * @example "4b97bb21b4594d3697bb21b4593d361c"
                      */
                     nodeUuid: string;
                 };
@@ -3709,7 +3709,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the node
-                     * @example "cdabb2f64d754ad3abb2f64d75aad36b"
+                     * @example "37421ba204434d18821ba20443cd18db"
                      */
                     nodeUuid: string;
                 };
@@ -3740,12 +3740,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag
-                     * @example "0587e1f5100f432f87e1f5100f432fde"
+                     * @example "084c1daa79364be08c1daa7936bbe0d5"
                      */
                     tagUuid: string;
                     /**
                      * Uuid of the node
-                     * @example "554aa89dae1243cf8aa89dae1243cf8e"
+                     * @example "6ea7175dbd24418aa7175dbd24818acb"
                      */
                     nodeUuid: string;
                 };
@@ -3772,7 +3772,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the schema.
-                     * @example "5826d1ff19f04475a6d1ff19f034752b"
+                     * @example "ba1901cc79ec42249901cc79ec022430"
                      */
                     schemaUuid: string;
                 };
@@ -3796,7 +3796,7 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "7685e951682f4e0e85e951682f9e0ed6"
+                     * @example "fb206e4224aa4fcea06e4224aabfce1b"
                      */
                     tagFamilyUuid: string;
                 };
@@ -3820,12 +3820,12 @@ export interface ApiEndpoints {
                     project: string;
                     /**
                      * Uuid of the tag family.
-                     * @example "8b5e229407e94ac69e229407e94ac6cb"
+                     * @example "0dbd803118c84c69bd803118c8ec6981"
                      */
                     tagFamilyUuid: string;
                     /**
                      * Uuid of the tag.
-                     * @example "f1e3da7b684a4377a3da7b684a2377a4"
+                     * @example "0219964486e6401599964486e60015c7"
                      */
                     tagUuid: string;
                 };
@@ -4102,7 +4102,7 @@ export interface GraphQLRequest {
      * Additional search index configuration. This can be used to setup custom analyzers
      * and filters.
      */
-    readonly variables?: JsonObjectFromServer;
+    readonly variables?: any;
 }
 
 /**
@@ -4113,7 +4113,7 @@ export interface GraphQLResponse {
      * Additional search index configuration. This can be used to setup custom analyzers
      * and filters.
      */
-    readonly data?: JsonObjectFromServer;
+    readonly data?: any;
     /** Array of errors which were encoutered when handling the query. */
     readonly errors?: GraphQLErrorFromServer[];
 }

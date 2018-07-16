@@ -3,12 +3,16 @@
 
     <h5>{{ options.titleKey | i18n:options.titleParams }}</h5>
 
-    <gtx-search-bar [placeholder]="'common.search_placeholder' | i18n">
-        <!-- <div class="search-chip" *ngIf="search$ | async">
-            <span class="chip-contents">
-                <span class="searching">{{ 'common.searching' | i18n }} </span>"{{ search$ | async }}"</span>
-            <i class="remove-button material-icons" (click)="setSearch('')">close</i>
-        </div> -->
+    <gtx-search-bar *ngIf="searchAvailable$ | async"
+                    [placeholder]="'common.search_placeholder' | i18n"
+                    [(ngModel)]="searchQuery"
+                    (search)="onSearch($event)"
+                    (clear)="clearSearch()">
+        <mesh-chip *ngIf="searchedTerm"
+                   class="search-term"
+                   (removeClick)="clearSearch()">
+            {{ 'common.searching' | i18n:{ term: searchedTerm } }}
+        </mesh-chip>
     </gtx-search-bar>
 
     <gtx-breadcrumbs [links]="breadcrumb$ | async"
