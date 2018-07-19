@@ -9,6 +9,7 @@ import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
+import { MockModalService } from '../../../../testing/modal.service.mock';
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
@@ -17,23 +18,22 @@ import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
 import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
+import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
 import { VersionLabelComponent } from '../version-label/version-label.component';
 
-import { MockModalService } from '../../../../testing/modal.service.mock';
-import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { NodeEditorComponent } from './node-editor.component';
-import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
-import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;

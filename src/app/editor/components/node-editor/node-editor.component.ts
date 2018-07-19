@@ -126,7 +126,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     }
 
     getNodePath(): string {
-        if (!this.node) {
+        if (!this.node || !this.node.breadcrumb) {
             return '';
         }
 

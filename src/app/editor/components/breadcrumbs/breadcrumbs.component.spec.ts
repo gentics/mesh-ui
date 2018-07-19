@@ -6,12 +6,12 @@ import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 import { componentTest } from '../../../../testing/component-test';
 import { mockMeshNode, mockProject } from '../../../../testing/mock-models';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 
 import { BreadcrumbsComponent } from './breadcrumbs.component';
-import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 
 describe('BreadcrumbsComponent:', () => {
     let appState: TestApplicationState;
@@ -65,7 +65,18 @@ describe('BreadcrumbsComponent:', () => {
                         container: true,
                         displayField: 'name',
                         fields: { name: 'rootNode' } as any,
-                        breadcrumb: []
+                        breadcrumb: [
+                            {
+                                projectName: 'testProject',
+                                uuid: 'root_node_uuid',
+                                displayName: 'rootNode',
+                                schema: {
+                                    name: 'folder',
+                                    uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
+                                    version: '1.0'
+                                }
+                            }
+                        ]
                     }),
                     '6adfe63bb9a34b8d9fe63bb9a30b8d8b': mockMeshNode({
                         uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
@@ -74,8 +85,8 @@ describe('BreadcrumbsComponent:', () => {
                         breadcrumb: [
                             {
                                 projectName: 'testProject',
-                                uuid: '5b1d4f44d5a545f49d4f44d5a5c5f495',
-                                displayName: 'folder2',
+                                uuid: 'root_node_uuid',
+                                displayName: 'rootNode',
                                 schema: {
                                     name: 'folder',
                                     uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
@@ -91,6 +102,26 @@ describe('BreadcrumbsComponent:', () => {
                                     uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
                                     version: '1.0'
                                 }
+                            },
+                            {
+                                projectName: 'testProject',
+                                uuid: '5b1d4f44d5a545f49d4f44d5a5c5f495',
+                                displayName: 'folder2',
+                                schema: {
+                                    name: 'folder',
+                                    uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
+                                    version: '1.0'
+                                }
+                            },
+                            {
+                                projectName: 'testProject',
+                                uuid: '6adfe63bb9a34b8d9fe63bb9a30b8d8b',
+                                displayName: 'current',
+                                schema: {
+                                    name: 'folder',
+                                    uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
+                                    version: '1.0'
+                                }
                             }
                         ]
                     }),
@@ -101,8 +132,28 @@ describe('BreadcrumbsComponent:', () => {
                         breadcrumb: [
                             {
                                 projectName: 'testProject',
+                                uuid: 'root_node_uuid',
+                                displayName: 'rootNode',
+                                schema: {
+                                    name: 'folder',
+                                    uuid: 'a2356ca67bb742adb56ca67bb7d2adca',
+                                    version: '1.0'
+                                }
+                            },
+                            {
+                                projectName: 'testProject',
                                 uuid: 'f69a7a7c1459495c9a7a7c1459e95c21',
                                 displayName: 'Automobiles',
+                                schema: {
+                                    name: 'category',
+                                    uuid: '084396b200bc46d18396b200bca6d11f',
+                                    version: '1.0'
+                                }
+                            },
+                            {
+                                projectName: 'testProject',
+                                uuid: 'fdc937c9ce0440188937c9ce04b0185f',
+                                displayName: 'current2',
                                 schema: {
                                     name: 'category',
                                     uuid: '084396b200bc46d18396b200bca6d11f',
