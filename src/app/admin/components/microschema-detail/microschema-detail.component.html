@@ -2,17 +2,32 @@
     Version: {{version$ | async}}
 </div>
 
-<mesh-monaco-editor [(ngModel)]="microschemaJson"
-                    language="json"
-                    [jsonSchema]="schema"
-                    (errors)="onErrorChange($event)"></mesh-monaco-editor>
+<gtx-tabs>
+    <gtx-tab title="Microschemas">
+        <mesh-monaco-editor [(ngModel)]="microschemaJson"
+                            language="json"
+                            [jsonSchema]="schema"
+                            (errors)="onErrorChange($event)"></mesh-monaco-editor>
 
-<mesh-schema-assignment *ngIf="!isNew"
-                        type="microschema"
-                        [uuid]="uuid$ | async"></mesh-schema-assignment>
+        <gtx-button [disabled]="errors.length > 0 || (loading$ | async)"
+                    style="margin-top: 15px;"
+                    (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
+        <gtx-button type="alert"
+                    *ngIf="!isNew"
+                    (click)="delete()">{{ 'common.delete_button' | i18n }}</gtx-button>
+    </gtx-tab>
 
-<gtx-button [disabled]="errors.length > 0 || (loading$ | async)"
-            (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
-<gtx-button type="alert"
-            *ngIf="!isNew"
-            (click)="delete()">{{ 'common.delete_button' | i18n }}</gtx-button>
+    <gtx-tab title="Allocations">
+        <mesh-admin-list [items]="projects$ | async"
+                         [autoHidePagination]="true"
+                         [selectable]="false">
+            <ng-template let-project="item">
+                <gtx-checkbox [label]="project.name"
+                              [checked]="projectAssignments[project.uuid]"
+                              (change)="onAssignmentChange(project, $event)">
+                </gtx-checkbox>
+            </ng-template>
+        </mesh-admin-list>
+    </gtx-tab>
+
+</gtx-tabs>

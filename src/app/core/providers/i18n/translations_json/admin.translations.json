@@ -11,6 +11,38 @@
         "en": "All groups",
         "de": "Alle Gruppen"
     },
+    "delete_selected_schemas" : {
+        "en": "Delete {{count}} schemas",
+        "de": "{{count }} Schemas löschen"
+    },
+    "delete_selected_microschemas" : {
+        "en": "Delete {{count}} microschemas",
+        "de": "{{count }} Microschemas löschen"
+    },
+    "delete_selected_schemas_confirmation": {
+        "en": "You are about to permanently delete {{ count }} schemas.",
+        "de": "Wollen Sie {{ count }} Schemas permanent löschen?"
+    },
+    "delete_selected_microschemas_confirmation": {
+        "en": "You are about to permanently delete {{ count }} microschemas.",
+        "de": "Wollen Sie {{ count }} Microschemas permanent löschen?"
+    },
+    "delete_schema": {
+        "en": "Delete schema",
+        "de": "Schema löschen"
+    },
+    "delete_microschema": {
+        "en": "Delete microschema",
+        "de": "Microschema löschen"
+    },
+    "delete_schema_confirmation": {
+        "en": "You are about to permanently delete schema '{{ name }}'.",
+        "de": "Wollen Sie '{{ name }}' permanent löschen?"
+    },
+    "delete_microschema_confirmation": {
+        "en": "You are about to permanently delete microschema '{{ name }}'.",
+        "de": "Wollen Sie '{{ name }}' permanent löschen?"
+    },
     "assigned_to_projects": {
         "en": "Assigned to projects",
         "de": "Zugewiesen zu Projekte"

@@ -9,14 +9,14 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
 import { Group } from '../../../common/models/group.model';
 import { User } from '../../../common/models/user.model';
+import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { observeQueryParam } from '../../../shared/common/observe-query-param';
+import { setQueryParams } from '../../../shared/common/set-query-param';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
-import { observeQueryParam } from '../../../shared/common/observe-query-param';
-import { setQueryParams } from '../../../shared/common/set-query-param';
-import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 
 @Component({
     selector: 'mesh-user-list',
@@ -53,7 +53,10 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.adminUserEffects.loadAllUsers();
         this.adminUserEffects.loadAllGroups();
 
-        combineLatest(observeQueryParam(this.route.queryParamMap, 'p', 1), observeQueryParam(this.route.queryParamMap, 'perPage', 25))
+        combineLatest(
+            observeQueryParam(this.route.queryParamMap, 'p', 1),
+            observeQueryParam(this.route.queryParamMap, 'perPage', 25)
+        )
             .takeUntil(this.destroy$)
             .subscribe(([page, perPage]) => {
                 this.adminUserEffects.setListPagination(page, perPage);
@@ -62,22 +65,22 @@ export class UserListComponent implements OnInit, OnDestroy {
         observeQueryParam(this.route.queryParamMap, 'q', '')
             .takeUntil(this.destroy$)
             .subscribe(filterTerm => {
-            this.adminUserEffects.setFilterTerm(filterTerm);
-            this.filterInput.setValue(filterTerm, { emitEvent: false });
+                this.adminUserEffects.setFilterTerm(filterTerm);
+                this.filterInput.setValue(filterTerm, { emitEvent: false });
             });
 
         observeQueryParam(this.route.queryParamMap, 'group', '')
             .takeUntil(this.destroy$)
             .subscribe(groupUuid => {
-            this.adminUserEffects.setFilterGroups([groupUuid]);
+                this.adminUserEffects.setFilterGroups([groupUuid]);
 
-            // setTimeout prevent an error where the Select component has not yet
-            // got a reference to the <gtx-option> elements at init time, which prevents
-            // the default value from being selected.
-            setTimeout(() => {
-                this.filterGroupSelect.setValue(groupUuid, { emitEvent: false });
+                // setTimeout prevent an error where the Select component has not yet
+                // got a reference to the <gtx-option> elements at init time, which prevents
+                // the default value from being selected.
+                setTimeout(() => {
+                    this.filterGroupSelect.setValue(groupUuid, { emitEvent: false });
+                });
             });
-        });
 
         this.filterInput.valueChanges
             .debounceTime(300)
@@ -142,7 +145,7 @@ export class UserListComponent implements OnInit, OnDestroy {
                     ).then(() => deletableUsers);
                 }
             })
-            .subscribe(deletableUsers => {
+            .subscribe((deletableUsers: User[]) => {
                 deletableUsers.forEach(user => {
                     this.adminUserEffects.deleteUser(user);
                 });
@@ -197,7 +200,6 @@ export class UserListComponent implements OnInit, OnDestroy {
         }
         return user.groups.some(group => group.uuid === groupUuid);
     }
-
 
     private displayDeleteUserModal(
         title: { token: string; params?: { [key: string]: any } },
