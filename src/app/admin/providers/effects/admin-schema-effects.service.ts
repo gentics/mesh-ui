@@ -15,6 +15,7 @@ import {
 } from '../../../common/models/server-models';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
+import { ProjectAssignments } from '../../../state/models/admin-schemas-state.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Injectable()
@@ -25,6 +26,14 @@ export class AdminSchemaEffectsService {
         private i18nNotification: I18nNotification,
         private notification: Notification
     ) {}
+
+    setListPagination(currentPage: number, itemsPerPage: number): void {
+        this.state.actions.adminSchemas.setSchemaListPagination(currentPage, itemsPerPage);
+    }
+
+    setFilterTerm(term: string): void {
+        this.state.actions.adminSchemas.setFilterTerm(term);
+    }
 
     loadSchemas() {
         this.state.actions.adminSchemas.fetchSchemasStart();
@@ -233,7 +242,7 @@ export class AdminSchemaEffectsService {
      * @param type
      * @param uuid
      */
-    loadEntityAssignments(type: 'microschema' | 'schema', uuid: string) {
+    loadEntityAssignments(type: 'microschema' | 'schema', uuid: string): Promise<ProjectAssignments> {
         const actions = this.state.actions.adminSchemas;
         actions.fetchEntityAssignmentsStart();
 
@@ -244,7 +253,7 @@ export class AdminSchemaEffectsService {
 
         // TODO consider paging
         // Get all projects
-        this.api.project
+        return this.api.project
             .getProjects({})
             .flatMap(projects => {
                 actions.fetchEntityAssignmentProjectsSuccess(projects.data);
@@ -259,10 +268,15 @@ export class AdminSchemaEffectsService {
             )
             .reduce(merge)
             .defaultIfEmpty({})
-            .subscribe(
-                assignments => actions.fetchEntityAssignmentsSuccess(assignments),
-                error => actions.fetchEntityAssignmentsError()
-            );
+            .toPromise()
+            .then(assignments => {
+                actions.fetchEntityAssignmentsSuccess(assignments);
+                return assignments;
+            })
+            .catch(error => {
+                actions.fetchEntityAssignmentsError();
+                throw error;
+            });
     }
 
     assignEntityToProject(type: 'schema' | 'microschema', entityUuid: string, projectName: string): void {

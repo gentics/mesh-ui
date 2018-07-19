@@ -28,10 +28,28 @@ export class AdminSchemasStateActions extends StateActionBranch<AppState> {
                     schemaList: [],
                     schemaDetail: null,
                     microschemaList: [],
-                    microschemaDetail: null
+                    microschemaDetail: null,
+                    pagination: {
+                        currentPage: 1,
+                        itemsPerPage: 25,
+                        totalItems: null
+                    },
+                    filterTerm: ''
                 }
             }
         });
+    }
+
+    setSchemaListPagination(currentPage: number, itemsPerPage: number): void {
+        this.adminSchemas.pagination = {
+            currentPage,
+            itemsPerPage,
+            totalItems: null
+        };
+    }
+
+    setFilterTerm(term: string): void {
+        this.adminSchemas.filterTerm = term;
     }
 
     fetchSchemasStart() {
