@@ -13,6 +13,7 @@ import { NodeBrowserOptions, PageResult, QueryResult } from './interfaces';
 const query = `
 query($parent: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
 	node(uuid: $parent) {
+        uuid
 		children(filter: $filter, perPage: $perPage, page: $page) {
             totalCount
             pageCount
@@ -46,8 +47,11 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     constructor(private apiService: ApiService) {}
 
     @Input() options: NodeBrowserOptions;
+    selectableFn: (node: any) => boolean;
+    closableFn: () => boolean;
 
-    currentNode: Subject<string>;
+    currentNode: any;
+    currentNode$: Subject<string>;
     queryResult$: Observable<QueryResult>;
     currentPageContent$: Observable<any[]>;
     breadcrumb$: Observable<IBreadcrumbLink[]>;
@@ -55,7 +59,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     pageCount$: Observable<number>;
     currentPage$ = new BehaviorSubject(1);
 
-    closeFn(val: any): void {}
+    closeFn(uuids: string[]): void {}
     cancelFn(val?: any): void {}
 
     selected: PageResult[] = [];
@@ -71,15 +75,16 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     }
 
     ngOnInit(): void {
-        this.currentNode = new BehaviorSubject(this.options.startNodeUuid);
+        this.initSelectableFn();
+        this.currentNode$ = new BehaviorSubject(this.options.startNodeUuid);
 
-        this.queryResult$ = Observable.combineLatest(this.currentNode, this.currentPage$).pipe(
+        this.queryResult$ = Observable.combineLatest(this.currentNode$, this.currentPage$).pipe(
             flatMap(([parent, page]) =>
                 this.apiService.graphQL(
                     { project: this.options.projectName },
                     {
                         query,
-                        variables: { query, parent, perPage: this.perPage, page }
+                        variables: { query, parent, perPage: this.perPage, page, filter: this.options.nodeFilter }
                     }
                 )
             ),
@@ -92,6 +97,26 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
         this.breadcrumb$ = this.queryResult$.map(result => this.toBreadcrumb(result));
         this.totalItems$ = this.queryResult$.map(result => result.node.children.totalCount);
         this.pageCount$ = this.queryResult$.map(result => result.node.children.pageCount);
+        this.queryResult$.subscribe(result => (this.currentNode = result.node));
+    }
+
+    private initSelectableFn() {
+        if (this.options.chooseContainer) {
+            // Checkboxes are hidden when a container is chosen
+            this.selectableFn = () => false;
+            const selectableFn = this.options.selectablePredicate;
+            // TODO Use a seperate function for that
+            // Use the selectable function for the button in container mode
+            this.closableFn =
+                (selectableFn && (() => (this.currentNode && selectableFn(this.currentNode)) || false)) || (() => true);
+        } else if (this.options.selectablePredicate) {
+            this.selectableFn = this.options.selectablePredicate;
+            this.closableFn = () => true;
+        } else {
+            // By default everything can be chosen
+            this.selectableFn = () => true;
+            this.closableFn = () => true;
+        }
     }
 
     toBreadcrumb(result: QueryResult): IBreadcrumbLink[] {
@@ -109,6 +134,10 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     }
 
     submitClicked() {
-        this.closeFn(this.selected.map(item => item.uuid));
+        if (this.options.chooseContainer) {
+            this.currentNode$.take(1).subscribe(uuid => this.closeFn([uuid]));
+        } else {
+            this.closeFn(this.selected.map(item => item.uuid));
+        }
     }
 }

@@ -181,6 +181,18 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount--;
     }
 
+    moveNodeStart() {
+        this.list.loadCount++;
+    }
+
+    moveNodeSuccess() {
+        this.list.loadCount--;
+    }
+
+    moveNodeError() {
+        this.list.loadCount--;
+    }
+
     searchNodesStart() {
         this.list.loadCount++;
     }

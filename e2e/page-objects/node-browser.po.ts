@@ -14,4 +14,8 @@ export class NodeBrowserDialog {
     public getPages() {
         return this.nodeBrowser.all(by.css('pagination-controls li:not(.pagination-previous):not(.pagination-next)'));
     }
+
+    public choose() {
+        return this.nodeBrowser.element(by.css('button.primary')).click();
+    }
 }

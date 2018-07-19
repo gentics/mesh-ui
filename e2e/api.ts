@@ -58,6 +58,10 @@ export function deleteNode(node: HasUuid) {
     });
 }
 
+export function moveNode(source: HasUuid, destination: HasUuid) {
+    return post(`/${project}/nodes/${source.uuid}/moveTo/${destination.uuid}`);
+}
+
 function get(url: string, body?: any, qs?: any) {
     return request('GET', url, body);
 }

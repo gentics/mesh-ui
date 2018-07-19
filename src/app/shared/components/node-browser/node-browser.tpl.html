@@ -16,19 +16,20 @@
     </gtx-search-bar> -->
 
     <gtx-breadcrumbs [links]="breadcrumb$ | async"
-                     (linkClick)="currentNode.next($event.uuid)"></gtx-breadcrumbs>
+                     (linkClick)="currentNode$.next($event.uuid)"></gtx-breadcrumbs>
 </div>
 <div class="modal-content">
 
     <mesh-node-browser-list [items]="currentPageContent$ | async | paginate: {
-            itemsPerPage: perPage,
-            currentPage: currentPage$ | async,
-            id: 'nodebrowser',
-            totalItems: totalItems$ | async
+                itemsPerPage: perPage,
+                currentPage: currentPage$ | async,
+                id: 'nodebrowser',
+                totalItems: totalItems$ | async
         }"
                             [multiple]="options.multiple"
-                            (containerClicked)="currentNode.next($event.uuid)"
-                            (selectedChange)="selected = $event"></mesh-node-browser-list>
+                            (containerClicked)="currentNode$.next($event.uuid)"
+                            (selectedChange)="selected = $event"
+                            [selectable]="selectableFn"></mesh-node-browser-list>
 
     <pagination-controls *ngIf="(pageCount$ | async) > 1"
                          (pageChange)="currentPage$.next($event)"
@@ -39,7 +40,8 @@
                 flat
                 type="secondary">{{ 'common.cancel_button' | i18n }}</gtx-button>
     <gtx-button (click)="submitClicked()"
-                type="primary">
+                type="primary"
+                [disabled]="!closableFn()">
         <span>{{ (options.submitLabelKey || 'common.choose') | i18n }}</span>
     </gtx-button>
 </div>

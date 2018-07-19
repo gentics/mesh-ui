@@ -1,4 +1,4 @@
-import { by, element } from 'protractor';
+import { browser, by, element, until, ExpectedConditions } from 'protractor';
 
 export class MeshNodeList {
     private readonly nodeList = element(by.css('mesh-container-contents'));
@@ -13,11 +13,23 @@ export class MeshNodeList {
             .click();
     }
 
+    async moveNode(displayName: string) {
+        await this.openNodeMenu(displayName);
+        await element(by.cssContainingText('gtx-dropdown-item', 'Move')).click();
+    }
+
+    private async openNodeMenu(displayName: string) {
+        await this.getNodeRow(displayName)
+            .element(by.css('gtx-dropdown-list button'))
+            .click();
+        await browser.wait(ExpectedConditions.presenceOf(element(by.css('mesh-app > gtx-dropdown-content-wrapper'))));
+    }
+
     public getBreadcrumbLinks() {
         return this.nodeList.all(by.css('gtx-breadcrumbs a.breadcrumb'));
     }
 
-    getNodeRow(displayName: string) {
+    public getNodeRow(displayName: string) {
         return element
             .all(by.tagName('mesh-node-row'))
             .filter(el => el.isElementPresent(by.cssContainingText('a', displayName)))

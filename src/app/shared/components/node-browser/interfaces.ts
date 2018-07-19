@@ -9,6 +9,7 @@ export interface NodeBrowserOptions {
     projectName: string;
     startNodeUuid: string;
     multiple?: boolean;
+    chooseContainer?: boolean;
 }
 
 export interface QueryResult {

@@ -1,18 +1,13 @@
 import { TranslateLoader } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
 
-const translationFiles = [
-    'admin',
-    'auth',
-    'common',
-    'editor',
-    'lang',
-    'list',
-    'modal',
-].reduce((hash, name) => {
-    hash[name] = require(`./translations_json/${name}.translations.json`);
-    return hash;
-}, {} as { [name: string]: any; });
+const translationFiles = ['admin', 'auth', 'common', 'editor', 'lang', 'list', 'modal', 'nodebrowser'].reduce(
+    (hash, name) => {
+        hash[name] = require(`./translations_json/${name}.translations.json`);
+        return hash;
+    },
+    {} as { [name: string]: any }
+);
 
 // Parse the yaml files into a JS object.
 const translations: any = {
@@ -31,7 +26,6 @@ const translations: any = {
  * }
  */
 export class CustomLoader implements TranslateLoader {
-
     getTranslation(lang: string): Observable<any> {
         const output: any = {};
         for (const section in translations) {

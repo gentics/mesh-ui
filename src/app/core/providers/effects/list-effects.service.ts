@@ -233,6 +233,36 @@ export class ListEffectsService {
         return this.config.CONTENT_LANGUAGES.sort((a, b) => (a === language ? -1 : 1)).join(',');
     }
 
+    /**
+     * Moves a node.
+     * @param source uuid of the node to be moved
+     * @param destination uuid of the destination container node
+     */
+    public moveNode(source: MeshNode, destination: string) {
+        this.state.actions.list.moveNodeStart();
+        this.api.project
+            .moveNode(
+                {
+                    project: source.project.name!,
+                    nodeUuid: source.uuid,
+                    toUuid: destination
+                },
+                undefined
+            )
+            .subscribe(
+                result => {
+                    this.state.actions.list.moveNodeSuccess();
+                    const parentNode = this.entities.getNode(source.parentNode.uuid, { language: source.language });
+                    if (parentNode && parentNode.language) {
+                        this.loadChildren(parentNode.project.name!, parentNode.uuid, parentNode.language);
+                    }
+                },
+                error => {
+                    this.state.actions.list.moveNodeError();
+                }
+            );
+    }
+
     public deleteNode(node: MeshNode, recursive: boolean): void {
         this.state.actions.list.deleteNodeStart();
         this.api.project.deleteNode({ project: node.project.name!, nodeUuid: node.uuid, recursive }).subscribe(

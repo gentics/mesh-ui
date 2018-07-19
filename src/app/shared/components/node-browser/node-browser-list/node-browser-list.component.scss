@@ -1,3 +1,5 @@
+@import "variables";
+
 gtx-contents-list-item {
   display: flex;
   align-items: center;
@@ -10,4 +12,11 @@ gtx-contents-list-item {
 
 .node-browser-container {
   cursor: pointer;
+}
+
+.no-results {
+  font-size: $gtx-font-size-lead;
+  color: $gtx-color-mid-gray;
+  text-align: center;
+  padding: 20px;
 }
