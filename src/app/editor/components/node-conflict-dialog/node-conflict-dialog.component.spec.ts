@@ -5,6 +5,7 @@ import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 
 import { mockMeshNode, mockMicroschema, mockProject, mockSchema, mockTag } from '../../../../testing/mock-models';
+import { MockModalService } from '../../../../testing/modal.service.mock';
 import { TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { FieldMapFromServer } from '../../../common/models/server-models';
 import { MockApiBase } from '../../../core/providers/api/api-base.mock';
@@ -26,7 +27,6 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { ConflictedFieldComponent } from '../conflicted-field/conflicted-field.component';
 
 import { NodeConflictDialogComponent } from './node-conflict-dialog.component';
-import { MockModalService } from '../../../../testing/modal.service.mock';
 
 let state: TestApplicationState;
 
@@ -88,7 +88,7 @@ describe('NodeConflictDialogComponent', () => {
                         language: 'en',
                         version: '0.1',
                         displayName: 'node_display_field',
-                        schema: { uuid: 'schema_uuid', version: '0' },
+                        schema: { name: 'schema_name', uuid: 'schema_uuid', version: '0' },
                         fields: {
                             image: imageField,
                             microschema: microschemaField,
@@ -100,7 +100,7 @@ describe('NodeConflictDialogComponent', () => {
                         language: 'en',
                         version: '0',
                         displayName: 'current_node_display_field',
-                        schema: { uuid: 'schema_uuid', version: '0' },
+                        schema: { name: 'schema_name', uuid: 'schema_uuid', version: '0' },
                         fields: {
                             image: imageField,
                             microschema: microschemaField,
@@ -113,7 +113,7 @@ describe('NodeConflictDialogComponent', () => {
                         language: 'en',
                         version: '0',
                         displayName: 'current_node_display_field',
-                        schema: { uuid: 'schema_uuid', version: '0' },
+                        schema: { name: 'schema_name', uuid: 'schema_uuid', version: '0' },
                         fields: {
                             image: imageField,
                             microschema: microschemaField,
@@ -280,9 +280,9 @@ describe('NodeConflictDialogComponent', () => {
 class MockEntitiesService {
     getSchema = (id: string) => {
         return state.now.entities.schema[id]['0'];
-    }
+    };
 
     getMicroschema = (id: string) => {
         return state.now.entities.microschema[id]['0'];
-    }
+    };
 }

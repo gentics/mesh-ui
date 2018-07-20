@@ -222,9 +222,9 @@ describe('NodeEditorComponent', () => {
                             parentNode: {
                                 uuid: node.parentNode.uuid,
                                 projectName: node.project.name,
-                                schema: { uuid: 'uuid1' }
+                                schema: { name: 'name1', uuid: 'uuid1', version: '0' }
                             },
-                            schema: { uuid: 'uuid1' }
+                            schema: { name: 'name1', uuid: 'uuid1', version: '0' }
                         })
                     }
                 }
