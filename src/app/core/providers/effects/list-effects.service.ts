@@ -3,7 +3,10 @@ import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { MeshNode } from '../../../common/models/node.model';
+import { SchemaField } from '../../../common/models/schema.model';
+import { NodeCreateRequest } from '../../../common/models/server-models';
 import { Tag } from '../../../common/models/tag.model';
+import { simpleCloneDeep } from '../../../common/util/util';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { ApiService } from '../api/api.service';
@@ -234,6 +237,54 @@ export class ListEffectsService {
     }
 
     /**
+     * Copies a node.
+     * @param source uuid of the node to be moved
+     * @param destination uuid of the destination container node
+     */
+    public copyNode(source: MeshNode, destination: string) {
+        const requestNode = simpleCloneDeep(source);
+        // TODO better conflict handling
+        // TODO Copy all languages?
+        this.state.actions.list.copyNodeStart();
+        const { segmentField, displayField, fields } = this.entities.getSchema(source.schema.uuid)!;
+        // TODO support other field types
+        if (displayField && isStringField(fields, displayField)) {
+            source.fields[displayField] += ' (copy)';
+        }
+        if (segmentField && isStringField(fields, displayField)) {
+            source.fields[segmentField] += '_copy';
+        }
+
+        const request: NodeCreateRequest = {
+            parentNode: { uuid: destination },
+            fields: source.fields,
+            language: source.language!,
+            schema: source.schema
+        };
+
+        this.api.project.createNode({ project: source.project.name! }, request).subscribe(
+            result => {
+                this.state.actions.list.copyNodeSuccess();
+                if (result.parentNode.uuid === source.parentNode.uuid) {
+                    this.reloadCurrentFolder(source);
+                }
+                this.notification.show({
+                    type: 'success',
+                    message: 'list.copy_success'
+                });
+            },
+            error => {
+                this.state.actions.list.copyNodeError();
+                this.notification.show({
+                    type: 'error',
+                    message: 'list.copy_error',
+                    translationParams: { error }
+                });
+            }
+        );
+    }
+
+    /**
      * Moves a node.
      * @param source uuid of the node to be moved
      * @param destination uuid of the destination container node
@@ -252,13 +303,19 @@ export class ListEffectsService {
             .subscribe(
                 result => {
                     this.state.actions.list.moveNodeSuccess();
-                    const parentNode = this.entities.getNode(source.parentNode.uuid, { language: source.language });
-                    if (parentNode && parentNode.language) {
-                        this.loadChildren(parentNode.project.name!, parentNode.uuid, parentNode.language);
-                    }
+                    this.reloadCurrentFolder(source);
+                    this.notification.show({
+                        type: 'success',
+                        message: 'list.move_success'
+                    });
                 },
                 error => {
                     this.state.actions.list.moveNodeError();
+                    this.notification.show({
+                        type: 'error',
+                        message: 'list.move_error',
+                        translationParams: { error }
+                    });
                 }
             );
     }
@@ -268,10 +325,7 @@ export class ListEffectsService {
         this.api.project.deleteNode({ project: node.project.name!, nodeUuid: node.uuid, recursive }).subscribe(
             result => {
                 this.state.actions.list.deleteNodeSuccess();
-                const parentNode = this.entities.getNode(node.parentNode.uuid, { language: node.language });
-                if (parentNode && parentNode.language) {
-                    this.loadChildren(parentNode.project.name!, parentNode.uuid, parentNode.language);
-                }
+                this.reloadCurrentFolder(node);
             },
             error => {
                 this.state.actions.list.deleteNodeError();
@@ -280,7 +334,23 @@ export class ListEffectsService {
         );
     }
 
+    private reloadCurrentFolder(childNode: MeshNode) {
+        const parentNode = this.entities.getNode(childNode.parentNode.uuid, { language: childNode.language });
+        if (parentNode && parentNode.language) {
+            this.loadChildren(parentNode.project.name!, parentNode.uuid, parentNode.language);
+        }
+    }
+
     public setFilterTerm(term: string) {
         this.state.actions.list.setFilterTerm(term);
     }
+}
+
+function isStringField(fields: SchemaField[], name: string): boolean {
+    for (const field of fields) {
+        if (field.name === name) {
+            return field.type === 'string';
+        }
+    }
+    throw new Error(`Field with name {${name}} could not be found`);
 }

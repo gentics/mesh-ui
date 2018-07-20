@@ -1,4 +1,4 @@
-import { moveNode } from '../api';
+import { deleteNode, moveNode } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import { NodeBrowserDialog } from '../page-objects/node-browser.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
@@ -44,6 +44,29 @@ describe('node list', () => {
             expect(await nodeList.getNodeRow('Ford GT Image').isPresent()).toBeTruthy();
             // Cleanup
             await moveNode({ uuid: 'df8beb3922c94ea28beb3922c94ea2f6' }, { uuid: '15d5ef7a9abf416d95ef7a9abf316d68' });
+        });
+    });
+
+    describe('copying nodes', () => {
+        it('works in the same folder', async () => {
+            await nodeList.copyNode('Yachts');
+            await nodeBrowser.choose();
+            expect(await nodeList.getNodeRow('Yachts (copy)').isPresent()).toBeTruthy();
+
+            // Cleanup
+            deleteNode({ uuid: await nodeList.getNodeUuid('Yachts (copy)') });
+        });
+
+        it('works in another folder', async () => {
+            await nodeList.copyNode('Yachts');
+            await nodeBrowser.openFolder('Aircraft');
+            await nodeBrowser.choose();
+            expect(await nodeList.getNodeRow('Yachts (copy)').isPresent()).toBeFalsy();
+            await nodeList.openFolder('Aircraft');
+            expect(await nodeList.getNodeRow('Yachts (copy)').isPresent()).toBeTruthy();
+
+            // Cleanup
+            deleteNode({ uuid: await nodeList.getNodeUuid('Yachts (copy)') });
         });
     });
 });

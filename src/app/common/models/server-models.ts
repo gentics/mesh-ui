@@ -4401,7 +4401,7 @@ export interface NodeCreateRequest {
     /** ISO 639-1 language tag of the node content. */
     readonly language: string;
     /** The project root node. All futher nodes are children of this node. */
-    readonly parentNode: NodeReferenceFromServer;
+    readonly parentNode: { uuid: string };
     /**
      * Reference to the schema of the root node. Creating a project will also
      * automatically create the base node of the project and link the schema to the
@@ -4866,10 +4866,9 @@ export interface SchemaListResponse {
  * initial branch  of the project.
  */
 export interface SchemaReferenceFromServer {
-    readonly name?: string;
-    readonly set?: boolean;
-    readonly uuid?: string;
-    readonly version?: string;
+    readonly name: string;
+    readonly uuid: string;
+    readonly version: string;
 }
 
 /**

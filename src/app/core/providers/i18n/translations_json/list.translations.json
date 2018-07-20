@@ -3,6 +3,14 @@
         "en": "Copy",
         "de": "Kopieren"
     },
+    "copy_success": {
+        "en": "Node copied successfully",
+        "de": "Node erfolgreich kopiert"
+    },
+    "copy_error": {
+        "en": "Copying node failed\n{{error}}",
+        "de": "Kopieren des Nodes fehlgeschlagen\n{{error}}"
+    },
     "language_select_switch_to": {
         "en": "Display nodes in {{language}}",
         "de": "Nodes in {{language}} zeigen"
@@ -11,7 +19,15 @@
         "en": "Move",
         "de": "Verschieben"
     },
-    "move_node_title": {
+    "move_success": {
+        "en": "Node moved successfully",
+        "de": "Node erfolgreich verschoben"
+    },
+    "move_error": {
+        "en": "Moving node failed\n{{error}}",
+        "de": "Verschieben des Nodes fehlgeschlagen\n{{error}}"
+    },
+    "folder_dialog_title": {
         "en": "Choose destination container",
         "de": "Zielcontainer wählen"
     },

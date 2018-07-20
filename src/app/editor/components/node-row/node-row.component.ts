@@ -52,28 +52,38 @@ export class NodeRowComponent implements OnInit, OnDestroy {
         this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).navigate();
     }
 
-    copyNode(): void {
-        // TODO
+    async copyNode() {
+        this.listEffects.copyNode(this.node, await this.chooseContainerDialog(true));
     }
 
     async moveNode() {
+        this.listEffects.moveNode(this.node, await this.chooseContainerDialog(false));
+    }
+
+    /**
+     * Opens a dialog for choosing a container. Returns the uuid of the chosen container.
+     */
+    private chooseContainerDialog(allowSameContainer: boolean): Promise<string> {
+        const selectablePredicate = allowSameContainer
+            ? () => true
+            : (node: any) => node.uuid !== this.node.parentNode.uuid!;
+
         const options: NodeBrowserOptions = {
             startNodeUuid: this.node.parentNode.uuid,
             projectName: this.node.project.name!,
-            titleKey: 'list.move_node_title',
+            titleKey: 'list.folder_dialog_title',
             chooseContainer: true,
-            selectablePredicate: (node: any) => node.uuid !== this.node.parentNode.uuid!,
+            selectablePredicate,
             nodeFilter: {
                 schema: {
                     isContainer: true
                 }
             }
         };
-        const uuids: string[] = await this.modalService
+        return this.modalService
             .fromComponent(NodeBrowserComponent, { padding: true, width: '1000px' }, { options })
-            .then(dialog => dialog.open());
-
-        this.listEffects.moveNode(this.node, uuids[0]);
+            .then(dialog => dialog.open())
+            .then(result => result[0]);
     }
 
     deleteNode(): void {
