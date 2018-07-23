@@ -43,7 +43,7 @@ describe('node schema', () => {
     it('should show a right breadcrumb after creating a new schema', async () => {
         const breadcrumbs: Array<String> = ['Schemas', 'New schema'];
 
-        await schema.createNewSchema();
+        await schema.createNewSchemaClick();
         await expect(schema.getBreadcrumbs()).toEqual(breadcrumbs);
     });
 
@@ -53,5 +53,52 @@ describe('node schema', () => {
         await schema.clickSomeSchema('folder');
         await schema.clickAllocationsTab();
         await expect(schema.getProjectsName()).toEqual(projects);
+    });
+
+    it('should show a right breadcrumb after clicking on "create schema" and going back to a schema list', async () => {
+        const breadcrumb: Array<String> = ['Schemas'];
+
+        await schema.createNewSchemaClick();
+        await schema.openSchema();
+
+        await expect(schema.getBreadcrumbs()).toEqual(breadcrumb);
+    });
+
+    it('should create a new schema right (check breadcrumb after creating a new schema)', async () => {
+        const schemaName = ['test333'];
+        const schemaInfo = `{
+            "name": "test333",
+            "fields": [
+                {
+                    "name": "name",
+                    "label": "Name",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        }`;
+
+        await schema.createNewSchemaClick();
+
+        await schema.giveSchemaInfo(schemaInfo);
+        await schema.clickSaveButton();
+
+        await schema.openSchema();
+
+        await schema.setFilterText('test333');
+
+        await expect(schema.getAllSchemasName()).toEqual(schemaName);
+    });
+
+    it('should delete some schema', async () => {
+        const test34: Array<String> = [];
+
+        await schema.clickSomeSchema('test333');
+        await schema.clickDeleteButton();
+
+        await schema.openSchema();
+        await schema.setFilterText('test333');
+
+        await expect(schema.getAllSchemasName()).toEqual(test34);
     });
 });

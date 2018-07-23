@@ -1,11 +1,14 @@
 import { browser, by, element } from 'protractor';
 
+declare const window: any;
+
 export class NodeSchema {
     async openSchema() {
         await browser.driver
             .manage()
             .window()
             .maximize();
+        await browser.sleep(1000);
         await this.getSchemaButton().click();
     }
 
@@ -56,11 +59,27 @@ export class NodeSchema {
         return element.all(by.css('gtx-breadcrumbs a.breadcrumb')).getText();
     }
 
-    async createNewSchema() {
+    async createNewSchemaClick() {
         await this.getCreateSchemaButton().click();
     }
 
     getCreateSchemaButton() {
         return element(by.cssContainingText('.button-event-wrapper', 'Create Schema'));
+    }
+
+    async giveSchemaInfo(schemaInfo: String) {
+        await browser.wait(() => browser.executeScript(() => window.monaco));
+        await browser.executeScript(
+            (schemaInfo: String) => window.monaco.editor.getModels()[0].setValue(schemaInfo),
+            schemaInfo
+        );
+    }
+
+    async clickSaveButton() {
+        await element(by.cssContainingText('.button-event-wrapper', 'Save')).click();
+    }
+
+    async clickDeleteButton() {
+        await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
     }
 }
