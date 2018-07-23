@@ -7,6 +7,8 @@ import { MeshNode } from '../../../common/models/node.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { NodeBrowserOptions } from '../../../shared/components/node-browser/interfaces';
+import { NodeBrowserComponent } from '../../../shared/components/node-browser/node-browser.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Component({
@@ -54,8 +56,24 @@ export class NodeRowComponent implements OnInit, OnDestroy {
         // TODO
     }
 
-    moveNode(): void {
-        // TODO
+    async moveNode() {
+        const options: NodeBrowserOptions = {
+            startNodeUuid: this.node.parentNode.uuid,
+            projectName: this.node.project.name!,
+            titleKey: 'list.move_node_title',
+            chooseContainer: true,
+            selectablePredicate: (node: any) => node.uuid !== this.node.parentNode.uuid!,
+            nodeFilter: {
+                schema: {
+                    isContainer: true
+                }
+            }
+        };
+        const uuids: string[] = await this.modalService
+            .fromComponent(NodeBrowserComponent, { padding: true, width: '1000px' }, { options })
+            .then(dialog => dialog.open());
+
+        this.listEffects.moveNode(this.node, uuids[0]);
     }
 
     deleteNode(): void {

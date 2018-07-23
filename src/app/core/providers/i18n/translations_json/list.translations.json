@@ -1,5 +1,5 @@
 {
-    "copy_button": {
+    "copy": {
         "en": "Copy",
         "de": "Kopieren"
     },
@@ -7,13 +7,21 @@
         "en": "Display nodes in {{language}}",
         "de": "Nodes in {{language}} zeigen"
     },
-    "move_button": {
+    "move": {
         "en": "Move",
         "de": "Verschieben"
     },
-    "delete_button": {
+    "move_node_title": {
+        "en": "Choose destination container",
+        "de": "Zielcontainer wählen"
+    },
+    "delete": {
         "en": "Delete",
         "de": "Löschen"
+    },
+    "edit": {
+        "en": "Edit",
+        "de": "Bearbeiten"
     },
     "no_results": {
         "en": "No results",
@@ -27,7 +35,6 @@
         "en": "Upload files",
         "de": "Dateien hochladen"
     },
-
     "choose_files": {
         "en": "Select or drop files...",
         "de": "Dateien auswählen oder hier ablegen..."
