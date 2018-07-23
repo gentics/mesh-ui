@@ -43,7 +43,8 @@ export class NodeFieldComponent extends BaseFieldComponent {
         this.api
             .openNodeBrowser({
                 startNodeUuid: node.parentNode ? node.parentNode.uuid : node.uuid,
-                projectName: node.project.name!
+                projectName: node.project.name!,
+                titleKey: 'editor.select_node'
             })
             .then(uuids => {
                 this.userValue = uuids[0];

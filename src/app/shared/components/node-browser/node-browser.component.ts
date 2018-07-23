@@ -7,14 +7,21 @@ import { filter, flatMap, map, share } from 'rxjs/operators';
 
 import { notNullOrUndefined } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 import { NodeBrowserOptions, PageResult, QueryResult } from './interfaces';
 
-const query = `
+interface QueryParams {
+    parent?: string;
+    esQuery?: string;
+    page: number;
+}
+
+const gqlQuery = `
 query($parent: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
 	node(uuid: $parent) {
         uuid
-		children(filter: $filter, perPage: $perPage, page: $page) {
+		nodes: children(filter: $filter, perPage: $perPage, page: $page) {
             totalCount
             pageCount
 			elements {
@@ -27,6 +34,19 @@ query($parent: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
 			uuid
 			text: displayName
 		}
+	}
+}`;
+
+const esGqlQuery = `
+query($query: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
+	nodes(query: $query, filter: $filter, perPage: $perPage, page: $page) {
+        totalCount
+        pageCount
+        elements {
+            uuid
+            displayName
+            isContainer
+        }
 	}
 }`;
 
@@ -44,7 +64,7 @@ query($parent: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeBrowserComponent implements IModalDialog, OnInit {
-    constructor(private apiService: ApiService) {}
+    constructor(private apiService: ApiService, private state: ApplicationStateService) { }
 
     @Input() options: NodeBrowserOptions;
     selectableFn: (node: any) => boolean;
@@ -52,15 +72,21 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
 
     currentNode: any;
     currentNode$: Subject<string>;
+    search: Subject<string | null> = new BehaviorSubject(null);
+    queryParams: Subject<QueryParams>;
+    searchQuery: string;
+    searchedTerm: string;
+
     queryResult$: Observable<QueryResult>;
     currentPageContent$: Observable<any[]>;
     breadcrumb$: Observable<IBreadcrumbLink[]>;
     totalItems$: Observable<number>;
     pageCount$: Observable<number>;
     currentPage$ = new BehaviorSubject(1);
+    searchAvailable$: Observable<boolean>;
 
-    closeFn(uuids: string[]): void {}
-    cancelFn(val?: any): void {}
+    closeFn(uuids: string[]): void { }
+    cancelFn(val?: any): void { }
 
     selected: PageResult[] = [];
 
@@ -77,27 +103,82 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     ngOnInit(): void {
         this.initSelectableFn();
         this.currentNode$ = new BehaviorSubject(this.options.startNodeUuid);
+        this.searchAvailable$ = this.state.select(s => s.ui.searchAvailable);
 
-        this.queryResult$ = Observable.combineLatest(this.currentNode$, this.currentPage$).pipe(
-            flatMap(([parent, page]) =>
+        this.queryParams = new BehaviorSubject({
+            page: 1
+        });
+
+        const esQuery = this.search.map(
+            term =>
+                term
+                    ? {
+                        query: {
+                            query_string: {
+                                query: term
+                            }
+                        }
+                    }
+                    : null
+        );
+
+        // Update query params when page has changed
+        this.currentPage$.subscribe(page => {
+            this.queryParams.take(1).subscribe(prevParams => {
+                this.queryParams.next({ ...prevParams, page });
+            });
+        });
+
+        // Empty search box when folder is changed and set page to 1
+        this.currentNode$.subscribe(parent => {
+            this.searchQuery = '';
+            this.searchedTerm = '';
+            this.queryParams.next({
+                parent,
+                page: 1
+            });
+        });
+
+        // Start search when search was pressed
+        esQuery.skip(1).subscribe(query => {
+            this.queryParams.take(1).subscribe(prevParams => {
+                this.queryParams.next({
+                    parent: prevParams.parent,
+                    esQuery: query ? JSON.stringify(query) : undefined,
+                    page: 1
+                });
+            });
+        });
+
+        // Fetch nodes from Mesh when folder, page or search term has changed
+        this.queryResult$ = this.queryParams.pipe(
+            flatMap(queryParams =>
                 this.apiService.graphQL(
                     { project: this.options.projectName },
                     {
-                        query,
-                        variables: { query, parent, perPage: this.perPage, page, filter: this.options.nodeFilter }
+                        query: queryParams.esQuery ? esGqlQuery : gqlQuery,
+                        variables: {
+                            query: queryParams.esQuery,
+                            filter: this.options.nodeFilter,
+                            parent: queryParams.parent,
+                            perPage: this.perPage,
+                            page: queryParams.page
+                        }
                     }
                 )
             ),
-            map(response => response.data),
+            map(response => response.data.node || response.data),
             filter(notNullOrUndefined),
             share()
         ) as Observable<QueryResult>;
 
-        this.currentPageContent$ = this.queryResult$.map(result => result.node.children.elements);
-        this.breadcrumb$ = this.queryResult$.map(result => this.toBreadcrumb(result));
-        this.totalItems$ = this.queryResult$.map(result => result.node.children.totalCount);
-        this.pageCount$ = this.queryResult$.map(result => result.node.children.pageCount);
-        this.queryResult$.subscribe(result => (this.currentNode = result.node));
+
+        this.currentPageContent$ = this.queryResult$.map(result => result.nodes.elements);
+        this.breadcrumb$ = this.queryResult$
+            .filter(result => !!result.breadcrumb)
+            .map(result => this.toBreadcrumb(result));
+        this.totalItems$ = this.queryResult$.map(result => result.nodes.totalCount);
+        this.pageCount$ = this.queryResult$.map(result => result.nodes.pageCount);
     }
 
     private initSelectableFn() {
@@ -120,7 +201,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     }
 
     toBreadcrumb(result: QueryResult): IBreadcrumbLink[] {
-        const breadcrumbs = result.node.breadcrumb;
+        const breadcrumbs = result.breadcrumb!;
 
         return breadcrumbs.map((crumb, index) => {
             if (index === 0) {
@@ -139,5 +220,17 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
         } else {
             this.closeFn(this.selected.map(item => item.uuid));
         }
+    }
+
+    clearSearch() {
+        this.searchQuery = '';
+        this.searchedTerm = '';
+        this.search.next(null);
+    }
+
+    onSearch(query: string) {
+        this.search.next(query);
+        this.searchedTerm = query;
+        this.searchQuery = '';
     }
 }

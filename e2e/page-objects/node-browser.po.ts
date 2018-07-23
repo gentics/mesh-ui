@@ -1,4 +1,4 @@
-import { by, element } from 'protractor';
+import { browser, by, element, Key } from 'protractor';
 
 export class NodeBrowserDialog {
     private readonly nodeBrowser = element(by.css('mesh-node-browser'));
@@ -17,5 +17,10 @@ export class NodeBrowserDialog {
 
     public choose() {
         return this.nodeBrowser.element(by.css('button.primary')).click();
+    }
+
+    public async search(term: string) {
+        await this.nodeBrowser.element(by.css('gtx-search-bar input')).sendKeys(term, Key.ENTER);
+        await browser.waitForAngular();
     }
 }

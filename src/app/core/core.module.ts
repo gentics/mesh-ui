@@ -19,6 +19,7 @@ import { I18nNotification } from './providers/i18n-notification/i18n-notificatio
 import { CustomLoader } from './providers/i18n/custom-loader';
 import { I18nService } from './providers/i18n/i18n.service';
 import { NavigationService } from './providers/navigation/navigation.service';
+import { SearchEffectsService } from './providers/search/search-effects.service';
 
 // Application wide providers
 const CORE_PROVIDERS = [
@@ -32,7 +33,8 @@ const CORE_PROVIDERS = [
     ListEffectsService,
     ApiService,
     ApiBase,
-    ContentPortalService
+    ContentPortalService,
+    SearchEffectsService
 ];
 
 const CORE_COMPONENTS = [LanguageSwitcherComponent, UserDropdownComponent];

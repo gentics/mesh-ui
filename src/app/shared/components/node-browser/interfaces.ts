@@ -13,16 +13,12 @@ export interface NodeBrowserOptions {
 }
 
 export interface QueryResult {
-    node: {
-        uuid: string;
-        displayName: string;
-        children: {
-            totalCount: number;
-            pageCount: number;
-            elements: PageResult[];
-        };
-        breadcrumb: Breadcrumb[];
+    nodes: {
+        totalCount: number;
+        pageCount: number;
+        elements: PageResult[];
     };
+    breadcrumb?: Breadcrumb[];
 }
 
 export interface Breadcrumb {

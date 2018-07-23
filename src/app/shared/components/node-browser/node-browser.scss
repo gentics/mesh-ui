@@ -11,6 +11,16 @@
         }
     }
 
+    .modal-title {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    gtx-search-bar {
+        width: 400px;
+    }
+
     /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
     /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
         color: white;

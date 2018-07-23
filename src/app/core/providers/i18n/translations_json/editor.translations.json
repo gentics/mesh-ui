@@ -49,11 +49,11 @@
     },
     "node_saved": {
       "en": "Node successfully saved",
-      "de": "Node erfolgrich geschpeichert"
+      "de": "Node erfolgreich gespeichert"
     },
     "node_save_error": {
       "en": "Node could not be saved",
-      "de": "Node könnte nicht geschpeichert werden"
+      "de": "Node könnte nicht gespeichert werden"
     },
     "publish_button": {
       "en": "Publish",
@@ -78,6 +78,10 @@
     "select_file": {
       "en": "Select file",
       "de": "Datei auswählen"
+    },
+    "select_node": {
+      "en": "Select node",
+      "de": "Node auswählen"
     },
     "tag_name": {
       "en": "Tag name",
