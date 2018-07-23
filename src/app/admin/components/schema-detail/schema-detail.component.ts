@@ -113,7 +113,9 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
         this.destroy$.next();
         this.destroy$.complete();
     }
