@@ -64,13 +64,13 @@ query($query: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeBrowserComponent implements IModalDialog, OnInit {
-    constructor(private apiService: ApiService, private state: ApplicationStateService) { }
+    constructor(private apiService: ApiService, private state: ApplicationStateService) {}
 
     @Input() options: NodeBrowserOptions;
     selectableFn: (node: any) => boolean;
     closableFn: () => boolean;
 
-    currentNode: any;
+    currentNode: { uuid: string };
     currentNode$: Subject<string>;
     search: Subject<string | null> = new BehaviorSubject(null);
     queryParams: Subject<QueryParams>;
@@ -85,8 +85,8 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     currentPage$ = new BehaviorSubject(1);
     searchAvailable$: Observable<boolean>;
 
-    closeFn(uuids: string[]): void { }
-    cancelFn(val?: any): void { }
+    closeFn(uuids: string[]): void {}
+    cancelFn(val?: any): void {}
 
     selected: PageResult[] = [];
 
@@ -113,12 +113,12 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
             term =>
                 term
                     ? {
-                        query: {
-                            query_string: {
-                                query: term
-                            }
-                        }
-                    }
+                          query: {
+                              query_string: {
+                                  query: term
+                              }
+                          }
+                      }
                     : null
         );
 
@@ -172,13 +172,13 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
             share()
         ) as Observable<QueryResult>;
 
-
         this.currentPageContent$ = this.queryResult$.map(result => result.nodes.elements);
         this.breadcrumb$ = this.queryResult$
             .filter(result => !!result.breadcrumb)
             .map(result => this.toBreadcrumb(result));
         this.totalItems$ = this.queryResult$.map(result => result.nodes.totalCount);
         this.pageCount$ = this.queryResult$.map(result => result.nodes.pageCount);
+        this.queryResult$.subscribe(result => (this.currentNode = result));
     }
 
     private initSelectableFn() {
@@ -189,7 +189,8 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
             // TODO Use a seperate function for that
             // Use the selectable function for the button in container mode
             this.closableFn =
-                (selectableFn && (() => (this.currentNode && selectableFn(this.currentNode)) || false)) || (() => true);
+                (selectableFn && (() => (this.currentNode && selectableFn(this.currentNode as any)) || false)) ||
+                (() => true);
         } else if (this.options.selectablePredicate) {
             this.selectableFn = this.options.selectablePredicate;
             this.closableFn = () => true;

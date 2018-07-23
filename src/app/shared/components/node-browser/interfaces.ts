@@ -13,6 +13,7 @@ export interface NodeBrowserOptions {
 }
 
 export interface QueryResult {
+    uuid: string;
     nodes: {
         totalCount: number;
         pageCount: number;
