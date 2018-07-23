@@ -18,6 +18,18 @@ export class MeshNodeList {
         await element(by.cssContainingText('gtx-dropdown-item', 'Move')).click();
     }
 
+    async copyNode(displayName: string) {
+        await this.openNodeMenu(displayName);
+        await element(by.cssContainingText('gtx-dropdown-item', 'Copy')).click();
+    }
+
+    async getNodeUuid(displayName: string): Promise<string> {
+        const href = await this.getNodeRow(displayName)
+            .element(by.css('.title a'))
+            .getAttribute('href');
+        return href.match(/demo\/(.*)\//)![1];
+    }
+
     private async openNodeMenu(displayName: string) {
         await this.getNodeRow(displayName)
             .element(by.css('gtx-dropdown-list button'))

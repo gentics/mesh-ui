@@ -15,6 +15,13 @@ export class NodeBrowserDialog {
         return this.nodeBrowser.all(by.css('pagination-controls li:not(.pagination-previous):not(.pagination-next)'));
     }
 
+    public openFolder(displayName: string) {
+        return this.getNodes()
+            .all(by.cssContainingText('a', displayName))
+            .first()
+            .click();
+    }
+
     public choose() {
         return this.nodeBrowser.element(by.css('button.primary')).click();
     }
