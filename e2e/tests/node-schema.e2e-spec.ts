@@ -64,7 +64,7 @@ describe('node schema', () => {
         await expect(schema.getBreadcrumbs()).toEqual(breadcrumb);
     });
 
-    fit('should create a new schema and delete it (using bottom button)', async () => {
+    it('should create a new schema and delete it (using bottom button)', async () => {
         const test: Array<String> = [];
         const schemaName: Array<String> = ['test'];
         const schemaInfo = `{
