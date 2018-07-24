@@ -1,5 +1,5 @@
 <mesh-admin-list [items]="schemas$ | async"
-                 [itemsPerPage]="25"
+                 [itemsPerPage]="5"
                  [currentPage]="currentPage$ | async"
                  [(selection)]="selectedIndices"
                  (pageChange)="onPageChange($event)">

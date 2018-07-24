@@ -51,7 +51,7 @@ export class SchemaListComponent implements OnInit, OnDestroy {
 
         combineLatest(
             observeQueryParam(this.route.queryParamMap, 'p', 1),
-            observeQueryParam(this.route.queryParamMap, 'perPage', 25)
+            observeQueryParam(this.route.queryParamMap, 'perPage', 5)
         )
             .takeUntil(this.destroy$)
             .subscribe(([page, perPage]) => {
