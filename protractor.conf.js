@@ -13,7 +13,8 @@ exports.config = {
     editor: 'e2e/tests/node-editor.e2e-spec.ts',
     list: 'e2e/tests/node-list.e2e-spec.ts',
     admin: 'e2e/tests/node-admin.e2e-spec.ts',
-    schema: 'e2e/tests/node-schema.e2e-spec.ts'
+    schema: 'e2e/tests/node-schema.e2e-spec.ts',
+    microschema: 'e2e/tests/node-microschema.e2e-spec.ts'
   },
   capabilities: {
     'browserName': 'chrome'

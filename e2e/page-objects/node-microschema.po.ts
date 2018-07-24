@@ -2,29 +2,30 @@ import { browser, by, element } from 'protractor';
 
 declare const window: any;
 
-export class NodeSchema {
-    async openSchema() {
+export class NodeMicroschema {
+    async openMicroschema() {
         await browser.driver
             .manage()
             .window()
             .maximize();
-        await this.getSchemaButton().click();
+        await browser.sleep(1000);
+        await this.getMicroschemaButton().click();
     }
 
-    getSchemaButton() {
-        return element.all(by.css('.main-menu li a span')).get(3);
+    getMicroschemaButton() {
+        return element.all(by.css('.main-menu li a span')).get(4);
     }
 
-    getAllSchemasName() {
+    getAllMicroschemasName() {
         return element.all(by.css('.item-primary')).getText();
     }
 
-    async clickSomeSchema(schemaName: string) {
-        await this.getSomeSchema(schemaName).click();
+    async clickSomeMicroschema(microschemaName: string) {
+        await this.getSomeMicroschema(microschemaName).click();
     }
 
-    getSomeSchema(schemaName: string) {
-        return element(by.cssContainingText('.item-primary', schemaName));
+    getSomeMicroschema(microschemaName: string) {
+        return element(by.cssContainingText('.item-primary', microschemaName));
     }
 
     async clickAllocationsTab() {
@@ -46,7 +47,7 @@ export class NodeSchema {
         await element(by.css('gtx-input input')).sendKeys(text);
     }
 
-    async checkAllSchemas() {
+    async checkAllMicroschemas() {
         await element(by.css('.select-all')).click();
     }
 
@@ -58,19 +59,19 @@ export class NodeSchema {
         return element.all(by.css('gtx-breadcrumbs a.breadcrumb')).getText();
     }
 
-    async createNewSchemaClick() {
-        await this.getCreateSchemaButton().click();
+    async createNewMicroschemaClick() {
+        await this.getCreateMicroschemaButton().click();
     }
 
-    getCreateSchemaButton() {
-        return element(by.cssContainingText('.button-event-wrapper', 'Create Schema'));
+    getCreateMicroschemaButton() {
+        return element(by.cssContainingText('.button-event-wrapper', 'Create Microschema'));
     }
 
-    async giveSchemaInfo(schemaInfo: String) {
+    async giveMicroschemaInfo(microschemaInfo: String) {
         await browser.wait(() => browser.executeScript(() => window.monaco));
         await browser.executeScript(
-            (schemaInfo: String) => window.monaco.editor.getModels()[0].setValue(schemaInfo),
-            schemaInfo
+            (microschemaInfo: String) => window.monaco.editor.getModels()[0].setValue(microschemaInfo),
+            microschemaInfo
         );
     }
 
@@ -78,7 +79,11 @@ export class NodeSchema {
         await element(by.cssContainingText('.button-event-wrapper', 'Save')).click();
     }
 
-    async chooseSchema() {
+    async clickDeleteButton() {
+        await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
+    }
+
+    async chooseMicroschema() {
         await element
             .all(by.css('gtx-checkbox'))
             .get(1)
@@ -87,10 +92,6 @@ export class NodeSchema {
 
     async clickDeleteTopButton() {
         await element(by.cssContainingText('.button-event-wrapper', 'delete')).click();
-    }
-
-    async clickDeleteButton() {
-        await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
     }
 
     async goToNextPage() {
