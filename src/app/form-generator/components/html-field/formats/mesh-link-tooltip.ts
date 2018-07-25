@@ -50,23 +50,39 @@ class BaseTooltip extends Tooltip {
         this.hide();
     }
 
-    edit(mode = 'link', preview: string | null = null) {
-        this.root.classList.remove('ql-hidden');
-        this.root.classList.add('ql-editing');
-        if (preview != null) {
-            this.textbox.value = preview;
-        } else if (mode !== this.root.getAttribute('data-mode')) {
-            this.textbox.value = '';
-        }
-        this.position(this.quill.getBounds(this.quill.selection.savedRange));
-        this.textbox.select();
-        this.textbox.setAttribute('placeholder', this.textbox.getAttribute(`data-${mode}`) || '');
+    async edit(mode = 'link', preview: string | null = null) {
         this.root.setAttribute('data-mode', mode);
         if (mode === 'mesh-link') {
-            this.meshNode.textContent = preview;
+            const node = this.api.getNodeValue() as MeshNode;
+            const [uuid] = await this.api.openNodeBrowser({
+                startNodeUuid: node.parentNode ? node.parentNode.uuid : node.uuid,
+                projectName: node.project.name!,
+                titleKey: 'editor.select_node'
+            });
+            const { scrollTop } = this.quill.root;
+            if (this.linkRange) {
+                this.quill.formatText(this.linkRange, 'mesh-link', uuid, Emitter.sources.USER);
+                delete this.linkRange;
+            } else {
+                this.restoreFocus();
+                this.quill.format('mesh-link', uuid, Emitter.sources.USER);
+            }
+            this.textbox.value = '';
+            this.quill.root.scrollTop = scrollTop;
+            this.meshNode.textContent = uuid;
         } else {
+            if (preview != null) {
+                this.textbox.value = preview;
+            } else if (mode !== this.root.getAttribute('data-mode')) {
+                this.textbox.value = '';
+            }
+            this.textbox.select();
+            this.textbox.setAttribute('placeholder', this.textbox.getAttribute(`data-${mode}`) || '');
             this.meshNode.textContent = '';
+            this.root.classList.add('ql-editing');
         }
+        this.root.classList.remove('ql-hidden');
+        this.position(this.quill.getBounds(this.quill.selection.savedRange));
     }
 
     restoreFocus() {
@@ -109,19 +125,6 @@ class BaseTooltip extends Tooltip {
                 }
                 break;
             }
-            case 'mesh-link': {
-                value = this.meshNode.textContent;
-                const { scrollTop } = this.quill.root;
-                if (this.linkRange) {
-                    this.quill.formatText(this.linkRange, 'mesh-link', value, Emitter.sources.USER);
-                    delete this.linkRange;
-                } else {
-                    this.restoreFocus();
-                    this.quill.format('mesh-link', value, Emitter.sources.USER);
-                }
-                this.quill.root.scrollTop = scrollTop;
-                break;
-            }
             default:
         }
         this.textbox.value = '';
@@ -134,10 +137,6 @@ class MeshTooltip extends BaseTooltip {
     constructor(quill: any, private api: MeshFieldControlApi, bounds?: any) {
         super(quill, bounds);
         this.preview = this.root.querySelector('a.ql-preview');
-    }
-
-    hide() {
-        super.hide();
     }
 
     listen() {
@@ -159,23 +158,11 @@ class MeshTooltip extends BaseTooltip {
             if (this.linkRange != null) {
                 const range = this.linkRange;
                 this.restoreFocus();
-                this.quill.formatText(range, 'link', false, Emitter.sources.USER);
+                this.quill.formatText(range, this.root.getAttribute('data-mode'), false, Emitter.sources.USER);
                 delete this.linkRange;
             }
             event.preventDefault();
             this.hide();
-        });
-        this.root.querySelector('a.ql-mesh-browse').addEventListener('click', async (event: Event) => {
-            event.preventDefault();
-            const node = this.api.getNodeValue() as MeshNode;
-            const [uuid] = await this.api.openNodeBrowser({
-                startNodeUuid: node.parentNode ? node.parentNode.uuid : node.uuid,
-                projectName: node.project.name!,
-                titleKey: 'editor.select_node'
-            });
-            this.edit('mesh-link', uuid);
-            // TODO Make node link clickable
-            // TODO Show display name instead of uuid
         });
         this.quill.on(Emitter.events.SELECTION_CHANGE, (range: any, oldRange: any, source: any) => {
             if (range == null) {
@@ -209,10 +196,6 @@ class MeshTooltip extends BaseTooltip {
             }
             this.hide();
         });
-    }
-
-    show() {
-        super.show();
     }
 
     static TEMPLATE = [

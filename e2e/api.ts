@@ -58,6 +58,10 @@ export function deleteNode(node: HasUuid) {
     });
 }
 
+export function findNodeByUuid(uuid: string): Promise<MeshNode> {
+    return get(`/${project}/nodes/${uuid}`);
+}
+
 export function moveNode(source: HasUuid, destination: HasUuid) {
     return post(`/${project}/nodes/${source.uuid}/moveTo/${destination.uuid}`);
 }

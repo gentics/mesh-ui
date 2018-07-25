@@ -1,18 +1,16 @@
 import { deleteNode, moveNode } from '../api';
 import { AppPage } from '../page-objects/app.po';
-import { NodeBrowserDialog } from '../page-objects/node-browser.po';
+import * as nodeBrowser from '../page-objects/node-browser.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 import { toText } from '../testUtil';
 
 describe('node list', () => {
     let page: AppPage;
     let nodeList: MeshNodeList;
-    let nodeBrowser: NodeBrowserDialog;
 
     beforeEach(async () => {
         page = new AppPage();
         nodeList = new MeshNodeList();
-        nodeBrowser = new NodeBrowserDialog();
         await page.navigateToHome();
     });
 
