@@ -8,7 +8,9 @@ export class NodeSchema {
             .manage()
             .window()
             .maximize();
+        await browser.sleep(1000);
         await this.getSchemaButton().click();
+        await browser.sleep(1000);
     }
 
     getSchemaButton() {
@@ -21,6 +23,7 @@ export class NodeSchema {
 
     async clickSomeSchema(schemaName: string) {
         await this.getSomeSchema(schemaName).click();
+        await browser.sleep(1000);
     }
 
     getSomeSchema(schemaName: string) {
@@ -44,6 +47,7 @@ export class NodeSchema {
 
     async setFilterText(text: string) {
         await element(by.css('gtx-input input')).sendKeys(text);
+        await browser.sleep(1000);
     }
 
     async checkAllSchemas() {
@@ -91,6 +95,14 @@ export class NodeSchema {
 
     async clickDeleteButton() {
         await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
+    }
+
+    async clickDeleteBottomButton() {
+        await browser.waitForAngularEnabled(false);
+        await element
+            .all(by.css('.button-event-wrapper'))
+            .get(4)
+            .click();
     }
 
     async goToNextPage() {

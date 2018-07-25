@@ -64,41 +64,6 @@ describe('node microschema', () => {
         await expect(microschema.getBreadcrumbs()).toEqual(breadcrumb);
     });
 
-    it('should create a new schema and delete it (using bottom button)', async () => {
-        const test: Array<String> = [];
-        const microschemaName: Array<String> = ['test4'];
-        const microschemaInfo = `{
-            "name": "test4",
-            "fields": [
-                {
-                    "name": "name",
-                    "label": "Name",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        }`;
-
-        await microschema.createNewMicroschemaClick();
-
-        await microschema.giveMicroschemaInfo(microschemaInfo);
-        await microschema.clickSaveButton();
-
-        await microschema.openMicroschema();
-
-        await microschema.setFilterText('test4');
-
-        await expect(microschema.getAllMicroschemasName()).toEqual(microschemaName);
-
-        await microschema.clickSomeMicroschema('test4');
-        await microschema.clickDeleteButton();
-
-        await microschema.openMicroschema();
-        await microschema.setFilterText('test4');
-
-        await expect(microschema.getAllMicroschemasName()).toEqual(test);
-    });
-
     it('should create a new schema and delete it (using top button)', async () => {
         const test: Array<String> = [];
         const microschemaName: Array<String> = ['test4'];
@@ -129,6 +94,41 @@ describe('node microschema', () => {
 
         await microschema.clickDeleteTopButton();
         await microschema.clickDeleteButton();
+
+        await microschema.openMicroschema();
+        await microschema.setFilterText('test4');
+
+        await expect(microschema.getAllMicroschemasName()).toEqual(test);
+    });
+
+    it('should create a new schema and delete it (using bottom button)', async () => {
+        const test: Array<String> = [];
+        const microschemaName: Array<String> = ['test4'];
+        const microschemaInfo = `{
+            "name": "test4",
+            "fields": [
+                {
+                    "name": "name",
+                    "label": "Name",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        }`;
+
+        await microschema.createNewMicroschemaClick();
+
+        await microschema.giveMicroschemaInfo(microschemaInfo);
+        await microschema.clickSaveButton();
+
+        await microschema.openMicroschema();
+
+        await microschema.setFilterText('test4');
+
+        await expect(microschema.getAllMicroschemasName()).toEqual(microschemaName);
+
+        await microschema.clickSomeMicroschema('test4');
+        await microschema.clickDeleteBottomButton();
 
         await microschema.openMicroschema();
         await microschema.setFilterText('test4');
