@@ -64,43 +64,6 @@ describe('node schema', () => {
         await expect(schema.getBreadcrumbs()).toEqual(breadcrumb);
     });
 
-    it('should create a new schema and delete it (using bottom button)', async () => {
-        const test: Array<String> = [];
-        const schemaName: Array<String> = ['test'];
-        const schemaInfo = `{
-            "name": "test",
-            "fields": [
-                {
-                    "name": "name",
-                    "label": "Name",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        }`;
-
-        await schema.createNewSchemaClick();
-
-        await schema.giveSchemaInfo(schemaInfo);
-        await schema.clickSaveButton();
-
-        await schema.openSchema();
-
-        await schema.setFilterText('test');
-
-        await expect(schema.getAllSchemasName()).toEqual(schemaName);
-
-        await schema.clickSomeSchema('test');
-
-        await schema.clickDeleteButton();
-
-        await schema.openSchema();
-
-        await schema.setFilterText('test');
-
-        await expect(schema.getAllSchemasName()).toEqual(test);
-    });
-
     it('should create a new schema and delete it (using top button)', async () => {
         const test: Array<String> = [];
         const schemaName: Array<String> = ['test'];
@@ -132,7 +95,47 @@ describe('node schema', () => {
         await schema.clickDeleteTopButton();
         await schema.clickDeleteButton();
 
+        await expect(schema.checkedCount().getText()).toEqual('Selected: 0');
+
+        await schema.clearFilterText();
+
+        await schema.setFilterText('test');
+
+        await expect(schema.getAllSchemasName()).toEqual(test);
+    });
+
+    it('should create a new schema and delete it (using bottom button)', async () => {
+        const test: Array<String> = [];
+        const schemaName: Array<String> = ['test'];
+        const schemaInfo = `{
+            "name": "test",
+            "fields": [
+                {
+                    "name": "name",
+                    "label": "Name",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        }`;
+
+        await schema.createNewSchemaClick();
+
+        await schema.giveSchemaInfo(schemaInfo);
+        await schema.clickSaveButton();
+
         await schema.openSchema();
+
+        await schema.setFilterText('test');
+
+        await expect(schema.getAllSchemasName()).toEqual(schemaName);
+
+        await schema.clickSomeSchema('test');
+
+        await schema.clickDeleteBottomButton();
+
+        await schema.openSchema();
+
         await schema.setFilterText('test');
 
         await expect(schema.getAllSchemasName()).toEqual(test);

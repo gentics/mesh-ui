@@ -10,6 +10,7 @@ export class NodeMicroschema {
             .maximize();
         await browser.sleep(1000);
         await this.getMicroschemaButton().click();
+        await browser.sleep(1000);
     }
 
     getMicroschemaButton() {
@@ -22,6 +23,7 @@ export class NodeMicroschema {
 
     async clickSomeMicroschema(microschemaName: string) {
         await this.getSomeMicroschema(microschemaName).click();
+        await browser.sleep(1000);
     }
 
     getSomeMicroschema(microschemaName: string) {
@@ -45,6 +47,7 @@ export class NodeMicroschema {
 
     async setFilterText(text: string) {
         await element(by.css('gtx-input input')).sendKeys(text);
+        await browser.sleep(1000);
     }
 
     async checkAllMicroschemas() {
@@ -79,10 +82,6 @@ export class NodeMicroschema {
         await element(by.cssContainingText('.button-event-wrapper', 'Save')).click();
     }
 
-    async clickDeleteButton() {
-        await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
-    }
-
     async chooseMicroschema() {
         await element
             .all(by.css('gtx-checkbox'))
@@ -91,7 +90,20 @@ export class NodeMicroschema {
     }
 
     async clickDeleteTopButton() {
+        await browser.waitForAngularEnabled(true);
         await element(by.cssContainingText('.button-event-wrapper', 'delete')).click();
+    }
+
+    async clickDeleteButton() {
+        await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
+    }
+
+    async clickDeleteBottomButton() {
+        await browser.waitForAngularEnabled(false);
+        await element
+            .all(by.css('.button-event-wrapper'))
+            .get(4)
+            .click();
     }
 
     async goToNextPage() {
