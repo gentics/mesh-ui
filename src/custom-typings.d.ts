@@ -124,4 +124,4 @@ interface NodeRequireFunction extends Es6PromiseLoader {}
 interface NodeModule extends WebpackModule {}
 interface Global extends GlobalEnvironment {}
 
-declare module 'quill/blots/inline';
+declare module 'quill-table';

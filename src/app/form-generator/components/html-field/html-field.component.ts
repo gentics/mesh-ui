@@ -8,8 +8,9 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import * as Quill from 'quill';
+import * as quillTable from 'quill-table';
 
-import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
+import { NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
 import { errorHashFor, ErrorCode } from '../../common/form-errors';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
@@ -35,8 +36,22 @@ const toolbarOptions = [
 
     ['link', 'mesh-link'],
 
+    tableOptions(),
+
     ['clean']
 ];
+
+function tableOptions(): any[] {
+    const maxRows = 10;
+    const maxCols = 5;
+    const tableOptions = [];
+    for (let r = 1; r <= maxRows; r++) {
+        for (let c = 1; c <= maxCols; c++) {
+            tableOptions.push('newtable_' + r + '_' + c);
+        }
+    }
+    return [{ table: tableOptions }, { table: 'append-row' }, { table: 'append-col' }];
+}
 
 @Component({
     selector: 'mesh-html-field',
@@ -59,7 +74,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
 
     ngAfterViewInit(): void {
         const editorElement = this.editorRef.nativeElement;
-        Quill.register('formats/mesh-link', MeshLink);
+        this.initQuill();
         this.editor = new Quill(editorElement, {
             theme: 'snow',
             modules: {
@@ -68,7 +83,8 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
                     handlers: {
                         'mesh-link': MeshLinkHandler
                     }
-                }
+                },
+                table: true
             }
         }) as any;
         this.editor.clipboard.dangerouslyPasteHTML(this.value as string);
@@ -85,6 +101,15 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         if (this.api.readOnly) {
             this.editor.disable();
         }
+    }
+
+    initQuill(): void {
+        Quill.register('formats/mesh-link', MeshLink);
+        Quill.register(quillTable.TableCell);
+        Quill.register(quillTable.TableRow);
+        Quill.register(quillTable.Table);
+        Quill.register(quillTable.Contain);
+        Quill.register('modules/table', quillTable.TableModule);
     }
 
     ngOnDestroy(): void {
