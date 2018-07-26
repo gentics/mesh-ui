@@ -64,7 +64,7 @@ describe('node microschema', () => {
         await expect(microschema.getBreadcrumbs()).toEqual(breadcrumb);
     });
 
-    it('should create a new schema and delete it (using top button)', async () => {
+    fit('should create a new schema and delete it (using top button) with selected items check', async () => {
         const test: Array<String> = [];
         const microschemaName: Array<String> = ['test4'];
         const microschemaInfo = `{
@@ -95,7 +95,10 @@ describe('node microschema', () => {
         await microschema.clickDeleteTopButton();
         await microschema.clickDeleteButton();
 
-        await microschema.openMicroschema();
+        await expect(microschema.checkedCount().getText()).toEqual('Selected: 0');
+
+        await microschema.clearFilterText();
+
         await microschema.setFilterText('test4');
 
         await expect(microschema.getAllMicroschemasName()).toEqual(test);
