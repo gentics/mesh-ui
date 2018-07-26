@@ -58,15 +58,3 @@ export function getTextNodeText(el: WebElement) {
         }
     }, el);
 }
-
-export function textNodesUnder(el: WebElement): Node[] {
-    return browser.executeScript((el: HTMLElement) => {
-        let n;
-        const a = [];
-        const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, undefined, false);
-        while ((n = walk.nextNode())) {
-            a.push(n);
-        }
-        return a;
-    }, el) as any;
-}

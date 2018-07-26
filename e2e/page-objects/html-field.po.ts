@@ -1,7 +1,5 @@
 import { browser, by, ElementFinder } from 'protractor';
 
-import { textNodesUnder } from '../testUtil';
-
 export class HtmlField {
     editor: ElementFinder;
     toolbar: ElementFinder;
