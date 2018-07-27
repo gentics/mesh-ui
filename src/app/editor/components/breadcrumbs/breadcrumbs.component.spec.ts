@@ -221,7 +221,7 @@ describe('BreadcrumbsComponent:', () => {
             () => TestComponent,
             fixture => {
                 fixture.detectChanges();
-                expect(getBreadcrumbText(fixture)).toEqual(['testProject', 'test', 'folder2', 'current']);
+                expect(getBreadcrumbText(fixture)).toEqual(['testProject', 'test']);
             }
         )
     );
@@ -239,7 +239,7 @@ describe('BreadcrumbsComponent:', () => {
                     }
                 });
                 fixture.detectChanges();
-                expect(getBreadcrumbText(fixture)).toEqual(['testProject', 'Automobiles', 'current2']);
+                expect(getBreadcrumbText(fixture)).toEqual(['testProject']);
             }
         )
     );

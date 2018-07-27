@@ -4,10 +4,6 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Button, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
 
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/takeUntil';
-
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { MockModalService } from '../../../../testing/modal.service.mock';
@@ -24,7 +20,7 @@ import { AdminListComponent } from '../admin-list/admin-list.component';
 
 import { MicroschemaListComponent } from './microschema-list.component';
 
-fdescribe('MicroSchemaListComponent', () => {
+describe('MicroSchemaListComponent', () => {
     let appState: TestApplicationState;
     const mockModal = { fromComponent() {} };
     let mockAdminSchemaEffects: any;
@@ -68,7 +64,7 @@ fdescribe('MicroSchemaListComponent', () => {
         componentTest(
             () => MicroschemaListComponent,
             fixture => {
-                fixture.debugElement.query(By.directive(Button)).nativeElement.click();
+                fixture.debugElement.query(By.css('.list-controls > gtx-button')).nativeElement.click();
                 fixture.detectChanges();
                 expect(mockRouter.navigate).toHaveBeenCalledWith(['admin', 'microschemas', 'new']);
             }
