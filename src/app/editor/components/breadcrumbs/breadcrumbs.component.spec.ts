@@ -6,12 +6,12 @@ import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 import { componentTest } from '../../../../testing/component-test';
 import { mockMeshNode, mockProject } from '../../../../testing/mock-models';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 
 import { BreadcrumbsComponent } from './breadcrumbs.component';
-import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 
 describe('BreadcrumbsComponent:', () => {
     let appState: TestApplicationState;
@@ -170,7 +170,7 @@ describe('BreadcrumbsComponent:', () => {
             () => TestComponent,
             fixture => {
                 fixture.detectChanges();
-                expect(getBreadcrumbText(fixture)).toEqual(['testProject', 'test', 'folder2', 'current']);
+                expect(getBreadcrumbText(fixture)).toEqual(['testProject', 'test']);
             }
         )
     );
@@ -188,7 +188,7 @@ describe('BreadcrumbsComponent:', () => {
                     }
                 });
                 fixture.detectChanges();
-                expect(getBreadcrumbText(fixture)).toEqual(['testProject', 'Automobiles', 'current2']);
+                expect(getBreadcrumbText(fixture)).toEqual(['testProject']);
             }
         )
     );

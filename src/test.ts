@@ -11,7 +11,7 @@ import { getTestBed } from '@angular/core/testing';
 import { platformBrowserDynamicTesting, BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 // TODO: remove this once we switch to pipable operators in rxjs v6
 // tslint:disable-next-line:import-blacklist
-import 'rxjs';
+import 'rxjs/Rx';
 
 // Unfortunately there's no typing for the `__karma__` variable. Just declare it as any.
 declare const __karma__: any;

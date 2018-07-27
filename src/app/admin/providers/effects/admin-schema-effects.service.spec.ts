@@ -49,14 +49,14 @@ describe('AdminSchemaEffects', () => {
             data: [{ uuid: 'uuid1', name: 'project1' }, { uuid: 'uuid2', name: 'project2' }]
         };
 
-        it('sends empty object on no projects', () => {
+        it('sends empty object on no projects', async () => {
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of({ data: [] }));
-            adminSchemaEffects.loadEntityAssignments('schema', 'test');
+            await adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith({});
         });
 
-        it('returns correct assignments 1', () => {
+        it('returns correct assignments 1', async () => {
             const expected: ProjectAssignments = {
                 uuid1: true,
                 uuid2: true
@@ -64,12 +64,12 @@ describe('AdminSchemaEffects', () => {
 
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
             apiServiceSpy.project.getProjectSchemas.and.returnValue(Observable.of(schemasResponse(['test'])));
-            adminSchemaEffects.loadEntityAssignments('schema', 'test');
+            await adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
         });
 
-        it('returns correct assignments 2', () => {
+        it('returns correct assignments 2', async () => {
             const expected: ProjectAssignments = {
                 uuid1: false,
                 uuid2: true
@@ -80,12 +80,12 @@ describe('AdminSchemaEffects', () => {
                 Observable.of(schemasResponse([])),
                 Observable.of(schemasResponse(['test']))
             );
-            adminSchemaEffects.loadEntityAssignments('schema', 'test');
+            await adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
         });
 
-        it('returns correct assignments 3', () => {
+        it('returns correct assignments 3', async () => {
             const expected: ProjectAssignments = {
                 uuid1: false,
                 uuid2: false
@@ -93,7 +93,7 @@ describe('AdminSchemaEffects', () => {
 
             apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
             apiServiceSpy.project.getProjectSchemas.and.returnValue(Observable.of(schemasResponse([])));
-            adminSchemaEffects.loadEntityAssignments('schema', 'test');
+            await adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
         });
