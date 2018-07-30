@@ -16,7 +16,7 @@ describe('node schema', () => {
         await schema.openSchema();
     });
 
-    it('should equal schema names', async () => {
+    it('should show the correct schema names', async () => {
         const list: Array<String> = ['category', 'vehicleImage', 'vehicle', 'binary_content', 'folder'];
 
         await expect(schema.getAllSchemasName()).toEqual(list);
@@ -44,15 +44,15 @@ describe('node schema', () => {
         const breadcrumbs: Array<String> = ['Schemas', 'New schema'];
 
         await schema.createNewSchemaClick();
-        await expect(schema.getBreadcrumbs()).toEqual(breadcrumbs);
+        await expect(admin.getBreadcrumbs()).toEqual(breadcrumbs);
     });
 
     it('should show a right project allocation for some schema', async () => {
         const projects: Array<String> = ['demo'];
 
-        await schema.clickSomeSchema('folder');
+        await schema.clickSchema('folder');
         await schema.clickAllocationsTab();
-        await expect(schema.getProjectsName()).toEqual(projects);
+        await expect(schema.getProjectNames()).toEqual(projects);
     });
 
     it('should show a right breadcrumb after clicking on "create schema" and going back to a schema list', async () => {
@@ -61,10 +61,10 @@ describe('node schema', () => {
         await schema.createNewSchemaClick();
         await schema.openSchema();
 
-        await expect(schema.getBreadcrumbs()).toEqual(breadcrumb);
+        await expect(admin.getBreadcrumbs()).toEqual(breadcrumb);
     });
 
-    fit('should create a new schema and delete it (using top button) with selected items check', async () => {
+    it('should create a new schema and delete it (using top button) with selected items check', async () => {
         const test: Array<String> = [];
         const schemaName: Array<String> = ['test'];
         const schemaInfo = `{
@@ -81,7 +81,7 @@ describe('node schema', () => {
 
         await schema.createNewSchemaClick();
 
-        await schema.giveSchemaInfo(schemaInfo);
+        await schema.setSchemaJSON(schemaInfo);
         await schema.clickSaveButton();
 
         await schema.openSchema();
@@ -93,7 +93,7 @@ describe('node schema', () => {
         await schema.chooseSchema();
 
         await schema.clickDeleteTopButton();
-        await schema.clickDeleteButton();
+        await schema.clickDialogDeleteButton();
 
         await expect(schema.checkedCount().getText()).toEqual('Selected: 0');
 
@@ -121,7 +121,7 @@ describe('node schema', () => {
 
         await schema.createNewSchemaClick();
 
-        await schema.giveSchemaInfo(schemaInfo);
+        await schema.setSchemaJSON(schemaInfo);
         await schema.clickSaveButton();
 
         await schema.openSchema();
@@ -130,7 +130,7 @@ describe('node schema', () => {
 
         await expect(schema.getAllSchemasName()).toEqual(schemaName);
 
-        await schema.clickSomeSchema('test');
+        await schema.clickSchema('test');
 
         await schema.clickDeleteBottomButton();
 
@@ -141,7 +141,7 @@ describe('node schema', () => {
         await expect(schema.getAllSchemasName()).toEqual(test);
     });
 
-    it('should goes to the next page and show right schema', async () => {
+    it('should go to the next page and show right schema', async () => {
         const schemaName: Array<String> = ['content'];
         await schema.goToNextPage();
 

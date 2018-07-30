@@ -21,12 +21,12 @@ export class NodeSchema {
         return element.all(by.css('.item-primary')).getText();
     }
 
-    async clickSomeSchema(schemaName: string) {
-        await this.getSomeSchema(schemaName).click();
+    async clickSchema(schemaName: string) {
+        await this.getSchema(schemaName).click();
         await browser.sleep(1000);
     }
 
-    getSomeSchema(schemaName: string) {
+    getSchema(schemaName: string) {
         return element(by.cssContainingText('.item-primary', schemaName));
     }
 
@@ -37,7 +37,7 @@ export class NodeSchema {
             .click();
     }
 
-    getProjectsName() {
+    getProjectNames() {
         return element.all(by.css('gtx-checkbox')).getAttribute('ng-reflect-label');
     }
 
@@ -58,10 +58,6 @@ export class NodeSchema {
         return element(by.css('.checked-count'));
     }
 
-    getBreadcrumbs() {
-        return element.all(by.css('gtx-breadcrumbs a.breadcrumb')).getText();
-    }
-
     async createNewSchemaClick() {
         await this.getCreateSchemaButton().click();
     }
@@ -70,7 +66,7 @@ export class NodeSchema {
         return element(by.cssContainingText('.button-event-wrapper', 'Create Schema'));
     }
 
-    async giveSchemaInfo(schemaInfo: String) {
+    async setSchemaJSON(schemaInfo: String) {
         await browser.wait(() => browser.executeScript(() => window.monaco));
         await browser.executeScript(
             (schemaInfo: String) => window.monaco.editor.getModels()[0].setValue(schemaInfo),
@@ -93,22 +89,16 @@ export class NodeSchema {
         await element(by.cssContainingText('.button-event-wrapper', 'delete')).click();
     }
 
-    async clickDeleteButton() {
+    async clickDialogDeleteButton() {
         await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
     }
 
     async clickDeleteBottomButton() {
         await browser.waitForAngularEnabled(false);
-        await element
-            .all(by.css('.button-event-wrapper'))
-            .get(4)
-            .click();
+        await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
     }
 
     async goToNextPage() {
-        await element
-            .all(by.css('.page-link'))
-            .get(3)
-            .click();
+        await element(by.cssContainingText('.page-link', ' » ')).click();
     }
 }

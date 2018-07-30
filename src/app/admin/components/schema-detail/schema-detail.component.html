@@ -21,6 +21,15 @@
         <mesh-admin-list [items]="projects$ | async"
                          [autoHidePagination]="true"
                          [selectable]="false">
+
+            <div class="list-controls">
+                <div class="filter">
+                    <gtx-input [label]="'admin.filter_by_name' | i18n"
+                               [formControl]="filterInput">
+                    </gtx-input>
+                </div>
+            </div>
+
             <ng-template let-project="item">
                 <gtx-checkbox [label]="project.name"
                               [checked]="projectAssignments[project.uuid]"

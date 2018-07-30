@@ -21,12 +21,12 @@ export class NodeMicroschema {
         return element.all(by.css('.item-primary')).getText();
     }
 
-    async clickSomeMicroschema(microschemaName: string) {
-        await this.getSomeMicroschema(microschemaName).click();
+    async clickMicroschema(microschemaName: string) {
+        await this.getMicroschema(microschemaName).click();
         await browser.sleep(1000);
     }
 
-    getSomeMicroschema(microschemaName: string) {
+    getMicroschema(microschemaName: string) {
         return element(by.cssContainingText('.item-primary', microschemaName));
     }
 
@@ -37,7 +37,7 @@ export class NodeMicroschema {
             .click();
     }
 
-    getProjectsName() {
+    getProjectNames() {
         return element.all(by.css('gtx-checkbox')).getAttribute('ng-reflect-label');
     }
 
@@ -58,10 +58,6 @@ export class NodeMicroschema {
         return element(by.css('.checked-count'));
     }
 
-    getBreadcrumbs() {
-        return element.all(by.css('gtx-breadcrumbs a.breadcrumb')).getText();
-    }
-
     async createNewMicroschemaClick() {
         await this.getCreateMicroschemaButton().click();
     }
@@ -70,7 +66,7 @@ export class NodeMicroschema {
         return element(by.cssContainingText('.button-event-wrapper', 'Create Microschema'));
     }
 
-    async giveMicroschemaInfo(microschemaInfo: String) {
+    async setMicroschemaJSON(microschemaInfo: String) {
         await browser.wait(() => browser.executeScript(() => window.monaco));
         await browser.executeScript(
             (microschemaInfo: String) => window.monaco.editor.getModels()[0].setValue(microschemaInfo),
@@ -94,22 +90,16 @@ export class NodeMicroschema {
         await element(by.cssContainingText('.button-event-wrapper', 'delete')).click();
     }
 
-    async clickDeleteButton() {
+    async clickDialogDeleteButton() {
         await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
     }
 
     async clickDeleteBottomButton() {
         await browser.waitForAngularEnabled(false);
-        await element
-            .all(by.css('.button-event-wrapper'))
-            .get(4)
-            .click();
+        await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
     }
 
     async goToNextPage() {
-        await element
-            .all(by.css('.page-link'))
-            .get(3)
-            .click();
+        await element(by.cssContainingText('.page-link', ' » ')).click();
     }
 }
