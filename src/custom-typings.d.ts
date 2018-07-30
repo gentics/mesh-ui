@@ -87,8 +87,8 @@ type IdleCallbacks = Es6PromiseLoader | Function | FactoryEs6PromiseLoader | Fac
 
 interface WebpackModule {
     hot: {
-        data?: any,
-        idle: any,
+        data?: any;
+        idle: any;
         accept(dependencies?: string | string[], callback?: (updatedDependencies?: any) => void): void;
         decline(deps?: any | string | string[]): void;
         dispose(callback?: (data?: any) => void): void;
@@ -120,6 +120,8 @@ interface ErrorStackTraceLimit {
 /* tslint:disable no-empty-interface */
 interface NodeRequire extends WebpackRequire {}
 interface ErrorConstructor extends ErrorStackTraceLimit {}
-interface NodeRequireFunction extends Es6PromiseLoader  {}
+interface NodeRequireFunction extends Es6PromiseLoader {}
 interface NodeModule extends WebpackModule {}
-interface Global extends GlobalEnvironment  {}
+interface Global extends GlobalEnvironment {}
+
+declare module 'quill/blots/inline';

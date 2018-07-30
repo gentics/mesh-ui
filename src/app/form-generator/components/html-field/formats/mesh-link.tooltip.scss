@@ -1,0 +1,16 @@
+.ql-snow .ql-tooltip[data-mode=mesh-link]::before {
+    content: "Node:";
+}
+
+.ql-snow .ql-tooltip[data-mode=mesh-link]::before {
+  content: "Node:";
+}
+
+.ql-snow .ql-tooltip[data-mode=mesh-link].ql-editing a.ql-mesh-browse::after {
+  margin-left: 16px;
+  content: 'Browse';
+}
+
+.ql-snow .ql-tooltip[data-mode=mesh-link].ql-editing input[type=text] {
+  display: none;
+}

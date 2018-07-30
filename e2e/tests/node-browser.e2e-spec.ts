@@ -2,7 +2,7 @@ import { by } from 'protractor';
 
 import { createFolder, createVehicle } from '../api';
 import { AppPage } from '../page-objects/app.po';
-import { NodeBrowserDialog } from '../page-objects/node-browser.po';
+import * as browser from '../page-objects/node-browser.po';
 import { NodeEditor } from '../page-objects/node-editor.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 import { temporaryFolder, toText } from '../testUtil';
@@ -10,12 +10,10 @@ import { temporaryFolder, toText } from '../testUtil';
 describe('node browser', () => {
     let page: AppPage;
     let nodeList: MeshNodeList;
-    let browser: NodeBrowserDialog;
     let nodeEditor: NodeEditor;
 
     beforeAll(async () => {
         page = new AppPage();
-        browser = new NodeBrowserDialog();
         nodeList = new MeshNodeList();
         nodeEditor = new NodeEditor();
     });

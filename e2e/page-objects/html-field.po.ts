@@ -1,0 +1,71 @@
+import { browser, by, ElementFinder } from 'protractor';
+
+export class HtmlField {
+    editor: ElementFinder;
+    toolbar: ElementFinder;
+    constructor(private container: ElementFinder) {
+        this.editor = container.element(by.css('.ql-editor'));
+        this.toolbar = container.element(by.css('.ql-toolbar'));
+    }
+
+    linkToNode() {
+        return this.toolbar.element(by.css('.ql-mesh-link')).click();
+    }
+
+    removeFormat() {
+        return this.toolbar.element(by.css('.ql-clean')).click();
+    }
+
+    clickAfter(text: string) {
+        return this.selectText(text, true);
+    }
+
+    /**
+     * Selects the whole text in the html field.
+     */
+    async selectText(): Promise<void>;
+    /**
+     * Selects text in the html field.
+     */
+    async selectText(text: string): Promise<void>;
+    /**
+     * Puts the caret after the text, if caretOnly is true
+     */
+    async selectText(text: string, caretOnly: boolean): Promise<void>;
+    async selectText(text?: string, caretOnly = false): Promise<void> {
+        await browser.executeScript(
+            (element: HTMLElement, text: string, caretOnly: boolean) => {
+                let n;
+                const textNodes = [];
+                const walk = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, undefined, false);
+                while ((n = walk.nextNode())) {
+                    textNodes.push(n);
+                }
+
+                const range = document.createRange();
+
+                if (text) {
+                    const node = textNodes.find(it => it.textContent!.includes(text))!;
+                    const textIndex = node.textContent!.indexOf(text);
+                    if (caretOnly) {
+                        range.setStart(node, textIndex + text.length);
+                    } else {
+                        range.setStart(node, textIndex);
+                    }
+                    range.setEnd(node, textIndex + text.length);
+                } else {
+                    const lastNode = textNodes[textNodes.length - 1];
+                    range.setStart(textNodes[0], 0);
+                    range.setEnd(lastNode, lastNode.textContent!.length - 1);
+                }
+
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            },
+            await this.editor,
+            text,
+            caretOnly
+        );
+    }
+}

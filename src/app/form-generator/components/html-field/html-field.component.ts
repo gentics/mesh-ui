@@ -9,11 +9,20 @@ import {
 } from '@angular/core';
 import * as Quill from 'quill';
 
-import { NodeFieldType } from '../../../common/models/node.model';
+import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
 import { errorHashFor, ErrorCode } from '../../common/form-errors';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
+
+import MeshLink, { MeshLinkHandler } from './formats/mesh-link';
+import MeshLinkToolTip from './formats/mesh-link-tooltip';
+
+interface ThemedQuill extends Quill.Quill {
+    theme: {
+        tooltip: any;
+    };
+}
 
 const toolbarOptions = [
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -24,13 +33,15 @@ const toolbarOptions = [
 
     [{ align: [] }],
 
+    ['link', 'mesh-link'],
+
     ['clean']
 ];
 
 @Component({
     selector: 'mesh-html-field',
     templateUrl: './html-field.component.html',
-    styleUrls: ['./html-field.scss'],
+    styleUrls: ['./html-field.scss', 'formats/mesh-link.tooltip.scss'],
     // required for the Quill.js styles to work correctly
     encapsulation: ViewEncapsulation.None
 })
@@ -39,7 +50,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     api: MeshFieldControlApi;
     value: NodeFieldType;
     @ViewChild('editor') private editorRef: ElementRef;
-    private editor: Quill.Quill;
+    private editor: ThemedQuill;
     private blurTimer: any;
 
     constructor(changeDetector: ChangeDetectorRef, private elementRef: ElementRef) {
@@ -48,13 +59,20 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
 
     ngAfterViewInit(): void {
         const editorElement = this.editorRef.nativeElement;
+        Quill.register('formats/mesh-link', MeshLink);
         this.editor = new Quill(editorElement, {
             theme: 'snow',
             modules: {
-                toolbar: toolbarOptions
+                toolbar: {
+                    container: toolbarOptions,
+                    handlers: {
+                        'mesh-link': MeshLinkHandler
+                    }
+                }
             }
-        });
+        }) as any;
         this.editor.clipboard.dangerouslyPasteHTML(this.value as string);
+        this.editor.theme.tooltip = new MeshLinkToolTip(this.editor, this.api);
 
         this.editor.on('text-change', this.onTextChangeHandler);
         this.editor.on('selection-change', this.onSelectionChangeHandler);
