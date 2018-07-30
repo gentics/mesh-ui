@@ -35,8 +35,6 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
     filterInput = new FormControl('');
 
-    private destroy$ = new Subject<void>();
-
     projects$: Observable<Project[]>;
 
     schema$: Observable<SchemaResponse>;
@@ -84,19 +82,14 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
         this.adminProjectEffects.loadProjects();
 
-        this.filterInput.valueChanges
-            .debounceTime(100)
-            .takeUntil(this.destroy$)
-            .subscribe(term => {
-                setQueryParams(this.router, this.route, { q: term });
-            });
+        this.filterInput.valueChanges.debounceTime(100).subscribe(term => {
+            setQueryParams(this.router, this.route, { q: term });
+        });
 
-        observeQueryParam(this.route.queryParamMap, 'q', '')
-            .takeUntil(this.destroy$)
-            .subscribe(filterTerm => {
-                this.adminProjectEffects.setFilterTerm(filterTerm);
-                this.filterInput.setValue(filterTerm, { emitEvent: false });
-            });
+        observeQueryParam(this.route.queryParamMap, 'q', '').subscribe(filterTerm => {
+            this.adminProjectEffects.setFilterTerm(filterTerm);
+            this.filterInput.setValue(filterTerm, { emitEvent: false });
+        });
 
         const allProjects$ = this.state
             .select(state => state.adminProjects.projectList)
@@ -116,8 +109,6 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
-        this.destroy$.next();
-        this.destroy$.complete();
     }
 
     onErrorChange(errors: MarkerData[]) {
@@ -153,13 +144,11 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         if (isChecked) {
             this.schema$
                 .take(1)
-                .map(schema => this.schemaEffects.assignEntityToProject('schema', schema.uuid, project.name))
-                .subscribe();
+                .subscribe(schema => this.schemaEffects.assignEntityToProject('schema', schema.uuid, project.name));
         } else {
             this.schema$
                 .take(1)
-                .map(schema => this.schemaEffects.removeEntityFromProject('schema', schema.uuid, project.name))
-                .subscribe();
+                .subscribe(schema => this.schemaEffects.removeEntityFromProject('schema', schema.uuid, project.name));
         }
 
         this.projectAssignments[project.uuid] = isChecked;

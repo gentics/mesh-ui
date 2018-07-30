@@ -35,8 +35,6 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     filterInput = new FormControl('');
 
-    private destroy$ = new Subject<void>();
-
     projects$: Observable<Project[]>;
 
     arrayList: string[] = [];
@@ -93,19 +91,14 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
         this.adminProjectEffects.loadProjects();
 
-        this.filterInput.valueChanges
-            .debounceTime(100)
-            .takeUntil(this.destroy$)
-            .subscribe(term => {
-                setQueryParams(this.router, this.route, { q: term });
-            });
+        this.filterInput.valueChanges.debounceTime(100).subscribe(term => {
+            setQueryParams(this.router, this.route, { q: term });
+        });
 
-        observeQueryParam(this.route.queryParamMap, 'q', '')
-            .takeUntil(this.destroy$)
-            .subscribe(filterTerm => {
-                this.adminProjectEffects.setFilterTerm(filterTerm);
-                this.filterInput.setValue(filterTerm, { emitEvent: false });
-            });
+        observeQueryParam(this.route.queryParamMap, 'q', '').subscribe(filterTerm => {
+            this.adminProjectEffects.setFilterTerm(filterTerm);
+            this.filterInput.setValue(filterTerm, { emitEvent: false });
+        });
 
         const allProjects$ = this.state
             .select(state => state.adminProjects.projectList)
@@ -125,8 +118,6 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
-        this.destroy$.next();
-        this.destroy$.complete();
     }
 
     onErrorChange(errors: MarkerData[]) {
@@ -162,17 +153,15 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         if (isChecked) {
             this.microschema$
                 .take(1)
-                .map(microschema =>
+                .subscribe(microschema =>
                     this.schemaEffects.assignEntityToProject('microschema', microschema.uuid, project.name)
-                )
-                .subscribe();
+                );
         } else {
             this.microschema$
                 .take(1)
-                .map(microschema =>
+                .subscribe(microschema =>
                     this.schemaEffects.removeEntityFromProject('microschema', microschema.uuid, project.name)
-                )
-                .subscribe();
+                );
         }
 
         this.projectAssignments[project.uuid] = isChecked;

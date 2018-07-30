@@ -16,7 +16,7 @@ describe('node microschema', () => {
         await microschema.openMicroschema();
     });
 
-    it('should equal microschema names', async () => {
+    it('should show the correct microschema names', async () => {
         const list: Array<String> = ['test', 'test3'];
 
         await expect(microschema.getAllMicroschemasName()).toEqual(list);
@@ -44,15 +44,15 @@ describe('node microschema', () => {
         const breadcrumbs: Array<String> = ['Microschemas', 'New microschema'];
 
         await microschema.createNewMicroschemaClick();
-        await expect(microschema.getBreadcrumbs()).toEqual(breadcrumbs);
+        await expect(admin.getBreadcrumbs()).toEqual(breadcrumbs);
     });
 
     it('should show a right project allocation for some microschema', async () => {
         const projects: Array<String> = ['demo'];
 
-        await microschema.clickSomeMicroschema('test3');
+        await microschema.clickMicroschema('test3');
         await microschema.clickAllocationsTab();
-        await expect(microschema.getProjectsName()).toEqual(projects);
+        await expect(microschema.getProjectNames()).toEqual(projects);
     });
 
     it('should show a right breadcrumb after clicking on "create microschema" and going back to a microschema list', async () => {
@@ -61,10 +61,10 @@ describe('node microschema', () => {
         await microschema.createNewMicroschemaClick();
         await microschema.openMicroschema();
 
-        await expect(microschema.getBreadcrumbs()).toEqual(breadcrumb);
+        await expect(admin.getBreadcrumbs()).toEqual(breadcrumb);
     });
 
-    fit('should create a new schema and delete it (using top button) with selected items check', async () => {
+    it('should create a new schema and delete it (using top button) with selected items check', async () => {
         const test: Array<String> = [];
         const microschemaName: Array<String> = ['test4'];
         const microschemaInfo = `{
@@ -81,7 +81,7 @@ describe('node microschema', () => {
 
         await microschema.createNewMicroschemaClick();
 
-        await microschema.giveMicroschemaInfo(microschemaInfo);
+        await microschema.setMicroschemaJSON(microschemaInfo);
         await microschema.clickSaveButton();
 
         await microschema.openMicroschema();
@@ -93,7 +93,7 @@ describe('node microschema', () => {
         await microschema.chooseMicroschema();
 
         await microschema.clickDeleteTopButton();
-        await microschema.clickDeleteButton();
+        await microschema.clickDialogDeleteButton();
 
         await expect(microschema.checkedCount().getText()).toEqual('Selected: 0');
 
@@ -121,7 +121,7 @@ describe('node microschema', () => {
 
         await microschema.createNewMicroschemaClick();
 
-        await microschema.giveMicroschemaInfo(microschemaInfo);
+        await microschema.setMicroschemaJSON(microschemaInfo);
         await microschema.clickSaveButton();
 
         await microschema.openMicroschema();
@@ -130,7 +130,7 @@ describe('node microschema', () => {
 
         await expect(microschema.getAllMicroschemasName()).toEqual(microschemaName);
 
-        await microschema.clickSomeMicroschema('test4');
+        await microschema.clickMicroschema('test4');
         await microschema.clickDeleteBottomButton();
 
         await microschema.openMicroschema();
@@ -139,7 +139,7 @@ describe('node microschema', () => {
         await expect(microschema.getAllMicroschemasName()).toEqual(test);
     });
 
-    it('should goes to the next page and show right microschema', async () => {
+    it('should go to the next page and show right microschema', async () => {
         const microschemaName: Array<String> = ['test2'];
         await microschema.goToNextPage();
 

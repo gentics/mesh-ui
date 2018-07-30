@@ -11,4 +11,8 @@ export class NodeAdmin {
     getModeText() {
         return this.mode.getText();
     }
+
+    getBreadcrumbs() {
+        return element.all(by.css('gtx-breadcrumbs a.breadcrumb')).getText();
+    }
 }

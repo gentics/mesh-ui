@@ -32,8 +32,6 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
     selectedIndices: number[] = [];
     ADMIN_USER_NAME = ADMIN_USER_NAME;
 
-    private destroy$ = new Subject<void>();
-
     constructor(
         private entities: EntitiesService,
         private adminSchemaEffects: AdminSchemaEffectsService,
@@ -51,26 +49,19 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
 
         combineLatest(
             observeQueryParam(this.route.queryParamMap, 'p', 1),
-            observeQueryParam(this.route.queryParamMap, 'perPage', 2)
-        )
-            .takeUntil(this.destroy$)
-            .subscribe(([page, perPage]) => {
-                this.adminSchemaEffects.setListPagination(page, perPage);
-            });
+            observeQueryParam(this.route.queryParamMap, 'perPage', 10)
+        ).subscribe(([page, perPage]) => {
+            this.adminSchemaEffects.setListPagination(page, perPage);
+        });
 
-        observeQueryParam(this.route.queryParamMap, 'q', '')
-            .takeUntil(this.destroy$)
-            .subscribe(filterTerm => {
-                this.adminSchemaEffects.setFilterTerm(filterTerm);
-                this.filterInput.setValue(filterTerm, { emitEvent: false });
-            });
+        observeQueryParam(this.route.queryParamMap, 'q', '').subscribe(filterTerm => {
+            this.adminSchemaEffects.setFilterTerm(filterTerm);
+            this.filterInput.setValue(filterTerm, { emitEvent: false });
+        });
 
-        this.filterInput.valueChanges
-            .debounceTime(300)
-            .takeUntil(this.destroy$)
-            .subscribe(term => {
-                setQueryParams(this.router, this.route, { q: term });
-            });
+        this.filterInput.valueChanges.debounceTime(300).subscribe(term => {
+            setQueryParams(this.router, this.route, { q: term });
+        });
 
         const allMicroschemas$ = this.state
             .select(state => state.adminSchemas.microschemaList)
@@ -86,10 +77,7 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
         this.totalItems$ = this.state.select(state => state.adminSchemas.pagination.totalItems);
     }
 
-    ngOnDestroy(): void {
-        this.destroy$.next();
-        this.destroy$.complete();
-    }
+    ngOnDestroy(): void {}
 
     createMicroschema() {
         this.router.navigate(['admin', 'microschemas', 'new']);

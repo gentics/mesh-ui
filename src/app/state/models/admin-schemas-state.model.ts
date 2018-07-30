@@ -13,8 +13,6 @@ export interface AdminSchemasState {
     microschemaList: string[];
     microschemaDetail: string | null;
 
-    /** LEX */
     pagination: PaginationConfig;
     filterTerm: string;
-    /** END */
 }
