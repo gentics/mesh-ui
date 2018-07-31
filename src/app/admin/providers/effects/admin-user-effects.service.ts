@@ -183,13 +183,10 @@ export class AdminUserEffectsService {
         this.state.actions.adminUsers.createUserStart();
         return this.api.admin
             .createUser({}, userRequest)
+            .pipe(this.notification.rxSuccess('admin.user_created'))
             .do(
                 user => {
                     this.state.actions.adminUsers.createUserSuccess(user);
-                    this.notification.show({
-                        type: 'success',
-                        message: 'admin.user_created'
-                    });
                 },
                 () => this.state.actions.adminUsers.createUserError()
             )
@@ -201,14 +198,11 @@ export class AdminUserEffectsService {
 
         return this.api.admin
             .updateUser({ userUuid }, user)
+            .pipe(this.notification.rxSuccess('admin.user_updated'))
             .toPromise()
             .then(
                 response => {
                     this.state.actions.adminUsers.updateUserSuccess(response);
-                    this.notification.show({
-                        type: 'success',
-                        message: 'admin.user_updated'
-                    });
                     return response as User;
                 },
                 error => this.state.actions.adminUsers.updateUserError()
@@ -218,24 +212,17 @@ export class AdminUserEffectsService {
     deleteUser(user: User): void {
         this.state.actions.adminUsers.deleteUserStart();
 
-        this.api.admin.deactivateUser({ userUuid: user.uuid }).subscribe(
-            () => {
-                this.state.actions.adminUsers.deleteUserSuccess(user.uuid);
-                this.notification.show({
-                    type: 'success',
-                    message: 'admin.user_deleted',
-                    translationParams: { username: user.username }
-                });
-            },
-            error => {
-                this.state.actions.adminUsers.deleteUserError();
-                this.notification.show({
-                    type: 'error',
-                    message: 'admin.user_deleted_error',
-                    translationParams: { username: user.username }
-                });
-            }
-        );
+        this.api.admin
+            .deactivateUser({ userUuid: user.uuid })
+            .pipe(this.notification.rxSuccess('admin.user_deleted'))
+            .subscribe(
+                () => {
+                    this.state.actions.adminUsers.deleteUserSuccess(user.uuid);
+                },
+                error => {
+                    this.state.actions.adminUsers.deleteUserError();
+                }
+            );
     }
 
     addUserToGroup(user: User, groupUuid: string): void {

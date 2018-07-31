@@ -2,8 +2,9 @@ import { Headers, Http, Request, RequestMethod, Response, ResponseOptions } from
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { ApiBase } from './api-base.service';
+import { MockI18nNotification } from '../i18n-notification/i18n-notification.service.mock';
 
+import { ApiBase } from './api-base.service';
 
 /** Only available in testing. A request tracked by {@link MockApiBase}. */
 export declare class MockedApiRequest {
@@ -15,7 +16,6 @@ export declare class MockedApiRequest {
     respond<T>(status: number, responseBody: T): void;
     respond(status: number, responseBody: any): void;
 }
-
 
 /**
  * A mock of {@link ApiBase} for unit tests.
@@ -33,10 +33,10 @@ export class MockApiBase extends ApiBase {
 
     constructor() {
         // Provide a spy Http service to ApiBase, we don't want to do actual http calls in unit tests.
-        super(undefined as any as string, undefined as any as Http);
-        this.http = {
+        super((undefined as any) as string, (undefined as any) as Http, new MockI18nNotification() as any);
+        this.http = ({
             request: (r: Request) => this.interceptHttpRequest(r)
-        } as any as Http;
+        } as any) as Http;
     }
 
     protected request(method: RequestMethod, url: string, params: any = {}, body?: any, extraHeaders?: any): any {
@@ -55,7 +55,7 @@ export class MockApiBase extends ApiBase {
 
     /** Intercepts requests made via Angulars `Http` service and stores them on this instance. */
     private interceptHttpRequest(request: Request): Observable<Response> {
-        const trackedRequest = { } as MockedApiRequest;
+        const trackedRequest = {} as MockedApiRequest;
         const returnedObservable = new Subject<Response>();
 
         // Add a non-enumerable "respond" method
@@ -64,35 +64,42 @@ export class MockApiBase extends ApiBase {
             enumerable: false,
             writable: true,
             value: (status: number, body: any) => {
-                const response = new Response(new ResponseOptions({
-                    body: JSON.stringify(body),
-                    headers: new Headers({
-                        'Content-Type': 'application/json'
-                    }),
-                    status,
-                    url: request.url
-                }));
+                const response = new Response(
+                    new ResponseOptions({
+                        body: JSON.stringify(body),
+                        headers: new Headers({
+                            'Content-Type': 'application/json'
+                        }),
+                        status,
+                        url: request.url
+                    })
+                );
                 returnedObservable.next(response);
                 returnedObservable.complete();
-                trackedRequest.respond = () => { };
+                trackedRequest.respond = () => {};
             }
         });
-        this.allRequests.push(this.lastRequest = trackedRequest);
+        this.allRequests.push((this.lastRequest = trackedRequest));
         return returnedObservable as Observable<Response>;
     }
 }
 
 function requestMethodToString(method: string | RequestMethod): typeof MockedApiRequest.prototype.method {
     switch (method) {
-        case 'DELETE': case RequestMethod.Delete:
+        case 'DELETE':
+        case RequestMethod.Delete:
             return 'DELETE';
-        case 'GET': case RequestMethod.Get:
+        case 'GET':
+        case RequestMethod.Get:
             return 'GET';
-        case 'POST': case RequestMethod.Post:
+        case 'POST':
+        case RequestMethod.Post:
             return 'POST';
-        case 'PATCH': case RequestMethod.Patch:
+        case 'PATCH':
+        case RequestMethod.Patch:
             return 'PATCH';
-        case 'PUT': case RequestMethod.Put:
+        case 'PUT':
+        case RequestMethod.Put:
             return 'PUT';
         default:
             return '[invalid request method]' as any;

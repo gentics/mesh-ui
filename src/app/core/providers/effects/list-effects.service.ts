@@ -262,26 +262,20 @@ export class ListEffectsService {
             schema: source.schema
         };
 
-        this.api.project.createNode({ project: source.project.name! }, request).subscribe(
-            result => {
-                this.state.actions.list.copyNodeSuccess();
-                if (result.parentNode.uuid === source.parentNode.uuid) {
-                    this.reloadCurrentFolder(source);
+        this.api.project
+            .createNode({ project: source.project.name! }, request)
+            .pipe(this.notification.rxSuccess('list.copy_success'))
+            .subscribe(
+                result => {
+                    this.state.actions.list.copyNodeSuccess();
+                    if (result.parentNode.uuid === source.parentNode.uuid) {
+                        this.reloadCurrentFolder(source);
+                    }
+                },
+                error => {
+                    this.state.actions.list.copyNodeError();
                 }
-                this.notification.show({
-                    type: 'success',
-                    message: 'list.copy_success'
-                });
-            },
-            error => {
-                this.state.actions.list.copyNodeError();
-                this.notification.show({
-                    type: 'error',
-                    message: 'list.copy_error',
-                    translationParams: { error }
-                });
-            }
-        );
+            );
     }
 
     /**
@@ -300,22 +294,14 @@ export class ListEffectsService {
                 },
                 undefined
             )
+            .pipe(this.notification.rxSuccess('list.move_success'))
             .subscribe(
                 result => {
                     this.state.actions.list.moveNodeSuccess();
                     this.reloadCurrentFolder(source);
-                    this.notification.show({
-                        type: 'success',
-                        message: 'list.move_success'
-                    });
                 },
                 error => {
                     this.state.actions.list.moveNodeError();
-                    this.notification.show({
-                        type: 'error',
-                        message: 'list.move_error',
-                        translationParams: { error }
-                    });
                 }
             );
     }

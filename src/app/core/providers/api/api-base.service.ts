@@ -3,6 +3,7 @@ import { Headers, Http, Request, RequestMethod, Response, ResponseContentType, U
 import { Observable } from 'rxjs/Observable';
 
 import { ApiEndpoints } from '../../../common/models/server-models';
+import { I18nNotification } from '../i18n-notification/i18n-notification.service';
 
 import { API_BASE_URL } from './api-di-tokens';
 import { ApiError } from './api-error';
@@ -59,7 +60,8 @@ export class ApiBase {
         @Inject(API_BASE_URL)
         @Optional()
         baseUrl: string | null,
-        protected http: Http
+        protected http: Http,
+        private I18nNotification: I18nNotification
     ) {
         if (baseUrl) {
             this.baseUrl = baseUrl;
@@ -275,31 +277,35 @@ export class ApiBase {
         request: Request
     ): ResponseObservable<T> {
         // The returned observable throws on HTTP errors, mapResponses does not.
-        const resultObservable = (inputObservable.map(response => {
-            if (response.ok) {
-                return this.getBody(response);
-            } else {
-                throw new ApiError({ url, request, response });
-            }
-        }) as any) as ResponseObservable<T>;
+        const resultObservable = (inputObservable
+            .map(response => {
+                if (response.ok) {
+                    return this.getBody(response);
+                } else {
+                    throw new ApiError({ url, request, response });
+                }
+            })
+            .pipe(this.I18nNotification.rxError) as any) as ResponseObservable<T>;
 
         resultObservable.rawResponse = inputObservable;
 
         resultObservable.mapResponses = <TResult>(mapping: ResponseMap<T, TResult>): Observable<TResult> => {
-            return inputObservable.map((response, index) => {
-                if (response.status in mapping || (response.ok && (mapping as any).success)) {
-                    const mappedTo: any =
-                        response.status in mapping ? (mapping as any)[response.status] : (mapping as any).success;
+            return inputObservable
+                .map((response, index) => {
+                    if (response.status in mapping || (response.ok && (mapping as any).success)) {
+                        const mappedTo: any =
+                            response.status in mapping ? (mapping as any)[response.status] : (mapping as any).success;
 
-                    if (typeof mappedTo === 'function') {
-                        return mappedTo.call(this, this.getBody(response), index, response);
-                    } else {
-                        return mappedTo;
+                        if (typeof mappedTo === 'function') {
+                            return mappedTo.call(this, this.getBody(response), index, response);
+                        } else {
+                            return mappedTo;
+                        }
                     }
-                }
 
-                throw new ApiError({ url, request, response });
-            });
+                    throw new ApiError({ url, request, response });
+                })
+                .pipe(this.I18nNotification.rxError);
         };
 
         return resultObservable;
