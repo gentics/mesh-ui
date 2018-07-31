@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { INotificationOptions, Notification as BaseNotification } from 'gentics-ui-core';
+import { Observable } from 'rxjs/Observable';
+import { OperatorFunction } from 'rxjs/interfaces';
 
 import { I18nService } from '../i18n/i18n.service';
 
@@ -13,7 +15,9 @@ export interface TranslatedNotificationOptions extends INotificationOptions {
  */
 @Injectable()
 export class I18nNotification {
-    constructor(private notification: BaseNotification, private i18n: I18nService) {}
+    constructor(private notification: BaseNotification, private i18n: I18nService) {
+        this.rxError = this.rxError.bind(this);
+    }
 
     /**
      * Display a toast with the `message` property being passed through the I18nService#translate()
@@ -25,6 +29,53 @@ export class I18nNotification {
             options.action.label = this.i18n.translate(options.action.label, options.translationParams);
         }
         return this.notification.show(options);
+    }
+
+    /**
+     * To be used with Observable.pipe.
+     * Displays an error notification when the observable emits an error.
+     */
+    rxError<T>(source: Observable<T>): Observable<T> {
+        return source.do({
+            error: (err: any) =>
+                this.notification.show({
+                    type: 'error',
+                    message: String(err)
+                })
+        });
+    }
+
+    /**
+     * To be used with Observable.pipe.
+     * Displays an error notification when the observable emits an error.
+     * If successKey is set, a success notification with the given key is displayed on the complete event.
+     */
+    rxSuccess<T>(successKey: string, translationParams?: { [key: string]: any }): OperatorFunction<T, T> {
+        return source =>
+            source.do({
+                complete: () =>
+                    this.show({
+                        type: 'success',
+                        message: successKey,
+                        translationParams
+                    })
+            });
+    }
+
+    /**
+     * Displays a success notification when a promise has been resolved.
+     * Usage example:
+     * `promise.then(promiseSuccess('editor.node_saved'))`
+     */
+    promiseSuccess<T>(i18nKey: string, translationParams?: { [key: string]: any }): (result: T) => T | PromiseLike<T> {
+        return val => {
+            this.show({
+                type: 'success',
+                message: i18nKey,
+                translationParams
+            });
+            return val;
+        };
     }
 
     destroyAllToasts(): void {

@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { ApiService } from '../../core/providers/api/api.service';
 import { ConfigService } from '../../core/providers/config/config.service';
-import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 
 @Injectable()
@@ -12,7 +11,6 @@ export class AuthEffectsService {
         private api: ApiService,
         private state: ApplicationStateService,
         private config: ConfigService,
-        private notification: I18nNotification,
         private router: Router
     ) {}
 
@@ -40,11 +38,6 @@ export class AuthEffectsService {
                 if (successful) {
                     return this.api.auth.getCurrentUser();
                 } else {
-                    this.notification.show({
-                        type: 'error',
-                        message: 'auth.auth_error',
-                        delay: 5000
-                    });
                     return [];
                 }
             })

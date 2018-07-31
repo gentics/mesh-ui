@@ -22,8 +22,7 @@ export class AdminSchemaEffectsService {
     constructor(
         private api: ApiService,
         private state: ApplicationStateService,
-        private i18nNotification: I18nNotification,
-        private notification: Notification
+        private i18nNotification: I18nNotification
     ) {}
 
     loadSchemas() {
@@ -61,43 +60,31 @@ export class AdminSchemaEffectsService {
 
     updateSchema(request: SchemaUpdateRequest & { uuid: string }) {
         this.state.actions.adminSchemas.updateSchemaStart();
-        this.api.admin.updateSchema({ schemaUuid: request.uuid }, request).subscribe(
-            response => {
-                this.state.actions.adminSchemas.updateSchemaSuccess(response);
-                this.i18nNotification.show({
-                    type: 'success',
-                    message: 'admin.schema_updated'
-                });
-            },
-            error => {
-                this.state.actions.adminSchemas.updateSchemaError();
-                this.notification.show({
-                    type: 'error',
-                    message: error.toString()
-                });
-            }
-        );
+        this.api.admin
+            .updateSchema({ schemaUuid: request.uuid }, request)
+            .pipe(this.i18nNotification.rxSuccess('admin.schema_updated'))
+            .subscribe(
+                response => {
+                    this.state.actions.adminSchemas.updateSchemaSuccess(response);
+                },
+                error => {
+                    this.state.actions.adminSchemas.updateSchemaError();
+                }
+            );
     }
 
     createSchema(request: SchemaCreateRequest): Promise<SchemaResponse | void> {
         this.state.actions.adminSchemas.createSchemaStart();
         return this.api.admin
             .createSchema({}, request)
+            .pipe(this.i18nNotification.rxSuccess('admin.schema_created'))
             .toPromise()
             .then(
                 schema => {
                     this.state.actions.adminSchemas.createSchemaSuccess(schema);
-                    this.i18nNotification.show({
-                        type: 'success',
-                        message: 'admin.schema_created'
-                    });
                 },
                 error => {
                     this.state.actions.adminSchemas.createSchemaError();
-                    this.notification.show({
-                        type: 'error',
-                        message: error.toString()
-                    });
                 }
             );
     }
@@ -107,21 +94,14 @@ export class AdminSchemaEffectsService {
 
         return this.api.admin
             .deleteSchema({ schemaUuid })
+            .pipe(this.i18nNotification.rxSuccess('admin.schema_deleted'))
             .toPromise()
             .then(
                 () => {
                     this.state.actions.adminSchemas.deleteSchemaSuccess(schemaUuid);
-                    this.i18nNotification.show({
-                        type: 'success',
-                        message: 'admin.schema_deleted'
-                    });
                 },
                 error => {
                     this.state.actions.adminSchemas.deleteSchemaError();
-                    this.i18nNotification.show({
-                        type: 'error',
-                        message: error.toString()
-                    });
                 }
             );
     }
@@ -154,10 +134,6 @@ export class AdminSchemaEffectsService {
                 },
                 error => {
                     this.state.actions.adminSchemas.openMicroschemaError();
-                    this.notification.show({
-                        type: 'error',
-                        message: error.toString()
-                    });
                 }
             );
     }
@@ -167,13 +143,10 @@ export class AdminSchemaEffectsService {
         this.api.admin
             .updateMicroschema({ microschemaUuid: request.uuid }, request)
             .flatMap(() => this.api.admin.getMicroschema({ microschemaUuid: request.uuid }))
+            .pipe(this.i18nNotification.rxSuccess('admin.microschema_updated'))
             .subscribe(
                 response => {
                     this.state.actions.adminSchemas.updateMicroschemaSuccess(response);
-                    this.i18nNotification.show({
-                        type: 'success',
-                        message: 'admin.microschema_updated'
-                    });
                 },
                 error => {
                     this.state.actions.adminSchemas.updateMicroschemaError();
@@ -185,21 +158,14 @@ export class AdminSchemaEffectsService {
         this.state.actions.adminSchemas.createMicroschemaStart();
         return this.api.admin
             .createMicroschema({}, request)
+            .pipe(this.i18nNotification.rxSuccess('admin.microschema_updated'))
             .toPromise()
             .then(
                 microschema => {
                     this.state.actions.adminSchemas.createMicroschemaSuccess(microschema);
-                    this.i18nNotification.show({
-                        type: 'success',
-                        message: 'admin.microschema_created'
-                    });
                 },
                 error => {
                     this.state.actions.adminSchemas.createMicroschemaError();
-                    this.notification.show({
-                        type: 'error',
-                        message: error.toString()
-                    });
                 }
             );
     }
@@ -209,21 +175,14 @@ export class AdminSchemaEffectsService {
 
         return this.api.admin
             .deleteMicroschema({ microschemaUuid })
+            .pipe(this.i18nNotification.rxSuccess('admin.microschema_deleted'))
             .toPromise()
             .then(
                 () => {
                     this.state.actions.adminSchemas.deleteMicroschemaSuccess(microschemaUuid);
-                    this.i18nNotification.show({
-                        type: 'success',
-                        message: 'admin.microschema_deleted'
-                    });
                 },
                 error => {
                     this.state.actions.adminSchemas.deleteMicroschemaError();
-                    this.notification.show({
-                        type: 'error',
-                        message: error.toString()
-                    });
                 }
             );
     }
@@ -286,10 +245,6 @@ export class AdminSchemaEffectsService {
                 this.state.actions.adminSchemas.assignEntityToProjectSuccess();
             },
             error => {
-                this.i18nNotification.show({
-                    type: 'error',
-                    message: error.toString()
-                });
                 this.state.actions.adminSchemas.assignEntityToProjectError();
             }
         );
@@ -313,10 +268,6 @@ export class AdminSchemaEffectsService {
                 this.state.actions.adminSchemas.removeEntityFromProjectSuccess();
             },
             error => {
-                this.i18nNotification.show({
-                    type: 'error',
-                    message: error.toString()
-                });
                 this.state.actions.adminSchemas.removeEntityFromProjectError();
             }
         );

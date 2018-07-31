@@ -114,6 +114,9 @@ export function uuidHash<T extends { uuid: string }>(elements: T[]): { [uuid: st
 }
 
 export function noop() {}
+export function id<T>(obj: T): T {
+    return obj;
+}
 
 export type Primitive = string | number | boolean;
 export interface SimpleObject {

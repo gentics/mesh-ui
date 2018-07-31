@@ -14,6 +14,9 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
+import { I18nNotification } from '../i18n-notification/i18n-notification.service';
+import { MockI18nNotification } from '../i18n-notification/i18n-notification.service.mock';
+
 import { ApiBase, ResponseObservable } from './api-base.service';
 import { ApiError } from './api-error';
 
@@ -25,7 +28,12 @@ describe('ApiBase', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpModule],
-            providers: [ApiBase, Http, { provide: ConnectionBackend, useClass: MockBackend }]
+            providers: [
+                ApiBase,
+                Http,
+                { provide: ConnectionBackend, useClass: MockBackend },
+                { provide: I18nNotification, useClass: MockI18nNotification }
+            ]
         });
 
         apiBase = TestBed.get(ApiBase);

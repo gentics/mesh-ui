@@ -18,7 +18,7 @@ interface QueryParams {
 }
 
 const gqlQuery = `
-query($parent: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
+query($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
 	node(uuid: $parent) {
         uuid
 		nodes: children(filter: $filter, perPage: $perPage, page: $page) {
@@ -38,7 +38,7 @@ query($parent: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
 }`;
 
 const esGqlQuery = `
-query($query: String, $filter: NodeFilter, $perPage: Int, $page: Long) {
+query($query: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
 	nodes(query: $query, filter: $filter, perPage: $perPage, page: $page) {
         totalCount
         pageCount

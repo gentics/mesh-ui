@@ -6,7 +6,7 @@ import { AudioPlayButtonComponent } from '../audio-play-button/audio-play-button
 
 import { FilePreviewComponent } from './file-preview.component';
 
-describe('FilePreviewComponent', () => {
+fdescribe('FilePreviewComponent', () => {
     let component: FilePreviewComponent;
     let fixture: ComponentFixture<FilePreviewComponent>;
 

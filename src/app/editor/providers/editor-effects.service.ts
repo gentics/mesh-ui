@@ -85,23 +85,15 @@ export class EditorEffectsService {
         return this.api.project
             .createNode({ project: projectName, lang: language } as any, nodeCreateRequest)
             .toPromise()
+            .then(this.notification.promiseSuccess('editor.node_saved'))
             .then(updatedNode => this.processTagsAndBinaries(node, updatedNode, tags))
             .then(
                 savedNode => {
                     this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
-                    this.notification.show({
-                        type: 'success',
-                        message: 'editor.node_saved'
-                    });
                     return savedNode;
                 },
                 (error: { node: MeshNode; error: any }) => {
                     this.state.actions.editor.saveNodeError();
-                    this.notification.show({
-                        type: 'error',
-                        message: 'editor.node_save_error'
-                    });
-
                     // For the new nodes, if something went wrong while saving - delete the node immediately.
                     // That way the editor will decide what to do next (stay in an unchanged state?),
                     this.api.project
@@ -140,21 +132,14 @@ export class EditorEffectsService {
                     throw new Error('No node was returned from the updateNode API call.');
                 }
             })
+            .then(this.notification.promiseSuccess('editor.node_saved'))
             .then(
                 savedNode => {
                     this.state.actions.editor.saveNodeSuccess(savedNode as MeshNode);
-                    this.notification.show({
-                        type: 'success',
-                        message: 'editor.node_saved'
-                    });
                     return savedNode;
                 },
                 error => {
                     this.state.actions.editor.saveNodeError();
-                    this.notification.show({
-                        type: 'error',
-                        message: 'editor.node_save_error'
-                    });
                     throw error;
                 }
             );
@@ -178,23 +163,14 @@ export class EditorEffectsService {
                     throw new Error('New version could not be retrieved');
                 }
             })
+            .pipe(this.notification.rxSuccess('editor.node_published'))
             .subscribe(
                 version => {
-                    this.notification.show({
-                        type: 'success',
-                        message: 'editor.node_published',
-                        translationParams: { version }
-                    });
                     const newNode = Object.assign({}, node, { version });
                     this.state.actions.editor.publishNodeSuccess(newNode);
                 },
                 error => {
                     this.state.actions.editor.publishNodeError();
-                    this.notification.show({
-                        type: 'error',
-                        message: 'editor.node_publish_error'
-                    });
-                    throw new Error('TODO: Error handling');
                 }
             );
     }
