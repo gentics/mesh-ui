@@ -12,12 +12,9 @@
         <gtx-button [disabled]="errors.length > 0 || (loading$ | async)"
                     style="margin-top: 15px;"
                     (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
-        <gtx-button type="alert"
-                    *ngIf="!isNew"
-                    (click)="delete()">{{ 'common.delete_button' | i18n }}</gtx-button>
     </gtx-tab>
 
-    <gtx-tab title="Allocations">
+    <gtx-tab title="Projects">
         <mesh-admin-list [items]="projects$ | async"
                          [autoHidePagination]="true"
                          [selectable]="false">
