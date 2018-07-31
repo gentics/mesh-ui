@@ -17,6 +17,7 @@ import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ProjectAssignments } from '../../../state/models/admin-schemas-state.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { MicroschemaDetailComponent } from '../../components/microschema-detail/microschema-detail.component';
 
 @Injectable()
 export class AdminSchemaEffectsService {
@@ -91,6 +92,7 @@ export class AdminSchemaEffectsService {
             .then(
                 schema => {
                     this.state.actions.adminSchemas.createSchemaSuccess(schema);
+                    return schema;
                 },
                 error => {
                     this.state.actions.adminSchemas.createSchemaError();
@@ -172,6 +174,7 @@ export class AdminSchemaEffectsService {
             .then(
                 microschema => {
                     this.state.actions.adminSchemas.createMicroschemaSuccess(microschema);
+                    return microschema;
                 },
                 error => {
                     this.state.actions.adminSchemas.createMicroschemaError();
@@ -243,12 +246,20 @@ export class AdminSchemaEffectsService {
         if (type === 'schema') {
             apiFunction = () =>
                 this.api.admin.assignSchemaToProject({ project: projectName, schemaUuid: entityUuid }, undefined);
+            this.i18nNotification.show({
+                type: 'success',
+                message: 'admin.project_assigned'
+            });
         } else if (type === 'microschema') {
             apiFunction = () =>
                 this.api.admin.assignMicroschemaToProject(
                     { project: projectName, microschemaUuid: entityUuid },
                     undefined
                 );
+            this.i18nNotification.show({
+                type: 'success',
+                message: 'admin.project_assigned'
+            });
         } else {
             throw new Error('type must be schema or microschema');
         }
@@ -269,9 +280,17 @@ export class AdminSchemaEffectsService {
         if (type === 'schema') {
             apiFunction = () =>
                 this.api.admin.removeSchemaFromProject({ project: projectName, schemaUuid: entityUuid });
+            this.i18nNotification.show({
+                type: 'success',
+                message: 'admin.project_unassigned'
+            });
         } else if (type === 'microschema') {
             apiFunction = () =>
                 this.api.admin.removeMicroschemaFromProject({ project: projectName, microschemaUuid: entityUuid });
+            this.i18nNotification.show({
+                type: 'success',
+                message: 'admin.project_unassigned'
+            });
         } else {
             throw new Error('type must be schema or microschema');
         }

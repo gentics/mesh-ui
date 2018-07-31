@@ -12,7 +12,7 @@ import { AdminListItemComponent } from './components/admin-list-item/admin-list-
 import { AdminListComponent } from './components/admin-list/admin-list.component';
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
-import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
+import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';

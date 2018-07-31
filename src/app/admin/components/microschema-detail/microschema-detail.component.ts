@@ -48,7 +48,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     microschemaJson = '';
     // TODO load json schema from mesh instead of static file
-    schema = require('./microschema.schema.json');
+    microschema = require('./microschema.schema.json');
 
     errors: MarkerData[] = [];
     isNew = true;

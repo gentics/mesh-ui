@@ -104,41 +104,6 @@ describe('node microschema', () => {
         await expect(microschema.getAllMicroschemasName()).toEqual(test);
     });
 
-    it('should create a new schema and delete it (using bottom button)', async () => {
-        const test: Array<String> = [];
-        const microschemaName: Array<String> = ['test4'];
-        const microschemaInfo = `{
-            "name": "test4",
-            "fields": [
-                {
-                    "name": "name",
-                    "label": "Name",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        }`;
-
-        await microschema.createNewMicroschemaClick();
-
-        await microschema.setMicroschemaJSON(microschemaInfo);
-        await microschema.clickSaveButton();
-
-        await microschema.openMicroschema();
-
-        await microschema.setFilterText('test4');
-
-        await expect(microschema.getAllMicroschemasName()).toEqual(microschemaName);
-
-        await microschema.clickMicroschema('test4');
-        await microschema.clickDeleteBottomButton();
-
-        await microschema.openMicroschema();
-        await microschema.setFilterText('test4');
-
-        await expect(microschema.getAllMicroschemasName()).toEqual(test);
-    });
-
     it('should go to the next page and show right microschema', async () => {
         const microschemaName: Array<String> = ['test2'];
         await microschema.goToNextPage();

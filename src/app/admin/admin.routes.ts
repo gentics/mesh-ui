@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
-import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
+import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';

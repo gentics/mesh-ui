@@ -94,11 +94,6 @@ export class NodeMicroschema {
         await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
     }
 
-    async clickDeleteBottomButton() {
-        await browser.waitForAngularEnabled(false);
-        await element(by.cssContainingText('.button-event-wrapper', 'Delete')).click();
-    }
-
     async goToNextPage() {
         await element(by.cssContainingText('.page-link', ' » ')).click();
     }

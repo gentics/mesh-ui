@@ -163,6 +163,14 @@
         "en": "Project created",
         "de": "Projekt erstellt"
     },
+    "project_assigned": {
+        "en": "Project assigned",
+        "de": "Projekt zugewiesen"
+    },
+    "project_unassigned": {
+        "en": "Project unassigned",
+        "de": "Projekt unzugewiesen"
+    },
     "delete_project": {
         "en": "Delete project",
         "de": "Projekt löschen"
