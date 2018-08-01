@@ -31,7 +31,7 @@ describe('node schema', () => {
         await schema.openSchema();
     });
 
-    fit('should show the correct schema names', async () => {
+    it('should show the correct schema names', async () => {
         const list: Array<String> = ['category', 'vehicleImage', 'vehicle', 'binary_content', 'folder', 'content'];
 
         await expect(schema.getAllSchemasName()).toEqual(list);
