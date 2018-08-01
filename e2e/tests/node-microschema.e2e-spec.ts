@@ -2,10 +2,26 @@ import { AppPage } from '../page-objects/app.po';
 import { NodeAdmin } from '../page-objects/node-admin.po';
 import { NodeMicroschema } from '../page-objects/node-microschema.po';
 
+import { createMicroschema, deleteMicroschema } from '../api';
+
 describe('node microschema', () => {
     let admin: NodeAdmin;
     let page: AppPage;
     let microschema: NodeMicroschema;
+
+    beforeAll(async () => {
+        for (let i = 1; i <= 10; i++) {
+            await createMicroschema('test' + i);
+        }
+    });
+
+    /*
+    afterAll(async () => {
+        await deleteMicroschema(schema.uuid, 'test1');
+        await deleteMicroschema(schema.uuid, 'test2');
+        await deleteMicroschema(schema.uuid, 'test3');
+    });
+    */
 
     beforeEach(async () => {
         admin = new NodeAdmin();
@@ -17,7 +33,7 @@ describe('node microschema', () => {
     });
 
     it('should show the correct microschema names', async () => {
-        const list: Array<String> = ['test', 'test3'];
+        const list: Array<String> = [];
 
         await expect(microschema.getAllMicroschemasName()).toEqual(list);
     });
@@ -37,7 +53,7 @@ describe('node microschema', () => {
 
     it('should show right number of selected microschemas', async () => {
         await microschema.checkAllMicroschemas();
-        await expect(microschema.checkedCount().getText()).toEqual('Selected: 2');
+        await expect(microschema.checkedCount().getText()).toEqual('Selected: 0');
     });
 
     it('should show a right breadcrumb after creating a new microschema', async () => {
