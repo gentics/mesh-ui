@@ -1,3 +1,4 @@
+import { createSchema, deleteSchema } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import { NodeAdmin } from '../page-objects/node-admin.po';
 import { NodeSchema } from '../page-objects/node-schema.po';
@@ -6,6 +7,20 @@ describe('node schema', () => {
     let admin: NodeAdmin;
     let page: AppPage;
     let schema: NodeSchema;
+
+    beforeAll(async () => {
+        for (let i = 1; i <= 10; i++) {
+            await createSchema('test' + i);
+        }
+    });
+
+    /*
+    afterAll(async () => {
+        await deleteSchema(schema.uuid, 'test1');
+        await deleteSchema(schema.uuid, 'test2');
+        await deleteSchema(schema.uuid, 'test3');
+    });
+    */
 
     beforeEach(async () => {
         admin = new NodeAdmin();
@@ -16,8 +31,8 @@ describe('node schema', () => {
         await schema.openSchema();
     });
 
-    it('should show the correct schema names', async () => {
-        const list: Array<String> = ['category', 'vehicleImage', 'vehicle', 'binary_content', 'folder'];
+    fit('should show the correct schema names', async () => {
+        const list: Array<String> = ['category', 'vehicleImage', 'vehicle', 'binary_content', 'folder', 'content'];
 
         await expect(schema.getAllSchemasName()).toEqual(list);
     });
@@ -37,7 +52,7 @@ describe('node schema', () => {
 
     it('should show right number of selected schemas', async () => {
         await schema.checkAllSchemas();
-        await expect(schema.checkedCount().getText()).toEqual('Selected: 5');
+        await expect(schema.checkedCount().getText()).toEqual('Selected: 6');
     });
 
     it('should show a right breadcrumb after creating a new schema', async () => {

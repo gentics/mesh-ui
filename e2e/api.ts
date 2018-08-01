@@ -3,6 +3,7 @@ import * as rp from 'request-promise';
 
 import { MeshNode } from '../src/app/common/models/node.model';
 import { Project } from '../src/app/common/models/project.model';
+import { Schema } from '../src/app/common/models/schema.model';
 
 import { HasUuid } from './model';
 
@@ -50,6 +51,46 @@ export function createVehicle(parent: HasUuid, name: string): Promise<MeshNode> 
             slug: name
         }
     });
+}
+
+export function createSchema(schemaName: string): any {
+    return post(`/schemas`, {
+        container: true,
+        displayField: 'name',
+        name: schemaName,
+        fields: [
+            {
+                name: 'name',
+                label: 'Name',
+                required: true,
+                type: 'string'
+            }
+        ]
+    });
+}
+
+export function deleteSchema(schema: HasUuid) {
+    return deleteReq(`/schemas/${schema.uuid}`);
+}
+
+export function createMicroschema(microschemaName: string): any {
+    return post(`/microschemas/`, {
+        container: true,
+        displayField: 'name',
+        name: microschemaName,
+        fields: [
+            {
+                name: 'name',
+                label: 'Name',
+                required: true,
+                type: 'string'
+            }
+        ]
+    });
+}
+
+export function deleteMicroschema(microschema: HasUuid) {
+    return deleteReq(`/microschemas/${microschema.uuid}`);
 }
 
 export function deleteNode(node: HasUuid) {
