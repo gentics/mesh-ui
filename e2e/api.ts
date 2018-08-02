@@ -70,7 +70,9 @@ export function createSchema(schemaName: string): any {
 }
 
 export function deleteSchema(schema: HasUuid) {
-    return deleteReq(`/schemas/${schema.uuid}`);
+    return deleteReq(`/schemas/${schema.uuid}`, {
+        recursive: true
+    });
 }
 
 export function createMicroschema(microschemaName: string): any {
@@ -90,7 +92,9 @@ export function createMicroschema(microschemaName: string): any {
 }
 
 export function deleteMicroschema(microschema: HasUuid) {
-    return deleteReq(`/microschemas/${microschema.uuid}`);
+    return deleteReq(`/microschemas/${microschema.uuid}`, {
+        recursive: true
+    });
 }
 
 export function deleteNode(node: HasUuid) {

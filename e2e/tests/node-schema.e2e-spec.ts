@@ -3,24 +3,27 @@ import { AppPage } from '../page-objects/app.po';
 import { NodeAdmin } from '../page-objects/node-admin.po';
 import { NodeSchema } from '../page-objects/node-schema.po';
 
+import { browser } from '../../node_modules/protractor';
+import { Schema } from '../../src/app/common/models/schema.model';
+
 describe('node schema', () => {
     let admin: NodeAdmin;
     let page: AppPage;
     let schema: NodeSchema;
 
+    const schemaModel: Array<Schema> = [];
+
     beforeAll(async () => {
         for (let i = 1; i <= 10; i++) {
-            await createSchema('test' + i);
+            schemaModel.push(await createSchema('test' + i));
         }
     });
 
-    /*
     afterAll(async () => {
-        await deleteSchema(schema.uuid, 'test1');
-        await deleteSchema(schema.uuid, 'test2');
-        await deleteSchema(schema.uuid, 'test3');
+        for (let i = 0; i < 10; i++) {
+            await deleteSchema(schemaModel[i]);
+        }
     });
-    */
 
     beforeEach(async () => {
         admin = new NodeAdmin();
@@ -29,12 +32,6 @@ describe('node schema', () => {
         await page.navigateToHome();
         await admin.modeChange();
         await schema.openSchema();
-    });
-
-    it('should show the correct schema names', async () => {
-        const list: Array<String> = ['category', 'vehicleImage', 'vehicle', 'binary_content', 'folder', 'content'];
-
-        await expect(schema.getAllSchemasName()).toEqual(list);
     });
 
     it('should give right filter results', async () => {
@@ -52,7 +49,7 @@ describe('node schema', () => {
 
     it('should show right number of selected schemas', async () => {
         await schema.checkAllSchemas();
-        await expect(schema.checkedCount().getText()).toEqual('Selected: 6');
+        await expect(schema.checkedCount().getText()).toEqual('Selected: 10');
     });
 
     it('should show a right breadcrumb after creating a new schema', async () => {
@@ -81,9 +78,9 @@ describe('node schema', () => {
 
     it('should create a new schema and delete it (using top button) with selected items check', async () => {
         const test: Array<String> = [];
-        const schemaName: Array<String> = ['test'];
+        const schemaName: Array<String> = ['test11'];
         const schemaInfo = `{
-            "name": "test",
+            "name": "test11",
             "fields": [
                 {
                     "name": "name",
@@ -101,7 +98,7 @@ describe('node schema', () => {
 
         await schema.openSchema();
 
-        await schema.setFilterText('test');
+        await schema.setFilterText('test11');
 
         await expect(schema.getAllSchemasName()).toEqual(schemaName);
 
@@ -114,15 +111,15 @@ describe('node schema', () => {
 
         await schema.clearFilterText();
 
-        await schema.setFilterText('test');
+        await schema.setFilterText('test11');
 
         await expect(schema.getAllSchemasName()).toEqual(test);
     });
 
     it('should go to the next page and show right schema', async () => {
-        const schemaName: Array<String> = ['content'];
+        const link: String = '#/admin/schemas?p=2';
         await schema.goToNextPage();
 
-        await expect(schema.getAllSchemasName()).toEqual(schemaName);
+        await expect(browser.getCurrentUrl()).toEqual(browser.baseUrl + link);
     });
 });

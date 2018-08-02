@@ -23,8 +23,7 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
-    templateUrl: './schema-detail.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './schema-detail.component.html'
 })
 export class SchemaDetailComponent implements OnInit, OnDestroy {
     // TODO Disable save button when editor is pristine
@@ -36,11 +35,12 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     filterInput = new FormControl('');
 
     projects$: Observable<Project[]>;
+    allProjects$: Observable<Project[]>;
 
     schema$: Observable<SchemaResponse>;
     version$: Observable<string>;
 
-    projectAssignments: ProjectAssignments;
+    projectAssignments?: ProjectAssignments;
 
     uuid$: Observable<string>;
     schemaJson = '';
@@ -58,8 +58,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         public adminProjectEffects: AdminProjectEffectsService,
         private schemaEffects: AdminSchemaEffectsService,
         private route: ActivatedRoute,
-        private router: Router,
-        private ref: ChangeDetectorRef
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -71,14 +70,19 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
         this.subscription = this.schema$.subscribe(schema => {
             this.schemaJson = schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`;
-            this.ref.detectChanges();
+            // this.ref.detectChanges();
         });
 
         this.schema$
             .take(1)
             .toPromise()
             .then(schema => this.schemaEffects.loadEntityAssignments('schema', schema.uuid))
-            .then(assignments => (this.projectAssignments = assignments));
+            .then(assignments => {
+                this.projectAssignments = assignments;
+                console.log(this.projectAssignments);
+            });
+
+        console.log(this.projectAssignments);
 
         this.adminProjectEffects.loadProjects();
 
@@ -91,13 +95,13 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
             this.filterInput.setValue(filterTerm, { emitEvent: false });
         });
 
-        const allProjects$ = this.state
+        this.allProjects$ = this.state
             .select(state => state.adminProjects.projectList)
             .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)).filter(notNullOrUndefined));
 
         const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
 
-        this.projects$ = combineLatest(allProjects$, filterTerm$).map(([projects, filterTerm]) => {
+        this.projects$ = combineLatest(this.allProjects$, filterTerm$).map(([projects, filterTerm]) => {
             this.filterTerm = filterTerm;
             return projects.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
                 return pro1.name < pro2.name ? -1 : 1;
@@ -113,7 +117,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
     onErrorChange(errors: MarkerData[]) {
         this.errors = errors;
-        this.ref.detectChanges();
+        // this.ref.detectChanges();
     }
 
     save() {
@@ -151,7 +155,12 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
                 .subscribe(schema => this.schemaEffects.removeEntityFromProject('schema', schema.uuid, project.name));
         }
 
-        this.projectAssignments[project.uuid] = isChecked;
+        if (this.projectAssignments) {
+            this.projectAssignments[project.uuid] = isChecked;
+            // this.ref.detectChanges();
+        }
+
+        console.log('111');
     }
 }
 

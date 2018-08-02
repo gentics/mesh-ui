@@ -6,6 +6,7 @@ import { ProjectResponse } from '../../common/models/server-models';
 import { AdminProjectsState } from '../models/admin-projects-state.model';
 import { AppState } from '../models/app-state.model';
 import { EntityState } from '../models/entity-state.model';
+
 import { mergeEntityState } from './entity-state-actions';
 
 @Injectable()
@@ -25,7 +26,7 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
                     projectList: [],
                     projectDetail: null,
                     filterTerm: '',
-                    filterTagsTerm: '',
+                    filterTagsTerm: ''
                 }
             }
         });
@@ -60,7 +61,6 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
     createProjectError(): void {
         this.adminProjects.loadCount--;
     }
-
 
     updateProjectStart(): void {
         this.adminProjects.loadCount++;

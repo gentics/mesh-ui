@@ -5,7 +5,6 @@ import { ProjectCreateRequest, ProjectResponse, ProjectUpdateRequest } from '../
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
 
 @Injectable()
 export class AdminProjectEffectsService {
@@ -36,12 +35,13 @@ export class AdminProjectEffectsService {
             );
     }
 
-    loadProjects(): void {
+    loadProjects(): any {
         this.state.actions.adminProjects.fetchProjectsStart();
 
         this.api.project.getProjects({}).subscribe(
             response => {
                 this.state.actions.adminProjects.fetchProjectsSuccess(response.data);
+                return response.data;
             },
             error => {
                 this.state.actions.adminProjects.fetchProjectsError();
