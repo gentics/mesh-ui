@@ -23,8 +23,7 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
-    templateUrl: './microschema-detail.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './microschema-detail.component.html'
 })
 export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     // TODO Disable save button when editor is pristine
@@ -36,8 +35,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     filterInput = new FormControl('');
 
     projects$: Observable<Project[]>;
-
-    arrayList: string[] = [];
+    allProjects$: Observable<Project[]>;
 
     microschema$: Observable<MicroschemaResponse>;
     version$: Observable<string>;
@@ -65,8 +63,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         public adminProjectEffects: AdminProjectEffectsService,
         private schemaEffects: AdminSchemaEffectsService,
         private route: ActivatedRoute,
-        private router: Router,
-        private ref: ChangeDetectorRef
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -80,7 +77,6 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
             this.microschemaJson = microschema
                 ? JSON.stringify(stripMicroschemaFields(microschema), undefined, 4)
                 : `{}`;
-            this.ref.detectChanges();
         });
 
         this.microschema$
@@ -122,7 +118,6 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     onErrorChange(errors: MarkerData[]) {
         this.errors = errors;
-        this.ref.detectChanges();
     }
 
     save() {

@@ -70,19 +70,13 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
         this.subscription = this.schema$.subscribe(schema => {
             this.schemaJson = schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`;
-            // this.ref.detectChanges();
         });
 
         this.schema$
             .take(1)
             .toPromise()
             .then(schema => this.schemaEffects.loadEntityAssignments('schema', schema.uuid))
-            .then(assignments => {
-                this.projectAssignments = assignments;
-                console.log(this.projectAssignments);
-            });
-
-        console.log(this.projectAssignments);
+            .then(assignments => (this.projectAssignments = assignments));
 
         this.adminProjectEffects.loadProjects();
 
@@ -117,7 +111,6 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
     onErrorChange(errors: MarkerData[]) {
         this.errors = errors;
-        // this.ref.detectChanges();
     }
 
     save() {
@@ -157,10 +150,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
         if (this.projectAssignments) {
             this.projectAssignments[project.uuid] = isChecked;
-            // this.ref.detectChanges();
         }
-
-        console.log('111');
     }
 }
 
