@@ -28,7 +28,8 @@
             </div>
 
             <ng-template let-project="item">
-                <gtx-checkbox [label]="project.name"
+                <gtx-checkbox *ngIf="projectAssignments"
+                              [label]="project.name"
                               [checked]="projectAssignments[project.uuid]"
                               (change)="onAssignmentChange(project, $event)">
                 </gtx-checkbox>

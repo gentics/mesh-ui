@@ -2,6 +2,9 @@ import { AppPage } from '../page-objects/app.po';
 import { NodeAdmin } from '../page-objects/node-admin.po';
 import { NodeMicroschema } from '../page-objects/node-microschema.po';
 
+import { Microschema } from '../../src/app/common/models/microschema.model';
+
+import { browser } from '../../node_modules/protractor';
 import { createMicroschema, deleteMicroschema } from '../api';
 
 describe('node microschema', () => {
@@ -9,19 +12,19 @@ describe('node microschema', () => {
     let page: AppPage;
     let microschema: NodeMicroschema;
 
+    const microschemaModel: Array<Microschema> = [];
+
     beforeAll(async () => {
-        for (let i = 1; i <= 10; i++) {
-            await createMicroschema('test' + i);
+        for (let i = 1; i <= 11; i++) {
+            microschemaModel.push(await createMicroschema('test' + i));
         }
     });
 
-    /*
     afterAll(async () => {
-        await deleteMicroschema(schema.uuid, 'test1');
-        await deleteMicroschema(schema.uuid, 'test2');
-        await deleteMicroschema(schema.uuid, 'test3');
+        for (let i = 0; i < 11; i++) {
+            await deleteMicroschema(microschemaModel[i]);
+        }
     });
-    */
 
     beforeEach(async () => {
         admin = new NodeAdmin();
@@ -32,17 +35,11 @@ describe('node microschema', () => {
         await microschema.openMicroschema();
     });
 
-    it('should show the correct microschema names', async () => {
-        const list: Array<String> = [];
-
-        await expect(microschema.getAllMicroschemasName()).toEqual(list);
-    });
-
     it('should give right filter results', async () => {
-        const test: Array<String> = ['test', 'test3'];
+        const test: Array<String> = ['test3'];
         const test2: Array<String> = ['test2'];
 
-        await microschema.setFilterText('te');
+        await microschema.setFilterText('test3');
         await expect(microschema.getAllMicroschemasName()).toEqual(test);
 
         await microschema.clearFilterText();
@@ -53,7 +50,7 @@ describe('node microschema', () => {
 
     it('should show right number of selected microschemas', async () => {
         await microschema.checkAllMicroschemas();
-        await expect(microschema.checkedCount().getText()).toEqual('Selected: 0');
+        await expect(microschema.checkedCount().getText()).toEqual('Selected: 10');
     });
 
     it('should show a right breadcrumb after creating a new microschema', async () => {
@@ -82,9 +79,9 @@ describe('node microschema', () => {
 
     it('should create a new schema and delete it (using top button) with selected items check', async () => {
         const test: Array<String> = [];
-        const microschemaName: Array<String> = ['test4'];
+        const microschemaName: Array<String> = ['test12'];
         const microschemaInfo = `{
-            "name": "test4",
+            "name": "test12",
             "fields": [
                 {
                     "name": "name",
@@ -102,7 +99,7 @@ describe('node microschema', () => {
 
         await microschema.openMicroschema();
 
-        await microschema.setFilterText('test4');
+        await microschema.setFilterText('test12');
 
         await expect(microschema.getAllMicroschemasName()).toEqual(microschemaName);
 
@@ -115,15 +112,15 @@ describe('node microschema', () => {
 
         await microschema.clearFilterText();
 
-        await microschema.setFilterText('test4');
+        await microschema.setFilterText('test12');
 
         await expect(microschema.getAllMicroschemasName()).toEqual(test);
     });
 
     it('should go to the next page and show right microschema', async () => {
-        const microschemaName: Array<String> = ['test2'];
+        const link: String = '#/admin/microschemas?p=2';
         await microschema.goToNextPage();
 
-        await expect(microschema.getAllMicroschemasName()).toEqual(microschemaName);
+        await expect(browser.getCurrentUrl()).toEqual(browser.baseUrl + link);
     });
 });
