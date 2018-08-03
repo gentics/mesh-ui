@@ -1,15 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Project } from '../../../common/models/project.model';
+import { Schema } from '../../../common/models/schema.model';
 import { SchemaResponse } from '../../../common/models/server-models';
-import { ProjectResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -38,7 +37,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     allProjects$: Observable<Project[]>;
 
     schema$: Observable<SchemaResponse>;
-    version$: Observable<string>;
+    version: string;
 
     projectAssignments?: ProjectAssignments;
 
@@ -62,21 +61,24 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.schema$ = this.route.data.map(data => data.schema).do(schema => {
+        this.schema$ = this.route.data.map(data => data.schema).do((schema: Schema) => {
             this.isNew = !schema;
         });
-
-        this.version$ = this.schema$.map(it => it.version);
 
         this.subscription = this.schema$.subscribe(schema => {
             this.schemaJson = schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`;
         });
 
         this.schema$
+            .filter(schema => !!schema)
             .take(1)
             .toPromise()
-            .then(schema => this.schemaEffects.loadEntityAssignments('schema', schema.uuid))
-            .then(assignments => (this.projectAssignments = assignments));
+            .then(schema => {
+                this.version = schema.version;
+                this.schemaEffects
+                    .loadEntityAssignments('schema', schema.uuid)
+                    .then(assignments => (this.projectAssignments = assignments));
+            });
 
         this.adminProjectEffects.loadProjects();
 
@@ -120,11 +122,16 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
                 this.schemaEffects.createSchema(changedSchema).then(schema => {
                     if (schema) {
                         this.router.navigate(['admin', 'schemas', schema.uuid]);
+                        this.version = schema.version;
                     }
                 });
             } else {
                 this.schema$.take(1).subscribe(schema => {
-                    this.schemaEffects.updateSchema({ ...schema, ...changedSchema });
+                    this.schemaEffects.updateSchema({ ...schema, ...changedSchema }).then(schemaNew => {
+                        if (schemaNew) {
+                            this.version = schemaNew.version;
+                        }
+                    });
                 });
             }
         }

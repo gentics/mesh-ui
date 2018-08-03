@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Microschema } from '../../../common/models/microschema.model';
 import { Schema } from '../../../common/models/schema.model';
 import {
+    GenericMessageResponse,
     MicroschemaCreateRequest,
     MicroschemaResponse,
     MicroschemaUpdateRequest,
@@ -69,24 +70,31 @@ export class AdminSchemaEffectsService {
             );
     }
 
-    updateSchema(request: SchemaUpdateRequest & { uuid: string }) {
+    updateSchema(request: SchemaUpdateRequest & { uuid: string }): Promise<SchemaResponse | void> {
         this.state.actions.adminSchemas.updateSchemaStart();
-        this.api.admin.updateSchema({ schemaUuid: request.uuid }, request).subscribe(
-            response => {
-                this.state.actions.adminSchemas.updateSchemaSuccess(response);
-                this.i18nNotification.show({
-                    type: 'success',
-                    message: 'admin.schema_updated'
-                });
-            },
-            error => {
-                this.state.actions.adminSchemas.updateSchemaError();
-                this.notification.show({
-                    type: 'error',
-                    message: error.toString()
-                });
-            }
-        );
+        return this.api.admin
+            .updateSchema({ schemaUuid: request.uuid }, request)
+            .toPromise()
+            .then(() => {
+                return this.api.admin.getSchema({ schemaUuid: request.uuid }).toPromise();
+            })
+            .then(
+                response => {
+                    this.state.actions.adminSchemas.updateSchemaSuccess(response);
+                    this.i18nNotification.show({
+                        type: 'success',
+                        message: 'admin.schema_updated'
+                    });
+                    return response;
+                },
+                error => {
+                    this.state.actions.adminSchemas.updateSchemaError();
+                    this.notification.show({
+                        type: 'error',
+                        message: error.toString()
+                    });
+                }
+            );
     }
 
     createSchema(request: SchemaCreateRequest): Promise<SchemaResponse | void> {
