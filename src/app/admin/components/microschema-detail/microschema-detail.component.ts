@@ -1,14 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Project } from '../../../common/models/project.model';
-import { ProjectResponse } from '../../../common/models/server-models';
 import { MicroschemaResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
@@ -38,7 +36,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     allProjects$: Observable<Project[]>;
 
     microschema$: Observable<MicroschemaResponse>;
-    version$: Observable<string>;
+    version: string;
 
     projectAssignments: ProjectAssignments;
 
@@ -71,8 +69,6 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
             this.isNew = !microschema;
         });
 
-        this.version$ = this.microschema$.map(it => it.version);
-
         this.subscription = this.microschema$.subscribe(microschema => {
             this.microschemaJson = microschema
                 ? JSON.stringify(stripMicroschemaFields(microschema), undefined, 4)
@@ -80,10 +76,15 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         });
 
         this.microschema$
+            .filter(microschema => !!microschema)
             .take(1)
             .toPromise()
-            .then(microschema => this.schemaEffects.loadEntityAssignments('microschema', microschema.uuid))
-            .then(assignments => (this.projectAssignments = assignments));
+            .then(microschema => {
+                this.version = microschema.version;
+                this.schemaEffects
+                    .loadEntityAssignments('microschema', microschema.uuid)
+                    .then(assignments => (this.projectAssignments = assignments));
+            });
 
         this.adminProjectEffects.loadProjects();
 
@@ -127,11 +128,16 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
                 this.schemaEffects.createMicroschema(changedSchema).then(microschema => {
                     if (microschema) {
                         this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                        this.version = microschema.version;
                     }
                 });
             } else {
                 this.microschema$.take(1).subscribe(microschema => {
-                    this.schemaEffects.updateMicroschema({ ...microschema, ...changedSchema });
+                    this.schemaEffects.updateMicroschema({ ...microschema, ...changedSchema }).then(microschemaNew => {
+                        if (microschemaNew) {
+                            this.version = microschemaNew.version;
+                        }
+                    });
                 });
             }
         }

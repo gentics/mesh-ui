@@ -181,21 +181,29 @@ export class AdminSchemaEffectsService {
             );
     }
 
-    updateMicroschema(request: MicroschemaUpdateRequest & { uuid: string }) {
+    updateMicroschema(request: MicroschemaUpdateRequest & { uuid: string }): Promise<MicroschemaResponse | void> {
         this.state.actions.adminSchemas.updateMicroschemaStart();
-        this.api.admin
+        return this.api.admin
             .updateMicroschema({ microschemaUuid: request.uuid }, request)
-            .flatMap(() => this.api.admin.getMicroschema({ microschemaUuid: request.uuid }))
-            .subscribe(
+            .toPromise()
+            .then(() => {
+                return this.api.admin.getMicroschema({ microschemaUuid: request.uuid }).toPromise();
+            })
+            .then(
                 response => {
                     this.state.actions.adminSchemas.updateMicroschemaSuccess(response);
                     this.i18nNotification.show({
                         type: 'success',
                         message: 'admin.microschema_updated'
                     });
+                    return response;
                 },
                 error => {
                     this.state.actions.adminSchemas.updateMicroschemaError();
+                    this.notification.show({
+                        type: 'error',
+                        message: error.toString()
+                    });
                 }
             );
     }
