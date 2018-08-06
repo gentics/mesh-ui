@@ -18,7 +18,7 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
-import { MockAdminListItem } from '../admin-list-item/admin-list-item.component.mock';
+import { MockAdminListItemComponent } from '../admin-list-item/admin-list-item.component.mock';
 import { AdminListComponent } from '../admin-list/admin-list.component';
 import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 import { CreateProjectModalComponent } from '../create-project-modal/create-project-modal.component';
@@ -31,7 +31,12 @@ describe('ProjectListComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ProjectListComponent, AdminListComponent, MockAdminListItem, CreateProjectModalComponent],
+            declarations: [
+                ProjectListComponent,
+                AdminListComponent,
+                MockAdminListItemComponent,
+                CreateProjectModalComponent
+            ],
             imports: [
                 GenticsUICoreModule,
                 FormsModule,

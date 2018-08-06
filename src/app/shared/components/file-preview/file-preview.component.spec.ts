@@ -17,40 +17,40 @@ describe('FilePreviewComponent', () => {
         }).compileComponents();
     }));
 
-    beforeEach(() => {
+    beforeEach(async(() => {
         fixture = TestBed.createComponent(FilePreviewComponent);
         component = fixture.componentInstance;
-    });
-
-    it('should render a video component', () => {
-        component.mimeType = 'video/ogg';
-        component.fileName = 'video.ogg';
-        fixture.detectChanges();
-        const video = fixture.debugElement.query(By.css('video'));
-        expect(video).toBeTruthy();
-    });
+    }));
 
     it('should render an audio component', () => {
         component.mimeType = 'audio/mp3';
         component.fileName = 'audio.mp3';
         fixture.detectChanges();
-        const video = fixture.debugElement.query(By.css('audio'));
-        expect(video).toBeTruthy();
+        const element = fixture.debugElement.query(By.css('mesh-audio-play-button'));
+        expect(element).toBeTruthy();
     });
 
     it('should render an image component', () => {
         component.mimeType = 'image/jpeg';
         component.fileName = 'image.jpg';
         fixture.detectChanges();
-        const video = fixture.debugElement.query(By.css('img.preview'));
-        expect(video).toBeTruthy();
+        const element = fixture.debugElement.query(By.css('img.preview'));
+        expect(element).toBeTruthy();
     });
 
     it('should render a default placeholder', () => {
         component.mimeType = 'whatever';
         component.fileName = 'whatever.file';
         fixture.detectChanges();
-        const video = fixture.debugElement.query(By.css('.default-preview'));
-        expect(video).toBeTruthy();
+        const element = fixture.debugElement.query(By.css('.default-preview'));
+        expect(element).toBeTruthy();
+    });
+
+    it('should render a video component', () => {
+        component.mimeType = 'video/ogg';
+        component.fileName = 'video.ogg';
+        fixture.detectChanges();
+        const elem = fixture.debugElement.query(By.css('video'));
+        expect(elem).toBeTruthy();
     });
 });
