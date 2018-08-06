@@ -20,7 +20,7 @@ import { AdminListComponent } from '../admin-list/admin-list.component';
 
 import { MicroschemaListComponent } from './microschema-list.component';
 
-fdescribe('MicroSchemaListComponent', () => {
+describe('MicroSchemaListComponent', () => {
     let appState: TestApplicationState;
     const mockModal = { fromComponent() {} };
     let mockAdminSchemaEffects: any;

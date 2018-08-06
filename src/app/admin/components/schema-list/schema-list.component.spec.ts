@@ -20,7 +20,7 @@ import { AdminListComponent } from '../admin-list/admin-list.component';
 
 import { SchemaListComponent } from './schema-list.component';
 
-fdescribe('SchemaListComponent', () => {
+describe('SchemaListComponent', () => {
     let appState: TestApplicationState;
     const mockModal = { fromComponent() {} };
     let mockAdminSchemaEffects: any;
