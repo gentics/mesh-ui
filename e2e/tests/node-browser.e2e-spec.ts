@@ -34,12 +34,12 @@ describe('node browser', () => {
 
         it('shows contents of the folder', async () => {
             const expected = [
-                'Koenigsegg CCX',
                 'Tesla Roadster',
                 'Ford GT',
                 'DeLorean DMC-12',
                 'Maize Blue Solar Car',
-                'Trabant'
+                'Trabant',
+                'Koenigsegg CCX'
             ];
             const nodes = browser.getNodes();
             expect(await nodes.map(toText)).toEqual(expected);
@@ -136,7 +136,7 @@ describe('node browser', () => {
                 .getText();
 
             await browser
-                .getPages()
+                .getNodeLinks()
                 .get(1)
                 .click();
 

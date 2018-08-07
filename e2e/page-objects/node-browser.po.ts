@@ -10,6 +10,10 @@ export function getNodes() {
     return nodeBrowser().all(by.tagName('gtx-contents-list-item'));
 }
 
+export function getNodeLinks() {
+    return nodeBrowser().all(by.css('gtx-contents-list-item a'));
+}
+
 export function getPages() {
     return nodeBrowser().all(by.css('pagination-controls li:not(.pagination-previous):not(.pagination-next)'));
 }

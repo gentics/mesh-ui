@@ -6,6 +6,7 @@ import { HtmlField } from '../page-objects/html-field.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import { NodeEditor } from '../page-objects/node-editor.po';
 import * as tooltip from '../page-objects/quill-tooltip.po';
+import { getTextNodeText } from '../testUtil';
 
 describe('node editor', () => {
     let page: AppPage;
@@ -33,22 +34,15 @@ describe('node editor', () => {
 
         describe('node link', () => {
             it('creates a mesh link in the markup', async () => {
-                let node;
                 await htmlField.selectText('business');
                 await htmlField.linkToNode();
                 await nodeBrowser.getNode('Space Shuttle').select();
                 await nodeBrowser.choose();
-                await editor.save();
-                node = await api.findNodeByUuid(uuid);
-                expect(node.fields.description).toBe(
-                    `<p>The Embraer Legacy 600 is a <a class="mesh-link" href="{{mesh.link('f915b16fa68f40e395b16fa68f10e32d')}}">business</a> jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>`
-                );
-                await htmlField.selectText();
-                await htmlField.removeFormat();
-                await editor.save();
-                node = await api.findNodeByUuid(uuid);
-                expect(node.fields.description).toBe(
-                    `<p>The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>`
+                await editor.getRemoveNodeLink().click();
+                await htmlField.selectText('business');
+                await htmlField.linkToNode();
+                expect(editor.getDescription()).toBe(
+                    `The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.`
                 );
             });
 
