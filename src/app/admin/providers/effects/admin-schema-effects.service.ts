@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Microschema } from '../../../common/models/microschema.model';
 import { Schema } from '../../../common/models/schema.model';
 import {
+    GenericMessageResponse,
     MicroschemaCreateRequest,
     MicroschemaResponse,
     MicroschemaUpdateRequest,
@@ -15,7 +16,9 @@ import {
 } from '../../../common/models/server-models';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
+import { ProjectAssignments } from '../../../state/models/admin-schemas-state.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { MicroschemaDetailComponent } from '../../components/microschema-detail/microschema-detail.component';
 
 @Injectable()
 export class AdminSchemaEffectsService {
@@ -24,6 +27,14 @@ export class AdminSchemaEffectsService {
         private state: ApplicationStateService,
         private i18nNotification: I18nNotification
     ) {}
+
+    setListPagination(currentPage: number, itemsPerPage: number): void {
+        this.state.actions.adminSchemas.setSchemaListPagination(currentPage, itemsPerPage);
+    }
+
+    setFilterTerm(term: string): void {
+        this.state.actions.adminSchemas.setFilterTerm(term);
+    }
 
     loadSchemas() {
         this.state.actions.adminSchemas.fetchSchemasStart();
@@ -58,14 +69,19 @@ export class AdminSchemaEffectsService {
             );
     }
 
-    updateSchema(request: SchemaUpdateRequest & { uuid: string }) {
+    updateSchema(request: SchemaUpdateRequest & { uuid: string }): Promise<SchemaResponse | void> {
         this.state.actions.adminSchemas.updateSchemaStart();
-        this.api.admin
+        return this.api.admin
             .updateSchema({ schemaUuid: request.uuid }, request)
             .pipe(this.i18nNotification.rxSuccess('admin.schema_updated'))
-            .subscribe(
+            .toPromise()
+            .then(() => {
+                return this.api.admin.getSchema({ schemaUuid: request.uuid }).toPromise();
+            })
+            .then(
                 response => {
                     this.state.actions.adminSchemas.updateSchemaSuccess(response);
+                    return response;
                 },
                 error => {
                     this.state.actions.adminSchemas.updateSchemaError();
@@ -82,6 +98,7 @@ export class AdminSchemaEffectsService {
             .then(
                 schema => {
                     this.state.actions.adminSchemas.createSchemaSuccess(schema);
+                    return schema;
                 },
                 error => {
                     this.state.actions.adminSchemas.createSchemaError();
@@ -138,15 +155,19 @@ export class AdminSchemaEffectsService {
             );
     }
 
-    updateMicroschema(request: MicroschemaUpdateRequest & { uuid: string }) {
+    updateMicroschema(request: MicroschemaUpdateRequest & { uuid: string }): Promise<MicroschemaResponse | void> {
         this.state.actions.adminSchemas.updateMicroschemaStart();
-        this.api.admin
+        return this.api.admin
             .updateMicroschema({ microschemaUuid: request.uuid }, request)
-            .flatMap(() => this.api.admin.getMicroschema({ microschemaUuid: request.uuid }))
             .pipe(this.i18nNotification.rxSuccess('admin.microschema_updated'))
-            .subscribe(
+            .toPromise()
+            .then(() => {
+                return this.api.admin.getMicroschema({ microschemaUuid: request.uuid }).toPromise();
+            })
+            .then(
                 response => {
                     this.state.actions.adminSchemas.updateMicroschemaSuccess(response);
+                    return response;
                 },
                 error => {
                     this.state.actions.adminSchemas.updateMicroschemaError();
@@ -163,6 +184,7 @@ export class AdminSchemaEffectsService {
             .then(
                 microschema => {
                     this.state.actions.adminSchemas.createMicroschemaSuccess(microschema);
+                    return microschema;
                 },
                 error => {
                     this.state.actions.adminSchemas.createMicroschemaError();
@@ -192,7 +214,7 @@ export class AdminSchemaEffectsService {
      * @param type
      * @param uuid
      */
-    loadEntityAssignments(type: 'microschema' | 'schema', uuid: string) {
+    loadEntityAssignments(type: 'microschema' | 'schema', uuid: string): Promise<ProjectAssignments> {
         const actions = this.state.actions.adminSchemas;
         actions.fetchEntityAssignmentsStart();
 
@@ -203,7 +225,7 @@ export class AdminSchemaEffectsService {
 
         // TODO consider paging
         // Get all projects
-        this.api.project
+        return this.api.project
             .getProjects({})
             .flatMap(projects => {
                 actions.fetchEntityAssignmentProjectsSuccess(projects.data);
@@ -218,10 +240,15 @@ export class AdminSchemaEffectsService {
             )
             .reduce(merge)
             .defaultIfEmpty({})
-            .subscribe(
-                assignments => actions.fetchEntityAssignmentsSuccess(assignments),
-                error => actions.fetchEntityAssignmentsError()
-            );
+            .toPromise()
+            .then(assignments => {
+                actions.fetchEntityAssignmentsSuccess(assignments);
+                return assignments;
+            })
+            .catch(error => {
+                actions.fetchEntityAssignmentsError();
+                throw error;
+            });
     }
 
     assignEntityToProject(type: 'schema' | 'microschema', entityUuid: string, projectName: string): void {
@@ -229,12 +256,20 @@ export class AdminSchemaEffectsService {
         if (type === 'schema') {
             apiFunction = () =>
                 this.api.admin.assignSchemaToProject({ project: projectName, schemaUuid: entityUuid }, undefined);
+            this.i18nNotification.show({
+                type: 'success',
+                message: 'admin.project_assigned'
+            });
         } else if (type === 'microschema') {
             apiFunction = () =>
                 this.api.admin.assignMicroschemaToProject(
                     { project: projectName, microschemaUuid: entityUuid },
                     undefined
                 );
+            this.i18nNotification.show({
+                type: 'success',
+                message: 'admin.project_assigned'
+            });
         } else {
             throw new Error('type must be schema or microschema');
         }
@@ -255,9 +290,17 @@ export class AdminSchemaEffectsService {
         if (type === 'schema') {
             apiFunction = () =>
                 this.api.admin.removeSchemaFromProject({ project: projectName, schemaUuid: entityUuid });
+            this.i18nNotification.show({
+                type: 'success',
+                message: 'admin.project_unassigned'
+            });
         } else if (type === 'microschema') {
             apiFunction = () =>
                 this.api.admin.removeMicroschemaFromProject({ project: projectName, microschemaUuid: entityUuid });
+            this.i18nNotification.show({
+                type: 'success',
+                message: 'admin.project_unassigned'
+            });
         } else {
             throw new Error('type must be schema or microschema');
         }

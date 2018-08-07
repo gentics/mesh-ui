@@ -2160,10 +2160,10 @@ export interface ApiEndpoints {
                 };
                 body: SchemaUpdateRequest;
             };
-            responseType: SchemaResponse;
+            responseType: GenericMessageResponse;
             responseTypes: {
                 /** Updated schema. */
-                200: SchemaResponse;
+                200: GenericMessageResponse;
             };
         };
         /**

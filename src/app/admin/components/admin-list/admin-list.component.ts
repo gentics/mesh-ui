@@ -108,6 +108,7 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
 
         if ('selection' in changes) {
             this.checked = this.selectionToCheckedHash(this.selection, this.itemsPerPage);
+            this.calculateCheckedCount();
         }
     }
 

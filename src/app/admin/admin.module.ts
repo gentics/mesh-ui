@@ -5,14 +5,15 @@ import { ModalService } from 'gentics-ui-core';
 import { TagsEffectsService } from '../core/providers/effects/tags-effects.service';
 import { FormGeneratorModule } from '../form-generator/form-generator.module';
 import { SharedModule } from '../shared/shared.module';
+
 import { routes } from './admin.routes';
 import { AdminBreadcrumbsComponent } from './components/admin-breadcrumbs/admin-breadcrumbs.component';
 import { AdminListItemComponent } from './components/admin-list-item/admin-list-item.component';
 import { AdminListComponent } from './components/admin-list/admin-list.component';
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
-import { MicroschemaDetailComponent } from './components/microschema-detail/mircoschema-detail.component';
-import { MicroschemaListComponent } from './components/microschema-list/mircoschema-list.component';
+import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
+import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
@@ -53,15 +54,8 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         ProjectDetailComponent,
         NameInputDialogComponent
     ],
-    entryComponents: [
-        CreateProjectModalComponent,
-        NameInputDialogComponent
-    ],
-    imports: [
-        SharedModule,
-        RouterModule.forChild(routes),
-        FormGeneratorModule
-    ],
+    entryComponents: [CreateProjectModalComponent, NameInputDialogComponent],
+    imports: [SharedModule, RouterModule.forChild(routes), FormGeneratorModule],
     providers: [
         ModalService,
         AdminSchemaEffectsService,

@@ -18,9 +18,9 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { MockAdminListItemComponent } from '../admin-list-item/admin-list-item.component.mock';
 import { AdminListComponent } from '../admin-list/admin-list.component';
 
-import { MicroschemaListComponent } from './microschema-list.component';
+import { SchemaListComponent } from './schema-list.component';
 
-describe('MicroSchemaListComponent', () => {
+describe('SchemaListComponent', () => {
     let appState: TestApplicationState;
     const mockModal = { fromComponent() {} };
     let mockAdminSchemaEffects: any;
@@ -28,11 +28,11 @@ describe('MicroSchemaListComponent', () => {
 
     beforeEach(async(() => {
         spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() {} }));
-        mockAdminSchemaEffects = jasmine.createSpyObj('MicroSchemaEffects', ['loadMicroschemas']);
+        mockAdminSchemaEffects = jasmine.createSpyObj('SchemaEffects', ['loadSchemas']);
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
         configureComponentTest({
-            declarations: [MicroschemaListComponent, AdminListComponent, MockAdminListItemComponent],
+            declarations: [SchemaListComponent, AdminListComponent, MockAdminListItemComponent],
             imports: [GenticsUICoreModule, FormsModule, SharedModule, RouterModule, TestStateModule],
             providers: [
                 { provide: AdminSchemaEffectsService, useValue: mockAdminSchemaEffects },
@@ -51,7 +51,7 @@ describe('MicroSchemaListComponent', () => {
     it(
         `should create`,
         componentTest(
-            () => MicroschemaListComponent,
+            () => SchemaListComponent,
             fixture => {
                 expect(fixture.componentInstance).toBeTruthy();
             }
@@ -59,24 +59,24 @@ describe('MicroSchemaListComponent', () => {
     );
 
     it(
-        `loads the microschemas`,
+        `loads the schemas`,
         componentTest(
-            () => MicroschemaListComponent,
+            () => SchemaListComponent,
             fixture => {
                 fixture.detectChanges();
-                expect(mockAdminSchemaEffects.loadMicroschemas).toHaveBeenCalled();
+                expect(mockAdminSchemaEffects.loadSchemas).toHaveBeenCalled();
             }
         )
     );
 
     it(
-        `navigates to new microschema`,
+        `navigates to new schema`,
         componentTest(
-            () => MicroschemaListComponent,
+            () => SchemaListComponent,
             fixture => {
                 fixture.debugElement.query(By.css('.list-controls > gtx-button')).nativeElement.click();
                 fixture.detectChanges();
-                expect(mockRouter.navigate).toHaveBeenCalledWith(['admin', 'microschemas', 'new']);
+                expect(mockRouter.navigate).toHaveBeenCalledWith(['admin', 'schemas', 'new']);
             }
         )
     );

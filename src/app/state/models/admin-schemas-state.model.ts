@@ -1,3 +1,5 @@
+import { PaginationConfig } from './common-state-models';
+
 export interface ProjectAssignments {
     [projectUuid: string]: boolean;
 }
@@ -10,4 +12,7 @@ export interface AdminSchemasState {
     schemaDetail: string | null;
     microschemaList: string[];
     microschemaDetail: string | null;
+
+    pagination: PaginationConfig;
+    filterTerm: string;
 }

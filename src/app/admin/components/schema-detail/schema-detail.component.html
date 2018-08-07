@@ -1,18 +1,40 @@
-<div *ngIf="version$">
-    Version: {{version$ | async}}
+<div *ngIf="version">
+    Version: {{version}}
 </div>
 
-<mesh-monaco-editor [(ngModel)]="schemaJson"
-                    language="json"
-                    [jsonSchema]="schema"
-                    (errors)="onErrorChange($event)"></mesh-monaco-editor>
+<gtx-tabs>
+    <gtx-tab title="Schemas">
+        <mesh-monaco-editor [(ngModel)]="schemaJson"
+                            language="json"
+                            [jsonSchema]="schema"
+                            (errors)="onErrorChange($event)"></mesh-monaco-editor>
 
-<mesh-schema-assignment *ngIf="!isNew"
-                        type="schema"
-                        [uuid]="uuid$ | async"></mesh-schema-assignment>
+        <gtx-button [disabled]="errors.length > 0 || (loading$ | async)"
+                    style="margin-top: 15px;"
+                    (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
+    </gtx-tab>
 
-<gtx-button [disabled]="errors.length > 0"
-            (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
-<gtx-button type="alert"
-            *ngIf="!isNew"
-            (click)="delete()">{{ 'common.delete_button' | i18n }}</gtx-button>
+    <gtx-tab title="Projects">
+        <mesh-admin-list [items]="projects$ | async"
+                         [autoHidePagination]="true"
+                         [selectable]="false">
+
+            <div class="list-controls">
+                <div class="filter">
+                    <gtx-input [label]="'admin.filter_by_name' | i18n"
+                               [formControl]="filterInput">
+                    </gtx-input>
+                </div>
+            </div>
+
+            <ng-template let-project="item">
+                <gtx-checkbox *ngIf="projectAssignments"
+                              [label]="project.name"
+                              [checked]="projectAssignments[project.uuid]"
+                              (change)="onAssignmentChange(project, $event)">
+                </gtx-checkbox>
+            </ng-template>
+        </mesh-admin-list>
+    </gtx-tab>
+
+</gtx-tabs>

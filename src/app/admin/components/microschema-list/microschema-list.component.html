@@ -1,18 +1,41 @@
-<div class="not-found"
-     *ngIf="(microschemas$ | async).length === 0">
-    <div>
-        <icon>sentiment_very_dissatisfied</icon>
+<mesh-admin-list [items]="microschemas$ | async"
+                 [itemsPerPage]="10"
+                 [currentPage]="currentPage$ | async"
+                 [(selection)]="selectedIndices"
+                 (pageChange)="onPageChange($event)">
+
+    <div class="list-controls">
+
+        <div class="with-selected"
+             [class.hidden]="selectedIndices.length === 0">
+            <gtx-button flat
+                        type="alert"
+                        [title]="'admin.delete_selected_schemas' | i18n: { count: selectedIndices.length }"
+                        (click)="deleteMicroschemas(selectedIndices)"
+                        size="small">
+                <icon>delete</icon>
+            </gtx-button>
+        </div>
+
+        <div class="filter">
+            <gtx-input [label]="'admin.filter_by_name' | i18n"
+                       [formControl]="filterInput"></gtx-input>
+        </div>
+
+        <gtx-button (click)="createMicroschema()">{{ 'admin.microschema_create' | i18n }}</gtx-button>
+
     </div>
-    <p>{{ 'admin.microschema_none_found' | i18n }}</p>
-</div>
 
-<div>
-    <a [routerLink]="['/admin/microschemas', microschema.uuid]"
-       *ngFor="let microschema of microschemas$ | async">
-        <gtx-contents-list-item>
-            <div class="item-primary">{{ microschema.name }}</div>
-        </gtx-contents-list-item>
-    </a>
-</div>
+    <ng-template let-microschema="item">
+        <div>
+            <a [routerLink]="['/admin/microschemas', microschema.uuid]">
+                <gtx-contents-list-item>
+                    <div class="item-primary"
+                         [innerHTML]="microschema.name | highlight:filterTerm"></div>
+                </gtx-contents-list-item>
+            </a>
+        </div>
+    </ng-template>
 
-<gtx-button (click)="createMicroschema()">{{ 'admin.microschema_create' | i18n }}</gtx-button>
+
+</mesh-admin-list>

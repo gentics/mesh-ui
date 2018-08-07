@@ -29,6 +29,17 @@ export class NodeEditor {
         return new HtmlField(this.getFieldElement('mesh-html-field', fieldName));
     }
 
+    getDescription() {
+        return element(by.css('.ql-editor p')).getText();
+    }
+
+    getRemoveNodeLink() {
+        return element(by.css('.editor-container'))
+            .all(by.css('.ql-tooltip'))
+            .get(1)
+            .element(by.css('.ql-remove'));
+    }
+
     save() {
         return this.editor.element(by.css('.editor-header .primary-buttons .save-button')).click();
     }

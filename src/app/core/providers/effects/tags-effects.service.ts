@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
-import { ApiService } from '../../../core/providers/api/api.service';
-import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { ApiService } from '../api/api.service';
+import { I18nNotification } from '../i18n-notification/i18n-notification.service';
 
 @Injectable()
 export class TagsEffectsService {

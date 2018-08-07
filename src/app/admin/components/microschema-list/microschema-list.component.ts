@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { ADMIN_USER_NAME } from '../../../common/constants';
-import { Schema } from '../../../common/models/schema.model';
+import { Microschema } from '../../../common/models/microschema.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -18,12 +18,12 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
-    templateUrl: './schema-list.component.html',
-    styleUrls: ['./schema-list.scss'],
+    templateUrl: './microschema-list.component.html',
+    styleUrls: ['./microschema-list.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SchemaListComponent implements OnInit, OnDestroy {
-    schemas$: Observable<Schema[]>;
+export class MicroschemaListComponent implements OnInit, OnDestroy {
+    microschemas$: Observable<Microschema[]>;
     currentPage$: Observable<number>;
     itemsPerPage$: Observable<number>;
     totalItems$: Observable<number | null>;
@@ -33,9 +33,9 @@ export class SchemaListComponent implements OnInit, OnDestroy {
     ADMIN_USER_NAME = ADMIN_USER_NAME;
 
     constructor(
-        private state: ApplicationStateService,
         private entities: EntitiesService,
         private adminSchemaEffects: AdminSchemaEffectsService,
+        private state: ApplicationStateService,
         private route: ActivatedRoute,
         private router: Router,
         private modalService: ModalService,
@@ -43,9 +43,9 @@ export class SchemaListComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.schemas$ = this.entities.selectAllSchemas();
+        this.microschemas$ = this.entities.selectAllMicroschemas();
 
-        this.adminSchemaEffects.loadSchemas();
+        this.adminSchemaEffects.loadMicroschemas();
 
         combineLatest(
             observeQueryParam(this.route.queryParamMap, 'p', 1),
@@ -63,13 +63,13 @@ export class SchemaListComponent implements OnInit, OnDestroy {
             setQueryParams(this.router, this.route, { q: term });
         });
 
-        const allSchemas$ = this.state
-            .select(state => state.adminSchemas.schemaList)
-            .map(uuids => uuids.map(uuid => this.entities.getSchema(uuid)).filter(notNullOrUndefined));
+        const allMicroschemas$ = this.state
+            .select(state => state.adminSchemas.microschemaList)
+            .map(uuids => uuids.map(uuid => this.entities.getMicroschema(uuid)).filter(notNullOrUndefined));
         const filterTerm$ = this.state.select(state => state.adminSchemas.filterTerm);
 
-        this.schemas$ = combineLatest(allSchemas$, filterTerm$).map(([schemas, filterTerm]) =>
-            this.filterSchemas(schemas, filterTerm)
+        this.microschemas$ = combineLatest(allMicroschemas$, filterTerm$).map(([microschemas, filterTerm]) =>
+            this.filterSchemas(microschemas, filterTerm)
         );
 
         this.currentPage$ = this.state.select(state => state.adminSchemas.pagination.currentPage);
@@ -79,69 +79,74 @@ export class SchemaListComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {}
 
-    createSchema() {
-        this.router.navigate(['admin', 'schemas', 'new']);
+    createMicroschema() {
+        this.router.navigate(['admin', 'microschemas', 'new']);
     }
 
     onPageChange(newPage: number): void {
         setQueryParams(this.router, this.route, { p: newPage });
     }
 
-    deleteSchema(schema: Schema): void {
-        if (!schema.permissions.delete || schema.name === ADMIN_USER_NAME) {
+    deleteMicroschema(microschema: Microschema): void {
+        if (!microschema.permissions.delete || microschema.name === ADMIN_USER_NAME) {
             return;
         }
-        this.displayDeleteSchemaModal(
-            { token: 'admin.delete_schema' },
-            { token: 'admin.delete_schema_confirmation', params: { name: schema.name } }
+        this.displayDeleteMicroschemaModal(
+            { token: 'admin.delete_microschema' },
+            { token: 'admin.delete_microschema_confirmation', params: { name: microschema.name } }
         ).then(() => {
-            this.adminSchemaEffects.deleteSchema(schema.uuid);
+            this.adminSchemaEffects.deleteMicroschema(microschema.uuid);
         });
     }
 
-    deleteSchemas(selectedIndices: number[]): void {
-        this.selectedSchemasFromIndices(selectedIndices)
-            .flatMap(selectedSchemas => {
-                const deletableSchemas = selectedSchemas.filter(
-                    schema => schema.permissions.delete && schema.name !== ADMIN_USER_NAME
+    deleteMicroschemas(selectedIndices: number[]): void {
+        this.selectedMicroschemasFromIndices(selectedIndices)
+            .flatMap(selectedMicroschemas => {
+                const deletableMicroschemas = selectedMicroschemas.filter(
+                    microschema => microschema.permissions.delete && microschema.name !== ADMIN_USER_NAME
                 );
-                if (deletableSchemas.length === 0) {
+                if (deletableMicroschemas.length === 0) {
                     return Observable.empty<any[]>();
                 } else {
-                    return this.displayDeleteSchemaModal(
-                        { token: 'admin.delete_selected_schemas', params: { count: deletableSchemas.length } },
+                    return this.displayDeleteMicroschemaModal(
                         {
-                            token: 'admin.delete_selected_schemas_confirmation',
-                            params: { count: deletableSchemas.length }
+                            token: 'admin.delete_selected_microschemas',
+                            params: { count: deletableMicroschemas.length }
+                        },
+                        {
+                            token: 'admin.delete_selected_microschemas_confirmation',
+                            params: { count: deletableMicroschemas.length }
                         }
-                    ).then(() => deletableSchemas);
+                    ).then(() => deletableMicroschemas);
                 }
             })
-            .subscribe((deletableSchemas: Schema[]) => {
-                deletableSchemas.forEach(schema => {
-                    this.adminSchemaEffects.deleteSchema(schema.uuid);
+            .subscribe((deletableMicroschemas: Microschema[]) => {
+                deletableMicroschemas.forEach(microschema => {
+                    this.adminSchemaEffects.deleteMicroschema(microschema.uuid);
                 });
                 this.selectedIndices = [];
             });
     }
 
-    private selectedSchemasFromIndices(selectedIndices: number[]): Observable<Schema[]> {
-        return this.schemas$.take(1).map(schemas => schemas.filter((schema, index) => selectedIndices.includes(index)));
+    private selectedMicroschemasFromIndices(selectedIndices: number[]): Observable<Microschema[]> {
+        return this.microschemas$
+            .take(1)
+            .map(microschemas => microschemas.filter((microschema, index) => selectedIndices.includes(index)));
     }
 
-    private filterSchemas(schemas: Schema[], filterTerm: string): Schema[] {
+    private filterSchemas(microschemas: Microschema[], filterTerm: string): Microschema[] {
         this.filterTerm = filterTerm.trim();
         if (this.filterTerm === '') {
-            return schemas;
+            return microschemas;
         }
-        return schemas.filter(schema => this.schemaMatchesTerm(schema, this.filterTerm));
+        return microschemas.filter(microschema => this.microschemaMatchesTerm(microschema, this.filterTerm));
     }
 
-    private schemaMatchesTerm(schema: Schema, filterTerm: string): boolean {
-        return fuzzyMatch(filterTerm, `${schema.name}`) !== null;
+    private microschemaMatchesTerm(microschema: Microschema, filterTerm: string): boolean {
+        return fuzzyMatch(filterTerm, `${microschema.name}`) !== null;
     }
 
-    private displayDeleteSchemaModal(
+    private displayDeleteMicroschemaModal(
         title: { token: string; params?: { [key: string]: any } },
         body: { token: string; params?: { [key: string]: any } }
     ): Promise<any> {

@@ -1,4 +1,4 @@
-import { SchemaField } from '../../common/models/schema.model';
+import { SchemaField } from '../models/schema.model';
 
 import { initializeFieldValue } from './initialize-field-value';
 

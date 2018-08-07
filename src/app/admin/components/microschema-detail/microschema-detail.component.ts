@@ -7,8 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Project } from '../../../common/models/project.model';
-import { Schema } from '../../../common/models/schema.model';
-import { SchemaResponse } from '../../../common/models/server-models';
+import { MicroschemaResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -22,9 +21,9 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
-    templateUrl: './schema-detail.component.html'
+    templateUrl: './microschema-detail.component.html'
 })
-export class SchemaDetailComponent implements OnInit, OnDestroy {
+export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     // TODO Disable save button when editor is pristine
     // TODO Show message on save when schema has not changed
     projects: Project[];
@@ -36,18 +35,23 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     projects$: Observable<Project[]>;
     allProjects$: Observable<Project[]>;
 
-    schema$: Observable<SchemaResponse>;
+    microschema$: Observable<MicroschemaResponse>;
     version: string;
 
-    projectAssignments?: ProjectAssignments;
+    projectAssignments: ProjectAssignments;
 
     uuid$: Observable<string>;
-    schemaJson = '';
+
+    microschemaJson = '';
     // TODO load json schema from mesh instead of static file
-    schema = require('./schema.schema.json');
+    microschema = require('./microschema.schema.json');
+
     errors: MarkerData[] = [];
     isNew = true;
-    private subscription: Subscription;
+
+    loading$: Observable<boolean>;
+
+    subscription: Subscription;
 
     constructor(
         private state: ApplicationStateService,
@@ -61,22 +65,24 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.schema$ = this.route.data.map(data => data.schema).do((schema: Schema) => {
-            this.isNew = !schema;
+        this.microschema$ = this.route.data.map(data => data.microschema).do(microschema => {
+            this.isNew = !microschema;
         });
 
-        this.subscription = this.schema$.subscribe(schema => {
-            this.schemaJson = schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`;
+        this.subscription = this.microschema$.subscribe(microschema => {
+            this.microschemaJson = microschema
+                ? JSON.stringify(stripMicroschemaFields(microschema), undefined, 4)
+                : `{}`;
         });
 
-        this.schema$
-            .filter(schema => !!schema)
+        this.microschema$
+            .filter(microschema => !!microschema)
             .take(1)
             .toPromise()
-            .then(schema => {
-                this.version = schema.version;
+            .then(microschema => {
+                this.version = microschema.version;
                 this.schemaEffects
-                    .loadEntityAssignments('schema', schema.uuid)
+                    .loadEntityAssignments('microschema', microschema.uuid)
                     .then(assignments => (this.projectAssignments = assignments));
             });
 
@@ -91,13 +97,13 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
             this.filterInput.setValue(filterTerm, { emitEvent: false });
         });
 
-        this.allProjects$ = this.state
+        const allProjects$ = this.state
             .select(state => state.adminProjects.projectList)
             .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)).filter(notNullOrUndefined));
 
         const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
 
-        this.projects$ = combineLatest(this.allProjects$, filterTerm$).map(([projects, filterTerm]) => {
+        this.projects$ = combineLatest(allProjects$, filterTerm$).map(([projects, filterTerm]) => {
             this.filterTerm = filterTerm;
             return projects.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
                 return pro1.name < pro2.name ? -1 : 1;
@@ -117,19 +123,19 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
     save() {
         if (this.errors.length === 0) {
-            const changedSchema = JSON.parse(this.schemaJson);
+            const changedSchema = JSON.parse(this.microschemaJson);
             if (this.isNew) {
-                this.schemaEffects.createSchema(changedSchema).then(schema => {
-                    if (schema) {
-                        this.router.navigate(['admin', 'schemas', schema.uuid]);
-                        this.version = schema.version;
+                this.schemaEffects.createMicroschema(changedSchema).then(microschema => {
+                    if (microschema) {
+                        this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                        this.version = microschema.version;
                     }
                 });
             } else {
-                this.schema$.take(1).subscribe(schema => {
-                    this.schemaEffects.updateSchema({ ...schema, ...changedSchema }).then(schemaNew => {
-                        if (schemaNew) {
-                            this.version = schemaNew.version;
+                this.microschema$.take(1).subscribe(microschema => {
+                    this.schemaEffects.updateMicroschema({ ...microschema, ...changedSchema }).then(microschemaNew => {
+                        if (microschemaNew) {
+                            this.version = microschemaNew.version;
                         }
                     });
                 });
@@ -138,31 +144,33 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     }
 
     delete() {
-        this.schema$
+        this.microschema$
             .take(1)
-            .switchMap(schema => this.schemaEffects.deleteSchema(schema.uuid))
-            .subscribe(() => this.router.navigate(['admin', 'schemas']));
+            .switchMap(microschema => this.schemaEffects.deleteMicroschema(microschema.uuid))
+            .subscribe(() => this.router.navigate(['admin', 'microschemas']));
     }
 
     onAssignmentChange(project: Project, isChecked: boolean) {
         if (isChecked) {
-            this.schema$
+            this.microschema$
                 .take(1)
-                .subscribe(schema => this.schemaEffects.assignEntityToProject('schema', schema.uuid, project.name));
+                .subscribe(microschema =>
+                    this.schemaEffects.assignEntityToProject('microschema', microschema.uuid, project.name)
+                );
         } else {
-            this.schema$
+            this.microschema$
                 .take(1)
-                .subscribe(schema => this.schemaEffects.removeEntityFromProject('schema', schema.uuid, project.name));
+                .subscribe(microschema =>
+                    this.schemaEffects.removeEntityFromProject('microschema', microschema.uuid, project.name)
+                );
         }
 
-        if (this.projectAssignments) {
-            this.projectAssignments[project.uuid] = isChecked;
-        }
+        this.projectAssignments[project.uuid] = isChecked;
     }
 }
 
-const updateFields: Array<keyof SchemaResponse> = ['name', 'description', 'fields'];
+const updateFields: Array<keyof MicroschemaResponse> = ['name', 'description', 'fields'];
 
-function stripSchemaFields(schema: SchemaResponse): any {
-    return updateFields.reduce((obj, key) => ({ ...obj, [key]: schema[key] }), {});
+function stripMicroschemaFields(microschema: MicroschemaResponse): any {
+    return updateFields.reduce((obj, key) => ({ ...obj, [key]: microschema[key] }), {});
 }

@@ -122,7 +122,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.editorEffects.closeEditor();
-        this.openNode$.unsubscribe();
+        if (this.openNode$) {
+            this.openNode$.unsubscribe();
+        }
     }
 
     getNodePath(): string {
@@ -131,10 +133,14 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
 
         // We are using slice(1) here because we don't want to show the root node
-        return this.node.breadcrumb
-            .slice(1)
-            .map(b => b.displayName)
-            .join(' › ');
+        if (this.node.breadcrumb) {
+            return this.node.breadcrumb
+                .slice(1)
+                .map(b => b.displayName)
+                .join(' › ');
+        } else {
+            return '';
+        }
     }
 
     getNodePathRouterLink(): any[] {
