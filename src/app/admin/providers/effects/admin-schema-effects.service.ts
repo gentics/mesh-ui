@@ -85,7 +85,6 @@ export class AdminSchemaEffectsService {
                 },
                 error => {
                     this.state.actions.adminSchemas.updateSchemaError();
-
                 }
             );
     }
