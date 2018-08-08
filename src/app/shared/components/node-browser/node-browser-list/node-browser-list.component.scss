@@ -14,6 +14,12 @@ gtx-contents-list-item {
   cursor: pointer;
 }
 
+.schemaName
+{
+  position: absolute;
+  right: 15%;
+}
+
 .no-results {
   font-size: $gtx-font-size-lead;
   color: $gtx-color-mid-gray;

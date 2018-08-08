@@ -10,6 +10,7 @@
             {{item.displayName || item.uuid}}
         </a>
         <ng-container *ngIf="!item.isContainer">{{item.displayName || item.uuid}}</ng-container>
+        <div class="schemaName">{{item.schema.name}}</div>
     </gtx-contents-list-item>
 </ng-container>
 

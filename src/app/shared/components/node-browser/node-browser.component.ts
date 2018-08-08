@@ -18,24 +18,28 @@ interface QueryParams {
 }
 
 const gqlQuery = `
-query($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
-	node(uuid: $parent) {
+query ($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
+    node(uuid: $parent) {
+      uuid
+      nodes: children(filter: $filter, perPage: $perPage, page: $page) {
+        totalCount
+        pageCount
+        elements {
+          uuid
+          schema {
+            name
+          }
+          displayName
+          isContainer
+        }
+      }
+      breadcrumb {
         uuid
-		nodes: children(filter: $filter, perPage: $perPage, page: $page) {
-            totalCount
-            pageCount
-			elements {
-				uuid
-				displayName
-				isContainer
-			}
-		}
-		breadcrumb {
-			uuid
-			text: displayName
-		}
-	}
-}`;
+        text: displayName
+      }
+    }
+  }
+  `;
 
 const esGqlQuery = `
 query($query: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
@@ -43,6 +47,9 @@ query($query: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
         totalCount
         pageCount
         elements {
+            schema {
+              name
+            }
             uuid
             displayName
             isContainer

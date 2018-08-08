@@ -2,13 +2,13 @@ import { SchemaResponse } from './server-models';
 
 export type CommonFieldType = 'node' | 'boolean' | 'string' | 'number' | 'date' | 'html';
 export type SchemaFieldType = CommonFieldType | 'micronode' | 'binary' | 'list';
-export type MicroschemaFieldType = CommonFieldType  | 'binary' | 'list';
+export type MicroschemaFieldType = CommonFieldType | 'binary' | 'list';
 export type ListTypeFieldType = CommonFieldType | 'micronode';
 
 export interface BaseSchemaField {
     name: string;
     type: SchemaFieldType | MicroschemaFieldType;
-    allow?: string[];
+    allow: string[];
     defaultValue?: any;
     label?: string;
     listType?: ListTypeFieldType | CommonFieldType;

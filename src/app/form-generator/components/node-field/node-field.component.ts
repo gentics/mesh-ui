@@ -40,11 +40,24 @@ export class NodeFieldComponent extends BaseFieldComponent {
 
     selectNode(): void {
         const node = this.api.getNodeValue() as MeshNode;
+        const allowedSchemas = this.api.field.allow;
+
+        console.log(allowedSchemas);
+
         this.api
             .openNodeBrowser({
                 startNodeUuid: node.parentNode ? node.parentNode.uuid : node.uuid,
                 projectName: node.project.name!,
-                titleKey: 'editor.select_node'
+                titleKey: 'editor.select_node',
+                selectablePredicate: node => {
+                    for (let i = 0; i < allowedSchemas.length; i++) {
+                        if (node.schema.name === allowedSchemas[i]) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
             })
             .then(uuids => {
                 this.userValue = uuids[0];
