@@ -19,7 +19,6 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 })
 export class NodeRowComponent implements OnInit, OnDestroy {
     @Input() node: MeshNode;
-    @Input() listLanguage: string;
 
     filterTerm$: Observable<string>;
     routerLink: any[] | null = null;
@@ -37,7 +36,7 @@ export class NodeRowComponent implements OnInit, OnDestroy {
     ngOnInit() {
         if (this.node.container) {
             this.routerLink = this.navigationService
-                .list(this.node.project.name!, this.node.uuid, this.listLanguage)
+                .list(this.node.project.name!, this.node.uuid, this.node.language)
                 .commands();
         } else {
             this.routerLink = this.navigationService
