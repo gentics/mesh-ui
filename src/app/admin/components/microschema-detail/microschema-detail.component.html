@@ -6,7 +6,7 @@
     <gtx-tab title="Microschemas">
         <mesh-monaco-editor [(ngModel)]="microschemaJson"
                             language="json"
-                            [jsonSchema]="schema"
+                            [jsonSchema]="microschema"
                             (errors)="onErrorChange($event)"></mesh-monaco-editor>
 
         <gtx-button [disabled]="errors.length > 0 || (loading$ | async)"
