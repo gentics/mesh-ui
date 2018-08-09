@@ -92,7 +92,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     currentPage$ = new BehaviorSubject(1);
     searchAvailable$: Observable<boolean>;
 
-    closeFn(uuids: string[]): void {}
+    closeFn(uuids: PageResult[] | string[]): void {}
     cancelFn(val?: any): void {}
 
     selected: PageResult[] = [];
@@ -226,7 +226,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
         if (this.options.chooseContainer) {
             this.currentNode$.take(1).subscribe(uuid => this.closeFn([uuid]));
         } else {
-            this.closeFn(this.selected.map(item => item.uuid));
+            this.closeFn(this.selected);
         }
     }
 
