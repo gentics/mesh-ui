@@ -50,12 +50,8 @@ export class NodeFieldComponent extends BaseFieldComponent {
                 projectName: node.project.name!,
                 titleKey: 'editor.select_node',
                 selectablePredicate: node => {
-                    for (let i = 0; i < allowedSchemas.length; i++) {
-                        if (node.schema.name === allowedSchemas[i]) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                    if (allowedSchemas) {
+                        return allowedSchemas.indexOf(node.schema.name) > -1;
                     }
                 }
             })

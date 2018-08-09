@@ -8,7 +8,7 @@ export type ListTypeFieldType = CommonFieldType | 'micronode';
 export interface BaseSchemaField {
     name: string;
     type: SchemaFieldType | MicroschemaFieldType;
-    allow: string[];
+    allow?: string[];
     defaultValue?: any;
     label?: string;
     listType?: ListTypeFieldType | CommonFieldType;
