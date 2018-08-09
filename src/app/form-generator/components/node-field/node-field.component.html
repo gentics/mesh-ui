@@ -4,8 +4,7 @@
     <!--<mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>-->
     <gtx-input [(ngModel)]="displayName"
                [readonly]="api.readOnly"
-               disabled=t
-               rue></gtx-input>
+               disabled=true></gtx-input>
     <gtx-button *ngIf="!api.readOnly"
                 flat="true"
                 (click)="selectNode()">Browse</gtx-button>
