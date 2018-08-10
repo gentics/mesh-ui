@@ -29,6 +29,9 @@ query ($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
           schema {
             name
           }
+          breadcrumb {
+            path
+          }
           displayName
           isContainer
         }
@@ -49,6 +52,9 @@ query($query: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
         elements {
             schema {
               name
+            }
+            breadcrumb {
+              path
             }
             uuid
             displayName

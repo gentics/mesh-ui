@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { ModalService } from 'gentics-ui-core';
 
 import { MeshNode, NodeField, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
+import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
 import { PageResult } from '../../../shared/components/node-browser/interfaces';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
@@ -18,6 +18,9 @@ export class NodeFieldComponent extends BaseFieldComponent {
     field: SchemaField;
     userValue: string | null;
     displayName: string;
+    schemaName: string;
+    breadcrumbPath: string;
+    fullName: string;
 
     constructor(changeDetector: ChangeDetectorRef) {
         super(changeDetector);
@@ -58,11 +61,23 @@ export class NodeFieldComponent extends BaseFieldComponent {
             .then((results: PageResult[]) => {
                 this.userValue = results[0].uuid;
                 this.displayName = results[0].displayName;
+                this.schemaName = results[0].schema.name;
+                this.breadcrumbPath = results[0].breadcrumb[results[0].breadcrumb.length - 1].path;
+                this.fullName =
+                    'Node name: ' +
+                    this.displayName +
+                    '\nSchema name: ' +
+                    this.schemaName +
+                    '\nUUID: ' +
+                    this.userValue +
+                    '\nPath: ' +
+                    this.breadcrumbPath;
                 this.changeDetector.detectChanges();
             });
     }
 
     removeNode(): void {
-        this.displayName = '';
+        this.breadcrumbPath = this.schemaName = '';
+        this.fullName = this.displayName = this.userValue = '';
     }
 }

@@ -34,4 +34,9 @@ export interface PageResult {
     schema: {
         name: string;
     };
+    breadcrumb: [
+        {
+            path: string;
+        }
+    ];
 }
