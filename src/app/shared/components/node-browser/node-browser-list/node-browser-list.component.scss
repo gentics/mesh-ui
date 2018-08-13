@@ -14,10 +14,19 @@ gtx-contents-list-item {
   cursor: pointer;
 }
 
+gtx-checkbox {
+  margin-top: 1%;
+  // visibility: hidden;
+}
+
+icon {
+  margin-right: 1%;
+}
+
 .schemaName
 {
   position: absolute;
-  right: 15%;
+  left: 75%;
 }
 
 .no-results {

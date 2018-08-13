@@ -4,13 +4,14 @@
                       [checked]="!!selection[item.uuid]"
                       (change)="handleSelect(item, $event)"></gtx-checkbox>
         <icon *ngIf="item.isContainer">folder</icon>
+        <icon *ngIf="!item.isContainer">insert_drive_file</icon>
         <a *ngIf="item.isContainer"
            (click)="containerClicked.emit(item)"
            class="node-browser-container">
             {{item.displayName || item.uuid}}
         </a>
         <ng-container *ngIf="!item.isContainer">{{item.displayName || item.uuid}}</ng-container>
-        <div class="schemaName">{{item.schema.name}}</div>
+        <div class="schemaName">Schema Name: {{item.schema.name}}</div>
     </gtx-contents-list-item>
 </ng-container>
 

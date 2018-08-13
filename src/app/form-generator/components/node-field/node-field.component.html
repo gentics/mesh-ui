@@ -1,13 +1,22 @@
-<label>{{ api.field.label || api.field.name }}</label>
-<div class="uuid-form">
+<gtx-contents-list-item>
+    <label class="allowedSchemas">List of allowed schemas: {{ api.field.allow }}</label>
+    <label class="nodeName">{{ api.field.label || api.field.name }}</label>
     <!-- TODO: re-enable the mesh-thumbnail once we have wired up real data -->
     <!--<mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>-->
     <gtx-textarea [(ngModel)]="fullName"
                   readonly=true></gtx-textarea>
-    <gtx-button *ngIf="!api.readOnly"
+
+    <gtx-button class="show-on-hover"
+                *ngIf="!api.readOnly"
                 flat="true"
-                (click)="selectNode()">Browse</gtx-button>
-    <gtx-button *ngIf="!api.readOnly"
+                (click)="selectNode()">
+        <icon left>search</icon>
+    </gtx-button>
+
+    <gtx-button class="show-on-hover"
+                *ngIf="!api.readOnly"
                 flat="true"
-                (click)="removeNode()">Remove</gtx-button>
-</div>
+                (click)="removeNode()">
+        <icon left>link_off</icon>
+    </gtx-button>
+</gtx-contents-list-item>
