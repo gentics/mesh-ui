@@ -8,6 +8,14 @@ $half-width-right: 70%;
 
 $left-bar-width: 6px;
 
+mesh-node-field {
+    width: $full-width !important;
+}
+
+gtx-textarea > textarea.materialize-textarea {
+    margin-top: 27px !important;
+}
+
 @mixin label-style-full {
     position: relative;
     font-size: $gtx-font-size-regular;

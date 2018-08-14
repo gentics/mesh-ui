@@ -30,3 +30,17 @@ label {
     align-items: center;
     transition: width 0.2s;
 }
+
+.form {
+    display: flex;
+    right: 0;
+}
+
+gtx-contents-list-item {
+    width: 100%;
+    border: 1px solid #e0e0e0;
+}
+
+.allowedSchemas {
+    color: red;
+}

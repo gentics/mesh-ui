@@ -16,17 +16,26 @@ gtx-contents-list-item {
 
 gtx-checkbox {
   margin-top: 1%;
-  // visibility: hidden;
+  visibility: hidden;
 }
 
-icon {
+.check {
+  display: flex;
   margin-right: 1%;
+}
+
+.check:hover icon {
+  visibility: hidden;
+}
+
+.check:hover gtx-checkbox {
+  visibility: visible;
 }
 
 .schemaName
 {
   position: absolute;
-  left: 75%;
+  left: 70%;
 }
 
 .no-results {
