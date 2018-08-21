@@ -14,21 +14,26 @@ gtx-contents-list-item {
   cursor: pointer;
 }
 
-gtx-checkbox {
-  margin-top: 1%;
+.icon-checkbox-wrapper gtx-checkbox {
+  position: absolute;
   visibility: hidden;
+  margin-left: 0.2%;
+  margin-top: 0.3%;
 }
 
-.check {
-  display: flex;
+.icons {
   margin-right: 1%;
 }
 
-.check:hover icon {
+.icon-checkbox-wrapper {
+  margin-right: 1%;
+}
+
+gtx-contents-list-item:hover .hover {
   visibility: hidden;
 }
 
-.check:hover gtx-checkbox {
+gtx-contents-list-item:hover gtx-checkbox {
   visibility: visible;
 }
 

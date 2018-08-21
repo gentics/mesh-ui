@@ -1,9 +1,16 @@
 <gtx-contents-list-item>
-    <div class="item-primary">
+    <div class="item-primary allowed">
         <label class="allowedSchemas">List of allowed schemas: {{ api.field.allow }}</label>
     </div>
-    <div class="item-primary">
+    <div class="item-primary title">
         <label>{{ api.field.label || api.field.name }}</label>
+    </div>
+
+    <div class="item-primary check">
+        <gtx-checkbox [(ngModel)]="uuidBoolean"
+                      label="uuid"></gtx-checkbox>
+        <gtx-checkbox [(ngModel)]="pathBoolean"
+                      label="path"></gtx-checkbox>
     </div>
     <!-- TODO: re-enable the mesh-thumbnail once we have wired up real data -->
     <!--<mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>-->

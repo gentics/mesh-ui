@@ -22,6 +22,9 @@ export class NodeFieldComponent extends BaseFieldComponent {
     breadcrumbPath: string;
     fullName: string;
 
+    uuidBoolean = false;
+    pathBoolean = false;
+
     constructor(changeDetector: ChangeDetectorRef) {
         super(changeDetector);
     }
@@ -63,15 +66,13 @@ export class NodeFieldComponent extends BaseFieldComponent {
                 this.displayName = results[0].displayName;
                 this.schemaName = results[0].schema.name;
                 this.breadcrumbPath = results[0].breadcrumb[results[0].breadcrumb.length - 1].path;
-                this.fullName =
-                    'Node name: ' +
-                    this.displayName +
-                    '\nSchema name: ' +
-                    this.schemaName +
-                    '\nUUID: ' +
-                    this.userValue +
-                    '\nPath: ' +
-                    this.breadcrumbPath;
+                this.fullName = 'Node name: ' + this.displayName + '\nSchema name: ' + this.schemaName;
+                if (this.uuidBoolean) {
+                    this.fullName += '\nUUID: ' + this.userValue;
+                }
+                if (this.pathBoolean) {
+                    this.fullName += '\nPath: ' + this.breadcrumbPath;
+                }
                 this.changeDetector.detectChanges();
             });
     }
@@ -79,5 +80,6 @@ export class NodeFieldComponent extends BaseFieldComponent {
     removeNode(): void {
         this.breadcrumbPath = this.schemaName = '';
         this.fullName = this.displayName = this.userValue = '';
+        this.uuidBoolean = this.pathBoolean = false;
     }
 }
