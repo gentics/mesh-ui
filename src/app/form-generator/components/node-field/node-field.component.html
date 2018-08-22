@@ -1,25 +1,37 @@
 <gtx-contents-list-item>
-    <div class="item-primary allowed">
-        <label class="allowedSchemas">List of allowed schemas: {{ api.field.allow }}</label>
-    </div>
-    <div class="item-primary title">
+    <div class="title">
         <label>{{ api.field.label || api.field.name }}</label>
     </div>
-
-    <div class="item-primary check">
-        <gtx-checkbox [(ngModel)]="uuidBoolean"
-                      label="uuid"></gtx-checkbox>
-        <gtx-checkbox [(ngModel)]="pathBoolean"
-                      label="path"></gtx-checkbox>
+    <div class="item-primary"
+         *ngIf="!fullName">
+        <gtx-button flat="true"
+                    (click)="selectNode()">
+            <icon left>search</icon>
+            Select Node Reference
+        </gtx-button>
+    </div>
+    <div *ngIf="fullName">
+        <icon *ngIf="isContainer">folder</icon>
+        <icon *ngIf="!isContainer">insert_drive_file</icon>
+    </div>
+    <div class="item-primary"
+         *ngIf="fullName">
+        <ul>
+            <li>
+                <label>{{ schemaName }}</label>
+            </li>
+            <li>
+                <a>{{ displayName }}</a>
+            </li>
+            <li>
+                <label>{{ breadcrumbPath }}</label>
+            </li>
+        </ul>
     </div>
     <!-- TODO: re-enable the mesh-thumbnail once we have wired up real data -->
     <!--<mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>-->
-    <div class="item-primary">
-        <gtx-textarea [(ngModel)]="fullName"
-                      readonly=true></gtx-textarea>
-    </div>
-
-    <div class="show-on-hover">
+    <div class="show-on-hover"
+         *ngIf="fullName">
         <gtx-button *ngIf="!api.readOnly"
                     flat="true"
                     (click)="selectNode()">

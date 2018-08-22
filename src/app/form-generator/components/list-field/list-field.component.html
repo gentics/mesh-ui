@@ -20,7 +20,7 @@
                         </div>
                     </gtx-sortable-item>
                 </ng-template>
-                <gtx-sortable-item *ngIf="field.listType !== 'micronode'">
+                <!-- gtx-sortable-item *ngIf="field.listType !== 'micronode'">
                     <div class="new-item">
                         <gtx-button (click)="addItem()"
                                     icon>
@@ -28,7 +28,7 @@
                         </gtx-button>{{ field.listType }}
                         <gtx-drag-handle></gtx-drag-handle>
                     </div>
-                </gtx-sortable-item>
+                </gtx-sortable-item -->
             </gtx-sortable-list>
         </div>
     </div>
@@ -79,4 +79,13 @@
             </div>
         </gtx-sortable-item>
     </gtx-sortable-list>
+
+    <div class="item-primary button"
+         *ngIf="field.listType !== 'micronode'">
+        <gtx-button flat="true"
+                    (click)="addItem()">
+            <icon left>search</icon>
+            Add Node Reference
+        </gtx-button>
+    </div>
 </div>
