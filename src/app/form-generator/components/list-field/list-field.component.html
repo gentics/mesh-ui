@@ -54,13 +54,13 @@
 <div class="list-container"
      [class.updating]="updating"
      [class.dragging]="dragging"
-     [class.empty]="!value || 0 === value.length"
      [style.height]="listHeight">
     <gtx-sortable-list #listContainer
                        [disabled]="api.readOnly"
                        (dragEnd)="dragEnd($event)"
                        (addItem)="addNewElement($event)"
                        [onMove]="onMove"
+                       [class.empty]="!value || value.length === 0"
                        [group]="mainGroup">
 
         <div class="empty-placeholder"
@@ -79,7 +79,6 @@
             </div>
         </gtx-sortable-item>
     </gtx-sortable-list>
-
     <div class="item-primary button"
          *ngIf="field.listType !== 'micronode'">
         <gtx-button flat="true"

@@ -16,7 +16,7 @@ gtx-contents-list-item {
 
 .icon-checkbox-wrapper gtx-checkbox {
   position: absolute;
-  visibility: hidden;
+  opacity: 0;
   margin-left: 0.2%;
   margin-top: 0.3%;
 }
@@ -29,18 +29,29 @@ gtx-contents-list-item {
   margin-right: 1%;
 }
 
+.hover {
+  opacity: 1;
+}
+
 gtx-contents-list-item:hover .hover {
-  visibility: hidden;
+  opacity: 0;
+  transition:opacity 0.1s linear;
 }
 
 gtx-contents-list-item:hover gtx-checkbox {
-  visibility: visible;
+  opacity: 1;
+  transition:opacity 0.1s linear;
+}
+
+.schemaName icon {
+  margin-right: 5%;
 }
 
 .schemaName
 {
   position: absolute;
   left: 70%;
+  display: flex;
 }
 
 .no-results {

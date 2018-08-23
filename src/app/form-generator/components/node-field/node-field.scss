@@ -38,9 +38,42 @@ label {
 
 gtx-contents-list-item {
     width: 100%;
-    border: 1px solid #e0e0e0;
+    border: none;
 }
 
 .title {
     width: 150px;
+    margin-left: -1%;
+}
+
+.schemaName {
+    font-size: 12px;
+    display: flex;
+}
+
+.schemaName icon {
+    font-size: 20px;
+    margin-right: 0.5%;
+}
+
+.innerSchemaName {
+    display: flex;
+    padding: 3px;
+    border: 1px solid #d6d6da;    
+}
+
+.nodeName {
+    border: 1px solid #d6d6da;
+    padding: 2px;
+    padding-left: 5px;
+}
+
+.path {
+    border: 1px solid #d6d6da;
+    padding: 1px;
+    padding-left: 5px;
+}
+
+.button gtx-button, .icon {
+    margin-left: 6%;
 }

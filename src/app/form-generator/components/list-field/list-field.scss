@@ -39,8 +39,16 @@
     }
 }
 
+.empty {
+    display: none !important;
+}
+
 .button gtx-button {
-    width: 255px;
+    margin-left: 1%;
+}
+
+gtx-sortable-list {
+    margin-bottom: -3%;
 }
 
 .new-item {

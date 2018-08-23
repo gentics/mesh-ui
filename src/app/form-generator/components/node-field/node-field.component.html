@@ -1,8 +1,9 @@
 <gtx-contents-list-item>
-    <div class="title">
+    <div class="title"
+         *ngIf="api.field.label || api.field.name">
         <label>{{ api.field.label || api.field.name }}</label>
     </div>
-    <div class="item-primary"
+    <div class="item-primary button"
          *ngIf="!fullName">
         <gtx-button flat="true"
                     (click)="selectNode()">
@@ -10,21 +11,25 @@
             Select Node Reference
         </gtx-button>
     </div>
-    <div *ngIf="fullName">
+    <div *ngIf="fullName"
+         class="icon">
         <icon *ngIf="isContainer">folder</icon>
         <icon *ngIf="!isContainer">insert_drive_file</icon>
     </div>
     <div class="item-primary"
          *ngIf="fullName">
         <ul>
-            <li>
-                <label>{{ schemaName }}</label>
+            <li class="schemaName">
+                <span class="innerSchemaName">
+                    <icon>view_quilt</icon>
+                    <div>{{ schemaName }}</div>
+                </span>
             </li>
             <li>
-                <a>{{ displayName }}</a>
+                <a class="nodeName">{{ displayName }}</a>
             </li>
             <li>
-                <label>{{ breadcrumbPath }}</label>
+                <label class="path">{{ breadcrumbPath }}</label>
             </li>
         </ul>
     </div>
