@@ -13,6 +13,7 @@
     </div>
     <div *ngIf="fullName"
          class="icon">
+        <mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>
         <icon *ngIf="isContainer">folder</icon>
         <icon *ngIf="!isContainer">insert_drive_file</icon>
     </div>
@@ -26,7 +27,8 @@
                 </span>
             </li>
             <li>
-                <a class="nodeName">{{ displayName }}</a>
+                <a class="nodeName"
+                   (click)="goToNode()">{{ displayName }}</a>
             </li>
             <li>
                 <label class="path">{{ breadcrumbPath }}</label>

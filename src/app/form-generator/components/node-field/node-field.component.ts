@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 
+import { Router } from '../../../../../node_modules/@angular/router';
 import { MeshNode, NodeField, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
 import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
@@ -23,7 +24,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
     fullName: string;
     isContainer: boolean;
 
-    constructor(changeDetector: ChangeDetectorRef) {
+    constructor(changeDetector: ChangeDetectorRef, private router: Router) {
         super(changeDetector);
     }
 
@@ -74,6 +75,10 @@ export class NodeFieldComponent extends BaseFieldComponent {
                     this.breadcrumbPath;
                 this.changeDetector.detectChanges();
             });
+    }
+
+    goToNode() {
+        this.router.navigate(['editor', 'project']);
     }
 
     removeNode(): void {

@@ -20,6 +20,14 @@
     }
 }
 
+a {
+    cursor: pointer;
+}
+
+.path {
+    cursor: default !important;
+}
+
 label {
     @include label-style-full;
 }

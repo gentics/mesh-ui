@@ -31,10 +31,12 @@ gtx-contents-list-item {
 
 .hover {
   opacity: 1;
+  visibility: visible;
 }
 
 gtx-contents-list-item:hover .hover {
   opacity: 0;
+  visibility: hidden;
   transition:opacity 0.1s linear;
 }
 
