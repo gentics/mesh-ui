@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgModule } from '@angular/core';
 
-import { Router } from '../../../../../node_modules/@angular/router';
 import { MeshNode, NodeField, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
-import { FilePreviewComponent } from '../../../shared/components/file-preview/file-preview.component';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { PageResult } from '../../../shared/components/node-browser/interfaces';
+import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
@@ -14,27 +14,49 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
     styleUrls: ['./node-field.scss']
 })
 export class NodeFieldComponent extends BaseFieldComponent {
+    @Input() node: MeshNode;
+    @Input() listLanguage: string;
+
+    routerLink: any[] | null = null;
+
     api: MeshFieldControlApi;
     value: NodeFieldType;
     field: SchemaField;
-    userValue: string | null;
+    userValue: string;
     displayName: string;
     schemaName: string;
     breadcrumbPath: string;
     fullName: string;
     isContainer: boolean;
 
-    constructor(changeDetector: ChangeDetectorRef, private router: Router) {
+    constructor(
+        changeDetector: ChangeDetectorRef,
+        private navigationService: NavigationService,
+        private entities: EntitiesService
+    ) {
         super(changeDetector);
     }
 
     init(api: MeshFieldControlApi): void {
         this.api = api;
         this.valueChange(api.getValue());
+
+        if (this.node.container) {
+            this.routerLink = this.navigationService
+                .list(this.node.project.name!, this.node.uuid, this.listLanguage)
+                .commands();
+        } else {
+            this.routerLink = this.navigationService
+                .detail(this.node.project.name!, this.node.uuid, this.node.language)
+                .commands();
+        }
+
+        console.log(this.routerLink);
     }
 
     valueChange(value: NodeField): void {
         this.userValue = (value && value.uuid) || '';
+        this.entities.getNode(this.userValue, { strictLanguageMatch: false });
     }
 
     isValidUuid(): boolean {
@@ -48,6 +70,8 @@ export class NodeFieldComponent extends BaseFieldComponent {
     selectNode(): void {
         const node = this.api.getNodeValue() as MeshNode;
         const allowedSchemas = this.api.field.allow;
+
+        console.log(allowedSchemas);
 
         this.api
             .openNodeBrowser({
@@ -77,8 +101,8 @@ export class NodeFieldComponent extends BaseFieldComponent {
             });
     }
 
-    goToNode() {
-        this.router.navigate(['editor', 'project']);
+    editNode(): void {
+        this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).navigate();
     }
 
     removeNode(): void {

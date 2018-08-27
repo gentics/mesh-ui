@@ -28,7 +28,8 @@
             </li>
             <li>
                 <a class="nodeName"
-                   (click)="goToNode()">{{ displayName }}</a>
+                   [routerLink]="routerLink"
+                   (click)="editNode()">{{ displayName }}</a>
             </li>
             <li>
                 <label class="path">{{ breadcrumbPath }}</label>
