@@ -35,10 +35,16 @@ export class EditorEffectsService {
         const lang = language || this.config.FALLBACK_LANGUAGE;
         this.state.actions.editor.openNode(projectName, nodeUuid, lang);
 
-        // Refresh the node
+        this.loadNode(projectName, nodeUuid, language);
+    }
+
+    loadNode(projectName: string, nodeUuid: string, language?: string): void {
+        const lang = language || this.config.FALLBACK_LANGUAGE;
+
         this.state.actions.list.fetchNodeStart();
         this.api.project.getNode({ project: projectName, nodeUuid, lang }).subscribe(
             response => {
+                console.log(response);
                 this.state.actions.list.fetchNodeSuccess(response);
             },
             error => {

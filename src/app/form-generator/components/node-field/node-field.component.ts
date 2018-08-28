@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, Input, NgModule } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 
 import { MeshNode, NodeField, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { EditorEffectsService } from '../../../editor/providers/editor-effects.service';
 import { PageResult } from '../../../shared/components/node-browser/interfaces';
-import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
@@ -15,14 +15,13 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
 })
 export class NodeFieldComponent extends BaseFieldComponent {
     @Input() node: MeshNode;
-    @Input() listLanguage: string;
 
     routerLink: any[] | null = null;
 
     api: MeshFieldControlApi;
     value: NodeFieldType;
     field: SchemaField;
-    userValue: string;
+    userValue: string | undefined;
     displayName: string;
     schemaName: string;
     breadcrumbPath: string;
@@ -32,31 +31,22 @@ export class NodeFieldComponent extends BaseFieldComponent {
     constructor(
         changeDetector: ChangeDetectorRef,
         private navigationService: NavigationService,
-        private entities: EntitiesService
+        private editorEffects: EditorEffectsService
     ) {
         super(changeDetector);
     }
 
     init(api: MeshFieldControlApi): void {
         this.api = api;
+        this.node = this.api.getNodeValue() as MeshNode;
         this.valueChange(api.getValue());
-
-        if (this.node.container) {
-            this.routerLink = this.navigationService
-                .list(this.node.project.name!, this.node.uuid, this.listLanguage)
-                .commands();
-        } else {
-            this.routerLink = this.navigationService
-                .detail(this.node.project.name!, this.node.uuid, this.node.language)
-                .commands();
+        if (this.userValue) {
+            this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
         }
-
-        console.log(this.routerLink);
     }
 
     valueChange(value: NodeField): void {
         this.userValue = (value && value.uuid) || '';
-        this.entities.getNode(this.userValue, { strictLanguageMatch: false });
     }
 
     isValidUuid(): boolean {
@@ -68,15 +58,14 @@ export class NodeFieldComponent extends BaseFieldComponent {
     }
 
     selectNode(): void {
-        const node = this.api.getNodeValue() as MeshNode;
-        const allowedSchemas = this.api.field.allow;
+        this.node = this.api.getNodeValue() as MeshNode;
 
-        console.log(allowedSchemas);
+        const allowedSchemas = this.api.field.allow;
 
         this.api
             .openNodeBrowser({
-                startNodeUuid: node.parentNode ? node.parentNode.uuid : node.uuid,
-                projectName: node.project.name!,
+                startNodeUuid: this.node.parentNode ? this.node.parentNode.uuid : this.node.uuid,
+                projectName: this.node.project.name!,
                 titleKey: 'editor.select_node',
                 selectablePredicate: node => {
                     if (allowedSchemas) {
@@ -97,12 +86,23 @@ export class NodeFieldComponent extends BaseFieldComponent {
                     this.displayName +
                     '\nPath: ' +
                     this.breadcrumbPath;
+                if (this.userValue) {
+                    this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
+                }
                 this.changeDetector.detectChanges();
             });
     }
 
     editNode(): void {
-        this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).navigate();
+        this.node = this.api.getNodeValue() as MeshNode;
+
+        this.routerLink = this.navigationService
+            .detail(this.node.project.name!, this.userValue!, this.node.language)
+            .commands();
+
+        console.log(this.routerLink);
+
+        this.navigationService.detail(this.node.project.name!, this.userValue!, this.node.language).navigate();
     }
 
     removeNode(): void {

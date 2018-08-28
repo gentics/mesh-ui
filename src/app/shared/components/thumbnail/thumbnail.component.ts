@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -20,8 +20,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
  */
 @Component({
     selector: 'mesh-thumbnail',
-    templateUrl: './thumbnail.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './thumbnail.component.html'
 })
 export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     @Input() nodeUuid: string;
@@ -43,7 +42,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
 
     private subscription: Subscription;
 
-    constructor(private entities: EntitiesService) {}
+    constructor(private changeDetector: ChangeDetectorRef, private entities: EntitiesService) {}
 
     ngOnInit(): void {
         const node$ = this.entities
@@ -55,7 +54,10 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         // Update binary properties when node or schema changes
         this.subscription = Observable.combineLatest(node$, schema$)
             .map(value => this.getBinaryProperties(value))
-            .subscribe(binaryProperties => (this.binaryProperties = binaryProperties));
+            .subscribe(binaryProperties => {
+                this.binaryProperties = binaryProperties;
+                this.changeDetector.detectChanges();
+            });
 
         this.setDisplaySize();
     }
