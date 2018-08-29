@@ -34,10 +34,6 @@ export class NodeFieldComponent extends BaseFieldComponent {
         return this.userValue.length === 32;
     }
 
-    doUpdate(): void {
-        this.api.setValue({ uuid: this.userValue });
-    }
-
     selectNode(): void {
         const node = this.api.getNodeValue() as MeshNode;
         this.api
@@ -48,6 +44,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
             })
             .then(uuids => {
                 this.userValue = uuids[0];
+                this.api.setValue({ uuid: this.userValue });
                 this.changeDetector.detectChanges();
             });
     }
