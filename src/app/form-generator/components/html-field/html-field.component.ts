@@ -56,7 +56,7 @@ function tableOptions(): any[] {
 @Component({
     selector: 'mesh-html-field',
     templateUrl: './html-field.component.html',
-    styleUrls: ['./html-field.scss', 'formats/mesh-link.tooltip.scss'],
+    styleUrls: ['./html-field.scss', './mesh-link.tooltip.scss'],
     // required for the Quill.js styles to work correctly
     encapsulation: ViewEncapsulation.None
 })
