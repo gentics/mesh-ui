@@ -44,7 +44,6 @@ export class EditorEffectsService {
         this.state.actions.list.fetchNodeStart();
         this.api.project.getNode({ project: projectName, nodeUuid, lang }).subscribe(
             response => {
-                console.log(response);
                 this.state.actions.list.fetchNodeSuccess(response);
             },
             error => {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core';
+import { AfterViewChecked, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -20,7 +20,7 @@ export interface SchemaDisplayProperties {
     styleUrls: ['create-node-button.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreateNodeButtonComponent {
+export class CreateNodeButtonComponent implements AfterViewChecked {
     @Input() disabled: boolean;
     schemas$: Observable<SchemaDisplayProperties[]>;
 
@@ -28,8 +28,10 @@ export class CreateNodeButtonComponent {
         private entities: EntitiesService,
         private navigationService: NavigationService,
         private state: ApplicationStateService
-    ) {
-        this.schemas$ = entities
+    ) {}
+
+    ngAfterViewChecked() {
+        this.schemas$ = this.entities
             .selectAllSchemas()
             .map(schemas => schemas.sort(this.nameSort).map(this.getSchemaDisplayProperties));
     }

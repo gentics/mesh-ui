@@ -14,11 +14,11 @@
     <div *ngIf="fullName"
          class="icon">
 
-        <mesh-thumbnail [nodeUuid]="userValue">
+        <mesh-thumbnail [nodeUuid]="userValue"
+                        *ngIf="!isContainer">
         </mesh-thumbnail>
 
         <icon *ngIf="isContainer">folder</icon>
-        <icon *ngIf="!isContainer">insert_drive_file</icon>
     </div>
     <div class="item-primary"
          *ngIf="fullName">

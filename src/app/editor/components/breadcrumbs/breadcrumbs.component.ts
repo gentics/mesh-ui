@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewChecked, Component } from '@angular/core';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 
@@ -13,18 +13,20 @@ import { EntitiesService } from '../../../state/providers/entities.service';
     templateUrl: './breadcrumbs.component.html',
     styleUrls: ['./breadcrumbs.scss']
 })
-export class BreadcrumbsComponent {
+export class BreadcrumbsComponent implements AfterViewChecked {
     routerLinks$: Observable<IBreadcrumbRouterLink[]>;
 
     constructor(
         private state: ApplicationStateService,
         private entities: EntitiesService,
         private navigationService: NavigationService
-    ) {
-        this.routerLinks$ = state.select(state => state.list).map(({ currentNode, language }) => {
+    ) {}
+
+    ngAfterViewChecked() {
+        this.routerLinks$ = this.state.select(state => state.list).map(({ currentNode, language }) => {
             let node: MeshNode | undefined;
             if (currentNode) {
-                node = entities.getNode(currentNode, { language, strictLanguageMatch: false });
+                node = this.entities.getNode(currentNode, { language, strictLanguageMatch: false });
             }
             return this.toRouterLinks(node, language);
         });
