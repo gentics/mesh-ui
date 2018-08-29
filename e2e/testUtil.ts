@@ -10,9 +10,14 @@ import { createFolder, deleteNode, getProject } from './api';
  * Creates a temporary folder in the root node of the project.
  * The folder and all its contents are deleted after the body has been executed.
  *
+ * @param language The language of the created folder
  * @param body A function that is executed
  */
-export async function temporaryFolder(description: string, body: (context: { folder: MeshNode }) => void) {
+export async function temporaryFolderWithLanguage(
+    description: string,
+    language: string,
+    body: (context: { folder: MeshNode }) => void
+) {
     describe(description, () => {
         let project: Project;
         const context: { folder: MeshNode } = {} as any;
@@ -20,7 +25,7 @@ export async function temporaryFolder(description: string, body: (context: { fol
 
         beforeAll(async () => {
             project = await getProject();
-            folder = await createFolder(project.rootNode, 'tmpFolder' + uuid());
+            folder = await createFolder(project.rootNode, 'tmpFolder' + uuid(), language);
             context.folder = folder;
         });
 
@@ -30,6 +35,16 @@ export async function temporaryFolder(description: string, body: (context: { fol
 
         body(context);
     });
+}
+
+/**
+ * Creates a temporary folder in the root node of the project.
+ * The folder and all its contents are deleted after the body has been executed.
+ *
+ * @param body A function that is executed
+ */
+export async function temporaryFolder(description: string, body: (context: { folder: MeshNode }) => void) {
+    return temporaryFolderWithLanguage(description, 'en', body);
 }
 
 /**

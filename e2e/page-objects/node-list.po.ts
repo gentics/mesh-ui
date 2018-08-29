@@ -47,4 +47,13 @@ export class MeshNodeList {
             .filter(el => el.isElementPresent(by.cssContainingText('a', displayName)))
             .first();
     }
+
+    public async createNode(schemaName: string) {
+        await element(by.css('mesh-create-node-button gtx-button')).click();
+        await element
+            .all(by.tagName('gtx-dropdown-item'))
+            .filter(el => el.isElementPresent(by.cssContainingText('.name', schemaName)))
+            .first()
+            .click();
+    }
 }

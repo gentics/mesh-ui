@@ -25,18 +25,24 @@ export function getProject(): Promise<Project> {
     return get(`/${project}`);
 }
 
-export function createFolder(parent: HasUuid, name: string): Promise<MeshNode> {
-    return post(`/${project}/nodes`, {
-        schema: {
-            name: 'folder'
+export function createFolder(parent: HasUuid, name: string, language = 'en'): Promise<MeshNode> {
+    return post(
+        `/${project}/nodes`,
+        {
+            schema: {
+                name: 'folder'
+            },
+            language,
+            parentNodeUuid: parent.uuid,
+            fields: {
+                name,
+                slug: name
+            }
         },
-        language: 'en',
-        parentNodeUuid: parent.uuid,
-        fields: {
-            name,
-            slug: name
+        {
+            lang: 'en,de'
         }
-    });
+    );
 }
 
 export function createVehicle(parent: HasUuid, name: string): Promise<MeshNode> {
@@ -112,11 +118,11 @@ export function moveNode(source: HasUuid, destination: HasUuid) {
 }
 
 function get(url: string, body?: any, qs?: any) {
-    return request('GET', url, body);
+    return request('GET', url, body, qs);
 }
 
 function post(url: string, body?: any, qs?: any) {
-    return request('POST', url, body);
+    return request('POST', url, body, qs);
 }
 
 function deleteReq(url: string, qs?: any) {
