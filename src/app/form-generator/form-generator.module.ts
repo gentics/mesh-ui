@@ -22,6 +22,7 @@ import { NumberFieldComponent } from './components/number-field/number-field.com
 import { StringFieldComponent } from './components/string-field/string-field.component';
 import { MeshControlGroupService } from './providers/field-control-group/mesh-control-group.service';
 import { FieldGeneratorService } from './providers/field-generator/field-generator.service';
+import { QuillInitializerService } from './providers/quill-initializer/quill-initializer.service';
 
 const ENTRY_COMPONENTS = [
     BinaryFieldComponent,
@@ -42,7 +43,7 @@ const ENTRY_COMPONENTS = [
     imports: [GenticsUICoreModule, GenticsUIImageEditorModule, CommonModule, FormsModule, SharedModule],
     declarations: [BaseFieldComponent, FormGeneratorComponent, ...ENTRY_COMPONENTS],
     entryComponents: ENTRY_COMPONENTS,
-    providers: [FieldGeneratorService, MeshControlGroupService],
+    providers: [FieldGeneratorService, MeshControlGroupService, QuillInitializerService],
     exports: [FormGeneratorComponent]
 })
 export class FormGeneratorModule {}
