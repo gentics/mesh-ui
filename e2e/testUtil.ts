@@ -73,3 +73,11 @@ export function getTextNodeText(el: WebElement) {
         }
     }, el);
 }
+
+export async function assertNoConsoleErrors() {
+    const logs = await browser
+        .manage()
+        .logs()
+        .get('browser');
+    expect(logs.length).toEqual(0);
+}

@@ -4,7 +4,7 @@ import { deleteNode, moveNode } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
-import { temporaryFolderWithLanguage, toText } from '../testUtil';
+import { assertNoConsoleErrors, temporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node list', () => {
     let page: AppPage;
@@ -75,11 +75,7 @@ describe('node list', () => {
             it('works without errors', async () => {
                 await nodeList.openFolder(context.folder.fields.name);
                 await nodeList.createNode('folder');
-                const logs = await browser
-                    .manage()
-                    .logs()
-                    .get('browser');
-                expect(logs.length).toEqual(0);
+                await assertNoConsoleErrors();
             });
         });
     });
