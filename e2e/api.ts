@@ -113,6 +113,10 @@ export function findNodeByUuid(uuid: string): Promise<MeshNode> {
     return get(`/${project}/nodes/${uuid}`);
 }
 
+export function updateNode(node: MeshNode): Promise<MeshNode> {
+    return post(`/${project}/nodes/${node.uuid}`, node);
+}
+
 export function moveNode(source: HasUuid, destination: HasUuid) {
     return post(`/${project}/nodes/${source.uuid}/moveTo/${destination.uuid}`);
 }

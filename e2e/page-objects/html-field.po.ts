@@ -1,4 +1,4 @@
-import { browser, by, ElementFinder } from 'protractor';
+import { browser, by, ElementFinder, Key } from 'protractor';
 
 export class HtmlField {
     editor: ElementFinder;
@@ -67,5 +67,14 @@ export class HtmlField {
             text,
             caretOnly
         );
+    }
+
+    /**
+     * Creates a link for the selected text.
+     */
+    async linkToUrl(url: string) {
+        await this.toolbar.element(by.css('.ql-link')).click();
+        await this.container.element(by.css('.ql-tooltip.ql-editing input')).sendKeys(Key.CONTROL, 'a', Key.NULL, url);
+        await this.container.element(by.css('.ql-tooltip.ql-editing .ql-action')).click();
     }
 }
