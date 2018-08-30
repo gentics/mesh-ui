@@ -4,7 +4,7 @@ import * as uuid from 'uuid-random';
 import { MeshNode } from '../src/app/common/models/node.model';
 import { Project } from '../src/app/common/models/project.model';
 
-import { createFolder, deleteNode, getProject } from './api';
+import { createFolder, deleteNode, findNodeByUuid, getProject, updateNode } from './api';
 
 /**
  * Creates a temporary folder in the root node of the project.
@@ -80,4 +80,22 @@ export async function assertNoConsoleErrors() {
         .logs()
         .get('browser');
     expect(logs.length).toEqual(0);
+}
+
+/**
+ * Reverts a node to its original state after the body has been executed.
+ * @param uuid The uuid of the node to be reverted
+ * @param body The function body to be executed.
+ */
+export async function temporaryNodeChanges(uuid: string, body: () => any) {
+    const originalNode = await findNodeByUuid(uuid);
+    try {
+        await body();
+    } finally {
+        const alteredNode = await findNodeByUuid(uuid);
+        await updateNode({
+            ...originalNode,
+            version: alteredNode.version
+        });
+    }
 }
