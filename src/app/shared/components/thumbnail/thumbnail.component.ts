@@ -45,13 +45,16 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     constructor(private changeDetector: ChangeDetectorRef, private entities: EntitiesService) {}
 
     ngOnInit(): void {
+        this.setDisplaySize();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
         const node$ = this.entities
             .selectNode(this.nodeUuid, { strictLanguageMatch: false })
             // Does not emit node if it was not found
             .filter(node => !!node);
         const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid!));
 
-        // Update binary properties when node or schema changes
         this.subscription = Observable.combineLatest(node$, schema$)
             .map(value => this.getBinaryProperties(value))
             .subscribe(binaryProperties => {
@@ -59,10 +62,6 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
                 this.changeDetector.detectChanges();
             });
 
-        this.setDisplaySize();
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
         if (changes['width'] || changes['height']) {
             this.setDisplaySize();
         }

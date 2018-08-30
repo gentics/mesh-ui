@@ -96,6 +96,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     });
                 } else {
                     const node$ = this.entities.selectNode(openNode.uuid, { language: openNode.language });
+
+                    console.log('uuid: ' + openNode.uuid);
+
                     const latest = Observable.combineLatest(
                         node$.filter<MeshNode>(Boolean).map(node => {
                             return simpleCloneDeep(node);
@@ -104,10 +107,13 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             return this.entities.selectSchema(node.schema.uuid!);
                         })
                     );
+
                     return latest;
                 }
             })
             .subscribe(([node, schema]) => {
+                console.log(node);
+
                 if (this.formGenerator) {
                     this.formGenerator.setPristine(node);
                 }

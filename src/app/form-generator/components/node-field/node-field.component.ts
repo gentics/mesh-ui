@@ -5,7 +5,6 @@ import { SchemaField } from '../../../common/models/schema.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../../editor/providers/editor-effects.service';
 import { PageResult } from '../../../shared/components/node-browser/interfaces';
-import { ThumbnailComponent } from '../../../shared/components/thumbnail/thumbnail.component';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
@@ -16,7 +15,6 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
 })
 export class NodeFieldComponent extends BaseFieldComponent {
     @Input() node: MeshNode;
-    @Input() binaryProperties: ThumbnailComponent;
 
     routerLink: any[] | null = null;
 
@@ -93,18 +91,20 @@ export class NodeFieldComponent extends BaseFieldComponent {
                 }
                 this.changeDetector.detectChanges();
             });
-
-        console.log(this.binaryProperties);
     }
 
     editNode(): void {
         this.node = this.api.getNodeValue() as MeshNode;
 
-        this.routerLink = this.navigationService
-            .detail(this.node.project.name!, this.userValue!, this.node.language)
-            .commands();
-
-        console.log(this.routerLink);
+        if (this.isContainer) {
+            this.routerLink = this.navigationService
+                .list(this.node.project.name!, this.userValue!, this.node.language)
+                .commands();
+        } else {
+            this.routerLink = this.navigationService
+                .detail(this.node.project.name!, this.userValue!, this.node.language)
+                .commands();
+        }
 
         this.navigationService.detail(this.node.project.name!, this.userValue!, this.node.language).navigate();
     }
