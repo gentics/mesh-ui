@@ -25,7 +25,6 @@ export class NodeFieldComponent extends BaseFieldComponent {
     displayName: string;
     schemaName: string;
     breadcrumbPath: string;
-    fullName: string;
     isContainer: boolean;
 
     constructor(
@@ -39,6 +38,9 @@ export class NodeFieldComponent extends BaseFieldComponent {
     init(api: MeshFieldControlApi): void {
         this.api = api;
         this.node = this.api.getNodeValue() as MeshNode;
+
+        console.log(this.node.fields);
+
         this.valueChange(api.getValue());
         if (this.userValue) {
             this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
@@ -79,16 +81,13 @@ export class NodeFieldComponent extends BaseFieldComponent {
                 this.schemaName = results[0].schema.name;
                 this.isContainer = results[0].isContainer;
                 this.breadcrumbPath = results[0].breadcrumb[results[0].breadcrumb.length - 1].path;
-                this.fullName =
-                    'Schema name: ' +
-                    this.schemaName +
-                    '\nNode name: ' +
-                    this.displayName +
-                    '\nPath: ' +
-                    this.breadcrumbPath;
+
                 if (this.userValue) {
                     this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
                 }
+                this.api.setValue({
+                    uuid: this.userValue
+                });
                 this.changeDetector.detectChanges();
             });
     }
@@ -111,6 +110,8 @@ export class NodeFieldComponent extends BaseFieldComponent {
 
     removeNode(): void {
         this.breadcrumbPath = this.schemaName = '';
-        this.fullName = this.displayName = this.userValue = '';
+        this.displayName = this.userValue = '';
+
+        this.api.setValue(null);
     }
 }

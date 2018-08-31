@@ -4,14 +4,14 @@
         <label>{{ api.field.label || api.field.name }}</label>
     </div>
     <div class="item-primary button"
-         *ngIf="!fullName">
+         *ngIf="!userValue">
         <gtx-button flat="true"
                     (click)="selectNode()">
             <icon left>search</icon>
             Select Node Reference
         </gtx-button>
     </div>
-    <div *ngIf="fullName"
+    <div *ngIf="userValue"
          class="icon">
 
         <mesh-thumbnail [nodeUuid]="userValue"
@@ -21,7 +21,7 @@
         <icon *ngIf="isContainer">folder</icon>
     </div>
     <div class="item-primary"
-         *ngIf="fullName">
+         *ngIf="userValue">
         <ul>
             <li class="schemaName">
                 <span class="innerSchemaName">
@@ -42,7 +42,7 @@
     <!-- TODO: re-enable the mesh-thumbnail once we have wired up real data -->
     <!--<mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>-->
     <div class="show-on-hover"
-         *ngIf="fullName">
+         *ngIf="userValue">
         <gtx-button *ngIf="!api.readOnly"
                     flat="true"
                     (click)="selectNode()">

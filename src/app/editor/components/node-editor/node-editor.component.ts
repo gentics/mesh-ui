@@ -19,6 +19,7 @@ import { ApiError } from '../../../core/providers/api/api-error';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MeshFieldControlApi } from '../../../form-generator/common/form-generator-models';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
@@ -97,8 +98,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 } else {
                     const node$ = this.entities.selectNode(openNode.uuid, { language: openNode.language });
 
-                    console.log('uuid: ' + openNode.uuid);
-
                     const latest = Observable.combineLatest(
                         node$.filter<MeshNode>(Boolean).map(node => {
                             return simpleCloneDeep(node);
@@ -107,13 +106,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             return this.entities.selectSchema(node.schema.uuid!);
                         })
                     );
-
                     return latest;
                 }
             })
             .subscribe(([node, schema]) => {
-                console.log(node);
-
                 if (this.formGenerator) {
                     this.formGenerator.setPristine(node);
                 }
