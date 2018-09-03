@@ -66,20 +66,19 @@ gtx-contents-list-item {
 
 .innerSchemaName {
     display: flex;
-    padding: 3px;
+    padding-right: 3px;
     border: 1px solid #d6d6da;    
 }
 
 .nodeName {
-    border: 1px solid #d6d6da;
     padding: 2px;
     padding-left: 5px;
 }
 
 .path {
-    border: 1px solid #d6d6da;
     padding: 1px;
     padding-left: 5px;
+    font-size: 13px;
 }
 
 .button gtx-button, .icon {

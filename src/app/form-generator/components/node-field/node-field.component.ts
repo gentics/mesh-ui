@@ -5,6 +5,7 @@ import { SchemaField } from '../../../common/models/schema.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../../editor/providers/editor-effects.service';
 import { PageResult } from '../../../shared/components/node-browser/interfaces';
+import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
@@ -30,6 +31,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
     constructor(
         changeDetector: ChangeDetectorRef,
         private navigationService: NavigationService,
+        private entities: EntitiesService,
         private editorEffects: EditorEffectsService
     ) {
         super(changeDetector);
@@ -39,10 +41,20 @@ export class NodeFieldComponent extends BaseFieldComponent {
         this.api = api;
         this.node = this.api.getNodeValue() as MeshNode;
 
-        console.log(this.node.fields);
-
         this.valueChange(api.getValue());
+
         if (this.userValue) {
+            const node$ = this.entities.selectNode(this.userValue!, { language: this.node.language });
+
+            node$.subscribe(node => {
+                this.schemaName = node.schema.name;
+                this.displayName = node.displayName!;
+                this.breadcrumbPath = node.breadcrumb
+                    .slice(1)
+                    .map(b => b.displayName)
+                    .join(' › ');
+            });
+
             this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
         }
     }
@@ -77,17 +89,28 @@ export class NodeFieldComponent extends BaseFieldComponent {
             })
             .then((results: PageResult[]) => {
                 this.userValue = results[0].uuid;
-                this.displayName = results[0].displayName;
-                this.schemaName = results[0].schema.name;
                 this.isContainer = results[0].isContainer;
-                this.breadcrumbPath = results[0].breadcrumb[results[0].breadcrumb.length - 1].path;
+                // this.displayName = results[0].displayName;
+                // this.schemaName = results[0].schema.name;
+                // this.breadcrumbPath = results[0].breadcrumb[results[0].breadcrumb.length - 1].path;
 
                 if (this.userValue) {
+                    const node$ = this.entities.selectNode(this.userValue!, { language: this.node.language });
+
+                    node$.subscribe(node => {
+                        this.schemaName = node.schema.name;
+                        this.displayName = node.displayName!;
+                        this.breadcrumbPath = node.breadcrumb
+                            .slice(1)
+                            .map(b => b.displayName)
+                            .join(' › ');
+                        this.api.setValue({
+                            uuid: node.uuid
+                        });
+                    });
+
                     this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
                 }
-                this.api.setValue({
-                    uuid: this.userValue
-                });
                 this.changeDetector.detectChanges();
             });
     }
