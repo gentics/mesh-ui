@@ -4,6 +4,7 @@
              class="icon-checkbox-wrapper">
             <gtx-checkbox *ngIf="selectable(item)"
                           [checked]="!!selection[item.uuid]"
+                          [ngClass]="{'checked': !!selection[item.uuid] }"
                           (change)="handleSelect(item, $event)"></gtx-checkbox>
             <icon class="hover"
                   *ngIf="item.isContainer">folder</icon>

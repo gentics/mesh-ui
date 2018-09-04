@@ -48,11 +48,9 @@ export class NodeFieldComponent extends BaseFieldComponent {
 
             node$.subscribe(node => {
                 this.schemaName = node.schema.name;
+                this.isContainer = node.container;
                 this.displayName = node.displayName!;
-                this.breadcrumbPath = node.breadcrumb
-                    .slice(1)
-                    .map(b => b.displayName)
-                    .join(' › ');
+                this.breadcrumbPath = node.project.name + node.breadcrumb.map(b => b.displayName).join(' › ');
             });
 
             this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
@@ -89,24 +87,19 @@ export class NodeFieldComponent extends BaseFieldComponent {
             })
             .then((results: PageResult[]) => {
                 this.userValue = results[0].uuid;
-                this.isContainer = results[0].isContainer;
-                // this.displayName = results[0].displayName;
-                // this.schemaName = results[0].schema.name;
-                // this.breadcrumbPath = results[0].breadcrumb[results[0].breadcrumb.length - 1].path;
 
                 if (this.userValue) {
                     const node$ = this.entities.selectNode(this.userValue!, { language: this.node.language });
 
                     node$.subscribe(node => {
                         this.schemaName = node.schema.name;
+                        this.isContainer = node.container;
                         this.displayName = node.displayName!;
-                        this.breadcrumbPath = node.breadcrumb
-                            .slice(1)
-                            .map(b => b.displayName)
-                            .join(' › ');
+                        this.breadcrumbPath = node.project.name + node.breadcrumb.map(b => b.displayName).join(' › ');
                         this.api.setValue({
                             uuid: node.uuid
                         });
+                        this.changeDetector.detectChanges();
                     });
 
                     this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
@@ -132,8 +125,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
     }
 
     removeNode(): void {
-        this.breadcrumbPath = this.schemaName = '';
-        this.displayName = this.userValue = '';
+        this.userValue = '';
 
         this.api.setValue(null);
     }

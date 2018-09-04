@@ -45,6 +45,14 @@ gtx-contents-list-item:hover gtx-checkbox {
   transition:opacity 0.1s linear;
 }
 
+gtx-checkbox.checked {
+  opacity: 1 !important;
+}
+
+gtx-checkbox.checked + .hover {
+  opacity: 0 !important;
+}
+
 .schemaName icon {
   margin-right: 5%;
 }

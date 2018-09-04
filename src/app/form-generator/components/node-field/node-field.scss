@@ -72,13 +72,11 @@ gtx-contents-list-item {
 
 .nodeName {
     padding: 2px;
-    padding-left: 5px;
 }
 
 .path {
     padding: 1px;
-    padding-left: 5px;
-    font-size: 13px;
+    font-size: 13px !important;
 }
 
 .button gtx-button, .icon {
