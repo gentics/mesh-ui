@@ -254,6 +254,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             }
                         }
                         this.isSaving = false;
+                        this.changeDetector.detectChanges();
                     }
                 );
             }

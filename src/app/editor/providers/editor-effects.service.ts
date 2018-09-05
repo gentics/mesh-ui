@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { BinaryField, FieldMap, ImageTransform, MeshNode } from '../../common/models/node.model';
 import {
-    FieldMapFromServer,
     NodeCreateRequest,
     NodeResponse,
     NodeUpdateRequest,
@@ -19,7 +18,6 @@ import { ConfigService } from '../../core/providers/config/config.service';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { EntitiesService } from '../../state/providers/entities.service';
-import { tagsAreEqual } from '../form-generator/common/tags-are-equal';
 
 @Injectable()
 export class EditorEffectsService {
@@ -370,7 +368,7 @@ export class EditorEffectsService {
             return Promise.reject('Project name, node language or node uuid not available.');
         }
         const promises = Object.keys(fields)
-            .filter(fieldName => !!fields[fieldName].transform)
+            .filter(fieldName => fields[fieldName] && !!fields[fieldName].transform)
             .map(fieldName => {
                 const value = fields[fieldName] as BinaryField;
                 const transform = value.transform as ImageTransform;
