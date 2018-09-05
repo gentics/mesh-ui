@@ -1,6 +1,5 @@
 <gtx-contents-list-item class="node-list-item"
-                        [class.container-node]="node.container"
-                        [class.not-in-current-lang]="node.language !== listLanguage">
+                        [class.container-node]="node.container">
     <icon class="node-icon"
           *ngIf="node.container">folder</icon>
     <icon class="node-icon"
@@ -13,8 +12,7 @@
                [innerHTML]="node.displayName | highlight:(filterTerm$ | async)"></a>
         </div>
         <div class="available-languages">
-            <mesh-available-languages-list [available]="node.availableLanguages"
-                                           [current]="listLanguage"></mesh-available-languages-list>
+            <mesh-available-languages-list [available]="node.availableLanguages"></mesh-available-languages-list>
         </div>
     </div>
     <div class="show-on-hover">

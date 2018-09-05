@@ -14,10 +14,10 @@ import { NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
 import { errorHashFor, ErrorCode } from '../../common/form-errors';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
+import { MeshLinkHandler } from '../../providers/quill-initializer/formats/mesh-link';
+import MeshLinkToolTip from '../../providers/quill-initializer/formats/mesh-link-tooltip';
+import { QuillInitializerService } from '../../providers/quill-initializer/quill-initializer.service';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
-
-import MeshLink, { MeshLinkHandler } from './formats/mesh-link';
-import MeshLinkToolTip from './formats/mesh-link-tooltip';
 
 interface ThemedQuill extends Quill.Quill {
     theme: {
@@ -56,7 +56,7 @@ function tableOptions(): any[] {
 @Component({
     selector: 'mesh-html-field',
     templateUrl: './html-field.component.html',
-    styleUrls: ['./html-field.scss', 'formats/mesh-link.tooltip.scss'],
+    styleUrls: ['./html-field.scss', './mesh-link.tooltip.scss'],
     // required for the Quill.js styles to work correctly
     encapsulation: ViewEncapsulation.None
 })
@@ -68,13 +68,17 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     private editor: ThemedQuill;
     private blurTimer: any;
 
-    constructor(changeDetector: ChangeDetectorRef, private elementRef: ElementRef) {
+    constructor(
+        changeDetector: ChangeDetectorRef,
+        private elementRef: ElementRef,
+        private quillInitializer: QuillInitializerService
+    ) {
         super(changeDetector);
     }
 
     ngAfterViewInit(): void {
         const editorElement = this.editorRef.nativeElement;
-        this.initQuill();
+        this.quillInitializer.initQuill();
         this.editor = new Quill(editorElement, {
             theme: 'snow',
             modules: {
@@ -101,15 +105,6 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
         if (this.api.readOnly) {
             this.editor.disable();
         }
-    }
-
-    initQuill(): void {
-        Quill.register('formats/mesh-link', MeshLink);
-        Quill.register(quillTable.TableCell);
-        Quill.register(quillTable.TableRow);
-        Quill.register(quillTable.Table);
-        Quill.register(quillTable.Contain);
-        Quill.register('modules/table', quillTable.TableModule);
     }
 
     ngOnDestroy(): void {

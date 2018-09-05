@@ -1,8 +1,10 @@
+import { browser } from 'protractor';
+
 import { deleteNode, moveNode } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
-import { toText } from '../testUtil';
+import { assertNoConsoleErrors, temporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node list', () => {
     let page: AppPage;
@@ -65,6 +67,16 @@ describe('node list', () => {
 
             // Cleanup
             deleteNode({ uuid: await nodeList.getNodeUuid('Yachts (copy)') });
+        });
+    });
+
+    describe('creating a node', () => {
+        temporaryFolderWithLanguage('container without content in default language', 'de', context => {
+            it('works without errors', async () => {
+                await nodeList.openFolder(context.folder.fields.name);
+                await nodeList.createNode('folder');
+                await assertNoConsoleErrors();
+            });
         });
     });
 });

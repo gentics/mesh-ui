@@ -15,8 +15,11 @@ import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -24,9 +27,6 @@ import { TestApplicationState } from '../../../state/testing/test-application-st
 import { AvailableLanguagesListComponent } from '../available-languages-list/available-languages-list.component';
 
 import { NodeRowComponent } from './node-row.component';
-import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
-import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
-import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('NodeRowComponent', () => {
     let api: MockApiService;
@@ -95,12 +95,11 @@ describe('NodeRowComponent', () => {
 
 @Component({
     template: `
-        <mesh-node-row [node]="node" [listLanguage]="listLanguage"></mesh-node-row>
+        <mesh-node-row [node]="node"></mesh-node-row>
         <gtx-overlay-host></gtx-overlay-host>`
 })
 class TestComponent {
     node: MeshNode;
-    listLanguage: string;
 }
 
 @Pipe({ name: 'displayField' })
@@ -109,7 +108,6 @@ class MockDisplayFieldPipe implements PipeTransform {
         return a;
     }
 }
-
 
 function findDeleteButton(fixture: ComponentFixture<any>): DebugElement {
     return fixture.debugElement.query(By.css('.item-delete'));

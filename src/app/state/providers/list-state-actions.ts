@@ -71,9 +71,13 @@ export class ListStateActions extends StateActionBranch<AppState> {
 
     fetchNodeSuccess(node: NodeResponse) {
         this.list.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            node: [node]
-        });
+        this.entities = mergeEntityState(
+            this.entities,
+            {
+                node: [node]
+            },
+            false
+        );
     }
 
     fetchNodeError() {

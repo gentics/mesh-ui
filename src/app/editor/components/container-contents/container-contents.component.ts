@@ -91,7 +91,6 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             )
             .combineLatest(this.state.select(state => state.list.filterTerm))
             .map(([items, filterTerm]) => this.filterNodes(items, filterTerm))
-            .map((nodes: MeshNode[]) => nodes.filter((node: MeshNode) => node.availableLanguages[this.state.now.list.language] !== undefined))
             .map(this.groupNodesBySchema);
 
         this.schemas$ = this.childrenBySchema$.map(childrenBySchema =>

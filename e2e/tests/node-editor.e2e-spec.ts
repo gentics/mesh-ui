@@ -6,7 +6,7 @@ import { HtmlField } from '../page-objects/html-field.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import { NodeEditor } from '../page-objects/node-editor.po';
 import * as tooltip from '../page-objects/quill-tooltip.po';
-import { getTextNodeText } from '../testUtil';
+import { temporaryNodeChanges } from '../testUtil';
 
 describe('node editor', () => {
     let page: AppPage;
@@ -54,6 +54,32 @@ describe('node editor', () => {
                 await htmlField.clickAfter('busi');
                 await tooltip.remove();
                 expect(await htmlField.editor.element(by.tagName('a')).isPresent()).toBeFalsy();
+            });
+
+            it('creates external links that open in a new window', async () => {
+                await htmlField.selectText('business');
+                await htmlField.linkToUrl('http://example.org');
+                await temporaryNodeChanges(uuid, async () => {
+                    await editor.save();
+                    const node = await api.findNodeByUuid(uuid);
+                    expect(node.fields.description).toEqual(
+                        `<p>The Embraer Legacy 600 is a <a href="http://example.org" target="_blank">business</a> jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>`
+                    );
+                });
+            });
+
+            it('creates interal links that open in the same window', async () => {
+                await htmlField.selectText('business');
+                await htmlField.linkToNode();
+                await nodeBrowser.getNode('Space Shuttle').select();
+                await nodeBrowser.choose();
+                await temporaryNodeChanges(uuid, async () => {
+                    await editor.save();
+                    const node = await api.findNodeByUuid(uuid);
+                    expect(node.fields.description).toEqual(
+                        `<p>The Embraer Legacy 600 is a <a class="mesh-link" href="{{mesh.link('f915b16fa68f40e395b16fa68f10e32d')}}">business</a> jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>`
+                    );
+                });
             });
         });
     });
