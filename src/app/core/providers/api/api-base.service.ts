@@ -207,7 +207,9 @@ export class ApiBase {
             .catch((errorOrResponse: Error | Response) => {
                 // When an unexpected error is thrown by angular, wrap it in an ApiError
                 if (errorOrResponse instanceof Response) {
-                    return Observable.throw(new ApiError({ url, request, response: errorOrResponse }));
+                    // Non-OK statuses will be thrown by angular, but that could be expected.
+                    // The function `toResponseObservable` will wrap it accordingly.
+                    return Observable.of(errorOrResponse);
                 } else {
                     return Observable.throw(new ApiError({ url, request, originalError: errorOrResponse }));
                 }

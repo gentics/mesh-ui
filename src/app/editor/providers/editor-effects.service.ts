@@ -155,25 +155,133 @@ export class EditorEffectsService {
         this.state.actions.editor.publishNodeStart();
         this.api.project
             .publishNode({ project: node.project.name, nodeUuid: node.uuid })
-            .map(response => {
-                let newVersion: string | undefined;
-                if (response.availableLanguages && node.language) {
-                    newVersion = response.availableLanguages[node.language].version;
-                }
-                if (newVersion) {
-                    return newVersion;
-                } else {
-                    throw new Error('New version could not be retrieved');
-                }
-            })
-            .pipe(this.notification.rxSuccess('editor.node_published'))
+            .pipe(
+                this.notification.rxSuccessNext('editor.node_published', version => ({
+                    version: version.availableLanguages[node.language!].version
+                }))
+            )
             .subscribe(
-                version => {
-                    const newNode = Object.assign({}, node, { version });
+                response => {
+                    if (!node.language) {
+                        throw new Error('Could not find language of node!');
+                    }
+                    const newNode = {
+                        ...node,
+                        availableLanguages: response.availableLanguages,
+                        version: response.availableLanguages[node.language].version
+                    };
                     this.state.actions.editor.publishNodeSuccess(newNode);
                 },
                 error => {
                     this.state.actions.editor.publishNodeError();
+                }
+            );
+    }
+
+    publishNodeLanguage(node: MeshNode): void {
+        if (!node.project.name) {
+            throw new Error('Project name is not available');
+        }
+        if (!node.language) {
+            throw new Error('Language is node available');
+        }
+        this.state.actions.editor.publishNodeStart();
+        this.api.project
+            .publishNodeLanguage({ project: node.project.name, nodeUuid: node.uuid, language: node.language })
+            .pipe(
+                this.notification.rxSuccessNext('editor.node_published', version => ({
+                    version: version.version
+                }))
+            )
+            .subscribe(
+                response => {
+                    if (!node.language) {
+                        throw new Error('Could not find language of node!');
+                    }
+                    const newNode = {
+                        ...node,
+                        availableLanguages: {
+                            ...node.availableLanguages,
+                            [node.language]: response
+                        },
+                        version: response.version
+                    };
+                    this.state.actions.editor.publishNodeSuccess(newNode);
+                },
+                error => {
+                    this.state.actions.editor.publishNodeError();
+                }
+            );
+    }
+
+    unpublishNode(node: MeshNode): void {
+        this.state.actions.editor.unpublishNodeStart();
+        if (!node.project.name) {
+            throw new Error('Project name is not available');
+        }
+
+        this.api.project
+            .unpublishNode({ project: node.project.name, nodeUuid: node.uuid })
+            .switchMap(() =>
+                this.api.project.getNodePublishStatus({
+                    project: node.project.name!,
+                    nodeUuid: node.uuid
+                })
+            )
+            .pipe(this.notification.rxSuccess('editor.node_unpublished'))
+            .subscribe(
+                response => {
+                    if (!node.language) {
+                        throw new Error('Could not find language of node!');
+                    }
+                    const newNode = {
+                        ...node,
+                        ...response
+                    };
+                    this.state.actions.editor.unpublishNodeSuccess(newNode);
+                },
+                error => {
+                    this.state.actions.editor.unpublishNodeError();
+                }
+            );
+    }
+
+    unpublishNodeLanguage(node: MeshNode): void {
+        this.state.actions.editor.unpublishNodeStart();
+        if (!node.project.name) {
+            throw new Error('Project name is not available');
+        }
+        if (!node.language) {
+            throw new Error('Language is node available');
+        }
+        if (!node.availableLanguages[node.language].published) {
+            this.notification.show({
+                message: 'editor.node_already_unpublished'
+            });
+            return;
+        }
+        this.api.project
+            .unpublishNodeLanguage({ project: node.project.name, nodeUuid: node.uuid, language: node.language })
+            .switchMap(() =>
+                this.api.project.getNodePublishStatus({
+                    project: node.project.name!,
+                    nodeUuid: node.uuid
+                })
+            )
+            .pipe(this.notification.rxSuccess('editor.node_unpublished'))
+            .subscribe(
+                response => {
+                    if (!node.language) {
+                        throw new Error('Could not find language of node!');
+                    }
+                    const newNode = {
+                        ...node,
+                        ...response
+                    };
+                    this.state.actions.editor.unpublishNodeSuccess(newNode);
+                },
+                error => {
+                    this.state.actions.editor.unpublishNodeError();
                 }
             );
     }

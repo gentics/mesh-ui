@@ -127,6 +127,9 @@ export class ProjectApi {
     /** Publish the node with the given uuid. */
     publishNode = apiPostWithoutBody('/{project}/nodes/{nodeUuid}/published');
 
+    /** Publish the node content with the given uuid and language */
+    publishNodeLanguage = apiPostWithoutBody('/{project}/nodes/{nodeUuid}/languages/{language}/published');
+
     /**
      * Remove the schema with the given uuid from the project. This will automatically
      * remove all schema versions of the given schema from all branches of the project.
@@ -171,6 +174,14 @@ export class ProjectApi {
 
     /** Unpublish the given node. */
     unpublishNode = apiDelete('/{project}/nodes/{nodeUuid}/published');
+
+    /** Unpublish a language of a node. */
+    unpublishNodeLanguage(params: { project: string; nodeUuid: string; language: string }) {
+        return this.apiBase.delete('/{project}/nodes/{nodeUuid}/languages/{language}/published', params).mapResponses({
+            204: response => true,
+            404: response => false
+        });
+    }
 
     /** Update the binaryfield with the given name. */
     // TODO: This is typed wrong in the RAML.

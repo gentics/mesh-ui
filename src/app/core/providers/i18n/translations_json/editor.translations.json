@@ -39,6 +39,10 @@
       "en": "Create {{language}} version",
       "de": "{{language}} Variante erstellen"
     },
+    "node_already_unpublished": {
+      "en": "The node is already unpublished",
+      "de": "Der Node ist bereits depubliziert"
+    },
     "node_published": {
       "en": "Node successfully published as version {{version}}",
       "de": "Node erfolgreich veröffentlicht als Version {{version}}"
@@ -54,6 +58,14 @@
     "node_save_error": {
       "en": "Node could not be saved",
       "de": "Node könnte nicht gespeichert werden"
+    },
+    "node_unpublished": {
+      "en": "Node unpublished successfully",
+      "de": "Node erfolgreich depubliziert"
+    },
+    "publish_all": {
+      "en": "Publish all languages",
+      "de": "Alle Sprachen veröffentlichen"
     },
     "publish_button": {
       "en": "Publish",
@@ -86,5 +98,13 @@
     "tag_name": {
       "en": "Tag name",
       "de": "Tag hinzufügen"
+    },
+    "unpublish": {
+      "en": "Unpublish",
+      "de": "Depublizieren"
+    },
+    "unpublish_all": {
+      "en": "Unpublish all languages",
+      "de": "Alle Sprachen depublizieren"
     }
   }

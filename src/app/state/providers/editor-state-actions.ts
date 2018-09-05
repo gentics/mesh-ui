@@ -100,4 +100,19 @@ export class EditorStateActions extends StateActionBranch<AppState> {
             node: [node]
         });
     }
+
+    unpublishNodeStart(): void {
+        this.editor.loadCount++;
+    }
+
+    unpublishNodeError(): void {
+        this.editor.loadCount--;
+    }
+
+    unpublishNodeSuccess(node: MeshNode): void {
+        this.editor.loadCount--;
+        this.entities = mergeEntityState(this.entities, {
+            node: [node]
+        });
+    }
 }

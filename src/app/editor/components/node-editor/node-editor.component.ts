@@ -156,9 +156,21 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
     }
 
-    /** Returns true if the node is a draft version i.e. not a whole number version */
+    /** Returns true if the node is a draft version */
     isDraft(): boolean {
-        return !!this.node && !/\.0$/.test(this.node.version);
+        return (
+            !!this.node &&
+            !!this.node.language &&
+            !(
+                this.node.availableLanguages[this.node.language].published &&
+                this.node.availableLanguages[this.node.language].version === this.node.version
+            )
+        );
+    }
+
+    /** Returns true if the node has been published and not been unpublished since */
+    isPublic(): boolean {
+        return !!this.node && !!this.node.language && this.node.availableLanguages[this.node.language].published;
     }
 
     /**
@@ -299,15 +311,38 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Publish the node, and if there are changes, save first before publishing.
      */
     publishNode(): void {
+        this.publish(node => this.editorEffects.publishNode(node));
+    }
+
+    /**
+     * Publish the node content in the current language, and if there are changes, save first before publishing.
+     */
+    publishNodeLanguage(): void {
+        this.publish(node => this.editorEffects.publishNodeLanguage(node));
+    }
+
+    private publish(publishFn: (node: MeshNode) => any) {
         if (this.node && this.tagsBar && this.isDraft()) {
             const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : undefined;
             const promise = this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
 
             promise.then(node => {
                 if (node) {
-                    this.editorEffects.publishNode(node);
+                    publishFn(node);
                 }
             });
+        }
+    }
+
+    unpublishNode(): void {
+        if (this.node) {
+            this.editorEffects.unpublishNode(this.node);
+        }
+    }
+
+    unpublishNodeLanguage(): void {
+        if (this.node) {
+            this.editorEffects.unpublishNodeLanguage(this.node);
         }
     }
 
