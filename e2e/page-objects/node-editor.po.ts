@@ -9,7 +9,7 @@ export class NodeEditor {
 
     async chooseNodeReference(fieldName: string) {
         await this.getFieldElement('mesh-node-field', fieldName)
-            .element(by.buttonText('Browse'))
+            .element(by.css('button'))
             .click();
     }
 

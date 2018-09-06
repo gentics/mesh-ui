@@ -7,7 +7,11 @@ export function getBreadcrumbLinks() {
 }
 
 export function getNodes() {
-    return nodeBrowser().all(by.tagName('gtx-contents-list-item'));
+    return nodeBrowser().all(by.css('gtx-contents-list-item'));
+}
+
+export function getNodesOnlyNames() {
+    return nodeBrowser().all(by.css('gtx-contents-list-item .display'));
 }
 
 export function getNodeLinks() {

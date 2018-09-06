@@ -4,6 +4,7 @@ import { createFolder, createVehicle } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import * as browser from '../page-objects/node-browser.po';
 import { NodeEditor } from '../page-objects/node-editor.po';
+import { NodeField } from '../page-objects/node-field.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 import { temporaryFolder, toText } from '../testUtil';
 
@@ -11,11 +12,13 @@ describe('node browser', () => {
     let page: AppPage;
     let nodeList: MeshNodeList;
     let nodeEditor: NodeEditor;
+    let nodeField: NodeField;
 
     beforeAll(async () => {
         page = new AppPage();
         nodeList = new MeshNodeList();
         nodeEditor = new NodeEditor();
+        nodeField = new NodeField();
     });
 
     describe('demo data', () => {
@@ -41,7 +44,7 @@ describe('node browser', () => {
                 'Trabant',
                 'Koenigsegg CCX'
             ];
-            const nodes = browser.getNodes();
+            const nodes = browser.getNodesOnlyNames();
             expect(await nodes.map(toText)).toEqual(expected);
         });
 
@@ -51,6 +54,9 @@ describe('node browser', () => {
         });
 
         it('can only select one node', async () => {
+            await nodeField.getBreadcrumbLink().click();
+            await nodeField.getFolderButton('Vehicle Images').click();
+
             const checkboxes = browser.getNodes().all(by.tagName('gtx-checkbox'));
             await checkboxes.get(0).click();
             expect(
@@ -122,7 +128,7 @@ describe('node browser', () => {
 
         it('displays results correctly', async () => {
             await browser.search('ford');
-            const result = await browser.getNodes().map(toText);
+            const result = await browser.getNodesOnlyNames().map(toText);
             expect(result[0]).toBe('Ford GT');
             expect(result[1]).toBe('Ford GT Image');
         });
@@ -137,7 +143,7 @@ describe('node browser', () => {
 
             await browser
                 .getNodeLinks()
-                .get(1)
+                .get(0)
                 .click();
 
             expect(
