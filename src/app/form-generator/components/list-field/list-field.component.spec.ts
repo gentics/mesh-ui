@@ -30,6 +30,17 @@ describe('ListFieldComponent', () => {
         instance = fixture.debugElement.query(By.directive(ListFieldComponent)).componentInstance;
     });
 
+    it('does not display the select button when the add button is not clicked', () => {
+        const api = new MockMeshFieldControlApi();
+        api.readOnly = false;
+        instance.init(api);
+        fixture.detectChanges();
+
+        const selectItemButton = fixture.debugElement.query(By.css('.select-item-button'));
+
+        expect(selectItemButton === null).toBe(true);
+    });
+
     it('does not display the add-item-button when in readOnly mode', () => {
         const api = new MockMeshFieldControlApi();
         api.readOnly = true;

@@ -28,13 +28,13 @@ describe('node field', () => {
         await browser.choose();
         await nodeField.clickSave();
 
-        await expect(await nodeField.getPath().getText()).toEqual('demo › Vehicle Images › Space Shuttle Image');
+        await expect(await nodeField.getPath().getText()).toEqual('demo › Vehicle Images › Ford GT Image');
     });
 
     it('should go to the node by clicking on the node name', async () => {
-        await nodeField.clickNodeName();
+        await nodeField.clickNodeName('Ford GT Image');
 
-        await expect(await nodeField.getDisplayName().getText()).toEqual('Space Shuttle Image');
+        await expect(await nodeField.getDisplayName().getText()).toEqual('Ford GT Image');
     });
 
     it('should show the select node reference button if delete button was clicked', async () => {

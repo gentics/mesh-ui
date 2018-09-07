@@ -3,7 +3,7 @@
          *ngIf="api.field.label || api.field.name">
         <label>{{ api.field.label || api.field.name }}</label>
     </div>
-    <div class="item-primary button"
+    <div class="item-primary button select-item-button"
          *ngIf="!userValue">
         <gtx-button flat="true"
                     (click)="selectNode()">

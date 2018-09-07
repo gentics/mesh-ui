@@ -15,8 +15,8 @@ export class NodeField {
             .click();
     }
 
-    async clickNodeName() {
-        await element(by.cssContainingText('.nodeName', 'Space Shuttle Image')).click();
+    async clickNodeName(nodeName: string) {
+        await element(by.cssContainingText('.nodeName', nodeName)).click();
     }
 
     async clickSaveAndClose() {
