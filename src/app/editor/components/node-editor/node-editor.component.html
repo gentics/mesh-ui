@@ -36,17 +36,8 @@
                 </gtx-button>
             </gtx-dropdown-trigger>
             <gtx-dropdown-content>
-                <gtx-dropdown-item (click)="publishNode()">
-                    {{ 'editor.publish_all' | i18n }}
-                </gtx-dropdown-item>
-                <gtx-dropdown-item class="dangerous"
-                                   (click)="unpublishNodeLanguage()">
-                    {{ 'editor.unpublish' | i18n }}
-                </gtx-dropdown-item>
-                <gtx-dropdown-item class="dangerous"
-                                   (click)="unpublishNode()">
-                    {{ 'editor.unpublish_all' | i18n }}
-                </gtx-dropdown-item>
+                <mesh-publish-options [node]="node"
+                                      [beforePublish]="beforePublish"></mesh-publish-options>
             </gtx-dropdown-content>
         </gtx-dropdown-list>
     </div>

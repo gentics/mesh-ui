@@ -155,11 +155,7 @@ export class EditorEffectsService {
         this.state.actions.editor.publishNodeStart();
         this.api.project
             .publishNode({ project: node.project.name, nodeUuid: node.uuid })
-            .pipe(
-                this.notification.rxSuccessNext('editor.node_published', version => ({
-                    version: version.availableLanguages[node.language!].version
-                }))
-            )
+            .pipe(this.notification.rxSuccess('editor.node_published'))
             .subscribe(
                 response => {
                     if (!node.language) {
@@ -189,7 +185,7 @@ export class EditorEffectsService {
         this.api.project
             .publishNodeLanguage({ project: node.project.name, nodeUuid: node.uuid, language: node.language })
             .pipe(
-                this.notification.rxSuccessNext('editor.node_published', version => ({
+                this.notification.rxSuccessNext('editor.node_language_published', version => ({
                     version: version.version
                 }))
             )

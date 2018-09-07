@@ -7,6 +7,7 @@ import { IModalInstance, ModalService } from 'gentics-ui-core';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
+import * as NodeUtil from '../../../common/util/node-util';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
@@ -42,6 +43,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     // TODO: make a fullscreen non-closable dialog for binary files preventing user from navigating away while file is uploading
     // isSaving$: Observable<boolean>;
     isSaving = false;
+    nodeUtil = NodeUtil;
 
     private openNode$: Subscription;
 
@@ -60,7 +62,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private modalService: ModalService,
         private apiBase: ApiBase,
         private api: ApiService
-    ) {}
+    ) {
+        this.beforePublish = this.beforePublish.bind(this);
+    }
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -307,42 +311,19 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             });
     }
 
-    /**
-     * Publish the node, and if there are changes, save first before publishing.
-     */
-    publishNode(): void {
-        this.publish(node => this.editorEffects.publishNode(node));
+    async publishNode() {
+        if (this.node) {
+            await this.beforePublish();
+            this.editorEffects.publishNodeLanguage(this.node);
+        }
     }
 
-    /**
-     * Publish the node content in the current language, and if there are changes, save first before publishing.
-     */
-    publishNodeLanguage(): void {
-        this.publish(node => this.editorEffects.publishNodeLanguage(node));
-    }
-
-    private publish(publishFn: (node: MeshNode) => any) {
-        if (this.node && this.tagsBar && this.isDraft()) {
+    beforePublish() {
+        if (this.node && this.tagsBar) {
             const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : undefined;
-            const promise = this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
-
-            promise.then(node => {
-                if (node) {
-                    publishFn(node);
-                }
-            });
-        }
-    }
-
-    unpublishNode(): void {
-        if (this.node) {
-            this.editorEffects.unpublishNode(this.node);
-        }
-    }
-
-    unpublishNodeLanguage(): void {
-        if (this.node) {
-            this.editorEffects.unpublishNodeLanguage(this.node);
+            return this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
+        } else {
+            return Promise.reject();
         }
     }
 

@@ -44,6 +44,10 @@
       "de": "Der Node ist bereits depubliziert"
     },
     "node_published": {
+      "en": "Node successfully published",
+      "de": "Node erfolgreich veröffentlicht"
+    },
+    "node_language_published": {
       "en": "Node successfully published as version {{version}}",
       "de": "Node erfolgreich veröffentlicht als Version {{version}}"
     },

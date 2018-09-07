@@ -14,6 +14,7 @@ import { NoContentComponent } from './components/no-content/no-content.component
 import { NodeBrowserListComponent } from './components/node-browser/node-browser-list/node-browser-list.component';
 import { NodeBrowserComponent } from './components/node-browser/node-browser.component';
 import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
+import { PublishOptionsComponent } from './components/publish-options/publish-options.component';
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
 import { ScrollFrameHeadingDirective } from './components/scroll-frame/scroll-frame-heading.directive';
 import { ScrollFrameDirective } from './components/scroll-frame/scroll-frame.directive';
@@ -40,7 +41,8 @@ const SHARED_COMPONENTS = [
     FilePreviewComponent,
     PaginationControlsComponent,
     ContentPortalComponent,
-    IconCheckboxComponent
+    IconCheckboxComponent,
+    PublishOptionsComponent
 ];
 
 const ENTRY_COMPONENTS = [NodeBrowserComponent];
