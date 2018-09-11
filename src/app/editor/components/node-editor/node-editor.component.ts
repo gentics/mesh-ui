@@ -323,7 +323,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : undefined;
             return this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
         } else {
-            return Promise.reject();
+            return Promise.reject(undefined);
         }
     }
 

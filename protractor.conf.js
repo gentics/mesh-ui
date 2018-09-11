@@ -14,7 +14,8 @@ exports.config = {
     microschema: 'e2e/tests/node-microschema.e2e-spec.ts',
     nodefield: 'e2e/tests/node-field.e2e-spec.ts',
     nodelistfield: 'e2e/tests/node-list-field.e2e-spec.ts',
-    nodebrowserlist: 'e2e/tests/node-browser-list.e2e-spec.ts'
+    nodebrowserlist: 'e2e/tests/node-browser-list.e2e-spec.ts',
+    nodePublish: 'e2e/tests/node-publish.e2e-spec.ts'
   },
   capabilities: {
     'browserName': 'chrome'

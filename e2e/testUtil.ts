@@ -67,7 +67,7 @@ export function toText(element: ElementFinder | undefined) {
  * There is no other way in protractor to retrieve the text.
  * See https://stackoverflow.com/questions/32479422/how-do-i-get-the-text-of-a-nested-element-in-html-for-automation-using-selenium
  */
-export function getTextNodeText(el: WebElement) {
+export function getTextNodeText(el: WebElement): Promise<string> {
     return browser.executeScript(function(elem: any) {
         const children = elem.childNodes;
         for (let i = 0; i < children.length; i++) {
@@ -79,7 +79,7 @@ export function getTextNodeText(el: WebElement) {
                 }
             }
         }
-    }, el);
+    }, el) as any;
 }
 
 export async function assertNoConsoleErrors() {
@@ -106,4 +106,14 @@ export async function temporaryNodeChanges(uuid: string, body: () => any) {
             version: alteredNode.version
         });
     }
+}
+
+/**
+ * Returns a function that resolves i18n keys to the english translation.
+ * @param filename The filename of the i18n file. (e.g. editor)
+ */
+export function i18n(filename: string) {
+    const translation = require(`../src/app/core/providers/i18n/translations_json/${filename}.translations.json`);
+    console.log(filename, translation);
+    return (key: string) => translation[key].en;
 }

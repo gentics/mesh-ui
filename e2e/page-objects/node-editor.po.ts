@@ -52,4 +52,8 @@ export class NodeEditor {
     save() {
         return this.editor.element(by.css('.editor-header .primary-buttons .save-button')).click();
     }
+
+    publish() {
+        return this.editor.element(by.css('.editor-header .primary-buttons .success')).click();
+    }
 }
