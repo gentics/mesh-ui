@@ -114,6 +114,5 @@ export async function temporaryNodeChanges(uuid: string, body: () => any) {
  */
 export function i18n(filename: string) {
     const translation = require(`../src/app/core/providers/i18n/translations_json/${filename}.translations.json`);
-    console.log(filename, translation);
     return (key: string) => translation[key].en;
 }

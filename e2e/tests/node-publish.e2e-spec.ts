@@ -2,6 +2,7 @@ import { AppPage } from '../page-objects/app.po';
 import * as actions from '../page-objects/node-actions.po';
 import { NodeEditor } from '../page-objects/node-editor.po';
 import { i18n } from '../testUtil';
+import { nodes } from '../uuids';
 
 describe('node publishing', () => {
     let page: AppPage;
@@ -14,8 +15,7 @@ describe('node publishing', () => {
     });
 
     beforeEach(async () => {
-        // Navigate to Aircraft / Gulfstream G550
-        await page.navigateToNodeEdit({ uuid: '7354bf2362e245cf94bf2362e235cf24' });
+        await page.navigateToNodeEdit({ uuid: nodes.Aircraft.GulfstreamG550 });
     });
 
     it('shows only available options when published', async () => {

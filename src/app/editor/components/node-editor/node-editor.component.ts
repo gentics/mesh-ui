@@ -62,9 +62,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private modalService: ModalService,
         private apiBase: ApiBase,
         private api: ApiService
-    ) {
-        this.beforePublish = this.beforePublish.bind(this);
-    }
+    ) {}
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(paramMap => {
@@ -324,14 +322,16 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
     }
 
-    beforePublish() {
+    // This function is used as an input for a component.
+    // To bind this controller to the function, we declare it as a fat arrow function.
+    beforePublish = () => {
         if (this.node && this.tagsBar) {
             const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : undefined;
             return this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
         } else {
             return Promise.reject(undefined);
         }
-    }
+    };
 
     closeEditor(): void {
         this.navigationService.clearDetail().navigate();

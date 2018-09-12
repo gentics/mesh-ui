@@ -10,17 +10,17 @@ export function languagePublished(node: MeshNode, language: string): boolean {
         return false;
     }
     const lang = node.availableLanguages[language];
-    return lang && lang.published;
+    return lang && node.version === lang.version && lang.published;
 }
 
 /**
  * Tests if the node in the current language is published.
  */
 export function currentLanguagePublished(node: MeshNode): boolean {
-    if (!node.language || !node.availableLanguages) {
+    if (!node.language) {
         return false;
     }
-    return node.availableLanguages[node.language].published;
+    return languagePublished(node, node.language);
 }
 
 /**
