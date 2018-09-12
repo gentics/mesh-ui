@@ -10,11 +10,11 @@ describe('node publishing', () => {
     beforeAll(async () => {
         page = new AppPage();
         editor = new NodeEditor();
-        // Navigate to Gulfstream G550
         await page.navigateToHome();
     });
 
     beforeEach(async () => {
+        // Navigate to Aircraft / Gulfstream G550
         await page.navigateToNodeEdit({ uuid: '7354bf2362e245cf94bf2362e235cf24' });
     });
 
