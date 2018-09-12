@@ -1,5 +1,5 @@
 import { AppPage } from '../page-objects/app.po';
-import { ListField } from '../page-objects/list-field.po';
+import { ListField } from '../page-objects/node-list-field.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 
 describe('list field', () => {
@@ -19,6 +19,6 @@ describe('list field', () => {
     it('should show select button by clicking on add button', async () => {
         await listField.clickAddReference();
 
-        await expect(await listField.getSelectButton()).toBeDefined();
+        expect(await listField.getSelectButton().isPresent()).toBe(true);
     });
 });

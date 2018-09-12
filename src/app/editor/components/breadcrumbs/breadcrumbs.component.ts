@@ -32,6 +32,10 @@ export class BreadcrumbsComponent implements OnInit, AfterViewChecked {
         });
     }
 
+    /**
+     * This is here to avoid Error: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked.
+     * If we make this after view was checked, there is no such error.
+     */
     ngAfterViewChecked() {
         this.routerLinks$ = this.state.select(state => state.list).map(({ currentNode, language }) => {
             let node: MeshNode | undefined;

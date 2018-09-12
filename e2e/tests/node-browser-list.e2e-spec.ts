@@ -1,6 +1,8 @@
-import { by, element } from '../../node_modules/protractor';
+import { by, element } from 'protractor';
+
 import { AppPage } from '../page-objects/app.po';
 import { NodeBrowserList } from '../page-objects/node-browser-list.po';
+import * as browser from '../page-objects/node-browser.po';
 import { NodeField } from '../page-objects/node-field.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 
@@ -21,7 +23,7 @@ describe('node browser list', () => {
     });
 
     it('should show checkbox if it is checked', async () => {
-        await nodeField.clickSelect(3);
+        await browser.select();
         await nodeField.getBreadcrumbLink().click();
         await nodeField.getFolderButton('Vehicle Images').click();
         await nodeBrowserList.clickFirstCheckbox();

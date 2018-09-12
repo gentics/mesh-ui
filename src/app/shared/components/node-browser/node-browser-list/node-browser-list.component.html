@@ -1,16 +1,16 @@
 <ng-container *ngFor="let item of items">
     <gtx-contents-list-item>
-        <div *ngIf="selectable(item)"
-             class="icon-checkbox-wrapper">
-            <gtx-checkbox *ngIf="selectable(item)"
-                          [checked]="!!selection[item.uuid]"
-                          [ngClass]="{'checked': !!selection[item.uuid] }"
-                          (change)="handleSelect(item, $event)"></gtx-checkbox>
-            <icon class="hover"
-                  *ngIf="item.isContainer">folder</icon>
-            <icon class="hover"
-                  *ngIf="!item.isContainer">insert_drive_file</icon>
-        </div>
+        <mesh-icon-checkbox *ngIf="selectable(item) && item.isContainer"
+                            icon="folder"
+                            [selected]="!!selection[item.uuid]"
+                            (change)="handleSelect(item, $event)">
+        </mesh-icon-checkbox>
+
+        <mesh-icon-checkbox *ngIf="selectable(item) && !item.isContainer"
+                            icon="insert_drive_file"
+                            [selected]="!!selection[item.uuid]"
+                            (change)="handleSelect(item, $event)">
+        </mesh-icon-checkbox>
 
         <div *ngIf="!selectable(item)"
              class="icons">
@@ -18,7 +18,7 @@
             <icon *ngIf="!item.isContainer">insert_drive_file</icon>
         </div>
 
-        <div class="display">
+        <div class="item-primary displayName">
             <a *ngIf="item.isContainer"
                (click)="containerClicked.emit(item)"
                class="node-browser-container">

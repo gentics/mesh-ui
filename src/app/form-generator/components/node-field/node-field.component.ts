@@ -7,7 +7,7 @@ import { EditorEffectsService } from '../../../editor/providers/editor-effects.s
 import { PageResult } from '../../../shared/components/node-browser/interfaces';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
-import { BaseFieldComponent } from '../base-field/base-field.component';
+import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
 @Component({
     selector: 'mesh-node-field',
@@ -42,6 +42,13 @@ export class NodeFieldComponent extends BaseFieldComponent {
         this.node = this.api.getNodeValue() as MeshNode;
 
         this.valueChange(api.getValue());
+    }
+
+    valueChange(value: NodeField): void {
+        this.userValue = (value && value.uuid) || '';
+        this.routerLink = this.navigationService
+            .detail(this.node.project.name!, this.userValue!, this.node.language)
+            .commands();
 
         if (this.userValue) {
             const node$ = this.entities.selectNode(this.userValue!, { language: this.node.language });
@@ -51,14 +58,11 @@ export class NodeFieldComponent extends BaseFieldComponent {
                 this.isContainer = node.container;
                 this.displayName = node.displayName!;
                 this.breadcrumbPath = node.project.name + node.breadcrumb.map(b => b.displayName).join(' › ');
+                this.changeDetector.detectChanges();
             });
 
             this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
         }
-    }
-
-    valueChange(value: NodeField): void {
-        this.userValue = (value && value.uuid) || '';
     }
 
     isValidUuid(): boolean {
@@ -82,51 +86,29 @@ export class NodeFieldComponent extends BaseFieldComponent {
                 selectablePredicate: node => {
                     if (allowedSchemas) {
                         return allowedSchemas.indexOf(node.schema.name) > -1;
+                    } else {
+                        return true;
                     }
                 }
             })
-            .then((results: PageResult[]) => {
-                this.userValue = results[0].uuid;
+            .then(uuids => {
+                this.userValue = uuids[0];
+                this.api.setValue({
+                    uuid: this.userValue
+                });
 
-                if (this.userValue) {
-                    const node$ = this.entities.selectNode(this.userValue!, { language: this.node.language });
-
-                    node$.subscribe(node => {
-                        this.schemaName = node.schema.name;
-                        this.isContainer = node.container;
-                        this.displayName = node.displayName!;
-                        this.breadcrumbPath = node.project.name + node.breadcrumb.map(b => b.displayName).join(' › ');
-                        this.api.setValue({
-                            uuid: node.uuid
-                        });
-                        this.changeDetector.detectChanges();
-                    });
-
-                    this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
-                }
                 this.changeDetector.detectChanges();
             });
-    }
-
-    editNode(): void {
-        this.node = this.api.getNodeValue() as MeshNode;
-
-        if (this.isContainer) {
-            this.routerLink = this.navigationService
-                .list(this.node.project.name!, this.userValue!, this.node.language)
-                .commands();
-        } else {
-            this.routerLink = this.navigationService
-                .detail(this.node.project.name!, this.userValue!, this.node.language)
-                .commands();
-        }
-
-        this.navigationService.detail(this.node.project.name!, this.userValue!, this.node.language).navigate();
     }
 
     removeNode(): void {
         this.userValue = '';
 
         this.api.setValue(null);
+    }
+
+    formWidthChange(width: number): void {
+        this.setWidth(FIELD_FULL_WIDTH);
+        this.isCompact = width <= SMALL_SCREEN_LIMIT;
     }
 }

@@ -14,55 +14,18 @@ gtx-contents-list-item {
   cursor: pointer;
 }
 
-.icon-checkbox-wrapper gtx-checkbox {
-  position: absolute;
-  opacity: 0;
-  margin-left: 0.2%;
-  margin-top: 0.3%;
+mesh-icon-checkbox {
+  margin-right: 5px;
+  margin-bottom: 3px;
 }
 
-.icons {
-  margin-right: 1%;
-}
-
-.icon-checkbox-wrapper {
-  margin-right: 1%;
-}
-
-.hover {
-  opacity: 1;
-  visibility: visible;
-}
-
-gtx-contents-list-item:hover .hover {
-  opacity: 0;
-  visibility: hidden;
-  transition:opacity 0.1s linear;
-}
-
-gtx-contents-list-item:hover gtx-checkbox {
-  opacity: 1;
-  transition:opacity 0.1s linear;
-}
-
-gtx-checkbox.checked {
-  opacity: 1 !important;
-}
-
-gtx-checkbox.checked + .hover {
-  opacity: 0 !important;
-}
-
-.schemaName icon {
-  margin-right: 5%;
-}
-
-.schemaName
-{
-  position: absolute;
-  left: 70%;
+.schemaName {
   display: flex;
-}
+  width: 120px;
+  icon {
+    margin-right: 1px;
+  }
+} 
 
 .no-results {
   font-size: $gtx-font-size-lead;

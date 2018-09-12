@@ -1,46 +1,33 @@
-<gtx-contents-list-item>
-    <div class="title"
-         *ngIf="api.field.label || api.field.name">
-        <label>{{ api.field.label || api.field.name }}</label>
-    </div>
-    <div class="item-primary button select-item-button"
-         *ngIf="!userValue">
-        <gtx-button flat="true"
-                    (click)="selectNode()">
-            <icon left>search</icon>
-            Select Node Reference
-        </gtx-button>
-    </div>
+<label *ngIf="api.field.label || api.field.name">{{ api.field.label || api.field.name }}</label>
+
+<div class="editor-container">
+    <gtx-button class="select-item-button"
+                *ngIf="!userValue"
+                flat="true"
+                (click)="selectNode()">
+        <icon left>search</icon>
+        Select Node Reference
+    </gtx-button>
+
     <div *ngIf="userValue"
          class="icon">
-
-        <mesh-thumbnail [nodeUuid]="userValue"
-                        *ngIf="!isContainer">
+        <mesh-thumbnail [nodeUuid]="userValue">
         </mesh-thumbnail>
+    </div>
 
-        <icon *ngIf="isContainer">folder</icon>
-    </div>
-    <div class="item-primary"
+    <div class="fullInfo"
          *ngIf="userValue">
-        <ul>
-            <li class="schemaName">
-                <span class="innerSchemaName">
-                    <icon>view_quilt</icon>
-                    <div>{{ schemaName }}</div>
-                </span>
-            </li>
-            <li>
-                <a class="nodeName"
-                   [routerLink]="routerLink"
-                   (click)="editNode()">{{ displayName }}</a>
-            </li>
-            <li>
-                <label class="path">{{ breadcrumbPath }}</label>
-            </li>
-        </ul>
+        <div class="schemaName">
+            <span class="innerSchemaName">
+                <icon>view_quilt</icon>
+                <div>{{ schemaName }}</div>
+            </span>
+        </div>
+        <a class="nodeName"
+           [routerLink]="routerLink">{{ displayName }}</a>
+        <div class="path">{{ breadcrumbPath }}</div>
     </div>
-    <!-- TODO: re-enable the mesh-thumbnail once we have wired up real data -->
-    <!--<mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>-->
+
     <div class="show-on-hover"
          *ngIf="userValue">
         <gtx-button *ngIf="!api.readOnly"
@@ -55,4 +42,4 @@
             <icon left>clear</icon>
         </gtx-button>
     </div>
-</gtx-contents-list-item>
+</div>

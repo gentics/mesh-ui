@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<div class="list-container"
+<div class="editor-container"
      [class.updating]="updating"
      [class.dragging]="dragging"
      [style.height]="listHeight">
@@ -70,7 +70,7 @@
             </div>
         </gtx-sortable-item>
     </gtx-sortable-list>
-    <div class="item-primary button"
+    <div class="add-button"
          *ngIf="field.listType !== 'micronode'">
         <gtx-button flat="true"
                     (click)="addItem()">

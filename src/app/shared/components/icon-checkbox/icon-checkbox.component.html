@@ -1,0 +1,12 @@
+<div class="icon-checkbox-wrapper"
+     [class.checked]="selected"
+     [class.disabled]="disabled">
+    <div class="item-icon">
+        <i class="material-icons">{{ icon }}</i>
+    </div>
+    <div class="item-checkbox"
+         *ngIf="!disabled">
+        <gtx-checkbox [checked]="selected"
+                      (change)="checkboxClicked($event)"></gtx-checkbox>
+    </div>
+</div>

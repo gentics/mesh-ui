@@ -38,7 +38,7 @@ describe('ListFieldComponent', () => {
 
         const selectItemButton = fixture.debugElement.query(By.css('.select-item-button'));
 
-        expect(selectItemButton === null).toBe(true);
+        expect(selectItemButton).toBe(null);
     });
 
     it('does not display the add-item-button when in readOnly mode', () => {
@@ -49,7 +49,7 @@ describe('ListFieldComponent', () => {
 
         const addItemButton = fixture.debugElement.query(By.css('.add-item-button'));
 
-        expect(addItemButton === null).toBe(true);
+        expect(addItemButton).toBe(null);
     });
 
     it('does not display the remove area when in readOnly mode', () => {
@@ -60,7 +60,7 @@ describe('ListFieldComponent', () => {
 
         const addItemButton = fixture.debugElement.query(By.css('.remove-area-wrapper'));
 
-        expect(addItemButton === null).toBe(true);
+        expect(addItemButton).toBe(null);
     });
 
     it('the sortable list is disabled in readOnly mode', () => {

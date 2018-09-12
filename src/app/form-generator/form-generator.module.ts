@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { GenticsUIImageEditorModule } from 'gentics-ui-image-editor';
 
-import { RouterModule } from '../../../node_modules/@angular/router';
 import { SharedModule } from '../shared/shared.module';
 
 import { BaseFieldComponent } from './components/base-field/base-field.component';

@@ -40,6 +40,9 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         width?: string | null;
     };
 
+    isContainer$: Observable<boolean>;
+    isContainer: boolean;
+
     private subscription: Subscription;
 
     constructor(private changeDetector: ChangeDetectorRef, private entities: EntitiesService) {}
@@ -54,6 +57,12 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
             // Does not emit node if it was not found
             .filter(node => !!node);
         const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid!));
+
+        this.isContainer$ = node$.map(node => node.container);
+
+        this.isContainer$.subscribe(isContainer => {
+            this.isContainer = isContainer;
+        });
 
         this.subscription = Observable.combineLatest(node$, schema$)
             .map(value => this.getBinaryProperties(value))

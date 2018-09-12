@@ -11,7 +11,9 @@
           font-size="10px"
           text-anchor="middle">{{ binaryProperties.extension }}</text>
 </svg>
-<icon *ngIf="binaryProperties.type === 'noBinary' 
-            && nodeUuid 
-            && nodeUuid.length == 32">insert_drive_file</icon>
-<!-- TODO maybe display something when node has no binary field -->
+<ng-container *ngIf="binaryProperties.type === 'noBinary' 
+                  && nodeUuid 
+                  && nodeUuid.length == 32">
+    <icon *ngIf="!isContainer">insert_drive_file</icon>
+    <icon *ngIf="isContainer">folder</icon>
+</ng-container>

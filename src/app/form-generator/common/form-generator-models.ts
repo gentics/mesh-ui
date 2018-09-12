@@ -110,5 +110,5 @@ export interface MeshFieldControlApi {
      * Opens the node browser. Returns a promise that resolves with the uuids of the chosen
      * nodes when the user has closed the dialog.
      */
-    openNodeBrowser(options: NodeBrowserOptions): Promise<PageResult[] | string[]>;
+    openNodeBrowser(options: NodeBrowserOptions): Promise<string[]>;
 }

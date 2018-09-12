@@ -3,7 +3,6 @@ import { by } from 'protractor';
 import { createFolder, createVehicle } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import * as browser from '../page-objects/node-browser.po';
-import { NodeEditor } from '../page-objects/node-editor.po';
 import { NodeField } from '../page-objects/node-field.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 import { temporaryFolder, toText } from '../testUtil';
@@ -11,13 +10,11 @@ import { temporaryFolder, toText } from '../testUtil';
 describe('node browser', () => {
     let page: AppPage;
     let nodeList: MeshNodeList;
-    let nodeEditor: NodeEditor;
     let nodeField: NodeField;
 
     beforeAll(async () => {
         page = new AppPage();
         nodeList = new MeshNodeList();
-        nodeEditor = new NodeEditor();
         nodeField = new NodeField();
     });
 
@@ -26,7 +23,7 @@ describe('node browser', () => {
             await page.navigateToHome();
             await nodeList.openFolder('Automobiles');
             await nodeList.editNode('Ford GT');
-            await nodeEditor.chooseNodeReference('Vehicle Image');
+            await nodeField.clickBrowse();
         });
 
         it('shows breadcrumbs of current folder', async () => {
@@ -54,8 +51,11 @@ describe('node browser', () => {
         });
 
         it('can only select one node', async () => {
-            await nodeField.getBreadcrumbLink().click();
-            await nodeField.getFolderButton('Vehicle Images').click();
+            await browser
+                .getBreadcrumbLinks()
+                .get(0)
+                .click();
+            await browser.openFolder('Vehicle Images');
 
             const checkboxes = browser.getNodes().all(by.tagName('gtx-checkbox'));
             await checkboxes.get(0).click();
@@ -89,7 +89,7 @@ describe('node browser', () => {
                 await createFolder(context.folder, `test${i}`);
             }
             await page.navigateToNodeEdit(vehicle);
-            await nodeEditor.chooseNodeReference('Vehicle Image');
+            await nodeField.clickBrowse();
         });
 
         it('shows 10 items per page', async () => {
@@ -123,7 +123,7 @@ describe('node browser', () => {
             await page.navigateToHome();
             await nodeList.openFolder('Automobiles');
             await nodeList.editNode('Ford GT');
-            await nodeEditor.chooseNodeReference('Vehicle Image');
+            await nodeField.clickBrowse();
         });
 
         it('displays results correctly', async () => {

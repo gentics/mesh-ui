@@ -40,6 +40,10 @@ export class NodeEditor {
             .element(by.css('.ql-remove'));
     }
 
+    async clickSaveAndClose() {
+        await element(by.cssContainingText('button', 'Save and close')).click();
+    }
+
     save() {
         return this.editor.element(by.css('.editor-header .primary-buttons .save-button')).click();
     }

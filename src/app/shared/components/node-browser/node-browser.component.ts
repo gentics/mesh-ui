@@ -29,9 +29,6 @@ query ($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
           schema {
             name
           }
-          breadcrumb {
-            path
-          }
           displayName
           isContainer
         }
@@ -52,9 +49,6 @@ query($query: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
         elements {
             schema {
               name
-            }
-            breadcrumb {
-              path
             }
             uuid
             displayName
@@ -232,7 +226,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
         if (this.options.chooseContainer) {
             this.currentNode$.take(1).subscribe(uuid => this.closeFn([uuid]));
         } else {
-            this.closeFn(this.selected);
+            this.closeFn(this.selected.map(item => item.uuid));
         }
     }
 

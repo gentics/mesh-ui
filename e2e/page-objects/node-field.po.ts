@@ -2,41 +2,15 @@ import { by, element } from 'protractor';
 
 export class NodeField {
     async clickBrowse() {
-        await element
-            .all(by.css('.right-panel .show-on-hover gtx-button'))
-            .first()
-            .click();
+        await element(by.buttonText('search')).click();
     }
 
     async clickDelete() {
-        await element
-            .all(by.css('.right-panel .show-on-hover gtx-button'))
-            .get(1)
-            .click();
+        await element(by.buttonText('clear')).click();
     }
 
     async clickNodeName(nodeName: string) {
         await element(by.cssContainingText('.nodeName', nodeName)).click();
-    }
-
-    async clickSaveAndClose() {
-        await element(by.cssContainingText('button', 'Save and close')).click();
-    }
-
-    async clickSave() {
-        await element(by.cssContainingText('.primary-buttons button', 'Save')).click();
-    }
-
-    async clickSelect(number: number) {
-        await element
-            .all(by.css('gtx-contents-list-item'))
-            .get(number)
-            .element(by.css('button'))
-            .click();
-    }
-
-    getBreadcrumbLink() {
-        return element.all(by.css('a.breadcrumb')).get(2);
     }
 
     getDisplayName() {
@@ -44,21 +18,14 @@ export class NodeField {
     }
 
     getIcon() {
-        return element
-            .all(by.css('gtx-contents-list-item'))
-            .get(4)
-            .element(by.css('icon'));
+        return element(by.css('mesh-thumbnail icon'));
     }
 
     getSelectButton() {
-        return element(by.cssContainingText('gtx-contents-list-item gtx-button', 'Select Node Reference'));
-    }
-
-    getFolderButton(folderName: string) {
-        return element(by.cssContainingText('.node-browser-container', folderName));
+        return element.all(by.css('.select-item-button'));
     }
 
     getPath() {
-        return element.all(by.css('label.path')).get(0);
+        return element.all(by.css('.path')).get(1);
     }
 }

@@ -1,0 +1,58 @@
+@import "variables";
+
+.icon-checkbox-wrapper {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
+
+    .item-checkbox,
+    .item-icon {
+        position: absolute;
+        transition: opacity 0.2s;
+        will-change: opacity;
+    }
+
+    .item-checkbox {
+        opacity: 0.001;
+        top: 2px;
+        left: 3px;
+    }
+
+    .item-icon {
+        opacity: 1;
+    }
+
+    &.checked,
+    &:hover:not(.disabled) {
+        .item-checkbox {
+            opacity: 1;
+        }
+        .item-icon {
+            opacity: 0.001;
+        }
+    }
+
+    .checked:not(:hover) {
+        .item-checkbox,
+        .item-icon {
+            transition-duration: 0s;
+        }
+    }
+
+    &.disabled {
+        color: $gtx-color-mid-gray;
+        cursor: default;
+    }
+}
+
+.datatable-row-group {
+    &:hover :host .icon-checkbox-wrapper:not(.disabled) {
+        .item-checkbox {
+            opacity: 1;
+        }
+        .item-icon {
+            opacity: 0.001;
+        }
+    }
+}

@@ -10,58 +10,48 @@
     &.compact {
         flex-direction: column;
 
-        label {
-            @include label-style-compact;
-        }
-
-        .uuid-form {
-            width: $full-width;
+        .label-container .floating-label {
+            flex-direction: row;
+            align-items: center;
+            label {
+                @include label-style-compact;
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
         }
     }
 }
 
-a {
-    cursor: pointer;
+.fullInfo {
+    flex: 1 1 auto;
 }
 
-.path {
-    cursor: default !important;
+.editor-container {
+    width: $full-width-right;
+    margin-top: 20px;
+    transition: width 0.2s;
+    display: flex;
+}
+
+.icon {
+    margin-right: 15px;
 }
 
 label {
     @include label-style-full;
 }
 
-.uuid-form {
-    width: $half-width-right;
+.node-field-inner {
     display: flex;
-    align-items: center;
-    transition: width 0.2s;
-}
-
-.form {
-    display: flex;
-    right: 0;
-}
-
-gtx-contents-list-item {
-    width: 100%;
-    border: none;
-}
-
-.title {
-    width: 150px;
-    margin-left: -1%;
 }
 
 .schemaName {
     font-size: 12px;
     display: flex;
-}
 
-.schemaName icon {
-    font-size: 20px;
-    margin-right: 0.5%;
+    icon {
+        font-size: 20px;
+    }
 }
 
 .innerSchemaName {
@@ -75,10 +65,6 @@ gtx-contents-list-item {
 }
 
 .path {
-    padding: 1px;
-    font-size: 13px !important;
-}
-
-.button gtx-button, .icon {
-    margin-left: 6%;
+    color: #79797d;
+    font-size: 13px;
 }

@@ -77,7 +77,7 @@ describe('node editor', () => {
                     await editor.save();
                     const node = await api.findNodeByUuid(uuid);
                     expect(node.fields.description).toEqual(
-                        `The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.`
+                        `<p>The Embraer Legacy 600 is a <a class="mesh-link" href="{{mesh.link('f915b16fa68f40e395b16fa68f10e32d')}}">business</a> jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>`
                     );
                 });
             });
