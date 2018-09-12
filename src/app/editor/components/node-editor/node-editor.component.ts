@@ -165,6 +165,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         return (
             !!this.node &&
             !!this.node.language &&
+            !!this.node.availableLanguages &&
             !(
                 this.node.availableLanguages[this.node.language].published &&
                 this.node.availableLanguages[this.node.language].version === this.node.version
@@ -174,7 +175,12 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     /** Returns true if the node has been published and not been unpublished since */
     isPublic(): boolean {
-        return !!this.node && !!this.node.language && this.node.availableLanguages[this.node.language].published;
+        return (
+            !!this.node &&
+            !!this.node.language &&
+            !!this.node.availableLanguages &&
+            this.node.availableLanguages[this.node.language].published
+        );
     }
 
     /**

@@ -24,7 +24,9 @@ import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock'
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
+import { PublishOptionsComponent } from '../../../shared/components/publish-options/publish-options.component';
 import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
+import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -52,7 +54,8 @@ describe('NodeEditorComponent', () => {
                 NodeLanguageLabelComponent,
                 MockLanguageSwitcherComponent,
                 MockNodeTagsBarComponent,
-                MockFormGeneratorComponent
+                MockFormGeneratorComponent,
+                PublishOptionsComponent
             ],
             providers: [
                 EntitiesService,
@@ -108,8 +111,8 @@ describe('NodeEditorComponent', () => {
                 editor: {
                     openNode: {
                         schemaUuid: 'uuid1',
-                        uuid: '',
-                        projectName: '',
+                        uuid: 'nodeuuid',
+                        projectName: 'demo',
                         language: 'en',
                         parentNodeUuid: 'uuid_parentNode'
                     }
@@ -119,6 +122,10 @@ describe('NodeEditorComponent', () => {
                         uuid1: mockSchema({ uuid: 'uuid1', version: '0.1' })
                     },
                     node: {
+                        nodeuuid: mockMeshNode({
+                            uuid: 'nodeuuid',
+                            project: { name: 'demo', uuid: 'demo_uuid' }
+                        }),
                         uuid_parentNode: mockMeshNode({
                             uuid: 'uuid_parentNode',
                             project: { name: 'demo', uuid: 'demo_uuid' }
