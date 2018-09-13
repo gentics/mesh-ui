@@ -94,6 +94,9 @@ describe('node field', () => {
 
             const node = await api.findNodeByUuid(uuid);
             expect(node.displayName).toEqual('Space Shuttle Image');
+
+            await nodeField.clickDelete();
+            await nodeEditor.save();
         });
     });
 });

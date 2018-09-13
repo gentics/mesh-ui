@@ -11,7 +11,7 @@ export function getNodes() {
 }
 
 export function getNodesOnlyNames() {
-    return nodeBrowser().all(by.css('gtx-contents-list-item .display'));
+    return nodeBrowser().all(by.css('gtx-contents-list-item .displayName'));
 }
 
 export function getNodeLinks() {

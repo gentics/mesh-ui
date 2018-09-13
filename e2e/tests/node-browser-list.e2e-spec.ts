@@ -23,9 +23,15 @@ describe('node browser list', () => {
     });
 
     it('should show checkbox if it is checked', async () => {
-        await browser.select();
-        await nodeField.getBreadcrumbLink().click();
-        await nodeField.getFolderButton('Vehicle Images').click();
+        await nodeField
+            .getSelectButton()
+            .get(0)
+            .click();
+        await browser
+            .getBreadcrumbLinks()
+            .get(0)
+            .click();
+        await browser.openFolder('Vehicle Images');
         await nodeBrowserList.clickFirstCheckbox();
 
         await expect(

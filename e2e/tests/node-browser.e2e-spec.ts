@@ -89,7 +89,10 @@ describe('node browser', () => {
                 await createFolder(context.folder, `test${i}`);
             }
             await page.navigateToNodeEdit(vehicle);
-            await nodeField.clickBrowse();
+            await nodeField
+                .getSelectButton()
+                .get(0)
+                .click();
         });
 
         it('shows 10 items per page', async () => {

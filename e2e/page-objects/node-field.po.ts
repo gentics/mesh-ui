@@ -2,11 +2,15 @@ import { by, element } from 'protractor';
 
 export class NodeField {
     async clickBrowse() {
-        await element(by.buttonText('search')).click();
+        await element(by.css('.right-panel'))
+            .element(by.buttonText('search'))
+            .click();
     }
 
     async clickDelete() {
-        await element(by.buttonText('clear')).click();
+        await element(by.css('.right-panel'))
+            .element(by.buttonText('clear'))
+            .click();
     }
 
     async clickNodeName(nodeName: string) {

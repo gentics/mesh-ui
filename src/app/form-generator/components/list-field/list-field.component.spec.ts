@@ -38,7 +38,7 @@ describe('ListFieldComponent', () => {
 
         const selectItemButton = fixture.debugElement.query(By.css('.select-item-button'));
 
-        expect(selectItemButton).toBe(null);
+        expect(selectItemButton).toBeNull();
     });
 
     it('does not display the add-item-button when in readOnly mode', () => {
@@ -49,7 +49,7 @@ describe('ListFieldComponent', () => {
 
         const addItemButton = fixture.debugElement.query(By.css('.add-item-button'));
 
-        expect(addItemButton).toBe(null);
+        expect(addItemButton).toBeNull();
     });
 
     it('does not display the remove area when in readOnly mode', () => {
@@ -60,7 +60,7 @@ describe('ListFieldComponent', () => {
 
         const addItemButton = fixture.debugElement.query(By.css('.remove-area-wrapper'));
 
-        expect(addItemButton).toBe(null);
+        expect(addItemButton).toBeNull();
     });
 
     it('the sortable list is disabled in readOnly mode', () => {
@@ -69,7 +69,7 @@ describe('ListFieldComponent', () => {
         instance.init(api);
         fixture.detectChanges();
 
-        const sortableList: SortableList = fixture.debugElement.query(By.css('.list-container gtx-sortable-list'))
+        const sortableList: SortableList = fixture.debugElement.query(By.css('.editor-container gtx-sortable-list'))
             .componentInstance;
 
         expect(sortableList.disabled).toBe(true);

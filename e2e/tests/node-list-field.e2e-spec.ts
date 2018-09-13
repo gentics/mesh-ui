@@ -2,7 +2,7 @@ import { AppPage } from '../page-objects/app.po';
 import { ListField } from '../page-objects/node-list-field.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 
-describe('list field', () => {
+describe('node list field', () => {
     let page: AppPage;
     let listField: ListField;
     let nodeList: MeshNodeList;
