@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { IBreadcrumbLink, IModalDialog } from 'gentics-ui-core';
+import esGqlQuery = require('raw-loader!./es-query.gql');
+import gqlQuery = require('raw-loader!./query.gql');
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -16,46 +18,6 @@ interface QueryParams {
     esQuery?: string;
     page: number;
 }
-
-const gqlQuery = `
-query ($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
-    node(uuid: $parent) {
-      uuid
-      nodes: children(filter: $filter, perPage: $perPage, page: $page) {
-        totalCount
-        pageCount
-        elements {
-          uuid
-          schema {
-            name
-          }
-          displayName
-          isContainer
-        }
-      }
-      breadcrumb {
-        uuid
-        text: displayName
-      }
-    }
-  }
-  `;
-
-const esGqlQuery = `
-query($query: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
-	nodes(query: $query, filter: $filter, perPage: $perPage, page: $page) {
-        totalCount
-        pageCount
-        elements {
-            schema {
-              name
-            }
-            uuid
-            displayName
-            isContainer
-        }
-	}
-}`;
 
 /**
  * A browser that allows selecting nodes.
