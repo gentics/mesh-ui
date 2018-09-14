@@ -248,6 +248,7 @@ describe('BinaryFieldComponent:', () => {
                         project: string,
                         nodeUuid: string,
                         name: string,
+                        language: string,
                         version?: string,
                         params: ImageTransformQueryParams = {}
                     ) => {
@@ -255,6 +256,7 @@ describe('BinaryFieldComponent:', () => {
                             project,
                             nodeUuid,
                             name,
+                            lang: language,
                             version,
                             ...params
                         });

@@ -2,6 +2,7 @@ import { by, element } from 'protractor';
 
 import { getTextNodeText } from '../testUtil';
 
+import { BinaryField } from './binary-field.po';
 import { HtmlField } from './html-field.po';
 
 export class NodeEditor {
@@ -27,6 +28,10 @@ export class NodeEditor {
 
     getHtmlField(fieldName: string) {
         return new HtmlField(this.getFieldElement('mesh-html-field', fieldName));
+    }
+
+    getBinaryField(fieldName: string) {
+        return new BinaryField(this.getFieldElement('mesh-binary-field', fieldName));
     }
 
     getDescription() {

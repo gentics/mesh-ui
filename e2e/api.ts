@@ -59,6 +59,19 @@ export function createVehicle(parent: HasUuid, name: string): Promise<MeshNode> 
     });
 }
 
+export function createVehicleImage(parent: HasUuid, name: string, language = 'en'): Promise<MeshNode> {
+    return post(`/${project}/nodes`, {
+        schema: {
+            name: 'vehicleImage'
+        },
+        language,
+        parentNodeUuid: parent.uuid,
+        fields: {
+            name
+        }
+    });
+}
+
 export function createSchema(schemaName: string): any {
     return post(`/schemas`, {
         container: true,

@@ -19,7 +19,7 @@ export class AppPage {
         await browser.waitForAngular();
     }
 
-    async navigateToNodeEdit(node: HasUuid) {
-        await browser.get(`/#/editor/project/(detail:demo/${node.uuid}/en)`);
+    async navigateToNodeEdit(node: HasUuid, language = 'en') {
+        await browser.get(`/#/editor/project/(detail:demo/${node.uuid}/${language})`);
     }
 }

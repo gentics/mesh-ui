@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { browser, ElementFinder, WebElement } from 'protractor';
 import * as uuid from 'uuid-random';
 
@@ -5,6 +6,13 @@ import { MeshNode } from '../src/app/common/models/node.model';
 import { Project } from '../src/app/common/models/project.model';
 
 import { createFolder, deleteNode, findNodeByUuid, getProject, updateNode } from './api';
+
+/**
+ * Contains paths of test files
+ */
+export const files = {
+    squirrel: path.join(__dirname, 'files', 'squirrel.jpg')
+};
 
 /**
  * Creates a temporary folder in the root node of the project.
