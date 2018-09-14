@@ -9,6 +9,7 @@ import { AudioPlayButtonComponent } from './components/audio-play-button/audio-p
 import { ChipComponent } from './components/chip/chip.component';
 import { ContentPortalComponent } from './components/content-portal/content-portal.component';
 import { FilePreviewComponent } from './components/file-preview/file-preview.component';
+import { IconCheckboxComponent } from './components/icon-checkbox/icon-checkbox.component';
 import { NoContentComponent } from './components/no-content/no-content.component';
 import { NodeBrowserListComponent } from './components/node-browser/node-browser-list/node-browser-list.component';
 import { NodeBrowserComponent } from './components/node-browser/node-browser.component';
@@ -38,7 +39,8 @@ const SHARED_COMPONENTS = [
     AudioPlayButtonComponent,
     FilePreviewComponent,
     PaginationControlsComponent,
-    ContentPortalComponent
+    ContentPortalComponent,
+    IconCheckboxComponent
 ];
 
 const ENTRY_COMPONENTS = [NodeBrowserComponent];

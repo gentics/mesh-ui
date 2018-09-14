@@ -31,4 +31,12 @@ export interface PageResult {
     uuid: string;
     displayName: string;
     isContainer: boolean;
+    schema: {
+        name: string;
+    };
+    breadcrumb: [
+        {
+            path: string;
+        }
+    ];
 }

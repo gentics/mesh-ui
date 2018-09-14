@@ -1,7 +1,7 @@
 import { MeshNode, NodeFieldType } from '../../common/models/node.model';
 import { SchemaField } from '../../common/models/schema.model';
 import { UILanguage } from '../../core/providers/i18n/i18n.service';
-import { NodeBrowserOptions } from '../../shared/components/node-browser/interfaces';
+import { NodeBrowserOptions, PageResult } from '../../shared/components/node-browser/interfaces';
 
 /**
  * An object path to a value contained in a MeshNode's fields.

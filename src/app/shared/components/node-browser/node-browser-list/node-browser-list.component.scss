@@ -14,6 +14,19 @@ gtx-contents-list-item {
   cursor: pointer;
 }
 
+mesh-icon-checkbox {
+  margin-right: 5px;
+  margin-bottom: 3px;
+}
+
+.schemaName {
+  display: flex;
+  width: 120px;
+  icon {
+    margin-right: 1px;
+  }
+} 
+
 .no-results {
   font-size: $gtx-font-size-lead;
   color: $gtx-color-mid-gray;

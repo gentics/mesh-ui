@@ -19,6 +19,7 @@ import { ApiError } from '../../../core/providers/api/api-error';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { MeshFieldControlApi } from '../../../form-generator/common/form-generator-models';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
@@ -96,6 +97,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     });
                 } else {
                     const node$ = this.entities.selectNode(openNode.uuid, { language: openNode.language });
+
                     const latest = Observable.combineLatest(
                         node$.filter<MeshNode>(Boolean).map(node => {
                             return simpleCloneDeep(node);
@@ -252,6 +254,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             }
                         }
                         this.isSaving = false;
+                        this.changeDetector.detectChanges();
                     }
                 );
             }

@@ -6,7 +6,7 @@ import { HtmlField } from '../page-objects/html-field.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import { NodeEditor } from '../page-objects/node-editor.po';
 import * as tooltip from '../page-objects/quill-tooltip.po';
-import { getTextNodeText, temporaryNodeChanges } from '../testUtil';
+import { temporaryNodeChanges } from '../testUtil';
 
 describe('node editor', () => {
     let page: AppPage;
@@ -68,7 +68,7 @@ describe('node editor', () => {
                 });
             });
 
-            it('creates interal links that open in the same window', async () => {
+            it('creates internal links that open in the same window', async () => {
                 await htmlField.selectText('business');
                 await htmlField.linkToNode();
                 await nodeBrowser.getNode('Space Shuttle').select();

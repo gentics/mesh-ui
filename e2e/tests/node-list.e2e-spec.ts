@@ -1,5 +1,3 @@
-import { browser } from 'protractor';
-
 import { deleteNode, moveNode } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';

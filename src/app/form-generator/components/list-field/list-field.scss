@@ -39,6 +39,16 @@
     }
 }
 
+.empty {
+    display: none !important;
+}
+
+.editor-container {
+    width: $full-width-right;
+    margin-top: 20px;
+    transition: width 0.2s;
+}
+
 .new-item {
     display: flex;
     align-items: center;
@@ -133,6 +143,18 @@
             align-items: center;
         }
     }
+}
+
+.item-row {
+    display: flex;
+}
+
+gtx-drag-handle {
+    margin-top: 21px;
+}
+
+gtx-sortable-list {
+    margin-bottom: 15px;
 }
 
 .list-container {

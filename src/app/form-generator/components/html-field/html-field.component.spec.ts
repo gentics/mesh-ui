@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { errorHashFor, ErrorCode } from '../../common/form-errors';
+import createSpy = jasmine.createSpy;
+import { QuillInitializerService } from '../../providers/quill-initializer/quill-initializer.service';
 import { MockMeshFieldControlApi } from '../../testing/mock-mesh-field-control-api';
 
 import { HtmlFieldComponent } from './html-field.component';
-import createSpy = jasmine.createSpy;
 
 describe('HtmlFieldComponent:', () => {
     let fixture: ComponentFixture<HtmlFieldComponent>;
@@ -15,7 +16,8 @@ describe('HtmlFieldComponent:', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [GenticsUICoreModule, FormsModule],
-            declarations: [HtmlFieldComponent]
+            declarations: [HtmlFieldComponent],
+            providers: [QuillInitializerService]
         });
         fixture = TestBed.createComponent(HtmlFieldComponent);
         instance = fixture.componentInstance;

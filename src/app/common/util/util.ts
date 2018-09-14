@@ -236,12 +236,28 @@ export function getMeshNodeNonBinaryFields(node: MeshNode): FieldMap {
                 // A binary field should be included if it should be deleted
                 node.fields[key] === null
             ) {
-                nonBinaryFields[key] = node.fields[key];
+                nonBinaryFields[key] = stripNulls(node.fields[key]);
             }
             return nonBinaryFields;
         },
         {} as FieldMap
     );
+}
+
+export function stripNulls<T>(arr: T): T {
+    // if it's array, delete all the nulls and return array without nulls
+    // if it's not array, just return it
+    if (Array.isArray(arr)) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] == null) {
+                arr.splice(i, 1);
+                i--;
+            }
+        }
+        return arr;
+    } else {
+        return arr;
+    }
 }
 
 export function stringToColor(input: string): string {

@@ -36,6 +36,10 @@
         }
     }
 
+    /deep/ & > mesh-list-field {
+        width: $full-width !important;
+    }
+
     // The first mesh-field should be bigger, since it can be considered the title of the node.
     /deep/ & > .mesh-field:nth-child(2) {
         /*width: 100% !important;

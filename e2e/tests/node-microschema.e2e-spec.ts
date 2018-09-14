@@ -1,11 +1,10 @@
+import { browser } from 'protractor';
+
+import { Microschema } from '../../src/app/common/models/microschema.model';
+import { createMicroschema, deleteMicroschema } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import { NodeAdmin } from '../page-objects/node-admin.po';
 import { NodeMicroschema } from '../page-objects/node-microschema.po';
-
-import { Microschema } from '../../src/app/common/models/microschema.model';
-
-import { browser } from '../../node_modules/protractor';
-import { createMicroschema, deleteMicroschema } from '../api';
 
 describe('node microschema', () => {
     let admin: NodeAdmin;

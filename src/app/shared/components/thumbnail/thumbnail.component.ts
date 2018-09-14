@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -20,8 +20,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
  */
 @Component({
     selector: 'mesh-thumbnail',
-    templateUrl: './thumbnail.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './thumbnail.component.html'
 })
 export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     @Input() nodeUuid: string;
@@ -41,26 +40,37 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         width?: string | null;
     };
 
+    isContainer$: Observable<boolean>;
+    isContainer: boolean;
+
     private subscription: Subscription;
 
-    constructor(private entities: EntitiesService) {}
+    constructor(private changeDetector: ChangeDetectorRef, private entities: EntitiesService) {}
 
     ngOnInit(): void {
+        this.setDisplaySize();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
         const node$ = this.entities
             .selectNode(this.nodeUuid, { strictLanguageMatch: false })
             // Does not emit node if it was not found
             .filter(node => !!node);
         const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid!));
 
-        // Update binary properties when node or schema changes
+        this.isContainer$ = node$.map(node => node.container);
+
+        this.isContainer$.subscribe(isContainer => {
+            this.isContainer = isContainer;
+        });
+
         this.subscription = Observable.combineLatest(node$, schema$)
             .map(value => this.getBinaryProperties(value))
-            .subscribe(binaryProperties => (this.binaryProperties = binaryProperties));
+            .subscribe(binaryProperties => {
+                this.binaryProperties = binaryProperties;
+                this.changeDetector.detectChanges();
+            });
 
-        this.setDisplaySize();
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
         if (changes['width'] || changes['height']) {
             this.setDisplaySize();
         }

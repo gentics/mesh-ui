@@ -1,10 +1,45 @@
-<label>{{ api.field.label || api.field.name }}</label>
-<div class="uuid-form">
-    <!-- TODO: re-enable the mesh-thumbnail once we have wired up real data -->
-    <!--<mesh-thumbnail [nodeUuid]="userValue"></mesh-thumbnail>-->
-    <gtx-input [(ngModel)]="userValue"
-               [readonly]="api.readOnly"></gtx-input>
-    <gtx-button *ngIf="!api.readOnly"
+<label *ngIf="api.field.label || api.field.name">{{ api.field.label || api.field.name }}</label>
+
+<div class="editor-container">
+    <gtx-button class="select-item-button"
+                *ngIf="!userValue"
                 flat="true"
-                (click)="selectNode()">Browse</gtx-button>
+                (click)="selectNode()">
+        <icon left>search</icon>
+        Select Node Reference
+    </gtx-button>
+
+    <div *ngIf="userValue"
+         class="icon">
+        <mesh-thumbnail [nodeUuid]="userValue">
+        </mesh-thumbnail>
+    </div>
+
+    <div class="fullInfo"
+         *ngIf="userValue">
+        <div class="schemaName">
+            <span class="innerSchemaName">
+                <icon>view_quilt</icon>
+                <div>{{ schemaName }}</div>
+            </span>
+        </div>
+        <a class="nodeName"
+           [routerLink]="routerLink">{{ displayName }}</a>
+        <div class="path">{{ breadcrumbPath }}</div>
+    </div>
+
+    <div class="show-on-hover"
+         *ngIf="userValue">
+        <gtx-button *ngIf="!api.readOnly"
+                    flat="true"
+                    (click)="selectNode()">
+            <icon left>search</icon>
+        </gtx-button>
+
+        <gtx-button *ngIf="!api.readOnly"
+                    flat="true"
+                    (click)="removeNode()">
+            <icon left>clear</icon>
+        </gtx-button>
+    </div>
 </div>

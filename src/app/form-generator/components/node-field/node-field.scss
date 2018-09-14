@@ -10,23 +10,61 @@
     &.compact {
         flex-direction: column;
 
-        label {
-            @include label-style-compact;
-        }
-
-        .uuid-form {
-            width: $full-width;
+        .label-container .floating-label {
+            flex-direction: row;
+            align-items: center;
+            label {
+                @include label-style-compact;
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
         }
     }
+}
+
+.fullInfo {
+    flex: 1 1 auto;
+}
+
+.editor-container {
+    width: $full-width-right;
+    margin-top: 20px;
+    transition: width 0.2s;
+    display: flex;
+}
+
+.icon {
+    margin-right: 15px;
 }
 
 label {
     @include label-style-full;
 }
 
-.uuid-form {
-    width: $half-width-right;
+.node-field-inner {
     display: flex;
-    align-items: center;
-    transition: width 0.2s;
+}
+
+.schemaName {
+    font-size: 12px;
+    display: flex;
+
+    icon {
+        font-size: 20px;
+    }
+}
+
+.innerSchemaName {
+    display: flex;
+    padding-right: 3px;
+    border: 1px solid #d6d6da;    
+}
+
+.nodeName {
+    padding: 2px;
+}
+
+.path {
+    color: #79797d;
+    font-size: 13px;
 }

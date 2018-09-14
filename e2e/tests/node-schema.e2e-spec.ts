@@ -1,10 +1,10 @@
+import { browser } from 'protractor';
+
+import { Schema } from '../../src/app/common/models/schema.model';
 import { createSchema, deleteSchema } from '../api';
 import { AppPage } from '../page-objects/app.po';
 import { NodeAdmin } from '../page-objects/node-admin.po';
 import { NodeSchema } from '../page-objects/node-schema.po';
-
-import { browser } from '../../node_modules/protractor';
-import { Schema } from '../../src/app/common/models/schema.model';
 
 describe('node schema', () => {
     let admin: NodeAdmin;

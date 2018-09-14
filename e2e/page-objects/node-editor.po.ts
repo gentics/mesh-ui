@@ -9,7 +9,7 @@ export class NodeEditor {
 
     async chooseNodeReference(fieldName: string) {
         await this.getFieldElement('mesh-node-field', fieldName)
-            .element(by.buttonText('Browse'))
+            .element(by.css('button'))
             .click();
     }
 
@@ -38,6 +38,10 @@ export class NodeEditor {
             .all(by.css('.ql-tooltip'))
             .get(1)
             .element(by.css('.ql-remove'));
+    }
+
+    async clickSaveAndClose() {
+        await element(by.cssContainingText('button', 'Save and close')).click();
     }
 
     save() {

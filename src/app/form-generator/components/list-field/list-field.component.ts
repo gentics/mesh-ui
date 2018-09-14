@@ -218,7 +218,8 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                 this.listItems.toArray().forEach((viewContainerRef, index) => {
                     const pseudoField = {
                         name: ``,
-                        type: fieldType
+                        type: fieldType,
+                        allow: this.field.allow
                     };
                     const value = this.value[index];
                     const newContainer = meshControl.addChild(pseudoField, value);

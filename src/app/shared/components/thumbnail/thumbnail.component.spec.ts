@@ -335,7 +335,7 @@ describe('Thumbnail', () => {
     );
 
     it(
-        `displays nothing if node has no binary field`,
+        `displays file icon if node has no binary field`,
         componentTest(
             () => TestComponent,
             fixture => {
@@ -343,13 +343,13 @@ describe('Thumbnail', () => {
                 component.nodeUuid = '6adfe63bb9a34b8d9fe63bb9a30b8d8b';
                 fixture.detectChanges();
 
-                expect(getThumbnail(fixture).children.length).toBe(0);
+                expect(getThumbnail(fixture).children.length).toBe(1);
             }
         )
     );
 
     it(
-        `displays nothing if schema has binary field but is undefined`,
+        `displays file icon if schema has binary field but is undefined`,
         componentTest(
             () => TestComponent,
             fixture => {
@@ -357,13 +357,13 @@ describe('Thumbnail', () => {
                 component.nodeUuid = 'd53197e5aa154e36b197e5aa155e367e';
                 fixture.detectChanges();
 
-                expect(getThumbnail(fixture).children.length).toBe(0);
+                expect(getThumbnail(fixture).children.length).toBe(1);
             }
         )
     );
 
     it(
-        `displays nothing if field cannot be found`,
+        `displays file icon if field cannot be found`,
         componentTest(
             () => TestComponent,
             fixture => {
@@ -372,7 +372,7 @@ describe('Thumbnail', () => {
                 component.fieldName = 'bogus';
                 fixture.detectChanges();
 
-                expect(getThumbnail(fixture).children.length).toBe(0);
+                expect(getThumbnail(fixture).children.length).toBe(1);
             }
         )
     );

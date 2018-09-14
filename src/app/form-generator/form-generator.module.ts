@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { GenticsUIImageEditorModule } from 'gentics-ui-image-editor';
 
@@ -40,7 +41,7 @@ const ENTRY_COMPONENTS = [
 ];
 
 @NgModule({
-    imports: [GenticsUICoreModule, GenticsUIImageEditorModule, CommonModule, FormsModule, SharedModule],
+    imports: [GenticsUICoreModule, GenticsUIImageEditorModule, CommonModule, FormsModule, SharedModule, RouterModule],
     declarations: [BaseFieldComponent, FormGeneratorComponent, ...ENTRY_COMPONENTS],
     entryComponents: ENTRY_COMPONENTS,
     providers: [FieldGeneratorService, MeshControlGroupService, QuillInitializerService],
