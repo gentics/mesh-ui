@@ -7,6 +7,7 @@ import { IModalInstance, ModalService } from 'gentics-ui-core';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
+import * as NodeUtil from '../../../common/util/node-util';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
@@ -42,6 +43,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     // TODO: make a fullscreen non-closable dialog for binary files preventing user from navigating away while file is uploading
     // isSaving$: Observable<boolean>;
     isSaving = false;
+    nodeUtil = NodeUtil;
 
     private openNode$: Subscription;
 
@@ -156,9 +158,27 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
     }
 
-    /** Returns true if the node is a draft version i.e. not a whole number version */
+    /** Returns true if the node is a draft version */
     isDraft(): boolean {
-        return !!this.node && !/\.0$/.test(this.node.version);
+        return (
+            !!this.node &&
+            !!this.node.language &&
+            !!this.node.availableLanguages &&
+            !(
+                this.node.availableLanguages[this.node.language].published &&
+                this.node.availableLanguages[this.node.language].version === this.node.version
+            )
+        );
+    }
+
+    /** Returns true if the node has been published and not been unpublished since */
+    isPublic(): boolean {
+        return (
+            !!this.node &&
+            !!this.node.language &&
+            !!this.node.availableLanguages &&
+            this.node.availableLanguages[this.node.language].published
+        );
     }
 
     /**
@@ -295,21 +315,23 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             });
     }
 
-    /**
-     * Publish the node, and if there are changes, save first before publishing.
-     */
-    publishNode(): void {
-        if (this.node && this.tagsBar && this.isDraft()) {
-            const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : undefined;
-            const promise = this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
-
-            promise.then(node => {
-                if (node) {
-                    this.editorEffects.publishNode(node);
-                }
-            });
+    async publishNode() {
+        if (this.node) {
+            await this.beforePublish();
+            this.editorEffects.publishNodeLanguage(this.node);
         }
     }
+
+    // This function is used as an input for a component.
+    // To bind this controller to the function, we declare it as a fat arrow function.
+    beforePublish = () => {
+        if (this.node && this.tagsBar) {
+            const tags = this.tagsBar.isDirty ? this.tagsBar.nodeTags : undefined;
+            return this.isDirty ? this.editorEffects.saveNode(this.node, tags) : Promise.resolve(this.node);
+        } else {
+            return Promise.reject(undefined);
+        }
+    };
 
     closeEditor(): void {
         this.navigationService.clearDetail().navigate();

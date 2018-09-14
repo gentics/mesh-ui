@@ -19,6 +19,7 @@
 
 .title-row {
     display: flex;
+    align-items: center;
     background-color: $gtx-color-very-dark-gray;
     color: white;
     padding: 5px 30px 5px 10px;
@@ -84,3 +85,4 @@
 app-node-tags-bar {
     display: block;
 }
+

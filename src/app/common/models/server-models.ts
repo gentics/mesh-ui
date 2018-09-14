@@ -3667,6 +3667,7 @@ export interface ApiEndpoints {
             responseTypes: {
                 /** Language variation of the node has been deleted. */
                 204: undefined;
+                404: GenericMessageResponse;
             };
         };
         /** Take the language of the node offline. */
@@ -3692,10 +3693,11 @@ export interface ApiEndpoints {
                 queryParams?: {};
                 body?: undefined;
             };
-            responseType: PublishStatusModelFromServer;
+            responseType: undefined;
             responseTypes: {
                 /** Node language was taken offline. */
-                204: PublishStatusModelFromServer;
+                204: undefined;
+                404: GenericMessageResponse;
             };
         };
         /** Unpublish the given node. */
@@ -4700,11 +4702,11 @@ export interface PublishStatusModelFromServer {
     /** ISO8601 formatted publish date string. */
     readonly publishDate?: string;
     /** Flag which indicates whether the content is published. */
-    readonly published?: boolean;
+    readonly published: boolean;
     /** User reference of the creator of the element. */
-    readonly publisher: UserReferenceFromServer;
+    readonly publisher?: UserReferenceFromServer;
     /** Version number. */
-    readonly version?: string;
+    readonly version: string;
 }
 
 /**
@@ -4714,7 +4716,7 @@ export interface PublishStatusModelFromServer {
  */
 export interface PublishStatusResponse {
     /** Map of publish status entries per language */
-    readonly availableLanguages?: { [key: string]: PublishStatusModelFromServer };
+    readonly availableLanguages: { [key: string]: PublishStatusModelFromServer };
 }
 
 export interface RoleCreateRequest {

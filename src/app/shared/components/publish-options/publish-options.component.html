@@ -1,0 +1,22 @@
+<gtx-dropdown-item (click)="publishNodeLanguage()"
+                   *ngIf="node && !nodeUtil.currentLanguagePublished(node)">
+    <icon left>public</icon>
+    {{ 'editor.publish_button' | i18n }}
+</gtx-dropdown-item>
+<gtx-dropdown-item (click)="publishNode()"
+                   *ngIf="node && !nodeUtil.allLanguagesPublished(node)">
+    <icon left>public</icon>
+    {{ 'editor.publish_all' | i18n }}
+</gtx-dropdown-item>
+<gtx-dropdown-item class="dangerous"
+                   *ngIf="node && nodeUtil.currentLanguagePublished(node)"
+                   (click)="unpublishNodeLanguage()">
+    <icon left>cloud_off</icon>
+    {{ 'editor.unpublish' | i18n }}
+</gtx-dropdown-item>
+<gtx-dropdown-item class="dangerous"
+                   *ngIf="node && !nodeUtil.allLanguagesUnpublished(node)"
+                   (click)="unpublishNode()">
+    <icon left>cloud_off</icon>
+    {{ 'editor.unpublish_all' | i18n }}
+</gtx-dropdown-item>

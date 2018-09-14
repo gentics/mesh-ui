@@ -7,11 +7,13 @@
             </div>
         </div>
         <div class="primary-buttons">
-            <mesh-version-label [version]="node?.version"></mesh-version-label>
+            <mesh-version-label [version]="node?.version"
+                                [published]="!isDraft()"></mesh-version-label>
 
             <gtx-progress-bar [active]="isSaving"></gtx-progress-bar>
 
-            <gtx-button size="small" type="primary"
+            <gtx-button size="small"
+                        type="primary"
                         (click)="saveNode()"
                         class="save-button"
                         [disabled]="(isSaving) || !isDirty || !formGenerator?.isValid ">
@@ -19,21 +21,37 @@
             </gtx-button>
 
 
-            <gtx-button size="small" type="success"
+            <gtx-button size="small"
+                        type="success"
                         (click)="publishNode()"
                         [disabled]="!isDraft()">
                 <icon left>public</icon> {{ 'editor.publish_button' | i18n }}
             </gtx-button>
         </div>
+        <gtx-dropdown-list>
+            <gtx-dropdown-trigger>
+                <gtx-button icon
+                            type="secondary">
+                    <icon>more_vert</icon>
+                </gtx-button>
+            </gtx-dropdown-trigger>
+            <gtx-dropdown-content>
+                <mesh-publish-options [node]="node"
+                                      [beforePublish]="beforePublish"></mesh-publish-options>
+            </gtx-dropdown-content>
+        </gtx-dropdown-list>
     </div>
     <div class="close-button">
         <gtx-button icon
                     type="secondary"
-                    (click)="closeEditor()"><icon>close</icon></gtx-button>
+                    (click)="closeEditor()">
+            <icon>close</icon>
+        </gtx-button>
     </div>
     <div class="info-row">
         <div class="path">
-            <a [routerLink]="nodePathRouterLink" (click)="focusList()">
+            <a [routerLink]="nodePathRouterLink"
+               (click)="focusList()">
                 <icon>folder_open</icon>
                 {{ nodePath }}
             </a>
@@ -44,13 +62,15 @@
     </div>
     <div class="tags-row">
         <div class="tags">
-            <mesh-node-tags-bar #tagsBar [node]="node"></mesh-node-tags-bar>
+            <mesh-node-tags-bar #tagsBar
+                                [node]="node"></mesh-node-tags-bar>
         </div>
     </div>
 </div>
 
-<div class="editor-body" meshScrollFrame>
+<div class="editor-body"
+     meshScrollFrame>
     <mesh-form-generator #formGenerator
-                    [schema]="schema"
-                    [node]="node"></mesh-form-generator>
+                         [schema]="schema"
+                         [node]="node"></mesh-form-generator>
 </div>

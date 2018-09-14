@@ -22,7 +22,12 @@ export function mockMeshNode(properties?: Partial<MeshNode>): { [language: strin
                 name: 'demo'
             },
             language: 'en',
-            availableLanguages: ['en'],
+            availableLanguages: {
+                en: {
+                    version: '0.2',
+                    published: false
+                }
+            },
             parentNode: {
                 projectName: 'demo',
                 uuid: '5b1d4f44d5a545f49d4f44d5a5c5f495',

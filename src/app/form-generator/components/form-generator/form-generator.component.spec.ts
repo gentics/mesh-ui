@@ -211,6 +211,8 @@ const mockNode: MeshNode = {
     rolePerms: {} as any,
     availableLanguages: {
         en: {
+            published: false,
+            version: '0.1',
             publisher: {
                 uuid: 'publisher_uuid'
             }

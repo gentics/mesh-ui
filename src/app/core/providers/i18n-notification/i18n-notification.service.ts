@@ -63,6 +63,23 @@ export class I18nNotification {
     }
 
     /**
+     * To be used with Observable.pipe.
+     * If successKey is set, a success notification with the given key is displayed on the next event.
+     * @param translationParamsMapper Maps the emitted item to the translation parameters
+     */
+    rxSuccessNext<T>(successKey: string, translationParamsMapper: (emittedItem: T) => any): OperatorFunction<T, T> {
+        return source =>
+            source.do({
+                next: item =>
+                    this.show({
+                        type: 'success',
+                        message: successKey,
+                        translationParams: translationParamsMapper(item)
+                    })
+            });
+    }
+
+    /**
      * Displays a success notification when a promise has been resolved.
      * Usage example:
      * `promise.then(promiseSuccess('editor.node_saved'))`
