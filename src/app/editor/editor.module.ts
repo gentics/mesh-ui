@@ -8,7 +8,6 @@ import { TagsEffectsService } from '../core/providers/effects/tags-effects.servi
 import { FormGeneratorModule } from '../form-generator/form-generator.module';
 import { SharedModule } from '../shared/shared.module';
 
-import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
 import { ConfirmNavigationModalComponent } from './components/confirm-navigation-modal/confirm-navigation-modal.component';
 import { ConflictedFieldComponent } from './components/conflicted-field/conflicted-field.component';
@@ -36,7 +35,6 @@ import { NodeEditorGuard } from './providers/node-editor-guard';
 @NgModule({
     imports: [SharedModule, HttpClientModule, RouterModule.forChild(routes), FormGeneratorModule],
     declarations: [
-        AvailableLanguagesListComponent,
         BreadcrumbsComponent,
         ConfirmNavigationModalComponent,
         ContainerContentsComponent,
