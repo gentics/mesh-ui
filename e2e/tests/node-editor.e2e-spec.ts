@@ -85,7 +85,7 @@ describe('node editor', () => {
     });
 
     temporaryFolder('image preview', context => {
-        fit('shows the image if there is only content in a non-default langauge', async () => {
+        it('shows the image if there is only content in a non-default langauge', async () => {
             const node = await api.createVehicleImage(context.folder, 'squirrel', 'de');
             await page.navigateToNodeEdit(node, 'de');
             const image = editor.getBinaryField('Image');

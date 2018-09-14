@@ -143,8 +143,8 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                         this.localNode.project.name!,
                         this.localNode.uuid,
                         schemaField.name,
-                        this.localNode.version,
                         this.localNode.language!,
+                        this.localNode.version,
                         { w: 200, h: 200 }
                     );
 

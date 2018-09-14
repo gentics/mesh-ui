@@ -269,6 +269,7 @@ describe('NodeConflictDialogComponent', () => {
             nodeUuid: mineNode.uuid,
             fieldName: 'image',
             version: mineNode.version,
+            lang: 'en',
             w: 200,
             h: 200
         });
