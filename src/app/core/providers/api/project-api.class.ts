@@ -196,6 +196,7 @@ export class ProjectApi {
         project: string,
         nodeUuid: string,
         name: string,
+        language: string,
         version?: string,
         params: ImageTransformQueryParams = {}
     ): string {
@@ -204,6 +205,7 @@ export class ProjectApi {
             nodeUuid,
             name,
             version,
+            lang: language,
             ...params
         });
     }

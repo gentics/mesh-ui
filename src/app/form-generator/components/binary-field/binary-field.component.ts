@@ -110,6 +110,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
                 node.project.name!,
                 node.uuid,
                 this.api.field.name,
+                node.language!,
                 node.version
             );
         }
@@ -199,11 +200,17 @@ export class BinaryFieldComponent extends BaseFieldComponent {
                 node.project.name!,
                 node.uuid,
                 this.api.field.name,
+                node.language!,
                 undefined,
                 { w: width, h: height }
             );
         } else {
-            return this.apiService.project.getBinaryFileUrl(node.project.name!, node.uuid, this.api.field.name);
+            return this.apiService.project.getBinaryFileUrl(
+                node.project.name!,
+                node.uuid,
+                this.api.field.name,
+                node.language!
+            );
         }
     }
 }
