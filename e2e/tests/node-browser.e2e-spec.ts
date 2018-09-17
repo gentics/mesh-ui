@@ -5,7 +5,7 @@ import { AppPage } from '../page-objects/app.po';
 import * as browser from '../page-objects/node-browser.po';
 import { NodeField } from '../page-objects/node-field.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
-import { temporaryFolder, toText } from '../testUtil';
+import { inTemporaryFolder, toText } from '../testUtil';
 
 describe('node browser', () => {
     let page: AppPage;
@@ -82,44 +82,47 @@ describe('node browser', () => {
         });
     });
 
-    temporaryFolder('paging', context => {
-        beforeAll(async () => {
-            const vehicle = await createVehicle(context.folder, 'testVehicle');
-            for (let i = 0; i < 50; i++) {
-                await createFolder(context.folder, `test${i}`);
-            }
-            await page.navigateToNodeEdit(vehicle);
-            await nodeField
-                .getSelectButton()
-                .get(0)
-                .click();
-        });
+    describe(
+        'paging',
+        inTemporaryFolder(context => {
+            beforeAll(async () => {
+                const vehicle = await createVehicle(context.folder, 'testVehicle');
+                for (let i = 0; i < 50; i++) {
+                    await createFolder(context.folder, `test${i}`);
+                }
+                await page.navigateToNodeEdit(vehicle);
+                await nodeField
+                    .getSelectButton()
+                    .get(0)
+                    .click();
+            });
 
-        it('shows 10 items per page', async () => {
-            expect(await browser.getNodes().count()).toBe(10);
-        });
+            it('shows 10 items per page', async () => {
+                expect(await browser.getNodes().count()).toBe(10);
+            });
 
-        it('shows 6 pages', async () => {
-            expect(await browser.getPages().count()).toBe(6);
-        });
+            it('shows 6 pages', async () => {
+                expect(await browser.getPages().count()).toBe(6);
+            });
 
-        it('shows next page when clicked', async () => {
-            const previousNode = await browser
-                .getNodes()
-                .get(0)
-                .getText();
-            await browser
-                .getPages()
-                .get(1)
-                .click();
-            expect(
-                await browser
+            it('shows next page when clicked', async () => {
+                const previousNode = await browser
                     .getNodes()
                     .get(0)
-                    .getText()
-            ).not.toEqual(previousNode);
-        });
-    });
+                    .getText();
+                await browser
+                    .getPages()
+                    .get(1)
+                    .click();
+                expect(
+                    await browser
+                        .getNodes()
+                        .get(0)
+                        .getText()
+                ).not.toEqual(previousNode);
+            });
+        })
+    );
 
     describe('search', () => {
         beforeAll(async () => {
