@@ -1,7 +1,7 @@
 query ($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
   node(uuid: $parent) {
     uuid
-    nodes: children(filter: $filter, perPage: $perPage, page: $page) {
+    nodes: children(filter: $filter, perPage: $perPage, page: $page, lang: ["de", "en"]) {
       totalCount
       pageCount
       elements {

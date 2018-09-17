@@ -173,7 +173,7 @@ describe('node browser', () => {
                 await nodeField.clickBrowse();
             });
 
-            fit('shows nodes in non-default languages', async () => {
+            it('shows nodes in non-default languages', async () => {
                 await browser.goToRoot();
                 await browser.openFolder(context.folder.displayName!);
                 await browser.getNode('germanImage').select();

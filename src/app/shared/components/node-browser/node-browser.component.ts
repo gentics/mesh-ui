@@ -25,6 +25,9 @@ interface QueryParams {
  * It can be used for single or multiple selection
  * and limit the type of the allowed selection.
  *
+ * TODO: Currently the language for the children query is hardcoded.
+ * Remove when https://github.com/gentics/mesh/issues/499 is solved.
+ *
  */
 @Component({
     selector: 'mesh-node-browser',
