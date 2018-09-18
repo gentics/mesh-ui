@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { BinaryField, MeshNode } from '../../../common/models/node.model';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { filenameExtension, isImageField, queryString } from '../../../common/util/util';
+import { ApiService } from '../../../core/providers/api/api.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 
 /**
@@ -45,7 +46,11 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
 
     private subscription: Subscription;
 
-    constructor(private changeDetector: ChangeDetectorRef, private entities: EntitiesService) {}
+    constructor(
+        private changeDetector: ChangeDetectorRef,
+        private entities: EntitiesService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit(): void {
         this.setDisplaySize();
@@ -154,12 +159,17 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
      * Creates an image URL from the node and the chosen field. Also uses Mesh Image API to resize the image.
      */
     private getImageUrl(node: MeshNode, fieldName: string): string {
-        const query = queryString({
-            width: this.width,
-            height: this.height
-        });
-        // TODO use central constant for beginning of relative URL
-        return `/api/v1/${node.project.name}/nodes/${node.uuid}/binary/${fieldName}${query}`;
+        return this.apiService.project.getBinaryFileUrl(
+            node.project.name!,
+            node.uuid,
+            fieldName,
+            node.language!,
+            undefined,
+            {
+                h: this.height,
+                w: this.width
+            }
+        );
     }
 }
 
