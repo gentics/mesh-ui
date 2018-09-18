@@ -12,11 +12,13 @@ import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
+import { AvailableLanguagesListComponent } from '../../../shared/components/available-languages-list/available-languages-list.component';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
-import { AvailableLanguagesListComponent } from '../available-languages-list/available-languages-list.component';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { ContainerLanguageSwitcherComponent } from '../container-language-switcher/container-language-switcher.component';
 import { CreateNodeButtonComponent } from '../create-node-button/create-node-button.component';
@@ -25,8 +27,6 @@ import { ProjectSwitcherComponent } from '../project-switcher/project-switcher.c
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 import { ContainerContentsComponent } from './container-contents.component';
-import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
-import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('ContainerContentsComponent', () => {
     let api: MockApiService;

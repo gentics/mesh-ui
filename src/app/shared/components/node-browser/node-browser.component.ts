@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { IBreadcrumbLink, IModalDialog } from 'gentics-ui-core';
-import esGqlQuery = require('raw-loader!./es-query.gql');
-import gqlQuery = require('raw-loader!./query.gql');
+import * as esGqlQuery from 'raw-loader!./es-query.gql';
+import * as gqlQuery from 'raw-loader!./query.gql';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
