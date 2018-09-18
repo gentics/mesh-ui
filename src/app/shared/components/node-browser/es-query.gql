@@ -1,0 +1,15 @@
+query($query: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
+	nodes(query: $query, filter: $filter, perPage: $perPage, page: $page) {
+        totalCount
+        pageCount
+        elements {
+            schema {
+              name
+            }
+            uuid
+            displayName
+            isContainer
+            availableLanguages
+        }
+	}
+}

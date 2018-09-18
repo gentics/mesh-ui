@@ -5,6 +5,8 @@ import { By } from '@angular/platform-browser';
 
 import { componentTest } from '../../../../testing/component-test';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
+import { ApiService } from '../../../core/providers/api/api.service';
+import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
@@ -18,6 +20,12 @@ describe('Thumbnail', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [TestComponent],
+            providers: [
+                {
+                    provide: ApiService,
+                    useClass: MockApiService
+                }
+            ],
             imports: [TestStateModule, SharedModule]
         });
     }));
@@ -280,9 +288,11 @@ describe('Thumbnail', () => {
                 fixture.detectChanges();
 
                 const imageSrc = fixture.debugElement.query(By.css('img')).nativeElement.src;
-                expect(endsWith(imageSrc, '/api/v1/demo/nodes/4d1cabf1382e41ea9cabf1382ef1ea7c/binary/image')).toBe(
+                expect(
+                    endsWith(imageSrc, '/api/v1/demo/nodes/4d1cabf1382e41ea9cabf1382ef1ea7c/binary/image?lang=en')
+                ).toBe(
                     true,
-                    `invalid image src`
+                    `Got "${imageSrc}", expected to end with "/api/v1/demo/nodes/4d1cabf1382e41ea9cabf1382ef1ea7c/binary/image"`
                 );
             }
         )
@@ -304,7 +314,12 @@ describe('Thumbnail', () => {
                 fixture.detectChanges();
 
                 const imageSrc = fixture.debugElement.query(By.css('img')).nativeElement.src;
-                expect(hasQueryParameters(imageSrc, dimensions)).toBe(true, `Invalid query params in ${imageSrc}`);
+                const expectedParams = {
+                    w: 640,
+                    h: 480,
+                    lang: 'en'
+                };
+                expect(hasQueryParameters(imageSrc, expectedParams)).toBe(true, `Invalid query params in ${imageSrc}`);
             }
         )
     );

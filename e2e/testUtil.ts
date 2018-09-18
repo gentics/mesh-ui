@@ -21,12 +21,8 @@ export const files = {
  * @param language The language of the created folder
  * @param body A function that is executed
  */
-export async function temporaryFolderWithLanguage(
-    description: string,
-    language: string,
-    body: (context: { folder: MeshNode }) => void
-) {
-    describe(description, () => {
+export function inTemporaryFolderWithLanguage(language: string, body: (context: { folder: MeshNode }) => void) {
+    return () => {
         let project: Project;
         const context: { folder: MeshNode } = {} as any;
         let folder: MeshNode;
@@ -42,7 +38,7 @@ export async function temporaryFolderWithLanguage(
         });
 
         body(context);
-    });
+    };
 }
 
 /**
@@ -51,8 +47,8 @@ export async function temporaryFolderWithLanguage(
  *
  * @param body A function that is executed
  */
-export async function temporaryFolder(description: string, body: (context: { folder: MeshNode }) => void) {
-    return temporaryFolderWithLanguage(description, 'en', body);
+export function inTemporaryFolder(body: (context: { folder: MeshNode }) => void) {
+    return inTemporaryFolderWithLanguage('en', body);
 }
 
 /**

@@ -29,6 +29,15 @@ export function openFolder(displayName: string) {
         .click();
 }
 
+/**
+ * Navigates to the root folder of the project.
+ */
+export function goToRoot() {
+    return getBreadcrumbLinks()
+        .get(0)
+        .click();
+}
+
 export function choose() {
     return nodeBrowser()
         .element(by.css('button.primary'))

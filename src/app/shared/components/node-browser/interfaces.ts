@@ -31,6 +31,7 @@ export interface PageResult {
     uuid: string;
     displayName: string;
     isContainer: boolean;
+    availableLanguages: string[];
     schema: {
         name: string;
     };

@@ -6,6 +6,7 @@ import { GenticsUICoreModule } from 'gentics-ui-core';
 import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 
 import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
+import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
 import { ChipComponent } from './components/chip/chip.component';
 import { ContentPortalComponent } from './components/content-portal/content-portal.component';
 import { FilePreviewComponent } from './components/file-preview/file-preview.component';
@@ -42,7 +43,8 @@ const SHARED_COMPONENTS = [
     PaginationControlsComponent,
     ContentPortalComponent,
     IconCheckboxComponent,
-    PublishOptionsComponent
+    PublishOptionsComponent,
+    AvailableLanguagesListComponent
 ];
 
 const ENTRY_COMPONENTS = [NodeBrowserComponent];

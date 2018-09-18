@@ -125,3 +125,4 @@ interface NodeModule extends WebpackModule {}
 interface Global extends GlobalEnvironment {}
 
 declare module 'quill-table';
+declare module '*.gql';

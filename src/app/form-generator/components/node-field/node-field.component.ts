@@ -61,7 +61,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
                 this.changeDetector.detectChanges();
             });
 
-            this.editorEffects.loadNode(this.node.project.name!, this.userValue, this.node.language);
+            this.editorEffects.loadNode(this.node.project.name!, this.userValue);
         }
     }
 

@@ -37,7 +37,10 @@ export class EditorEffectsService {
     }
 
     loadNode(projectName: string, nodeUuid: string, language?: string): void {
-        const lang = language || this.config.FALLBACK_LANGUAGE;
+        // TODO: Language should be empty for default fallback behaviour.
+        // Currently the default behaviour in mesh is not desireable.
+        // See https://github.com/gentics/mesh/issues/502
+        const lang = language || this.config.CONTENT_LANGUAGES.join(',');
 
         this.state.actions.list.fetchNodeStart();
         this.api.project.getNode({ project: projectName, nodeUuid, lang }).subscribe(

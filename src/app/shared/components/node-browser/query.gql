@@ -1,0 +1,22 @@
+query ($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
+  node(uuid: $parent) {
+    uuid
+    nodes: children(filter: $filter, perPage: $perPage, page: $page, lang: ["de", "en"]) {
+      totalCount
+      pageCount
+      elements {
+        uuid
+        schema {
+          name
+        }
+        displayName
+        isContainer
+        availableLanguages
+      }
+    }
+    breadcrumb {
+      uuid
+      text: displayName
+    }
+  }
+}

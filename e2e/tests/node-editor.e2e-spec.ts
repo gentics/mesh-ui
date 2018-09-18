@@ -6,7 +6,7 @@ import { HtmlField } from '../page-objects/html-field.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import { NodeEditor } from '../page-objects/node-editor.po';
 import * as tooltip from '../page-objects/quill-tooltip.po';
-import { files, temporaryFolder, temporaryNodeChanges } from '../testUtil';
+import { files, inTemporaryFolder, temporaryNodeChanges } from '../testUtil';
 
 describe('node editor', () => {
     let page: AppPage;
@@ -84,16 +84,19 @@ describe('node editor', () => {
         });
     });
 
-    temporaryFolder('image preview', context => {
-        it('shows the image if there is only content in a non-default langauge', async () => {
-            const node = await api.createVehicleImage(context.folder, 'squirrel', 'de');
-            await page.navigateToNodeEdit(node, 'de');
-            const image = editor.getBinaryField('Image');
-            await image.selectFile(files.squirrel);
-            await editor.save();
-            // Refresh the page
-            await page.navigateToNodeEdit(node, 'de');
-            expect(await image.isImageLoaded()).toBeTruthy();
-        });
-    });
+    describe(
+        'image preview',
+        inTemporaryFolder(context => {
+            it('shows the image if there is only content in a non-default langauge', async () => {
+                const node = await api.createVehicleImage(context.folder, 'squirrel', 'de');
+                await page.navigateToNodeEdit(node, 'de');
+                const image = editor.getBinaryField('Image');
+                await image.selectFile(files.squirrel);
+                await editor.save();
+                // Refresh the page
+                await page.navigateToNodeEdit(node, 'de');
+                expect(await image.isImageLoaded()).toBeTruthy();
+            });
+        })
+    );
 });
