@@ -26,6 +26,7 @@
             </a>
             <ng-container *ngIf="!item.isContainer">{{item.displayName || item.uuid}}</ng-container>
             <div class="available-languages">
+                <mesh-available-languages-list [available]="item.availableLanguages"></mesh-available-languages-list>
             </div>
         </div>
 

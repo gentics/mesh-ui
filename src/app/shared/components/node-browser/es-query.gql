@@ -9,6 +9,7 @@ query($query: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
             uuid
             displayName
             isContainer
+            availableLanguages
         }
 	}
 }

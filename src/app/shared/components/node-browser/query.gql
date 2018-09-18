@@ -11,6 +11,7 @@ query ($parent: String, $filter: NodeFilter, $perPage: Long, $page: Long) {
         }
         displayName
         isContainer
+        availableLanguages
       }
     }
     breadcrumb {
