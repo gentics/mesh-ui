@@ -29,7 +29,7 @@
     },
     "error_required": {
       "en": "This field is required",
-      "de": "Dieses Felt is erforderlich"
+      "de": "Dieses Feld is erforderlich"
     },
     "language_switch_to": {
       "en": "Switch to {{language}}",
