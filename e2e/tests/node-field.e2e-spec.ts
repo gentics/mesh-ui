@@ -2,19 +2,17 @@ import * as api from '../api';
 import * as page from '../page-objects/app.po';
 import { NodeBrowserList } from '../page-objects/node-browser-list.po';
 import * as browser from '../page-objects/node-browser.po';
-import { NodeEditor } from '../page-objects/node-editor.po';
+import * as nodeEditor from '../page-objects/node-editor.po';
 import { NodeField } from '../page-objects/node-field.po';
 import * as nodeList from '../page-objects/node-list.po';
 import { temporaryNodeChanges } from '../testUtil';
 
 describe('node field', () => {
     let nodeField: NodeField;
-    let nodeEditor: NodeEditor;
     let nodeBrowserList: NodeBrowserList;
 
     beforeEach(async () => {
         nodeField = new NodeField();
-        nodeEditor = new NodeEditor();
         nodeBrowserList = new NodeBrowserList();
         await page.navigateToHome();
         await nodeList.openFolder('Yachts');

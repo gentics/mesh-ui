@@ -1,14 +1,11 @@
 import * as page from '../page-objects/app.po';
 import * as actions from '../page-objects/node-actions.po';
-import { NodeEditor } from '../page-objects/node-editor.po';
+import * as editor from '../page-objects/node-editor.po';
 import { i18n } from '../testUtil';
 import { nodes } from '../uuids';
 
 describe('node publishing', () => {
-    let editor: NodeEditor;
-
     beforeAll(async () => {
-        editor = new NodeEditor();
         await page.navigateToHome();
     });
 

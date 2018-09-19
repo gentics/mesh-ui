@@ -4,15 +4,12 @@ import * as api from '../api';
 import * as page from '../page-objects/app.po';
 import { HtmlField } from '../page-objects/html-field.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
-import { NodeEditor } from '../page-objects/node-editor.po';
+import * as editor from '../page-objects/node-editor.po';
 import * as tooltip from '../page-objects/quill-tooltip.po';
 import { files, inTemporaryFolder, temporaryNodeChanges } from '../testUtil';
 
 describe('node editor', () => {
-    let editor: NodeEditor;
-
     beforeAll(async () => {
-        editor = new NodeEditor();
         await page.navigateToHome();
     });
 
