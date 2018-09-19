@@ -28,6 +28,7 @@ describe(
             'saves an empty list',
             inTemporaryFolder(async folder => {
                 await page.navigateToFolder(folder);
+                await nodeList.createNode(schema.name);
             })
         );
     })

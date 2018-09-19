@@ -4822,18 +4822,18 @@ export interface SchemaCreateRequest {
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.
      */
-    readonly container: boolean;
+    readonly container?: boolean;
     /** Description of the schema */
     readonly description?: string;
     /** Name of the display field. */
-    readonly displayField: string;
+    readonly displayField?: string;
     /**
      * Additional search index configuration. This can be used to setup custom analyzers
      * and filters.
      */
     readonly elasticsearch?: JsonObjectFromServer;
     /** List of schema fields */
-    readonly fields: FieldSchemaFromServer[];
+    readonly fields?: FieldSchemaFromServer[];
     /** Name of the schema */
     readonly name: string;
     /**

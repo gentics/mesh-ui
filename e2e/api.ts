@@ -4,6 +4,7 @@ import * as rp from 'request-promise';
 import { MeshNode } from '../src/app/common/models/node.model';
 import { Project } from '../src/app/common/models/project.model';
 import { Schema } from '../src/app/common/models/schema.model';
+import { SchemaCreateRequest } from '../src/app/common/models/server-models';
 
 import { HasUuid } from './model';
 
@@ -72,7 +73,11 @@ export function createVehicleImage(parent: HasUuid, name: string, language = 'en
     });
 }
 
-export function createSchema(schemaName: string): any {
+export function createSchema(schema: SchemaCreateRequest) {
+    return post('/schemas', schema);
+}
+
+export function createSimpleSchema(schemaName: string): any {
     return post(`/schemas`, {
         container: true,
         displayField: 'name',
