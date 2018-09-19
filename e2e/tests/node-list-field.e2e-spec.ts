@@ -1,7 +1,7 @@
 import * as page from '../page-objects/app.po';
 import { ListField } from '../page-objects/node-list-field.po';
-import { MeshNodeList } from '../page-objects/node-list.po';
-import { SingleHtmlFieldList, SingleNodeFieldList } from '../schemas';
+import * as nodeList from '../page-objects/node-list.po';
+import { SingleNodeFieldList } from '../schemas';
 import { inTemporaryFolder, requiresSchema } from '../testUtil';
 
 describe(
@@ -9,11 +9,9 @@ describe(
     requiresSchema(SingleNodeFieldList, schema => {
         xdescribe('temp', () => {
             let listField: ListField;
-            let nodeList: MeshNodeList;
 
             beforeEach(async () => {
                 listField = new ListField();
-                nodeList = new MeshNodeList();
                 await page.navigateToHome();
                 await nodeList.openFolder('Yachts');
                 await nodeList.editNode('Pelorus');
@@ -26,6 +24,11 @@ describe(
             });
         });
 
-        it('saves an empty list', inTemporaryFolder(folder => {}));
+        it(
+            'saves an empty list',
+            inTemporaryFolder(async folder => {
+                await page.navigateToFolder(folder);
+            })
+        );
     })
 );

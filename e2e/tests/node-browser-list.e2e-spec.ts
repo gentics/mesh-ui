@@ -4,16 +4,14 @@ import * as page from '../page-objects/app.po';
 import { NodeBrowserList } from '../page-objects/node-browser-list.po';
 import * as browser from '../page-objects/node-browser.po';
 import { NodeField } from '../page-objects/node-field.po';
-import { MeshNodeList } from '../page-objects/node-list.po';
+import * as nodeList from '../page-objects/node-list.po';
 
 describe('node browser list', () => {
     let nodeField: NodeField;
-    let nodeList: MeshNodeList;
     let nodeBrowserList: NodeBrowserList;
 
     beforeEach(async () => {
         nodeField = new NodeField();
-        nodeList = new MeshNodeList();
         nodeBrowserList = new NodeBrowserList();
         await page.navigateToHome();
         await nodeList.openFolder('Yachts');

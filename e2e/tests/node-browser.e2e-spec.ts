@@ -5,15 +5,13 @@ import * as api from '../api';
 import * as page from '../page-objects/app.po';
 import * as browser from '../page-objects/node-browser.po';
 import { NodeField } from '../page-objects/node-field.po';
-import { MeshNodeList } from '../page-objects/node-list.po';
+import * as nodeList from '../page-objects/node-list.po';
 import { inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node browser', () => {
-    let nodeList: MeshNodeList;
     let nodeField: NodeField;
 
     beforeAll(async () => {
-        nodeList = new MeshNodeList();
         nodeField = new NodeField();
     });
 
