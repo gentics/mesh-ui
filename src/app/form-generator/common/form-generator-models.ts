@@ -111,4 +111,9 @@ export interface MeshFieldControlApi {
      * nodes when the user has closed the dialog.
      */
     openNodeBrowser(options: NodeBrowserOptions): Promise<string[]>;
+
+    /**
+     * The name of the current project.
+     */
+    project(): string;
 }

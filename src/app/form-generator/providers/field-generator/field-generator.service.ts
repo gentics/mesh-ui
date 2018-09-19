@@ -120,7 +120,9 @@ export class FieldGenerator {
                 return this.modalService
                     .fromComponent(NodeBrowserComponent, { padding: true, width: '1000px' }, { options })
                     .then(dialog => dialog.open());
-            }
+            },
+            // non-null assertion is used here because a node will always be created in an existing project
+            project: () => this.state.now.list.currentProject!
         };
         componentRef.instance.init(meshControlFieldInstance);
         return {
