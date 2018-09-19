@@ -139,6 +139,10 @@ export function moveNode(source: HasUuid, destination: HasUuid) {
     return post(`/${project}/nodes/${source.uuid}/moveTo/${destination.uuid}`);
 }
 
+export function assignSchemaToProject(schema: HasUuid) {
+    return post(`/${project}/schemas/${schema.uuid}`);
+}
+
 function get(url: string, body?: any, qs?: any) {
     return request('GET', url, body, qs);
 }

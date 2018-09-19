@@ -1,5 +1,6 @@
-import { by, element } from 'protractor';
+import { browser, by, element } from 'protractor';
 
+import * as api from '../api';
 import { getTextNodeText } from '../testUtil';
 
 import { BinaryField } from './binary-field.po';
@@ -8,13 +9,13 @@ import { HtmlField } from './html-field.po';
 const editor = element(by.tagName('mesh-node-editor'));
 
 export async function chooseNodeReference(fieldName: string) {
-    await this.getFieldElement('mesh-node-field', fieldName)
+    await getFieldElement('mesh-node-field', fieldName)
         .element(by.css('button'))
         .click();
 }
 
 export async function getBreadCrumbText() {
-    const breadcrumb = await this.editor.element(by.css('.info-row .path a')).getWebElement();
+    const breadcrumb = await editor.element(by.css('.info-row .path a')).getWebElement();
     return getTextNodeText(breadcrumb);
 }
 
@@ -26,11 +27,11 @@ function getFieldElement(tagName: string, fieldName: string) {
 }
 
 export function getHtmlField(fieldName: string) {
-    return new HtmlField(this.getFieldElement('mesh-html-field', fieldName));
+    return new HtmlField(getFieldElement('mesh-html-field', fieldName));
 }
 
 export function getBinaryField(fieldName: string) {
-    return new BinaryField(this.getFieldElement('mesh-binary-field', fieldName));
+    return new BinaryField(getFieldElement('mesh-binary-field', fieldName));
 }
 
 export function getDescription() {
@@ -49,9 +50,18 @@ export async function clickSaveAndClose() {
 }
 
 export async function save() {
-    return this.editor.element(by.css('.editor-header .primary-buttons .save-button')).click();
+    return editor.element(by.css('.editor-header .primary-buttons .save-button')).click();
+}
+
+export async function fetchCurrentNode() {
+    const url = await browser.getCurrentUrl();
+    const match = url.match(/detail:demo\/(.*)\//);
+    if (!match) {
+        throw new Error(`Could not get uuid from url. Url is ${url}`);
+    }
+    return api.findNodeByUuid(match[1]);
 }
 
 export async function publish() {
-    return this.editor.element(by.css('.editor-header .primary-buttons .success')).click();
+    return editor.element(by.css('.editor-header .primary-buttons .success')).click();
 }

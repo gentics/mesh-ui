@@ -66,7 +66,11 @@ function createWrapper<T extends object>(fns: WrapperFunctions<T>) {
  */
 export function requiresSchema(schema: SchemaCreateRequest, body: (schema: SchemaResponse) => any) {
     return createWrapper({
-        before: () => api.createSchema(schema),
+        async before() {
+            const response = await api.createSchema(schema);
+            await api.assignSchemaToProject(response);
+            return response;
+        },
         test: body,
         after: api.deleteSchema
     });

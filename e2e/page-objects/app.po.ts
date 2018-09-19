@@ -6,7 +6,7 @@ export async function navigateToHome() {
     await browser.get('/');
     const url = await browser.getCurrentUrl();
     if (url.match(/login$/)) {
-        await this.login();
+        await login();
     }
 }
 
