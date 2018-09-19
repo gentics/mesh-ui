@@ -70,9 +70,9 @@ describe('node list', () => {
 
     describe(
         'creating a node',
-        inTemporaryFolderWithLanguage('de', context => {
+        inTemporaryFolderWithLanguage('de', folder => {
             it('works without content in default language', async () => {
-                await nodeList.openFolder(context.folder.fields.name);
+                await nodeList.openFolder(folder.fields.name);
                 await nodeList.createNode('folder');
                 await assertNoConsoleErrors();
             });

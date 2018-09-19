@@ -85,11 +85,11 @@ describe('node browser', () => {
 
     describe(
         'paging',
-        inTemporaryFolder(context => {
+        inTemporaryFolder(folder => {
             beforeAll(async () => {
-                const vehicle = await createVehicle(context.folder, 'testVehicle');
+                const vehicle = await createVehicle(folder, 'testVehicle');
                 for (let i = 0; i < 50; i++) {
-                    await createFolder(context.folder, `test${i}`);
+                    await createFolder(folder, `test${i}`);
                 }
                 await page.navigateToNodeEdit(vehicle);
                 await nodeField
@@ -164,9 +164,9 @@ describe('node browser', () => {
 
     describe(
         'languages',
-        inTemporaryFolderWithLanguage('de', context => {
+        inTemporaryFolderWithLanguage('de', folder => {
             beforeAll(async () => {
-                await api.createVehicleImage(context.folder, 'germanImage', 'de');
+                await api.createVehicleImage(folder, 'germanImage', 'de');
                 await page.navigateToHome();
                 await nodeList.openFolder('Automobiles');
                 await nodeList.editNode('Ford GT');
@@ -175,7 +175,7 @@ describe('node browser', () => {
 
             it('shows nodes in non-default languages', async () => {
                 await browser.goToRoot();
-                await browser.openFolder(context.folder.displayName!);
+                await browser.openFolder(folder.displayName!);
                 await browser.getNode('germanImage').select();
                 await browser.choose();
             });
