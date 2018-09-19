@@ -1,21 +1,20 @@
 import { browser } from 'protractor';
 
 import { Schema } from '../../src/app/common/models/schema.model';
-import { createSchema, deleteSchema } from '../api';
-import { AppPage } from '../page-objects/app.po';
+import { createSimpleSchema, deleteSchema } from '../api';
+import * as page from '../page-objects/app.po';
 import { NodeAdmin } from '../page-objects/node-admin.po';
 import { NodeSchema } from '../page-objects/node-schema.po';
 
 describe('node schema', () => {
     let admin: NodeAdmin;
-    let page: AppPage;
     let schema: NodeSchema;
 
     const schemaModel: Array<Schema> = [];
 
     beforeAll(async () => {
         for (let i = 1; i <= 10; i++) {
-            schemaModel.push(await createSchema('test' + i));
+            schemaModel.push(await createSimpleSchema('test' + i));
         }
     });
 
@@ -27,7 +26,6 @@ describe('node schema', () => {
 
     beforeEach(async () => {
         admin = new NodeAdmin();
-        page = new AppPage();
         schema = new NodeSchema();
         await page.navigateToHome();
         await admin.modeChange();

@@ -2,19 +2,17 @@ import { by } from 'protractor';
 
 import { createFolder, createVehicle } from '../api';
 import * as api from '../api';
-import { AppPage } from '../page-objects/app.po';
+import * as page from '../page-objects/app.po';
 import * as browser from '../page-objects/node-browser.po';
 import { NodeField } from '../page-objects/node-field.po';
 import { MeshNodeList } from '../page-objects/node-list.po';
 import { inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node browser', () => {
-    let page: AppPage;
     let nodeList: MeshNodeList;
     let nodeField: NodeField;
 
     beforeAll(async () => {
-        page = new AppPage();
         nodeList = new MeshNodeList();
         nodeField = new NodeField();
     });

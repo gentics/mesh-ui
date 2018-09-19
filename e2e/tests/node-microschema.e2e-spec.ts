@@ -2,13 +2,12 @@ import { browser } from 'protractor';
 
 import { Microschema } from '../../src/app/common/models/microschema.model';
 import { createMicroschema, deleteMicroschema } from '../api';
-import { AppPage } from '../page-objects/app.po';
+import * as page from '../page-objects/app.po';
 import { NodeAdmin } from '../page-objects/node-admin.po';
 import { NodeMicroschema } from '../page-objects/node-microschema.po';
 
 describe('node microschema', () => {
     let admin: NodeAdmin;
-    let page: AppPage;
     let microschema: NodeMicroschema;
 
     const microschemaModel: Array<Microschema> = [];
@@ -27,7 +26,6 @@ describe('node microschema', () => {
 
     beforeEach(async () => {
         admin = new NodeAdmin();
-        page = new AppPage();
         microschema = new NodeMicroschema();
         await page.navigateToHome();
         await admin.modeChange();
