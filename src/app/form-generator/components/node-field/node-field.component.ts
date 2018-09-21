@@ -47,7 +47,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
     valueChange(value: NodeField): void {
         this.userValue = (value && value.uuid) || '';
         this.routerLink = this.navigationService
-            .detail(this.node.project.name!, this.userValue!, this.node.language)
+            .detail(this.api.project(), this.userValue!, this.node.language)
             .commands();
 
         if (this.userValue) {
@@ -61,7 +61,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
                 this.changeDetector.detectChanges();
             });
 
-            this.editorEffects.loadNode(this.node.project.name!, this.userValue);
+            this.editorEffects.loadNode(this.api.project(), this.userValue);
         }
     }
 
@@ -81,7 +81,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
         this.api
             .openNodeBrowser({
                 startNodeUuid: this.node.parentNode ? this.node.parentNode.uuid : this.node.uuid,
-                projectName: this.node.project.name!,
+                projectName: this.api.project(),
                 titleKey: 'editor.select_node',
                 selectablePredicate: node => {
                     if (allowedSchemas) {

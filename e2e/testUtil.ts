@@ -3,9 +3,9 @@ import { browser, ElementFinder, WebElement } from 'protractor';
 import * as uuid from 'uuid-random';
 
 import { MeshNode } from '../src/app/common/models/node.model';
-import { Project } from '../src/app/common/models/project.model';
+import { SchemaCreateRequest, SchemaResponse } from '../src/app/common/models/server-models';
 
-import { createFolder, deleteNode, findNodeByUuid, getProject, updateNode } from './api';
+import * as api from './api';
 
 /**
  * Contains paths of test files
@@ -15,30 +15,83 @@ export const files = {
 };
 
 /**
+ * Checks if the current code is executed in a describe block.
+ */
+function inDescribe(): boolean {
+    try {
+        beforeAll(() => {});
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+interface WrapperFunctions<T extends object = object> {
+    before(): T | Promise<T>;
+    test(param: T): any;
+    after(param: T): any;
+}
+
+interface ValueWrapperFunctions<T> {
+    before(): any;
+    test(): any;
+    after(): any;
+}
+
+function createWrapper<T extends object>(fns: WrapperFunctions<T>) {
+    return async () => {
+        if (inDescribe()) {
+            const val: T = {} as any;
+            beforeAll(async () => {
+                Object.assign(val, await fns.before());
+            });
+
+            afterAll(() => {
+                return fns.after(val);
+            });
+
+            return fns.test(val);
+        } else {
+            const val = await fns.before();
+            try {
+                await fns.test(val);
+            } finally {
+                await fns.after(val);
+            }
+        }
+    };
+}
+
+/**
+ * Creates a schema for the test and deletes it afterwards.
+ */
+export function requiresSchema(schema: SchemaCreateRequest, body: (schema: SchemaResponse) => any) {
+    return createWrapper({
+        async before() {
+            const response = await api.createSchema(schema);
+            await api.assignSchemaToProject(response);
+            return response;
+        },
+        test: body,
+        after: api.deleteSchema
+    });
+}
+
+/**
  * Creates a temporary folder in the root node of the project.
  * The folder and all its contents are deleted after the body has been executed.
  *
  * @param language The language of the created folder
  * @param body A function that is executed
  */
-export function inTemporaryFolderWithLanguage(language: string, body: (context: { folder: MeshNode }) => void) {
-    return () => {
-        let project: Project;
-        const context: { folder: MeshNode } = {} as any;
-        let folder: MeshNode;
-
-        beforeAll(async () => {
-            project = await getProject();
-            folder = await createFolder(project.rootNode, 'tmpFolder' + uuid(), language);
-            context.folder = folder;
-        });
-
-        afterAll(async () => {
-            await deleteNode(folder);
-        });
-
-        body(context);
-    };
+export function inTemporaryFolderWithLanguage(language: string, body: (folder: MeshNode) => any) {
+    return createWrapper({
+        async before() {
+            const project = await api.getProject();
+            return await api.createFolder(project.rootNode, 'tmpFolder' + uuid(), language);
+        },
+        test: body,
+        after: api.deleteNode
+    });
 }
 
 /**
@@ -47,7 +100,7 @@ export function inTemporaryFolderWithLanguage(language: string, body: (context: 
  *
  * @param body A function that is executed
  */
-export function inTemporaryFolder(body: (context: { folder: MeshNode }) => void) {
+export function inTemporaryFolder(body: (folder: MeshNode) => any) {
     return inTemporaryFolderWithLanguage('en', body);
 }
 
@@ -92,12 +145,12 @@ export async function assertNoConsoleErrors() {
  * @param body The function body to be executed.
  */
 export async function temporaryNodeChanges(uuid: string, body: () => any) {
-    const originalNode = await findNodeByUuid(uuid);
+    const originalNode = await api.findNodeByUuid(uuid);
     try {
         await body();
     } finally {
-        const alteredNode = await findNodeByUuid(uuid);
-        await updateNode({
+        const alteredNode = await api.findNodeByUuid(uuid);
+        await api.updateNode({
             ...originalNode,
             version: alteredNode.version
         });

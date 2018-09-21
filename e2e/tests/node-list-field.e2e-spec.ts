@@ -1,24 +1,43 @@
-import { AppPage } from '../page-objects/app.po';
+import * as page from '../page-objects/app.po';
+import * as editor from '../page-objects/node-editor.po';
 import { ListField } from '../page-objects/node-list-field.po';
-import { MeshNodeList } from '../page-objects/node-list.po';
+import * as nodeList from '../page-objects/node-list.po';
+import { SingleNodeFieldList } from '../schemas';
+import { inTemporaryFolder, requiresSchema } from '../testUtil';
 
-describe('node list field', () => {
-    let page: AppPage;
-    let listField: ListField;
-    let nodeList: MeshNodeList;
+describe(
+    'node list field',
+    requiresSchema(SingleNodeFieldList, schema => {
+        beforeEach(async () => {
+            await page.navigateToHome();
+        });
 
-    beforeEach(async () => {
-        page = new AppPage();
-        listField = new ListField();
-        nodeList = new MeshNodeList();
-        await page.navigateToHome();
-        await nodeList.openFolder('Yachts');
-        await nodeList.editNode('Pelorus');
-    });
+        xdescribe('temp', () => {
+            let listField: ListField;
 
-    it('should show select button by clicking on add button', async () => {
-        await listField.clickAddReference();
+            beforeEach(async () => {
+                listField = new ListField();
+                await page.navigateToHome();
+                await nodeList.openFolder('Yachts');
+                await nodeList.editNode('Pelorus');
+            });
 
-        expect(await listField.getSelectButton().isPresent()).toBe(true);
-    });
-});
+            it('should show select button by clicking on add button', async () => {
+                await listField.clickAddReference();
+
+                expect(await listField.getSelectButton().isPresent()).toBe(true);
+            });
+        });
+
+        fit(
+            'saves an empty list',
+            inTemporaryFolder(async folder => {
+                await page.navigateToFolder(folder);
+                await nodeList.createNode(schema.name);
+                await editor.save();
+                const node = await editor.fetchCurrentNode();
+                expect(node.fields.nodes).toEqual([]);
+            })
+        );
+    })
+);

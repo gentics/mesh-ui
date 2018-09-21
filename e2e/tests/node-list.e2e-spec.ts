@@ -1,16 +1,11 @@
 import { deleteNode, moveNode } from '../api';
-import { AppPage } from '../page-objects/app.po';
+import * as page from '../page-objects/app.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
-import { MeshNodeList } from '../page-objects/node-list.po';
+import * as nodeList from '../page-objects/node-list.po';
 import { assertNoConsoleErrors, inTemporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node list', () => {
-    let page: AppPage;
-    let nodeList: MeshNodeList;
-
     beforeEach(async () => {
-        page = new AppPage();
-        nodeList = new MeshNodeList();
         await page.navigateToHome();
     });
 
@@ -70,9 +65,9 @@ describe('node list', () => {
 
     describe(
         'creating a node',
-        inTemporaryFolderWithLanguage('de', context => {
+        inTemporaryFolderWithLanguage('de', folder => {
             it('works without content in default language', async () => {
-                await nodeList.openFolder(context.folder.fields.name);
+                await nodeList.openFolder(folder.fields.name);
                 await nodeList.createNode('folder');
                 await assertNoConsoleErrors();
             });

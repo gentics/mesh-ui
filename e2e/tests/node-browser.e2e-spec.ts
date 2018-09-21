@@ -2,20 +2,16 @@ import { by } from 'protractor';
 
 import { createFolder, createVehicle } from '../api';
 import * as api from '../api';
-import { AppPage } from '../page-objects/app.po';
+import * as page from '../page-objects/app.po';
 import * as browser from '../page-objects/node-browser.po';
 import { NodeField } from '../page-objects/node-field.po';
-import { MeshNodeList } from '../page-objects/node-list.po';
+import * as nodeList from '../page-objects/node-list.po';
 import { inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node browser', () => {
-    let page: AppPage;
-    let nodeList: MeshNodeList;
     let nodeField: NodeField;
 
     beforeAll(async () => {
-        page = new AppPage();
-        nodeList = new MeshNodeList();
         nodeField = new NodeField();
     });
 
@@ -85,11 +81,11 @@ describe('node browser', () => {
 
     describe(
         'paging',
-        inTemporaryFolder(context => {
+        inTemporaryFolder(folder => {
             beforeAll(async () => {
-                const vehicle = await createVehicle(context.folder, 'testVehicle');
+                const vehicle = await createVehicle(folder, 'testVehicle');
                 for (let i = 0; i < 50; i++) {
-                    await createFolder(context.folder, `test${i}`);
+                    await createFolder(folder, `test${i}`);
                 }
                 await page.navigateToNodeEdit(vehicle);
                 await nodeField
@@ -164,9 +160,9 @@ describe('node browser', () => {
 
     describe(
         'languages',
-        inTemporaryFolderWithLanguage('de', context => {
+        inTemporaryFolderWithLanguage('de', folder => {
             beforeAll(async () => {
-                await api.createVehicleImage(context.folder, 'germanImage', 'de');
+                await api.createVehicleImage(folder, 'germanImage', 'de');
                 await page.navigateToHome();
                 await nodeList.openFolder('Automobiles');
                 await nodeList.editNode('Ford GT');
@@ -175,7 +171,7 @@ describe('node browser', () => {
 
             it('shows nodes in non-default languages', async () => {
                 await browser.goToRoot();
-                await browser.openFolder(context.folder.displayName!);
+                await browser.openFolder(folder.displayName!);
                 await browser.getNode('germanImage').select();
                 await browser.choose();
             });
