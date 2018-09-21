@@ -1,5 +1,6 @@
+<mesh-simple-label [api]="api"
+                   [value]="value"></mesh-simple-label>
 <gtx-date-time-picker [(ngModel)]="timestampValue"
-                      [label]="api.field.label || api.field.name"
                       [disabled]="api.readOnly"
                       (change)="onChange($event)">
 </gtx-date-time-picker>

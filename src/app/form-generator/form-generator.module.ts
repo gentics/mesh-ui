@@ -20,6 +20,7 @@ import { ListFieldComponent } from './components/list-field/list-field.component
 import { MicronodeFieldComponent } from './components/micronode-field/micronode-field.component';
 import { NodeFieldComponent } from './components/node-field/node-field.component';
 import { NumberFieldComponent } from './components/number-field/number-field.component';
+import { SimpleLabelComponent } from './components/simple-label/simple-label.component';
 import { StringFieldComponent } from './components/string-field/string-field.component';
 import { MeshControlGroupService } from './providers/field-control-group/mesh-control-group.service';
 import { FieldGeneratorService } from './providers/field-generator/field-generator.service';
@@ -42,7 +43,7 @@ const ENTRY_COMPONENTS = [
 
 @NgModule({
     imports: [GenticsUICoreModule, GenticsUIImageEditorModule, CommonModule, FormsModule, SharedModule, RouterModule],
-    declarations: [BaseFieldComponent, FormGeneratorComponent, ...ENTRY_COMPONENTS],
+    declarations: [BaseFieldComponent, FormGeneratorComponent, ...ENTRY_COMPONENTS, SimpleLabelComponent],
     entryComponents: ENTRY_COMPONENTS,
     providers: [FieldGeneratorService, MeshControlGroupService, QuillInitializerService],
     exports: [FormGeneratorComponent]

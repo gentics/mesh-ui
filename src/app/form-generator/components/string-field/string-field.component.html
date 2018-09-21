@@ -1,5 +1,6 @@
-<gtx-input [label]="api.field.label || api.field.name"
-           [name]="api.path"
+<mesh-simple-label [api]="api"
+                   [value]="value"></mesh-simple-label>
+<gtx-input [name]="api.path"
            [required]="api.field.required"
            [ngModel]="value"
            [readonly]="api.readOnly"

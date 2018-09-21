@@ -23,6 +23,7 @@ export class NumberFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value: NodeFieldType): void {
+        console.log(value);
         this.value = value;
     }
 

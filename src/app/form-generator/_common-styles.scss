@@ -27,20 +27,16 @@ $left-bar-width: 6px;
 }
 
 @mixin input-styles {
-    /deep/ gtx-input {
         display: flex;
-        flex-direction: row-reverse;
         justify-content: space-between;
 
-        input[type="number"],
+    /deep/ gtx-input, /deep/ gtx-date-time-picker {
+        width: $half-width-right;
+        input[type="number"]
         input[type="text"],
         input[type="password"] {
-            width: $half-width-right;
             background-color: white;
             transition: width 0.2s;
-        }
-        label {
-            @include label-style-full;
         }
     }
 

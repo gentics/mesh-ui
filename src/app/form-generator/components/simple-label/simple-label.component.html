@@ -1,0 +1,8 @@
+<ng-container *ngIf="api.field.label || api.field.name">
+    <label>{{api.field.label || api.field.name}}</label>
+    <a class="remove-content-button"
+       (click)="removeContent()"
+       *ngIf="isRemovable()">
+        <icon>close</icon>
+    </a>
+</ng-container>

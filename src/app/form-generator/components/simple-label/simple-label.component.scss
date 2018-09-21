@@ -1,0 +1,19 @@
+@import "variables";
+@import "../../common-styles";
+
+.remove-content-button {
+  color: $gtx-color-alert;
+  cursor: pointer;
+  margin-right: 5px;
+  margin-top: 26px;
+}
+
+label {
+  @include label-style-full;
+}
+
+:host {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+}

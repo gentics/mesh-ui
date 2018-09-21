@@ -12,6 +12,7 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
 export class DateFieldComponent extends BaseFieldComponent {
     api: MeshFieldControlApi;
     timestampValue: number;
+    value: DateField;
 
     init(api: MeshFieldControlApi): void {
         this.api = api;
@@ -19,6 +20,7 @@ export class DateFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value: DateField): void {
+        this.value = value;
         const date = new Date(value);
         this.timestampValue = date.getTime() / 1000;
     }
