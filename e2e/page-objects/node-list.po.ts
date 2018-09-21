@@ -22,6 +22,11 @@ export async function copyNode(displayName: string) {
     await element(by.cssContainingText('gtx-dropdown-item', 'Copy')).click();
 }
 
+export async function deleteNode(displayName: string) {
+    await openNodeMenu(displayName);
+    await element(by.cssContainingText('gtx-dropdown-item', 'Delete'));
+}
+
 export async function getNodeUuid(displayName: string): Promise<string> {
     const href = await getNodeRow(displayName)
         .element(by.css('.title a'))

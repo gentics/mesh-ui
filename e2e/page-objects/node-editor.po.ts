@@ -65,3 +65,7 @@ export async function fetchCurrentNode() {
 export async function publish() {
     return editor.element(by.css('.editor-header .primary-buttons .success')).click();
 }
+
+export function isOpen() {
+    return editor.isPresent();
+}

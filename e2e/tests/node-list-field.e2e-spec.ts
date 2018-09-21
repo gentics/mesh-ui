@@ -29,7 +29,7 @@ describe(
             });
         });
 
-        fit(
+        it(
             'saves an empty list',
             inTemporaryFolder(async folder => {
                 await page.navigateToFolder(folder);

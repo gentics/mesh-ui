@@ -1,8 +1,12 @@
-import { deleteNode, moveNode } from '../api';
+import { browser } from 'protractor';
+
+import { NodeResponse } from '../../src/app/common/models/server-models';
+import { createVehicle, deleteNode, moveNode } from '../api';
 import * as page from '../page-objects/app.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
+import * as editor from '../page-objects/node-editor.po';
 import * as nodeList from '../page-objects/node-list.po';
-import { assertNoConsoleErrors, inTemporaryFolderWithLanguage, toText } from '../testUtil';
+import { assertNoConsoleErrors, inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node list', () => {
     beforeEach(async () => {
@@ -73,4 +77,41 @@ describe('node list', () => {
             });
         })
     );
+
+    fdescribe('deleting a node', () => {
+        it(
+            'closes the node editor if the deleted node was open',
+            inTemporaryFolder(async folder => {
+                // Node list is only visible if the window is big enough or the left arrow has been clicked
+                // TODO the page object API should do that automatically
+                browser.driver
+                    .manage()
+                    .window()
+                    .maximize();
+                const node1 = await createVehicle(folder, 'vehicle1');
+                await page.navigateToFolder(folder);
+                await nodeList.editNode(node1.displayName!);
+                await nodeList.deleteNode(node1.displayName!);
+                expect(await editor.isOpen()).toBe(false, 'Expected editor to be closed');
+            })
+        );
+
+        it(
+            'does not close the editor if another node was deleted',
+            inTemporaryFolder(async folder => {
+                // Node list is only visible if the window is big enough or the left arrow has been clicked
+                // TODO the page object API should do that automatically
+                browser.driver
+                    .manage()
+                    .window()
+                    .maximize();
+                const node1 = await createVehicle(folder, 'vehicle1');
+                const node2 = await createVehicle(folder, 'vehicle2');
+                await page.navigateToFolder(folder);
+                await nodeList.editNode(node1.displayName!);
+                await nodeList.deleteNode(node2.displayName!);
+                expect(await editor.isOpen()).toBe(true, 'Expected editor to be open');
+            })
+        );
+    });
 });
