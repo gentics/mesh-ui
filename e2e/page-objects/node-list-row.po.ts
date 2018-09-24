@@ -23,7 +23,8 @@ export class NodeListRow {
 
     public async deleteNode() {
         await this.openNodeMenu();
-        await element(by.cssContainingText('gtx-dropdown-item', 'Delete'));
+        await element(by.cssContainingText('gtx-dropdown-item', 'Delete')).click();
+        await element(by.cssContainingText('gtx-modal-dialog button', 'Delete')).click();
     }
 
     public async getNodeUuid(): Promise<string> {

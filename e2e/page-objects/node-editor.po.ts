@@ -67,10 +67,10 @@ export async function publish() {
 }
 
 /**
- * Tests if the editor pane is currently present.
+ * Tests if the editor pane is currently displayed.
  */
-export function isPresent() {
-    return editor.isPresent();
+export function isDisplayed() {
+    return editor.isDisplayed();
 }
 
 export async function createLanguage(language: string) {

@@ -91,7 +91,7 @@ describe('node list', () => {
                 await page.navigateToFolder(folder);
                 await nodeList.getNode(node1.displayName!).editNode();
                 await nodeList.getNode(node1.displayName!).deleteNode();
-                expect(await editor.isPresent()).toBe(false, 'Expected editor to be closed');
+                expect(await editor.isDisplayed()).toBe(false, 'Expected editor to be closed');
             })
         );
 
@@ -109,12 +109,12 @@ describe('node list', () => {
                 await page.navigateToFolder(folder);
                 await nodeList.getNode(node1.displayName!).editNode();
                 await nodeList.getNode(node2.displayName!).deleteNode();
-                expect(await editor.isPresent()).toBe(true, 'Expected editor to be open');
+                expect(await editor.isDisplayed()).toBe(true, 'Expected editor to be open');
             })
         );
     });
 
-    fdescribe('Updating on changes', () => {
+    describe('Updating on changes', () => {
         it(
             'shows a newly created language of a node',
             inTemporaryFolder(async folder => {
