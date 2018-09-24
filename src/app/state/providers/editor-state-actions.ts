@@ -81,9 +81,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
 
     saveNodeSuccess(node: MeshNode): void {
         this.editor.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            node: [node]
-        });
+        this.updateNodeEntity(node);
     }
 
     publishNodeStart(): void {
@@ -96,9 +94,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
 
     publishNodeSuccess(node: MeshNode): void {
         this.editor.loadCount--;
-        this.entities = mergeEntityState(this.entities, {
-            node: [node]
-        });
+        this.updateNodeEntity(node);
     }
 
     unpublishNodeStart(): void {
@@ -111,8 +107,32 @@ export class EditorStateActions extends StateActionBranch<AppState> {
 
     unpublishNodeSuccess(node: MeshNode): void {
         this.editor.loadCount--;
+        this.updateNodeEntity(node);
+    }
+
+    private updateNodeEntity(node: MeshNode) {
         this.entities = mergeEntityState(this.entities, {
             node: [node]
         });
+        const availableLanguages = node.availableLanguages;
+        const languages: { [language: string]: { [version: string]: MeshNode } } = {};
+        // Set the available languages of all contents of the node
+        for (const language of Object.keys(this.entities.node[node.uuid])) {
+            languages[language] = {};
+            for (const version of Object.keys(this.entities.node[node.uuid][language])) {
+                languages[language][version] = {
+                    ...this.entities.node[node.uuid][language][version],
+                    availableLanguages
+                };
+            }
+        }
+
+        this.entities = {
+            ...this.entities,
+            node: {
+                ...this.entities.node,
+                [node.uuid]: languages
+            }
+        };
     }
 }
