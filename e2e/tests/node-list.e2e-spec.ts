@@ -77,7 +77,7 @@ describe('node list', () => {
         })
     );
 
-    fdescribe('deleting a node', () => {
+    describe('deleting a node', () => {
         it(
             'closes the node editor if the deleted node was open',
             inTemporaryFolder(async folder => {
@@ -126,9 +126,10 @@ describe('node list', () => {
                     .maximize();
                 const node = await createVehicle(folder, 'vehicle1');
                 await page.navigateToFolder(folder);
-                await nodeList.editNode(node.displayName!);
+                const nodeRow = nodeList.getNode(node.displayName!);
+                await nodeRow.editNode();
                 await editor.createLanguage('de');
-                expect(await nodeList.getLanguages(node.displayName!)).toEqual(['de', 'en']);
+                expect(await nodeRow.getLanguages()).toEqual(['de', 'en']);
             })
         );
     });

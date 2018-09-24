@@ -1,7 +1,7 @@
 import { browser, by, element } from 'protractor';
 
 import * as api from '../api';
-import { getTextNodeText } from '../testUtil';
+import { getTextNodeText, i18n } from '../testUtil';
 
 import { BinaryField } from './binary-field.po';
 import { HtmlField } from './html-field.po';
@@ -66,6 +66,21 @@ export async function publish() {
     return editor.element(by.css('.editor-header .primary-buttons .success')).click();
 }
 
-export function isOpen() {
+/**
+ * Tests if the editor pane is currently present.
+ */
+export function isPresent() {
     return editor.isPresent();
+}
+
+export async function createLanguage(language: string) {
+    await editor.element(by.css('.language mesh-node-language-switcher')).click();
+    await browser
+        .element(by.cssContainingText('gtx-dropdown-content-wrapper gtx-dropdown-item', getTranslateNodeText(language)))
+        .click();
+}
+
+function getTranslateNodeText(langCode: string): string {
+    const language = i18n('lang')(langCode);
+    return i18n('editor')('language_translate_to').replace('{{language}}', language);
 }

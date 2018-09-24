@@ -1,4 +1,4 @@
-import { browser, by, element, ElementFinder, ExpectedConditions } from 'protractor';
+import { browser, by, element, promise, ElementFinder, ExpectedConditions } from 'protractor';
 
 export class NodeListRow {
     constructor(private container: ElementFinder) {}
@@ -33,6 +33,12 @@ export class NodeListRow {
 
     public isPresent() {
         return this.container.isPresent();
+    }
+
+    public async getLanguages(): Promise<string[]> {
+        return this.container
+            .all(by.css('mesh-available-languages-list li'))
+            .map<string>(element => element!.getText());
     }
 
     private async openNodeMenu() {
