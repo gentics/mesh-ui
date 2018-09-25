@@ -27,7 +27,7 @@ class Range {
 
 // Based on `quill/themes/base.js`
 class BaseTooltip extends Tooltip {
-    constructor(quill: any, boundsContainer: any) {
+    constructor(quill: any, private api: MeshFieldControlApi, boundsContainer: any) {
         super(quill, boundsContainer);
         this.textbox = this.root.querySelector('input[type="text"]');
         this.meshNode = this.root.querySelector('span.ql-mesh-node');
@@ -56,7 +56,7 @@ class BaseTooltip extends Tooltip {
             const node = this.api.getNodeValue() as MeshNode;
             const [uuid] = await this.api.openNodeBrowser({
                 startNodeUuid: node.parentNode ? node.parentNode.uuid : node.uuid,
-                projectName: node.project.name!,
+                projectName: this.api.project(),
                 titleKey: 'editor.select_node'
             });
             const { scrollTop } = this.quill.root;
@@ -134,8 +134,8 @@ class BaseTooltip extends Tooltip {
 
 // Heavily based on `quill/themes/snow.js`
 class MeshTooltip extends BaseTooltip {
-    constructor(quill: any, private api: MeshFieldControlApi, bounds?: any) {
-        super(quill, bounds);
+    constructor(quill: any, api: MeshFieldControlApi, bounds?: any) {
+        super(quill, api, bounds);
         this.preview = this.root.querySelector('a.ql-preview');
     }
 
