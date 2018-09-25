@@ -5,6 +5,7 @@ import * as page from '../page-objects/app.po';
 import { HtmlField } from '../page-objects/html-field.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import * as editor from '../page-objects/node-editor.po';
+import * as nodeList from '../page-objects/node-list.po';
 import * as tooltip from '../page-objects/quill-tooltip.po';
 import { files, inTemporaryFolder, temporaryNodeChanges } from '../testUtil';
 
@@ -18,7 +19,7 @@ describe('node editor', () => {
         expect(await editor.getBreadCrumbText()).toBe('Aircraft › Space Shuttle');
     });
 
-    describe('html field', () => {
+    describe('html field in existing node', () => {
         let htmlField: HtmlField;
         const uuid = 'a5d81285b4884df1981285b488adf1b5';
 
@@ -75,6 +76,31 @@ describe('node editor', () => {
                         `<p>The Embraer Legacy 600 is a <a class="mesh-link" href="{{mesh.link('f915b16fa68f40e395b16fa68f10e32d')}}">business</a> jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>`
                     );
                 });
+            });
+        });
+    });
+
+    describe('html field new node', () => {
+        let htmlField: HtmlField;
+
+        beforeEach(async () => {
+            await nodeList.createNode('vehicle');
+            htmlField = editor.getHtmlField('Description');
+        });
+
+        describe('node link', () => {
+            fit('creates a mesh link in the markup', async () => {
+                await htmlField.setText('Hello World!');
+                await htmlField.selectText('World');
+                await htmlField.linkToNode();
+                await nodeBrowser.getNode('Automobiles').select();
+                await nodeBrowser.choose();
+                await editor.getRemoveNodeLink().click();
+                await htmlField.selectText('World');
+                await htmlField.linkToNode();
+                expect(editor.getDescription()).toBe(
+                    `The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.`
+                );
             });
         });
     });

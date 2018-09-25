@@ -19,6 +19,7 @@ export function getNode(displayName: string): NodeListRow {
 
 export async function createNode(schemaName: string) {
     await element(by.css('mesh-create-node-button gtx-button')).click();
+    await browser.waitForAngular();
     await element
         .all(by.tagName('gtx-dropdown-item'))
         .filter(el => el.isElementPresent(by.cssContainingText('.name', schemaName)))
