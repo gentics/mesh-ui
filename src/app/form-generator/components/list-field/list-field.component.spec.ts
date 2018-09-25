@@ -69,7 +69,7 @@ describe('ListFieldComponent', () => {
         instance.init(api);
         fixture.detectChanges();
 
-        const sortableList: SortableList = fixture.debugElement.query(By.css('.editor-container gtx-sortable-list'))
+        const sortableList: SortableList = fixture.debugElement.query(By.css('.list-container gtx-sortable-list'))
             .componentInstance;
 
         expect(sortableList.disabled).toBe(true);
