@@ -81,12 +81,6 @@ describe('node list', () => {
         it(
             'closes the node editor if the deleted node was open',
             inTemporaryFolder(async folder => {
-                // Node list is only visible if the window is big enough or the left arrow has been clicked
-                // TODO the page object API should do that automatically
-                browser.driver
-                    .manage()
-                    .window()
-                    .maximize();
                 const node1 = await createVehicle(folder, 'vehicle1');
                 await page.navigateToFolder(folder);
                 await nodeList.getNode(node1.displayName!).editNode();
@@ -98,12 +92,6 @@ describe('node list', () => {
         it(
             'does not close the editor if another node was deleted',
             inTemporaryFolder(async folder => {
-                // Node list is only visible if the window is big enough or the left arrow has been clicked
-                // TODO the page object API should do that automatically
-                browser.driver
-                    .manage()
-                    .window()
-                    .maximize();
                 const node1 = await createVehicle(folder, 'vehicle1');
                 const node2 = await createVehicle(folder, 'vehicle2');
                 await page.navigateToFolder(folder);
@@ -118,12 +106,6 @@ describe('node list', () => {
         it(
             'shows a newly created language of a node',
             inTemporaryFolder(async folder => {
-                // Node list is only visible if the window is big enough or the left arrow has been clicked
-                // TODO the page object API should do that automatically
-                browser.driver
-                    .manage()
-                    .window()
-                    .maximize();
                 const node = await createVehicle(folder, 'vehicle1');
                 await page.navigateToFolder(folder);
                 const nodeRow = nodeList.getNode(node.displayName!);

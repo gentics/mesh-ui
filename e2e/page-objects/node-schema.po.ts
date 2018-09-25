@@ -4,10 +4,6 @@ declare const window: any;
 
 export class NodeSchema {
     async openSchema() {
-        await browser.driver
-            .manage()
-            .window()
-            .maximize();
         await browser.sleep(1000);
         await this.getSchemaButton().click();
         await browser.sleep(1000);
