@@ -18,8 +18,8 @@ describe('node browser', () => {
     describe('demo data', () => {
         beforeAll(async () => {
             await page.navigateToHome();
-            await nodeList.openFolder('Automobiles');
-            await nodeList.editNode('Ford GT');
+            await nodeList.getNode('Automobiles').openFolder();
+            await nodeList.getNode('Ford GT').editNode();
             await nodeField.clickBrowse();
         });
 
@@ -124,8 +124,8 @@ describe('node browser', () => {
     describe('search', () => {
         beforeAll(async () => {
             await page.navigateToHome();
-            await nodeList.openFolder('Automobiles');
-            await nodeList.editNode('Ford GT');
+            await nodeList.getNode('Automobiles').openFolder();
+            await nodeList.getNode('Ford GT').editNode();
             await nodeField.clickBrowse();
         });
 
@@ -164,8 +164,8 @@ describe('node browser', () => {
             beforeAll(async () => {
                 await api.createVehicleImage(folder, 'germanImage', 'de');
                 await page.navigateToHome();
-                await nodeList.openFolder('Automobiles');
-                await nodeList.editNode('Ford GT');
+                await nodeList.getNode('Automobiles').openFolder();
+                await nodeList.getNode('Ford GT').editNode();
                 await nodeField.clickBrowse();
             });
 

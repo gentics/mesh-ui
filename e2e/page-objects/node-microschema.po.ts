@@ -4,10 +4,6 @@ declare const window: any;
 
 export class NodeMicroschema {
     async openMicroschema() {
-        await browser.driver
-            .manage()
-            .window()
-            .maximize();
         await browser.sleep(1000);
         await this.getMicroschemaButton().click();
         await browser.sleep(1000);

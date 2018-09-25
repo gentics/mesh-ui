@@ -15,8 +15,8 @@ describe('node field', () => {
         nodeField = new NodeField();
         nodeBrowserList = new NodeBrowserList();
         await page.navigateToHome();
-        await nodeList.openFolder('Yachts');
-        await nodeList.editNode('Pelorus');
+        await nodeList.getNode('Yachts').openFolder();
+        await nodeList.getNode('Pelorus').editNode();
     });
 
     it('should show the right node for vehicleImages', async () => {

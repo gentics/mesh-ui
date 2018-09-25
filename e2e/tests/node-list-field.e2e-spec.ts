@@ -18,8 +18,8 @@ describe(
             beforeEach(async () => {
                 listField = new ListField();
                 await page.navigateToHome();
-                await nodeList.openFolder('Yachts');
-                await nodeList.editNode('Pelorus');
+                await nodeList.getNode('Yachts').openFolder();
+                await nodeList.getNode('Pelorus').editNode();
             });
 
             it('should show select button by clicking on add button', async () => {
@@ -29,7 +29,7 @@ describe(
             });
         });
 
-        fit(
+        it(
             'saves an empty list',
             inTemporaryFolder(async folder => {
                 await page.navigateToFolder(folder);

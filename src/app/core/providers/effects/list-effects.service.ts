@@ -311,6 +311,10 @@ export class ListEffectsService {
         this.api.project.deleteNode({ project: node.project.name!, nodeUuid: node.uuid, recursive }).subscribe(
             result => {
                 this.state.actions.list.deleteNodeSuccess();
+                const editorState = this.state.now.editor;
+                if (editorState.editorIsOpen && editorState.openNode && editorState.openNode.uuid === node.uuid) {
+                    this.state.actions.editor.closeEditor();
+                }
                 this.reloadCurrentFolder(node);
             },
             error => {

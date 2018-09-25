@@ -161,7 +161,7 @@ export async function temporaryNodeChanges(uuid: string, body: () => any) {
  * Returns a function that resolves i18n keys to the english translation.
  * @param filename The filename of the i18n file. (e.g. editor)
  */
-export function i18n(filename: string) {
+export function i18n(filename: string): (key: string) => string {
     const translation = require(`../src/app/core/providers/i18n/translations_json/${filename}.translations.json`);
     return (key: string) => translation[key].en;
 }

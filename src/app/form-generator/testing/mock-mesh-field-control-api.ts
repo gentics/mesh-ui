@@ -25,4 +25,5 @@ export class MockMeshFieldControlApi implements MeshFieldControlApi {
     appendDefaultStyles = createSpy('appendDefaultStyles');
     uiLanguage: UILanguage;
     openNodeBrowser = createSpy('openNodeBrowser');
+    project = createSpy('project');
 }

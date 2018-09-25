@@ -18,7 +18,10 @@ exports.config = {
     nodePublish: 'e2e/tests/node-publish.e2e-spec.ts'
   },
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    chromeOptions: {
+      args: ['--window-size=1920,1080']
+    }
   },
   SELENIUM_PROMISE_MANAGER: false,
   directConnect: true,

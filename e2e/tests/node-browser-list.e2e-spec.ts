@@ -14,8 +14,8 @@ describe('node browser list', () => {
         nodeField = new NodeField();
         nodeBrowserList = new NodeBrowserList();
         await page.navigateToHome();
-        await nodeList.openFolder('Yachts');
-        await nodeList.editNode('Pelorus');
+        await nodeList.getNode('Yachts').openFolder();
+        await nodeList.getNode('Pelorus').editNode();
     });
 
     it('should show checkbox if it is checked', async () => {

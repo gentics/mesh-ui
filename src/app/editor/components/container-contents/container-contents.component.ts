@@ -86,9 +86,13 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             this.state.select(state => state.list.items),
             this.state.select(state => state.list.language)
         )
-            .map(([items, language]) =>
-                items.map(uuid => this.entities.getNode(uuid, { language })).filter(notNullOrUndefined)
+            .switchMap(([items, language]) =>
+                Observable.from(items)
+                    .map(uuid => this.entities.selectNode(uuid, { language }))
+                    .combineAll<Observable<MeshNode>, MeshNode[]>()
+                    .startWith([])
             )
+            .map(items => items.filter(notNullOrUndefined))
             .combineLatest(this.state.select(state => state.list.filterTerm))
             .map(([items, filterTerm]) => this.filterNodes(items, filterTerm))
             .map(this.groupNodesBySchema);
