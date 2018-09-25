@@ -20,6 +20,10 @@ export class HtmlField {
         return this.selectText(text, true);
     }
 
+    setText(text: string) {
+        return this.editor.sendKeys(Key.CONTROL, 'a', Key.NULL, text);
+    }
+
     /**
      * Selects the whole text in the html field.
      */
