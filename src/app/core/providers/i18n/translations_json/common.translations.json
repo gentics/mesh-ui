@@ -301,7 +301,7 @@
     },
     "permissions": {
       "en": "Permissions",
-      "de": "Berchtigungen"
+      "de": "Berechtigungen"
     },
     "schema": {
       "en": "Schema",
@@ -309,14 +309,22 @@
     },
     "schemas": {
       "en": "Schemas",
-      "de": "Schemata"
+      "de": "Schemas"
     },
     "microschema": {
       "en": "Microschema",
-      "de": "Mikroschema"
+      "de": "Microschema"
     },
     "microschemas": {
       "en": "Microschemas",
-      "de": "Mikroschemen"
+      "de": "Microschemas"
+    },
+    "groups": {
+      "en": "Groups",
+      "de": "Gruppen"
+    },
+    "roles": {
+      "en": "Roles",
+      "de": "Rollen"
     }
 }

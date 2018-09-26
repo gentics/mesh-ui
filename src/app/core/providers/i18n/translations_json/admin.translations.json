@@ -11,6 +11,10 @@
         "en": "All groups",
         "de": "Alle Gruppen"
     },
+    "all_roles": {
+        "en": "All roles",
+        "de": "Alle Rollen"
+    },
     "delete_selected_schemas" : {
         "en": "Delete {{count}} schemas",
         "de": "{{count }} Schemas löschen"
@@ -51,6 +55,10 @@
         "en": "Create user",
         "de": "Benutzer erstellen"
     },
+    "delete_group": {
+        "en": "Delete group",
+        "de": "Gruppe löschen"
+    },
     "delete_label": {
         "en": "Delete",
         "de": "Löschen"
@@ -86,6 +94,10 @@
     "filter_by_name": {
         "en": "Filter by name",
         "de": "nach Name durchsuchen"
+    },
+    "filter_by_role": {
+        "en": "Filter by role",
+        "de": "nach Rolle durchsuchen"
     },
     "first_name_label": {
         "en": "First name",
@@ -126,6 +138,10 @@
     "microschema_none_found": {
         "en": "No microschemas found",
         "de": "Keine Microschemas gefunden"
+    },
+    "new_group": {
+        "en": "New group",
+        "de": "Neue Gruppe"
     },
     "new_project": {
         "en": "New project",

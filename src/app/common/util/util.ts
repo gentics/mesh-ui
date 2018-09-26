@@ -7,7 +7,7 @@ import {
     MicronodeFieldType,
     NodeFieldType
 } from '../models/node.model';
-import { FieldMapFromServer } from '../models/server-models';
+import { FieldMapFromServer, GraphQLResponse } from '../models/server-models';
 
 type Supplier<T> = () => T;
 
@@ -296,4 +296,16 @@ export async function promiseConcat<T>(promiseSuppliers: Supplier<T>[]): Promise
         results.push(await supplier());
     }
     return results;
+}
+
+/**
+ * Extracts the data property from a GraphQl response.
+ * Throws an error if the error property is present.
+ */
+export function extractGraphQlResponse(response: GraphQLResponse): any {
+    if (response.errors) {
+        throw new Error(JSON.stringify(response, undefined, 2));
+    } else {
+        return response.data;
+    }
 }

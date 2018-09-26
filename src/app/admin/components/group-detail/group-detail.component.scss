@@ -1,0 +1,16 @@
+@import "variables";
+
+/deep/ gtx-input > input[type] {
+    background-color: white;
+}
+
+.node-reference-form {
+    border: 1px solid $gtx-color-light-gray;
+    background-color: #fcfcfe;
+    border-radius: 3px;
+}
+
+.select-new-node {
+    padding: 10px 10px 0 10px;
+    text-align: right;
+}
