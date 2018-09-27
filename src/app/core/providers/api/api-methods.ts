@@ -33,7 +33,7 @@ export function apiPost<U extends keyof ApiEndpoints['POST']>(url: U) {
 /** Creates a method that is a typed wrapper to `this.apiBase.post()` for endpoints without a request body. */
 export function apiPostWithoutBody<U extends keyof ApiEndpoints['POST']>(url: U) {
     return function postMethod(
-        params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams']
+        params: ApiEndpoints['POST'][U]['request']['urlParams'] & ApiEndpoints['POST'][U]['request']['queryParams']
     ): Observable<ApiEndpoints['POST'][U]['responseType']> {
         return this.apiBase.post(url, params);
     };
