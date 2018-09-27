@@ -78,4 +78,36 @@ export class AdminGroupEffectsService {
             )
             .map(extractGraphQlResponse);
     }
+
+    addGroupsToRole(groups: AdminGroupResponse[], role: AdminGroupRoleResponse) {
+        return Observable.from(groups)
+            .flatMap(group =>
+                this.api.admin.addRoleToGroup({
+                    groupUuid: group.uuid,
+                    roleUuid: role.uuid
+                })
+            )
+            .toArray();
+    }
+
+    removeGroupsFromRole(groups: AdminGroupResponse[], role: AdminGroupRoleResponse) {
+        return Observable.from(groups)
+            .flatMap(group =>
+                this.api.admin.removeRoleFromGroup({
+                    groupUuid: group.uuid,
+                    roleUuid: role.uuid
+                })
+            )
+            .toArray();
+    }
+
+    deleteGroups(groups: AdminGroupResponse[]) {
+        return Observable.from(groups)
+            .flatMap(group =>
+                this.api.admin.deleteGroup({
+                    groupUuid: group.uuid
+                })
+            )
+            .toArray();
+    }
 }

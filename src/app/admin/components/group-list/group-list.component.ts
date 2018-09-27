@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
@@ -21,6 +22,7 @@ import {
 })
 export class GroupListComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();
+    private refetch$ = new BehaviorSubject<void>(undefined);
 
     response: AdminGroupListResponse = emptyResponse();
     currentPage: number;
@@ -43,7 +45,8 @@ export class GroupListComponent implements OnInit, OnDestroy {
         combineLatest(
             observeQueryParam(this.route.queryParamMap, 'p', 1),
             observeQueryParam(this.route.queryParamMap, 'q', ''),
-            observeQueryParam(this.route.queryParamMap, 'role', '')
+            observeQueryParam(this.route.queryParamMap, 'role', ''),
+            this.refetch$
         )
             .takeUntil(this.destroy$)
             .flatMap(([page, query, role]) => this.adminGroupEffects.loadGroups(page))
@@ -58,6 +61,13 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
+    /**
+     * Causes the groups to be refetched.
+     */
+    private refetch() {
+        this.refetch$.next(undefined);
+    }
+
     onPageChange(newPage: number): void {
         setQueryParams(this.router, this.route, { p: newPage });
     }
@@ -65,35 +75,35 @@ export class GroupListComponent implements OnInit, OnDestroy {
     addGroupsToRole(selectedIndices: number[], role: AdminGroupRoleResponse): void {
         const groups = this.selectedGroupsFromIndices(selectedIndices);
 
-        this.adminGroupEffects.addGroupsToRole(groups, role.uuid);
+        this.adminGroupEffects.addGroupsToRole(groups, role).subscribe(() => this.refetch());
     }
 
     removeGroupsFromRole(selectedIndices: number[], role: AdminGroupRoleResponse): void {
         const groups = this.selectedGroupsFromIndices(selectedIndices);
 
-        this.adminGroupEffects.removeGroupsFromRole(groups, role.uuid);
+        this.adminGroupEffects.removeGroupsFromRole(groups, role).subscribe(() => this.refetch());
     }
 
     deleteGroups(selectedIndices: number[]) {
         const groups = this.selectedGroupsFromIndices(selectedIndices);
 
-        this.adminGroupEffects.deleteGroups(groups);
+        this.adminGroupEffects.deleteGroups(groups).subscribe(() => this.refetch());
     }
 
     removeGroupFromRole(group: AdminGroupResponse, role: AdminGroupRoleResponse) {
-        this.adminGroupEffects.removeGroupFromRole(group, role);
+        this.adminGroupEffects.removeGroupsFromRole([group], role).subscribe(() => this.refetch());
     }
 
     addGroupToRole(group: AdminGroupResponse, role: AdminGroupRoleResponse) {
-        this.adminGroupEffects.addGroupToRole(group, role);
+        this.adminGroupEffects.addGroupsToRole([group], role).subscribe(() => this.refetch());
     }
 
     deleteGroup(group: AdminGroupResponse) {
-        this.adminGroupEffects.deleteGroup(group);
+        this.adminGroupEffects.deleteGroups([group]).subscribe(() => this.refetch());
     }
 
     private selectedGroupsFromIndices(indices: number[]) {
-        return indices.map(i => this.response.allRoles.elements[i]);
+        return indices.map(i => this.response.groups.elements[i]);
     }
 }
 
