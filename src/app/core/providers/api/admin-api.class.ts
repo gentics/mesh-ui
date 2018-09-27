@@ -1,9 +1,8 @@
 import { ApiBase } from './api-base.service';
 import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 
-
 export class AdminApi {
-    constructor(private apiBase: ApiBase) { }
+    constructor(private apiBase: ApiBase) {}
 
     /** Add a role to an existing group. */
     addRoleToGroup = apiPostWithoutBody('/groups/{groupUuid}/roles/{roleUuid}');
@@ -35,7 +34,7 @@ export class AdminApi {
     assignSchemaToProject = apiPost('/{project}/schemas/{schemaUuid}');
 
     /** Create a new group. */
-    createGroup = apiPostWithoutBody('/groups');
+    createGroup = apiPost('/groups');
 
     /** Create a new microschema. */
     createMicroschema = apiPost('/microschemas');

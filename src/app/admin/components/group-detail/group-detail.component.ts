@@ -7,12 +7,18 @@ import { Subject } from 'rxjs/Subject';
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
-import { UserCreateRequest, UserUpdateRequest } from '../../../common/models/server-models';
+import {
+    GroupCreateRequest,
+    GroupUpdateRequest,
+    UserCreateRequest,
+    UserUpdateRequest
+} from '../../../common/models/server-models';
 import { User, UserNodeReference } from '../../../common/models/user.model';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { AdminGroupEffectsService, AdminGroupOnlyResponse } from '../../providers/effects/admin-group-effects.service';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 
 @Component({
@@ -24,11 +30,9 @@ import { AdminUserEffectsService } from '../../providers/effects/admin-user-effe
 export class GroupDetailComponent implements OnInit, OnDestroy {
     form: FormGroup;
     isNew = false;
-    readOnly = true;
-    userNode$: Observable<MeshNode>;
-    userNodeSchema$: Observable<Schema>;
-    userNodeLink$: Observable<any[]>;
+    group: AdminGroupOnlyResponse;
     BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
+    readOnly = true;
 
     @ViewChild('formGenerator') private formGenerator: FormGeneratorComponent;
     private destroy$ = new Subject<void>();
@@ -39,70 +43,28 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private navigationService: NavigationService,
         private entities: EntitiesService,
-        private adminUserEffects: AdminUserEffectsService
+        private adminGroupEffects: AdminGroupEffectsService
     ) {}
 
     ngOnInit() {
-        const user$: Observable<User> = this.route.data.map(data => data.user).filter(notNullOrUndefined);
-        const nodeReference$ = user$.map(user => user.nodeReference).filter(notNullOrUndefined);
-
-        this.userNode$ = nodeReference$
-            .map(nodeReference => this.entities.getNode(nodeReference.uuid, { strictLanguageMatch: false }))
-            .filter(notNullOrUndefined);
-
-        this.userNodeSchema$ = nodeReference$
-            .map(nodeReference => this.entities.getSchema(nodeReference.schema.uuid || ''))
-            .filter(notNullOrUndefined);
-
-        this.userNodeLink$ = this.userNode$.map(node => {
-            if (node.language && node.project && node.project.name) {
-                return this.navigationService
-                    .instruction({
-                        detail: {
-                            projectName: node.project.name,
-                            nodeUuid: node.uuid,
-                            language: node.language
-                        },
-                        list: {
-                            containerUuid: node.parentNode.uuid,
-                            projectName: node.project.name,
-                            language: node.language
-                        }
-                    })
-                    .commands();
-            } else {
-                return [];
-            }
-        });
-
-        user$.takeUntil(this.destroy$).subscribe(user => {
-            this.isNew = !user;
-            this.readOnly = !!user && !user.permissions.update;
-            this.form = this.formBuilder.group({
-                userName: [user ? user.username : '', Validators.required],
-                password: ['', user ? undefined : Validators.required],
-                firstName: user ? user.firstname : '',
-                lastName: user ? user.lastname : '',
-                emailAddress: user ? user.emailAddress : ''
+        this.route.data
+            .map(data => data.group)
+            .takeUntil(this.destroy$)
+            .subscribe((group: AdminGroupOnlyResponse) => {
+                this.isNew = !group;
+                this.group = group;
+                // TODO Fetch from GraphQL as soon as permissions bug in Mesh is fixed
+                // TODO Fetch information about create permissions for user as soon as this is possible in Mesh
+                this.readOnly = false;
+                this.form = this.formBuilder.group({
+                    groupName: [group ? group.name : '', Validators.required]
+                });
             });
-        });
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-    }
-
-    persistUser(): void {
-        if (this.isNew) {
-            this.createUser();
-        } else {
-            this.updateUser();
-        }
-    }
-
-    selectNodeReference(): void {
-        alert('Requires Repository Browser!');
     }
 
     isSaveButtonEnabled(): boolean {
@@ -115,13 +77,21 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         }
     }
 
-    private updateUser(): void {
+    persistGroup(): void {
+        if (this.isNew) {
+            this.createGroup();
+        } else {
+            this.updateGroup();
+        }
+    }
+
+    private updateGroup(): void {
         if (this.form.dirty) {
             const uuid = this.route.snapshot.paramMap.get('uuid');
             if (uuid) {
-                const updateRequest = this.getUserFromForm();
-                this.adminUserEffects.updateUser(uuid, updateRequest).then(user => {
-                    if (user) {
+                const updateRequest = this.getGroupFromForm();
+                this.adminGroupEffects.updateGroup(uuid, updateRequest).subscribe(group => {
+                    if (group) {
                         this.form.markAsPristine();
                     }
                 });
@@ -129,23 +99,19 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         }
     }
 
-    private createUser(): void {
-        const updateRequest = this.getUserFromForm() as UserCreateRequest;
-        this.adminUserEffects.createUser(updateRequest).then(user => {
-            if (user) {
-                this.router.navigate(['/admin/users', user.uuid]);
+    private createGroup(): void {
+        const createRequest = this.getGroupFromForm() as GroupCreateRequest;
+        this.adminGroupEffects.createGroup(createRequest).subscribe(group => {
+            if (group) {
+                this.router.navigate(['/admin/groups', group.uuid]);
             }
         });
     }
 
-    private getUserFromForm(): UserUpdateRequest | UserCreateRequest {
+    private getGroupFromForm(): GroupUpdateRequest | GroupCreateRequest {
         const formValue = this.form.value;
         return {
-            username: formValue.userName,
-            password: formValue.password,
-            firstname: formValue.firstName,
-            lastname: formValue.lastName,
-            emailAddress: formValue.emailAddress
+            name: formValue.groupName
         };
     }
 }

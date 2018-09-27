@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { head, values } from 'ramda';
 import * as GroupQuery from 'raw-loader!./admin-group-query.gql';
+import * as GroupsQuery from 'raw-loader!./admin-groups-query.gql';
 import { Observable } from 'rxjs/Observable';
 
+import { GroupCreateRequest, GroupUpdateRequest } from '../../../common/models/server-models';
 import { extractGraphQlResponse } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { AppState } from '../../../state/models/app-state.model';
@@ -19,6 +21,10 @@ export interface AdminGroupListResponse {
     allRoles: {
         elements: AdminGroupRoleResponse[];
     };
+}
+export interface AdminGroupOnlyResponse {
+    uuid: string;
+    name: string;
 }
 
 export interface AdminGroupResponse {
@@ -71,12 +77,28 @@ export class AdminGroupEffectsService {
                 this.api.graphQL(
                     { project },
                     {
-                        query: GroupQuery,
+                        query: GroupsQuery,
                         variables: { page }
                     }
                 )
             )
             .map(extractGraphQlResponse);
+    }
+
+    loadGroup(uuid: string): Observable<AdminGroupOnlyResponse> {
+        return this.getAnyProjectName()
+            .flatMap(project =>
+                this.api.graphQL(
+                    { project },
+                    {
+                        query: GroupQuery,
+                        variables: { uuid }
+                    }
+                )
+            )
+            .map(extractGraphQlResponse)
+            .map(response => response.group)
+            .do(group => this.state.actions.adminGroups.loadGroupSuccess(group));
     }
 
     addGroupsToRole(groups: AdminGroupResponse[], role: AdminGroupRoleResponse) {
@@ -109,5 +131,13 @@ export class AdminGroupEffectsService {
                 })
             )
             .toArray();
+    }
+
+    createGroup(createRequest: GroupCreateRequest) {
+        return this.api.admin.createGroup(undefined, createRequest);
+    }
+
+    updateGroup(groupUuid: string, updateRequest: GroupUpdateRequest) {
+        return this.api.admin.updateGroup({ groupUuid }, updateRequest);
     }
 }

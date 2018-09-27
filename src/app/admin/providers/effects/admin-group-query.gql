@@ -1,22 +1,6 @@
-query loadGroups($page:Long) {
-  groups(perPage:10, page:$page) {
-    elements {
-      uuid
-      name
-      roles(perPage: 10) {
-        elements {
-          uuid
-          name
-        }
-      }
-    }
-    currentPage
-    pageCount
-  }
-  allRoles: roles {
-    elements {
-      uuid
-      name
-    }
+query loadGroup($uuid: String) {
+  group(uuid:$uuid) {
+    uuid
+    name
   }
 }

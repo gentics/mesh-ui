@@ -51,6 +51,10 @@
         "en": "Assigned to projects",
         "de": "Zugewiesen zu Projekte"
     },
+    "create_group": {
+        "en": "Create group",
+        "de": "Gruppe erstellen"
+    },
     "create_user": {
         "en": "Create user",
         "de": "Benutzer erstellen"
@@ -102,6 +106,10 @@
     "first_name_label": {
         "en": "First name",
         "de": "Vorname"
+    },
+    "group_name_label": {
+        "en": "Group name",
+        "de": "Gruppenname"
     },
     "last_name_label": {
         "en": "Last name",
@@ -290,6 +298,10 @@
     "select_new_node_reference": {
         "en": "Select a different node",
         "de": "Andere Node auswählen"
+    },
+    "update_group": {
+        "en": "Update group",
+        "de": "Gruppe speichern"
     },
     "update_user": {
         "en": "Update user",

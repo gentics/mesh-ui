@@ -1,3 +1,4 @@
+import { AdminGroupsState } from './admin-groups-state.model';
 import { AdminProjectsState } from './admin-projects-state.model';
 import { AdminSchemasState } from './admin-schemas-state.model';
 import { AdminUsersState } from './admin-users-state.model';
@@ -12,6 +13,7 @@ export interface AppState {
     adminSchemas: AdminSchemasState;
     adminProjects: AdminProjectsState;
     adminUsers: AdminUsersState;
+    adminGroups: AdminGroupsState;
     auth: AuthState;
     editor: EditorState;
     entities: EntityState;

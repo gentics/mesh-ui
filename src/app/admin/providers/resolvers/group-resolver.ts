@@ -1,41 +1,27 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 
-import { User } from '../../../common/models/user.model';
 import { BreadcrumbTextFunction } from '../../components/admin-breadcrumbs/admin-breadcrumbs.component';
-import { AdminUserEffectsService } from '../effects/admin-user-effects.service';
+import { AdminGroupEffectsService, AdminGroupOnlyResponse } from '../effects/admin-group-effects.service';
 
 @Injectable()
-export class GroupResolver implements Resolve<User | undefined> {
-    constructor(private adminUserEffects: AdminUserEffectsService) {}
+export class GroupResolver implements Resolve<AdminGroupOnlyResponse | undefined> {
+    constructor(private adminGroupEffects: AdminGroupEffectsService) {}
 
-    resolve(route: ActivatedRouteSnapshot): Promise<User> | undefined {
+    resolve(route: ActivatedRouteSnapshot): Promise<AdminGroupOnlyResponse> | undefined {
         const uuid = route.paramMap.get('uuid');
 
-        if (uuid === 'new') {
-            this.adminUserEffects.newUser();
-        } else if (uuid) {
-            return this.adminUserEffects.openUser(uuid).then(user => {
-                if (!user) {
-                    // throw
-                    throw new Error(`Could not find a user with the uuid "${uuid}"`);
-                }
-                return user;
-            });
+        if (uuid && uuid !== 'new') {
+            return this.adminGroupEffects.loadGroup(uuid).toPromise();
         }
     }
 }
 
 export const groupBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities) => {
-    const userUuid = state.adminUsers.userDetail;
-    if (!userUuid) {
-        return 'admin.new_user';
+    const group = state.adminGroups.groupDetail;
+    if (group) {
+        return group.name;
     } else {
-        return entities.selectUser(userUuid).map(user => {
-            if (user.firstname && user.lastname) {
-                return `${user.firstname} ${user.lastname} (${user.username})`;
-            }
-            return `${user.username}`;
-        });
+        return 'admin.new_group';
     }
 };
