@@ -107,6 +107,22 @@
         "en": "First name",
         "de": "Vorname"
     },
+    "group_created": {
+        "en": "New group created",
+        "de": "Neue Gruppe erstellt"
+    },
+    "group_deleted": {
+        "en": "Group deleted",
+        "de": "Gruppe gelöscht"
+    },
+    "group_updated": {
+        "en": "Group updated",
+        "de": "Gruppe gespeichert"
+    },
+    "groups_deleted": {
+        "en": "Groups deleted",
+        "de": "Gruppen gelöscht"
+    },
     "group_name_label": {
         "en": "Group name",
         "de": "Gruppenname"

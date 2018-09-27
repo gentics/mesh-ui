@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { GroupCreateRequest, GroupUpdateRequest } from '../../../common/models/server-models';
 import { extractGraphQlResponse } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
-import { AppState } from '../../../state/models/app-state.model';
+import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 import { AdminProjectEffectsService } from './admin-project-effects.service';
@@ -45,7 +45,8 @@ export class AdminGroupEffectsService {
     constructor(
         private api: ApiService,
         private state: ApplicationStateService,
-        private project: AdminProjectEffectsService
+        private project: AdminProjectEffectsService,
+        private notification: I18nNotification
     ) {}
 
     /**
@@ -124,20 +125,27 @@ export class AdminGroupEffectsService {
     }
 
     deleteGroups(groups: AdminGroupResponse[]) {
+        const notificationKey = groups.length === 1 ? 'admin.group_deleted' : 'admin.groups_deleted';
+
         return Observable.from(groups)
             .flatMap(group =>
                 this.api.admin.deleteGroup({
                     groupUuid: group.uuid
                 })
             )
+            .pipe(this.notification.rxSuccess(notificationKey))
             .toArray();
     }
 
     createGroup(createRequest: GroupCreateRequest) {
-        return this.api.admin.createGroup(undefined, createRequest);
+        return this.api.admin
+            .createGroup(undefined, createRequest)
+            .pipe(this.notification.rxSuccess('admin.group_created'));
     }
 
     updateGroup(groupUuid: string, updateRequest: GroupUpdateRequest) {
-        return this.api.admin.updateGroup({ groupUuid }, updateRequest);
+        return this.api.admin
+            .updateGroup({ groupUuid }, updateRequest)
+            .pipe(this.notification.rxSuccess('admin.group_updated'));
     }
 }
