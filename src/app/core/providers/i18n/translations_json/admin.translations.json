@@ -55,6 +55,10 @@
         "en": "Create group",
         "de": "Gruppe erstellen"
     },
+    "create_tag": {
+        "en": "Create tag",
+        "de": "Tag erstellen"
+    },
     "create_user": {
         "en": "Create user",
         "de": "Benutzer erstellen"
@@ -279,6 +283,10 @@
         "en": "Remove from group",
         "de": "Von Gruppe entfernen"
     },
+    "remove_group_from_role": {
+        "en": "Remove from role",
+        "de": "Von Rolle entfernen"
+    },
     "schema_create": {
         "en": "Create Schema",
         "de": "Schema erstellen"
@@ -314,6 +322,10 @@
     "select_new_node_reference": {
         "en": "Select a different node",
         "de": "Andere Node auswählen"
+    },
+    "tag": {
+        "en": "Tag",
+        "de": "Tag"
     },
     "update_group": {
         "en": "Update group",
