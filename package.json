@@ -50,7 +50,7 @@
     "@types/quill": "0.0.31",
     "core-js": "^2.4.1",
     "gentics-ui-core": "^6.1.1",
-    "gentics-ui-image-editor": "^0.3.0",
+    "gentics-ui-image-editor": "^0.3.5",
     "http-server": "^0.10.0",
     "ie-shim": "^0.1.0",
     "immutablets": "^0.11.0",
