@@ -26,8 +26,9 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
     response: AdminGroupListResponse = emptyResponse();
     currentPage: number;
-    selectedIndices: number[] = [];
-
+    selectedItems: AdminGroupResponse[] = [];
+    filterTerm = '';
+    filterInput = new FormControl('');
     filterRoleSelect = new FormControl('');
 
     constructor(
@@ -49,10 +50,23 @@ export class GroupListComponent implements OnInit, OnDestroy {
             this.refetch$
         )
             .takeUntil(this.destroy$)
-            .flatMap(([page, query, role]) => this.adminGroupEffects.loadGroups(page))
+            .flatMap(([page, query, role]) => this.adminGroupEffects.loadGroups(page, query))
             .subscribe(response => {
                 this.response = response;
                 this.change.markForCheck();
+            });
+
+        observeQueryParam(this.route.queryParamMap, 'q', '')
+            .takeUntil(this.destroy$)
+            .subscribe(filterTerm => {
+                this.filterInput.setValue(filterTerm, { emitEvent: false });
+            });
+
+        this.filterInput.valueChanges
+            .debounceTime(300)
+            .takeUntil(this.destroy$)
+            .subscribe(term => {
+                setQueryParams(this.router, this.route, { q: term });
             });
     }
 
@@ -72,22 +86,19 @@ export class GroupListComponent implements OnInit, OnDestroy {
         setQueryParams(this.router, this.route, { p: newPage });
     }
 
-    addGroupsToRole(selectedIndices: number[], role: AdminGroupRoleResponse): void {
-        const groups = this.selectedGroupsFromIndices(selectedIndices);
-
+    addGroupsToRole(groups: AdminGroupResponse[], role: AdminGroupRoleResponse): void {
         this.adminGroupEffects.addGroupsToRole(groups, role).subscribe(() => this.refetch());
     }
 
-    removeGroupsFromRole(selectedIndices: number[], role: AdminGroupRoleResponse): void {
-        const groups = this.selectedGroupsFromIndices(selectedIndices);
-
+    removeGroupsFromRole(groups: AdminGroupResponse[], role: AdminGroupRoleResponse): void {
         this.adminGroupEffects.removeGroupsFromRole(groups, role).subscribe(() => this.refetch());
     }
 
-    deleteGroups(selectedIndices: number[]) {
-        const groups = this.selectedGroupsFromIndices(selectedIndices);
-
-        this.adminGroupEffects.deleteGroups(groups).subscribe(() => this.refetch());
+    deleteGroups(groups: AdminGroupResponse[]) {
+        this.adminGroupEffects.deleteGroups(groups).subscribe(() => {
+            this.refetch();
+            this.selectedItems = [];
+        });
     }
 
     removeGroupFromRole(group: AdminGroupResponse, role: AdminGroupRoleResponse) {
@@ -99,11 +110,10 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
 
     deleteGroup(group: AdminGroupResponse) {
-        this.adminGroupEffects.deleteGroups([group]).subscribe(() => this.refetch());
-    }
-
-    private selectedGroupsFromIndices(indices: number[]) {
-        return indices.map(i => this.response.groups.elements[i]);
+        this.adminGroupEffects.deleteGroups([group]).subscribe(() => {
+            this.refetch();
+            this.selectedItems = this.selectedItems.filter(item => item.uuid !== group.uuid);
+        });
     }
 }
 
@@ -111,7 +121,7 @@ function emptyResponse(): AdminGroupListResponse {
     return {
         groups: {
             currentPage: 1,
-            pageCount: 0,
+            totalCount: 0,
             elements: []
         },
         allRoles: {

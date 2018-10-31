@@ -1,5 +1,7 @@
-query loadGroups($page:Long) {
-  groups(perPage:10, page:$page) {
+query loadGroups($page:Long, $query:String) {
+  groups(perPage:10, page:$page, filter: {
+    name: {regex:$query}
+  }) {
     elements {
       uuid
       name
@@ -11,7 +13,7 @@ query loadGroups($page:Long) {
       }
     }
     currentPage
-    pageCount
+    totalCount
   }
   allRoles: roles {
     elements {

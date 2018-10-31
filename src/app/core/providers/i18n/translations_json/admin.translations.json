@@ -1,4 +1,8 @@
 {
+    "add_selected_groups_to_role": {
+        "en": "Assign {{count}} groups to role",
+        "de": "{{count}} Gruppen zu Rolle zuweisen"
+    },
     "add_selected_users_to_group": {
         "en": "Assign {{count}} users to group",
         "de": "{{count}} Benutzer zu Gruppe zuweisen"
@@ -274,6 +278,10 @@
     "update_project": {
         "en": "Update Project",
         "de": "Projekt speichern"
+    },
+    "remove_selected_groups_from_role": {
+        "en": "Remove {{count}} groups from role",
+        "de": "{{count}} Gruppen von Rolle entfernen"
     },
     "remove_selected_users_from_group": {
         "en": "Remove {{count}} users from group",

@@ -309,3 +309,22 @@ export function extractGraphQlResponse(response: GraphQLResponse): any {
         return response.data;
     }
 }
+
+/**
+ * Creates an object with an entry for every item in the array.
+ *
+ * @param keyMapper A function that retrieves the key of the entry from an item
+ * @param valueMapper A function that retrieves the value of the entry from an item
+ * @param array The array to create the object of
+ */
+export function toObject<T, V>(
+    keyMapper: (item: T) => string,
+    valueMapper: (item: T) => V,
+    array: T[]
+): { [key: string]: V } {
+    const obj: { [key: string]: V } = {};
+    for (const item of array) {
+        obj[keyMapper(item)] = valueMapper(item);
+    }
+    return obj;
+}

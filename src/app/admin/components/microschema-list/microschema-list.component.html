@@ -1,17 +1,17 @@
 <mesh-admin-list [items]="microschemas$ | async"
                  [itemsPerPage]="10"
                  [currentPage]="currentPage$ | async"
-                 [(selection)]="selectedIndices"
+                 [(selection)]="selectedItems"
                  (pageChange)="onPageChange($event)">
 
     <div class="list-controls">
 
         <div class="with-selected"
-             [class.hidden]="selectedIndices.length === 0">
+             [class.hidden]="selectedItems.length === 0">
             <gtx-button flat
                         type="alert"
-                        [title]="'admin.delete_selected_schemas' | i18n: { count: selectedIndices.length }"
-                        (click)="deleteMicroschemas(selectedIndices)"
+                        [title]="'admin.delete_selected_schemas' | i18n: { count: selectedItems.length }"
+                        (click)="deleteMicroschemas(selectedItems)"
                         size="small">
                 <icon>delete</icon>
             </gtx-button>

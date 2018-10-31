@@ -15,6 +15,9 @@ import {
 } from '@angular/core';
 import { PaginationInstance, PaginationService } from 'ngx-pagination';
 
+import { HasUuid } from '../../../../../e2e/model';
+import { toObject } from '../../../common/util/util';
+
 /**
  * A paginated, selectable list for admin list views.
  *
@@ -46,9 +49,9 @@ import { PaginationInstance, PaginationService } from 'ngx-pagination';
     providers: [PaginationService],
     animations: [trigger('listAnimation', [transition(':enter', [style({ opacity: 0 }), animate(300)])])]
 })
-export class AdminListComponent implements OnChanges, AfterContentInit {
+export class AdminListComponent<T extends HasUuid> implements OnChanges, AfterContentInit {
     /** An array of objects to be listed */
-    @Input() items: any = [];
+    @Input() items: T[] = [];
     /** Number of items on each paginated page */
     @Input() itemsPerPage = 10;
     /** Current page of pagination */
@@ -60,14 +63,14 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
     @Input() totalItems: number;
     /** Controls whether each row is selectable with a checkbox */
     @Input() selectable = true;
-    /** An array of the selected indices */
-    @Input() selection: number[] = [];
+    /** An array of the selected items */
+    @Input() selection: T[] = [];
     /** If true, no pagination will be displayed if there is only a single page  */
     @Input() autoHidePagination = false;
     /** Emits the page number of the page being switched to */
     @Output() pageChange = new EventEmitter<number>();
     /** Emits an array of the indexes of all selected items. Only applicable if `selectable` is true.*/
-    @Output() selectionChange = new EventEmitter<number[]>();
+    @Output() selectionChange = new EventEmitter<T[]>();
 
     // Using ContentChildren rather than ContentChild because only ContentChildren
     // currently supports the { descendants: false } option.
@@ -76,7 +79,8 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
     templateRef: TemplateRef<any>;
 
     paginationConfig: PaginationInstance;
-    checked: { [id: string]: boolean } = {};
+    checked: { [uuid: string]: boolean } = {};
+    itemsByKey: { [uuid: string]: T };
     checkedCount = 0;
     private currentPageIndices: number[];
 
@@ -106,8 +110,12 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
             this.paginationConfig.totalItems = this.totalItems;
         }
 
+        if (changes.items || changes.selection) {
+            this.itemsByKey = toObject(item => item.uuid, it => it, [...this.items, ...this.selection]);
+        }
+
         if ('selection' in changes) {
-            this.checked = this.selectionToCheckedHash(this.selection, this.itemsPerPage);
+            this.checked = this.selectionToCheckedHash(this.selection);
             this.calculateCheckedCount();
         }
     }
@@ -116,8 +124,8 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         this.templateRef = this.templateRefs.toArray()[0];
     }
 
-    onItemCheckboxClick(index: number, checked: boolean): void {
-        this.checked[this.itemId(index)] = checked;
+    onItemCheckboxClick(item: T, checked: boolean): void {
+        this.checked[item.uuid] = checked;
         this.calculateCheckedCount();
         this.emitSelectionChange();
     }
@@ -131,17 +139,17 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         if (this.items.length === 0) {
             return false;
         }
-        return this.currentPageIndices.every((_, i) => this.checked[this.itemId(i)]);
+        return this.currentPageIndices.every((_, i) => this.checked[this.items[i].uuid]);
     }
 
     toggleSelectAll(): void {
         if (this.allSelected()) {
             this.currentPageIndices.forEach((_, i) => {
-                this.checked[this.itemId(i)] = false;
+                this.checked[this.items[i].uuid] = false;
             });
         } else {
             this.currentPageIndices.forEach((_, i) => {
-                this.checked[this.itemId(i)] = true;
+                this.checked[this.items[i].uuid] = true;
             });
         }
         this.calculateCheckedCount();
@@ -152,10 +160,6 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
         Object.keys(this.checked).forEach(key => (this.checked[key] = false));
         this.calculateCheckedCount();
         this.emitSelectionChange();
-    }
-
-    itemId(index: number, currentPage?: number): string {
-        return `${currentPage || this.currentPage}-${index}`;
     }
 
     displayPaginationControls(): boolean {
@@ -169,24 +173,15 @@ export class AdminListComponent implements OnChanges, AfterContentInit {
      * Converts the `selection` array (and array of absolute indices of selected items) into the page-aware
      * `checked` hash map used to mark the checkbox state in the list.
      */
-    private selectionToCheckedHash(selection: number[], itemsPerPage: number): { [id: string]: boolean } {
-        const checkedHash: { [id: string]: boolean } = {};
-        for (const index of selection) {
-            const currentPage = Math.floor(index / itemsPerPage) + 1;
-            const indexOnPage = index % itemsPerPage;
-            checkedHash[this.itemId(indexOnPage, currentPage)] = true;
-        }
-        return checkedHash;
+    private selectionToCheckedHash(selection: T[]): { [id: string]: boolean } {
+        return toObject(item => item.uuid, () => true, selection);
     }
 
     private emitSelectionChange(): void {
-        const selectedIndices = Object.keys(this.checked)
+        const selectedItems = Object.keys(this.checked)
             .filter(key => this.checked[key] === true)
-            .map(key => {
-                const [page, index] = key.split('-').map(val => +val);
-                return (page - 1) * this.itemsPerPage + index;
-            });
-        this.selectionChange.emit(selectedIndices);
+            .map(key => this.itemsByKey[key]);
+        this.selectionChange.emit(selectedItems);
     }
 
     private calculateCheckedCount(): void {

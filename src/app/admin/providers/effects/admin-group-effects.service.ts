@@ -15,7 +15,7 @@ import { AdminProjectEffectsService } from './admin-project-effects.service';
 export interface AdminGroupListResponse {
     groups: {
         currentPage: number;
-        pageCount: number;
+        totalCount: number;
         elements: AdminGroupResponse[];
     };
     allRoles: {
@@ -70,16 +70,17 @@ export class AdminGroupEffectsService {
     /**
      * Loads groups and their roles. The number of elements per page (groups and roles) is limited to 10.
      * @param page The page to load.
+     * @param query A query that the user entered.
      */
-    loadGroups(page: number): Observable<AdminGroupListResponse> {
-        // TODO Make filterable by name and role
+    loadGroups(page: number, query?: string): Observable<AdminGroupListResponse> {
+        // TODO Make filterable by role
         return this.getAnyProjectName()
             .flatMap(project =>
                 this.api.graphQL(
                     { project },
                     {
                         query: GroupsQuery,
-                        variables: { page }
+                        variables: { page, query }
                     }
                 )
             )
