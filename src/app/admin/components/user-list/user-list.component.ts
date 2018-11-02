@@ -11,6 +11,7 @@ import { Group } from '../../../common/models/group.model';
 import { User } from '../../../common/models/user.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
+import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
@@ -44,8 +45,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         private entities: EntitiesService,
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: ModalService,
-        private i18n: I18nService,
+        private meshDialog: MeshDialogsService,
         private adminUserEffects: AdminUserEffectsService
     ) {}
 
@@ -122,12 +122,14 @@ export class UserListComponent implements OnInit, OnDestroy {
         if (!user.permissions.delete || user.username === ADMIN_USER_NAME) {
             return;
         }
-        this.displayDeleteUserModal(
-            { token: 'admin.delete_user' },
-            { token: 'admin.delete_user_confirmation', params: { username: user.username } }
-        ).then(() => {
-            this.adminUserEffects.deleteUser(user);
-        });
+        this.meshDialog
+            .deleteConfirmation(
+                { token: 'admin.delete_user' },
+                { token: 'admin.delete_user_confirmation', params: { username: user.username } }
+            )
+            .then(() => {
+                this.adminUserEffects.deleteUser(user);
+            });
     }
 
     deleteUsers(selectedIndices: number[]): void {
@@ -139,10 +141,15 @@ export class UserListComponent implements OnInit, OnDestroy {
                 if (deletableUsers.length === 0) {
                     return Observable.empty<any[]>();
                 } else {
-                    return this.displayDeleteUserModal(
-                        { token: 'admin.delete_selected_users', params: { count: deletableUsers.length } },
-                        { token: 'admin.delete_selected_users_confirmation', params: { count: deletableUsers.length } }
-                    ).then(() => deletableUsers);
+                    return this.meshDialog
+                        .deleteConfirmation(
+                            { token: 'admin.delete_selected_users', params: { count: deletableUsers.length } },
+                            {
+                                token: 'admin.delete_selected_users_confirmation',
+                                params: { count: deletableUsers.length }
+                            }
+                        )
+                        .then(() => deletableUsers);
                 }
             })
             .subscribe((deletableUsers: User[]) => {
@@ -199,26 +206,5 @@ export class UserListComponent implements OnInit, OnDestroy {
             return true;
         }
         return user.groups.some(group => group.uuid === groupUuid);
-    }
-
-    private displayDeleteUserModal(
-        title: { token: string; params?: { [key: string]: any } },
-        body: { token: string; params?: { [key: string]: any } }
-    ): Promise<any> {
-        return this.modalService
-            .dialog({
-                title: this.i18n.translate(title.token, title.params) + '?',
-                body: this.i18n.translate(body.token, body.params),
-                buttons: [
-                    {
-                        type: 'secondary',
-                        flat: true,
-                        shouldReject: true,
-                        label: this.i18n.translate('common.cancel_button')
-                    },
-                    { type: 'alert', label: this.i18n.translate('admin.delete_label') }
-                ]
-            })
-            .then(modal => modal.open());
     }
 }

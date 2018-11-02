@@ -76,8 +76,8 @@
         "de": "Löschen"
     },
     "delete_selected_users": {
-        "en": "Delete {{count}} users",
-        "de": "{{count }} Benutzer löschen"
+        "en": "Delete {{ count }} users",
+        "de": "{{ count }} Benutzer löschen"
     },
     "delete_selected_users_confirmation": {
         "en": "You are about to permanently delete {{ count }} users.",
@@ -90,6 +90,18 @@
     "delete_user_confirmation": {
         "en": "You are about to permanently delete user '{{ username }}'.",
         "de": "Wollen Sie '{{ username }}' permanent löschen?"
+    },
+    "delete_selected_groups": {
+        "en": "Delete {{ count }} groups",
+        "de": "{{ count }} Gruppen löschen"
+    },
+    "delete_selected_groups_confirmation": {
+        "en": "You are about to permanently delete {{ count }} groups.",
+        "de": "Wollen Sie {{ count }} Gruppen permanent löschen?"
+    },
+    "delete_group_confirmation": {
+        "en": "You are about to permanently delete group '{{ groupname }}'.",
+        "de": "Wollen Sie '{{ groupname }}' permanent löschen?"
     },
     "edit_user_node": {
         "en": "Edit node",

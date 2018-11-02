@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalService } from 'gentics-ui-core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
+import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs.service';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
 import {
@@ -35,7 +38,8 @@ export class GroupListComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private adminGroupEffects: AdminGroupEffectsService,
-        private change: ChangeDetectorRef
+        private change: ChangeDetectorRef,
+        private meshDialog: MeshDialogsService
     ) {}
 
     ngOnInit() {
@@ -94,7 +98,14 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this.adminGroupEffects.removeGroupsFromRole(groups, role).subscribe(() => this.refetch());
     }
 
-    deleteGroups(groups: AdminGroupResponse[]) {
+    async deleteGroups(groups: AdminGroupResponse[]) {
+        if (groups.length === 0) {
+            return;
+        }
+        await this.meshDialog.deleteConfirmation(
+            { token: 'admin.delete_selected_groups', params: { count: groups.length } },
+            { token: 'admin.delete_selected_groups_confirmation', params: { count: groups.length } }
+        );
         this.adminGroupEffects.deleteGroups(groups).subscribe(() => {
             this.refetch();
             this.selectedItems = [];
@@ -109,7 +120,11 @@ export class GroupListComponent implements OnInit, OnDestroy {
         this.adminGroupEffects.addGroupsToRole([group], role).subscribe(() => this.refetch());
     }
 
-    deleteGroup(group: AdminGroupResponse) {
+    async deleteGroup(group: AdminGroupResponse) {
+        await this.meshDialog.deleteConfirmation(
+            { token: 'admin.delete_group' },
+            { token: 'admin.delete_group_confirmation', params: { groupname: group.name } }
+        );
         this.adminGroupEffects.deleteGroups([group]).subscribe(() => {
             this.refetch();
             this.selectedItems = this.selectedItems.filter(item => item.uuid !== group.uuid);
