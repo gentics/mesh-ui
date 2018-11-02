@@ -1,25 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
-import { MeshNode } from '../../../common/models/node.model';
-import { Schema } from '../../../common/models/schema.model';
-import {
-    GroupCreateRequest,
-    GroupUpdateRequest,
-    UserCreateRequest,
-    UserUpdateRequest
-} from '../../../common/models/server-models';
-import { User, UserNodeReference } from '../../../common/models/user.model';
-import { notNullOrUndefined } from '../../../common/util/util';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { GroupCreateRequest, GroupUpdateRequest } from '../../../common/models/server-models';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
-import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminGroupEffectsService, AdminGroupOnlyResponse } from '../../providers/effects/admin-group-effects.service';
-import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 
 @Component({
     selector: 'mesh-group-detail',
@@ -41,7 +28,6 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private formBuilder: FormBuilder,
-        private navigationService: NavigationService,
         private adminGroupEffects: AdminGroupEffectsService
     ) {}
 
