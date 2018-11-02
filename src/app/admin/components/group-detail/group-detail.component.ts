@@ -42,7 +42,6 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         private router: Router,
         private formBuilder: FormBuilder,
         private navigationService: NavigationService,
-        private entities: EntitiesService,
         private adminGroupEffects: AdminGroupEffectsService
     ) {}
 
@@ -103,7 +102,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         const createRequest = this.getGroupFromForm() as GroupCreateRequest;
         this.adminGroupEffects.createGroup(createRequest).subscribe(group => {
             if (group) {
-                this.router.navigate(['/admin/groups', group.uuid]);
+                this.router.navigate(['/admin/groups']);
             }
         });
     }
