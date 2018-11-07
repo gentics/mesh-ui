@@ -26,8 +26,16 @@ describe('group admin list', () => {
             'admin',
             'test1'
         ]);
+
         // This will fail if the group could not be found:
         await GroupAdminList.groupByName('test1').delete();
+
+        expect(await GroupAdminList.displayedGroupNames()).toEqualInAnyOrder([
+            'Editor Group',
+            'Client Group',
+            'anonymous',
+            'admin'
+        ]);
     });
 
     it('removes and adds roles', async () => {
