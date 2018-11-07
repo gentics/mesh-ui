@@ -74,7 +74,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         if (this.form.dirty) {
             const uuid = this.route.snapshot.paramMap.get('uuid');
             if (uuid) {
-                const updateRequest = this.getGroupFromForm();
+                const updateRequest = this.getGroupRequest();
                 this.adminGroupEffects.updateGroup(uuid, updateRequest).subscribe(group => {
                     this.router.navigate(['/admin/groups']);
                 });
@@ -83,7 +83,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
     }
 
     private createGroup(): void {
-        const createRequest = this.getGroupFromForm() as GroupCreateRequest;
+        const createRequest = this.getGroupRequest();
         this.adminGroupEffects.createGroup(createRequest).subscribe(group => {
             if (group) {
                 this.router.navigate(['/admin/groups']);
@@ -91,7 +91,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getGroupFromForm(): GroupUpdateRequest | GroupCreateRequest {
+    private getGroupRequest(): GroupUpdateRequest | GroupCreateRequest {
         const formValue = this.form.value;
         return {
             name: formValue.groupName
