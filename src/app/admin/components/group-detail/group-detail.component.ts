@@ -76,9 +76,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
             if (uuid) {
                 const updateRequest = this.getGroupFromForm();
                 this.adminGroupEffects.updateGroup(uuid, updateRequest).subscribe(group => {
-                    if (group) {
-                        this.form.markAsPristine();
-                    }
+                    this.router.navigate(['/admin/groups']);
                 });
             }
         }
