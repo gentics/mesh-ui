@@ -7,13 +7,13 @@ import { configureComponentTest } from '../../../../testing/configure-component-
 import { mockProject } from '../../../../testing/mock-models';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
+import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 
 import { ProjectSwitcherComponent } from './project-switcher.component';
-import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 
 describe('ProjectSwitcherComponent:', () => {
     let appState: TestApplicationState;
@@ -92,7 +92,7 @@ describe('ProjectSwitcherComponent:', () => {
 
                 const projectNames: string[] = Array.from<HTMLLIElement>(
                     fixture.nativeElement.querySelectorAll('gtx-dropdown-item')
-                ).map(li => li.innerText);
+                ).map(li => li.innerText.trim());
                 expect(projectNames).toEqual(['demo', 'tvc']);
             }
         )
@@ -110,7 +110,7 @@ describe('ProjectSwitcherComponent:', () => {
 
                 const demoProject: HTMLLIElement = Array.from<HTMLLIElement>(
                     fixture.nativeElement.querySelectorAll('gtx-dropdown-item')
-                ).filter(li => li.innerText === 'demo')[0];
+                ).filter(li => li.innerText.trim() === 'demo')[0];
 
                 demoProject.click();
                 fixture.detectChanges();
