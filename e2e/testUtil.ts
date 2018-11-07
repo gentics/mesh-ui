@@ -165,12 +165,3 @@ export function i18n(filename: string): (key: string) => string {
     const translation = require(`../src/app/core/providers/i18n/translations_json/${filename}.translations.json`);
     return (key: string) => translation[key].en;
 }
-
-export function pPipe<T1, T2>(initialPromise: promise.Promise<T1>, f1: (prev: T1) => promise.Promise<T2>): Promise<T2>;
-export async function pPipe(initialPromise: any, ...functions: Array<(prev: any) => any>): Promise<any> {
-    let val = await initialPromise;
-    for (const f of functions) {
-        val = await f(val);
-    }
-    return val;
-}
