@@ -89,7 +89,7 @@ describe('node editor', () => {
         });
 
         describe('node link', () => {
-            fit('creates a mesh link in the markup', async () => {
+            it('creates a mesh link in the markup', async () => {
                 await htmlField.setText('Hello World!');
                 await htmlField.selectText('World');
                 await htmlField.linkToNode();

@@ -1,0 +1,24 @@
+query loadGroups($page:Long, $query:String) {
+  groups(perPage:10, page:$page, filter: {
+    name: {regex:$query}
+  }) {
+    elements {
+      uuid
+      name
+      roles(perPage: 10) {
+        elements {
+          uuid
+          name
+        }
+      }
+    }
+    currentPage
+    totalCount
+  }
+  allRoles: roles {
+    elements {
+      uuid
+      name
+    }
+  }
+}

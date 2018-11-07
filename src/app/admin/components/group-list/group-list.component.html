@@ -1,0 +1,83 @@
+<mesh-admin-list [items]="response.groups.elements"
+                 [itemsPerPage]="10"
+                 [currentPage]="currentPage"
+                 [(selection)]="selectedItems"
+                 [totalItems]="response.groups.totalCount"
+                 (pageChange)="onPageChange($event)">
+    <div class="list-controls">
+        <div class="with-selected"
+             [class.hidden]="selectedItems.length === 0">
+            <mesh-user-group-select [groups]="response.allRoles.elements"
+                                    [title]="'admin.add_selected_groups_to_role' | i18n: { count: selectedItems.length }"
+                                    (select)="addGroupsToRole(selectedItems, $event)"></mesh-user-group-select>
+            <mesh-user-group-select [groups]="response.allRoles.elements"
+                                    class="warning"
+                                    icon="remove"
+                                    [title]="'admin.remove_selected_groups_from_role' | i18n: { count: selectedItems.length }"
+                                    (select)="removeGroupsFromRole(selectedItems, $event)"></mesh-user-group-select>
+            <gtx-button flat
+                        type="alert"
+                        [title]="'admin.delete_selected_users' | i18n: { count: selectedItems.length }"
+                        (click)="deleteGroups(selectedItems)"
+                        size="small">
+                <icon>delete</icon>
+            </gtx-button>
+        </div>
+        <div class="filter">
+            <gtx-input [label]="'admin.filter_by_name' | i18n"
+                       [formControl]="filterInput"></gtx-input>
+        </div>
+        <div class="role-filter">
+            <gtx-select [label]="'admin.filter_by_role' | i18n"
+                        [formControl]="filterRoleSelect">
+                <gtx-option value="">{{ 'admin.all_roles' | i18n }}</gtx-option>
+                <gtx-option *ngFor="let role of response.allRoles.elements"
+                            [value]="role.uuid">{{ role.name }}</gtx-option>
+            </gtx-select>
+        </div>
+        <gtx-button size="regular"
+                    [routerLink]="['/admin/groups/new']">
+            <icon left>group_add</icon>
+            <span class="new-item-label">{{ 'admin.new_group' | i18n }}</span>
+        </gtx-button>
+    </div>
+
+    <ng-template let-group="item">
+        <div class="item-row">
+            <a [routerLink]="['/admin/groups', group.uuid]">
+                <div class="group-name"
+                     [innerHTML]="group.name"></div>
+            </a>
+            <div class="role-wrapper">
+                <ng-container *ngFor="let role of group.roles.elements">
+                    <!-- TODO Permissions -->
+                    <mesh-chip [removeTitle]="'admin.remove_group_from_role' | i18n"
+                               [removable]="!(role.name === ADMIN_GROUP_NAME && group.name === ADMIN_USER_NAME)"
+                               (removeClick)="removeGroupFromRole(group, role)">
+                        {{ role.name }}
+                    </mesh-chip>
+                </ng-container>
+                <mesh-user-group-select [groups]="response.allRoles.elements"
+                                        [omit]="group.roles.elements"
+                                        (select)="addGroupToRole(group, $event)"></mesh-user-group-select>
+            </div>
+            <div class="row-actions">
+                <gtx-dropdown-list>
+                    <gtx-dropdown-trigger>
+                        <gtx-button icon
+                                    type="secondary">
+                            <icon>more_vert</icon>
+                        </gtx-button>
+                    </gtx-dropdown-trigger>
+                    <gtx-dropdown-content>
+                        <gtx-dropdown-item class="alert"
+                                           (click)="deleteGroup(group)">
+                            <icon>delete</icon> {{ 'admin.delete_group' | i18n }}
+                        </gtx-dropdown-item>
+                    </gtx-dropdown-content>
+                </gtx-dropdown-list>
+            </div>
+        </div>
+    </ng-template>
+
+</mesh-admin-list>

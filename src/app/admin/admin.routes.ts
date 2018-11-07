@@ -1,6 +1,8 @@
 import { Route } from '@angular/router';
 
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
+import { GroupDetailComponent } from './components/group-detail/group-detail.component';
+import { GroupListComponent } from './components/group-list/group-list.component';
 import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
@@ -9,6 +11,7 @@ import { SchemaDetailComponent } from './components/schema-detail/schema-detail.
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { groupBreadcrumbFn, GroupResolver } from './providers/resolvers/group-resolver';
 import { microschemaBreadcrumbFn, MicroschemaResolver } from './providers/resolvers/microschema-resolver';
 import { projectBreadcrumbFn, ProjectResolver } from './providers/resolvers/project-resolver';
 import { schemaBreadcrumbFn, SchemaResolver } from './providers/resolvers/schema-resolver';
@@ -69,6 +72,19 @@ export const routes: Route[] = [
                         component: UserDetailComponent,
                         resolve: { user: UserResolver },
                         data: { breadcrumb: userBreadcrumbFn }
+                    }
+                ]
+            },
+            {
+                path: 'groups',
+                data: { breadcrumb: 'common.groups' },
+                children: [
+                    { path: '', component: GroupListComponent },
+                    {
+                        path: ':uuid',
+                        component: GroupDetailComponent,
+                        resolve: { group: GroupResolver },
+                        data: { breadcrumb: groupBreadcrumbFn }
                     }
                 ]
             }

@@ -1,0 +1,6 @@
+query loadGroup($uuid: String) {
+  group(uuid:$uuid) {
+    uuid
+    name
+  }
+}

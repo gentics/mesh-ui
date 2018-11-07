@@ -29,7 +29,7 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
     totalItems$: Observable<number | null>;
     filterInput = new FormControl('');
     filterTerm = '';
-    selectedIndices: number[] = [];
+    selectedItems: Microschema[] = [];
     ADMIN_USER_NAME = ADMIN_USER_NAME;
 
     constructor(
@@ -99,8 +99,8 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
         });
     }
 
-    deleteMicroschemas(selectedIndices: number[]): void {
-        this.selectedMicroschemasFromIndices(selectedIndices)
+    deleteMicroschemas(selectedIndices: Microschema[]): void {
+        Observable.of(selectedIndices)
             .flatMap(selectedMicroschemas => {
                 const deletableMicroschemas = selectedMicroschemas.filter(
                     microschema => microschema.permissions.delete && microschema.name !== ADMIN_USER_NAME
@@ -124,14 +124,8 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
                 deletableMicroschemas.forEach(microschema => {
                     this.adminSchemaEffects.deleteMicroschema(microschema.uuid);
                 });
-                this.selectedIndices = [];
+                this.selectedItems = [];
             });
-    }
-
-    private selectedMicroschemasFromIndices(selectedIndices: number[]): Observable<Microschema[]> {
-        return this.microschemas$
-            .take(1)
-            .map(microschemas => microschemas.filter((microschema, index) => selectedIndices.includes(index)));
     }
 
     private filterSchemas(microschemas: Microschema[], filterTerm: string): Microschema[] {

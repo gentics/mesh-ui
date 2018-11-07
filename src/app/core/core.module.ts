@@ -13,6 +13,7 @@ import { ApiBase } from './providers/api/api-base.service';
 import { ApiService } from './providers/api/api.service';
 import { ConfigService } from './providers/config/config.service';
 import { ContentPortalService } from './providers/content-portal/content-portal.service';
+import { MeshDialogsService } from './providers/dialogs/mesh-dialogs.service';
 import { ListEffectsService } from './providers/effects/list-effects.service';
 import { AuthGuard } from './providers/guards/auth-guard';
 import { I18nNotification } from './providers/i18n-notification/i18n-notification.service';
@@ -34,7 +35,8 @@ const CORE_PROVIDERS = [
     ApiService,
     ApiBase,
     ContentPortalService,
-    SearchEffectsService
+    SearchEffectsService,
+    MeshDialogsService
 ];
 
 const CORE_COMPONENTS = [LanguageSwitcherComponent, UserDropdownComponent];

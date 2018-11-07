@@ -10,6 +10,10 @@ import { AdminListItemComponent } from '../admin-list-item/admin-list-item.compo
 
 import { AdminListComponent } from './admin-list.component';
 
+const User1 = { uuid: '1', firstName: 'Ada', lastName: 'Lovelace' };
+const User2 = { uuid: '2', firstName: 'Charles', lastName: 'Babbage' };
+const User3 = { uuid: '3', firstName: 'George', lastName: 'Byron' };
+
 describe('AdminListComponent', () => {
     let instance: TestComponent;
     let fixture: ComponentFixture<TestComponent>;
@@ -186,6 +190,8 @@ describe('AdminListComponent', () => {
         it(
             'checkedCount updates when list items are checked and unchecked',
             fakeAsync(() => {
+                instance.onSelectionChange = (selection: any[]) => (instance.selection = selection);
+                instance.users = [User1, User2];
                 instance.itemsPerPage = 2;
                 fixture.detectChanges();
 
@@ -198,6 +204,7 @@ describe('AdminListComponent', () => {
 
                 // move to page 2 and check all items
                 instance.currentPage = 2;
+                instance.users = [User3];
                 fixture.detectChanges();
 
                 checkAllListItems(fixture);
@@ -206,6 +213,7 @@ describe('AdminListComponent', () => {
 
                 // move back to page 1 and uncheck all page 1 items
                 instance.currentPage = 1;
+                instance.users = [User1, User2];
                 fixture.detectChanges();
 
                 const selectAll = getSelectAllCheckbox(fixture);
@@ -241,7 +249,7 @@ describe('AdminListComponent', () => {
         );
 
         it(
-            'selectionChange event emits the selected indices when selection changes',
+            'selectionChange event emits the selected items when selection changes',
             fakeAsync(() => {
                 instance.itemsPerPage = 2;
                 fixture.detectChanges();
@@ -249,26 +257,26 @@ describe('AdminListComponent', () => {
                 // check all items on the first page
                 checkAllListItems(fixture);
 
-                expect(instance.onSelectionChange).toHaveBeenCalledWith([0, 1]);
+                expect(instance.onSelectionChange).toHaveBeenCalledWith([User1, User2]);
 
                 instance.currentPage = 2;
                 fixture.detectChanges();
                 checkAllListItems(fixture);
-                expect(instance.onSelectionChange).toHaveBeenCalledWith([0, 1, 2]);
+                expect(instance.onSelectionChange).toHaveBeenCalledWith([User1, User2, User3]);
             })
         );
 
         it(
-            'binding to selection checks the selected indices',
+            'binding to selection checks the selected items',
             fakeAsync(() => {
-                instance.selection = [0, 2];
+                instance.selection = [User1, User3];
                 fixture.detectChanges();
 
                 const listItems = getAdminListItems(fixture);
 
-                expect(listItems[0].checked).toBe(true);
-                expect(listItems[1].checked).toBe(false);
-                expect(listItems[2].checked).toBe(true);
+                expect(listItems[0].checked).toBeTruthy();
+                expect(listItems[1].checked).toBeFalsy();
+                expect(listItems[2].checked).toBeTruthy();
             })
         );
 
@@ -276,19 +284,21 @@ describe('AdminListComponent', () => {
             'binding to selection checks the selected indices with multiple pages',
             fakeAsync(() => {
                 instance.itemsPerPage = 2;
-                instance.selection = [1, 2];
+                instance.users = [User1, User2];
+                instance.selection = [User2, User3];
                 fixture.detectChanges();
 
                 const listItemsPage1 = getAdminListItems(fixture);
 
-                expect(listItemsPage1[0].checked).toBe(false);
-                expect(listItemsPage1[1].checked).toBe(true);
+                expect(listItemsPage1[0].checked).toBeFalsy();
+                expect(listItemsPage1[1].checked).toBeTruthy();
 
                 instance.currentPage = 2;
+                instance.users = [User3];
                 fixture.detectChanges();
                 const listItemsPage2 = getAdminListItems(fixture);
 
-                expect(listItemsPage2[0].checked).toBe(true);
+                expect(listItemsPage2[0].checked).toBeTruthy();
             })
         );
     });
@@ -310,6 +320,7 @@ function getAdminListItems(fixture: ComponentFixture<TestComponent>): AdminListI
                          [currentPage]="currentPage"
                          [autoHidePagination]="autoHidePagination"
                          [selection]="selection"
+                         [totalItems]="totalItems"
                          (selectionChange)="onSelectionChange($event)"
                          (pageChange)="currentPage = $event">
             <ng-template let-user="item">
@@ -321,14 +332,11 @@ function getAdminListItems(fixture: ComponentFixture<TestComponent>): AdminListI
 class TestComponent {
     itemsPerPage = 10;
     currentPage = 1;
-    users = [
-        { firstName: 'Ada', lastName: 'Lovelace' },
-        { firstName: 'Charles', lastName: 'Babbage' },
-        { firstName: 'George', lastName: 'Byron' }
-    ];
+    totalItems = 3;
+    users = [User1, User2, User3];
     autoHidePagination = false;
-    onSelectionChange = jasmine.createSpy('onSelectionChange');
-    selection: number[] = [];
+    onSelectionChange: any = jasmine.createSpy('onSelectionChange');
+    selection: any[] = [];
 }
 
 @Component({

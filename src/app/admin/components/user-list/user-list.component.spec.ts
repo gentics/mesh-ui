@@ -9,16 +9,17 @@ import { MockModalService } from '../../../../testing/modal.service.mock';
 import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
 import { Group } from '../../../common/models/group.model';
 import { User } from '../../../common/models/user.model';
+import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { ChipComponent } from '../../../shared/components/chip/chip.component';
+import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { AdminUserEffectsService } from '../../providers/effects/admin-user-effects.service';
 import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 
-import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { UserListComponent } from './user-list.component';
 
 type MockUser = Partial<User> & { uuid: string };
@@ -50,12 +51,13 @@ describe('UserListComponent', () => {
                 ChipComponent,
                 MockAdminListComponent,
                 MockMeshUserGroupSelectComponent,
-                HighlightPipe,
+                HighlightPipe
             ],
             providers: [
                 { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService },
                 { provide: I18nService, useClass: MockI18nService },
-                { provide: ModalService, useClass: MockModalService }
+                { provide: ModalService, useClass: MockModalService },
+                MeshDialogsService
             ]
         });
 

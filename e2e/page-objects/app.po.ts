@@ -1,6 +1,6 @@
 import { browser, by, element, until } from 'protractor';
 
-import { HasUuid } from '../model';
+import { HasUuid } from '../../src/app/common/models/common.model';
 
 export async function navigateToHome() {
     await browser.get('/');
@@ -24,4 +24,12 @@ export async function navigateToNodeEdit(node: HasUuid, language = 'en') {
 
 export async function navigateToFolder(node: HasUuid, language = 'en') {
     await browser.get(`/#/editor/project/(list:demo/${node.uuid}/${language})`);
+}
+
+export async function navigateToGroupAdmin() {
+    await goToRoute(`admin/groups`);
+}
+
+async function goToRoute(route: string) {
+    await browser.executeScript((route: string) => (window.location.href = `/#${route}`), route);
 }

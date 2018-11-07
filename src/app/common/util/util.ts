@@ -7,7 +7,7 @@ import {
     MicronodeFieldType,
     NodeFieldType
 } from '../models/node.model';
-import { FieldMapFromServer } from '../models/server-models';
+import { FieldMapFromServer, GraphQLResponse } from '../models/server-models';
 
 type Supplier<T> = () => T;
 
@@ -296,4 +296,35 @@ export async function promiseConcat<T>(promiseSuppliers: Supplier<T>[]): Promise
         results.push(await supplier());
     }
     return results;
+}
+
+/**
+ * Extracts the data property from a GraphQl response.
+ * Throws an error if the error property is present.
+ */
+export function extractGraphQlResponse(response: GraphQLResponse): any {
+    if (response.errors) {
+        throw new Error(JSON.stringify(response, undefined, 2));
+    } else {
+        return response.data;
+    }
+}
+
+/**
+ * Creates an object with an entry for every item in the array.
+ *
+ * @param keyMapper A function that retrieves the key of the entry from an item
+ * @param valueMapper A function that retrieves the value of the entry from an item
+ * @param array The array to create the object of
+ */
+export function toObject<T, V>(
+    keyMapper: (item: T) => string,
+    valueMapper: (item: T) => V,
+    array: T[]
+): { [key: string]: V } {
+    const obj: { [key: string]: V } = {};
+    for (const item of array) {
+        obj[keyMapper(item)] = valueMapper(item);
+    }
+    return obj;
 }

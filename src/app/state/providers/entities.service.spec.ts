@@ -161,7 +161,7 @@ describe('EntitiesService', () => {
         it('getNode() returns alphabetically first language when no languages match and default not found in not strict mode', () => {
             config.FALLBACK_LANGUAGE = 'zulu';
             expect(entities.getNode('mockNode1', { language: ['bad', 'badder'], strictLanguageMatch: false })).toEqual(
-                mockNode1['en']['2.0']
+                mockNode1['de']['0.1']
             );
         });
     });

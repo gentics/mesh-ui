@@ -12,6 +12,8 @@ import { AdminListItemComponent } from './components/admin-list-item/admin-list-
 import { AdminListComponent } from './components/admin-list/admin-list.component';
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
 import { CreateProjectModalComponent } from './components/create-project-modal/create-project-modal.component';
+import { GroupDetailComponent } from './components/group-detail/group-detail.component';
+import { GroupListComponent } from './components/group-list/group-list.component';
 import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
@@ -25,9 +27,11 @@ import { SchemaListComponent } from './components/schema-list/schema-list.compon
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { AdminGroupEffectsService } from './providers/effects/admin-group-effects.service';
 import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
 import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
 import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
+import { GroupResolver } from './providers/resolvers/group-resolver';
 import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
 import { ProjectResolver } from './providers/resolvers/project-resolver';
 import { SchemaResolver } from './providers/resolvers/schema-resolver';
@@ -52,7 +56,9 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         UserDetailComponent,
         UserGroupSelectComponent,
         ProjectDetailComponent,
-        NameInputDialogComponent
+        NameInputDialogComponent,
+        GroupListComponent,
+        GroupDetailComponent
     ],
     entryComponents: [CreateProjectModalComponent, NameInputDialogComponent],
     imports: [SharedModule, RouterModule.forChild(routes), FormGeneratorModule],
@@ -61,8 +67,10 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         AdminSchemaEffectsService,
         AdminProjectEffectsService,
         AdminUserEffectsService,
+        AdminGroupEffectsService,
         TagsEffectsService,
         UserResolver,
+        GroupResolver,
         SchemaResolver,
         MicroschemaResolver,
         ProjectResolver

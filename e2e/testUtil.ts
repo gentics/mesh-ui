@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { browser, ElementFinder, WebElement } from 'protractor';
+import { browser, promise, ElementFinder, WebElement } from 'protractor';
 import * as uuid from 'uuid-random';
 
 import { MeshNode } from '../src/app/common/models/node.model';

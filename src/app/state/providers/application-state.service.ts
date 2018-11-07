@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { AppState } from '../models/app-state.model';
 
+import { AdminGroupsStateActions } from './admin-groups-state-actions';
 import { AdminProjectsStateActions } from './admin-projects-state-actions';
 import { AdminSchemasStateActions } from './admin-schemas-state-actions';
 import { AdminUsersStateActions } from './admin-users-state-actions';
@@ -24,6 +25,7 @@ type ActionBranches = {
     adminProjects: AdminProjectsStateActions;
     adminSchemas: AdminSchemasStateActions;
     adminUsers: AdminUsersStateActions;
+    adminGroups: AdminGroupsStateActions;
     auth: AuthStateActions;
     editor: EditorStateActions;
     entity: EntityStateActions;
@@ -52,6 +54,7 @@ export class ApplicationStateService {
             adminProjects: new AdminProjectsStateActions(),
             adminSchemas: new AdminSchemasStateActions(),
             adminUsers: new AdminUsersStateActions(),
+            adminGroups: new AdminGroupsStateActions(),
             auth: new AuthStateActions(),
             entity: new EntityStateActions(),
             editor: new EditorStateActions(config),

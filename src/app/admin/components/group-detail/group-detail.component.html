@@ -1,0 +1,23 @@
+<div class="user-details">
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="small-12 columns">
+                <gtx-input formControlName="groupName"
+                           [readonly]="readOnly"
+                           [label]="'admin.group_name_label' | i18n"></gtx-input>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="actions"
+     *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
+    <gtx-button type="primary"
+                size="small"
+                class="save-button"
+                [disabled]="!isSaveButtonEnabled()"
+                (click)="persistGroup()">
+        <ng-container *ngIf="!isNew">{{ 'admin.update_group' | i18n }}</ng-container>
+        <ng-container *ngIf="isNew">{{ 'admin.create_group' | i18n }}</ng-container>
+    </gtx-button>
+</div>

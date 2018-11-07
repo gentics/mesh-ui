@@ -1,12 +1,10 @@
 import { browser } from 'protractor';
 import * as rp from 'request-promise';
 
+import { HasUuid } from '../src/app/common/models/common.model';
 import { MeshNode } from '../src/app/common/models/node.model';
 import { Project } from '../src/app/common/models/project.model';
-import { Schema } from '../src/app/common/models/schema.model';
 import { SchemaCreateRequest } from '../src/app/common/models/server-models';
-
-import { HasUuid } from './model';
 
 const project = 'demo';
 const api = rp.defaults({

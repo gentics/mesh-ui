@@ -2,6 +2,7 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const { SpecReporter } = require('jasmine-spec-reporter');
+const customMatchers = require('./e2e/custom-matchers');
 
 exports.config = {
   allScriptsTimeout: 11000,
@@ -15,7 +16,8 @@ exports.config = {
     nodefield: 'e2e/tests/node-field.e2e-spec.ts',
     nodelistfield: 'e2e/tests/node-list-field.e2e-spec.ts',
     nodebrowserlist: 'e2e/tests/node-browser-list.e2e-spec.ts',
-    nodePublish: 'e2e/tests/node-publish.e2e-spec.ts'
+    nodePublish: 'e2e/tests/node-publish.e2e-spec.ts',
+    groupAdmin: 'e2e/tests/group-admin.e2e-spec.ts'
   },
   capabilities: {
     'browserName': 'chrome',
@@ -32,10 +34,25 @@ exports.config = {
     defaultTimeoutInterval: 30000,
     print: function() {}
   },
-  onPrepare() {
+  async onPrepare() {
     require('ts-node').register({
       project: 'e2e/tsconfig.e2e.json'
     });
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
+    beforeEach(() => {
+      jasmine.addMatchers(customMatchers);
+    })
+
+    // Workaround for https://github.com/angular/protractor/issues/2227
+    require("protractor").ElementArrayFinder.prototype.map = function(mapFn) {
+      return this.reduce((arr, el) => arr.concat(mapFn(el, arr.length)), []);
+    };
+
+    await browser.get('/#/login');
+    await element(by.css('input[name="username"]')).sendKeys('admin');
+    await element(by.css('input[name="password"]')).sendKeys('admin');
+    await element(by.tagName('button')).click();
+    // This seems to be necessary sometimes
+    await browser.waitForAngular();
   }
 };

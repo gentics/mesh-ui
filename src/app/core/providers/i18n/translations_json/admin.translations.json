@@ -1,4 +1,8 @@
 {
+    "add_selected_groups_to_role": {
+        "en": "Assign {{count}} groups to role",
+        "de": "{{count}} Gruppen zu Rolle zuweisen"
+    },
     "add_selected_users_to_group": {
         "en": "Assign {{count}} users to group",
         "de": "{{count}} Benutzer zu Gruppe zuweisen"
@@ -10,6 +14,10 @@
     "all_groups": {
         "en": "All groups",
         "de": "Alle Gruppen"
+    },
+    "all_roles": {
+        "en": "All roles",
+        "de": "Alle Rollen"
     },
     "delete_selected_schemas" : {
         "en": "Delete {{count}} schemas",
@@ -47,17 +55,29 @@
         "en": "Assigned to projects",
         "de": "Zugewiesen zu Projekte"
     },
+    "create_group": {
+        "en": "Create group",
+        "de": "Gruppe erstellen"
+    },
+    "create_tag": {
+        "en": "Create tag",
+        "de": "Tag erstellen"
+    },
     "create_user": {
         "en": "Create user",
         "de": "Benutzer erstellen"
+    },
+    "delete_group": {
+        "en": "Delete group",
+        "de": "Gruppe löschen"
     },
     "delete_label": {
         "en": "Delete",
         "de": "Löschen"
     },
     "delete_selected_users": {
-        "en": "Delete {{count}} users",
-        "de": "{{count }} Benutzer löschen"
+        "en": "Delete {{ count }} users",
+        "de": "{{ count }} Benutzer löschen"
     },
     "delete_selected_users_confirmation": {
         "en": "You are about to permanently delete {{ count }} users.",
@@ -70,6 +90,18 @@
     "delete_user_confirmation": {
         "en": "You are about to permanently delete user '{{ username }}'.",
         "de": "Wollen Sie '{{ username }}' permanent löschen?"
+    },
+    "delete_selected_groups": {
+        "en": "Delete {{ count }} groups",
+        "de": "{{ count }} Gruppen löschen"
+    },
+    "delete_selected_groups_confirmation": {
+        "en": "You are about to permanently delete {{ count }} groups.",
+        "de": "Wollen Sie {{ count }} Gruppen permanent löschen?"
+    },
+    "delete_group_confirmation": {
+        "en": "You are about to permanently delete group '{{ groupname }}'.",
+        "de": "Wollen Sie '{{ groupname }}' permanent löschen?"
     },
     "edit_user_node": {
         "en": "Edit node",
@@ -87,9 +119,33 @@
         "en": "Filter by name",
         "de": "nach Name durchsuchen"
     },
+    "filter_by_role": {
+        "en": "Filter by role",
+        "de": "nach Rolle durchsuchen"
+    },
     "first_name_label": {
         "en": "First name",
         "de": "Vorname"
+    },
+    "group_created": {
+        "en": "New group created",
+        "de": "Neue Gruppe erstellt"
+    },
+    "group_deleted": {
+        "en": "Group deleted",
+        "de": "Gruppe gelöscht"
+    },
+    "group_updated": {
+        "en": "Group updated",
+        "de": "Gruppe gespeichert"
+    },
+    "groups_deleted": {
+        "en": "Groups deleted",
+        "de": "Gruppen gelöscht"
+    },
+    "group_name_label": {
+        "en": "Group name",
+        "de": "Gruppenname"
     },
     "last_name_label": {
         "en": "Last name",
@@ -126,6 +182,10 @@
     "microschema_none_found": {
         "en": "No microschemas found",
         "de": "Keine Microschemas gefunden"
+    },
+    "new_group": {
+        "en": "New group",
+        "de": "Neue Gruppe"
     },
     "new_project": {
         "en": "New project",
@@ -231,6 +291,10 @@
         "en": "Update Project",
         "de": "Projekt speichern"
     },
+    "remove_selected_groups_from_role": {
+        "en": "Remove {{count}} groups from role",
+        "de": "{{count}} Gruppen von Rolle entfernen"
+    },
     "remove_selected_users_from_group": {
         "en": "Remove {{count}} users from group",
         "de": "{{count}} Benutzer von Gruppe entfernen"
@@ -238,6 +302,10 @@
     "remove_user_from_group": {
         "en": "Remove from group",
         "de": "Von Gruppe entfernen"
+    },
+    "remove_group_from_role": {
+        "en": "Remove from role",
+        "de": "Von Rolle entfernen"
     },
     "schema_create": {
         "en": "Create Schema",
@@ -274,6 +342,14 @@
     "select_new_node_reference": {
         "en": "Select a different node",
         "de": "Andere Node auswählen"
+    },
+    "tag": {
+        "en": "Tag",
+        "de": "Tag"
+    },
+    "update_group": {
+        "en": "Update group",
+        "de": "Gruppe speichern"
     },
     "update_user": {
         "en": "Update user",

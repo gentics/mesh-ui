@@ -43,8 +43,11 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        const user$: Observable<User> = this.route.data.map(data => data.user).filter(notNullOrUndefined);
-        const nodeReference$ = user$.map(user => user.nodeReference).filter(notNullOrUndefined);
+        const user$: Observable<User> = this.route.data.map(data => data.user);
+        const nodeReference$ = user$
+            .filter(notNullOrUndefined)
+            .map(user => user.nodeReference)
+            .filter(notNullOrUndefined);
 
         this.userNode$ = nodeReference$
             .map(nodeReference => this.entities.getNode(nodeReference.uuid, { strictLanguageMatch: false }))
