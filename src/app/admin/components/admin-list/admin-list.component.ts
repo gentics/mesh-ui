@@ -82,7 +82,6 @@ export class AdminListComponent<T extends HasUuid> implements OnChanges, AfterCo
     checked: { [uuid: string]: boolean } = {};
     itemsByKey: { [uuid: string]: T };
     checkedCount = 0;
-    private currentPageIndices: number[];
 
     constructor(private elementRef: ElementRef) {}
 
@@ -100,7 +99,6 @@ export class AdminListComponent<T extends HasUuid> implements OnChanges, AfterCo
         } else {
             length = this.itemsPerPage;
         }
-        this.currentPageIndices = Array.from({ length }, (_, i) => i);
 
         this.paginationConfig = {
             currentPage: this.currentPage,
@@ -139,17 +137,17 @@ export class AdminListComponent<T extends HasUuid> implements OnChanges, AfterCo
         if (this.items.length === 0) {
             return false;
         }
-        return this.currentPageIndices.every((_, i) => this.checked[this.items[i].uuid]);
+        return this.items.every(item => this.checked[item.uuid]);
     }
 
     toggleSelectAll(): void {
         if (this.allSelected()) {
-            this.currentPageIndices.forEach((_, i) => {
-                this.checked[this.items[i].uuid] = false;
+            this.items.forEach(item => {
+                this.checked[item.uuid] = false;
             });
         } else {
-            this.currentPageIndices.forEach((_, i) => {
-                this.checked[this.items[i].uuid] = true;
+            this.items.forEach(item => {
+                this.checked[item.uuid] = true;
             });
         }
         this.calculateCheckedCount();
