@@ -1,6 +1,6 @@
 import { browser, by, element, until } from 'protractor';
 
-import { HasUuid } from '../model';
+import { HasUuid } from '../../src/app/common/models/common.model';
 
 export async function navigateToHome() {
     await browser.get('/');

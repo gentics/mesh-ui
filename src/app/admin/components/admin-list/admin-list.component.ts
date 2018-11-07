@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { PaginationInstance, PaginationService } from 'ngx-pagination';
 
-import { HasUuid } from '../../../../../e2e/model';
+import { HasUuid } from '../../../common/models/common.model';
 import { toObject } from '../../../common/util/util';
 
 /**

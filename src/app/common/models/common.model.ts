@@ -40,3 +40,7 @@ export interface ConflictedField {
     remoteURL?: string | SafeUrl;
     loading?: boolean;
 }
+
+export interface HasUuid {
+    uuid: string;
+}
