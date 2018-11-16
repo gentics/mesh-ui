@@ -163,6 +163,18 @@
         "en": "Group name",
         "de": "Gruppenname"
     },
+    "role_created": {
+        "en": "New role created",
+        "de": "Neue Rolle erstellt"
+    },
+    "role_deleted": {
+        "en": "Role deleted",
+        "de": "Rolle gelöscht"
+    },
+    "role_updated": {
+        "en": "Role updated",
+        "de": "Rolle gespeichert"
+    },
     "role_name_label": {
         "en": "Role name",
         "de": "Rollenname"
@@ -378,6 +390,10 @@
     "update_group": {
         "en": "Update group",
         "de": "Gruppe speichern"
+    },
+    "update_role": {
+        "en": "Update role",
+        "de": "Rolle speichern"
     },
     "update_user": {
         "en": "Update user",
