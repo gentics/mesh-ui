@@ -33,7 +33,6 @@ export class RoleDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.route.data
-            .do((role: any) => console.log('!!! role:', role))
             .map(data => data.role)
             .takeUntil(this.destroy$)
             .subscribe((role: AdminRoleOnlyResponse) => {
