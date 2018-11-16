@@ -115,6 +115,14 @@
         "en": "You are about to permanently delete group '{{ groupname }}'.",
         "de": "Wollen Sie '{{ groupname }}' permanent löschen?"
     },
+    "delete_selected_roles": {
+        "en": "Delete {{ count }} roles",
+        "de": "{{ count }} Rollen löschen"
+    },
+    "delete_selected_roles_confirmation": {
+        "en": "You are about to permanently delete {{ count }} roles.",
+        "de": "Wollen Sie {{ count }} Rollen permanent löschen?"
+    },
     "delete_role_confirmation": {
         "en": "You are about to permanently delete role '{{ rolename }}'.",
         "de": "Wollen Sie '{{ rolename }}' permanent löschen?"
