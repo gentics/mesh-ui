@@ -112,13 +112,13 @@ export class RoleListComponent implements OnInit, OnDestroy {
         });
     }
 
-    removeRoleFromRole(role: AdminRoleResponse, group: AdminRolePermissionResponse) {
-        this.adminRoleEffects.removePermissionsFromRole([role], role).subscribe(() => this.refetch());
+    /*     removePermissionFromRole(role: AdminRoleResponse, permission: AdminRolePermissionResponse) {
+        this.adminRoleEffects.removePermissionsFromRole([permission], role).subscribe(() => this.refetch());
     }
 
-    addRoleToRole(role: AdminRoleResponse, group: AdminRolePermissionResponse) {
-        this.adminRoleEffects.addPermissionsToRole([role], role).subscribe(() => this.refetch());
-    }
+    addPermissionToRole(role: AdminRoleResponse, permission: AdminRolePermissionResponse) {
+        this.adminRoleEffects.addPermissionsToRole([permission], role).subscribe(() => this.refetch());
+    } */
 
     async deleteRole(role: AdminRoleResponse) {
         await this.meshDialog.deleteConfirmation(

@@ -1,0 +1,26 @@
+<gtx-dropdown-list>
+    <gtx-dropdown-trigger>
+        <gtx-button size="small"
+                    [title]="title || ('admin.add_permission_to_role' | i18n)"
+                    flat
+                    [type]="icon === 'remove' ? 'warning' : 'secondary'">
+            <div class="icon-wrapper">
+                <icon class="add-remove-icon"
+                      *ngIf="icon === 'add'">add</icon>
+                <icon class="add-remove-icon"
+                      *ngIf="icon === 'remove'">remove</icon>
+                <icon>role</icon>
+            </div>
+        </gtx-button>
+    </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+        <gtx-dropdown-item *ngFor="let role of filteredRoles"
+                           (click)="select.emit(role)">
+            {{ role.name }}
+        </gtx-dropdown-item>
+        <gtx-dropdown-item *ngIf="filteredRoles.length === 0"
+                           class="not-available">
+            {{ 'admin.no_available_roles' | i18n }}
+        </gtx-dropdown-item>
+    </gtx-dropdown-content>
+</gtx-dropdown-list>

@@ -1,0 +1,23 @@
+<div class="user-details">
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="small-12 columns">
+                <gtx-input formControlName="roleName"
+                           [readonly]="readOnly"
+                           [label]="'admin.role_name_label' | i18n"></gtx-input>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="actions"
+     *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
+    <gtx-button type="primary"
+                size="small"
+                class="save-button"
+                [disabled]="!isSaveButtonEnabled()"
+                (click)="persistRole()">
+        <ng-container *ngIf="!isNew">{{ 'admin.update_role' | i18n }}</ng-container>
+        <ng-container *ngIf="isNew">{{ 'admin.create_role' | i18n }}</ng-container>
+    </gtx-button>
+</div>

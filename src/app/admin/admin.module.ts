@@ -21,19 +21,24 @@ import { NameInputDialogComponent } from './components/name-input-dialog/name-in
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
+import { RoleDetailComponent } from './components/role-detail/role-detail.component';
+import { RoleListComponent } from './components/role-list/role-list.component';
 import { SchemaAssignmentComponent } from './components/schema-assignment/schema-assignment.component';
 import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { UserRoleSelectComponent } from './components/user-role-select/user-role-select.component';
 import { AdminGroupEffectsService } from './providers/effects/admin-group-effects.service';
 import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
+import { AdminRoleEffectsService } from './providers/effects/admin-role-effects.service';
 import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
 import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
 import { GroupResolver } from './providers/resolvers/group-resolver';
 import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
 import { ProjectResolver } from './providers/resolvers/project-resolver';
+import { RoleResolver } from './providers/resolvers/role-resolver';
 import { SchemaResolver } from './providers/resolvers/schema-resolver';
 import { UserResolver } from './providers/resolvers/user-resolver';
 
@@ -55,10 +60,13 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         AdminListItemComponent,
         UserDetailComponent,
         UserGroupSelectComponent,
+        UserRoleSelectComponent,
         ProjectDetailComponent,
         NameInputDialogComponent,
         GroupListComponent,
-        GroupDetailComponent
+        GroupDetailComponent,
+        RoleListComponent,
+        RoleDetailComponent
     ],
     entryComponents: [CreateProjectModalComponent, NameInputDialogComponent],
     imports: [SharedModule, RouterModule.forChild(routes), FormGeneratorModule],
@@ -68,9 +76,11 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         AdminProjectEffectsService,
         AdminUserEffectsService,
         AdminGroupEffectsService,
+        AdminRoleEffectsService,
         TagsEffectsService,
         UserResolver,
         GroupResolver,
+        RoleResolver,
         SchemaResolver,
         MicroschemaResolver,
         ProjectResolver

@@ -11,6 +11,10 @@
         "en": "Assign to group",
         "de": "Zu Gruppe zuweisen"
     },
+    "add_permission_to_role": {
+        "en": "Assign to role",
+        "de": "Zu Rolle zuweisen"
+    },
     "all_groups": {
         "en": "All groups",
         "de": "Alle Gruppen"
@@ -59,6 +63,10 @@
         "en": "Create group",
         "de": "Gruppe erstellen"
     },
+    "create_role": {
+        "en": "Create role",
+        "de": "Rolle erstellen"
+    },
     "create_tag": {
         "en": "Create tag",
         "de": "Tag erstellen"
@@ -70,6 +78,10 @@
     "delete_group": {
         "en": "Delete group",
         "de": "Gruppe löschen"
+    },
+    "delete_role": {
+        "en": "Delete role",
+        "de": "Rolle löschen"
     },
     "delete_label": {
         "en": "Delete",
@@ -102,6 +114,10 @@
     "delete_group_confirmation": {
         "en": "You are about to permanently delete group '{{ groupname }}'.",
         "de": "Wollen Sie '{{ groupname }}' permanent löschen?"
+    },
+    "delete_role_confirmation": {
+        "en": "You are about to permanently delete role '{{ rolename }}'.",
+        "de": "Wollen Sie '{{ rolename }}' permanent löschen?"
     },
     "edit_user_node": {
         "en": "Edit node",
@@ -187,6 +203,10 @@
         "en": "New group",
         "de": "Neue Gruppe"
     },
+    "new_role": {
+        "en": "New role",
+        "de": "Neue Rolle"
+    },
     "new_project": {
         "en": "New project",
         "de": "Neues Projekt"
@@ -206,6 +226,10 @@
     "no_available_groups": {
         "en": "No available groups",
         "de": "Keine gültige Gruppen"
+    },
+    "no_available_roles": {
+        "en": "No available roles",
+        "de": "Keine gültige Rollen"
     },
     "no_results": {
         "en": "No results",

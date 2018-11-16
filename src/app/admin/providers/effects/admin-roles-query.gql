@@ -15,10 +15,4 @@ query loadRoles($page:Long, $query:String) {
     currentPage
     totalCount
   }
-  allRoles: roles {
-    elements {
-      uuid
-      name
-    }
-  }
 }

@@ -7,6 +7,8 @@ import { MicroschemaDetailComponent } from './components/microschema-detail/micr
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
+import { RoleDetailComponent } from './components/role-detail/role-detail.component';
+import { RoleListComponent } from './components/role-list/role-list.component';
 import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
@@ -14,6 +16,7 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { groupBreadcrumbFn, GroupResolver } from './providers/resolvers/group-resolver';
 import { microschemaBreadcrumbFn, MicroschemaResolver } from './providers/resolvers/microschema-resolver';
 import { projectBreadcrumbFn, ProjectResolver } from './providers/resolvers/project-resolver';
+import { roleBreadcrumbFn, RoleResolver } from './providers/resolvers/role-resolver';
 import { schemaBreadcrumbFn, SchemaResolver } from './providers/resolvers/schema-resolver';
 import { userBreadcrumbFn, UserResolver } from './providers/resolvers/user-resolver';
 
@@ -85,6 +88,19 @@ export const routes: Route[] = [
                         component: GroupDetailComponent,
                         resolve: { group: GroupResolver },
                         data: { breadcrumb: groupBreadcrumbFn }
+                    }
+                ]
+            },
+            {
+                path: 'roles',
+                data: { breadcrumb: 'common.roles' },
+                children: [
+                    { path: '', component: RoleListComponent },
+                    {
+                        path: ':uuid',
+                        component: RoleDetailComponent,
+                        resolve: { group: RoleResolver },
+                        data: { breadcrumb: roleBreadcrumbFn }
                     }
                 ]
             }

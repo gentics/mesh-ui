@@ -1,20 +1,20 @@
-<mesh-admin-list [items]="response.groups.elements"
+<mesh-admin-list [items]="response.roles.elements"
                  [itemsPerPage]="10"
                  [currentPage]="currentPage"
                  [(selection)]="selectedItems"
-                 [totalItems]="response.groups.totalCount"
+                 [totalItems]="response.roles.totalCount"
                  (pageChange)="onPageChange($event)">
     <div class="list-controls">
         <div class="with-selected"
              [class.hidden]="selectedItems.length === 0">
-            <mesh-user-group-select [groups]="response.allRoles.elements"
-                                    [title]="'admin.add_selected_groups_to_role' | i18n: { count: selectedItems.length }"
-                                    (select)="addGroupsToRole(selectedItems, $event)"></mesh-user-group-select>
-            <mesh-user-group-select [groups]="response.allRoles.elements"
+            <!--             <mesh-user-role-select [roles]="response.allPermissions.elements"
+                                    [title]="'admin.add_selected_permissions_to_role' | i18n: { count: selectedItems.length }"
+                                    (select)="addPermissionsToRole(selectedItems, $event)"></mesh-user-role-select>
+            <mesh-user-role-select [roles]="response.allPermissions.elements"
                                     class="warning"
                                     icon="remove"
-                                    [title]="'admin.remove_selected_groups_from_role' | i18n: { count: selectedItems.length }"
-                                    (select)="removeGroupsFromRole(selectedItems, $event)"></mesh-user-group-select>
+                                    [title]="'admin.remove_selected_permissions_from_role' | i18n: { count: selectedItems.length }"
+                                    (select)="removePermissionsFromRole(selectedItems, $event)"></mesh-user-role-select> -->
             <gtx-button flat
                         type="alert"
                         [title]="'admin.delete_selected_users' | i18n: { count: selectedItems.length }"
@@ -31,36 +31,35 @@
             <gtx-select [label]="'admin.filter_by_role' | i18n"
                         [formControl]="filterRoleSelect">
                 <gtx-option value="">{{ 'admin.all_roles' | i18n }}</gtx-option>
-                <gtx-option *ngFor="let role of response.allRoles.elements"
+                <gtx-option *ngFor="let role of response.roles.elements"
                             [value]="role.uuid">{{ role.name }}</gtx-option>
             </gtx-select>
         </div>
         <gtx-button size="regular"
-                    [routerLink]="['/admin/groups/new']">
-            <icon left>group_add</icon>
-            <span class="new-item-label">{{ 'admin.new_group' | i18n }}</span>
+                    [routerLink]="['/admin/roles/new']">
+            <icon left>role_add</icon>
+            <span class="new-item-label">{{ 'admin.new_role' | i18n }}</span>
         </gtx-button>
     </div>
 
-    <ng-template let-group="item">
+    <ng-template let-role="item">
         <div class="item-row">
-            <a [routerLink]="['/admin/groups', group.uuid]">
-                <div class="group-name"
-                     [innerHTML]="group.name"></div>
+            <a [routerLink]="['/admin/roles', role.uuid]">
+                <div class="role-name"
+                     [innerHTML]="role.name"></div>
             </a>
-            <div class="role-wrapper">
-                <ng-container *ngFor="let role of group.roles.elements">
-                    <!-- TODO Permissions -->
-                    <mesh-chip [removeTitle]="'admin.remove_group_from_role' | i18n"
-                               [removable]="!(role.name === ADMIN_GROUP_NAME && group.name === ADMIN_USER_NAME)"
-                               (removeClick)="removeGroupFromRole(group, role)">
+            <!--             <div class="role-wrapper">
+                <ng-container *ngFor="let permission of role.permissions.elements">
+                    <mesh-chip [removeTitle]="'admin.remove_permission_from_role' | i18n"
+                               [removable]="!(role.name === ADMIN_ROLE_NAME && role.name === ADMIN_USER_NAME)"
+                               (removeClick)="removePermissionFromRole(role, permission)">
                         {{ role.name }}
                     </mesh-chip>
                 </ng-container>
-                <mesh-user-group-select [groups]="response.allRoles.elements"
-                                        [omit]="group.roles.elements"
-                                        (select)="addGroupToRole(group, $event)"></mesh-user-group-select>
-            </div>
+                <mesh-user-role-select [roles]="response.allRoles.elements"
+                                        [omit]="role.roles.elements"
+                                        (select)="addGroupToRole(role, $event)"></mesh-user-role-select>
+            </div> -->
             <div class="row-actions">
                 <gtx-dropdown-list>
                     <gtx-dropdown-trigger>
@@ -71,8 +70,8 @@
                     </gtx-dropdown-trigger>
                     <gtx-dropdown-content>
                         <gtx-dropdown-item class="alert"
-                                           (click)="deleteGroup(group)">
-                            <icon>delete</icon> {{ 'admin.delete_group' | i18n }}
+                                           (click)="deleteRole(role)">
+                            <icon>delete</icon> {{ 'admin.delete_role' | i18n }}
                         </gtx-dropdown-item>
                     </gtx-dropdown-content>
                 </gtx-dropdown-list>

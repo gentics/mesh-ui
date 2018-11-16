@@ -14,7 +14,7 @@ export class NameInputDialogComponent implements IModalDialog {
     title = '';
     label = '';
     value: string;
-    error: string | null;
+    error: string | null;
 
     registerCloseFn(close: (val: string) => void): void {
         this.closeFn = close;
@@ -24,7 +24,7 @@ export class NameInputDialogComponent implements IModalDialog {
     }
 
     // Bound to the form's submit event.
-    onSubmitClick() : void {
+    onSubmitClick(): void {
         this.closeFn(this.value);
     }
 
@@ -32,5 +32,4 @@ export class NameInputDialogComponent implements IModalDialog {
     onCancelClick(): void {
         this.cancelFn();
     }
-
 }
