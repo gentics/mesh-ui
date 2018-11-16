@@ -28,11 +28,12 @@ export class RoleDetailComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private formBuilder: FormBuilder,
-        private adminGroupEffects: AdminRoleEffectsService
+        private adminRoleEffects: AdminRoleEffectsService
     ) {}
 
     ngOnInit() {
         this.route.data
+            .do((role: any) => console.log('!!! role:', role))
             .map(data => data.role)
             .takeUntil(this.destroy$)
             .subscribe((role: AdminRoleOnlyResponse) => {
@@ -75,7 +76,7 @@ export class RoleDetailComponent implements OnInit, OnDestroy {
             const uuid = this.route.snapshot.paramMap.get('uuid');
             if (uuid) {
                 const updateRequest = this.getRoleRequest();
-                this.adminGroupEffects.updateRole(uuid, updateRequest).subscribe(role => {
+                this.adminRoleEffects.updateRole(uuid, updateRequest).subscribe(role => {
                     this.router.navigate(['/admin/roles']);
                 });
             }
@@ -84,7 +85,7 @@ export class RoleDetailComponent implements OnInit, OnDestroy {
 
     private createRole(): void {
         const createRequest = this.getRoleRequest();
-        this.adminGroupEffects.createRole(createRequest).subscribe(role => {
+        this.adminRoleEffects.createRole(createRequest).subscribe(role => {
             if (role) {
                 this.router.navigate(['/admin/roles']);
             }

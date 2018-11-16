@@ -163,6 +163,10 @@
         "en": "Group name",
         "de": "Gruppenname"
     },
+    "role_name_label": {
+        "en": "Role name",
+        "de": "Rollenname"
+    },
     "last_name_label": {
         "en": "Last name",
         "de": "Nachname"

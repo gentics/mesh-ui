@@ -13,7 +13,6 @@ import { setQueryParams } from '../../../shared/common/set-query-param';
 import {
     AdminRoleEffectsService,
     AdminRoleListResponse,
-    AdminRolePermissionResponse,
     AdminRoleResponse
 } from '../../providers/effects/admin-role-effects.service';
 
@@ -90,14 +89,6 @@ export class RoleListComponent implements OnInit, OnDestroy {
         setQueryParams(this.router, this.route, { p: newPage });
     }
 
-    addPermissionsToRole(roles: AdminRoleResponse[], role: AdminRolePermissionResponse): void {
-        this.adminRoleEffects.addPermissionsToRole(roles, role).subscribe(() => this.refetch());
-    }
-
-    removePermissionsFromRole(roles: AdminRoleResponse[], role: AdminRolePermissionResponse): void {
-        this.adminRoleEffects.removePermissionsFromRole(roles, role).subscribe(() => this.refetch());
-    }
-
     async deleteRoles(roles: AdminRoleResponse[]) {
         if (roles.length === 0) {
             return;
@@ -111,14 +102,6 @@ export class RoleListComponent implements OnInit, OnDestroy {
             this.selectedItems = [];
         });
     }
-
-    /*     removePermissionFromRole(role: AdminRoleResponse, permission: AdminRolePermissionResponse) {
-        this.adminRoleEffects.removePermissionsFromRole([permission], role).subscribe(() => this.refetch());
-    }
-
-    addPermissionToRole(role: AdminRoleResponse, permission: AdminRolePermissionResponse) {
-        this.adminRoleEffects.addPermissionsToRole([permission], role).subscribe(() => this.refetch());
-    } */
 
     async deleteRole(role: AdminRoleResponse) {
         await this.meshDialog.deleteConfirmation(
@@ -137,9 +120,6 @@ function emptyResponse(): AdminRoleListResponse {
         roles: {
             currentPage: 1,
             totalCount: 0,
-            elements: []
-        },
-        allRoles: {
             elements: []
         }
     };

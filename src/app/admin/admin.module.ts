@@ -29,7 +29,6 @@ import { SchemaListComponent } from './components/schema-list/schema-list.compon
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
 import { UserListComponent } from './components/user-list/user-list.component';
-import { UserRoleSelectComponent } from './components/user-role-select/user-role-select.component';
 import { AdminGroupEffectsService } from './providers/effects/admin-group-effects.service';
 import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
 import { AdminRoleEffectsService } from './providers/effects/admin-role-effects.service';
@@ -60,7 +59,6 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         AdminListItemComponent,
         UserDetailComponent,
         UserGroupSelectComponent,
-        UserRoleSelectComponent,
         ProjectDetailComponent,
         NameInputDialogComponent,
         GroupListComponent,

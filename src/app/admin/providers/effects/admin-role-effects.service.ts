@@ -18,9 +18,6 @@ export interface AdminRoleListResponse {
         totalCount: number;
         elements: AdminRoleResponse[];
     };
-    allRoles: {
-        elements: AdminRolePermissionResponse[];
-    };
 }
 export interface AdminRoleOnlyResponse {
     uuid: string;
@@ -28,14 +25,6 @@ export interface AdminRoleOnlyResponse {
 }
 
 export interface AdminRoleResponse {
-    uuid: string;
-    name: string;
-    groups: {
-        elements: AdminRolePermissionResponse[];
-    };
-}
-
-export interface AdminRolePermissionResponse {
     uuid: string;
     name: string;
 }
@@ -101,28 +90,6 @@ export class AdminRoleEffectsService {
             .map(extractGraphQlResponse)
             .map(response => response.role)
             .do(role => this.state.actions.adminRoles.loadRoleSuccess(role));
-    }
-
-    addPermissionsToRole(permissions: AdminRolePermissionResponse[], role: AdminRolePermissionResponse) {
-        return Observable.from(permissions)
-            .flatMap(permission =>
-                this.api.admin.addPermissionToRole({
-                    roleUuid: role.uuid,
-                    permissionUuid: permission.uuid
-                })
-            )
-            .toArray();
-    }
-
-    removePermissionsFromRole(permissions: AdminRolePermissionResponse[], role: AdminRolePermissionResponse) {
-        return Observable.from(permissions)
-            .flatMap(permission =>
-                this.api.admin.removePermissionFromRole({
-                    roleUuid: role.uuid,
-                    permissionUuid: permission.uuid
-                })
-            )
-            .toArray();
     }
 
     deleteRoles(roles: AdminRoleResponse[]) {

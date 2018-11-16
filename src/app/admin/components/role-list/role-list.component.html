@@ -7,14 +7,6 @@
     <div class="list-controls">
         <div class="with-selected"
              [class.hidden]="selectedItems.length === 0">
-            <!--             <mesh-user-role-select [roles]="response.allPermissions.elements"
-                                    [title]="'admin.add_selected_permissions_to_role' | i18n: { count: selectedItems.length }"
-                                    (select)="addPermissionsToRole(selectedItems, $event)"></mesh-user-role-select>
-            <mesh-user-role-select [roles]="response.allPermissions.elements"
-                                    class="warning"
-                                    icon="remove"
-                                    [title]="'admin.remove_selected_permissions_from_role' | i18n: { count: selectedItems.length }"
-                                    (select)="removePermissionsFromRole(selectedItems, $event)"></mesh-user-role-select> -->
             <gtx-button flat
                         type="alert"
                         [title]="'admin.delete_selected_users' | i18n: { count: selectedItems.length }"
@@ -48,18 +40,6 @@
                 <div class="role-name"
                      [innerHTML]="role.name"></div>
             </a>
-            <!--             <div class="role-wrapper">
-                <ng-container *ngFor="let permission of role.permissions.elements">
-                    <mesh-chip [removeTitle]="'admin.remove_permission_from_role' | i18n"
-                               [removable]="!(role.name === ADMIN_ROLE_NAME && role.name === ADMIN_USER_NAME)"
-                               (removeClick)="removePermissionFromRole(role, permission)">
-                        {{ role.name }}
-                    </mesh-chip>
-                </ng-container>
-                <mesh-user-role-select [roles]="response.allRoles.elements"
-                                        [omit]="role.roles.elements"
-                                        (select)="addGroupToRole(role, $event)"></mesh-user-role-select>
-            </div> -->
             <div class="row-actions">
                 <gtx-dropdown-list>
                     <gtx-dropdown-trigger>

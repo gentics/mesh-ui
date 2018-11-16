@@ -99,7 +99,7 @@ export const routes: Route[] = [
                     {
                         path: ':uuid',
                         component: RoleDetailComponent,
-                        resolve: { group: RoleResolver },
+                        resolve: { role: RoleResolver },
                         data: { breadcrumb: roleBreadcrumbFn }
                     }
                 ]
