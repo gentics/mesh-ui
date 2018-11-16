@@ -9,6 +9,7 @@ import { AppState } from '../models/app-state.model';
 
 import { AdminGroupsStateActions } from './admin-groups-state-actions';
 import { AdminProjectsStateActions } from './admin-projects-state-actions';
+import { AdminRolesStateActions } from './admin-roles-state-actions';
 import { AdminSchemasStateActions } from './admin-schemas-state-actions';
 import { AdminUsersStateActions } from './admin-users-state-actions';
 import { AuthStateActions } from './auth-state-actions';
@@ -26,6 +27,7 @@ type ActionBranches = {
     adminSchemas: AdminSchemasStateActions;
     adminUsers: AdminUsersStateActions;
     adminGroups: AdminGroupsStateActions;
+    adminRoles: AdminRolesStateActions;
     auth: AuthStateActions;
     editor: EditorStateActions;
     entity: EntityStateActions;
@@ -55,6 +57,7 @@ export class ApplicationStateService {
             adminSchemas: new AdminSchemasStateActions(),
             adminUsers: new AdminUsersStateActions(),
             adminGroups: new AdminGroupsStateActions(),
+            adminRoles: new AdminRolesStateActions(),
             auth: new AuthStateActions(),
             entity: new EntityStateActions(),
             editor: new EditorStateActions(config),
