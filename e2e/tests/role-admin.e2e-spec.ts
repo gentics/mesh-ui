@@ -1,7 +1,7 @@
 import * as page from '../page-objects/app.po';
 import { RoleAdminList } from '../page-objects/role-admin/role-admin-list.po';
 
-fdescribe('role admin list', () => {
+describe('role admin list', () => {
     beforeEach(async () => {
         await page.navigateToRoleAdmin();
     });
