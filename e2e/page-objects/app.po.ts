@@ -30,6 +30,11 @@ export async function navigateToGroupAdmin() {
     await goToRoute(`admin/groups`);
 }
 
+export async function navigateToRoleAdmin() {
+    console.log('!!!!!!!!!!! navigateToRoleAdmin');
+    await goToRoute(`admin/roles`);
+}
+
 async function goToRoute(route: string) {
     await browser.executeScript((route: string) => (window.location.href = `/#${route}`), route);
 }

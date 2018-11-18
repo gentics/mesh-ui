@@ -19,14 +19,14 @@
             <gtx-input [label]="'admin.filter_by_name' | i18n"
                        [formControl]="filterInput"></gtx-input>
         </div>
-        <div class="role-filter">
+        <!--         <div class="role-filter">
             <gtx-select [label]="'admin.filter_by_role' | i18n"
                         [formControl]="filterRoleSelect">
                 <gtx-option value="">{{ 'admin.all_roles' | i18n }}</gtx-option>
                 <gtx-option *ngFor="let role of response.roles.elements"
                             [value]="role.uuid">{{ role.name }}</gtx-option>
             </gtx-select>
-        </div>
+        </div> -->
         <gtx-button size="regular"
                     [routerLink]="['/admin/roles/new']">
             <icon left>group_add</icon>
