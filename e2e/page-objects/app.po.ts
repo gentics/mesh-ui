@@ -31,7 +31,6 @@ export async function navigateToGroupAdmin() {
 }
 
 export async function navigateToRoleAdmin() {
-    console.log('!!!!!!!!!!! navigateToRoleAdmin');
     await goToRoute(`admin/roles`);
 }
 
