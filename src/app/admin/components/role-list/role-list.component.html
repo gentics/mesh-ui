@@ -1,0 +1,54 @@
+<mesh-admin-list [items]="response.roles.elements"
+                 [itemsPerPage]="10"
+                 [currentPage]="currentPage"
+                 [(selection)]="selectedItems"
+                 [totalItems]="response.roles.totalCount"
+                 (pageChange)="onPageChange($event)">
+    <div class="list-controls">
+        <div class="with-selected"
+             [class.hidden]="selectedItems.length === 0">
+            <gtx-button flat
+                        type="alert"
+                        [title]="'admin.delete_selected_users' | i18n: { count: selectedItems.length }"
+                        (click)="deleteRoles(selectedItems)"
+                        size="small">
+                <icon>delete</icon>
+            </gtx-button>
+        </div>
+        <div class="filter">
+            <gtx-input [label]="'admin.filter_by_name' | i18n"
+                       [formControl]="filterInput"></gtx-input>
+        </div>
+        <gtx-button size="regular"
+                    [routerLink]="['/admin/roles/new']">
+            <icon left>group_add</icon>
+            <span class="new-item-label">{{ 'admin.new_role' | i18n }}</span>
+        </gtx-button>
+    </div>
+
+    <ng-template let-role="item">
+        <div class="item-row">
+            <a [routerLink]="['/admin/roles', role.uuid]">
+                <div class="role-name"
+                     [innerHTML]="role.name"></div>
+            </a>
+            <div class="row-actions">
+                <gtx-dropdown-list>
+                    <gtx-dropdown-trigger>
+                        <gtx-button icon
+                                    type="secondary">
+                            <icon>more_vert</icon>
+                        </gtx-button>
+                    </gtx-dropdown-trigger>
+                    <gtx-dropdown-content>
+                        <gtx-dropdown-item class="alert"
+                                           (click)="deleteRole(role)">
+                            <icon>delete</icon> {{ 'admin.delete_role' | i18n }}
+                        </gtx-dropdown-item>
+                    </gtx-dropdown-content>
+                </gtx-dropdown-list>
+            </div>
+        </div>
+    </ng-template>
+
+</mesh-admin-list>

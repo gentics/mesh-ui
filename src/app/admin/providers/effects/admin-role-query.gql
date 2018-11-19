@@ -1,0 +1,6 @@
+query loadRole($uuid: String) {
+  role(uuid:$uuid) {
+    uuid
+    name
+  }
+}

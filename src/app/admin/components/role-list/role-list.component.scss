@@ -1,0 +1,41 @@
+@import "variables";
+@import "../admin-list/admin-list.component.common-styles.scss";
+@include gtx-dropdown-item;
+@include list-controls;
+@include item-row;
+@include filter-selection;
+
+.with-selected {
+    overflow: hidden;
+    display: flex;
+    transition: visibility 0s, max-width 0.2s, opacity 0.2s, margin 0.2s;
+    max-width: 130px;
+    margin: 0 10px;
+
+    &.hidden {
+        opacity: 0;
+        visibility: hidden;
+        max-width: 0;
+        margin: 0;
+        transition: visibility 0s 0.2s, max-width 0.2s, opacity 0.2s, margin 0.2s;
+    }
+
+    > * {
+        margin-right: 5px;
+    }
+}
+
+.role-filter {
+    margin-right: 10px;
+}
+
+.group-name {
+    color: $gtx-color-dark-gray;
+    @media screen and (min-width: $medium-screen-up){
+        min-width: 150px;
+    }
+}
+
+.role-wrapper {
+    margin-left: 15px;
+}

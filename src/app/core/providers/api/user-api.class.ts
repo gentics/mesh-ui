@@ -1,9 +1,8 @@
 import { ApiBase } from './api-base.service';
 import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 
-
 export class UserApi {
-    constructor(private apiBase: ApiBase) { }
+    constructor(private apiBase: ApiBase) {}
 
     /** Deactivate the user with the given uuid. */
     deactivateUser = apiDelete('/users/{userUuid}');
