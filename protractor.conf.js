@@ -26,7 +26,7 @@ exports.config = {
       args: ['--window-size=1920,1080']
     }
   },
-  SELENIUM_PROMISE_MANAGER: false,
+  SELENIUM_PROMISE_MANAGER: true,
   directConnect: true,
   baseUrl: 'http://localhost:4200/',
   framework: 'jasmine',
