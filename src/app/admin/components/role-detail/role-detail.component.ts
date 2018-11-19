@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { RoleCreateRequest, RoleUpdateRequest } from '../../../common/models/server-models';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
-import { AdminRoleEffectsService, AdminRoleOnlyResponse } from '../../providers/effects/admin-role-effects.service';
+import { AdminRoleEffectsService, AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
 
 @Component({
     selector: 'mesh-role-detail',
@@ -17,7 +17,7 @@ import { AdminRoleEffectsService, AdminRoleOnlyResponse } from '../../providers/
 export class RoleDetailComponent implements OnInit, OnDestroy {
     form: FormGroup;
     isNew = false;
-    role: AdminRoleOnlyResponse;
+    role: AdminRoleResponse;
     BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
     readOnly = true;
 
@@ -35,7 +35,7 @@ export class RoleDetailComponent implements OnInit, OnDestroy {
         this.route.data
             .map(data => data.role)
             .takeUntil(this.destroy$)
-            .subscribe((role: AdminRoleOnlyResponse) => {
+            .subscribe((role: AdminRoleResponse) => {
                 this.isNew = !role;
                 this.role = role;
                 // TODO Fetch from GraphQL as soon as permissions bug in Mesh is fixed

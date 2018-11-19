@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 
 import { BreadcrumbTextFunction } from '../../components/admin-breadcrumbs/admin-breadcrumbs.component';
-import { AdminRoleEffectsService, AdminRoleOnlyResponse } from '../effects/admin-role-effects.service';
+import { AdminRoleEffectsService, AdminRoleResponse } from '../effects/admin-role-effects.service';
 
 @Injectable()
-export class RoleResolver implements Resolve<AdminRoleOnlyResponse | undefined> {
+export class RoleResolver implements Resolve<AdminRoleResponse | undefined> {
     constructor(private adminRoleEffects: AdminRoleEffectsService) {}
 
-    resolve(route: ActivatedRouteSnapshot): Promise<AdminRoleOnlyResponse> | undefined {
+    resolve(route: ActivatedRouteSnapshot): Promise<AdminRoleResponse> | undefined {
         const uuid = route.paramMap.get('uuid');
 
         if (uuid && uuid !== 'new') {

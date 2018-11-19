@@ -4,9 +4,6 @@ import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 export class AdminApi {
     constructor(private apiBase: ApiBase) {}
 
-    /** Add a permission to an existing role. */
-    addPermissionToRole = apiPostWithoutBody('/roles/{roleUuid}/permissions/{permissionUuid}');
-
     /** Add a role to an existing group. */
     addRoleToGroup = apiPostWithoutBody('/groups/{groupUuid}/roles/{roleUuid}');
 
@@ -109,9 +106,6 @@ export class AdminApi {
     /** Remove the given role from the group. */
     removeRoleFromGroup = apiDelete('/groups/{groupUuid}/roles/{roleUuid}');
 
-    /** Remove the given permission from the role. */
-    removePermissionFromRole = apiDelete('/roles/{roleUuid}/permissions/{permissionUuid}');
-
     /** Remove a schema from the given project. */
     removeSchemaFromProject = apiDelete('/{project}/schemas/{schemaUuid}');
 
@@ -119,7 +113,7 @@ export class AdminApi {
     removeMicroschemaFromProject = apiDelete('/{project}/microschemas/{microschemaUuid}');
 
     /** Set the permissions between role and the targeted element. */
-    setRolePermissions = apiPost('/roles/{roleUuid}/permissions/{permissionUuid}');
+    setRolePermissions = apiPost('/roles/{roleUuid}/permissions/{path}');
 
     /**
      * Invoke a graph database backup and dump the data to the configured backup

@@ -19,10 +19,6 @@ export interface AdminRoleListResponse {
         elements: AdminRoleResponse[];
     };
 }
-export interface AdminRoleOnlyResponse {
-    uuid: string;
-    name: string;
-}
 
 export interface AdminRoleResponse {
     uuid: string;
@@ -57,7 +53,7 @@ export class AdminRoleEffectsService {
     }
 
     /**
-     * Loads roles and their groups. The number of elements per page (roles and groups) is limited to 10.
+     * Loads roles. The number of elements per page (roles and groups) is limited to 10.
      * @param page The page to load.
      * @param query A query that the user entered.
      */
@@ -76,7 +72,7 @@ export class AdminRoleEffectsService {
             .map(extractGraphQlResponse);
     }
 
-    loadRole(uuid: string): Observable<AdminRoleOnlyResponse> {
+    loadRole(uuid: string): Observable<AdminRoleResponse> {
         return this.getAnyProjectName()
             .flatMap(project =>
                 this.api.graphQL(

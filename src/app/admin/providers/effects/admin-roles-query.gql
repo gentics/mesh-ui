@@ -5,12 +5,6 @@ query loadRoles($page:Long, $query:String) {
     elements {
       uuid
       name
-      groups(perPage: 10) {
-        elements {
-          uuid
-          name
-        }
-      }
     }
     currentPage
     totalCount

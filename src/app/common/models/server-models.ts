@@ -477,7 +477,7 @@ export interface ApiEndpoints {
             };
         };
         /** Load the permissions between given role and the targeted element. */
-        '/roles/{roleUuid}/permissions/{permissionUuid}': {
+        '/roles/{roleUuid}/permissions/{path}': {
             request: {
                 urlParams: {
                     /**
@@ -2095,19 +2095,22 @@ export interface ApiEndpoints {
             };
         };
         /** Set the permissions between role and the targeted element. */
-        '/roles/{roleUuid}/permissions/{permissionUuid}': {
+        '/roles/{roleUuid}/permissions/{path}': {
             request: {
                 urlParams: {
                     /**
+                     * API path to the element.
+                     * @example
+                     *     "projects/1452bf5893f842dd92bf5893f812dd82"
+                     *     "projects/87e5c286ed7a46cda5c286ed7a26cd43/nodes/ec5b4fda50c34ecf9b4fda50c37ecffd"
+                     *     ""
+                     */
+                    path: string;
+                    /**
                      * Uuid of the role.
-                     * @example "a7233ba6df804deca33ba6df806dec2a"
+                     * @example "59db1218b6ce4cb09b1218b6ceccb04d"
                      */
                     roleUuid: string;
-                    /**
-                     * Uuid of the permission.
-                     * @example "eff7860e746a4c7ab7860e746aac7ae1"
-                     */
-                    permissionUuid: string;
                 };
                 queryParams?: {};
                 body: RolePermissionRequest;
@@ -3520,30 +3523,6 @@ export interface ApiEndpoints {
             responseType: undefined;
             responseTypes: {
                 /** Role was deleted. */
-                204: undefined;
-            };
-        };
-        /** Remove the given permission from the role. */
-        '/roles/{roleUuid}/permissions/{permissionUuid}': {
-            request: {
-                urlParams: {
-                    /**
-                     * Uuid of the role.
-                     * @example "a7233ba6df804deca33ba6df806dec2a"
-                     */
-                    roleUuid: string;
-                    /**
-                     * Uuid of the permission.
-                     * @example "eff7860e746a4c7ab7860e746aac7ae1"
-                     */
-                    permissionUuid: string;
-                };
-                queryParams?: {};
-                body?: undefined;
-            };
-            responseType: undefined;
-            responseTypes: {
-                /** Role was removed from the group. */
                 204: undefined;
             };
         };

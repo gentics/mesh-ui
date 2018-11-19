@@ -23,7 +23,7 @@ export class UserApi {
     getRole = apiGet('/roles/{roleUuid}');
 
     /** Load the permissions between given role and the targeted element. */
-    getRolePermissionsForPath = apiGet('/roles/{roleUuid}/permissions/{permissionUuid}');
+    getRolePermissionsForPath = apiGet('/roles/{roleUuid}/permissions/{path}');
 
     /** Get a list of roles as a paged list response */
     getRoles = apiGet('/roles');

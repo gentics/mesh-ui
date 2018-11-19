@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
-import { AdminRoleOnlyResponse } from '../../admin/providers/effects/admin-role-effects.service';
+import { AdminRoleResponse } from '../../admin/providers/effects/admin-role-effects.service';
 import { Microschema } from '../../common/models/microschema.model';
 import { MeshNode } from '../../common/models/node.model';
 import { Schema } from '../../common/models/schema.model';
@@ -31,7 +31,7 @@ export class AdminRolesStateActions extends StateActionBranch<AppState> {
         });
     }
 
-    loadRoleSuccess(role: AdminRoleOnlyResponse) {
+    loadRoleSuccess(role: AdminRoleResponse) {
         this.adminRoles.roleDetail = role;
     }
 }
