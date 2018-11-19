@@ -17,7 +17,8 @@ exports.config = {
     nodelistfield: 'e2e/tests/node-list-field.e2e-spec.ts',
     nodebrowserlist: 'e2e/tests/node-browser-list.e2e-spec.ts',
     nodePublish: 'e2e/tests/node-publish.e2e-spec.ts',
-    groupAdmin: 'e2e/tests/group-admin.e2e-spec.ts'
+    groupAdmin: 'e2e/tests/group-admin.e2e-spec.ts',
+    roleAdmin: 'e2e/tests/role-admin.e2e-spec.ts'
   },
   capabilities: {
     'browserName': 'chrome',
@@ -25,7 +26,7 @@ exports.config = {
       args: ['--window-size=1920,1080']
     }
   },
-  SELENIUM_PROMISE_MANAGER: false,
+  SELENIUM_PROMISE_MANAGER: true,
   directConnect: true,
   baseUrl: 'http://localhost:4200/',
   framework: 'jasmine',
