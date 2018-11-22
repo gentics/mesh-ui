@@ -165,3 +165,11 @@ export function i18n(filename: string): (key: string) => string {
     const translation = require(`../src/app/core/providers/i18n/translations_json/${filename}.translations.json`);
     return (key: string) => translation[key].en;
 }
+
+/**
+ * Resolves a promise of an array of promises to a promise of an array
+ * @param arr Promise of an array of promises
+ */
+export async function awaitArray<T>(arr: promise.Promise<T[]>): Promise<T[]> {
+    return promise.all(await arr);
+}

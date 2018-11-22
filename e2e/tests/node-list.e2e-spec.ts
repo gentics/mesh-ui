@@ -100,6 +100,20 @@ describe('node list', () => {
         );
     });
 
+    describe('Asserting existing node information', () => {
+        it('shows existing languages correctly', async () => {
+            await nodeList.getNode('Aircraft').openFolder();
+            const nodeRow = nodeList.getNode('Space Shuttle');
+            expect(await nodeRow.getLanguages()).toEqual(['en']);
+        });
+
+        it('shows existing tags correctly', async () => {
+            await nodeList.getNode('Aircraft').openFolder();
+            const nodeRow = nodeList.getNode('Space Shuttle');
+            expect(await nodeRow.getTags()).toEqual(['Black', 'White', 'Hydrogen']);
+        });
+    });
+
     describe('Updating on changes', () => {
         it(
             'shows a newly created language of a node',
@@ -110,6 +124,23 @@ describe('node list', () => {
                 await nodeRow.editNode();
                 await editor.createLanguage('de');
                 expect(await nodeRow.getLanguages()).toEqual(['de', 'en']);
+            })
+        );
+
+        it(
+            'adds a tag to and removes a tag from a node',
+            inTemporaryFolder(async folder => {
+                const node = await createVehicle(folder, 'vehicle1');
+                await page.navigateToFolder(folder);
+                const nodeRow = nodeList.getNode(node.displayName!);
+                await nodeRow.editNode();
+                await editor.addTag('Black');
+                await editor.save();
+                expect(await nodeRow.getTags()).toEqual(['Black']);
+
+                await editor.removeTag('Black');
+                await editor.save();
+                expect(await nodeRow.getTags()).toEqual([]);
             })
         );
     });

@@ -1,4 +1,6 @@
-import { browser, by, element, promise, ElementFinder, ExpectedConditions } from 'protractor';
+import { browser, by, element, promise, ElementArrayFinder, ElementFinder, ExpectedConditions } from 'protractor';
+
+import { awaitArray } from '../testUtil';
 
 export class NodeListRow {
     constructor(private container: ElementFinder) {}
@@ -37,9 +39,18 @@ export class NodeListRow {
     }
 
     public async getLanguages(): Promise<string[]> {
-        return this.container
-            .all(by.css('mesh-available-languages-list li'))
-            .map<string>(element => element!.getText());
+        return awaitArray<string>(
+            this.container.all(by.css('mesh-available-languages-list li')).map<string>(element => element!.getText())
+        );
+    }
+
+    /**
+     * Get all the category tag titles the node is eventually tagged with
+     */
+    public async getTags(): Promise<string[]> {
+        return awaitArray<string>(
+            this.container.all(by.css('.added-tags .tag-name')).map<string>(element => element!.getText())
+        );
     }
 
     private async openNodeMenu() {
