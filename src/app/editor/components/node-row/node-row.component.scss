@@ -13,3 +13,9 @@
     flex-shrink: 0;
     white-space: nowrap;
 }
+
+:host ::ng-deep mesh-chip {
+    font-size: 12px;
+    line-height: 18px;
+    padding: 0 10px;
+}
