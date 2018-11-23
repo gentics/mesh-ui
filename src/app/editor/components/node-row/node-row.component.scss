@@ -8,3 +8,8 @@
 .dangerous {
     color: $gtx-color-alert;
 }
+
+.last-cell {
+    flex-shrink: 0;
+    white-space: nowrap;
+}

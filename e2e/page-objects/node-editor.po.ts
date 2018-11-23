@@ -80,6 +80,16 @@ export async function createLanguage(language: string) {
         .click();
 }
 
+export async function addTag(tag: string) {
+    await editor.element(by.css('.tags mesh-node-tags-bar button')).click();
+    await browser.element(by.cssContainingText('gtx-dropdown-content-wrapper gtx-dropdown-item', tag)).click();
+}
+
+export async function removeTag(tag: string) {
+    const tagElement = await editor.element(by.cssContainingText('.tags mesh-tag', tag));
+    await tagElement.element(by.css('.remove-button')).click();
+}
+
 function getTranslateNodeText(langCode: string): string {
     const language = i18n('lang')(langCode);
     return i18n('editor')('language_translate_to').replace('{{language}}', language);
