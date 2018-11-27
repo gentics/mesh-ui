@@ -93,18 +93,21 @@ export class ListEffectsService {
     /**
      * Load the children for the opened folder
      */
-    loadChildren(projectName: string, containerUuid: string, language: string): void {
+    loadChildren(projectName: string, containerUuid: string, language: string, page?: number, perPage?: number) {
         // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
-        this.api.project
+        return this.api.project
             .getNodeChildren({
                 project: projectName,
                 nodeUuid: containerUuid,
+                page,
+                perPage,
                 lang: this.languageWithFallbacks(language)
             })
-            .subscribe(
+            .do(
                 response => {
                     this.state.actions.list.fetchChildrenSuccess(containerUuid, response.data);
+                    return response.data;
                 },
                 error => {
                     this.state.actions.list.fetchChildrenError();
