@@ -44,7 +44,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     public searching$: Observable<boolean>;
 
     /** Number of items on each paginated page */
-    @Input() itemsPerPage = 5;
+    @Input() itemsPerPage = 8;
     /** Current page of pagination */
     @Input() currentPage = 1;
 
