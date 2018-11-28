@@ -195,7 +195,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         if (!this.paginationConfig.totalItems) {
             return false;
         }
-        return this.itemsPerPage < this.paginationConfig.totalItems;
+        return this.itemsPerPage <= this.paginationConfig.totalItems;
     }
 
     private groupNodesBySchema(nodes: MeshNode[]): { [schemaUuid: string]: MeshNode[] } {
