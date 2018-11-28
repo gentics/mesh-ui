@@ -80,44 +80,7 @@ describe('node browser', () => {
     });
 
     describe(
-        'node content list browser paging',
-        inTemporaryFolder(folder => {
-            beforeAll(async () => {
-                for (let i = 0; i < 50; i++) {
-                    await createFolder(folder, `test${i}`);
-                }
-                await page.navigateToFolder(folder);
-            });
-
-            it('shows 8 items per page', async () => {
-                expect(await nodeList.getNodes().count()).toBe(8);
-            });
-
-            it('shows 7 pages', async () => {
-                expect(await nodeList.getPages().count()).toBe(7);
-            });
-
-            it('shows next page when clicked', async () => {
-                const previousNode = await nodeList
-                    .getNodes()
-                    .get(0)
-                    .getText();
-                await nodeList
-                    .getPages()
-                    .get(1)
-                    .click();
-                expect(
-                    await nodeList
-                        .getNodes()
-                        .get(0)
-                        .getText()
-                ).not.toEqual(previousNode);
-            });
-        })
-    );
-
-    describe(
-        'node select browser paging',
+        'paging',
         inTemporaryFolder(folder => {
             beforeAll(async () => {
                 const vehicle = await createVehicle(folder, 'testVehicle');
