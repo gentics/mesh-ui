@@ -145,7 +145,7 @@ describe('node list', () => {
         );
     });
 
-    fdescribe(
+    describe(
         'pages correctly',
         inTemporaryFolder(folder => {
             beforeAll(async () => {
