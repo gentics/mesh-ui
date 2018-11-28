@@ -4,7 +4,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
-import { NodeCreateRequest } from '../../../common/models/server-models';
+import { NodeCreateRequest, NodeListResponse } from '../../../common/models/server-models';
 import { Tag } from '../../../common/models/tag.model';
 import { simpleCloneDeep } from '../../../common/util/util';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -93,24 +93,34 @@ export class ListEffectsService {
     /**
      * Load the children for the opened folder
      */
-    loadChildren(projectName: string, containerUuid: string, language: string): void {
+    loadChildren(
+        projectName: string,
+        containerUuid: string,
+        language: string,
+        page?: number,
+        perPage?: number
+    ): Promise<NodeListResponse> {
         // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
-        this.api.project
+        return this.api.project
             .getNodeChildren({
                 project: projectName,
                 nodeUuid: containerUuid,
+                page,
+                perPage,
                 lang: this.languageWithFallbacks(language)
             })
-            .subscribe(
+            .do(
                 response => {
                     this.state.actions.list.fetchChildrenSuccess(containerUuid, response.data);
+                    return response.data;
                 },
                 error => {
                     this.state.actions.list.fetchChildrenError();
                     throw new Error('TODO: Error handling');
                 }
-            );
+            )
+            .toPromise();
     }
 
     searchNodes(searchTerm: string, tags: Tag[], projectName: string, languageCode: string): void {

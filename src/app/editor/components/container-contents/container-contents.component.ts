@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PaginationInstance } from 'ngx-pagination';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
-import { SchemaReferenceFromServer } from '../../../common/models/server-models';
+import { NodeListResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
+import { setQueryParams } from '../../../shared/common/set-query-param';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { ContainerFileDropAreaComponent } from '../container-file-drop-area/container-file-drop-area.component';
@@ -25,11 +27,24 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     @ViewChild(ContainerFileDropAreaComponent) fileDropArea: ContainerFileDropAreaComponent;
 
     /** @internal */
-    public schemas$: Observable<SchemaReference[]>;
-    /** @internal */
-    public childrenBySchema$: Observable<{ [schemaUuid: string]: MeshNode[] }>;
+    schemas$: Observable<SchemaReference[]>;
 
-    public searching$: Observable<boolean>;
+    /** @internal */
+    childrenBySchema$: Observable<{ [schemaUuid: string]: MeshNode[] }>;
+
+    searching$: Observable<boolean>;
+
+    /** Number of items on each paginated page */
+    itemsPerPage = 8;
+    /** Current page of pagination */
+    currentPage = 1;
+
+    /** Initial config */
+    paginationConfig: PaginationInstance = {
+        currentPage: this.currentPage,
+        itemsPerPage: this.itemsPerPage,
+        totalItems: 0
+    };
 
     private destroy$ = new Subject<void>();
 
@@ -38,12 +53,14 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         private tagEffects: TagsEffectsService,
         private route: ActivatedRoute,
         private entities: EntitiesService,
-        private state: ApplicationStateService
+        private state: ApplicationStateService,
+        private router: Router
     ) {}
 
     ngOnInit(): void {
         const onLogin$ = this.state.select(state => state.auth.loggedIn).filter(loggedIn => loggedIn);
 
+        // set current parent node
         onLogin$
             .let(obs => this.switchMapToParams(obs))
             .takeUntil(this.destroy$)
@@ -51,18 +68,33 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
+        // get list details from url parameters
         const listParams$ = Observable.of([]).let(obs => this.switchMapToParams(obs));
+
+        // get search filter from url parameters
         const searchParams$ = this.route.queryParamMap.map(paramMap => {
+            // get search query
             const keyword = (paramMap.get('q') || '').trim();
+            // get filter for tags
             const tags = (paramMap.get('t') || '').trim();
-            return { keyword, tags };
+            // get current page
+            const page = paramMap.get('p') || this.currentPage;
+            // get max items per page
+            const perPage = paramMap.get('perPage') || this.itemsPerPage;
+
+            return { keyword, tags, page, perPage };
         });
 
+        // request node children
         combineLatest(searchParams$, listParams$, this.state.select(state => state.entities.tag))
             .takeUntil(this.destroy$)
-            .subscribe(([{ keyword, tags }, { containerUuid, projectName, language }]) => {
+            .subscribe(([{ keyword, tags, page, perPage }, { containerUuid, projectName, language }]) => {
                 if (keyword === '' && tags === '') {
-                    this.listEffects.loadChildren(projectName, containerUuid, language);
+                    this.listEffects
+                        .loadChildren(projectName, containerUuid, language, +page, +perPage)
+                        .then((responseData: NodeListResponse) => {
+                            this.updatePagination(responseData);
+                        });
                 } else {
                     const searchedTags = tags
                         .split(',')
@@ -72,6 +104,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 }
             });
 
+        // load project-associated data
         this.state
             .select(state => state.list.currentProject)
             .filter(notNullOrUndefined)
@@ -82,6 +115,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 this.tagEffects.loadTagFamiliesAndTheirTags(projectName);
             });
 
+        // node children by schema
         this.childrenBySchema$ = combineLatest(
             this.state.select(state => state.list.items),
             this.state.select(state => state.list.language)
@@ -97,6 +131,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .map(([items, filterTerm]) => this.filterNodes(items, filterTerm))
             .map(this.groupNodesBySchema);
 
+        // get schemas
         this.schemas$ = this.childrenBySchema$.map(childrenBySchema =>
             Object.values(childrenBySchema)
                 .map(nodes => nodes[0])
@@ -118,6 +153,18 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         this.searching$ = searchParams$.map(({ keyword, tags }) => keyword !== '' || tags !== '');
     }
 
+    updatePagination(loadChildrenResponse: NodeListResponse) {
+        if (!loadChildrenResponse._metainfo) {
+            return;
+        }
+
+        this.paginationConfig = {
+            currentPage: loadChildrenResponse._metainfo.currentPage,
+            itemsPerPage: loadChildrenResponse._metainfo.perPage,
+            totalItems: loadChildrenResponse._metainfo.totalCount
+        };
+    }
+
     onFileUploadClicked() {
         this.fileDropArea.openModalDialog([]);
     }
@@ -125,6 +172,17 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+    }
+
+    onPageChange(pageNumber: number): void {
+        setQueryParams(this.router, this.route, { p: pageNumber });
+    }
+
+    displayPaginationControls(): boolean {
+        if (!this.paginationConfig.totalItems) {
+            return false;
+        }
+        return this.itemsPerPage <= this.paginationConfig.totalItems;
     }
 
     private groupNodesBySchema(nodes: MeshNode[]): { [schemaUuid: string]: MeshNode[] } {
