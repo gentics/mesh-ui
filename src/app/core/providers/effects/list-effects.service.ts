@@ -4,7 +4,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
-import { NodeCreateRequest } from '../../../common/models/server-models';
+import { NodeCreateRequest, NodeListResponse } from '../../../common/models/server-models';
 import { Tag } from '../../../common/models/tag.model';
 import { simpleCloneDeep } from '../../../common/util/util';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -93,7 +93,13 @@ export class ListEffectsService {
     /**
      * Load the children for the opened folder
      */
-    loadChildren(projectName: string, containerUuid: string, language: string, page?: number, perPage?: number) {
+    loadChildren(
+        projectName: string,
+        containerUuid: string,
+        language: string,
+        page?: number,
+        perPage?: number
+    ): Promise<NodeListResponse> {
         // Refresh child node list
         this.state.actions.list.fetchChildrenStart();
         return this.api.project
@@ -113,7 +119,8 @@ export class ListEffectsService {
                     this.state.actions.list.fetchChildrenError();
                     throw new Error('TODO: Error handling');
                 }
-            );
+            )
+            .toPromise();
     }
 
     searchNodes(searchTerm: string, tags: Tag[], projectName: string, languageCode: string): void {

@@ -1,13 +1,4 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    EventEmitter,
-    Input,
-    OnDestroy,
-    OnInit,
-    Output,
-    ViewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationInstance } from 'ngx-pagination';
 import { Observable } from 'rxjs/Observable';
@@ -44,9 +35,9 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     public searching$: Observable<boolean>;
 
     /** Number of items on each paginated page */
-    @Input() itemsPerPage = 8;
+    itemsPerPage = 8;
     /** Current page of pagination */
-    @Input() currentPage = 1;
+    currentPage = 1;
 
     /** Initial config */
     public paginationConfig: PaginationInstance = {
@@ -54,9 +45,6 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         itemsPerPage: this.itemsPerPage,
         totalItems: 0
     };
-
-    /** Emits the page number of the page being switched to */
-    @Output() pageChange = new EventEmitter<number>();
 
     private destroy$ = new Subject<void>();
 
@@ -104,8 +92,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 if (keyword === '' && tags === '') {
                     this.listEffects
                         .loadChildren(projectName, containerUuid, language, +page, +perPage)
-                        .takeUntil(this.destroy$)
-                        .subscribe((responseData: NodeListResponse) => {
+                        .then((responseData: NodeListResponse) => {
                             this.updatePagination(responseData);
                         });
                 } else {
