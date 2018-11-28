@@ -27,12 +27,12 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     @ViewChild(ContainerFileDropAreaComponent) fileDropArea: ContainerFileDropAreaComponent;
 
     /** @internal */
-    public schemas$: Observable<SchemaReference[]>;
+    schemas$: Observable<SchemaReference[]>;
 
     /** @internal */
-    public childrenBySchema$: Observable<{ [schemaUuid: string]: MeshNode[] }>;
+    childrenBySchema$: Observable<{ [schemaUuid: string]: MeshNode[] }>;
 
-    public searching$: Observable<boolean>;
+    searching$: Observable<boolean>;
 
     /** Number of items on each paginated page */
     itemsPerPage = 8;
@@ -40,7 +40,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     currentPage = 1;
 
     /** Initial config */
-    public paginationConfig: PaginationInstance = {
+    paginationConfig: PaginationInstance = {
         currentPage: this.currentPage,
         itemsPerPage: this.itemsPerPage,
         totalItems: 0
