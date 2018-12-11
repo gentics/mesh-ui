@@ -42,10 +42,23 @@ mesh-html-field.mesh-field {
         background-color: white;
     }
 
-    .ql-mesh-link {
-        background-image: url('assets/icon/gentics-logo.svg');
-        background-repeat: no-repeat;
-        background-position: center;
+    .ql-mesh-link::after {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 20px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+        font-feature-settings: 'liga';
+        text-rendering: optimizeLegibility;
+        content: 'find_in_page';
     }
 
     strong {
