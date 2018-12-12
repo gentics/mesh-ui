@@ -10,6 +10,8 @@
 .editor-header {
     flex-shrink: 1;
     position: relative;
+    border-top: 8px solid darken( $gtx-color-primary, 2.5% );
+
     .close-button {
         position: absolute;
         right: 5px;
@@ -20,8 +22,8 @@
 .title-row {
     display: flex;
     align-items: center;
-    background-color: $gtx-color-very-dark-gray;
-    color: white;
+    background-color: $gtx-color-white;
+    // color: white;
     padding: 5px 30px 5px 10px;
     height: 40px;
     .main {
@@ -47,7 +49,7 @@
 }
 .info-row {
     padding: 5px;
-    background-color: $gtx-color-very-light-gray;
+    // background-color: $gtx-color-very-light-gray;
     display: flex;
     justify-content: space-between;
     .path {
@@ -70,7 +72,7 @@
 .tags-row {
     display: flex;
     justify-content: space-between;
-    background-color: $gtx-color-very-light-gray;
+    // background-color: $gtx-color-very-light-gray;
 
     .tags {
         color: $gtx-color-light-gray;
