@@ -54,7 +54,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     breadcrumb$: Observable<IBreadcrumbLink[]>;
     totalItems$: Observable<number>;
     pageCount$: Observable<number>;
-    currentPage$ = new BehaviorSubject(1);
+    currentPage$: Observable<number>;
     searchAvailable$: Observable<boolean>;
 
     closeFn(uuids: PageResult[] | string[]): void {}
@@ -81,6 +81,8 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
             page: 1
         });
 
+        this.currentPage$ = this.queryParams.map(params => params.page);
+
         const esQuery = this.search.map(
             term =>
                 term
@@ -93,13 +95,6 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
                       }
                     : null
         );
-
-        // Update query params when page has changed
-        this.currentPage$.subscribe(page => {
-            this.queryParams.take(1).subscribe(prevParams => {
-                this.queryParams.next({ ...prevParams, page });
-            });
-        });
 
         // Empty search box when folder is changed and set page to 1
         this.currentNode$.subscribe(parent => {
@@ -205,5 +200,11 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
         this.search.next(query);
         this.searchedTerm = query;
         this.searchQuery = '';
+    }
+
+    pageChanged(page: number) {
+        this.queryParams.take(1).subscribe(prevParams => {
+            this.queryParams.next({ ...prevParams, page });
+        });
     }
 }
