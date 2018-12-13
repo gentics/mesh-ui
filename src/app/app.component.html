@@ -1,18 +1,5 @@
 <gtx-top-bar *ngIf="loggedIn$ | async">
     <div class="gtx-top-bar-left">
-        <a href="#">
-            <img class="logo"
-                 src="/assets/img/logo.svg"
-                 alt="Logo">
-        </a>
-    </div>
-
-    <div class="gtx-top-bar-right">
-        <mesh-app-navigator [appList]="appList$ | async"
-                            (app)="navigateToApp($event)"
-                            icon="apps">
-        </mesh-app-navigator>
-
         <gtx-button size="small"
                     flat
                     type="secondary"
@@ -23,11 +10,12 @@
                     type="secondary"
                     *ngIf="adminMode$ | async"
                     [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
+    </div>
 
+    <div class="gtx-top-bar-right">
         <mesh-language-switcher></mesh-language-switcher>
         <mesh-user-dropdown></mesh-user-dropdown>
     </div>
 </gtx-top-bar>
-<br>
 <router-outlet></router-outlet>
 <gtx-overlay-host></gtx-overlay-host>

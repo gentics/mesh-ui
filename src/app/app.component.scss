@@ -12,25 +12,11 @@ app {
 }
 
 gtx-top-bar {
-    background-color: $gtx-color-white;
-    padding: 8px 0 4px;
-    box-shadow: $header-box-shadow;
+    padding: 5px 0;
 
-    .content {
-        max-width: 5000px;
-        width: 95%;
-
-        .gtx-top-bar-left {
-            text-align: left;
-        }
-    
-        .gtx-top-bar-right {
-            display: flex;
-        }
+    .gtx-top-bar-left {
+        text-align: left !important;
     }
 }
 
-.logo {
-    width: auto;
-    height: 1.8rem;
-}
+
