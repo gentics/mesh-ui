@@ -1,0 +1,50 @@
+@import "variables";
+
+.app-navigator-wrapper {
+    width: 2rem;
+    height: 2rem;
+    overflow: hidden;
+
+    .nav-icon {
+        position: absolute;
+        transition: opacity 0.2s;
+        will-change: opacity;
+        cursor: pointer;
+        transition: color 0.15s ease-in-out;
+
+        &:hover {
+            color: $gtx-color-primary;
+            box-shadow: $header-box-shadow;
+        }
+    }
+
+    &.disabled {
+        color: $gtx-color-mid-gray;
+        cursor: default;
+    }
+
+    .app-navigator-dropdown {
+        position: absolute;
+        z-index: 1;
+        display: block;
+        background-color: $gtx-color-white;
+        padding: 0.4rem;
+        box-shadow: $header-box-shadow;
+        top: 2rem;
+    }
+
+    .app-icon {
+        display: inline-block;
+        margin: 0.4rem;
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+        box-shadow: 0 0px 0px 0px rgba(0, 0, 0, 0.20);
+        transition: color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+
+        &:hover {
+            color: $gtx-color-primary;
+            box-shadow: $header-box-shadow;
+        }
+    }
+}

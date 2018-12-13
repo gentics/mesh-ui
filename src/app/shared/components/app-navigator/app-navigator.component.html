@@ -1,0 +1,19 @@
+<div class="app-navigator-wrapper"
+     [class.disabled]="disabled">
+    <div (click)="onNavClicked($event)"
+         class="nav-icon">
+        <i class="material-icons">{{ icon }}</i>
+    </div>
+
+    <div *ngIf="expanded"
+         [@statusAnimation]
+         class="app-navigator-dropdown">
+        <div *ngFor="let app of appList"
+             (click)="onAppSelect(app.name)"
+             class="app-icon"
+             [attr.title]="app.label"
+             [attr.data-app]="app.name">
+            <i class="material-icons">{{app.icon}}</i>
+        </div>
+    </div>
+</div>

@@ -19,10 +19,14 @@ gtx-top-bar {
     .content {
         max-width: 5000px;
         width: 95%;
-    }
 
-    .gtx-top-bar-left {
-        text-align: left !important;
+        .gtx-top-bar-left {
+            text-align: left;
+        }
+    
+        .gtx-top-bar-right {
+            display: flex;
+        }
     }
 }
 
