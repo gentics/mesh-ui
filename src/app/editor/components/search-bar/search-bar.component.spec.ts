@@ -17,6 +17,7 @@ import { MockApiService } from '../../../core/providers/api/api.service.mock';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
+import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
@@ -30,10 +31,11 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
+import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
+import { ContainerLanguageSwitcherComponent } from '../container-language-switcher/container-language-switcher.component';
+import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
 
 import { SearchBarComponent } from './search-bar.component';
-import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
-import { MockListEffectsService } from '../../../core/providers/effects/list-effects.service.mock';
 
 describe('Search-bar component:', () => {
     let appState: TestApplicationState;
@@ -80,6 +82,8 @@ describe('Search-bar component:', () => {
             declarations: [
                 TestComponent,
                 SearchBarComponent,
+                ContainerLanguageSwitcherComponent,
+                NodeLanguageLabelComponent,
                 BackgroundFromDirective,
                 HighlightPipe,
                 ChipComponent,
