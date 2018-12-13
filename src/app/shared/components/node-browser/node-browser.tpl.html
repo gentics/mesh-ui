@@ -32,7 +32,7 @@
                             [selectable]="selectableFn"></mesh-node-browser-list>
 
     <pagination-controls *ngIf="(pageCount$ | async) > 1"
-                         (pageChange)="currentPage$.next($event)"
+                         (pageChange)="pageChanged($event)"
                          id="nodebrowser"></pagination-controls>
 </div>
 <div class="modal-footer">
