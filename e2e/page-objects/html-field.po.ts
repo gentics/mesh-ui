@@ -78,7 +78,9 @@ export class HtmlField {
      */
     async linkToUrl(url: string) {
         await this.toolbar.element(by.css('.ql-link')).click();
-        await this.container.element(by.css('.ql-tooltip.ql-editing input')).sendKeys(Key.CONTROL, 'a', Key.NULL, url);
+        const inputUrl = await this.container.element(by.css('.ql-tooltip.ql-editing input'));
+        await inputUrl.clear();
+        await inputUrl.sendKeys(Key.CONTROL, 'a', Key.NULL, url);
         await this.container.element(by.css('.ql-tooltip.ql-editing .ql-action')).click();
     }
 }
