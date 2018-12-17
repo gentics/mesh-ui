@@ -1,4 +1,4 @@
-import { by } from 'protractor';
+import { by, ElementFinder } from 'protractor';
 
 import { createFolder, createVehicle } from '../api';
 import * as api from '../api';
@@ -6,7 +6,7 @@ import * as page from '../page-objects/app.po';
 import * as browser from '../page-objects/node-browser.po';
 import { NodeField } from '../page-objects/node-field.po';
 import * as nodeList from '../page-objects/node-list.po';
-import { inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
+import { awaitArray, inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node browser', () => {
     let nodeField: NodeField;
@@ -25,8 +25,10 @@ describe('node browser', () => {
 
         it('shows breadcrumbs of current folder', async () => {
             const expected = ['demo', 'Automobiles'];
-            const breadcrumbs = browser.getBreadcrumbLinks();
-            expect(await breadcrumbs.map(toText)).toEqual(expected);
+            const breadCrumbTexts = awaitArray(
+                browser.getBreadcrumbLinks().map((breadcrumb: ElementFinder) => toText(breadcrumb))
+            );
+            expect(breadCrumbTexts).toEqual(expected);
         });
 
         it('shows contents of the folder', async () => {
