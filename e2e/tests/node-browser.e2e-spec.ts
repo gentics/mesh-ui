@@ -40,8 +40,8 @@ describe('node browser', () => {
                 'Trabant',
                 'Koenigsegg CCX'
             ];
-            const nodes = browser.getNodesOnlyNames();
-            expect(await nodes.map(toText)).toEqual(expected);
+            const nodes = awaitArray(browser.getNodesOnlyNames().map((node: ElementFinder) => toText(node)));
+            expect(nodes).toEqual(expected);
         });
 
         it('does not show pagination for a single page', async () => {
