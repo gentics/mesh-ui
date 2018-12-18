@@ -1,4 +1,4 @@
-import { by, ElementFinder } from 'protractor';
+import { by } from 'protractor';
 
 import { createFolder, createVehicle } from '../api';
 import * as api from '../api';

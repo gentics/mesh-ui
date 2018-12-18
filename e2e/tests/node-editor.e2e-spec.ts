@@ -131,6 +131,7 @@ describe('node editor', () => {
                 await editor.getRemoveNodeLink().click();
                 await htmlField.selectText('World');
                 await htmlField.linkToNode();
+                browser.waitForAngular();
                 expect(editor.getDescription()).toBe(
                     `The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.`
                 );
@@ -141,7 +142,7 @@ describe('node editor', () => {
     describe(
         'image preview',
         inTemporaryFolder(folder => {
-            it('shows the image if there is only content in a non-default langauge', async () => {
+            it('shows the image if there is only content in a non-default language', async () => {
                 const node = await api.createVehicleImage(folder, 'squirrel', 'de');
                 await page.navigateToNodeEdit(node, 'de');
                 const image = editor.getBinaryField('Image');
