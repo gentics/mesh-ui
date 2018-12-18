@@ -25,9 +25,7 @@ describe('node browser', () => {
 
         it('shows breadcrumbs of current folder', async () => {
             const expected = ['demo', 'Automobiles'];
-            const breadCrumbTexts = awaitArray(
-                browser.getBreadcrumbLinks().map((breadcrumb: ElementFinder) => toText(breadcrumb))
-            );
+            const breadCrumbTexts = awaitArray(browser.getBreadcrumbLinks().map(toText));
             expect(breadCrumbTexts).toEqual(expected);
         });
 
@@ -40,7 +38,7 @@ describe('node browser', () => {
                 'Trabant',
                 'Koenigsegg CCX'
             ];
-            const nodes = awaitArray(browser.getNodesOnlyNames().map((node: ElementFinder) => toText(node)));
+            const nodes = awaitArray(browser.getNodesOnlyNames().map(toText));
             expect(nodes).toEqual(expected);
         });
 

@@ -3,7 +3,13 @@ import * as page from '../page-objects/app.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import * as editor from '../page-objects/node-editor.po';
 import * as nodeList from '../page-objects/node-list.po';
-import { assertNoConsoleErrors, inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
+import {
+    assertNoConsoleErrors,
+    awaitArray,
+    inTemporaryFolder,
+    inTemporaryFolderWithLanguage,
+    toText
+} from '../testUtil';
 
 describe('node list', () => {
     beforeEach(async () => {
@@ -12,12 +18,14 @@ describe('node list', () => {
 
     describe('breadcrumb', () => {
         it('displays only the project name in root node', async () => {
-            expect(await nodeList.getBreadcrumbLinks().map(toText)).toEqual(['demo']);
+            const breadCrumbLinkTexts = awaitArray(nodeList.getBreadcrumbLinks().map(toText));
+            expect(await breadCrumbLinkTexts).toEqual(['demo']);
         });
 
         it('displays only the project and a folder in a child node of the root node', async () => {
             await nodeList.getNode('Aircraft').openFolder();
-            expect(await nodeList.getBreadcrumbLinks().map(toText)).toEqual(['demo', 'Aircraft']);
+            const breadCrumbLinkTexts = awaitArray(nodeList.getBreadcrumbLinks().map(toText));
+            expect(await breadCrumbLinkTexts).toEqual(['demo', 'Aircraft']);
         });
     });
 
