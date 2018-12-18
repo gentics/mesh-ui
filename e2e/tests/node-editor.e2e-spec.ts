@@ -150,6 +150,7 @@ describe('node editor', () => {
                 await editor.save();
                 // Refresh the page
                 await page.navigateToNodeEdit(node, 'de');
+                await browser.waitForAngular();
                 expect(await image.isImageLoaded()).toBeTruthy();
             });
         })

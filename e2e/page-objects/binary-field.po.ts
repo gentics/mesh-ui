@@ -10,6 +10,8 @@ export class BinaryField {
 
     async isImageLoaded(): Promise<boolean> {
         const image = await this.container.element(by.css('gentics-ui-image-preview img')).getWebElement();
+        await browser.waitForAngular();
+        await browser.sleep(1000);
         return browser.executeScript((element: HTMLImageElement) => {
             return element.naturalWidth > 0;
         }, image) as any;
