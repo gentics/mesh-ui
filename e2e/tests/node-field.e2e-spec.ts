@@ -33,7 +33,7 @@ describe('node field', () => {
         await browser.choose();
         await nodeEditor.save();
 
-        await expect(await nodeField.getPath().getText()).toEqual('demo › Vehicle Images › Space Shuttle Image');
+        await expect(await nodeField.getPath().getText()).toEqual('demo › Vehicle Images › Tesla Roadster Image');
     });
 
     it('should go to the node by clicking on the node name', async () => {
