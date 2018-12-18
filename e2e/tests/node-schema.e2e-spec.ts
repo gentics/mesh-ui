@@ -47,7 +47,7 @@ describe('node schema', () => {
 
     it('should show right number of selected schemas', async () => {
         await schema.checkAllSchemas();
-        await expect(schema.checkedCount().getText()).toEqual('Selected: 10');
+        await expect(schema.checkedCount().getText()).toEqual('Selected: 16');
     });
 
     it('should show a right breadcrumb after creating a new schema', async () => {

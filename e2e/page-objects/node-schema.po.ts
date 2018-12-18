@@ -1,5 +1,7 @@
 import { browser, by, element } from 'protractor';
 
+import { awaitArray, toText } from '../testUtil';
+
 declare const window: any;
 
 export class NodeSchema {
@@ -10,11 +12,11 @@ export class NodeSchema {
     }
 
     getSchemaButton() {
-        return element.all(by.css('.main-menu li a span')).get(3);
+        return element.all(by.css('.main-menu li a span')).get(5);
     }
 
     getAllSchemasName() {
-        return element.all(by.css('.item-primary')).getText();
+        return awaitArray<string>(element.all(by.css('.item-primary')).map(toText));
     }
 
     async clickSchema(schemaName: string) {
