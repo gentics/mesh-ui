@@ -43,17 +43,26 @@ exports.config = {
     beforeEach(() => {
       jasmine.addMatchers(customMatchers);
     })
-
+    
     // Workaround for https://github.com/angular/protractor/issues/2227
     require("protractor").ElementArrayFinder.prototype.map = function(mapFn) {
       return this.reduce((arr, el) => arr.concat(mapFn(el, arr.length)), []);
     };
-
-    await browser.get('/#/login');
-    await element(by.css('input[name="username"]')).sendKeys('admin');
-    await element(by.css('input[name="password"]')).sendKeys('admin');
-    await element(by.tagName('button')).click();
+    
+    // Check if already logged-in to avoid wasting time
+    await browser.get('/#/editor/project');
+    const navTop = element(by.tagName('gtx-top-bar'));
+    if (navTop.isPresent()) {
+      console.log('Already logged-in');
+    } else {
+      console.log('Not logged-in. Logging in...');
+      await browser.get('/#/login');
+      await element(by.css('input[name="username"]')).sendKeys('admin');
+      await element(by.css('input[name="password"]')).sendKeys('admin');
+      await element(by.tagName('button')).click();
+    }
     // This seems to be necessary sometimes
     await browser.waitForAngular();
+    
   }
 };
