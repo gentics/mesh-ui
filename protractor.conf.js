@@ -23,7 +23,7 @@ exports.config = {
   capabilities: {
     'browserName': 'chrome',
     chromeOptions: {
-      args: ['--window-size=1920,1080', 'auto-open-devtools-for-tabs']
+      args: ['--window-size=1920,1080']
     }
   },
   SELENIUM_PROMISE_MANAGER: false,
