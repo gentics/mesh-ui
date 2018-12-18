@@ -9,7 +9,7 @@ import * as nodeList from '../page-objects/node-list.po';
 import * as tooltip from '../page-objects/quill-tooltip.po';
 import { files, inTemporaryFolder, temporaryNodeChanges } from '../testUtil';
 
-fdescribe('node editor', () => {
+describe('node editor', () => {
     beforeAll(async () => {
         await page.navigateToHome();
     });
