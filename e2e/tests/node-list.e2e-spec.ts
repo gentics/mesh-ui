@@ -13,7 +13,7 @@ import {
     toText
 } from '../testUtil';
 
-fdescribe('node list', () => {
+describe('node list', () => {
     beforeEach(async () => {
         await page.navigateToHome();
     });
