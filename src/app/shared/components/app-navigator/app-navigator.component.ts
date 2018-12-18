@@ -63,7 +63,6 @@ export class AppNavigatorComponent {
     }
 
     onAppSelect(app: string): void {
-        console.log('!!! onAppSelect:', app);
         this.expanded = false;
         this.app.emit(app);
     }

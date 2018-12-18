@@ -9,14 +9,16 @@ import * as nodeList from '../page-objects/node-list.po';
 import * as tooltip from '../page-objects/quill-tooltip.po';
 import { files, inTemporaryFolder, temporaryNodeChanges } from '../testUtil';
 
-describe('node editor', () => {
+fdescribe('node editor', () => {
     beforeAll(async () => {
         await page.navigateToHome();
     });
 
-    it('shows the breadcrumb correctly', async () => {
-        await page.navigateToNodeEdit({ uuid: 'f915b16fa68f40e395b16fa68f10e32d' });
-        expect(await editor.getBreadCrumbText()).toBe('Aircraft › Space Shuttle');
+    describe('breadcrumbs', () => {
+        it('correctly displayed', async () => {
+            await page.navigateToNodeEdit({ uuid: 'f915b16fa68f40e395b16fa68f10e32d' });
+            expect(await editor.getBreadCrumbText()).toBe('Aircraft › Space Shuttle');
+        });
     });
 
     describe('html field in existing node', () => {
@@ -114,8 +116,9 @@ describe('node editor', () => {
         let htmlField: HtmlField;
 
         beforeEach(async () => {
+            await page.navigateToHome();
             await nodeList.createNode('vehicle');
-            htmlField = editor.getHtmlField('Description');
+            htmlField = await editor.getHtmlField('Description');
         });
 
         describe('node link', () => {
