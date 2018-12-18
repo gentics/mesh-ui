@@ -8,7 +8,7 @@ import { NodeField } from '../page-objects/node-field.po';
 import * as nodeList from '../page-objects/node-list.po';
 import { awaitArray, inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
 
-fdescribe('node browser', () => {
+describe('node browser', () => {
     let nodeField: NodeField;
 
     beforeAll(async () => {
