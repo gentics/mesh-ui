@@ -53,7 +53,7 @@ exports.config = {
     await browser.get('/#/editor/project');
     const navTop = element(by.tagName('gtx-top-bar'));
     if (navTop.isPresent()) {
-      console.log('Already logged-in');
+      console.log('Already logged-in. Skipping login process.');
     } else {
       console.log('Not logged-in. Logging in...');
       await browser.get('/#/login');

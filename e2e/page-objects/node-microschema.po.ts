@@ -1,5 +1,7 @@
 import { browser, by, element } from 'protractor';
 
+import { awaitArray, toText } from '../testUtil';
+
 declare const window: any;
 
 export class NodeMicroschema {
@@ -10,11 +12,11 @@ export class NodeMicroschema {
     }
 
     getMicroschemaButton() {
-        return element.all(by.css('.main-menu li a span')).get(4);
+        return element.all(by.css('.main-menu li a span')).get(6);
     }
 
     getAllMicroschemasName() {
-        return element.all(by.css('.item-primary')).getText();
+        return awaitArray<string>(element.all(by.css('.item-primary')).map(toText));
     }
 
     async clickMicroschema(microschemaName: string) {
