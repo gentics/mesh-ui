@@ -33,8 +33,8 @@ describe('node list', () => {
 
     describe('moving nodes', () => {
         it('displays correctly', async () => {
-            const bode1 = await nodeList.getNode('Vehicle Images');
-            await bode1.openFolder();
+            const node1 = await nodeList.getNode('Vehicle Images');
+            await node1.openFolder();
             await browser.waitForAngular();
 
             const node2 = await nodeList.getNode('Ford GT Image');
@@ -163,7 +163,7 @@ describe('node list', () => {
                 const nodeRow = nodeList.getNode(node.displayName!);
                 await nodeRow.editNode();
                 await editor.createLanguage('de');
-                expect(await nodeRow.getLanguages()).toEqual(['en', 'de']);
+                expect(await nodeRow.getLanguages()).toEqualInAnyOrder(['en', 'de']);
             })
         );
 

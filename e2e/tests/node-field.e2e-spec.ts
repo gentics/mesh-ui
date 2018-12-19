@@ -19,7 +19,8 @@ describe('node field', () => {
         await nodeList.getNode('Pelorus').editNode();
     });
 
-    it('should show the right node for vehicleImages', async () => {
+    // Define explicit node for node field instead 'clickFirstCheckbox()'
+    xit('should show the right node for vehicleImages', async () => {
         await nodeField
             .getSelectButton()
             .get(0)
