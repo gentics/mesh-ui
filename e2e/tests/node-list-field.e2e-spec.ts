@@ -29,7 +29,8 @@ describe(
             });
         });
 
-        it(
+        // THe type list is not available
+        xit(
             'saves an empty list',
             inTemporaryFolder(async folder => {
                 await page.navigateToFolder(folder);
