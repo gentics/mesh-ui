@@ -34,7 +34,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     filterInput = new FormControl('');
     filterGroupSelect = new FormControl('');
     filterTerm = '';
-    selectedIndices: number[] = [];
+    selectedUsers: User[] = [];
     ADMIN_USER_NAME = ADMIN_USER_NAME;
     ADMIN_GROUP_NAME = ADMIN_GROUP_NAME;
 
@@ -132,32 +132,30 @@ export class UserListComponent implements OnInit, OnDestroy {
             });
     }
 
-    deleteUsers(selectedIndices: number[]): void {
-        this.selectedUsersFromIndices(selectedIndices)
-            .flatMap(selectedUsers => {
-                const deletableUsers = selectedUsers.filter(
-                    user => user.permissions.delete && user.username !== ADMIN_USER_NAME
-                );
-                if (deletableUsers.length === 0) {
-                    return Observable.empty<any[]>();
-                } else {
-                    return this.meshDialog
-                        .deleteConfirmation(
-                            { token: 'admin.delete_selected_users', params: { count: deletableUsers.length } },
-                            {
-                                token: 'admin.delete_selected_users_confirmation',
-                                params: { count: deletableUsers.length }
-                            }
-                        )
-                        .then(() => deletableUsers);
+    async deleteUsers(selectedUsers: User[]) {
+        // check permissions
+        const deletableUsers = selectedUsers.filter(
+            user => user.permissions.delete && user.username !== ADMIN_USER_NAME
+        );
+        // if users to delete exist
+        if (deletableUsers.length === 0) {
+            return;
+        } else {
+            // prompt modal to be confirmed by user
+            await this.meshDialog.deleteConfirmation(
+                { token: 'admin.delete_selected_users', params: { count: deletableUsers.length } },
+                {
+                    token: 'admin.delete_selected_users_confirmation',
+                    params: { count: deletableUsers.length }
                 }
-            })
-            .subscribe((deletableUsers: User[]) => {
-                deletableUsers.forEach(user => {
-                    this.adminUserEffects.deleteUser(user);
-                });
-                this.selectedIndices = [];
+            );
+            // send delete requests
+            deletableUsers.forEach(user => {
+                this.adminUserEffects.deleteUser(user);
             });
+            // empty selection
+            this.selectedUsers = [];
+        }
     }
 
     addUserToGroup(user: User, group: Group): void {
@@ -168,24 +166,12 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.adminUserEffects.removeUserFromGroup(user, group.uuid);
     }
 
-    addUsersToGroup(selectedIndices: number[], group: Group): void {
-        this.selectedUsersFromIndices(selectedIndices).subscribe(selectedUsers => {
-            this.adminUserEffects.addUsersToGroup(selectedUsers, group.uuid);
-        });
+    addUsersToGroup(selectedUsers: User[], group: Group): void {
+        this.adminUserEffects.addUsersToGroup(selectedUsers, group.uuid);
     }
 
-    removeUsersFromGroup(selectedIndices: number[], group: Group): void {
-        this.selectedUsersFromIndices(selectedIndices).subscribe(selectedUsers => {
-            if (group.name === ADMIN_GROUP_NAME) {
-                // Prevent the admin user from being removed from the admin group.
-                selectedUsers = selectedUsers.filter(user => user.username !== ADMIN_USER_NAME);
-            }
-            this.adminUserEffects.removeUsersFromGroup(selectedUsers, group.uuid);
-        });
-    }
-
-    private selectedUsersFromIndices(selectedIndices: number[]): Observable<User[]> {
-        return this.users$.take(1).map(users => users.filter((user, index) => selectedIndices.includes(index)));
+    removeUsersFromGroup(selectedUsers: User[], group: Group): void {
+        this.adminUserEffects.removeUsersFromGroup(selectedUsers, group.uuid);
     }
 
     private filterUsers(users: User[], filterTerm: string, filterGroups: string[]): User[] {

@@ -1,35 +1,41 @@
 <mesh-admin-list [items]="users$ | async"
                  [itemsPerPage]="25"
                  [currentPage]="currentPage$ | async"
-                 [(selection)]="selectedIndices"
+                 [(selection)]="selectedUsers"
                  (pageChange)="onPageChange($event)">
     <div class="list-controls">
-        <div class="with-selected" [class.hidden]="selectedIndices.length === 0">
+        <div class="with-selected"
+             [class.hidden]="selectedUsers.length === 0">
             <mesh-user-group-select [groups]="allGroups$ | async"
-                                    [title]="'admin.add_selected_users_to_group' | i18n: { count: selectedIndices.length }"
-                                    (select)="addUsersToGroup(selectedIndices, $event)"></mesh-user-group-select>
+                                    [title]="'admin.add_selected_users_to_group' | i18n: { count: selectedUsers.length }"
+                                    (select)="addUsersToGroup(selectedUsers, $event)"></mesh-user-group-select>
             <mesh-user-group-select [groups]="allGroups$ | async"
                                     class="warning"
                                     icon="remove"
-                                    [title]="'admin.remove_selected_users_from_group' | i18n: { count: selectedIndices.length }"
-                                    (select)="removeUsersFromGroup(selectedIndices, $event)"></mesh-user-group-select>
+                                    [title]="'admin.remove_selected_users_from_group' | i18n: { count: selectedUsers.length }"
+                                    (select)="removeUsersFromGroup(selectedUsers, $event)"></mesh-user-group-select>
             <gtx-button flat
                         type="alert"
-                        [title]="'admin.delete_selected_users' | i18n: { count: selectedIndices.length }"
-                        (click)="deleteUsers(selectedIndices)"
-                        size="small"><icon>delete</icon></gtx-button>
+                        [title]="'admin.delete_selected_users' | i18n: { count: selectedUsers.length }"
+                        (click)="deleteUsers(selectedUsers)"
+                        size="small">
+                <icon>delete</icon>
+            </gtx-button>
         </div>
         <div class="filter">
             <gtx-input [label]="'admin.filter_by_name' | i18n"
                        [formControl]="filterInput"></gtx-input>
         </div>
         <div class="group-filter">
-            <gtx-select [label]="'admin.filter_by_group' | i18n" [formControl]="filterGroupSelect">
+            <gtx-select [label]="'admin.filter_by_group' | i18n"
+                        [formControl]="filterGroupSelect">
                 <gtx-option value="">{{ 'admin.all_groups' | i18n }}</gtx-option>
-                <gtx-option *ngFor="let group of allGroups$ | async" [value]="group.uuid">{{ group.name }}</gtx-option>
+                <gtx-option *ngFor="let group of allGroups$ | async"
+                            [value]="group.uuid">{{ group.name }}</gtx-option>
             </gtx-select>
         </div>
-        <gtx-button size="regular" [routerLink]="['/admin/users/new']">
+        <gtx-button size="regular"
+                    [routerLink]="['/admin/users/new']">
             <icon left>person_add</icon>
             <span class="new-item-label">{{ 'admin.new_user' | i18n }}</span>
         </gtx-button>
@@ -38,11 +44,13 @@
     <ng-template let-user="item">
         <div class="item-row">
             <a [routerLink]="['/admin/users', user.uuid]">
-                <div class="name" *ngIf="user.firstname || user.lastname">
+                <div class="name"
+                     *ngIf="user.firstname || user.lastname">
                     <span [innerHTML]="user.firstname | highlight:filterTerm "></span>
                     <span [innerHTML]="user.lastname | highlight:filterTerm "></span>
                 </div>
-                <div class="user-name" [innerHTML]="user.username | highlight:filterTerm"></div>
+                <div class="user-name"
+                     [innerHTML]="user.username | highlight:filterTerm"></div>
             </a>
             <div class="group-wrapper">
                 <ng-container *ngFor="let group of user.groups">
@@ -59,7 +67,10 @@
             <div class="row-actions">
                 <gtx-dropdown-list>
                     <gtx-dropdown-trigger>
-                        <gtx-button icon type="secondary"><icon>more_vert</icon></gtx-button>
+                        <gtx-button icon
+                                    type="secondary">
+                            <icon>more_vert</icon>
+                        </gtx-button>
                     </gtx-dropdown-trigger>
                     <gtx-dropdown-content>
                         <gtx-dropdown-item class="alert"

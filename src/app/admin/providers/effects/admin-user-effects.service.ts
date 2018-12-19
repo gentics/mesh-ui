@@ -214,7 +214,7 @@ export class AdminUserEffectsService {
 
         this.api.admin
             .deactivateUser({ userUuid: user.uuid })
-            .pipe(this.notification.rxSuccess('admin.user_deleted'))
+            .pipe(this.notification.rxSuccess('admin.user_deleted', { username: user.username }))
             .subscribe(
                 () => {
                     this.state.actions.adminUsers.deleteUserSuccess(user.uuid);
