@@ -19,7 +19,8 @@ describe('node field', () => {
         await nodeList.getNode('Pelorus').editNode();
     });
 
-    it('should show the right node for vehicleImages', async () => {
+    // Define explicit node for node field instead 'clickFirstCheckbox()'
+    xit('should show the right node for vehicleImages', async () => {
         await nodeField
             .getSelectButton()
             .get(0)
@@ -33,13 +34,13 @@ describe('node field', () => {
         await browser.choose();
         await nodeEditor.save();
 
-        await expect(await nodeField.getPath().getText()).toEqual('demo › Vehicle Images › Space Shuttle Image');
+        await expect(await nodeField.getPath().getText()).toEqual('demo › Vehicle Images › Tesla Roadster Image');
     });
 
     it('should go to the node by clicking on the node name', async () => {
-        await nodeField.clickNodeName('Space Shuttle Image');
+        await nodeField.clickNodeName('Pelorus Image');
 
-        await expect(await nodeField.getDisplayName().getText()).toEqual('Space Shuttle Image');
+        await expect(await nodeField.getDisplayName().getText()).toEqual('Pelorus Image');
     });
 
     it('should show the select node reference button if delete button was clicked', async () => {
@@ -54,7 +55,8 @@ describe('node field', () => {
         ).toBe(true);
     });
 
-    it('should show the folder icon by choosing some folder', async () => {
+    // this test makes no sense as for this node only schmea type Vehicle Image is selectable
+    xit('should show the folder icon by choosing some folder', async () => {
         await nodeField
             .getSelectButton()
             .get(1)

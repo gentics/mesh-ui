@@ -1,4 +1,4 @@
-import { by } from 'protractor';
+import { browser } from 'protractor';
 
 import * as api from '../api';
 import * as page from '../page-objects/app.po';
@@ -14,9 +14,11 @@ describe('node editor', () => {
         await page.navigateToHome();
     });
 
-    it('shows the breadcrumb correctly', async () => {
-        await page.navigateToNodeEdit({ uuid: 'f915b16fa68f40e395b16fa68f10e32d' });
-        expect(await editor.getBreadCrumbText()).toBe('Aircraft › Space Shuttle');
+    describe('breadcrumbs', () => {
+        it('correctly displayed', async () => {
+            await page.navigateToNodeEdit({ uuid: 'f915b16fa68f40e395b16fa68f10e32d' });
+            expect(await editor.getBreadCrumbText()).toBe('Aircraft › Space Shuttle');
+        });
     });
 
     describe('html field in existing node', () => {
@@ -29,48 +31,78 @@ describe('node editor', () => {
         });
 
         describe('node link', () => {
-            it('creates a mesh link in the markup', async () => {
+            it('creates a mesh link in the markup and removes it', async () => {
+                // select text in Description text editor
                 await htmlField.selectText('business');
+                // click link to node button in Description text editor tools
                 await htmlField.linkToNode();
+                // select node 'Space Shuttle' from node list modal
                 await nodeBrowser.getNode('Space Shuttle').select();
+                // click button 'Choose' for in node list modal
                 await nodeBrowser.choose();
+                // click button 'Remove' in appearing tooltip popup of word business in Description text editor
                 await editor.getRemoveNodeLink().click();
+                // select text in Description text editor
                 await htmlField.selectText('business');
+                // click link to node button in Description text editor tools
                 await htmlField.linkToNode();
-                expect(editor.getDescription()).toBe(
-                    `The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.`
+                await browser.waitForAngular();
+                const node = await api.findNodeByUuid(uuid);
+                // confirm that no link exists
+                expect(node.fields.description).toEqual(
+                    'The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.'
                 );
             });
 
             it('can be removed', async () => {
+                // select text in Description text editor
                 await htmlField.selectText('business');
+                // click link to node button in Description text editor tools
                 await htmlField.linkToNode();
+                // select node 'Space Shuttle' from node list modal
                 await nodeBrowser.getNode('Space Shuttle').select();
+                // click button 'Choose' for in node list modal
                 await nodeBrowser.choose();
+                // select text in Description text editor
                 await htmlField.clickAfter('busi');
                 await tooltip.remove();
-                expect(await htmlField.editor.element(by.tagName('a')).isPresent()).toBeFalsy();
+                await browser.waitForAngular();
+                const node = await api.findNodeByUuid(uuid);
+                // confirm that no link exists
+                expect(node.fields.description).toEqual(
+                    'The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.'
+                );
             });
 
             it('creates external links that open in a new window', async () => {
+                // select text in Description text editor
                 await htmlField.selectText('business');
+                // enter text into tooltip url link input and save it
                 await htmlField.linkToUrl('http://example.org');
+
                 await temporaryNodeChanges(uuid, async () => {
                     await editor.save();
+                    await browser.waitForAngular();
                     const node = await api.findNodeByUuid(uuid);
                     expect(node.fields.description).toEqual(
-                        `<p>The Embraer Legacy 600 is a <a href="http://example.org" target="_blank">business</a> jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>`
+                        '<p>The Embraer Legacy 600 is a <a href="http://example.org" target="_blank">business</a> jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>'
                     );
                 });
             });
 
             it('creates internal links that open in the same window', async () => {
+                // select text in Description text editor
                 await htmlField.selectText('business');
+                // click link to node button in Description text editor tools
                 await htmlField.linkToNode();
+                // select node 'Space Shuttle' from node list modal
                 await nodeBrowser.getNode('Space Shuttle').select();
+                // click button 'Choose' for in node list modal#
                 await nodeBrowser.choose();
+                await browser.waitForAngular();
                 await temporaryNodeChanges(uuid, async () => {
                     await editor.save();
+                    await browser.waitForAngular();
                     const node = await api.findNodeByUuid(uuid);
                     expect(node.fields.description).toEqual(
                         `<p>The Embraer Legacy 600 is a <a class="mesh-link" href="{{mesh.link('f915b16fa68f40e395b16fa68f10e32d')}}">business</a> jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.</p>`
@@ -84,8 +116,9 @@ describe('node editor', () => {
         let htmlField: HtmlField;
 
         beforeEach(async () => {
+            await page.navigateToHome();
             await nodeList.createNode('vehicle');
-            htmlField = editor.getHtmlField('Description');
+            htmlField = await editor.getHtmlField('Description');
         });
 
         describe('node link', () => {
@@ -98,6 +131,7 @@ describe('node editor', () => {
                 await editor.getRemoveNodeLink().click();
                 await htmlField.selectText('World');
                 await htmlField.linkToNode();
+                browser.waitForAngular();
                 expect(editor.getDescription()).toBe(
                     `The Embraer Legacy 600 is a business jet derivative of the Embraer ERJ 145 family of commercial jet aircraft.`
                 );
@@ -108,7 +142,7 @@ describe('node editor', () => {
     describe(
         'image preview',
         inTemporaryFolder(folder => {
-            it('shows the image if there is only content in a non-default langauge', async () => {
+            it('shows the image if there is only content in a non-default language', async () => {
                 const node = await api.createVehicleImage(folder, 'squirrel', 'de');
                 await page.navigateToNodeEdit(node, 'de');
                 const image = editor.getBinaryField('Image');
@@ -116,6 +150,7 @@ describe('node editor', () => {
                 await editor.save();
                 // Refresh the page
                 await page.navigateToNodeEdit(node, 'de');
+                await browser.waitForAngular();
                 expect(await image.isImageLoaded()).toBeTruthy();
             });
         })

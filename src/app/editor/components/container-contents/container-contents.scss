@@ -2,13 +2,19 @@
 
 :host {
     display: block;
+
+    ::ng-deep gtx-search-bar {
+        border: 1px solid #d6d6da;
+        margin-right: 0.8rem !important;
+    }
 }
 
 .container-header {
     display: flex;
     flex-direction: column;
-    background-color: $gtx-color-very-light-gray;
-    box-shadow: $header-box-shadow;
+    background-color: $gtx-color-white;
+    border-top: 8px solid darken( $gtx-color-primary, 2.5% );
+    padding-bottom: 1.5rem;
 }
 
 .group-header {

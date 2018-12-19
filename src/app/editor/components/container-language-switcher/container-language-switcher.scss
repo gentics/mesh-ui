@@ -1,5 +1,10 @@
+@import 'variables';
 
 .trigger {
     cursor: pointer;
     display: flex;
+
+    icon {
+        color: $gtx-color-primary;
+    }
 }

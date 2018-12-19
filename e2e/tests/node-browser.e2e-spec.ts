@@ -1,12 +1,12 @@
-import { by } from 'protractor';
+import { browser, by } from 'protractor';
 
 import { createFolder, createVehicle } from '../api';
 import * as api from '../api';
 import * as page from '../page-objects/app.po';
-import * as browser from '../page-objects/node-browser.po';
+import * as MeshBrowser from '../page-objects/node-browser.po';
 import { NodeField } from '../page-objects/node-field.po';
 import * as nodeList from '../page-objects/node-list.po';
-import { inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
+import { awaitArray, inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
 
 describe('node browser', () => {
     let nodeField: NodeField;
@@ -25,8 +25,8 @@ describe('node browser', () => {
 
         it('shows breadcrumbs of current folder', async () => {
             const expected = ['demo', 'Automobiles'];
-            const breadcrumbs = browser.getBreadcrumbLinks();
-            expect(await breadcrumbs.map(toText)).toEqual(expected);
+            const breadCrumbTexts = awaitArray(MeshBrowser.getBreadcrumbLinks().map(toText));
+            expect(breadCrumbTexts).toEqual(expected);
         });
 
         it('shows contents of the folder', async () => {
@@ -38,24 +38,25 @@ describe('node browser', () => {
                 'Trabant',
                 'Koenigsegg CCX'
             ];
-            const nodes = browser.getNodesOnlyNames();
-            expect(await nodes.map(toText)).toEqual(expected);
+            const nodes = awaitArray(MeshBrowser.getNodesOnlyNames().map(toText));
+            expect(nodes).toEqual(expected);
         });
 
         it('does not show pagination for a single page', async () => {
-            const pages = browser.getPages();
+            const pages = MeshBrowser.getPages();
             expect(await pages.count()).toBe(0);
         });
 
         it('can only select one node', async () => {
-            await browser
-                .getBreadcrumbLinks()
+            await MeshBrowser.getBreadcrumbLinks()
                 .get(0)
                 .click();
-            await browser.openFolder('Vehicle Images');
+            await MeshBrowser.openFolder('Vehicle Images');
+            await browser.waitForAngular();
 
-            const checkboxes = browser.getNodes().all(by.tagName('gtx-checkbox'));
+            const checkboxes = MeshBrowser.getNodes().all(by.tagName('gtx-checkbox'));
             await checkboxes.get(0).click();
+            await browser.waitForAngular();
             expect(
                 await checkboxes
                     .get(0)
@@ -63,6 +64,7 @@ describe('node browser', () => {
                     .isSelected()
             ).toBeTruthy();
             await checkboxes.get(1).click();
+            await browser.waitForAngular();
             expect(
                 await checkboxes
                     .get(0)
@@ -70,6 +72,7 @@ describe('node browser', () => {
                     .isSelected()
             ).toBeFalsy();
             await checkboxes.get(1).click();
+            await browser.waitForAngular();
             expect(
                 await checkboxes
                     .get(1)
@@ -95,25 +98,22 @@ describe('node browser', () => {
             });
 
             it('shows 10 items per page', async () => {
-                expect(await browser.getNodes().count()).toBe(10);
+                expect(await MeshBrowser.getNodes().count()).toBe(10);
             });
 
             it('shows 6 pages', async () => {
-                expect(await browser.getPages().count()).toBe(6);
+                expect(await MeshBrowser.getPages().count()).toBe(6);
             });
 
             it('shows next page when clicked', async () => {
-                const previousNode = await browser
-                    .getNodes()
+                const previousNode = await MeshBrowser.getNodes()
                     .get(0)
                     .getText();
-                await browser
-                    .getPages()
+                await MeshBrowser.getPages()
                     .get(1)
                     .click();
                 expect(
-                    await browser
-                        .getNodes()
+                    await MeshBrowser.getNodes()
                         .get(0)
                         .getText()
                 ).not.toEqual(previousNode);
@@ -130,28 +130,25 @@ describe('node browser', () => {
         });
 
         it('displays results correctly', async () => {
-            await browser.search('ford');
-            const result = await browser.getNodesOnlyNames().map(toText);
+            await MeshBrowser.search('ford');
+            const result = await MeshBrowser.getNodesOnlyNames().map(toText);
             expect(result[0]).toBe('Ford GT');
             expect(result[1]).toBe('Ford GT Image');
         });
 
         it('pages correctly', async () => {
-            await browser.search('folder');
+            await MeshBrowser.search('folder');
 
-            const previousNode = await browser
-                .getNodes()
+            const previousNode = await MeshBrowser.getNodes()
                 .get(0)
                 .getText();
 
-            await browser
-                .getNodeLinks()
+            await MeshBrowser.getNodeLinks()
                 .get(0)
                 .click();
 
             expect(
-                await browser
-                    .getNodes()
+                await MeshBrowser.getNodes()
                     .get(0)
                     .getText()
             ).not.toEqual(previousNode);
@@ -170,10 +167,10 @@ describe('node browser', () => {
             });
 
             it('shows nodes in non-default languages', async () => {
-                await browser.goToRoot();
-                await browser.openFolder(folder.displayName!);
-                await browser.getNode('germanImage').select();
-                await browser.choose();
+                await MeshBrowser.goToRoot();
+                await MeshBrowser.openFolder(folder.displayName!);
+                await MeshBrowser.getNode('germanImage').select();
+                await MeshBrowser.choose();
             });
         })
     );

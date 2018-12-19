@@ -8,11 +8,16 @@
 
         /deep/ nav {
             box-shadow: none;
+            background-color: $gtx-color-white;
+            color: $gtx-color-primary;
         }
     }
 
-    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
+    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb {
+        color: $gtx-color-primary;
+    }
+
     /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
-        color: white;
+        color: $gtx-breadcrumbs-inactive-color;
     }
 }

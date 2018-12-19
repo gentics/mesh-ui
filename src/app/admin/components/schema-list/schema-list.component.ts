@@ -99,34 +99,30 @@ export class SchemaListComponent implements OnInit, OnDestroy {
         });
     }
 
-    deleteSchemas(selectedIndices: number[]): void {
-        this.selectedSchemasFromIndices(selectedIndices)
-            .flatMap(selectedSchemas => {
-                const deletableSchemas = selectedSchemas.filter(
-                    schema => schema.permissions.delete && schema.name !== ADMIN_USER_NAME
-                );
-                if (deletableSchemas.length === 0) {
-                    return Observable.empty<any[]>();
-                } else {
-                    return this.displayDeleteSchemaModal(
-                        { token: 'admin.delete_selected_schemas', params: { count: deletableSchemas.length } },
-                        {
-                            token: 'admin.delete_selected_schemas_confirmation',
-                            params: { count: deletableSchemas.length }
-                        }
-                    ).then(() => deletableSchemas);
+    async deleteSchemas(selectedSchemas: Schema[]) {
+        // check permissions
+        const deletableSchemas = selectedSchemas.filter(
+            schema => schema.permissions.delete && schema.name !== ADMIN_USER_NAME
+        );
+        // if schemas to delete exist
+        if (deletableSchemas.length === 0) {
+            return;
+        } else {
+            // prompt modal to be confirmed by user
+            await this.displayDeleteSchemaModal(
+                { token: 'admin.delete_selected_schemas', params: { count: deletableSchemas.length } },
+                {
+                    token: 'admin.delete_selected_schemas_confirmation',
+                    params: { count: deletableSchemas.length }
                 }
-            })
-            .subscribe((deletableSchemas: Schema[]) => {
-                deletableSchemas.forEach(schema => {
-                    this.adminSchemaEffects.deleteSchema(schema.uuid);
-                });
-                this.selectedIndices = [];
+            );
+            // send delete requests
+            deletableSchemas.forEach(schema => {
+                this.adminSchemaEffects.deleteSchema(schema.uuid);
             });
-    }
-
-    private selectedSchemasFromIndices(selectedIndices: number[]): Observable<Schema[]> {
-        return this.schemas$.take(1).map(schemas => schemas.filter((schema, index) => selectedIndices.includes(index)));
+            // empty selection
+            this.selectedIndices = [];
+        }
     }
 
     private filterSchemas(schemas: Schema[], filterTerm: string): Schema[] {

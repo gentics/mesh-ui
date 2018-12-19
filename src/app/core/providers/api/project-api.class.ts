@@ -56,7 +56,7 @@ export class ProjectApi {
     getNodeChildren = apiGet('/{project}/nodes/{nodeUuid}/children');
 
     /** Return the publish status for the given language of the node. */
-    getNodeLangaugePublishStatus = apiGet('/{project}/nodes/{nodeUuid}/languages/{language}/published');
+    getNodeLanguagePublishStatus = apiGet('/{project}/nodes/{nodeUuid}/languages/{language}/published');
 
     /** Returns a navigation object for the provided node. */
     getNodeNavigation = apiGet('/{project}/nodes/{nodeUuid}/navigation');

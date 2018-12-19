@@ -5,6 +5,34 @@
     @include search-bar-styles;
 }
 
+.search-row {
+    display: flex;
+
+    ::ng-deep mesh-container-language-switcher {
+        display: flex;
+
+        ::ng-deep gtx-dropdown-list {
+            display: flex;
+
+            & div {
+                display: flex;
+            }
+
+            ::ng-deep gtx-dropdown-trigger {
+                display: flex;
+    
+                & .trigger {
+                    display: flex;
+
+                    icon {
+                        line-height: 1.8;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .search-bar-container {
     display: flex;
 }
@@ -26,5 +54,9 @@ gtx-search-bar {
 
     &.focused {
         background-color: white;
+    }
+
+    ::ng-deep .submit-button .btn {
+        padding: 0 0.5rem;
     }
 }

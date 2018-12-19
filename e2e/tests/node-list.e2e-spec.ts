@@ -1,9 +1,17 @@
+import { browser } from 'protractor';
+
 import { createFolder, createVehicle, deleteNode, moveNode } from '../api';
 import * as page from '../page-objects/app.po';
 import * as nodeBrowser from '../page-objects/node-browser.po';
 import * as editor from '../page-objects/node-editor.po';
 import * as nodeList from '../page-objects/node-list.po';
-import { assertNoConsoleErrors, inTemporaryFolder, inTemporaryFolderWithLanguage, toText } from '../testUtil';
+import {
+    assertNoConsoleErrors,
+    awaitArray,
+    inTemporaryFolder,
+    inTemporaryFolderWithLanguage,
+    toText
+} from '../testUtil';
 
 describe('node list', () => {
     beforeEach(async () => {
@@ -12,30 +20,44 @@ describe('node list', () => {
 
     describe('breadcrumb', () => {
         it('displays only the project name in root node', async () => {
-            expect(await nodeList.getBreadcrumbLinks().map(toText)).toEqual(['demo']);
+            const breadCrumbLinkTexts = awaitArray(nodeList.getBreadcrumbLinks().map(toText));
+            expect(await breadCrumbLinkTexts).toEqual(['demo']);
         });
 
         it('displays only the project and a folder in a child node of the root node', async () => {
             await nodeList.getNode('Aircraft').openFolder();
-            expect(await nodeList.getBreadcrumbLinks().map(toText)).toEqual(['demo', 'Aircraft']);
+            const breadCrumbLinkTexts = awaitArray(nodeList.getBreadcrumbLinks().map(toText));
+            expect(await breadCrumbLinkTexts).toEqual(['demo', 'Aircraft']);
         });
     });
 
     describe('moving nodes', () => {
         it('displays correctly', async () => {
-            await nodeList.getNode('Vehicle Images').openFolder();
-            await nodeList.getNode('Ford GT Image').moveNode();
+            const node1 = await nodeList.getNode('Vehicle Images');
+            await node1.openFolder();
+            await browser.waitForAngular();
+
+            const node2 = await nodeList.getNode('Ford GT Image');
+            await node2.moveNode();
+            await browser.waitForAngular();
+
             await nodeBrowser
                 .getBreadcrumbLinks()
                 .get(0)
                 .click();
             await nodeBrowser.choose();
+            await browser.waitForAngular();
+            await browser.sleep(1000);
             expect(await nodeList.getNode('Ford GT Image').isPresent()).toBeFalsy();
+
             await nodeList
                 .getBreadcrumbLinks()
                 .get(0)
                 .click();
+            await browser.waitForAngular();
+            await browser.sleep(1000);
             expect(await nodeList.getNode('Ford GT Image').isPresent()).toBeTruthy();
+
             // Cleanup
             await moveNode({ uuid: 'df8beb3922c94ea28beb3922c94ea2f6' }, { uuid: '15d5ef7a9abf416d95ef7a9abf316d68' });
         });
@@ -44,7 +66,9 @@ describe('node list', () => {
     describe('copying nodes', () => {
         it('works in the same folder', async () => {
             await nodeList.getNode('Yachts').copyNode();
+            await browser.waitForAngular();
             await nodeBrowser.choose();
+            await browser.waitForAngular();
             expect(await nodeList.getNode('Yachts (copy)').isPresent()).toBeTruthy();
 
             // Cleanup
@@ -53,10 +77,18 @@ describe('node list', () => {
 
         it('works in another folder', async () => {
             await nodeList.getNode('Yachts').copyNode();
+            await browser.waitForAngular();
+
             await nodeBrowser.openFolder('Aircraft');
+            await browser.waitForAngular();
+
             await nodeBrowser.choose();
+            await browser.waitForAngular();
+
             expect(await nodeList.getNode('Yachts (copy)').isPresent()).toBeFalsy();
+
             await nodeList.getNode('Aircraft').openFolder();
+            await browser.waitForAngular();
             expect(await nodeList.getNode('Yachts (copy)').isPresent()).toBeTruthy();
 
             // Cleanup
@@ -68,8 +100,16 @@ describe('node list', () => {
         'creating a node',
         inTemporaryFolderWithLanguage('de', folder => {
             it('works without content in default language', async () => {
-                await nodeList.getNode(folder.fields.name).openFolder();
+                const node = await nodeList.getNode(folder.fields.name);
+                await browser.waitForAngular();
+
+                await node.openFolder();
+                await browser.waitForAngular();
+
                 await nodeList.createNode('folder');
+                await browser.waitForAngular();
+                await browser.sleep(1000);
+
                 await assertNoConsoleErrors();
             });
         })
@@ -123,7 +163,7 @@ describe('node list', () => {
                 const nodeRow = nodeList.getNode(node.displayName!);
                 await nodeRow.editNode();
                 await editor.createLanguage('de');
-                expect(await nodeRow.getLanguages()).toEqual(['de', 'en']);
+                expect(await nodeRow.getLanguages()).toEqualInAnyOrder(['en', 'de']);
             })
         );
 
@@ -136,10 +176,12 @@ describe('node list', () => {
                 await nodeRow.editNode();
                 await editor.addTag('Black');
                 await editor.save();
+                await browser.waitForAngular();
                 expect(await nodeRow.getTags()).toEqual(['Black']);
 
                 await editor.removeTag('Black');
                 await editor.save();
+                await browser.waitForAngular();
                 expect(await nodeRow.getTags()).toEqual([]);
             })
         );
