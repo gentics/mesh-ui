@@ -54,7 +54,8 @@ describe('node field', () => {
         ).toBe(true);
     });
 
-    it('should show the folder icon by choosing some folder', async () => {
+    // this test makes no sense as for this node only schmea type Vehicle Image is selectable
+    xit('should show the folder icon by choosing some folder', async () => {
         await nodeField
             .getSelectButton()
             .get(1)
