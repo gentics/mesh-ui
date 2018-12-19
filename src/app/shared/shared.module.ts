@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 
-import { AppNavigatorComponent } from './components/app-navigator/app-navigator.component';
 import { AudioPlayButtonComponent } from './components/audio-play-button/audio-play-button.component';
 import { AvailableLanguagesListComponent } from './components/available-languages-list/available-languages-list.component';
 import { ChipComponent } from './components/chip/chip.component';
@@ -40,7 +39,6 @@ const SHARED_COMPONENTS = [
     TagSelectorComponent,
     ThumbnailComponent,
     AudioPlayButtonComponent,
-    AppNavigatorComponent,
     FilePreviewComponent,
     PaginationControlsComponent,
     ContentPortalComponent,
