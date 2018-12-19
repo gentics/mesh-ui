@@ -29,7 +29,7 @@ export class SchemaListComponent implements OnInit, OnDestroy {
     totalItems$: Observable<number | null>;
     filterInput = new FormControl('');
     filterTerm = '';
-    selectedIndices: number[] = [];
+    selectedIndices: Schema[] = [];
     ADMIN_USER_NAME = ADMIN_USER_NAME;
 
     constructor(
