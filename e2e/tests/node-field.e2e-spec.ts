@@ -37,9 +37,9 @@ describe('node field', () => {
     });
 
     it('should go to the node by clicking on the node name', async () => {
-        await nodeField.clickNodeName('Space Shuttle Image');
+        await nodeField.clickNodeName('Pelorus Image');
 
-        await expect(await nodeField.getDisplayName().getText()).toEqual('Space Shuttle Image');
+        await expect(await nodeField.getDisplayName().getText()).toEqual('Pelorus Image');
     });
 
     it('should show the select node reference button if delete button was clicked', async () => {
