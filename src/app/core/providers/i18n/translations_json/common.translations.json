@@ -11,6 +11,10 @@
       "en": "Apply recursively",
       "de": "Rekursiv übernehmen"
     },
+    "at": {
+      "en": "at",
+      "de": "am"
+    },
     "cancel_button": {
       "en": "Cancel",
       "de": "Abbrechen"
@@ -59,6 +63,10 @@
       "en": "ID",
       "de": "ID"
     },
+    "last_edited": {
+      "en": "last edited",
+      "de": "zuletzt bearbeitet"
+    },
     "not_found": {
       "en": "Not found",
       "de": "Nicht gefunden"
@@ -66,6 +74,10 @@
     "okay_button": {
       "en": "Okay",
       "de": "OK"
+    },
+    "published": {
+      "en": "published",
+      "de": "veröffentlicht"
     },
     "publish_button": {
       "en": "Publish",

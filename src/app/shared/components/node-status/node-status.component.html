@@ -7,10 +7,10 @@
     <icon *ngIf="nodeIsPublished">cloud_upload</icon>
     <icon *ngIf="!nodeIsPublished">cloud_off</icon>
     <span class="text-uppercase">{{ nodeLabel }}</span>
-    <!-- DRAFT that once has been published -->
+    <!-- DRAFT -->
     <p [@statusAnimation]
        *ngIf="hasHover && !nodeIsPublished && getNodeHasBeenEdited()">
-        <span class="text-dark">last edit at
+        <span class="text-dark">{{ 'common.last_edited' | i18n }} {{ 'common.at' | i18n }}
             <span class="text-bold">{{ nodeEditedDate | date:(getDateTimeFormat() | async)?.date }}</span> /
             <span class="text-bold">{{ nodeEditedDate | date:(getDateTimeFormat() | async)?.time }}</span>
         </span>
@@ -18,7 +18,7 @@
     <!-- PUBLISHED -->
     <p [@statusAnimation]
        *ngIf="hasHover && nodeIsPublished && !getNodeHasBeenEdited()">
-        <span class="text-dark">at
+        <span class="text-dark">{{ 'common.at' | i18n }}
             <span class="text-bold">{{ nodePublishDate | date:(getDateTimeFormat() | async)?.date }}</span> /
             <span class="text-bold">{{ nodePublishDate | date:(getDateTimeFormat() | async)?.time }}</span>
         </span>
@@ -26,7 +26,7 @@
     <!-- UPDATED -->
     <p [@statusAnimation]
        *ngIf="hasHover && nodeIsPublished && getNodeHasBeenEdited()">
-        <span class="text-dark">published at
+        <span class="text-dark">{{ 'common.published' | i18n }} {{ 'common.at' | i18n }}
             <span class="text-bold">{{ nodePublishDate | date:(getDateTimeFormat() | async)?.date }}</span> /
             <span class="text-bold">{{ nodePublishDate | date:(getDateTimeFormat() | async)?.time }}</span>
         </span>
@@ -34,7 +34,7 @@
     <!-- ARCHIVED -->
     <p [@statusAnimation]
        *ngIf="hasHover && !nodeIsPublished && !getNodeHasBeenEdited()">
-        <span class="text-dark">last edit at
+        <span class="text-dark">{{ 'common.last_edited' | i18n }} {{ 'common.at' | i18n }}
             <span class="text-bold">{{ nodeEditedDate | date:(getDateTimeFormat() | async)?.date }}</span> /
             <span class="text-bold">{{ nodeEditedDate | date:(getDateTimeFormat() | async)?.time }}</span>
         </span>
