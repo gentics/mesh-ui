@@ -137,6 +137,8 @@ export class NodeStatusComponent implements OnChanges, OnDestroy {
 
         // get node status information
         const nodeStatus: PublishStatusModelFromServer = this.node.availableLanguages[this.current];
+        let nodeLabel = '';
+        let cssClass = '';
 
         // set properties
         this.nodeIsPublished = nodeStatus.published;
@@ -144,25 +146,26 @@ export class NodeStatusComponent implements OnChanges, OnDestroy {
         this.nodeEditedDate = this.node.edited;
 
         if (!this.nodeIsPublished && this.getNodeHasBeenEdited()) {
-            this.nodeLabel = EMeshNodeStatusStrings.DRAFT;
-            this.cssClass = EMeshNodeStatusStrings.DRAFT;
+            nodeLabel = EMeshNodeStatusStrings.DRAFT;
+            cssClass = EMeshNodeStatusStrings.DRAFT;
             // PUBLISHED
         } else if (this.nodeIsPublished && !this.getNodeHasBeenEdited()) {
-            this.nodeLabel = EMeshNodeStatusStrings.PUBLISHED;
-            this.cssClass = EMeshNodeStatusStrings.PUBLISHED;
+            nodeLabel = EMeshNodeStatusStrings.PUBLISHED;
+            cssClass = EMeshNodeStatusStrings.PUBLISHED;
 
             // UPDATED
         } else if (this.nodeIsPublished && this.getNodeHasBeenEdited()) {
-            this.nodeLabel = EMeshNodeStatusStrings.UPDATED;
-            this.cssClass = EMeshNodeStatusStrings.UPDATED;
+            nodeLabel = EMeshNodeStatusStrings.UPDATED;
+            cssClass = EMeshNodeStatusStrings.UPDATED;
 
             // ARCHIVED
         } else if (!this.nodeIsPublished && !this.getNodeHasBeenEdited()) {
-            this.nodeLabel = EMeshNodeStatusStrings.ARCHIVED;
-            this.cssClass = EMeshNodeStatusStrings.ARCHIVED;
-
-            // DRAFT
+            nodeLabel = EMeshNodeStatusStrings.ARCHIVED;
+            cssClass = EMeshNodeStatusStrings.ARCHIVED;
         }
+
+        this.nodeLabel = nodeLabel;
+        this.cssClass = cssClass;
     }
 
     private getNodeVersionParsed() {

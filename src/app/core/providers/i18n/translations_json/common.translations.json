@@ -79,6 +79,18 @@
       "en": "published",
       "de": "veröffentlicht"
     },
+    "draft": {
+      "en": "draft",
+      "de": "Entwurf"
+    },
+    "updated": {
+      "en": "updated",
+      "de": "Bearbeitet"
+    },
+    "archived": {
+      "en": "archived",
+      "de": "Archiviert"
+    },
     "publish_button": {
       "en": "Publish",
       "de": "Veröffentlichen"

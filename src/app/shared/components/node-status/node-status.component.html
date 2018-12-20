@@ -6,7 +6,7 @@
      (mouseleave)="onMouseleave()">
     <icon *ngIf="nodeIsPublished">cloud_upload</icon>
     <icon *ngIf="!nodeIsPublished">cloud_off</icon>
-    <span class="text-uppercase">{{ nodeLabel }}</span>
+    <span class="text-uppercase">{{ 'common.' + nodeLabel | i18n }}</span>
     <!-- DRAFT -->
     <p [@statusAnimation]
        *ngIf="hasHover && !nodeIsPublished && getNodeHasBeenEdited()">
