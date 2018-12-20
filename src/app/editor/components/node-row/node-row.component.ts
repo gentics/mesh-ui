@@ -17,7 +17,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
     styleUrls: ['./node-row.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodeRowComponent implements OnInit, OnDestroy {
+export class NodeRowComponent implements OnInit {
     @Input() node: MeshNode;
 
     filterTerm$: Observable<string>;
@@ -26,8 +26,6 @@ export class NodeRowComponent implements OnInit, OnDestroy {
     currentLanguage$: Observable<string>;
 
     routerLink: any[] | null = null;
-
-    private subscription: Subscription = new Subscription();
 
     constructor(
         private state: ApplicationStateService,
@@ -55,6 +53,10 @@ export class NodeRowComponent implements OnInit, OnDestroy {
 
     editNode(): void {
         this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).navigate();
+    }
+
+    editNodeTranslation(language: string): void {
+        this.navigationService.detail(this.node.project.name!, this.node.uuid, language).navigate();
     }
 
     async copyNode() {
@@ -120,9 +122,5 @@ export class NodeRowComponent implements OnInit, OnDestroy {
         }
 
         this.state.actions.editor.focusEditor();
-    }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
     }
 }

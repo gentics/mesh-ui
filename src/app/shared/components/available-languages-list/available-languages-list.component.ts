@@ -20,6 +20,9 @@ export class AvailableLanguagesListComponent implements OnChanges {
 
     // ONCHANGES
     ngOnChanges(): void {
+        if (!this.node) {
+            return;
+        }
         const langs = Array.isArray(this.node.availableLanguages)
             ? this.node.availableLanguages
             : Object.keys(this.node.availableLanguages);
