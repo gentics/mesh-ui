@@ -9,15 +9,14 @@ import {
     OnChanges,
     OnDestroy
 } from '@angular/core';
-
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { PublishStatusModelFromServer } from '../../../common/models/server-models';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-
 import { UILanguage } from '../../../core/providers/i18n/i18n.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
 @Component({
     selector: 'mesh-node-status',
@@ -60,7 +59,7 @@ export class NodeStatusComponent implements OnChanges, OnDestroy {
     cssClass: string;
 
     /** True if mouse hover over div.status */
-    hasHover = false;
+    hasHover = new BehaviorSubject<boolean>(false);
 
     /** Date format string */
     dateTimeFormat: {
@@ -115,11 +114,13 @@ export class NodeStatusComponent implements OnChanges, OnDestroy {
     }
 
     onMouseenter(): void {
-        this.hasHover = true;
+        this.hasHover.next(true);
     }
 
-    onMouseleave(): void {
-        this.hasHover = false;
+    onMouseleave() {
+        setTimeout(() => {
+            this.hasHover.next(false);
+        }, 300);
     }
 
     getNodeHasStatus(): boolean {
