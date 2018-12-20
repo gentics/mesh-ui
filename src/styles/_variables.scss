@@ -8,4 +8,11 @@
 @import "./mixins";
 
 $gtx-color-white: #fff !default;
+
 $header-box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.20);
+
+// node status colours
+$mesh-node-status-draft: #ec971f;
+$mesh-node-status-published: #449d44;
+$mesh-node-status-updated: #007bff;
+$mesh-node-status-archived: #c9302c;

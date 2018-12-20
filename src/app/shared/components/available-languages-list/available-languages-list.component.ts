@@ -1,8 +1,6 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 
-import { PublishStatusModelFromServer } from '../../../common/models/server-models';
-
-import { Language, PublishModelMap } from './interfaces';
+import { MeshNode } from '../../../common/models/node.model';
 
 @Component({
     selector: 'mesh-available-languages-list',
@@ -10,13 +8,21 @@ import { Language, PublishModelMap } from './interfaces';
     styleUrls: ['available-languages-list.scss']
 })
 export class AvailableLanguagesListComponent implements OnChanges {
-    @Input() available: PublishModelMap | Language[];
+    @Input() node: MeshNode;
     @Input() current: string;
+    @Output() nodeLanguage: EventEmitter<string> = new EventEmitter<string>();
 
     public sortedLanguages: string[];
 
-    ngOnChanges(changes: SimpleChanges): void {
-        const langs = Array.isArray(this.available) ? this.available : Object.keys(this.available);
+    onClickOnLanguage(language: string): void {
+        this.nodeLanguage.emit(language);
+    }
+
+    // ONCHANGES
+    ngOnChanges(): void {
+        const langs = Array.isArray(this.node.availableLanguages)
+            ? this.node.availableLanguages
+            : Object.keys(this.node.availableLanguages);
 
         // Sort languages alphabetically but put the current language first.
         this.sortedLanguages = langs

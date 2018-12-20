@@ -21,6 +21,10 @@ export class NodeRowComponent implements OnInit, OnDestroy {
     @Input() node: MeshNode;
 
     filterTerm$: Observable<string>;
+
+    /** Current display node language */
+    currentLanguage$: Observable<string>;
+
     routerLink: any[] | null = null;
 
     private subscription: Subscription = new Subscription();
@@ -31,7 +35,9 @@ export class NodeRowComponent implements OnInit, OnDestroy {
         private modalService: ModalService,
         private i18n: I18nService,
         private listEffects: ListEffectsService
-    ) {}
+    ) {
+        this.currentLanguage$ = this.state.select(state => state.list.language);
+    }
 
     ngOnInit() {
         if (this.node.container) {

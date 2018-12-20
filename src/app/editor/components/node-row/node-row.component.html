@@ -10,9 +10,15 @@
                [routerLink]="routerLink"
                (click)="focusEditor()"
                [innerHTML]="node.displayName | highlight:(filterTerm$ | async)"></a>
+            <mesh-node-status [node]="node"
+                              [current]="currentLanguage$ | async">>
+            </mesh-node-status>
         </div>
         <div class="available-languages">
-            <mesh-available-languages-list [available]="node.availableLanguages"></mesh-available-languages-list>
+            <mesh-available-languages-list [node]="node"
+                                           (nodeLanguage)="editNodeTranslation( $event )"
+                                           [current]="currentLanguage$ | async">
+            </mesh-available-languages-list>
         </div>
         <div class="added-tags">
             <mesh-tag *ngFor="let tag of node.tags;"
