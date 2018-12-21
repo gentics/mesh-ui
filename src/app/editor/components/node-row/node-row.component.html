@@ -29,11 +29,6 @@
         </div>
     </div>
     <div class="show-on-hover last-cell">
-        <gtx-button flat
-                    size="small"
-                    (click)="editNode()">
-            <icon left>edit</icon> {{ 'list.edit' | i18n }}
-        </gtx-button>
         <gtx-dropdown-list align="right">
             <gtx-dropdown-trigger>
                 <gtx-button icon
@@ -42,6 +37,9 @@
                 </gtx-button>
             </gtx-dropdown-trigger>
             <gtx-dropdown-content>
+                <gtx-dropdown-item (click)="editNode()">
+                    <icon left>edit</icon> {{ 'list.edit' | i18n }}
+                </gtx-dropdown-item>
                 <gtx-dropdown-item (click)="copyNode()">
                     <icon left>content_copy</icon> {{ 'list.copy' | i18n }}
                 </gtx-dropdown-item>
