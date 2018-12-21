@@ -1,6 +1,7 @@
 import { Component, DebugElement, Pipe, PipeTransform } from '@angular/core';
 import { tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DropdownTriggerDirective, GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
@@ -21,7 +22,11 @@ import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock'
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { AvailableLanguagesListComponent } from '../../../shared/components/available-languages-list/available-languages-list.component';
+import { ChipComponent } from '../../../shared/components/chip/chip.component';
+import { NodeStatusComponent } from '../../../shared/components/node-status/node-status.component';
 import { PublishOptionsComponent } from '../../../shared/components/publish-options/publish-options.component';
+import { TagComponent } from '../../../shared/components/tag/tag.component';
+import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
 import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -44,7 +49,11 @@ describe('NodeRowComponent', () => {
                 HighlightPipe,
                 AvailableLanguagesListComponent,
                 TestComponent,
-                PublishOptionsComponent
+                PublishOptionsComponent,
+                NodeStatusComponent,
+                TagComponent,
+                ChipComponent,
+                BackgroundFromDirective
             ],
             providers: [
                 EntitiesService,
@@ -59,7 +68,7 @@ describe('NodeRowComponent', () => {
                 { provide: ConfigService, useClass: MockConfigService },
                 { provide: ActivatedRoute }
             ],
-            imports: [GenticsUICoreModule, RouterTestingModule.withRoutes([])]
+            imports: [NoopAnimationsModule, GenticsUICoreModule, RouterTestingModule.withRoutes([])]
         });
 
         api = TestBed.get(ApiService);
