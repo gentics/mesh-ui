@@ -1,5 +1,16 @@
 <gtx-top-bar *ngIf="loggedIn$ | async">
     <div class="gtx-top-bar-left">
+        <a class="logo-container"
+           href="/#/">
+            <img src="/assets/img/logo.svg"
+                 alt="vendor logo">
+            <span>Gentics
+                <span class="color-dark">Mesh-UI</span>
+            </span>
+        </a>
+    </div>
+
+    <div class="gtx-top-bar-right">
         <gtx-button size="small"
                     flat
                     type="secondary"
@@ -10,9 +21,6 @@
                     type="secondary"
                     *ngIf="adminMode$ | async"
                     [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
-    </div>
-
-    <div class="gtx-top-bar-right">
         <mesh-language-switcher></mesh-language-switcher>
         <mesh-user-dropdown></mesh-user-dropdown>
     </div>
