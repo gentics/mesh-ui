@@ -10,7 +10,8 @@ export class NodeListRow {
     }
 
     public async editNode() {
-        await this.container.element(by.cssContainingText('button', 'edit')).click();
+        await this.openNodeMenu();
+        await element(by.cssContainingText('gtx-dropdown-item', 'Edit')).click();
     }
 
     public async moveNode() {
