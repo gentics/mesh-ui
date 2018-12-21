@@ -110,7 +110,7 @@ describe('UserListComponent', () => {
                 setMockState();
                 fixture.detectChanges();
 
-                instance.deleteUsers([0, 1, 2]);
+                instance.deleteUsers([mockUser1 as User, mockUser2 as User]);
                 tick();
 
                 expect(mockModalService.dialogSpy).toHaveBeenCalled();
@@ -123,7 +123,7 @@ describe('UserListComponent', () => {
                 setMockState();
                 fixture.detectChanges();
 
-                instance.deleteUsers([0]);
+                instance.deleteUsers([mockAdminUser as User]);
                 tick();
 
                 expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
@@ -136,13 +136,11 @@ describe('UserListComponent', () => {
                 setMockState();
                 fixture.detectChanges();
 
-                instance.deleteUsers([0, 1, 2]);
+                instance.deleteUsers([mockAdminUser as User]);
                 tick();
-                mockModalService.confirmLastModal();
-
-                expect(adminUserEffects.deleteUser).toHaveBeenCalledTimes(2);
-                expect(adminUserEffects.deleteUser).toHaveBeenCalledWith(mockUser1);
-                expect(adminUserEffects.deleteUser).toHaveBeenCalledWith(mockUser2);
+                // no modal will be called as array filtered by permission will be empty and stop method execution
+                expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
+                expect(adminUserEffects.deleteUser).not.toHaveBeenCalled();
             })
         );
 
@@ -153,12 +151,11 @@ describe('UserListComponent', () => {
                 setMockState();
                 fixture.detectChanges();
 
-                instance.deleteUsers([1, 2]);
+                instance.deleteUsers([mockUser1 as User]);
                 tick();
-                mockModalService.confirmLastModal();
-
-                expect(adminUserEffects.deleteUser).toHaveBeenCalledTimes(1);
-                expect(adminUserEffects.deleteUser).toHaveBeenCalledWith(mockUser2);
+                // no modal will be called as array filtered by permission will be empty and stop method execution
+                expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
+                expect(adminUserEffects.deleteUser).not.toHaveBeenCalled();
             })
         );
     });

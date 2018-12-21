@@ -14,6 +14,7 @@ import { IconCheckboxComponent } from './components/icon-checkbox/icon-checkbox.
 import { NoContentComponent } from './components/no-content/no-content.component';
 import { NodeBrowserListComponent } from './components/node-browser/node-browser-list/node-browser-list.component';
 import { NodeBrowserComponent } from './components/node-browser/node-browser.component';
+import { NodeStatusComponent } from './components/node-status/node-status.component';
 import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
 import { PublishOptionsComponent } from './components/publish-options/publish-options.component';
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
@@ -34,6 +35,7 @@ const COMPONENTS = [NodeBrowserListComponent];
 const SHARED_COMPONENTS = [
     ChipComponent,
     NoContentComponent,
+    NodeStatusComponent,
     SchemaLabelComponent,
     TagComponent,
     TagSelectorComponent,

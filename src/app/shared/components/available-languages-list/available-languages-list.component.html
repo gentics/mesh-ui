@@ -1,4 +1,5 @@
 <ul>
     <li *ngFor="let language of sortedLanguages"
-        [class.current]="language === current">{{ language }}</li>
+        [class.current]="language === current"
+        (click)="onClickOnLanguage( language )">{{ language }}</li>
 </ul>

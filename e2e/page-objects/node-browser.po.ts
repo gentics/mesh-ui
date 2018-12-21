@@ -57,5 +57,6 @@ export async function search(term: string) {
 }
 
 function nodeBrowser() {
+    browser.wait(async () => await element(by.css('mesh-node-browser')));
     return element(by.css('mesh-node-browser'));
 }

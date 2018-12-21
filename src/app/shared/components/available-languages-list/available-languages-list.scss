@@ -13,6 +13,7 @@
         background: $gtx-color-off-white;
         border-bottom: 2px solid $gtx-color-off-white;
         border-radius: 2px;
+        cursor: pointer;
         &.current {
             border-bottom: 2px solid $gtx-color-primary;
         }

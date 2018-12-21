@@ -1,0 +1,71 @@
+@import "variables";
+
+$mesh-node-status-font-color: #777;
+
+:host {
+    position: absolute;
+    display: inline-flex;
+    background-color: $gtx-color-white;
+    overflow: hidden;
+    height: 20px;
+    margin: 4px 10px;
+
+    .status {
+        font-size: 10px;
+        white-space: nowrap;
+        border: 1px solid gray;
+        border-radius: 3px;
+        margin-bottom: 3px;
+        padding: 0 5px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        cursor: default;
+        transition: all 0.09s ease-in-out;
+
+        &.draft {
+            color: $mesh-node-status-draft;
+            border-color: rgba( $mesh-node-status-draft, 0.4 );
+        }
+    
+        &.published {
+            color: $mesh-node-status-published;
+            border-color: rgba( $mesh-node-status-published, 0.4 );
+        }
+    
+        &.updated {
+            color: $mesh-node-status-updated;
+            border-color: rgba( $mesh-node-status-updated, 0.4 );
+        }
+    
+        &.archived {
+            color: $mesh-node-status-archived;
+            border-color: rgba( $mesh-node-status-archived, 0.4 );
+        }
+
+        & > * + * {
+            margin-left: 4px;
+        }
+
+        icon {
+            font-size: 14px;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+
+    *.text-uppercase {
+        text-transform: uppercase;
+    }
+
+    *.text-dark {
+        color: $mesh-node-status-font-color;
+    }
+
+    *.text-bold {
+        color: $mesh-node-status-font-color;
+        font-weight: 700;
+    }
+}

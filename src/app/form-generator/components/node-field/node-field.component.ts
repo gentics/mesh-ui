@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 
 import { MeshNode, NodeField, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { EditorEffectsService } from '../../../editor/providers/editor-effects.service';
-import { PageResult } from '../../../shared/components/node-browser/interfaces';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
@@ -14,7 +14,7 @@ import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../bas
     templateUrl: './node-field.component.html',
     styleUrls: ['./node-field.scss']
 })
-export class NodeFieldComponent extends BaseFieldComponent {
+export class NodeFieldComponent extends BaseFieldComponent implements OnDestroy {
     @Input() node: MeshNode;
 
     routerLink: any[] | null = null;
@@ -28,6 +28,8 @@ export class NodeFieldComponent extends BaseFieldComponent {
     breadcrumbPath: string;
     isContainer: boolean;
 
+    private destroy$ = new Subject<void>();
+
     constructor(
         changeDetector: ChangeDetectorRef,
         private navigationService: NavigationService,
@@ -35,6 +37,11 @@ export class NodeFieldComponent extends BaseFieldComponent {
         private editorEffects: EditorEffectsService
     ) {
         super(changeDetector);
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     init(api: MeshFieldControlApi): void {
@@ -53,7 +60,7 @@ export class NodeFieldComponent extends BaseFieldComponent {
         if (this.userValue) {
             const node$ = this.entities.selectNode(this.userValue!, { language: this.node.language });
 
-            node$.subscribe(node => {
+            node$.takeUntil(this.destroy$).subscribe(node => {
                 this.schemaName = node.schema.name;
                 this.isContainer = node.container;
                 this.displayName = node.displayName!;

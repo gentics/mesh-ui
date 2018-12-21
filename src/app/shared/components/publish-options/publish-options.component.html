@@ -1,11 +1,13 @@
-<gtx-dropdown-item (click)="publishNodeLanguage()"
+<gtx-dropdown-item class="publish"
+                   (click)="publishNodeLanguage()"
                    *ngIf="node && !nodeUtil.currentLanguagePublished(node)">
-    <icon left>public</icon>
+    <icon left>cloud_upload</icon>
     {{ 'editor.publish_button' | i18n }}
 </gtx-dropdown-item>
-<gtx-dropdown-item (click)="publishNode()"
+<gtx-dropdown-item class="publish"
+                   (click)="publishNode()"
                    *ngIf="node && !nodeUtil.allLanguagesPublished(node)">
-    <icon left>public</icon>
+    <icon left>cloud_upload</icon>
     {{ 'editor.publish_all' | i18n }}
 </gtx-dropdown-item>
 <gtx-dropdown-item class="dangerous"
