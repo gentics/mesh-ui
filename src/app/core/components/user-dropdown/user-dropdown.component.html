@@ -1,17 +1,16 @@
-<gtx-dropdown-list>
-    <gtx-dropdown-trigger>
-        <gtx-button flat size="small" type="secondary">
-            <icon left>account_circle</icon>
-            {{ currentUsername$ | async }}
-            <icon right>arrow_drop_down</icon>
-        </gtx-button>
-    </gtx-dropdown-trigger>
-    <gtx-dropdown-content>
-        <gtx-dropdown-item (click)="changePassword()">
-            {{ 'auth.change_password' | i18n }}
-        </gtx-dropdown-item>
-        <gtx-dropdown-item (click)="logOut()">
-            {{ 'auth.logout' | i18n }}
-        </gtx-dropdown-item>
-    </gtx-dropdown-content>
- </gtx-dropdown-list>
+<li>
+    <gtx-button flat
+                size="regular"
+                type="secondary"
+                (click)="changePassword()">
+        {{ 'auth.change_password' | i18n }}
+    </gtx-button>
+</li>
+<li>
+    <gtx-button flat
+                size="regular"
+                type="secondary"
+                (click)="logOut()">
+        {{ 'auth.logout' | i18n }}
+    </gtx-button>
+</li>

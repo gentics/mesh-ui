@@ -11,19 +11,47 @@
     </div>
 
     <div class="gtx-top-bar-right">
-        <gtx-button size="small"
-                    flat
-                    type="secondary"
-                    *ngIf="!(adminMode$ | async)"
-                    [routerLink]="['/admin']">Admin Mode</gtx-button>
-        <gtx-button size="small"
-                    flat
-                    type="secondary"
-                    *ngIf="adminMode$ | async"
-                    [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
-        <mesh-language-switcher></mesh-language-switcher>
-        <mesh-user-dropdown></mesh-user-dropdown>
+        <gtx-side-menu-toggle>
+            <gtx-button size="regular"
+                        type="primary"
+                        *ngIf="!(adminMode$ | async)"
+                        [routerLink]="['/admin']">Admin Mode</gtx-button>
+            <gtx-button size="regular"
+                        type="primary"
+                        *ngIf="adminMode$ | async"
+                        [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
+            <gtx-button *ngIf="!displayMenu"
+                        size="regular"
+                        type="primary"
+                        [icon]="true"
+                        (click)="displayMenu = !displayMenu">User
+                <icon right>account_circle</icon>
+            </gtx-button>
+        </gtx-side-menu-toggle>
     </div>
 </gtx-top-bar>
+
+<gtx-side-menu [opened]="displayMenu"
+               (toggle)="displayMenu = $event"
+               position="right">
+    <gtx-side-menu-toggle>
+        <gtx-button *ngIf="displayMenu"
+                    size="regular"
+                    type="primary"
+                    [icon]="true">User
+            <icon right>account_circle</icon>
+        </gtx-button>
+    </gtx-side-menu-toggle>
+
+    <div class="menu-content">
+        <ul>
+            <li>
+                <mesh-language-switcher></mesh-language-switcher>
+            </li>
+            <mesh-user-dropdown></mesh-user-dropdown>
+        </ul>
+    </div>
+</gtx-side-menu>
+
 <router-outlet></router-outlet>
 <gtx-overlay-host></gtx-overlay-host>

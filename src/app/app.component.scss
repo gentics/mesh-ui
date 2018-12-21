@@ -49,3 +49,17 @@ gtx-top-bar {
         color: $gtx-color-very-dark-gray;
     }
 }
+
+.menu-content {
+    display: block;
+    margin-top: 2rem;
+    text-align: left;
+
+    li {
+        display: block;
+
+        & + & {
+            margin-bottom: 1rem;
+        }
+    }
+}

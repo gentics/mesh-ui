@@ -15,6 +15,8 @@ export class AppComponent {
     loggedIn$: Observable<boolean>;
     adminMode$: Observable<boolean>;
 
+    displayMenu = false;
+
     constructor(public state: ApplicationStateService, devtools: ApplicationStateDevtools, private router: Router) {
         this.loggedIn$ = state.select(_state => _state.auth.loggedIn);
         this.adminMode$ = this.router.events
