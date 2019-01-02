@@ -15,7 +15,6 @@ export class AppComponent {
     loggedIn$: Observable<boolean>;
     adminMode$: Observable<boolean>;
 
-    /** App menu is expanded if true */
     displayMenu = false;
 
     constructor(public state: ApplicationStateService, devtools: ApplicationStateDevtools, private router: Router) {
