@@ -12,14 +12,6 @@
 
     <div class="gtx-top-bar-right">
         <gtx-side-menu-toggle>
-            <gtx-button size="regular"
-                        type="primary"
-                        *ngIf="!(adminMode$ | async)"
-                        [routerLink]="['/admin']">Admin Mode</gtx-button>
-            <gtx-button size="regular"
-                        type="primary"
-                        *ngIf="adminMode$ | async"
-                        [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
             <gtx-button *ngIf="!displayMenu"
                         size="regular"
                         type="primary"
@@ -45,6 +37,18 @@
 
     <div class="menu-content">
         <ul>
+            <li>
+                <gtx-button size="regular"
+                            flat
+                            type="secondary"
+                            *ngIf="!(adminMode$ | async)"
+                            [routerLink]="['/admin']">Administration</gtx-button>
+                <gtx-button size="regular"
+                            flat
+                            type="secondary"
+                            *ngIf="adminMode$ | async"
+                            [routerLink]="['/editor', 'project']">CMS</gtx-button>
+            </li>
             <li>
                 <mesh-language-switcher></mesh-language-switcher>
             </li>
