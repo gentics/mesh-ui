@@ -21,6 +21,9 @@ export class AppComponent {
         this.loggedIn$ = state.select(_state => _state.auth.loggedIn);
         this.adminMode$ = this.router.events
             .filter(event => event instanceof NavigationEnd)
-            .map((event: NavigationEnd) => /^\/admin/.test(event.url));
+            .map((event: NavigationEnd) => {
+                this.displayMenu = false;
+                return /^\/admin/.test(event.url);
+            });
     }
 }
