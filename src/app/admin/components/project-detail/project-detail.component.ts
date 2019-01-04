@@ -7,20 +7,24 @@ import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
+import { SchemaReference } from '../../../common/models/common.model';
 import { Project } from '../../../common/models/project.model';
+import { Schema } from '../../../common/models/schema.model';
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
+import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
+import { SchemaAssignments } from '../../../state/models/admin-schemas-state.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
+import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 import { NameInputDialogComponent } from '../name-input-dialog/name-input-dialog.component';
 
 enum TagStatus {
@@ -61,6 +65,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
     public TagStatus = TagStatus;
 
+    public project$: Observable<Project>;
     public project: Project;
     public tagFamilies: LocalTagFamily[] = [];
 
@@ -69,6 +74,14 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private tagFilterTerm = '';
     public readOnly = true;
     private tagsChanged = false;
+
+    public filterTerm: string;
+    public schemas$: Observable<Schema[]>;
+    public allSchemas$: Observable<Schema[]>;
+    public projectSchemas$: Observable<SchemaReference[] | undefined>;
+
+    public schemaAssignments$?: Observable<SchemaAssignments>;
+    public schemaAssignments?: SchemaAssignments;
 
     private destroy$ = new Subject<void>();
     private preventTagFamiliesUpdate$: Subject<void>;
@@ -82,21 +95,26 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private modalService: ModalService,
         private i18n: I18nService,
         private changeDetector: ChangeDetectorRef,
-        private projectEffect: AdminProjectEffectsService,
+        private projectEffects: AdminProjectEffectsService,
+        private listEffects: ListEffectsService,
+        private schemaEffects: AdminSchemaEffectsService,
         private tagEffects: TagsEffectsService
     ) {}
 
+    // ON INIT
     ngOnInit() {
-        const project$: Observable<Project> = this.route.data.map(data => data.project).filter(notNullOrUndefined);
+        // Projects
+        this.project$ = this.route.data.map(data => data.project).filter(notNullOrUndefined);
 
-        project$.takeUntil(this.destroy$).subscribe(project => {
+        this.project$.takeUntil(this.destroy$).subscribe(project => {
             this.project = project;
             this.readOnly = !!project && !project.permissions.update;
             this.form = this.formBuilder.group({
                 name: [project ? project.name : '', Validators.required]
             });
 
-            this.tagEffects.loadTagFamiliesAndTheirTags(project.name);
+            this.listEffects.loadSchemasForProject(project.name);
+            this.listEffects.loadMicroschemasForProject(project.name);
         });
 
         this.filterInput.valueChanges
@@ -109,7 +127,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         observeQueryParam(this.route.queryParamMap, 'q', '')
             .takeUntil(this.destroy$)
             .subscribe(filterTerm => {
-                this.projectEffect.setTagFilterTerm(filterTerm);
+                this.projectEffects.setTagFilterTerm(filterTerm);
                 this.filterInput.setValue(filterTerm, { emitEvent: false });
             });
 
@@ -122,8 +140,80 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             });
 
         this.fetchTags();
+
+        // Schemas
+
+        // set schema filter on search bar input change
+        this.filterInput.valueChanges.debounceTime(100).subscribe(filterTerm => {
+            // setQueryParams(this.router, this.route, { q: term });
+            this.schemaEffects.setFilterTerm(filterTerm);
+        });
+
+        // observeQueryParam(this.route.queryParamMap, 'q', '').subscribe(filterTerm => {
+        //     this.schemaEffects.setFilterTerm(filterTerm);
+        //     this.filterInput.setValue(filterTerm, { emitEvent: false });
+        // });
+
+        // filter term entered in search bar
+        const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
+
+        const state$ = this.state
+            .select(state => state)
+            .takeUntil(this.destroy$)
+            .subscribe(state => console.log('!!! STATE:'));
+
+        // request all schemas
+        this.schemaEffects.loadSchemas();
+
+        // subscribe to all schemas
+        this.allSchemas$ = this.entities.selectAllSchemas();
+
+        // get project schemas
+        this.projectSchemas$ = this.state.select(state => state.entities.project).map(project => {
+            console.log('!!! REAL schemaAssignments:', project[this.project.uuid].schemas);
+            if (!project[this.project.uuid].schemas) {
+                return [];
+            }
+            return project[this.project.uuid].schemas;
+        });
+
+        // get schema asignments
+        this.schemaAssignments$ = combineLatest(this.allSchemas$, this.projectSchemas$).map(
+            ([allSchemas, projectSchemas]) => {
+                console.log('!!! MY projectSchemas:', projectSchemas);
+                const schemaAssignments = {};
+                allSchemas.map(schema => {
+                    const match: string | undefined = projectSchemas!
+                        .map(projSchema => projSchema.uuid)
+                        .find(projSchemaUuid => projSchemaUuid === schema.uuid);
+                    Object.assign(schemaAssignments, { [schema.uuid]: match ? true : false });
+                });
+                // this.schemaAssignments = schemaAssignments;
+                return schemaAssignments;
+            }
+        );
+
+        // get schema asignments for view
+        this.schemaAssignments$
+            .takeUntil(this.destroy$)
+            .filter(schema => !!schema)
+            .take(1)
+            .toPromise()
+            .then(schemaAssignments => {
+                console.log('!!! FINAL schemaAssignments:', schemaAssignments);
+                return (this.schemaAssignments = schemaAssignments);
+            });
+
+        // all schemas filtered by search term
+        this.schemas$ = combineLatest(this.allSchemas$, filterTerm$).map(([schemas, filterTerm]) => {
+            this.filterTerm = filterTerm;
+            return schemas.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
+                return pro1.name < pro2.name ? -1 : 1;
+            });
+        });
     }
 
+    // ON DESTROY
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
@@ -518,7 +608,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         const queue: Promise<any | void>[] = [];
 
         if (this.form.dirty && this.form.valid && !this.readOnly) {
-            const projectUpdateRespose = this.projectEffect.updateProject(this.project.uuid, { name: formValue.name });
+            const projectUpdateRespose = this.projectEffects.updateProject(this.project.uuid, { name: formValue.name });
             projectUpdateRespose.then(response => {
                 queue.push(this.syncFamilies(response));
             });
@@ -532,5 +622,17 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.tagsChanged = false;
             this.form.markAsPristine();
         });
+    }
+
+    onAssignmentChange(schema: Schema, isChecked: boolean): void {
+        if (isChecked) {
+            this.schemaEffects.assignEntityToProject('schema', schema.uuid, this.project.name);
+        } else {
+            this.schemaEffects.removeEntityFromProject('schema', schema.uuid, this.project.name);
+        }
+
+        if (this.schemaAssignments) {
+            this.schemaAssignments[schema.uuid] = isChecked;
+        }
     }
 }
