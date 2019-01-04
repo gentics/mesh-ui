@@ -114,7 +114,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             });
 
             this.listEffects.loadSchemasForProject(project.name);
-            this.listEffects.loadMicroschemasForProject(project.name);
+            // this.listEffects.loadMicroschemasForProject(project.name);
         });
 
         this.filterInput.valueChanges
@@ -157,11 +157,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         // filter term entered in search bar
         const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
 
-        const state$ = this.state
-            .select(state => state)
-            .takeUntil(this.destroy$)
-            .subscribe(state => console.log('!!! STATE:'));
-
         // request all schemas
         this.schemaEffects.loadSchemas();
 
@@ -169,18 +164,16 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.allSchemas$ = this.entities.selectAllSchemas();
 
         // get project schemas
-        this.projectSchemas$ = this.state.select(state => state.entities.project).map(project => {
-            console.log('!!! REAL schemaAssignments:', project[this.project.uuid].schemas);
-            if (!project[this.project.uuid].schemas) {
+        this.projectSchemas$ = this.state.select(state => state.entities.project[this.project.uuid]).map(project => {
+            if (!project.schemas) {
                 return [];
             }
-            return project[this.project.uuid].schemas;
+            return project.schemas;
         });
 
         // get schema asignments
         this.schemaAssignments$ = combineLatest(this.allSchemas$, this.projectSchemas$).map(
             ([allSchemas, projectSchemas]) => {
-                console.log('!!! MY projectSchemas:', projectSchemas);
                 const schemaAssignments = {};
                 allSchemas.map(schema => {
                     const match: string | undefined = projectSchemas!
@@ -188,7 +181,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                         .find(projSchemaUuid => projSchemaUuid === schema.uuid);
                     Object.assign(schemaAssignments, { [schema.uuid]: match ? true : false });
                 });
-                // this.schemaAssignments = schemaAssignments;
                 return schemaAssignments;
             }
         );
@@ -197,11 +189,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.schemaAssignments$
             .takeUntil(this.destroy$)
             .filter(schema => !!schema)
-            .take(1)
-            .toPromise()
-            .then(schemaAssignments => {
-                console.log('!!! FINAL schemaAssignments:', schemaAssignments);
-                return (this.schemaAssignments = schemaAssignments);
+            // .take(1)
+            // .toPromise()
+            .subscribe(schemaAssignments => {
+                console.log('!!! schemaAssignments:', schemaAssignments);
+                this.schemaAssignments = schemaAssignments;
             });
 
         // all schemas filtered by search term
@@ -624,15 +616,19 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    onAssignmentChange(schema: Schema, isChecked: boolean): void {
+    async onAssignmentChange(schema: Schema, isChecked: boolean) {
+        // request changes
         if (isChecked) {
             this.schemaEffects.assignEntityToProject('schema', schema.uuid, this.project.name);
         } else {
             this.schemaEffects.removeEntityFromProject('schema', schema.uuid, this.project.name);
         }
 
+        // set view state
         if (this.schemaAssignments) {
             this.schemaAssignments[schema.uuid] = isChecked;
         }
+
+        this.listEffects.loadSchemasForProject(this.project.name);
     }
 }
