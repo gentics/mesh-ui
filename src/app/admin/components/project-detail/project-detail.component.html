@@ -118,7 +118,6 @@
         </gtx-tab>
 
         <gtx-tab title="Microschemas">
-            <pre>{{ microschemaAssignments$ | async | json }}</pre>
             <mesh-admin-list [items]="microschemas$ | async"
                              [autoHidePagination]="true"
                              [selectable]="false">

@@ -245,7 +245,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             if (!project.microschemas) {
                 return [];
             }
-            return project.schemas;
+            return project.microschemas;
         });
 
         // get microschema asignments
