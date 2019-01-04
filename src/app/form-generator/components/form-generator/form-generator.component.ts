@@ -16,9 +16,9 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { SplitViewContainer } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
+import { merge } from 'rxjs/observable/merge';
 
 import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
@@ -95,7 +95,7 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         this.fieldGenerator = this.fieldGeneratorService.create(this.formRoot, updateFn);
         this.generateForm();
 
-        this.containerResizeSub = Observable.merge(
+        this.containerResizeSub = merge(
             this.windowResize$,
             this.formGenerated$,
             (this.splitViewContainer && this.splitViewContainer.splitDragEnd) || []
