@@ -7,7 +7,8 @@ import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
-import { SchemaReference } from '../../../common/models/common.model';
+import { MicroschemaReference, SchemaReference } from '../../../common/models/common.model';
+import { Microschema } from '../../../common/models/microschema.model';
 import { Project } from '../../../common/models/project.model';
 import { Schema } from '../../../common/models/schema.model';
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
@@ -80,12 +81,20 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public filterTermTag: string;
     public filterTermSchema: string;
     public filterTermMicroschema: string;
+
     public schemas$: Observable<Schema[]>;
     public allSchemas$: Observable<Schema[]>;
     public projectSchemas$: Observable<SchemaReference[] | undefined>;
 
+    public microschemas$: Observable<Microschema[]>;
+    public allMicroschemas$: Observable<Microschema[]>;
+    public projectMicroschemas$: Observable<MicroschemaReference[] | undefined>;
+
     public schemaAssignments$?: Observable<SchemaAssignments>;
     public schemaAssignments?: SchemaAssignments;
+
+    public microschemaAssignments$?: Observable<SchemaAssignments>;
+    public microschemaAssignments?: SchemaAssignments;
 
     private destroy$ = new Subject<void>();
     private preventTagFamiliesUpdate$: Subject<void>;
@@ -107,7 +116,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     // ON INIT
     ngOnInit() {
-        // Project
+        // PROJECT
 
         this.project$ = this.route.data.map(data => data.project).filter(notNullOrUndefined);
 
@@ -124,7 +133,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.listEffects.loadMicroschemasForProject(project.name);
         });
 
-        // Tags
+        // TAGS
 
         this.filterInputTags.valueChanges
             .debounceTime(100)
@@ -150,11 +159,13 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
         this.fetchTags();
 
-        // Schemas
+        // SCHEMAS
+
+        // request all schemas
+        this.schemaEffects.loadSchemas();
 
         // filter term entered in search bar
         const filterTermSchema$ = this.state.select(state => state.adminSchemas.filterTerm);
-        // const filterTermMicroschema$ = this.state.select(state => state.adminProjects.filterTerm);
 
         // set schema filter on search bar input change
         this.filterInputSchema.valueChanges.debounceTime(100).subscribe(filterTerm => {
@@ -167,14 +178,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.filterInputSchema.setValue(filterTerm, { emitEvent: false });
         });
 
-        // request all schemas
-        this.schemaEffects.loadSchemas();
-
         // subscribe to all schemas
         this.allSchemas$ = this.entities.selectAllSchemas();
 
         // get project schemas
-        this.projectSchemas$ = this.state.select(state => state.entities.project[this.project.uuid]).map(project => {
+        this.projectSchemas$ = this.entities.selectProject(this.project.uuid).map(project => {
             if (!project.schemas) {
                 return [];
             }
@@ -210,6 +218,67 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 return pro1.name < pro2.name ? -1 : 1;
             });
         });
+
+        // MICROSCHEMAS
+        // request all microschemas
+        this.schemaEffects.loadMicroschemas();
+
+        // filter term entered in search bar
+        const filterTermMicroschema$ = this.state.select(state => state.adminProjects.filterTerm);
+
+        // set schema filter on search bar input change
+        this.filterInputMicroschema.valueChanges.debounceTime(100).subscribe(filterTerm => {
+            setQueryParams(this.router, this.route, { microschema: filterTerm });
+            this.schemaEffects.setFilterTerm(filterTerm);
+        });
+
+        observeQueryParam(this.route.queryParamMap, 'microschema', '').subscribe(filterTerm => {
+            this.listEffects.setFilterTerm(filterTerm);
+            this.filterInputMicroschema.setValue(filterTerm, { emitEvent: false });
+        });
+
+        // subscribe to all microschemas
+        this.allMicroschemas$ = this.entities.selectAllMicroschemas();
+
+        // get project microschemas
+        this.projectMicroschemas$ = this.entities.selectProject(this.project.uuid).map(project => {
+            if (!project.microschemas) {
+                return [];
+            }
+            return project.schemas;
+        });
+
+        // get microschema asignments
+        this.microschemaAssignments$ = combineLatest(this.allMicroschemas$, this.projectMicroschemas$).map(
+            ([allMicroschemas, projectMicroschemas]) => {
+                const microschemaAssignments = {};
+                allMicroschemas.map(schema => {
+                    const match: string | undefined = projectMicroschemas!
+                        .map(projMicroschema => projMicroschema.uuid)
+                        .find(projMicroschemaUuid => projMicroschemaUuid === schema.uuid);
+                    Object.assign(microschemaAssignments, { [schema.uuid]: match ? true : false });
+                });
+                return microschemaAssignments;
+            }
+        );
+
+        // get microschema asignments for view
+        this.microschemaAssignments$
+            .takeUntil(this.destroy$)
+            .filter(schema => !!schema)
+            .subscribe(schemaAssignments => {
+                this.microschemaAssignments = schemaAssignments;
+            });
+
+        // all microschemas filtered by search term
+        this.microschemas$ = combineLatest(this.allMicroschemas$, filterTermMicroschema$).map(
+            ([schemas, filterTerm]) => {
+                this.filterTermMicroschema = filterTerm;
+                return schemas.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
+                    return pro1.name < pro2.name ? -1 : 1;
+                });
+            }
+        );
     }
 
     // ON DESTROY
@@ -623,7 +692,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    async onAssignmentChange(schema: Schema, isChecked: boolean) {
+    onSchemaAssignmentChange(schema: Schema, isChecked: boolean): void {
         // request changes
         if (isChecked) {
             this.schemaEffects.assignEntityToProject('schema', schema.uuid, this.project.name);
@@ -637,5 +706,21 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         }
 
         this.listEffects.loadSchemasForProject(this.project.name);
+    }
+
+    onMicroschemaAssignmentChange(microschema: Microschema, isChecked: boolean): void {
+        // request changes
+        if (isChecked) {
+            this.schemaEffects.assignEntityToProject('microschema', microschema.uuid, this.project.name);
+        } else {
+            this.schemaEffects.removeEntityFromProject('microschema', microschema.uuid, this.project.name);
+        }
+
+        // set view state
+        if (this.microschemaAssignments) {
+            this.microschemaAssignments[microschema.uuid] = isChecked;
+        }
+
+        this.listEffects.loadMicroschemasForProject(this.project.name);
     }
 }
