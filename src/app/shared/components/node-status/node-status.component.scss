@@ -10,11 +10,12 @@ $mesh-node-status-font-color: #777;
     margin: 4px 0;
 
     .status {
+        position: absolute;
         font-size: 10px;
         white-space: nowrap;
         border: 1px solid gray;
         border-radius: 3px;
-        margin-bottom: 3px;
+        margin: 5px 0;
         padding: 0 5px;
         display: flex;
         flex-direction: row;
