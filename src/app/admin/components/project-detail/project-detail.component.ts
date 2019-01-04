@@ -71,9 +71,9 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public tagFamilies: LocalTagFamily[] = [];
 
     public form: FormGroup;
-    private filterInputTags = new FormControl('');
-    private filterInputSchema = new FormControl('');
-    private filterInputMicroschema = new FormControl('');
+    public filterInputTags = new FormControl('');
+    public filterInputSchema = new FormControl('');
+    public filterInputMicroschema = new FormControl('');
     private tagFilterTerm = '';
     public readOnly = true;
     private tagsChanged = false;
