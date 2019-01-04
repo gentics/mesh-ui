@@ -70,12 +70,16 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public tagFamilies: LocalTagFamily[] = [];
 
     public form: FormGroup;
-    private filterInput = new FormControl('');
+    private filterInputTags = new FormControl('');
+    private filterInputSchema = new FormControl('');
+    private filterInputMicroschema = new FormControl('');
     private tagFilterTerm = '';
     public readOnly = true;
     private tagsChanged = false;
 
-    public filterTerm: string;
+    public filterTermTag: string;
+    public filterTermSchema: string;
+    public filterTermMicroschema: string;
     public schemas$: Observable<Schema[]>;
     public allSchemas$: Observable<Schema[]>;
     public projectSchemas$: Observable<SchemaReference[] | undefined>;
@@ -103,7 +107,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     // ON INIT
     ngOnInit() {
-        // Projects
+        // Project
+
         this.project$ = this.route.data.map(data => data.project).filter(notNullOrUndefined);
 
         this.project$.takeUntil(this.destroy$).subscribe(project => {
@@ -113,22 +118,26 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 name: [project ? project.name : '', Validators.required]
             });
 
+            // load related project data
+            this.tagEffects.loadTagFamiliesAndTheirTags(project.name);
             this.listEffects.loadSchemasForProject(project.name);
-            // this.listEffects.loadMicroschemasForProject(project.name);
+            this.listEffects.loadMicroschemasForProject(project.name);
         });
 
-        this.filterInput.valueChanges
+        // Tags
+
+        this.filterInputTags.valueChanges
             .debounceTime(100)
             .takeUntil(this.destroy$)
             .subscribe(term => {
-                setQueryParams(this.router, this.route, { q: term });
+                setQueryParams(this.router, this.route, { tags: term });
             });
 
-        observeQueryParam(this.route.queryParamMap, 'q', '')
+        observeQueryParam(this.route.queryParamMap, 'tags', '')
             .takeUntil(this.destroy$)
             .subscribe(filterTerm => {
                 this.projectEffects.setTagFilterTerm(filterTerm);
-                this.filterInput.setValue(filterTerm, { emitEvent: false });
+                this.filterInputTags.setValue(filterTerm, { emitEvent: false });
             });
 
         this.state
@@ -143,19 +152,20 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
         // Schemas
 
+        // filter term entered in search bar
+        const filterTermSchema$ = this.state.select(state => state.adminSchemas.filterTerm);
+        // const filterTermMicroschema$ = this.state.select(state => state.adminProjects.filterTerm);
+
         // set schema filter on search bar input change
-        this.filterInput.valueChanges.debounceTime(100).subscribe(filterTerm => {
-            // setQueryParams(this.router, this.route, { q: term });
+        this.filterInputSchema.valueChanges.debounceTime(100).subscribe(filterTerm => {
+            setQueryParams(this.router, this.route, { schema: filterTerm });
             this.schemaEffects.setFilterTerm(filterTerm);
         });
 
-        // observeQueryParam(this.route.queryParamMap, 'q', '').subscribe(filterTerm => {
-        //     this.schemaEffects.setFilterTerm(filterTerm);
-        //     this.filterInput.setValue(filterTerm, { emitEvent: false });
-        // });
-
-        // filter term entered in search bar
-        const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
+        observeQueryParam(this.route.queryParamMap, 'schema', '').subscribe(filterTerm => {
+            this.listEffects.setFilterTerm(filterTerm);
+            this.filterInputSchema.setValue(filterTerm, { emitEvent: false });
+        });
 
         // request all schemas
         this.schemaEffects.loadSchemas();
@@ -189,16 +199,13 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.schemaAssignments$
             .takeUntil(this.destroy$)
             .filter(schema => !!schema)
-            // .take(1)
-            // .toPromise()
             .subscribe(schemaAssignments => {
-                console.log('!!! schemaAssignments:', schemaAssignments);
                 this.schemaAssignments = schemaAssignments;
             });
 
         // all schemas filtered by search term
-        this.schemas$ = combineLatest(this.allSchemas$, filterTerm$).map(([schemas, filterTerm]) => {
-            this.filterTerm = filterTerm;
+        this.schemas$ = combineLatest(this.allSchemas$, filterTermSchema$).map(([schemas, filterTerm]) => {
+            this.filterTermSchema = filterTerm;
             return schemas.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
                 return pro1.name < pro2.name ? -1 : 1;
             });

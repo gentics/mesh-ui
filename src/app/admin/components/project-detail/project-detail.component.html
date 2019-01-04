@@ -20,7 +20,7 @@
                 <div class="list-controls">
                     <div class="filter">
                         <gtx-input [label]="'admin.filter_by_name' | i18n"
-                                   [formControl]="filterInput"></gtx-input>
+                                   [formControl]="filterInputTags"></gtx-input>
                     </div>
                     <gtx-button size="regular"
                                 (click)="createTagFamilyClick()">
@@ -95,8 +95,6 @@
         </gtx-tab>
 
         <gtx-tab title="Schemas">
-            <pre>{{ schemaAssignments | json }}</pre>
-
             <mesh-admin-list [items]="schemas$ | async"
                              [autoHidePagination]="true"
                              [selectable]="false">
@@ -104,7 +102,7 @@
                 <div class="list-controls">
                     <div class="filter">
                         <gtx-input [label]="'admin.filter_by_name' | i18n"
-                                   [formControl]="filterInput">
+                                   [formControl]="filterInputSchema">
                         </gtx-input>
                     </div>
                 </div>
