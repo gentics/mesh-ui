@@ -3,12 +3,11 @@
 $mesh-node-status-font-color: #777;
 
 :host {
-    position: absolute;
     display: inline-flex;
     background-color: $gtx-color-white;
     overflow: hidden;
     height: 20px;
-    margin: 4px 10px;
+    margin: 4px 0;
 
     .status {
         font-size: 10px;
