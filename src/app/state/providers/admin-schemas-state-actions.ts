@@ -34,7 +34,8 @@ export class AdminSchemasStateActions extends StateActionBranch<AppState> {
                         itemsPerPage: 25,
                         totalItems: null
                     },
-                    filterTerm: ''
+                    filterTerm: '',
+                    filterTermMicroschema: ''
                 }
             }
         });
@@ -50,6 +51,10 @@ export class AdminSchemasStateActions extends StateActionBranch<AppState> {
 
     setFilterTerm(term: string): void {
         this.adminSchemas.filterTerm = term;
+    }
+
+    setFilterTermMicroschema(term: string): void {
+        this.adminSchemas.filterTermMicroschema = term;
     }
 
     fetchSchemasStart() {

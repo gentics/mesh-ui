@@ -36,6 +36,10 @@ export class AdminSchemaEffectsService {
         this.state.actions.adminSchemas.setFilterTerm(term);
     }
 
+    setFilterTermMicroSchema(term: string): void {
+        this.state.actions.adminSchemas.setFilterTermMicroschema(term);
+    }
+
     loadSchemas() {
         this.state.actions.adminSchemas.fetchSchemasStart();
         // TODO How to handle paging? Should all schemas be loaded?

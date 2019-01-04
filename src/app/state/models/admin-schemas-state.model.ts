@@ -19,4 +19,5 @@ export interface AdminSchemasState {
 
     pagination: PaginationConfig;
     filterTerm: string;
+    filterTermMicroschema: string;
 }

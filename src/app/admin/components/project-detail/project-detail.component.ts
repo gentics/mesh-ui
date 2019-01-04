@@ -224,12 +224,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.schemaEffects.loadMicroschemas();
 
         // filter term entered in search bar
-        const filterTermMicroschema$ = this.state.select(state => state.adminProjects.filterTerm);
+        const filterTermMicroschema$ = this.state.select(state => state.adminSchemas.filterTermMicroschema);
 
         // set schema filter on search bar input change
         this.filterInputMicroschema.valueChanges.debounceTime(100).subscribe(filterTerm => {
             setQueryParams(this.router, this.route, { microschema: filterTerm });
-            this.schemaEffects.setFilterTerm(filterTerm);
+            this.schemaEffects.setFilterTermMicroSchema(filterTerm);
         });
 
         observeQueryParam(this.route.queryParamMap, 'microschema', '').subscribe(filterTerm => {
