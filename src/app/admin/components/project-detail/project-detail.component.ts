@@ -693,34 +693,38 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     }
 
     onSchemaAssignmentChange(schema: Schema, isChecked: boolean): void {
-        // request changes
-        if (isChecked) {
-            this.schemaEffects.assignEntityToProject('schema', schema.uuid, this.project.name);
-        } else {
-            this.schemaEffects.removeEntityFromProject('schema', schema.uuid, this.project.name);
-        }
-
         // set view state
         if (this.schemaAssignments) {
             this.schemaAssignments[schema.uuid] = isChecked;
         }
 
-        this.listEffects.loadSchemasForProject(this.project.name);
+        // request changes
+        if (isChecked) {
+            this.schemaEffects
+                .assignEntityToProject('schema', schema.uuid, this.project.name)
+                .then(() => this.listEffects.loadSchemasForProject(this.project.name));
+        } else {
+            this.schemaEffects
+                .removeEntityFromProject('schema', schema.uuid, this.project.name)
+                .then(() => this.listEffects.loadSchemasForProject(this.project.name));
+        }
     }
 
     onMicroschemaAssignmentChange(microschema: Microschema, isChecked: boolean): void {
-        // request changes
-        if (isChecked) {
-            this.schemaEffects.assignEntityToProject('microschema', microschema.uuid, this.project.name);
-        } else {
-            this.schemaEffects.removeEntityFromProject('microschema', microschema.uuid, this.project.name);
-        }
-
         // set view state
         if (this.microschemaAssignments) {
             this.microschemaAssignments[microschema.uuid] = isChecked;
         }
 
-        this.listEffects.loadMicroschemasForProject(this.project.name);
+        // request changes
+        if (isChecked) {
+            this.schemaEffects
+                .assignEntityToProject('microschema', microschema.uuid, this.project.name)
+                .then(() => this.listEffects.loadMicroschemasForProject(this.project.name));
+        } else {
+            this.schemaEffects
+                .removeEntityFromProject('microschema', microschema.uuid, this.project.name)
+                .then(() => this.listEffects.loadMicroschemasForProject(this.project.name));
+        }
     }
 }

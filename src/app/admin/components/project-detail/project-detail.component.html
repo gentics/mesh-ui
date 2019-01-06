@@ -108,9 +108,9 @@
                 </div>
 
                 <ng-template let-schema="item">
-                    <gtx-checkbox *ngIf="schemaAssignments"
+                    <gtx-checkbox *ngIf="schemaAssignments$ | async"
                                   [label]="schema.name"
-                                  [checked]="schemaAssignments[schema.uuid]"
+                                  [checked]="(schemaAssignments$ | async)[schema.uuid]"
                                   (change)="onSchemaAssignmentChange(schema, $event)">
                     </gtx-checkbox>
                 </ng-template>
@@ -131,9 +131,9 @@
                 </div>
 
                 <ng-template let-schema="item">
-                    <gtx-checkbox *ngIf="microschemaAssignments"
+                    <gtx-checkbox *ngIf="microschemaAssignments$ | async"
                                   [label]="schema.name"
-                                  [checked]="microschemaAssignments[schema.uuid]"
+                                  [checked]="(microschemaAssignments$ | async)[schema.uuid]"
                                   (change)="onMicroschemaAssignmentChange(schema, $event)">
                     </gtx-checkbox>
                 </ng-template>
