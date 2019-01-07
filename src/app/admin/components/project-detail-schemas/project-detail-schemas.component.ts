@@ -100,13 +100,11 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
             .takeUntil(this.destroy$)
             .subscribe(([filterTerm, currentPage]) => {
                 const queryParams = {};
-                if (filterTerm) {
+                if (filterTerm || filterTerm === '') {
                     Object.assign(queryParams, { q: filterTerm });
                     this.schemaEffects.setFilterTerm(filterTerm);
                 }
-                if (currentPage) {
-                    Object.assign(queryParams, { p: currentPage });
-                }
+                Object.assign(queryParams, { p: currentPage || 1 });
                 setQueryParams(this.router, this.route, { schema: JSON.stringify(queryParams) });
             });
 
@@ -119,16 +117,12 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
                 // parse query and pagination information from url parameter
                 const parsedData = JSON.parse(schemaData);
                 const query = parsedData['q'] ? parsedData['q'] : null;
-                const currentPage = parsedData['p'] ? parseInt(parsedData['p'], 10) : null;
+                const currentPage = parsedData['p'] ? parseInt(parsedData['p'], 10) : 1;
 
-                // proceed data if existing
-                if (currentPage) {
-                    this.currentPage$.next(currentPage);
-                }
-                if (query) {
-                    this.listEffects.setFilterTerm(query);
-                    this.filterInputSchema.setValue(query);
-                }
+                // proceed data
+                this.currentPage$.next(currentPage);
+                this.listEffects.setFilterTerm(query);
+                this.filterInputSchema.setValue(query);
             });
 
         // subscribe to all schemas
