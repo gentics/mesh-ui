@@ -97,20 +97,20 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
 
         // listen to input changes and page changes
         combineLatest(this.filterInputSchema.valueChanges, this.currentPage$)
+            .debounceTime(100)
             .takeUntil(this.destroy$)
             .subscribe(([filterTerm, currentPage]) => {
-                const queryParams = {};
+                const queryParams = { p: currentPage || 1 };
                 if (filterTerm || filterTerm === '') {
                     Object.assign(queryParams, { q: filterTerm });
                     this.schemaEffects.setFilterTerm(filterTerm);
                 }
-                Object.assign(queryParams, { p: currentPage || 1 });
                 setQueryParams(this.router, this.route, { schema: JSON.stringify(queryParams) });
             });
 
         // Watch URL parameter:
         // Search query and pagination data are bookmarkable.
-        observeQueryParam(this.route.queryParamMap, 'schema', '')
+        observeQueryParam(this.route.queryParamMap, 'schema', JSON.stringify({ p: this.currentPage$.getValue() }))
             .takeUntil(this.destroy$)
             .filter(schemaData => !!schemaData)
             .subscribe(schemaData => {
