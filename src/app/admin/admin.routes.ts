@@ -36,19 +36,7 @@ export const routes: Route[] = [
                         path: ':uuid',
                         component: ProjectDetailComponent,
                         resolve: { project: ProjectResolver },
-                        data: { breadcrumb: projectBreadcrumbFn },
-                        children: [
-                            {
-                                path: '',
-                                component: ProjectDetailSchemasComponent,
-                                outlet: 'detail'
-                            },
-                            {
-                                path: 'schemas',
-                                component: ProjectDetailSchemasComponent,
-                                outlet: 'detail'
-                            }
-                        ]
+                        data: { breadcrumb: projectBreadcrumbFn }
                     }
                 ]
             },

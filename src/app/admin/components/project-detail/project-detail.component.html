@@ -94,29 +94,8 @@
             </div>
         </gtx-tab>
 
-        <gtx-tab title="Schemas"
-                 [routerLink]="schemasRoute">
-            <router-outlet name="detail"></router-outlet>
-            <!-- <mesh-admin-list [items]="schemas$ | async"
-                             [autoHidePagination]="true"
-                             [selectable]="false">
-
-                <div class="list-controls">
-                    <div class="filter">
-                        <gtx-input [label]="'admin.filter_by_name' | i18n"
-                                   [formControl]="filterInputSchema">
-                        </gtx-input>
-                    </div>
-                </div>
-
-                <ng-template let-schema="item">
-                    <gtx-checkbox *ngIf="schemaAssignments$ | async"
-                                  [label]="schema.name"
-                                  [checked]="(schemaAssignments$ | async)[schema.uuid]"
-                                  (change)="onSchemaAssignmentChange(schema, $event)">
-                    </gtx-checkbox>
-                </ng-template>
-            </mesh-admin-list> -->
+        <gtx-tab title="Schemas">
+            <mesh-project-detail-schemas></mesh-project-detail-schemas>
         </gtx-tab>
 
         <gtx-tab title="Microschemas">

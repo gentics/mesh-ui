@@ -83,7 +83,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public filterTermSchema: string;
     public filterTermMicroschema: string;
 
-    public schemasRoute: any[] = [{ outlets: { detail: ['schemas'] } }];
     public schemas$: Observable<Schema[]>;
     public allSchemas$: Observable<Schema[]>;
     public projectSchemas$: Observable<SchemaReference[] | undefined>;

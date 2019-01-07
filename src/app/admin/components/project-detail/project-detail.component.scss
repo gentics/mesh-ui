@@ -12,9 +12,3 @@
 .row-actions {
     flex: 0;
 }
-
-:host /deep/ gtx-tabs * {
-    &:focus {
-        outline: 0 none !important;
-    }
-}

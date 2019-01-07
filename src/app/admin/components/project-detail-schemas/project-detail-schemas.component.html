@@ -1,6 +1,6 @@
 <mesh-admin-list [items]="schemas$ | async"
                  [itemsPerPage]="itemsPerPage"
-                 [currentPage]="currentPage"
+                 [currentPage]="currentPage$ | async"
                  [totalItems]="totalCount$ | async"
                  [autoHidePagination]="false"
                  [selectable]="false"

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -9,6 +10,7 @@ import { SchemaReference } from '../../../common/models/common.model';
 import { Project } from '../../../common/models/project.model';
 import { Schema } from '../../../common/models/schema.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
+import { notNullOrUndefined } from '../../../common/util/util';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
@@ -35,14 +37,15 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
     public allSchemas$: Observable<Schema[]>;
     public projectSchemas$: Observable<SchemaReference[] | undefined>;
 
-    public filterTermSchema: string;
+    public filterTermSchema = '';
 
     public schemaAssignments$?: Observable<SchemaAssignments>;
     public schemaAssignments?: SchemaAssignments;
 
-    public currentPage = 0;
     public itemsPerPage = 10;
     public totalCount$: Observable<number | null>;
+
+    public currentPage$ = new BehaviorSubject<number>(1);
 
     private destroy$ = new Subject<void>();
 
@@ -60,7 +63,8 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
     ngOnInit() {
         // PROJECT
 
-        this.project$ = this.entities.selectProject(this.route.snapshot.parent!.paramMap.get('uuid')!);
+        // get project from route
+        this.project$ = this.route.data.map(data => data.project).filter(notNullOrUndefined);
 
         this.project$.takeUntil(this.destroy$).subscribe(project => {
             this.project = project;
@@ -75,7 +79,15 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
 
         // SCHEMAS
 
-        // get all schemas in frontend since there is not yet any filter query parameter available
+        // if filter term is already set, update input
+        this.state
+            .select(state => state.adminSchemas.filterTerm)
+            .filter(filterTerm => !!filterTerm)
+            .first()
+            .toPromise()
+            .then((filterTerm: string) => this.filterInputSchema.setValue(filterTerm));
+
+        // load all schemas in frontend since there is not yet any filter query parameter available
         this.schemaEffects.setListPagination(0, 999);
         // request all schemas
         this.schemaEffects.loadSchemas();
@@ -83,16 +95,41 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
         // filter term entered in search bar
         const filterTermSchema$ = this.state.select(state => state.adminSchemas.filterTerm);
 
-        // set schema filter on search bar input change
-        this.filterInputSchema.valueChanges.debounceTime(100).subscribe(filterTerm => {
-            setQueryParams(this.router, this.route, { q: filterTerm });
-            this.schemaEffects.setFilterTerm(filterTerm);
-        });
+        // listen to input changes and page changes
+        combineLatest(this.filterInputSchema.valueChanges, this.currentPage$)
+            .takeUntil(this.destroy$)
+            .subscribe(([filterTerm, currentPage]) => {
+                const queryParams = {};
+                if (filterTerm) {
+                    Object.assign(queryParams, { q: filterTerm });
+                    this.schemaEffects.setFilterTerm(filterTerm);
+                }
+                if (currentPage) {
+                    Object.assign(queryParams, { p: currentPage });
+                }
+                setQueryParams(this.router, this.route, { schema: JSON.stringify(queryParams) });
+            });
 
-        observeQueryParam(this.route.queryParamMap, 'q', '').subscribe(filterTerm => {
-            this.listEffects.setFilterTerm(filterTerm);
-            this.filterInputSchema.setValue(filterTerm, { emitEvent: false });
-        });
+        // Watch URL parameter:
+        // Search query and pagination data are bookmarkable.
+        observeQueryParam(this.route.queryParamMap, 'schema', '')
+            .takeUntil(this.destroy$)
+            .filter(schemaData => !!schemaData)
+            .subscribe(schemaData => {
+                // parse query and pagination information from url parameter
+                const parsedData = JSON.parse(schemaData);
+                const query = parsedData['q'] ? parsedData['q'] : null;
+                const currentPage = parsedData['p'] ? parseInt(parsedData['p'], 10) : null;
+
+                // proceed data if existing
+                if (currentPage) {
+                    this.currentPage$.next(currentPage);
+                }
+                if (query) {
+                    this.listEffects.setFilterTerm(query);
+                    this.filterInputSchema.setValue(query);
+                }
+            });
 
         // subscribe to all schemas
         this.allSchemas$ = this.entities.selectAllSchemas();
@@ -129,25 +166,25 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
 
         // all schemas filtered by search term
         this.schemas$ = combineLatest(this.allSchemas$, filterTermSchema$).map(([schemas, filterTerm]) => {
-            this.filterTermSchema = filterTerm;
+            this.filterTermSchema = filterTerm.toLocaleLowerCase();
             return schemas.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
                 return pro1.name < pro2.name ? -1 : 1;
             });
         });
 
+        // get schema total count from store
         this.totalCount$ = this.state.select(state => state.adminSchemas.pagination.totalItems);
     }
 
     // ON DESTROY
     ngOnDestroy(): void {
+        setQueryParams(this.router, this.route, {});
         this.destroy$.next();
         this.destroy$.complete();
     }
 
     onPageChange(newPage: number): void {
-        console.log('!!! onPageChange:', newPage);
-        setQueryParams(this.router, this.route, { p: newPage });
-        this.currentPage = newPage;
+        this.currentPage$.next(newPage);
     }
 
     onSchemaAssignmentChange(schema: Schema, isChecked: boolean): void {
