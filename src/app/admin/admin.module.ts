@@ -18,6 +18,7 @@ import { MicroschemaDetailComponent } from './components/microschema-detail/micr
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';
+import { ProjectDetailMicroschemasComponent } from './components/project-detail-microschemas/project-detail-microschemas.component';
 import { ProjectDetailSchemasComponent } from './components/project-detail-schemas/project-detail-schemas.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectListItemComponent } from './components/project-list-item/project-list-item.component';
@@ -62,6 +63,7 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         UserGroupSelectComponent,
         ProjectDetailComponent,
         ProjectDetailSchemasComponent,
+        ProjectDetailMicroschemasComponent,
         NameInputDialogComponent,
         GroupListComponent,
         GroupDetailComponent,

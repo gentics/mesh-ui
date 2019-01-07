@@ -73,29 +73,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     public form: FormGroup;
     public filterInputTags = new FormControl('');
-    public filterInputSchema = new FormControl('');
-    public filterInputMicroschema = new FormControl('');
     private tagFilterTerm = '';
     public readOnly = true;
     private tagsChanged = false;
 
     public filterTermTag: string;
-    public filterTermSchema: string;
-    public filterTermMicroschema: string;
-
-    public schemas$: Observable<Schema[]>;
-    public allSchemas$: Observable<Schema[]>;
-    public projectSchemas$: Observable<SchemaReference[] | undefined>;
-
-    public microschemas$: Observable<Microschema[]>;
-    public allMicroschemas$: Observable<Microschema[]>;
-    public projectMicroschemas$: Observable<MicroschemaReference[] | undefined>;
-
-    public schemaAssignments$?: Observable<SchemaAssignments>;
-    public schemaAssignments?: SchemaAssignments;
-
-    public microschemaAssignments$?: Observable<SchemaAssignments>;
-    public microschemaAssignments?: SchemaAssignments;
 
     private destroy$ = new Subject<void>();
     private preventTagFamiliesUpdate$: Subject<void>;
@@ -159,127 +141,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             });
 
         this.fetchTags();
-
-        // SCHEMAS
-
-        // request all schemas
-        this.schemaEffects.loadSchemas();
-
-        // filter term entered in search bar
-        const filterTermSchema$ = this.state.select(state => state.adminSchemas.filterTerm);
-
-        // set schema filter on search bar input change
-        this.filterInputSchema.valueChanges.debounceTime(100).subscribe(filterTerm => {
-            setQueryParams(this.router, this.route, { schema: filterTerm });
-            this.schemaEffects.setFilterTerm(filterTerm);
-        });
-
-        observeQueryParam(this.route.queryParamMap, 'schema', '').subscribe(filterTerm => {
-            this.listEffects.setFilterTerm(filterTerm);
-            this.filterInputSchema.setValue(filterTerm, { emitEvent: false });
-        });
-
-        // subscribe to all schemas
-        this.allSchemas$ = this.entities.selectAllSchemas();
-
-        // get project schemas
-        this.projectSchemas$ = this.entities.selectProject(this.project.uuid).map(project => {
-            if (!project.schemas) {
-                return [];
-            }
-            return project.schemas;
-        });
-
-        // get schema asignments
-        this.schemaAssignments$ = combineLatest(this.allSchemas$, this.projectSchemas$).map(
-            ([allSchemas, projectSchemas]) => {
-                const schemaAssignments = {};
-                allSchemas.map(schema => {
-                    const match: string | undefined = projectSchemas!
-                        .map(projSchema => projSchema.uuid)
-                        .find(projSchemaUuid => projSchemaUuid === schema.uuid);
-                    Object.assign(schemaAssignments, { [schema.uuid]: match ? true : false });
-                });
-                return schemaAssignments;
-            }
-        );
-
-        // get schema asignments for view
-        this.schemaAssignments$
-            .takeUntil(this.destroy$)
-            .filter(schema => !!schema)
-            .subscribe(schemaAssignments => {
-                this.schemaAssignments = schemaAssignments;
-            });
-
-        // all schemas filtered by search term
-        this.schemas$ = combineLatest(this.allSchemas$, filterTermSchema$).map(([schemas, filterTerm]) => {
-            this.filterTermSchema = filterTerm;
-            return schemas.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
-                return pro1.name < pro2.name ? -1 : 1;
-            });
-        });
-
-        // MICROSCHEMAS
-        // request all microschemas
-        this.schemaEffects.loadMicroschemas();
-
-        // filter term entered in search bar
-        const filterTermMicroschema$ = this.state.select(state => state.adminSchemas.filterTermMicroschema);
-
-        // set schema filter on search bar input change
-        this.filterInputMicroschema.valueChanges.debounceTime(100).subscribe(filterTerm => {
-            setQueryParams(this.router, this.route, { microschema: filterTerm });
-            this.schemaEffects.setFilterTermMicroSchema(filterTerm);
-        });
-
-        observeQueryParam(this.route.queryParamMap, 'microschema', '').subscribe(filterTerm => {
-            this.listEffects.setFilterTerm(filterTerm);
-            this.filterInputMicroschema.setValue(filterTerm, { emitEvent: false });
-        });
-
-        // subscribe to all microschemas
-        this.allMicroschemas$ = this.entities.selectAllMicroschemas();
-
-        // get project microschemas
-        this.projectMicroschemas$ = this.entities.selectProject(this.project.uuid).map(project => {
-            if (!project.microschemas) {
-                return [];
-            }
-            return project.microschemas;
-        });
-
-        // get microschema asignments
-        this.microschemaAssignments$ = combineLatest(this.allMicroschemas$, this.projectMicroschemas$).map(
-            ([allMicroschemas, projectMicroschemas]) => {
-                const microschemaAssignments = {};
-                allMicroschemas.map(schema => {
-                    const match: string | undefined = projectMicroschemas!
-                        .map(projMicroschema => projMicroschema.uuid)
-                        .find(projMicroschemaUuid => projMicroschemaUuid === schema.uuid);
-                    Object.assign(microschemaAssignments, { [schema.uuid]: match ? true : false });
-                });
-                return microschemaAssignments;
-            }
-        );
-
-        // get microschema asignments for view
-        this.microschemaAssignments$
-            .takeUntil(this.destroy$)
-            .filter(schema => !!schema)
-            .subscribe(schemaAssignments => {
-                this.microschemaAssignments = schemaAssignments;
-            });
-
-        // all microschemas filtered by search term
-        this.microschemas$ = combineLatest(this.allMicroschemas$, filterTermMicroschema$).map(
-            ([schemas, filterTerm]) => {
-                this.filterTermMicroschema = filterTerm;
-                return schemas.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
-                    return pro1.name < pro2.name ? -1 : 1;
-                });
-            }
-        );
     }
 
     // ON DESTROY
@@ -691,41 +552,5 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.tagsChanged = false;
             this.form.markAsPristine();
         });
-    }
-
-    onSchemaAssignmentChange(schema: Schema, isChecked: boolean): void {
-        // set view state
-        if (this.schemaAssignments) {
-            this.schemaAssignments[schema.uuid] = isChecked;
-        }
-
-        // request changes
-        if (isChecked) {
-            this.schemaEffects
-                .assignEntityToProject('schema', schema.uuid, this.project.name)
-                .then(() => this.listEffects.loadSchemasForProject(this.project.name));
-        } else {
-            this.schemaEffects
-                .removeEntityFromProject('schema', schema.uuid, this.project.name)
-                .then(() => this.listEffects.loadSchemasForProject(this.project.name));
-        }
-    }
-
-    onMicroschemaAssignmentChange(microschema: Microschema, isChecked: boolean): void {
-        // set view state
-        if (this.microschemaAssignments) {
-            this.microschemaAssignments[microschema.uuid] = isChecked;
-        }
-
-        // request changes
-        if (isChecked) {
-            this.schemaEffects
-                .assignEntityToProject('microschema', microschema.uuid, this.project.name)
-                .then(() => this.listEffects.loadMicroschemasForProject(this.project.name));
-        } else {
-            this.schemaEffects
-                .removeEntityFromProject('microschema', microschema.uuid, this.project.name)
-                .then(() => this.listEffects.loadMicroschemasForProject(this.project.name));
-        }
     }
 }

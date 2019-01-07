@@ -99,26 +99,7 @@
         </gtx-tab>
 
         <gtx-tab title="Microschemas">
-            <mesh-admin-list [items]="microschemas$ | async"
-                             [autoHidePagination]="true"
-                             [selectable]="false">
-
-                <div class="list-controls">
-                    <div class="filter">
-                        <gtx-input [label]="'admin.filter_by_name' | i18n"
-                                   [formControl]="filterInputMicroschema">
-                        </gtx-input>
-                    </div>
-                </div>
-
-                <ng-template let-schema="item">
-                    <gtx-checkbox *ngIf="microschemaAssignments$ | async"
-                                  [label]="schema.name"
-                                  [checked]="(microschemaAssignments$ | async)[schema.uuid]"
-                                  (change)="onMicroschemaAssignmentChange(schema, $event)">
-                    </gtx-checkbox>
-                </ng-template>
-            </mesh-admin-list>
+            <mesh-project-detail-microschemas></mesh-project-detail-microschemas>
         </gtx-tab>
 
     </gtx-tabs>
