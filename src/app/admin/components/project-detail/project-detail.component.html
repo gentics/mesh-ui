@@ -94,8 +94,10 @@
             </div>
         </gtx-tab>
 
-        <gtx-tab title="Schemas">
-            <mesh-admin-list [items]="schemas$ | async"
+        <gtx-tab title="Schemas"
+                 [routerLink]="schemasRoute">
+            <router-outlet name="detail"></router-outlet>
+            <!-- <mesh-admin-list [items]="schemas$ | async"
                              [autoHidePagination]="true"
                              [selectable]="false">
 
@@ -114,7 +116,7 @@
                                   (change)="onSchemaAssignmentChange(schema, $event)">
                     </gtx-checkbox>
                 </ng-template>
-            </mesh-admin-list>
+            </mesh-admin-list> -->
         </gtx-tab>
 
         <gtx-tab title="Microschemas">

@@ -4,17 +4,6 @@
 @include list-controls;
 @include item-row;
 
-
-.tags {
-    flex: 1;
-}
-
 .row-actions {
     flex: 0;
-}
-
-:host /deep/ gtx-tabs * {
-    &:focus {
-        outline: 0 none !important;
-    }
 }

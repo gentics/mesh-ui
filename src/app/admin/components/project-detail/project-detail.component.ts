@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
+import { PaginationInstance } from 'ngx-pagination';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -82,6 +83,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public filterTermSchema: string;
     public filterTermMicroschema: string;
 
+    public schemasRoute: any[] = [{ outlets: { detail: ['schemas'] } }];
     public schemas$: Observable<Schema[]>;
     public allSchemas$: Observable<Schema[]>;
     public projectSchemas$: Observable<SchemaReference[] | undefined>;

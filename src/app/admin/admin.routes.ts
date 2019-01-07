@@ -5,6 +5,7 @@ import { GroupDetailComponent } from './components/group-detail/group-detail.com
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
+import { ProjectDetailSchemasComponent } from './components/project-detail-schemas/project-detail-schemas.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
 import { RoleDetailComponent } from './components/role-detail/role-detail.component';
@@ -35,7 +36,19 @@ export const routes: Route[] = [
                         path: ':uuid',
                         component: ProjectDetailComponent,
                         resolve: { project: ProjectResolver },
-                        data: { breadcrumb: projectBreadcrumbFn }
+                        data: { breadcrumb: projectBreadcrumbFn },
+                        children: [
+                            {
+                                path: '',
+                                component: ProjectDetailSchemasComponent,
+                                outlet: 'detail'
+                            },
+                            {
+                                path: 'schemas',
+                                component: ProjectDetailSchemasComponent,
+                                outlet: 'detail'
+                            }
+                        ]
                     }
                 ]
             },
