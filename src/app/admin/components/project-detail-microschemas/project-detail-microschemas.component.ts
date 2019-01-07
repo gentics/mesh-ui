@@ -106,18 +106,18 @@ export class ProjectDetailMicroschemasComponent implements OnInit, OnDestroy {
                     Object.assign(queryParams, { q: filterTerm });
                     this.schemaEffects.setFilterTermMicroSchema(filterTerm);
                 }
-                setQueryParams(this.router, this.route, { microschema: JSON.stringify(queryParams) });
+                setQueryParams(this.router, this.route, { microschemas: JSON.stringify(queryParams) });
             });
 
         // Watch URL parameter:
         // Search query and pagination data are bookmarkable.
-        observeQueryParam(this.route.queryParamMap, 'microschema', JSON.stringify({ p: this.currentPage$.getValue() }))
+        observeQueryParam(this.route.queryParamMap, 'microschemas', JSON.stringify({ p: this.currentPage$.getValue() }))
             .takeUntil(this.destroy$)
             .filter(schemaData => !!schemaData)
             .subscribe(schemaData => {
                 // parse query and pagination information from url parameter
                 const parsedData = JSON.parse(schemaData);
-                const query = parsedData['q'] ? parsedData['q'] : null;
+                const query = parsedData['q'] || null;
                 const currentPage = parsedData['p'] ? parseInt(parsedData['p'], 10) : 1;
 
                 // proceed data
@@ -131,10 +131,10 @@ export class ProjectDetailMicroschemasComponent implements OnInit, OnDestroy {
 
         // get project schemas
         this.projectSchemas$ = this.entities.selectProject(this.project.uuid).map(project => {
-            if (!project.schemas) {
+            if (!project.microschemas) {
                 return [];
             }
-            return project.schemas;
+            return project.microschemas;
         });
 
         // get schema asignments
