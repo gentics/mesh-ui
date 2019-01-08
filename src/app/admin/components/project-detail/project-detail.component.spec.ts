@@ -1,3 +1,4 @@
+import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -19,7 +20,6 @@ import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock'
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
-import { PaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component';
 import { MockPaginationControlsComponent } from '../../../shared/components/pagination-controls/pagination-controls.component.mock';
 import { MockTagComponent } from '../../../shared/components/tag/tag.component.mock';
 import { MockProjectContentDirective } from '../../../shared/directives/project-content.directive.mock';
@@ -29,9 +29,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 import { AdminListItemComponent } from '../admin-list-item/admin-list-item.component';
-import { MockAdminListItemComponent } from '../admin-list-item/admin-list-item.component.mock';
 import { AdminListComponent } from '../admin-list/admin-list.component';
-import { MockAdminListComponent } from '../admin-list/admin-list.component.mock';
 
 import { ProjectDetailComponent } from './project-detail.component';
 
@@ -61,6 +59,8 @@ describe('ProjectDetailComponent', () => {
                 MockTagComponent,
                 MockProjectContentDirective,
                 MockPaginationControlsComponent,
+                MockProjectDetailSchemasComponent,
+                MockProjectDetailMicroschemasComponent,
                 PaginatePipe
             ],
             providers: [
@@ -73,7 +73,8 @@ describe('ProjectDetailComponent', () => {
                 { provide: ApplicationStateService, useClass: TestApplicationState },
                 { provide: ConfigService, useClass: MockConfigService },
                 { provide: ActivatedRoute, useClass: MockActivatedRoute }
-            ]
+            ],
+            schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
     }));
 
@@ -392,3 +393,15 @@ class MockEntitiesService {
         return state.now.entities.tagFamily[uuid];
     });
 }
+
+@Component({
+    selector: 'mesh-project-detail-schemas',
+    template: `<p>mesh-project-detail-schemas</p>`
+})
+class MockProjectDetailSchemasComponent {}
+
+@Component({
+    selector: 'mesh-project-detail-microschemas',
+    template: `<p>mesh-project-detail-microschemas</p>`
+})
+class MockProjectDetailMicroschemasComponent {}
