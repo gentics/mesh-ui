@@ -2,31 +2,25 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { PaginationInstance } from 'ngx-pagination';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
-import { MicroschemaReference, SchemaReference } from '../../../common/models/common.model';
-import { Microschema } from '../../../common/models/microschema.model';
 import { Project } from '../../../common/models/project.model';
-import { Schema } from '../../../common/models/schema.model';
 import { TagFamilyResponse, TagResponse } from '../../../common/models/server-models';
 import { TagFamily } from '../../../common/models/tag-family.model';
 import { Tag } from '../../../common/models/tag.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
-import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
-import { SchemaAssignments } from '../../../state/models/admin-schemas-state.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
-import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 import { NameInputDialogComponent } from '../name-input-dialog/name-input-dialog.component';
 
 enum TagStatus {
@@ -67,17 +61,14 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     public BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
     public TagStatus = TagStatus;
 
-    public project$: Observable<Project>;
     public project: Project;
     public tagFamilies: LocalTagFamily[] = [];
 
     public form: FormGroup;
-    public filterInputTags = new FormControl('');
+    private filterInput = new FormControl('');
     private tagFilterTerm = '';
     public readOnly = true;
     private tagsChanged = false;
-
-    public filterTermTag: string;
 
     private destroy$ = new Subject<void>();
     private preventTagFamiliesUpdate$: Subject<void>;
@@ -91,45 +82,35 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private modalService: ModalService,
         private i18n: I18nService,
         private changeDetector: ChangeDetectorRef,
-        private projectEffects: AdminProjectEffectsService,
-        private listEffects: ListEffectsService,
-        private schemaEffects: AdminSchemaEffectsService,
+        private projectEffect: AdminProjectEffectsService,
         private tagEffects: TagsEffectsService
     ) {}
 
-    // ON INIT
     ngOnInit() {
-        // PROJECT
+        const project$: Observable<Project> = this.route.data.map(data => data.project).filter(notNullOrUndefined);
 
-        this.project$ = this.route.data.map(data => data.project).filter(notNullOrUndefined);
-
-        this.project$.takeUntil(this.destroy$).subscribe(project => {
+        project$.takeUntil(this.destroy$).subscribe(project => {
             this.project = project;
             this.readOnly = !!project && !project.permissions.update;
             this.form = this.formBuilder.group({
                 name: [project ? project.name : '', Validators.required]
             });
 
-            // load related project data
             this.tagEffects.loadTagFamiliesAndTheirTags(project.name);
-            this.listEffects.loadSchemasForProject(project.name);
-            this.listEffects.loadMicroschemasForProject(project.name);
         });
 
-        // TAGS
-
-        this.filterInputTags.valueChanges
+        this.filterInput.valueChanges
             .debounceTime(100)
             .takeUntil(this.destroy$)
             .subscribe(term => {
-                setQueryParams(this.router, this.route, { tags: term });
+                setQueryParams(this.router, this.route, { q: term });
             });
 
-        observeQueryParam(this.route.queryParamMap, 'tags', '')
+        observeQueryParam(this.route.queryParamMap, 'q', '')
             .takeUntil(this.destroy$)
             .subscribe(filterTerm => {
-                this.projectEffects.setTagFilterTerm(filterTerm);
-                this.filterInputTags.setValue(filterTerm, { emitEvent: false });
+                this.projectEffect.setTagFilterTerm(filterTerm);
+                this.filterInput.setValue(filterTerm, { emitEvent: false });
             });
 
         this.state
@@ -143,7 +124,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.fetchTags();
     }
 
-    // ON DESTROY
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
@@ -538,7 +518,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         const queue: Promise<any | void>[] = [];
 
         if (this.form.dirty && this.form.valid && !this.readOnly) {
-            const projectUpdateRespose = this.projectEffects.updateProject(this.project.uuid, { name: formValue.name });
+            const projectUpdateRespose = this.projectEffect.updateProject(this.project.uuid, { name: formValue.name });
             projectUpdateRespose.then(response => {
                 queue.push(this.syncFamilies(response));
             });
