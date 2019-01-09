@@ -1,21 +1,59 @@
 <gtx-top-bar *ngIf="loggedIn$ | async">
     <div class="gtx-top-bar-left">
-        <gtx-button size="small"
-                    flat
-                    type="secondary"
-                    *ngIf="!(adminMode$ | async)"
-                    [routerLink]="['/admin']">Admin Mode</gtx-button>
-        <gtx-button size="small"
-                    flat
-                    type="secondary"
-                    *ngIf="adminMode$ | async"
-                    [routerLink]="['/editor', 'project']">Editor Mode</gtx-button>
+        <a class="logo-container"
+           href="/#/">
+            <img src="/assets/img/logo.svg"
+                 alt="vendor logo">
+            <span>Gentics
+                <span class="color-dark">Mesh</span>
+            </span>
+        </a>
     </div>
 
     <div class="gtx-top-bar-right">
-        <mesh-language-switcher></mesh-language-switcher>
-        <mesh-user-dropdown></mesh-user-dropdown>
+        <gtx-button size="regular"
+                    flat
+                    type="secondary"
+                    *ngIf="!(adminMode$ | async)"
+                    [routerLink]="['/admin']">Admin</gtx-button>
+        <gtx-button size="regular"
+                    flat
+                    type="secondary"
+                    *ngIf="adminMode$ | async"
+                    [routerLink]="['/editor', 'project']">CMS</gtx-button>
+        <gtx-side-menu-toggle>
+            <gtx-button *ngIf="!displayMenu"
+                        size="regular"
+                        type="primary"
+                        [icon]="true"
+                        (click)="displayMenu = !displayMenu">User
+                <icon right>account_circle</icon>
+            </gtx-button>
+        </gtx-side-menu-toggle>
     </div>
 </gtx-top-bar>
+
+<gtx-side-menu [opened]="displayMenu"
+               (toggle)="displayMenu = $event"
+               position="right">
+    <gtx-side-menu-toggle>
+        <gtx-button *ngIf="displayMenu"
+                    size="regular"
+                    type="primary"
+                    [icon]="true">User
+            <icon right>account_circle</icon>
+        </gtx-button>
+    </gtx-side-menu-toggle>
+
+    <div class="menu-content">
+        <ul>
+            <li>
+                <mesh-language-switcher></mesh-language-switcher>
+            </li>
+            <mesh-user-dropdown></mesh-user-dropdown>
+        </ul>
+    </div>
+</gtx-side-menu>
+
 <router-outlet></router-outlet>
 <gtx-overlay-host></gtx-overlay-host>

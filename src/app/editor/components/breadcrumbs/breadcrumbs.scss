@@ -15,6 +15,9 @@
 
     /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb {
         color: $gtx-color-primary;
+        &:last-child {
+            color: $gtx-color-primary;
+        }
     }
 
     /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {

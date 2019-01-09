@@ -1,5 +1,33 @@
+@import "variables";
+
+.container {
+    text-align: center;
+}
+.login-header {
+    display: inline-block;
+    padding-top: 4rem;
+    padding-bottom: 1rem;
+    line-height: 1;
+    font-weight: 200;
+    text-transform: uppercase;
+
+    img {
+        width: 11rem;
+        height: auto;
+        margin-bottom: 1rem;
+    }
+    .name-company {
+        font-size: 2.8rem;
+        color: $gtx-color-primary;
+    }
+    .name-app {
+        font-size: 4.1rem;
+        color: $gtx-color-dark-gray;
+    }
+}
+
 .login-form {
-    max-width: 500px;
+    max-width: 11rem;
     margin: auto;
     text-align: center;
 }

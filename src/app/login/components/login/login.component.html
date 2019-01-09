@@ -1,5 +1,20 @@
-<form class="login-form" (ngSubmit)="onSubmit()">
-    <gtx-input placeholder="username" [(ngModel)]="username" name="username"></gtx-input>
-    <gtx-input placeholder="password" type="password" [(ngModel)]="password" name="password"></gtx-input>
-    <gtx-button submit>Log In</gtx-button>
-</form>
+<div class="container">
+    <div class="login-header">
+        <img src="/assets/img/logo.svg"
+             alt="vendor logo">
+        <div class="name-company">Gentics</div>
+        <div class="name-app">Mesh</div>
+    </div>
+
+    <form class="login-form"
+          (ngSubmit)="onSubmit()">
+        <gtx-input placeholder="username"
+                   [(ngModel)]="username"
+                   name="username"></gtx-input>
+        <gtx-input placeholder="password"
+                   type="password"
+                   [(ngModel)]="password"
+                   name="password"></gtx-input>
+        <gtx-button submit>Log In</gtx-button>
+    </form>
+</div>

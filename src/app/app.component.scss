@@ -12,11 +12,69 @@ app {
 }
 
 gtx-top-bar {
+    background-color: $gtx-color-white;
+    box-shadow: $header-box-shadow;
+    margin-bottom: 1.5rem;
     padding: 5px 0;
 
+    .content {
+        width: 95%;
+        margin: auto;
+        max-width: 5000px;
+    }
+
     .gtx-top-bar-left {
+        display: flex;
         text-align: left !important;
     }
 }
 
+.logo-container {
+    display: flex;
 
+    img {
+        width: auto;
+        height: 1.7rem;
+    }
+
+    & > span {
+        display: flex;
+        align-items: center;
+        margin-left: 0.7rem;
+        text-transform: uppercase;
+    }
+
+    .color-dark {
+        margin-left: 0.2rem;
+        color: $gtx-color-very-dark-gray;
+    }
+}
+
+.menu-content {
+    display: block;
+    margin-top: 2rem;
+    text-align: left;
+
+    li {
+        display: block;
+
+        & + & {
+            margin-bottom: 1rem;
+        }
+    }
+
+    /deep/ gtx-button,
+    /deep/ gtx-button .button-event-wrapper,
+    /deep/ gtx-button .button-event-wrapper button,
+    /deep/ mesh-language-switcher,
+    /deep/ mesh-language-switcher gtx-dropdown-list,
+    /deep/ mesh-language-switcher gtx-dropdown-list div,
+    /deep/ mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger,
+    /deep/ mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button,
+    /deep/ mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button .button-event-wrapper,
+    /deep/ mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button .button-event-wrapper button
+    {
+        width: 100%;
+    }
+
+}
