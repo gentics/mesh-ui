@@ -29,8 +29,12 @@ class Range {
 class BaseTooltip extends Tooltip {
     constructor(quill: any, private api: MeshFieldControlApi, boundsContainer: any) {
         super(quill, boundsContainer);
+
+        // input for new link if not yet configured
         this.textbox = this.root.querySelector('input[type="text"]');
+        // displaying the node name in toolbox if already configured
         this.meshNode = this.root.querySelector('span.ql-mesh-node');
+
         this.listen();
     }
 
@@ -47,40 +51,61 @@ class BaseTooltip extends Tooltip {
     }
 
     cancel() {
+        // hide tooltip
         this.hide();
     }
 
+    // edit link in Quill editor
     async edit(mode = 'link', preview: string | null = null) {
+        // set link method of tooltip as HTML attribute
         this.root.setAttribute('data-mode', mode);
         if (mode === 'mesh-link') {
+            // get current node
             const node = this.api.getNodeValue() as MeshNode;
+            const nodeDisplayName = node.displayName;
+            // store displayname of linked node as HTML attribute
+            this.meshNode.setAttribute('data-displayname', nodeDisplayName);
+
+            // open node select browser modal and get UUID from node selected by user
             const [uuid] = await this.api.openNodeBrowser({
                 startNodeUuid: node.parentNode ? node.parentNode.uuid : node.uuid,
                 projectName: this.api.project(),
                 titleKey: 'editor.select_node'
             });
+            // get vertical scroll distance from editor
             const { scrollTop } = this.quill.root;
+
+            // if text is selected in the editor
             if (this.linkRange) {
+                // set selected text as anchor with node UUID href
                 this.quill.formatText(this.linkRange, 'mesh-link', uuid, Emitter.sources.USER);
+                // unselect text
                 delete this.linkRange;
             } else {
+                // scroll to editor
                 this.restoreFocus();
+                // set selected text as anchor with node UUID href
                 this.quill.format('mesh-link', uuid, Emitter.sources.USER);
             }
             this.textbox.value = '';
             this.quill.root.scrollTop = scrollTop;
-            this.meshNode.textContent = uuid;
+            // set tooltip linked node display name
+            this.meshNode.textContent = nodeDisplayName;
         } else {
             if (preview != null) {
                 this.textbox.value = preview;
             } else if (mode !== this.root.getAttribute('data-mode')) {
                 this.textbox.value = '';
             }
+
             this.textbox.select();
             this.textbox.setAttribute('placeholder', this.textbox.getAttribute(`data-${mode}`) || '');
+
             this.meshNode.textContent = '';
             this.root.classList.add('ql-editing');
         }
+
+        // make tooltip appear
         this.root.classList.remove('ql-hidden');
         this.position(this.quill.getBounds(this.quill.selection.savedRange));
     }
@@ -149,7 +174,8 @@ class MeshTooltip extends BaseTooltip {
                 if (mode === 'link') {
                     this.edit('link', this.preview.textContent);
                 } else if (mode === 'mesh-link') {
-                    this.edit('mesh-link', this.meshNode.textContent);
+                    // this.edit('mesh-link', this.meshNode.textContent);
+                    this.edit('mesh-link', this.textbox.getAttribute('data-displayname'));
                 }
             }
             event.preventDefault();
