@@ -71,8 +71,7 @@ class BaseTooltip extends Tooltip {
             .select(state => state.editor.openNode!.language)
             .filter(language => !!language)
             .first()
-            .toPromise()
-            .then(language => language);
+            .toPromise();
         // load node in state
         await this.editorEffects.loadNode(this.state.now.list.currentProject!, uuid, currentLanguage);
         // get node from state
