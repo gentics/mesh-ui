@@ -1,6 +1,9 @@
 import * as Quill from 'quill';
 
 import { MeshNode } from '../../../../common/models/node.model';
+import { EditorEffectsService } from '../../../../editor/providers/editor-effects.service';
+import { ApplicationStateService } from '../../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../../state/providers/entities.service';
 import { MeshFieldControlApi } from '../../../common/form-generator-models';
 
 import MeshLink from './mesh-link';
@@ -27,7 +30,14 @@ class Range {
 
 // Based on `quill/themes/base.js`
 class BaseTooltip extends Tooltip {
-    constructor(quill: any, private api: MeshFieldControlApi, boundsContainer: any) {
+    constructor(
+        quill: any,
+        protected api: MeshFieldControlApi,
+        protected editorEffects: EditorEffectsService,
+        protected state: ApplicationStateService,
+        protected entities: EntitiesService,
+        boundsContainer: any
+    ) {
         super(quill, boundsContainer);
 
         // input for new link if not yet configured
@@ -55,29 +65,42 @@ class BaseTooltip extends Tooltip {
         this.hide();
     }
 
+    protected async getNodeDisplayname(uuid: string) {
+        console.log('!!! this.state.now.editor.openNode:', this.state.now.editor.openNode);
+        await this.editorEffects.loadNode(
+            this.state.now.list.currentProject!,
+            uuid,
+            this.state.now.editor.openNode!.language
+        );
+        const selectedNode = this.entities.getNode(uuid, { language: this.state.now.ui.currentLanguage });
+        return selectedNode!.displayName;
+    }
+
     // edit link in Quill editor
     async edit(mode = 'link', preview: string | null = null) {
         // set link method of tooltip as HTML attribute
         this.root.setAttribute('data-mode', mode);
+
+        // if link to internal mesh node
         if (mode === 'mesh-link') {
             // get current node
             const node = this.api.getNodeValue() as MeshNode;
-            const nodeDisplayName = node.displayName;
-            // store displayname of linked node as HTML attribute
-            this.meshNode.setAttribute('data-displayname', nodeDisplayName);
-
             // open node select browser modal and get UUID from node selected by user
             const [uuid] = await this.api.openNodeBrowser({
                 startNodeUuid: node.parentNode ? node.parentNode.uuid : node.uuid,
                 projectName: this.api.project(),
                 titleKey: 'editor.select_node'
             });
+
+            // get chosen node data
+            const selectedNodeDisplayName = await this.getNodeDisplayname(uuid);
+
             // get vertical scroll distance from editor
             const { scrollTop } = this.quill.root;
 
             // if text is selected in the editor
             if (this.linkRange) {
-                // set selected text as anchor with node UUID href
+                // set selected text as anchor with href to node UUID
                 this.quill.formatText(this.linkRange, 'mesh-link', uuid, Emitter.sources.USER);
                 // unselect text
                 delete this.linkRange;
@@ -90,7 +113,9 @@ class BaseTooltip extends Tooltip {
             this.textbox.value = '';
             this.quill.root.scrollTop = scrollTop;
             // set tooltip linked node display name
-            this.meshNode.textContent = nodeDisplayName;
+            this.meshNode.textContent = selectedNodeDisplayName;
+
+            // if link to external URL
         } else {
             if (preview != null) {
                 this.textbox.value = preview;
@@ -159,8 +184,15 @@ class BaseTooltip extends Tooltip {
 
 // Heavily based on `quill/themes/snow.js`
 class MeshTooltip extends BaseTooltip {
-    constructor(quill: any, api: MeshFieldControlApi, bounds?: any) {
-        super(quill, api, bounds);
+    constructor(
+        quill: any,
+        api: MeshFieldControlApi,
+        editorEffects: EditorEffectsService,
+        state: ApplicationStateService,
+        entities: EntitiesService,
+        bounds?: any
+    ) {
+        super(quill, api, editorEffects, state, entities, bounds);
         this.preview = this.root.querySelector('a.ql-preview');
     }
 
@@ -174,8 +206,7 @@ class MeshTooltip extends BaseTooltip {
                 if (mode === 'link') {
                     this.edit('link', this.preview.textContent);
                 } else if (mode === 'mesh-link') {
-                    // this.edit('mesh-link', this.meshNode.textContent);
-                    this.edit('mesh-link', this.textbox.getAttribute('data-displayname'));
+                    this.edit('mesh-link', this.meshNode.textContent);
                 }
             }
             event.preventDefault();
@@ -190,7 +221,7 @@ class MeshTooltip extends BaseTooltip {
             event.preventDefault();
             this.hide();
         });
-        this.quill.on(Emitter.events.SELECTION_CHANGE, (range: any, oldRange: any, source: any) => {
+        this.quill.on(Emitter.events.SELECTION_CHANGE, async (range: any, oldRange: any, source: any) => {
             if (range == null) {
                 return;
             }
@@ -210,8 +241,12 @@ class MeshTooltip extends BaseTooltip {
                         this.preview.setAttribute('href', preview);
                     } else if (link instanceof MeshLink) {
                         this.root.setAttribute('data-mode', 'mesh-link');
+                        // get node uuid from link
                         const preview = MeshLink.formats(link.domNode);
-                        this.meshNode.textContent = preview;
+                        // get node data
+                        const selectedNodeDisplayName = await this.getNodeDisplayname(preview!);
+                        // set preview text to node display name
+                        this.meshNode.textContent = selectedNodeDisplayName;
                     }
                     this.show();
                     this.position(this.quill.getBounds(this.linkRange));

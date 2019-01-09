@@ -36,22 +36,26 @@ export class EditorEffectsService {
         this.loadNode(projectName, nodeUuid, language);
     }
 
-    loadNode(projectName: string, nodeUuid: string, language?: string): void {
+    async loadNode(projectName: string, nodeUuid: string, language?: string) {
         // TODO: Language should be empty for default fallback behaviour.
         // Currently the default behaviour in mesh is not desireable.
         // See https://github.com/gentics/mesh/issues/502
         const lang = language || this.config.CONTENT_LANGUAGES.join(',');
 
         this.state.actions.list.fetchNodeStart();
-        this.api.project.getNode({ project: projectName, nodeUuid, lang }).subscribe(
-            response => {
-                this.state.actions.list.fetchNodeSuccess(response);
-            },
-            error => {
-                this.state.actions.list.fetchChildrenError();
-                throw new Error('TODO: Error handling');
-            }
-        );
+        return new Promise((resolve, reject) => {
+            this.api.project.getNode({ project: projectName, nodeUuid, lang }).subscribe(
+                response => {
+                    this.state.actions.list.fetchNodeSuccess(response);
+                    resolve();
+                },
+                error => {
+                    this.state.actions.list.fetchChildrenError();
+                    reject();
+                    throw new Error('TODO: Error handling');
+                }
+            );
+        });
     }
 
     /**
