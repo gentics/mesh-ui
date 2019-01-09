@@ -11,6 +11,6 @@ describe('node admin', () => {
 
     it('shows the mode correctly', async () => {
         await admin.modeChange();
-        await expect(admin.getModeText()).toEqual('EDITOR MODE');
+        await expect(admin.getModeText()).toEqual('CMS');
     });
 });
