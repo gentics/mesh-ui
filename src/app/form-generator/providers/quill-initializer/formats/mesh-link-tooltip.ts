@@ -66,13 +66,17 @@ class BaseTooltip extends Tooltip {
     }
 
     protected async getNodeDisplayname(uuid: string) {
-        console.log('!!! this.state.now.editor.openNode:', this.state.now.editor.openNode);
-        await this.editorEffects.loadNode(
-            this.state.now.list.currentProject!,
-            uuid,
-            this.state.now.editor.openNode!.language
-        );
-        const selectedNode = this.entities.getNode(uuid, { language: this.state.now.ui.currentLanguage });
+        // get editor language
+        const currentLanguage = await this.state
+            .select(state => state.editor.openNode!.language)
+            .filter(language => !!language)
+            .first()
+            .toPromise()
+            .then(language => language);
+        // load node in state
+        await this.editorEffects.loadNode(this.state.now.list.currentProject!, uuid, currentLanguage);
+        // get node from state
+        const selectedNode = this.entities.getNode(uuid, { language: currentLanguage });
         return selectedNode!.displayName;
     }
 
