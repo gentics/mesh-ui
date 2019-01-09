@@ -17,6 +17,7 @@ import { setQueryParams } from '../../../shared/common/set-query-param';
 import { SchemaAssignments } from '../../../state/models/admin-schemas-state.model';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
@@ -56,7 +57,8 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
         private entities: EntitiesService,
         private state: ApplicationStateService,
         private listEffects: ListEffectsService,
-        private schemaEffects: AdminSchemaEffectsService
+        private schemaEffects: AdminSchemaEffectsService,
+        private projectEffect: AdminProjectEffectsService
     ) {}
 
     // ON INIT
@@ -81,11 +83,11 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
 
         // if filter term is already set, update input
         this.state
-            .select(state => state.adminSchemas.filterTerm)
+            .select(state => state.adminProjects.filterTermSchemas)
             .filter(filterTerm => !!filterTerm)
             .first()
             .toPromise()
-            .then((filterTerm: string) => this.filterInputSchema.setValue(filterTerm));
+            .then(filterTerm => this.filterInputSchema.setValue(filterTerm));
 
         // load all schemas in frontend since there is not yet any filter query parameter available
         this.schemaEffects.setListPagination(0, 999);
@@ -93,7 +95,7 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
         this.schemaEffects.loadSchemas();
 
         // filter term entered in search bar
-        const filterTermSchema$ = this.state.select(state => state.adminSchemas.filterTerm);
+        const filterTermSchema$ = this.state.select(state => state.adminProjects.filterTermSchemas);
 
         // listen to input changes and page changes
         combineLatest(this.filterInputSchema.valueChanges, this.currentPage$)
@@ -103,7 +105,7 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
                 const queryParams = { p: currentPage || 1 };
                 if (filterTerm || filterTerm === '') {
                     Object.assign(queryParams, { q: filterTerm });
-                    this.schemaEffects.setFilterTerm(filterTerm);
+                    this.projectEffect.setSchemaFilterTerm(filterTerm);
                 }
                 setQueryParams(this.router, this.route, { schemas: JSON.stringify(queryParams) });
             });
@@ -111,8 +113,8 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
         // Watch URL parameter:
         // Search query and pagination data are bookmarkable.
         observeQueryParam(this.route.queryParamMap, 'schemas', JSON.stringify({ p: this.currentPage$.getValue() }))
-            .takeUntil(this.destroy$)
             .filter(schemaData => !!schemaData)
+            .takeUntil(this.destroy$)
             .subscribe(schemaData => {
                 // parse query and pagination information from url parameter
                 const parsedData = JSON.parse(schemaData);
@@ -152,8 +154,8 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
 
         // get schema asignments for view
         this.schemaAssignments$
-            .takeUntil(this.destroy$)
             .filter(schema => !!schema)
+            .takeUntil(this.destroy$)
             .subscribe(schemaAssignments => {
                 this.schemaAssignments = schemaAssignments;
             });

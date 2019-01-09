@@ -26,7 +26,9 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
                     projectList: [],
                     projectDetail: null,
                     filterTerm: '',
-                    filterTagsTerm: ''
+                    filterTagsTerm: '',
+                    filterTermSchemas: '',
+                    filterTermMicroschema: ''
                 }
             }
         });
@@ -115,5 +117,13 @@ export class AdminProjectsStateActions extends StateActionBranch<AppState> {
 
     setFilterTerm(term: string): void {
         this.adminProjects.filterTerm = term;
+    }
+
+    setFilterTermSchema(term: string): void {
+        this.adminProjects.filterTermSchemas = term;
+    }
+
+    setFilterTermMicroschema(term: string): void {
+        this.adminProjects.filterTermMicroschema = term;
     }
 }
