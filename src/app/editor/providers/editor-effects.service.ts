@@ -379,7 +379,7 @@ export class EditorEffectsService {
      * foo => foo_de
      * foo.html => foo.de.html
      */
-    private addSuffixToString(value: string, suffix: string, delimiter: string = '_'): string {
+    private addSuffixToString(value: string, suffix: string, delimiter: string = '-'): string {
         const parts = value.split('.');
         if (1 < parts.length) {
             parts.splice(-1, 0, suffix);
