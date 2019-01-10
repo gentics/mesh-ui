@@ -1,7 +1,15 @@
+import { state } from '@angular/core/src/animation/dsl';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
+import { EditorEffectsService } from '../../../editor/providers/editor-effects.service';
+import { MockEditorEffectsService } from '../../../editor/providers/editor-effects.service.mock';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
+import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { errorHashFor, ErrorCode } from '../../common/form-errors';
 import createSpy = jasmine.createSpy;
 import { QuillInitializerService } from '../../providers/quill-initializer/quill-initializer.service';
@@ -17,7 +25,13 @@ describe('HtmlFieldComponent:', () => {
         TestBed.configureTestingModule({
             imports: [GenticsUICoreModule, FormsModule],
             declarations: [HtmlFieldComponent],
-            providers: [QuillInitializerService]
+            providers: [
+                QuillInitializerService,
+                { provide: ConfigService, useClass: MockConfigService },
+                { provide: EditorEffectsService, useClass: MockEditorEffectsService },
+                ApplicationStateService,
+                EntitiesService
+            ]
         });
         fixture = TestBed.createComponent(HtmlFieldComponent);
         instance = fixture.componentInstance;
