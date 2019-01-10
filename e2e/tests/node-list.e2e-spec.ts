@@ -101,7 +101,7 @@ describe('node list', () => {
         inTemporaryFolderWithLanguage('de', folder => {
             it('works without content in default language', async () => {
                 const node = await nodeList.getNode(folder.fields.name);
-                await browser.waitForAngular();
+                await browser.wait(async () => nodeList.getNode(folder.fields.name));
 
                 await node.openFolder();
                 await browser.waitForAngular();
