@@ -12,7 +12,13 @@ import { NavigationService } from '../../../core/providers/navigation/navigation
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 
-import { NodeReferenceFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
+import {
+    GenericMessageResponse,
+    GraphQLErrorFromServer,
+    NodeReferenceFromServer,
+    NodeResponse,
+    TagReferenceFromServer
+} from '../../../common/models/server-models';
 import { initializeNode } from '../../../common/util/initialize-node';
 import { getMeshNodeBinaryFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
 import { ApiBase } from '../../../core/providers/api/api-base.service';
@@ -267,12 +273,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                         }
                     },
                     error => {
-                        if (error.response) {
-                            const errorResponse = error.response.json();
-                            if (errorResponse.type === 'node_version_conflict') {
-                                this.handleSaveConflicts(errorResponse.properties.conflicts);
-                            }
-                        }
+                        this.handleSaveConflicts(error);
                         this.isSaving = false;
                         this.changeDetector.detectChanges();
                     }
@@ -282,10 +283,30 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         }
     }
 
-    handleSaveConflicts(conflicts: string[]): void {
+    handleSaveConflicts(errorResponse: { conflict: GraphQLErrorFromServer | null; node: NodeResponse | null }): void {
         if (!this.node) {
             throw new Error('Cannot handle save conflicts because this.node is undefined.');
         }
+        // Assure data
+        if (
+            !errorResponse.conflict ||
+            !errorResponse.conflict!.type ||
+            !errorResponse.conflict!.i18nParameters ||
+            errorResponse.conflict!.i18nParameters!.length === 0
+        ) {
+            // If response is malformed, show general error modal
+            this.modalService.dialog({
+                title: this.i18n.translate('modal.server_error'),
+                body: this.i18n.translate('editor.node_save_error'),
+                buttons: [
+                    {
+                        label: this.i18n.translate('modaL.close_button')
+                    }
+                ]
+            });
+        }
+
+        // Handle save conflicts via modal
         this.api.project
             .getNode({ project: this.node.project.name!, nodeUuid: this.node.uuid })
             .take(1)
@@ -301,7 +322,13 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             }
                         },
                         {
-                            conflicts,
+                            /**
+                                Error response seems to have changed from
+                                documentation at https://getmesh.io/docs/api/#project__nodes__nodeUuid__post .
+                                Issued additional tests for verification.
+                                Currently, only one conflicting field is contained in response at errorResponse.conflict.i18nParameters[0] .
+                            **/
+                            conflicts: [errorResponse.conflict!.i18nParameters![0]],
                             localTags: this.tagsBar ? this.tagsBar.nodeTags : [],
                             localNode: this.node,
                             remoteNode: response as MeshNode
@@ -311,6 +338,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     .then(mergedNode => {
                         this.node = mergedNode;
                         this.saveNode(true, mergedNode.tags);
+                        // reset form input values
+                        this.formGenerator!.generateForm();
                     });
             });
     }

@@ -36,22 +36,26 @@ export class EditorEffectsService {
         this.loadNode(projectName, nodeUuid, language);
     }
 
-    loadNode(projectName: string, nodeUuid: string, language?: string): void {
+    async loadNode(projectName: string, nodeUuid: string, language?: string) {
         // TODO: Language should be empty for default fallback behaviour.
         // Currently the default behaviour in mesh is not desireable.
         // See https://github.com/gentics/mesh/issues/502
         const lang = language || this.config.CONTENT_LANGUAGES.join(',');
 
         this.state.actions.list.fetchNodeStart();
-        this.api.project.getNode({ project: projectName, nodeUuid, lang }).subscribe(
-            response => {
-                this.state.actions.list.fetchNodeSuccess(response);
-            },
-            error => {
-                this.state.actions.list.fetchChildrenError();
-                throw new Error('TODO: Error handling');
-            }
-        );
+        return new Promise((resolve, reject) => {
+            this.api.project.getNode({ project: projectName, nodeUuid, lang }).subscribe(
+                response => {
+                    this.state.actions.list.fetchNodeSuccess(response);
+                    resolve();
+                },
+                error => {
+                    this.state.actions.list.fetchChildrenError();
+                    reject();
+                    throw new Error('TODO: Error handling');
+                }
+            );
+        });
     }
 
     /**
@@ -131,9 +135,15 @@ export class EditorEffectsService {
         return this.api.project
             .updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
             .toPromise()
-            .then(response => {
+            .then((response: any) => {
+                // if successful, return data
                 if (response.node) {
                     return this.processTagsAndBinaries(node, response.node, tags);
+                    // if errornous, return server response with error data
+                }
+                if (response.conflict) {
+                    return Promise.reject(response);
+                    // if response won't match any properties, throw error
                 } else {
                     throw new Error('No node was returned from the updateNode API call.');
                 }
@@ -375,7 +385,7 @@ export class EditorEffectsService {
      * foo => foo_de
      * foo.html => foo.de.html
      */
-    private addSuffixToString(value: string, suffix: string, delimiter: string = '_'): string {
+    private addSuffixToString(value: string, suffix: string, delimiter: string = '-'): string {
         const parts = value.split('.');
         if (1 < parts.length) {
             parts.splice(-1, 0, suffix);

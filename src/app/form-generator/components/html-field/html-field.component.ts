@@ -19,6 +19,10 @@ import MeshLinkToolTip from '../../providers/quill-initializer/formats/mesh-link
 import { QuillInitializerService } from '../../providers/quill-initializer/quill-initializer.service';
 import { BaseFieldComponent, FIELD_FULL_WIDTH, SMALL_SCREEN_LIMIT } from '../base-field/base-field.component';
 
+import { EditorEffectsService } from '../../../editor/providers/editor-effects.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
+import { EntitiesService } from '../../../state/providers/entities.service';
+
 interface ThemedQuill extends Quill.Quill {
     theme: {
         tooltip: any;
@@ -71,7 +75,10 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     constructor(
         changeDetector: ChangeDetectorRef,
         private elementRef: ElementRef,
-        private quillInitializer: QuillInitializerService
+        private quillInitializer: QuillInitializerService,
+        private editorEffects: EditorEffectsService,
+        private state: ApplicationStateService,
+        private entities: EntitiesService
     ) {
         super(changeDetector);
     }
@@ -92,7 +99,13 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
             }
         }) as any;
         this.editor.clipboard.dangerouslyPasteHTML(this.value as string);
-        this.editor.theme.tooltip = new MeshLinkToolTip(this.editor, this.api);
+        this.editor.theme.tooltip = new MeshLinkToolTip(
+            this.editor,
+            this.api,
+            this.editorEffects,
+            this.state,
+            this.entities
+        );
 
         this.editor.on('text-change', this.onTextChangeHandler);
         this.editor.on('selection-change', this.onSelectionChangeHandler);
