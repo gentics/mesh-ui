@@ -110,5 +110,9 @@
     "unpublish_all": {
       "en": "Unpublish all languages",
       "de": "Alle Sprachen depublizieren"
+    },
+    "server_error": {
+      "en": "An error occured during server communication. Please repeat your action or get back to the software maintainer.",
+      "de": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten. Bitte Vorgang wiederholen oder Hersteller kontaktieren."
     }
   }

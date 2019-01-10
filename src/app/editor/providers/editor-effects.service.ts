@@ -135,9 +135,15 @@ export class EditorEffectsService {
         return this.api.project
             .updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
             .toPromise()
-            .then(response => {
+            .then((response: any) => {
+                // if successful, return data
                 if (response.node) {
                     return this.processTagsAndBinaries(node, response.node, tags);
+                    // if errornous, return server response with error data
+                }
+                if (response.conflict) {
+                    return Promise.reject(response);
+                    // if response won't match any properties, throw error
                 } else {
                     throw new Error('No node was returned from the updateNode API call.');
                 }

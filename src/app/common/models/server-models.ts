@@ -4093,6 +4093,8 @@ export interface GraphQLErrorFromServer {
     readonly message: string;
     /** Type of the error. */
     readonly type: string;
+    /** translation identifiers */
+    readonly i18nParameters?: string[];
 }
 
 export interface GraphQLRequest {
