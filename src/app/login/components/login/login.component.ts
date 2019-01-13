@@ -15,6 +15,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
     password = '';
 
     /** CSS class string defining logo animation state */
+    animclasscontainer = '';
     animclasslogo = 'cube__face--front';
     animclassimg = '';
     animclassform = '';
@@ -37,8 +38,12 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this.animate();
+            this.animclasscontainer = ELogoAnimClass.FADE_IN;
         }, 0);
+
+        setTimeout(() => {
+            this.animate();
+        }, 150);
     }
 
     ngOnDestroy(): void {
@@ -55,11 +60,8 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
         setTimeout(() => {
             this.animclasslogo += ' ' + ELogoAnimClass.FADE_OUT;
-        }, 250);
-
-        setTimeout(() => {
             this.animclassimg += ' ' + ELogoAnimClass.FADE_IN;
-        }, 280);
+        }, 250);
 
         setTimeout(() => {
             this.animclassform = ELogoAnimClass.FADE_IN;

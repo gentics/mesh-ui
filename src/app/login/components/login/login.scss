@@ -7,7 +7,13 @@
 }
 
 .container {
+    opacity: 0;
     text-align: center;
+    transition: opacity 1s;
+
+    &.fade-in {
+        opacity: 1;
+    }
 }
 .login-header {
     display: inline-block;
