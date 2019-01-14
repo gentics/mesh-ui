@@ -1,0 +1,9 @@
+@import "variables";
+@import "../admin-list/admin-list.component.common-styles.scss";
+@include gtx-dropdown-item;
+@include list-controls;
+@include item-row;
+
+.row-actions {
+    flex: 0;
+}

@@ -103,9 +103,30 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount++;
     }
 
-    fetchMicroschemasSuccess(microschemas: MicroschemaResponse[]) {
+    fetchMicroschemasSuccess(projectName: string, microschemas: MicroschemaResponse[]) {
+        const projectUuid = Object.keys(this.entities.project).filter(
+            uuid => this.entities.project[uuid].name === projectName
+        )[0];
+
         this.list.loadCount--;
+
+        // save in entity root
         this.entities = mergeEntityState(this.entities, {
+            microschema: microschemas as Microschema[]
+        });
+
+        // save in projects property
+        this.entities = mergeEntityState(this.entities, {
+            project: [
+                {
+                    uuid: projectUuid,
+                    microschemas: microschemas.map(microschema => ({
+                        name: microschema.name,
+                        uuid: microschema.uuid,
+                        version: microschema.version
+                    }))
+                }
+            ],
             microschema: microschemas as Microschema[]
         });
     }

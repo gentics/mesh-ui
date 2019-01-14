@@ -4,6 +4,10 @@ export interface ProjectAssignments {
     [projectUuid: string]: boolean;
 }
 
+export interface SchemaAssignments {
+    [projectUuid: string]: boolean;
+}
+
 export interface AdminSchemasState {
     loadCount: number;
     /** Assignment of the currently open (micro-)schema to projects. */

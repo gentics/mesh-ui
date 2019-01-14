@@ -104,4 +104,12 @@ export class AdminProjectEffectsService {
     setTagFilterTerm(term: string): void {
         this.state.actions.adminProjects.setTagFilterTerm(term);
     }
+
+    setSchemaFilterTerm(term: string): void {
+        this.state.actions.adminProjects.setFilterTermSchema(term);
+    }
+
+    setMicroschemaFilterTerm(term: string): void {
+        this.state.actions.adminProjects.setFilterTermMicroschema(term);
+    }
 }

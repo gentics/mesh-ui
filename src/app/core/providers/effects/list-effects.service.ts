@@ -62,7 +62,7 @@ export class ListEffectsService {
         this.api.project
             .getProjectMicroschemas({ project })
             .subscribe(
-                ({ data }) => this.state.actions.list.fetchMicroschemasSuccess(data),
+                ({ data }) => this.state.actions.list.fetchMicroschemasSuccess(project, data),
                 error => this.state.actions.list.fetchMicroschemasError() /* TODO: error handling */
             );
     }

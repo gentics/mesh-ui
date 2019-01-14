@@ -1,0 +1,24 @@
+<mesh-admin-list [items]="schemas$ | async"
+                 [itemsPerPage]="itemsPerPage"
+                 [currentPage]="currentPage$ | async"
+                 [totalItems]="totalCount$ | async"
+                 [autoHidePagination]="false"
+                 [selectable]="false"
+                 (pageChange)="onPageChange($event)">
+
+    <div class="list-controls">
+        <div class="filter">
+            <gtx-input [label]="'admin.filter_by_name' | i18n"
+                       [formControl]="filterInputSchema">
+            </gtx-input>
+        </div>
+    </div>
+
+    <ng-template let-schema="item">
+        <gtx-checkbox *ngIf="schemaAssignments$ | async"
+                      [label]="schema.name"
+                      [checked]="(schemaAssignments$ | async)[schema.uuid]"
+                      (change)="onSchemaAssignmentChange(schema, $event)">
+        </gtx-checkbox>
+    </ng-template>
+</mesh-admin-list>

@@ -1,86 +1,106 @@
 <div>
-    <form [formGroup]="form">
-        <div class="row">
-            <div class="small-12 medium-12 columns">
-                <gtx-input formControlName="name"
-                           [readonly]="readOnly"
-                           [label]="'admin.project_label' | i18n">
-                </gtx-input>
-            </div>
-        </div>
-    </form>
-    <mesh-admin-list *ngIf="tagFamilies"
-                     [items]="getFilteredFamilies()"
-                     [autoHidePagination]=true
-                     [selectable]=false>
+    <gtx-tabs>
+        <gtx-tab title="Project">
+            <form [formGroup]="form">
+                <div class="row">
+                    <div class="small-12 medium-12 columns">
+                        <gtx-input formControlName="name"
+                                   [readonly]="readOnly"
+                                   [label]="'admin.project_label' | i18n">
+                        </gtx-input>
+                    </div>
+                </div>
+            </form>
+            <mesh-admin-list *ngIf="tagFamilies"
+                             [items]="getFilteredFamilies()"
+                             [autoHidePagination]=true
+                             [selectable]=false>
 
-        <div class="list-controls-title">{{ 'admin.project_tags' | i18n }}</div>
-        <div class="list-controls">
-            <div class="filter">
-                <gtx-input [label]="'admin.filter_by_name' | i18n"
-                            [formControl]="filterInput"></gtx-input>
-            </div>
-            <gtx-button size="regular" (click)="createTagFamilyClick()">
-                <icon left>label_outline</icon>
-                <span class="new-item-label">{{ 'admin.create_tag_family' | i18n }}</span>
-            </gtx-button>
-        </div>
-
-        <ng-template let-family="item">
-            <div class="item-row">
-                <a (click)="updateTagFamilyClick(family)" [routerLink]="null">
-                    <div class="name"><a href="">{{ family.data.name }}</a></div>
-                </a>
-
-                <div class="tags">
-                    <ng-container *ngFor="let tag of getFilteredTags(family.tags)">
-                        <mesh-tag *ngIf="tag.status !== TagStatus.DELETED"
-                                  [tag]="tag.data"
-                                  [filterTerm]="tagFilterTerm"
-                                  [editable]="true"
-                                  (removeClick)="deleteTagClick(tag, family)"
-                                  (editClick)="updateTagClick(tag, family)">
-                        </mesh-tag>
-                    </ng-container>
-                    <gtx-button type="primary"
-                                flat
-                                size="small"
-                                class="add-tag-button"
-                                (click)="addTagClick(family)">
-                        <icon left>label_outline</icon>{{ 'editor.add_tag' | i18n }}
+                <div class="list-controls-title">{{ 'admin.project_tags' | i18n }}</div>
+                <div class="list-controls">
+                    <div class="filter">
+                        <gtx-input [label]="'admin.filter_by_name' | i18n"
+                                   [formControl]="filterInput"></gtx-input>
+                    </div>
+                    <gtx-button size="regular"
+                                (click)="createTagFamilyClick()">
+                        <icon left>label_outline</icon>
+                        <span class="new-item-label">{{ 'admin.create_tag_family' | i18n }}</span>
                     </gtx-button>
                 </div>
-                <div class="row-actions">
-                    <gtx-dropdown-list>
-                        <gtx-dropdown-trigger>
-                            <gtx-button icon type="secondary"><icon>more_vert</icon></gtx-button>
-                        </gtx-dropdown-trigger>
-                        <gtx-dropdown-content>
-                            <gtx-dropdown-item [class.disabled]="!family.data.permissions.update"
-                                               (click)="updateTagFamilyClick(family)">
-                                <icon>edit</icon> {{ 'admin.edit_tag_family' | i18n }}
-                            </gtx-dropdown-item>
 
-                            <gtx-dropdown-item class="alert"
-                                               [class.disabled]="!family.data.permissions.delete"
-                                               (click)="deleteTagFamilyClick(family)">
-                                <icon>delete</icon> {{ 'admin.delete_tag_family' | i18n }}
-                            </gtx-dropdown-item>
-                        </gtx-dropdown-content>
-                    </gtx-dropdown-list>
-                </div>
+                <ng-template let-family="item">
+                    <div class="item-row">
+                        <a (click)="updateTagFamilyClick(family)"
+                           [routerLink]="null">
+                            <div class="name">
+                                <a href="">{{ family.data.name }}</a>
+                            </div>
+                        </a>
+
+                        <div class="tags">
+                            <ng-container *ngFor="let tag of getFilteredTags(family.tags)">
+                                <mesh-tag *ngIf="tag.status !== TagStatus.DELETED"
+                                          [tag]="tag.data"
+                                          [filterTerm]="tagFilterTerm"
+                                          [editable]="true"
+                                          (removeClick)="deleteTagClick(tag, family)"
+                                          (editClick)="updateTagClick(tag, family)">
+                                </mesh-tag>
+                            </ng-container>
+                            <gtx-button type="primary"
+                                        flat
+                                        size="small"
+                                        class="add-tag-button"
+                                        (click)="addTagClick(family)">
+                                <icon left>label_outline</icon>{{ 'editor.add_tag' | i18n }}
+                            </gtx-button>
+                        </div>
+                        <div class="row-actions">
+                            <gtx-dropdown-list>
+                                <gtx-dropdown-trigger>
+                                    <gtx-button icon
+                                                type="secondary">
+                                        <icon>more_vert</icon>
+                                    </gtx-button>
+                                </gtx-dropdown-trigger>
+                                <gtx-dropdown-content>
+                                    <gtx-dropdown-item [class.disabled]="!family.data.permissions.update"
+                                                       (click)="updateTagFamilyClick(family)">
+                                        <icon>edit</icon> {{ 'admin.edit_tag_family' | i18n }}
+                                    </gtx-dropdown-item>
+
+                                    <gtx-dropdown-item class="alert"
+                                                       [class.disabled]="!family.data.permissions.delete"
+                                                       (click)="deleteTagFamilyClick(family)">
+                                        <icon>delete</icon> {{ 'admin.delete_tag_family' | i18n }}
+                                    </gtx-dropdown-item>
+                                </gtx-dropdown-content>
+                            </gtx-dropdown-list>
+                        </div>
+                    </div>
+                </ng-template>
+            </mesh-admin-list>
+
+            <div class="actions"
+                 *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
+                <gtx-button type="primary"
+                            size="small"
+                            class="save-button"
+                            [disabled]="!isSaveButtonEnabled()"
+                            (click)="persistProject()">
+                    <ng-container>{{ 'admin.update_project' | i18n }}</ng-container>
+                </gtx-button>
             </div>
-        </ng-template>
-    </mesh-admin-list>
-</div>
+        </gtx-tab>
 
-<div class="actions" *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
-    <gtx-button type="primary"
-                size="small"
-                class="save-button"
-                [disabled]="!isSaveButtonEnabled()"
-                (click)="persistProject()">
-        <ng-container>{{ 'admin.update_project' | i18n }}</ng-container>
-    </gtx-button>
-</div>
+        <gtx-tab title="Schemas">
+            <mesh-project-detail-schemas></mesh-project-detail-schemas>
+        </gtx-tab>
 
+        <gtx-tab title="Microschemas">
+            <mesh-project-detail-microschemas></mesh-project-detail-microschemas>
+        </gtx-tab>
+
+    </gtx-tabs>
+</div>

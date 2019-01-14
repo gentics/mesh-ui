@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { reject } from 'bluebird';
 import { Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 
@@ -251,7 +252,7 @@ export class AdminSchemaEffectsService {
             });
     }
 
-    assignEntityToProject(type: 'schema' | 'microschema', entityUuid: string, projectName: string): void {
+    async assignEntityToProject(type: 'schema' | 'microschema', entityUuid: string, projectName: string) {
         let apiFunction: () => Observable<any>;
         if (type === 'schema') {
             apiFunction = () =>
@@ -275,17 +276,21 @@ export class AdminSchemaEffectsService {
         }
 
         this.state.actions.adminSchemas.assignEntityToProjectStart();
-        apiFunction().subscribe(
-            () => {
-                this.state.actions.adminSchemas.assignEntityToProjectSuccess();
-            },
-            error => {
-                this.state.actions.adminSchemas.assignEntityToProjectError();
-            }
-        );
+        return new Promise((resolve, reject) => {
+            apiFunction().subscribe(
+                () => {
+                    this.state.actions.adminSchemas.assignEntityToProjectSuccess();
+                    resolve();
+                },
+                error => {
+                    this.state.actions.adminSchemas.assignEntityToProjectError();
+                    reject();
+                }
+            );
+        });
     }
 
-    removeEntityFromProject(type: 'schema' | 'microschema', entityUuid: string, projectName: string): void {
+    async removeEntityFromProject(type: 'schema' | 'microschema', entityUuid: string, projectName: string) {
         let apiFunction: () => Observable<any>;
         if (type === 'schema') {
             apiFunction = () =>
@@ -306,14 +311,18 @@ export class AdminSchemaEffectsService {
         }
 
         this.state.actions.adminSchemas.removeEntityFromProjectStart();
-        apiFunction().subscribe(
-            () => {
-                this.state.actions.adminSchemas.removeEntityFromProjectSuccess();
-            },
-            error => {
-                this.state.actions.adminSchemas.removeEntityFromProjectError();
-            }
-        );
+        return new Promise((resolve, reject) => {
+            apiFunction().subscribe(
+                () => {
+                    this.state.actions.adminSchemas.removeEntityFromProjectSuccess();
+                    resolve();
+                },
+                error => {
+                    this.state.actions.adminSchemas.removeEntityFromProjectError();
+                    reject();
+                }
+            );
+        });
     }
 }
 
