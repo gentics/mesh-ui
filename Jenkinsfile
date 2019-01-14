@@ -24,7 +24,7 @@ node('jenkins-slave') {
 		stage("Install dependencies") {
 			sh "npm install"
 			echo "Preparing basepath"
-			sh $/sed -i 's/href="\(.*\)\"/href=\"\/ui\"/' src/index.html/$
+			sh '''sed -i 's/href="\\(.*\\)\\"/href=\\"\\/ui\\"/' src/index.html'''
 		}
 
 		stage("Set version") {
