@@ -72,3 +72,8 @@ mesh-ui.code-workspace
 *.css.shim.ts
 *.ngsummary.json
 *.shim.ngstyle.ts
+
+# Eclipse IDE
+.settings
+.classpath
+.project
