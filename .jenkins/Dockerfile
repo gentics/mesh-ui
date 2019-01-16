@@ -14,5 +14,5 @@ RUN id ${USER_NAME}
 
 USER ${USER_NAME}
 
-RUN mkdir -p ~/.m2 && mkdir -p ~/workspace
-RUN ln -s ~/credentials/maven/settings.xml ~/.m2/settings.xml
+RUN mkdir -p /ci/.m2 && mkdir -p /ci/workspace
+RUN ln -s /ci/credentials/maven/settings.xml /ci/.m2/settings.xml
