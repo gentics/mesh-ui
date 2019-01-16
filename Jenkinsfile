@@ -31,16 +31,12 @@ node("docker") {
 			containerTemplate(alwaysPullImage: true,
 				command: 'cat',
 				image: dockerImageName,
-				name: 'mesh-ui',
+				name: 'nodejs',
 				privileged: false,
 				ttyEnabled: true,
 				resourceRequestCpu: '1000m',
-				resourceRequestMemory: '1048Mi',
-				workingDir: '/ci')
-				],
-
-				inheritFrom: '',
-				instanceCap: 10,
+				resourceRequestMemory: '1048Mi'
+				)],
 				label: 'mesh-ui',
 				name: 'jenkins-slave-mesh-ui',
 				namespace: 'default', 
@@ -61,17 +57,19 @@ node("docker") {
 							}
 
 							stage("Install dependencies") {
-								sh "npm install --global yarn"
-								sh "/opt/node/bin/yarn"
-								echo "Preparing basepath"
-								sh '''sed -i 's/href="\\(.*\\)\\"/href=\\"\\/ui\\"/' src/index.html'''
+								container('nodejs') {
+									sh "/usr/local/bin/npm install --global yarn"
+									sh "/usr/local/bin/yarn"
+									echo "Preparing basepath"
+									sh '''sed -i 's/href="\\(.*\\)\\"/href=\\"\\/ui\\"/' src/index.html'''
+								}
 							}
 
 							stage("Set version") {
 								if (params.release) {
 									def buildVars = readJSON file: 'package.json'
 									version = buildVars.version
-									sh "mvn versions:set -DgenerateBackupPoms=false -DnewVersion=" + version
+									sh "mvnw versions:set -DgenerateBackupPoms=false -DnewVersion=" + version
 								} else {
 									echo "Not setting version"
 								}
