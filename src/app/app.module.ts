@@ -3,14 +3,13 @@ import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PreloadAllModules, Router, RouterModule } from '@angular/router';
-import { Routes } from '@angular/router';
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
 
 import '../styles/main.scss';
 
 import { AppComponent } from './app.component';
+import { ROUTER_CONFIG } from './app.routes';
 import { CoreModule } from './core/core.module';
-import { AuthGuard } from './core/providers/guards/auth-guard';
 import { I18nService } from './core/providers/i18n/i18n.service';
 import { SearchEffectsService } from './core/providers/search/search-effects.service';
 import { AuthEffectsService } from './login/providers/auth-effects.service';
@@ -18,18 +17,6 @@ import { SharedModule } from './shared/shared.module';
 import { AppState } from './state/models/app-state.model';
 import { ApplicationStateService } from './state/providers/application-state.service';
 import { StateModule } from './state/state.module';
-
-export const ROUTER_CONFIG: Routes = [
-    { path: '', redirectTo: '/login', pathMatch: 'full' },
-    { path: 'login', loadChildren: './login/login.module#LoginModule' },
-    {
-        path: '',
-        children: [
-            { path: 'editor', canActivate: [AuthGuard], loadChildren: './editor/editor.module#EditorModule' },
-            { path: 'admin', canActivate: [AuthGuard], loadChildren: './admin/admin.module#AdminModule' }
-        ]
-    }
-];
 
 // Data type for saving and restoring application state with hot module reloading
 interface HmrStore {
