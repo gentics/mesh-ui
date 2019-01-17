@@ -10,8 +10,12 @@ RUN apk add --update \
 # The ID / GID 10000 is used by the jenkinsci/slave Dockerfile and has to match here, because Jenkins
 # does the SCM checkout in the jnlp container for some reasons.
 RUN adduser -D -u 10000 -h /ci ${USER_NAME}
-RUN id ${USER_NAME}
+
+# Setup Git
+ADD ./files/.gitconfig /ci/.gitconfig
+RUN chown ${USER_NAME}: /ci/.gitconfig
 RUN chown ${USER_NAME}: /usr/local -R
+
 USER ${USER_NAME}
 
 RUN mkdir -p /ci/.m2 && mkdir -p /ci/workspace
