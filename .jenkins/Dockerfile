@@ -3,7 +3,7 @@ FROM node:9-alpine
 ARG USER_NAME="jenkins"
 
 RUN apk add --update \
-    sed \
+    sed openjdk8 git \
   && rm -rf /var/cache/apk/*
 
 # Add user

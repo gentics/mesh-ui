@@ -31,7 +31,7 @@ node("docker") {
 			containerTemplate(alwaysPullImage: true,
 				command: 'cat',
 				image: dockerImageName,
-				name: 'nodejs',
+				name: 'buildenv',
 				privileged: false,
 				ttyEnabled: true,
 				resourceRequestCpu: '1000m',
@@ -57,7 +57,7 @@ node("docker") {
 							}
 
 							stage("Install dependencies") {
-								container('nodejs') {
+								container('buildenv') {
 									sh "/usr/local/bin/npm install --global yarn"
 									sh "/usr/local/bin/yarn"
 									echo "Preparing basepath"
@@ -69,29 +69,29 @@ node("docker") {
 								if (params.release) {
 									def buildVars = readJSON file: 'package.json'
 									version = buildVars.version
-									sh "./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion=" + version
+									sh "./mvnw -B versions:set -DgenerateBackupPoms=false -DnewVersion=" + version
 								} else {
 									echo "Not setting version"
 								}
 							}
 
 							stage("Build") {
-							    container('nodejs') {
-			    					//try {
-		    							sh "until /usr/local/bin/yarn build ; do echo retry.. ; sleep 1 ; done"
-	    							//} finally {
-    								//step([$class: 'JUnitResultArchiver', testResults: 'dist/junit.xml'])
-								    //}
+							    container('buildenv') {
+	    							sh "until /usr/local/bin/yarn build ; do echo retry.. ; sleep 1 ; done"
 							    }
 							}
 
 							stage("Deploy") {
 								if (params.release) {
-									GitHelper.addCommit('.', gitCommitTag + ' Release version ' + version)
-									GitHelper.addTag(version, 'Release version ' + version)
-									sh "./mvnw deploy"
-									GitHelper.pushTag(version)
-									GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
+									container('buildenv') {
+										withEnv(["EMAIL=entwicklung@gentics.com", "GIT_COMMITTER_NAME=JenkinsCI"]) {
+											GitHelper.addCommit('.', gitCommitTag + ' Release version ' + version)
+											GitHelper.addTag(version, 'Release version ' + version)
+											sh "./mvnw -B deploy"
+											GitHelper.pushTag(version)
+											GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
+										}
+									}
 								}
 							}
 						}
