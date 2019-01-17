@@ -11,9 +11,13 @@ RUN apk add --update \
 # does the SCM checkout in the jnlp container for some reasons.
 RUN adduser -D -u 10000 -h /ci ${USER_NAME}
 
-# Setup Git
+# Setup Git / SSH
 ADD ./files/.gitconfig /ci/.gitconfig
-RUN chown ${USER_NAME}: /ci/.gitconfig
+ADD ./files/config /ci/.ssh/config
+RUN ssh-keyscan github.com >> /ci/.ssh/known_hosts
+RUN ssh-keyscan git.gentics.com >> /ci/.ssh/known_hosts
+
+RUN chown ${USER_NAME}: /ci -R
 RUN chown ${USER_NAME}: /usr/local -R
 
 USER ${USER_NAME}
