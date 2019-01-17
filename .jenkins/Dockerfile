@@ -11,7 +11,7 @@ RUN apk add --update \
 # does the SCM checkout in the jnlp container for some reasons.
 RUN adduser -D -u 10000 -h /ci ${USER_NAME}
 RUN id ${USER_NAME}
-
+RUN chown ${USER_NAME}: /usr/local/lib/node_modules -R
 USER ${USER_NAME}
 
 RUN mkdir -p /ci/.m2 && mkdir -p /ci/workspace
