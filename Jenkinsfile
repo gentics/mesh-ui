@@ -69,7 +69,7 @@ node("docker") {
 								if (params.release) {
 									def buildVars = readJSON file: 'package.json'
 									version = buildVars.version
-									sh "mvnw versions:set -DgenerateBackupPoms=false -DnewVersion=" + version
+									sh "./mvnw versions:set -DgenerateBackupPoms=false -DnewVersion=" + version
 								} else {
 									echo "Not setting version"
 								}
@@ -89,7 +89,7 @@ node("docker") {
 								if (params.release) {
 									GitHelper.addCommit('.', gitCommitTag + ' Release version ' + version)
 									GitHelper.addTag(version, 'Release version ' + version)
-									sh "mvnw deploy"
+									sh "./mvnw deploy"
 									GitHelper.pushTag(version)
 									GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
 								}
