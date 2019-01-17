@@ -84,7 +84,7 @@ node("docker") {
 							stage("Deploy") {
 								if (params.release) {
 									container('buildenv') {
-										withEnv(["EMAIL=entwicklung@gentics.com", "GIT_COMMITTER_NAME=JenkinsCI"]) {
+										withEnv(["EMAIL=entwicklung@gentics.com", "GIT_AUTHOR_NAME=JenkinsCI", "GIT_COMMITTER_NAME=JenkinsCI"]) {
 											GitHelper.addCommit('.', gitCommitTag + ' Release version ' + version)
 											GitHelper.addTag(version, 'Release version ' + version)
 											sh "./mvnw -B deploy"
