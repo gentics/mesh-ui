@@ -76,18 +76,20 @@ node("docker") {
 							}
 
 							stage("Build") {
-								try {
-									sh "npm run build"
-								} finally {
-									step([$class: 'JUnitResultArchiver', testResults: 'dist/junit.xml'])
-								}
+							    container('nodejs') {
+			    					//try {
+		    							sh "until /usr/local/bin/yarn build ; do echo retry.. ; sleep 1 ; done"
+	    							//} finally {
+    								//step([$class: 'JUnitResultArchiver', testResults: 'dist/junit.xml'])
+								    //}
+							    }
 							}
 
 							stage("Deploy") {
 								if (params.release) {
 									GitHelper.addCommit('.', gitCommitTag + ' Release version ' + version)
 									GitHelper.addTag(version, 'Release version ' + version)
-									sh "mvn deploy"
+									sh "mvnw deploy"
 									GitHelper.pushTag(version)
 									GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
 								}
