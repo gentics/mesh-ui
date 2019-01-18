@@ -35,7 +35,7 @@ window.MeshUiConfig = {
              * @param path Webroot path of the node. The path property will only be provided if the
              * resolveLinks query parameter has been set.
              */
-            urlResolver: function (nodeUuid, path) { return 'http://localhost:3000/category/' + nodeUuid; }
+            urlResolver: function (nodeUuid, path) { return 'http://localhost:3000/product/' + nodeUuid; }
         }
     ]
 };
