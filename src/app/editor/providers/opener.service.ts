@@ -1,5 +1,18 @@
 import { Injectable } from '@angular/core';
 
+/**
+ * Open URLs in new browser tabs and reload them.
+ * @example
+ * ```typescript
+ * constructor(
+ *     private opener: OpenerService
+ * ) {}
+ *
+ * this.opener.open('https://gentics.com/');
+ *
+ * this.opener.reload();
+ * ```
+ */
 @Injectable()
 export class OpenerService {
     /** open tab data */
