@@ -62,7 +62,7 @@ node("docker") {
 								sh "/usr/local/bin/npm install --global yarn"
 								sh "/usr/local/bin/yarn"
 								echo "Preparing basepath"
-								sh '''sed -i 's/href="\\(.*\\)\\"/href=\\"\\/ui\\"/' src/index.html'''
+								sh '''sed -i 's/href="\\(.*\\)\\"/href=\\"\\/ui\\/\\"/' src/index.html'''
 							}
 						}
 
