@@ -32,6 +32,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
+import { OpenerService } from '../../providers/opener.service';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
 import { VersionLabelComponent } from '../version-label/version-label.component';
 
@@ -68,7 +69,8 @@ describe('NodeEditorComponent', () => {
                 { provide: I18nService, useClass: MockI18nService },
                 { provide: ConfigService, useClass: MockConfigService },
                 { provide: ApiBase, useClass: MockApiBase },
-                { provide: ApiService, useClass: MockApiService }
+                { provide: ApiService, useClass: MockApiService },
+                OpenerService
             ],
             imports: [RouterTestingModule.withRoutes([]), GenticsUICoreModule.forRoot(), FormsModule]
         });

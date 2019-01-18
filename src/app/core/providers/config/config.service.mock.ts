@@ -11,14 +11,14 @@ export class MockConfigService implements ConfigService {
     readonly PREVIEW_URLS = [
         {
             label: 'previewUrlLabelTest-01',
-            urlResolver: ((nodeUuid = '' as string, path = undefined as string | undefined) => {
-                return 'http://test-01.tld/segment/' + nodeUuid;
+            urlResolver: (node => {
+                return 'http://test-01.tld/segment/' + node.uuid + '?preview=true';
             }) as MeshPreviewUrlResolver
         },
         {
             label: 'previewUrlLabelTest-02',
-            urlResolver: ((nodeUuid = '' as string, path = undefined as string | undefined) => {
-                return 'http://test-02.tld/segment/' + nodeUuid;
+            urlResolver: (node => {
+                return 'http://test-02.tld/segment/' + node.uuid + '?preview=true';
             }) as MeshPreviewUrlResolver
         }
     ];
