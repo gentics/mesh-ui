@@ -20,7 +20,7 @@ window.MeshUiConfig = {
      * previewUrls: [
      *    {
      *        label: 'Gentics Mesh Angular Demo',
-     *        urlResolver: function (nodeUuid, path) { return 'http://test.myapp/category/' + nodeUuid; }
+     *        urlResolver: function (node) { return 'http://test.myapp/category/' + node.uuid + '?preview=true'; }
      *    }
      * ]
      * ```
@@ -31,11 +31,9 @@ window.MeshUiConfig = {
             label: 'Gentics Mesh Angular Demo',
             /**
              * Function to be called in frontend to get url
-             * @param nodeUuid unique identifier of a Mesh node
-             * @param path Webroot path of the node. The path property will only be provided if the
-             * resolveLinks query parameter has been set.
+             * @param nodeUuid unique Mesh node
              */
-            urlResolver: function (nodeUuid, path) { return 'http://localhost:3000/product/' + nodeUuid; }
+            urlResolver: function (node) { return 'http://localhost:3000/product/' + node.uuid + '?preview=true'; }
         }
     ]
 };

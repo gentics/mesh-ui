@@ -1,3 +1,5 @@
+import { MeshNode } from './node.model';
+
 /**
  * Interface for Mesh UI app configuration
  */
@@ -22,7 +24,7 @@ export interface MeshUiAppConfig {
      * previewUrls: [
      *    {
      *        label: 'Gentics Mesh Angular Demo',
-     *        urlResolver: function (nodeUuid, path) { return 'http://test.myapp/category/' + nodeUuid; }
+     *        urlResolver: function (node) { return 'http://test.myapp/category/' + node.uuid + '?preview=true'; }
      *    }
      * ]
      * ```
@@ -43,4 +45,4 @@ export interface MeshPreviewUrl {
  * @param path Webroot path of the node. The path property will only be provided if the
  * resolveLinks query parameter has been set.
  */
-export type MeshPreviewUrlResolver = (nodeUuid: string, path?: string | undefined) => string;
+export type MeshPreviewUrlResolver = (node: MeshNode) => string;

@@ -20,6 +20,7 @@ import { FormGeneratorComponent } from '../../../form-generator/components/form-
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { EditorEffectsService } from '../../providers/editor-effects.service';
+import { OpenerService } from '../../providers/opener.service';
 import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
 import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
@@ -60,7 +61,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private i18n: I18nService,
         private modalService: ModalService,
         private api: ApiService,
-        private config: ConfigService
+        private config: ConfigService,
+        private opener: OpenerService
     ) {}
 
     ngOnInit(): void {
@@ -260,6 +262,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 saveFn = this.editorEffects.saveNode(this.node, tags).then(
                     node => {
                         this.isSaving = false;
+                        // reload preview tab
+                        this.opener.reload();
                         if (node && node.project.name && node.language) {
                             formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
@@ -353,12 +357,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         if (!this.node) {
             throw new Error('No node for preview defined!');
         }
-        const nodeUuid = this.node!.uuid;
-        const nodePath = this.node!.path || undefined;
-        const urlParams = '?preview=true';
-        const url = urlResolver(nodeUuid, nodePath);
+        const url = urlResolver(this.node);
         // open new tab
-        window.open(url + urlParams);
+        this.opener.open(url);
     }
 
     // This function is used as an input for a component.
