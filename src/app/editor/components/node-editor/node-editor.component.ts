@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ConfigService } from '@mesh-config/config.service';
 import { ModalService } from 'gentics-ui-core/dist/components/modal/modal.service';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -13,6 +12,7 @@ import { initializeNode } from '../../../common/util/initialize-node';
 import * as NodeUtil from '../../../common/util/node-util';
 import { getMeshNodeBinaryFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
+import { ConfigService } from '../../../core/providers/config/config.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';

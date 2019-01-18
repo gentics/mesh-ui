@@ -9,6 +9,8 @@ import { MockModalService } from '../../../../testing/modal.service.mock';
 import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
 import { Group } from '../../../common/models/group.model';
 import { User } from '../../../common/models/user.model';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
@@ -54,6 +56,7 @@ describe('UserListComponent', () => {
                 HighlightPipe
             ],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: AdminUserEffectsService, useClass: MockAdminUserEffectsService },
                 { provide: I18nService, useClass: MockI18nService },
                 { provide: ModalService, useClass: MockModalService },

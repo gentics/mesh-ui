@@ -9,6 +9,9 @@ import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
+import { CoreModule } from '../../core.module';
+import { ConfigService } from '../../providers/config/config.service';
+import { MockConfigService } from '../../providers/config/config.service.mock';
 import { I18nService } from '../../providers/i18n/i18n.service';
 
 import { ChangePasswordModalComponent } from './change-password-modal.component';
@@ -26,6 +29,7 @@ describe('ChangePasswordModal', () => {
         configureComponentTest({
             imports: [ReactiveFormsModule, SharedModule, TestStateModule],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: AuthEffectsService, useValue: authEffectSpy },
                 { provide: Notification, useValue: notificationSpy },
                 {

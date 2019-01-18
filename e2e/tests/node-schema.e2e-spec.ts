@@ -115,7 +115,7 @@ describe('node schema', () => {
     });
 
     it('should go to the next page and show right schema', async () => {
-        const link: String = '#/admin/schemas?p=2';
+        const link: String = 'ui#/admin/schemas?p=2';
         await schema.goToNextPage();
 
         await expect(browser.getCurrentUrl()).toEqual(browser.baseUrl + link);

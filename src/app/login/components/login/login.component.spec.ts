@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -18,6 +20,7 @@ describe('LoginComponent:', () => {
         TestBed.configureTestingModule({
             imports: [SharedModule, TestStateModule],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: Router, useClass: MockRouter },
                 { provide: AuthEffectsService, useClass: MockAuthEffects }
             ],

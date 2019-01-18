@@ -14,6 +14,8 @@ import { componentTest } from '../../../../testing/component-test';
 import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { mockMeshNode, mockProject, mockSchema, mockUser } from '../../../../testing/mock-models';
 import { ApiError } from '../../../core/providers/api/api-error';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -32,6 +34,7 @@ describe('CreateProjectModal', () => {
         provideMockI18n({
             imports: [FormsModule, ReactiveFormsModule, SharedModule, GenticsUICoreModule.forRoot(), TestStateModule],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 {
                     provide: AdminSchemaEffectsService,
                     useValue: jasmine.createSpyObj('schemaEffects', ['loadSchemas'])
@@ -186,31 +189,35 @@ describe('CreateProjectModal', () => {
         )
     );
 
-    it(`creates a new project`,
-        componentTest(() => CreateProjectModalComponent, (fixture, instance) => {
-            const projectName = 'testproject1';
-            const testSchema = {
-                uuid: 'test_schema',
-                name: 'TestSchema',
-                version: '',
-            };
+    it(
+        `creates a new project`,
+        componentTest(
+            () => CreateProjectModalComponent,
+            (fixture, instance) => {
+                const projectName = 'testproject1';
+                const testSchema = {
+                    uuid: 'test_schema',
+                    name: 'TestSchema',
+                    version: ''
+                };
 
-            instance.name.setValue(projectName);
-            instance.schema.setValue(testSchema);
+                instance.name.setValue(projectName);
+                instance.schema.setValue(testSchema);
 
-            mockAdminProjectEffectsService.createProject.and.returnValue(Promise.resolve(null));
+                mockAdminProjectEffectsService.createProject.and.returnValue(Promise.resolve(null));
 
-            triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
-            fixture.detectChanges();
-            expect(mockAdminProjectEffectsService.createProject).toHaveBeenCalledWith({
-                name: projectName,
-                schema: {
-                    uuid: testSchema.uuid,
-                    name: testSchema.name,
-                    version: testSchema.version
-                }
-            });
-        })
+                triggerEvent(fixture.debugElement.query(By.css('gtx-button[type="primary"]')).nativeElement, 'click');
+                fixture.detectChanges();
+                expect(mockAdminProjectEffectsService.createProject).toHaveBeenCalledWith({
+                    name: projectName,
+                    schema: {
+                        uuid: testSchema.uuid,
+                        name: testSchema.name,
+                        version: testSchema.version
+                    }
+                });
+            }
+        )
     );
 
     it(

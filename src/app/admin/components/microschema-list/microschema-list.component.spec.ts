@@ -8,6 +8,8 @@ import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { MockModalService } from '../../../../testing/modal.service.mock';
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { SharedModule } from '../../../shared/shared.module';
@@ -35,6 +37,7 @@ describe('MicroSchemaListComponent', () => {
             declarations: [MicroschemaListComponent, AdminListComponent, MockAdminListItemComponent],
             imports: [GenticsUICoreModule, FormsModule, SharedModule, RouterModule, TestStateModule],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: AdminSchemaEffectsService, useValue: mockAdminSchemaEffects },
                 { provide: ModalService, useClass: MockModalService },
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },

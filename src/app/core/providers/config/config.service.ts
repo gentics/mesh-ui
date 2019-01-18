@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { reject } from 'bluebird';
-import { loadavg } from 'os';
-import { MeshPreviewUrl, MeshUiAppConfig } from 'src/app/common/models/appconfig.model';
+
+import { MeshPreviewUrl, MeshUiAppConfig } from '../../../common/models/appconfig.model';
 
 interface MeshWindow {
     [key: string]: any | MeshUiAppConfig | undefined;
@@ -15,7 +13,6 @@ interface MeshWindow {
  */
 @Injectable()
 export class ConfigService {
-
     /**
      * Returns the current UI application configuration
      * @return UI application configuration

@@ -9,6 +9,8 @@ import createSpy = jasmine.createSpy;
 import { MockModalService } from '../../../../testing/modal.service.mock';
 import { NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
@@ -28,6 +30,7 @@ describe('FieldGeneratorService', () => {
         TestBed.configureTestingModule({
             imports: [TestModule, TestStateModule],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 FieldGeneratorService,
                 { provide: MeshControlGroupService, useClass: MockMeshControlGroupService },
                 { provide: ModalService, useClass: MockModalService }

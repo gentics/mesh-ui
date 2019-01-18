@@ -7,6 +7,8 @@ import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { mockProject } from '../../../../testing/mock-models';
 import { ProjectResponse } from '../../../common/models/server-models';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -32,6 +34,7 @@ describe('ProjectListItemComponent', () => {
         configureComponentTest({
             imports: [GenticsUICoreModule, FormsModule, SharedModule, TestStateModule],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: ModalService, useValue: mockModal },
                 { provide: Notification, useValue: mockNotification },
                 { provide: I18nService, useValue: { translate() {} } },

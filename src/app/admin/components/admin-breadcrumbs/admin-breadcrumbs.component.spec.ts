@@ -6,6 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { AppState } from '../../../state/models/app-state.model';
@@ -82,7 +84,10 @@ describe('AdminBreadcrumbsComponent', () => {
                 GenticsUICoreModule
             ],
             declarations: [TestComponent, AdminBreadcrumbsComponent, MockRouteComponent, MockContentPortalComponent],
-            providers: [{ provide: I18nService, useClass: MockI18nService }]
+            providers: [
+                { provide: ConfigService, useClass: MockConfigService },
+                { provide: I18nService, useClass: MockI18nService }
+            ]
         });
 
         appState = TestBed.get(ApplicationStateService);

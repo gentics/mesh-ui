@@ -5,6 +5,8 @@ import { IBreadcrumbRouterLink } from 'gentics-ui-core';
 
 import { componentTest } from '../../../../testing/component-test';
 import { mockMeshNode, mockProject } from '../../../../testing/mock-models';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -26,7 +28,10 @@ describe('BreadcrumbsComponent:', () => {
                 MockGtxBreadcrumbsComponent
             ],
             imports: [TestStateModule],
-            providers: [{ provide: NavigationService, useClass: MockNavigationService }]
+            providers: [
+                { provide: ConfigService, useClass: MockConfigService },
+                { provide: NavigationService, useClass: MockNavigationService }
+            ]
         });
     }));
 

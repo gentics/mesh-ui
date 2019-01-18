@@ -5,6 +5,8 @@ import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { mockProject } from '../../../../testing/mock-models';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { MockNavigationService } from '../../../core/providers/navigation/navigation.service.mock';
@@ -24,6 +26,7 @@ describe('ProjectSwitcherComponent:', () => {
             declarations: [TestComponent, ProjectSwitcherComponent],
             imports: [SharedModule, TestStateModule, GenticsUICoreModule],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: NavigationService, useClass: MockNavigationService },
                 { provide: ListEffectsService, useValue: jasmine.createSpyObj('ListEffectsService', ['loadProjects']) },
                 OverlayHostService

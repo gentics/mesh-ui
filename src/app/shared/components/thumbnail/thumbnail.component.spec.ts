@@ -7,6 +7,8 @@ import { componentTest } from '../../../../testing/component-test';
 import { mockMeshNode, mockSchema } from '../../../../testing/mock-models';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
@@ -21,10 +23,8 @@ describe('Thumbnail', () => {
         TestBed.configureTestingModule({
             declarations: [TestComponent],
             providers: [
-                {
-                    provide: ApiService,
-                    useClass: MockApiService
-                }
+                { provide: ConfigService, useClass: MockConfigService },
+                { provide: ApiService, useClass: MockApiService }
             ],
             imports: [TestStateModule, SharedModule]
         });

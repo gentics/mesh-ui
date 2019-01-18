@@ -43,4 +43,4 @@ export interface MeshPreviewUrl {
  * @param path Webroot path of the node. The path property will only be provided if the
  * resolveLinks query parameter has been set.
  */
-export type MeshPreviewUrlResolver = (nodeUuid: string, path?: string) => string;
+export type MeshPreviewUrlResolver = (nodeUuid: string, path?: string | undefined) => string;

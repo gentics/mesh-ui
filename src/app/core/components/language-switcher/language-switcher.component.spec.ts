@@ -1,4 +1,4 @@
-import { Component, Pipe, PipeTransform } from '@angular/core';
+import { Component } from '@angular/core';
 import { tick, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DropdownItem, OverlayHostService } from 'gentics-ui-core';
@@ -11,6 +11,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { ConfigService } from '../../providers/config/config.service';
+import { MockConfigService } from '../../providers/config/config.service.mock';
 import { I18nService } from '../../providers/i18n/i18n.service';
 
 import { LanguageSwitcherComponent } from './language-switcher.component';
@@ -22,7 +23,11 @@ describe('LanguageSwitcherComponent:', () => {
         configureComponentTest({
             declarations: [TestComponent, LanguageSwitcherComponent, MockI18nPipe],
             imports: [SharedModule, TestStateModule],
-            providers: [OverlayHostService, ConfigService, { provide: I18nService, useValue: { setLanguage() {} } }]
+            providers: [
+                { provide: ConfigService, useClass: MockConfigService },
+                OverlayHostService,
+                { provide: I18nService, useValue: { setLanguage() {} } }
+            ]
         });
     });
 
@@ -63,7 +68,7 @@ describe('LanguageSwitcherComponent:', () => {
                 fixture.detectChanges();
                 tick();
 
-                const config = new ConfigService();
+                const config = new MockConfigService();
                 const dropdownItems = fixture.debugElement.queryAll(By.directive(DropdownItem));
                 expect(dropdownItems.length).toEqual(config.UI_LANGUAGES.length);
             }

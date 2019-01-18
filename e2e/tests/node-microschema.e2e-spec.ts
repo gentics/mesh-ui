@@ -118,7 +118,7 @@ describe('node microschema', () => {
     });
 
     it('should go to the next page and show right microschema', async () => {
-        const link: String = '#/admin/microschemas?p=2';
+        const link: String = 'ui#/admin/microschemas?p=2';
         await microschema.goToNextPage();
 
         await expect(browser.getCurrentUrl()).toEqual(browser.baseUrl + link);
