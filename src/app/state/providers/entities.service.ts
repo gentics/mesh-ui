@@ -105,7 +105,9 @@ export class EntitiesService {
         }
 
         const defaultFallbacks = this.config.CONTENT_LANGUAGES.sort(
-            (a, b) => (a === this.config.FALLBACK_LANGUAGE ? -1 : 1)
+            // if config.FALLBACK_LANGUAGE, put in first in fallback array
+            // else return alphabetically sorted fallback languages
+            (a, b) => (a === this.config.FALLBACK_LANGUAGE ? -1 : a.localeCompare(b))
         );
 
         return concatUnique(languageArray || [], defaultFallbacks);
