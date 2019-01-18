@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start-original": "ng serve",
-    "start": "ng serve --verbose --proxy-config proxy.conf.json",
+    "start": "ng serve --verbose --base-href /ui --proxy-config proxy.conf.json",
     "build": "ng build --prod",
     "generate-models": "node config/build-models-from-raml",
     "test": "ng test",
