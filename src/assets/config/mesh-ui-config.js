@@ -33,7 +33,27 @@ window.MeshUiConfig = {
              * Function to be called in frontend to get url
              * @param nodeUuid unique Mesh node
              */
-            urlResolver: function (node) { return 'http://localhost:3000/product/' + node.uuid + '?preview=true'; }
+            // adopt to angular demo
+            urlResolver: function (node) {
+
+                // custom route mapping
+                var segmentParent;
+                switch (node.schema.name) {
+                    case 'category':
+                        segmentParent = 'category';
+                        break;
+
+                    case 'vehicle':
+                        segmentParent = 'product';
+                        break;
+                
+                    default:
+                        throw new Error('No existing app route preview mapping configured in assets/config/mesh-ui-config.js for path segment!');
+                }
+
+                // return app preview URL
+                return '/demo/' + segmentParent + '/' + node.uuid + '?preview=true';
+            }
         }
     ]
 };
