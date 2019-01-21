@@ -48,7 +48,7 @@ window.MeshUiConfig = {
                         break;
                 
                     default:
-                        throw new Error('No existing app route preview mapping configured in assets/config/mesh-ui-config.js for path segment!');
+                        throw new Error('No existing app route preview mapping configured for node of schema: ' + node.schema.name);
                 }
 
                 // return app preview URL
