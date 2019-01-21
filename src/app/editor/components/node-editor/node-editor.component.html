@@ -8,9 +8,28 @@
         </div>
         <div class="primary-buttons">
             <mesh-version-label [version]="node?.version"
-                                [published]="!isDraft()"></mesh-version-label>
+                                [published]="!isDraft()"
+                                [style.margin-right]="'1rem'"></mesh-version-label>
 
             <gtx-progress-bar [active]="isSaving"></gtx-progress-bar>
+
+            <gtx-dropdown-list>
+                <gtx-dropdown-trigger>
+                    <gtx-button size="small"
+                                type="primary"
+                                class="preview-button"
+                                [disabled]="!previewUrls || previewUrls.length === 0">
+                        <icon left>remove_red_eye</icon> {{ 'editor.preview_button' | i18n }}
+                    </gtx-button>
+                </gtx-dropdown-trigger>
+                <gtx-dropdown-content>
+                    <ng-container *ngFor="let preview of previewUrls">
+                        <gtx-dropdown-item (click)="previewNode(preview.urlResolver)">
+                            <icon left>remove_red_eye</icon>{{preview?.label}}
+                        </gtx-dropdown-item>
+                    </ng-container>
+                </gtx-dropdown-content>
+            </gtx-dropdown-list>
 
             <gtx-button size="small"
                         type="primary"

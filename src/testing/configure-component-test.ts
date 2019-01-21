@@ -3,6 +3,8 @@ import { getTestBed, TestModuleMetadata } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
 
+import { ConfigService } from '../app/core/providers/config/config.service';
+import { MockConfigService } from '../app/core/providers/config/config.service.mock';
 import { MockI18nPipe } from '../app/shared/pipes/i18n/i18n.pipe.mock';
 
 /**
@@ -23,7 +25,10 @@ export function provideMockI18n(config: NgModule): NgModule {
     const defaultConfig: TestModuleMetadata = {
         imports: [],
         declarations: [MockI18nPipe],
-        providers: [{ provide: TranslateService, useClass: MockTranslateService }]
+        providers: [
+            { provide: ConfigService, useClass: MockConfigService },
+            { provide: TranslateService, useClass: MockTranslateService }
+        ]
     };
 
     return {
@@ -38,7 +43,9 @@ export function provideMockI18n(config: NgModule): NgModule {
 class MockTranslateService {
     onTranslationChange = Observable.of({});
     onLangChange = Observable.of({});
-    get(): Observable<string> { return Observable.of('mocked i18n string'); }
+    get(): Observable<string> {
+        return Observable.of('mocked i18n string');
+    }
 }
 
 /**

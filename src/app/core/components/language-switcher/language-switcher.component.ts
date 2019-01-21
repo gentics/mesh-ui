@@ -13,7 +13,7 @@ export class LanguageSwitcherComponent {
     availableLanguages: string[];
     currentLanguage$: Observable<UILanguage>;
 
-    constructor(private appState: ApplicationStateService, private config: ConfigService, private i18n: I18nService) {
+    constructor(config: ConfigService, private appState: ApplicationStateService, private i18n: I18nService) {
         this.availableLanguages = config.UI_LANGUAGES;
         this.currentLanguage$ = appState
             .select(state => state.ui.currentLanguage)

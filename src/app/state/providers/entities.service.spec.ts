@@ -1,3 +1,5 @@
+import { TestBed } from '@angular/core/testing';
+
 import {
     mergeMocks,
     mockMeshNode,
@@ -6,13 +8,13 @@ import {
     mockSchema,
     mockUser
 } from '../../../testing/mock-models';
+import { CoreModule } from '../../core/core.module';
 import { ConfigService } from '../../core/providers/config/config.service';
+import { MockConfigService } from '../../core/providers/config/config.service.mock';
 import { TestApplicationState } from '../testing/test-application-state.mock';
 
+import { ApplicationStateService } from './application-state.service';
 import { EntitiesService } from './entities.service';
-
-const CONTENT_LANGUAGES = ['en', 'de'];
-const FALLBACK_LANGUAGE = 'en';
 
 describe('EntitiesService', () => {
     let entities: EntitiesService;
@@ -20,9 +22,18 @@ describe('EntitiesService', () => {
     let config: MockConfigService;
 
     beforeEach(() => {
-        config = new MockConfigService();
-        state = new TestApplicationState(config);
-        entities = new EntitiesService(state, config);
+        TestBed.configureTestingModule({
+            imports: [CoreModule],
+            providers: [
+                { provide: ConfigService, useClass: MockConfigService },
+                { provide: ApplicationStateService, useClass: TestApplicationState },
+                EntitiesService
+            ]
+        });
+
+        config = TestBed.get(ConfigService);
+        state = TestBed.get(ApplicationStateService);
+        entities = TestBed.get(EntitiesService);
     });
 
     describe('Project', () => {
@@ -299,11 +310,3 @@ describe('EntitiesService', () => {
         });
     });
 });
-
-class MockConfigService implements ConfigService {
-    readonly ANONYMOUS_USER_NAME: any;
-    readonly UI_LANGUAGES: any;
-
-    FALLBACK_LANGUAGE: any = FALLBACK_LANGUAGE;
-    CONTENT_LANGUAGES: any = CONTENT_LANGUAGES;
-}

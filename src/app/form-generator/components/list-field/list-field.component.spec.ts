@@ -4,6 +4,8 @@ import { By } from '@angular/platform-browser';
 import { GenticsUICoreModule, SortableList } from 'gentics-ui-core';
 
 import { configureComponentTest } from '../../../../testing/configure-component-test';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { ScrollFrameHeadingDirective } from '../../../shared/components/scroll-frame/scroll-frame-heading.directive';
 import { ScrollFrameDirective } from '../../../shared/components/scroll-frame/scroll-frame.directive';
 import { TestStateModule } from '../../../state/testing/test-state.module';
@@ -22,6 +24,7 @@ describe('ListFieldComponent', () => {
             imports: [GenticsUICoreModule, TestStateModule],
             declarations: [TestHostComponent, ListFieldComponent, ScrollFrameDirective, ScrollFrameHeadingDirective],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: FieldGeneratorService, useClass: MockFieldGeneratorService },
                 { provide: MeshControlGroupService, useClass: MockMeshControlGroupService }
             ]

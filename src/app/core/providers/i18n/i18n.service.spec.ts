@@ -1,11 +1,11 @@
-import { ConfigService } from '../config/config.service';
+import { MockConfigService } from '../config/config.service.mock';
 
 import { I18nService } from './i18n.service';
 
 describe('I18nService', () => {
     let i18n: I18nService;
     let mockTranslateService: MockTranslateService;
-    const config = new ConfigService();
+    const config = new MockConfigService();
     const FALLBACK_LANGUAGE = config.FALLBACK_LANGUAGE;
 
     beforeEach(() => {

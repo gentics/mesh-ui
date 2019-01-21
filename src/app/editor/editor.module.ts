@@ -31,6 +31,7 @@ import { VersionLabelComponent } from './components/version-label/version-label.
 import { routes } from './editor.routes';
 import { EditorEffectsService } from './providers/editor-effects.service';
 import { NodeEditorGuard } from './providers/node-editor-guard';
+import { OpenerService } from './providers/opener.service';
 
 @NgModule({
     imports: [SharedModule, HttpClientModule, RouterModule.forChild(routes), FormGeneratorModule],
@@ -70,7 +71,7 @@ import { NodeEditorGuard } from './providers/node-editor-guard';
         ModalService,
         OverlayHostService,
         BlobService,
-        HttpClientModule
+        OpenerService
     ]
 })
 export class EditorModule {

@@ -9,6 +9,8 @@ import { provideMockI18n } from '../../../../testing/configure-component-test';
 import { MockModalService } from '../../../../testing/modal.service.mock';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
 import { MeshControlGroupService } from '../../providers/field-control-group/mesh-control-group.service';
 import { FieldGeneratorService } from '../../providers/field-generator/field-generator.service';
@@ -38,6 +40,7 @@ describe('FormGeneratorComponent:', () => {
             imports: [TestModule, TestStateModule],
             declarations: [FormGeneratorComponent],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 FieldGeneratorService,
                 MeshControlGroupService,
                 { provide: ModalService, useClass: MockModalService }

@@ -12,6 +12,8 @@ import { mockProject } from '../../../../testing/mock-models';
 import { MockModalService } from '../../../../testing/modal.service.mock';
 import { MockActivatedRoute } from '../../../../testing/router-testing-mocks';
 import { CoreModule } from '../../../core/core.module';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -47,6 +49,7 @@ describe('ProjectListComponent', () => {
                 RouterTestingModule
             ],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 { provide: ModalService, useClass: MockModalService },
                 { provide: ActivatedRoute, useClass: MockActivatedRoute },
                 {

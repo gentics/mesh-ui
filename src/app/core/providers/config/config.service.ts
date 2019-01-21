@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 
+import { MeshPreviewUrl, MeshUiAppConfig } from '../../../common/models/appconfig.model';
+
+interface MeshWindow {
+    [key: string]: any | MeshUiAppConfig | undefined;
+}
+
 /**
  * Service which provides all constant config values for the app. Providing these values
  * as an injectable service allows us to leverage the Angular DI to override values e.g.
@@ -7,9 +13,22 @@ import { Injectable } from '@angular/core';
  */
 @Injectable()
 export class ConfigService {
+    /**
+     * Returns the current UI application configuration
+     * @return UI application configuration
+     */
+    get appConfig(): MeshUiAppConfig {
+        const meshWindow = window as MeshWindow;
+        const config: any = (meshWindow && meshWindow['MeshUiConfig']) || undefined;
+        if (!config) {
+            throw new Error('No Mesh UI configuration found!');
+        }
+        return config;
+    }
+
     /** UI localizations */
     get UI_LANGUAGES(): string[] {
-        return ['en', 'de'];
+        return this.getConfigValueFromProperty('uiLanguages') as string[];
     }
 
     /**
@@ -17,12 +36,34 @@ export class ConfigService {
      * TODO: This will need to be user-configurable eventually.
      */
     get CONTENT_LANGUAGES(): string[] {
-        return ['en', 'de'];
+        return this.getConfigValueFromProperty('contentLanguages') as string[];
     }
 
     /** Language used when no translation is found in the current language */
-    readonly FALLBACK_LANGUAGE = 'en';
+    get FALLBACK_LANGUAGE(): string {
+        return this.getConfigValueFromProperty('fallbackLanguage') as string;
+    }
 
     /** Username of the default anonymous (unauthenticated) user in Mesh */
-    readonly ANONYMOUS_USER_NAME = 'anonymous';
+    get ANONYMOUS_USER_NAME(): string {
+        return this.getConfigValueFromProperty('anonymousUsername') as string;
+    }
+
+    /** Username of the default anonymous (unauthenticated) user in Mesh */
+    get PREVIEW_URLS(): MeshPreviewUrl[] {
+        return this.getConfigValueFromProperty('previewUrls') as MeshPreviewUrl[];
+    }
+
+    /**
+     * Helper function to retrieve values from app config
+     * @param property key of config object
+     */
+    getConfigValueFromProperty(property: keyof MeshUiAppConfig) {
+        const retVal = this.appConfig[property];
+        if (retVal) {
+            return retVal;
+        } else {
+            throw new Error(`Property '${property}' not set in /src/assets/config/mesh-ui-config.js!`);
+        }
+    }
 }

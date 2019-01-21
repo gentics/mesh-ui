@@ -7,6 +7,8 @@ import { Schema } from '../../../common/models/schema.model';
 import { User } from '../../../common/models/user.model';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { MockApiService } from '../../../core/providers/api/api.service.mock';
+import { ConfigService } from '../../../core/providers/config/config.service';
+import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { I18nNotification } from '../../../core/providers/i18n-notification/i18n-notification.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -25,6 +27,7 @@ describe('AdminUserEffects', () => {
 
         TestBed.configureTestingModule({
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 AdminUserEffectsService,
                 { provide: ApiService, useClass: MockApiService },
                 { provide: I18nNotification, useValue: i18nNotificationSpy },

@@ -1,11 +1,13 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 
 import { AppComponent } from './app.component';
 import { ConfigService } from './core/providers/config/config.service';
+import { MockConfigService } from './core/providers/config/config.service.mock';
 import { SharedModule } from './shared/shared.module';
 import { ApplicationStateDevtools } from './state/providers/application-state-devtools';
 import { ApplicationStateService } from './state/providers/application-state.service';
@@ -16,26 +18,24 @@ describe(`App`, () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [SharedModule, GenticsUICoreModule.forRoot()],
+            imports: [NoopAnimationsModule, SharedModule, GenticsUICoreModule.forRoot()],
             declarations: [AppComponent],
             providers: [
+                { provide: ConfigService, useClass: MockConfigService },
                 ApplicationStateService,
                 ApplicationStateDevtools,
-                ConfigService,
                 { provide: Router, useClass: MockRouter }
             ],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
-    }));
 
-    beforeEach(() => {
         fixture = TestBed.createComponent(AppComponent);
         comp = fixture.componentInstance;
 
         fixture.detectChanges();
-    });
+    }));
 
-    it(`should be readly initialized`, () => {
+    it(`should be readily initialized`, () => {
         expect(fixture).toBeDefined();
         expect(comp).toBeDefined();
     });

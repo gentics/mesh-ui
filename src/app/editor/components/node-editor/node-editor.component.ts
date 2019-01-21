@@ -1,35 +1,26 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ModalService } from 'gentics-ui-core/dist/components/modal/modal.service';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
 
-import { IModalInstance, ModalService } from 'gentics-ui-core';
-
+import { MeshPreviewUrl, MeshPreviewUrlResolver } from '../../../common/models/appconfig.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
-import * as NodeUtil from '../../../common/util/node-util';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
-import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { EditorEffectsService } from '../../providers/editor-effects.service';
-
-import {
-    GenericMessageResponse,
-    GraphQLErrorFromServer,
-    NodeReferenceFromServer,
-    NodeResponse,
-    TagReferenceFromServer
-} from '../../../common/models/server-models';
+import { GraphQLErrorFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
 import { initializeNode } from '../../../common/util/initialize-node';
+import * as NodeUtil from '../../../common/util/node-util';
 import { getMeshNodeBinaryFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
-import { ApiBase } from '../../../core/providers/api/api-base.service';
-import { ApiError } from '../../../core/providers/api/api-error';
 import { ApiService } from '../../../core/providers/api/api.service';
+import { ConfigService } from '../../../core/providers/config/config.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { MeshFieldControlApi } from '../../../form-generator/common/form-generator-models';
+import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { FormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
-import { tagsAreEqual } from '../../form-generator/common/tags-are-equal';
+import { EditorEffectsService } from '../../providers/editor-effects.service';
+import { OpenerService } from '../../providers/opener.service';
 import { NodeConflictDialogComponent } from '../node-conflict-dialog/node-conflict-dialog.component';
 import { NodeTagsBarComponent } from '../node-tags-bar/node-tags-bar.component';
 import { ProgressbarModalComponent } from '../progressbar-modal/progressbar-modal.component';
@@ -51,7 +42,10 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     isSaving = false;
     nodeUtil = NodeUtil;
 
-    private openNode$: Subscription;
+    /** defined in assests/config/mesh-ui-config.js */
+    previewUrls: MeshPreviewUrl[] = this.config.PREVIEW_URLS || null;
+
+    private destroy$ = new Subject<void>();
 
     @ViewChild('formGenerator') formGenerator?: FormGeneratorComponent;
     @ViewChild('tagsBar') tagsBar?: NodeTagsBarComponent;
@@ -66,8 +60,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private i18n: I18nService,
         private modalService: ModalService,
-        private apiBase: ApiBase,
-        private api: ApiService
+        private api: ApiService,
+        private config: ConfigService,
+        private opener: OpenerService
     ) {}
 
     ngOnInit(): void {
@@ -92,7 +87,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.openNode$ = this.state
+        // get node opened in editor
+        this.state
             .select(state => state.editor.openNode)
             .filter(notNullOrUndefined)
             .switchMap(openNode => {
@@ -117,6 +113,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     return latest;
                 }
             })
+            .takeUntil(this.destroy$)
             .subscribe(([node, schema]) => {
                 if (this.formGenerator) {
                     this.formGenerator.setPristine(node);
@@ -132,9 +129,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.editorEffects.closeEditor();
-        if (this.openNode$) {
-            this.openNode$.unsubscribe();
-        }
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     getNodePath(): string {
@@ -266,6 +262,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 saveFn = this.editorEffects.saveNode(this.node, tags).then(
                     node => {
                         this.isSaving = false;
+                        // reload preview tab
+                        this.opener.reload();
                         if (node && node.project.name && node.language) {
                             formGenerator.setPristine(node);
                             this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
@@ -349,6 +347,19 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             await this.beforePublish();
             this.editorEffects.publishNodeLanguage(this.node);
         }
+    }
+
+    /**
+     * Open node preview url defined in assests/config/mesh-ui-config.js
+     * @param urlResolver returns url string from parameter
+     */
+    previewNode(urlResolver: MeshPreviewUrlResolver): void {
+        if (!this.node) {
+            throw new Error('No node for preview defined!');
+        }
+        const url = urlResolver(this.node);
+        // open new tab
+        this.opener.open(url);
     }
 
     // This function is used as an input for a component.

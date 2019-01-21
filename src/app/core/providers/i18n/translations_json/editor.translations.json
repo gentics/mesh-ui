@@ -75,6 +75,10 @@
       "en": "Publish",
       "de": "Veröffentlichen"
     },
+    "preview_button": {
+      "en": "Preview",
+      "de": "Vorschau"
+    },
     "remove_list_item_tooltip": {
       "en": "Drop here to remove",
       "de": "Zum Entfernen hier ablegen"
