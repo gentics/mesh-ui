@@ -1,0 +1,191 @@
+<form [formGroup]="formGroup"
+      class="formgroup row">
+
+    <h2 class="section-header medium-10 columns">Schema Properties:</h2>
+    <gtx-input class="small-12 medium-10 columns"
+               type="text"
+               label="Schema Name"
+               formControlName="name"></gtx-input>
+
+    <div class="small-12 medium-2 columns">
+        <div class="checkbox-wrapper">
+            <div>
+                <gtx-checkbox label="Container"
+                              formControlName="container"></gtx-checkbox>
+            </div>
+        </div>
+    </div>
+
+    <gtx-input type="text"
+               class="small-12 medium-12 columns"
+               label="Description"
+               formControlName="description"></gtx-input>
+
+    <gtx-select class="small-12 medium-4 columns"
+                formControlName="displayField"
+                label="Display Field"
+                title="Select the name of the field whose value will be used as the node display (e. g. field 'ISBN' or field 'Title' on a schema 'Book' )">
+        <!-- <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option> -->
+    </gtx-select>
+
+
+    <gtx-select class="small-12 medium-4 columns"
+                formControlName="segmentField"
+                label="Segment Field">
+        <!-- <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option> -->
+    </gtx-select>
+
+
+    <gtx-select class="small-12 medium-4 columns"
+                formControlName="urlFields"
+                label="URL Fields">
+        <!-- <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option> -->
+    </gtx-select>
+
+    <br>
+    <h2 class="section-header medium-10 columns">Schema Fields:</h2>
+
+    <div class="schema-field small-12 medium-12 columns"
+         *ngFor="let field of schemaFields.controls; let i = index">
+        <form [formGroup]="field">
+            <div class="row">
+                <gtx-input type="text"
+                           class="small-12 medium-3 columns"
+                           label="Field Name"
+                           formControlName="name"></gtx-input>
+
+                <gtx-textarea class="small-12 medium-3 columns"
+                              label="Field Label"
+                              formControlName="label"></gtx-textarea>
+
+                <gtx-select class="small-12 medium-2 columns"
+                            formControlName="type"
+                            label="Field Type">
+                    <gtx-option *ngFor="let type of schemaTypes"
+                                [value]="type.value">{{ type.label }}</gtx-option>
+                </gtx-select>
+
+                <div class="small-12 medium-2 columns">
+                    <div class="checkbox-wrapper">
+                        <div>
+                            <gtx-checkbox label="required"
+                                          formControlName="required"></gtx-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- INPUT DEPENDING ON listType START -->
+
+                <!-- {{ 'modal.create_project_schema_label' | i18n }} -->
+                <gtx-select [hidden]="field.value.type !== 'list'"
+                            class="small-12 medium-4 columns"
+                            formControlName="listType"
+                            label="List Type">
+                    <gtx-option *ngFor="let type of schemaTypes"
+                                [value]="type.value">{{ type.label }}</gtx-option>
+                </gtx-select>
+
+                <div [hidden]="field.value.type !== 'node' && field.value.listType !== 'node'"
+                     class="small-12 medium-6 columns">
+                    <div class="checkbox-wrapper">
+                        <div>
+                            <gtx-dropdown-list sticky="true">
+                                <gtx-dropdown-trigger>
+                                    <gtx-button flat
+                                                size="medium"
+                                                type="secondary">
+                                        <icon left>more_vert</icon>Allowed Schemas
+                                    </gtx-button>
+                                </gtx-dropdown-trigger>
+                                <gtx-dropdown-content>
+                                    <gtx-dropdown-item *ngFor="let schema of (allSchemas$ | async)">
+                                        <gtx-checkbox [checked]="allowedBarStringsContains(i, schema.name)"
+                                                      (change)="schemaFieldAllowEntryChange(i, schema.name, $event)"
+                                                      [label]="schema.name"></gtx-checkbox>
+                                    </gtx-dropdown-item>
+                                </gtx-dropdown-content>
+                            </gtx-dropdown-list>
+                        </div>
+                    </div>
+                </div>
+
+                <div [hidden]="field.value.type !== 'micronode' && field.value.listType !== 'micronode'"
+                     class="small-12 medium-6 columns">
+                    <div class="checkbox-wrapper">
+                        <div>
+                            <gtx-dropdown-list sticky="true">
+                                <gtx-dropdown-trigger>
+                                    <gtx-button flat
+                                                size="medium"
+                                                type="secondary">
+                                        <icon left>more_vert</icon>Allowed Microschemas
+                                    </gtx-button>
+                                </gtx-dropdown-trigger>
+                                <gtx-dropdown-content>
+                                    <gtx-dropdown-item *ngFor="let microschema of (allMicroschemas$ | async)">
+                                        <gtx-checkbox (change)="schemaFieldAllowEntryChange(i, schema.name, $event)"
+                                                      [label]="microschema.name"></gtx-checkbox>
+                                    </gtx-dropdown-item>
+                                </gtx-dropdown-content>
+                            </gtx-dropdown-list>
+                        </div>
+                    </div>
+                </div>
+
+                <div [hidden]="field.value.type !== 'string' && field.value.listType !== 'string'"
+                     class="small-12 medium-12 columns">
+                    <!-- (change)="allowedStringsOnChange(i)" -->
+                    <gtx-search-bar formControlName="allow"
+                                    (search)="allowedStringsOnAdd(i)"
+                                    [placeholder]="'Type to add allowed value'"
+                                    (clear)="allowedStringsOnClear(i)"
+                                    (keydown.backspace)="allowedStringsOnRemoveLast(i)">
+
+                        <mesh-chip *ngFor="let item of allowedBarStrings[i]"
+                                   (removeClick)="allowedStringsOnRemove(i, item)">
+                            {{ item }}
+                        </mesh-chip>
+                    </gtx-search-bar>
+                </div>
+
+                <!-- INPUT DEPENDING ON listType END -->
+            </div>
+        </form>
+        <div class="close-button">
+            <gtx-button icon
+                        type="secondary"
+                        (click)="fieldRemoveAt(index)">
+                <icon>close</icon>
+            </gtx-button>
+        </div>
+    </div>
+
+    <div class="small-12 medium-12 columns">
+        <gtx-button flat
+                    size="small"
+                    (click)="fieldAdd()">
+            Add field
+        </gtx-button>
+
+        <gtx-button flat
+                    size="small"
+                    (click)="fieldRemoveLast()">
+            Remove field
+        </gtx-button>
+    </div>
+
+</form>
+
+<br>
+
+<div class="small-12 medium-12 columns">
+    <gtx-button (click)="schemaCreate()">
+        <icon left>add</icon>Create
+    </gtx-button>
+
+    <gtx-button (click)="schemaDelete()">
+        <icon left>delete</icon>Delete
+    </gtx-button>
+</div>

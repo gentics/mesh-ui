@@ -3,7 +3,12 @@
 </div>
 
 <gtx-tabs>
-    <gtx-tab title="Schemas">
+    <gtx-tab title="Editor">
+        <mesh-schema-editor>
+        </mesh-schema-editor>
+    </gtx-tab>
+
+    <gtx-tab title="JSON">
         <mesh-monaco-editor [(ngModel)]="schemaJson"
                             language="json"
                             [jsonSchema]="schema"
