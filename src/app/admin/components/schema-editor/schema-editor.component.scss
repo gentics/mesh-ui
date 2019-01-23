@@ -21,6 +21,27 @@
     // }
 }
 
+/* Remove margins for warning texts */
+/deep/ gtx-search-bar, /deep/ gtx-select {
+    margin-bottom: 0.4rem !important;
+}
+
+/deep/ gtx-input {
+    input {
+        margin-bottom: 0.4rem !important;
+    }
+}
+
+/deep/ gtx-textarea {
+    line-height: 0.8;
+    label {
+        line-height: 1.5;
+    }
+    & > .materialize-textarea {
+        margin-bottom: 0.4rem;
+    }
+}
+
 .schema-field {
     position: relative;
     margin-bottom: 0.6rem;
@@ -69,13 +90,9 @@
     }
 }
 
-/* Remove margins for warning texts */
-/deep/ gtx-input input, /deep/ gtx-search-bar, /deep/ gtx-select {
-    margin-bottom: 0 !important;
-}
-
 .warning {
     margin-top: 0;
+    margin-bottom: 1rem;
     color: $gtx-color-alert;
     font-size: 0.8rem;
 }

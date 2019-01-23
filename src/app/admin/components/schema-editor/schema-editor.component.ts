@@ -144,8 +144,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             container: [false],
             description: [''],
             displayField: ['', Validators.required],
-            segmentField: ['', Validators.required],
-            urlFields: ['', Validators.required],
+            segmentField: [''],
+            urlFields: [''],
             fields: this.formBuilder.array([this.createNewField()])
         });
 
@@ -214,6 +214,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             this.displayFields.push({ value: field.name, label: field.name });
                         }
 
+                        // EXTENDED VALIDATION LOGIC
+                        this.fieldHasDuplicateValue(index, 'name');
+                        this.fieldHasDuplicateValue(index, 'label');
+
                         return schemaField;
                     })
                 };
@@ -266,7 +270,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             return false;
         }
         // iterate over all existing fields
-        return (
+        const isDuplicate =
             fields.filter((field, fieldIndex) => {
                 // if own index, skip
                 if (fieldIndex === index) {
@@ -274,8 +278,26 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 }
                 // check values
                 return field[formControlName] && field[formControlName]!.toLocaleLowerCase() === ownValue.toLowerCase();
-            }).length > 0
-        );
+            }).length > 0;
+        // notify formControl in formGroup of this extended validation logic
+        if (isDuplicate === true) {
+            this.schemaFields.controls[index].get(formControlName)!.setErrors({ duplicate: true });
+        } else {
+            this.schemaFields.controls[index].get(formControlName)!.setErrors(null);
+        }
+        return isDuplicate;
+    }
+
+    getErrorFromControlOfType(formControlName: keyof Schema, errorType: string): boolean {
+        return this.formGroup.get(formControlName)!.hasError(errorType);
+    }
+
+    getErrorFromControlInFromArrayOfType(
+        index: number,
+        formControlName: keyof SchemaField,
+        errorType: string
+    ): boolean {
+        return this.schemaFields.controls[index].get(formControlName)!.hasError(errorType);
     }
 
     // MANAGE SCHEMA.FIELD[].ALLOW VALUES //////////////////////////////////////////////////////////////////////////////

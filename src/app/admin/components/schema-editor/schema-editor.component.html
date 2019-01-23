@@ -2,10 +2,13 @@
       class="formgroup row">
 
     <h2 class="section-header medium-10 columns">Schema Properties:</h2>
-    <gtx-input class="small-12 medium-10 columns"
-               type="text"
-               label="Schema Name"
-               formControlName="name"></gtx-input>
+    <div class="small-12 medium-10 columns">
+        <gtx-input type="text"
+                   label="Schema Name"
+                   formControlName="name"></gtx-input>
+        <p *ngIf="getErrorFromControlOfType('name', 'required')"
+           class="warning">required</p>
+    </div>
 
     <div class="small-12 medium-2 columns">
         <div class="checkbox-wrapper">
@@ -28,6 +31,8 @@
             <gtx-option *ngFor="let displayField of displayFields"
                         [value]="displayField.value">{{ displayField.label }}</gtx-option>
         </gtx-select>
+        <p *ngIf="getErrorFromControlOfType('displayField', 'required')"
+           class="warning">required</p>
         <p class="warning"
            *ngIf="! hasNamedFields()">Create at least one valid field schema field</p>
     </div>
@@ -57,23 +62,30 @@
                     <gtx-input type="text"
                                label="Field Name"
                                formControlName="name"></gtx-input>
-                    <p class="warning"
-                       *ngIf="fieldHasDuplicateValue(i, 'name')">Duplicate content</p>
+                    <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'name', 'required')"
+                       class="warning">required</p>
+                    <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'name', 'duplicate')"
+                       class="warning">Duplicate content</p>
                 </div>
 
                 <div class="small-12 medium-3 columns">
                     <gtx-textarea label="Field Label"
                                   formControlName="label"></gtx-textarea>
-                    <p class="warning"
-                       *ngIf="fieldHasDuplicateValue(i, 'label')">Duplicate content</p>
+                    <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'label', 'required')"
+                       class="warning">required</p>
+                    <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'label', 'duplicate')"
+                       class="warning">Duplicate content</p>
                 </div>
 
-                <gtx-select class="small-12 medium-2 columns"
-                            formControlName="type"
-                            label="Field Type">
-                    <gtx-option *ngFor="let type of schemaFieldTypes"
-                                [value]="type.value">{{ type.label }}</gtx-option>
-                </gtx-select>
+                <div class="small-12 medium-2 columns">
+                    <gtx-select formControlName="type"
+                                label="Field Type">
+                        <gtx-option *ngFor="let type of schemaFieldTypes"
+                                    [value]="type.value">{{ type.label }}</gtx-option>
+                    </gtx-select>
+                    <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'type', 'required')"
+                       class="warning">required</p>
+                </div>
 
                 <div class="small-12 medium-2 columns">
                     <div class="checkbox-wrapper">
