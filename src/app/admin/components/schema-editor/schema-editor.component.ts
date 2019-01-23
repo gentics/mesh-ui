@@ -81,19 +81,11 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     displayFields: Array<{ value: string; label: string }> = [];
 
-    // get displayFieldsInputIsDisabled(): boolean {
-    //     return this.displayFields.length === 0;
-    // }
+    segmentFields: Array<{ value: string; label: string }> = [];
 
-    // get segmentFields(): Array<{ value: string; label: string; }> {
-    //     return true;
-    // }
+    urlFields: Array<{ value: string; label: string }> = [];
 
-    // get urlFieldss(): Array<{ value: string; label: string; }> {
-    //     return true;
-    // }
-
-    private destroyed$: Subject<void> = new Subject();
+    private destroyed$ = new Subject<void>();
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
 
@@ -156,6 +148,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             .subscribe((value: any) => {
                 // reset data
                 this.displayFields = [];
+                this.segmentFields = [];
 
                 // assign form data to component data
                 this.schema = {
@@ -212,6 +205,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         // fill data for displayFields input
                         if (field.name) {
                             this.displayFields.push({ value: field.name, label: field.name });
+                            this.segmentFields.push({ value: field.name, label: field.name });
                         }
 
                         // EXTENDED VALIDATION LOGIC

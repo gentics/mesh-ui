@@ -37,12 +37,15 @@
            *ngIf="! hasNamedFields()">Create at least one valid field schema field</p>
     </div>
 
-
-    <gtx-select class="small-12 medium-4 columns"
-                formControlName="segmentField"
-                label="Segment Field">
-        <!-- <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option> -->
-    </gtx-select>
+    <div class="small-12 medium-4 columns">
+        <gtx-select formControlName="segmentField"
+                    label="Segment Field">
+            <gtx-option *ngFor="let segmentField of segmentFields"
+                        [value]="segmentField.value">{{ segmentField.label }}</gtx-option>
+        </gtx-select>
+        <p class="warning"
+           *ngIf="! hasNamedFields()">Create at least one valid field schema field</p>
+    </div>
 
 
     <gtx-select class="small-12 medium-4 columns"
