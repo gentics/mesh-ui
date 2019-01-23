@@ -79,18 +79,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         return this.formGroup.get('fields') as FormArray;
     }
 
-    get displayFields(): Array<{ value: string; label: string }> {
-        // const retval = this.schemaFields.value
-        //     .filter((field: SchemaField) => !!field.name)
-        //     .map((field: SchemaField) => ({ value: field.name, label: field.name }));
-        // console.log( '!!! retval:', retval );
-        // return retval;
-        return [
-            { value: 'test-1', label: 'Test-1' },
-            { value: 'test-2', label: 'Test-2' },
-            { value: 'test-3', label: 'Test-3' }
-        ];
-    }
+    displayFields: Array<{ value: string; label: string }> = [];
 
     // get displayFieldsInputIsDisabled(): boolean {
     //     return this.displayFields.length === 0;
@@ -165,12 +154,15 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             .distinctUntilChanged()
             .takeUntil(this.destroyed$)
             .subscribe((value: any) => {
+                // reset data
+                this.displayFields = [];
+
                 // assign form data to component data
                 this.schema = {
                     name: value.name,
                     container: value.container,
                     description: value.description,
-                    displayField: 'test',
+                    displayField: value.displayField,
                     segmentField: value.segmentField,
                     urlFields: ['test'],
                     fields: value.fields.map((field: any, index: number) => {
@@ -217,6 +209,11 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             this.propertyPurge(field, index, 'allow');
                         }
 
+                        // fill data for displayFields input
+                        if (field.name) {
+                            this.displayFields.push({ value: field.name, label: field.name });
+                        }
+
                         return schemaField;
                     })
                 };
@@ -226,6 +223,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     formGroupIsValid(): boolean {
         return this.formGroup.valid;
+    }
+
+    hasNamedFields(): boolean {
+        return this.displayFields.length > 0;
     }
 
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
@@ -257,8 +258,24 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         this.fieldRemoveAt(this.schemaFields.length - 1);
     }
 
-    hasField(): boolean {
-        return this.schemaFields.length > 0;
+    fieldHasDuplicateValue(index: number, formControlName: 'name' | 'label'): boolean {
+        const fields = this.schemaFields.value as SchemaField[];
+        const ownValue = fields[index][formControlName];
+        // if not existing, return default
+        if (!ownValue) {
+            return false;
+        }
+        // iterate over all existing fields
+        return (
+            fields.filter((field, fieldIndex) => {
+                // if own index, skip
+                if (fieldIndex === index) {
+                    return;
+                }
+                // check values
+                return field[formControlName] && field[formControlName]!.toLocaleLowerCase() === ownValue.toLowerCase();
+            }).length > 0
+        );
     }
 
     // MANAGE SCHEMA.FIELD[].ALLOW VALUES //////////////////////////////////////////////////////////////////////////////

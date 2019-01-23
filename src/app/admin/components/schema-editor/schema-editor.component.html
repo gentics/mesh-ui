@@ -29,7 +29,7 @@
                         [value]="displayField.value">{{ displayField.label }}</gtx-option>
         </gtx-select>
         <p class="warning"
-           *ngIf="! hasField()">Create at least one valid field schema field</p>
+           *ngIf="! hasNamedFields()">Create at least one valid field schema field</p>
     </div>
 
 
@@ -53,14 +53,20 @@
          *ngFor="let field of schemaFields.controls; let i = index">
         <form [formGroup]="field">
             <div class="row">
-                <gtx-input type="text"
-                           class="small-12 medium-3 columns"
-                           label="Field Name"
-                           formControlName="name"></gtx-input>
+                <div class="small-12 medium-3 columns">
+                    <gtx-input type="text"
+                               label="Field Name"
+                               formControlName="name"></gtx-input>
+                    <p class="warning"
+                       *ngIf="fieldHasDuplicateValue(i, 'name')">Duplicate content</p>
+                </div>
 
-                <gtx-textarea class="small-12 medium-3 columns"
-                              label="Field Label"
-                              formControlName="label"></gtx-textarea>
+                <div class="small-12 medium-3 columns">
+                    <gtx-textarea label="Field Label"
+                                  formControlName="label"></gtx-textarea>
+                    <p class="warning"
+                       *ngIf="fieldHasDuplicateValue(i, 'label')">Duplicate content</p>
+                </div>
 
                 <gtx-select class="small-12 medium-2 columns"
                             formControlName="type"

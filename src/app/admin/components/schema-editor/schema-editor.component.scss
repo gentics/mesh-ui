@@ -70,11 +70,12 @@
 }
 
 /* Remove margins for warning texts */
-/deep/ gtx-input, /deep/ gtx-search-bar, /deep/ gtx-select {
+/deep/ gtx-input input, /deep/ gtx-search-bar, /deep/ gtx-select {
     margin-bottom: 0 !important;
 }
 
 .warning {
     margin-top: 0;
     color: $gtx-color-alert;
+    font-size: 0.8rem;
 }
