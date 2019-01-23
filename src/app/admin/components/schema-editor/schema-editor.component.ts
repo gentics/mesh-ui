@@ -358,9 +358,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         const newForm = simpleCloneDeep(this.formGroup.value);
         const newField = newForm.fields[index];
         // update mesh chip array cleaned from forbiddden characters
-        this.allowValues[index].add(
-            newField.allow.replace(new RegExp(/\s/, 'g'), '').replace(new RegExp(/\W/, 'g'), '')
-        );
+        this.allowValues[index].add(newField.allow.replace(new RegExp(/\W/, 'g'), ''));
         // empty field after new value is displayed as chip
         newField.allow = '';
         // assign new value to form data
@@ -374,7 +372,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             return;
         }
         // if input value is seperated by space or comma, then add as chip
-        if (new RegExp(/\w+\s|\w+\W/, 'g').test(newField.allow)) {
+        if (new RegExp(/\w+\W/, 'g').test(newField.allow)) {
             this.allowValueOnStringInputAddAt(index);
         }
     }
