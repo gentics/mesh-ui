@@ -32,7 +32,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     allowValues: Array<Set<string>> = [];
 
-    schemaTypes: Array<{ value: SchemaFieldType; label: string }> = [
+    schemaFieldListTypes: Array<{ value: SchemaFieldType; label: string }> = [
         {
             value: 'binary',
             label: 'Binary'
@@ -62,12 +62,16 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             label: 'HTML'
         },
         {
-            value: 'list',
-            label: 'List'
-        },
-        {
             value: 'string',
             label: 'String'
+        }
+    ];
+
+    schemaFieldTypes: Array<{ value: SchemaFieldType; label: string }> = [
+        ...this.schemaFieldListTypes,
+        {
+            value: 'list',
+            label: 'List'
         }
     ];
 
@@ -75,8 +79,21 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         return this.formGroup.get('fields') as FormArray;
     }
 
-    // get displayFields(): Array<{ value: string; label: string; }> {
-    //     return true;
+    get displayFields(): Array<{ value: string; label: string }> {
+        // const retval = this.schemaFields.value
+        //     .filter((field: SchemaField) => !!field.name)
+        //     .map((field: SchemaField) => ({ value: field.name, label: field.name }));
+        // console.log( '!!! retval:', retval );
+        // return retval;
+        return [
+            { value: 'test-1', label: 'Test-1' },
+            { value: 'test-2', label: 'Test-2' },
+            { value: 'test-3', label: 'Test-3' }
+        ];
+    }
+
+    // get displayFieldsInputIsDisabled(): boolean {
+    //     return this.displayFields.length === 0;
     // }
 
     // get segmentFields(): Array<{ value: string; label: string; }> {
@@ -137,9 +154,9 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             name: ['', Validators.required],
             container: [false],
             description: [''],
-            displayField: [{ value: '', disabled: true }, Validators.required],
-            segmentField: [{ value: '', disabled: true }, Validators.required],
-            urlFields: [{ value: '', disabled: true }, Validators.required],
+            displayField: ['', Validators.required],
+            segmentField: ['', Validators.required],
+            urlFields: ['', Validators.required],
             fields: this.formBuilder.array([this.createNewField()])
         });
 
@@ -180,6 +197,11 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             this.propertyPurge(field, index, 'allow');
                         }
 
+                        // if not of type list anymore, clean up
+                        if (field.type !== 'list') {
+                            this.propertyPurge(field, index, 'listType');
+                        }
+
                         // if of type string, trigger search bar functionality
                         if (field.type === 'string' || field.listType === 'string') {
                             this.allowValuesOnStringInputChangeAt(index);
@@ -200,6 +222,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 };
                 console.log('!!! schema:', this.schema);
             });
+    }
+
+    formGroupIsValid(): boolean {
+        return this.formGroup.valid;
     }
 
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
@@ -231,7 +257,23 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         this.fieldRemoveAt(this.schemaFields.length - 1);
     }
 
+    hasField(): boolean {
+        return this.schemaFields.length > 0;
+    }
+
     // MANAGE SCHEMA.FIELD[].ALLOW VALUES //////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Reset the entire allowValues Set at index
+     * @param index of schmea.fields[]
+     * @param values replacing previous values
+     */
+    allowValueSetAt(index: number, values: string[]): void {
+        // update allowed data
+        this.allowValues[index] = new Set<string>(values);
+        // update form
+        this.formGroup.updateValueAndValidity();
+    }
 
     /**
      * add value to schema.fields[] allow[]
@@ -316,7 +358,9 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         const newForm = simpleCloneDeep(this.formGroup.value);
         const newField = newForm.fields[index];
         // update mesh chip array cleaned from forbiddden characters
-        this.allowValues[index].add(newField.allow.replace(' ', '').replace(',', ''));
+        this.allowValues[index].add(
+            newField.allow.replace(new RegExp(/\s/, 'g'), '').replace(new RegExp(/\W/, 'g'), '')
+        );
         // empty field after new value is displayed as chip
         newField.allow = '';
         // assign new value to form data
@@ -330,7 +374,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             return;
         }
         // if input value is seperated by space or comma, then add as chip
-        if (newField.allow.indexOf(',') > -1 || newField.allow.indexOf(' ') > -1) {
+        if (new RegExp(/\w+\s|\w+\W/, 'g').test(newField.allow)) {
             this.allowValueOnStringInputAddAt(index);
         }
     }
@@ -348,14 +392,16 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
 
     private propertyPurge(field: any, index: number, property: keyof SchemaField): void {
-        delete field[property];
+        if (field[property]) {
+            delete field[property];
+        }
+
         if (!this.schema) {
             return;
         }
         const fieldToDelete = this.schema.fields[index] as SchemaField;
-        if (!field) {
-            return;
+        if (fieldToDelete && fieldToDelete[property]) {
+            delete fieldToDelete[property];
         }
-        delete fieldToDelete[property];
     }
 }

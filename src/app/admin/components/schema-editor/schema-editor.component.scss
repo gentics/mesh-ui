@@ -38,12 +38,20 @@
     top: 0;
 }
 
+.string-bar {
+    label {
+        position: absolute;
+        color: #79797d;
+    }
+}
+
 /deep/ gtx-search-bar {
     border: 2px solid #d6d6da;
     border-radius: 3px;
-    flex-grow: 1;
+    margin-top: 1.2rem;
+    // flex-grow: 1;
     // z-index: 1;
-    margin: 3px;
+    // margin: 3px;
     box-shadow: none;
     background-color: $gtx-color-off-white;
 
@@ -59,4 +67,14 @@
         margin-bottom: 0 !important;
         margin-left: 0.3rem;
     }
+}
+
+/* Remove margins for warning texts */
+/deep/ gtx-input, /deep/ gtx-search-bar, /deep/ gtx-select {
+    margin-bottom: 0 !important;
+}
+
+.warning {
+    margin-top: 0;
+    color: $gtx-color-alert;
 }
