@@ -280,10 +280,11 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 return field[formControlName] && field[formControlName]!.toLocaleLowerCase() === ownValue.toLowerCase();
             }).length > 0;
         // notify formControl in formGroup of this extended validation logic
+        const control = this.schemaFields.controls[index].get(formControlName);
         if (isDuplicate === true) {
-            this.schemaFields.controls[index].get(formControlName)!.setErrors({ duplicate: true });
+            control!.setErrors({ duplicate: true });
         } else {
-            this.schemaFields.controls[index].get(formControlName)!.setErrors(null);
+            control!.setErrors(null);
         }
         return isDuplicate;
     }
