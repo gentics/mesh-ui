@@ -1,3 +1,5 @@
+import { ListTypeFieldType } from './schema.model';
+
 // Auto-generated from the RAML for Version 0.22.0-SNAPSHOT of the Gentics Mesh REST API.
 
 export type Integer = number;
@@ -4051,6 +4053,8 @@ export interface FieldSchemaFromServer {
     readonly required?: boolean;
     /** Type of the field. */
     readonly type: string;
+    /** Type of the field. */
+    readonly listType?: ListTypeFieldType;
 }
 
 /**

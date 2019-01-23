@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { Microschema } from '../../../common/models/microschema.model';
-import { Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
+import { ListTypeFieldType, Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
 import { SchemaUpdateRequest } from '../../../common/models/server-models';
 import { simpleCloneDeep } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -138,54 +138,89 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             label: field.label,
                             type: field.type,
                             required: field.required,
-                            listType: field.listType || (null as any)
+                            listType: field.listType as ListTypeFieldType
                         };
 
-                        switch (field.type) {
-                            case 'node':
-                                if (field.type !== 'node' && field.listType !== 'node') {
-                                    // clear properties not allowed for field of type 'node'
-                                    this.propertyPurge(field, index, 'listType');
-                                }
-                                if (field.allow) {
-                                    Object.assign(schemaField, { allow: field.allow });
-                                }
-                                break;
-                            case 'micronode':
-                                if (field.type !== 'micronode' && field.listType !== 'micronode') {
-                                    // clear properties not allowed for field of type 'micronode'
-                                    this.propertyPurge(field, index, 'listType');
-                                }
-                                if (field.allow) {
-                                    Object.assign(schemaField, { allow: field.allow });
-                                }
-                                break;
-                            case 'list':
-                                // clear properties not allowed for field of type 'list'
-                                if (field.listType !== 'node' || 'micronode') {
-                                    this.propertyPurge(field, index, 'allow');
-                                }
-                                if (field.listType) {
-                                    Object.assign(schemaField, { listType: field.listType });
-                                }
-                                break;
-                            case 'string':
-                                // if previously field.type has been node or micronode, reset field.allow
-                                if (this.schema && this.schema.fields && this.schema.fields[index].type !== 'string') {
-                                    this.allowedStringsOnClear(index);
-                                }
-                                // clear properties not allowed for field of type 'micronode'
-                                this.propertyPurge(field, index, 'listType');
-                                this.allowedStringsOnChange(index);
-                                Object.assign(schemaField, {
-                                    allow: this.allowedBarStrings[index]
-                                        ? Array.from(this.allowedBarStrings[index])
-                                        : null
-                                });
-                                break;
-                            default:
-                                break;
+                        // if something has changed, clear up before saving
+                        if (
+                            (this.schema &&
+                                this.schema.fields &&
+                                this.schema.fields[index] &&
+                                this.schema.fields[index].type !== field.type) ||
+                            (this.schema &&
+                                this.schema.fields &&
+                                this.schema.fields[index] &&
+                                this.schema.fields[index].listType !== field.listType)
+                        ) {
+                            this.allowedStringsOnClear(index);
+                            this.propertyPurge(field, index, 'allow');
                         }
+
+                        // if of type string, trigger search bar functionality
+                        if (field.type === 'string' || field.listType === 'string') {
+                            this.allowedStringsOnChange(index);
+                        }
+
+                        // if allow property should exist, assign appropriate data
+                        Object.assign(schemaField, {
+                            allow: this.allowedBarStrings[index] ? Array.from(this.allowedBarStrings[index]) : null
+                        });
+
+                        // if field.allow proeprty is an empty array, clean it up
+                        if (field.allow && field.allow.length && field.allow === 0) {
+                            this.propertyPurge(field, index, 'allow');
+                        }
+
+                        // switch (field.type) {
+                        //     case 'node':
+                        //         if (field.allow) {
+                        //             Object.assign(schemaField, { allow: field.allow });
+                        //         }
+                        //         break;
+                        //     case 'micronode':
+                        //         if (field.listType !== 'micronode') {
+                        //             // clear properties not allowed for field of type 'micronode'
+                        //             this.propertyPurge(field, index, 'listType');
+                        //         }
+                        //         if (field.allow) {
+                        //             Object.assign(schemaField, { allow: field.allow });
+                        //         }
+                        //         break;
+                        //     case 'list':
+                        //         // // clear properties not allowed for field of type 'list'
+                        //         // if (field.listType !== 'node' || 'micronode') {
+                        //         //     this.propertyPurge(field, index, 'allow');
+                        //         // }
+                        //         // if previously field.type has been node or micronode, reset field.allow
+                        //         if (this.schema && this.schema.fields && this.schema.fields[index].type !== 'list') {
+                        //             this.allowedStringsOnClear(index);
+                        //         }
+                        //         Object.assign(schemaField, {
+                        //             allow: this.allowedBarStrings[index]
+                        //                 ? Array.from(this.allowedBarStrings[index])
+                        //                 : null
+                        //         });
+                        //         if (field.listType) {
+                        //             Object.assign(schemaField, { listType: field.listType });
+                        //         }
+                        //         break;
+                        //     case 'string':
+                        //         // if previously field.type has been node or micronode, reset field.allow
+                        //         if (this.schema && this.schema.fields && this.schema.fields[index].type !== 'string') {
+                        //             this.allowedStringsOnClear(index);
+                        //         }
+                        //         // clear properties not allowed for field of type 'micronode'
+                        //         this.propertyPurge(field, index, 'listType');
+                        //         this.allowedStringsOnChange(index);
+                        //         Object.assign(schemaField, {
+                        //             allow: this.allowedBarStrings[index]
+                        //                 ? Array.from(this.allowedBarStrings[index])
+                        //                 : null
+                        //         });
+                        //         break;
+                        //     default:
+                        //         break;
+                        // }
 
                         return schemaField;
                     })
@@ -237,18 +272,22 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      * @param entry string to be added
      * */
     schemaFieldAllowEntryAdd(index: number, entry: string): void {
-        const newForm = simpleCloneDeep(this.formGroup.value) as SchemaUpdateRequest;
-        const newField = newForm.fields[index] as SchemaField;
-        // if array not yet existing, create it
-        if (!newField.allow) {
-            newField.allow = [];
-        }
-        // make new set from array to keep entries unique
-        const allowSet = new Set<string>(newField.allow);
-        allowSet.add(entry);
-        newField.allow = Array.from<string>(allowSet);
-        // assign new value to form data
-        this.formGroup.patchValue(newForm);
+        // update allowed data
+        this.allowedBarStrings[index].add(entry);
+        // update form
+        this.formGroup.updateValueAndValidity();
+        // const newForm = simpleCloneDeep(this.formGroup.value) as SchemaUpdateRequest;
+        // const newField = newForm.fields[index] as SchemaField;
+        // // if array not yet existing, create it
+        // if (!newField.allow) {
+        //     newField.allow = [];
+        // }
+        // // make new set from array to keep entries unique
+        // const allowSet = new Set<string>(newField.allow);
+        // allowSet.add(entry);
+        // newField.allow = Array.from<string>(allowSet);
+        // // assign new value to form data
+        // this.formGroup.patchValue(newForm);
     }
 
     /**
@@ -257,16 +296,21 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      * @param entry string to be removed
      * */
     schemaFieldAllowEntryRemove(index: number, entry: string): void {
-        const newForm = simpleCloneDeep(this.formGroup.value) as SchemaUpdateRequest;
-        const newField = newForm.fields[index] as SchemaField;
+        // update allowed data
+        this.allowedBarStrings[index].delete(entry);
+        // update form
+        this.formGroup.updateValueAndValidity();
+        // // update form data
+        // const newForm = simpleCloneDeep(this.formGroup.value) as SchemaUpdateRequest;
+        // const newField = newForm.fields[index] as SchemaField;
 
-        if (!newField.allow || !(newField.allow instanceof Array)) {
-            return;
-        }
-        // remove entry
-        newField.allow = newField.allow.filter(item => item !== entry);
-        // assign new value to form data
-        this.formGroup.patchValue(newForm);
+        // if (!newField.allow || !(newField.allow instanceof Array)) {
+        //     return;
+        // }
+        // // remove entry
+        // newField.allow = newField.allow.filter(item => item !== entry);
+        // // assign new value to form data
+        // this.formGroup.patchValue(newForm);
     }
 
     /**
@@ -301,9 +345,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     allowedStringsOnRemove(index: number, entry: string): void {
         // remove from entries array
         this.allowedBarStrings[index].delete(entry);
-        // trigger form update with identical values just for triggering
-        const newForm = simpleCloneDeep(this.formGroup.value);
-        this.formGroup.patchValue(newForm);
+        // update form
+        this.formGroup.updateValueAndValidity();
     }
 
     allowedStringsOnRemoveLast(index: number): void {
@@ -356,18 +399,17 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     allowedBarStringsContains(index: number, value: string): boolean {
-        if (!this.formGroup.value) {
-            return false;
-        }
-        const form = this.formGroup.value as Schema;
-        const retval =
-            form.fields &&
-            form.fields[index] &&
-            form.fields[index].allow &&
-            form.fields[index].allow!.indexOf(value) > -1
-                ? true
-                : false;
-        return retval;
+        // if (!this.formGroup.value) {
+        //     return false;
+        // }
+        // const form = this.formGroup.value as Schema;
+        // return form.fields &&
+        //     form.fields[index] &&
+        //     form.fields[index].allow &&
+        //     form.fields[index].allow!.indexOf(value) > -1
+        //         ? true
+        //         : false;
+        return this.allowedBarStrings[index].has(value);
     }
 
     private propertyPurge(field: any, index: number, property: keyof SchemaField): void {
