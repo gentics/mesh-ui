@@ -101,8 +101,8 @@
                                 </gtx-dropdown-trigger>
                                 <gtx-dropdown-content>
                                     <gtx-dropdown-item *ngFor="let schema of (allSchemas$ | async)">
-                                        <gtx-checkbox [checked]="allowedBarStringsContains(i, schema.name)"
-                                                      (change)="schemaFieldAllowEntryChange(i, schema.name, $event)"
+                                        <gtx-checkbox [checked]="allowValuesContainsAt(i, schema.name)"
+                                                      (change)="allowValuesChangeAt(i, schema.name, $event)"
                                                       [label]="schema.name"></gtx-checkbox>
                                     </gtx-dropdown-item>
                                 </gtx-dropdown-content>
@@ -125,7 +125,8 @@
                                 </gtx-dropdown-trigger>
                                 <gtx-dropdown-content>
                                     <gtx-dropdown-item *ngFor="let microschema of (allMicroschemas$ | async)">
-                                        <gtx-checkbox (change)="schemaFieldAllowEntryChange(i, schema.name, $event)"
+                                        <gtx-checkbox [checked]="allowValuesContainsAt(i, microschema.name)"
+                                                      (change)="allowValuesChangeAt(i, microschema.name, $event)"
                                                       [label]="microschema.name"></gtx-checkbox>
                                     </gtx-dropdown-item>
                                 </gtx-dropdown-content>
@@ -136,15 +137,14 @@
 
                 <div [hidden]="field.value.type !== 'string' && field.value.listType !== 'string'"
                      class="small-12 medium-12 columns">
-                    <!-- (change)="allowedStringsOnChange(i)" -->
                     <gtx-search-bar formControlName="allow"
-                                    (search)="allowedStringsOnAdd(i)"
+                                    (search)="allowValueOnStringInputAddAt(i)"
                                     [placeholder]="'Type to add allowed value'"
-                                    (clear)="allowedStringsOnClear(i)"
-                                    (keydown.backspace)="allowedStringsOnRemoveLast(i)">
+                                    (clear)="allowValuesClearAt(i)"
+                                    (keydown.backspace)="allowValueRemoveLastAt(i)">
 
-                        <mesh-chip *ngFor="let item of allowedBarStrings[i]"
-                                   (removeClick)="allowedStringsOnRemove(i, item)">
+                        <mesh-chip *ngFor="let item of allowValues[i]"
+                                   (removeClick)="allowValueRemoveAt(i, item)">
                             {{ item }}
                         </mesh-chip>
                     </gtx-search-bar>
