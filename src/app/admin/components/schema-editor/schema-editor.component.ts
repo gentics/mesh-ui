@@ -30,6 +30,9 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
     set schema(value: string) {
         this._schema = JSON.parse(value);
+        if (this.formGroup instanceof FormGroup) {
+            this.formGroup.patchValue(this._schema, { emitEvent: false });
+        }
     }
     @Output() schemaChange = new EventEmitter<string>();
 
@@ -152,20 +155,17 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      */
     protected formGroupInit(): void {
         this.formGroup = this.formBuilder.group({
-            name: ['', Validators.required],
-            container: [false],
-            description: [''],
-            displayField: ['', Validators.required],
-            segmentField: [''],
-            urlFields: [''],
-            // for testing:
-            // name: ['testschema-01', Validators.required],
-            // container: [false],
-            // description: [''],
-            // displayField: ['testfield-01', Validators.required],
-            // segmentField: [''],
-            // urlFields: [''],
-            fields: this.formBuilder.array([this.createNewField()])
+            name: [this._schema.name || '', Validators.required],
+            container: [this._schema.container || false],
+            description: [this._schema.description || ''],
+            displayField: [this._schema.displayField || ''],
+            segmentField: [this._schema.segmentField || ''],
+            urlFields: [this._schema.urlFields || []],
+            fields: this.formBuilder.array(
+                this._schema.fields
+                    ? this.createFieldsFromData(this._schema.fields as SchemaField[])
+                    : [this.createNewField()]
+            )
         });
 
         // listen to form changes
@@ -242,12 +242,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         return schemaField;
                     })
                 };
-                console.log('!!! schema:', this._schema);
-                // this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
+                this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
             });
-
-        // trigger first change to update sibling component mesh-monaco-editor
-        this.formGroup.updateValueAndValidity();
     }
 
     formGroupIsValid(): boolean {
@@ -273,15 +269,23 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             listType: [null],
             allow: [null]
         });
-        // for testing:
-        // return this.formBuilder.group({
-        //     name: ['testfield-01', Validators.required],
-        //     label: ['Testfield 01', Validators.required],
-        //     type: ['number', Validators.required],
-        //     required: [false],
-        //     listType: [null],
-        //     allow: [null]
-        // });
+    }
+
+    protected createFieldFromData(field: SchemaField): FormGroup {
+        return this.formBuilder.group({
+            name: [field.name || '', Validators.required],
+            label: [field.label || '', Validators.required],
+            type: [field.type || '', Validators.required],
+            required: [field.required || false],
+            listType: [field.listType || ''],
+            allow: [field.allow || '']
+        });
+    }
+
+    protected createFieldsFromData(fields: SchemaField[]): FormGroup[] {
+        return fields.map(field => {
+            return this.createFieldFromData(field);
+        });
     }
 
     fieldAdd(): void {
