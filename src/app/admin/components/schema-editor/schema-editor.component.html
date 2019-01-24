@@ -7,7 +7,7 @@
                    label="Schema Name"
                    formControlName="name"></gtx-input>
         <p *ngIf="getErrorFromControlOfType('name', 'required')"
-           class="warning">required</p>
+           class="input-note invalid">required</p>
     </div>
 
     <div class="small-12 medium-2 columns">
@@ -32,8 +32,8 @@
                         [value]="displayField.value">{{ displayField.label }}</gtx-option>
         </gtx-select>
         <p *ngIf="getErrorFromControlOfType('displayField', 'required')"
-           class="warning">required</p>
-        <p class="warning"
+           class="input-note invalid">required</p>
+        <p class="input-note hint"
            *ngIf="! hasNamedFields()">Create at least one valid field schema field</p>
     </div>
 
@@ -43,7 +43,7 @@
             <gtx-option *ngFor="let segmentField of segmentFields"
                         [value]="segmentField.value">{{ segmentField.label }}</gtx-option>
         </gtx-select>
-        <p class="warning"
+        <p class="input-note hint"
            *ngIf="! hasNamedFields()">Create at least one valid field schema field</p>
     </div>
 
@@ -66,18 +66,18 @@
                                label="Field Name"
                                formControlName="name"></gtx-input>
                     <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'name', 'required')"
-                       class="warning">required</p>
+                       class="input-note invalid">required</p>
                     <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'name', 'duplicate')"
-                       class="warning">Duplicate content</p>
+                       class="input-note invalid">Duplicate content</p>
                 </div>
 
                 <div class="small-12 medium-3 columns">
                     <gtx-textarea label="Field Label"
                                   formControlName="label"></gtx-textarea>
                     <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'label', 'required')"
-                       class="warning">required</p>
+                       class="input-note invalid">required</p>
                     <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'label', 'duplicate')"
-                       class="warning">Duplicate content</p>
+                       class="input-note invalid">Duplicate content</p>
                 </div>
 
                 <div class="small-12 medium-2 columns">
@@ -87,7 +87,7 @@
                                     [value]="type.value">{{ type.label }}</gtx-option>
                     </gtx-select>
                     <p *ngIf="getErrorFromControlInFromArrayOfType(i, 'type', 'required')"
-                       class="warning">required</p>
+                       class="input-note invalid">required</p>
                 </div>
 
                 <div class="small-12 medium-2 columns">
