@@ -123,6 +123,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         const options = this.options;
         options.value = this._value;
         options.language = this.language;
+        options.automaticLayout = true;
 
         if (this.jsonSchema) {
             monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -176,10 +177,17 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
      * @param value
      */
     updateValue(value: string) {
-        this.value = value;
-        this.onChange(value);
-        this.onTouched();
-        this.change.emit(value);
+        // only emit if valid JSON
+        try {
+            if (JSON.parse(value)) {
+                this.value = value;
+                this.onChange(value);
+                this.onTouched();
+                this.change.emit(value);
+            }
+        } catch (e) {
+            return;
+        }
     }
 
     /**

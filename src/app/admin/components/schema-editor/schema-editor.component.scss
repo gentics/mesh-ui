@@ -8,18 +8,7 @@
 
 .checkbox-wrapper {
     padding-top: 1.8rem;
-    // display: flex;
-    // height: 100%;
 
-    // & > div {
-    //     align-self: center;
-    // }
-
-    // /deep/ gtx-dropdown-list {
-    //     .btn, .btn-large, .btn-flat {
-    //         padding: 0;
-    //     }
-    // }
     @media screen and (max-width: $medium-screen) {
         padding-top: 0;
         padding-bottom: 1rem;
@@ -57,16 +46,6 @@
 }
 
 /deep/ gtx-input {
-    // label {
-    //     @media screen and (max-width: $medium-screen) {
-    //         padding-top: 1rem;
-    //     }
-    
-    //     @media screen and (max-width: $small-screen) {
-    //         padding-top: 1rem;
-    //     }   
-    // }
-
     input {
         margin-bottom: 0.4rem !important;
 
@@ -106,9 +85,6 @@
     border: 2px solid #d6d6da;
     border-radius: 3px;
     margin-top: 1.2rem;
-    // flex-grow: 1;
-    // z-index: 1;
-    // margin: 3px;
     box-shadow: none;
     background-color: $gtx-color-off-white;
 

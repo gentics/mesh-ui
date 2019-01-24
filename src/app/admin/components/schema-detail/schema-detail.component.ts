@@ -76,8 +76,6 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         });
 
         this.subscription = this.schema$.subscribe(schema => {
-            console.log('!!! SOURCE:', schema);
-            console.log('!!! SOURCE stringified:', JSON.parse(JSON.stringify(schema)));
             this.schemaJson$.next(schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`);
         });
 
@@ -173,8 +171,16 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     }
 }
 
-const updateFields: Array<keyof SchemaResponse> = ['name', 'description', 'fields'];
+const updateFields: Array<keyof SchemaResponse> = [
+    'name',
+    'description',
+    'fields',
+    'displayField',
+    'segmentField',
+    'urlFields'
+];
 
 function stripSchemaFields(schema: SchemaResponse): any {
+    schema.fields.sort((a: any, b: any) => a.name.localeCompare(b.name));
     return updateFields.reduce((obj, key) => ({ ...obj, [key]: schema[key] }), {});
 }

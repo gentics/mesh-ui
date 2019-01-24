@@ -4,13 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { Microschema } from '../../../common/models/microschema.model';
-import {
-    FieldSchemaFromServer,
-    FieldSchemaFromServerType,
-    ListTypeFieldType,
-    Schema
-} from '../../../common/models/schema.model';
-import { FieldSchemaFromServer, SchemaResponse } from '../../../common/models/server-models';
+import { ListTypeFieldType, Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
+import { FieldSchemaFromServer, SchemaUpdateRequest } from '../../../common/models/server-models';
 import { simpleCloneDeep } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
@@ -36,7 +31,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         if (!value) {
             return;
         }
-        console.log('!!! SET schema:', value);
         this._schema = JSON.parse(value);
         // if formGroup initiated, fill it with provided data
         if (this.formGroup instanceof FormGroup) {
@@ -44,7 +38,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         }
     }
     @Output() schemaChange = new EventEmitter<string>();
-    protected _schema: SchemaResponse;
+    protected _schema: SchemaUpdateRequest | Schema;
 
     /** Schema form */
     formGroup: FormGroup;
@@ -62,7 +56,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     allowValues: Array<Set<string>> = [];
 
     /** Providing data for Schema Field List Type dropdown list */
-    FieldSchemaFromServerListTypes: Array<{ value: FieldSchemaFromServerType; label: string }> = [
+    schemaFieldListTypes: Array<{ value: SchemaFieldType; label: string }> = [
         {
             value: 'binary',
             label: 'Binary'
@@ -98,8 +92,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     ];
 
     /** Providing data for Schema Field Type dropdown list */
-    FieldSchemaFromServerTypes: Array<{ value: FieldSchemaFromServerType; label: string }> = [
-        ...this.FieldSchemaFromServerListTypes,
+    schemaFieldTypes: Array<{ value: SchemaFieldType; label: string }> = [
+        ...this.schemaFieldListTypes,
         {
             value: 'list',
             label: 'List'
@@ -107,7 +101,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     ];
 
     /** Convenience getter for form fields array */
-    get FieldSchemaFromServers(): FormArray {
+    get schemaFields(): FormArray {
         return this.formGroup.get('fields') as FormArray;
     }
 
@@ -166,8 +160,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      * Initialize form with empty/default data and listen to changes
      */
     protected formGroupInit(): void {
-        // console.log( '!!! INIT _schema:', this._schema );
-        console.log('!!! INIT schema:', this.schema);
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
             name: [this._schema.name || '', Validators.required],
@@ -178,16 +170,14 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             urlFields: [this._schema.urlFields || []],
             fields: this.formBuilder.array(
                 this._schema.fields
-                    ? this.createFieldsFromData(this._schema.fields as FieldSchemaFromServer[])
+                    ? this.createFieldsFromData(this._schema.fields as SchemaField[])
                     : [this.createNewField()]
             )
         });
 
-        console.log('!!! formGroup:', this.formGroup.value);
-
         // if init value has been provided, fill related data properties
         if (this._schema && this._schema.fields instanceof Array && this._schema.fields.length > 0) {
-            (this._schema.fields as FieldSchemaFromServer[]).forEach(field => {
+            (this._schema.fields as SchemaField[]).forEach(field => {
                 this.displayFields.push({ value: field.name, label: field.name });
                 this.segmentFields.push({ value: field.name, label: field.name });
             });
@@ -213,7 +203,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         value.urlFields.length > 0 &&
                         ({ urlFields: value.urlFields } as any)),
                     fields: value.fields.map((field: any, index: number) => {
-                        const FieldSchemaFromServer: FieldSchemaFromServer = {
+                        const schemaField: FieldSchemaFromServer = {
                             name: field.name,
                             type: field.type,
                             ...(field.label.length > 0 && ({ label: field.label } as any)),
@@ -248,7 +238,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
                         // if allow property should exist, assign appropriate data
                         if (this.allowValues[index] && Array.from(this.allowValues[index]).length > 0) {
-                            Object.assign(FieldSchemaFromServer, { allow: Array.from(this.allowValues[index]) });
+                            Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
                         } else {
                             this.propertyPurge(field, index, 'allow');
                         }
@@ -263,10 +253,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         this.fieldHasDuplicateValue(index, 'name');
                         this.fieldHasDuplicateValue(index, 'label');
 
-                        return FieldSchemaFromServer;
+                        return schemaField;
                     })
                 };
-                // this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
+                this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
             });
     }
 
@@ -295,7 +285,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         });
     }
 
-    protected createFieldFromData(field: FieldSchemaFromServer): FormGroup {
+    protected createFieldFromData(field: SchemaField): FormGroup {
         if (field.allow instanceof Array && field.allow.length > 0) {
             this.allowValues.push(new Set<string>(field.allow));
         }
@@ -309,26 +299,26 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         });
     }
 
-    protected createFieldsFromData(fields: FieldSchemaFromServer[]): FormGroup[] {
+    protected createFieldsFromData(fields: SchemaField[]): FormGroup[] {
         return fields.map(field => {
             return this.createFieldFromData(field);
         });
     }
 
     fieldAdd(): void {
-        this.FieldSchemaFromServers.push(this.createNewField());
+        this.schemaFields.push(this.createNewField());
     }
 
     fieldRemoveAt(index: number): void {
-        this.FieldSchemaFromServers.removeAt(index);
+        this.schemaFields.removeAt(index);
     }
 
     fieldRemoveLast(): void {
-        this.fieldRemoveAt(this.FieldSchemaFromServers.length - 1);
+        this.fieldRemoveAt(this.schemaFields.length - 1);
     }
 
     fieldHasDuplicateValue(index: number, formControlName: 'name' | 'label'): boolean {
-        const fields = this.FieldSchemaFromServers.value as FieldSchemaFromServer[];
+        const fields = this.schemaFields.value as SchemaField[];
         const ownValue = fields[index][formControlName];
         // if not existing, return default
         if (!ownValue) {
@@ -345,7 +335,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 return field[formControlName] && field[formControlName]!.toLocaleLowerCase() === ownValue.toLowerCase();
             }).length > 0;
         // notify formControl in formGroup of this extended validation logic
-        const control = this.FieldSchemaFromServers.controls[index].get(formControlName);
+        const control = this.schemaFields.controls[index].get(formControlName);
         if (isDuplicate === true) {
             control!.setErrors({ duplicate: true });
         } else {
@@ -360,10 +350,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     getErrorFromControlInFromArrayOfType(
         index: number,
-        formControlName: keyof FieldSchemaFromServer,
+        formControlName: keyof SchemaField,
         errorType: string
     ): boolean {
-        return this.FieldSchemaFromServers.controls[index].get(formControlName)!.hasError(errorType);
+        return this.schemaFields.controls[index].get(formControlName)!.hasError(errorType);
     }
 
     // MANAGE SCHEMA.FIELD[].ALLOW VALUES //////////////////////////////////////////////////////////////////////////////
@@ -495,7 +485,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
 
-    private propertyPurge(field: any, index: number, property: keyof FieldSchemaFromServer): void {
+    private propertyPurge(field: any, index: number, property: keyof SchemaField): void {
         if (field[property]) {
             delete field[property];
         }
@@ -503,7 +493,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         if (!this._schema) {
             return;
         }
-        const fieldToDelete = (this._schema.fields && (this._schema.fields[index] as FieldSchemaFromServer)) || null;
+        const fieldToDelete = (this._schema.fields && (this._schema.fields[index] as SchemaField)) || null;
         if (fieldToDelete && fieldToDelete[property]) {
             delete fieldToDelete[property];
         }
