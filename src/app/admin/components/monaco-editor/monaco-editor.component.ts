@@ -1,6 +1,6 @@
 import {
-    forwardRef,
     AfterViewInit,
+    ChangeDetectionStrategy,
     Component,
     ElementRef,
     EventEmitter,
@@ -44,6 +44,7 @@ export enum Severity {
     selector: 'mesh-monaco-editor',
     template: `<div (window:resize)="onResize()" id='editor' #editor class="monaco-editor"></div>`,
     styleUrls: ['./monaco-editor.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -195,6 +196,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         if (this._editor) {
             this._editor.getModel().setValue(this._value);
         }
+        this.change.emit(value);
     }
 
     onResize() {

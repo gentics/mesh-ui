@@ -3,13 +3,9 @@
 </div>
 
 <gtx-tabs>
-    <gtx-tab title="Editor">
-        <mesh-schema-editor>
-        </mesh-schema-editor>
-    </gtx-tab>
-
     <gtx-tab title="JSON">
-        <mesh-monaco-editor [(ngModel)]="schemaJson"
+        <mesh-monaco-editor [ngModel]="schemaJson$ | async"
+                            (ngModelChange)="schemaJson = $event"
                             language="json"
                             [jsonSchema]="schema"
                             (errors)="onErrorChange($event)"></mesh-monaco-editor>
@@ -17,6 +13,13 @@
         <gtx-button [disabled]="errors.length > 0"
                     style="margin-top: 15px;"
                     (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
+    </gtx-tab>
+
+    <gtx-tab title="Editor">
+        <mesh-schema-editor [schema]="schemaJson$ | async"
+                            (schemaChange)="schemaJson = $event"
+                            (save)="save()">
+        </mesh-schema-editor>
     </gtx-tab>
 
     <gtx-tab title="Projects">

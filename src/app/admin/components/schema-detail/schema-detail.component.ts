@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -22,7 +23,8 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
-    templateUrl: './schema-detail.component.html'
+    templateUrl: './schema-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SchemaDetailComponent implements OnInit, OnDestroy {
     // TODO Disable save button when editor is pristine
@@ -42,7 +44,15 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     projectAssignments?: ProjectAssignments;
 
     uuid$: Observable<string>;
-    schemaJson = '';
+
+    get schemaJson(): string {
+        return this.schemaJson$.getValue();
+    }
+    set schemaJson(v: string) {
+        this.schemaJson$.next(v);
+    }
+    schemaJson$ = new BehaviorSubject<string>('{}');
+
     // TODO load json schema from mesh instead of static file
     schema = require('./schema.schema.json');
     errors: MarkerData[] = [];
@@ -66,7 +76,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         });
 
         this.subscription = this.schema$.subscribe(schema => {
-            this.schemaJson = schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`;
+            this.schemaJson$.next(schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`);
         });
 
         this.schema$
@@ -116,6 +126,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     }
 
     save() {
+        console.log('!!! this.errors:', this.errors);
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.schemaJson);
             if (this.isNew) {

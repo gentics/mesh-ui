@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -24,7 +24,27 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     formGroup: FormGroup;
 
-    schema: SchemaUpdateRequest | Schema;
+    @Input()
+    get schema(): string {
+        return JSON.stringify(this._schema, undefined, 4);
+    }
+    set schema(value: string) {
+        this._schema = JSON.parse(value);
+    }
+    @Output() schemaChange = new EventEmitter<string>();
+
+    @Output() save = new EventEmitter<string>();
+
+    private _schema: SchemaUpdateRequest | Schema = {
+        name: '',
+        displayField: '',
+        fields: [
+            {
+                name: '',
+                type: ''
+            }
+        ]
+    };
 
     allSchemas$: Observable<Schema[]>;
 
@@ -138,6 +158,13 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             displayField: ['', Validators.required],
             segmentField: [''],
             urlFields: [''],
+            // for testing:
+            // name: ['testschema-01', Validators.required],
+            // container: [false],
+            // description: [''],
+            // displayField: ['testfield-01', Validators.required],
+            // segmentField: [''],
+            // urlFields: [''],
             fields: this.formBuilder.array([this.createNewField()])
         });
 
@@ -151,7 +178,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 this.segmentFields = [];
 
                 // assign form data to component data
-                this.schema = {
+                this._schema = {
                     name: value.name,
                     container: value.container,
                     description: value.description,
@@ -169,14 +196,14 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
                         // if something has changed, clear up before saving
                         if (
-                            (this.schema &&
-                                this.schema.fields &&
-                                this.schema.fields[index] &&
-                                this.schema.fields[index].type !== field.type) ||
-                            (this.schema &&
-                                this.schema.fields &&
-                                this.schema.fields[index] &&
-                                this.schema.fields[index].listType !== field.listType)
+                            (this._schema &&
+                                this._schema.fields &&
+                                this._schema.fields[index] &&
+                                this._schema.fields[index].type !== field.type) ||
+                            (this._schema &&
+                                this._schema.fields &&
+                                this._schema.fields[index] &&
+                                this._schema.fields[index].listType !== field.listType)
                         ) {
                             this.allowValuesClearAt(index);
                             this.propertyPurge(field, index, 'allow');
@@ -215,8 +242,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         return schemaField;
                     })
                 };
-                console.log('!!! schema:', this.schema);
+                console.log('!!! schema:', this._schema);
+                // this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
             });
+
+        // trigger first change to update sibling component mesh-monaco-editor
+        this.formGroup.updateValueAndValidity();
     }
 
     formGroupIsValid(): boolean {
@@ -242,6 +273,15 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             listType: [null],
             allow: [null]
         });
+        // for testing:
+        // return this.formBuilder.group({
+        //     name: ['testfield-01', Validators.required],
+        //     label: ['Testfield 01', Validators.required],
+        //     type: ['number', Validators.required],
+        //     required: [false],
+        //     listType: [null],
+        //     allow: [null]
+        // });
     }
 
     fieldAdd(): void {
@@ -415,6 +455,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     schemaCreate(): void {
         console.log('!!! schemaCreate()');
+        this.save.emit(JSON.stringify(this._schema, undefined, 4));
     }
 
     schemaDelete(): void {
@@ -428,10 +469,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             delete field[property];
         }
 
-        if (!this.schema) {
+        if (!this._schema) {
             return;
         }
-        const fieldToDelete = this.schema.fields[index] as SchemaField;
+        const fieldToDelete = (this._schema.fields && (this._schema.fields[index] as SchemaField)) || null;
         if (fieldToDelete && fieldToDelete[property]) {
             delete fieldToDelete[property];
         }
