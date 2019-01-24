@@ -114,7 +114,8 @@
 
                 <div [hidden]="field.value.type !== 'node' && field.value.listType !== 'node'"
                      class="small-12 medium-8 columns">
-                    <gtx-select (change)="allowValueSetAt(i, $event)"
+                    <gtx-select [value]="allowValueGetAt(i)"
+                                (change)="allowValueSetAt(i, $event)"
                                 [multiple]="true"
                                 label="Allowed Schemas">
                         <gtx-option *ngFor="let schema of (allSchemas$ | async)"
@@ -124,7 +125,8 @@
 
                 <div [hidden]="field.value.type !== 'micronode' && field.value.listType !== 'micronode'"
                      class="small-12 medium-8 columns">
-                    <gtx-select (change)="allowValueSetAt(i, $event)"
+                    <gtx-select [value]="allowValueGetAt(i)"
+                                (change)="allowValueSetAt(i, $event)"
                                 [multiple]="true"
                                 label="Allowed Microschemas">
                         <gtx-option *ngFor="let microschema of (allMicroschemas$ | async)"
