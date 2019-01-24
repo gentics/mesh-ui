@@ -196,7 +196,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
         if (this._editor) {
             this._editor.getModel().setValue(this._value);
         }
-        this.change.emit(value);
     }
 
     onResize() {
