@@ -60,7 +60,8 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
     @Input() jsonSchema: any;
     @Input()
     set value(v: string) {
-        if (v !== this._value) {
+        const value = v || '{}';
+        if (value !== this._value) {
             this._value = v;
             this.onChange(v);
         }

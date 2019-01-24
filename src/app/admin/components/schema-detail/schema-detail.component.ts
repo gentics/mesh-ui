@@ -76,6 +76,8 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         });
 
         this.subscription = this.schema$.subscribe(schema => {
+            console.log('!!! SOURCE:', schema);
+            console.log('!!! SOURCE stringified:', JSON.parse(JSON.stringify(schema)));
             this.schemaJson$.next(schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`);
         });
 
@@ -126,7 +128,6 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     }
 
     save() {
-        console.log('!!! this.errors:', this.errors);
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.schemaJson);
             if (this.isNew) {
