@@ -1,3 +1,4 @@
+import { animate, animateChild, query, style, transition, trigger, AnimationMetadata } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -17,7 +18,58 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
     selector: 'mesh-schema-editor',
     templateUrl: './schema-editor.component.html',
     styleUrls: ['./schema-editor.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger('statusAnim', [
+            transition(':enter', [style({ opacity: 0 }), animate('0.2s', style({ opacity: 1 }))]),
+            transition(':leave', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))])
+        ]),
+        trigger('ngForAnimParent', [transition(':enter, :leave', [query('@ngForAnimChild', [animateChild()])])]),
+        trigger('ngForAnimChild', [
+            transition('void => *', [
+                style({
+                    opacity: 0,
+                    height: '0',
+                    'padding-top': '0',
+                    'padding-bottom': '0',
+                    'margin-top': '0',
+                    'margin-bottom': '0'
+                }),
+                animate(
+                    '0.2s ease',
+                    style({
+                        opacity: 1,
+                        height: '*',
+                        'padding-top': '*',
+                        'padding-bottom': '*',
+                        'margin-top': '*',
+                        'margin-bottom': '*'
+                    })
+                )
+            ]),
+            transition('* => void', [
+                style({
+                    opacity: 1,
+                    height: '*',
+                    'padding-top': '*',
+                    'padding-bottom': '*',
+                    'margin-top': '*',
+                    'margin-bottom': '*'
+                }),
+                animate(
+                    '0.2s ease',
+                    style({
+                        opacity: 0,
+                        height: '0',
+                        'padding-top': '0',
+                        'padding-bottom': '0',
+                        'margin-top': '0',
+                        'margin-bottom': '0'
+                    })
+                )
+            ])
+        ])
+    ]
 })
 export class SchemaEditorComponent implements OnInit, OnDestroy {
     // PROPERTIES //////////////////////////////////////////////////////////////////////////////
@@ -58,10 +110,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     /** Providing data for Schema Field List Type dropdown list */
     schemaFieldListTypes: Array<{ value: SchemaFieldType; label: string }> = [
         {
-            value: 'binary',
-            label: 'Binary'
-        },
-        {
             value: 'boolean',
             label: 'Boolean'
         },
@@ -95,6 +143,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     schemaFieldTypes: Array<{ value: SchemaFieldType; label: string }> = [
         ...this.schemaFieldListTypes,
         {
+            value: 'binary',
+            label: 'Binary'
+        },
+        {
             value: 'list',
             label: 'List'
         }
@@ -113,6 +165,9 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     /** Providing data for Schema urlFields dropdown list */
     urlFields: Array<{ value: string; label: string }> = [];
+
+    /** Regular expression for text input validation checking for allowed characters */
+    allowedChars = new RegExp(/^[a-zA-Z0-9_]+$/);
 
     private destroyed$ = new Subject<void>();
 
@@ -162,7 +217,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     protected formGroupInit(): void {
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
-            name: [this._schema.name || '', Validators.required],
+            name: [this._schema.name || '', [Validators.required, Validators.pattern(this.allowedChars)]],
             container: [this._schema.container || false],
             description: [this._schema.description || ''],
             displayField: [this._schema.displayField || ''],
@@ -188,6 +243,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             .distinctUntilChanged()
             .takeUntil(this.destroyed$)
             .subscribe((value: any) => {
+                console.log('!!! form NAME:', value.name);
+                console.log('!!! form NAME:', this.formGroup.get('name')!.getError('pattern'));
                 // reset data
                 this.displayFields = [];
                 this.segmentFields = [];
@@ -246,7 +303,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             this.allowValuesOnStringInputChangeAt(index);
                         }
 
-                        // fill data for displayFields input
+                        // fill data for dropdown-inputs
                         if (field.name) {
                             this.displayFields.push({ value: field.name, label: field.name });
                             this.segmentFields.push({ value: field.name, label: field.name });
@@ -254,12 +311,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
                         // EXTENDED VALIDATION LOGIC
                         this.fieldHasDuplicateValue(index, 'name');
-                        this.fieldHasDuplicateValue(index, 'label');
 
                         return schemaField;
                     })
                 };
-                // console.log( '!!! this.schema:', this.schema );
                 this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
             });
     }
@@ -272,6 +327,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         return this.displayFields.length > 0;
     }
 
+    hasStringFields(): boolean {
+        return this.schemaFields.value.filter((field: SchemaField) => field.type === 'string') > 0 || false;
+    }
+
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -280,8 +339,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     protected createNewField(): FormGroup {
         this.allowValues.push(new Set<string>());
         return this.formBuilder.group({
-            name: ['', Validators.required],
-            label: ['', Validators.required],
+            name: ['', [Validators.required, Validators.pattern(this.allowedChars)]],
+            label: [''],
             type: ['', Validators.required],
             required: [false],
             listType: [''],
@@ -296,8 +355,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             this.allowValues.push(new Set<string>([]));
         }
         return this.formBuilder.group({
-            name: [field.name || '', Validators.required],
-            label: [field.label || '', Validators.required],
+            name: [field.name || '', [Validators.required, Validators.pattern(this.allowedChars)]],
+            label: [field.label || ''],
             type: [field.type || '', Validators.required],
             required: [field.required || false],
             listType: [field.listType || ''],
@@ -320,7 +379,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     fieldRemoveLast(): void {
-        this.fieldRemoveAt(this.schemaFields.length - 1);
+        this.fieldRemoveAt(this.schemaFields.value.length - 1);
     }
 
     fieldHasDuplicateValue(index: number, formControlName: 'name' | 'label'): boolean {
@@ -463,6 +522,9 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         const newForm = simpleCloneDeep(this.formGroup.value);
         const newField = newForm.fields[index];
         // update mesh chip array cleaned from forbiddden characters
+        if (!newField.allow) {
+            return;
+        }
         this.allowValues[index].add(newField.allow.replace(new RegExp(/\W/, 'g'), ''));
         // empty field after new value is displayed as chip
         newField.allow = '';
@@ -473,8 +535,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     allowValuesOnStringInputChangeAt(index: number): void {
         const newForm = simpleCloneDeep(this.formGroup.value);
         const newField = newForm.fields[index];
-        console.log('!!! newField:', newField.allow);
-        console.log('!!! this.allowValues:', this.allowValues.map(value => Array.from(value)));
         if (!newField.allow) {
             return;
         }
