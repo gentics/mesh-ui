@@ -363,7 +363,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         const test = this.formBuilder.group({
             name: ['', [Validators.required, Validators.pattern(this.allowedChars)]],
             label: [''],
-            type: ['micronode', Validators.required],
+            type: ['string', Validators.required],
             required: [false],
             listType: [''],
             allow: ['']
@@ -463,6 +463,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         return this.schemaFields.controls[index].get(formControlName)!.hasError(errorType);
     }
 
+    formControlInArrayClear(index: number, property: keyof SchemaField): void {
+        if (this.schemaFields.controls[index].get(property)) {
+            this.schemaFields.controls[index].get(property)!.setValue('', { emitEvent: false });
+        }
+    }
+
     // MANAGE SCHEMA.FIELD[].ALLOW VALUES //////////////////////////////////////////////////////////////////////////////
 
     allowValueGetAt(index: number): string[] {
@@ -555,10 +561,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     allowValueOnStringInputAddAt(index: number, value: any): void {
         if (typeof value === 'string' && value !== '') {
             // as formGroup.field[].allow.control values are represented not as input value, empty it
-            if (this.schemaFields.controls[index].get('allow')) {
-                this.schemaFields.controls[index].get('allow')!.setValue('', { emitEvent: false });
-            }
-            this.allowValues[index].add(value.replace(new RegExp(/\W/, 'g'), ''));
+            this.formControlInArrayClear(index, 'allow');
+            this.allowValues[index].add(value.replace(new RegExp(/\s/, 'g'), ''));
         }
     }
 
@@ -568,7 +572,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         }
         const allow = this.schemaFields.controls[index].get('allow')!.value;
         // if input value is seperated by space or comma, then add as chip
-        if (new RegExp(/\w+\W/, 'g').test(allow)) {
+        if (new RegExp(/\w+\s/, 'g').test(allow)) {
             this.allowValueOnStringInputAddAt(index, allow);
         }
     }

@@ -75,7 +75,7 @@
     }
     
     /* Remove margins for warning texts */
-    /deep/ gtx-search-bar, /deep/ gtx-select {
+    /deep/ gtx-select {
         margin-bottom: 2rem !important;
     
     
@@ -89,6 +89,34 @@
             @media screen and (max-width: $small-screen) {
                 padding-top: 1rem;
             }   
+        }
+    }
+
+    /deep/ gtx-search-bar {
+        position: relative;
+        // margin-bottom: 2rem !important;
+        border: none !important;
+        
+        .input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2.5rem;
+            border: 2px solid #d6d6da;
+            padding-right: 2rem;
+        }
+        .contents {
+            position: relative;
+            margin-top: 2.5rem;
+            min-height: 2.5rem;
+            border: none;
+        }
+        .clear-button {
+            position: absolute;
+            top: 0.5rem;
+            bottom: 0;
+            right: 0.5rem;
         }
     }
     

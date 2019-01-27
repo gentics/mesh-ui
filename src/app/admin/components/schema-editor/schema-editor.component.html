@@ -171,8 +171,9 @@
                     <gtx-search-bar formControlName="allow"
                                     (search)="allowValueOnStringInputAddAt(i, $event)"
                                     (keydown.backspace)="allowValueRemoveLastAt(i)"
-                                    [placeholder]="'Type to add allowed value'"
-                                    (clear)="allowValuesClearAt(i)">
+                                    placeholder="Type and press ENTER or SPACE to add allowed value"
+                                    title="Type and press ENTER or SPACE to add allowed value; press BACKSPACE to remove existing entry"
+                                    (clear)="formControlInArrayClear(i, 'allow')">
 
                         <mesh-chip *ngFor="let item of allowValues[i]"
                                    (removeClick)="allowValueRemoveAt(i, item)">
