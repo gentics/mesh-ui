@@ -1,6 +1,6 @@
-import { animate, animateChild, query, style, transition, trigger, AnimationMetadata } from '@angular/animations';
+import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -77,6 +77,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     /** Primary data object */
     @Input()
     get schema(): string {
+        console.log('!!! GET schema:', this._schema);
         return this._schema && JSON.stringify(this._schema, undefined, 4);
     }
     set schema(value: string) {
@@ -84,9 +85,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             return;
         }
         this._schema = JSON.parse(value);
+        console.log('!!! SET schema:', this._schema);
         // if formGroup initiated, fill it with provided data
         if (this.formGroup instanceof FormGroup) {
-            this.formGroup.patchValue(this._schema);
+            this.formGroup.patchValue(this.schemaAsFormValue(this._schema));
         }
     }
     @Output() schemaChange = new EventEmitter<string>();
@@ -212,8 +214,21 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////
 
     /**
+     * Returns modified schema to fit the form's data structure
+     * @param schema of original state
+     */
+    schemaAsFormValue(schema: SchemaUpdateRequest | Schema): SchemaUpdateRequest | Schema {
+        return (
+            (schema as any).fields
+                // as formGroup.field[].allow.control values are represented not as input value, empty it
+                .map((field: SchemaField) => this.objectRemoveProperty(field, 'allow') as SchemaField)
+        );
+    }
+
+    /**
      * Initialize form with empty/default data and listen to changes
      */
+    testIndex = 0;
     protected formGroupInit(): void {
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
@@ -243,8 +258,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             .distinctUntilChanged()
             .takeUntil(this.destroyed$)
             .subscribe((value: any) => {
-                console.log('!!! form NAME:', value.name);
-                console.log('!!! form NAME:', this.formGroup.get('name')!.getError('pattern'));
+                this.testIndex++;
                 // reset data
                 this.displayFields = [];
                 this.segmentFields = [];
@@ -293,18 +307,26 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             this.propertyPurge(field, index, 'listType');
                         }
 
-                        // if entires in allow, assign them to data object but remove from form
-                        if (Array.from(this.allowValues[index]).length > 0) {
-                            Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
-                        }
-
                         // if of type string, trigger search bar functionality
                         if (field.type === 'string' || field.listType === 'string') {
                             this.allowValuesOnStringInputChangeAt(index);
+
+                            // if entries in allow, assign them to data object but remove from form
+                            if (Array.from(this.allowValues[index]).length > 0) {
+                                Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
+                            }
+                            // // as formGroup.field[].allow.control values are represented not as input value, empty it
+                            // if (this.schemaFields.controls[index].get('allow')) {
+                            //     this.schemaFields.controls[index].get('allow')!.setValue(null, {
+                            //         emitEvent: false,
+                            //         // onlySelf: true
+                            //     });
+                            // }
                         }
 
                         // fill data for dropdown-inputs
                         if (field.name) {
+                            console.log('!!! ' + this.testIndex + ' if (field.name)');
                             this.displayFields.push({ value: field.name, label: field.name });
                             this.segmentFields.push({ value: field.name, label: field.name });
                         }
@@ -315,6 +337,19 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         return schemaField;
                     })
                 };
+                console.log('!!! CYCLE:', this.testIndex++);
+                console.log(
+                    '!!! ' + this.testIndex + ' ONCHANGE this.allowValues[index]:',
+                    this.allowValues.map(allowed => Array.from(allowed))
+                );
+                console.log(
+                    '!!! ' + this.testIndex + ' formGroup ALLOWED:',
+                    (this.schemaFields.value as SchemaField[]).map(field => field.allow)
+                );
+                console.log(
+                    '!!! ' + this.testIndex + ' this._schema:',
+                    (this._schema.fields as SchemaField[]).map(field => field.allow)
+                );
                 this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
             });
     }
@@ -338,14 +373,24 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      */
     protected createNewField(): FormGroup {
         this.allowValues.push(new Set<string>());
-        return this.formBuilder.group({
+        const test = this.formBuilder.group({
             name: ['', [Validators.required, Validators.pattern(this.allowedChars)]],
             label: [''],
-            type: ['', Validators.required],
+            type: ['string', Validators.required],
             required: [false],
             listType: [''],
             allow: ['']
         });
+        return test;
+    }
+
+    /**
+     * Creating a new form group specifically initiated for specified index
+     * @param index pointing at array position
+     */
+    protected createNewFieldForIndex(index: number): FormGroup {
+        this.allowValues.splice(index, 0, new Set<string>());
+        return this.createNewField();
     }
 
     protected createFieldFromData(field: SchemaField): FormGroup {
@@ -365,13 +410,19 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     protected createFieldsFromData(fields: SchemaField[]): FormGroup[] {
-        return fields.map(field => {
-            return this.createFieldFromData(field);
-        });
+        return fields.map(field => this.createFieldFromData(field));
     }
 
     fieldAdd(): void {
         this.schemaFields.push(this.createNewField());
+    }
+
+    /**
+     * Insert new field form at specified index
+     * @param index form array index
+     */
+    fieldAddAt(index: number): void {
+        this.schemaFields.insert(index, this.createNewFieldForIndex(index));
     }
 
     fieldRemoveAt(index: number): void {
@@ -400,23 +451,27 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 return field[formControlName] && field[formControlName]!.toLocaleLowerCase() === ownValue.toLowerCase();
             }).length > 0;
         // notify formControl in formGroup of this extended validation logic
-        const control = this.schemaFields.controls[index].get(formControlName);
+        const control = this.schemaFields.controls[index].get(formControlName) as AbstractControl | any;
         if (isDuplicate === true) {
-            control!.setErrors({ duplicate: true });
+            // assign new error to field errors
+            control!.setErrors({ ...control!.errors, ...{ duplicate: true } });
         } else {
-            control!.setErrors(null);
+            // if exist, create new error object without duplicate error
+            const errors =
+                control!.errors && (this.objectRemoveProperty(control!.errors, 'duplicate') as ValidationErrors | null);
+            control!.setErrors(errors);
         }
         return isDuplicate;
     }
 
-    getErrorFromControlOfType(formControlName: keyof Schema, errorType: string): boolean {
+    getFormControlErrorOfType(formControlName: keyof Schema, errorType: TSchemaEditorErrors): boolean {
         return this.formGroup.get(formControlName)!.hasError(errorType);
     }
 
-    getErrorFromControlInFromArrayOfType(
+    getFormControlInArrayErrorOfType(
         index: number,
         formControlName: keyof SchemaField,
-        errorType: string
+        errorType: TSchemaEditorErrors
     ): boolean {
         return this.schemaFields.controls[index].get(formControlName)!.hasError(errorType);
     }
@@ -518,29 +573,24 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         return this.allowValues[index].has(value);
     }
 
-    allowValueOnStringInputAddAt(index: number): void {
-        const newForm = simpleCloneDeep(this.formGroup.value);
-        const newField = newForm.fields[index];
-        // update mesh chip array cleaned from forbiddden characters
-        if (!newField.allow) {
-            return;
+    allowValueOnStringInputAddAt(index: number, value: any): void {
+        if (typeof value === 'string' && value !== '') {
+            // as formGroup.field[].allow.control values are represented not as input value, empty it
+            if (this.schemaFields.controls[index].get('allow')) {
+                this.schemaFields.controls[index].get('allow')!.setValue('', { emitEvent: false });
+            }
+            this.allowValues[index].add(value.replace(new RegExp(/\W/, 'g'), ''));
         }
-        this.allowValues[index].add(newField.allow.replace(new RegExp(/\W/, 'g'), ''));
-        // empty field after new value is displayed as chip
-        newField.allow = '';
-        // assign new value to form data
-        this.formGroup.patchValue(newForm);
     }
 
     allowValuesOnStringInputChangeAt(index: number): void {
-        const newForm = simpleCloneDeep(this.formGroup.value);
-        const newField = newForm.fields[index];
-        if (!newField.allow) {
+        if (!this.schemaFields.controls[index].get('allow')) {
             return;
         }
+        const allow = this.schemaFields.controls[index].get('allow')!.value;
         // if input value is seperated by space or comma, then add as chip
-        if (new RegExp(/\w+\W/, 'g').test(newField.allow)) {
-            this.allowValueOnStringInputAddAt(index);
+        if (new RegExp(/\w+\W/, 'g').test(allow)) {
+            this.allowValueOnStringInputAddAt(index, allow);
         }
     }
 
@@ -557,6 +607,20 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Returns an object without the defined property
+     * @param object to be cleared of defined property-value pair
+     * @param propertyKey of property to be removed
+     * @returns cleared object or null if object does not have any properties
+     */
+    private objectRemoveProperty(object: { [key: string]: any }, propertyKey: string): { [key: string]: any } | null {
+        return Object.getOwnPropertyNames(object).length > 0
+            ? (Object.getOwnPropertyNames(object)
+                  .map(key => key !== propertyKey && { [key]: object[key] })
+                  .reduce((objects: object, object: object) => ({ ...objects, object })) as any)
+            : null;
+    }
+
     private propertyPurge(field: any, index: number, property: keyof SchemaField): void {
         if (field[property]) {
             delete field[property];
@@ -571,3 +635,5 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         }
     }
 }
+
+export type TSchemaEditorErrors = 'required' | 'pattern' | 'duplicate';

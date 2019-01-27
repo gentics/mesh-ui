@@ -8,10 +8,10 @@
                    formControlName="name"></gtx-input>
         <div class="input-note">
             <p [@statusAnim]
-               *ngIf="getErrorFromControlOfType('name', 'required')"
+               *ngIf="getFormControlErrorOfType('name', 'required')"
                class="invalid">required</p>
             <p [@statusAnim]
-               *ngIf="getErrorFromControlOfType('name', 'pattern')"
+               *ngIf="getFormControlErrorOfType('name', 'pattern')"
                class="invalid">Invalid characters: alphanumeric and underscore only</p>
         </div>
     </div>
@@ -39,11 +39,11 @@
         </gtx-select>
         <div class="input-note">
             <p [@statusAnim]
-               *ngIf="getErrorFromControlOfType('displayField', 'required')"
+               *ngIf="getFormControlErrorOfType('displayField', 'required')"
                class="invalid">required</p>
-            <p class="hint"
+            <p class="invalid"
                [@statusAnim]
-               *ngIf="! hasNamedFields()">Create at least one valid field schema field</p>
+               *ngIf="! hasNamedFields()">Create at least one valid schema field</p>
         </div>
     </div>
 
@@ -54,9 +54,9 @@
                         [value]="segmentField.value">{{ segmentField.label }}</gtx-option>
         </gtx-select>
         <div class="input-note">
-            <p class="hint"
+            <p class="invalid"
                [@statusAnim]
-               *ngIf="! hasNamedFields()">Create at least one valid field schema field</p>
+               *ngIf="! hasNamedFields()">Create at least one valid schema field</p>
         </div>
     </div>
 
@@ -68,13 +68,23 @@
     </gtx-select>
 
     <br>
-    <h2 class="section-header medium-10 columns">Schema Fields:</h2>
+    <div class="section-header-fields medium-12 columns">
+        <h2>Schema Fields:</h2>
+        <gtx-button size="small"
+                    (click)="fieldAdd()">
+            <icon left>add</icon>New Field
+        </gtx-button>
+    </div>
 
     <div [@ngForAnimParent]
          class="schema-field small-12 medium-12 columns"
          *ngFor="let field of schemaFields.controls; let i = index">
+
         <form [@ngForAnimChild]
               [formGroup]="field">
+            <div class="field-header">
+                <h3>{{field.value?.name}}</h3>
+            </div>
             <div class="row">
                 <div class="small-12 medium-3 columns">
                     <gtx-input type="text"
@@ -82,10 +92,13 @@
                                formControlName="name"></gtx-input>
                     <div class="input-note">
                         <p [@statusAnim]
-                           *ngIf="getErrorFromControlInFromArrayOfType(i, 'name', 'required')"
+                           *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'required')"
                            class="invalid">required</p>
                         <p [@statusAnim]
-                           *ngIf="getErrorFromControlInFromArrayOfType(i, 'name', 'duplicate')"
+                           *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
+                           class="invalid">Invalid characters: alphanumeric and underscore only</p>
+                        <p [@statusAnim]
+                           *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
                            class="invalid">Duplicate content</p>
                     </div>
                 </div>
@@ -103,7 +116,7 @@
                     </gtx-select>
                     <div class="input-note">
                         <p [@statusAnim]
-                           *ngIf="getErrorFromControlInFromArrayOfType(i, 'type', 'required')"
+                           *ngIf="getFormControlInArrayErrorOfType(i, 'type', 'required')"
                            class="invalid">required</p>
                     </div>
                 </div>
@@ -156,7 +169,7 @@
                      class="string-bar small-12 medium-8 columns">
                     <label class="ng-star-inserted">Allowed Strings</label>
                     <gtx-search-bar formControlName="allow"
-                                    (search)="allowValueOnStringInputAddAt(i)"
+                                    (search)="allowValueOnStringInputAddAt(i, $event)"
                                     (keydown.backspace)="allowValueRemoveLastAt(i)"
                                     [placeholder]="'Type to add allowed value'"
                                     (clear)="allowValuesClearAt(i)">
@@ -171,34 +184,47 @@
                 <!-- INPUT DEPENDING ON listType END -->
             </div>
         </form>
-        <div class="close-button">
+        <div class="button-close">
             <gtx-button icon
                         type="secondary"
-                        (click)="fieldRemoveAt(index)">
+                        title="remove field"
+                        (click)="fieldRemoveAt(i)">
                 <icon>close</icon>
+            </gtx-button>
+        </div>
+        <div class="button-add">
+            <gtx-button icon
+                        type="secondary"
+                        title="insert field"
+                        (click)="fieldAddAt(i + 1)">
+                <icon>add</icon>
             </gtx-button>
         </div>
     </div>
 
-    <div class="small-12 medium-12 columns">
-        <gtx-button flat
-                    size="small"
-                    (click)="fieldAdd()">
-            Add field
-        </gtx-button>
+    <!-- <div class="field-controls">
+        <div class="field-controls-container-inner small-10 medium-10 columns">
+            <gtx-button flat
+                        size="small"
+                        (click)="fieldAdd()">
+                Add field
+            </gtx-button>
 
-        <gtx-button flat
-                    size="small"
-                    (click)="fieldRemoveLast()">
-            Remove field
-        </gtx-button>
-    </div>
+            <gtx-button flat
+                        size="small"
+                        (click)="fieldRemoveLast()">
+                Remove field
+            </gtx-button>
+        </div>
+    </div> -->
 
 </form>
 
 <br>
 
-<div class="small-12 medium-12 columns">
+<div class="schema-controls small-12 medium-12 columns">
+    <!-- <div class="container"> -->
+    <!-- <div class="schema-controls-container"> -->
     <gtx-button [disabled]="!formGroupIsValid()"
                 (click)="schemaCreate()">
         <icon left>add</icon>Save
@@ -207,4 +233,6 @@
     <gtx-button (click)="schemaDelete()">
         <icon left>delete</icon>Delete
     </gtx-button>
+    <!-- </div> -->
+    <!-- </div> -->
 </div>
