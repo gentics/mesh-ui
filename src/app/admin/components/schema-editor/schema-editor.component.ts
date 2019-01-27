@@ -7,7 +7,6 @@ import { Subject } from 'rxjs/Subject';
 import { Microschema } from '../../../common/models/microschema.model';
 import { ListTypeFieldType, Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
 import { FieldSchemaFromServer, SchemaUpdateRequest } from '../../../common/models/server-models';
-import { simpleCloneDeep } from '../../../common/util/util';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
@@ -75,17 +74,15 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     // PROPERTIES //////////////////////////////////////////////////////////////////////////////
 
     /** Primary data object */
-    @Input()
     get schema(): string {
-        console.log('!!! GET schema:', this._schema);
         return this._schema && JSON.stringify(this._schema, undefined, 4);
     }
+    @Input()
     set schema(value: string) {
         if (!value) {
             return;
         }
         this._schema = JSON.parse(value);
-        console.log('!!! SET schema:', this._schema);
         // if formGroup initiated, fill it with provided data
         if (this.formGroup instanceof FormGroup) {
             this.formGroup.patchValue(this.schemaAsFormValue(this._schema));
@@ -228,7 +225,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     /**
      * Initialize form with empty/default data and listen to changes
      */
-    testIndex = 0;
     protected formGroupInit(): void {
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
@@ -258,7 +254,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             .distinctUntilChanged()
             .takeUntil(this.destroyed$)
             .subscribe((value: any) => {
-                this.testIndex++;
                 // reset data
                 this.displayFields = [];
                 this.segmentFields = [];
@@ -282,29 +277,42 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             ...(field.type !== 'list' ||
                                 (field.listType.length > 0 &&
                                     ({ listType: field.listType as ListTypeFieldType } as any)))
-                            // ...(field.allow instanceof Array &&
-                            //     field.allow.length > 0 &&
-                            //     ({ allow: field.allow } as any)),
                         };
-
-                        // // if something has changed, clear up before saving
-                        // if (
-                        //     (this._schema &&
-                        //         this._schema.fields &&
-                        //         this._schema.fields[index] &&
-                        //         this._schema.fields[index].type !== field.type)
-                        //     || (this._schema &&
-                        //         this._schema.fields &&
-                        //         this._schema.fields[index] &&
-                        //         this._schema.fields[index].listType !== field.listType)
-                        // ) {
-                        //     this.allowValuesClearAt(index);
-                        //     this.propertyPurge(field, index, 'allow');
-                        // }
 
                         // if not of type list anymore, clean up
                         if (field.type !== 'list') {
                             this.propertyPurge(field, index, 'listType');
+                        }
+
+                        // if list types has changed, clear up to prevent wrong form contents
+                        if (
+                            (this._schema &&
+                                this._schema.fields &&
+                                this._schema.fields[index] &&
+                                this._schema.fields[index].type &&
+                                this._schema.fields[index].type !== field.type) ||
+                            (this._schema &&
+                                this._schema.fields &&
+                                this._schema.fields[index] &&
+                                this._schema.fields[index].listType &&
+                                this._schema.fields[index].listType !== field.listType)
+                        ) {
+                            this.allowValuesClearAt(index);
+                            // this.propertyPurge(field, index, 'allow');
+                        }
+
+                        // if of type node or micronode, assign values
+                        if (
+                            field.type === 'node' ||
+                            field.listType === 'node' ||
+                            field.type === 'micronode' ||
+                            field.listType === 'micronode'
+                        ) {
+                            console.log('!!! NOES:', Array.from(this.allowValues[index]));
+                            // if entries in allow, assign them to data object but remove from form
+                            if (Array.from(this.allowValues[index]).length > 0) {
+                                Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
+                            }
                         }
 
                         // if of type string, trigger search bar functionality
@@ -315,18 +323,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             if (Array.from(this.allowValues[index]).length > 0) {
                                 Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
                             }
-                            // // as formGroup.field[].allow.control values are represented not as input value, empty it
-                            // if (this.schemaFields.controls[index].get('allow')) {
-                            //     this.schemaFields.controls[index].get('allow')!.setValue(null, {
-                            //         emitEvent: false,
-                            //         // onlySelf: true
-                            //     });
-                            // }
                         }
 
                         // fill data for dropdown-inputs
                         if (field.name) {
-                            console.log('!!! ' + this.testIndex + ' if (field.name)');
                             this.displayFields.push({ value: field.name, label: field.name });
                             this.segmentFields.push({ value: field.name, label: field.name });
                         }
@@ -337,19 +337,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         return schemaField;
                     })
                 };
-                console.log('!!! CYCLE:', this.testIndex++);
-                console.log(
-                    '!!! ' + this.testIndex + ' ONCHANGE this.allowValues[index]:',
-                    this.allowValues.map(allowed => Array.from(allowed))
-                );
-                console.log(
-                    '!!! ' + this.testIndex + ' formGroup ALLOWED:',
-                    (this.schemaFields.value as SchemaField[]).map(field => field.allow)
-                );
-                console.log(
-                    '!!! ' + this.testIndex + ' this._schema:',
-                    (this._schema.fields as SchemaField[]).map(field => field.allow)
-                );
                 this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
             });
     }
@@ -376,7 +363,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         const test = this.formBuilder.group({
             name: ['', [Validators.required, Validators.pattern(this.allowedChars)]],
             label: [''],
-            type: ['string', Validators.required],
+            type: ['micronode', Validators.required],
             required: [false],
             listType: [''],
             allow: ['']
@@ -488,6 +475,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      * @param values replacing previous values
      */
     allowValueSetAt(index: number, values: string[]): void {
+        console.log('!!! allowValueSetAt:', values);
         // update allowed data
         this.allowValues[index] = new Set<string>(values);
         // update form
@@ -558,15 +546,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     allowValuesClearAt(index: number): void {
         // clear data
         this.allowValues[index] = new Set();
-
-        // clear form values
-        const newForm = simpleCloneDeep(this.formGroup.value);
-        const newField = newForm.fields[index];
-        if (!newField.allow) {
-            return;
-        }
-        newField.allow = '';
-        this.formGroup.patchValue(newForm);
     }
 
     allowValuesContainsAt(index: number, value: string): boolean {
@@ -614,14 +593,21 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      * @returns cleared object or null if object does not have any properties
      */
     private objectRemoveProperty(object: { [key: string]: any }, propertyKey: string): { [key: string]: any } | null {
-        return Object.getOwnPropertyNames(object).length > 0
-            ? (Object.getOwnPropertyNames(object)
+        const propertyKeys = Object.getOwnPropertyNames(object);
+        return propertyKeys.length > 0
+            ? (propertyKeys
                   .map(key => key !== propertyKey && { [key]: object[key] })
                   .reduce((objects: object, object: object) => ({ ...objects, object })) as any)
             : null;
     }
 
-    private propertyPurge(field: any, index: number, property: keyof SchemaField): void {
+    /**
+     * Remove property from data structure entirely
+     * @param field current field containing property to be deleted
+     * @param index of field containing the property to be deleted
+     * @param property key to be deleted
+     */
+    private propertyPurge(field: SchemaField, index: number, property: keyof SchemaField): void {
         if (field[property]) {
             delete field[property];
         }
