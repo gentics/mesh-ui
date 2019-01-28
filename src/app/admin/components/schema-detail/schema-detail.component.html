@@ -6,7 +6,8 @@
     <gtx-tab title="Editor">
         <mesh-schema-editor [schema]="schemaJson$ | async"
                             (schemaChange)="schemaJson = $event"
-                            (save)="save()">
+                            (save)="save()"
+                            (delete)="delete()">
         </mesh-schema-editor>
     </gtx-tab>
 

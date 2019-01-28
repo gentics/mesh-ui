@@ -95,8 +95,11 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     /** Schema form */
     formGroup: FormGroup;
 
-    /** Emitting on Create/Save */
+    /** Emitting on Create/Save Schema */
     @Output() save = new EventEmitter<void>();
+
+    /** Emitting on Delete Schema */
+    @Output() delete = new EventEmitter<void>();
 
     /** All schemas of current Mesh instance */
     allSchemas$: Observable<Schema[]>;
@@ -680,7 +683,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     schemaDelete(): void {
-        console.log('!!! schemaDelete()');
+        this.delete.emit();
     }
 
     // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
