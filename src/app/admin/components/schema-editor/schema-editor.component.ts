@@ -339,7 +339,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                     ...(this.schemaDataConditions.container(value) && ({ container: value.container } as any)),
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
                     ...(this.schemaDataConditions.displayField(value) && ({ displayField: value.displayField } as any)),
-                    ...(this.schemaDataConditions.segmentField(value) && ({ segmentField: value.segmentField } as any)),
+                    // check, if existing data still meets conditions
+                    ...(this.schemaDataConditions.segmentField(value) &&
+                        (this.getSchemaFieldsFilteredFromFormData(field => {
+                            return this.schemaInputSelectDataConditions.segmentFields(field);
+                        }).find(field => field.name === value.segmentField) as SchemaField) &&
+                        ({ segmentField: value.segmentField } as any)),
                     // check, if existing data still meets conditions
                     ...(this.schemaDataConditions.urlFields(value) &&
                         ({
