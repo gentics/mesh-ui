@@ -192,7 +192,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     /** Precondition functions to fill input select dropdown data */
     schemaInputSelectDataConditions: { [key: string]: (field: SchemaField) => boolean } = {
-        displayFields: field => field.name.length > 0,
+        displayFields: field => field.name.length > 0 && (field.type === 'binary' || field.type === 'string'),
         segmentFields: field => field.name.length > 0 && (field.type === 'binary' || field.type === 'string'),
         urlFields: field => field.name.length > 0 && (field.type === 'string' || field.listType === 'string')
     };
@@ -202,7 +202,13 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         name: property => property.name,
         container: property => property.container,
         description: property => property.description.length > 0,
-        displayField: property => property.displayField.length > 0,
+        displayField: () => {
+            return (
+                this.getSchemaFieldsFilteredFromFormData(field => {
+                    return this.schemaInputSelectDataConditions.segmentFields(field);
+                }).length > 0
+            );
+        },
         segmentField: () => {
             return (
                 this.getSchemaFieldsFilteredFromFormData(field => {

@@ -46,7 +46,6 @@ export class SchemaDetailsGuard implements CanDeactivate<SchemaDetailComponent> 
             })
             .then(modal => modal.open())
             .then(result => {
-                console.log('!!! result:', result);
                 return result;
             });
     }
