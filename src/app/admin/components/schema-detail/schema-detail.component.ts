@@ -53,6 +53,15 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     }
     schemaJson$ = new BehaviorSubject<string>('{}');
 
+    /** To check if has been edited by user */
+    schemaJsonOriginal: string;
+
+    get schemaHasChanged(): boolean {
+        const a = JSON.stringify(this.schemaJsonOriginal);
+        const b = JSON.stringify(JSON.parse(this.schemaJson));
+        return a !== b;
+    }
+
     // TODO load json schema from mesh instead of static file
     schema = require('./schema.schema.json');
     errors: MarkerData[] = [];
@@ -62,8 +71,6 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     constructor(
         private state: ApplicationStateService,
         private entities: EntitiesService,
-        private modal: ModalService,
-        private i18n: I18nService,
         public adminProjectEffects: AdminProjectEffectsService,
         private schemaEffects: AdminSchemaEffectsService,
         private route: ActivatedRoute,
@@ -84,6 +91,8 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
             .take(1)
             .toPromise()
             .then(schema => {
+                // keep original to compare
+                this.schemaJsonOriginal = stripSchemaFields(schema);
                 this.version = schema.version;
                 this.schemaEffects
                     .loadEntityAssignments('schema', schema.uuid)
@@ -128,13 +137,10 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     save() {
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.schemaJson);
+            // update original to compare
+            this.schemaJsonOriginal = JSON.parse(this.schemaJson);
             if (this.isNew) {
-                this.schemaEffects.createSchema(changedSchema).then(schema => {
-                    // if (schema) {
-                    //     this.router.navigate(['admin', 'schemas', schema.uuid]);
-                    //     this.version = schema.version;
-                    // }
-                });
+                this.schemaEffects.createSchema(changedSchema);
             } else {
                 this.schema$.take(1).subscribe(schema => {
                     this.schemaEffects.updateSchema({ ...schema, ...changedSchema }).then(schemaNew => {

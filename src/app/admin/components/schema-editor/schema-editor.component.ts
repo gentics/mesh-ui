@@ -359,6 +359,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
                     ...(this.schemaDataConditions.displayField(value) && ({ displayField: value.displayField } as any)),
                     // check, if existing data still meets conditions
+                    ...(this.schemaDataConditions.displayField(value) &&
+                        (this.getSchemaFieldsFilteredFromFormData(field => {
+                            return this.schemaInputSelectDataConditions.displayFields(field);
+                        }).find(field => field.name === value.displayField) as SchemaField) &&
+                        ({ displayField: value.displayField } as any)),
+                    // check, if existing data still meets conditions
                     ...(this.schemaDataConditions.segmentField(value) &&
                         (this.getSchemaFieldsFilteredFromFormData(field => {
                             return this.schemaInputSelectDataConditions.segmentFields(field);
@@ -440,6 +446,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             });
     }
 
+    /** True if all values are valid */
     formGroupIsValid(): boolean {
         return this.formGroup.valid;
     }
@@ -770,7 +777,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     fieldDelete(field: FormControl, index: number): void {
         // if field is valid, ask before deleting
         if (field.valid) {
-            this.displayDeleteSchemaModal(
+            this.displayDeleteFieldModal(
                 { token: 'admin.delete_schemafield' },
                 { token: 'admin.schemafield_delete_confirmation', params: { name: field.value.name } }
             ).then(() => {
