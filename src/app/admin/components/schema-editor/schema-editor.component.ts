@@ -9,6 +9,7 @@ import { ListTypeFieldType, Schema, SchemaField, SchemaFieldType } from '../../.
 import { FieldSchemaFromServer, SchemaUpdateRequest } from '../../../common/models/server-models';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
+import { SchemaListComponent } from '../schema-list/schema-list.component';
 
 /**
  * Schema Builder for UI-friendly assembly of a new schema at app route /admin/schemas/new
@@ -149,7 +150,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             value: 'list',
             label: 'List'
         }
-    ];
+    ].sort((a, b) => a.value.localeCompare(b.value)) as Array<{
+        value: SchemaFieldType;
+        label: string;
+    }>;
 
     /** Convenience getter for form fields array */
     get schemaFields(): FormArray {
@@ -168,10 +172,47 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     /** Regular expression for text input validation checking for allowed characters */
     allowedChars = new RegExp(/^[a-zA-Z0-9_]+$/);
 
+    /** Precondition functions to fill input select dropdown data */
+    schemaInputSelectDataConditions: { [key: string]: (field: SchemaField) => boolean } = {
+        displayFields: field => field.name.length > 0,
+        segmentFields: field => field.name.length > 0 && (field.type === 'binary' || field.type === 'string'),
+        urlFields: field => field.name.length > 0 && (field.type === 'string' || field.listType === 'string')
+    };
+
+    /** Precondition functions to fill schema data */
+    schemaDataConditions: { [key: string]: (property: any) => boolean } = {
+        name: property => property.name,
+        container: property => property.container,
+        description: property => property.description.length > 0,
+        displayField: property => property.displayField.length > 0,
+        segmentField: () => {
+            return (
+                this.getSchemaFieldsFilteredFromFormData(field => {
+                    return this.schemaInputSelectDataConditions.segmentFields(field);
+                }).length > 0
+            );
+        },
+        urlFields: () => {
+            return (
+                this.getSchemaFieldsFilteredFromFormData(field => {
+                    return this.schemaInputSelectDataConditions.urlFields(field);
+                }).length > 0
+            );
+        }
+    };
+
+    /** Precondition functions to fill schema fields data */
+    schemaFieldDataConditions: { [key: string]: (property: any) => boolean } = {
+        name: property => property.name,
+        type: property => property.type,
+        label: property => property.label,
+        required: property => property.required,
+        listType: property => property.type !== 'list' || property.listType.length > 0
+    };
+
     private destroyed$ = new Subject<void>();
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
-
     constructor(
         private entities: EntitiesService,
         private adminSchemaEffects: AdminSchemaEffectsService,
@@ -179,12 +220,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     ) {}
 
     // LIFECYCLE HOOKS //////////////////////////////////////////////////////////////////////////////
-
     ngOnInit(): void {
         this.loadComponentData();
         this.formGroupInit();
     }
-
     ngOnDestroy(): void {
         this.destroyed$.next();
         this.destroyed$.complete();
@@ -223,6 +262,41 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Fill input select dropdown data from schema data object
+     */
+    initInputSelectDataFromSchemaData(): void {
+        this.displayFields = this.getSchemaFieldsFilteredAsInputSelectDataFromSchemaData(field => {
+            return this.schemaInputSelectDataConditions.displayFields(field);
+        });
+        this.segmentFields = this.getSchemaFieldsFilteredAsInputSelectDataFromSchemaData(field => {
+            return this.schemaInputSelectDataConditions.segmentFields(field);
+        });
+        this.urlFields = this.getSchemaFieldsFilteredAsInputSelectDataFromSchemaData(field => {
+            return this.schemaInputSelectDataConditions.urlFields(field);
+        });
+    }
+
+    /**
+     * Fill input select dropdown data from method param
+     */
+    updateInputSelectData(field: SchemaField): void {
+        // displayFields
+        if (this.schemaInputSelectDataConditions.displayFields(field)) {
+            this.displayFields.push({ value: field.name, label: field.name });
+        }
+
+        // segmentFields
+        if (this.schemaInputSelectDataConditions.segmentFields(field)) {
+            this.segmentFields.push({ value: field.name, label: field.name });
+        }
+
+        // urlFields
+        if (this.schemaInputSelectDataConditions.urlFields(field)) {
+            this.urlFields.push({ value: field.name, label: field.name });
+        }
+    }
+
+    /**
      * Initialize form with empty/default data and listen to changes
      */
     protected formGroupInit(): void {
@@ -240,14 +314,11 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                     : [this.createNewField()]
             )
         });
+        // init first validation trigger
+        this.formGroup.updateValueAndValidity();
 
         // if init value has been provided, fill related data properties
-        if (this._schema && this._schema.fields instanceof Array && this._schema.fields.length > 0) {
-            (this._schema.fields as SchemaField[]).forEach(field => {
-                this.displayFields.push({ value: field.name, label: field.name });
-                this.segmentFields.push({ value: field.name, label: field.name });
-            });
-        }
+        this.initInputSelectDataFromSchemaData();
 
         // listen to form changes
         this.formGroup.valueChanges
@@ -257,26 +328,31 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 // reset data
                 this.displayFields = [];
                 this.segmentFields = [];
+                this.urlFields = [];
 
-                // assign form data to component data
+                // map form data to component data
                 this._schema = {
-                    name: value.name,
-                    ...(value.container && ({ container: value.container } as any)),
-                    ...(value.description.length > 0 && ({ description: value.description } as any)),
-                    ...(value.displayField.length > 0 && ({ displayField: value.displayField } as any)),
-                    ...(value.segmentField.length > 0 && ({ segmentField: value.segmentField } as any)),
-                    ...(value.urlFields instanceof Array &&
-                        value.urlFields.length > 0 &&
-                        ({ urlFields: value.urlFields } as any)),
+                    ...(this.schemaDataConditions.name(value) && ({ name: value.name } as any)),
+                    ...(this.schemaDataConditions.container(value) && ({ container: value.container } as any)),
+                    ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
+                    ...(this.schemaDataConditions.displayField(value) && ({ displayField: value.displayField } as any)),
+                    ...(this.schemaDataConditions.segmentField(value) && ({ segmentField: value.segmentField } as any)),
+                    // check, if existing data still meets conditions
+                    ...(this.schemaDataConditions.urlFields(value) &&
+                        ({
+                            urlFields: this.getSchemaFieldsFilteredFromFormData(field => {
+                                return this.schemaInputSelectDataConditions.urlFields(field);
+                            }).map(field => field.name)
+                        } as any)),
+                    // mapping the fields
                     fields: value.fields.map((field: any, index: number) => {
                         const schemaField: FieldSchemaFromServer = {
-                            name: field.name,
-                            type: field.type,
-                            ...(field.label.length > 0 && ({ label: field.label } as any)),
-                            ...(field.required && ({ required: field.required } as any)),
-                            ...(field.type !== 'list' ||
-                                (field.listType.length > 0 &&
-                                    ({ listType: field.listType as ListTypeFieldType } as any)))
+                            ...(this.schemaFieldDataConditions.name(field) && ({ name: field.name } as any)),
+                            ...(this.schemaFieldDataConditions.type(field) && ({ type: field.type } as any)),
+                            ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),
+                            ...(this.schemaFieldDataConditions.required(field) &&
+                                ({ required: field.required } as any)),
+                            ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
                         };
 
                         // if not of type list anymore, clean up
@@ -298,7 +374,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                                 this._schema.fields[index].listType !== field.listType)
                         ) {
                             this.allowValuesClearAt(index);
-                            // this.propertyPurge(field, index, 'allow');
                         }
 
                         // if of type node or micronode, assign values
@@ -308,7 +383,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             field.type === 'micronode' ||
                             field.listType === 'micronode'
                         ) {
-                            console.log('!!! NOES:', Array.from(this.allowValues[index]));
                             // if entries in allow, assign them to data object but remove from form
                             if (Array.from(this.allowValues[index]).length > 0) {
                                 Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
@@ -317,6 +391,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
                         // if of type string, trigger search bar functionality
                         if (field.type === 'string' || field.listType === 'string') {
+                            // trigger allow-input
                             this.allowValuesOnStringInputChangeAt(index);
 
                             // if entries in allow, assign them to data object but remove from form
@@ -325,11 +400,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                             }
                         }
 
-                        // fill data for dropdown-inputs
-                        if (field.name) {
-                            this.displayFields.push({ value: field.name, label: field.name });
-                            this.segmentFields.push({ value: field.name, label: field.name });
-                        }
+                        // if init value has been provided, fill related data properties
+                        this.updateInputSelectData(field);
 
                         // EXTENDED VALIDATION LOGIC
                         this.fieldHasDuplicateValue(index, 'name');
@@ -345,12 +417,37 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         return this.formGroup.valid;
     }
 
-    hasNamedFields(): boolean {
-        return this.displayFields.length > 0;
+    /**
+     * True if at least one field exists and is valid
+     */
+    hasValidFields(): boolean {
+        return (
+            this.schemaFields.controls.filter(field => {
+                return field.valid;
+            }).length > 0
+        );
     }
 
-    hasStringFields(): boolean {
-        return this.schemaFields.value.filter((field: SchemaField) => field.type === 'string') > 0 || false;
+    /**
+     * True if at least one field exists, and meets SegmentField conditions
+     */
+    hasSegmentFields(): boolean {
+        return (
+            this.getSchemaFieldsFilteredFromFormData(field => {
+                return this.schemaInputSelectDataConditions.segmentFields(field);
+            }).length > 0
+        );
+    }
+
+    /**
+     * True if at least one field exists, and meets UrlField conditions
+     */
+    hasUrlFields(): boolean {
+        return (
+            this.getSchemaFieldsFilteredFromFormData(field => {
+                return this.schemaInputSelectDataConditions.urlFields(field);
+            }).length > 0
+        );
     }
 
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
@@ -363,7 +460,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         const test = this.formBuilder.group({
             name: ['', [Validators.required, Validators.pattern(this.allowedChars)]],
             label: [''],
-            type: ['string', Validators.required],
+            type: ['', Validators.required],
             required: [false],
             listType: [''],
             allow: ['']
@@ -481,7 +578,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      * @param values replacing previous values
      */
     allowValueSetAt(index: number, values: string[]): void {
-        console.log('!!! allowValueSetAt:', values);
         // update allowed data
         this.allowValues[index] = new Set<string>(values);
         // update form
@@ -580,7 +676,6 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     // SCHEMA MAIN BUTTON //////////////////////////////////////////////////////////////////////////////
 
     schemaCreate(): void {
-        console.log('!!! schemaCreate()');
         this.save.emit();
     }
 
@@ -589,6 +684,27 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Return fields of schema data as data for select/drop-down input filtered by function
+     * @param compareFn filtering fields
+     * @returns array of value-label pairs fit for input select drop down data
+     */
+    private getSchemaFieldsFilteredAsInputSelectDataFromSchemaData(
+        compareFn: (field: SchemaField) => boolean
+    ): Array<{ value: string; label: string }> {
+        return this._schema.fields
+            ? (this._schema.fields as SchemaField[])
+                  .filter(field => compareFn(field))
+                  .map(field => ({ value: field.name, label: field.name }))
+            : [];
+    }
+
+    private getSchemaFieldsFilteredFromFormData(compareFn: (field: SchemaField) => boolean): SchemaField[] {
+        return this.schemaFields.value
+            ? (this.schemaFields.value as SchemaField[]).filter(field => compareFn(field))
+            : [];
+    }
 
     /**
      * Returns an object without the defined property

@@ -34,38 +34,46 @@
         <gtx-select formControlName="displayField"
                     label="Display Field"
                     title="Select the name of the field whose value will be used as the node display (e. g. field 'ISBN' or field 'Title' on a schema 'Book' )">
-            <gtx-option *ngFor="let displayField of displayFields"
-                        [value]="displayField.value">{{ displayField.label }}</gtx-option>
+            <gtx-option *ngFor="let field of displayFields"
+                        [value]="field.value">{{ field.label }}</gtx-option>
         </gtx-select>
         <div class="input-note">
             <p [@statusAnim]
                *ngIf="getFormControlErrorOfType('displayField', 'required')"
                class="invalid">required</p>
-            <p class="invalid"
+            <p class="hint"
                [@statusAnim]
-               *ngIf="! hasNamedFields()">Create at least one valid schema field</p>
+               *ngIf="!hasValidFields()">Create valid schema field</p>
         </div>
     </div>
 
     <div class="input-container small-12 medium-4 columns">
         <gtx-select formControlName="segmentField"
                     label="Segment Field">
-            <gtx-option *ngFor="let segmentField of segmentFields"
-                        [value]="segmentField.value">{{ segmentField.label }}</gtx-option>
+            <gtx-option *ngFor="let field of segmentFields"
+                        [value]="field.value">{{ field.label }}</gtx-option>
         </gtx-select>
         <div class="input-note">
-            <p class="invalid"
+            <p class="hint"
                [@statusAnim]
-               *ngIf="! hasNamedFields()">Create at least one valid schema field</p>
+               *ngIf="!hasSegmentFields()">Create valid schema field of type 'binary' or 'string'</p>
         </div>
     </div>
 
 
-    <gtx-select class="input-container small-12 medium-4 columns"
-                formControlName="urlFields"
-                label="URL Fields">
-        <!-- <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option> -->
-    </gtx-select>
+    <div class="input-container small-12 medium-4 columns">
+        <gtx-select formControlName="urlFields"
+                    [multiple]="true"
+                    label="URL Fields">
+            <gtx-option *ngFor="let field of urlFields"
+                        [value]="field.value">{{ field.label }}</gtx-option>
+        </gtx-select>
+        <div class="input-note">
+            <p class="hint"
+               [@statusAnim]
+               *ngIf="!hasUrlFields()">Create valid schema field of type 'string' or type 'list' of type 'string'</p>
+        </div>
+    </div>
 
     <br>
     <div class="section-header-fields medium-12 columns">
@@ -144,7 +152,7 @@
                 </gtx-select>
 
                 <div [hidden]="field.value.type !== 'node' && field.value.listType !== 'node'"
-                     class="input-container small-12 medium-8 columns">
+                     class="input-container small-12 medium-7 columns">
                     <gtx-select [value]="allowValueGetAt(i)"
                                 (change)="allowValueSetAt(i, $event)"
                                 [multiple]="true"
@@ -155,7 +163,7 @@
                 </div>
 
                 <div [hidden]="field.value.type !== 'micronode' && field.value.listType !== 'micronode'"
-                     class="input-container small-12 medium-8 columns">
+                     class="input-container small-12 medium-7 columns">
                     <gtx-select [value]="allowValueGetAt(i)"
                                 (change)="allowValueSetAt(i, $event)"
                                 [multiple]="true"
@@ -166,7 +174,7 @@
                 </div>
 
                 <div [hidden]="field.value.type !== 'string' && field.value.listType !== 'string'"
-                     class="string-bar small-12 medium-8 columns">
+                     class="string-bar small-12 medium-7 columns">
                     <label class="ng-star-inserted">Allowed Strings</label>
                     <gtx-search-bar formControlName="allow"
                                     (search)="allowValueOnStringInputAddAt(i, $event)"
