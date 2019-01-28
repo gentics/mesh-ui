@@ -43,6 +43,10 @@
         "en": "Delete schema",
         "de": "Schema löschen"
     },
+    "delete_schemafield": {
+        "en": "Delete schemafield",
+        "de": "Schemafeld löschen"
+    },
     "delete_microschema": {
         "en": "Delete microschema",
         "de": "Microschema löschen"
@@ -382,6 +386,10 @@
     "schema_updated_confirmation": {
         "en": "You are about to save schema '{{ name }}'.",
         "de": "Wollen Sie '{{ name }}' speichern?"
+    },
+    "schemafield_delete_confirmation": {
+        "en": "You are about to delete schemafield '{{ name }}'.",
+        "de": "Wollen Sie das Schemafeld'{{ name }}' löschen?"
     },
     "schema_none_found": {
         "en": "No schemas found",

@@ -1,6 +1,14 @@
 import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+    AbstractControl,
+    FormArray,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    ValidationErrors,
+    Validators
+} from '@angular/forms';
 import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -756,6 +764,24 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Delete field at index if displayed warning modal has been confirmed by user
+     */
+    fieldDelete(field: FormControl, index: number): void {
+        // if field is valid, ask before deleting
+        if (field.valid) {
+            this.displayDeleteSchemaModal(
+                { token: 'admin.delete_schemafield' },
+                { token: 'admin.schemafield_delete_confirmation', params: { name: field.value.name } }
+            ).then(() => {
+                this.fieldRemoveAt(index);
+            });
+            // otherwise delete without confirmation
+        } else {
+            this.fieldRemoveAt(index);
+        }
+    }
+
     schemaDeleteButtonIsDisplayed(): boolean {
         return this.schema ? true : false;
     }
@@ -844,6 +870,27 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     private displayDeleteSchemaModal(
+        title: { token: string; params?: { [key: string]: any } },
+        body: { token: string; params?: { [key: string]: any } }
+    ): Promise<any> {
+        return this.modalService
+            .dialog({
+                title: this.i18n.translate(title.token, title.params) + '?',
+                body: this.i18n.translate(body.token, body.params),
+                buttons: [
+                    {
+                        type: 'secondary',
+                        flat: true,
+                        shouldReject: true,
+                        label: this.i18n.translate('common.cancel_button')
+                    },
+                    { type: 'alert', label: this.i18n.translate('admin.delete_label') }
+                ]
+            })
+            .then(modal => modal.open());
+    }
+
+    private displayDeleteFieldModal(
         title: { token: string; params?: { [key: string]: any } },
         body: { token: string; params?: { [key: string]: any } }
     ): Promise<any> {
