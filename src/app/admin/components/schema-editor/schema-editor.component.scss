@@ -184,7 +184,7 @@
         position: relative;
         margin-bottom: 0.6rem;
     }
-    
+
     .button-close {
         position: absolute;
         right: 1rem;
@@ -196,9 +196,31 @@
         } 
     }
     
-    .button-add {
+    .button-moveup {
         position: absolute;
         right: 1rem;
+        top: 2.5rem;
+
+        icon {
+            color: $gtx-color-primary;
+            font-size: 20px;
+        } 
+    }
+
+    .button-movedown {
+        position: absolute;
+        right: 1rem;
+        bottom: 1.5rem;
+
+        icon {
+            color: $gtx-color-primary;
+            font-size: 20px;
+        } 
+    }
+    
+    .button-add {
+        position: absolute;
+        right: 0.85rem;
         bottom: 0;
 
         icon {
