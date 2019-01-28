@@ -4,8 +4,9 @@
 
 <gtx-tabs>
     <gtx-tab title="Editor">
-        <mesh-schema-editor [schema]="schemaJson$ | async"
-                            (schemaChange)="schemaJson = $event"
+        <mesh-schema-editor [schemaJson]="schemaJson$ | async"
+                            (schemaJsonChange)="schemaJson = $event"
+                            [schema]="schema$ | async"
                             (save)="save()"
                             (delete)="delete()">
         </mesh-schema-editor>

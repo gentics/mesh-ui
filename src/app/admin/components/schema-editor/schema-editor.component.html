@@ -210,38 +210,21 @@
             </gtx-button>
         </div>
     </div>
-
-    <!-- <div class="field-controls">
-        <div class="field-controls-container-inner small-10 medium-10 columns">
-            <gtx-button flat
-                        size="small"
-                        (click)="fieldAdd()">
-                Add field
-            </gtx-button>
-
-            <gtx-button flat
-                        size="small"
-                        (click)="fieldRemoveLast()">
-                Remove field
-            </gtx-button>
-        </div>
-    </div> -->
-
 </form>
 
 <br>
 
 <div class="schema-controls small-12 medium-12 columns">
-    <!-- <div class="container"> -->
-    <!-- <div class="schema-controls-container"> -->
-    <gtx-button [disabled]="!formGroupIsValid()"
-                (click)="schemaCreate()">
+    <gtx-button [disabled]="!(formGroupIsValid() && schemaSaveIsPermitted())"
+                (click)="schemaSave()"
+                [title]="schemaSaveIsPermitted() ? 'Save' : 'You do not have the required privilege to save'">
         <icon left>add</icon>Save
     </gtx-button>
 
-    <gtx-button (click)="schemaDelete()">
+    <gtx-button [hidden]="!schemaDeleteButtonIsDisplayed()"
+                [disabled]="!schemaDeleteIsPermitted()"
+                (click)="schemaDelete()"
+                [title]="schemaDeleteIsPermitted() ? 'Delete' : 'You do not have the required privilege to delete'">
         <icon left>delete</icon>Delete
     </gtx-button>
-    <!-- </div> -->
-    <!-- </div> -->
 </div>

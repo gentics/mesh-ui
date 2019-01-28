@@ -359,6 +359,10 @@
         "en": "Create Schema",
         "de": "Schema erstellen"
     },
+    "schema_update": {
+        "en": "Save Schema",
+        "de": "Schema speichern"
+    },
     "schema_deleted": {
         "en": "Schema deleted",
         "de": "Schema gelöscht"
@@ -374,6 +378,10 @@
     "schema_updated": {
         "en": "Schema updated",
         "de": "Schema gespeichert"
+    },
+    "schema_updated_confirmation": {
+        "en": "You are about to save schema '{{ name }}'.",
+        "de": "Wollen Sie '{{ name }}' speichern?"
     },
     "schema_none_found": {
         "en": "No schemas found",

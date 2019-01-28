@@ -130,10 +130,10 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
             const changedSchema = JSON.parse(this.schemaJson);
             if (this.isNew) {
                 this.schemaEffects.createSchema(changedSchema).then(schema => {
-                    if (schema) {
-                        this.router.navigate(['admin', 'schemas', schema.uuid]);
-                        this.version = schema.version;
-                    }
+                    // if (schema) {
+                    //     this.router.navigate(['admin', 'schemas', schema.uuid]);
+                    //     this.version = schema.version;
+                    // }
                 });
             } else {
                 this.schema$.take(1).subscribe(schema => {

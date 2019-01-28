@@ -1,15 +1,17 @@
 import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
+import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Microschema } from '../../../common/models/microschema.model';
-import { ListTypeFieldType, Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
-import { FieldSchemaFromServer, SchemaUpdateRequest } from '../../../common/models/server-models';
+import { Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
+import { FieldSchemaFromServer, SchemaResponse, SchemaUpdateRequest } from '../../../common/models/server-models';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
-import { SchemaListComponent } from '../schema-list/schema-list.component';
 
 /**
  * Schema Builder for UI-friendly assembly of a new schema at app route /admin/schemas/new
@@ -75,22 +77,27 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     // PROPERTIES //////////////////////////////////////////////////////////////////////////////
 
     /** Primary data object */
-    get schema(): string {
-        return this._schema && JSON.stringify(this._schema, undefined, 4);
+    get schemaJson(): string {
+        return this._schemaJson && JSON.stringify(this._schemaJson, undefined, 4);
     }
     @Input()
-    set schema(value: string) {
+    set schemaJson(value: string) {
         if (!value) {
             return;
         }
-        this._schema = JSON.parse(value);
+        this._schemaJson = JSON.parse(value);
         // if formGroup initiated, fill it with provided data
         if (this.formGroup instanceof FormGroup) {
-            this.formGroup.patchValue(this.schemaAsFormValue(this._schema));
+            this.formGroup.patchValue(this.schemaAsFormValue(this._schemaJson));
         }
     }
-    @Output() schemaChange = new EventEmitter<string>();
-    protected _schema: SchemaUpdateRequest | Schema;
+    @Output() schemaJsonChange = new EventEmitter<string>();
+    protected _schemaJson: SchemaUpdateRequest | Schema;
+
+    /**
+     * Non-editable schema data from server providing permission data
+     */
+    @Input() schema: SchemaResponse;
 
     /** Schema form */
     formGroup: FormGroup;
@@ -213,13 +220,17 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         listType: property => property.type !== 'list' || property.listType.length > 0
     };
 
+    ADMIN_USER_NAME = ADMIN_USER_NAME;
+
     private destroyed$ = new Subject<void>();
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
     constructor(
         private entities: EntitiesService,
         private adminSchemaEffects: AdminSchemaEffectsService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private i18n: I18nService,
+        private modalService: ModalService
     ) {}
 
     // LIFECYCLE HOOKS //////////////////////////////////////////////////////////////////////////////
@@ -305,15 +316,15 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     protected formGroupInit(): void {
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
-            name: [this._schema.name || '', [Validators.required, Validators.pattern(this.allowedChars)]],
-            container: [this._schema.container || false],
-            description: [this._schema.description || ''],
-            displayField: [this._schema.displayField || ''],
-            segmentField: [this._schema.segmentField || ''],
-            urlFields: [this._schema.urlFields || []],
+            name: [this._schemaJson.name || '', [Validators.required, Validators.pattern(this.allowedChars)]],
+            container: [this._schemaJson.container || false],
+            description: [this._schemaJson.description || ''],
+            displayField: [this._schemaJson.displayField || ''],
+            segmentField: [this._schemaJson.segmentField || ''],
+            urlFields: [this._schemaJson.urlFields || []],
             fields: this.formBuilder.array(
-                this._schema.fields
-                    ? this.createFieldsFromData(this._schema.fields as SchemaField[])
+                this._schemaJson.fields
+                    ? this.createFieldsFromData(this._schemaJson.fields as SchemaField[])
                     : [this.createNewField()]
             )
         });
@@ -334,7 +345,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 this.urlFields = [];
 
                 // map form data to component data
-                this._schema = {
+                this._schemaJson = {
                     ...(this.schemaDataConditions.name(value) && ({ name: value.name } as any)),
                     ...(this.schemaDataConditions.container(value) && ({ container: value.container } as any)),
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
@@ -370,16 +381,16 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
                         // if list types has changed, clear up to prevent wrong form contents
                         if (
-                            (this._schema &&
-                                this._schema.fields &&
-                                this._schema.fields[index] &&
-                                this._schema.fields[index].type &&
-                                this._schema.fields[index].type !== field.type) ||
-                            (this._schema &&
-                                this._schema.fields &&
-                                this._schema.fields[index] &&
-                                this._schema.fields[index].listType &&
-                                this._schema.fields[index].listType !== field.listType)
+                            (this._schemaJson &&
+                                this._schemaJson.fields &&
+                                this._schemaJson.fields[index] &&
+                                this._schemaJson.fields[index].type &&
+                                this._schemaJson.fields[index].type !== field.type) ||
+                            (this._schemaJson &&
+                                this._schemaJson.fields &&
+                                this._schemaJson.fields[index] &&
+                                this._schemaJson.fields[index].listType &&
+                                this._schemaJson.fields[index].listType !== field.listType)
                         ) {
                             this.allowValuesClearAt(index);
                         }
@@ -417,7 +428,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         return schemaField;
                     })
                 };
-                this.schemaChange.emit(JSON.stringify(this._schema, undefined, 4));
+                this.schemaJsonChange.emit(JSON.stringify(this._schemaJson, undefined, 4));
             });
     }
 
@@ -683,12 +694,70 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     // SCHEMA MAIN BUTTON //////////////////////////////////////////////////////////////////////////////
 
-    schemaCreate(): void {
-        this.save.emit();
+    schemaSaveIsPermitted(): boolean {
+        // if no schema, this component is in CREATE mode
+        if (!this.schema) {
+            return true;
+        }
+        // if schema, check if hs permissions
+        return (
+            this.schema &&
+            this.schema.permissions &&
+            (this.schema.permissions.update || this.schema.name !== ADMIN_USER_NAME)
+        );
+    }
+    /**
+     * Create/update current schema if displayed warning modal has been confirmed by user
+     */
+    schemaSave(): void {
+        if (
+            this.schema &&
+            this.schema.permissions &&
+            this.schema.permissions.update &&
+            (!this.schema.permissions.update || this.schema.name === ADMIN_USER_NAME)
+        ) {
+            return;
+        } else {
+            // if no schema, this component is in CREATE mode
+            this.displaySaveSchemaModal(
+                { token: 'admin.schema_update' },
+                { token: 'admin.schema_updated_confirmation', params: { name: this.formGroup.value.name } }
+            ).then(() => {
+                this.save.emit();
+            });
+        }
     }
 
+    schemaDeleteIsPermitted(): boolean {
+        // if schema, check if hs permissions
+        return (
+            this.schema &&
+            this.schema.permissions &&
+            (this.schema.permissions.delete || this.schema.name !== ADMIN_USER_NAME)
+        );
+    }
+    /**
+     * Delete current schema if displayed warning modal has been confirmed by user
+     */
     schemaDelete(): void {
-        this.delete.emit();
+        if (
+            this.schema &&
+            this.schema.permissions &&
+            this.schema.permissions.delete &&
+            (!this.schema.permissions.delete || this.schema.name === ADMIN_USER_NAME)
+        ) {
+            return;
+        }
+        this.displayDeleteSchemaModal(
+            { token: 'admin.delete_schema' },
+            { token: 'admin.delete_schema_confirmation', params: { name: this.schema.name } }
+        ).then(() => {
+            this.delete.emit();
+        });
+    }
+
+    schemaDeleteButtonIsDisplayed(): boolean {
+        return this.schema ? true : false;
     }
 
     // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
@@ -701,13 +770,17 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     private getSchemaFieldsFilteredAsInputSelectDataFromSchemaData(
         compareFn: (field: SchemaField) => boolean
     ): Array<{ value: string; label: string }> {
-        return this._schema.fields
-            ? (this._schema.fields as SchemaField[])
+        return this._schemaJson.fields
+            ? (this._schemaJson.fields as SchemaField[])
                   .filter(field => compareFn(field))
                   .map(field => ({ value: field.name, label: field.name }))
             : [];
     }
 
+    /**
+     * Returns fields of schema from form data filtered by function
+     * @param compareFn filtering fields
+     */
     private getSchemaFieldsFilteredFromFormData(compareFn: (field: SchemaField) => boolean): SchemaField[] {
         return this.schemaFields.value
             ? (this.schemaFields.value as SchemaField[]).filter(field => compareFn(field))
@@ -740,13 +813,55 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             delete field[property];
         }
 
-        if (!this._schema) {
+        if (!this._schemaJson) {
             return;
         }
-        const fieldToDelete = (this._schema.fields && (this._schema.fields[index] as SchemaField)) || null;
+        const fieldToDelete = (this._schemaJson.fields && (this._schemaJson.fields[index] as SchemaField)) || null;
         if (fieldToDelete && fieldToDelete[property]) {
             delete fieldToDelete[property];
         }
+    }
+
+    private displaySaveSchemaModal(
+        title: { token: string; params?: { [key: string]: any } },
+        body: { token: string; params?: { [key: string]: any } }
+    ): Promise<any> {
+        return this.modalService
+            .dialog({
+                title: this.i18n.translate(title.token, title.params) + '?',
+                body: this.i18n.translate(body.token, body.params),
+                buttons: [
+                    {
+                        type: 'secondary',
+                        flat: true,
+                        shouldReject: true,
+                        label: this.i18n.translate('common.cancel_button')
+                    },
+                    { type: 'secondary', label: this.i18n.translate('admin.schema_update') }
+                ]
+            })
+            .then(modal => modal.open());
+    }
+
+    private displayDeleteSchemaModal(
+        title: { token: string; params?: { [key: string]: any } },
+        body: { token: string; params?: { [key: string]: any } }
+    ): Promise<any> {
+        return this.modalService
+            .dialog({
+                title: this.i18n.translate(title.token, title.params) + '?',
+                body: this.i18n.translate(body.token, body.params),
+                buttons: [
+                    {
+                        type: 'secondary',
+                        flat: true,
+                        shouldReject: true,
+                        label: this.i18n.translate('common.cancel_button')
+                    },
+                    { type: 'alert', label: this.i18n.translate('admin.delete_label') }
+                ]
+            })
+            .then(modal => modal.open());
     }
 }
 
