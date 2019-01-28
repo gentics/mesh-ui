@@ -107,14 +107,14 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
      */
     @Input() schema: SchemaResponse;
 
-    /** Schema form */
-    formGroup: FormGroup;
-
     /** Emitting on Create/Save Schema */
     @Output() save = new EventEmitter<void>();
 
     /** Emitting on Delete Schema */
     @Output() delete = new EventEmitter<void>();
+
+    /** Schema form */
+    formGroup: FormGroup;
 
     /** All schemas of current Mesh instance */
     allSchemas$: Observable<Schema[]>;
@@ -458,12 +458,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * True if at least one field exists and is valid
+     * True if at least one field exists, and meets DisplayField conditions
      */
-    hasValidFields(): boolean {
+    hasDisplayFields(): boolean {
         return (
-            this.schemaFields.controls.filter(field => {
-                return field.valid;
+            this.getSchemaFieldsFilteredFromFormData(field => {
+                return this.schemaInputSelectDataConditions.displayFields(field);
             }).length > 0
         );
     }
