@@ -13,6 +13,9 @@
             <p [@statusAnim]
                *ngIf="getFormControlErrorOfType('name', 'pattern')"
                class="invalid">Invalid characters: alphanumeric and underscore only</p>
+            <p [@statusAnim]
+               *ngIf="getFormControlErrorOfType('name', 'conflict')"
+               class="invalid">This name is already in use by another schema</p>
         </div>
     </div>
 
@@ -41,7 +44,7 @@
             <p [@statusAnim]
                *ngIf="getFormControlErrorOfType('displayField', 'required')"
                class="invalid">required</p>
-            <p class="hint"
+            <p class="warning"
                [@statusAnim]
                *ngIf="!hasDisplayFields()">Create valid schema field of type 'binary' or 'string'</p>
         </div>
@@ -54,7 +57,7 @@
                         [value]="field.value">{{ field.label }}</gtx-option>
         </gtx-select>
         <div class="input-note">
-            <p class="hint"
+            <p class="warning"
                [@statusAnim]
                *ngIf="!hasSegmentFields()">Create valid schema field of type 'binary' or 'string'</p>
         </div>
@@ -69,7 +72,7 @@
                         [value]="field.value">{{ field.label }}</gtx-option>
         </gtx-select>
         <div class="input-note">
-            <p class="hint"
+            <p class="warning"
                [@statusAnim]
                *ngIf="!hasUrlFields()">Create valid schema field of type 'string' or type 'list' of type 'string'</p>
         </div>
@@ -143,13 +146,19 @@
                 <!-- INPUT DEPENDING ON listType START -->
 
                 <!-- {{ 'modal.create_project_schema_label' | i18n }} -->
-                <gtx-select [hidden]="field.value.type !== 'list'"
-                            class="small-12 medium-4 columns"
-                            formControlName="listType"
-                            label="List Type">
-                    <gtx-option *ngFor="let type of schemaFieldListTypes"
-                                [value]="type.value">{{ type.label }}</gtx-option>
-                </gtx-select>
+                <div class="small-12 medium-4 columns">
+                    <gtx-select [hidden]="field.value.type !== 'list'"
+                                formControlName="listType"
+                                label="List Type">
+                        <gtx-option *ngFor="let type of schemaFieldListTypes"
+                                    [value]="type.value">{{ type.label }}</gtx-option>
+                    </gtx-select>
+                    <div class="input-note">
+                        <p [@statusAnim]
+                           *ngIf="getFormControlInArrayErrorOfType(i, 'listType', 'required')"
+                           class="invalid">required</p>
+                    </div>
+                </div>
 
                 <div [hidden]="field.value.type !== 'node' && field.value.listType !== 'node'"
                      class="input-container small-12 medium-7 columns">
@@ -209,6 +218,11 @@
                 <icon>add</icon>
             </gtx-button>
         </div>
+    </div>
+
+    <div *ngIf="schemaFields.value.length === 0"
+         class="small-12 medium-12 columns">
+        <p class="warning">This Schema has no schema fields</p>
     </div>
 </form>
 

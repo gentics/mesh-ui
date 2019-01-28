@@ -216,33 +216,18 @@
     .input-note {
         position: absolute;
         margin-top: -2rem;
-    
-        p {
-            margin-top: 0;
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
-        }
-    
-        .invalid {
+    }
+
+    p {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 0.8rem;
+
+        &.invalid {
             color: $gtx-color-alert;
         }
-        .hint {
-            color: $gtx-color-primary;
+        &.warning {
+            color: $gtx-color-warning;
         }
     }
-    
-    // .schema-controls {
-    //     background-color: rgba( white, 0.7 );
-    //     position: fixed;
-    //     left: 0;
-    //     right: 0;
-    //     bottom: 0;
-    
-    //     .schema-controls-container {
-    //         float: right;
-    //         margin-left: -3rem;
-    //         padding-top: 1rem;
-    //         padding-bottom: 1rem;
-    //     }
-    // }
 }

@@ -7,7 +7,8 @@ import {
     FormControl,
     FormGroup,
     ValidationErrors,
-    Validators
+    Validators,
+    ValidatorFn
 } from '@angular/forms';
 import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
@@ -118,6 +119,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     /** All schemas of current Mesh instance */
     allSchemas$: Observable<Schema[]>;
+    allSchemas: Schema[];
 
     /** All microschemas of current Mesh instance */
     allMicroschemas$: Observable<Microschema[]>;
@@ -231,7 +233,25 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         type: property => property.type,
         label: property => property.label,
         required: property => property.required,
-        listType: property => property.type !== 'list' || property.listType.length > 0
+        listType: property => property.type !== 'list' || (property.listType && property.listType.length > 0)
+    };
+
+    /** Central form initial validators reference */
+    formValidators: { [key: string]: ValidatorFn[] | any } = {
+        name: [Validators.required, Validators.pattern(this.allowedChars)],
+        container: [],
+        description: [],
+        displayField: [],
+        segmentField: [],
+        urlFields: [],
+        fields: {
+            name: [Validators.required, Validators.pattern(this.allowedChars)],
+            label: [],
+            type: [Validators.required],
+            required: [],
+            listType: [],
+            allow: []
+        }
     };
 
     ADMIN_USER_NAME = ADMIN_USER_NAME;
@@ -251,6 +271,9 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.loadComponentData();
         this.formGroupInit();
+
+        // get all schemas
+        this.allSchemas$.takeUntil(this.destroyed$).subscribe(allSchemas => (this.allSchemas = allSchemas));
     }
     ngOnDestroy(): void {
         this.destroyed$.next();
@@ -330,12 +353,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     protected formGroupInit(): void {
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
-            name: [this._schemaJson.name || '', [Validators.required, Validators.pattern(this.allowedChars)]],
-            container: [this._schemaJson.container || false],
-            description: [this._schemaJson.description || ''],
-            displayField: [this._schemaJson.displayField || ''],
-            segmentField: [this._schemaJson.segmentField || ''],
-            urlFields: [this._schemaJson.urlFields || []],
+            name: [this._schemaJson.name || '', this.formValidators.name],
+            container: [this._schemaJson.container || false, this.formValidators.container],
+            description: [this._schemaJson.description || '', this.formValidators.description],
+            displayField: [this._schemaJson.displayField || '', this.formValidators.displayField],
+            segmentField: [this._schemaJson.segmentField || '', this.formValidators.segmentField],
+            urlFields: [this._schemaJson.urlFields || [], this.formValidators.urlFields],
             fields: this.formBuilder.array(
                 this._schemaJson.fields
                     ? this.createFieldsFromData(this._schemaJson.fields as SchemaField[])
@@ -358,25 +381,28 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 this.segmentFields = [];
                 this.urlFields = [];
 
+                // EXTENDED VALIDATION LOGIC
+                this.isConflictingProperty('name', value.name);
+
                 // map form data to component data
                 this._schemaJson = {
                     ...(this.schemaDataConditions.name(value) && ({ name: value.name } as any)),
                     ...(this.schemaDataConditions.container(value) && ({ container: value.container } as any)),
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
                     ...(this.schemaDataConditions.displayField(value) && ({ displayField: value.displayField } as any)),
-                    // check, if existing data still meets conditions
+                    // assign data meeting conditions only
                     ...(this.schemaDataConditions.displayField(value) &&
                         (this.getSchemaFieldsFilteredFromFormData(field => {
                             return this.schemaInputSelectDataConditions.displayFields(field);
                         }).find(field => field.name === value.displayField) as SchemaField) &&
                         ({ displayField: value.displayField } as any)),
-                    // check, if existing data still meets conditions
+                    // assign data meeting conditions only
                     ...(this.schemaDataConditions.segmentField(value) &&
                         (this.getSchemaFieldsFilteredFromFormData(field => {
                             return this.schemaInputSelectDataConditions.segmentFields(field);
                         }).find(field => field.name === value.segmentField) as SchemaField) &&
                         ({ segmentField: value.segmentField } as any)),
-                    // check, if existing data still meets conditions
+                    // assign data meeting conditions only
                     ...(this.schemaDataConditions.urlFields(value) &&
                         ({
                             urlFields: this.getSchemaFieldsFilteredFromFormData(field => {
@@ -445,6 +471,14 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                         // EXTENDED VALIDATION LOGIC
                         this.fieldHasDuplicateValue(index, 'name');
 
+                        if (field.type === 'list') {
+                            this.validatorUpdate(this.schemaFields.controls[index].get('listType') as any, [
+                                Validators.required
+                            ]);
+                        } else {
+                            this.validatorUpdate(this.schemaFields.controls[index].get('listType') as any, []);
+                        }
+
                         return schemaField;
                     })
                 };
@@ -455,6 +489,23 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     /** True if all values are valid */
     formGroupIsValid(): boolean {
         return this.formGroup.valid;
+    }
+
+    isConflictingProperty(formControlName: any, value: any): boolean {
+        const isConflict =
+            this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0 ? true : false;
+        const control = this.formGroup.get(formControlName) as AbstractControl | any;
+
+        if (isConflict === true) {
+            // assign new error to field errors
+            control!.setErrors({ ...control!.errors, ...{ conflict: true } });
+        } else {
+            // if exist, create new error object without conflict error
+            const errors =
+                control!.errors && (this.objectRemoveProperty(control!.errors, 'conflict') as ValidationErrors | null);
+            control!.setErrors(errors);
+        }
+        return isConflict;
     }
 
     /**
@@ -498,12 +549,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     protected createNewField(): FormGroup {
         this.allowValues.push(new Set<string>());
         const test = this.formBuilder.group({
-            name: ['', [Validators.required, Validators.pattern(this.allowedChars)]],
-            label: [''],
-            type: ['', Validators.required],
-            required: [false],
-            listType: [''],
-            allow: ['']
+            name: ['', this.formValidators.fields.name],
+            label: ['', this.formValidators.fields.label],
+            type: ['', this.formValidators.fields.type],
+            required: [false, this.formValidators.fields.required],
+            listType: [null, this.formValidators.fields.listType],
+            allow: ['', this.formValidators.fields.allow]
         });
         return test;
     }
@@ -524,12 +575,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             this.allowValues.push(new Set<string>([]));
         }
         return this.formBuilder.group({
-            name: [field.name || '', [Validators.required, Validators.pattern(this.allowedChars)]],
-            label: [field.label || ''],
-            type: [field.type || '', Validators.required],
-            required: [field.required || false],
-            listType: [field.listType || ''],
-            allow: ['']
+            name: [field.name || '', this.formValidators.fields.name],
+            label: [field.label || '', this.formValidators.fields.label],
+            type: [field.type || '', this.formValidators.fields.type],
+            required: [field.required || false, this.formValidators.fields.required],
+            listType: [field.listType || null, this.formValidators.fields.listType],
+            allow: ['', this.formValidators.fields.allow]
         });
     }
 
@@ -592,6 +643,12 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         return this.formGroup.get(formControlName)!.hasError(errorType);
     }
 
+    /**
+     * Returns if defined error type is set
+     * @param index of schemafields form array
+     * @param formControlName form control identifier
+     * @param errorType identifier
+     */
     getFormControlInArrayErrorOfType(
         index: number,
         formControlName: keyof SchemaField,
@@ -600,6 +657,11 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         return this.schemaFields.controls[index].get(formControlName)!.hasError(errorType);
     }
 
+    /**
+     * Resets control value in schemafields form array
+     * @param index of schemafields form array
+     * @param property to be cleared
+     */
     formControlInArrayClear(index: number, property: keyof SchemaField): void {
         if (this.schemaFields.controls[index].get(property)) {
             this.schemaFields.controls[index].get(property)!.setValue('', { emitEvent: false });
@@ -608,13 +670,17 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     // MANAGE SCHEMA.FIELD[].ALLOW VALUES //////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Get allowed data entries
+     * @param index of schemafields form array
+     */
     allowValueGetAt(index: number): string[] {
         return Array.from(this.allowValues[index]);
     }
 
     /**
      * Reset the entire allowValues Set at index
-     * @param index of schmea.fields[]
+     * @param index of allowed data array
      * @param values replacing previous values
      */
     allowValueSetAt(index: number, values: string[]): void {
@@ -625,7 +691,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * add value to schema.fields[] allow[]
+     * Add value to schema.fields[] allow[]
      * @param index of schema.fields[]
      * @param value string to be added
      * */
@@ -637,7 +703,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * remove value from schema.fields[] allow[]
+     * Remove value from schema.fields[] allow[]
      * @param index of schema.fields[]
      * @param value string to be removed
      * */
@@ -649,7 +715,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * change value of schema.fields[] allow[]
+     * Change value of schema.fields[] allow[]
      * @param index of schema.fields[]
      * @param value string to be changed
      * @param action indicator: true = add, false = remove
@@ -662,6 +728,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Removes last entry of allow data array
+     * @param index of allow data array
+     */
     allowValueRemoveLastAt(index: number): void {
         // if input bar has text, which is not yet converted to chip, don't redirect backspace key
         const form = this.formGroup.value as Schema;
@@ -690,10 +760,20 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         this.allowValues[index] = new Set();
     }
 
+    /**
+     * Returns True if allow data entry equals value param
+     * @param index of allow data array
+     * @param value to be checked
+     */
     allowValuesContainsAt(index: number, value: string): boolean {
         return this.allowValues[index].has(value);
     }
 
+    /**
+     * Add allow data entry at index with param value
+     * @param index of allow data array
+     * @param value to be set at index
+     */
     allowValueOnStringInputAddAt(index: number, value: any): void {
         if (typeof value === 'string' && value !== '') {
             // as formGroup.field[].allow.control values are represented not as input value, empty it
@@ -702,6 +782,10 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Checks allow data input element for user input
+     * @param index of allow data array
+     */
     allowValuesOnStringInputChangeAt(index: number): void {
         if (!this.schemaFields.controls[index].get('allow')) {
             return;
@@ -715,6 +799,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
 
     // SCHEMA MAIN BUTTON //////////////////////////////////////////////////////////////////////////////
 
+    /** True, if save button is available */
     schemaSaveIsPermitted(): boolean {
         // if no schema, this component is in CREATE mode
         if (!this.schema) {
@@ -727,9 +812,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             (this.schema.permissions.update || this.schema.name !== ADMIN_USER_NAME)
         );
     }
-    /**
-     * Create/update current schema if displayed warning modal has been confirmed by user
-     */
+    /** Create/update current schema if displayed warning modal has been confirmed by user */
     schemaSave(): void {
         if (
             this.schema &&
@@ -749,6 +832,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         }
     }
 
+    /** True, if delete button is available */
     schemaDeleteIsPermitted(): boolean {
         // if schema, check if hs permissions
         return (
@@ -757,9 +841,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             (this.schema.permissions.delete || this.schema.name !== ADMIN_USER_NAME)
         );
     }
-    /**
-     * Delete current schema if displayed warning modal has been confirmed by user
-     */
+    /** Delete current schema if displayed warning modal has been confirmed by user */
     schemaDelete(): void {
         if (
             this.schema &&
@@ -777,9 +859,7 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         });
     }
 
-    /**
-     * Delete field at index if displayed warning modal has been confirmed by user
-     */
+    /** Delete field at index if displayed warning modal has been confirmed by user */
     fieldDelete(field: FormControl, index: number): void {
         // if field is valid, ask before deleting
         if (field.valid) {
@@ -923,6 +1003,17 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
             })
             .then(modal => modal.open());
     }
+
+    /**
+     * Update Validators on form control
+     * @param control form control to be modified
+     * @param validators to be set
+     */
+    private validatorUpdate(control: AbstractControl, validators: ValidatorFn[]): void {
+        control.setValidators(validators);
+        control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    }
 }
 
-export type TSchemaEditorErrors = 'required' | 'pattern' | 'duplicate';
+/** Possible invalid types of this form group */
+export type TSchemaEditorErrors = 'required' | 'pattern' | 'duplicate' | 'conflict';
