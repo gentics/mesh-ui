@@ -87,7 +87,7 @@ node("docker") {
 								container('buildenv') {
 									sshagent(["git"]) {
 										withEnv(["EMAIL=entwicklung@gentics.com", "GIT_AUTHOR_NAME=JenkinsCI", "GIT_COMMITTER_NAME=JenkinsCI"]) {
-											GitHelper.addCommit('.', gitCommitTag + ' Release version ' + version)
+											GitHelper.addCommit('pom.xml', gitCommitTag + ' Release version ' + version)
 											GitHelper.addTag(version, 'Release version ' + version)
 											sh "./mvnw -B deploy"
 											GitHelper.pushTag(version)
