@@ -16,6 +16,7 @@ import { CreateProjectModalComponent } from './components/create-project-modal/c
 import { GroupDetailComponent } from './components/group-detail/group-detail.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
+import { MicroschemaEditorComponent } from './components/microschema-editor/microschema-editor.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';
@@ -58,6 +59,7 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         SchemaListComponent,
         SchemaDetailComponent,
         SchemaEditorComponent,
+        MicroschemaEditorComponent,
         MonacoEditorComponent,
         SchemaAssignmentComponent,
         UserListComponent,

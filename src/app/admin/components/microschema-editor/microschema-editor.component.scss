@@ -1,0 +1,255 @@
+@import "variables";
+
+:host {
+
+    .formgroup {
+        padding-bottom: 6rem;
+    }
+
+    .section-header {
+        font-size: 16px;
+        color: #79797d;
+        text-transform: uppercase;
+    }
+
+    .section-header-fields {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+
+        h2 {
+            display: inline-block;
+            font-size: 16px;
+            color: #79797d;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            margin-top: 0.25rem;
+        }
+        gtx-button {
+            display: inline-block;
+            float: right;
+        }
+    }
+
+    .field-header {
+        position: relative;
+        width: 100%;
+        line-height: 1;
+        padding-bottom: 0.5rem;
+        overflow: hidden;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            // border-top: 1px solid $gtx-color-light-gray;
+            width: 100%;
+            height: 1px;
+            top: 5%;
+            // bottom: 0;
+            // margin: auto;
+            // background-color: $gtx-color-light-gray;
+            background-color: $gtx-color-primary;
+        }
+
+        h3 {
+            display: inline-block;
+            position: relative;
+            margin: 0;
+            line-height: 1;
+            padding-top: 0;
+            padding-bottom: 0;
+            padding-right: 0.2rem;
+            font-size: 16px;
+            color: $gtx-color-primary;
+            text-transform: uppercase;
+        }
+    }
+    
+    .checkbox-wrapper {
+        padding-top: 1.8rem;
+    
+        @media screen and (max-width: $small-screen) {
+            padding-top: 0;
+            padding-bottom: 1rem;
+        }
+    }
+    
+    /* Remove margins for warning texts */
+    /deep/ gtx-select {
+        margin-bottom: 2rem !important;
+    
+    
+        @media screen and (max-width: $small-screen) {
+            padding-top: 1rem;
+            // padding-bottom: 0;
+        }
+    
+        label {
+        
+            @media screen and (max-width: $small-screen) {
+                padding-top: 1rem;
+            }   
+        }
+    }
+
+    /deep/ gtx-search-bar {
+        position: relative;
+        // margin-bottom: 2rem !important;
+        border: none !important;
+        
+        .input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2.5rem;
+            border: 2px solid #d6d6da;
+            padding-right: 2rem;
+        }
+        .contents {
+            position: relative;
+            margin-top: 2.5rem;
+            min-height: 2.5rem;
+            border: none;
+        }
+        .clear-button {
+            position: absolute;
+            top: 0.5rem;
+            bottom: 0;
+            right: 0.5rem;
+        }
+    }
+    
+    .input-container {
+        position: relative;
+    }
+    
+    /deep/ gtx-input {
+        input {
+            margin-bottom: 2rem !important;
+    
+            @media screen and (max-width: $small-screen) {
+                padding-top: 2rem;
+                // padding-bottom: 0;
+            }
+        }
+    }
+    
+    /deep/ gtx-textarea {
+        line-height: 0.8;
+        label {
+            line-height: 1.5;
+        }
+        & > .materialize-textarea {
+            // margin-bottom: 0.4rem;
+    
+            @media screen and (max-width: $small-screen) {
+                padding-top: 0;
+                padding-bottom: 1rem;
+            }
+        }
+    }
+    
+    /deep/ gtx-search-bar {
+        border: 2px solid #d6d6da;
+        border-radius: 3px;
+        margin-top: 1.2rem;
+        box-shadow: none;
+        background-color: $gtx-color-off-white;
+    
+        input {
+            margin-bottom: 0 !important;
+        }
+    
+        &.focused {
+            background-color: white;
+        }
+    
+        .submit-button {
+            display: none;
+        }
+    
+        /deep/ mesh-chip {
+            margin-bottom: 0.2rem !important;
+            margin-top: 0.2rem !important;
+            margin-left: 0.3rem;
+        }
+    
+        @media screen and (max-width: $small-screen) {
+            padding-top: 0;
+        }
+    }
+    
+    .schema-field {
+        position: relative;
+        margin-bottom: 0.6rem;
+    }
+
+    .button-close {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+
+        icon {
+            color: $gtx-color-primary;
+            font-size: 20px;
+        } 
+    }
+    
+    .button-moveup {
+        position: absolute;
+        right: 1rem;
+        top: 2.5rem;
+
+        icon {
+            color: $gtx-color-primary;
+            font-size: 20px;
+        } 
+    }
+
+    .button-movedown {
+        position: absolute;
+        right: 1rem;
+        bottom: 1.5rem;
+
+        icon {
+            color: $gtx-color-primary;
+            font-size: 20px;
+        } 
+    }
+    
+    .button-add {
+        position: absolute;
+        right: 0.85rem;
+        bottom: 0;
+
+        icon {
+            color: $gtx-color-primary;
+        }
+    }
+    
+    .string-bar {
+        label {
+            position: absolute;
+            color: #79797d;
+        }
+    }
+    
+    .input-note {
+        position: absolute;
+        margin-top: -2rem;
+    }
+
+    p {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 0.8rem;
+
+        &.invalid {
+            color: $gtx-color-alert;
+        }
+        &.warning {
+            color: $gtx-color-warning;
+        }
+    }
+}

@@ -15,9 +15,14 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { ADMIN_USER_NAME } from '../../../common/constants';
-import { Microschema } from '../../../common/models/microschema.model';
-import { Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
-import { FieldSchemaFromServer, SchemaResponse, SchemaUpdateRequest } from '../../../common/models/server-models';
+import { Microschema, MicroschemaField } from '../../../common/models/microschema.model';
+import { MicroschemaFieldType, Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
+import {
+    FieldSchemaFromServer,
+    MicroschemaResponse,
+    SchemaResponse,
+    SchemaUpdateRequest
+} from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
@@ -27,9 +32,9 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
  * Schema Builder for UI-friendly assembly of a new schema at app route /admin/schemas/new
  */
 @Component({
-    selector: 'mesh-schema-editor',
-    templateUrl: './schema-editor.component.html',
-    styleUrls: ['./schema-editor.component.scss'],
+    selector: 'mesh-microschema-editor',
+    templateUrl: './microschema-editor.component.html',
+    styleUrls: ['./microschema-editor.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
         trigger('statusAnim', [
@@ -83,13 +88,13 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
         ])
     ]
 })
-export class SchemaEditorComponent
-    extends AbstractSchemaEditorComponent<SchemaUpdateRequest | Schema, SchemaResponse, SchemaField, SchemaFieldType>
+export class MicroschemaEditorComponent
+    extends AbstractSchemaEditorComponent<Microschema, MicroschemaResponse, MicroschemaField, MicroschemaFieldType>
     implements OnInit, OnDestroy {
     // PROPERTIES //////////////////////////////////////////////////////////////////////////////
 
     /** Providing data for Schema Field List Type dropdown list */
-    schemaFieldListTypes: Array<{ value: SchemaFieldType; label: string }> = [
+    schemaFieldListTypes: Array<{ value: MicroschemaFieldType; label: string }> = [
         {
             value: 'boolean',
             label: 'Boolean'
@@ -121,7 +126,7 @@ export class SchemaEditorComponent
     ];
 
     /** Providing data for Schema Field Type dropdown list */
-    schemaFieldTypes: Array<{ value: SchemaFieldType; label: string }> = [
+    schemaFieldTypes: Array<{ value: MicroschemaFieldType; label: string }> = [
         ...this.schemaFieldListTypes,
         {
             value: 'binary',

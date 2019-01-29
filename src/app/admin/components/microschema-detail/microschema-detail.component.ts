@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -21,7 +22,8 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
-    templateUrl: './microschema-detail.component.html'
+    templateUrl: './microschema-detail.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     // TODO Disable save button when editor is pristine
@@ -42,8 +44,18 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     uuid$: Observable<string>;
 
-    microschemaJson = '';
+    get microschemaJson(): string {
+        return this.microschemaJson$.getValue();
+    }
+    set microschemaJson(v: string) {
+        this.microschemaJson$.next(v);
+    }
+    microschemaJson$ = new BehaviorSubject<string>('{}');
     // TODO load json schema from mesh instead of static file
+
+    /** To check if has been edited by user */
+    microschemaJsonOriginal: string;
+
     microschema = require('./microschema.schema.json');
 
     errors: MarkerData[] = [];
@@ -80,6 +92,8 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
             .take(1)
             .toPromise()
             .then(microschema => {
+                // keep original to compare
+                this.microschemaJsonOriginal = stripMicroschemaFields(microschema);
                 this.version = microschema.version;
                 this.schemaEffects
                     .loadEntityAssignments('microschema', microschema.uuid)
@@ -124,12 +138,13 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     save() {
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.microschemaJson);
+            this.microschemaJsonOriginal = JSON.parse(this.microschemaJson);
             if (this.isNew) {
                 this.schemaEffects.createMicroschema(changedSchema).then(microschema => {
-                    if (microschema) {
-                        this.router.navigate(['admin', 'microschemas', microschema.uuid]);
-                        this.version = microschema.version;
-                    }
+                    // if (microschema) {
+                    //     this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                    //     this.version = microschema.version;
+                    // }
                 });
             } else {
                 this.microschema$.take(1).subscribe(microschema => {

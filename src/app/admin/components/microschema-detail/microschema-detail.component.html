@@ -3,13 +3,23 @@
 </div>
 
 <gtx-tabs>
-    <gtx-tab title="Microschemas">
-        <mesh-monaco-editor [(ngModel)]="microschemaJson"
+    <gtx-tab title="Editor">
+        <mesh-microschema-editor [schemaJson]="microschemaJson$ | async"
+                                 (schemaJsonChange)="microschemaJson = $event"
+                                 [schema]="microschema$ | async"
+                                 (save)="save()"
+                                 (delete)="delete()">
+        </mesh-microschema-editor>
+    </gtx-tab>
+
+    <gtx-tab title="JSON">
+        <mesh-monaco-editor [ngModel]="microschemaJson$ | async"
+                            (ngModelChange)="microschemaJson = $event"
                             language="json"
-                            [jsonSchema]="microschema"
+                            [jsonSchema]="microschema$ | async"
                             (errors)="onErrorChange($event)"></mesh-monaco-editor>
 
-        <gtx-button [disabled]="errors.length > 0 || (loading$ | async)"
+        <gtx-button [disabled]="errors.length > 0"
                     style="margin-top: 15px;"
                     (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
     </gtx-tab>
