@@ -383,8 +383,8 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
                 this.segmentFields = [];
                 this.urlFields = [];
 
-                // EXTENDED VALIDATION LOGIC
-                this.isConflictingProperty('name', value.name);
+                // // EXTENDED VALIDATION LOGIC
+                // this.isConflictingProperty('name', value.name);
 
                 // map form data to component data
                 this._schemaJson = {
@@ -610,51 +610,51 @@ export class SchemaEditorComponent implements OnInit, OnDestroy {
         this.fieldRemoveAt(this.schemaFields.value.length - 1);
     }
 
-    fieldMove(fromIndex: number, toIndex: number): void {
-        if (
-            !this.schemaFields.controls[fromIndex] ||
-            !this.schemaFields.controls[toIndex] ||
-            !this.allowValues[fromIndex] ||
-            !this.allowValues[toIndex]
-        ) {
-            return;
-        }
-        const controlToMove = this.schemaFields.controls[fromIndex];
-        console.log('!!! controlToMove:', controlToMove);
-        const controlToMoveAllowValue = controlToMove.get('allow') && (controlToMove.get('allow') as any).value;
+    // fieldMove(fromIndex: number, toIndex: number): void {
+    //     if (
+    //         !this.schemaFields.controls[fromIndex] ||
+    //         !this.schemaFields.controls[toIndex] ||
+    //         !this.allowValues[fromIndex] ||
+    //         !this.allowValues[toIndex]
+    //     ) {
+    //         return;
+    //     }
+    //     const controlToMove = this.schemaFields.controls[fromIndex];
+    //     console.log('!!! controlToMove:', controlToMove);
+    //     const controlToMoveAllowValue = controlToMove.get('allow') && (controlToMove.get('allow') as any).value;
 
-        console.log('!!! this.allowValues BEFORE:', this.allowValues);
-        const removedAllowValue = this.allowValues[fromIndex - 1];
-        console.log('!!! removedAllowValue:', removedAllowValue);
-        this.schemaFields.removeAt(fromIndex);
-        this.allowValues.splice(toIndex, 0, this.allowValues.splice(fromIndex, 1)[0]);
-        this.schemaFields.insert(toIndex, controlToMove);
-        this.allowValues.splice(fromIndex, 0, removedAllowValue);
-        console.log('!!! this.allowValues AFTER:', this.allowValues);
+    //     console.log('!!! this.allowValues BEFORE:', this.allowValues);
+    //     const removedAllowValue = this.allowValues[fromIndex - 1];
+    //     console.log('!!! removedAllowValue:', removedAllowValue);
+    //     this.schemaFields.removeAt(fromIndex);
+    //     this.allowValues.splice(toIndex, 0, this.allowValues.splice(fromIndex, 1)[0]);
+    //     this.schemaFields.insert(toIndex, controlToMove);
+    //     this.allowValues.splice(fromIndex, 0, removedAllowValue);
+    //     console.log('!!! this.allowValues AFTER:', this.allowValues);
 
-        // if allwo values, move them also
-        console.log("!!! controlToMove.get('allow').value:", controlToMoveAllowValue);
-        if (controlToMoveAllowValue && this.schemaFields.controls[toIndex].get('allow')) {
-            this.schemaFields.controls[toIndex].get('allow')!.setValue(controlToMoveAllowValue);
-        }
+    //     // if allwo values, move them also
+    //     console.log("!!! controlToMove.get('allow').value:", controlToMoveAllowValue);
+    //     if (controlToMoveAllowValue && this.schemaFields.controls[toIndex].get('allow')) {
+    //         this.schemaFields.controls[toIndex].get('allow')!.setValue(controlToMoveAllowValue);
+    //     }
 
-        // console.log( '!!! this.allowValues BEFORE:', this.allowValues );
-        // const allowValuetoMove = this.allowValues[fromIndex];
-        // const removedAllowValue =  this.allowValues[fromIndex];
-        // console.log( '!!! removedAllowValue:', removedAllowValue );
-        // this.allowValues.splice(toIndex, 0, this.allowValues.splice(fromIndex, 1)[0]);
-        // this.allowValues.splice(toIndex, 0, allowValuetoMove);
-        // this.allowValues.splice(fromIndex, 0, removedAllowValue);
-        // console.log( '!!! this.allowValues AFTER:', this.allowValues );
-    }
+    //     // console.log( '!!! this.allowValues BEFORE:', this.allowValues );
+    //     // const allowValuetoMove = this.allowValues[fromIndex];
+    //     // const removedAllowValue =  this.allowValues[fromIndex];
+    //     // console.log( '!!! removedAllowValue:', removedAllowValue );
+    //     // this.allowValues.splice(toIndex, 0, this.allowValues.splice(fromIndex, 1)[0]);
+    //     // this.allowValues.splice(toIndex, 0, allowValuetoMove);
+    //     // this.allowValues.splice(fromIndex, 0, removedAllowValue);
+    //     // console.log( '!!! this.allowValues AFTER:', this.allowValues );
+    // }
 
-    fieldMoveUp(index: number): void {
-        this.fieldMove(index, index - 1);
-    }
+    // fieldMoveUp(index: number): void {
+    //     this.fieldMove(index, index - 1);
+    // }
 
-    fieldMoveDown(index: number): void {
-        this.fieldMove(index, index + 1);
-    }
+    // fieldMoveDown(index: number): void {
+    //     this.fieldMove(index, index + 1);
+    // }
 
     fieldHasDuplicateValue(index: number, formControlName: 'name' | 'label'): boolean {
         const fields = this.schemaFields.value as SchemaField[];
