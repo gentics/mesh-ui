@@ -24,7 +24,7 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 /**
  * Schema Builder for UI-friendly assembly of a new schema at app route /admin/schemas/new
  */
-export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, SchemafieldT, SchemaFieldTypeT>
+export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, SchemaFieldT, SchemaFieldTypeT>
     implements OnInit, OnDestroy {
     // PROPERTIES //////////////////////////////////////////////////////////////////////////////
 
@@ -50,6 +50,9 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * Non-editable schema data from server providing permission data
      */
     @Input() schema: SchemaResponseT;
+
+    /** If true, form will create a new entity instead of editing an existing entity */
+    @Input() isNew = false;
 
     /** Emitting on Create/Save Schema */
     @Output() save = new EventEmitter<void>();
@@ -94,16 +97,16 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     allowedChars = new RegExp(/^[a-zA-Z0-9_]+$/);
 
     /** Precondition functions to fill input select dropdown data */
-    abstract schemaInputSelectDataConditions: { [key: string]: (field: SchemaField) => boolean };
+    abstract schemaInputSelectDataConditions: { [key: string]: (field: SchemaFieldT) => boolean };
 
-    /** Precondition functions to fill schema data */
-    abstract schemaDataConditions: { [key: string]: (property: any) => boolean };
+    /** Central form initial validators reference */
+    abstract formValidators: { [key: string]: ValidatorFn[] | any };
 
     /** Precondition functions to fill schema fields data */
     abstract schemaFieldDataConditions: { [key: string]: (property: any) => boolean };
 
-    /** Central form initial validators reference */
-    abstract formValidators: { [key: string]: ValidatorFn[] | any };
+    /** Precondition functions to fill schema data */
+    abstract schemaDataConditions: { [key: string]: (property: any) => boolean };
 
     ADMIN_USER_NAME = ADMIN_USER_NAME;
 
@@ -178,6 +181,10 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     isConflictingProperty(formControlName: any, value: any): boolean {
+        // if editing an existing entity, always return false
+        if (this.isNew === false) {
+            return false;
+        }
         const isConflict =
             this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0 ? true : false;
         const control = this.formGroup.get(formControlName) as AbstractControl | any;
@@ -353,10 +360,10 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      */
     getFormControlInArrayErrorOfType(
         index: number,
-        formControlName: keyof SchemaField,
+        formControlName: keyof SchemaFieldT,
         errorType: TSchemaEditorErrors
     ): boolean {
-        return this.schemaFields.controls[index].get(formControlName)!.hasError(errorType);
+        return this.schemaFields.controls[index].get(formControlName as any)!.hasError(errorType);
     }
 
     /**
@@ -364,9 +371,9 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * @param index of schemafields form array
      * @param property to be cleared
      */
-    formControlInArrayClear(index: number, property: keyof SchemaField): void {
-        if (this.schemaFields.controls[index].get(property)) {
-            this.schemaFields.controls[index].get(property)!.setValue('', { emitEvent: false });
+    formControlInArrayClear(index: number, property: keyof SchemaFieldT): void {
+        if (this.schemaFields.controls[index].get(property as any)) {
+            this.schemaFields.controls[index].get(property as any)!.setValue('', { emitEvent: false });
         }
     }
 
@@ -483,7 +490,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     allowValueOnStringInputAddAt(index: number, value: any): void {
         if (typeof value === 'string' && value !== '') {
             // as formGroup.field[].allow.control values are represented not as input value, empty it
-            this.formControlInArrayClear(index, 'allow');
+            this.formControlInArrayClear(index, 'allow' as any);
             this.allowValues[index].add(value.replace(new RegExp(/\s/, 'g'), ''));
         }
     }
@@ -514,17 +521,17 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         // if schema, check if hs permissions
         return (
             this.schema &&
-            this.schema.permissions &&
-            (this.schema.permissions.update || this.schema.name !== ADMIN_USER_NAME)
+            (this.schema as any).permissions &&
+            ((this.schema as any).permissions.update || (this.schema as any).name !== ADMIN_USER_NAME)
         );
     }
     /** Create/update current schema if displayed warning modal has been confirmed by user */
     schemaSave(): void {
         if (
             this.schema &&
-            this.schema.permissions &&
-            this.schema.permissions.update &&
-            (!this.schema.permissions.update || this.schema.name === ADMIN_USER_NAME)
+            (this.schema as any).permissions &&
+            (this.schema as any).permissions.update &&
+            (!(this.schema as any).permissions.update || (this.schema as any).name === ADMIN_USER_NAME)
         ) {
             return;
         } else {
@@ -543,23 +550,23 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         // if schema, check if hs permissions
         return (
             this.schema &&
-            this.schema.permissions &&
-            (this.schema.permissions.delete || this.schema.name !== ADMIN_USER_NAME)
+            (this.schema as any).permissions &&
+            ((this.schema as any).permissions.delete || (this.schema as any).name !== ADMIN_USER_NAME)
         );
     }
     /** Delete current schema if displayed warning modal has been confirmed by user */
     schemaDelete(): void {
         if (
-            this.schema &&
-            this.schema.permissions &&
-            this.schema.permissions.delete &&
-            (!this.schema.permissions.delete || this.schema.name === ADMIN_USER_NAME)
+            (this.schema as any) &&
+            (this.schema as any).permissions &&
+            (this.schema as any).permissions.delete &&
+            (!(this.schema as any).permissions.delete || (this.schema as any).name === ADMIN_USER_NAME)
         ) {
             return;
         }
         this.displayDeleteSchemaModal(
             { token: 'admin.delete_schema' },
-            { token: 'admin.delete_schema_confirmation', params: { name: this.schema.name } }
+            { token: 'admin.delete_schema_confirmation', params: { name: (this.schema as any).name } }
         ).then(() => {
             this.delete.emit();
         });
@@ -593,12 +600,12 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * @returns array of value-label pairs fit for input select drop down data
      */
     protected getSchemaFieldsFilteredAsInputSelectDataFromSchemaData(
-        compareFn: (field: SchemaField) => boolean
+        compareFn: (field: SchemaFieldT) => boolean
     ): Array<{ value: string; label: string }> {
-        return this._schemaJson.fields
-            ? (this._schemaJson.fields as SchemaField[])
+        return (this._schemaJson as any).fields
+            ? ((this._schemaJson as any).fields as SchemaFieldT[])
                   .filter(field => compareFn(field))
-                  .map(field => ({ value: field.name, label: field.name }))
+                  .map(field => ({ value: (field as any).name, label: (field as any).name }))
             : [];
     }
 
@@ -606,9 +613,9 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * Returns fields of schema from form data filtered by function
      * @param compareFn filtering fields
      */
-    protected getSchemaFieldsFilteredFromFormData(compareFn: (field: SchemaField) => boolean): SchemaField[] {
+    protected getSchemaFieldsFilteredFromFormData(compareFn: (field: SchemaFieldT) => boolean): SchemaFieldT[] {
         return this.schemaFields.value
-            ? (this.schemaFields.value as SchemaField[]).filter(field => compareFn(field))
+            ? (this.schemaFields.value as SchemaFieldT[]).filter(field => compareFn(field))
             : [];
     }
 
@@ -641,7 +648,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         if (!this._schemaJson) {
             return;
         }
-        const fieldToDelete = (this._schemaJson.fields && (this._schemaJson.fields[index] as SchemaField)) || null;
+        const fieldToDelete =
+            ((this._schemaJson as any).fields && ((this._schemaJson as any).fields[index] as SchemaField)) || null;
         if (fieldToDelete && fieldToDelete[property]) {
             delete fieldToDelete[property];
         }

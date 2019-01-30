@@ -83,9 +83,12 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
         ])
     ]
 })
-export class SchemaEditorComponent
-    extends AbstractSchemaEditorComponent<SchemaUpdateRequest | Schema, SchemaResponse, SchemaField, SchemaFieldType>
-    implements OnInit, OnDestroy {
+export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
+    SchemaUpdateRequest | Schema,
+    SchemaResponse,
+    SchemaField,
+    SchemaFieldType
+> {
     // PROPERTIES //////////////////////////////////////////////////////////////////////////////
 
     /** Providing data for Schema Field List Type dropdown list */
@@ -146,6 +149,24 @@ export class SchemaEditorComponent
         urlFields: field => field.name.length > 0 && (field.type === 'string' || field.listType === 'string')
     };
 
+    /** Central form initial validators reference */
+    formValidators: { [key: string]: ValidatorFn[] | any } = {
+        name: [Validators.required, Validators.pattern(this.allowedChars)],
+        container: [],
+        description: [],
+        displayField: [],
+        segmentField: [],
+        urlFields: [],
+        fields: {
+            name: [Validators.required, Validators.pattern(this.allowedChars)],
+            label: [],
+            type: [Validators.required],
+            required: [],
+            listType: [],
+            allow: []
+        }
+    };
+
     /** Precondition functions to fill schema data */
     schemaDataConditions: { [key: string]: (property: any) => boolean } = {
         name: property => property.name,
@@ -183,24 +204,6 @@ export class SchemaEditorComponent
         listType: property => property.type !== 'list' || (property.listType && property.listType.length > 0)
     };
 
-    /** Central form initial validators reference */
-    formValidators: { [key: string]: ValidatorFn[] | any } = {
-        name: [Validators.required, Validators.pattern(this.allowedChars)],
-        container: [],
-        description: [],
-        displayField: [],
-        segmentField: [],
-        urlFields: [],
-        fields: {
-            name: [Validators.required, Validators.pattern(this.allowedChars)],
-            label: [],
-            type: [Validators.required],
-            required: [],
-            listType: [],
-            allow: []
-        }
-    };
-
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
     constructor(
         entities: EntitiesService,
@@ -210,14 +213,6 @@ export class SchemaEditorComponent
         modalService: ModalService
     ) {
         super(entities, adminSchemaEffects, formBuilder, i18n, modalService);
-    }
-
-    // LIFECYCLE HOOKS //////////////////////////////////////////////////////////////////////////////
-    ngOnInit(): void {
-        super.ngOnInit();
-    }
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
     }
 
     // MANAGE COMPONENT DATA //////////////////////////////////////////////////////////////////////////////
@@ -313,7 +308,6 @@ export class SchemaEditorComponent
                     ...(this.schemaDataConditions.name(value) && ({ name: value.name } as any)),
                     ...(this.schemaDataConditions.container(value) && ({ container: value.container } as any)),
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
-                    ...(this.schemaDataConditions.displayField(value) && ({ displayField: value.displayField } as any)),
                     // assign data meeting conditions only
                     ...(this.schemaDataConditions.displayField(value) &&
                         (this.getSchemaFieldsFilteredFromFormData(field => {

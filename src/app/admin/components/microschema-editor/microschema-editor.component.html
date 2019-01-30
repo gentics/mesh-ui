@@ -33,52 +33,8 @@
                label="Description"
                formControlName="description"></gtx-input>
 
-    <div class="input-container small-12 medium-4 columns">
-        <gtx-select formControlName="displayField"
-                    label="Display Field"
-                    title="Select the name of the field whose value will be used as the node display (e. g. field 'ISBN' or field 'Title' on a schema 'Book' )">
-            <gtx-option *ngFor="let field of displayFields"
-                        [value]="field.value">{{ field.label }}</gtx-option>
-        </gtx-select>
-        <div class="input-note">
-            <p [@statusAnim]
-               *ngIf="getFormControlErrorOfType('displayField', 'required')"
-               class="invalid">required</p>
-            <p class="warning"
-               [@statusAnim]
-               *ngIf="!hasDisplayFields()">Create valid schema field of type 'binary' or 'string'</p>
-        </div>
-    </div>
-
-    <div class="input-container small-12 medium-4 columns">
-        <gtx-select formControlName="segmentField"
-                    label="Segment Field">
-            <gtx-option *ngFor="let field of segmentFields"
-                        [value]="field.value">{{ field.label }}</gtx-option>
-        </gtx-select>
-        <div class="input-note">
-            <p class="warning"
-               [@statusAnim]
-               *ngIf="!hasSegmentFields()">Create valid schema field of type 'binary' or 'string'</p>
-        </div>
-    </div>
-
-
-    <div class="input-container small-12 medium-4 columns">
-        <gtx-select formControlName="urlFields"
-                    [multiple]="true"
-                    label="URL Fields">
-            <gtx-option *ngFor="let field of urlFields"
-                        [value]="field.value">{{ field.label }}</gtx-option>
-        </gtx-select>
-        <div class="input-note">
-            <p class="warning"
-               [@statusAnim]
-               *ngIf="!hasUrlFields()">Create valid schema field of type 'string' or type 'list' of type 'string'</p>
-        </div>
-    </div>
-
     <br>
+
     <div class="section-header-fields medium-12 columns">
         <h2>Microschema Fields:</h2>
         <gtx-button size="small"
@@ -160,45 +116,6 @@
                     </div>
                 </div>
 
-                <div [hidden]="field.value.type !== 'node' && field.value.listType !== 'node'"
-                     class="input-container small-12 medium-7 columns">
-                    <gtx-select [value]="allowValueGetAt(i)"
-                                (change)="allowValueSetAt(i, $event)"
-                                [multiple]="true"
-                                label="Allowed Schemas">
-                        <gtx-option *ngFor="let schema of (allSchemas$ | async)"
-                                    [value]="schema.name">{{ schema.name }}</gtx-option>
-                    </gtx-select>
-                </div>
-
-                <div [hidden]="field.value.type !== 'micronode' && field.value.listType !== 'micronode'"
-                     class="input-container small-12 medium-7 columns">
-                    <gtx-select [value]="allowValueGetAt(i)"
-                                (change)="allowValueSetAt(i, $event)"
-                                [multiple]="true"
-                                label="Allowed Microschemas">
-                        <gtx-option *ngFor="let microschema of (allMicroschemas$ | async)"
-                                    [value]="microschema.name">{{ microschema.name }}</gtx-option>
-                    </gtx-select>
-                </div>
-
-                <div [hidden]="field.value.type !== 'string' && field.value.listType !== 'string'"
-                     class="string-bar small-12 medium-7 columns">
-                    <label class="ng-star-inserted">Allowed Strings</label>
-                    <gtx-search-bar formControlName="allow"
-                                    (search)="allowValueOnStringInputAddAt(i, $event)"
-                                    (keydown.backspace)="allowValueRemoveLastAt(i)"
-                                    placeholder="Type and press ENTER or SPACE to add allowed value"
-                                    title="Type and press ENTER or SPACE to add allowed value; press BACKSPACE to remove existing entry"
-                                    (clear)="formControlInArrayClear(i, 'allow')">
-
-                        <mesh-chip *ngFor="let item of allowValues[i]"
-                                   (removeClick)="allowValueRemoveAt(i, item)">
-                            {{ item }}
-                        </mesh-chip>
-                    </gtx-search-bar>
-                </div>
-
                 <!-- INPUT DEPENDING ON listType END -->
             </div>
         </form>
@@ -210,22 +127,7 @@
                 <icon>close</icon>
             </gtx-button>
         </div>
-        <!-- <div class="button-moveup">
-            <gtx-button icon
-                        type="secondary"
-                        title="move field one field up"
-                        (click)="fieldMoveUp(i)">
-                <icon>keyboard_arrow_up</icon>
-            </gtx-button>
-        </div>
-        <div class="button-movedown">
-            <gtx-button icon
-                        type="secondary"
-                        title="move field one field down"
-                        (click)="fieldMoveDown(i)">
-                <icon>keyboard_arrow_down</icon>
-            </gtx-button>
-        </div> -->
+
         <div class="button-add">
             <gtx-button icon
                         type="secondary"
