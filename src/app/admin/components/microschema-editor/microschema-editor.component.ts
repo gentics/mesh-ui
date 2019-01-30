@@ -281,6 +281,29 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
             });
     }
 
+    isConflictingProperty(formControlName: any, value: any): boolean {
+        // if editing an existing entity, always return false
+        if (this.isNew === false) {
+            return false;
+        }
+        const isConflict =
+            this.allMicroschemas.filter((schema: any) => schema[formControlName] === value).length > 0 ? true : false;
+        const control = this.formGroup.get(formControlName) as AbstractControl | any;
+
+        if (isConflict === true) {
+            // assign new error to field errors
+            this.controlErrorsAdd(control, { conflict: true });
+            // control!.setErrors({ ...control!.errors, ...{ conflict: true } });
+        } else {
+            // if exist, create new error object without conflict error
+            this.controlErrorsRemove(control, ['conflict']);
+            // const errors =
+            //     control!.errors && (this.objectRemoveProperties(control!.errors, 'conflict') as ValidationErrors | null);
+            // control!.setErrors(errors);
+        }
+        return isConflict;
+    }
+
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
 
     /**

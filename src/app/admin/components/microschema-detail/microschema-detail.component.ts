@@ -56,6 +56,12 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     /** To check if has been edited by user */
     microschemaJsonOriginal: string;
 
+    get schemaHasChanged(): boolean {
+        const a = JSON.stringify(this.microschemaJsonOriginal);
+        const b = JSON.stringify(JSON.parse(this.microschemaJson));
+        return a !== b;
+    }
+
     microschema = require('./microschema.schema.json');
 
     errors: MarkerData[] = [];

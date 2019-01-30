@@ -201,7 +201,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         type: property => property.type,
         label: property => property.label,
         required: property => property.required,
-        listType: property => property.type !== 'list' || (property.listType && property.listType.length > 0)
+        listType: property => property.type === 'list' && property.listType && property.listType.length > 0
     };
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
@@ -227,7 +227,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         return (
             (schema as any).fields
                 // as formGroup.field[].allow.control values are represented not as input value, empty it
-                .map((field: SchemaField) => this.objectRemoveProperty(field, 'allow') as SchemaField)
+                .map((field: SchemaField) => this.objectRemoveProperties(field, ['allow']) as SchemaField)
         );
     }
 
@@ -402,6 +402,28 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                 };
                 this.schemaJsonChange.emit(JSON.stringify(this._schemaJson, undefined, 4));
             });
+    }
+
+    isConflictingProperty(formControlName: any, value: any): boolean {
+        // if editing an existing entity, always return false
+        if (this.isNew === false) {
+            return false;
+        }
+        const isConflict =
+            this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0 ? true : false;
+        const control = this.formGroup.get(formControlName) as AbstractControl | any;
+
+        if (isConflict === true) {
+            // assign new error to field errors
+            this.controlErrorsAdd(control, { conflict: true });
+        } else {
+            // if exist, create new error object without conflict error
+            this.controlErrorsRemove(control, ['conflict']);
+            // const errors =
+            //     control!.errors && (this.objectRemoveProperties(control!.errors, 'conflict') as ValidationErrors | null);
+            // control!.setErrors(errors);
+        }
+        return isConflict;
     }
 
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////

@@ -46,9 +46,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     @Output() schemaJsonChange = new EventEmitter<string>();
     protected _schemaJson: SchemaT;
 
-    /**
-     * Non-editable schema data from server providing permission data
-     */
+    /** @description Non-editable schema data from server providing permission data */
     @Input() schema: SchemaResponseT;
 
     /** If true, form will create a new entity instead of editing an existing entity */
@@ -69,6 +67,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     /** All microschemas of current Mesh instance */
     allMicroschemas$: Observable<Microschema[]>;
+    allMicroschemas: Microschema[];
 
     /** Stored values of schema.fields[].allow */
     allowValues: Array<Set<string>> = [];
@@ -128,6 +127,10 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
         // get all schemas
         this.allSchemas$.takeUntil(this.destroyed$).subscribe(allSchemas => (this.allSchemas = allSchemas));
+        // get all microschemas
+        this.allMicroschemas$
+            .takeUntil(this.destroyed$)
+            .subscribe(allMicroschemas => (this.allMicroschemas = allMicroschemas));
     }
     ngOnDestroy(): void {
         this.destroyed$.next();
@@ -155,55 +158,29 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns modified schema to fit the form's data structure
+     * @description Returns modified schema to fit the form's data structure
      * @param schema of original state
      */
     abstract schemaAsFormValue(schema: SchemaT): SchemaT;
 
-    /**
-     * Fill input select dropdown data from schema data object
-     */
+    /** @description Fill input select dropdown data from schema data object */
     abstract initInputSelectDataFromSchemaData(): void;
 
-    /**
-     * Fill input select dropdown data from method param
-     */
+    /** @description Fill input select dropdown data from method param */
     abstract updateInputSelectData(field: SchemaField): void;
 
-    /**
-     * Initialize form with empty/default data and listen to changes
-     */
+    /** @description Initialize form with empty/default data and listen to changes */
     protected abstract formGroupInit(): void;
 
-    /** True if all values are valid */
+    /** @returns true if all values are valid */
     formGroupIsValid(): boolean {
         return this.formGroup.valid;
     }
 
-    isConflictingProperty(formControlName: any, value: any): boolean {
-        // if editing an existing entity, always return false
-        if (this.isNew === false) {
-            return false;
-        }
-        const isConflict =
-            this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0 ? true : false;
-        const control = this.formGroup.get(formControlName) as AbstractControl | any;
+    /** @returns true if AbstractControl instance property equals value */
+    abstract isConflictingProperty(formControlName: any, value: any): boolean;
 
-        if (isConflict === true) {
-            // assign new error to field errors
-            control!.setErrors({ ...control!.errors, ...{ conflict: true } });
-        } else {
-            // if exist, create new error object without conflict error
-            const errors =
-                control!.errors && (this.objectRemoveProperty(control!.errors, 'conflict') as ValidationErrors | null);
-            control!.setErrors(errors);
-        }
-        return isConflict;
-    }
-
-    /**
-     * True if at least one field exists, and meets DisplayField conditions
-     */
+    /** @returns true if at least one field exists, and meets DisplayField conditions */
     hasDisplayFields(): boolean {
         return (
             this.getSchemaFieldsFilteredFromFormData(field => {
@@ -212,9 +189,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         );
     }
 
-    /**
-     * True if at least one field exists, and meets SegmentField conditions
-     */
+    /** @returns true if at least one field exists, and meets SegmentField conditions */
     hasSegmentFields(): boolean {
         return (
             this.getSchemaFieldsFilteredFromFormData(field => {
@@ -223,9 +198,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         );
     }
 
-    /**
-     * True if at least one field exists, and meets UrlField conditions
-     */
+    /** @returns true if at least one field exists, and meets UrlField conditions */
     hasUrlFields(): boolean {
         return (
             this.getSchemaFieldsFilteredFromFormData(field => {
@@ -236,15 +209,17 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Initialize a new FormGroup instance and its related data analog to schema.field type
-     */
+    /** @description Initialize a new FormGroup instance and its related data analogously to schema.field type */
     protected abstract createNewField(): FormGroup;
 
-    protected abstract createFieldFromData(field: SchemaField): FormGroup;
+    /**
+     * @description Create FormGroup instance from param data
+     * @param field data to create from
+     */
+    protected abstract createFieldFromData(field: SchemaFieldT): FormGroup;
 
     /**
-     * Creating a new form group specifically initiated for specified index
+     * @description Creating a new form group specifically initiated for specified index
      * @param index pointing at array position
      */
     protected createNewFieldForIndex(index: number): FormGroup {
@@ -252,26 +227,36 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         return this.createNewField();
     }
 
-    protected createFieldsFromData(fields: SchemaField[]): FormGroup[] {
+    /**
+     * @description Create multiple FormGroup instances from param data
+     * @param fields data to create from
+     */
+    protected createFieldsFromData(fields: SchemaFieldT[]): FormGroup[] {
         return fields.map(field => this.createFieldFromData(field));
     }
 
-    fieldAdd(): void {
-        this.schemaFields.push(this.createNewField());
-    }
-
     /**
-     * Insert new field form at specified index
-     * @param index form array index
+     * @description Add new FormGroup instance to FormArray at specified index
+     * @param index FormArray index
      */
     fieldAddAt(index: number): void {
         this.schemaFields.insert(index, this.createNewFieldForIndex(index));
     }
 
+    /** @description Add new FormGroup instance to FormArray */
+    fieldAdd(): void {
+        this.schemaFields.push(this.createNewField());
+    }
+
+    /**
+     * @description Remove FormGroup instance from FormArray at specified index
+     * @param index FormArray index
+     */
     fieldRemoveAt(index: number): void {
         this.schemaFields.removeAt(index);
     }
 
+    /** @description remove last FormGroup instance from FormArray */
     fieldRemoveLast(): void {
         this.fieldRemoveAt(this.schemaFields.value.length - 1);
     }
@@ -317,6 +302,11 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     //     this.fieldMove(index, index + 1);
     // }
 
+    /**
+     * @param index of FormArray instance
+     * @param formControlName FormControl instance string identifer
+     * @returns TRUE if param property of defined FormControl in FormArray equals any other
+     */
     fieldHasDuplicateValue(index: number, formControlName: 'name' | 'label'): boolean {
         const fields = this.schemaFields.value as SchemaField[];
         const ownValue = fields[index][formControlName];
@@ -342,21 +332,27 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         } else {
             // if exist, create new error object without duplicate error
             const errors =
-                control!.errors && (this.objectRemoveProperty(control!.errors, 'duplicate') as ValidationErrors | null);
+                control!.errors &&
+                (this.objectRemoveProperties(control!.errors, ['duplicate']) as ValidationErrors | null);
             control!.setErrors(errors);
         }
         return isDuplicate;
     }
 
+    /**
+     * @param formControlName FormControl instance string identifer
+     * @param errorType string-defined error type
+     * @returns TRUE if defined FormControl instance has param error type
+     */
     getFormControlErrorOfType(formControlName: keyof Schema, errorType: TSchemaEditorErrors): boolean {
         return this.formGroup.get(formControlName)!.hasError(errorType);
     }
 
     /**
-     * Returns if defined error type is set
-     * @param index of schemafields form array
-     * @param formControlName form control identifier
-     * @param errorType identifier
+     * @param index of FormControl instance in FormArray
+     * @param formControlName FormControl instance string identifer
+     * @param errorType string-defined error type
+     * @returns TRUE if defined FormControl instance has param error type
      */
     getFormControlInArrayErrorOfType(
         index: number,
@@ -368,7 +364,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     /**
      * Resets control value in schemafields form array
-     * @param index of schemafields form array
+     * @param index of FormControl instance in FormArray
      * @param property to be cleared
      */
     formControlInArrayClear(index: number, property: keyof SchemaFieldT): void {
@@ -381,7 +377,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     /**
      * Get allowed data entries
-     * @param index of schemafields form array
+     * @param index of FormControl instance in FormArray
      */
     allowValueGetAt(index: number): string[] | null {
         if (this.allowValues[index]) {
@@ -474,9 +470,9 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     /**
-     * Returns True if allow data entry equals value param
      * @param index of allow data array
      * @param value to be checked
+     * @returns TRUE if allow data entry equals value param
      */
     allowValuesContainsAt(index: number, value: string): boolean {
         return this.allowValues[index].has(value);
@@ -512,7 +508,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     // SCHEMA MAIN BUTTON //////////////////////////////////////////////////////////////////////////////
 
-    /** True, if save button is available */
+    /** @returns TRUE if save button is available */
     schemaSaveIsPermitted(): boolean {
         // if no schema, this component is in CREATE mode
         if (!this.schema) {
@@ -525,7 +521,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             ((this.schema as any).permissions.update || (this.schema as any).name !== ADMIN_USER_NAME)
         );
     }
-    /** Create/update current schema if displayed warning modal has been confirmed by user */
+    /** @description Create/update current schema if displayed warning modal has been confirmed by user */
     schemaSave(): void {
         if (
             this.schema &&
@@ -545,7 +541,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         }
     }
 
-    /** True, if delete button is available */
+    /** @returns true if delete button is available */
     schemaDeleteIsPermitted(): boolean {
         // if schema, check if hs permissions
         return (
@@ -554,7 +550,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             ((this.schema as any).permissions.delete || (this.schema as any).name !== ADMIN_USER_NAME)
         );
     }
-    /** Delete current schema if displayed warning modal has been confirmed by user */
+    /** @description Delete current schema if displayed warning modal has been confirmed by user */
     schemaDelete(): void {
         if (
             (this.schema as any) &&
@@ -572,7 +568,11 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         });
     }
 
-    /** Delete field at index if displayed warning modal has been confirmed by user */
+    /**
+     * @description Delete field at index if displayed warning modal has been confirmed by user
+     * @param field FormGroup instance to be removed
+     * @param index of FormControl instance in FormArray
+     * */
     fieldDelete(field: FormControl, index: number): void {
         // if field is valid, ask before deleting
         if (field.valid) {
@@ -595,7 +595,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Return fields of schema data as data for select/drop-down input filtered by function
+     * @description Return fields of schema data as data for select/drop-down input filtered by function
      * @param compareFn filtering fields
      * @returns array of value-label pairs fit for input select drop down data
      */
@@ -610,32 +610,46 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     /**
-     * Returns fields of schema from form data filtered by function
+     * @description Returns fields of schema from form data filtered by function
      * @param compareFn filtering fields
      */
     protected getSchemaFieldsFilteredFromFormData(compareFn: (field: SchemaFieldT) => boolean): SchemaFieldT[] {
-        return this.schemaFields.value
-            ? (this.schemaFields.value as SchemaFieldT[]).filter(field => compareFn(field))
-            : [];
+        if (this.schemaFields.value) {
+            return (this.schemaFields.value as SchemaFieldT[]).filter(field => compareFn(field));
+        } else {
+            return [];
+        }
     }
 
     /**
-     * Returns an object without the defined property
+     * @description Returns an object without the defined property
      * @param object to be cleared of defined property-value pair
-     * @param propertyKey of property to be removed
+     * @param removePropertyKeys of properties to be removed
      * @returns cleared object or null if object does not have any properties
      */
-    protected objectRemoveProperty(object: { [key: string]: any }, propertyKey: string): { [key: string]: any } | null {
-        const propertyKeys = Object.getOwnPropertyNames(object);
-        return propertyKeys.length > 0
-            ? (propertyKeys
-                  .map(key => key !== propertyKey && { [key]: object[key] })
-                  .reduce((objects: object, object: object) => ({ ...objects, object })) as any)
-            : null;
+    protected objectRemoveProperties(
+        object: { [key: string]: any },
+        removePropertyKeys: string[]
+    ): { [key: string]: any } | null {
+        const objectPropertyKeys = Object.getOwnPropertyNames(object);
+        if (objectPropertyKeys.length > 0) {
+            return objectPropertyKeys
+                .map(key => {
+                    // if key in removePropertyKeys then don't include in new return object
+                    return (
+                        !removePropertyKeys.find(removePropertyKey => removePropertyKey === key) && {
+                            [key]: object[key]
+                        }
+                    );
+                })
+                .reduce((objects: object, object: object) => ({ ...objects, object })) as any;
+        } else {
+            return null;
+        }
     }
 
     /**
-     * Remove property from data structure entirely
+     * @description Remove property from data structure entirely
      * @param field current field containing property to be deleted
      * @param index of field containing the property to be deleted
      * @param property key to be deleted
@@ -726,6 +740,32 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     protected validatorUpdate(control: AbstractControl, validators: ValidatorFn[]): void {
         control.setValidators(validators);
         control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    }
+
+    /**
+     * Add new error object to AbstractControl instance
+     * @param control to add new error to
+     * @param errors to be added to defined AbstractControl instance
+     */
+    protected controlErrorsAdd(control: AbstractControl, errors: ValidationErrors): void {
+        // assign new errors to control errors
+        control!.setErrors({ ...control!.errors, ...errors });
+    }
+
+    /**
+     * Remove error object from AbstractControl instance
+     * @param control to remove errors from
+     * @param errorKeys as string array identifying errors to be removed
+     */
+    protected controlErrorsRemove(control: AbstractControl, errorKeys: string[]): void {
+        // remove errors from control errors while retaining existing errors
+        const updatedErrors =
+            control!.errors &&
+            (this.objectRemoveProperties(
+                control!.errors as { [key: string]: any },
+                errorKeys
+            ) as ValidationErrors | null);
+        control!.setErrors(updatedErrors);
     }
 }
 

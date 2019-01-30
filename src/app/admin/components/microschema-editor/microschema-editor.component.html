@@ -2,7 +2,7 @@
       class="formgroup row">
 
     <h2 class="section-header medium-10 columns">Microschema Properties:</h2>
-    <div class="input-container small-12 medium-10 columns">
+    <div class="input-container small-12 medium-12 columns">
         <gtx-input type="text"
                    label="Microschema Name"
                    formControlName="name"></gtx-input>
@@ -15,16 +15,7 @@
                class="invalid">Invalid characters: alphanumeric and underscore only</p>
             <p [@statusAnim]
                *ngIf="getFormControlErrorOfType('name', 'conflict')"
-               class="invalid">This name is already in use by another schema</p>
-        </div>
-    </div>
-
-    <div class="small-12 medium-2 columns">
-        <div class="checkbox-wrapper">
-            <div>
-                <gtx-checkbox label="Container"
-                              formControlName="container"></gtx-checkbox>
-            </div>
+               class="invalid">This name is already in use by another microschema</p>
         </div>
     </div>
 
@@ -32,7 +23,6 @@
                class="small-12 medium-12 columns"
                label="Description"
                formControlName="description"></gtx-input>
-
     <br>
 
     <div class="section-header-fields medium-12 columns">

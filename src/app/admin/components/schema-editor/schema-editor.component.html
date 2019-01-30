@@ -160,7 +160,7 @@
                     </div>
                 </div>
 
-                <div [hidden]="field.value.type !== 'node' && field.value.listType !== 'node'"
+                <div *ngIf="!(field.value.type !== 'node' && field.value.listType !== 'node')"
                      class="input-container small-12 medium-7 columns">
                     <gtx-select [value]="allowValueGetAt(i)"
                                 (change)="allowValueSetAt(i, $event)"
@@ -171,7 +171,7 @@
                     </gtx-select>
                 </div>
 
-                <div [hidden]="field.value.type !== 'micronode' && field.value.listType !== 'micronode'"
+                <div *ngIf="!(field.value.type !== 'micronode' && field.value.listType !== 'micronode')"
                      class="input-container small-12 medium-7 columns">
                     <gtx-select [value]="allowValueGetAt(i)"
                                 (change)="allowValueSetAt(i, $event)"
@@ -182,7 +182,7 @@
                     </gtx-select>
                 </div>
 
-                <div [hidden]="field.value.type !== 'string' && field.value.listType !== 'string'"
+                <div *ngIf="!(field.value.type !== 'string' && field.value.listType !== 'string')"
                      class="string-bar small-12 medium-7 columns">
                     <label class="ng-star-inserted">Allowed Strings</label>
                     <gtx-search-bar formControlName="allow"

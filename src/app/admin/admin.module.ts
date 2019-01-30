@@ -39,6 +39,7 @@ import { AdminProjectEffectsService } from './providers/effects/admin-project-ef
 import { AdminRoleEffectsService } from './providers/effects/admin-role-effects.service';
 import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
 import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
+import { MicrochemaDetailsGuard } from './providers/guards/microschema-editor-guard';
 import { SchemaDetailsGuard } from './providers/guards/schema-editor-guard';
 import { GroupResolver } from './providers/resolvers/group-resolver';
 import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
@@ -92,7 +93,8 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         SchemaResolver,
         MicroschemaResolver,
         ProjectResolver,
-        SchemaDetailsGuard
+        SchemaDetailsGuard,
+        MicrochemaDetailsGuard
     ]
 })
 export class AdminModule {
