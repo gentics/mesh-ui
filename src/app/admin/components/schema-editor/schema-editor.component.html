@@ -7,13 +7,13 @@
                    label="Schema Name"
                    formControlName="name"></gtx-input>
         <div class="input-note">
-            <p [@statusAnim]
+            <p [@animNgIf]
                *ngIf="getFormControlErrorOfType('name', 'required')"
                class="invalid">required</p>
-            <p [@statusAnim]
+            <p [@animNgIf]
                *ngIf="getFormControlErrorOfType('name', 'pattern')"
                class="invalid">Invalid characters: alphanumeric and underscore only</p>
-            <p [@statusAnim]
+            <p [@animNgIf]
                *ngIf="getFormControlErrorOfType('name', 'conflict')"
                class="invalid">This name is already in use by another schema</p>
         </div>
@@ -41,11 +41,11 @@
                         [value]="field.value">{{ field.label }}</gtx-option>
         </gtx-select>
         <div class="input-note">
-            <p [@statusAnim]
+            <p [@animNgIf]
                *ngIf="getFormControlErrorOfType('displayField', 'required')"
                class="invalid">required</p>
             <p class="warning"
-               [@statusAnim]
+               [@animNgIf]
                *ngIf="!hasDisplayFields()">Create valid schema field of type 'binary' or 'string'</p>
         </div>
     </div>
@@ -58,7 +58,7 @@
         </gtx-select>
         <div class="input-note">
             <p class="warning"
-               [@statusAnim]
+               [@animNgIf]
                *ngIf="!hasSegmentFields()">Create valid schema field of type 'binary' or 'string'</p>
         </div>
     </div>
@@ -73,7 +73,7 @@
         </gtx-select>
         <div class="input-note">
             <p class="warning"
-               [@statusAnim]
+               [@animNgIf]
                *ngIf="!hasUrlFields()">Create valid schema field of type 'string' or type 'list' of type 'string'</p>
         </div>
     </div>
@@ -87,11 +87,11 @@
         </gtx-button>
     </div>
 
-    <div [@ngForAnimParent]
+    <div [@animNgForParent]
          class="schema-field small-12 medium-12 columns"
          *ngFor="let field of schemaFields.controls; let i = index">
 
-        <form [@ngForAnimChild]
+        <form [@animNgForChild]
               [formGroup]="field">
             <div class="field-header">
                 <h3>{{field.value?.name}}</h3>
@@ -102,13 +102,13 @@
                                label="Field Name"
                                formControlName="name"></gtx-input>
                     <div class="input-note">
-                        <p [@statusAnim]
+                        <p [@animNgIf]
                            *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'required')"
                            class="invalid">required</p>
-                        <p [@statusAnim]
+                        <p [@animNgIf]
                            *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
                            class="invalid">Invalid characters: alphanumeric and underscore only</p>
-                        <p [@statusAnim]
+                        <p [@animNgIf]
                            *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
                            class="invalid">Duplicate content</p>
                     </div>
@@ -126,7 +126,7 @@
                                     [value]="type.value">{{ type.label }}</gtx-option>
                     </gtx-select>
                     <div class="input-note">
-                        <p [@statusAnim]
+                        <p [@animNgIf]
                            *ngIf="getFormControlInArrayErrorOfType(i, 'type', 'required')"
                            class="invalid">required</p>
                     </div>
@@ -154,7 +154,7 @@
                                     [value]="type.value">{{ type.label }}</gtx-option>
                     </gtx-select>
                     <div class="input-note">
-                        <p [@statusAnim]
+                        <p [@animNgIf]
                            *ngIf="getFormControlInArrayErrorOfType(i, 'listType', 'required')"
                            class="invalid">required</p>
                     </div>

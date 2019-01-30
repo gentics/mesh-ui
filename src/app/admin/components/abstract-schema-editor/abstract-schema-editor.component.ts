@@ -1,5 +1,4 @@
-import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import {
     AbstractControl,
     FormArray,
@@ -7,7 +6,6 @@ import {
     FormControl,
     FormGroup,
     ValidationErrors,
-    Validators,
     ValidatorFn
 } from '@angular/forms';
 import { ModalService } from 'gentics-ui-core';
@@ -22,7 +20,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 /**
- * Schema Builder for UI-friendly assembly of a new schema at app route /admin/schemas/new
+ * @description Schema Builder for UI-friendly assembly of a new schema
  */
 export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, SchemaFieldT, SchemaFieldTypeT>
     implements OnInit, OnDestroy {
@@ -488,6 +486,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             // as formGroup.field[].allow.control values are represented not as input value, empty it
             this.formControlInArrayClear(index, 'allow' as any);
             this.allowValues[index].add(value.replace(new RegExp(/\s/, 'g'), ''));
+            this.formGroup.updateValueAndValidity();
         }
     }
 

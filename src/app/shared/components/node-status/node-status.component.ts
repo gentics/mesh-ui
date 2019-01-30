@@ -24,7 +24,7 @@ import { ApplicationStateService } from '../../../state/providers/application-st
     styleUrls: ['./node-status.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
-        trigger('statusAnimation', [
+        trigger('animNgIfation', [
             transition(':enter', [style({ opacity: 0 }), animate('0.09s', style({ opacity: 1 }))]),
             transition(':leave', [style({ opacity: 1 }), animate('0.09s', style({ opacity: 0 }))])
         ])

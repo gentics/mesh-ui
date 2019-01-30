@@ -1,21 +1,8 @@
 import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import {
-    AbstractControl,
-    FormArray,
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    ValidationErrors,
-    Validators,
-    ValidatorFn
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 
-import { ADMIN_USER_NAME } from '../../../common/constants';
-import { Microschema } from '../../../common/models/microschema.model';
 import { Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
 import { FieldSchemaFromServer, SchemaResponse, SchemaUpdateRequest } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -24,7 +11,7 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstract-schema-editor.component';
 
 /**
- * Schema Builder for UI-friendly assembly of a new schema at app route /admin/schemas/new
+ * @description Schema Builder for UI-friendly assembly of a new schema at app route /admin/schemas/new
  */
 @Component({
     selector: 'mesh-schema-editor',
@@ -32,12 +19,12 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
     styleUrls: ['./schema-editor.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
-        trigger('statusAnim', [
+        trigger('animNgIf', [
             transition(':enter', [style({ opacity: 0 }), animate('0.2s', style({ opacity: 1 }))]),
             transition(':leave', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))])
         ]),
-        trigger('ngForAnimParent', [transition(':enter, :leave', [query('@ngForAnimChild', [animateChild()])])]),
-        trigger('ngForAnimChild', [
+        trigger('animNgForParent', [transition(':enter, :leave', [query('@animNgForChild', [animateChild()])])]),
+        trigger('animNgForChild', [
             transition('void => *', [
                 style({
                     opacity: 0,
@@ -217,8 +204,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
     // MANAGE COMPONENT DATA //////////////////////////////////////////////////////////////////////////////
 
-    // MANAGE FORM //////////////////////////////////////////////////////////////////////////////
-
     /**
      * Returns modified schema to fit the form's data structure
      * @param schema of original state
@@ -266,9 +251,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         }
     }
 
-    /**
-     * Initialize form with empty/default data and listen to changes
-     */
     protected formGroupInit(): void {
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
@@ -325,7 +307,11 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                         ({
                             urlFields: this.getSchemaFieldsFilteredFromFormData(field => {
                                 return this.schemaInputSelectDataConditions.urlFields(field);
-                            }).map(field => field.name)
+                            })
+                                .map(field => field.name)
+                                .filter(fieldName =>
+                                    (value.urlFields as string[]).find(urlFieldName => urlFieldName === fieldName)
+                                )
                         } as any)),
                     // mapping the fields
                     fields: value.fields.map((field: any, index: number) => {
@@ -376,7 +362,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                         if (field.type === 'string' || field.listType === 'string') {
                             // trigger allow-input
                             this.allowValuesOnStringInputChangeAt(index);
-
                             // if entries in allow, assign them to data object but remove from form
                             if (this.allowValues[index] && Array.from(this.allowValues[index]).length > 0) {
                                 Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
@@ -419,18 +404,12 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         } else {
             // if exist, create new error object without conflict error
             this.controlErrorsRemove(control, ['conflict']);
-            // const errors =
-            //     control!.errors && (this.objectRemoveProperties(control!.errors, 'conflict') as ValidationErrors | null);
-            // control!.setErrors(errors);
         }
         return isConflict;
     }
 
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Initialize a new FormGroup instance and its related data analog to schema.field type
-     */
     protected createNewField(): FormGroup {
         this.allowValues.push(new Set<string>());
         const test = this.formBuilder.group({

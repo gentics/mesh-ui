@@ -1,21 +1,10 @@
 import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import {
-    AbstractControl,
-    FormArray,
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    ValidationErrors,
-    Validators,
-    ValidatorFn
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 
 import { Microschema, MicroschemaField } from '../../../common/models/microschema.model';
-import { MicroschemaFieldType, Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
+import { MicroschemaFieldType } from '../../../common/models/schema.model';
 import { FieldSchemaFromServer, MicroschemaResponse } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -23,7 +12,7 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstract-schema-editor.component';
 
 /**
- * Schema Builder for UI-friendly assembly of a new schema at app route /admin/schemas/new
+ * @description Schema Builder for UI-friendly assembly of a new microschema at app route /admin/microschemas/new
  */
 @Component({
     selector: 'mesh-microschema-editor',
@@ -31,12 +20,12 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
     styleUrls: ['./microschema-editor.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
-        trigger('statusAnim', [
+        trigger('animNgIf', [
             transition(':enter', [style({ opacity: 0 }), animate('0.2s', style({ opacity: 1 }))]),
             transition(':leave', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))])
         ]),
-        trigger('ngForAnimParent', [transition(':enter, :leave', [query('@ngForAnimChild', [animateChild()])])]),
-        trigger('ngForAnimChild', [
+        trigger('animNgForParent', [transition(':enter, :leave', [query('@animNgForChild', [animateChild()])])]),
+        trigger('animNgForChild', [
             transition('void => *', [
                 style({
                     opacity: 0,
@@ -181,40 +170,16 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         super(entities, adminSchemaEffects, formBuilder, i18n, modalService);
     }
 
-    // MANAGE COMPONENT DATA //////////////////////////////////////////////////////////////////////////////
-
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Returns modified schema to fit the form's data structure
-     * @param schema of original state
-     */
     schemaAsFormValue(schema: Microschema): Microschema {
         return schema;
     }
 
-    /**
-     * Fill input select dropdown data from schema data object
-     */
-    initInputSelectDataFromSchemaData(): void {
-        // this.displayFields = this.getSchemaFieldsFilteredAsInputSelectDataFromSchemaData(field => {
-        //     return this.schemaInputSelectDataConditions.displayFields(field);
-        // });
-    }
+    initInputSelectDataFromSchemaData(): void {}
 
-    /**
-     * Fill input select dropdown data from method param
-     */
-    updateInputSelectData(field: MicroschemaField): void {
-        // // displayFields
-        // if (this.schemaInputSelectDataConditions.displayFields(field)) {
-        //     this.displayFields.push({ value: field.name, label: field.name });
-        // }
-    }
+    updateInputSelectData(field: MicroschemaField): void {}
 
-    /**
-     * Initialize form with empty/default data and listen to changes
-     */
     protected formGroupInit(): void {
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
@@ -293,22 +258,15 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         if (isConflict === true) {
             // assign new error to field errors
             this.controlErrorsAdd(control, { conflict: true });
-            // control!.setErrors({ ...control!.errors, ...{ conflict: true } });
         } else {
             // if exist, create new error object without conflict error
             this.controlErrorsRemove(control, ['conflict']);
-            // const errors =
-            //     control!.errors && (this.objectRemoveProperties(control!.errors, 'conflict') as ValidationErrors | null);
-            // control!.setErrors(errors);
         }
         return isConflict;
     }
 
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Initialize a new FormGroup instance and its related data analog to schema.field type
-     */
     protected createNewField(): FormGroup {
         return this.formBuilder.group({
             name: ['', this.formValidators.fields.name],
