@@ -5,7 +5,11 @@ import { ModalService } from 'gentics-ui-core';
 
 import { Microschema, MicroschemaField } from '../../../common/models/microschema.model';
 import { MicroschemaFieldType } from '../../../common/models/schema.model';
-import { FieldSchemaFromServer, MicroschemaResponse } from '../../../common/models/server-models';
+import {
+    FieldSchemaFromServer,
+    MicroschemaResponse,
+    MicroschemaUpdateRequest
+} from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
@@ -123,9 +127,6 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         label: string;
     }>;
 
-    /** Regular expression for text input validation checking for allowed characters */
-    allowedChars = new RegExp(/^[a-zA-Z0-9_]+$/);
-
     /** Precondition functions to fill input select dropdown data */
     schemaInputSelectDataConditions: { [key: string]: (field: MicroschemaField) => boolean } = {
         // displayFields: field => field.name.length > 0 && (field.type === 'binary' || field.type === 'string'),
@@ -133,10 +134,10 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
 
     /** Central form initial validators reference */
     formValidators: { [key: string]: ValidatorFn[] | any } = {
-        name: [Validators.required, Validators.pattern(this.allowedChars)],
+        name: [Validators.required, Validators.pattern(this.allowedCharsRegExp)],
         description: [],
         fields: {
-            name: [Validators.required, Validators.pattern(this.allowedChars)],
+            name: [Validators.required, Validators.pattern(this.allowedCharsRegExp)],
             label: [],
             type: [Validators.required],
             required: [],
@@ -156,7 +157,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         type: property => property.type,
         label: property => property.label,
         required: property => property.required,
-        listType: property => property.type !== 'list' || (property.listType && property.listType.length > 0)
+        listType: property => property.type === 'list' && property.listType && property.listType.length > 0
     };
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
@@ -172,8 +173,12 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
 
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////
 
-    schemaAsFormValue(schema: Microschema): Microschema {
-        return schema;
+    schemaAsFormValue(schema: MicroschemaUpdateRequest | Microschema): Microschema {
+        return (
+            (schema as any).fields
+                // as formGroup.field[].allow.control values are represented not as input value, empty it
+                .map((field: MicroschemaField) => this.objectRemoveProperties(field, ['allow']) as MicroschemaField)
+        );
     }
 
     initInputSelectDataFromSchemaData(): void {}
@@ -202,6 +207,11 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
             .distinctUntilChanged()
             .takeUntil(this.destroyed$)
             .subscribe((value: any) => {
+                // reset data
+                this.displayFields = [];
+                this.segmentFields = [];
+                this.urlFields = [];
+
                 // EXTENDED VALIDATION LOGIC
                 this.isConflictingProperty('name', value.name);
 
@@ -223,6 +233,45 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                         // if not of type list anymore, clean up
                         if (field.type !== 'list') {
                             this.propertyPurge(field, index, 'listType');
+                        }
+
+                        // if list types has changed, clear up to prevent wrong form contents
+                        if (
+                            (this._schemaJson &&
+                                this._schemaJson.fields &&
+                                this._schemaJson.fields[index] &&
+                                this._schemaJson.fields[index].type &&
+                                this._schemaJson.fields[index].type !== field.type) ||
+                            (this._schemaJson &&
+                                this._schemaJson.fields &&
+                                this._schemaJson.fields[index] &&
+                                this._schemaJson.fields[index].listType &&
+                                this._schemaJson.fields[index].listType !== field.listType)
+                        ) {
+                            this.allowValuesClearAt(index);
+                        }
+
+                        // if of type node or micronode, assign values
+                        if (
+                            field.type === 'node' ||
+                            field.listType === 'node' ||
+                            field.type === 'micronode' ||
+                            field.listType === 'micronode'
+                        ) {
+                            // if entries in allow, assign them to data object but remove from form
+                            if (this.allowValues[index] && Array.from(this.allowValues[index]).length > 0) {
+                                Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
+                            }
+                        }
+
+                        // if of type string, trigger search bar functionality
+                        if (field.type === 'string' || field.listType === 'string') {
+                            // trigger allow-input
+                            this.allowValuesOnStringInputChangeAt(index);
+                            // if entries in allow, assign them to data object but remove from form
+                            if (this.allowValues[index] && Array.from(this.allowValues[index]).length > 0) {
+                                Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
+                            }
                         }
 
                         // if init value has been provided, fill related data properties
@@ -268,22 +317,30 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
     // MANAGE SCHEMA.FIELD[] ENTRIES //////////////////////////////////////////////////////////////////////////////
 
     protected createNewField(): FormGroup {
+        this.allowValues.push(new Set<string>());
         return this.formBuilder.group({
             name: ['', this.formValidators.fields.name],
             label: ['', this.formValidators.fields.label],
             type: ['', this.formValidators.fields.type],
             required: [false, this.formValidators.fields.required],
-            listType: [null, this.formValidators.fields.listType]
+            listType: [null, this.formValidators.fields.listType],
+            allow: ['', this.formValidators.fields.allow]
         });
     }
 
     protected createFieldFromData(field: MicroschemaField): FormGroup {
+        if (field.allow instanceof Array && field.allow.length > 0) {
+            this.allowValues.push(new Set<string>(field.allow));
+        } else {
+            this.allowValues.push(new Set<string>([]));
+        }
         return this.formBuilder.group({
             name: [field.name || '', this.formValidators.fields.name],
             label: [field.label || '', this.formValidators.fields.label],
             type: [field.type || '', this.formValidators.fields.type],
             required: [field.required || false, this.formValidators.fields.required],
-            listType: [field.listType || null, this.formValidators.fields.listType]
+            listType: [field.listType || null, this.formValidators.fields.listType],
+            allow: ['', this.formValidators.fields.allow]
         });
     }
 }

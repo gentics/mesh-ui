@@ -446,5 +446,136 @@
     "user_updated": {
         "en": "User updated",
         "de": "Benutzer gespeichert"
+    },
+
+    "schema_editor_validator_required": {
+        "en": "This field is required",
+        "de": "Dieses Feld is erforderlich"
+    },
+    "schema_editor_validator_pattern": {
+        "en": "This field may contain allowed charaters only: alphanumeric characters and {{allowedchars}}",
+        "de": "Für die Eingabe sind nur folgende Zeichen erlaubt: alphanumerische Zeichen und {{allowedchars}}"
+    },
+    "schema_editor_validator_duplicate": {
+        "en": "This value is already in use",
+        "de": "Dieser Wert wird bereits verwendet"
+    },
+    "schema_editor_validator_conflict": {
+        "en": "This value is already in use",
+        "de": "Dieser Wert wird bereits verwendet"
+    },
+
+    "schema_editor_warning_displayfield": {
+        "en": "Create valid schema field of type 'binary' or 'string'",
+        "de": "Erstellen Sie ein gültiges Feld vom Typ 'binary' oder 'string'"
+    },
+    "schema_editor_warning_segmentfield": {
+        "en": "Create valid schema field of type 'binary' or 'string'",
+        "de": "Erstellen Sie ein gültiges Feld vom Typ 'binary' oder 'string'"
+    },
+    "schema_editor_warning_urlfield": {
+        "en": "Create valid schema field of type 'string' or type 'list' of list type 'string'",
+        "de": "Erstellen Sie ein gültiges Feld vom Typ 'string' oder 'list' mit Listentyp 'string'"
+    },
+    "schema_editor_warning_nofields": {
+        "en": "This Schema has no fields",
+        "de": "Dieses Schema hat keine Felder"
+    },
+
+    "schema_editor_placeholder_allowedstrings": {
+        "en": "Type and press ENTER or SPACE to add, BACKSPACE to remove",
+        "de": "Tippen und EINGABE oder LEER drücken zum hinzufügen, RÜCK zum entfernen"
+    },
+
+    "schema_editor_sectionlabel_schemaproperties": {
+        "en": "Schema Properties",
+        "de": "Schemaeigenschaften"
+    },
+    "schema_editor_sectionlabel_schemafields": {
+        "en": "Schema Fields",
+        "de": "Schemafelder"
+    },
+    "schema_editor_sectionlabel_microschemaproperties": {
+        "en": "Microschema Properties",
+        "de": "Mikroschemaeigenschaften"
+    },
+    "schema_editor_sectionlabel_microschemafields": {
+        "en": "Microschema Fields",
+        "de": "Mikroschemafelder"
+    },
+
+    "schema_editor_inputlabel_name": {
+        "en": "Name",
+        "de": "Name"
+    },
+    "schema_editor_inputlabel_container": {
+        "en": "Container",
+        "de": "Container"
+    },
+    "schema_editor_inputlabel_description": {
+        "en": "Description",
+        "de": "Beschreibung"
+    },
+    "schema_editor_inputlabel_displayfield": {
+        "en": "Display Field",
+        "de": "Display-Feld"
+    },
+    "schema_editor_inputlabel_segmentfield": {
+        "en": "Segment Field",
+        "de": "Segment-Feld"
+    },
+    "schema_editor_inputlabel_urlfield": {
+        "en": "URL Field",
+        "de": "URL-Feld"
+    },
+    "schema_editor_inputlabel_label": {
+        "en": "Label",
+        "de": "Anzeigename"
+    },
+    "schema_editor_inputlabel_type": {
+        "en": "Type",
+        "de": "Typ"
+    },
+    "schema_editor_inputlabel_required": {
+        "en": "Required",
+        "de": "Erforderlich"
+    },
+    "schema_editor_inputlabel_listtype": {
+        "en": "List Type",
+        "de": "Listentyp"
+    },
+    "schema_editor_inputlabel_allowedschemas": {
+        "en": "Allowed Schemas",
+        "de": "Erlaubte Schemata"
+    },
+    "schema_editor_inputlabel_allowedmicroschemas": {
+        "en": "Allowed Microschemas",
+        "de": "Erlaubte Mikroschemata"
+    },
+    "schema_editor_inputlabel_allowedstrings": {
+        "en": "Allowed Strings",
+        "de": "Erlaubte Zeichenketten"
+    },
+
+    "schema_editor_buttonlabel_newfield": {
+        "en": "New Field",
+        "de": "Neues Feld"
+    },
+    "schema_editor_buttonlabel_save": {
+        "en": "Save",
+        "de": "Speichern"
+    },
+    "schema_editor_buttonlabel_delete": {
+        "en": "Delete",
+        "de": "Löschen"
+    },
+
+    "schema_editor_tooltip_insertnewfield": {
+        "en": "Insert new field",
+        "de": "Neues Feld einfügen"
+    },
+    "schema_editor_tooltip_removefield": {
+        "en": "Remove field",
+        "de": "Feld entfernen"
     }
 }

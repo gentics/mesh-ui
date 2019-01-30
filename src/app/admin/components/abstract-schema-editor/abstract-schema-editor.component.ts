@@ -91,7 +91,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     urlFields: Array<{ value: string; label: string }> = [];
 
     /** Regular expression for text input validation checking for allowed characters */
-    allowedChars = new RegExp(/^[a-zA-Z0-9_]+$/);
+    allowedSpecialChars = '_';
+    allowedCharsRegExp = new RegExp(`^[a-zA-Z0-9${this.allowedSpecialChars}]+$`);
 
     /** Precondition functions to fill input select dropdown data */
     abstract schemaInputSelectDataConditions: { [key: string]: (field: SchemaFieldT) => boolean };
@@ -165,7 +166,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     abstract initInputSelectDataFromSchemaData(): void;
 
     /** @description Fill input select dropdown data from method param */
-    abstract updateInputSelectData(field: SchemaField): void;
+    abstract updateInputSelectData(field: SchemaFieldT): void;
 
     /** @description Initialize form with empty/default data and listen to changes */
     protected abstract formGroupInit(): void;
@@ -559,7 +560,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         ) {
             return;
         }
-        this.displayDeleteSchemaModal(
+        this.displayDeleteModal(
             { token: 'admin.delete_schema' },
             { token: 'admin.delete_schema_confirmation', params: { name: (this.schema as any).name } }
         ).then(() => {
@@ -575,7 +576,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     fieldDelete(field: FormControl, index: number): void {
         // if field is valid, ask before deleting
         if (field.valid) {
-            this.displayDeleteFieldModal(
+            this.displayDeleteModal(
                 { token: 'admin.delete_schemafield' },
                 { token: 'admin.schemafield_delete_confirmation', params: { name: field.value.name } }
             ).then(() => {
@@ -689,28 +690,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             .then(modal => modal.open());
     }
 
-    protected displayDeleteSchemaModal(
-        title: { token: string; params?: { [key: string]: any } },
-        body: { token: string; params?: { [key: string]: any } }
-    ): Promise<any> {
-        return this.modalService
-            .dialog({
-                title: this.i18n.translate(title.token, title.params) + '?',
-                body: this.i18n.translate(body.token, body.params),
-                buttons: [
-                    {
-                        type: 'secondary',
-                        flat: true,
-                        shouldReject: true,
-                        label: this.i18n.translate('common.cancel_button')
-                    },
-                    { type: 'alert', label: this.i18n.translate('admin.delete_label') }
-                ]
-            })
-            .then(modal => modal.open());
-    }
-
-    protected displayDeleteFieldModal(
+    protected displayDeleteModal(
         title: { token: string; params?: { [key: string]: any } },
         body: { token: string; params?: { [key: string]: any } }
     ): Promise<any> {

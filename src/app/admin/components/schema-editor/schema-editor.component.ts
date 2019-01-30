@@ -126,9 +126,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         label: string;
     }>;
 
-    /** Regular expression for text input validation checking for allowed characters */
-    allowedChars = new RegExp(/^[a-zA-Z0-9_]+$/);
-
     /** Precondition functions to fill input select dropdown data */
     schemaInputSelectDataConditions: { [key: string]: (field: SchemaField) => boolean } = {
         displayFields: field => field.name.length > 0 && (field.type === 'binary' || field.type === 'string'),
@@ -138,14 +135,14 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
     /** Central form initial validators reference */
     formValidators: { [key: string]: ValidatorFn[] | any } = {
-        name: [Validators.required, Validators.pattern(this.allowedChars)],
+        name: [Validators.required, Validators.pattern(this.allowedCharsRegExp)],
         container: [],
         description: [],
         displayField: [],
         segmentField: [],
         urlFields: [],
         fields: {
-            name: [Validators.required, Validators.pattern(this.allowedChars)],
+            name: [Validators.required, Validators.pattern(this.allowedCharsRegExp)],
             label: [],
             type: [Validators.required],
             required: [],
@@ -204,10 +201,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
     // MANAGE COMPONENT DATA //////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Returns modified schema to fit the form's data structure
-     * @param schema of original state
-     */
     schemaAsFormValue(schema: SchemaUpdateRequest | Schema): SchemaUpdateRequest | Schema {
         return (
             (schema as any).fields
@@ -216,9 +209,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         );
     }
 
-    /**
-     * Fill input select dropdown data from schema data object
-     */
     initInputSelectDataFromSchemaData(): void {
         this.displayFields = this.getSchemaFieldsFilteredAsInputSelectDataFromSchemaData(field => {
             return this.schemaInputSelectDataConditions.displayFields(field);
@@ -231,9 +221,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         });
     }
 
-    /**
-     * Fill input select dropdown data from method param
-     */
     updateInputSelectData(field: SchemaField): void {
         // displayFields
         if (this.schemaInputSelectDataConditions.displayFields(field)) {
@@ -412,7 +399,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
     protected createNewField(): FormGroup {
         this.allowValues.push(new Set<string>());
-        const test = this.formBuilder.group({
+        return this.formBuilder.group({
             name: ['', this.formValidators.fields.name],
             label: ['', this.formValidators.fields.label],
             type: ['', this.formValidators.fields.type],
@@ -420,7 +407,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
             listType: [null, this.formValidators.fields.listType],
             allow: ['', this.formValidators.fields.allow]
         });
-        return test;
     }
 
     protected createFieldFromData(field: SchemaField): FormGroup {
