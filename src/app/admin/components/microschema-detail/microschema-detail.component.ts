@@ -65,7 +65,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     microschema = require('./microschema.schema.json');
 
     errors: MarkerData[] = [];
-    isNew = true;
+    isNew$ = new BehaviorSubject<boolean>(true);
 
     loading$: Observable<boolean>;
 
@@ -84,7 +84,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.microschema$ = this.route.data.map(data => data.microschema).do(microschema => {
-            this.isNew = !microschema;
+            this.isNew$.next(!microschema);
         });
 
         this.subscription = this.microschema$.subscribe(microschema => {
@@ -145,12 +145,11 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.microschemaJson);
             this.microschemaJsonOriginal = JSON.parse(this.microschemaJson);
-            if (this.isNew) {
-                this.schemaEffects.createMicroschema(changedSchema).then(microschema => {
-                    // if (microschema) {
-                    //     this.router.navigate(['admin', 'microschemas', microschema.uuid]);
-                    //     this.version = microschema.version;
-                    // }
+            if (this.isNew$.getValue()) {
+                this.schemaEffects.createMicroschema(changedSchema).then((microschema: MicroschemaResponse) => {
+                    this.isNew$.next(false);
+                    this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                    this.version = microschema.version;
                 });
             } else {
                 this.microschema$.take(1).subscribe(microschema => {

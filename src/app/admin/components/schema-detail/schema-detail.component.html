@@ -7,7 +7,7 @@
         <mesh-schema-editor [schemaJson]="schemaJson$ | async"
                             (schemaJsonChange)="schemaJson = $event"
                             [schema]="schema$ | async"
-                            [isNew]="isNew"
+                            [isNew]="isNew$ | async"
                             (save)="save()"
                             (delete)="delete()">
         </mesh-schema-editor>

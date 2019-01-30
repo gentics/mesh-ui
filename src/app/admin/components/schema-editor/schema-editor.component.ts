@@ -1,6 +1,7 @@
 import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 
 import { Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
@@ -190,13 +191,14 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
     constructor(
+        router: Router,
         entities: EntitiesService,
         adminSchemaEffects: AdminSchemaEffectsService,
         formBuilder: FormBuilder,
         i18n: I18nService,
         modalService: ModalService
     ) {
-        super(entities, adminSchemaEffects, formBuilder, i18n, modalService);
+        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService);
     }
 
     // MANAGE COMPONENT DATA //////////////////////////////////////////////////////////////////////////////
@@ -311,6 +313,30 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                             ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
                         };
 
+                        // EXTENDED VALIDATION LOGIC
+                        this.fieldHasDuplicateValue(index, 'name');
+
+                        // conditional validators depending on type
+                        if (field.type === 'list') {
+                            this.controlValidatorsUpdate(this.schemaFields.controls[index].get('listType') as any, [
+                                Validators.required
+                            ]);
+                        } else {
+                            this.controlValidatorsUpdate(
+                                this.schemaFields.controls[index].get('listType') as any,
+                                null
+                            );
+                        }
+
+                        // conditional validators depending on list type
+                        if (field.type === 'micronode') {
+                            this.controlValidatorsUpdate(this.schemaFields.controls[index].get('allow') as any, [
+                                Validators.required
+                            ]);
+                        } else {
+                            this.controlValidatorsUpdate(this.schemaFields.controls[index].get('allow') as any, null);
+                        }
+
                         // if not of type list anymore, clean up
                         if (field.type !== 'list') {
                             this.propertyPurge(field, index, 'listType');
@@ -357,17 +383,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
                         // if init value has been provided, fill related data properties
                         this.updateInputSelectData(field);
-
-                        // EXTENDED VALIDATION LOGIC
-                        this.fieldHasDuplicateValue(index, 'name');
-
-                        if (field.type === 'list') {
-                            this.validatorUpdate(this.schemaFields.controls[index].get('listType') as any, [
-                                Validators.required
-                            ]);
-                        } else {
-                            this.validatorUpdate(this.schemaFields.controls[index].get('listType') as any, []);
-                        }
 
                         return schemaField;
                     })

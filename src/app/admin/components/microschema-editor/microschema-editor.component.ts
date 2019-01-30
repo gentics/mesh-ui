@@ -1,6 +1,7 @@
 import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 
 import { Microschema, MicroschemaField } from '../../../common/models/microschema.model';
@@ -115,10 +116,6 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
     schemaFieldTypes: Array<{ value: MicroschemaFieldType; label: string }> = [
         ...this.schemaFieldListTypes,
         {
-            value: 'binary',
-            label: 'Binary'
-        },
-        {
             value: 'list',
             label: 'List'
         }
@@ -128,9 +125,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
     }>;
 
     /** Precondition functions to fill input select dropdown data */
-    schemaInputSelectDataConditions: { [key: string]: (field: MicroschemaField) => boolean } = {
-        // displayFields: field => field.name.length > 0 && (field.type === 'binary' || field.type === 'string'),
-    };
+    schemaInputSelectDataConditions: { [key: string]: (field: MicroschemaField) => boolean } = {};
 
     /** Central form initial validators reference */
     formValidators: { [key: string]: ValidatorFn[] | any } = {
@@ -162,13 +157,14 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
     constructor(
+        router: Router,
         entities: EntitiesService,
         adminSchemaEffects: AdminSchemaEffectsService,
         formBuilder: FormBuilder,
         i18n: I18nService,
         modalService: ModalService
     ) {
-        super(entities, adminSchemaEffects, formBuilder, i18n, modalService);
+        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService);
     }
 
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////
@@ -230,6 +226,21 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                             ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
                         };
 
+                        // EXTENDED VALIDATION LOGIC
+                        this.fieldHasDuplicateValue(index, 'name');
+
+                        // conditional validators depending on type
+                        if (field.type === 'list') {
+                            this.controlValidatorsUpdate(this.schemaFields.controls[index].get('listType') as any, [
+                                Validators.required
+                            ]);
+                        } else {
+                            this.controlValidatorsUpdate(
+                                this.schemaFields.controls[index].get('listType') as any,
+                                null
+                            );
+                        }
+
                         // if not of type list anymore, clean up
                         if (field.type !== 'list') {
                             this.propertyPurge(field, index, 'listType');
@@ -276,17 +287,6 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
 
                         // if init value has been provided, fill related data properties
                         this.updateInputSelectData(field);
-
-                        // EXTENDED VALIDATION LOGIC
-                        this.fieldHasDuplicateValue(index, 'name');
-
-                        if (field.type === 'list') {
-                            this.validatorUpdate(this.schemaFields.controls[index].get('listType') as any, [
-                                Validators.required
-                            ]);
-                        } else {
-                            this.validatorUpdate(this.schemaFields.controls[index].get('listType') as any, []);
-                        }
 
                         return schemaField;
                     })

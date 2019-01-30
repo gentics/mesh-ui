@@ -161,24 +161,36 @@
 
                 <div *ngIf="field.value.type === 'node' || field.value.listType === 'node'"
                      class="input-container small-12 medium-7 columns">
-                    <gtx-select [value]="allowValueGetAt(i)"
+                    <gtx-select formControlName="allow"
+                                [value]="allowValueGetAt(i)"
                                 (change)="allowValueSetAt(i, $event)"
                                 [multiple]="true"
                                 [label]="'admin.schema_editor_inputlabel_allowedschemas' | i18n">
                         <gtx-option *ngFor="let schema of (allSchemas$ | async)"
                                     [value]="schema.name">{{ schema.name }}</gtx-option>
                     </gtx-select>
+                    <div class="input-note">
+                        <p [@animNgIf]
+                           *ngIf="getFormControlInArrayErrorOfType(i, 'allow', 'required')"
+                           class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                    </div>
                 </div>
 
                 <div *ngIf="field.value.type === 'micronode' || field.value.listType === 'micronode'"
                      class="input-container small-12 medium-7 columns">
-                    <gtx-select [value]="allowValueGetAt(i)"
+                    <gtx-select formControlName="allow"
+                                [value]="allowValueGetAt(i)"
                                 (change)="allowValueSetAt(i, $event)"
                                 [multiple]="true"
                                 [label]="'admin.schema_editor_inputlabel_allowedmicroschemas' | i18n">
                         <gtx-option *ngFor="let microschema of (allMicroschemas$ | async)"
                                     [value]="microschema.name">{{ microschema.name }}</gtx-option>
                     </gtx-select>
+                    <div class="input-note">
+                        <p [@animNgIf]
+                           *ngIf="getFormControlInArrayErrorOfType(i, 'allow', 'required')"
+                           class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                    </div>
                 </div>
 
                 <div *ngIf="field.value.type === 'string' || field.value.listType === 'string'"

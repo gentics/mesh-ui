@@ -7,7 +7,7 @@
         <mesh-microschema-editor [schemaJson]="microschemaJson$ | async"
                                  (schemaJsonChange)="microschemaJson = $event"
                                  [schema]="microschema$ | async"
-                                 [isNew]="isNew"
+                                 [isNew]="isNew$ | async"
                                  (save)="save()"
                                  (delete)="delete()">
         </mesh-microschema-editor>

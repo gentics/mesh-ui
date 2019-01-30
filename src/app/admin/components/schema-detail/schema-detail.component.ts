@@ -63,7 +63,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     // TODO load json schema from mesh instead of static file
     schema = require('./schema.schema.json');
     errors: MarkerData[] = [];
-    isNew = true;
+    isNew$ = new BehaviorSubject<boolean>(true);
     private subscription: Subscription;
 
     constructor(
@@ -77,7 +77,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.schema$ = this.route.data.map(data => data.schema).do((schema: Schema) => {
-            this.isNew = !schema;
+            this.isNew$.next(!schema);
         });
 
         this.subscription = this.schema$.subscribe(schema => {
@@ -137,8 +137,12 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
             const changedSchema = JSON.parse(this.schemaJson);
             // update original to compare
             this.schemaJsonOriginal = JSON.parse(this.schemaJson);
-            if (this.isNew) {
-                this.schemaEffects.createSchema(changedSchema);
+            if (this.isNew$.getValue()) {
+                this.schemaEffects.createSchema(changedSchema).then((schema: SchemaResponse) => {
+                    this.isNew$.next(false);
+                    this.router.navigate(['admin', 'schemas', schema.uuid]);
+                    this.version = schema.version;
+                });
             } else {
                 this.schema$.take(1).subscribe(schema => {
                     this.schemaEffects.updateSchema({ ...schema, ...changedSchema }).then(schemaNew => {

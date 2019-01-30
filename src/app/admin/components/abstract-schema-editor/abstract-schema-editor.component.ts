@@ -8,6 +8,7 @@ import {
     ValidationErrors,
     ValidatorFn
 } from '@angular/forms';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -112,6 +113,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
     constructor(
+        protected router: Router,
         protected entities: EntitiesService,
         protected adminSchemaEffects: AdminSchemaEffectsService,
         protected formBuilder: FormBuilder,
@@ -130,6 +132,13 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         this.allMicroschemas$
             .takeUntil(this.destroyed$)
             .subscribe(allMicroschemas => (this.allMicroschemas = allMicroschemas));
+
+        // refresh entities on router change to update validators
+        this.router.events.takeUntil(this.destroyed$).subscribe((event: RouterEvent) => {
+            if (event instanceof NavigationEnd) {
+                this.loadComponentData();
+            }
+        });
     }
     ngOnDestroy(): void {
         this.destroyed$.next();
@@ -650,7 +659,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     /**
      * @description Remove property from data structure entirely
-     * @param field current field containing property to be deleted
+     * @param field containing property to be deleted
      * @param index of field containing the property to be deleted
      * @param property key to be deleted
      */
@@ -712,17 +721,17 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     /**
-     * Update Validators on form control
+     * @description Update Validators on form control
      * @param control form control to be modified
      * @param validators to be set
      */
-    protected validatorUpdate(control: AbstractControl, validators: ValidatorFn[]): void {
+    protected controlValidatorsUpdate(control: AbstractControl, validators: ValidatorFn | ValidatorFn[] | null): void {
         control.setValidators(validators);
         control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
     }
 
     /**
-     * Add new error object to AbstractControl instance
+     * @description Add new error object to AbstractControl instance
      * @param control to add new error to
      * @param errors to be added to defined AbstractControl instance
      */
@@ -732,7 +741,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     /**
-     * Remove error object from AbstractControl instance
+     * @description Remove error object from AbstractControl instance
      * @param control to remove errors from
      * @param errorKeys as string array identifying errors to be removed
      */
