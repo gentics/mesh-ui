@@ -10,7 +10,7 @@ import { Project } from '../../../common/models/project.model';
 import { Schema } from '../../../common/models/schema.model';
 import { SchemaResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
-import { notNullOrUndefined } from '../../../common/util/util';
+import { notNullOrUndefined, simpleDeepEquals } from '../../../common/util/util';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
 import { ProjectAssignments } from '../../../state/models/admin-schemas-state.model';
@@ -55,9 +55,9 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     schemaJsonOriginal: string;
 
     get schemaHasChanged(): boolean {
-        const a = JSON.stringify(this.schemaJsonOriginal);
-        const b = JSON.stringify(JSON.parse(this.schemaJson));
-        return a !== b;
+        const a = JSON.parse(this.schemaJsonOriginal);
+        const b = JSON.parse(this.schemaJson);
+        return !simpleDeepEquals(a, b);
     }
 
     // TODO load json schema from mesh instead of static file
@@ -90,7 +90,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
             .toPromise()
             .then(schema => {
                 // keep original to compare
-                this.schemaJsonOriginal = stripSchemaFields(schema);
+                this.schemaJsonOriginal = JSON.stringify(stripSchemaFields(schema));
                 this.version = schema.version;
                 this.schemaEffects
                     .loadEntityAssignments('schema', schema.uuid)

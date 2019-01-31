@@ -8,7 +8,7 @@ import {
     ValidationErrors,
     ValidatorFn
 } from '@angular/forms';
-import { NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -134,10 +134,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             .subscribe(allMicroschemas => (this.allMicroschemas = allMicroschemas));
 
         // refresh entities on router change to update validators
-        this.router.events.takeUntil(this.destroyed$).subscribe((event: RouterEvent) => {
-            if (event instanceof NavigationEnd) {
-                this.loadComponentData();
-            }
+        this.router.events.takeUntil(this.destroyed$).subscribe(() => {
+            this.loadComponentData();
         });
     }
     ngOnDestroy(): void {

@@ -10,7 +10,7 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { Project } from '../../../common/models/project.model';
 import { MicroschemaResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
-import { notNullOrUndefined } from '../../../common/util/util';
+import { notNullOrUndefined, simpleDeepEquals } from '../../../common/util/util';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
@@ -57,9 +57,9 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     microschemaJsonOriginal: string;
 
     get schemaHasChanged(): boolean {
-        const a = JSON.stringify(this.microschemaJsonOriginal);
-        const b = JSON.stringify(JSON.parse(this.microschemaJson));
-        return a !== b;
+        const a = JSON.parse(this.microschemaJsonOriginal);
+        const b = JSON.parse(this.microschemaJson);
+        return !simpleDeepEquals(a, b);
     }
 
     microschema = require('./microschema.schema.json');
@@ -99,7 +99,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
             .toPromise()
             .then(microschema => {
                 // keep original to compare
-                this.microschemaJsonOriginal = stripMicroschemaFields(microschema);
+                this.microschemaJsonOriginal = JSON.stringify(stripMicroschemaFields(microschema));
                 this.version = microschema.version;
                 this.schemaEffects
                     .loadEntityAssignments('microschema', microschema.uuid)
@@ -143,7 +143,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     save() {
         if (this.errors.length === 0) {
-            const changedSchema = JSON.parse(this.microschemaJson);
+            const changedSchema = JSON.parse(stripMicroschemaFields(this.microschemaJson));
             this.microschemaJsonOriginal = JSON.parse(this.microschemaJson);
             if (this.isNew$.getValue()) {
                 this.schemaEffects.createMicroschema(changedSchema).then((microschema: MicroschemaResponse) => {

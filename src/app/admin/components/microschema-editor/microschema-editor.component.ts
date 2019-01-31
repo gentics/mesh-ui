@@ -192,8 +192,6 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                     : [this.createNewField()]
             )
         });
-        // init first validation trigger
-        this.formGroup.updateValueAndValidity();
 
         // if init value has been provided, fill related data properties
         this.initInputSelectDataFromSchemaData();
@@ -263,15 +261,16 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                         }
 
                         // if of type node or micronode, assign values
-                        if (
-                            field.type === 'node' ||
-                            field.listType === 'node' ||
-                            field.type === 'micronode' ||
-                            field.listType === 'micronode'
-                        ) {
+                        if (field.type === 'node' || field.listType === 'node') {
                             // if entries in allow, assign them to data object but remove from form
                             if (this.allowValues[index] && Array.from(this.allowValues[index]).length > 0) {
                                 Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
+                                this.schemaFields.controls[index]
+                                    .get('allow')!
+                                    .setValue(Array.from(this.allowValues[index]), {
+                                        onlySelf: true,
+                                        emitEvent: false
+                                    });
                             }
                         }
 
@@ -293,6 +292,9 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                 };
                 this.schemaJsonChange.emit(JSON.stringify(this._schemaJson, undefined, 4));
             });
+
+        // init first validation trigger
+        this.formGroup.updateValueAndValidity();
     }
 
     isConflictingProperty(formControlName: any, value: any): boolean {

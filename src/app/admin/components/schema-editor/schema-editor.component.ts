@@ -255,8 +255,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                     : [this.createNewField()]
             )
         });
-        // init first validation trigger
-        this.formGroup.updateValueAndValidity();
 
         // if init value has been provided, fill related data properties
         this.initInputSelectDataFromSchemaData();
@@ -308,8 +306,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                             ...(this.schemaFieldDataConditions.name(field) && ({ name: field.name } as any)),
                             ...(this.schemaFieldDataConditions.type(field) && ({ type: field.type } as any)),
                             ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),
-                            ...(this.schemaFieldDataConditions.required(field) &&
-                                ({ required: field.required } as any)),
+                            ...({ required: field.required || false } as any),
                             ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
                         };
 
@@ -368,6 +365,12 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                             // if entries in allow, assign them to data object but remove from form
                             if (this.allowValues[index] && Array.from(this.allowValues[index]).length > 0) {
                                 Object.assign(schemaField, { allow: Array.from(this.allowValues[index]) });
+                                this.schemaFields.controls[index]
+                                    .get('allow')!
+                                    .setValue(Array.from(this.allowValues[index]), {
+                                        onlySelf: true,
+                                        emitEvent: false
+                                    });
                             }
                         }
 
@@ -389,6 +392,9 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                 };
                 this.schemaJsonChange.emit(JSON.stringify(this._schemaJson, undefined, 4));
             });
+
+        // init first validation trigger
+        this.formGroup.updateValueAndValidity();
     }
 
     isConflictingProperty(formControlName: any, value: any): boolean {
