@@ -144,7 +144,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     save() {
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.microschemaJson);
-            this.microschemaJsonOriginal = JSON.parse(this.microschemaJson);
+            this.microschemaJsonOriginal = JSON.stringify(stripMicroschemaFields(changedSchema));
             if (this.isNew$.getValue()) {
                 this.schemaEffects.createMicroschema(changedSchema).then((microschema: MicroschemaResponse) => {
                     this.isNew$.next(false);
