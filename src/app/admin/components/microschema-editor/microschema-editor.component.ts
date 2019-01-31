@@ -216,13 +216,11 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                     // mapping the fields
                     fields: value.fields.map((field: any, index: number) => {
                         const oldField = this.schemaFields.value[index];
-                        console.log('!!! value.type:' + value.type + 'field.type:' + field.type);
                         const schemaField: FieldSchemaFromServer = {
                             ...(this.schemaFieldDataConditions.name(field) && ({ name: field.name } as any)),
                             ...(this.schemaFieldDataConditions.type(field) && ({ type: field.type } as any)),
                             ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),
-                            ...(this.schemaFieldDataConditions.required(field) &&
-                                ({ required: field.required } as any)),
+                            ...({ required: field.required || false } as any),
                             // check conditions and only assign if type has changed
                             ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
                         };
