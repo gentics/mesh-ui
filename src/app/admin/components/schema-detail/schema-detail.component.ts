@@ -60,6 +60,9 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         return !simpleDeepEquals(a, b);
     }
 
+    /** indiocate component is in delete mode */
+    doesDelete = false;
+
     // TODO load json schema from mesh instead of static file
     schema = require('./schema.schema.json');
     errors: MarkerData[] = [];
@@ -159,7 +162,10 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         this.schema$
             .take(1)
             .switchMap(schema => this.schemaEffects.deleteSchema(schema.uuid))
-            .subscribe(() => this.router.navigate(['admin', 'schemas']));
+            .subscribe(() => {
+                this.doesDelete = true;
+                this.router.navigate(['admin', 'schemas']);
+            });
     }
 
     onAssignmentChange(project: Project, isChecked: boolean) {

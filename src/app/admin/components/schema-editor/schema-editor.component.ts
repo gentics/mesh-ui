@@ -309,8 +309,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                             ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),
                             ...({ required: field.required || false } as any),
                             // check conditions and only assign if type has changed
-                            ...(this.schemaFieldDataConditions.listType(field) &&
-                                ({ listType: oldField.type !== field.type ? field.listType : null } as any))
+                            ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
                         };
 
                         // EXTENDED VALIDATION LOGIC

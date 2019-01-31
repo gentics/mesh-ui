@@ -62,6 +62,9 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         return !simpleDeepEquals(a, b);
     }
 
+    /** indiocate component is in delete mode */
+    doesDelete = false;
+
     microschema = require('./microschema.schema.json');
 
     errors: MarkerData[] = [];
@@ -167,7 +170,10 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         this.microschema$
             .take(1)
             .switchMap(microschema => this.schemaEffects.deleteMicroschema(microschema.uuid))
-            .subscribe(() => this.router.navigate(['admin', 'microschemas']));
+            .subscribe(() => {
+                this.doesDelete = true;
+                this.router.navigate(['admin', 'microschemas']);
+            });
     }
 
     onAssignmentChange(project: Project, isChecked: boolean) {
