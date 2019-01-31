@@ -151,7 +151,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         name: property => property.name,
         type: property => property.type,
         label: property => property.label,
-        required: property => property.required,
+        required: property => property.required === true,
         listType: property => property.type === 'list' && property.listType && property.listType.length > 0
     };
 
@@ -220,8 +220,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                             ...(this.schemaFieldDataConditions.name(field) && ({ name: field.name } as any)),
                             ...(this.schemaFieldDataConditions.type(field) && ({ type: field.type } as any)),
                             ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),
-                            ...(this.schemaFieldDataConditions.required(field) &&
-                                ({ required: field.required } as any)),
+                            ...({ required: field.required || false } as any),
                             // check conditions and only assign if type has changed
                             ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
                         };
