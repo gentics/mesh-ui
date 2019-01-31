@@ -199,7 +199,7 @@
     .button-moveup {
         position: absolute;
         right: 1rem;
-        top: 2.5rem;
+        top: 2.3rem;
 
         icon {
             color: $gtx-color-primary;
@@ -207,10 +207,21 @@
         } 
     }
 
+    gtx-drag-handle {
+        position: absolute;
+        right: 1.1rem;
+        top: 3.5rem;
+
+        /deep/ .gtx-drag-handle > i {
+            color: $gtx-color-primary;
+            font-size: 1.2rem;
+        }
+    }
+
     .button-movedown {
         position: absolute;
         right: 1rem;
-        bottom: 1.5rem;
+        bottom: 1.3rem;
 
         icon {
             color: $gtx-color-primary;
