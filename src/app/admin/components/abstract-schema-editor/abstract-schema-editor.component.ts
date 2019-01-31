@@ -375,8 +375,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * @param errorType string-defined error type
      * @returns TRUE if defined FormControl instance has param error type
      */
-    getFormControlErrorOfType(formControlName: keyof Schema, errorType: TSchemaEditorErrors): boolean {
-        return this.formGroup.get(formControlName)!.hasError(errorType);
+    getFormControlErrorOfType(formControlName: keyof SchemaT, errorType: TSchemaEditorErrors): boolean {
+        return this.formGroup.get(formControlName as any)!.hasError(errorType);
     }
 
     /**
@@ -474,8 +474,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      */
     allowValueRemoveLastAt(index: number): void {
         // if input bar has text, which is not yet converted to chip, don't redirect backspace key
-        const form = this.formGroup.value as Schema;
-        const inputText = form.fields && form.fields[index] && form.fields[index].allow;
+        const form = this.formGroup.value as SchemaT;
+        const inputText = (form as any).fields && (form as any).fields[index] && (form as any).fields[index].allow;
         if (inputText && inputText.length) {
             return;
         }
@@ -686,27 +686,6 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
                 .reduce((objects: object, object: object) => ({ ...objects, object })) as any;
         } else {
             return null;
-        }
-    }
-
-    /**
-     * @description Remove property from data structure entirely
-     * @param field containing property to be deleted
-     * @param index of field containing the property to be deleted
-     * @param property key to be deleted
-     */
-    protected propertyPurge(field: SchemaField, index: number, property: keyof SchemaField): void {
-        if (field[property]) {
-            delete field[property];
-        }
-
-        if (!this._schemaJson) {
-            return;
-        }
-        const fieldToDelete =
-            ((this._schemaJson as any).fields && ((this._schemaJson as any).fields[index] as SchemaField)) || null;
-        if (fieldToDelete && fieldToDelete[property]) {
-            delete fieldToDelete[property];
         }
     }
 
