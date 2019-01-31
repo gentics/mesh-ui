@@ -107,6 +107,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, 
      * Upon destruction of the component we make sure to dispose both the editor and the extra libs that we might've loaded
      */
     ngOnDestroy() {
+        if (!this._editor) {
+            return;
+        }
         this._editor.dispose();
         if (this._javascriptExtraLibs !== null) {
             this._javascriptExtraLibs.dispose();
