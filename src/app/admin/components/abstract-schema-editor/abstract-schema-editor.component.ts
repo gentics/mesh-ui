@@ -267,46 +267,71 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         this.fieldRemoveAt(this.schemaFields.value.length - 1);
     }
 
-    // fieldMove(fromIndex: number, toIndex: number): void {
-    //     if (
-    //         !this.schemaFields.controls[fromIndex] ||
-    //         !this.schemaFields.controls[toIndex] ||
-    //         !this.allowValues[fromIndex] ||
-    //         !this.allowValues[toIndex]
-    //     ) {
-    //         return;
-    //     }
-    //     const controlToMove = this.schemaFields.controls[fromIndex];
-    //     const controlToMoveAllowValue = controlToMove.get('allow') && (controlToMove.get('allow') as any).value;
+    fieldHasMoveButtons(): boolean {
+        return this.schemaFields.value && this.schemaFields.value.length > 1;
+    }
 
-    //     const removedAllowValue = this.allowValues[fromIndex - 1];
-    //     this.schemaFields.removeAt(fromIndex);
-    //     this.allowValues.splice(toIndex, 0, this.allowValues.splice(fromIndex, 1)[0]);
-    //     this.schemaFields.insert(toIndex, controlToMove);
-    //     this.allowValues.splice(fromIndex, 0, removedAllowValue);
+    fieldHasMoveUpButton(index: number): boolean {
+        const hasFieldBefore = this.schemaFields.controls[index - 1] ? true : false;
+        return this.fieldHasMoveButtons() && hasFieldBefore;
+    }
 
-    //     // if allwo values, move them also
-    //     if (controlToMoveAllowValue && this.schemaFields.controls[toIndex].get('allow')) {
-    //         this.schemaFields.controls[toIndex].get('allow')!.setValue(controlToMoveAllowValue);
-    //     }
+    fieldHasMoveDownButton(index: number): boolean {
+        const hasFieldAfter = this.schemaFields.controls[index + 1] ? true : false;
+        return this.fieldHasMoveButtons() && hasFieldAfter;
+    }
 
-    //     // console.log( '!!! this.allowValues BEFORE:', this.allowValues );
-    //     // const allowValuetoMove = this.allowValues[fromIndex];
-    //     // const removedAllowValue =  this.allowValues[fromIndex];
-    //     // console.log( '!!! removedAllowValue:', removedAllowValue );
-    //     // this.allowValues.splice(toIndex, 0, this.allowValues.splice(fromIndex, 1)[0]);
-    //     // this.allowValues.splice(toIndex, 0, allowValuetoMove);
-    //     // this.allowValues.splice(fromIndex, 0, removedAllowValue);
-    //     // console.log( '!!! this.allowValues AFTER:', this.allowValues );
-    // }
+    fieldMove(fromIndex: number, toIndex: number): void {
+        if (
+            !this.schemaFields.controls[fromIndex] ||
+            !this.schemaFields.controls[toIndex] ||
+            !this.allowValues[fromIndex] ||
+            !this.allowValues[toIndex]
+        ) {
+            return;
+        }
+        const controlToMove = this.schemaFields.at(fromIndex);
+        const allowValueToMove = this.allowValues[fromIndex] || null;
+        const allowValueToMoveInData = (this._schemaJson as any).fields[fromIndex].allow || null;
 
-    // fieldMoveUp(index: number): void {
-    //     this.fieldMove(index, index - 1);
-    // }
+        // if allowValue exist, remove from current position
+        if (allowValueToMove && allowValueToMoveInData) {
+            this.allowValues.splice(fromIndex, 1);
+            (this._schemaJson as any).fields.splice(fromIndex, 1);
+        }
+        // remove control from array current array position
+        this.schemaFields.removeAt(fromIndex);
 
-    // fieldMoveDown(index: number): void {
-    //     this.fieldMove(index, index + 1);
-    // }
+        // if allowValues exist, insert at new array positon
+        if (allowValueToMove && allowValueToMoveInData) {
+            this.allowValues.splice(toIndex, 0, allowValueToMove);
+            (this._schemaJson as any).fields.splice(toIndex, 0, allowValueToMoveInData);
+        }
+        // add control to new array positon
+        this.schemaFields.insert(toIndex, controlToMove);
+
+        // if allwo values, update moved control
+        const type = this.getControlFromArrayAtIndex(toIndex, 'type')!.value;
+        const listType = this.getControlFromArrayAtIndex(toIndex, 'listType')!.value;
+        if (
+            allowValueToMove &&
+            this.getControlFromArrayAtIndex(toIndex, 'allow') &&
+            !(type !== 'string' || listType !== 'string') &&
+            this.getControlFromArrayAtIndex(toIndex, 'allow')
+        ) {
+            this.getControlFromArrayAtIndex(toIndex, 'allow')!.setValue(allowValueToMove);
+        }
+        // trigger validators
+        this.formGroup.updateValueAndValidity();
+    }
+
+    fieldMoveUp(index: number): void {
+        this.fieldMove(index, index - 1);
+    }
+
+    fieldMoveDown(index: number): void {
+        this.fieldMove(index, index + 1);
+    }
 
     /**
      * @param index of FormArray instance
@@ -331,7 +356,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
                 return field[formControlName] && field[formControlName]!.toLocaleLowerCase() === ownValue.toLowerCase();
             }).length > 0;
         // notify formControl in formGroup of this extended validation logic
-        const control = this.schemaFields.controls[index].get(formControlName) as AbstractControl | any;
+        const control = this.getControlFromArrayAtIndex(index, formControlName) as AbstractControl | any;
         if (isDuplicate === true) {
             // assign new error to field errors
             control!.setErrors({ ...control!.errors, ...{ duplicate: true } });
@@ -365,7 +390,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         formControlName: keyof SchemaFieldT,
         errorType: TSchemaEditorErrors
     ): boolean {
-        return this.schemaFields.controls[index].get(formControlName as any)!.hasError(errorType);
+        return this.getControlFromArrayAtIndex(index, formControlName as any)!.hasError(errorType);
     }
 
     /**
@@ -374,8 +399,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * @param property to be cleared
      */
     formControlInArrayClear(index: number, property: keyof SchemaFieldT): void {
-        if (this.schemaFields.controls[index].get(property as any)) {
-            this.schemaFields.controls[index].get(property as any)!.setValue('', { emitEvent: false });
+        if (this.getControlFromArrayAtIndex(index, property as any)) {
+            this.getControlFromArrayAtIndex(index, property as any)!.setValue('', { emitEvent: false });
         }
     }
 
@@ -503,10 +528,10 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * @param index of allow data array
      */
     allowValuesOnStringInputChangeAt(index: number): void {
-        if (!this.schemaFields.controls[index].get('allow')) {
+        if (!this.getControlFromArrayAtIndex(index, 'allow')) {
             return;
         }
-        const allow = this.schemaFields.controls[index].get('allow')!.value;
+        const allow = this.getControlFromArrayAtIndex(index, 'allow')!.value;
         // if input value is seperated by space or comma, then add as chip
         if (new RegExp(/\w+\s/, 'g').test(allow)) {
             this.allowValueOnStringInputAddAt(index, allow);
@@ -600,6 +625,15 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param index of control in form array instance
+     * @param control string identifying control in form group
+     * @returns control from form group in form array
+     */
+    protected getControlFromArrayAtIndex(index: number, control: string): AbstractControl | null {
+        return this.schemaFields.controls[index].get(control);
+    }
 
     /**
      * @description Return fields of schema data as data for select/drop-down input filtered by function
