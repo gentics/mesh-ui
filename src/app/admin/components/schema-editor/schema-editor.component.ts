@@ -302,12 +302,15 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                         } as any)),
                     // mapping the fields
                     fields: value.fields.map((field: any, index: number) => {
+                        const oldField = this.schemaFields.value[index];
                         const schemaField: FieldSchemaFromServer = {
                             ...(this.schemaFieldDataConditions.name(field) && ({ name: field.name } as any)),
                             ...(this.schemaFieldDataConditions.type(field) && ({ type: field.type } as any)),
                             ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),
                             ...({ required: field.required || false } as any),
-                            ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
+                            // check conditions and only assign if type has changed
+                            ...(this.schemaFieldDataConditions.listType(field) &&
+                                ({ listType: oldField.type !== field.type ? field.listType : null } as any))
                         };
 
                         // EXTENDED VALIDATION LOGIC
@@ -334,9 +337,12 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                             this.controlValidatorsUpdate(this.schemaFields.controls[index].get('allow') as any, null);
                         }
 
-                        // if not of type list anymore, clean up
-                        if (field.type !== 'list') {
-                            this.propertyPurge(field, index, 'listType');
+                        // if not of type list anymore, update controls to display correct input elements
+                        if (field.type !== 'list' || oldField.type !== field.type) {
+                            this.schemaFields.controls[index].get('listType')!.setValue(null, {
+                                onlySelf: true,
+                                emitEvent: false
+                            });
                         }
 
                         // if list types has changed, clear up to prevent wrong form contents
@@ -403,7 +409,9 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
             return false;
         }
         const isConflict =
-            this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0 ? true : false;
+            this.allSchemas && this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0
+                ? true
+                : false;
         const control = this.formGroup.get(formControlName) as AbstractControl | any;
 
         if (isConflict === true) {

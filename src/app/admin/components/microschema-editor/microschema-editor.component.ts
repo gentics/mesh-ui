@@ -215,13 +215,17 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
                     // mapping the fields
                     fields: value.fields.map((field: any, index: number) => {
+                        const oldField = this.schemaFields.value[index];
+                        console.log('!!! value.type:' + value.type + 'field.type:' + field.type);
                         const schemaField: FieldSchemaFromServer = {
                             ...(this.schemaFieldDataConditions.name(field) && ({ name: field.name } as any)),
                             ...(this.schemaFieldDataConditions.type(field) && ({ type: field.type } as any)),
                             ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),
                             ...(this.schemaFieldDataConditions.required(field) &&
                                 ({ required: field.required } as any)),
-                            ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
+                            // check conditions and only assign if type has changed
+                            ...(this.schemaFieldDataConditions.listType(field) &&
+                                ({ listType: oldField.type !== field.type ? field.listType : null } as any))
                         };
 
                         // EXTENDED VALIDATION LOGIC
@@ -239,9 +243,12 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                             );
                         }
 
-                        // if not of type list anymore, clean up
-                        if (field.type !== 'list') {
-                            this.propertyPurge(field, index, 'listType');
+                        // if not of type list anymore, update controls to display correct input elements
+                        if (field.type !== 'list' || oldField.type !== field.type) {
+                            this.schemaFields.controls[index].get('listType')!.setValue(null, {
+                                onlySelf: true,
+                                emitEvent: false
+                            });
                         }
 
                         // if list types has changed, clear up to prevent wrong form contents
