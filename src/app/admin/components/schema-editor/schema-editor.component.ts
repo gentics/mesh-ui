@@ -404,13 +404,11 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
     isConflictingProperty(formControlName: any, value: any): boolean {
         // if editing an existing entity, always return false
-        if (this.isNew === false) {
+        if (this.isNew === false || !this.allSchemas) {
             return false;
         }
         const isConflict =
-            this.allSchemas && this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0
-                ? true
-                : false;
+            this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0 ? true : false;
         const control = this.formGroup.get(formControlName) as AbstractControl | any;
 
         if (isConflict === true) {

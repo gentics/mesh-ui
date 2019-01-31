@@ -305,7 +305,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
 
     isConflictingProperty(formControlName: any, value: any): boolean {
         // if editing an existing entity, always return false
-        if (this.isNew === false) {
+        if (this.isNew === false || !this.allMicroschemas) {
             return false;
         }
         const isConflict =
