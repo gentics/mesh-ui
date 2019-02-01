@@ -1,6 +1,5 @@
 import { animate, style, AnimationBuilder, AnimationPlayer } from '@angular/animations';
 import {
-    ContentChildren,
     ElementRef,
     EventEmitter,
     Input,
@@ -145,8 +144,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         protected formBuilder: FormBuilder,
         protected i18n: I18nService,
         protected modalService: ModalService,
-        protected animationBuilder: AnimationBuilder,
-        protected elementRef: ElementRef
+        protected animationBuilder: AnimationBuilder
     ) {}
 
     // LIFECYCLE HOOKS //////////////////////////////////////////////////////////////////////////////
