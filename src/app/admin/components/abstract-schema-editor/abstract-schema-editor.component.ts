@@ -164,8 +164,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @description Returns modified schema to fit the form's data structure
      * @param schema of original state
+     * @returns modified schema to fit the form's data structure
      */
     abstract schemaAsFormValue(schema: SchemaT): SchemaT;
 
@@ -184,7 +184,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     /** @returns true if AbstractControl instance property equals value */
-    abstract isConflictingProperty(formControlName: any, value: any): boolean;
+    abstract isConflictingProperty(formControlName: keyof SchemaT, value: any): boolean;
 
     /** @returns true if at least one field exists, and meets DisplayField conditions */
     hasDisplayFields(): boolean {
@@ -624,7 +624,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         return this.schema ? true : false;
     }
 
-    // PRIVATE METHODS //////////////////////////////////////////////////////////////////////////////
+    // UTILITY METHODS //////////////////////////////////////////////////////////////////////////////
 
     /**
      * @param index of control in form array instance

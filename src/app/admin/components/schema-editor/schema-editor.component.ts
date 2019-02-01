@@ -402,13 +402,13 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         this.formGroup.updateValueAndValidity();
     }
 
-    isConflictingProperty(formControlName: any, value: any): boolean {
+    isConflictingProperty(formControlName: keyof Schema, value: any): boolean {
         // if editing an existing entity, always return false
         if (this.isNew === false || !this.allSchemas) {
             return false;
         }
         const isConflict =
-            this.allSchemas.filter((schema: any) => schema[formControlName] === value).length > 0 ? true : false;
+            this.allSchemas.filter(schema => schema[formControlName] === value).length > 0 ? true : false;
         const control = this.formGroup.get(formControlName) as AbstractControl | any;
 
         if (isConflict === true) {
@@ -439,7 +439,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         if (field.allow instanceof Array && field.allow.length > 0) {
             this.allowValues.push(new Set<string>(field.allow));
         } else {
-            this.allowValues.push(new Set<string>([]));
+            this.allowValues.push(new Set<string>());
         }
         return this.formBuilder.group({
             name: [field.name || '', this.formValidators.fields.name],

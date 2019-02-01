@@ -301,7 +301,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         this.formGroup.updateValueAndValidity();
     }
 
-    isConflictingProperty(formControlName: any, value: any): boolean {
+    isConflictingProperty(formControlName: keyof Microschema, value: any): boolean {
         // if editing an existing entity, always return false
         if (this.isNew === false || !this.allMicroschemas) {
             return false;
@@ -338,7 +338,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         if (field.allow instanceof Array && field.allow.length > 0) {
             this.allowValues.push(new Set<string>(field.allow));
         } else {
-            this.allowValues.push(new Set<string>([]));
+            this.allowValues.push(new Set<string>());
         }
         return this.formBuilder.group({
             name: [field.name || '', this.formValidators.fields.name],
