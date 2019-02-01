@@ -18,7 +18,7 @@ export class MicrochemaDetailsGuard implements CanDeactivate<MicroschemaDetailCo
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Promise<boolean> {
-        if ((schemaDetails.schemaHasChanged && !schemaDetails.doesDelete) || schemaDetails.isNew$.getValue()) {
+        if (schemaDetails.schemaHasChanged && !schemaDetails.doesDelete) {
             return this.displayConfirmDiscardChangesModal();
         }
         return Promise.resolve(true);
