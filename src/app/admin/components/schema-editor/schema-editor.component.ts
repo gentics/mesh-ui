@@ -1,4 +1,4 @@
-import { animate, style, transition, trigger, AnimationBuilder } from '@angular/animations';
+import { AnimationBuilder } from '@angular/animations';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -18,13 +18,7 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
     selector: 'mesh-schema-editor',
     templateUrl: './schema-editor.component.html',
     styleUrls: ['./schema-editor.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: [
-        trigger('animNgIf', [
-            transition(':enter', [style({ opacity: 0 }), animate('0.2s', style({ opacity: 1 }))]),
-            transition(':leave', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))])
-        ])
-    ]
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
     SchemaUpdateRequest | Schema,
