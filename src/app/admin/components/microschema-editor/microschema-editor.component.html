@@ -7,14 +7,11 @@
                    [label]="'admin.schema_editor_inputlabel_name' | i18n"
                    formControlName="name"></gtx-input>
         <div class="input-note">
-            <p [@animNgIf]
-               *ngIf="getFormControlErrorOfType('name', 'required')"
+            <p *ngIf="getFormControlErrorOfType('name', 'required')"
                class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
-            <p [@animNgIf]
-               *ngIf="getFormControlErrorOfType('name', 'pattern')"
+            <p *ngIf="getFormControlErrorOfType('name', 'pattern')"
                class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
-            <p [@animNgIf]
-               *ngIf="getFormControlErrorOfType('name', 'conflict')"
+            <p *ngIf="getFormControlErrorOfType('name', 'conflict')"
                class="invalid">{{ 'admin.schema_editor_validator_conflict' | i18n }}</p>
         </div>
     </div>
@@ -72,14 +69,11 @@
                                        [label]="'admin.schema_editor_inputlabel_name' | i18n"
                                        formControlName="name"></gtx-input>
                             <div class="input-note">
-                                <p [@animNgIf]
-                                   *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'required')"
+                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
-                                <p [@animNgIf]
-                                   *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
+                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
                                    class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
-                                <p [@animNgIf]
-                                   *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
+                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
                                    class="invalid">{{ 'admin.schema_editor_validator_duplicate' | i18n }}</p>
                             </div>
                         </div>
@@ -96,8 +90,7 @@
                                             [value]="type.value">{{ type.label }}</gtx-option>
                             </gtx-select>
                             <div class="input-note">
-                                <p [@animNgIf]
-                                   *ngIf="getFormControlInArrayErrorOfType(i, 'type', 'required')"
+                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'type', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
                             </div>
                         </div>
@@ -121,8 +114,7 @@
                                             [value]="type.value">{{ type.label }}</gtx-option>
                             </gtx-select>
                             <div class="input-note">
-                                <p [@animNgIf]
-                                   *ngIf="getFormControlInArrayErrorOfType(i, 'listType', 'required')"
+                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'listType', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
                             </div>
                         </div>
@@ -138,8 +130,7 @@
                                             [value]="schema.name">{{ schema.name }}</gtx-option>
                             </gtx-select>
                             <div class="input-note">
-                                <p [@animNgIf]
-                                   *ngIf="getFormControlInArrayErrorOfType(i, 'allow', 'required')"
+                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'allow', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
                             </div>
                         </div>

@@ -18,7 +18,7 @@ export class SchemaDetailsGuard implements CanDeactivate<SchemaDetailComponent> 
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot
     ): Promise<boolean> {
-        if (schemaDetails.schemaHasChanged && !schemaDetails.doesDelete) {
+        if ((schemaDetails.schemaHasChanged && !schemaDetails.doesDelete) || schemaDetails.isNew$.getValue()) {
             return this.displayConfirmDiscardChangesModal();
         }
         return Promise.resolve(true);

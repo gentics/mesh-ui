@@ -144,60 +144,6 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         protected animationBuilder: AnimationBuilder
     ) {}
 
-    fieldAddAnimate(index: number) {
-        const field = this.fields.toArray()[index].nativeElement;
-        const animationFactory = this.animationBuilder.build([
-            style({
-                opacity: 0,
-                height: '0',
-                'padding-top': '0',
-                'padding-bottom': '0',
-                'margin-top': '0',
-                'margin-bottom': '0'
-            }),
-            animate(
-                `${this.animDuration}ms ease`,
-                style({
-                    opacity: 1,
-                    height: '*',
-                    'padding-top': '*',
-                    'padding-bottom': '*',
-                    'margin-top': '*',
-                    'margin-bottom': '*'
-                })
-            )
-        ]);
-        this.player = animationFactory.create(field);
-        this.player.play();
-    }
-
-    fieldRemoveAnimate(index: number) {
-        const field = this.fields.toArray()[index].nativeElement;
-        const animationFactory = this.animationBuilder.build([
-            style({
-                opacity: 1,
-                height: '*',
-                'padding-top': '*',
-                'padding-bottom': '*',
-                'margin-top': '*',
-                'margin-bottom': '*'
-            }),
-            animate(
-                `${this.animDuration}ms ease`,
-                style({
-                    opacity: 0,
-                    height: '0',
-                    'padding-top': '0',
-                    'padding-bottom': '0',
-                    'margin-top': '0',
-                    'margin-bottom': '0'
-                })
-            )
-        ]);
-        this.player = animationFactory.create(field);
-        this.player.play();
-    }
-
     // LIFECYCLE HOOKS //////////////////////////////////////////////////////////////////////////////
     ngOnInit(): void {
         this.loadComponentData();
@@ -700,6 +646,62 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     schemaDeleteButtonIsDisplayed(): boolean {
         return this.schema ? true : false;
+    }
+
+    // ANIMATIONS //////////////////////////////////////////////////////////////////////////////
+
+    fieldAddAnimate(index: number) {
+        const field = this.fields.toArray()[index].nativeElement;
+        const animationFactory = this.animationBuilder.build([
+            style({
+                opacity: 0,
+                'max-height': '0',
+                'padding-top': '0',
+                'padding-bottom': '0',
+                'margin-top': '0',
+                'margin-bottom': '0'
+            }),
+            animate(
+                `${this.animDuration}ms ease`,
+                style({
+                    opacity: 1,
+                    'max-height': '20rem',
+                    'padding-top': '*',
+                    'padding-bottom': '*',
+                    'margin-top': '*',
+                    'margin-bottom': '*'
+                })
+            )
+        ]);
+        this.player = animationFactory.create(field);
+        this.player.play();
+    }
+
+    fieldRemoveAnimate(index: number) {
+        const field = this.fields.toArray()[index].nativeElement;
+        const animationFactory = this.animationBuilder.build([
+            style({
+                opacity: 1,
+                'max-height': '20rem',
+                'padding-top': '*',
+                'padding-bottom': '*',
+                'margin-top': '*',
+                'margin-bottom': '*'
+            }),
+            animate(
+                `${this.animDuration}ms ease`,
+                style({
+                    opacity: 0,
+                    'max-height': '0',
+                    'padding-top': '0',
+                    'padding-bottom': '0',
+                    'margin-top': '0',
+                    'margin-bottom': '0'
+                })
+            )
+        ]);
+        this.player = animationFactory.create(field);
+        this.player.play();
     }
 
     // UTILITY METHODS //////////////////////////////////////////////////////////////////////////////
