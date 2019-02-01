@@ -118,8 +118,19 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     /** Precondition functions to fill schema data */
     abstract schemaDataConditions: { [key: string]: (property: any) => boolean };
 
+    /** FormArray fields from template-ngFor */
+    @ViewChildren('fields') protected fields: QueryList<ElementRef>;
+
+    /** Duration of add/remove field animation in ms */
+    animDuration = 200;
+
+    /** Animation Player instance */
+    protected player: AnimationPlayer;
+
+    /** admin user identification string constant */
     ADMIN_USER_NAME = ADMIN_USER_NAME;
 
+    /** subscriptions controller */
     protected destroyed$ = new Subject<void>();
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
@@ -133,10 +144,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         protected animationBuilder: AnimationBuilder
     ) {}
 
-    @ViewChildren('fields') protected fields: QueryList<ElementRef>;
-    animDuration = 200;
-    protected player: AnimationPlayer;
-    fieldAddCreatePlayer(index: number) {
+    fieldAddAnimate(index: number) {
         const field = this.fields.toArray()[index].nativeElement;
         const animationFactory = this.animationBuilder.build([
             style({
@@ -160,14 +168,10 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             )
         ]);
         this.player = animationFactory.create(field);
-    }
-
-    fieldAddAnimate(index: number) {
-        this.fieldAddCreatePlayer(index);
         this.player.play();
     }
 
-    fieldRemoveCreatePlayer(index: number) {
+    fieldRemoveAnimate(index: number) {
         const field = this.fields.toArray()[index].nativeElement;
         const animationFactory = this.animationBuilder.build([
             style({
@@ -191,10 +195,6 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             )
         ]);
         this.player = animationFactory.create(field);
-    }
-
-    fieldRemoveAnimate(index: number) {
-        this.fieldRemoveCreatePlayer(index);
         this.player.play();
     }
 

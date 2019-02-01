@@ -28,51 +28,6 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
         trigger('animNgIf', [
             transition(':enter', [style({ opacity: 0 }), animate('0.2s', style({ opacity: 1 }))]),
             transition(':leave', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))])
-        ]),
-        trigger('animNgForParent', [transition(':enter, :leave', [query('@animNgForChild', [animateChild()])])]),
-        trigger('animNgForChild', [
-            transition('void => *', [
-                style({
-                    opacity: 0,
-                    height: '0',
-                    'padding-top': '0',
-                    'padding-bottom': '0',
-                    'margin-top': '0',
-                    'margin-bottom': '0'
-                }),
-                animate(
-                    '0.2s ease',
-                    style({
-                        opacity: 1,
-                        height: '*',
-                        'padding-top': '*',
-                        'padding-bottom': '*',
-                        'margin-top': '*',
-                        'margin-bottom': '*'
-                    })
-                )
-            ]),
-            transition('* => void', [
-                style({
-                    opacity: 1,
-                    height: '*',
-                    'padding-top': '*',
-                    'padding-bottom': '*',
-                    'margin-top': '*',
-                    'margin-bottom': '*'
-                }),
-                animate(
-                    '0.2s ease',
-                    style({
-                        opacity: 0,
-                        height: '0',
-                        'padding-top': '0',
-                        'padding-bottom': '0',
-                        'margin-top': '0',
-                        'margin-bottom': '0'
-                    })
-                )
-            ])
         ])
     ]
 })

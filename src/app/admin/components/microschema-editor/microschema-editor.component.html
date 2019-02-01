@@ -2,7 +2,7 @@
       class="formgroup row">
 
     <h2 class="section-header medium-12 columns">{{ 'admin.schema_editor_sectionlabel_microschemaproperties' | i18n }}:</h2>
-    <div class="input-container small-12 medium-12 columns">
+    <div class="input-container small-12 medium-10 columns">
         <gtx-input type="text"
                    [label]="'admin.schema_editor_inputlabel_name' | i18n"
                    formControlName="name"></gtx-input>
@@ -28,152 +28,156 @@
     <div class="section-header-fields medium-12 columns">
         <h2>{{ 'admin.schema_editor_sectionlabel_microschemafields' | i18n }}:</h2>
         <gtx-button size="small"
-                    (click)="fieldAdd()">
+                    (click)="fieldAddAtAnim(0)">
             <icon left>add</icon>{{ 'admin.schema_editor_buttonlabel_newfield' | i18n }}
         </gtx-button>
     </div>
 
-    <div [@animNgForParent]
-         class="schema-field small-12 medium-12 columns"
-         *ngFor="let field of schemaFields.controls; let i = index">
-
-        <form [@animNgForChild]
-              [formGroup]="field">
-            <div class="field-header">
-                <h3>{{field.value?.name}}</h3>
-            </div>
-            <div class="row">
-                <div class="small-12 medium-3 columns">
-                    <gtx-input type="text"
-                               [label]="'admin.schema_editor_inputlabel_name' | i18n"
-                               formControlName="name"></gtx-input>
-                    <div class="input-note">
-                        <p [@animNgIf]
-                           *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'required')"
-                           class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
-                        <p [@animNgIf]
-                           *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
-                           class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
-                        <p [@animNgIf]
-                           *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
-                           class="invalid">{{ 'admin.schema_editor_validator_duplicate' | i18n }}</p>
+    <div class="small-12 medium-12 columns">
+        <gtx-sortable-list (dragEnd)="fieldMove($event.oldIndex, $event.newIndex)">
+            <gtx-sortable-item *ngFor="let field of schemaFields.controls; let i = index"
+                               class="schema-field"
+                               #fields>
+                <form [formGroup]="field">
+                    <div class="field-header">
+                        <h3>{{field.value?.name}}</h3>
+                        <gtx-button icon
+                                    class="button-close"
+                                    type="secondary"
+                                    [title]="'admin.schema_editor_tooltip_removefield' | i18n"
+                                    (click)="fieldDelete(field, i)">
+                            <icon>close</icon>
+                        </gtx-button>
+                        <gtx-drag-handle></gtx-drag-handle>
+                        <gtx-button *ngIf="fieldHasMoveDownButton(i)"
+                                    icon
+                                    class="button-down"
+                                    type="secondary"
+                                    title="move field one field down"
+                                    (click)="fieldMoveDown(i)">
+                            <icon>keyboard_arrow_down</icon>
+                        </gtx-button>
+                        <gtx-button *ngIf="fieldHasMoveUpButton(i)"
+                                    icon
+                                    class="button-up"
+                                    type="secondary"
+                                    title="move field one field up"
+                                    (click)="fieldMoveUp(i)">
+                            <icon>keyboard_arrow_up</icon>
+                        </gtx-button>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="small-12 medium-3 columns">
+                            <gtx-input type="text"
+                                       [label]="'admin.schema_editor_inputlabel_name' | i18n"
+                                       formControlName="name"></gtx-input>
+                            <div class="input-note">
+                                <p [@animNgIf]
+                                   *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'required')"
+                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                                <p [@animNgIf]
+                                   *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
+                                   class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
+                                <p [@animNgIf]
+                                   *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
+                                   class="invalid">{{ 'admin.schema_editor_validator_duplicate' | i18n }}</p>
+                            </div>
+                        </div>
 
-                <div class="small-12 medium-3 columns">
-                    <gtx-textarea [label]="'admin.schema_editor_inputlabel_label' | i18n"
-                                  formControlName="label"></gtx-textarea>
-                </div>
+                        <div class="small-12 medium-3 columns">
+                            <gtx-textarea [label]="'admin.schema_editor_inputlabel_label' | i18n"
+                                          formControlName="label"></gtx-textarea>
+                        </div>
 
-                <div class="input-container small-12 medium-2 columns">
-                    <gtx-select formControlName="type"
-                                [label]="'admin.schema_editor_inputlabel_type' | i18n">
-                        <gtx-option *ngFor="let type of schemaFieldTypes"
-                                    [value]="type.value">{{ type.label }}</gtx-option>
-                    </gtx-select>
-                    <div class="input-note">
-                        <p [@animNgIf]
-                           *ngIf="getFormControlInArrayErrorOfType(i, 'type', 'required')"
-                           class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
-                    </div>
-                </div>
+                        <div class="input-container small-12 medium-2 columns">
+                            <gtx-select formControlName="type"
+                                        [label]="'admin.schema_editor_inputlabel_type' | i18n">
+                                <gtx-option *ngFor="let type of schemaFieldTypes"
+                                            [value]="type.value">{{ type.label }}</gtx-option>
+                            </gtx-select>
+                            <div class="input-note">
+                                <p [@animNgIf]
+                                   *ngIf="getFormControlInArrayErrorOfType(i, 'type', 'required')"
+                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                            </div>
+                        </div>
 
-                <div class="small-12 medium-2 columns">
-                    <div class="checkbox-wrapper">
-                        <div>
-                            <gtx-checkbox [label]="'admin.schema_editor_inputlabel_required' | i18n"
-                                          formControlName="required"></gtx-checkbox>
+                        <div class="small-12 medium-2 columns">
+                            <div class="checkbox-wrapper">
+                                <div>
+                                    <gtx-checkbox [label]="'admin.schema_editor_inputlabel_required' | i18n"
+                                                  formControlName="required"></gtx-checkbox>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="row">
-                <!-- INPUT DEPENDING ON listType START -->
+                    <div class="row">
+                        <div *ngIf="field.value.type === 'list'"
+                             class="small-12 medium-4 columns">
+                            <gtx-select formControlName="listType"
+                                        [label]="'admin.schema_editor_inputlabel_listtype' | i18n">
+                                <gtx-option *ngFor="let type of schemaFieldListTypes"
+                                            [value]="type.value">{{ type.label }}</gtx-option>
+                            </gtx-select>
+                            <div class="input-note">
+                                <p [@animNgIf]
+                                   *ngIf="getFormControlInArrayErrorOfType(i, 'listType', 'required')"
+                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                            </div>
+                        </div>
 
-                <!-- {{ 'admin.schema_editor_validator_required' | i18n }} -->
-                <div *ngIf="field.value.type === 'list'"
-                     class="small-12 medium-4 columns">
-                    <gtx-select formControlName="listType"
-                                [label]="'admin.schema_editor_inputlabel_listtype' | i18n">
-                        <gtx-option *ngFor="let type of schemaFieldListTypes"
-                                    [value]="type.value">{{ type.label }}</gtx-option>
-                    </gtx-select>
-                    <div class="input-note">
-                        <p [@animNgIf]
-                           *ngIf="getFormControlInArrayErrorOfType(i, 'listType', 'required')"
-                           class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                        <div *ngIf="field.value.type === 'node' || field.value.listType === 'node'"
+                             class="input-container small-12 medium-7 columns">
+                            <gtx-select formControlName="allow"
+                                        [value]="allowValueGetAt(i)"
+                                        (change)="allowValueSetAt(i, $event)"
+                                        [multiple]="true"
+                                        [label]="'admin.schema_editor_inputlabel_allowedschemas' | i18n">
+                                <gtx-option *ngFor="let schema of (allSchemas$ | async)"
+                                            [value]="schema.name">{{ schema.name }}</gtx-option>
+                            </gtx-select>
+                            <div class="input-note">
+                                <p [@animNgIf]
+                                   *ngIf="getFormControlInArrayErrorOfType(i, 'allow', 'required')"
+                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                            </div>
+                        </div>
+
+                        <div *ngIf="field.value.type === 'string' || field.value.listType === 'string'"
+                             class="string-bar small-12 medium-7 columns">
+                            <label class="ng-star-inserted">{{ 'admin.schema_editor_inputlabel_allowedstrings' | i18n }}</label>
+                            <gtx-search-bar formControlName="allow"
+                                            (search)="allowValueOnStringInputAddAt(i, $event)"
+                                            (keydown.backspace)="allowValueRemoveLastAt(i)"
+                                            [placeholder]="'admin.schema_editor_placeholder_allowedstrings' | i18n"
+                                            (clear)="formControlInArrayClear(i, 'allow')">
+
+                                <mesh-chip *ngFor="let item of allowValues[i]"
+                                           (removeClick)="allowValueRemoveAt(i, item)">
+                                    {{ item }}
+                                </mesh-chip>
+                            </gtx-search-bar>
+                        </div>
                     </div>
-                </div>
+                </form>
+                <gtx-button icon
+                            class="button-add"
+                            type="secondary"
+                            [title]="'admin.schema_editor_tooltip_insertnewfield' | i18n"
+                            (click)="fieldAddAtAnim(i + 1)">
+                    <icon>add</icon>
+                </gtx-button>
+            </gtx-sortable-item>
+        </gtx-sortable-list>
+    </div>
 
-                <div *ngIf="field.value.type === 'node' || field.value.listType === 'node'"
-                     class="input-container small-12 medium-7 columns">
-                    <gtx-select formControlName="allow"
-                                [value]="allowValueGetAt(i)"
-                                (change)="allowValueSetAt(i, $event)"
-                                [multiple]="true"
-                                [label]="'admin.schema_editor_inputlabel_allowedschemas' | i18n">
-                        <gtx-option *ngFor="let schema of (allSchemas$ | async)"
-                                    [value]="schema.name">{{ schema.name }}</gtx-option>
-                    </gtx-select>
-                    <div class="input-note">
-                        <p [@animNgIf]
-                           *ngIf="getFormControlInArrayErrorOfType(i, 'allow', 'required')"
-                           class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
-                    </div>
-                </div>
-
-                <div *ngIf="field.value.type === 'string' || field.value.listType === 'string'"
-                     class="string-bar small-12 medium-7 columns">
-                    <label class="ng-star-inserted">{{ 'admin.schema_editor_inputlabel_allowedstrings' | i18n }}</label>
-                    <gtx-search-bar formControlName="allow"
-                                    (search)="allowValueOnStringInputAddAt(i, $event)"
-                                    (keydown.backspace)="allowValueRemoveLastAt(i)"
-                                    [placeholder]="'admin.schema_editor_placeholder_allowedstrings' | i18n"
-                                    (clear)="formControlInArrayClear(i, 'allow')">
-
-                        <mesh-chip *ngFor="let item of allowValues[i]"
-                                   (removeClick)="allowValueRemoveAt(i, item)">
-                            {{ item }}
-                        </mesh-chip>
-                    </gtx-search-bar>
-                </div>
-
-                <!-- INPUT DEPENDING ON listType END -->
-            </div>
-        </form>
-        <div class="button-close">
-            <gtx-button icon
-                        type="secondary"
-                        [title]="'admin.schema_editor_tooltip_removefield' | i18n"
-                        (click)="fieldDelete(field, i)">
-                <icon>close</icon>
-            </gtx-button>
-        </div>
-        <!-- <div class="button-moveup">
-            <gtx-button icon
-                        type="secondary"
-                        title="move field one field up"
-                        (click)="fieldMoveUp(i)">
-                <icon>keyboard_arrow_up</icon>
-            </gtx-button>
-        </div>
-        <div class="button-movedown">
-            <gtx-button icon
-                        type="secondary"
-                        title="move field one field down"
-                        (click)="fieldMoveDown(i)">
-                <icon>keyboard_arrow_down</icon>
-            </gtx-button>
-        </div> -->
-        <div class="button-add">
-            <gtx-button icon
-                        type="secondary"
-                        [title]="'admin.schema_editor_tooltip_insertnewfield' | i18n"
-                        (click)="fieldAddAt(i + 1)">
-                <icon>add</icon>
-            </gtx-button>
-        </div>
+    <div *ngIf="schemaFields.value.length > 0"
+         class="section-header-fields medium-12 columns">
+        <gtx-button size="small"
+                    (click)="fieldAddAnim()">
+            <icon left>add</icon>{{ 'admin.schema_editor_buttonlabel_newfield' | i18n }}
+        </gtx-button>
     </div>
 
     <div *ngIf="schemaFields.value.length === 0"
