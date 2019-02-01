@@ -1,6 +1,19 @@
 <form [formGroup]="formGroup"
       class="formgroup row">
 
+    <div class="schema-controls small-12 medium-12 columns">
+        <gtx-button [disabled]="!(formGroupIsValid() && schemaSaveIsPermitted())"
+                    (click)="schemaSave()">
+            <icon left>save</icon>{{ 'admin.schema_editor_buttonlabel_save' | i18n }}
+        </gtx-button>
+
+        <gtx-button [hidden]="!schemaDeleteButtonIsDisplayed()"
+                    [disabled]="!schemaDeleteIsPermitted()"
+                    (click)="schemaDelete()">
+            <icon left>delete</icon>{{ 'admin.schema_editor_buttonlabel_delete' | i18n }}
+        </gtx-button>
+    </div>
+
     <h2 class="section-header medium-12 columns">{{ 'admin.schema_editor_sectionlabel_schemaproperties' | i18n }}:</h2>
     <div class="input-container small-12 medium-10 columns">
         <gtx-input type="text"
@@ -244,7 +257,8 @@
 
 <br>
 
-<div class="schema-controls small-12 medium-12 columns">
+<div *ngIf="schemaFields.value.length > 1"
+     class="schema-controls small-12 medium-12 columns">
     <gtx-button [disabled]="!(formGroupIsValid() && schemaSaveIsPermitted())"
                 (click)="schemaSave()">
         <icon left>save</icon>{{ 'admin.schema_editor_buttonlabel_save' | i18n }}

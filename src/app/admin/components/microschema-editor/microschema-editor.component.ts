@@ -1,5 +1,5 @@
 import { AnimationBuilder } from '@angular/animations';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
@@ -112,9 +112,10 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         formBuilder: FormBuilder,
         i18n: I18nService,
         modalService: ModalService,
-        animationBuilder: AnimationBuilder
+        animationBuilder: AnimationBuilder,
+        elementRef: ElementRef
     ) {
-        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService, animationBuilder);
+        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService, animationBuilder, elementRef);
     }
 
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////

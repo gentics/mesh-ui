@@ -8,6 +8,7 @@ import {
     OnInit,
     Output,
     QueryList,
+    ViewChild,
     ViewChildren
 } from '@angular/core';
 import {
@@ -35,7 +36,7 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
  * @description Schema Builder for UI-friendly assembly of a new schema
  */
 export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, SchemaFieldT, SchemaFieldTypeT>
-    implements OnInit, OnDestroy {
+    implements OnDestroy, OnInit {
     // PROPERTIES //////////////////////////////////////////////////////////////////////////////
 
     /** Primary data object */
@@ -118,6 +119,9 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     /** Precondition functions to fill schema data */
     abstract schemaDataConditions: { [key: string]: (property: any) => boolean };
 
+    /** Main container for autoscroll */
+    @ViewChild('scrollContainer') protected scrollContainer: ElementRef;
+
     /** FormArray fields from template-ngFor */
     @ViewChildren('fields') protected fields: QueryList<ElementRef>;
 
@@ -141,7 +145,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         protected formBuilder: FormBuilder,
         protected i18n: I18nService,
         protected modalService: ModalService,
-        protected animationBuilder: AnimationBuilder
+        protected animationBuilder: AnimationBuilder,
+        protected elementRef: ElementRef
     ) {}
 
     // LIFECYCLE HOOKS //////////////////////////////////////////////////////////////////////////////
@@ -161,6 +166,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             this.loadComponentData();
         });
     }
+
     ngOnDestroy(): void {
         this.destroyed$.next();
         this.destroyed$.complete();
@@ -271,11 +277,11 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     fieldAddAt(index: number): void {
         this.schemaFields.insert(index, this.createNewFieldForIndex(index));
     }
-
     fieldAddAtAnim(index: number): void {
         this.schemaFields.insert(index, this.createNewFieldForIndex(index));
         setTimeout(() => this.fieldAddAnimate(index), 0);
     }
+
     /** @description Add new FormGroup instance to FormArray */
     fieldAdd(): void {
         this.schemaFields.push(this.createNewField());
@@ -283,7 +289,9 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     fieldAddAnim(): void {
         this.schemaFields.push(this.createNewField());
         setTimeout(() => this.fieldAddAnimate(this.schemaFields.value.length - 1), 0);
+        this.scrollToFieldLast();
     }
+
     /**
      * @description Remove FormGroup instance from FormArray at specified index
      * @param index FormArray index
@@ -702,6 +710,11 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         ]);
         this.player = animationFactory.create(field);
         this.player.play();
+    }
+
+    /** Scroll to last form group in form array */
+    scrollToFieldLast(): void {
+        this.fields.last.nativeElement.scrollIntoView({ behavior: 'smooth' });
     }
 
     // UTILITY METHODS //////////////////////////////////////////////////////////////////////////////
