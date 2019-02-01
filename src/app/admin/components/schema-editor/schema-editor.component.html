@@ -81,7 +81,7 @@
     <div class="section-header-fields medium-12 columns">
         <h2>{{ 'admin.schema_editor_sectionlabel_schemafields' | i18n }}:</h2>
         <gtx-button size="small"
-                    (click)="fieldAddAt(0)">
+                    (click)="fieldAddAtAnim(0)">
             <icon left>add</icon>{{ 'admin.schema_editor_buttonlabel_newfield' | i18n }}
         </gtx-button>
     </div>
@@ -90,9 +90,8 @@
         <gtx-sortable-list (dragEnd)="fieldMove($event.oldIndex, $event.newIndex)">
             <gtx-sortable-item *ngFor="let field of schemaFields.controls; let i = index"
                                class="schema-field"
-                               [@animNgForParent]>
-                <form [formGroup]="field"
-                      [@animNgForChild]>
+                               #fields>
+                <form [formGroup]="field">
                     <div class="field-header">
                         <h3>{{field.value?.name}}</h3>
                         <gtx-button icon
@@ -104,7 +103,6 @@
                         </gtx-button>
                         <gtx-drag-handle></gtx-drag-handle>
                         <gtx-button *ngIf="fieldHasMoveDownButton(i)"
-                                    [@animNgIf]
                                     icon
                                     class="button-down"
                                     type="secondary"
@@ -113,7 +111,6 @@
                             <icon>keyboard_arrow_down</icon>
                         </gtx-button>
                         <gtx-button *ngIf="fieldHasMoveUpButton(i)"
-                                    [@animNgIf]
                                     icon
                                     class="button-up"
                                     type="secondary"
@@ -238,17 +235,17 @@
                             class="button-add"
                             type="secondary"
                             [title]="'admin.schema_editor_tooltip_insertnewfield' | i18n"
-                            (click)="fieldAddAt(i + 1)">
+                            (click)="fieldAddAtAnim(i + 1)">
                     <icon>add</icon>
                 </gtx-button>
             </gtx-sortable-item>
         </gtx-sortable-list>
     </div>
 
-    <div class="section-header-fields medium-12 columns">
-        <h2>{{ 'admin.schema_editor_sectionlabel_schemafields' | i18n }}:</h2>
+    <div *ngIf="schemaFields.value.length > 0"
+         class="section-header-fields medium-12 columns">
         <gtx-button size="small"
-                    (click)="fieldAdd()">
+                    (click)="fieldAddAnim()">
             <icon left>add</icon>{{ 'admin.schema_editor_buttonlabel_newfield' | i18n }}
         </gtx-button>
     </div>

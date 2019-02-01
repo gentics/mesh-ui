@@ -1,4 +1,4 @@
-import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
+import { animate, style, transition, trigger, AnimationBuilder } from '@angular/animations';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -23,51 +23,6 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
         trigger('animNgIf', [
             transition(':enter', [style({ opacity: 0 }), animate('0.2s', style({ opacity: 1 }))]),
             transition(':leave', [style({ opacity: 1 }), animate('0.2s', style({ opacity: 0 }))])
-        ]),
-        trigger('animNgForParent', [transition(':enter, :leave', [query('@animNgForChild', [animateChild()])])]),
-        trigger('animNgForChild', [
-            transition('void => *', [
-                style({
-                    opacity: 0,
-                    height: '0',
-                    'padding-top': '0',
-                    'padding-bottom': '0',
-                    'margin-top': '0',
-                    'margin-bottom': '0'
-                }),
-                animate(
-                    '0.2s ease',
-                    style({
-                        opacity: 1,
-                        height: '*',
-                        'padding-top': '*',
-                        'padding-bottom': '*',
-                        'margin-top': '*',
-                        'margin-bottom': '*'
-                    })
-                )
-            ]),
-            transition('* => void', [
-                style({
-                    opacity: 1,
-                    height: '*',
-                    'padding-top': '*',
-                    'padding-bottom': '*',
-                    'margin-top': '*',
-                    'margin-bottom': '*'
-                }),
-                animate(
-                    '0.2s ease',
-                    style({
-                        opacity: 0,
-                        height: '0',
-                        'padding-top': '0',
-                        'padding-bottom': '0',
-                        'margin-top': '0',
-                        'margin-bottom': '0'
-                    })
-                )
-            ])
         ])
     ]
 })
@@ -196,9 +151,10 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         adminSchemaEffects: AdminSchemaEffectsService,
         formBuilder: FormBuilder,
         i18n: I18nService,
-        modalService: ModalService
+        modalService: ModalService,
+        animationBuilder: AnimationBuilder
     ) {
-        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService);
+        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService, animationBuilder);
     }
 
     // MANAGE COMPONENT DATA //////////////////////////////////////////////////////////////////////////////

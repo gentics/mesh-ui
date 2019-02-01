@@ -55,9 +55,13 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     schemaJsonOriginal: string;
 
     get schemaHasChanged(): boolean {
-        const a = JSON.parse(this.schemaJsonOriginal);
-        const b = JSON.parse(this.schemaJson);
-        return !simpleDeepEquals(a, b);
+        try {
+            const a = JSON.parse(this.schemaJsonOriginal);
+            const b = JSON.parse(this.schemaJson);
+            return !simpleDeepEquals(a, b);
+        } catch (error) {
+            return false;
+        }
     }
 
     /** indiocate component is in delete mode */

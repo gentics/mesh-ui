@@ -1,4 +1,4 @@
-import { animate, animateChild, query, style, transition, trigger } from '@angular/animations';
+import { animate, animateChild, query, style, transition, trigger, AnimationBuilder } from '@angular/animations';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -162,9 +162,10 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         adminSchemaEffects: AdminSchemaEffectsService,
         formBuilder: FormBuilder,
         i18n: I18nService,
-        modalService: ModalService
+        modalService: ModalService,
+        animationBuilder: AnimationBuilder
     ) {
-        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService);
+        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService, animationBuilder);
     }
 
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////

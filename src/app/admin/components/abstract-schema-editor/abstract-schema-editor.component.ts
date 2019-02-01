@@ -1,4 +1,15 @@
-import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { animate, style, AnimationBuilder, AnimationPlayer } from '@angular/animations';
+import {
+    ContentChildren,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    QueryList,
+    ViewChildren
+} from '@angular/core';
 import {
     AbstractControl,
     FormArray,
@@ -9,7 +20,7 @@ import {
     ValidatorFn
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ModalService } from 'gentics-ui-core';
+import { ModalService, SortableItem } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -118,8 +129,74 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         protected adminSchemaEffects: AdminSchemaEffectsService,
         protected formBuilder: FormBuilder,
         protected i18n: I18nService,
-        protected modalService: ModalService
+        protected modalService: ModalService,
+        protected animationBuilder: AnimationBuilder
     ) {}
+
+    @ViewChildren('fields') protected fields: QueryList<ElementRef>;
+    animDuration = 200;
+    protected player: AnimationPlayer;
+    fieldAddCreatePlayer(index: number) {
+        const field = this.fields.toArray()[index].nativeElement;
+        const animationFactory = this.animationBuilder.build([
+            style({
+                opacity: 0,
+                height: '0',
+                'padding-top': '0',
+                'padding-bottom': '0',
+                'margin-top': '0',
+                'margin-bottom': '0'
+            }),
+            animate(
+                `${this.animDuration}ms ease`,
+                style({
+                    opacity: 1,
+                    height: '*',
+                    'padding-top': '*',
+                    'padding-bottom': '*',
+                    'margin-top': '*',
+                    'margin-bottom': '*'
+                })
+            )
+        ]);
+        this.player = animationFactory.create(field);
+    }
+
+    fieldAddAnimate(index: number) {
+        this.fieldAddCreatePlayer(index);
+        this.player.play();
+    }
+
+    fieldRemoveCreatePlayer(index: number) {
+        const field = this.fields.toArray()[index].nativeElement;
+        const animationFactory = this.animationBuilder.build([
+            style({
+                opacity: 1,
+                height: '*',
+                'padding-top': '*',
+                'padding-bottom': '*',
+                'margin-top': '*',
+                'margin-bottom': '*'
+            }),
+            animate(
+                `${this.animDuration}ms ease`,
+                style({
+                    opacity: 0,
+                    height: '0',
+                    'padding-top': '0',
+                    'padding-bottom': '0',
+                    'margin-top': '0',
+                    'margin-bottom': '0'
+                })
+            )
+        ]);
+        this.player = animationFactory.create(field);
+    }
+
+    fieldRemoveAnimate(index: number) {
+        this.fieldRemoveCreatePlayer(index);
+        this.player.play();
+    }
 
     // LIFECYCLE HOOKS //////////////////////////////////////////////////////////////////////////////
     ngOnInit(): void {
@@ -249,22 +326,37 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         this.schemaFields.insert(index, this.createNewFieldForIndex(index));
     }
 
+    fieldAddAtAnim(index: number): void {
+        this.schemaFields.insert(index, this.createNewFieldForIndex(index));
+        setTimeout(() => this.fieldAddAnimate(index), 0);
+    }
     /** @description Add new FormGroup instance to FormArray */
     fieldAdd(): void {
         this.schemaFields.push(this.createNewField());
     }
-
+    fieldAddAnim(): void {
+        this.schemaFields.push(this.createNewField());
+        setTimeout(() => this.fieldAddAnimate(this.schemaFields.value.length - 1), 0);
+    }
     /**
      * @description Remove FormGroup instance from FormArray at specified index
      * @param index FormArray index
      */
     fieldRemoveAt(index: number): void {
-        this.schemaFields.removeAt(index);
+        this.fieldRemoveAnimate(index);
+    }
+    fieldRemoveAtAnim(index: number): void {
+        this.fieldRemoveAnimate(index);
+        setTimeout(() => this.schemaFields.removeAt(index), this.animDuration);
     }
 
     /** @description remove last FormGroup instance from FormArray */
     fieldRemoveLast(): void {
-        this.fieldRemoveAt(this.schemaFields.value.length - 1);
+        this.fieldRemoveAnimate(this.schemaFields.value.length - 1);
+    }
+    fieldRemoveLastAnim(): void {
+        this.fieldRemoveAnimate(this.schemaFields.value.length - 1);
+        setTimeout(() => this.fieldRemoveAt(this.schemaFields.value.length - 1), this.animDuration);
     }
 
     fieldHasMoveButtons(): boolean {
@@ -282,31 +374,17 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     fieldMove(fromIndex: number, toIndex: number): void {
-        if (
-            !this.schemaFields.controls[fromIndex] ||
-            !this.schemaFields.controls[toIndex] ||
-            !this.allowValues[fromIndex] ||
-            !this.allowValues[toIndex]
-        ) {
-            return;
-        }
         const controlToMove = this.schemaFields.at(fromIndex);
         const allowValueToMove = this.allowValues[fromIndex] || null;
         const allowValueToMoveInData = (this._schemaJson as any).fields[fromIndex].allow || null;
 
-        // if allowValue exist, remove from current position
-        if (allowValueToMove && allowValueToMoveInData) {
-            this.allowValues.splice(fromIndex, 1);
-            (this._schemaJson as any).fields.splice(fromIndex, 1);
-        }
+        this.allowValues.splice(fromIndex, 1);
+        (this._schemaJson as any).fields.splice(fromIndex, 1);
         // remove control from array current array position
         this.schemaFields.removeAt(fromIndex);
 
-        // if allowValues exist, insert at new array positon
-        if (allowValueToMove && allowValueToMoveInData) {
-            this.allowValues.splice(toIndex, 0, allowValueToMove);
-            (this._schemaJson as any).fields.splice(toIndex, 0, allowValueToMoveInData);
-        }
+        this.allowValues.splice(toIndex, 0, allowValueToMove);
+        (this._schemaJson as any).fields.splice(toIndex, 0, allowValueToMoveInData);
         // add control to new array positon
         this.schemaFields.insert(toIndex, controlToMove);
 
@@ -612,11 +690,11 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
                 { token: 'admin.delete_schemafield' },
                 { token: 'admin.schemafield_delete_confirmation', params: { name: field.value.name } }
             ).then(() => {
-                this.fieldRemoveAt(index);
+                this.fieldRemoveAtAnim(index);
             });
             // otherwise delete without confirmation
         } else {
-            this.fieldRemoveAt(index);
+            this.fieldRemoveAtAnim(index);
         }
     }
 

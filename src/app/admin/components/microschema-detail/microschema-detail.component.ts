@@ -57,9 +57,13 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     microschemaJsonOriginal: string;
 
     get schemaHasChanged(): boolean {
-        const a = JSON.parse(this.microschemaJsonOriginal);
-        const b = JSON.parse(this.microschemaJson);
-        return !simpleDeepEquals(a, b);
+        try {
+            const a = JSON.parse(this.microschemaJsonOriginal);
+            const b = JSON.parse(this.microschemaJson);
+            return !simpleDeepEquals(a, b);
+        } catch (error) {
+            return false;
+        }
     }
 
     /** indiocate component is in delete mode */
