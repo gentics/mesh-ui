@@ -200,9 +200,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
             segmentField: [this._schemaJson.segmentField || '', this.formValidators.segmentField],
             urlFields: [this._schemaJson.urlFields || [], this.formValidators.urlFields],
             fields: this.formBuilder.array(
-                this._schemaJson.fields
-                    ? this.createFieldsFromData(this._schemaJson.fields as SchemaField[])
-                    : [this.createNewField()]
+                this._schemaJson.fields ? this.createFieldsFromData(this._schemaJson.fields as SchemaField[]) : []
             )
         });
 

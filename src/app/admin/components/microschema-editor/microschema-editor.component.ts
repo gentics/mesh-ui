@@ -137,9 +137,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
             name: [this._schemaJson.name || '', this.formValidators.name],
             description: [this._schemaJson.description || '', this.formValidators.description],
             fields: this.formBuilder.array(
-                this._schemaJson.fields
-                    ? this.createFieldsFromData(this._schemaJson.fields as MicroschemaField[])
-                    : [this.createNewField()]
+                this._schemaJson.fields ? this.createFieldsFromData(this._schemaJson.fields as MicroschemaField[]) : []
             )
         });
 

@@ -20,11 +20,11 @@
                    [label]="'admin.schema_editor_inputlabel_name' | i18n"
                    formControlName="name"></gtx-input>
         <div class="input-note">
-            <p *ngIf="getFormControlErrorOfType('name', 'required')"
+            <p *ngIf="isformControlTouched('name') && getFormControlErrorOfType('name', 'required')"
                class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
-            <p *ngIf="getFormControlErrorOfType('name', 'pattern')"
+            <p *ngIf="isformControlTouched('name') && getFormControlErrorOfType('name', 'pattern')"
                class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
-            <p *ngIf="getFormControlErrorOfType('name', 'conflict')"
+            <p *ngIf="isformControlTouched('name') && getFormControlErrorOfType('name', 'conflict')"
                class="invalid">{{ 'admin.schema_editor_validator_conflict' | i18n }}</p>
         </div>
     </div>
@@ -50,7 +50,7 @@
                         [value]="field.value">{{ field.label }}</gtx-option>
         </gtx-select>
         <div class="input-note">
-            <p *ngIf="getFormControlErrorOfType('displayField', 'required')"
+            <p *ngIf="isformControlTouched('displayField') && getFormControlErrorOfType('displayField', 'required')"
                class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
             <p class="warning"
                *ngIf="!hasDisplayFields()">{{ 'admin.schema_editor_warning_displayfield' | i18n }}</p>
@@ -108,22 +108,6 @@
                             <icon>close</icon>
                         </gtx-button>
                         <gtx-drag-handle></gtx-drag-handle>
-                        <gtx-button *ngIf="fieldHasMoveDownButton(i)"
-                                    icon
-                                    class="button-down"
-                                    type="secondary"
-                                    title="move field one field down"
-                                    (click)="fieldMoveDown(i)">
-                            <icon>keyboard_arrow_down</icon>
-                        </gtx-button>
-                        <gtx-button *ngIf="fieldHasMoveUpButton(i)"
-                                    icon
-                                    class="button-up"
-                                    type="secondary"
-                                    title="move field one field up"
-                                    (click)="fieldMoveUp(i)">
-                            <icon>keyboard_arrow_up</icon>
-                        </gtx-button>
                     </div>
                     <div class="row">
                         <div class="small-12 medium-3 columns">
@@ -131,18 +115,19 @@
                                        [label]="'admin.schema_editor_inputlabel_name' | i18n"
                                        formControlName="name"></gtx-input>
                             <div class="input-note">
-                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'required')"
+                                <p *ngIf="isFormControlInArrayTouched(i, 'name') && getFormControlInArrayErrorOfType(i, 'name', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
-                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
+                                <p *ngIf="isFormControlInArrayTouched(i, 'name') && getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
                                    class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
-                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
+                                <p *ngIf="isFormControlInArrayTouched(i, 'name') && getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
                                    class="invalid">{{ 'admin.schema_editor_validator_duplicate' | i18n }}</p>
                             </div>
                         </div>
 
                         <div class="small-12 medium-3 columns">
-                            <gtx-textarea [label]="'admin.schema_editor_inputlabel_label' | i18n"
-                                          formControlName="label"></gtx-textarea>
+                            <gtx-input type="text"
+                                       [label]="'admin.schema_editor_inputlabel_label' | i18n"
+                                       formControlName="label"></gtx-input>
                         </div>
 
                         <div class="input-container small-12 medium-2 columns">
@@ -152,7 +137,7 @@
                                             [value]="type.value">{{ type.label }}</gtx-option>
                             </gtx-select>
                             <div class="input-note">
-                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'type', 'required')"
+                                <p *ngIf="isFormControlInArrayTouched(i, 'type') && getFormControlInArrayErrorOfType(i, 'type', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
                             </div>
                         </div>
@@ -176,7 +161,7 @@
                                             [value]="type.value">{{ type.label }}</gtx-option>
                             </gtx-select>
                             <div class="input-note">
-                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'listType', 'required')"
+                                <p *ngIf="isFormControlInArrayTouched(i, 'listType') && getFormControlInArrayErrorOfType(i, 'listType', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
                             </div>
                         </div>
@@ -192,7 +177,7 @@
                                             [value]="schema.name">{{ schema.name }}</gtx-option>
                             </gtx-select>
                             <div class="input-note">
-                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'allow', 'required')"
+                                <p *ngIf="isFormControlInArrayTouched(i, 'allow') && getFormControlInArrayErrorOfType(i, 'allow', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
                             </div>
                         </div>
@@ -208,7 +193,7 @@
                                             [value]="microschema.name">{{ microschema.name }}</gtx-option>
                             </gtx-select>
                             <div class="input-note">
-                                <p *ngIf="getFormControlInArrayErrorOfType(i, 'allow', 'required')"
+                                <p *ngIf="isFormControlInArrayTouched(i, 'allow') && getFormControlInArrayErrorOfType(i, 'allow', 'required')"
                                    class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
                             </div>
                         </div>

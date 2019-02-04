@@ -410,6 +410,14 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     /**
+     * @param formControlName FormControl instance string identifer
+     * @returns TRUE if defined FormControl instance has been touched by user
+     */
+    isformControlTouched(formControlName: keyof SchemaT): boolean {
+        return this.formGroup.get(formControlName as any)!.touched;
+    }
+
+    /**
      * @param index of FormControl instance in FormArray
      * @param formControlName FormControl instance string identifer
      * @param errorType string-defined error type
@@ -421,6 +429,15 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         errorType: TSchemaEditorErrors
     ): boolean {
         return this.getControlFromArrayAtIndex(index, formControlName as any)!.hasError(errorType);
+    }
+
+    /**
+     * @param index of FormControl instance in FormArray
+     * @param formControlName FormControl instance string identifer
+     * @returns TRUE if defined FormControl instance has been touched by user
+     */
+    isFormControlInArrayTouched(index: number, formControlName: keyof SchemaFieldT): boolean {
+        return this.getControlFromArrayAtIndex(index, formControlName as any)!.touched;
     }
 
     /**

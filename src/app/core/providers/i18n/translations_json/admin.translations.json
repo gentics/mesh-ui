@@ -505,8 +505,8 @@
     },
 
     "schema_editor_inputlabel_name": {
-        "en": "Name",
-        "de": "Name"
+        "en": "Name *",
+        "de": "Name *"
     },
     "schema_editor_inputlabel_container": {
         "en": "Container",
@@ -533,8 +533,8 @@
         "de": "Anzeigename"
     },
     "schema_editor_inputlabel_type": {
-        "en": "Type",
-        "de": "Typ"
+        "en": "Type *",
+        "de": "Typ *"
     },
     "schema_editor_inputlabel_required": {
         "en": "Required",
