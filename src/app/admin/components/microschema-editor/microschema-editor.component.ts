@@ -243,10 +243,12 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                     })
                 };
                 this.schemaJsonChange.emit(JSON.stringify(this._schemaJson, undefined, 4));
+                this.isValid.emit(this.formGroupIsValid());
             });
 
         // init first validation trigger
         this.formGroup.updateValueAndValidity();
+        this.isValid.emit(this.formGroupIsValid());
     }
 
     isConflictingProperty(formControlName: keyof Microschema, value: any): boolean {

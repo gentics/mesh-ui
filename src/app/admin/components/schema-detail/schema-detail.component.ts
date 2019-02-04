@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
+import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
 import { Schema } from '../../../common/models/schema.model';
 import { SchemaResponse } from '../../../common/models/server-models';
@@ -22,6 +23,7 @@ import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
     templateUrl: './schema-detail.component.html',
+    styleUrls: ['./schema-detail.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SchemaDetailComponent implements OnInit, OnDestroy {
@@ -64,13 +66,20 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         }
     }
 
+    /** Indicator wheter form is valid or not */
+    isValid = false;
+    /** Indicator whether form is about creating a new node instead updating existing */
+    isNew$ = new BehaviorSubject<boolean>(true);
     /** indiocate component is in delete mode */
     doesDelete = false;
 
     // TODO load json schema from mesh instead of static file
     schema = require('./schema.schema.json');
+
     errors: MarkerData[] = [];
-    isNew$ = new BehaviorSubject<boolean>(true);
+
+    BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
+
     private subscription: Subscription;
 
     constructor(

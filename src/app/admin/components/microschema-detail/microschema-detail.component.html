@@ -2,14 +2,34 @@
     Version: {{version}}
 </div>
 
+<div class="actions"
+     *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
+    <gtx-button type="primary"
+                size="small"
+                class="save-button"
+                [disabled]="!isValid"
+                (click)="save()">
+        <ng-container *ngIf="!(isNew$ | async)">{{ 'admin.schema_editor_buttonlabel_save' | i18n }}</ng-container>
+        <ng-container *ngIf="isNew$ | async">{{ 'admin.schema_editor_buttonlabel_create' | i18n }}</ng-container>
+    </gtx-button>
+
+    <gtx-button *ngIf="!(isNew$ | async)"
+                type="primary"
+                size="small"
+                class="save-button"
+                [disabled]="!isValid"
+                (click)="delete()">
+        {{ 'admin.schema_editor_buttonlabel_delete' | i18n }}
+    </gtx-button>
+</div>
+
 <gtx-tabs>
     <gtx-tab title="Editor">
         <mesh-microschema-editor [schemaJson]="microschemaJson$ | async"
                                  (schemaJsonChange)="microschemaJson = $event"
                                  [schema]="microschema$ | async"
                                  [isNew]="isNew$ | async"
-                                 (save)="save()"
-                                 (delete)="delete()">
+                                 (isValid)="isValid = $event">
         </mesh-microschema-editor>
     </gtx-tab>
 

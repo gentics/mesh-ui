@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
+import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
 import { MicroschemaResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
@@ -23,6 +24,7 @@ import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
     templateUrl: './microschema-detail.component.html',
+    styleUrls: ['microschema-detail.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MicroschemaDetailComponent implements OnInit, OnDestroy {
@@ -66,13 +68,18 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         }
     }
 
+    /** Indicator wheter form is valid or not */
+    isValid = false;
+    /** Indicator whether form is about creating a new node instead updating existing */
+    isNew$ = new BehaviorSubject<boolean>(true);
     /** indiocate component is in delete mode */
     doesDelete = false;
 
     microschema = require('./microschema.schema.json');
 
     errors: MarkerData[] = [];
-    isNew$ = new BehaviorSubject<boolean>(true);
+
+    BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
 
     loading$: Observable<boolean>;
 

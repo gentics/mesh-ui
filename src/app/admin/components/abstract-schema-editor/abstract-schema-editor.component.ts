@@ -68,6 +68,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     /** Emitting on Delete Schema */
     @Output() delete = new EventEmitter<void>();
 
+    @Output() isValid = new EventEmitter<boolean>();
+
     /** Schema form */
     formGroup: FormGroup;
 

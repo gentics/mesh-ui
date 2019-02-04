@@ -561,6 +561,10 @@
         "en": "New Field",
         "de": "Neues Feld"
     },
+    "schema_editor_buttonlabel_create": {
+        "en": "Create",
+        "de": "Erstellen"
+    },
     "schema_editor_buttonlabel_save": {
         "en": "Save",
         "de": "Speichern"
