@@ -195,7 +195,8 @@ const updateFields: Array<keyof SchemaResponse> = [
     'fields',
     'displayField',
     'segmentField',
-    'urlFields'
+    'urlFields',
+    'container'
 ];
 
 function stripSchemaFields(schema: SchemaResponse): any {
