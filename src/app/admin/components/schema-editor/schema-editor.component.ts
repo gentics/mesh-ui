@@ -223,7 +223,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                 // map form data to component data
                 this._schemaJson = {
                     ...(this.schemaDataConditions.name(value) && ({ name: value.name } as any)),
-                    ...(this.schemaDataConditions.container(value) && ({ container: value.container } as any)),
+                    ...({ container: value.container ? true : false } as any),
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
                     // assign data meeting conditions only
                     ...(this.schemaDataConditions.displayField(value) &&
@@ -343,6 +343,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                         return schemaField;
                     })
                 };
+                console.log('!!! EMIT:', JSON.stringify(this._schemaJson, undefined, 4));
                 this.schemaJsonChange.emit(JSON.stringify(this._schemaJson, undefined, 4));
                 this.isValid.emit(this.formGroupIsValid());
             });
