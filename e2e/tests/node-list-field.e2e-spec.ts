@@ -7,7 +7,7 @@ import { inTemporaryFolder, requiresSchema } from '../testUtil';
 
 describe(
     'node list field',
-    requiresSchema(SingleNodeFieldList, schema => {
+    requiresSchema(SingleNodeFieldList as any, schema => {
         beforeEach(async () => {
             await page.navigateToHome();
         });

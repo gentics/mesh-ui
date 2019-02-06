@@ -130,12 +130,15 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
     };
 
     /** Precondition functions to fill schema fields data */
-    schemaFieldDataConditions: { [key: string]: (property: any) => boolean } = {
-        name: property => property.name,
-        type: property => property.type,
-        label: property => property.label,
-        required: property => property.required,
-        listType: property => property.type === 'list' && property.listType && property.listType.length > 0
+    schemaFieldDataConditions: { [key: string]: (field: SchemaField) => boolean } = {
+        name: () => true,
+        type: () => true,
+        label: () => true,
+        required: () => true,
+        listType: field => (field.type === 'list' && field.listType && field.listType.length > 0) as boolean,
+        allowNodeInputSelect: field => field.type === 'node' || field.listType === 'node',
+        allowMicroodeInputSelect: field => field.type === 'micronode' || field.listType === 'micronode',
+        allowStringsInputText: field => field.type === 'string' || field.listType === 'string'
     };
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
@@ -226,17 +229,25 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                     ...({ container: value.container ? true : false } as any),
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
                     // assign data meeting conditions only
-                    ...(this.schemaDataConditions.displayField(value) &&
-                        (this.getSchemaFieldsFilteredFromFormData(field => {
-                            return this.schemaInputSelectDataConditions.displayFields(field);
-                        }).find(field => field.name === value.displayField) as SchemaField) &&
-                        ({ displayField: value.displayField } as any)),
+                    ...({
+                        displayField:
+                            this.schemaDataConditions.displayField(value) &&
+                            (this.getSchemaFieldsFilteredFromFormData(field => {
+                                return this.schemaInputSelectDataConditions.displayFields(field);
+                            }).find(field => field.name === value.displayField) as SchemaField)
+                                ? value.displayField
+                                : null
+                    } as any),
                     // assign data meeting conditions only
-                    ...(this.schemaDataConditions.segmentField(value) &&
-                        (this.getSchemaFieldsFilteredFromFormData(field => {
-                            return this.schemaInputSelectDataConditions.segmentFields(field);
-                        }).find(field => field.name === value.segmentField) as SchemaField) &&
-                        ({ segmentField: value.segmentField } as any)),
+                    ...({
+                        segmentField:
+                            this.schemaDataConditions.segmentField(value) &&
+                            (this.getSchemaFieldsFilteredFromFormData(field => {
+                                return this.schemaInputSelectDataConditions.segmentFields(field);
+                            }).find(field => field.name === value.segmentField) as SchemaField)
+                                ? value.segmentField
+                                : null
+                    } as any),
                     // assign data meeting conditions only
                     ...(this.schemaDataConditions.urlFields(value) &&
                         ({

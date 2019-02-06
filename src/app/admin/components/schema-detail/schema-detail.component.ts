@@ -151,6 +151,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     save() {
         if (this.errors.length === 0) {
             const changedSchema = JSON.parse(this.schemaJson);
+            console.log('!!! changedSchema:', changedSchema);
             // update original to compare
             this.schemaJsonOriginal = JSON.stringify(stripSchemaFields(changedSchema));
             if (this.isNew$.getValue()) {
