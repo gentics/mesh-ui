@@ -8,37 +8,44 @@ export class SchemaEditorField {
     /** @returns all relevant schema field properties input data */
     input = {
         name: {
-            element: () => SchemaEditorUtils.getInputElementByFormControlName('name', this.root),
+            element: () => SchemaEditorUtils.getInputTextElementByFormControlName('name', this.root),
             value: () => SchemaEditorUtils.getInputValueByFormControlName('name', this.root),
+            setValue: (value: string) => SchemaEditorUtils.inputTextSetValue(value, 'name', this.root),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('name', this.root)
         },
         label: {
-            element: () => SchemaEditorUtils.getInputElementByFormControlName('label', this.root),
+            element: () => SchemaEditorUtils.getInputTextElementByFormControlName('label', this.root),
             value: () => SchemaEditorUtils.getInputValueByFormControlName('label', this.root),
+            setValue: (value: string) => SchemaEditorUtils.inputTextSetValue(value, 'label', this.root),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('label', this.root)
         },
         type: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('type', this.root),
             value: () => SchemaEditorUtils.getInputSelectSingleValueByFormControlName('type', this.root),
+            setValue: (value: string) => SchemaEditorUtils.inputSelectSetValueSingle(value, 'type', this.root),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('type', this.root)
         },
         required: {
-            element: () => SchemaEditorUtils.getInputElementByFormControlName('required', this.root),
-            value: () => SchemaEditorUtils.getInputCheckboxValueByFormControlName('required', this.root)
+            element: () => SchemaEditorUtils.getInputTextElementByFormControlName('required', this.root),
+            value: () => SchemaEditorUtils.getInputCheckboxValueByFormControlName('required', this.root),
+            setValue: (value: boolean) => SchemaEditorUtils.inputCheckboxSetValue(value, 'required', this.root)
         },
         listType: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('listType', this.root),
             value: () => SchemaEditorUtils.getInputSelectSingleValueByFormControlName('listType', this.root),
+            setValue: (value: string) => SchemaEditorUtils.inputSelectSetValueSingle(value, 'listType', this.root),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('listType', this.root)
         },
         allowInputSelect: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('allow', this.root),
             value: () => SchemaEditorUtils.getInputSelectMultiValueByFormControlName('allow', this.root),
+            setValue: (value: string[]) => SchemaEditorUtils.inputSelectSetValueMulti(value, 'allow', this.root),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('allow', this.root)
         },
         allowInputText: {
-            element: () => SchemaEditorUtils.getInputElementByFormControlName('allow', this.root),
+            element: () => SchemaEditorUtils.getInputTextElementByFormControlName('allow', this.root),
             value: () => SchemaEditorUtils.getInputValueByFormControlName('allow', this.root),
+            setValue: (value: string[]) => SchemaEditorUtils.inputChipsSetValue(value, 'allow', this.root),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('allow', this.root),
             chips: () => SchemaEditorUtils.getAllowStrings(this.root)
         }

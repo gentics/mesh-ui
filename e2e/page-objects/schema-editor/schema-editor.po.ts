@@ -1,4 +1,4 @@
-import { by, element, promise, ElementFinder } from 'protractor';
+import { browser, by, element, promise, ElementFinder } from 'protractor';
 
 import { Schema } from '../../../src/app/common/models/schema.model';
 import { SchemaResponse, SchemaUpdateRequest } from '../../../src/app/common/models/server-models';
@@ -8,25 +8,31 @@ import { SchemaEditorField } from './schema-editor-field.po';
 import { SchemaEditorUtils } from './utils.po';
 
 export class SchemaEditor {
+    // GETTERS /////////////////////////////////////////////////////////////////////////////////////
+
     /** @returns all relevant schema properties input data */
     input = {
         name: {
-            element: () => SchemaEditorUtils.getInputElementByFormControlName('name'),
+            element: () => SchemaEditorUtils.getInputTextElementByFormControlName('name'),
             value: () => SchemaEditorUtils.getInputValueByFormControlName('name'),
+            setValue: (value: string) => SchemaEditorUtils.inputTextSetValue(value, 'name'),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('name')
         },
         description: {
-            element: () => SchemaEditorUtils.getInputElementByFormControlName('description'),
+            element: () => SchemaEditorUtils.getInputTextElementByFormControlName('description'),
             value: () => SchemaEditorUtils.getInputValueByFormControlName('description'),
+            setValue: (value: string) => SchemaEditorUtils.inputTextSetValue(value, 'description'),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('description')
         },
         container: {
-            element: () => SchemaEditorUtils.getInputElementByFormControlName('container'),
-            value: () => SchemaEditorUtils.getInputCheckboxValueByFormControlName('container')
+            element: () => SchemaEditorUtils.getInputTextElementByFormControlName('container'),
+            value: () => SchemaEditorUtils.getInputCheckboxValueByFormControlName('container'),
+            setValue: (value: boolean) => SchemaEditorUtils.inputCheckboxSetValue(value, 'container')
         },
         displayField: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('displayField'),
             value: () => SchemaEditorUtils.getInputSelectSingleValueByFormControlName('displayField'),
+            setValue: (value: string) => SchemaEditorUtils.inputSelectSetValueSingle(value, 'displayField'),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('displayField'),
             options: async () => {
                 const inputSelect = await SchemaEditorUtils.getInputSelectElementByFormControlName('displayField');
@@ -36,6 +42,7 @@ export class SchemaEditor {
         segmentField: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('segmentField'),
             value: () => SchemaEditorUtils.getInputSelectSingleValueByFormControlName('segmentField'),
+            setValue: (value: string) => SchemaEditorUtils.inputSelectSetValueSingle(value, 'segmentField'),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('segmentField'),
             options: async () => {
                 const inputSelect = await SchemaEditorUtils.getInputSelectElementByFormControlName('segmentField');
@@ -45,6 +52,7 @@ export class SchemaEditor {
         urlFields: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('urlFields'),
             value: () => SchemaEditorUtils.getInputSelectMultiValueByFormControlName('urlFields'),
+            setValue: (value: string[]) => SchemaEditorUtils.inputSelectSetValueMulti(value, 'urlFields'),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('urlFields'),
             options: async () => {
                 const inputSelect = await SchemaEditorUtils.getInputSelectElementByFormControlName('urlFields');
@@ -79,7 +87,38 @@ export class SchemaEditor {
 
     /** @returns schema buttons */
     button = {
-        newField: element(by.cssContainingText('button', 'New Field'))
+        create: {
+            element: () => element(by.cssContainingText('button', 'Create')),
+            click: async () => {
+                const button = await element(by.cssContainingText('button', 'Create'));
+                await browser.executeScript('arguments[0].scrollIntoView();', button.getWebElement());
+                return await button.click();
+            }
+        },
+        save: {
+            element: () => element(by.cssContainingText('button', 'Save')),
+            click: async () => {
+                const button = await element(by.cssContainingText('button', 'Save'));
+                await browser.executeScript('arguments[0].scrollIntoView();', button.getWebElement());
+                return await button.click();
+            }
+        },
+        delete: {
+            element: () => element(by.cssContainingText('button', 'Delete')),
+            click: async () => {
+                const button = await element(by.cssContainingText('button', 'Delete'));
+                await browser.executeScript('arguments[0].scrollIntoView();', button.getWebElement());
+                return await button.click();
+            }
+        },
+        newField: {
+            element: () => element(by.cssContainingText('button', 'New Field')),
+            click: async () => {
+                const button = await element(by.cssContainingText('button', 'New Field'));
+                await browser.executeScript('arguments[0].scrollIntoView();', button.getWebElement());
+                return await button.click();
+            }
+        }
     };
 
     /** @returns all relevant input data from schema */
@@ -165,6 +204,8 @@ export class SchemaEditor {
 
         return value;
     }
+
+    // HELPERS /////////////////////////////////////////////////////////////////////////////////////
 
     /** @description Contains Schema properties to be editable in editor */
     updateFields: Array<keyof SchemaResponse> = [

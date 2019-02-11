@@ -1,11 +1,22 @@
-import { browser, by, element, ElementArrayFinder, ElementFinder } from 'protractor';
+import { browser, by, element, ElementArrayFinder, ElementFinder, Key } from 'protractor';
 
 import { isValidString } from '../../../src/app/common/util/util';
 import { awaitArray } from '../../testUtil';
 
 export namespace SchemaEditorUtils {
-    export function getInputElementByFormControlName(formControlName: string, rootElement?: ElementFinder) {
+    // GETTERS /////////////////////////////////////////////////////////////////////////////////////
+
+    export function getInputTextElementByFormControlName(formControlName: string, rootElement?: ElementFinder) {
         const target = by.css(`[formControlName="${formControlName}"] input`);
+        if (rootElement) {
+            return rootElement.element(target);
+        } else {
+            return element(target);
+        }
+    }
+
+    export function getInputCheckboxElementByFormControlName(formControlName: string, rootElement?: ElementFinder) {
+        const target = by.css(`[formControlName="${formControlName}"]`);
         if (rootElement) {
             return rootElement.element(target);
         } else {
@@ -44,13 +55,6 @@ export namespace SchemaEditorUtils {
 
         const value = await el.getAttribute('checked');
 
-        // if (value === 'true') {
-        //     return true;
-        // } else if (value === 'false') {
-        //     return false;
-        // } else {
-        //     return null;
-        // }
         if (value === 'true') {
             return true;
         } else {
@@ -112,14 +116,8 @@ export namespace SchemaEditorUtils {
      * @description Anytime a input select has been clicked a globale dropdown menu with its available options will be opened.
      * @returns strings contained in dropdown menu items IF expanded
      * */
-    function getSelectableOptions(rootElement?: ElementFinder): Promise<string[]> {
-        const target = by.css('gtx-dropdown-content-wrapper .select-option');
-        let els: ElementArrayFinder;
-        if (rootElement) {
-            els = rootElement.all(target);
-        } else {
-            els = element.all(target);
-        }
+    function getSelectableOptions(): Promise<string[]> {
+        const els = element.all(by.css('gtx-dropdown-content .select-option'));
         return awaitArray(els.map(item => item!.getText()));
     }
 
@@ -135,7 +133,7 @@ export namespace SchemaEditorUtils {
         await input.click();
         let options: string[];
         if (rootElement) {
-            options = await getSelectableOptions(rootElement);
+            options = await getSelectableOptions();
         } else {
             options = await getSelectableOptions();
         }
@@ -155,34 +153,86 @@ export namespace SchemaEditorUtils {
         return awaitArray(els.map(item => item!.getText()));
     }
 
-    // async function inputSelectSetValue(inputSelect: ElementFinder, value: string) {
-    //     await inputSelect.click();
-    //     // check if options menu visible and target value contained
-    //     const options = await SchemaEditorUtils.getSelectableOptions();
-    //     if (options.filter(option => option === value).length !== 1) {
-    //         throw new Error('No or more than one value selectable');
-    //     }
-    //     await element(by.cssContainingText('.select-option', value)).click();
-    // }
+    // SETTERS /////////////////////////////////////////////////////////////////////////////////////
 
-    // async function inputSelectSetValues(inputSelect: ElementFinder, values: string[]) {
-    //     await inputSelect.click();
-    //     // check if options menu visible and target value cotnained
-    //     const options = await SchemaEditorUtils.getSelectableOptions();
-    //     if (options.filter(option => !!values.find(value => value === option)).length === 0) {
-    //         throw new Error('Defined value does not exist for selection');
-    //     }
-    //     // click checkboxes
-    //     values.forEach(async value => {
-    //         const test = await element(by.cssContainingText('.select-option', value)).getText();
-    //         console.log( '!!! TEST:', test );
-    //         return await element(by.cssContainingText('.select-option', value)).element(by.css('[for*="checkbox"]')).click();
-    //         // awaitArray(option.map(async (option: ElementFinder) => {
-    //         //     const checkbox = await option.element(by.css('[type="checkbox"]'));
-    //         //     await checkbox.click();
-    //         // }));
-    //     });
-    // }
+    export async function inputTextSetValue(value: string, formControlname: string, rootElement?: ElementFinder) {
+        if (!isValidString(value)) {
+            throw new Error('Value is not valid string');
+        }
+        const input = await getInputTextElementByFormControlName(formControlname, rootElement && rootElement);
+        // clear existing text
+        await input.clear();
+        return await input.sendKeys(value);
+    }
+
+    export async function inputCheckboxSetValue(value: boolean, formControlname: string, rootElement?: ElementFinder) {
+        const input = await getInputCheckboxElementByFormControlName(formControlname, rootElement && rootElement);
+        const inputValue = await getInputCheckboxValueByFormControlName(formControlname, rootElement && rootElement);
+        if (inputValue === false && value === true) {
+            return await input.click();
+        } else if (inputValue === true && value === true) {
+            return Promise.resolve();
+        } else if (inputValue === false && value === false) {
+            return Promise.resolve();
+        } else if (inputValue === true && value === false) {
+            return await input.click();
+        }
+    }
+
+    export async function inputSelectSetValueSingle(
+        value: string,
+        formControlname: string,
+        rootElement?: ElementFinder
+    ) {
+        const input = getInputSelectElementByFormControlName(formControlname, rootElement && rootElement);
+        // check if options menu visible and target value contained
+        await input.click();
+        browser.waitForAngular();
+        const options = await getSelectableOptions();
+        if (!options || options.filter(option => option === value).length !== 1) {
+            throw new Error('No or more than one value selectable');
+        }
+        return await element(by.cssContainingText('.select-option', value)).click();
+    }
+
+    export async function inputSelectSetValueMulti(
+        values: string[],
+        formControlname: string,
+        rootElement?: ElementFinder
+    ) {
+        const input = getInputSelectElementByFormControlName(formControlname, rootElement && rootElement);
+        // check if options menu visible and target value contained
+        const options = await getSelectableOptions();
+        // if (!options || options.filter(option => !!values.find(value => value === option)).length === 0) {
+        //     throw new Error('Defined value does not exist for selection');
+        // }
+        // // click checkboxes
+        // return Promise.all(values.map(async value => {
+        //     const test = await element(by.cssContainingText('.select-option', value)).getText();
+        //     console.log( '!!! TEST:', test );
+        //     return await element(by.cssContainingText('.select-option', value)).element(by.css('[for*="checkbox"]')).click();
+        //     // awaitArray(option.map(async (option: ElementFinder) => {
+        //     //     const checkbox = await option.element(by.css('[type="checkbox"]'));
+        //     //     await checkbox.click();
+        //     // }));
+        // }));
+    }
+
+    export async function inputChipsSetValue(values: string[], formControlname: string, rootElement?: ElementFinder) {
+        if (!values || !values.length || values.length < 1) {
+            throw new Error('Invalid value parameter');
+        }
+        const input = await getInputTextElementByFormControlName(formControlname, rootElement && rootElement);
+        // clear existing text
+        await input.clear();
+
+        return await Promise.all(
+            values.map(async value => {
+                await input.sendKeys(value);
+                return await input.sendKeys(Key.ENTER);
+            })
+        );
+    }
 
     /** Closes an open input select dropdown menu */
     async function selectableOptionsCloseMenu() {
