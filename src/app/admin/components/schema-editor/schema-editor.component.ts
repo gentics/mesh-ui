@@ -229,36 +229,11 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                     ...({ container: value.container ? true : false } as any),
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
                     // assign data meeting conditions only
-                    ...({
-                        displayField:
-                            this.schemaDataConditions.displayField(value) &&
-                            (this.getSchemaFieldsFilteredFromFormData(field => {
-                                return this.schemaInputSelectDataConditions.displayFields(field);
-                            }).find(field => field.name === value.displayField) as SchemaField)
-                                ? value.displayField
-                                : null
-                    } as any),
+                    ...this.displayFieldAssign(value),
                     // assign data meeting conditions only
-                    ...({
-                        segmentField:
-                            this.schemaDataConditions.segmentField(value) &&
-                            (this.getSchemaFieldsFilteredFromFormData(field => {
-                                return this.schemaInputSelectDataConditions.segmentFields(field);
-                            }).find(field => field.name === value.segmentField) as SchemaField)
-                                ? value.segmentField
-                                : null
-                    } as any),
+                    ...this.segmentFieldAssign(value),
                     // assign data meeting conditions only
-                    ...(this.schemaDataConditions.urlFields(value) &&
-                        ({
-                            urlFields: this.getSchemaFieldsFilteredFromFormData(field => {
-                                return this.schemaInputSelectDataConditions.urlFields(field);
-                            })
-                                .map(field => field.name)
-                                .filter(fieldName =>
-                                    (value.urlFields as string[]).find(urlFieldName => urlFieldName === fieldName)
-                                )
-                        } as any)),
+                    ...this.urlFieldsAssign(value),
                     // mapping the fields
                     fields: value.fields.map((field: any, index: number) => {
                         const oldField = this.schemaFields.value[index];
@@ -410,5 +385,45 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
             listType: [field.listType || null, this.formValidators.fields.listType],
             allow: ['', this.formValidators.fields.allow]
         });
+    }
+
+    // FORM SPECIFIC METHODS //////////////////////////////////////////////////////////////////////////////
+
+    private displayFieldAssign(value: any) {
+        const precondition =
+            this.schemaDataConditions.displayField(value) &&
+            (this.getSchemaFieldsFilteredFromFormData(field => {
+                return this.schemaInputSelectDataConditions.displayFields(field);
+            }).find(field => field.name === value.displayField) as SchemaField);
+
+        if (precondition) {
+            return { displayField: value.displayField };
+        }
+    }
+
+    private segmentFieldAssign(value: any) {
+        const precondition =
+            this.schemaDataConditions.segmentField(value) &&
+            (this.getSchemaFieldsFilteredFromFormData(field => {
+                return this.schemaInputSelectDataConditions.segmentFields(field);
+            }).find(field => field.name === value.segmentField) as SchemaField);
+
+        if (precondition) {
+            return { segmentField: value.segmentField };
+        }
+    }
+
+    private urlFieldsAssign(value: any) {
+        const assignValue =
+            this.schemaDataConditions.urlFields(value) &&
+            this.getSchemaFieldsFilteredFromFormData(field => {
+                return this.schemaInputSelectDataConditions.urlFields(field);
+            })
+                .map(field => field.name)
+                .filter(fieldName => (value.urlFields as string[]).find(urlFieldName => urlFieldName === fieldName));
+
+        if (assignValue && assignValue.length > 0) {
+            return { urlFields: assignValue };
+        }
     }
 }
