@@ -329,7 +329,6 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                         return schemaField;
                     })
                 };
-                console.log('!!! EMIT:', JSON.stringify(this._schemaJson, undefined, 4));
                 this.schemaJsonChange.emit(JSON.stringify(this._schemaJson, undefined, 4));
                 this.isValid.emit(this.formGroupIsValid());
             });

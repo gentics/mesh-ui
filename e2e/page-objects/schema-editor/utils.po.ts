@@ -1,5 +1,6 @@
 import { browser, by, element, ElementArrayFinder, ElementFinder } from 'protractor';
 
+import { isValidString } from '../../../src/app/common/util/util';
 import { awaitArray } from '../../testUtil';
 
 export namespace SchemaEditorUtils {
@@ -43,16 +44,24 @@ export namespace SchemaEditorUtils {
 
         const value = await el.getAttribute('checked');
 
+        // if (value === 'true') {
+        //     return true;
+        // } else if (value === 'false') {
+        //     return false;
+        // } else {
+        //     return null;
+        // }
         if (value === 'true') {
             return true;
-        } else if (value === 'false') {
-            return false;
         } else {
-            return null;
+            return false;
         }
     }
 
-    export function getInputSelectSingleValueByFormControlName(formControlName: string, rootElement?: ElementFinder) {
+    export async function getInputSelectSingleValueByFormControlName(
+        formControlName: string,
+        rootElement?: ElementFinder
+    ) {
         const target = by.css(`[formControlName="${formControlName}"] .view-value > div`);
         let el: ElementFinder;
         if (rootElement) {
@@ -60,7 +69,11 @@ export namespace SchemaEditorUtils {
         } else {
             el = element(target);
         }
-        return el.getText();
+        // return el.getText();
+        const value = await el.getText();
+        if (isValidString(value)) {
+            return value;
+        }
     }
 
     export async function getInputSelectMultiValueByFormControlName(
@@ -74,9 +87,14 @@ export namespace SchemaEditorUtils {
         } else {
             el = element(target);
         }
-        const values = await el.getText();
-        values.replace(/\s/g, '');
-        return values.split(new RegExp(/,/)).map(item => item.replace(/\s/g, ''));
+        const valuesRaw = await el.getText();
+        // if its just empty string or blank spaces, stop
+        if (!isValidString(valuesRaw)) {
+            return;
+        }
+
+        valuesRaw.replace(/\s/g, '');
+        return valuesRaw.split(new RegExp(/,/)).map(item => item.replace(/\s/g, ''));
     }
 
     export async function getInputErrorsByFormControlName(formControlName: string, rootElement?: ElementFinder) {

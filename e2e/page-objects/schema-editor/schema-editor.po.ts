@@ -2,6 +2,7 @@ import { by, element, promise, ElementFinder } from 'protractor';
 
 import { Schema } from '../../../src/app/common/models/schema.model';
 import { SchemaResponse, SchemaUpdateRequest } from '../../../src/app/common/models/server-models';
+import { isValidString } from '../../../src/app/common/util/util';
 
 import { SchemaEditorField } from './schema-editor-field.po';
 import { SchemaEditorUtils } from './utils.po';
@@ -152,11 +153,13 @@ export class SchemaEditor {
 
         const value = {
             name: state.name.value,
-            description: state.description.value,
+            ...(isValidString(state.description.value) && ({ description: state.description.value } as any)),
             ...(fieldValues && fieldValues.length && fieldValues.length > 0 && ({ fields: fieldValues } as any)),
             displayField: state.displayField.value,
             segmentField: state.segmentField.value,
-            urlFields: state.urlFields.value,
+            ...(state.urlFields.value &&
+                state.urlFields.value.length > 0 &&
+                ({ urlFields: state.urlFields.value } as any)),
             ...(typeof state.container.value === 'boolean' && ({ container: state.container.value } as any))
         };
 

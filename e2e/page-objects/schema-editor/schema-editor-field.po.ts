@@ -178,6 +178,7 @@ export class SchemaEditorField {
                     state.type.value,
                     state.listType && state.listType.value
                 ) &&
+                state.allow.value.length > 0 &&
                 ({ allow: state.allow.value } as any)),
             ...(state.type &&
                 state.type.value &&
@@ -185,36 +186,9 @@ export class SchemaEditorField {
                     state.type.value,
                     state.listType && state.listType.value
                 ) &&
+                state.allow.chips.length > 0 &&
                 ({ allow: state.allow.chips } as any))
         };
-
-        // // add if exist
-        // if (typeof state.required.value === 'boolean') {
-        //     Object.assign(stateValues, { required: state.required.value });
-        // }
-
-        // // add if conditions are met
-        // if (state.type && this.schemaFieldDataConditions.listType(state.type.value)) {
-        //     Object.assign(stateValues, { listType: state.listType.value });
-        // }
-
-        // // add if conditions are met
-        // if (
-        //     state.type &&
-        //     state.listType &&
-        //     this.schemaFieldDataConditions.allowInputSelect(state.type.value, state.listType.value)
-        // ) {
-        //     Object.assign(stateValues, { allow: state.allow.value });
-        // }
-
-        // // add if conditions are met
-        // if (
-        //     state.type &&
-        //     state.listType &&
-        //     this.schemaFieldDataConditions.allowStringsInputText(state.type.value, state.listType.value)
-        // ) {
-        //     Object.assign(stateValues, { allow: state.allow.chips });
-        // }
 
         return stateValues;
     }

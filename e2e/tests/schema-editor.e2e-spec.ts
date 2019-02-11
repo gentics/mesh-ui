@@ -2,16 +2,16 @@ import * as api from '../api';
 import * as page from '../page-objects/app.po';
 import { SchemaEditor } from '../page-objects/schema-editor/schema-editor.po';
 
-fdescribe('schema editor', () => {
+describe('schema editor', () => {
     beforeEach(async () => {
         await page.navigateToHome();
-        await page.navigateToAdminSchemaEditorExisting();
-        // await page.navigateToAdminSchemaEditorNew();
     });
 
     it('shows correct data', async () => {
+        await page.navigateToAdminSchemaEditorExisting();
+
         const schemaEditor = new SchemaEditor();
-        const schemaFromApi = await api.getSchema('a866dec4538c4c65a6dec4538c9c653d');
+        const schemaFromApi = await api.getSchema('2aa83a2b3cba40a1a83a2b3cba90a1de');
         const schemaFromApiStripped = schemaEditor.stripSchemaFields(schemaFromApi);
 
         const schemaFromEditor = await schemaEditor.value();
@@ -21,31 +21,16 @@ fdescribe('schema editor', () => {
         const isEqual = a === b;
         expect(isEqual).toBeTruthy();
     });
+
+    // it('creates data correctly', async () => {
+    //     await page.navigateToAdminSchemaEditorNew();
+
+    //     const schemaEditor = new SchemaEditor();
+
+    // });
+
+    // it('changes data correctly', async () => {
+    //     const schemaEditor = new SchemaEditor();
+
+    // });
 });
-
-/**
-# Tests
-
-## Basic Input Test Iteration Cycle
-
-## Schema
-#### Check existing inputs
-##### Input Text Presence & Value
-##### Input Text Validation Errors
-
-##### Input CheckBox Presence & Value
-##### Input CheckBox Validation Errors
-
-##### Input Select Single Presence & Value
-##### Input Select Single Validation Errors
-##### Input Select Single Options
-
-##### Input Select Multi Presence & Value
-##### Input Select Multi Validation Errors
-##### Input Select Multi Options
-
-## Schema Field
-### Check how many fields
-### Same as Schema
-
-**/

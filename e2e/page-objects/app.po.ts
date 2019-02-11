@@ -40,7 +40,7 @@ export async function navigateToAdminSchemaEditorNew() {
 }
 /** @description Navigate to schema editor with sample node 'vehicle' provided in demo data */
 export async function navigateToAdminSchemaEditorExisting() {
-    await goToRoute(`admin/schemas/a866dec4538c4c65a6dec4538c9c653d`);
+    await goToRoute(`admin/schemas/2aa83a2b3cba40a1a83a2b3cba90a1de`);
 }
 
 async function goToRoute(route: string) {
