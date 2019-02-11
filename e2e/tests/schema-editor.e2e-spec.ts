@@ -33,4 +33,9 @@ describe('schema editor', () => {
     //     const schemaEditor = new SchemaEditor();
 
     // });
+
+    // it('deletes correctly', async () => {
+    //     const schemaEditor = new SchemaEditor();
+
+    // });
 });

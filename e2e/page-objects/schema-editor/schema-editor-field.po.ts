@@ -109,6 +109,8 @@ export class SchemaEditorField {
         let inputSelectListTypeValue;
         let inputSelectListTypeErrors;
         if (this.schemaFieldDataConditions.listType(inputSelectTypeValue)) {
+            const inputSelectListTypeElement = await this.input.listType.element();
+            expect(inputSelectListTypeElement.isPresent()).toBeTruthy();
             inputSelectListTypeValue = await this.input.listType.value();
             inputSelectListTypeErrors = await this.input.listType.errors();
 
@@ -125,6 +127,8 @@ export class SchemaEditorField {
         let inputSelectAllowValue;
         let inputSelectAllowErrors;
         if (this.schemaFieldDataConditions.allowInputSelect(inputSelectTypeValue, inputSelectListTypeValue)) {
+            const inputSelectAllowElement = await this.input.allowInputSelect.element();
+            expect(inputSelectAllowElement.isPresent()).toBeTruthy();
             inputSelectAllowValue = await this.input.allowInputSelect.value();
             inputSelectAllowErrors = await this.input.allowInputSelect.errors();
 
@@ -142,6 +146,8 @@ export class SchemaEditorField {
         let inputTextAllowErrors;
         let inputTextAllowChips;
         if (this.schemaFieldDataConditions.allowStringsInputText(inputSelectTypeValue, inputSelectListTypeValue)) {
+            const inputTextAllowElement = await this.input.allowInputText.element();
+            expect(inputTextAllowElement.isPresent()).toBeTruthy();
             inputTextAllowValue = await this.input.allowInputText.value();
             inputTextAllowErrors = await this.input.allowInputText.errors();
             inputTextAllowChips = await this.input.allowInputText.chips();
