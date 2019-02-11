@@ -1,7 +1,5 @@
 import { by, ElementFinder } from 'protractor';
 
-import { SchemaField } from '../../../src/app/common/models/schema.model';
-
 import { SchemaEditorUtils } from './utils.po';
 
 export class SchemaEditorField {
@@ -54,17 +52,20 @@ export class SchemaEditorField {
 
     /** @description Precondition functions to fill schema fields data */
     schemaFieldDataConditions: { [key: string]: (...args: any[]) => boolean } = {
-        listType: type => type === 'List',
+        listType: type => {
+            return type === 'list';
+        },
         allowInputSelect: (type, listType) => {
-            return type === 'Node' || listType === 'Node' || type === 'Micronode' || listType === 'Micronode';
+            return type === 'node' || listType === 'node' || type === 'micronode' || listType === 'micronode';
         },
         allowStringsInputText: (type, listType) => {
-            return type === 'String' || listType === 'String';
+            return type === 'string' || listType === 'string';
         }
     };
 
     /** @returns all relevant input data from schema field */
     async stateCurrent() {
+        // get values
         const inputTextNameElement = await this.input.name.element();
         expect(inputTextNameElement.isPresent()).toBeTruthy();
         const inputTextNameValue = await this.input.name.value();
@@ -84,6 +85,7 @@ export class SchemaEditorField {
         expect(inputCheckboxRequiredElement.isPresent()).toBeTruthy();
         const inputCheckboxRequiredValue = await this.input.required.value();
 
+        // provide unconditional values
         const state: any = {
             name: {
                 value: inputTextNameValue,
@@ -102,6 +104,8 @@ export class SchemaEditorField {
             }
         };
 
+        // listType
+        // add if conditions are met
         let inputSelectListTypeValue;
         let inputSelectListTypeErrors;
         if (this.schemaFieldDataConditions.listType(inputSelectTypeValue)) {
@@ -116,6 +120,8 @@ export class SchemaEditorField {
             });
         }
 
+        // allow input select
+        // add if conditions are met
         let inputSelectAllowValue;
         let inputSelectAllowErrors;
         if (this.schemaFieldDataConditions.allowInputSelect(inputSelectTypeValue, inputSelectListTypeValue)) {
@@ -130,6 +136,8 @@ export class SchemaEditorField {
             });
         }
 
+        // allow input text
+        // add if conditions are met
         let inputTextAllowValue;
         let inputTextAllowErrors;
         let inputTextAllowChips;
@@ -154,24 +162,59 @@ export class SchemaEditorField {
     async value() {
         const state = await this.stateCurrent();
 
+        // always provide mandatory properties
         const stateValues: any = {
             name: state.name.value,
             label: state.label.value,
+            ...(typeof state.required.value === 'boolean' && ({ required: state.required.value } as any)),
+            ...(state.type &&
+                state.type.value &&
+                this.schemaFieldDataConditions.listType(state.type.value) &&
+                ({ listType: state.listType.value } as any)),
             type: state.type.value,
-            required: state.required.value
+            ...(state.type &&
+                state.type.value &&
+                this.schemaFieldDataConditions.allowInputSelect(
+                    state.type.value,
+                    state.listType && state.listType.value
+                ) &&
+                ({ allow: state.allow.value } as any)),
+            ...(state.type &&
+                state.type.value &&
+                this.schemaFieldDataConditions.allowStringsInputText(
+                    state.type.value,
+                    state.listType && state.listType.value
+                ) &&
+                ({ allow: state.allow.chips } as any))
         };
 
-        if (state.type && this.schemaFieldDataConditions.listType(state.type.value)) {
-            Object.assign(stateValues, { listType: state.listType.value });
-        }
+        // // add if exist
+        // if (typeof state.required.value === 'boolean') {
+        //     Object.assign(stateValues, { required: state.required.value });
+        // }
 
-        if (
-            state.type &&
-            state.listType &&
-            this.schemaFieldDataConditions.allowInputSelect(state.type.value, state.listType.value)
-        ) {
-            Object.assign(stateValues, { allow: state.allow.value });
-        }
+        // // add if conditions are met
+        // if (state.type && this.schemaFieldDataConditions.listType(state.type.value)) {
+        //     Object.assign(stateValues, { listType: state.listType.value });
+        // }
+
+        // // add if conditions are met
+        // if (
+        //     state.type &&
+        //     state.listType &&
+        //     this.schemaFieldDataConditions.allowInputSelect(state.type.value, state.listType.value)
+        // ) {
+        //     Object.assign(stateValues, { allow: state.allow.value });
+        // }
+
+        // // add if conditions are met
+        // if (
+        //     state.type &&
+        //     state.listType &&
+        //     this.schemaFieldDataConditions.allowStringsInputText(state.type.value, state.listType.value)
+        // ) {
+        //     Object.assign(stateValues, { allow: state.allow.chips });
+        // }
 
         return stateValues;
     }

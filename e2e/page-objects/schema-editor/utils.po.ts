@@ -32,7 +32,7 @@ export namespace SchemaEditorUtils {
         return el.getAttribute('value');
     }
 
-    export function getInputCheckboxValueByFormControlName(formControlName: string, rootElement?: ElementFinder) {
+    export async function getInputCheckboxValueByFormControlName(formControlName: string, rootElement?: ElementFinder) {
         const target = by.css(`[formControlName="${formControlName}"] input`);
         let el: ElementFinder;
         if (rootElement) {
@@ -40,7 +40,16 @@ export namespace SchemaEditorUtils {
         } else {
             el = element(target);
         }
-        return (el.getAttribute('checked') as any) === true ? true : false;
+
+        const value = await el.getAttribute('checked');
+
+        if (value === 'true') {
+            return true;
+        } else if (value === 'false') {
+            return false;
+        } else {
+            return null;
+        }
     }
 
     export function getInputSelectSingleValueByFormControlName(formControlName: string, rootElement?: ElementFinder) {

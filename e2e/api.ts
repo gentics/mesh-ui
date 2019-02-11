@@ -71,8 +71,9 @@ export function createVehicleImage(parent: HasUuid, name: string, language = 'en
     });
 }
 
-export function getSchema(schemaId: string) {
-    return get('/schemas', schemaId);
+export async function getSchema(schemaId: string) {
+    const response = await get(`/schemas/${schemaId}`);
+    return response.data || response;
 }
 
 export function createSchema(schema: SchemaCreateRequest) {

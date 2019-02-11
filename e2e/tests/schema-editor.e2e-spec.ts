@@ -10,10 +10,16 @@ fdescribe('schema editor', () => {
     });
 
     it('shows correct data', async () => {
-        // const schemaSample = await api.getSchema('a866dec4538c4c65a6dec4538c9c653d');
+        const schemaEditor = new SchemaEditor();
+        const schemaFromApi = await api.getSchema('a866dec4538c4c65a6dec4538c9c653d');
+        const schemaFromApiStripped = schemaEditor.stripSchemaFields(schemaFromApi);
 
-        const TEST = await SchemaEditor.value();
-        console.log('!!! TEST:', JSON.stringify(TEST, null, 4));
+        const schemaFromEditor = await schemaEditor.value();
+
+        const a = JSON.stringify(schemaFromApiStripped);
+        const b = JSON.stringify(schemaFromEditor);
+        const isEqual = a === b;
+        expect(isEqual).toBeTruthy();
     });
 });
 

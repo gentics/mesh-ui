@@ -1,14 +1,14 @@
 import { by, element, promise, ElementFinder } from 'protractor';
 
 import { Schema } from '../../../src/app/common/models/schema.model';
-import { SchemaUpdateRequest } from '../../../src/app/common/models/server-models';
+import { SchemaResponse, SchemaUpdateRequest } from '../../../src/app/common/models/server-models';
 
 import { SchemaEditorField } from './schema-editor-field.po';
 import { SchemaEditorUtils } from './utils.po';
 
-export namespace SchemaEditor {
+export class SchemaEditor {
     /** @returns all relevant schema properties input data */
-    export const input = {
+    input = {
         name: {
             element: () => SchemaEditorUtils.getInputElementByFormControlName('name'),
             value: () => SchemaEditorUtils.getInputValueByFormControlName('name'),
@@ -53,13 +53,13 @@ export namespace SchemaEditor {
     };
 
     /** @returns all schema fields as class instances */
-    export async function fields(): Promise<SchemaEditorField[]> {
+    async fields(): Promise<SchemaEditorField[]> {
         const fields: ElementFinder[] = await element.all(by.css('gtx-sortable-item form'));
         return fields.map(field => new SchemaEditorField(field as ElementFinder));
     }
 
     /** @returns all schema field input data */
-    export async function fieldStates() {
+    async fieldStates() {
         const fieldInstances = await this.fields();
         const statePromises: Array<Promise<any>> = fieldInstances.map((instance: SchemaEditorField) =>
             instance.stateCurrent()
@@ -68,7 +68,7 @@ export namespace SchemaEditor {
     }
 
     /** @returns all fields data analogously to the schema editor data object */
-    export async function fieldValues() {
+    async fieldValues() {
         const fieldInstances = await this.fields();
         const statePromises: Array<Promise<any>> = fieldInstances.map((instance: SchemaEditorField) =>
             instance.value()
@@ -77,12 +77,12 @@ export namespace SchemaEditor {
     }
 
     /** @returns schema buttons */
-    export const button = {
+    button = {
         newField: element(by.cssContainingText('button', 'New Field'))
     };
 
     /** @returns all relevant input data from schema */
-    export async function stateCurrent() {
+    async stateCurrent() {
         const inputTextNameElement = await this.input.name.element();
         expect(inputTextNameElement.isPresent()).toBeTruthy();
         const inputTextNameValue = await this.input.name.value();
@@ -115,8 +115,6 @@ export namespace SchemaEditor {
         const inputSelectMultiUrlFieldsErrors = await this.input.urlFields.errors();
         const inputSelectMultiUrlFieldsieldOptions = await this.input.urlFields.options();
 
-        // const fieldStates = await this.fieldStates();
-
         return {
             name: {
                 value: inputTextNameValue,
@@ -144,22 +142,41 @@ export namespace SchemaEditor {
                 errors: inputSelectMultiUrlFieldsErrors,
                 options: inputSelectMultiUrlFieldsieldOptions
             }
-            // fields: fieldStates || null
         };
     }
 
     /** @returns data analogously to the schema editor data object */
-    export async function value(): Promise<SchemaUpdateRequest | Schema> {
+    async value(): Promise<SchemaUpdateRequest | Schema | any> {
         const state = await this.stateCurrent();
         const fieldValues = await this.fieldValues();
 
-        return {
-            name: state.inputTextNameValue,
-            description: state.inputTextDescriptionValue,
-            container: state.inputCheckboxContainerValue,
-            segmentField: state.inputSelectSingleSegmentFieldValue,
-            urlFields: state.inputSelectMultiUrlFieldsValue,
-            fields: fieldValues || null
+        const value = {
+            name: state.name.value,
+            description: state.description.value,
+            ...(fieldValues && fieldValues.length && fieldValues.length > 0 && ({ fields: fieldValues } as any)),
+            displayField: state.displayField.value,
+            segmentField: state.segmentField.value,
+            urlFields: state.urlFields.value,
+            ...(typeof state.container.value === 'boolean' && ({ container: state.container.value } as any))
         };
+
+        return value;
+    }
+
+    /** @description Contains Schema properties to be editable in editor */
+    updateFields: Array<keyof SchemaResponse> = [
+        'name',
+        'description',
+        'fields',
+        'displayField',
+        'segmentField',
+        'urlFields',
+        'container'
+    ];
+
+    /** @returns Schema object with those properties whic hare editable in the editor */
+    stripSchemaFields(schema: SchemaResponse): any {
+        schema.fields.sort((a: any, b: any) => a.name.localeCompare(b.name));
+        return this.updateFields.reduce((obj, key) => ({ ...obj, [key]: schema[key] }), {});
     }
 }

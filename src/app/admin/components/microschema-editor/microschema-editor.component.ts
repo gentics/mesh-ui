@@ -26,7 +26,7 @@ import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstrac
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
-    Microschema,
+    MicroschemaUpdateRequest,
     MicroschemaResponse,
     MicroschemaField,
     MicroschemaFieldType
@@ -37,27 +37,27 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
     schemaFieldListTypes: Array<{ value: MicroschemaFieldType; label: string }> = [
         {
             value: 'boolean',
-            label: 'Boolean'
+            label: 'boolean'
         },
         {
             value: 'date',
-            label: 'Date'
+            label: 'date'
         },
         {
             value: 'node',
-            label: 'Node'
+            label: 'node'
         },
         {
             value: 'number',
-            label: 'Number'
+            label: 'number'
         },
         {
             value: 'html',
-            label: 'HTML'
+            label: 'html'
         },
         {
             value: 'string',
-            label: 'String'
+            label: 'string'
         }
     ];
 
@@ -66,7 +66,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         ...this.schemaFieldListTypes,
         {
             value: 'list',
-            label: 'List'
+            label: 'list'
         }
     ].sort((a, b) => a.value.localeCompare(b.value)) as Array<{
         value: MicroschemaFieldType;
@@ -82,7 +82,6 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         description: [],
         fields: {
             name: [Validators.required, Validators.pattern(this.allowedCharsRegExp)],
-            label: [],
             type: [Validators.required],
             required: [],
             listType: []
@@ -90,18 +89,23 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
     };
 
     /** Precondition functions to fill schema data */
-    schemaDataConditions: { [key: string]: (property: any) => boolean } = {
-        name: property => property.name,
-        description: property => property.description.length > 0
+    schemaDataConditions: {
+        [key: string]: (schema: MicroschemaUpdateRequest) => boolean;
+    } = {
+        name: () => true,
+        description: schema => schema.description!.length > 0
     };
 
     /** Precondition functions to fill schema fields data */
-    schemaFieldDataConditions: { [key: string]: (property: any) => boolean } = {
-        name: property => property.name,
-        type: property => property.type,
-        label: property => property.label,
-        required: property => property.required === true,
-        listType: property => property.type === 'list' && property.listType && property.listType.length > 0
+    schemaFieldDataConditions: {
+        [key: string]: (field: MicroschemaField) => boolean;
+    } = {
+        name: () => true,
+        type: () => true,
+        label: () => true,
+        required: field => field.required === true,
+        listType: field => (field.type === 'list' && field.listType && field.listType.length > 0) || false,
+        allow: () => true
     };
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
@@ -149,11 +153,6 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
             .distinctUntilChanged()
             .takeUntil(this.destroyed$)
             .subscribe((value: any) => {
-                // reset data
-                this.displayFields = [];
-                this.segmentFields = [];
-                this.urlFields = [];
-
                 // EXTENDED VALIDATION LOGIC
                 this.isConflictingProperty('name', value.name);
 

@@ -32,31 +32,31 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
     schemaFieldListTypes: Array<{ value: SchemaFieldType; label: string }> = [
         {
             value: 'boolean',
-            label: 'Boolean'
+            label: 'boolean'
         },
         {
             value: 'date',
-            label: 'Date'
+            label: 'date'
         },
         {
             value: 'micronode',
-            label: 'Micronode'
+            label: 'micronode'
         },
         {
             value: 'node',
-            label: 'Node'
+            label: 'node'
         },
         {
             value: 'number',
-            label: 'Number'
+            label: 'number'
         },
         {
             value: 'html',
-            label: 'HTML'
+            label: 'html'
         },
         {
             value: 'string',
-            label: 'String'
+            label: 'string'
         }
     ];
 
@@ -65,11 +65,11 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         ...this.schemaFieldListTypes,
         {
             value: 'binary',
-            label: 'Binary'
+            label: 'binary'
         },
         {
             value: 'list',
-            label: 'List'
+            label: 'list'
         }
     ].sort((a, b) => a.value.localeCompare(b.value)) as Array<{
         value: SchemaFieldType;
