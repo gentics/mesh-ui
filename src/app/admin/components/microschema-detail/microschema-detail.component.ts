@@ -50,6 +50,9 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         return this.microschemaJson$.getValue();
     }
     set microschemaJson(v: string) {
+        if (!v) {
+            return;
+        }
         this.microschemaJson$.next(v);
     }
     microschemaJson$ = new BehaviorSubject<string>('{}');

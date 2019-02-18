@@ -8,18 +8,20 @@ describe('schema editor', () => {
     });
 
     it('shows correct data', async () => {
+        // navigate to existing reference schema
         await page.navigateToAdminSchemaEditorExisting();
-
+        // construct schema object from open page
         const schemaEditor = new SchemaEditor();
+        // get reference schema data from API
         const schemaFromApi = await api.getSchema('2aa83a2b3cba40a1a83a2b3cba90a1de');
+        // reduce schema data to those properties to be mutable by schema editor
         const schemaFromApiStripped = schemaEditor.stripSchemaFields(schemaFromApi);
-
+        // get schema data from schema editor
         const schemaFromEditor = await schemaEditor.value();
-
+        // compare API data against editor data
         const a = JSON.stringify(schemaFromApiStripped);
         const b = JSON.stringify(schemaFromEditor);
-        const isEqual = a === b;
-        expect(isEqual).toBeTruthy();
+        expect(a === b).toBeTruthy();
     });
 
     fit('creates data correctly', async () => {
@@ -31,7 +33,7 @@ describe('schema editor', () => {
         await schemaEditor.input.description.setValue('Lorem ipsum dolor amet');
         await schemaEditor.input.container.setValue(true);
 
-        // create new field
+        // create 3 new fields
         await schemaEditor.button.newField.click();
         await schemaEditor.button.newField.click();
         await schemaEditor.button.newField.click();
@@ -58,18 +60,28 @@ describe('schema editor', () => {
         await fields[2].input.type.setValue('string');
         await fields[2].input.allowInputText.setValue(['xyz']);
 
-        // set meta fields
+        // const displayFieldOptions = await schemaEditor.input.displayField.options();
+        // console.log( '!!! displayFieldOptions:', displayFieldOptions );
+        // expect(displayFieldOptions).toBe(['ccc']);
+
+        // const segmentFieldOptions = await schemaEditor.input.segmentField.options();
+        // console.log( '!!! segmentFieldOptions:', segmentFieldOptions );
+        // expect(segmentFieldOptions).toBe(['ccc']);
+
+        // set schema properties
         await schemaEditor.input.displayField.setValue('ccc');
         await schemaEditor.input.segmentField.setValue('ccc');
 
-        // check values
-        const schemaFromEditor = await schemaEditor.value();
-        console.log('!!! schemaFromEditor:', JSON.stringify(schemaFromEditor, null, 4));
+        // // check values
+        // const schemaFromEditor = await schemaEditor.value();
+        // console.log('!!! schemaFromEditor:', JSON.stringify(schemaFromEditor, null, 4));
 
         // save new schema
-        // const buttonSave = await schemaEditor.button.save;
-        // expect(buttonSave.isPresent()).toBeTruthy();
-        await schemaEditor.button.save.click();
+        const buttonCreate = await schemaEditor.button.create.element();
+        expect(buttonCreate.isPresent()).toBeTruthy();
+        // const buttonCreateDisabled = await buttonCreate.getAttribute('disabled');
+        expect(buttonCreate.getAttribute('disabled')).toBeFalsy();
+        await buttonCreate.click();
     });
 
     // it('changes data correctly', async () => {

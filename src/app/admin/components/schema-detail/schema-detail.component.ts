@@ -49,6 +49,9 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         return this.schemaJson$.getValue();
     }
     set schemaJson(v: string) {
+        if (!v) {
+            return;
+        }
         this.schemaJson$.next(v);
     }
     schemaJson$ = new BehaviorSubject<string>('{}');
