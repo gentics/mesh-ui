@@ -52,7 +52,6 @@ export class SchemaEditor {
         urlFields: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('urlFields'),
             value: () => SchemaEditorUtils.getInputSelectMultiValueByFormControlName('urlFields'),
-            setValue: (value: string[]) => SchemaEditorUtils.inputSelectSetValueMulti(value, 'urlFields'),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('urlFields'),
             options: async () => {
                 const inputSelect = await SchemaEditorUtils.getInputSelectElementByFormControlName('urlFields');
@@ -190,7 +189,7 @@ export class SchemaEditor {
         const state = await this.stateCurrent();
         const fieldValues = await this.fieldValues();
 
-        const value = {
+        return {
             name: state.name.value,
             ...(isValidString(state.description.value) && ({ description: state.description.value } as any)),
             ...(fieldValues && fieldValues.length && fieldValues.length > 0 && ({ fields: fieldValues } as any)),
@@ -201,8 +200,6 @@ export class SchemaEditor {
                 ({ urlFields: state.urlFields.value } as any)),
             ...(typeof state.container.value === 'boolean' && ({ container: state.container.value } as any))
         };
-
-        return value;
     }
 
     // HELPERS /////////////////////////////////////////////////////////////////////////////////////

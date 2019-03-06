@@ -1,19 +1,50 @@
 import * as api from '../api';
 import * as page from '../page-objects/app.po';
 import { SchemaEditor } from '../page-objects/schema-editor/schema-editor.po';
+import { Schemalist } from '../page-objects/schema-editor/schema-list.po';
 
 describe('schema editor', () => {
+    const testSchema: any = {
+        name: 'schema_test',
+        description: 'Lorem ipsum dolor amet',
+        container: true,
+        displayField: 'ccc',
+        segmentField: 'ccc',
+        fields: [
+            {
+                name: 'aaa',
+                label: 'AAA',
+                type: 'boolean',
+                required: true
+            },
+            {
+                name: 'bbb',
+                label: 'BBB',
+                type: 'list',
+                listType: 'number'
+            },
+            {
+                name: 'ccc',
+                label: 'CCC',
+                type: 'string',
+                allow: ['x', 'y', 'z']
+            }
+        ]
+    };
+
     beforeEach(async () => {
         await page.navigateToHome();
     });
 
-    it('shows correct data', async () => {
+    it('shows correct data according to API response', async () => {
+        // schema 'Vehicle' with htis UUID must be provided in demo data
+        const existingSchemaUuid = '2aa83a2b3cba40a1a83a2b3cba90a1de';
         // navigate to existing reference schema
-        await page.navigateToAdminSchemaEditorExisting();
+        await page.navigateToAdminSchemaEditorExistingSchema(existingSchemaUuid);
         // construct schema object from open page
         const schemaEditor = new SchemaEditor();
         // get reference schema data from API
-        const schemaFromApi = await api.getSchema('2aa83a2b3cba40a1a83a2b3cba90a1de');
+        const schemaFromApi = await api.getSchema(existingSchemaUuid);
         // reduce schema data to those properties to be mutable by schema editor
         const schemaFromApiStripped = schemaEditor.stripSchemaFields(schemaFromApi);
         // get schema data from schema editor
@@ -24,73 +55,103 @@ describe('schema editor', () => {
         expect(a === b).toBeTruthy();
     });
 
-    fit('creates data correctly', async () => {
+    it('creates schema', async () => {
+        let schemaEditor;
+        let fields;
+
         await page.navigateToAdminSchemaEditorNew();
 
-        let schemaEditor = new SchemaEditor();
+        schemaEditor = new SchemaEditor();
 
-        await schemaEditor.input.name.setValue('schema_test_01');
-        await schemaEditor.input.description.setValue('Lorem ipsum dolor amet');
-        await schemaEditor.input.container.setValue(true);
+        await schemaEditor.input.name.setValue(testSchema.name);
+        await schemaEditor.input.description.setValue(testSchema.description);
+        await schemaEditor.input.container.setValue(testSchema.container);
 
         // create 3 new fields
+        const btnNewField = await schemaEditor.button.newField.element();
+        expect(btnNewField.isPresent()).toBeTruthy();
         await schemaEditor.button.newField.click();
         await schemaEditor.button.newField.click();
         await schemaEditor.button.newField.click();
-        // expect(buttonNewField.isPresent()).toBeTruthy();
-        // await buttonNewField.click();
-        // await buttonNewField.click();
-        // await buttonNewField.click();
 
+        // recreate object to access changed properties
         schemaEditor = new SchemaEditor();
-        const fields = await schemaEditor.fields();
+        fields = await schemaEditor.fields();
 
-        await fields[0].input.name.setValue('aaa');
-        await fields[0].input.label.setValue('AAA');
-        await fields[0].input.type.setValue('boolean');
-        await fields[0].input.required.setValue(true);
+        await fields[0].input.name.setValue(testSchema.fields[0].name);
+        await fields[0].input.label.setValue(testSchema.fields[0].label);
+        await fields[0].input.type.setValue(testSchema.fields[0].type);
+        await fields[0].input.required.setValue(testSchema.fields[0].required);
 
-        await fields[1].input.name.setValue('bbb');
-        await fields[1].input.label.setValue('BBB');
-        await fields[1].input.type.setValue('list');
-        await fields[1].input.listType.setValue('number');
+        await fields[1].input.name.setValue(testSchema.fields[1].name);
+        await fields[1].input.label.setValue(testSchema.fields[1].label);
+        await fields[1].input.type.setValue(testSchema.fields[1].type);
+        await fields[1].input.listType.setValue(testSchema.fields[1].listType);
 
-        await fields[2].input.name.setValue('ccc');
-        await fields[2].input.label.setValue('CCC');
-        await fields[2].input.type.setValue('string');
-        await fields[2].input.allowInputText.setValue(['xyz']);
-
-        // const displayFieldOptions = await schemaEditor.input.displayField.options();
-        // console.log( '!!! displayFieldOptions:', displayFieldOptions );
-        // expect(displayFieldOptions).toBe(['ccc']);
-
-        // const segmentFieldOptions = await schemaEditor.input.segmentField.options();
-        // console.log( '!!! segmentFieldOptions:', segmentFieldOptions );
-        // expect(segmentFieldOptions).toBe(['ccc']);
+        await fields[2].input.name.setValue(testSchema.fields[2].name);
+        await fields[2].input.label.setValue(testSchema.fields[2].label);
+        await fields[2].input.type.setValue(testSchema.fields[2].type);
+        await fields[2].input.allowInputText.setValue(testSchema.fields[2].allow);
 
         // set schema properties
-        await schemaEditor.input.displayField.setValue('ccc');
-        await schemaEditor.input.segmentField.setValue('ccc');
-
-        // // check values
-        // const schemaFromEditor = await schemaEditor.value();
-        // console.log('!!! schemaFromEditor:', JSON.stringify(schemaFromEditor, null, 4));
+        await schemaEditor.input.displayField.setValue(testSchema.displayField);
+        await schemaEditor.input.segmentField.setValue(testSchema.segmentField);
 
         // save new schema
         const buttonCreate = await schemaEditor.button.create.element();
         expect(buttonCreate.isPresent()).toBeTruthy();
-        // const buttonCreateDisabled = await buttonCreate.getAttribute('disabled');
         expect(buttonCreate.getAttribute('disabled')).toBeFalsy();
-        await buttonCreate.click();
+        await schemaEditor.button.create.click();
     });
 
-    // it('changes data correctly', async () => {
-    //     const schemaEditor = new SchemaEditor();
+    it('created schema has correct data', async () => {
+        // Now navigate to new this new schema and check values
+        await page.navigateToAdminSchemaEditor();
+        const newSchemaListItem = await Schemalist.getAdminListItemByName(testSchema.name);
+        await newSchemaListItem.click();
 
-    // });
+        const schemaEditor = new SchemaEditor();
+        const schemaFromEditor = await schemaEditor.value();
 
-    // it('deletes correctly', async () => {
-    //     const schemaEditor = new SchemaEditor();
+        expect(schemaFromEditor.name).toBe(testSchema.name);
+        expect(schemaFromEditor.description).toBe(testSchema.description);
+        expect(schemaFromEditor.container).toBe(testSchema.container);
+        expect(schemaFromEditor.displayField).toBe(testSchema.displayField);
+        expect(schemaFromEditor.segmentField).toBe(testSchema.segmentField);
 
-    // });
+        expect(schemaFromEditor.fields[0].name).toBe(testSchema.fields[0].name);
+        expect(schemaFromEditor.fields[0].label).toBe(testSchema.fields[0].label);
+        expect(schemaFromEditor.fields[0].type).toBe(testSchema.fields[0].type);
+        expect(schemaFromEditor.fields[0].required).toBe(testSchema.fields[0].required);
+
+        expect(schemaFromEditor.fields[1].name).toBe(testSchema.fields[1].name);
+        expect(schemaFromEditor.fields[1].label).toBe(testSchema.fields[1].label);
+        expect(schemaFromEditor.fields[1].type).toBe(testSchema.fields[1].type);
+        expect(schemaFromEditor.fields[1].listType).toBe(testSchema.fields[1].listType);
+
+        expect(schemaFromEditor.fields[2].name).toBe(testSchema.fields[2].name);
+        expect(schemaFromEditor.fields[2].label).toBe(testSchema.fields[2].label);
+        expect(schemaFromEditor.fields[2].type).toBe(testSchema.fields[2].type);
+        expect(JSON.stringify(schemaFromEditor.fields[2].allow)).toBe(JSON.stringify(testSchema.fields[2].allow));
+    });
+
+    it('deletes schema correctly', async () => {
+        let newSchemaListItem;
+
+        await page.navigateToAdminSchemaEditor();
+        newSchemaListItem = await Schemalist.getAdminListItemByName(testSchema.name);
+        await newSchemaListItem.click();
+
+        const schemaEditor = new SchemaEditor();
+        // delete schema
+        await schemaEditor.button.delete.click();
+
+        // navigate to schema list
+        await page.navigateToHome();
+        await page.navigateToAdminSchemaEditor();
+
+        // check if deleted schema is in list
+        newSchemaListItem = await Schemalist.getAdminListItemByName(testSchema.name);
+        expect(newSchemaListItem.isPresent()).toBeFalsy();
+    });
 });

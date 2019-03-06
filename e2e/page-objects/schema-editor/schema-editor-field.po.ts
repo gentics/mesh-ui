@@ -39,7 +39,6 @@ export class SchemaEditorField {
         allowInputSelect: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('allow', this.root),
             value: () => SchemaEditorUtils.getInputSelectMultiValueByFormControlName('allow', this.root),
-            setValue: (value: string[]) => SchemaEditorUtils.inputSelectSetValueMulti(value, 'allow', this.root),
             errors: () => SchemaEditorUtils.getInputErrorsByFormControlName('allow', this.root)
         },
         allowInputText: {

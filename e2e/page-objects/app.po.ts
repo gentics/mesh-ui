@@ -34,13 +34,17 @@ export async function navigateToRoleAdmin() {
     await goToRoute(`admin/roles`);
 }
 
+/** @description Navigate to schema editor */
+export async function navigateToAdminSchemaEditor() {
+    await goToRoute(`admin/schemas`);
+}
 /** @description Navigate to schema editor in 'create new' mode with empty input fields */
 export async function navigateToAdminSchemaEditorNew() {
     await goToRoute(`admin/schemas/new`);
 }
-/** @description Navigate to schema editor with sample node 'vehicle' provided in demo data */
-export async function navigateToAdminSchemaEditorExisting() {
-    await goToRoute(`admin/schemas/2aa83a2b3cba40a1a83a2b3cba90a1de`);
+/** @description Navigate to specified schema in schema editor */
+export async function navigateToAdminSchemaEditorExistingSchema(schemaUuid: string) {
+    await goToRoute(`admin/schemas/${schemaUuid}`);
 }
 
 async function goToRoute(route: string) {
