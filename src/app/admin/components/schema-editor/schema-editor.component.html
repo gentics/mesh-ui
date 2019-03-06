@@ -81,6 +81,12 @@
 
     <div class="small-12 medium-12 columns">
         <gtx-sortable-list (dragEnd)="fieldMove($event.oldIndex, $event.newIndex)">
+
+            <!-- This hidden drag handle is necessary because gtx-sortable-list only
+                enables drag handles if at least one is present during onContentInit(). -->
+            <gtx-drag-handle *ngIf="!hasSchemaFields()"
+                             class="workaround-handle"></gtx-drag-handle>
+
             <gtx-sortable-item *ngFor="let field of schemaFields.controls; let i = index"
                                class="schema-field"
                                #fields>

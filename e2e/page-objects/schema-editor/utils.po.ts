@@ -121,10 +121,7 @@ export namespace SchemaEditorUtils {
         return awaitArray(els.map(item => item!.getText()));
     }
 
-    export async function getSelectableOptionsOfInput(
-        input: ElementFinder,
-        rootElement?: ElementFinder
-    ): Promise<string[]> {
+    export async function getSelectableOptionsOfInput(input: ElementFinder): Promise<string[]> {
         // close dropdown menu
         await selectableOptionsCloseMenu();
         // scroll to element
@@ -132,11 +129,7 @@ export namespace SchemaEditorUtils {
         // click on element to open global dropdown menu
         await input.click();
         let options: string[];
-        if (rootElement) {
-            options = await getSelectableOptions();
-        } else {
-            options = await getSelectableOptions();
-        }
+        options = await getSelectableOptions();
         // close dropdown menu
         await selectableOptionsCloseMenu();
         return options;

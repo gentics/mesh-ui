@@ -111,7 +111,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
 
     /** Regular expression for text input validation checking for allowed characters */
     allowedSpecialChars = '_';
-    allowedCharsRegExp = new RegExp(`^[a-zA-Z0-9${this.allowedSpecialChars}]+$`);
+    protected allowedCharsRegExp = new RegExp(`^[a-zA-Z0-9${this.allowedSpecialChars}]+$`);
 
     /** Precondition functions to fill input select dropdown data */
     abstract schemaInputSelectDataConditions: { [key: string]: (field: SchemaFieldT) => boolean };
@@ -740,6 +740,15 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     }
 
     // UTILITY METHODS //////////////////////////////////////////////////////////////////////////////
+
+    /** @returns TRUE if there are any schema fields */
+    hasSchemaFields(): boolean {
+        if (this.schemaFields && this.schemaFields.length && this.schemaFields.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * @param index of control in form array instance
