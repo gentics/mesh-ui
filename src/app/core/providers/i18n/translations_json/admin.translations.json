@@ -448,6 +448,19 @@
         "de": "Benutzer gespeichert"
     },
 
+    "schema_details_tab_label_editor": {
+        "en": "Editor",
+        "de": "Editor"
+    },
+    "schema_details_tab_label_json": {
+        "en": "JSON",
+        "de": "JSON"
+    },
+    "schema_details_tab_label_projects": {
+        "en": "Project Assignments",
+        "de": "Projektzuordnungen"
+    },
+
     "schema_editor_validator_required": {
         "en": "This field is required",
         "de": "Dieses Feld is erforderlich"

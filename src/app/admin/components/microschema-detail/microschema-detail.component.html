@@ -24,7 +24,7 @@
 </div>
 
 <gtx-tabs>
-    <gtx-tab title="Editor">
+    <gtx-tab [title]="'admin.schema_details_tab_label_editor' | i18n">
         <mesh-microschema-editor [schemaJson]="microschemaJson$ | async"
                                  (schemaJsonChange)="microschemaJson = $event"
                                  [schema]="microschema$ | async"
@@ -33,7 +33,7 @@
         </mesh-microschema-editor>
     </gtx-tab>
 
-    <gtx-tab title="JSON">
+    <gtx-tab [title]="'admin.schema_details_tab_label_json' | i18n">
         <mesh-monaco-editor [ngModel]="microschemaJson$ | async"
                             (ngModelChange)="microschemaJson = $event"
                             language="json"
@@ -45,7 +45,7 @@
                     (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
     </gtx-tab>
 
-    <gtx-tab title="Projects">
+    <gtx-tab [title]="'admin.schema_details_tab_label_projects' | i18n">
         <mesh-admin-list [items]="projects$ | async"
                          [autoHidePagination]="true"
                          [selectable]="false">
