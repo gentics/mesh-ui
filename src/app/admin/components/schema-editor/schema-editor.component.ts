@@ -215,6 +215,9 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
             .distinctUntilChanged()
             .takeUntil(this.destroyed$)
             .subscribe((value: any) => {
+                // set flag to identify change trigger source
+                this.schemaJsonFromExternalSource = false;
+
                 // reset data
                 this.displayFields = [];
                 this.segmentFields = [];

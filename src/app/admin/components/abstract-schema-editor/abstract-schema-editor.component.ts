@@ -49,12 +49,17 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         }
         this._schemaJson = JSON.parse(value);
         // if formGroup initiated, fill it with provided data
-        if (this.formGroup instanceof FormGroup) {
-            this.formGroup.patchValue(this.schemaAsFormValue(this._schemaJson));
+        if (this.schemaJsonFromExternalSource === true) {
+            this.formGroupInit();
         }
+        // reset flag
+        this.schemaJsonFromExternalSource = true;
     }
     @Output() schemaJsonChange = new EventEmitter<string>();
     protected _schemaJson: SchemaT;
+
+    /** If TRUE this.schemaJson has been set by an external trigger instead of this component's formGroup.onChanges trigger */
+    protected schemaJsonFromExternalSource = true;
 
     /** @description Non-editable schema data from server providing permission data */
     @Input() schema: SchemaResponseT;

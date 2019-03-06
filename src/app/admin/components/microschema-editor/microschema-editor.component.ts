@@ -153,6 +153,9 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
             .distinctUntilChanged()
             .takeUntil(this.destroyed$)
             .subscribe((value: any) => {
+                // set flag to identify change trigger source
+                this.schemaJsonFromExternalSource = false;
+
                 // EXTENDED VALIDATION LOGIC
                 this.isConflictingProperty('name', value.name);
 
