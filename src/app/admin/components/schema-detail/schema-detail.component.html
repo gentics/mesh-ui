@@ -60,7 +60,7 @@
 
             <ng-template let-project="item">
                 <gtx-checkbox *ngIf="projectAssignments"
-                              [label]="project.name"
+                              [label]="project?.name"
                               [checked]="projectAssignments[project.uuid]"
                               (change)="onAssignmentChange(project, $event)">
                 </gtx-checkbox>

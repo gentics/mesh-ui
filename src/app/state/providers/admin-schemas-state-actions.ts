@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { all } from 'bluebird';
 import { CloneDepth, Immutable, StateActionBranch } from 'immutablets';
 
 import { Microschema } from '../../common/models/microschema.model';
@@ -15,7 +16,7 @@ import { mergeEntityState } from './entity-state-actions';
 export class AdminSchemasStateActions extends StateActionBranch<AppState> {
     @CloneDepth(1)
     private adminSchemas: AdminSchemasState;
-    @CloneDepth(0)
+    @CloneDepth(1)
     private entities: EntityState;
 
     constructor() {
@@ -89,6 +90,9 @@ export class AdminSchemasStateActions extends StateActionBranch<AppState> {
     deleteMicroschemaSuccess(microschemaUuid: string) {
         this.adminSchemas.loadCount--;
         this.adminSchemas.microschemaList = this.adminSchemas.microschemaList.filter(uuid => uuid !== microschemaUuid);
+        this.entities.microschema = Object.keys(this.entities.microschema)
+            .filter(uuid => uuid !== microschemaUuid)
+            .reduce((all, current) => ({ ...all, ...this.entities.microschema[current] }), {});
     }
 
     deleteMicroschemaError(): void {
@@ -102,6 +106,9 @@ export class AdminSchemasStateActions extends StateActionBranch<AppState> {
     deleteSchemaSuccess(schemaUuid: string) {
         this.adminSchemas.loadCount--;
         this.adminSchemas.schemaList = this.adminSchemas.schemaList.filter(uuid => uuid !== schemaUuid);
+        this.entities.schema = Object.keys(this.entities.schema)
+            .filter(uuid => uuid !== schemaUuid)
+            .reduce((all, current) => ({ ...all, ...this.entities.schema[current] }), {});
     }
 
     deleteSchemaError(): void {
