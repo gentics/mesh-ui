@@ -236,6 +236,7 @@ export class ProjectApi {
             .post('/{project}/nodes/{nodeUuid}', { project, nodeUuid, lang: language } as any, updateRequest)
             .mapResponses<{ conflict: GenericMessageResponse | null; node: NodeResponse | null }>({
                 200: node => ({ node, conflict: null }),
+                400: conflict => ({ node: null, conflict }),
                 409: conflict => ({ node: null, conflict })
             });
     }

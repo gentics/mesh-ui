@@ -2825,6 +2825,7 @@ export interface ApiEndpoints {
          * and return a 409 error if a conflict has been detected. Additional conflict
          * checks for WebRoot path conflicts will also be performed. The node is created if
          * no node with the specified uuid could be found.
+         * Also, 400 needs to be checked for malformed requests.
          */
         '/{project}/nodes/{nodeUuid}': {
             request: {
@@ -2847,6 +2848,8 @@ export interface ApiEndpoints {
             responseTypes: {
                 /** Updated node. */
                 200: NodeResponse;
+                /** Malformed request */
+                400: GenericMessageResponse;
                 /** A conflict has been detected. */
                 409: GenericMessageResponse;
             };
