@@ -219,8 +219,8 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                 this.schemaJsonFromExternalSource = false;
 
                 // reset data
-                this.displayFields = [];
-                this.segmentFields = [];
+                this.displayFields = [{ value: '', label: '' }];
+                this.segmentFields = [{ value: '', label: '' }];
                 this.urlFields = [];
 
                 // EXTENDED VALIDATION LOGIC
@@ -400,6 +400,8 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
         if (precondition) {
             return { displayField: value.displayField };
+        } else {
+            return { displayField: null };
         }
     }
 
@@ -412,6 +414,8 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
         if (precondition) {
             return { segmentField: value.segmentField };
+        } else {
+            return { segmentField: null };
         }
     }
 
@@ -426,6 +430,8 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
         if (assignValue && assignValue.length > 0) {
             return { urlFields: assignValue };
+        } else {
+            return { urlFields: [] };
         }
     }
 }

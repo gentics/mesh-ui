@@ -116,7 +116,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
             .toPromise()
             .then(microschema => {
                 // keep original to compare
-                this.microschemaJsonOriginal = JSON.stringify(stripMicroschemaFields(microschema));
+                this.microschemaJsonOriginal = JSON.stringify(microschema);
                 this.version = microschema.version;
                 this.schemaEffects
                     .loadEntityAssignments('microschema', microschema.uuid)
