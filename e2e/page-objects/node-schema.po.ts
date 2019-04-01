@@ -28,15 +28,16 @@ export class NodeSchema {
         return element(by.cssContainingText('.item-primary', schemaName));
     }
 
+    async clickJsonEditorTab() {
+        await element(by.cssContainingText('.tab-link a', 'JSON')).click();
+    }
+
     async clickAllocationsTab() {
-        await element
-            .all(by.css('.tab-link a'))
-            .last()
-            .click();
+        await element(by.cssContainingText('.tab-link a', 'Project Assignments')).click();
     }
 
     getProjectNames() {
-        return element.all(by.css('gtx-checkbox')).getAttribute('ng-reflect-label');
+        return element.all(by.css('mesh-admin-list gtx-checkbox')).getAttribute('ng-reflect-label');
     }
 
     async clearFilterText() {

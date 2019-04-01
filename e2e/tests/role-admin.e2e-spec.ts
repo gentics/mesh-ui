@@ -3,6 +3,7 @@ import { RoleAdminList } from '../page-objects/role-admin/role-admin-list.po';
 
 describe('role admin list', () => {
     beforeEach(async () => {
+        await page.navigateToHome();
         await page.navigateToRoleAdmin();
     });
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot } from '@angular/router';
+import { CanDeactivate } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 
 // import { SchemaEditorComponent } from '../../components/schema-editor/schema-editor.component';
@@ -13,11 +13,7 @@ import { MicroschemaDetailComponent } from '../../components/microschema-detail/
 export class MicrochemaDetailsGuard implements CanDeactivate<MicroschemaDetailComponent> {
     constructor(private i18n: I18nService, private modalService: ModalService) {}
 
-    canDeactivate(
-        schemaDetails: MicroschemaDetailComponent,
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Promise<boolean> {
+    canDeactivate(schemaDetails: MicroschemaDetailComponent): Promise<boolean> {
         if (schemaDetails.schemaHasChanged && !schemaDetails.isNew$.getValue() && !schemaDetails.doesDelete) {
             return this.displayConfirmDiscardChangesModal();
         }

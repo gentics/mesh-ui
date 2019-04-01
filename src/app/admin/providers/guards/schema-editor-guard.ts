@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot } from '@angular/router';
+import { CanDeactivate } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 
 // import { SchemaEditorComponent } from '../../components/schema-editor/schema-editor.component';
@@ -13,11 +13,7 @@ import { SchemaDetailComponent } from '../../components/schema-detail/schema-det
 export class SchemaDetailsGuard implements CanDeactivate<SchemaDetailComponent> {
     constructor(private i18n: I18nService, private modalService: ModalService) {}
 
-    canDeactivate(
-        schemaDetails: SchemaDetailComponent,
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Promise<boolean> {
+    canDeactivate(schemaDetails: SchemaDetailComponent): Promise<boolean> {
         if (schemaDetails.schemaHasChanged && !schemaDetails.isNew$.getValue() && !schemaDetails.doesDelete) {
             return this.displayConfirmDiscardChangesModal();
         }

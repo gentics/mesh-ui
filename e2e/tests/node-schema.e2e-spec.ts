@@ -90,6 +90,7 @@ describe('node schema', () => {
         }`;
 
         await schema.createNewSchemaClick();
+        await schema.clickJsonEditorTab();
 
         await schema.setSchemaJSON(schemaInfo);
         await schema.clickSaveButton();
