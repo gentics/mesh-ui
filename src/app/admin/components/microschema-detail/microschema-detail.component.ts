@@ -63,8 +63,8 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     get schemaHasChanged(): boolean {
         try {
-            const a = JSON.parse(this.microschemaJsonOriginal);
-            const b = JSON.parse(this.microschemaJson);
+            const a = stripMicroschemaFields(JSON.parse(this.microschemaJsonOriginal));
+            const b = stripMicroschemaFields(JSON.parse(this.microschemaJson));
             return !simpleDeepEquals(a, b);
         } catch (error) {
             return false;
@@ -212,5 +212,5 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 const updateFields: Array<keyof MicroschemaResponse> = ['name', 'description', 'fields'];
 
 function stripMicroschemaFields(microschema: MicroschemaResponse): any {
-    return updateFields.reduce((obj, key) => ({ ...obj, [key]: microschema[key] }), {});
+    return updateFields.reduce((obj, key) => ({ ...obj, [key]: microschema[key] || null }), {});
 }

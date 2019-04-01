@@ -61,8 +61,8 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
     get schemaHasChanged(): boolean {
         try {
-            const a = JSON.parse(this.schemaJsonOriginal);
-            const b = JSON.parse(this.schemaJson);
+            const a = stripSchemaFields(JSON.parse(this.schemaJsonOriginal));
+            const b = stripSchemaFields(JSON.parse(this.schemaJson));
             return !simpleDeepEquals(a, b);
         } catch (error) {
             return false;
@@ -213,5 +213,5 @@ const updateFields: Array<keyof SchemaResponse> = [
 
 function stripSchemaFields(schema: SchemaResponse): any {
     schema.fields.sort((a: any, b: any) => a.name.localeCompare(b.name));
-    return updateFields.reduce((obj, key) => ({ ...obj, [key]: schema[key] }), {});
+    return updateFields.reduce((obj, key) => ({ ...obj, [key]: schema[key] || null }), {});
 }
