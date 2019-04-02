@@ -8,20 +8,22 @@ export class MockConfigService implements ConfigService {
     readonly UI_LANGUAGES = ['en', 'de'];
     FALLBACK_LANGUAGE = 'en';
     CONTENT_LANGUAGES = ['en', 'de'];
-    readonly PREVIEW_URLS = [
-        {
-            label: 'previewUrlLabelTest-01',
-            urlResolver: (node => {
-                return 'http://test-01.tld/segment/' + node.uuid + '?preview=true';
-            }) as MeshPreviewUrlResolver
-        },
-        {
-            label: 'previewUrlLabelTest-02',
-            urlResolver: (node => {
-                return 'http://test-02.tld/segment/' + node.uuid + '?preview=true';
-            }) as MeshPreviewUrlResolver
-        }
-    ];
+    getPreviewUrlsByProjectUuid(projectUuid: string) {
+        return [
+            {
+                label: 'previewUrlLabelTest-01',
+                urlResolver: (node => {
+                    return 'http://test-01.tld/segment/' + node.uuid + '?preview=true';
+                }) as MeshPreviewUrlResolver
+            },
+            {
+                label: 'previewUrlLabelTest-02',
+                urlResolver: (node => {
+                    return 'http://test-02.tld/segment/' + node.uuid + '?preview=true';
+                }) as MeshPreviewUrlResolver
+            }
+        ];
+    }
     getConfigValueFromProperty() {
         return '';
     }
