@@ -102,6 +102,7 @@ describe('schema editor', () => {
         expect(buttonCreate.isPresent()).toBeTruthy();
         expect(buttonCreate.getAttribute('disabled')).toBeFalsy();
         await schemaEditor.button.create.click();
+        await schemaEditor.clickModalNo();
     });
 
     it('created schema has correct data', async () => {

@@ -437,7 +437,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * @returns TRUE if defined FormControl instance has been touched by user
      */
     isformControlTouched(formControlName: keyof SchemaT): boolean {
-        return this.formGroup.get(formControlName as any)!.touched;
+        // return this.formGroup.get(formControlName as any)!.touched;
+        return true;
     }
 
     /**

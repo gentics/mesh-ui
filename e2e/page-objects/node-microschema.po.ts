@@ -77,6 +77,18 @@ export class NodeMicroschema {
         await element(by.cssContainingText('.button-event-wrapper', 'Save')).click();
     }
 
+    async clickAnywhere() {
+        await element(by.css('mesh-admin-shell')).click();
+    }
+
+    async clickCreateButton() {
+        await element(by.cssContainingText('.button-event-wrapper', 'Create')).click();
+    }
+
+    async clickModalNo() {
+        await element(by.cssContainingText('gtx-modal-dialog button', 'No')).click();
+    }
+
     async chooseMicroschema() {
         await element
             .all(by.css('gtx-checkbox'))

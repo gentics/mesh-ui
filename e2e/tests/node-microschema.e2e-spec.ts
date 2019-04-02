@@ -96,7 +96,10 @@ describe('node microschema', () => {
         await microschema.clickJsonEditorTab();
 
         await microschema.setMicroschemaJSON(microschemaInfo);
-        await microschema.clickSaveButton();
+        await microschema.clickAnywhere();
+
+        await microschema.clickCreateButton();
+        await microschema.clickModalNo();
 
         await microschema.openMicroschema();
 

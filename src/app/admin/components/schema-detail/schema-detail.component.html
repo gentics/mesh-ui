@@ -41,10 +41,6 @@
                             language="json"
                             [jsonSchema]="schema"
                             (errors)="onErrorChange($event)"></mesh-monaco-editor>
-
-        <gtx-button [disabled]="errors.length > 0"
-                    style="margin-top: 15px;"
-                    (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
     </gtx-tab>
 
     <gtx-tab id="tab3"

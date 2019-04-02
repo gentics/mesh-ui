@@ -204,6 +204,10 @@ export class SchemaEditor {
 
     // HELPERS /////////////////////////////////////////////////////////////////////////////////////
 
+    async clickModalNo() {
+        await element(by.cssContainingText('gtx-modal-dialog button', 'No')).click();
+    }
+
     /** @description Contains Schema properties to be editable in editor */
     updateFields: Array<keyof SchemaResponse> = [
         'name',

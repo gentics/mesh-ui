@@ -33,25 +33,6 @@ describe('microschema editor', () => {
         await page.navigateToHome();
     });
 
-    // it('shows correct data according to API response', async () => {
-    //     // schema 'Vehicle' with htis UUID must be provided in demo data
-    //     const existingSchemaUuid = '2aa83a2b3cba40a1a83a2b3cba90a1de';
-    //     // navigate to existing reference schema
-    //     await page.navigateToAdminMicroschemaEditorExistingSchema(existingSchemaUuid);
-    //     // construct schema object from open page
-    //     const schemaEditor = new MicroschemaEditor();
-    //     // get reference schema data from API
-    //     const schemaFromApi = await api.getSchema(existingSchemaUuid);
-    //     // reduce schema data to those properties to be mutable by schema editor
-    //     const schemaFromApiStripped = schemaEditor.stripSchemaFields(schemaFromApi);
-    //     // get schema data from schema editor
-    //     const schemaFromEditor = await schemaEditor.value();
-    //     // compare API data against editor data
-    //     const a = JSON.stringify(schemaFromApiStripped);
-    //     const b = JSON.stringify(schemaFromEditor);
-    //     expect(a === b).toBeTruthy();
-    // });
-
     it('creates microschema', async () => {
         let schemaEditor;
         let fields;
@@ -94,6 +75,7 @@ describe('microschema editor', () => {
         expect(buttonCreate.isPresent()).toBeTruthy();
         expect(buttonCreate.getAttribute('disabled')).toBeFalsy();
         await schemaEditor.button.create.click();
+        await schemaEditor.clickModalNo();
     });
 
     it('created microschema has correct data', async () => {

@@ -75,6 +75,10 @@
       "en": "Okay",
       "de": "OK"
     },
+    "no_button": {
+      "en": "No",
+      "de": "Nein"
+    },
     "yes_button": {
       "en": "Yes",
       "de": "Ja"

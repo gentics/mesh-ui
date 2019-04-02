@@ -179,7 +179,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
                                 type: 'secondary',
                                 flat: true,
                                 shouldReject: true,
-                                label: this.i18n.translate('common.cancel_button')
+                                label: this.i18n.translate('common.no_button')
                             },
                             { type: 'secondary', label: this.i18n.translate('common.yes_button') }
                         ]
