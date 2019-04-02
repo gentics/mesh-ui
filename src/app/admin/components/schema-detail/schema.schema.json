@@ -19,6 +19,10 @@
                 },
                 "required": {
                     "type": "boolean"
+                },
+                "elasticsearch": {
+                    "type": "object",
+                    "description": "The elasticsearch custom mapping options of the field. See https://getmesh.io/docs/building-blocks/#_schema_field"
                 }
             }
         },

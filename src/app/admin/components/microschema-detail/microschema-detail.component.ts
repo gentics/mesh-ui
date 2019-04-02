@@ -28,9 +28,9 @@ import { MarkerData } from '../monaco-editor/monaco-editor.component';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MicroschemaDetailComponent implements OnInit, OnDestroy {
-    // TODO Disable save button when editor is pristine
-    // TODO Show message on save when schema has not changed
     projects: Project[];
+
+    activeId$ = new BehaviorSubject<string>('');
 
     filterTerm: string;
 
@@ -159,24 +159,45 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     }
 
     save() {
-        if (this.errors.length === 0) {
-            const changedSchema = JSON.parse(this.microschemaJson);
-            this.microschemaJsonOriginal = JSON.stringify(stripMicroschemaFields(changedSchema));
-            if (this.isNew$.getValue()) {
-                this.schemaEffects.createMicroschema(changedSchema).then((microschema: MicroschemaResponse) => {
-                    this.isNew$.next(false);
-                    this.router.navigate(['admin', 'microschemas', microschema.uuid]);
-                    this.version = microschema.version;
-                });
-            } else {
-                this.microschema$.take(1).subscribe(microschema => {
-                    this.schemaEffects.updateMicroschema({ ...microschema, ...changedSchema }).then(microschemaNew => {
-                        if (microschemaNew) {
-                            this.version = microschemaNew.version;
-                        }
+        const changedSchema = JSON.parse(this.microschemaJson);
+        // update original to compare
+        this.microschemaJsonOriginal = JSON.stringify(changedSchema);
+
+        if (this.isNew$.getValue()) {
+            this.schemaEffects.createMicroschema(changedSchema).then((microschema: MicroschemaResponse) => {
+                this.isNew$.next(false);
+                this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                this.version = microschema.version;
+
+                // open modal asking whether user wants schema to assign to project
+                this.modal
+                    .dialog({
+                        title: this.i18n.translate('admin.assign_schema') + '?',
+                        body: this.i18n.translate('admin.assign_schema_confirmation', { name: microschema.name }),
+                        buttons: [
+                            {
+                                type: 'secondary',
+                                flat: true,
+                                shouldReject: true,
+                                label: this.i18n.translate('common.cancel_button')
+                            },
+                            { type: 'secondary', label: this.i18n.translate('common.yes_button') }
+                        ]
+                    })
+                    .then(modal => modal.open())
+                    .then(() => {
+                        // switching to project assignmnt tab
+                        this.activeId$.next('tab3');
                     });
+            });
+        } else {
+            this.microschema$.take(1).subscribe(microschema => {
+                this.schemaEffects.updateMicroschema({ ...microschema, ...changedSchema }).then(microschemaNew => {
+                    if (microschemaNew) {
+                        this.version = microschemaNew.version;
+                    }
                 });
-            }
+            });
         }
     }
 

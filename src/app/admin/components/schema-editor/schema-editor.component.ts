@@ -241,6 +241,12 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                     fields: value.fields.map((field: any, index: number) => {
                         const oldField = this.schemaFields.value[index];
                         const schemaField: FieldSchemaFromServer = {
+                            ...(this._schemaJson.fields[index] &&
+                                (this._schemaJson.fields[index] as FieldSchemaFromServer).elasticsearch &&
+                                ({
+                                    elasticsearch: (this._schemaJson.fields[index] as FieldSchemaFromServer)
+                                        .elasticsearch
+                                } as any)),
                             ...(this.schemaFieldDataConditions.name(field) && ({ name: field.name } as any)),
                             ...(this.schemaFieldDataConditions.type(field) && ({ type: field.type } as any)),
                             ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),

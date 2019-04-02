@@ -184,12 +184,28 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      */
     protected loadComponentData(): void {
         // assign data streams
-        this.allSchemas$ = this.entities
-            .selectAllSchemas()
-            .map(schemas => schemas.sort((a, b) => a.name.localeCompare(b.name)));
-        this.allMicroschemas$ = this.entities
-            .selectAllMicroschemas()
-            .map(microschemas => microschemas.sort((a, b) => a.name.localeCompare(b.name)));
+        this.allSchemas$ = this.entities.selectAllSchemas().map(
+            schemas =>
+                schemas &&
+                schemas.sort((a, b) => {
+                    if (a && a.name) {
+                        return a.name.localeCompare(b.name);
+                    } else {
+                        return 0;
+                    }
+                })
+        );
+        this.allMicroschemas$ = this.entities.selectAllMicroschemas().map(
+            microschemas =>
+                microschemas &&
+                microschemas.sort((a, b) => {
+                    if (a && a.name) {
+                        return a.name.localeCompare(b.name);
+                    } else {
+                        return 0;
+                    }
+                })
+        );
         // request data
         this.adminSchemaEffects.loadSchemas();
         this.adminSchemaEffects.loadMicroschemas();
@@ -828,13 +844,34 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
                         shouldReject: true,
                         label: this.i18n.translate('common.cancel_button')
                     },
-                    { type: 'secondary', label: this.i18n.translate('admin.schema_update') }
+                    { type: 'secondary', label: this.i18n.translate('admin.yes_button') }
                 ]
             })
             .then(modal => modal.open());
     }
 
     protected displayDeleteModal(
+        title: { token: string; params?: { [key: string]: any } },
+        body: { token: string; params?: { [key: string]: any } }
+    ): Promise<any> {
+        return this.modalService
+            .dialog({
+                title: this.i18n.translate(title.token, title.params) + '?',
+                body: this.i18n.translate(body.token, body.params),
+                buttons: [
+                    {
+                        type: 'secondary',
+                        flat: true,
+                        shouldReject: true,
+                        label: this.i18n.translate('common.cancel_button')
+                    },
+                    { type: 'alert', label: this.i18n.translate('admin.delete_label') }
+                ]
+            })
+            .then(modal => modal.open());
+    }
+
+    protected displayProjectAssignModal(
         title: { token: string; params?: { [key: string]: any } },
         body: { token: string; params?: { [key: string]: any } }
     ): Promise<any> {

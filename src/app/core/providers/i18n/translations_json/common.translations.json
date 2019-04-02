@@ -75,6 +75,10 @@
       "en": "Okay",
       "de": "OK"
     },
+    "yes_button": {
+      "en": "Yes",
+      "de": "Ja"
+    },
     "published": {
       "en": "published",
       "de": "veröffentlicht"

@@ -23,8 +23,9 @@
     </gtx-button>
 </div>
 
-<gtx-tabs>
-    <gtx-tab [title]="'admin.schema_details_tab_label_editor' | i18n">
+<gtx-tabs [activeId]="activeId$ | async">
+    <gtx-tab id="tab1"
+             [title]="'admin.schema_details_tab_label_editor' | i18n">
         <mesh-schema-editor [schemaJson]="schemaJson$ | async"
                             (schemaJsonChange)="schemaJson = $event"
                             [schema]="schema$ | async"
@@ -33,11 +34,12 @@
         </mesh-schema-editor>
     </gtx-tab>
 
-    <gtx-tab [title]="'admin.schema_details_tab_label_json' | i18n">
+    <gtx-tab id="tab2"
+             [title]="'admin.schema_details_tab_label_json' | i18n">
         <mesh-monaco-editor [ngModel]="schemaJson$ | async"
                             (ngModelChange)="schemaJson = $event"
                             language="json"
-                            [jsonSchema]="schema$ | async"
+                            [jsonSchema]="schema"
                             (errors)="onErrorChange($event)"></mesh-monaco-editor>
 
         <gtx-button [disabled]="errors.length > 0"
@@ -45,7 +47,8 @@
                     (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
     </gtx-tab>
 
-    <gtx-tab [title]="'admin.schema_details_tab_label_projects' | i18n">
+    <gtx-tab id="tab3"
+             [title]="'admin.schema_details_tab_label_projects' | i18n">
         <mesh-admin-list [items]="projects$ | async"
                          [autoHidePagination]="true"
                          [selectable]="false">

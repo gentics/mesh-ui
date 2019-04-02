@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalService } from 'gentics-ui-core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -12,6 +13,7 @@ import { Schema } from '../../../common/models/schema.model';
 import { SchemaResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined, simpleDeepEquals } from '../../../common/util/util';
+import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
 import { ProjectAssignments } from '../../../state/models/admin-schemas-state.model';
@@ -27,9 +29,9 @@ import { MarkerData } from '../monaco-editor/monaco-editor.component';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SchemaDetailComponent implements OnInit, OnDestroy {
-    // TODO Disable save button when editor is pristine
-    // TODO Show message on save when schema has not changed
     projects: Project[];
+
+    activeId$ = new BehaviorSubject<string>('');
 
     filterTerm: string;
 
@@ -91,7 +93,9 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         public adminProjectEffects: AdminProjectEffectsService,
         private schemaEffects: AdminSchemaEffectsService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        protected modal: ModalService,
+        protected i18n: I18nService
     ) {}
 
     ngOnInit() {
@@ -152,25 +156,45 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     }
 
     save() {
-        if (this.errors.length === 0) {
-            const changedSchema = JSON.parse(this.schemaJson);
-            // update original to compare
-            this.schemaJsonOriginal = JSON.stringify(changedSchema);
-            if (this.isNew$.getValue()) {
-                this.schemaEffects.createSchema(changedSchema).then((schema: SchemaResponse) => {
-                    this.isNew$.next(false);
-                    this.router.navigate(['admin', 'schemas', schema.uuid]);
-                    this.version = schema.version;
-                });
-            } else {
-                this.schema$.take(1).subscribe(schema => {
-                    this.schemaEffects.updateSchema({ ...schema, ...changedSchema }).then(schemaNew => {
-                        if (schemaNew) {
-                            this.version = schemaNew.version;
-                        }
+        const changedSchema = JSON.parse(this.schemaJson);
+        // update original to compare
+        this.schemaJsonOriginal = JSON.stringify(changedSchema);
+
+        if (this.isNew$.getValue() === true) {
+            this.schemaEffects.createSchema(changedSchema).then((schema: SchemaResponse) => {
+                this.isNew$.next(false);
+                this.router.navigate(['admin', 'schemas', schema.uuid]);
+                this.version = schema.version;
+
+                // open modal asking whether user wants schema to assign to project
+                this.modal
+                    .dialog({
+                        title: this.i18n.translate('admin.assign_schema') + '?',
+                        body: this.i18n.translate('admin.assign_schema_confirmation', { name: schema.name }),
+                        buttons: [
+                            {
+                                type: 'secondary',
+                                flat: true,
+                                shouldReject: true,
+                                label: this.i18n.translate('common.cancel_button')
+                            },
+                            { type: 'secondary', label: this.i18n.translate('common.yes_button') }
+                        ]
+                    })
+                    .then(modal => modal.open())
+                    .then(() => {
+                        // switching to project assignmnt tab
+                        this.activeId$.next('tab3');
                     });
+            });
+        } else {
+            this.schema$.take(1).subscribe(schema => {
+                this.schemaEffects.updateSchema({ ...schema, ...changedSchema }).then(schemaNew => {
+                    if (schemaNew) {
+                        this.version = schemaNew.version;
+                    }
                 });
-            }
+            });
         }
     }
 
@@ -208,7 +232,8 @@ const updateFields: Array<keyof SchemaResponse> = [
     'displayField',
     'segmentField',
     'urlFields',
-    'container'
+    'container',
+    'elasticsearch'
 ];
 
 function stripSchemaFields(schema: SchemaResponse): any {

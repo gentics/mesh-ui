@@ -23,6 +23,14 @@
         "en": "All roles",
         "de": "Alle Rollen"
     },
+    "assign_schema": {
+        "en": "Assign schema",
+        "de": "Schema zuordnen"
+    },
+    "assign_schema_confirmation": {
+        "en": "Do you want to assign schema \"{{ name }}\" to a project?",
+        "de": "Wollen Sie das Schema \"{{ name }}\" einem Projekt zuordnen?"
+    },
     "delete_selected_schemas" : {
         "en": "Delete {{count}} schemas",
         "de": "{{count }} Schemas löschen"
