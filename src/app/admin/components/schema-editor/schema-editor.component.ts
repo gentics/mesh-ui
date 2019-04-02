@@ -7,6 +7,7 @@ import { ModalService } from 'gentics-ui-core';
 import { Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
 import { FieldSchemaFromServer, SchemaResponse, SchemaUpdateRequest } from '../../../common/models/server-models';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 import { AbstractSchemaEditorComponent } from '../abstract-schema-editor/abstract-schema-editor.component';
@@ -144,6 +145,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
     constructor(
         router: Router,
+        appState: ApplicationStateService,
         entities: EntitiesService,
         adminSchemaEffects: AdminSchemaEffectsService,
         formBuilder: FormBuilder,
@@ -151,7 +153,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         modalService: ModalService,
         animationBuilder: AnimationBuilder
     ) {
-        super(router, entities, adminSchemaEffects, formBuilder, i18n, modalService, animationBuilder);
+        super(router, appState, entities, adminSchemaEffects, formBuilder, i18n, modalService, animationBuilder);
     }
 
     // MANAGE COMPONENT DATA //////////////////////////////////////////////////////////////////////////////
@@ -196,7 +198,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
     protected formGroupInit(): void {
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
-            name: [this._schemaJson.name || '', this.formValidators.name],
+            name: [this._schemaJson.name || this.schemaTitlePrefilled || '', this.formValidators.name],
             container: [this._schemaJson.container || false, this.formValidators.container],
             description: [this._schemaJson.description || '', this.formValidators.description],
             displayField: [this._schemaJson.displayField || '', this.formValidators.displayField],

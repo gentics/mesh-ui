@@ -28,6 +28,7 @@ import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Microschema } from '../../../common/models/microschema.model';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
+import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
@@ -140,12 +141,16 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     /** admin user identification string constant */
     ADMIN_USER_NAME = ADMIN_USER_NAME;
 
+    /** If user entered/searched existing schema title in admin schema list, prefill here for convenience */
+    schemaTitlePrefilled: string;
+
     /** subscriptions controller */
     protected destroyed$ = new Subject<void>();
 
     // CONSTRUCTOR //////////////////////////////////////////////////////////////////////////////
     constructor(
         protected router: Router,
+        protected appState: ApplicationStateService,
         protected entities: EntitiesService,
         protected adminSchemaEffects: AdminSchemaEffectsService,
         protected formBuilder: FormBuilder,
@@ -183,6 +188,15 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      * Trigger loading of required data and assign data streams to component properties
      */
     protected loadComponentData(): void {
+        this.appState
+            .select(state => {
+                return state.adminSchemas.filterTerm;
+            })
+            .first()
+            .subscribe(currentSearchTerm => {
+                this.schemaTitlePrefilled = currentSearchTerm;
+            });
+
         // assign data streams
         this.allSchemas$ = this.entities.selectAllSchemas().map(
             schemas =>
