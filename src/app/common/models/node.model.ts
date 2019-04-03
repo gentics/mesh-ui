@@ -43,6 +43,10 @@ export interface BinaryField {
     width?: number;
     file?: File;
     transform?: ImageTransform;
+    focalPoint?: {
+        x: number;
+        y: number;
+    };
 }
 export interface NodeField {
     uuid: string;
