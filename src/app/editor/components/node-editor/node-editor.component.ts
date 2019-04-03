@@ -6,6 +6,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { MeshPreviewUrl, MeshPreviewUrlResolver } from '../../../common/models/appconfig.model';
 import { MeshNode } from '../../../common/models/node.model';
+import { Project } from '../../../common/models/project.model';
 import { Schema } from '../../../common/models/schema.model';
 import { GraphQLErrorFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
 import { initializeNode } from '../../../common/util/initialize-node';
@@ -43,7 +44,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     nodeUtil = NodeUtil;
 
     /** defined in assests/config/mesh-ui-config.js */
-    previewUrls: MeshPreviewUrl[] = this.config.PREVIEW_URLS || null;
+    previewUrls: MeshPreviewUrl[];
+
+    currentProject: Project;
 
     private destroy$ = new Subject<void>();
 
@@ -119,6 +122,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     this.formGenerator.setPristine(node);
                 }
                 this.node = node;
+                if (this.node.project && this.node.project.name) {
+                    this.previewUrls = this.config.getPreviewUrlsByProjectName(this.node.project.name) || null;
+                }
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();
                 this.nodePathRouterLink = this.getNodePathRouterLink();

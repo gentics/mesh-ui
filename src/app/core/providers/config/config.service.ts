@@ -49,9 +49,11 @@ export class ConfigService {
         return this.getConfigValueFromProperty('anonymousUsername') as string;
     }
 
-    /** Username of the default anonymous (unauthenticated) user in Mesh */
-    get PREVIEW_URLS(): MeshPreviewUrl[] {
-        return this.getConfigValueFromProperty('previewUrls') as MeshPreviewUrl[];
+    /** preview URLs defined per project */
+    getPreviewUrlsByProjectName(projectName: string): MeshPreviewUrl[] {
+        return (this.getConfigValueFromProperty('previewUrls') as {
+            [projectUuid: string]: MeshPreviewUrl[];
+        })[projectName] as MeshPreviewUrl[];
     }
 
     /**
@@ -63,7 +65,7 @@ export class ConfigService {
         if (retVal) {
             return retVal;
         } else {
-            throw new Error(`Property '${property}' not set in /src/assets/config/mesh-ui-config.js!`);
+            throw new Error(`Property '${property}' not set in /src/assets/config/mesh-ui-config.js`);
         }
     }
 }
