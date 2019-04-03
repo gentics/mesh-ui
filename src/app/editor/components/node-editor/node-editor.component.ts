@@ -122,8 +122,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     this.formGenerator.setPristine(node);
                 }
                 this.node = node;
-                if (this.node.project) {
-                    this.previewUrls = this.config.getPreviewUrlsByProjectUuid(this.node.project.uuid) || null;
+                if (this.node.project && this.node.project.name) {
+                    this.previewUrls = this.config.getPreviewUrlsByProjectName(this.node.project.name) || null;
                 }
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();

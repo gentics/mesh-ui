@@ -18,12 +18,12 @@ export interface MeshUiAppConfig {
     /**
      * Within the node editor in UI the feature "Preview" of a node will open a new tab to a defined frontend app.
      * Here, a function can be provided returning the URL which will be called by that component.
-     * Preview URLs are defined per project, identified via project UUID.
+     * Preview URLs are defined per project, identified via project name property.
      *
      * @example:
      * ```javascript
      * previewUrls: {
-     *  "217f8c981ada4642bf8c981adaa642c3": [
+     *  "demo": [
      *    {
      *        label: 'Gentics Mesh Angular Demo',
      *        urlResolver: function (node) { return 'http://test.myapp/category/' + node.uuid + '?preview=true'; }

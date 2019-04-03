@@ -8,7 +8,7 @@ export class MockConfigService implements ConfigService {
     readonly UI_LANGUAGES = ['en', 'de'];
     FALLBACK_LANGUAGE = 'en';
     CONTENT_LANGUAGES = ['en', 'de'];
-    getPreviewUrlsByProjectUuid(projectUuid: string) {
+    getPreviewUrlsByProjectName(projectName: string) {
         return [
             {
                 label: 'previewUrlLabelTest-01',

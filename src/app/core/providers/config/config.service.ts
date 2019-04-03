@@ -50,10 +50,10 @@ export class ConfigService {
     }
 
     /** preview URLs defined per project */
-    getPreviewUrlsByProjectUuid(projectUuid: string): MeshPreviewUrl[] {
+    getPreviewUrlsByProjectName(projectName: string): MeshPreviewUrl[] {
         return (this.getConfigValueFromProperty('previewUrls') as {
             [projectUuid: string]: MeshPreviewUrl[];
-        })[projectUuid] as MeshPreviewUrl[];
+        })[projectName] as MeshPreviewUrl[];
     }
 
     /**
