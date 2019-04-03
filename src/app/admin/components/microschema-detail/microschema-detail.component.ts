@@ -1,15 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
+import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
 import { MicroschemaResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
-import { notNullOrUndefined } from '../../../common/util/util';
+import { notNullOrUndefined, simpleDeepEquals } from '../../../common/util/util';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
@@ -21,12 +23,14 @@ import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-
 import { MarkerData } from '../monaco-editor/monaco-editor.component';
 
 @Component({
-    templateUrl: './microschema-detail.component.html'
+    templateUrl: './microschema-detail.component.html',
+    styleUrls: ['microschema-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MicroschemaDetailComponent implements OnInit, OnDestroy {
-    // TODO Disable save button when editor is pristine
-    // TODO Show message on save when schema has not changed
     projects: Project[];
+
+    activeId$ = new BehaviorSubject<string>('');
 
     filterTerm: string;
 
@@ -42,12 +46,43 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     uuid$: Observable<string>;
 
-    microschemaJson = '';
+    get microschemaJson(): string {
+        return this.microschemaJson$.getValue();
+    }
+    set microschemaJson(v: string) {
+        if (!v) {
+            return;
+        }
+        this.microschemaJson$.next(v);
+    }
+    microschemaJson$ = new BehaviorSubject<string>('{}');
     // TODO load json schema from mesh instead of static file
+
+    /** To check if has been edited by user */
+    microschemaJsonOriginal: string;
+
+    get schemaHasChanged(): boolean {
+        try {
+            const a = stripMicroschemaFields(JSON.parse(this.microschemaJsonOriginal));
+            const b = stripMicroschemaFields(JSON.parse(this.microschemaJson));
+            return !simpleDeepEquals(a, b);
+        } catch (error) {
+            return false;
+        }
+    }
+
+    /** Indicator wheter form is valid or not */
+    isValid = false;
+    /** Indicator whether form is about creating a new node instead updating existing */
+    isNew$ = new BehaviorSubject<boolean>(true);
+    /** indiocate component is in delete mode */
+    doesDelete = false;
+
     microschema = require('./microschema.schema.json');
 
     errors: MarkerData[] = [];
-    isNew = true;
+
+    BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
 
     loading$: Observable<boolean>;
 
@@ -66,7 +101,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.microschema$ = this.route.data.map(data => data.microschema).do(microschema => {
-            this.isNew = !microschema;
+            this.isNew$.next(!microschema);
         });
 
         this.subscription = this.microschema$.subscribe(microschema => {
@@ -80,6 +115,8 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
             .take(1)
             .toPromise()
             .then(microschema => {
+                // keep original to compare
+                this.microschemaJsonOriginal = JSON.stringify(microschema);
                 this.version = microschema.version;
                 this.schemaEffects
                     .loadEntityAssignments('microschema', microschema.uuid)
@@ -122,24 +159,45 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     }
 
     save() {
-        if (this.errors.length === 0) {
-            const changedSchema = JSON.parse(this.microschemaJson);
-            if (this.isNew) {
-                this.schemaEffects.createMicroschema(changedSchema).then(microschema => {
-                    if (microschema) {
-                        this.router.navigate(['admin', 'microschemas', microschema.uuid]);
-                        this.version = microschema.version;
+        const changedSchema = JSON.parse(this.microschemaJson);
+        // update original to compare
+        this.microschemaJsonOriginal = JSON.stringify(changedSchema);
+
+        if (this.isNew$.getValue()) {
+            this.schemaEffects.createMicroschema(changedSchema).then((microschema: MicroschemaResponse) => {
+                this.isNew$.next(false);
+                this.router.navigate(['admin', 'microschemas', microschema.uuid]);
+                this.version = microschema.version;
+
+                // open modal asking whether user wants schema to assign to project
+                this.modal
+                    .dialog({
+                        title: this.i18n.translate('admin.assign_schema') + '?',
+                        body: this.i18n.translate('admin.assign_schema_confirmation', { name: microschema.name }),
+                        buttons: [
+                            {
+                                type: 'secondary',
+                                flat: true,
+                                shouldReject: true,
+                                label: this.i18n.translate('common.no_button')
+                            },
+                            { type: 'secondary', label: this.i18n.translate('common.yes_button') }
+                        ]
+                    })
+                    .then(modal => modal.open())
+                    .then(() => {
+                        // switching to project assignmnt tab
+                        this.activeId$.next('tab3');
+                    });
+            });
+        } else {
+            this.microschema$.take(1).subscribe(microschema => {
+                this.schemaEffects.updateMicroschema({ ...microschema, ...changedSchema }).then(microschemaNew => {
+                    if (microschemaNew) {
+                        this.version = microschemaNew.version;
                     }
                 });
-            } else {
-                this.microschema$.take(1).subscribe(microschema => {
-                    this.schemaEffects.updateMicroschema({ ...microschema, ...changedSchema }).then(microschemaNew => {
-                        if (microschemaNew) {
-                            this.version = microschemaNew.version;
-                        }
-                    });
-                });
-            }
+            });
         }
     }
 
@@ -147,7 +205,10 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         this.microschema$
             .take(1)
             .switchMap(microschema => this.schemaEffects.deleteMicroschema(microschema.uuid))
-            .subscribe(() => this.router.navigate(['admin', 'microschemas']));
+            .subscribe(() => {
+                this.doesDelete = true;
+                this.router.navigate(['admin', 'microschemas']);
+            });
     }
 
     onAssignmentChange(project: Project, isChecked: boolean) {
@@ -172,5 +233,5 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 const updateFields: Array<keyof MicroschemaResponse> = ['name', 'description', 'fields'];
 
 function stripMicroschemaFields(microschema: MicroschemaResponse): any {
-    return updateFields.reduce((obj, key) => ({ ...obj, [key]: microschema[key] }), {});
+    return updateFields.reduce((obj, key) => ({ ...obj, [key]: microschema[key] || null }), {});
 }

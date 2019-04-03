@@ -10,6 +10,7 @@ import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Schema } from '../../../common/models/schema.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
+import { ConfigService } from '../../../core/providers/config/config.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
@@ -30,6 +31,7 @@ export class SchemaListComponent implements OnInit, OnDestroy {
     filterInput = new FormControl('');
     filterTerm = '';
     selectedIndices: Schema[] = [];
+    availableLanguages: string[];
     ADMIN_USER_NAME = ADMIN_USER_NAME;
 
     constructor(
@@ -39,11 +41,18 @@ export class SchemaListComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private modalService: ModalService,
-        private i18n: I18nService
+        private i18n: I18nService,
+        private config: ConfigService
     ) {}
 
     ngOnInit(): void {
-        this.schemas$ = this.entities.selectAllSchemas();
+        this.availableLanguages = this.config.UI_LANGUAGES;
+
+        this.schemas$ = this.entities
+            .selectAllSchemas()
+            .map(schemas =>
+                schemas.sort((a, b) => a.name.localeCompare(b.name, this.availableLanguages, { sensitivity: 'case' }))
+            );
 
         this.adminSchemaEffects.loadSchemas();
 
@@ -68,9 +77,11 @@ export class SchemaListComponent implements OnInit, OnDestroy {
             .map(uuids => uuids.map(uuid => this.entities.getSchema(uuid)).filter(notNullOrUndefined));
         const filterTerm$ = this.state.select(state => state.adminSchemas.filterTerm);
 
-        this.schemas$ = combineLatest(allSchemas$, filterTerm$).map(([schemas, filterTerm]) =>
-            this.filterSchemas(schemas, filterTerm)
-        );
+        this.schemas$ = combineLatest(allSchemas$, filterTerm$)
+            .map(([schemas, filterTerm]) => this.filterSchemas(schemas, filterTerm))
+            .map(schemas =>
+                schemas.sort((a, b) => a.name.localeCompare(b.name, this.availableLanguages, { sensitivity: 'case' }))
+            );
 
         this.currentPage$ = this.state.select(state => state.adminSchemas.pagination.currentPage);
         this.itemsPerPage$ = this.state.select(state => state.adminSchemas.pagination.itemsPerPage);

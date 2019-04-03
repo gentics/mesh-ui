@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 
@@ -15,6 +16,7 @@ import { CreateProjectModalComponent } from './components/create-project-modal/c
 import { GroupDetailComponent } from './components/group-detail/group-detail.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
+import { MicroschemaEditorComponent } from './components/microschema-editor/microschema-editor.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';
@@ -27,6 +29,7 @@ import { RoleDetailComponent } from './components/role-detail/role-detail.compon
 import { RoleListComponent } from './components/role-list/role-list.component';
 import { SchemaAssignmentComponent } from './components/schema-assignment/schema-assignment.component';
 import { SchemaDetailComponent } from './components/schema-detail/schema-detail.component';
+import { SchemaEditorComponent } from './components/schema-editor/schema-editor.component';
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
@@ -36,6 +39,8 @@ import { AdminProjectEffectsService } from './providers/effects/admin-project-ef
 import { AdminRoleEffectsService } from './providers/effects/admin-role-effects.service';
 import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
 import { AdminUserEffectsService } from './providers/effects/admin-user-effects.service';
+import { MicrochemaDetailsGuard } from './providers/guards/microschema-editor-guard';
+import { SchemaDetailsGuard } from './providers/guards/schema-editor-guard';
 import { GroupResolver } from './providers/resolvers/group-resolver';
 import { MicroschemaResolver } from './providers/resolvers/microschema-resolver';
 import { ProjectResolver } from './providers/resolvers/project-resolver';
@@ -54,6 +59,8 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         MicroschemaDetailComponent,
         SchemaListComponent,
         SchemaDetailComponent,
+        SchemaEditorComponent,
+        MicroschemaEditorComponent,
         MonacoEditorComponent,
         SchemaAssignmentComponent,
         UserListComponent,
@@ -71,7 +78,7 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         RoleDetailComponent
     ],
     entryComponents: [CreateProjectModalComponent, NameInputDialogComponent],
-    imports: [SharedModule, RouterModule.forChild(routes), FormGeneratorModule],
+    imports: [SharedModule, RouterModule.forChild(routes), ReactiveFormsModule, FormGeneratorModule],
     providers: [
         ModalService,
         AdminSchemaEffectsService,
@@ -85,7 +92,9 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         RoleResolver,
         SchemaResolver,
         MicroschemaResolver,
-        ProjectResolver
+        ProjectResolver,
+        SchemaDetailsGuard,
+        MicrochemaDetailsGuard
     ]
 })
 export class AdminModule {

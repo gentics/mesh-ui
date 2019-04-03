@@ -28,15 +28,16 @@ export class NodeSchema {
         return element(by.cssContainingText('.item-primary', schemaName));
     }
 
+    async clickJsonEditorTab() {
+        await element(by.cssContainingText('.tab-link a', 'JSON')).click();
+    }
+
     async clickAllocationsTab() {
-        await element
-            .all(by.css('.tab-link a'))
-            .last()
-            .click();
+        await element(by.cssContainingText('.tab-link a', 'Project Assignments')).click();
     }
 
     getProjectNames() {
-        return element.all(by.css('gtx-checkbox')).getAttribute('ng-reflect-label');
+        return element.all(by.css('mesh-admin-list gtx-checkbox')).getAttribute('ng-reflect-label');
     }
 
     async clearFilterText() {
@@ -74,6 +75,18 @@ export class NodeSchema {
 
     async clickSaveButton() {
         await element(by.cssContainingText('.button-event-wrapper', 'Save')).click();
+    }
+
+    async clickAnywhere() {
+        await element(by.css('mesh-admin-shell')).click();
+    }
+
+    async clickCreateButton() {
+        await element(by.cssContainingText('.button-event-wrapper', 'Create')).click();
+    }
+
+    async clickModalNo() {
+        await element(by.cssContainingText('gtx-modal-dialog button', 'No')).click();
     }
 
     async chooseSchema() {

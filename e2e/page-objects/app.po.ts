@@ -34,6 +34,32 @@ export async function navigateToRoleAdmin() {
     await goToRoute(`admin/roles`);
 }
 
+/** @description Navigate to schema editor */
+export async function navigateToAdminSchemaEditor() {
+    await goToRoute(`admin/schemas`);
+}
+/** @description Navigate to schema editor in 'create new' mode with empty input fields */
+export async function navigateToAdminSchemaEditorNew() {
+    await goToRoute(`admin/schemas/new`);
+}
+/** @description Navigate to specified schema in schema editor */
+export async function navigateToAdminSchemaEditorExistingSchema(schemaUuid: string) {
+    await goToRoute(`admin/schemas/${schemaUuid}`);
+}
+
+/** @description Navigate to microschema editor */
+export async function navigateToAdminMicroschemaEditor() {
+    await goToRoute(`admin/microschemas`);
+}
+/** @description Navigate to microschema editor in 'create new' mode with empty input fields */
+export async function navigateToAdminMicroschemaEditorNew() {
+    await goToRoute(`admin/microschemas/new`);
+}
+/** @description Navigate to specified microschema in schema editor */
+export async function navigateToAdminMicroschemaEditorExistingSchema(schemaUuid: string) {
+    await goToRoute(`admin/microschemas/${schemaUuid}`);
+}
+
 async function goToRoute(route: string) {
     await browser.executeScript((route: string) => (window.location.href = `/#${route}`), route);
 }

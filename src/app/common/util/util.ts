@@ -358,3 +358,15 @@ export function toObject<T, V>(
     }
     return obj;
 }
+
+/**
+ * @description Checks input value to be a human-readable string (blankspaces only not allowed)
+ * @param value to be examined if is human-readable string
+ * */
+export function isValidString(value: string | any) {
+    if (value && typeof value === 'string' && value !== '' && new RegExp(/^\s+$/).test(value) === false) {
+        return true;
+    } else {
+        return false;
+    }
+}

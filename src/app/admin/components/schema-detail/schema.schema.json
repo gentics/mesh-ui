@@ -19,6 +19,10 @@
                 },
                 "required": {
                     "type": "boolean"
+                },
+                "elasticsearch": {
+                    "type": "object",
+                    "description": "The elasticsearch custom mapping options of the field. See https://getmesh.io/docs/building-blocks/#_schema_field"
                 }
             }
         },
@@ -219,15 +223,36 @@
             "description": "Name of the schema"
         },
         "description": {
-            "type": "string",
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
             "description": "Description of the schema"
         },
         "displayField": {
-            "type": "string",
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
             "description": "Name of the display field"
         },
         "segmentField": {
-            "type": "string",
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
             "description": "Name of the segment field. This field is used to construct the webroot path to the node."
         },
         "container": {

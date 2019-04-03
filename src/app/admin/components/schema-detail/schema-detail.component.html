@@ -2,19 +2,49 @@
     Version: {{version}}
 </div>
 
-<gtx-tabs>
-    <gtx-tab title="Schemas">
-        <mesh-monaco-editor [(ngModel)]="schemaJson"
+<div class="actions"
+     *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
+    <gtx-button type="primary"
+                size="small"
+                class="save-button"
+                [disabled]="!isValid"
+                (click)="save()">
+        <ng-container *ngIf="!(isNew$ | async)">{{ 'admin.schema_editor_buttonlabel_save' | i18n }}</ng-container>
+        <ng-container *ngIf="isNew$ | async">{{ 'admin.schema_editor_buttonlabel_create' | i18n }}</ng-container>
+    </gtx-button>
+
+    <gtx-button *ngIf="!(isNew$ | async)"
+                type="primary"
+                size="small"
+                class="save-button"
+                [disabled]="!isValid"
+                (click)="delete()">
+        {{ 'admin.schema_editor_buttonlabel_delete' | i18n }}
+    </gtx-button>
+</div>
+
+<gtx-tabs [activeId]="activeId$ | async">
+    <gtx-tab id="tab1"
+             [title]="'admin.schema_details_tab_label_editor' | i18n">
+        <mesh-schema-editor [schemaJson]="schemaJson$ | async"
+                            (schemaJsonChange)="schemaJson = $event"
+                            [schema]="schema$ | async"
+                            [isNew]="isNew$ | async"
+                            (isValid)="isValid = $event">
+        </mesh-schema-editor>
+    </gtx-tab>
+
+    <gtx-tab id="tab2"
+             [title]="'admin.schema_details_tab_label_json' | i18n">
+        <mesh-monaco-editor [ngModel]="schemaJson$ | async"
+                            (ngModelChange)="schemaJson = $event"
                             language="json"
                             [jsonSchema]="schema"
                             (errors)="onErrorChange($event)"></mesh-monaco-editor>
-
-        <gtx-button [disabled]="errors.length > 0"
-                    style="margin-top: 15px;"
-                    (click)="save()">{{ 'common.save' | i18n }}</gtx-button>
     </gtx-tab>
 
-    <gtx-tab title="Projects">
+    <gtx-tab id="tab3"
+             [title]="'admin.schema_details_tab_label_projects' | i18n">
         <mesh-admin-list [items]="projects$ | async"
                          [autoHidePagination]="true"
                          [selectable]="false">
@@ -29,7 +59,7 @@
 
             <ng-template let-project="item">
                 <gtx-checkbox *ngIf="projectAssignments"
-                              [label]="project.name"
+                              [label]="project?.name"
                               [checked]="projectAssignments[project.uuid]"
                               (change)="onAssignmentChange(project, $event)">
                 </gtx-checkbox>
