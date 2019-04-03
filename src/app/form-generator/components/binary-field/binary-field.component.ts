@@ -149,13 +149,11 @@ export class BinaryFieldComponent extends BaseFieldComponent {
                     this.api.setValue({
                         ...value,
                         // update focalpoint data
-                        ...{
-                            focalPoint: {
-                                x: params.focalPointX,
-                                y: params.focalPointY
-                            }
+                        focalPoint: {
+                            x: params.focalPointX,
+                            y: params.focalPointY
                         },
-                        ...{ transform: params }
+                        transform: params
                     });
                 }
                 this.transformParams = params;
@@ -209,8 +207,8 @@ export class BinaryFieldComponent extends BaseFieldComponent {
                 width: round(params.cropRect.width * ratio),
                 height: round(params.cropRect.height * ratio)
             },
-            focalPointX: imageField.focalPoint!.x,
-            focalPointY: imageField.focalPoint!.y
+            focalPointX: params.focalPointX,
+            focalPointY: params.focalPointY
         };
     }
 
