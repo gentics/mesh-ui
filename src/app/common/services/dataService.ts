@@ -351,7 +351,7 @@ module meshAdminUi {
             if (searchParams.searchAll) {
                 const searchAll = () => {
                     let query = this.createNodeSearchQuery(projectName, node, searchParams);
-                    let bundleQueryParams = angular.extend(queryParams, { page: bundleParams[0].page });
+                    let bundleQueryParams = angular.extend({}, queryParams, { page: bundleParams[0].page });
                     return this.searchNodes(query, projectName, bundleQueryParams);
                 };
                 searchOperation = [searchAll()];
@@ -360,7 +360,7 @@ module meshAdminUi {
                     .sort(sortByIsContainer)
                     .map(bundleParam => {
                         let query = this.createNodeSearchQuery(projectName, node, searchParams, bundleParam);
-                        let bundleQueryParams = angular.extend(queryParams, { page: bundleParam.page });
+                        let bundleQueryParams = angular.extend({}, queryParams, { page: bundleParam.page });
                         return this.searchNodes(query, projectName, bundleQueryParams);
                     });
             }
