@@ -5,6 +5,7 @@ module meshAdminUi {
      */
     class ProjectExplorerController {
 
+        private currentPages: { [schemaUuid: string]: number } = {};
         private itemsPerPage: number = 10;
         private createPermission: boolean;
         private contents: INodeBundleResponse[] = [];
@@ -45,7 +46,10 @@ module meshAdminUi {
                 })
             };
 
-            const searchParamsHandler = () => this.populateChildNodes();
+            const searchParamsHandler = () => {
+              this.currentPages = {};
+              this.populateChildNodes();
+            };
 
             dispatcher.subscribe(dispatcher.events.explorerSearchParamsChanged, searchParamsHandler);
             dispatcher.subscribe(dispatcher.events.explorerContentsChanged, updateContents);
@@ -97,7 +101,7 @@ module meshAdminUi {
             let bundleParams: INodeBundleParams[] = this.childrenSchemas.map(schemaRef => {
                 return {
                     schema: schemaRef,
-                    page: 1
+                    page: this.currentPages[schemaRef.uuid] || 1
                 };
             });
             return this.dataService.getNodeBundles(projectName, this.currentNode, bundleParams, searchParams, queryParams)
@@ -120,6 +124,7 @@ module meshAdminUi {
             return this.dataService.getNodeBundles(this.projectName, this.currentNode, bundleParams, searchParams, {
                 perPage: this.itemsPerPage
             }).then(result => {
+                this.currentPages[schemaUuid] = newPageNumber;
                 var index = this.contents.map(bundle => bundle.schema.uuid).indexOf(schemaUuid);
                 this.contents[index].data = result[0].data;
                 this.contents[index]._metainfo = result[0]._metainfo;
