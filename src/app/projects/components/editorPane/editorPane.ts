@@ -179,6 +179,8 @@ module meshAdminUi {
                     .catch(error => {
                        this.notifyService.toast(error.data.message || error.data);
                    });
+            }).catch(error => {
+                this.notifyService.toast(error.data.message || error.data);
             });
         }
 

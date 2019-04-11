@@ -566,6 +566,8 @@ module meshAdminUi {
                             console.warn(`Version conflict detected, forcing update to this version`, err.data);
                             node.version = err.data.properties.newVersion;
                             return this.updateNode(projectName, node, queryParams);
+                        } else {
+                            throw err;
                         }
                     }
                 );
