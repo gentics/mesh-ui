@@ -147,7 +147,7 @@ module meshAdminUi {
 
         public readyToPublish(): boolean {
             const isPublished = this.isPublished();
-            return !isPublished || (isPublished && this.contentModified || this.tagsModified);
+            return !isPublished || (isPublished && (this.contentModified || this.tagsModified) && this.formIsValid());
         }
 
         /**
@@ -156,7 +156,7 @@ module meshAdminUi {
         public publish(): void {
             let savePromise: ng.IPromise<any>;
             let savingNode: boolean = false;
-            if (this.contentModified || this.tagsModified) {
+            if ((this.contentModified || this.tagsModified) && this.formIsValid()) {
                 savePromise = this.persist(this.node);
                 savingNode = true;
             } else {
@@ -179,6 +179,8 @@ module meshAdminUi {
                     .catch(error => {
                        this.notifyService.toast(error.data.message || error.data);
                    });
+            }).catch(error => {
+                this.notifyService.toast(error.data.message || error.data);
             });
         }
 
@@ -386,6 +388,19 @@ module meshAdminUi {
                     const microschema = this.microschemas.filter(m => m.name === nodeField.microschema.name)[0];
                     if (microschema) {
                         return microschema.fields.reduce(fieldIsValidReducer(nodeField), valid);
+                    }
+                } else if (field.type === 'list' && field.listType === 'micronode') {
+                    const listField = container.fields[field.name];
+                    if (listField instanceof Array) {
+                        return listField.reduce((listValid: boolean, listItem: any) => {
+                            const microschema = this.microschemas
+                                .filter(m => m.name === listItem.microschema.name)[0];
+                            if (microschema) {
+                                return microschema.fields.reduce(fieldIsValidReducer(listItem), listValid);
+                            } else {
+                                return listValid;
+                            }
+                        }, valid);
                     }
                 }
                 return valid;
