@@ -1,4 +1,5 @@
-import { Request, Response } from '@angular/http';
+import { HttpRequest } from '@angular/common/http';
+import { Response } from '@angular/http';
 
 /**
  * A specific error caused by the API, only thrown on unexpected status codes or on critical errors.
@@ -6,23 +7,38 @@ import { Request, Response } from '@angular/http';
  */
 export class ApiError extends Error {
     readonly originalError: Error | undefined;
-    readonly request: Request;
+    readonly request: HttpRequest<any>;
     readonly response: Response | undefined;
     readonly url: string;
 
     /** Construct from a successful request and a response (not necessarily HTTP 200) */
-    constructor({ url, request, response, cause }: { url?: string, request: Request, response: Response, cause?: string });
+    constructor({
+        url,
+        request,
+        response,
+        cause
+    }: {
+        url?: string;
+        request: HttpRequest<any>;
+        response: Response;
+        cause?: string;
+    });
     /** Construct from a failed request and an error */
-    constructor({ url, request, originalError }: { url?: string, request: Request, originalError: Error });
+    constructor({ url, request, originalError }: { url?: string; request: HttpRequest<any>; originalError: Error });
 
-    constructor({ url, request, response, cause, originalError }: {
-            url?: string,
-            request: Request,
-            response?: Response,
-            cause?: string,
-            originalError?: Error
-        }) {
-
+    constructor({
+        url,
+        request,
+        response,
+        cause,
+        originalError
+    }: {
+        url?: string;
+        request: HttpRequest<any>;
+        response?: Response;
+        cause?: string;
+        originalError?: Error;
+    }) {
         url = url || request.url;
 
         let message: string;

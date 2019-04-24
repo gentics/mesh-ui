@@ -1,5 +1,6 @@
+import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Headers, Http, Request, RequestMethod, Response, ResponseContentType, URLSearchParams } from '@angular/http';
+import { Headers, RequestMethod, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import { ApiEndpoints } from '../../../common/models/server-models';
@@ -26,13 +27,13 @@ type ResponseMapCallback<T, R> = (data: T, index: number, response: Response) =>
 export type ResponseMap<T extends { [status: number]: any }, R> = FullResponseMap<T, R> | PartialResponseMap<T, R>;
 
 type FullResponseMap<T extends { [status: number]: any }, R> = {
-    [/** Handles an expected status code */
-    K in keyof T]: R | ResponseMapCallback<T[K], R>
+    /** Handles an expected status code */
+    [K in keyof T]: R | ResponseMapCallback<T[K], R>
 };
 
 type PartialResponseMap<T extends { [status: number]: any }, R> = {
-    [/** Handles an expected status code. Can be ommitted if "success" is provided. */
-    K in keyof T]?: R | ResponseMapCallback<T[K], R>
+    /** Handles an expected status code. Can be ommitted if "success" is provided. */
+    [K in keyof T]?: R | ResponseMapCallback<T[K], R>
 } & {
     /** Status codes not mentioned in the RAML */
     [status: number]: R;
@@ -60,7 +61,7 @@ export class ApiBase {
         @Inject(API_BASE_URL)
         @Optional()
         baseUrl: string | null,
-        protected http: Http,
+        protected http: HttpClient,
         private I18nNotification: I18nNotification
     ) {
         if (baseUrl) {
@@ -79,7 +80,7 @@ export class ApiBase {
         params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams'],
         headers?: any
     ): ResponseObservable<ApiEndpoints['GET'][U]['responseTypes']> {
-        return this.request(RequestMethod.Get, url, params as any, null, headers);
+        return this.request('GET', url, params as any, null, headers);
     }
 
     /**
@@ -96,7 +97,7 @@ export class ApiBase {
         params: ApiEndpoints['POST'][U]['request']['urlParams'] & ApiEndpoints['POST'][U]['request']['queryParams'],
         body: ApiEndpoints['POST'][U]['request']['body']
     ): ResponseObservable<ApiEndpoints['POST'][U]['responseTypes']> {
-        return this.request(RequestMethod.Post, url, params as any, body);
+        return this.request('POST', url, params as any, body);
     }
 
     /**
@@ -109,7 +110,7 @@ export class ApiBase {
         url: U,
         params: ApiEndpoints['DELETE'][U]['request']['urlParams'] & ApiEndpoints['DELETE'][U]['request']['queryParams']
     ): ResponseObservable<ApiEndpoints['DELETE'][U]['responseTypes']> {
-        return this.request(RequestMethod.Delete, url, params as any);
+        return this.request('DELETE', url, params as any);
     }
 
     /**
@@ -137,7 +138,7 @@ export class ApiBase {
         params: ApiEndpoints['PUT'][U]['request']['urlParams'] & ApiEndpoints['PUT'][U]['request']['queryParams'],
         body: ApiEndpoints['PUT'][U]['request']['body']
     ): ResponseObservable<ApiEndpoints['PUT'][U]['responseTypes']> {
-        return this.request(RequestMethod.Put, url, params as any, body);
+        return this.request('PUT', url, params as any, body);
     }
 
     /**
@@ -150,7 +151,7 @@ export class ApiBase {
 
     /** Use the parameters to create a request and handle critical errors. */
     protected request(
-        method: RequestMethod,
+        method: 'DELETE' | 'GET' | 'HEAD' | 'JSONP' | 'OPTIONS' | 'POST' | 'PUT',
         url: string,
         params: QueryParams & UrlParams,
         body?: any,
@@ -193,9 +194,7 @@ export class ApiBase {
             headers.append('Content-Type', 'application/json');
         }
 
-        const request = new Request({
-            url: this.formatUrl(url, params),
-            method,
+        const request = new HttpRequest(method, this.formatUrl(url, params), {
             headers,
             body: bodyToUse,
             withCredentials: false
@@ -276,7 +275,7 @@ export class ApiBase {
     protected toResponseObservable<T>(
         inputObservable: Observable<Response>,
         url: string,
-        request: Request
+        request: HttpRequest<any>
     ): ResponseObservable<T> {
         // The returned observable throws on HTTP errors, mapResponses does not.
         const resultObservable = (inputObservable
