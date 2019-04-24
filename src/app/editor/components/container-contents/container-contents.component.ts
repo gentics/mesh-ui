@@ -123,7 +123,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .switchMap(([items, language]) =>
                 Observable.from(items)
                     .map(uuid => this.entities.selectNode(uuid, { language }))
-                    .combineAll<Observable<MeshNode>, MeshNode[]>()
+                    .combineAll<Observable<MeshNode>, MeshNode>()
                     .startWith([])
             )
             .map(items => items.filter(notNullOrUndefined))

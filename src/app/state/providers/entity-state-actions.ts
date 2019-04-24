@@ -169,7 +169,11 @@ export function getNestedEntity<B extends keyof EntityState>(
         let key = source[k as keyof typeof source];
         if (k === 'language' && Array.isArray(languageFallbacks) && 0 < languageFallbacks.length) {
             const availableLanguages = Object.keys(o);
-            key = getLanguageKeyFromFallbackArray(availableLanguages, languageFallbacks);
+            if (getLanguageKeyFromFallbackArray(availableLanguages, languageFallbacks)) {
+                key = getLanguageKeyFromFallbackArray(availableLanguages, languageFallbacks) as string;
+            } else {
+                return;
+            }
         } else if (key === undefined) {
             // The discriminator part was not provided in the source.
             // We must choose a default from any available.

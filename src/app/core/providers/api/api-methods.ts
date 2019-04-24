@@ -48,22 +48,22 @@ export function apiDelete<U extends keyof ApiEndpoints['DELETE']>(url: U) {
     };
 }
 
-/** Creates a method that is a typed wrapper to `this.apiBase.put()`. */
-export function apiPut<U extends keyof ApiEndpoints['PUT']>(url: U) {
-    return function putMethod(
-        params: ApiEndpoints['PUT'][U]['request']['urlParams'] & ApiEndpoints['PUT'][U]['request']['queryParams'],
-        body: ApiEndpoints['POST'][U]['request']['body']
-    ): Observable<ApiEndpoints['PUT'][U]['responseType']> {
-        return this.apiBase.put(url, params, body);
-    };
-}
+// /** Creates a method that is a typed wrapper to `this.apiBase.put()`. */
+// export function apiPut<U extends keyof ApiEndpoints['PUT']>(url: U) {
+//     return function putMethod(
+//         params: ApiEndpoints['PUT'][U]['request']['urlParams'] & ApiEndpoints['PUT'][U]['request']['queryParams'],
+//         body: ApiEndpoints['POST'][U]['request']['body']
+//     ): Observable<ApiEndpoints['PUT'][U]['responseType']> {
+//         return this.apiBase.put(url, params, body);
+//     };
+// }
 
-/** Creates a method that is a typed wrapper to `this.apiBase.pattch()`. */
-export function apiPatch<U extends keyof ApiEndpoints['PATCH']>(url: U) {
-    return function patchMethod(
-        params: ApiEndpoints['PATCH'][U]['request']['urlParams'] & ApiEndpoints['PATCH'][U]['request']['queryParams'],
-        body: ApiEndpoints['PATCH'][U]['request']['body']
-    ): Observable<ApiEndpoints['PATCH'][U]['responseType']> {
-        return this.apiBase.patch(url, params, body);
-    };
-}
+// /** Creates a method that is a typed wrapper to `this.apiBase.pattch()`. */
+// export function apiPatch<U extends keyof ApiEndpoints['PATCH']>(url: U) {
+//     return function patchMethod(
+//         params: ApiEndpoints['PATCH'][U]['request']['urlParams'] & ApiEndpoints['PATCH'][U]['request']['queryParams'],
+//         body: ApiEndpoints['PATCH'][U]['request']['body']
+//     ): Observable<ApiEndpoints['PATCH'][U]['responseType']> {
+//         return this.apiBase.patch(url, params, body);
+//     };
+// }

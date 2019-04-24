@@ -67,7 +67,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     hoverRemoveArea = false;
     mainGroup: ISortableGroupOptions = {
         name: this.groupId,
-        pull: e => (e.options.group.name === this.removeGroupId ? 'clone' : true),
+        pull: (e: any) => (e.options.group.name === this.removeGroupId ? 'clone' : true),
         put: true,
         revertClone: false
     };
@@ -175,7 +175,11 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
     deleteItem(e: ISortableEvent): void {
         const newValue = this.value.slice(0);
-        newValue.splice(e.oldIndex, 1);
+        if (e.oldIndex) {
+            newValue.splice(e.oldIndex, 1);
+        } else {
+            throw new Error('"oldIndex" of SortableEvent is undefined');
+        }
         this.api.setValue(newValue);
     }
 

@@ -113,33 +113,33 @@ export class ApiBase {
         return this.request('DELETE', url, params as any);
     }
 
-    /**
-     * Create an Observable that will send a PATCH request to the API when subscribed to.
-     *
-     * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
-     * @param {object} requestProps Properties of the request (`urlParams`, `queryParams` and `body`).
-     */
-    patch<U extends keyof ApiEndpoints['PATCH']>(
-        url: U,
-        params: ApiEndpoints['PATCH'][U]['request']['urlParams'] & ApiEndpoints['PATCH'][U]['request']['queryParams'],
-        body: ApiEndpoints['PATCH'][U]['request']['body']
-    ): ResponseObservable<ApiEndpoints['PATCH'][U]['responseTypes']> {
-        return this.request('PATCH' as any, url, params as any, body);
-    }
+    // /**
+    //  * Create an Observable that will send a PATCH request to the API when subscribed to.
+    //  *
+    //  * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
+    //  * @param {object} requestProps Properties of the request (`urlParams`, `queryParams` and `body`).
+    //  */
+    // patch<U extends keyof ApiEndpoints['PATCH']>(
+    //     url: U,
+    //     params: ApiEndpoints['PATCH'][U]['request']['urlParams'] & ApiEndpoints['PATCH'][U]['request']['queryParams'],
+    //     body: ApiEndpoints['PATCH'][U]['request']['body']
+    // ): ResponseObservable<ApiEndpoints['PATCH'][U]['responseTypes']> {
+    //     return this.request('PATCH' as any, url, params as any, body);
+    // }
 
-    /**
-     * Create an Observable that will send a PUT request to the API when subscribed to.
-     *
-     * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
-     * @param {object} requestProps Properties of the request (`urlParams`, `queryParams` and `body`).
-     */
-    put<U extends keyof ApiEndpoints['PUT']>(
-        url: U,
-        params: ApiEndpoints['PUT'][U]['request']['urlParams'] & ApiEndpoints['PUT'][U]['request']['queryParams'],
-        body: ApiEndpoints['PUT'][U]['request']['body']
-    ): ResponseObservable<ApiEndpoints['PUT'][U]['responseTypes']> {
-        return this.request('PUT', url, params as any, body);
-    }
+    // /**
+    //  * Create an Observable that will send a PUT request to the API when subscribed to.
+    //  *
+    //  * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
+    //  * @param {object} requestProps Properties of the request (`urlParams`, `queryParams` and `body`).
+    //  */
+    // put<U extends keyof ApiEndpoints['PUT']>(
+    //     url: U,
+    //     params: ApiEndpoints['PUT'][U]['request']['urlParams'] & ApiEndpoints['PUT'][U]['request']['queryParams'],
+    //     body: ApiEndpoints['PUT'][U]['request']['body']
+    // ): ResponseObservable<ApiEndpoints['PUT'][U]['responseTypes']> {
+    //     return this.request('PUT', url, params as any, body);
+    // }
 
     /**
      * Change the language to set as "Accept-Language" header of requests.
@@ -151,7 +151,7 @@ export class ApiBase {
 
     /** Use the parameters to create a request and handle critical errors. */
     protected request(
-        method: 'DELETE' | 'GET' | 'HEAD' | 'JSONP' | 'OPTIONS' | 'POST' | 'PUT',
+        method: 'DELETE' | 'GET' | 'HEAD' | 'JSONP' | 'OPTIONS' | 'POST' | 'PUT' | 'PATCH',
         url: string,
         params: QueryParams & UrlParams,
         body?: any,

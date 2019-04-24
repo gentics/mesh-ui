@@ -280,6 +280,6 @@ export class EntitiesService {
      * Applies the selectorFn to the AppState and filters out any undefined values.
      */
     private selectWithFilter<T>(selectorFn: (state: AppState) => T | undefined): Observable<T> {
-        return this.state.select(selectorFn).filter(notNullOrUndefined);
+        return this.state.select(selectorFn).filter(notNullOrUndefined as any);
     }
 }

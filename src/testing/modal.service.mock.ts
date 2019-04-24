@@ -1,8 +1,8 @@
 import { tick } from '@angular/core/testing';
 import { IModalDialog, ModalService } from 'gentics-ui-core';
 
-import { ModalDialog } from 'gentics-ui-core/dist/components/modal/modal-dialog.component';
-import { IModalInstance } from 'gentics-ui-core/dist/components/modal/modal-interfaces';
+import { ModalDialog } from 'gentics-ui-core/components/modal/modal-dialog.component';
+import { IModalInstance } from 'gentics-ui-core/components/modal/modal-interfaces';
 
 /**
  * A mock of the Gentics UI Core ModalService, which allows us to simulate resolving / rejecting the modal
