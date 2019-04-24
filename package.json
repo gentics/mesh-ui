@@ -47,6 +47,7 @@
     "@angularclass/hmr-loader": "^3.0.4",
     "@ngx-translate/core": "^9.0.2",
     "@types/quill": "0.0.31",
+    "@types/sortablejs": "^1.7.2",
     "core-js": "^2.4.1",
     "gentics-ui-core": "^7.0.0",
     "gentics-ui-image-editor": "^0.4.0",
