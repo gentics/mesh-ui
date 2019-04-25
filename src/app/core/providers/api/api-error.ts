@@ -1,4 +1,4 @@
-import { HttpRequest } from '@angular/common/http';
+import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { Response } from '@angular/http';
 
 /**
@@ -8,7 +8,7 @@ import { Response } from '@angular/http';
 export class ApiError extends Error {
     readonly originalError: Error | undefined;
     readonly request: HttpRequest<any>;
-    readonly response: Response | undefined;
+    readonly response: HttpResponse<any> | undefined;
     readonly url: string;
 
     /** Construct from a successful request and a response (not necessarily HTTP 200) */
@@ -20,7 +20,7 @@ export class ApiError extends Error {
     }: {
         url?: string;
         request: HttpRequest<any>;
-        response: Response;
+        response: HttpResponse<any>;
         cause?: string;
     });
     /** Construct from a failed request and an error */
@@ -35,7 +35,7 @@ export class ApiError extends Error {
     }: {
         url?: string;
         request: HttpRequest<any>;
-        response?: Response;
+        response?: HttpResponse<any>;
         cause?: string;
         originalError?: Error;
     }) {
@@ -46,7 +46,7 @@ export class ApiError extends Error {
             // Attempt to parse error message from mesh
             let responseBody;
             try {
-                responseBody = response.json();
+                responseBody = response.body;
             } catch (err) {}
             if (responseBody && responseBody.message) {
                 message = responseBody.message;

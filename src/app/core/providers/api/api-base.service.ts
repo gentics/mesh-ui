@@ -1,7 +1,8 @@
-import { HttpClient, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Headers, RequestMethod, Response, URLSearchParams } from '@angular/http';
+import { Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { catchError, last, map } from 'rxjs/operators';
 
 import { ApiEndpoints } from '../../../common/models/server-models';
 import { I18nNotification } from '../i18n-notification/i18n-notification.service';
@@ -16,8 +17,8 @@ export type RequestLanguage = 'de' | 'en';
 export type RequestMethodString = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
 /** An observable with a `mapResponses` method which can be used to handle expected errors.  */
-export interface ResponseObservable<T> extends Observable<T[keyof T]> {
-    rawResponse: Observable<Response>;
+export interface HttpResponseObservable<T> extends Observable<T[keyof T]> {
+    rawResponse: Observable<HttpResponse<T>>;
     mapResponses<R>(mapping: ResponseMap<T, R>): Observable<R>;
 }
 
@@ -79,7 +80,7 @@ export class ApiBase {
         url: U,
         params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams'],
         headers?: any
-    ): ResponseObservable<ApiEndpoints['GET'][U]['responseTypes']> {
+    ): HttpResponseObservable<ApiEndpoints['GET'][U]['responseTypes']> {
         return this.request('GET', url, params as any, null, headers);
     }
 
@@ -96,7 +97,7 @@ export class ApiBase {
         url: U,
         params: ApiEndpoints['POST'][U]['request']['urlParams'] & ApiEndpoints['POST'][U]['request']['queryParams'],
         body: ApiEndpoints['POST'][U]['request']['body']
-    ): ResponseObservable<ApiEndpoints['POST'][U]['responseTypes']> {
+    ): HttpResponseObservable<ApiEndpoints['POST'][U]['responseTypes']> {
         return this.request('POST', url, params as any, body);
     }
 
@@ -109,7 +110,7 @@ export class ApiBase {
     delete<U extends keyof ApiEndpoints['DELETE']>(
         url: U,
         params: ApiEndpoints['DELETE'][U]['request']['urlParams'] & ApiEndpoints['DELETE'][U]['request']['queryParams']
-    ): ResponseObservable<ApiEndpoints['DELETE'][U]['responseTypes']> {
+    ): HttpResponseObservable<ApiEndpoints['DELETE'][U]['responseTypes']> {
         return this.request('DELETE', url, params as any);
     }
 
@@ -156,9 +157,9 @@ export class ApiBase {
         params: QueryParams & UrlParams,
         body?: any,
         extraHeaders?: { [key: string]: string | number }
-    ): ResponseObservable<any> {
+    ): HttpResponseObservable<any> {
         // Append request headers
-        const headers = new Headers({
+        const headers = new HttpHeaders({
             Accept: 'application/json',
             'Accept-Language': this.requestLanguage,
             ...extraHeaders
@@ -201,9 +202,9 @@ export class ApiBase {
         });
 
         // Perform the actual request using the Http service provided by Angular
-        const result = this.http
-            .request(request)
-            .catch((errorOrResponse: Error | Response) => {
+        const result = this.http.request(request).pipe(
+            catchError((errorOrResponse: Error) => {
+                console.log('!!! ERROR of ' + request.url + ' :', errorOrResponse);
                 // When an unexpected error is thrown by angular, wrap it in an ApiError
                 if (errorOrResponse instanceof Response) {
                     // Non-OK statuses will be thrown by angular, but that could be expected.
@@ -212,19 +213,14 @@ export class ApiBase {
                 } else {
                     return Observable.throw(new ApiError({ url, request, originalError: errorOrResponse }));
                 }
-            })
-            .map((response: Response) => {
+            }),
+            last(),
+            map((response: HttpResponse<any>) => {
+                console.log('!!! RESPONSE of ' + request.url + ' .BODY:', response.body);
                 // If response.json() fails, throw an ApiError instead of a generic error.
-                const originalToJSON = response.json.bind(response);
-                response.json = () => {
-                    try {
-                        return originalToJSON();
-                    } catch (e) {
-                        throw new ApiError({ url, request, response, cause: 'Invalid JSON' });
-                    }
-                };
                 return response;
-            }) as ResponseObservable<any>;
+            })
+        );
 
         return this.toResponseObservable(result, url, request);
     }
@@ -273,10 +269,10 @@ export class ApiBase {
 
     /** Adds the mapResponses method to observables returned by ApiBase methods. */
     protected toResponseObservable<T>(
-        inputObservable: Observable<Response>,
+        inputObservable: Observable<HttpResponse<any>>,
         url: string,
         request: HttpRequest<any>
-    ): ResponseObservable<T> {
+    ): HttpResponseObservable<T> {
         // The returned observable throws on HTTP errors, mapResponses does not.
         const resultObservable = (inputObservable
             .map(response => {
@@ -286,7 +282,7 @@ export class ApiBase {
                     throw new ApiError({ url, request, response });
                 }
             })
-            .pipe(this.I18nNotification.rxError) as any) as ResponseObservable<T>;
+            .pipe(this.I18nNotification.rxError) as any) as HttpResponseObservable<T>;
 
         resultObservable.rawResponse = inputObservable;
 
@@ -313,17 +309,17 @@ export class ApiBase {
     }
 
     /** Gets the body from an angular `Response` object */
-    private getBody(response: Response): any {
+    private getBody(response: HttpResponse<any>): any {
         const contentType = response.headers && response.headers.get('Content-Type');
         if (contentType && (contentType.startsWith('application/json') || contentType.startsWith('text/json'))) {
-            return response.json();
+            return response.body;
         } else if (contentType && contentType.startsWith('text/')) {
-            return response.text();
+            return response.body;
         } else if (response.status === 204) {
             // No content (happens on delete)
             return null;
         } else {
-            return response.blob();
+            return response.body;
         }
     }
 }
