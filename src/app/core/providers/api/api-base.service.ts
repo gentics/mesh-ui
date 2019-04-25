@@ -191,20 +191,18 @@ export class ApiBase {
                 }
             }
         } else {
-            bodyToUse = JSON.stringify(body);
+            bodyToUse = body;
             headers.append('Content-Type', 'application/json');
         }
 
-        const request = new HttpRequest(method, this.formatUrl(url, params), {
+        const request = new HttpRequest(method, this.formatUrl(url, params), bodyToUse, {
             headers,
-            body: bodyToUse,
             withCredentials: false
         });
 
         // Perform the actual request using the Http service provided by Angular
         const result = this.http.request(request).pipe(
             catchError((errorOrResponse: Error) => {
-                console.log('!!! ERROR of ' + request.url + ' :', errorOrResponse);
                 // When an unexpected error is thrown by angular, wrap it in an ApiError
                 if (errorOrResponse instanceof Response) {
                     // Non-OK statuses will be thrown by angular, but that could be expected.
@@ -216,7 +214,6 @@ export class ApiBase {
             }),
             last(),
             map((response: HttpResponse<any>) => {
-                console.log('!!! RESPONSE of ' + request.url + ' .BODY:', response.body);
                 // If response.json() fails, throw an ApiError instead of a generic error.
                 return response;
             })
