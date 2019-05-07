@@ -1,5 +1,17 @@
 # MeshAdminUI Changelog
 
+## Version 0.9.4 (2019-05-07)
+
+* Validate microschema lists, Node update error handling (#202)
+
+## Version 0.9.3 (2019-04-10)
+
+* Fix project explorer select node resetting current page (#201)
+
+## Version 0.9.2 (2018-09-25)
+
+* Limit max height and add autoscroll for dropdown list (#163)
+
 ## Version 0.9.1 (2018-02-23)
 
 * Restrict nodes to certain schema if allow is set in node list fields
