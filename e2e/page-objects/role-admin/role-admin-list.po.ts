@@ -35,7 +35,7 @@ export namespace RoleAdminList {
                 item
                     .element(by.css('a'))
                     .getText()
-                    .then(roleName => roleName === name)
+                    .then((roleName: string) => roleName === name)
             )
             .first();
 
@@ -44,7 +44,7 @@ export namespace RoleAdminList {
 
     export async function displayedRoleNames(): Promise<string[]> {
         const roles = await RoleAdminList.displayedRoles();
-        const roleNames = await promise.all(roles.map(role => role.name()));
+        const roleNames = await promise.all(roles.map((role: RoleAdminListRow) => role.name()));
         return roleNames;
     }
 }

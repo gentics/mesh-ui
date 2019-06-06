@@ -1,4 +1,3 @@
-import { state } from '@angular/core/src/animation/dsl';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { GenticsUICoreModule } from 'gentics-ui-core';

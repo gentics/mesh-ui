@@ -152,7 +152,7 @@ export class ApiBase {
 
     /** Use the parameters to create a request and handle critical errors. */
     protected request(
-        method: 'DELETE' | 'GET' | 'HEAD' | 'JSONP' | 'OPTIONS' | 'POST' | 'PUT' | 'PATCH',
+        method: RequestMethodString,
         url: string,
         params: QueryParams & UrlParams,
         body?: any,

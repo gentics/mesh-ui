@@ -37,7 +37,7 @@ export namespace GroupAdminList {
                 item
                     .element(by.css('a'))
                     .getText()
-                    .then(groupName => groupName === name)
+                    .then((groupName: string) => groupName === name)
             )
             .first();
 
@@ -46,7 +46,7 @@ export namespace GroupAdminList {
 
     export async function displayedGroupNames(): Promise<string[]> {
         const groups = await GroupAdminList.displayedGroups();
-        const groupNames = await promise.all(groups.map(group => group.name()));
+        const groupNames = await promise.all(groups.map((group: GroupAdminListRow) => group.name()));
         return groupNames;
     }
 }

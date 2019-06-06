@@ -1,3 +1,4 @@
+import { HttpRequest } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import {
     ConnectionBackend,
@@ -17,7 +18,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { I18nNotification } from '../i18n-notification/i18n-notification.service';
 import { MockI18nNotification } from '../i18n-notification/i18n-notification.service.mock';
 
-import { ApiBase, ResponseObservable } from './api-base.service';
+import { ApiBase, HttpResponseObservable } from './api-base.service';
 import { ApiError } from './api-error';
 
 describe('ApiBase', () => {
@@ -111,7 +112,7 @@ describe('ApiBase', () => {
                 expect(error.response!.status).toBe(404);
                 expect(error.response!.statusText).toBe('Not Found');
                 expect(error.response!.headers!.get('Content-Type')).toBe('text/plain');
-                expect(error.response!.text()).toBe('Endpoint not found');
+                expect(error.response!.body).toBe('Endpoint not found');
                 didThrow = true;
             });
 
@@ -141,7 +142,7 @@ describe('ApiBase', () => {
 
             expect(thrownError).toBeDefined('no thrownError');
             expect(thrownError.name).toBe('ApiError');
-            expect(thrownError.request.method).toBe(RequestMethod.Get, 'method is not GET');
+            expect(thrownError.request.method).toBe('GET', 'method is not GET');
             expect(thrownError.request.url).toMatch(/\/some\/endpoint/);
             expect(thrownError.response).toBeUndefined('response on error object should not be set');
             expect(thrownError.originalError).toBeDefined('originalError is not set');
@@ -155,7 +156,7 @@ describe('ApiBase', () => {
                 called = true;
                 expect(typeof observable.subscribe).toBe('function', 'not an Observable');
                 expect(url).toBe('/some/endpoint');
-                expect(request.method).toBe(RequestMethod.Get);
+                expect(request.method).toBe('GET');
                 expect(request.url).toBe('/api/v1/some/endpoint');
                 return realExtendObservable.call(this, observable, url, request);
             };
@@ -243,7 +244,7 @@ describe('ApiBase', () => {
             expect(thrownError.response!.status).toBe(404);
             expect(thrownError.response!.statusText).toBe('Not Found');
             expect(thrownError.response!.headers!.get('Content-Type')).toBe('text/plain');
-            expect(thrownError.response!.text()).toBe('Endpoint not found');
+            expect(thrownError.response!.body).toBe('Endpoint not found');
         });
 
         it('emits an error when the request fails with a critical error', () => {
@@ -256,7 +257,7 @@ describe('ApiBase', () => {
 
             expect(thrownError).toBeDefined('no thrownError');
             expect(thrownError.name).toBe('ApiError');
-            expect(thrownError.request.method).toBe(RequestMethod.Post, 'method is not POST');
+            expect(thrownError.request.method).toBe('POST', 'method is not POST');
             expect(thrownError.request.url).toMatch(/some-api-endpoint/);
             expect(thrownError.response).toBeUndefined('response on error object should not be set');
             expect(thrownError.originalError).toBeDefined('originalError is not set');
@@ -270,7 +271,7 @@ describe('ApiBase', () => {
                 called = true;
                 expect(typeof observable.subscribe).toBe('function', 'not an Observable');
                 expect(url).toBe('/some-api-endpoint');
-                expect(request.method).toBe(RequestMethod.Post);
+                expect(request.method).toBe('POST');
                 expect(request.url).toBe('/api/v1/some-api-endpoint');
                 return realExtendObservable.call(this, observable, url, request);
             };
@@ -405,13 +406,10 @@ describe('ApiBase', () => {
     describe('extendObservable()', () => {
         describe('mapResponses()', () => {
             let subject: Subject<any> = undefined as any;
-            let observable: ResponseObservable<any> = undefined as any;
+            let observable: HttpResponseObservable<any> = undefined as any;
             beforeEach(() => {
                 subject = new Subject();
-                const request = new Request({
-                    method: RequestMethod.Get,
-                    url: '/api/v1/some/url'
-                });
+                const request = new HttpRequest('GET', '/api/v1/some/url');
                 observable = apiBase['toResponseObservable'](subject, '/some/url', request);
             });
 
@@ -424,7 +422,9 @@ describe('ApiBase', () => {
                 const inputObservable = new Observable<any>(() => {
                     subscribed = true;
                 });
-                observable = apiBase['toResponseObservable'](inputObservable, '/some/url', ({} as any) as Request);
+                observable = apiBase['toResponseObservable'](inputObservable, '/some/url', ({} as any) as HttpRequest<
+                    any
+                >);
 
                 expect(subscribed).toBe(false);
                 observable.subscribe();

@@ -1,10 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Headers, Http, Request, RequestMethod, Response, ResponseOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { MockI18nNotification } from '../i18n-notification/i18n-notification.service.mock';
 
-import { ApiBase } from './api-base.service';
+import { ApiBase, RequestMethodString } from './api-base.service';
 
 /** Only available in testing. A request tracked by {@link MockApiBase}. */
 export declare class MockedApiRequest {
@@ -33,13 +34,13 @@ export class MockApiBase extends ApiBase {
 
     constructor() {
         // Provide a spy Http service to ApiBase, we don't want to do actual http calls in unit tests.
-        super((undefined as any) as string, (undefined as any) as Http, new MockI18nNotification() as any);
+        super((undefined as any) as string, (undefined as any) as HttpClient, new MockI18nNotification() as any);
         this.http = ({
             request: (r: Request) => this.interceptHttpRequest(r)
-        } as any) as Http;
+        } as any) as HttpClient;
     }
 
-    protected request(method: RequestMethod, url: string, params: any = {}, body?: any, extraHeaders?: any): any {
+    protected request(method: RequestMethodString, url: string, params: any = {}, body?: any, extraHeaders?: any): any {
         const result = super.request(method, url, params, body);
 
         // Add the passed arguments to the tracked request.
