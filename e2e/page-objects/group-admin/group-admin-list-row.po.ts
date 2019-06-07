@@ -16,7 +16,7 @@ export class GroupAdminListRow {
                 el!
                     .element(by.css('.chip-contents'))
                     .getText()
-                    .then(text => text === name)
+                    .then((text: string) => text === name)
             )
             .first()
             .element(by.css('icon'))

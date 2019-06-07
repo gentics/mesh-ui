@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ImmutableStateStore, TrackedMethodCall } from 'immutablets';
+import { of } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -73,7 +74,7 @@ export class ApplicationStateService {
 
     /** For debugging - Emits all method calls and their state changes. */
     observeMethodCalls(): Observable<TrackedMethodCall<AppState>> {
-        return this.store.observeCalls(Observable);
+        return this.store.observeCalls(of() as any);
     }
 
     /** Used for hot module reloading - fully restores a previous app state */

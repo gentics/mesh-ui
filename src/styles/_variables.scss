@@ -3,8 +3,8 @@
 // GUIC variables (e.g. $gtx-color-mid-gray) should import this file, rather than referencing the GUIC file directly.
 //
 @import "ui-core-overrides";
-@import "../../node_modules/gentics-ui-core/dist/styles/variables";
-@import "../../node_modules/gentics-ui-core/dist/styles/mixins";
+@import "../../node_modules/gentics-ui-core/styles/variables";
+@import "../../node_modules/gentics-ui-core/styles/mixins";
 @import "./mixins";
 
 $gtx-color-white: #fff !default;

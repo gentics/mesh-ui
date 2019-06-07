@@ -15,13 +15,18 @@ import {
 
 describe('node list', () => {
     beforeEach(async () => {
+        console.log('navigating to home...');
         await page.navigateToHome();
+        console.log('navigating to home... done');
     });
 
-    describe('breadcrumb', () => {
+    fdescribe('breadcrumb', () => {
         it('displays only the project name in root node', async () => {
-            const breadCrumbLinkTexts = awaitArray(nodeList.getBreadcrumbLinks().map(toText));
-            expect(await breadCrumbLinkTexts).toEqual(['demo']);
+            console.log('starting test...');
+
+            const breadCrumbLinkTexts = await awaitArray(nodeList.getBreadcrumbLinks().map(toText));
+            expect(breadCrumbLinkTexts).toEqual(['demo']);
+            console.log('done starting test...');
         });
 
         it('displays only the project and a folder in a child node of the root node', async () => {

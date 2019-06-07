@@ -37,11 +37,15 @@ export class I18nNotification {
      */
     rxError<T>(source: Observable<T>): Observable<T> {
         return source.do({
-            error: (err: any) =>
-                this.notification.show({
-                    type: 'error',
-                    message: String(err)
-                })
+            error: (err: any) => {
+                // This could fire very early after app startup. Therefore, wait for gtx-overlay-host to be initialized.
+                setTimeout(() => {
+                    this.notification.show({
+                        type: 'error',
+                        message: String(err)
+                    });
+                });
+            }
         });
     }
 

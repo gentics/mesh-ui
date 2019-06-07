@@ -29,7 +29,7 @@ describe('SchemaListComponent', () => {
     let mockRouter: any;
 
     beforeEach(async(() => {
-        spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() {} }));
+        spyOn(mockModal, 'fromComponent').and.returnValue(undefined);
         mockAdminSchemaEffects = jasmine.createSpyObj('SchemaEffects', ['loadSchemas']);
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 

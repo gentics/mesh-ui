@@ -1,4 +1,4 @@
-import { state, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { async, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -111,7 +111,7 @@ describe('ProjectListComponent', () => {
         componentTest(
             () => ProjectListComponent,
             fixture => {
-                spyOn(fixture.componentInstance.router, 'navigate').and.returnValue(true);
+                spyOn(fixture.componentInstance.router, 'navigate').and.returnValue(Promise.resolve(true));
                 fixture.debugElement.query(By.directive(Button)).nativeElement.click();
                 tick();
                 fixture.detectChanges();

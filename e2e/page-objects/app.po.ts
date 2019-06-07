@@ -14,8 +14,6 @@ async function login() {
     await element(by.css('input[name="username"]')).sendKeys('admin');
     await element(by.css('input[name="password"]')).sendKeys('admin');
     await element(by.tagName('button')).click();
-    // This seems to be necessary sometimes
-    await browser.waitForAngular();
 }
 
 export async function navigateToNodeEdit(node: HasUuid, language = 'en') {

@@ -14,5 +14,9 @@ if (environment.production) {
 }
 
 platformBrowserDynamic()
-    .bootstrapModule(AppModule)
+    .bootstrapModule(
+        AppModule,
+        // Enable preservation of whitespaces for default spacing between components.
+        { preserveWhitespaces: true }
+    )
     .catch(err => console.log(err));

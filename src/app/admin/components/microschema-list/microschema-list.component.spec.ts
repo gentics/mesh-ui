@@ -29,7 +29,7 @@ describe('MicroSchemaListComponent', () => {
     let mockRouter: any;
 
     beforeEach(async(() => {
-        spyOn(mockModal, 'fromComponent').and.returnValue(Promise.resolve({ open() {} }));
+        spyOn(mockModal, 'fromComponent').and.returnValue(undefined);
         mockAdminSchemaEffects = jasmine.createSpyObj('MicroSchemaEffects', ['loadMicroschemas']);
         mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 

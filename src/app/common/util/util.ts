@@ -152,7 +152,7 @@ export function simpleDeepEquals<T extends SimpleDeepEqualsType>(o1?: T, o2?: T)
     }
 
     for (let i = keys1.length - 1; i >= 0; i--) {
-        const key = keys1[i] as keyof T;
+        const key = keys1[i] as keyof SimpleDeepEqualsType;
         if (!simpleDeepEquals(o1[key], o2[key])) {
             return false;
         }

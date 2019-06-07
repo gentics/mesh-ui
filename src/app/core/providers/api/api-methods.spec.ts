@@ -1,5 +1,5 @@
 import { MockApiBase } from './api-base.mock';
-import { apiDelete, apiGet, apiPatch, apiPost, apiPostWithoutBody, apiPut } from './api-methods';
+import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 
 describe('api-methods helper functions', () => {
     let apiBase: MockApiBase = undefined as any;
@@ -100,52 +100,6 @@ describe('api-methods helper functions', () => {
             expect(emitted).toEqual([{ pi: 3.14 }]);
         });
     });
-
-    describe('apiPatch()', () => {
-        it('forwards the passed parameters to apiBase.patch()', () => {
-            testApi.patchSomething({ id: 314 }, { someData: 'to update somewhere' });
-            expect(apiBase.allRequests.length).toBe(1);
-            expect(apiBase.lastRequest.method).toBe('PATCH');
-            expect(apiBase.lastRequest.url).toBe('/some-api-endpoint');
-            expect(apiBase.lastRequest.params).toEqual({ id: 314 });
-            expect(apiBase.lastRequest.body).toEqual({ someData: 'to update somewhere' });
-        });
-
-        it('returns the return value of apiBase.patch()', () => {
-            const emitted: any[] = [];
-            testApi.patchSomething({ id: 314 }, { someData: 'to update somewhere' }).subscribe(v => {
-                emitted.push(v);
-            });
-
-            expect(emitted).toEqual([]);
-            expect(apiBase.allRequests.length).toBe(1);
-            apiBase.lastRequest.respond(200, { pi: 3.14 });
-            expect(emitted).toEqual([{ pi: 3.14 }]);
-        });
-    });
-
-    describe('apiPut()', () => {
-        it('forwards the passed parameters to apiBase.put()', () => {
-            testApi.putSomething({ id: 314 }, { someData: 'to be put somewhere' });
-            expect(apiBase.allRequests.length).toBe(1);
-            expect(apiBase.lastRequest.method).toBe('PUT');
-            expect(apiBase.lastRequest.url).toBe('/some-api-endpoint');
-            expect(apiBase.lastRequest.params).toEqual({ id: 314 });
-            expect(apiBase.lastRequest.body).toEqual({ someData: 'to be put somewhere' });
-        });
-
-        it('returns the return value of apiBase.put()', () => {
-            const emitted: any[] = [];
-            testApi.putSomething({ id: 314 }, { someData: 'to be put somewhere' }).subscribe(v => {
-                emitted.push(v);
-            });
-
-            expect(emitted).toEqual([]);
-            expect(apiBase.allRequests.length).toBe(1);
-            apiBase.lastRequest.respond(200, { pi: 3.14 });
-            expect(emitted).toEqual([{ pi: 3.14 }]);
-        });
-    });
 });
 
 class TestApi {
@@ -155,10 +109,4 @@ class TestApi {
     postSomethingWithoutBody = apiPostWithoutBody('/some-api-endpoint' as any);
     postSomethingWithBody = apiPost('/some-api-endpoint' as any);
     deleteSomething = apiDelete('/some-api-endpoint' as any);
-
-    // `never` means there are no PATCH endpoints yet
-    patchSomething = apiPatch(('/some-api-endpoint' as any) as never);
-
-    // `never` means there are no PUT endpoints yet
-    putSomething = apiPut(('/some-api-endpoint' as any) as never);
 }

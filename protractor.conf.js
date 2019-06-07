@@ -28,7 +28,6 @@ exports.config = {
       args: ['--window-size=1920,1080']
     }
   },
-  SELENIUM_PROMISE_MANAGER: false,
   directConnect: true,
   baseUrl: 'http://localhost:4200/',
   framework: 'jasmine',
@@ -47,9 +46,9 @@ exports.config = {
     })
     
     // Workaround for https://github.com/angular/protractor/issues/2227
-    require("protractor").ElementArrayFinder.prototype.map = function(mapFn) {
-      return this.reduce((arr, el) => arr.concat(mapFn(el, arr.length)), []);
-    };
+    // require("protractor").ElementArrayFinder.prototype.map = function(mapFn) {
+    //   return this.reduce((arr, el) => arr.concat(mapFn(el, arr.length)), []);
+    // };
     
     // Check if already logged-in to avoid wasting time
     await browser.get('/#/editor/project');

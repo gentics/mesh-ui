@@ -98,7 +98,7 @@ export namespace SchemaEditorUtils {
         }
 
         valuesRaw.replace(/\s/g, '');
-        return valuesRaw.split(new RegExp(/,/)).map(item => item.replace(/\s/g, ''));
+        return valuesRaw.split(new RegExp(/,/)).map((item: string) => item.replace(/\s/g, ''));
     }
 
     export async function getInputErrorsByFormControlName(formControlName: string, rootElement?: ElementFinder) {

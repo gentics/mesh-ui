@@ -41,7 +41,7 @@ export class HtmlField {
             (element: HTMLElement, text: string, caretOnly: boolean) => {
                 let n;
                 const textNodes = [];
-                const walk = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, undefined, false);
+                const walk = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
                 while ((n = walk.nextNode())) {
                     textNodes.push(n);
                 }
@@ -64,8 +64,12 @@ export class HtmlField {
                 }
 
                 const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                if (selection) {
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                } else {
+                    throw new Error('window.getSelection() returned null');
+                }
             },
             await this.editor,
             text,

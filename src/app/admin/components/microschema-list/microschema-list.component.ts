@@ -117,7 +117,7 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
                     microschema => microschema.permissions.delete && microschema.name !== ADMIN_USER_NAME
                 );
                 if (deletableMicroschemas.length === 0) {
-                    return Observable.empty<any[]>();
+                    return Observable.empty();
                 } else {
                     return this.displayDeleteMicroschemaModal(
                         {

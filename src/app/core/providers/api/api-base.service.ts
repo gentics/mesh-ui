@@ -1,6 +1,8 @@
+import { HttpClient, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Headers, Http, Request, RequestMethod, Response, ResponseContentType, URLSearchParams } from '@angular/http';
+import { Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { catchError, last, map } from 'rxjs/operators';
 
 import { ApiEndpoints } from '../../../common/models/server-models';
 import { I18nNotification } from '../i18n-notification/i18n-notification.service';
@@ -15,8 +17,8 @@ export type RequestLanguage = 'de' | 'en';
 export type RequestMethodString = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
 /** An observable with a `mapResponses` method which can be used to handle expected errors.  */
-export interface ResponseObservable<T> extends Observable<T[keyof T]> {
-    rawResponse: Observable<Response>;
+export interface HttpResponseObservable<T> extends Observable<T[keyof T]> {
+    rawResponse: Observable<HttpResponse<T>>;
     mapResponses<R>(mapping: ResponseMap<T, R>): Observable<R>;
 }
 
@@ -26,13 +28,13 @@ type ResponseMapCallback<T, R> = (data: T, index: number, response: Response) =>
 export type ResponseMap<T extends { [status: number]: any }, R> = FullResponseMap<T, R> | PartialResponseMap<T, R>;
 
 type FullResponseMap<T extends { [status: number]: any }, R> = {
-    [/** Handles an expected status code */
-    K in keyof T]: R | ResponseMapCallback<T[K], R>
+    /** Handles an expected status code */
+    [K in keyof T]: R | ResponseMapCallback<T[K], R>
 };
 
 type PartialResponseMap<T extends { [status: number]: any }, R> = {
-    [/** Handles an expected status code. Can be ommitted if "success" is provided. */
-    K in keyof T]?: R | ResponseMapCallback<T[K], R>
+    /** Handles an expected status code. Can be ommitted if "success" is provided. */
+    [K in keyof T]?: R | ResponseMapCallback<T[K], R>
 } & {
     /** Status codes not mentioned in the RAML */
     [status: number]: R;
@@ -60,7 +62,7 @@ export class ApiBase {
         @Inject(API_BASE_URL)
         @Optional()
         baseUrl: string | null,
-        protected http: Http,
+        protected http: HttpClient,
         private I18nNotification: I18nNotification
     ) {
         if (baseUrl) {
@@ -78,8 +80,8 @@ export class ApiBase {
         url: U,
         params: ApiEndpoints['GET'][U]['request']['urlParams'] & ApiEndpoints['GET'][U]['request']['queryParams'],
         headers?: any
-    ): ResponseObservable<ApiEndpoints['GET'][U]['responseTypes']> {
-        return this.request(RequestMethod.Get, url, params as any, null, headers);
+    ): HttpResponseObservable<ApiEndpoints['GET'][U]['responseTypes']> {
+        return this.request('GET', url, params as any, null, headers);
     }
 
     /**
@@ -95,8 +97,8 @@ export class ApiBase {
         url: U,
         params: ApiEndpoints['POST'][U]['request']['urlParams'] & ApiEndpoints['POST'][U]['request']['queryParams'],
         body: ApiEndpoints['POST'][U]['request']['body']
-    ): ResponseObservable<ApiEndpoints['POST'][U]['responseTypes']> {
-        return this.request(RequestMethod.Post, url, params as any, body);
+    ): HttpResponseObservable<ApiEndpoints['POST'][U]['responseTypes']> {
+        return this.request('POST', url, params as any, body);
     }
 
     /**
@@ -108,37 +110,37 @@ export class ApiBase {
     delete<U extends keyof ApiEndpoints['DELETE']>(
         url: U,
         params: ApiEndpoints['DELETE'][U]['request']['urlParams'] & ApiEndpoints['DELETE'][U]['request']['queryParams']
-    ): ResponseObservable<ApiEndpoints['DELETE'][U]['responseTypes']> {
-        return this.request(RequestMethod.Delete, url, params as any);
+    ): HttpResponseObservable<ApiEndpoints['DELETE'][U]['responseTypes']> {
+        return this.request('DELETE', url, params as any);
     }
 
-    /**
-     * Create an Observable that will send a PATCH request to the API when subscribed to.
-     *
-     * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
-     * @param {object} requestProps Properties of the request (`urlParams`, `queryParams` and `body`).
-     */
-    patch<U extends keyof ApiEndpoints['PATCH']>(
-        url: U,
-        params: ApiEndpoints['PATCH'][U]['request']['urlParams'] & ApiEndpoints['PATCH'][U]['request']['queryParams'],
-        body: ApiEndpoints['PATCH'][U]['request']['body']
-    ): ResponseObservable<ApiEndpoints['PATCH'][U]['responseTypes']> {
-        return this.request('PATCH' as any, url, params as any, body);
-    }
+    // /**
+    //  * Create an Observable that will send a PATCH request to the API when subscribed to.
+    //  *
+    //  * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
+    //  * @param {object} requestProps Properties of the request (`urlParams`, `queryParams` and `body`).
+    //  */
+    // patch<U extends keyof ApiEndpoints['PATCH']>(
+    //     url: U,
+    //     params: ApiEndpoints['PATCH'][U]['request']['urlParams'] & ApiEndpoints['PATCH'][U]['request']['queryParams'],
+    //     body: ApiEndpoints['PATCH'][U]['request']['body']
+    // ): ResponseObservable<ApiEndpoints['PATCH'][U]['responseTypes']> {
+    //     return this.request('PATCH' as any, url, params as any, body);
+    // }
 
-    /**
-     * Create an Observable that will send a PUT request to the API when subscribed to.
-     *
-     * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
-     * @param {object} requestProps Properties of the request (`urlParams`, `queryParams` and `body`).
-     */
-    put<U extends keyof ApiEndpoints['PUT']>(
-        url: U,
-        params: ApiEndpoints['PUT'][U]['request']['urlParams'] & ApiEndpoints['PUT'][U]['request']['queryParams'],
-        body: ApiEndpoints['PUT'][U]['request']['body']
-    ): ResponseObservable<ApiEndpoints['PUT'][U]['responseTypes']> {
-        return this.request(RequestMethod.Put, url, params as any, body);
-    }
+    // /**
+    //  * Create an Observable that will send a PUT request to the API when subscribed to.
+    //  *
+    //  * @param {string} url The url to request with placeholders, e.g. `"/projects/{project}/groups/"`.
+    //  * @param {object} requestProps Properties of the request (`urlParams`, `queryParams` and `body`).
+    //  */
+    // put<U extends keyof ApiEndpoints['PUT']>(
+    //     url: U,
+    //     params: ApiEndpoints['PUT'][U]['request']['urlParams'] & ApiEndpoints['PUT'][U]['request']['queryParams'],
+    //     body: ApiEndpoints['PUT'][U]['request']['body']
+    // ): ResponseObservable<ApiEndpoints['PUT'][U]['responseTypes']> {
+    //     return this.request('PUT', url, params as any, body);
+    // }
 
     /**
      * Change the language to set as "Accept-Language" header of requests.
@@ -150,14 +152,14 @@ export class ApiBase {
 
     /** Use the parameters to create a request and handle critical errors. */
     protected request(
-        method: RequestMethod,
+        method: RequestMethodString,
         url: string,
         params: QueryParams & UrlParams,
         body?: any,
         extraHeaders?: { [key: string]: string | number }
-    ): ResponseObservable<any> {
+    ): HttpResponseObservable<any> {
         // Append request headers
-        const headers = new Headers({
+        const headers = new HttpHeaders({
             Accept: 'application/json',
             'Accept-Language': this.requestLanguage,
             ...extraHeaders
@@ -189,22 +191,18 @@ export class ApiBase {
                 }
             }
         } else {
-            bodyToUse = JSON.stringify(body);
+            bodyToUse = body;
             headers.append('Content-Type', 'application/json');
         }
 
-        const request = new Request({
-            url: this.formatUrl(url, params),
-            method,
+        const request = new HttpRequest(method, this.formatUrl(url, params), bodyToUse, {
             headers,
-            body: bodyToUse,
             withCredentials: false
         });
 
         // Perform the actual request using the Http service provided by Angular
-        const result = this.http
-            .request(request)
-            .catch((errorOrResponse: Error | Response) => {
+        const result = this.http.request(request).pipe(
+            catchError((errorOrResponse: Error) => {
                 // When an unexpected error is thrown by angular, wrap it in an ApiError
                 if (errorOrResponse instanceof Response) {
                     // Non-OK statuses will be thrown by angular, but that could be expected.
@@ -213,19 +211,13 @@ export class ApiBase {
                 } else {
                     return Observable.throw(new ApiError({ url, request, originalError: errorOrResponse }));
                 }
-            })
-            .map((response: Response) => {
+            }),
+            last(),
+            map((response: HttpResponse<any>) => {
                 // If response.json() fails, throw an ApiError instead of a generic error.
-                const originalToJSON = response.json.bind(response);
-                response.json = () => {
-                    try {
-                        return originalToJSON();
-                    } catch (e) {
-                        throw new ApiError({ url, request, response, cause: 'Invalid JSON' });
-                    }
-                };
                 return response;
-            }) as ResponseObservable<any>;
+            })
+        );
 
         return this.toResponseObservable(result, url, request);
     }
@@ -274,10 +266,10 @@ export class ApiBase {
 
     /** Adds the mapResponses method to observables returned by ApiBase methods. */
     protected toResponseObservable<T>(
-        inputObservable: Observable<Response>,
+        inputObservable: Observable<HttpResponse<any>>,
         url: string,
-        request: Request
-    ): ResponseObservable<T> {
+        request: HttpRequest<any>
+    ): HttpResponseObservable<T> {
         // The returned observable throws on HTTP errors, mapResponses does not.
         const resultObservable = (inputObservable
             .map(response => {
@@ -287,7 +279,7 @@ export class ApiBase {
                     throw new ApiError({ url, request, response });
                 }
             })
-            .pipe(this.I18nNotification.rxError) as any) as ResponseObservable<T>;
+            .pipe(this.I18nNotification.rxError) as any) as HttpResponseObservable<T>;
 
         resultObservable.rawResponse = inputObservable;
 
@@ -314,17 +306,17 @@ export class ApiBase {
     }
 
     /** Gets the body from an angular `Response` object */
-    private getBody(response: Response): any {
+    private getBody(response: HttpResponse<any>): any {
         const contentType = response.headers && response.headers.get('Content-Type');
         if (contentType && (contentType.startsWith('application/json') || contentType.startsWith('text/json'))) {
-            return response.json();
+            return response.body;
         } else if (contentType && contentType.startsWith('text/')) {
-            return response.text();
+            return response.body;
         } else if (response.status === 204) {
             // No content (happens on delete)
             return null;
         } else {
-            return response.blob();
+            return response.body;
         }
     }
 }
