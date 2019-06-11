@@ -533,6 +533,10 @@
         "en": "Container",
         "de": "Container"
     },
+    "schema_editor_inputlabel_autopurge": {
+        "en": "Auto Purge",
+        "de": "Selbstbereinigung"
+    },
     "schema_editor_inputlabel_description": {
         "en": "Description",
         "de": "Beschreibung"
