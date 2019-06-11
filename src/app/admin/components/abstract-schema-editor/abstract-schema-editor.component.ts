@@ -311,10 +311,12 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
      */
     fieldAddAt(index: number): void {
         this.schemaFields.insert(index, this.createNewFieldForIndex(index));
+        setTimeout(() => this.fieldFocus(index), 0);
     }
     fieldAddAtAnim(index: number): void {
         this.schemaFields.insert(index, this.createNewFieldForIndex(index));
         setTimeout(() => this.fieldAddAnimate(index), 0);
+        setTimeout(() => this.fieldFocus(index), 0);
     }
 
     /** @description Add new FormGroup instance to FormArray */
@@ -324,6 +326,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     fieldAddAnim(): void {
         this.schemaFields.push(this.createNewField());
         setTimeout(() => this.fieldAddAnimate(this.schemaFields.value.length - 1), 0);
+        setTimeout(() => this.fieldFocus(this.schemaFields.value.length), 0);
         this.scrollToFieldLast();
     }
 
@@ -941,6 +944,16 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
                 errorKeys
             ) as ValidationErrors | null);
         control!.setErrors(updatedErrors);
+    }
+
+    /**
+     * @description set focus on first input element of created field
+     * @param index FormArray index
+     */
+    protected fieldFocus(index: number): void {
+        const field = this.fields.toArray()[index] || this.fields.last;
+        const input = field.nativeElement.querySelector('[formcontrolname="name"] input');
+        input.focus();
     }
 }
 
