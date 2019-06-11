@@ -535,7 +535,7 @@
     },
     "schema_editor_inputlabel_autopurge": {
         "en": "Auto Purge",
-        "de": "Selbstbereinigung"
+        "de": "Auto-Purge"
     },
     "schema_editor_inputlabel_description": {
         "en": "Description",

@@ -88,7 +88,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
     formValidators: { [key: string]: ValidatorFn[] | any } = {
         name: [Validators.required, Validators.pattern(this.allowedCharsRegExp)],
         container: [],
-        autpurge: [],
+        autoPurge: [],
         description: [],
         displayField: [],
         segmentField: [],
