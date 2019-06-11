@@ -13,7 +13,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
     templateUrl: './breadcrumbs.component.html',
     styleUrls: ['./breadcrumbs.scss']
 })
-export class BreadcrumbsComponent implements OnInit, AfterViewChecked {
+export class BreadcrumbsComponent implements OnInit {
     routerLinks$: Observable<IBreadcrumbRouterLink[]>;
 
     constructor(
@@ -23,27 +23,15 @@ export class BreadcrumbsComponent implements OnInit, AfterViewChecked {
     ) {}
 
     ngOnInit() {
-        this.routerLinks$ = this.state.select(state => state.list).map(({ currentNode, language }) => {
-            let node: MeshNode | undefined;
-            if (currentNode) {
-                node = this.entities.getNode(currentNode, { language, strictLanguageMatch: false });
-            }
-            return this.toRouterLinks(node, language);
-        });
-    }
-
-    /**
-     * This is here to avoid Error: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked.
-     * If we make this after view was checked, there is no such error.
-     */
-    ngAfterViewChecked() {
-        this.routerLinks$ = this.state.select(state => state.list).map(({ currentNode, language }) => {
-            let node: MeshNode | undefined;
-            if (currentNode) {
-                node = this.entities.getNode(currentNode, { language, strictLanguageMatch: false });
-            }
-            return this.toRouterLinks(node, language);
-        });
+        this.routerLinks$ = this.state
+            .select(state => state.list)
+            .map(({ currentNode, language }) => {
+                let node: MeshNode | undefined;
+                if (currentNode) {
+                    node = this.entities.getNode(currentNode, { language, strictLanguageMatch: false });
+                }
+                return this.toRouterLinks(node, language);
+            });
     }
 
     /**
