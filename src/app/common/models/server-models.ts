@@ -4828,6 +4828,11 @@ export interface SchemaChangesListModelFromServer {
 
 export interface SchemaCreateRequest {
     /**
+     * Flag which indicates whether version history should be squashed or retained.
+     * See Mesh docs: https://getmesh.io/docs/features/#auto-purge
+     */
+    readonly autoPurge: boolean;
+    /**
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.
      */
@@ -4892,6 +4897,11 @@ export interface SchemaReferenceFromServer {
  */
 export interface SchemaResponse {
     /**
+     * Flag which indicates whether version history should be squashed or retained.
+     * See Mesh docs: https://getmesh.io/docs/features/#auto-purge
+     */
+    readonly autoPurge: boolean;
+    /**
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.
      */
@@ -4937,6 +4947,11 @@ export interface SchemaResponse {
 }
 
 export interface SchemaUpdateRequest {
+    /**
+     * Flag which indicates whether version history should be squashed or retained.
+     * See Mesh docs: https://getmesh.io/docs/features/#auto-purge
+     */
+    readonly autoPurge: boolean;
     /**
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.

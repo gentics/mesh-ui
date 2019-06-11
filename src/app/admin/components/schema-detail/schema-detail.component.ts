@@ -99,9 +99,11 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.schema$ = this.route.data.map(data => data.schema).do((schema: Schema) => {
-            this.isNew$.next(!schema);
-        });
+        this.schema$ = this.route.data
+            .map(data => data.schema)
+            .do((schema: Schema) => {
+                this.isNew$.next(!schema);
+            });
 
         this.subscription = this.schema$.subscribe(schema => {
             this.schemaJson$.next(schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`);
@@ -139,9 +141,11 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
         this.projects$ = combineLatest(this.allProjects$, filterTerm$).map(([projects, filterTerm]) => {
             this.filterTerm = filterTerm;
-            return projects.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
-                return pro1.name < pro2.name ? -1 : 1;
-            });
+            return projects
+                .filter(project => fuzzyMatch(filterTerm, project.name) !== null)
+                .sort((pro1, pro2) => {
+                    return pro1.name < pro2.name ? -1 : 1;
+                });
         });
     }
 
@@ -233,6 +237,7 @@ const updateFields: Array<keyof SchemaResponse> = [
     'segmentField',
     'urlFields',
     'container',
+    'autoPurge',
     'elasticsearch'
 ];
 
