@@ -1,13 +1,10 @@
-import { browser, by, element, until } from 'protractor';
+import { browser, by, element, protractor, until } from 'protractor';
 
 import { HasUuid } from '../../src/app/common/models/common.model';
 
 export async function navigateToHome() {
-    await browser.get('/');
-    const url = await browser.getCurrentUrl();
-    if (url.match(/login$/)) {
-        await login();
-    }
+    await goToRoute('/');
+    await browser.wait(protractor.ExpectedConditions.urlContains('/editor/project/'), 2000);
 }
 
 async function login() {
@@ -17,11 +14,11 @@ async function login() {
 }
 
 export async function navigateToNodeEdit(node: HasUuid, language = 'en') {
-    await browser.get(`/#/editor/project/(detail:demo/${node.uuid}/${language})`);
+    await goToRoute(`/editor/project/(detail:demo/${node.uuid}/${language})`);
 }
 
 export async function navigateToFolder(node: HasUuid, language = 'en') {
-    await browser.get(`/#/editor/project/(list:demo/${node.uuid}/${language})`);
+    await goToRoute(`/editor/project/(list:demo/${node.uuid}/${language})`);
 }
 
 export async function navigateToGroupAdmin() {
@@ -59,5 +56,7 @@ export async function navigateToAdminMicroschemaEditorExistingSchema(schemaUuid:
 }
 
 async function goToRoute(route: string) {
+    // .setLocation does not work with angular 2+. See https://stackoverflow.com/questions/50355276/protractor-angular-is-not-defined-when-using-browser-setlocation
+    // await browser.setLocation(route);
     await browser.executeScript((route: string) => (window.location.href = `/#${route}`), route);
 }
