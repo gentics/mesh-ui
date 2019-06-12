@@ -163,6 +163,10 @@
         "en": "First name",
         "de": "Vorname"
     },
+    "forced_password_change_label": {
+        "en": "Force user to change password on login",
+        "de": "Benutzer muss Passwort beim nächsten Login ändern"
+    },
     "group_created": {
         "en": "New group created",
         "de": "Neue Gruppe erstellt"

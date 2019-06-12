@@ -5167,6 +5167,8 @@ export interface UserCreateRequest {
     readonly password: string;
     /** Username of the user. */
     readonly username: string;
+    /** When true, the user needs to change their password on the next login. */
+    readonly forcedPasswordChange?: boolean;
 }
 
 /**
@@ -5261,6 +5263,8 @@ export interface UserResponse {
     readonly username: string;
     /** Uuid of the element */
     readonly uuid: string;
+    /** When true, the user needs to change their password on the next login. */
+    readonly forcedPasswordChange: boolean;
 }
 
 export interface UserUpdateRequest {
@@ -5280,4 +5284,6 @@ export interface UserUpdateRequest {
     readonly password?: string;
     /** New username of the user */
     readonly username?: string;
+    /** When true, the user needs to change their password on the next login. */
+    readonly forcedPasswordChange?: boolean;
 }
