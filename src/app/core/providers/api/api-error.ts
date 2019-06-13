@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Response } from '@angular/http';
 
 /**
@@ -10,6 +10,7 @@ export class ApiError extends Error {
     readonly request: HttpRequest<any>;
     readonly response: HttpResponse<any> | undefined;
     readonly url: string;
+    readonly i18nKey?: string;
 
     /** Construct from a successful request and a response (not necessarily HTTP 200) */
     constructor({
@@ -42,21 +43,21 @@ export class ApiError extends Error {
         url = url || request.url;
 
         let message: string;
-        if (response) {
-            // Attempt to parse error message from mesh
-            let responseBody;
-            try {
-                responseBody = response.body;
-            } catch (err) {}
-            if (responseBody && responseBody.message) {
-                message = responseBody.message;
-            } else {
-                message = (cause || `HTTP ${response.status} returned`) + ` for "${url}"`;
-            }
-        } else if (originalError) {
-            message = `${originalError.name} requesting "${url}": ${originalError.message}`;
+        let i18nKey: string | undefined;
+        const responseBody =
+            (response && response.body) ||
+            (originalError && originalError instanceof HttpErrorResponse && originalError.error);
+        if (responseBody) {
+            i18nKey = responseBody.i18nKey;
+            message = responseBody.message;
         } else {
-            message = `Error requesting "${url}".`;
+            if (response) {
+                message = (cause || `HTTP ${response.status} returned`) + ` for "${url}"`;
+            } else if (originalError) {
+                message = `${originalError.name} requesting "${url}": ${originalError.message}`;
+            } else {
+                message = `Error requesting "${url}".`;
+            }
         }
 
         super(message);
@@ -72,5 +73,6 @@ export class ApiError extends Error {
         this.request = request;
         this.response = response;
         this.url = url;
+        this.i18nKey = i18nKey;
     }
 }

@@ -4269,6 +4269,8 @@ export interface LoginRequest {
     readonly password: string;
     /** Username of the user which should be logged in. */
     readonly username: string;
+    /** New password that will be set after successful login. */
+    readonly newPassword?: string;
 }
 
 /**

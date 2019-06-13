@@ -19,16 +19,41 @@
         <div class="name-app">Mesh</div>
     </div>
 
+    <div class="error-message"
+         *ngIf="forcedPasswordChange">
+        {{'auth.forced_password_change_message' | i18n}}
+    </div>
+
     <form class="login-form"
+          [formGroup]="loginForm"
           [ngClass]="animclassform"
           (ngSubmit)="onSubmit()">
         <gtx-input placeholder="username"
-                   [(ngModel)]="username"
-                   name="username"></gtx-input>
+                   formControlName="username"></gtx-input>
+        <div class="input-note">
+            <p *ngIf="loginForm.touched && loginForm.controls.username.hasError('required')"
+               class="invalid">required</p>
+        </div>
         <gtx-input placeholder="password"
                    type="password"
-                   [(ngModel)]="password"
-                   name="password"></gtx-input>
-        <gtx-button submit>Log In</gtx-button>
+                   formControlName="password"></gtx-input>
+        <div class="input-note">
+            <p *ngIf="loginForm.touched && loginForm.controls.password.hasError('required')"
+               class="invalid">required</p>
+        </div>
+        <gtx-input *ngIf="forcedPasswordChange"
+                   placeholder="New Password"
+                   type="password"
+                   formControlName="newPassword"></gtx-input>
+        <gtx-input *ngIf="forcedPasswordChange"
+                   placeholder="Repeat New Password"
+                   type="password"
+                   formControlName="newPasswordRepeat"></gtx-input>
+        <div class="input-note">
+            <p *ngIf="loginForm.touched && loginForm.controls.username.hasError('matchOther')"
+               class="invalid">match other</p>
+        </div>
+        <gtx-button [disabled]="loginForm.invalid"
+                    submit>Log In</gtx-button>
     </form>
 </div>
