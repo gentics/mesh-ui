@@ -63,9 +63,14 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
     async onSubmit() {
         const values = this.loginForm.value;
-        this.forcedPasswordChange = false;
         try {
-            await this.authEffects.login(values.username, values.password, values.newPassword || undefined);
+            if (this.forcedPasswordChange) {
+                this.forcedPasswordChange = false;
+                await this.authEffects.login(values.username, values.password, values.newPassword || undefined);
+            } else {
+                this.forcedPasswordChange = false;
+                await this.authEffects.login(values.username, values.password);
+            }
         } catch (err) {
             if (err && err.i18nKey === 'auth_login_password_change_required') {
                 this.forcedPasswordChange = true;

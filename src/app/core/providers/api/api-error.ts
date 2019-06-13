@@ -1,6 +1,8 @@
 import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Response } from '@angular/http';
 
+import { I18NErrorKey } from './api-error-i18n-keys';
+
 /**
  * A specific error caused by the API, only thrown on unexpected status codes or on critical errors.
  * The original url, request and response can be accessed as properties of the error.
@@ -43,7 +45,7 @@ export class ApiError extends Error {
         url = url || request.url;
 
         let message: string;
-        let i18nKey: string | undefined;
+        let i18nKey: I18NErrorKey | undefined;
         const responseBody =
             (response && response.body) ||
             (originalError && originalError instanceof HttpErrorResponse && originalError.error);
