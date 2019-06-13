@@ -473,10 +473,6 @@
         "de": "Projektzuordnungen"
     },
 
-    "schema_editor_validator_required": {
-        "en": "This field is required",
-        "de": "Dieses Feld is erforderlich"
-    },
     "schema_editor_validator_pattern": {
         "en": "This field may contain allowed charaters only: alphanumeric characters and {{allowedchars}}",
         "de": "Für die Eingabe sind nur folgende Zeichen erlaubt: alphanumerische Zeichen und {{allowedchars}}"

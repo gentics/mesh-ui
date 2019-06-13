@@ -29,17 +29,19 @@
           [ngClass]="animclassform"
           (ngSubmit)="onSubmit()">
         <gtx-input placeholder="username"
+                   name="username"
                    formControlName="username"></gtx-input>
         <div class="input-note">
             <p *ngIf="loginForm.touched && loginForm.controls.username.hasError('required')"
-               class="invalid">required</p>
+               class="invalid">{{'common.field_required' | i18n}}</p>
         </div>
         <gtx-input placeholder="password"
+                   name="password"
                    type="password"
                    formControlName="password"></gtx-input>
         <div class="input-note">
             <p *ngIf="loginForm.touched && loginForm.controls.password.hasError('required')"
-               class="invalid">required</p>
+               class="invalid">{{'common.field_required' | i18n}}</p>
         </div>
         <gtx-input *ngIf="forcedPasswordChange"
                    placeholder="New Password"
@@ -50,8 +52,8 @@
                    type="password"
                    formControlName="newPasswordRepeat"></gtx-input>
         <div class="input-note">
-            <p *ngIf="loginForm.touched && loginForm.controls.username.hasError('matchOther')"
-               class="invalid">match other</p>
+            <p *ngIf="loginForm.touched && loginForm.controls.newPasswordRepeat.hasError('matchOther')"
+               class="invalid">{{'auth.password_mismatch' | i18n }}</p>
         </div>
         <gtx-button [disabled]="loginForm.invalid"
                     submit>Log In</gtx-button>
