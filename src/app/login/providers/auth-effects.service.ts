@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { UserResponse } from 'src/app/common/models/server-models';
 
+import { ApiError } from '../../core/providers/api/api-error';
 import { ApiService } from '../../core/providers/api/api.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
@@ -30,18 +33,20 @@ export class AuthEffectsService {
             );
     }
 
-    login(username: string, password: string): void {
+    login(username: string, password: string, newPassword?: string): Promise<UserResponse> {
         this.state.actions.auth.loginStart();
-        this.api.auth
-            .login({ username, password })
-            .flatMap(successful => {
-                if (successful) {
+        return this.api.auth
+            .login({ username, password, newPassword })
+            .flatMap(response => {
+                if (typeof response === 'boolean') {
                     return this.api.auth.getCurrentUser();
+                } else if (response && response.i18nKey) {
+                    throw response;
                 } else {
                     return [];
                 }
             })
-            .subscribe(
+            .do(
                 user => {
                     if (!user || user.username === this.config.ANONYMOUS_USER_NAME) {
                         this.state.actions.auth.loginError();
@@ -51,10 +56,10 @@ export class AuthEffectsService {
                 },
                 error => {
                     this.state.actions.auth.loginError();
-                    // TODO: Add general error handler
                     throw error;
                 }
-            );
+            )
+            .toPromise();
     }
 
     logout(): void {

@@ -86,7 +86,8 @@ export class UserDetailComponent implements OnInit, OnDestroy {
                 password: ['', user ? undefined : Validators.required],
                 firstName: user ? user.firstname : '',
                 lastName: user ? user.lastname : '',
-                emailAddress: user ? user.emailAddress : ''
+                emailAddress: user ? user.emailAddress : '',
+                forcedPasswordChange: user ? user.forcedPasswordChange : false
             });
         });
     }
@@ -148,7 +149,8 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             password: formValue.password,
             firstname: formValue.firstName,
             lastname: formValue.lastName,
-            emailAddress: formValue.emailAddress
+            emailAddress: formValue.emailAddress,
+            forcedPasswordChange: formValue.forcedPasswordChange
         };
     }
 }

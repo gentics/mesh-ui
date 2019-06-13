@@ -358,5 +358,9 @@
     "roles": {
       "en": "Roles",
       "de": "Rollen"
+    },
+    "field_required": {
+      "en": "This field is required",
+      "de": "Dieses Feld is erforderlich"
     }
 }

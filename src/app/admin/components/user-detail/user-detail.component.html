@@ -34,6 +34,12 @@
                            [label]="'admin.email_address_label' | i18n"></gtx-input>
             </div>
         </div>
+        <div class="row">
+            <div class="small-12 columns">
+                <gtx-checkbox formControlName="forcedPasswordChange"
+                              [label]="'admin.forced_password_change_label' | i18n"></gtx-checkbox>
+            </div>
+        </div>
     </form>
 </div>
 
@@ -61,9 +67,9 @@
                 </gtx-button>
             </div>
             <mesh-form-generator #formGenerator
-                            [readOnly]="true"
-                            [node]="node"
-                            [schema]="userNodeSchema$ | async"></mesh-form-generator>
+                                 [readOnly]="true"
+                                 [node]="node"
+                                 [schema]="userNodeSchema$ | async"></mesh-form-generator>
         </div>
     </div>
 
@@ -77,7 +83,8 @@
     </ng-template>
 </div>
 
-<div class="actions" *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
+<div class="actions"
+     *meshProjectTo="BREADCRUMBS_BAR_PORTAL_ID">
     <gtx-button type="primary"
                 size="small"
                 class="save-button"

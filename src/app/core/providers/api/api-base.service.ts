@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable, Optional } from '@angular/core';
 import { Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -22,19 +22,19 @@ export interface HttpResponseObservable<T> extends Observable<T[keyof T]> {
     mapResponses<R>(mapping: ResponseMap<T, R>): Observable<R>;
 }
 
-type ResponseMapCallback<T, R> = (data: T, index: number, response: Response) => R;
+type ResponseMapCallback<T, R> = (data: T) => R;
 
 /** A map of values to return for expected status codes */
 export type ResponseMap<T extends { [status: number]: any }, R> = FullResponseMap<T, R> | PartialResponseMap<T, R>;
 
 type FullResponseMap<T extends { [status: number]: any }, R> = {
     /** Handles an expected status code */
-    [K in keyof T]: R | ResponseMapCallback<T[K], R>
+    [K in keyof T]: R | ResponseMapCallback<T[K], R>;
 };
 
 type PartialResponseMap<T extends { [status: number]: any }, R> = {
     /** Handles an expected status code. Can be ommitted if "success" is provided. */
-    [K in keyof T]?: R | ResponseMapCallback<T[K], R>
+    [K in keyof T]?: R | ResponseMapCallback<T[K], R>;
 } & {
     /** Status codes not mentioned in the RAML */
     [status: number]: R;
@@ -274,7 +274,7 @@ export class ApiBase {
         const resultObservable = (inputObservable
             .map(response => {
                 if (response.ok) {
-                    return this.getBody(response);
+                    return response.body;
                 } else {
                     throw new ApiError({ url, request, response });
                 }
@@ -285,38 +285,44 @@ export class ApiBase {
 
         resultObservable.mapResponses = <TResult>(mapping: ResponseMap<T, TResult>): Observable<TResult> => {
             return inputObservable
-                .map((response, index) => {
-                    if (response.status in mapping || (response.ok && (mapping as any).success)) {
-                        const mappedTo: any =
-                            response.status in mapping ? (mapping as any)[response.status] : (mapping as any).success;
-
+                .materialize()
+                .map(notification => {
+                    let status: number;
+                    let body: any;
+                    if (
+                        notification.error instanceof ApiError &&
+                        notification.error.originalError instanceof HttpErrorResponse
+                    ) {
+                        const originalError = notification.error.originalError;
+                        status = originalError.status;
+                        body = originalError.error;
+                    } else if (notification.hasValue && notification.value) {
+                        status = notification.value.status;
+                        body = notification.value.body;
+                    } else if (notification.kind === 'C') {
+                        return;
+                    } else {
+                        throw new ApiError({ url, request, response: notification.value || notification.error });
+                    }
+                    const ok = status >= 200 && status < 300;
+                    if (status in mapping || (ok && (mapping as any).success)) {
+                        const mappedTo: any = status in mapping ? (mapping as any)[status] : (mapping as any).success;
                         if (typeof mappedTo === 'function') {
-                            return mappedTo.call(this, this.getBody(response), index, response);
+                            return mappedTo.call(this, body);
                         } else {
                             return mappedTo;
                         }
+                    } else {
+                        if (notification.value) {
+                            throw new ApiError({ url, request, response: notification.value });
+                        } else {
+                            throw new ApiError({ url, request, originalError: notification.error.originalError });
+                        }
                     }
-
-                    throw new ApiError({ url, request, response });
                 })
                 .pipe(this.I18nNotification.rxError);
         };
 
         return resultObservable;
-    }
-
-    /** Gets the body from an angular `Response` object */
-    private getBody(response: HttpResponse<any>): any {
-        const contentType = response.headers && response.headers.get('Content-Type');
-        if (contentType && (contentType.startsWith('application/json') || contentType.startsWith('text/json'))) {
-            return response.body;
-        } else if (contentType && contentType.startsWith('text/')) {
-            return response.body;
-        } else if (response.status === 204) {
-            // No content (happens on delete)
-            return null;
-        } else {
-            return response.body;
-        }
     }
 }

@@ -8,7 +8,7 @@
                    formControlName="name"></gtx-input>
         <div class="input-note">
             <p *ngIf="isformControlTouched('name') && getFormControlErrorOfType('name', 'required')"
-               class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+               class="invalid">{{ 'common.field_required' | i18n }}</p>
             <p *ngIf="isformControlTouched('name') && getFormControlErrorOfType('name', 'pattern')"
                class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
             <p *ngIf="isformControlTouched('name') && getFormControlErrorOfType('name', 'conflict')"
@@ -47,7 +47,7 @@
         </gtx-select>
         <div class="input-note">
             <p *ngIf="isformControlTouched('displayField') && getFormControlErrorOfType('displayField', 'required')"
-               class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+               class="invalid">{{ 'common.field_required' | i18n }}</p>
             <p class="warning"
                *ngIf="!hasDisplayFields()">{{ 'admin.schema_editor_warning_displayfield' | i18n }}</p>
         </div>
@@ -118,7 +118,7 @@
                                        formControlName="name"></gtx-input>
                             <div class="input-note">
                                 <p *ngIf="isFormControlInArrayTouched(i, 'name') && getFormControlInArrayErrorOfType(i, 'name', 'required')"
-                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                                   class="invalid">{{ 'common.field_required' | i18n }}</p>
                                 <p *ngIf="isFormControlInArrayTouched(i, 'name') && getFormControlInArrayErrorOfType(i, 'name', 'pattern')"
                                    class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
                                 <p *ngIf="isFormControlInArrayTouched(i, 'name') && getFormControlInArrayErrorOfType(i, 'name', 'duplicate')"
@@ -140,7 +140,7 @@
                             </gtx-select>
                             <div class="input-note">
                                 <p *ngIf="isFormControlInArrayTouched(i, 'type') && getFormControlInArrayErrorOfType(i, 'type', 'required')"
-                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                                   class="invalid">{{ 'common.field_required' | i18n }}</p>
                             </div>
                         </div>
 
@@ -164,7 +164,7 @@
                             </gtx-select>
                             <div class="input-note">
                                 <p *ngIf="isFormControlInArrayTouched(i, 'listType') && getFormControlInArrayErrorOfType(i, 'listType', 'required')"
-                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                                   class="invalid">{{ 'common.field_required' | i18n }}</p>
                             </div>
                         </div>
 
@@ -180,7 +180,7 @@
                             </gtx-select>
                             <div class="input-note">
                                 <p *ngIf="isFormControlInArrayTouched(i, 'allow') && getFormControlInArrayErrorOfType(i, 'allow', 'required')"
-                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                                   class="invalid">{{ 'common.field_required' | i18n }}</p>
                             </div>
                         </div>
 
@@ -196,7 +196,7 @@
                             </gtx-select>
                             <div class="input-note">
                                 <p *ngIf="isFormControlInArrayTouched(i, 'allow') && getFormControlInArrayErrorOfType(i, 'allow', 'required')"
-                                   class="invalid">{{ 'admin.schema_editor_validator_required' | i18n }}</p>
+                                   class="invalid">{{ 'common.field_required' | i18n }}</p>
                             </div>
                         </div>
 

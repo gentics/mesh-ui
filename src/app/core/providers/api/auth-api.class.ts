@@ -3,6 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { GenericMessageResponse, UserResponse } from '../../../common/models/server-models';
 
 import { ApiBase, ResponseMap } from './api-base.service';
+import { ApiError } from './api-error';
 
 export class AuthApi {
     constructor(private apiBase: ApiBase) {}
@@ -26,15 +27,24 @@ export class AuthApi {
     }
 
     /** Login as a known user. */
-    login({ username, password }: { username: string; password: string }): Observable<boolean> {
-        return this.apiBase.post('/auth/login', undefined, { username, password }).mapResponses({
+    login({
+        username,
+        password,
+        newPassword
+    }: {
+        username: string;
+        password: string;
+        newPassword?: string;
+    }): Observable<boolean | ApiError> {
+        return this.apiBase.post('/auth/login', undefined, { username, password, newPassword }).mapResponses({
             success: true,
-            401: false
+            400: err => err
         } as ResponseMap<
             {
-                200: any;
+                200: GenericMessageResponse;
+                400: ApiError;
             },
-            boolean
+            boolean | ApiError
         >);
     }
 

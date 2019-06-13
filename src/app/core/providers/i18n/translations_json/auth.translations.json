@@ -10,5 +10,13 @@
     "logout": {
       "en": "Log out",
       "de": "Ausloggen"
+    },
+    "forced_password_change_message": {
+      "en": "You have to change your password to login.",
+      "de": "Sie müssen Ihr Passwort ändern, um sich einzuloggen."
+    },
+    "password_mismatch": {
+      "en": "Password doesn't match",
+      "de": "Die Passwörter stimmen nicht überein"
     }
 }

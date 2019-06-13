@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import { matchOtherValidator } from 'src/app/common/util/util';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AuthEffectsService } from '../../providers/auth-effects.service';
@@ -11,9 +13,6 @@ import { AuthEffectsService } from '../../providers/auth-effects.service';
     styleUrls: ['./login.scss']
 })
 export class LoginComponent implements AfterViewInit, OnDestroy {
-    username = '';
-    password = '';
-
     /** CSS class string defining logo animation state */
     animclasscontainer = '';
     animclasslogo = 'cube__face--front';
@@ -22,10 +21,15 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
 
     private subscription: Subscription;
 
+    public forcedPasswordChange: boolean;
+
+    public loginForm: FormGroup;
+
     constructor(
         private appState: ApplicationStateService,
         private authEffects: AuthEffectsService,
-        private router: Router
+        private router: Router,
+        private fb: FormBuilder
     ) {
         this.subscription = this.appState
             .select(state => state.auth.loggedIn)
@@ -34,6 +38,13 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
             .subscribe(() => {
                 this.router.navigate(['/editor', 'project']);
             });
+
+        this.loginForm = fb.group({
+            username: ['', Validators.required],
+            password: ['', Validators.required],
+            newPassword: '',
+            newPasswordRepeat: ['', matchOtherValidator('newPassword')]
+        });
     }
 
     ngAfterViewInit(): void {
@@ -50,8 +61,21 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    onSubmit(): void {
-        this.authEffects.login(this.username, this.password);
+    async onSubmit() {
+        const values = this.loginForm.value;
+        try {
+            if (this.forcedPasswordChange) {
+                this.forcedPasswordChange = false;
+                await this.authEffects.login(values.username, values.password, values.newPassword || undefined);
+            } else {
+                this.forcedPasswordChange = false;
+                await this.authEffects.login(values.username, values.password);
+            }
+        } catch (err) {
+            if (err && err.i18nKey === 'auth_login_password_change_required') {
+                this.forcedPasswordChange = true;
+            }
+        }
     }
 
     animate(): void {

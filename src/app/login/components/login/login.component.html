@@ -19,16 +19,45 @@
         <div class="name-app">Mesh</div>
     </div>
 
+    <div class="error-message"
+         *ngIf="forcedPasswordChange">
+        {{'auth.forced_password_change_message' | i18n}}
+    </div>
+
     <form class="login-form"
+          [formGroup]="loginForm"
           [ngClass]="animclassform"
           (ngSubmit)="onSubmit()">
         <gtx-input placeholder="username"
-                   [(ngModel)]="username"
-                   name="username"></gtx-input>
+                   name="username"
+                   formControlName="username"></gtx-input>
+        <div class="input-note">
+            <p *ngIf="loginForm.touched && loginForm.controls.username.hasError('required')"
+               class="invalid">{{'common.field_required' | i18n}}</p>
+        </div>
         <gtx-input placeholder="password"
+                   name="password"
                    type="password"
-                   [(ngModel)]="password"
-                   name="password"></gtx-input>
-        <gtx-button submit>Log In</gtx-button>
+                   formControlName="password"></gtx-input>
+        <div class="input-note">
+            <p *ngIf="loginForm.touched && loginForm.controls.password.hasError('required')"
+               class="invalid">{{'common.field_required' | i18n}}</p>
+        </div>
+        <gtx-input *ngIf="forcedPasswordChange"
+                   placeholder="New Password"
+                   type="password"
+                   formControlName="newPassword"></gtx-input>
+        <div class="input-note">
+        </div>
+        <gtx-input *ngIf="forcedPasswordChange"
+                   placeholder="Repeat New Password"
+                   type="password"
+                   formControlName="newPasswordRepeat"></gtx-input>
+        <div class="input-note">
+            <p *ngIf="loginForm.touched && loginForm.controls.newPasswordRepeat.hasError('matchOther')"
+               class="invalid">{{'auth.password_mismatch' | i18n }}</p>
+        </div>
+        <gtx-button [disabled]="loginForm.invalid"
+                    submit>Log In</gtx-button>
     </form>
 </div>
