@@ -111,10 +111,6 @@ export class EditorStateActions extends StateActionBranch<AppState> {
         this.updateNodeEntity(node);
     }
 
-    setContentLanguage(newContentLanguage: string): void {
-        this.editor.currentContentLanguage = newContentLanguage;
-    }
-
     private updateNodeEntity(node: MeshNode) {
         this.entities = mergeEntityState(this.entities, {
             node: [node]

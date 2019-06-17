@@ -43,6 +43,5 @@ export class ContainerLanguageSwitcherComponent {
     itemClick(languageCode: string): void {
         const listState = this.state.now.list;
         this.navigationService.list(listState.currentProject!, listState.currentNode!, languageCode).navigate();
-        this.state.actions.editor.setContentLanguage(languageCode);
     }
 }

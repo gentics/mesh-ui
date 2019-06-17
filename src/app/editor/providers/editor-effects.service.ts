@@ -259,7 +259,7 @@ export class EditorEffectsService {
      * @param publishAllLanguages Choose between publishNode() and publishNodeLanguage()
      */
     protected async checkIfParentNodesUnPublished(node: MeshNode, publishAllLanguages: boolean): Promise<void> {
-        const currentLanguage = this.state.now.editor.currentContentLanguage;
+        const currentLanguage = this.state.now.list.language;
         const parentNodesUnPublished = await this.getParentNodesUnPublishedLanguage(
             node.parentNode.uuid,
             currentLanguage
