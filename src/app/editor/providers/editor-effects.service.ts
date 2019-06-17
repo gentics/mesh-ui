@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalService } from 'gentics-ui-core';
+import { from, of } from 'rxjs';
 
 import { BinaryField, FieldMap, ImageTransform, MeshNode } from '../../common/models/node.model';
 import {
@@ -215,7 +216,7 @@ export class EditorEffectsService {
         if (!node.language) {
             throw new Error('Language is node available');
         }
-        await this.checkIfParentNodesUnPublished(node, false);
+        await this.checkIfParentNodesUnPublished(node);
         await this._publishNodeLanguage(node);
     }
 
@@ -256,8 +257,12 @@ export class EditorEffectsService {
      * @param node to be checked. If this node has unpublished parent nodes and user agrees all its ancestor nodes will be published.
      * @param publishAllLanguages Choose between publishNode() and publishNodeLanguage()
      */
-    protected async checkIfParentNodesUnPublished(node: MeshNode, publishAllLanguages: boolean): Promise<void> {
-        const parentNodesUnPublished = await this.getParentNodesUnPublished(node.parentNode.uuid);
+    protected async checkIfParentNodesUnPublished(node: MeshNode, publishAllLanguages = false): Promise<void> {
+        const currentLanguage = this.state.now.ui.currentLanguage;
+        const parentNodesUnPublished = await this.getParentNodesUnPublishedLanguage(
+            node.parentNode.uuid,
+            currentLanguage
+        );
         if (parentNodesUnPublished.length > 0) {
             const nodeName = node.displayName;
             return this.modalService
@@ -284,11 +289,13 @@ export class EditorEffectsService {
                     if (result) {
                         // publish all parent nodes
                         if (publishAllLanguages) {
-                            parentNodesUnPublished.forEach(async (node: MeshNode) => await this._publishNode(node));
+                            await from(parentNodesUnPublished)
+                                .concatMap(node => this._publishNode(node))
+                                .toPromise();
                         } else {
-                            parentNodesUnPublished.forEach(
-                                async (node: MeshNode) => await this._publishNodeLanguage(node)
-                            );
+                            await from(parentNodesUnPublished)
+                                .concatMap(node => this._publishNodeLanguage(node))
+                                .toPromise();
                         }
                     }
                     return;
@@ -302,25 +309,24 @@ export class EditorEffectsService {
      * @param parentNodeUuid of node
      * @returns array of all ancestor nodes which are not published in current UI language
      */
-    async getParentNodesUnPublished(parentNodeUuid: string): Promise<MeshNode[]> {
+    async getParentNodesUnPublishedLanguage(parentNodeUuid: string, language: string): Promise<MeshNode[]> {
         const parentNodesUnPublishedUuids = new Set<MeshNode>();
-        const currentLanguage = this.state.now.ui.currentLanguage;
         const currentProject = this.state.now.list.currentProject;
         const check = async (parentNodeUuid: string, currentProject: string) => {
             // get node from state
-            let parentNode: MeshNode | undefined = this.entities.getNode(parentNodeUuid, { language: currentLanguage });
+            let parentNode: MeshNode | undefined = this.entities.getNode(parentNodeUuid, { language: language });
             // if node not in state
             if (!parentNode) {
                 // load node
-                await this.loadNode(currentProject, parentNodeUuid, currentLanguage);
-                parentNode = this.entities.getNode(parentNodeUuid, { language: currentLanguage });
+                await this.loadNode(currentProject, parentNodeUuid, language);
+                parentNode = this.entities.getNode(parentNodeUuid, { language: language });
             }
             // check for null
             if (!parentNode) {
                 throw new Error(`Could not get node with uuid ${parentNodeUuid}.`);
             }
             // check if is published
-            const nodeStatus: PublishStatusModelFromServer = parentNode.availableLanguages[currentLanguage];
+            const nodeStatus: PublishStatusModelFromServer = parentNode.availableLanguages[language];
             // if is not published
             if (!nodeStatus.published) {
                 // add to set of unpublished parent nodes to be returned as array
@@ -332,9 +338,8 @@ export class EditorEffectsService {
             }
         };
 
-        check(parentNodeUuid, currentProject!);
-
-        return Array.from(parentNodesUnPublishedUuids);
+        await check(parentNodeUuid, currentProject!);
+        return Array.from(parentNodesUnPublishedUuids).reverse();
     }
 
     unpublishNode(node: MeshNode): void {
