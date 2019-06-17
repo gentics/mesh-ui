@@ -25,8 +25,7 @@ export class EditorStateActions extends StateActionBranch<AppState> {
                     editorIsFocused: false,
                     editorIsOpen: false,
                     openNode: null,
-                    loadCount: 0,
-                    currentContentLanguage: 'en'
+                    loadCount: 0
                 }
             }
         });
