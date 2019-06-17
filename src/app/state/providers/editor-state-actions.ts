@@ -25,7 +25,8 @@ export class EditorStateActions extends StateActionBranch<AppState> {
                     editorIsFocused: false,
                     editorIsOpen: false,
                     openNode: null,
-                    loadCount: 0
+                    loadCount: 0,
+                    currentContentLanguage: 'en'
                 }
             }
         });
@@ -108,6 +109,10 @@ export class EditorStateActions extends StateActionBranch<AppState> {
     unpublishNodeSuccess(node: MeshNode): void {
         this.editor.loadCount--;
         this.updateNodeEntity(node);
+    }
+
+    setContentLanguage(newContentLanguage: string): void {
+        this.editor.currentContentLanguage = newContentLanguage;
     }
 
     private updateNodeEntity(node: MeshNode) {

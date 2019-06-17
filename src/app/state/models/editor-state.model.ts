@@ -9,4 +9,5 @@ export interface EditorState {
         parentNodeUuid?: string;
     } | null;
     loadCount: number;
+    currentContentLanguage: string;
 }

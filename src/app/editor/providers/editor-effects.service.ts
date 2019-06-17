@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ModalService } from 'gentics-ui-core';
 import { from, of } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 import { BinaryField, FieldMap, ImageTransform, MeshNode } from '../../common/models/node.model';
 import {
@@ -216,7 +217,7 @@ export class EditorEffectsService {
         if (!node.language) {
             throw new Error('Language is node available');
         }
-        await this.checkIfParentNodesUnPublished(node);
+        await this.checkIfParentNodesUnPublished(node, false);
         await this._publishNodeLanguage(node);
     }
 
@@ -257,8 +258,8 @@ export class EditorEffectsService {
      * @param node to be checked. If this node has unpublished parent nodes and user agrees all its ancestor nodes will be published.
      * @param publishAllLanguages Choose between publishNode() and publishNodeLanguage()
      */
-    protected async checkIfParentNodesUnPublished(node: MeshNode, publishAllLanguages = false): Promise<void> {
-        const currentLanguage = this.state.now.ui.currentLanguage;
+    protected async checkIfParentNodesUnPublished(node: MeshNode, publishAllLanguages: boolean): Promise<void> {
+        const currentLanguage = this.state.now.editor.currentContentLanguage;
         const parentNodesUnPublished = await this.getParentNodesUnPublishedLanguage(
             node.parentNode.uuid,
             currentLanguage
@@ -328,7 +329,7 @@ export class EditorEffectsService {
             // check if is published
             const nodeStatus: PublishStatusModelFromServer = parentNode.availableLanguages[language];
             // if is not published
-            if (!nodeStatus.published) {
+            if (nodeStatus && !nodeStatus.published) {
                 // add to set of unpublished parent nodes to be returned as array
                 parentNodesUnPublishedUuids.add(parentNode);
             }
