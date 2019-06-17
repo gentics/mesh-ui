@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
+import { ModalService } from 'gentics-ui-core';
 
 import { BinaryField, FieldMap, ImageTransform, MeshNode } from '../../common/models/node.model';
 import {
     NodeCreateRequest,
     NodeResponse,
     NodeUpdateRequest,
+    PublishStatusModelFromServer,
     TagReferenceFromServer
 } from '../../common/models/server-models';
 import {
@@ -16,6 +18,7 @@ import {
 import { ApiService } from '../../core/providers/api/api.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
+import { I18nService } from '../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../state/providers/application-state.service';
 import { EntitiesService } from '../../state/providers/entities.service';
 
@@ -26,7 +29,9 @@ export class EditorEffectsService {
         private entities: EntitiesService,
         private notification: I18nNotification,
         private config: ConfigService,
-        private api: ApiService
+        private api: ApiService,
+        private i18n: I18nService,
+        private modalService: ModalService
     ) {}
 
     openNode(projectName: string, nodeUuid: string, language?: string): void {
@@ -137,11 +142,11 @@ export class EditorEffectsService {
             .toPromise()
             .then((response: any) => {
                 // if successful, return data
-                if (response.node) {
+                if (response && response.node) {
                     return this.processTagsAndBinaries(node, response.node, tags);
                     // if errornous, return server response with error data
                 }
-                if (response.conflict) {
+                if (response && response.conflict) {
                     return Promise.reject(response);
                     // if response won't match any properties, throw error
                 } else {
@@ -161,15 +166,25 @@ export class EditorEffectsService {
             );
     }
 
-    publishNode(node: MeshNode): void {
+    /**
+     * @description Publish all language specific contents of the node with the given uuid.
+     * @param node to publish
+     */
+    async publishNode(node: MeshNode): Promise<void> {
         if (!node.project.name) {
             throw new Error('Project name is not available');
         }
+        await this.checkIfParentNodesUnPublished(node, true);
+        await this._publishNode(node);
+    }
+
+    protected async _publishNode(node: MeshNode): Promise<void> {
         this.state.actions.editor.publishNodeStart();
-        this.api.project
-            .publishNode({ project: node.project.name, nodeUuid: node.uuid })
+        return this.api.project
+            .publishNode({ project: node.project.name!, nodeUuid: node.uuid })
             .pipe(this.notification.rxSuccess('editor.node_published'))
-            .subscribe(
+            .toPromise()
+            .then(
                 response => {
                     if (!node.language) {
                         throw new Error('Could not find language of node!');
@@ -181,28 +196,40 @@ export class EditorEffectsService {
                     };
                     this.state.actions.editor.publishNodeSuccess(newNode);
                 },
-                error => {
+                () => {
                     this.state.actions.editor.publishNodeError();
                 }
             );
     }
 
-    publishNodeLanguage(node: MeshNode): void {
+    /**
+     * @description Publish the language of the node.
+     * This will automatically assign a new major version to the node and
+     * update the draft version to the published version.
+     * @param node to publish
+     */
+    async publishNodeLanguage(node: MeshNode): Promise<void> {
         if (!node.project.name) {
             throw new Error('Project name is not available');
         }
         if (!node.language) {
             throw new Error('Language is node available');
         }
+        await this.checkIfParentNodesUnPublished(node, false);
+        await this._publishNodeLanguage(node);
+    }
+
+    protected async _publishNodeLanguage(node: MeshNode): Promise<void> {
         this.state.actions.editor.publishNodeStart();
-        this.api.project
-            .publishNodeLanguage({ project: node.project.name, nodeUuid: node.uuid, language: node.language })
+        return this.api.project
+            .publishNodeLanguage({ project: node.project.name!, nodeUuid: node.uuid, language: node.language! })
             .pipe(
                 this.notification.rxSuccessNext('editor.node_language_published', version => ({
                     version: version.version
                 }))
             )
-            .subscribe(
+            .toPromise()
+            .then(
                 response => {
                     if (!node.language) {
                         throw new Error('Could not find language of node!');
@@ -217,10 +244,97 @@ export class EditorEffectsService {
                     };
                     this.state.actions.editor.publishNodeSuccess(newNode);
                 },
-                error => {
+                () => {
                     this.state.actions.editor.publishNodeError();
                 }
             );
+    }
+
+    /**
+     * @description Check if parent nodes are published
+     * because, if they are not, publishing this node won't actually make it available as published
+     * @param node to be checked. If this node has unpublished parent nodes and user agrees all its ancestor nodes will be published.
+     * @param publishAllLanguages Choose between publishNode() and publishNodeLanguage()
+     */
+    protected async checkIfParentNodesUnPublished(node: MeshNode, publishAllLanguages: boolean): Promise<void> {
+        const parentNodesUnPublished = await this.getParentNodesUnPublished(node.parentNode.uuid);
+        if (parentNodesUnPublished.length > 0) {
+            const nodeName = node.displayName;
+            return this.modalService
+                .dialog({
+                    title: this.i18n.translate('modal.confirm_publish_node_parents_title'),
+                    body: this.i18n.translate('modal.confirm_publish_node_parents_body', { name: nodeName }),
+                    buttons: [
+                        {
+                            type: 'secondary',
+                            flat: true,
+                            label: this.i18n.translate('modal.confirm_publish_node_parents_button_do_not_publish'),
+                            returnValue: false
+                        },
+                        {
+                            type: 'success',
+                            label: this.i18n.translate('modal.confirm_publish_node_parents_button_do_publish'),
+                            returnValue: true
+                        }
+                    ]
+                })
+                .then(modal => modal.open())
+                .then(async result => {
+                    // if user opts for publishing all parent nodes
+                    if (result) {
+                        // publish all parent nodes
+                        if (publishAllLanguages) {
+                            parentNodesUnPublished.forEach(async (node: MeshNode) => await this._publishNode(node));
+                        } else {
+                            parentNodesUnPublished.forEach(
+                                async (node: MeshNode) => await this._publishNodeLanguage(node)
+                            );
+                        }
+                    }
+                    return;
+                });
+        } else {
+            return;
+        }
+    }
+
+    /**
+     * @param parentNodeUuid of node
+     * @returns array of all ancestor nodes which are not published in current UI language
+     */
+    async getParentNodesUnPublished(parentNodeUuid: string): Promise<MeshNode[]> {
+        const parentNodesUnPublishedUuids = new Set<MeshNode>();
+        const currentLanguage = this.state.now.ui.currentLanguage;
+        const currentProject = this.state.now.list.currentProject;
+        const check = async (parentNodeUuid: string, currentProject: string) => {
+            // get node from state
+            let parentNode: MeshNode | undefined = this.entities.getNode(parentNodeUuid, { language: currentLanguage });
+            // if node not in state
+            if (!parentNode) {
+                // load node
+                await this.loadNode(currentProject, parentNodeUuid, currentLanguage);
+                parentNode = this.entities.getNode(parentNodeUuid, { language: currentLanguage });
+            }
+            // check for null
+            if (!parentNode) {
+                throw new Error(`Could not get node with uuid ${parentNodeUuid}.`);
+            }
+            // check if is published
+            const nodeStatus: PublishStatusModelFromServer = parentNode.availableLanguages[currentLanguage];
+            // if is not published
+            if (!nodeStatus.published) {
+                // add to set of unpublished parent nodes to be returned as array
+                parentNodesUnPublishedUuids.add(parentNode);
+            }
+            // check for parent nodes recursively
+            if (parentNode.parentNode) {
+                check(parentNode.parentNode.uuid, currentProject);
+            }
+        };
+
+        check(parentNodeUuid, currentProject!);
+
+        return Array.from(parentNodesUnPublishedUuids);
     }
 
     unpublishNode(node: MeshNode): void {
@@ -351,6 +465,7 @@ export class EditorEffectsService {
         if (schema) {
             const displayField = schema.displayField;
             const segmentField = schema.segmentField;
+            const urlFields = schema.urlFields;
 
             if (typeof node.fields[displayField] === 'string') {
                 clone.fields[displayField] += ` (${suffix})`;
@@ -363,6 +478,21 @@ export class EditorEffectsService {
                     );
                 } else if (node.fields[segmentField] !== undefined) {
                     clone.fields[segmentField] = this.addSuffixToString(clone.fields[segmentField], suffix);
+                }
+            }
+            // get all fields that are defined as URL fields
+            let fieldsToBeSuffixed: string[] = [];
+            if (urlFields) {
+                fieldsToBeSuffixed = Object.getOwnPropertyNames(clone.fields).filter((nodeFieldKey: string) => {
+                    return urlFields.filter(schemaFieldKey => schemaFieldKey === nodeFieldKey).length > 0
+                        ? true
+                        : false;
+                });
+                // and suffix their values
+                if (fieldsToBeSuffixed.length > 0) {
+                    fieldsToBeSuffixed.forEach(fieldKey => {
+                        clone.fields[fieldKey] = this.addSuffixToString(clone.fields[fieldKey], suffix);
+                    });
                 }
             }
 
