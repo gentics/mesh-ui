@@ -252,6 +252,7 @@ export class EditorEffectsService {
             );
     }
 
+    // TODO: Tests
     /**
      * @description Check if parent nodes are published
      * because, if they are not, publishing this node won't actually make it available as published
@@ -306,9 +307,10 @@ export class EditorEffectsService {
         }
     }
 
+    // TODO: Tests
     /**
      * @param parentNodeUuid of node
-     * @returns array of all ancestor nodes which are not published in current UI language
+     * @returns array of all ancestor nodes which are not published in current content language
      */
     async getParentNodesUnPublishedLanguage(parentNodeUuid: string, language: string): Promise<MeshNode[]> {
         const parentNodesUnPublishedUuids = new Set<MeshNode>();
