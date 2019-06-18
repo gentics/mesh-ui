@@ -473,7 +473,6 @@ export class EditorEffectsService {
         if (schema) {
             const displayField = schema.displayField;
             const segmentField = schema.segmentField;
-            const urlFields = schema.urlFields;
 
             if (typeof node.fields[displayField] === 'string') {
                 clone.fields[displayField] += ` (${suffix})`;
@@ -486,21 +485,6 @@ export class EditorEffectsService {
                     );
                 } else if (node.fields[segmentField] !== undefined) {
                     clone.fields[segmentField] = this.addSuffixToString(clone.fields[segmentField], suffix);
-                }
-            }
-            // get all fields that are defined as URL fields
-            let fieldsToBeSuffixed: string[] = [];
-            if (urlFields) {
-                fieldsToBeSuffixed = Object.getOwnPropertyNames(clone.fields).filter((nodeFieldKey: string) => {
-                    return urlFields.filter(schemaFieldKey => schemaFieldKey === nodeFieldKey).length > 0
-                        ? true
-                        : false;
-                });
-                // and suffix their values
-                if (fieldsToBeSuffixed.length > 0) {
-                    fieldsToBeSuffixed.forEach(fieldKey => {
-                        clone.fields[fieldKey] = this.addSuffixToString(clone.fields[fieldKey], suffix);
-                    });
                 }
             }
 
