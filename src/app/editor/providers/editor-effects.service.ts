@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { filter } from 'rxjs/operators';
+import { isNullOrUndefined } from 'util';
 
 import { BinaryField, FieldMap, ImageTransform, MeshNode } from '../../common/models/node.model';
 import {
@@ -134,14 +136,15 @@ export class EditorEffectsService {
 
         return this.api.project
             .updateNode({ project: node.project.name, nodeUuid: node.uuid, language }, updateRequest)
+            .pipe(filter((response: any) => !isNullOrUndefined(response)))
             .toPromise()
             .then((response: any) => {
                 // if successful, return data
-                if (response.node) {
+                if (response && response.node) {
                     return this.processTagsAndBinaries(node, response.node, tags);
                     // if errornous, return server response with error data
                 }
-                if (response.conflict) {
+                if (response && response.conflict) {
                     return Promise.reject(response);
                     // if response won't match any properties, throw error
                 } else {
@@ -351,20 +354,42 @@ export class EditorEffectsService {
         if (schema) {
             const displayField = schema.displayField;
             const segmentField = schema.segmentField;
+            const urlFields = schema.urlFields;
+            const fieldsToBeSuffixed = new Set<string>();
 
-            if (typeof node.fields[displayField] === 'string') {
-                clone.fields[displayField] += ` (${suffix})`;
+            // if node has set displayField
+            if (displayField && typeof node.fields[displayField] === 'string') {
+                // add to be suffixed
+                fieldsToBeSuffixed.add(displayField);
             }
-            if (segmentField && segmentField !== displayField && node.fields[segmentField]) {
+            // if node has set segmentField
+            if (segmentField && typeof node.fields[segmentField] === 'string') {
+                // if segmentField is binary
                 if (node.fields[segmentField].sha512sum) {
+                    // suffix filename
                     clone.fields[segmentField].fileName = this.addSuffixToString(
                         node.fields[segmentField].fileName,
                         suffix
                     );
-                } else if (node.fields[segmentField] !== undefined) {
-                    clone.fields[segmentField] = this.addSuffixToString(clone.fields[segmentField], suffix);
+                } else {
+                    // add to be suffixed
+                    fieldsToBeSuffixed.add(segmentField);
                 }
             }
+            // if node has urlFields
+            if (urlFields && urlFields.length > 0) {
+                urlFields.forEach(urlField => {
+                    // if field has value
+                    if (typeof clone.fields[urlField] === 'string') {
+                        // add to be suffixed
+                        fieldsToBeSuffixed.add(urlField);
+                    }
+                });
+            }
+            // suffix fields
+            Array.from(fieldsToBeSuffixed).forEach(fieldToBeSuffixed => {
+                clone.fields[fieldToBeSuffixed] = this.addSuffixToString(node.fields[fieldToBeSuffixed], suffix);
+            });
 
             // Display a warning if there are any binary fields - these cannot be handled properly
             // until the dedicated translation endpoint is implemented in Mesh.
