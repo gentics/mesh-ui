@@ -145,14 +145,14 @@
     },
     "confirm_publish_node_parents_body": {
         "en": "This node has unpublished parent nodes. \n If you want this node available publicly you would need to publish all of its parent nodes as well. Do you want to publish all parent nodes of <strong>\"{{ name }}\"</strong>?",
-        "de": "Keine Vorschau verfügbar"
+        "de": "Diese Node hat unveröffentlichte Eltern-Nodes. Wenn Sie diese öffentlich verfügbar machen wollen, müssen Sie all ihre Eltern-Nodes veröffentlichen. Möchten Sie alle Eltern-Nodes veröffentlichen?"
     },
     "confirm_publish_node_parents_button_do_publish": {
         "en": "Publish parent nodes",
-        "de": "Eltern-Nodes veröffentlichten"
+        "de": "Eltern-Nodes veröffentlichen"
     },
     "confirm_publish_node_parents_button_do_not_publish": {
         "en": "Do not publish parent nodes",
-        "de": "Eltern-Nodes nicht veröffentlichten"
+        "de": "Eltern-Nodes nicht veröffentlichen"
     }
 }
