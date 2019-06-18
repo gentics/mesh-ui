@@ -357,37 +357,29 @@ export class EditorEffectsService {
             const urlFields = schema.urlFields;
             const fieldsToBeSuffixed = new Set<string>();
 
-            // if node has set displayField
-            if (displayField && typeof node.fields[displayField] === 'string') {
-                // add to be suffixed
-                fieldsToBeSuffixed.add(displayField);
-            }
-            // if node has set segmentField
-            if (segmentField && typeof node.fields[segmentField] === 'string') {
-                // if segmentField is binary
-                if (node.fields[segmentField].sha512sum) {
-                    // suffix filename
-                    clone.fields[segmentField].fileName = this.addSuffixToString(
-                        node.fields[segmentField].fileName,
-                        suffix
-                    );
-                } else {
-                    // add to be suffixed
-                    fieldsToBeSuffixed.add(segmentField);
+            const addToFieldsToBeSuffixed = (fieldKey: string | undefined) => {
+                if (!fieldKey) {
+                    return;
                 }
-            }
+                if (node.fields[fieldKey].sha512sum) {
+                    clone.fields[fieldKey].fileName = this.addSuffixToString(node.fields[fieldKey].fileName, suffix);
+                } else {
+                    fieldsToBeSuffixed.add(fieldKey);
+                }
+            };
+
+            addToFieldsToBeSuffixed(displayField);
+            addToFieldsToBeSuffixed(segmentField);
             // if node has urlFields
             if (urlFields && urlFields.length > 0) {
                 urlFields.forEach(urlField => {
-                    // if field has value
-                    if (typeof clone.fields[urlField] === 'string') {
-                        // add to be suffixed
-                        fieldsToBeSuffixed.add(urlField);
-                    }
+                    // add to be suffixed
+                    addToFieldsToBeSuffixed(urlField);
                 });
             }
+
             // suffix fields
-            Array.from(fieldsToBeSuffixed).forEach(fieldToBeSuffixed => {
+            fieldsToBeSuffixed.forEach(fieldToBeSuffixed => {
                 clone.fields[fieldToBeSuffixed] = this.addSuffixToString(node.fields[fieldToBeSuffixed], suffix);
             });
 
