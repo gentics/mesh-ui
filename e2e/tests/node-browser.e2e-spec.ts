@@ -25,7 +25,7 @@ describe('node browser', () => {
 
         it('shows breadcrumbs of current folder', async () => {
             const expected = ['demo', 'Automobiles'];
-            const breadCrumbTexts = awaitArray(MeshBrowser.getBreadcrumbLinks().map(toText));
+            const breadCrumbTexts = await MeshBrowser.getBreadcrumbLinks().map(toText);
             expect(breadCrumbTexts).toEqual(expected);
         });
 

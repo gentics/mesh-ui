@@ -9,7 +9,7 @@ export namespace RoleAdminList {
         return new PaginationControls(element(by.css('mesh-pagination-controls')));
     }
 
-    export function displayedRoles(): promise.Promise<RoleAdminListRow[]> {
+    export function displayedRoles(): Promise<RoleAdminListRow[]> {
         return element.all(by.css('mesh-admin-list-item')).map(finder => new RoleAdminListRow(finder as ElementFinder));
     }
 
@@ -44,7 +44,7 @@ export namespace RoleAdminList {
 
     export async function displayedRoleNames(): Promise<string[]> {
         const roles = await RoleAdminList.displayedRoles();
-        const roleNames = await promise.all(roles.map((role: RoleAdminListRow) => role.name()));
+        const roleNames = await Promise.all(roles.map((role: RoleAdminListRow) => role.name()));
         return roleNames;
     }
 }

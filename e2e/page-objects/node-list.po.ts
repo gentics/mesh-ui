@@ -4,7 +4,7 @@ import { NodeListRow } from './node-list-row.po';
 
 const nodeList = element(by.css('mesh-container-contents'));
 
-export function getBreadcrumbLinks() {
+export function getBreadcrumbLinks(): ElementArrayFinder {
     return nodeList.all(by.css('gtx-breadcrumbs a.breadcrumb'));
 }
 

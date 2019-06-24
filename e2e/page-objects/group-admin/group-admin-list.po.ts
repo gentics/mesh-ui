@@ -9,7 +9,7 @@ export namespace GroupAdminList {
         return new PaginationControls(element(by.css('mesh-pagination-controls')));
     }
 
-    export function displayedGroups(): promise.Promise<GroupAdminListRow[]> {
+    export function displayedGroups(): Promise<GroupAdminListRow[]> {
         return element
             .all(by.css('mesh-admin-list-item'))
             .map(finder => new GroupAdminListRow(finder as ElementFinder));
@@ -46,7 +46,7 @@ export namespace GroupAdminList {
 
     export async function displayedGroupNames(): Promise<string[]> {
         const groups = await GroupAdminList.displayedGroups();
-        const groupNames = await promise.all(groups.map((group: GroupAdminListRow) => group.name()));
+        const groupNames = await Promise.all(groups.map((group: GroupAdminListRow) => group.name()));
         return groupNames;
     }
 }

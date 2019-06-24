@@ -1,4 +1,4 @@
-import { browser } from 'protractor';
+import { browser, protractor, ElementArrayFinder } from 'protractor';
 
 import { createFolder, createVehicle, deleteNode, moveNode } from '../api';
 import * as page from '../page-objects/app.po';
@@ -20,7 +20,7 @@ describe('node list', () => {
         console.log('navigating to home... done');
     });
 
-    fdescribe('breadcrumb', () => {
+    describe('breadcrumb', () => {
         it('displays only the project name in root node', async () => {
             console.log('starting test...');
 

@@ -38,7 +38,7 @@ export class MicroschemaEditor {
         const statePromises: Array<Promise<any>> = fieldInstances.map((instance: MicroschemaEditorField) =>
             instance.stateCurrent()
         );
-        return promise.all(statePromises);
+        return Promise.all(statePromises);
     }
 
     /** @returns all fields data analogously to the schema editor data object */
@@ -47,7 +47,7 @@ export class MicroschemaEditor {
         const statePromises: Array<Promise<any>> = fieldInstances.map((instance: MicroschemaEditorField) =>
             instance.value()
         );
-        return promise.all(statePromises);
+        return Promise.all(statePromises);
     }
 
     /** @returns schema buttons */

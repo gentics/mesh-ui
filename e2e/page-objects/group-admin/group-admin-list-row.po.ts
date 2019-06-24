@@ -28,7 +28,7 @@ export class GroupAdminListRow {
         await element(by.cssContainingText('gtx-dropdown-content gtx-dropdown-item', name)).click();
     }
 
-    public name(): promise.Promise<string> {
+    public name(): Promise<string> {
         return this.root.element(by.css('a')).getText();
     }
 

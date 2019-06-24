@@ -107,7 +107,7 @@ export function inTemporaryFolder(body: (folder: MeshNode) => any) {
 /**
  * Maps an Element from Protractor to its text. Useful for .map
  */
-export function toText(element: ElementFinder | undefined) {
+export function toText(element: ElementFinder | undefined): string {
     return element!.getText();
 }
 
@@ -170,6 +170,6 @@ export function i18n(filename: string): (key: string) => string {
  * Resolves a promise of an array of promises to a promise of an array
  * @param arr Promise of an array of promises
  */
-export async function awaitArray<T>(arr: promise.Promise<T[]>): Promise<T[]> {
-    return promise.all(await arr);
+export async function awaitArray<T>(arr: PromiseLike<Array<PromiseLike<T>>>): Promise<T[]> {
+    return arr.then(a => Promise.all(a));
 }

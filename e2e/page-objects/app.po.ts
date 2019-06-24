@@ -17,11 +17,11 @@ async function login() {
 }
 
 export async function navigateToNodeEdit(node: HasUuid, language = 'en') {
-    await browser.get(`/#/editor/project/(detail:demo/${node.uuid}/${language})`);
+    await goToRoute(`/editor/project/(detail:demo/${node.uuid}/${language})`);
 }
 
 export async function navigateToFolder(node: HasUuid, language = 'en') {
-    await browser.get(`/#/editor/project/(list:demo/${node.uuid}/${language})`);
+    await goToRoute(`/editor/project/(list:demo/${node.uuid}/${language})`);
 }
 
 export async function navigateToGroupAdmin() {
