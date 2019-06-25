@@ -1,0 +1,4 @@
+{
+    "browsers": "chrome",
+    "src": "testcafe/test/**/*.ts"
+}
