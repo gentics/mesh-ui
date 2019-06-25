@@ -11,10 +11,12 @@
     "test": "ng test",
     "test-no-sourcemaps": "ng test -sm=false --browsers=ChromeHeadless",
     "lint": "ng lint",
-    "e2e": "ng e2e",
+    "e2e-protractor": "ng e2e",
     "precommit": "lint-staged",
     "postcommit": "git update-index --again",
-    "mesh": "docker run --rm -p '8080:8080' -e MESH_ELASTICSEARCH_URL=null -e MESH_ELASTICSEARCH_START_EMBEDDED=false gentics/mesh-demo"
+    "mesh": "docker run --rm -p '8080:8080' -e MESH_ELASTICSEARCH_URL=null -e MESH_ELASTICSEARCH_START_EMBEDDED=false gentics/mesh-demo",
+    "e2e": "cross-env MESHUI_URL=http://localhost:4200 testcafe",
+    "e2e-watch": "cross-env MESHUI_URL=http://localhost:4200 testcafe --live"
   },
   "lint-staged": {
     "concurrent": false,
@@ -50,6 +52,7 @@
     "@types/quill": "0.0.31",
     "@types/sortablejs": "^1.7.2",
     "core-js": "^2.4.1",
+    "cross-env": "^5.2.0",
     "gentics-ui-core": "^7.1.1",
     "gentics-ui-image-editor": "^0.4.0",
     "http-server": "^0.10.0",
@@ -63,6 +66,7 @@
     "reflect-metadata": "^0.1.10",
     "rxjs": "^6.4.0",
     "rxjs-compat": "^6.5.1",
+    "testcafe": "^1.2.1",
     "tslib": "^1.9.0",
     "web-animations-js": "^2.3.1",
     "zone.js": "^0.9.0"
@@ -74,7 +78,7 @@
     "@angular/language-service": "^5.0.0",
     "@types/jasmine": "~3.3.12",
     "@types/jasminewd2": "~2.0.6",
-    "@types/node": "~6.0.60",
+    "@types/node": "^6.0.118",
     "@types/ramda": "^0.25.21",
     "@types/request-promise": "^4.1.41",
     "codelyzer": "^5.0.0",
