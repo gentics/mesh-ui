@@ -175,7 +175,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
     deleteItem(e: ISortableEvent): void {
         const newValue = this.value.slice(0);
-        if (e.oldIndex) {
+        if (e.oldIndex !== undefined) {
             newValue.splice(e.oldIndex, 1);
         } else {
             throw new Error('"oldIndex" of SortableEvent is undefined');

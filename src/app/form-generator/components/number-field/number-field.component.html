@@ -1,9 +1,8 @@
-<gtx-input type="number"
-           [value]="value"
+<!-- Does not use type="number" because of https://github.com/gentics/gentics-ui-core/issues/52 -->
+<gtx-input [value]="value"
            [label]="api.field.label || api.field.name"
            [min]="api.field.min"
            [max]="api.field.max"
            [step]="api.field.step"
            [readonly]="api.readOnly"
            (change)="onChange($event)"></gtx-input>
-
