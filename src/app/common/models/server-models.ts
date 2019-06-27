@@ -4058,6 +4058,8 @@ export interface FieldSchemaFromServer {
     readonly type: string;
     /** Type of the field. */
     readonly listType?: ListTypeFieldType;
+
+    readonly allow?: string[];
 }
 
 /**
@@ -4833,7 +4835,7 @@ export interface SchemaCreateRequest {
      * Flag which indicates whether version history should be squashed or retained.
      * See Mesh docs: https://getmesh.io/docs/features/#auto-purge
      */
-    readonly autoPurge: boolean;
+    readonly autoPurge?: boolean;
     /**
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.

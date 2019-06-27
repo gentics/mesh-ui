@@ -9,12 +9,15 @@ export function initializeFieldValue(field: SchemaField): any {
     }
 
     const isList = field.type === 'list';
-    const type = isList ? field.listType as ListTypeFieldType : field.type;
+    const type = isList ? (field.listType as ListTypeFieldType) : field.type;
     const defaultValue = typeToDefault(type, field);
-    return isList ? [defaultValue] : defaultValue;
+    return isList ? [] : defaultValue;
 }
 
 export function typeToDefault(type: SchemaFieldType, field: SchemaField): any {
+    if (!field.required) {
+        return null;
+    }
     switch (type) {
         case 'html':
         case 'string':
