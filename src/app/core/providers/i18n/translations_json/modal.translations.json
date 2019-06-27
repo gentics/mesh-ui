@@ -55,6 +55,10 @@
         "en": "New Project",
         "de": "Neues Projekt"
     },
+    "create_project_anonymous_access": {
+        "en": "Allow anonymous users to read contents",
+        "de": "Erlaube anonymen Benutzern Inhalte zu lesen"
+    },
     "delete_project_title": {
         "en": "Delete Project",
         "de": "Projekt löschen"

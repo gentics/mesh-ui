@@ -4749,7 +4749,7 @@ export interface RoleListResponse {
 }
 
 export interface RolePermissionRequest {
-    readonly permissions: PermissionInfoFromServer;
+    readonly permissions: Partial<PermissionInfoFromServer>;
     /** Flag which indicates whether the permission update should be applied recursivly. */
     readonly recursive?: boolean;
 }

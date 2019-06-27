@@ -46,9 +46,9 @@ export class AdminRoleEffectsService {
         return this.state
             .select(state => {
                 const project = head(values(state.entities.project));
-                return project && project.name;
+                return project!.name;
             })
-            .filter(Boolean)
+            .filter<string>(Boolean)
             .take(1);
     }
 
@@ -86,6 +86,31 @@ export class AdminRoleEffectsService {
             .map(extractGraphQlResponse)
             .map(response => response.role)
             .do(role => this.state.actions.adminRoles.loadRoleSuccess(role));
+    }
+
+    async loadRoleUuidByName(name: string): Promise<string> {
+        const project = await this.getAnyProjectName().toPromise();
+        return this.api
+            .graphQL(
+                { project },
+                {
+                    query: `
+            query roleByName($name: String) {
+                role(name: $name) {
+                  uuid
+                }
+              }
+            `,
+                    variables: { name }
+                }
+            )
+            .map(extractGraphQlResponse)
+            .map(response => response.role.uuid)
+            .toPromise();
+    }
+
+    loadAnonymousRoleUuid(): Promise<string> {
+        return this.loadRoleUuidByName('anonymous');
     }
 
     deleteRoles(roles: AdminRoleResponse[]) {

@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { IModalDialog, Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs/Observable';
+import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { ProjectCreateRequest, ProjectResponse, SchemaResponse } from '../../../common/models/server-models';
 import { ApiError } from '../../../core/providers/api/api-error';
 import { EntitiesService } from '../../../state/providers/entities.service';
+import { AdminPermissionEffectsService } from '../../providers/effects/admin-permission-effects.service';
 import { AdminProjectEffectsService } from '../../providers/effects/admin-project-effects.service';
+import { AdminRoleEffectsService } from '../../providers/effects/admin-role-effects.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
 
 @Component({
@@ -20,6 +23,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
 
     schema: FormControl;
     name: FormControl;
+    anonymousAccess: FormControl;
     form: FormGroup;
 
     creating = false;
@@ -29,15 +33,19 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
         entities: EntitiesService,
         private notification: Notification,
         private adminSchemaEffects: AdminSchemaEffectsService,
-        private adminProjectEffects: AdminProjectEffectsService
+        private adminProjectEffects: AdminProjectEffectsService,
+        private adminRoleEffects: AdminRoleEffectsService,
+        private adminPermissionEffects: AdminPermissionEffectsService
     ) {
         this.schemas$ = entities.selectAllSchemas();
         this.name = new FormControl('', Validators.compose([Validators.required, this.conflictValidator]));
         this.schema = new FormControl('', Validators.required);
+        this.anonymousAccess = new FormControl(true);
 
         this.form = new FormGroup({
             name: this.name,
-            schema: this.schema
+            schema: this.schema,
+            anonymousAccess: this.anonymousAccess
         });
     }
 
@@ -71,7 +79,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
         this.cancelFn = cancel;
     }
 
-    createProject() {
+    async createProject() {
         if (this.form.valid) {
             const request: ProjectCreateRequest = {
                 name: this.name.value,
@@ -86,24 +94,30 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
             this.form.markAsPristine();
             this.creating = true;
             this.conflict = false;
-            this.adminProjectEffects
-                .createProject(request)
-                .then(response => {
-                    this.closeFn(response);
-                    this.creating = false;
-                })
-                .catch(err => {
-                    if (err instanceof ApiError && err.response && err.response.status === 409) {
-                        this.conflict = true;
-                        this.name.updateValueAndValidity();
-                    } else {
-                        this.notification.show({
-                            type: 'error',
-                            message: err.toString()
-                        });
-                    }
-                    this.creating = false;
-                });
+            try {
+                const response = this.adminProjectEffects.createProject(request);
+                if (this.anonymousAccess.value) {
+                    // Required by https://github.com/gentics/mesh-ui/issues/42
+                    const uuid = await this.adminRoleEffects.loadAnonymousRoleUuid();
+                    this.adminPermissionEffects.grantPermissionToProject(uuid, (await response).uuid, {
+                        permissions: { read: true },
+                        recursive: true
+                    });
+                }
+                this.closeFn(await response);
+                this.creating = false;
+            } catch (err) {
+                if (err instanceof ApiError && err.response && err.response.status === 409) {
+                    this.conflict = true;
+                    this.name.updateValueAndValidity();
+                } else {
+                    this.notification.show({
+                        type: 'error',
+                        message: err.toString()
+                    });
+                }
+                this.creating = false;
+            }
         }
     }
 

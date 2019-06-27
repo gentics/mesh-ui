@@ -35,6 +35,7 @@ import { UserDetailComponent } from './components/user-detail/user-detail.compon
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AdminGroupEffectsService } from './providers/effects/admin-group-effects.service';
+import { AdminPermissionEffectsService } from './providers/effects/admin-permission-effects.service';
 import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
 import { AdminRoleEffectsService } from './providers/effects/admin-role-effects.service';
 import { AdminSchemaEffectsService } from './providers/effects/admin-schema-effects.service';
@@ -86,6 +87,7 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         AdminUserEffectsService,
         AdminGroupEffectsService,
         AdminRoleEffectsService,
+        AdminPermissionEffectsService,
         TagsEffectsService,
         UserResolver,
         GroupResolver,
