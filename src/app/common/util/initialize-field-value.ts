@@ -15,9 +15,6 @@ export function initializeFieldValue(field: SchemaField): any {
 }
 
 export function typeToDefault(type: SchemaFieldType, field: SchemaField): any {
-    if (!field.required) {
-        return null;
-    }
     switch (type) {
         case 'html':
         case 'string':
