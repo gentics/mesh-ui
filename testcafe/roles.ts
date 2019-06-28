@@ -1,8 +1,8 @@
 import { Role } from 'testcafe';
 
+import { api } from './api';
 import { login } from './page-object/login';
-import { baseUrl } from './testUtil';
 
-export const Admin = Role(`${baseUrl()}/#/login`, async t => {
+export const Admin = Role(`${api.baseUrl()}/#/login`, async t => {
     await login('admin', 'admin');
 });

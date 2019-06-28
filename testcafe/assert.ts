@@ -35,4 +35,12 @@ export namespace assert {
             )
             .ok(message || `Expected actual to be empty`);
     }
+
+    /**
+     * Fails the test.
+     * @param message
+     */
+    export async function fail(message?: string) {
+        await t.expect(false).ok(message || 'Test failed');
+    }
 }
