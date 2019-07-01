@@ -236,55 +236,53 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         if (!this.node || !formGenerator || !tagsBar) {
             throw new Error('Could not save node. One or more expected objects were not present.');
         }
-        if (this.isDirty) {
-            this.isSaving = true;
-            let saveFn: Promise<any> | null = null;
-            tags = !!tags ? tags : tagsBar.isDirty ? tagsBar.nodeTags : undefined;
+        this.isSaving = true;
+        let saveFn: Promise<any> | null = null;
+        tags = !!tags ? tags : tagsBar.isDirty ? tagsBar.nodeTags : undefined;
 
-            if (!this.node.uuid) {
-                // Create new node.
-                const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
-                const projectName = parentNode && parentNode.project.name;
-                if (parentNode && projectName) {
-                    saveFn = this.editorEffects.saveNewNode(projectName, this.node, tags).then(
-                        node => {
-                            this.isSaving = false;
-                            if (node && node.language) {
-                                formGenerator.setPristine(node);
-                                this.listEffects.loadChildren(projectName, parentNode.uuid, node.language);
-
-                                if (navigateOnSave) {
-                                    this.navigationService.detail(projectName, node.uuid, node.language).navigate();
-                                }
-                            }
-                        },
-                        error => {
-                            this.isSaving = false;
-                            this.changeDetector.detectChanges();
-                        }
-                    );
-                }
-            } else {
-                saveFn = this.editorEffects.saveNode(this.node, tags).then(
+        if (!this.node.uuid) {
+            // Create new node.
+            const parentNode = this.entities.getNode(this.node.parentNode.uuid, { language: this.node.language });
+            const projectName = parentNode && parentNode.project.name;
+            if (parentNode && projectName) {
+                saveFn = this.editorEffects.saveNewNode(projectName, this.node, tags).then(
                     node => {
                         this.isSaving = false;
-                        // reload preview tab
-                        this.opener.reload();
-                        if (node && node.project.name && node.language) {
+                        if (node && node.language) {
                             formGenerator.setPristine(node);
-                            this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
-                            this.changeDetector.markForCheck();
+                            this.listEffects.loadChildren(projectName, parentNode.uuid, node.language);
+
+                            if (navigateOnSave) {
+                                this.navigationService.detail(projectName, node.uuid, node.language).navigate();
+                            }
                         }
                     },
                     error => {
-                        this.handleSaveConflicts(error);
                         this.isSaving = false;
                         this.changeDetector.detectChanges();
                     }
                 );
             }
-            this.saveNodeWithProgress(saveFn, this.node);
+        } else {
+            saveFn = this.editorEffects.saveNode(this.node, tags).then(
+                node => {
+                    this.isSaving = false;
+                    // reload preview tab
+                    this.opener.reload();
+                    if (node && node.project.name && node.language) {
+                        formGenerator.setPristine(node);
+                        this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
+                        this.changeDetector.markForCheck();
+                    }
+                },
+                error => {
+                    this.handleSaveConflicts(error);
+                    this.isSaving = false;
+                    this.changeDetector.detectChanges();
+                }
+            );
         }
+        this.saveNodeWithProgress(saveFn, this.node);
     }
 
     handleSaveConflicts(errorResponse: { conflict: GraphQLErrorFromServer | null; node: NodeResponse | null }): void {

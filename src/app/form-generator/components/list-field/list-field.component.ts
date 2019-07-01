@@ -175,7 +175,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
 
     deleteItem(e: ISortableEvent): void {
         const newValue = this.value.slice(0);
-        if (e.oldIndex) {
+        if (e.oldIndex !== undefined) {
             newValue.splice(e.oldIndex, 1);
         } else {
             throw new Error('"oldIndex" of SortableEvent is undefined');
@@ -223,7 +223,9 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
                     const pseudoField = {
                         name: ``,
                         type: fieldType,
-                        allow: this.field.allow
+                        allow: this.field.allow,
+                        // List field items are always required. Mesh does not allow null values in list fields.
+                        required: true
                     };
                     const value = this.value[index];
                     const newContainer = meshControl.addChild(pseudoField, value);

@@ -8,7 +8,7 @@ export type NodeCreateRequestWithFields = NodeCreateRequest & {
 };
 
 /**
- * Initializes a new Micronode based on the associated Microschema.
+ * Initializes a new Node based on the associated Schema.
  * TODO - verify what's the version number for NodeFieldMicronode.microschema
  */
 export function initializeNode(schema: Schema, parentNodeUuid: string, language: string): NodeCreateRequestWithFields {
@@ -22,10 +22,6 @@ export function initializeNode(schema: Schema, parentNodeUuid: string, language:
         },
         fields: {}
     };
-
-    for (const field of schema.fields) {
-        node.fields[field.name] = initializeFieldValue(field);
-    }
 
     return node;
 }

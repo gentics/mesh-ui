@@ -26,6 +26,10 @@ test('Change password on login', async t => {
     await login(username, 'abc', 'newpassword');
 
     await t.expect(topBar.exists).ok('User is logged in');
+
+    // TODO Use Roles to switch more
+    await logout();
+    await login('admin', 'admin');
 }).after(async t => {
     if (t.ctx.username) {
         await deleteUserByName(t.ctx.username);
