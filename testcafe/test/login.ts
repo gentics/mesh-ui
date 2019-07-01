@@ -1,18 +1,17 @@
-import { deleteUserByName } from '../api';
+import { api } from '../api';
 import { goToUsers } from '../page-object/admin/admin-main-menu';
 import { createUser } from '../page-object/admin/user/user-detail';
 import { newUser } from '../page-object/admin/user/user-list';
 import { login } from '../page-object/login';
-import { goToAdmin, logout, topBar } from '../page-object/topnav';
-import { baseUrl } from '../testUtil';
+import { topnav } from '../page-object/topnav';
 
-fixture`Login`.page(baseUrl());
+fixture`Login`.page(api.baseUrl());
 
 test('Change password on login', async t => {
     const username = `user-` + new Date().toISOString();
 
     await login('admin', 'admin');
-    await goToAdmin();
+    await topnav.goToAdmin();
     await goToUsers();
     await newUser();
     await createUser({
@@ -21,17 +20,17 @@ test('Change password on login', async t => {
         forcedPasswordChange: true
     });
     t.ctx.username = username;
-    await logout();
+    await topnav.logout();
     await login(username, 'abc');
     await login(username, 'abc', 'newpassword');
 
-    await t.expect(topBar.exists).ok('User is logged in');
+    await t.expect(topnav.topBar.exists).ok('User is logged in');
 
     // TODO Use Roles to switch more
-    await logout();
+    await topnav.logout();
     await login('admin', 'admin');
 }).after(async t => {
     if (t.ctx.username) {
-        await deleteUserByName(t.ctx.username);
+        await api.deleteUserByName(t.ctx.username);
     }
 });

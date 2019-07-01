@@ -9,11 +9,7 @@ import {
     SchemaResponse
 } from '../src/app/common/models/server-models';
 
-import * as api from './api';
-
-export function baseUrl() {
-    return process.env.MESHUI_URL || 'http://localhost:4200';
-}
+import { api } from './api';
 
 export function formControlInput(name: string) {
     return Selector('gtx-input')

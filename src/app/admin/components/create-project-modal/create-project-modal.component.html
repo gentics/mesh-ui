@@ -5,22 +5,32 @@
 </div>
 <div class="modal-content">
     <form [formGroup]="form">
-        <gtx-input label="Name" formControlName="name" autofocus></gtx-input>
-        <div class="error" *ngIf="name.errors && name.errors.conflict">
+        <gtx-input label="Name"
+                   formControlName="name"
+                   autofocus></gtx-input>
+        <div class="error"
+             *ngIf="name.errors && name.errors.conflict">
             {{ 'modal.create_project_conflict' | i18n }}
         </div>
 
-        <gtx-select formControlName="schema" label="{{ 'modal.create_project_schema_label' | i18n }}">
-            <gtx-option *ngFor="let schema of schemas$ | async" [value]="schema">{{ schema.name }}</gtx-option>
+        <gtx-select formControlName="schema"
+                    label="{{ 'modal.create_project_schema_label' | i18n }}">
+            <gtx-option *ngFor="let schema of schemas$ | async"
+                        [value]="schema">{{ schema.name }}</gtx-option>
         </gtx-select>
 
-        <div class="non-container-warning" *ngIf="schema.value && !schema.value.container">
+        <div class="non-container-warning"
+             *ngIf="schema.value && !schema.value.container">
             {{ 'modal.create_project_non_container_hint' | i18n }}
         </div>
+
+        <gtx-checkbox formControlName="anonymousAccess"
+                      label="{{ 'modal.create_project_anonymous_access' | i18n }}"></gtx-checkbox>
     </form>
 </div>
 <div class="modal-footer">
-    <gtx-button type="secondary" flat
+    <gtx-button type="secondary"
+                flat
                 (click)="cancelFn()">{{ 'common.cancel_button' | i18n }}</gtx-button>
     <gtx-button type="primary"
                 [disabled]="!form?.valid || creating"
