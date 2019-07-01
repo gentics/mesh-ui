@@ -95,16 +95,16 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
             this.creating = true;
             this.conflict = false;
             try {
-                const response = this.adminProjectEffects.createProject(request);
+                const response = await this.adminProjectEffects.createProject(request);
                 if (this.anonymousAccess.value) {
                     // Required by https://github.com/gentics/mesh-ui/issues/42
                     const uuid = await this.adminRoleEffects.loadAnonymousRoleUuid();
-                    this.adminPermissionEffects.grantPermissionToProject(uuid, (await response).uuid, {
+                    this.adminPermissionEffects.grantPermissionToProject(uuid, response.uuid, {
                         permissions: { read: true },
                         recursive: true
                     });
                 }
-                this.closeFn(await response);
+                this.closeFn(response);
                 this.creating = false;
             } catch (err) {
                 if (err instanceof ApiError && err.response && err.response.status === 409) {
