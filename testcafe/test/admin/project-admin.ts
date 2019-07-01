@@ -24,12 +24,14 @@ test('Create project with anonymous permissions', async t => {
 test('Create project without anonymous permissions', async t => {
     await t.useRole(Admin);
     await navigate.toProjectAdmin();
-    await projectList.createProject({ name: projectName });
+    await projectList.createProject({ name: projectName, anonymousAccess: false });
     await api.asAnonymousUser(async () => {
         try {
             await api.getProjectByName(projectName);
             await assert.fail('The anonymous user should not have access to the project');
-        } catch {}
+        } catch (err) {
+            await t.expect(err.statusCode).eql(403);
+        }
     });
 }).after(async t => {
     await api.deleteProjectByName(projectName);
