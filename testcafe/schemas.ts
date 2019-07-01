@@ -66,6 +66,11 @@ export const allFields: SchemaCreateRequest = {
             listType: 'string'
         },
         {
+            name: 'booleanListField',
+            type: 'list',
+            listType: 'boolean'
+        },
+        {
             name: 'numberListField',
             type: 'list',
             listType: 'number'

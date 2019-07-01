@@ -35,6 +35,11 @@ export const allMicroFields: MicroschemaCreateRequest = {
             listType: 'string'
         },
         {
+            name: 'booleanListField',
+            type: 'list',
+            listType: 'boolean'
+        },
+        {
             name: 'numberListField',
             type: 'list',
             listType: 'number'
