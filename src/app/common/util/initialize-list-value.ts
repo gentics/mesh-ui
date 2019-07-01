@@ -20,6 +20,6 @@ export function initializeListValue(field: SchemaField, microschema?: Microschem
         }
         return initializeMicronode(microschema);
     } else {
-        return typeToDefault(field.listType as SchemaFieldType, field);
+        return null;
     }
 }
