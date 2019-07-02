@@ -98,7 +98,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
                 table: true
             }
         }) as any;
-        this.editor.clipboard.dangerouslyPasteHTML(this.value as string);
+        this.editor.clipboard.dangerouslyPasteHTML((this.value as string) || '');
         this.editor.theme.tooltip = new MeshLinkToolTip(
             this.editor,
             this.api,
