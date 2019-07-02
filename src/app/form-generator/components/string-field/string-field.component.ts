@@ -34,6 +34,6 @@ export class StringFieldComponent extends BaseFieldComponent {
      */
     private setValidity(value: any): void {
         const requiredError = this.api.field.required === true && !value;
-        this.api.setError(errorHashFor(ErrorCode.REQUIRED, requiredError));
+        this.api.setError(errorHashFor('required', requiredError));
     }
 }

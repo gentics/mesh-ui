@@ -31,6 +31,10 @@
       "en": "This field is required",
       "de": "Dieses Feld is erforderlich"
     },
+    "error_number": {
+      "en": "This field must be a valid number",
+      "de": "Dieses Feld muss eine gültige Zahl sein"
+    },
     "language_switch_to": {
       "en": "Switch to {{language}}",
       "de": "Auf {{language}} umschalten"

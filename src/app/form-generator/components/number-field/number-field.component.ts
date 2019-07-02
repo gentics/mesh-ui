@@ -37,15 +37,22 @@ export class NumberFieldComponent extends BaseFieldComponent {
     private setValidity(value: any): void {
         const min = this.api.field.min;
         const max = this.api.field.max;
-        const requiredError = this.api.field.required && (typeof value !== 'number' || Number.isNaN(value));
+
+        const requiredError = this.api.field.required && this.isEmpty(value);
         const minError = min !== undefined && value < min;
         const maxError = max !== undefined && max < value;
+        const numberError = !this.isEmpty(value) && isNaN(value);
 
         const errors = {
-            ...errorHashFor(ErrorCode.REQUIRED, requiredError),
-            ...errorHashFor(ErrorCode.MIN_VALUE, minError),
-            ...errorHashFor(ErrorCode.MAX_VALUE, maxError)
+            ...errorHashFor('required', requiredError),
+            ...errorHashFor('min_value', minError),
+            ...errorHashFor('max_value', maxError),
+            ...errorHashFor('number', numberError)
         };
         this.api.setError(errors);
+    }
+
+    private isEmpty(value: any) {
+        return value === '' || value === undefined || value === null;
     }
 }

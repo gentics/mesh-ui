@@ -186,6 +186,6 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     private setValidity(value: any): void {
         const quillEmptyValue = '<p><br></p>';
         const isValid = !this.api.field.required || (!!value && value !== quillEmptyValue);
-        this.api.setError(errorHashFor(ErrorCode.REQUIRED, !isValid));
+        this.api.setError(errorHashFor('required', !isValid));
     }
 }
