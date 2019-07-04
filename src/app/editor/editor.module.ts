@@ -12,6 +12,7 @@ import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.compo
 import { ConfirmNavigationModalComponent } from './components/confirm-navigation-modal/confirm-navigation-modal.component';
 import { ConflictedFieldComponent } from './components/conflicted-field/conflicted-field.component';
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
+import { ContainerEmptyComponent } from './components/container-empty/container-empty.component';
 import { ContainerFileDropAreaComponent } from './components/container-file-drop-area/container-file-drop-area.component';
 import { ContainerLanguageSwitcherComponent } from './components/container-language-switcher/container-language-switcher.component';
 import { CreateNodeButtonComponent } from './components/create-node-button/create-node-button.component';
@@ -30,6 +31,7 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
 import { VersionLabelComponent } from './components/version-label/version-label.component';
 import { routes } from './editor.routes';
 import { EditorEffectsService } from './providers/editor-effects.service';
+import { NoProjectsGuard } from './providers/no-projects.guard';
 import { NodeEditorGuard } from './providers/node-editor-guard';
 import { OpenerService } from './providers/opener.service';
 
@@ -55,7 +57,8 @@ import { OpenerService } from './providers/opener.service';
         ContainerFileDropAreaComponent,
         MultiFileUploadDialogComponent,
         NodeConflictDialogComponent,
-        ConflictedFieldComponent
+        ConflictedFieldComponent,
+        ContainerEmptyComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,
@@ -68,6 +71,7 @@ import { OpenerService } from './providers/opener.service';
         EditorEffectsService,
         TagsEffectsService,
         NodeEditorGuard,
+        NoProjectsGuard,
         ModalService,
         OverlayHostService,
         BlobService,
