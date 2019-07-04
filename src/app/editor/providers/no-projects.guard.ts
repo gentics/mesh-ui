@@ -37,8 +37,11 @@ export class NoProjectsGuard implements CanActivateChild {
     }
 
     canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const projectUrlSegment = route.url[0].path;
+
         console.log('!!! NoProjectsGuard.projects:', this.projects);
         console.log('!!! currentProject:', this.currentProject);
+        console.log('!!! projectUrlSegment:', projectUrlSegment);
         // redirect to introduction page if requested project doesn't exist
         // this.router.navigate(['/editor', 'empty']);
         return true;
