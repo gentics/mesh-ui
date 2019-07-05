@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 
-import { AssureEntititesGuard } from '../core/providers/guards/assure-entities.guard';
+import { AssureEntitiesGuard } from '../core/providers/guards/assure-entities.guard';
 
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
 import { ContainerEmptyComponent } from './components/container-empty/container-empty.component';
@@ -17,7 +17,7 @@ export const routes: Route[] = [
     {
         path: 'project',
         component: MasterDetailComponent,
-        canActivateChild: [AssureEntititesGuard],
+        canActivateChild: [AssureEntitiesGuard],
         children: [
             {
                 path: ':projectName/:containerUuid/:language',
@@ -35,11 +35,13 @@ export const routes: Route[] = [
                 component: NodeEditorComponent,
                 outlet: 'detail',
                 canDeactivate: [NodeEditorGuard]
-            }
+            },
+            { path: '**', redirectTo: 'project' }
         ]
     },
     {
         path: 'empty',
         component: ContainerEmptyComponent
-    }
+    },
+    { path: '**', component: MasterDetailComponent }
 ];
