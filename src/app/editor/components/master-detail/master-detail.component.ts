@@ -39,7 +39,6 @@ export class MasterDetailComponent implements OnInit {
                 .switchMap(() =>
                     this.state.select(state => {
                         const projects = state.entities.project;
-                        console.log('!!! projects:', projects);
                         const firstProjectUuid = Object.keys(projects)[0];
                         return firstProjectUuid && projects[firstProjectUuid];
                     })
