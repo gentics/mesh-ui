@@ -9,11 +9,6 @@ import { NodeEditorComponent } from './components/node-editor/node-editor.compon
 import { NodeEditorGuard } from './providers/node-editor-guard';
 
 export const routes: Route[] = [
-    /**
-     * TODO: this top-level path "project" is not really needed, but at the moment there is a bug with the router
-     * (https://github.com/angular/angular/issues/10726) which means that if an empty top-level route is used,
-     * aux routes do not get correctly matched.
-     */
     {
         path: 'project',
         component: MasterDetailComponent,
@@ -35,13 +30,11 @@ export const routes: Route[] = [
                 component: NodeEditorComponent,
                 outlet: 'detail',
                 canDeactivate: [NodeEditorGuard]
-            },
-            { path: '**', redirectTo: 'project' }
+            }
         ]
     },
     {
         path: 'empty',
         component: ContainerEmptyComponent
-    },
-    { path: '**', component: MasterDetailComponent }
+    }
 ];

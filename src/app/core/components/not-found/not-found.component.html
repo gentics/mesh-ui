@@ -1,0 +1,5 @@
+<div class="small-12 medium-12 columns not-found-container">
+    <p>{{ 'common.page_not_found' | translate }}</p>
+    <a [routerLink]="[ '/' ]"
+       [fragment]="redirectToModule">{{ 'common.navigate_to_fallback' | translate }}</a>
+</div>
