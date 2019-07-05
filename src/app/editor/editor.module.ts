@@ -31,7 +31,6 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
 import { VersionLabelComponent } from './components/version-label/version-label.component';
 import { routes } from './editor.routes';
 import { EditorEffectsService } from './providers/editor-effects.service';
-import { NoProjectsGuard } from './providers/no-projects.guard';
 import { NodeEditorGuard } from './providers/node-editor-guard';
 import { OpenerService } from './providers/opener.service';
 
@@ -40,42 +39,41 @@ import { OpenerService } from './providers/opener.service';
     declarations: [
         BreadcrumbsComponent,
         ConfirmNavigationModalComponent,
+        ConflictedFieldComponent,
         ContainerContentsComponent,
+        ContainerEmptyComponent,
+        ContainerFileDropAreaComponent,
         ContainerLanguageSwitcherComponent,
         CreateNodeButtonComponent,
+        CreateTagDialogComponent,
         MasterDetailComponent,
+        MultiFileUploadDialogComponent,
+        NodeConflictDialogComponent,
         NodeEditorComponent,
         NodeLanguageLabelComponent,
         NodeLanguageSwitcherComponent,
+        NodeRowComponent,
+        NodeTagsBarComponent,
+        ProgressbarModalComponent,
         ProjectSwitcherComponent,
         SearchBarComponent,
-        VersionLabelComponent,
-        NodeRowComponent,
-        ProgressbarModalComponent,
-        NodeTagsBarComponent,
-        CreateTagDialogComponent,
-        ContainerFileDropAreaComponent,
-        MultiFileUploadDialogComponent,
-        NodeConflictDialogComponent,
-        ConflictedFieldComponent,
-        ContainerEmptyComponent
+        VersionLabelComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,
-        ProgressbarModalComponent,
         CreateTagDialogComponent,
         MultiFileUploadDialogComponent,
-        NodeConflictDialogComponent
+        NodeConflictDialogComponent,
+        ProgressbarModalComponent
     ],
     providers: [
-        EditorEffectsService,
-        TagsEffectsService,
-        NodeEditorGuard,
-        NoProjectsGuard,
-        ModalService,
-        OverlayHostService,
         BlobService,
-        OpenerService
+        EditorEffectsService,
+        ModalService,
+        NodeEditorGuard,
+        OpenerService,
+        OverlayHostService,
+        TagsEffectsService
     ]
 })
 export class EditorModule {

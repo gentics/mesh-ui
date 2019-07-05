@@ -1,10 +1,11 @@
 import { Route } from '@angular/router';
 
+import { AssureEntititesGuard } from '../core/providers/guards/assure-entities.guard';
+
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
 import { ContainerEmptyComponent } from './components/container-empty/container-empty.component';
 import { MasterDetailComponent } from './components/master-detail/master-detail.component';
 import { NodeEditorComponent } from './components/node-editor/node-editor.component';
-import { NoProjectsGuard } from './providers/no-projects.guard';
 import { NodeEditorGuard } from './providers/node-editor-guard';
 
 export const routes: Route[] = [
@@ -16,7 +17,7 @@ export const routes: Route[] = [
     {
         path: 'project',
         component: MasterDetailComponent,
-        canActivateChild: [NoProjectsGuard],
+        canActivateChild: [AssureEntititesGuard],
         children: [
             {
                 path: ':projectName/:containerUuid/:language',

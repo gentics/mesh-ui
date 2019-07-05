@@ -15,6 +15,7 @@ import { ConfigService } from './providers/config/config.service';
 import { ContentPortalService } from './providers/content-portal/content-portal.service';
 import { MeshDialogsService } from './providers/dialogs/mesh-dialogs.service';
 import { ListEffectsService } from './providers/effects/list-effects.service';
+import { AssureEntititesGuard } from './providers/guards/assure-entities.guard';
 import { AuthGuard } from './providers/guards/auth-guard';
 import { I18nNotification } from './providers/i18n-notification/i18n-notification.service';
 import { CustomLoader } from './providers/i18n/custom-loader';
@@ -26,6 +27,7 @@ import { SearchEffectsService } from './providers/search/search-effects.service'
 const CORE_PROVIDERS = [
     ApplicationStateService,
     AuthGuard,
+    AssureEntititesGuard,
     ConfigService,
     I18nNotification,
     I18nService,
