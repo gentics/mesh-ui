@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateChild, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router } from '@angular/router';
 import { Notification } from 'gentics-ui-core';
 import { of, Observable } from 'rxjs';
 import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { NavigationService } from '../navigation/navigation.service';
 @Injectable({
     providedIn: 'root'
 })
-export class AssureEntitiesGuard implements CanActivateChild {
+export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
     constructor(
         private api: ApiService,
         private router: Router,
@@ -22,11 +22,22 @@ export class AssureEntitiesGuard implements CanActivateChild {
         private notification: Notification
     ) {}
 
+    async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
+        return this.canActivateCheck(route);
+    }
+
     async canActivateChild(route: ActivatedRouteSnapshot): Promise<boolean> {
+        return this.canActivateCheck(route);
+    }
+
+    private async canActivateCheck(route: ActivatedRouteSnapshot): Promise<boolean> {
         const currentProjectName = route.params.projectName;
         const currentContainerUuid = route.params.containerUuid;
         const command = route.params.command;
-        console.log('!!!!!!!!!!!!!!!!!!!!! route.params:', route.params);
+
+        if (!currentProjectName || !currentContainerUuid) {
+            return Promise.resolve(true);
+        }
 
         return this.api.project
             .getProjects({})
@@ -39,19 +50,14 @@ export class AssureEntitiesGuard implements CanActivateChild {
                         allProjects.filter(project => {
                             return project.name === currentProjectName;
                         }).length > 0;
-                    console.log('!!! allProjects:', allProjects);
-                    console.log('!!! currentProjectName:', currentProjectName);
-                    console.log('!!! currentContainerUuid:', currentContainerUuid);
 
                     // redirect to introduction page if requested project doesn't exist
                     if (noProjects) {
-                        console.log('!!! cond - 01 !!!');
                         this.router.navigate(['/editor', 'empty']);
                         return of(false);
 
                         // if projects exist but not the one in the route, redirect to next available project and notify user
                     } else if (!projectExists) {
-                        console.log('!!! cond - 02 !!!');
                         const projectFallbackName = allProjects[0].name;
                         return this.getProjectRootContainerUuid(projectFallbackName).pipe(
                             map(rootContainerUuid => {
@@ -60,7 +66,6 @@ export class AssureEntitiesGuard implements CanActivateChild {
                                     type: 'error',
                                     message: `Project ${currentProjectName} does not exist.`
                                 });
-                                console.log('!!!!!!!!!!!!!!!!!! projectFallbackName:', projectFallbackName);
                                 // try to navigate to next available project contents
                                 this.navigationService
                                     .list(projectFallbackName, rootContainerUuid)
@@ -71,22 +76,16 @@ export class AssureEntitiesGuard implements CanActivateChild {
 
                         // if project in route exists check if container node exists
                     } else {
-                        console.log('!!! cond - 03 !!!');
                         // if route indicates writing instead of reading, no need to check
                         if (typeof command === 'string') {
-                            console.log('!!! cond - 04 !!!');
                             return of(true);
                         } else {
-                            console.log('!!! cond - 05 !!!');
                             return this.nodeExists(currentProjectName, currentContainerUuid).pipe(
                                 mergeMap(nodeExists => {
-                                    console.log('!!! cond - 06 !!!');
                                     // if container node in route exists allow navigation and do nothing
                                     if (nodeExists) {
-                                        console.log('!!! cond - 07 !!!');
                                         return of(true);
                                     } else {
-                                        console.log('!!! cond - 08 !!!');
                                         // try to navigate to root container instead
                                         return this.getProjectRootContainerUuid(currentProjectName).pipe(
                                             map(rootContainerUuid => {
@@ -110,18 +109,14 @@ export class AssureEntitiesGuard implements CanActivateChild {
     /**
      * @returns if container is available from backend (true) or not (false)
      */
-    private nodeExists(projectname: string, nodeUuid: string): Observable<boolean> {
-        if (nodeUuid.length < 12) {
-            return of(false);
-        }
+    private nodeExists(projectName: string, nodeUuid: string): Observable<boolean> {
         return this.api.project
             .getNode({
-                project: projectname,
+                project: projectName,
                 nodeUuid
             })
             .pipe(
-                tap(result => console.log('!!! nodeExists result:', result)),
-                map(node => (node ? true : false)),
+                map(() => true),
                 catchError(() => of(false))
             );
     }
@@ -132,6 +127,6 @@ export class AssureEntitiesGuard implements CanActivateChild {
     private getProjectRootContainerUuid(projectName: string): Observable<string> {
         return this.api.project
             .getProjectByName({ project: projectName })
-            .pipe(switchMap((project: ProjectResponse) => project.rootNode.uuid));
+            .pipe(map((project: ProjectResponse) => project.rootNode.uuid));
     }
 }

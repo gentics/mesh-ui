@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
+import { AdminProjectEffectsService } from '../../../admin/providers/effects/admin-project-effects.service';
 import { Project } from '../../../common/models/project.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
@@ -27,37 +28,41 @@ export class MasterDetailComponent implements OnInit {
         this.editorFocused$ = this.state.select(state => state.editor.editorIsFocused);
         this.editorOpen$ = this.state.select(state => state.editor.editorIsOpen);
 
-        this.listEffects.loadProjects();
+        this.listEffects.loadProjects().then(() => {
+            // TODO: We need to determine a "default" project to load up on init, fetch it from the
+            // API and navigate to its baseNode.
+            // this.navigationService.list('demo', 'container_uuid').navigate();
+            this.state
+                .select(state => state.auth.loggedIn)
+                .filter(Boolean)
+                // load project into state
+                .switchMap(() =>
+                    this.state.select(state => {
+                        const projects = state.entities.project;
+                        console.log('!!! projects:', projects);
+                        const firstProjectUuid = Object.keys(projects)[0];
+                        return firstProjectUuid && projects[firstProjectUuid];
+                    })
+                )
+                .filter(Boolean)
+                .take(1)
+                .subscribe((firstProject: Project) => {
+                    // If the list params are already set in the URL, use those. Otherwise
+                    // default to the first project.
+                    const listRoute = this.route.snapshot.children.find(route => route.outlet === 'list');
+                    const projectName = listRoute ? listRoute.paramMap.get('projectName') : firstProject.name;
+                    const containerUuid = listRoute
+                        ? listRoute.paramMap.get('containerUuid')
+                        : firstProject.rootNode.uuid;
+                    const language = listRoute ? listRoute.paramMap.get('language') : undefined;
 
-        // TODO: We need to determine a "default" project to load up on init, fetch it from the
-        // API and navigate to its baseNode.
-        // this.navigationService.list('demo', 'container_uuid').navigate();
-        this.state
-            .select(state => state.auth.loggedIn)
-            .filter(Boolean)
-            .switchMap(() =>
-                this.state.select(state => {
-                    const projects = state.entities.project;
-                    const firstProjectUuid = Object.keys(projects)[0];
-                    return firstProjectUuid && projects[firstProjectUuid];
-                })
-            )
-            .filter(Boolean)
-            .take(1)
-            .subscribe((firstProject: Project) => {
-                // If the list params are already set in the URL, use those. Otherwise
-                // default to the first project.
-                const listRoute = this.route.snapshot.children.find(route => route.outlet === 'list');
-                const projectName = listRoute ? listRoute.paramMap.get('projectName') : firstProject.name;
-                const containerUuid = listRoute ? listRoute.paramMap.get('containerUuid') : firstProject.rootNode.uuid;
-                const language = listRoute ? listRoute.paramMap.get('language') : undefined;
-
-                if (projectName && containerUuid) {
-                    this.navigationService
-                        .list(projectName, containerUuid, language || undefined)
-                        .navigate({ queryParams: this.route.snapshot.queryParams });
-                }
-            });
+                    if (projectName && containerUuid) {
+                        this.navigationService
+                            .list(projectName, containerUuid, language || undefined)
+                            .navigate({ queryParams: this.route.snapshot.queryParams });
+                    }
+                });
+        });
     }
 
     setSplitFocus(focus: 'left' | 'right'): void {

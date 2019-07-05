@@ -1,5 +1,4 @@
 <div class="small-12 medium-12 columns not-found-container">
-    <p>{{ 'common.page_not_found' | translate }}</p>
-    <a [routerLink]="[ '/' ]"
-       [fragment]="redirectToModule">{{ 'common.navigate_to_fallback' | translate }}</a>
+    <p>{{ 'common.page_not_found' | i18n }}</p>
+    <a [routerLink]="[ redirectUrl ]">{{ 'common.navigate_to_fallback' | i18n }}</a>
 </div>

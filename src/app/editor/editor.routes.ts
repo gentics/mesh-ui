@@ -12,6 +12,7 @@ export const routes: Route[] = [
     {
         path: 'project',
         component: MasterDetailComponent,
+        canActivate: [AssureEntitiesGuard],
         canActivateChild: [AssureEntitiesGuard],
         children: [
             {

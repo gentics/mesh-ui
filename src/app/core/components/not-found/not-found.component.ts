@@ -9,6 +9,5 @@ import { Component } from '@angular/core';
     styleUrls: ['./not-found.component.scss']
 })
 export class NotFoundComponent {
-    /** root path available in app.routes */
-    redirectToModule = 'editor';
+    redirectUrl = '/editor/project';
 }
