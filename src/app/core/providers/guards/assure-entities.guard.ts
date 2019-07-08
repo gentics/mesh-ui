@@ -33,6 +33,7 @@ export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
     private async canActivateCheck(route: ActivatedRouteSnapshot): Promise<boolean> {
         const currentProjectName = route.params.projectName;
         const currentContainerUuid = route.params.containerUuid;
+        const currentNodeUuid = route.params.nodeUuid;
         const command = route.params.command;
 
         return this.api.project
@@ -40,8 +41,11 @@ export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
             .pipe(
                 map((response: any) => response.data),
                 mergeMap((projects: ProjectResponse[]) => {
+                    /** All project available from Mesh response */
                     const allProjects = projects;
+                    /*+ TRUE if there exist no projects at all */
                     const noProjects = allProjects.length === 0;
+                    /** TRUE if current project exists in Mesh response */
                     const projectExists =
                         allProjects.filter(project => {
                             return project.name === currentProjectName;
@@ -59,6 +63,7 @@ export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
                             return of(true);
                         }
 
+                        // choose the next available project as a fallback to display
                         const projectFallbackName = allProjects[0].name;
                         return this.getProjectRootContainerUuid(projectFallbackName).pipe(
                             map((rootContainerUuid: string) => {
@@ -81,7 +86,17 @@ export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
                         if (typeof command === 'string') {
                             return of(true);
                         } else {
-                            return this.nodeExists(currentProjectName, currentContainerUuid).pipe(
+                            // if node editor is open with node, there is no currentContainerUuid but a currentNodeUuid
+                            let checkNodeUuid: string;
+                            if (currentContainerUuid) {
+                                checkNodeUuid = currentContainerUuid;
+                            } else if (currentNodeUuid) {
+                                checkNodeUuid = currentNodeUuid;
+                            } else {
+                                // if in doubt, allow
+                                return of(true);
+                            }
+                            return this.nodeExists(currentProjectName, checkNodeUuid).pipe(
                                 mergeMap(nodeExists => {
                                     // if container node in route exists allow navigation and do nothing
                                     if (nodeExists) {
