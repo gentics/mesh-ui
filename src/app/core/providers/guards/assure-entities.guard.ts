@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router } from '@angular/router';
 import { Notification } from 'gentics-ui-core';
 import { of, Observable } from 'rxjs';
-import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 
 import { ProjectResponse } from '../../../common/models/server-models';
 import { ApiService } from '../api/api.service';
@@ -35,10 +35,6 @@ export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
         const currentContainerUuid = route.params.containerUuid;
         const command = route.params.command;
 
-        if (!currentProjectName || !currentContainerUuid) {
-            return Promise.resolve(true);
-        }
-
         return this.api.project
             .getProjects({})
             .pipe(
@@ -58,9 +54,14 @@ export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
 
                         // if projects exist but not the one in the route, redirect to next available project and notify user
                     } else if (!projectExists) {
+                        // allow navigation if no params info available to prevent a loop
+                        if (!currentProjectName || !currentContainerUuid) {
+                            return of(true);
+                        }
+
                         const projectFallbackName = allProjects[0].name;
                         return this.getProjectRootContainerUuid(projectFallbackName).pipe(
-                            map(rootContainerUuid => {
+                            map((rootContainerUuid: string) => {
                                 // notify user
                                 this.notification.show({
                                     type: 'error',
@@ -69,7 +70,7 @@ export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
                                 // try to navigate to next available project contents
                                 this.navigationService
                                     .list(projectFallbackName, rootContainerUuid)
-                                    .navigate(route.params);
+                                    .navigate({ queryParams: route.params });
                                 return false;
                             })
                         );
@@ -92,7 +93,7 @@ export class AssureEntitiesGuard implements CanActivate, CanActivateChild {
                                                 // try to navigate to next available project contents
                                                 this.navigationService
                                                     .list(currentProjectName, rootContainerUuid)
-                                                    .navigate(route.params);
+                                                    .navigate({ queryParams: route.params });
                                                 return false;
                                             })
                                         );
