@@ -1,19 +1,19 @@
 import { Route } from '@angular/router';
 
+import { AssureEntitiesGuard } from '../core/providers/guards/assure-entities.guard';
+
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
+import { ContainerEmptyComponent } from './components/container-empty/container-empty.component';
 import { MasterDetailComponent } from './components/master-detail/master-detail.component';
 import { NodeEditorComponent } from './components/node-editor/node-editor.component';
 import { NodeEditorGuard } from './providers/node-editor-guard';
 
 export const routes: Route[] = [
-    /**
-     * TODO: this top-level path "project" is not really needed, but at the moment there is a bug with the router
-     * (https://github.com/angular/angular/issues/10726) which means that if an empty top-level route is used,
-     * aux routes do not get correctly matched.
-     */
     {
         path: 'project',
         component: MasterDetailComponent,
+        canActivate: [AssureEntitiesGuard],
+        canActivateChild: [AssureEntitiesGuard],
         children: [
             {
                 path: ':projectName/:containerUuid/:language',
@@ -33,5 +33,9 @@ export const routes: Route[] = [
                 canDeactivate: [NodeEditorGuard]
             }
         ]
+    },
+    {
+        path: 'empty',
+        component: ContainerEmptyComponent
     }
 ];

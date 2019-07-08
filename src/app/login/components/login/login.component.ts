@@ -71,11 +71,16 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
                 this.forcedPasswordChange = false;
                 await this.authEffects.login(values.username, values.password);
             }
+            await this.afterLogin();
         } catch (err) {
             if (err && err.i18nKey === 'auth_login_password_change_required') {
                 this.forcedPasswordChange = true;
             }
         }
+    }
+
+    async afterLogin(): Promise<boolean> {
+        return this.router.navigate(['editor', 'project']);
     }
 
     animate(): void {

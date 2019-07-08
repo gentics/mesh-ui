@@ -1,4 +1,5 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 
@@ -8,6 +9,7 @@ import { ApplicationStateService } from '../state/providers/application-state.se
 
 import { ChangePasswordModalComponent } from './components/change-password-modal/change-password-modal.component';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 import { UserDropdownComponent } from './components/user-dropdown/user-dropdown.component';
 import { ApiBase } from './providers/api/api-base.service';
 import { ApiService } from './providers/api/api.service';
@@ -15,6 +17,7 @@ import { ConfigService } from './providers/config/config.service';
 import { ContentPortalService } from './providers/content-portal/content-portal.service';
 import { MeshDialogsService } from './providers/dialogs/mesh-dialogs.service';
 import { ListEffectsService } from './providers/effects/list-effects.service';
+import { AssureEntitiesGuard } from './providers/guards/assure-entities.guard';
 import { AuthGuard } from './providers/guards/auth-guard';
 import { I18nNotification } from './providers/i18n-notification/i18n-notification.service';
 import { CustomLoader } from './providers/i18n/custom-loader';
@@ -26,6 +29,7 @@ import { SearchEffectsService } from './providers/search/search-effects.service'
 const CORE_PROVIDERS = [
     ApplicationStateService,
     AuthGuard,
+    AssureEntitiesGuard,
     ConfigService,
     I18nNotification,
     I18nService,
@@ -50,6 +54,7 @@ const CORE_ENTRY_COMPONENTS = [ChangePasswordModalComponent];
  */
 @NgModule({
     imports: [
+        RouterModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -59,7 +64,7 @@ const CORE_ENTRY_COMPONENTS = [ChangePasswordModalComponent];
         GenticsUICoreModule.forRoot(),
         SharedModule
     ],
-    declarations: [...CORE_COMPONENTS, ...CORE_ENTRY_COMPONENTS],
+    declarations: [...CORE_COMPONENTS, ...CORE_ENTRY_COMPONENTS, NotFoundComponent],
     entryComponents: CORE_ENTRY_COMPONENTS,
     exports: CORE_COMPONENTS,
     providers: CORE_PROVIDERS

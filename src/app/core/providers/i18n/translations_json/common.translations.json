@@ -71,6 +71,14 @@
       "en": "Not found",
       "de": "Nicht gefunden"
     },
+    "page_not_found": {
+      "en": "The URL you entered is not available.",
+      "de": "Die eingegebene URL ist nicht verfügbar."
+    },
+    "navigate_to_fallback": {
+      "en": "Navigate to Editor",
+      "de": "Zum Editor navigieren"
+    },
     "okay_button": {
       "en": "Okay",
       "de": "OK"

@@ -12,6 +12,7 @@ import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.compo
 import { ConfirmNavigationModalComponent } from './components/confirm-navigation-modal/confirm-navigation-modal.component';
 import { ConflictedFieldComponent } from './components/conflicted-field/conflicted-field.component';
 import { ContainerContentsComponent } from './components/container-contents/container-contents.component';
+import { ContainerEmptyComponent } from './components/container-empty/container-empty.component';
 import { ContainerFileDropAreaComponent } from './components/container-file-drop-area/container-file-drop-area.component';
 import { ContainerLanguageSwitcherComponent } from './components/container-language-switcher/container-language-switcher.component';
 import { CreateNodeButtonComponent } from './components/create-node-button/create-node-button.component';
@@ -38,40 +39,41 @@ import { OpenerService } from './providers/opener.service';
     declarations: [
         BreadcrumbsComponent,
         ConfirmNavigationModalComponent,
+        ConflictedFieldComponent,
         ContainerContentsComponent,
+        ContainerEmptyComponent,
+        ContainerFileDropAreaComponent,
         ContainerLanguageSwitcherComponent,
         CreateNodeButtonComponent,
+        CreateTagDialogComponent,
         MasterDetailComponent,
+        MultiFileUploadDialogComponent,
+        NodeConflictDialogComponent,
         NodeEditorComponent,
         NodeLanguageLabelComponent,
         NodeLanguageSwitcherComponent,
+        NodeRowComponent,
+        NodeTagsBarComponent,
+        ProgressbarModalComponent,
         ProjectSwitcherComponent,
         SearchBarComponent,
-        VersionLabelComponent,
-        NodeRowComponent,
-        ProgressbarModalComponent,
-        NodeTagsBarComponent,
-        CreateTagDialogComponent,
-        ContainerFileDropAreaComponent,
-        MultiFileUploadDialogComponent,
-        NodeConflictDialogComponent,
-        ConflictedFieldComponent
+        VersionLabelComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,
-        ProgressbarModalComponent,
         CreateTagDialogComponent,
         MultiFileUploadDialogComponent,
-        NodeConflictDialogComponent
+        NodeConflictDialogComponent,
+        ProgressbarModalComponent
     ],
     providers: [
-        EditorEffectsService,
-        TagsEffectsService,
-        NodeEditorGuard,
-        ModalService,
-        OverlayHostService,
         BlobService,
-        OpenerService
+        EditorEffectsService,
+        ModalService,
+        NodeEditorGuard,
+        OpenerService,
+        OverlayHostService,
+        TagsEffectsService
     ]
 })
 export class EditorModule {

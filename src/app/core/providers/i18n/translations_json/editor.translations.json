@@ -119,6 +119,14 @@
       "en": "Unpublish all languages",
       "de": "Alle Sprachen depublizieren"
     },
+    "no_projects": {
+      "en": "No projects to display.",
+      "de": "Es existieren keine Projekte."
+    },
+    "create_new_project": {
+      "en": "Create a new project",
+      "de": "Neues Projekt erstellen"
+    },
     "server_error": {
       "en": "An error occured during server communication. Please repeat your action or get back to the software maintainer.",
       "de": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten. Bitte Vorgang wiederholen oder Hersteller kontaktieren."
