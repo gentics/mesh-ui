@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { catchError, map } from 'rxjs/operators';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
@@ -28,16 +26,17 @@ export class ListEffectsService {
     /**
      * Load all projects
      */
-    async loadProjects(): Promise<void> {
+    loadProjects() {
         this.state.actions.list.fetchProjectsStart();
         // TODO How to handle paging? Should all projects be loaded?
-        return this.api.project
-            .getProjects({})
-            .pipe(
-                map(projects => this.state.actions.list.fetchProjectsSuccess(projects.data)),
-                catchError(() => of(this.state.actions.list.fetchProjectsError()))
-            )
-            .toPromise();
+        this.api.project.getProjects({}).subscribe(
+            projects => {
+                this.state.actions.list.fetchProjectsSuccess(projects.data);
+            },
+            error => {
+                this.state.actions.list.fetchProjectsError();
+            }
+        );
     }
 
     /**
