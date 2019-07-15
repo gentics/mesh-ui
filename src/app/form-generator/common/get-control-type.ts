@@ -15,22 +15,24 @@ import { StringFieldComponent } from '../components/string-field/string-field.co
 
 type TypeComponentMap = { [P in SchemaFieldType]: Type<BaseFieldComponent> | null };
 
-const defaultTypeComponentMap: TypeComponentMap = {
-    binary: BinaryFieldComponent,
-    boolean: BooleanFieldComponent,
-    date: DateFieldComponent,
-    html: HtmlFieldComponent,
-    list: ListFieldComponent,
-    micronode: MicronodeFieldComponent,
-    node: NodeFieldComponent,
-    number: NumberFieldComponent,
-    string: StringFieldComponent
-};
-
 /**
  * Given a schema field definition, returns the component which should be used to render it.
  */
 export function getControlType(field: SchemaField): Type<BaseFieldComponent> | undefined {
+    // This is not a top level constant to prevent circular dependency issues.
+    // See https://github.com/gentics/mesh-ui/issues/233
+    const defaultTypeComponentMap: TypeComponentMap = {
+        binary: BinaryFieldComponent,
+        boolean: BooleanFieldComponent,
+        date: DateFieldComponent,
+        html: HtmlFieldComponent,
+        list: ListFieldComponent,
+        micronode: MicronodeFieldComponent,
+        node: NodeFieldComponent,
+        number: NumberFieldComponent,
+        string: StringFieldComponent
+    };
+
     const defaultFieldType = defaultTypeComponentMap[field.type];
     if (field.control && field.control.use) {
         // TODO: check for built-in variants
