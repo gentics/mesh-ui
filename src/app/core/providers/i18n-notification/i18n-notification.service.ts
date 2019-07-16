@@ -9,6 +9,16 @@ export interface TranslatedNotificationOptions extends INotificationOptions {
     translationParams?: { [key: string]: any };
 }
 
+export class AlreadyHandledError extends Error {
+    constructor() {
+        super();
+        // https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+        if (!(this instanceof AlreadyHandledError)) {
+            Object.setPrototypeOf(this, AlreadyHandledError.prototype);
+        }
+    }
+}
+
 /**
  * A drop-in replacement for the GUIC Notification service, which is able to transparently
  * translate translation keys passed in the `message` property of the options object.
@@ -38,6 +48,9 @@ export class I18nNotification {
     rxError<T>(source: Observable<T>): Observable<T> {
         return source.do({
             error: (err: any) => {
+                if (err instanceof AlreadyHandledError) {
+                    return;
+                }
                 // This could fire very early after app startup. Therefore, wait for gtx-overlay-host to be initialized.
                 setTimeout(() => {
                     this.notification.show({

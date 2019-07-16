@@ -10,12 +10,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
-import { timer } from 'rxjs';
+import { throwError, timer } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { debounce, filter, switchMap } from 'rxjs/operators';
+import { catchError, debounce, filter, switchMap, tap } from 'rxjs/operators';
 
 import { ApiService } from '../core/providers/api/api.service';
+import { AlreadyHandledError, I18nNotification } from '../core/providers/i18n-notification/i18n-notification.service';
 
 interface MeshToken {
     userUuid: string;
@@ -31,7 +32,12 @@ const MIN_TOKEN_VALID_DURATION = 60;
 export class AuthInterceptor implements HttpInterceptor {
     private expiresIn = new Subject<number>();
 
-    constructor(private router: Router, private cookies: CookieService, private api: ApiService) {
+    constructor(
+        private router: Router,
+        private cookies: CookieService,
+        private api: ApiService,
+        private notification: I18nNotification
+    ) {
         this.expiresIn
             .pipe(
                 // Don't refresh the token when it expires too fast
@@ -48,15 +54,23 @@ export class AuthInterceptor implements HttpInterceptor {
             headers: req.headers.set('Anonymous-Authentication', 'disable'),
             withCredentials: true
         });
-        return next.handle(newReq).do(
-            response => {
-                this.resetRefreshTimer(response);
-            },
-            err => {
+        return next.handle(newReq).pipe(
+            tap(response => this.resetRefreshTimer(response)),
+            catchError(err => {
                 if (err instanceof HttpErrorResponse && err.status === 401) {
-                    this.router.navigate(['login']);
+                    const url = this.router.routerState.snapshot.url;
+                    if (url && url !== '/login') {
+                        this.router.navigate(['login']);
+                        this.notification.show({
+                            type: 'error',
+                            message: 'auth.session_expired'
+                        });
+                    }
+                    return throwError(new AlreadyHandledError());
+                } else {
+                    return throwError(err);
                 }
-            }
+            })
         );
     }
 

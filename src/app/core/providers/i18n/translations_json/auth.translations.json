@@ -18,5 +18,9 @@
     "password_mismatch": {
       "en": "Password doesn't match",
       "de": "Die Passwörter stimmen nicht überein"
+    },
+    "session_expired": {
+      "en": "Your session has expired. Please login again.",
+      "de": "Ihre Sitzung ist abgelaufen. Bitte loggen Sie sich erneut ein."
     }
 }
