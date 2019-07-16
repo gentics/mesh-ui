@@ -60,4 +60,10 @@ export class AuthApi {
             boolean
         >);
     }
+
+    public refreshToken(): Observable<any> {
+        return this.apiBase.get(`/auth/me`, {
+            fields: 'uuid'
+        });
+    }
 }

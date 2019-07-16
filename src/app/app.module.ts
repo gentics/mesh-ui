@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PreloadAllModules, Router, RouterModule } from '@angular/router';
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
+import { CookieService } from 'ngx-cookie-service';
 
 import '../styles/main.scss';
 
@@ -12,6 +13,7 @@ import { ROUTER_CONFIG } from './app.routes';
 import { CoreModule } from './core/core.module';
 import { I18nService } from './core/providers/i18n/i18n.service';
 import { SearchEffectsService } from './core/providers/search/search-effects.service';
+import { httpInterceptorProviders } from './http-interceptors';
 import { AuthEffectsService } from './login/providers/auth-effects.service';
 import { SharedModule } from './shared/shared.module';
 import { AppState } from './state/models/app-state.model';
@@ -31,6 +33,7 @@ interface HmrStore {
 @NgModule({
     bootstrap: [AppComponent],
     declarations: [AppComponent],
+    providers: [httpInterceptorProviders, CookieService],
     imports: [
         RouterModule.forRoot(ROUTER_CONFIG, { useHash: true, preloadingStrategy: PreloadAllModules }),
         BrowserModule,
