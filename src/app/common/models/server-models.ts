@@ -155,7 +155,10 @@ export interface ApiEndpoints {
         '/auth/me': {
             request: {
                 urlParams?: {};
-                queryParams?: {};
+                queryParams?: {
+                    fields?: string;
+                    etag?: boolean;
+                };
                 body?: undefined;
             };
             responseType: UserResponse;

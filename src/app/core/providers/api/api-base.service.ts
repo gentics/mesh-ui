@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { catchError, last, map } from 'rxjs/operators';
 
 import { ApiEndpoints } from '../../../common/models/server-models';
-import { I18nNotification } from '../i18n-notification/i18n-notification.service';
+import { AlreadyHandledError, I18nNotification } from '../i18n-notification/i18n-notification.service';
 
 import { API_BASE_URL } from './api-di-tokens';
 import { ApiError } from './api-error';
@@ -29,12 +29,12 @@ export type ResponseMap<T extends { [status: number]: any }, R> = FullResponseMa
 
 type FullResponseMap<T extends { [status: number]: any }, R> = {
     /** Handles an expected status code */
-    [K in keyof T]: R | ResponseMapCallback<T[K], R>;
+    [K in keyof T]: R | ResponseMapCallback<T[K], R>
 };
 
 type PartialResponseMap<T extends { [status: number]: any }, R> = {
     /** Handles an expected status code. Can be ommitted if "success" is provided. */
-    [K in keyof T]?: R | ResponseMapCallback<T[K], R>;
+    [K in keyof T]?: R | ResponseMapCallback<T[K], R>
 } & {
     /** Status codes not mentioned in the RAML */
     [status: number]: R;
@@ -208,6 +208,8 @@ export class ApiBase {
                     // Non-OK statuses will be thrown by angular, but that could be expected.
                     // The function `toResponseObservable` will wrap it accordingly.
                     return Observable.of(errorOrResponse);
+                } else if (errorOrResponse instanceof AlreadyHandledError) {
+                    return Observable.throw(errorOrResponse);
                 } else {
                     return Observable.throw(new ApiError({ url, request, originalError: errorOrResponse }));
                 }
