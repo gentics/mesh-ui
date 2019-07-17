@@ -276,7 +276,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     }
                 },
                 error => {
-                    this.handleSaveConflicts(error);
+                    this.handleSaveErrors(error);
                     this.isSaving = false;
                     this.changeDetector.detectChanges();
                 }
@@ -285,7 +285,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.saveNodeWithProgress(saveFn, this.node);
     }
 
-    handleSaveConflicts(errorResponse: {
+    handleSaveErrors(errorResponse: {
         field?: any;
         error: any;
         conflict: GraphQLErrorFromServer | null;

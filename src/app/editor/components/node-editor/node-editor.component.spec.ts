@@ -293,9 +293,9 @@ describe('NodeEditorComponent', () => {
                         return Promise.reject(errorResponse);
                     });
 
-                    instance.handleSaveConflicts = jasmine.createSpy('handleSaveConflicts');
+                    instance.handleSaveErrors = jasmine.createSpy('handleSaveConflicts');
                     clickSave(fixture);
-                    expect(instance.handleSaveConflicts).toHaveBeenCalled();
+                    expect(instance.handleSaveErrors).toHaveBeenCalled();
                 }
             )
         );

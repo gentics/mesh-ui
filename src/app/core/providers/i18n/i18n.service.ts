@@ -22,6 +22,7 @@ export class I18nService {
      * Translate the given key.
      */
     translate(key: string | string[], params?: any): string {
+        // TODO: Potential security issue because params are not escaped in template interpolation
         return this.ngxTranslate.instant(key, params);
     }
 
