@@ -142,5 +142,13 @@
     "no_preview_available": {
         "en": "No Preview Available",
         "de": "Keine Vorschau verfügbar"
+    },
+    "file_too_large": {
+        "en": "File too large",
+        "de": "Zu große Datei"
+    },
+    "file_too_large_body": {
+        "en": "The file <code>{{ fileName }}</code> is too large to upload. Please choose a smaller file or <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">change the upload limit in the configuration</a>.",
+        "de": "Die Datei <code>{{ fileName }}</code> ist zu groß zum Hochladen. Bitte wählen Sie eine kleinere Datei, oder <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">ändern Sie das Upload-Limit in der Konfiguration</a>."
     }
 }

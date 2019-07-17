@@ -452,16 +452,15 @@ export class EditorEffectsService {
         }
 
         const promiseSuppliers = Object.keys(fields).map(key => () =>
-            this.uploadBinary(projectName, node.uuid, key, fields[key].file, language, node.version)
+            this.uploadBinary(projectName, node.uuid, key, fields[key].file, language, node.version).catch(error => {
+                throw { field: fields[key], node, error };
+            })
         );
 
         return (
             promiseConcat(promiseSuppliers)
                 // return the node from the last successful request
                 .then(nodes => nodes[nodes.length - 1])
-                .catch(error => {
-                    throw { node, error };
-                })
         );
     }
 
