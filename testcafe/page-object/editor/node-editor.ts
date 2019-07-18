@@ -15,4 +15,12 @@ export namespace nodeEditor {
         }
         return match[1];
     }
+
+    export async function showPath() {
+        await t.click('mesh-node-path icon.copy');
+    }
+
+    export async function getNodePath(): Promise<string | undefined> {
+        return Selector('mesh-node-path input').value;
+    }
 }

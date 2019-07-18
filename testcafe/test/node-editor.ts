@@ -24,3 +24,11 @@ test('Create empty node of all possible fields', async t =>
             })
         )
     ));
+
+test('Display node path', async t => {
+    await t.useRole(Admin);
+    await containerContents.getListItemByName('Aircraft').open();
+    await containerContents.getListItemByName('Space Shuttle').open();
+    await nodeEditor.showPath();
+    await t.expect(await nodeEditor.getNodePath()).eql('/aircrafts/space-shuttle');
+});
