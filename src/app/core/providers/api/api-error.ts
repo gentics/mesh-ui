@@ -50,8 +50,14 @@ export class ApiError extends Error {
             (response && response.body) ||
             (originalError && originalError instanceof HttpErrorResponse && originalError.error);
         if (responseBody) {
-            i18nKey = responseBody.i18nKey;
-            message = responseBody.message;
+            if (typeof responseBody === 'object') {
+                i18nKey = responseBody.i18nKey;
+                message = responseBody.message;
+            } else if (typeof responseBody === 'string') {
+                message = responseBody;
+            } else {
+                message = '';
+            }
         } else {
             if (response) {
                 message = (cause || `HTTP ${response.status} returned`) + ` for "${url}"`;

@@ -276,7 +276,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     }
                 },
                 error => {
-                    this.handleSaveConflicts(error);
+                    this.handleSaveErrors(error);
                     this.isSaving = false;
                     this.changeDetector.detectChanges();
                 }
@@ -285,27 +285,56 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         this.saveNodeWithProgress(saveFn, this.node);
     }
 
-    handleSaveConflicts(errorResponse: { conflict: GraphQLErrorFromServer | null; node: NodeResponse | null }): void {
+    handleSaveErrors(errorResponse: {
+        field?: any;
+        error: any;
+        conflict: GraphQLErrorFromServer | null;
+        node: NodeResponse | null;
+    }): void {
         if (!this.node) {
             throw new Error('Cannot handle save conflicts because this.node is undefined.');
         }
+        if (
+            errorResponse.error &&
+            errorResponse.error.originalError &&
+            errorResponse.error.originalError.status === 413 &&
+            errorResponse.field
+        ) {
+            console.log(errorResponse.field);
+            this.modalService
+                .dialog({
+                    title: this.i18n.translate('modal.file_too_large'),
+                    body: this.i18n.translate('modal.file_too_large_body', errorResponse.field),
+                    buttons: [
+                        {
+                            label: this.i18n.translate('common.okay_button')
+                        }
+                    ]
+                })
+                .then(modal => modal.open());
+            return;
+        }
+
         // Assure data
         if (
             !errorResponse.conflict ||
-            !errorResponse.conflict!.type ||
-            !errorResponse.conflict!.i18nParameters ||
-            errorResponse.conflict!.i18nParameters!.length === 0
+            !errorResponse.conflict.type ||
+            !errorResponse.conflict.i18nParameters ||
+            errorResponse.conflict.i18nParameters.length === 0
         ) {
             // If response is malformed, show general error modal
-            this.modalService.dialog({
-                title: this.i18n.translate('modal.server_error'),
-                body: this.i18n.translate('editor.node_save_error'),
-                buttons: [
-                    {
-                        label: this.i18n.translate('modaL.close_button')
-                    }
-                ]
-            });
+            this.modalService
+                .dialog({
+                    title: this.i18n.translate('modal.server_error'),
+                    body: this.i18n.translate('editor.node_save_error'),
+                    buttons: [
+                        {
+                            label: this.i18n.translate('modal.close_button')
+                        }
+                    ]
+                })
+                .then(modal => modal.open());
+            return;
         }
 
         // Handle save conflicts via modal
