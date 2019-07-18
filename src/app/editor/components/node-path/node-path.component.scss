@@ -7,6 +7,10 @@
     icon {
         font-size: 16px;
         margin-right: 5px;
+        &.copy {
+            margin-left: 5px;
+            cursor: pointer;
+        }
     }
     a {
         display: flex;
@@ -14,5 +18,13 @@
         &:hover {
             color: lighten($gtx-color-primary, 10%);
         }
+    }
+}
+
+gtx-input::ng-deep {
+    input {
+        width: 400px;
+        margin-top: 0;
+        margin-bottom: 0;
     }
 }

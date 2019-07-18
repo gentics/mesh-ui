@@ -76,6 +76,12 @@ export interface MeshNode extends NodeResponse {
     fields: FieldMap;
 }
 
+export interface ProjectNode {
+    node: MeshNode;
+    project: string;
+    branch?: string;
+}
+
 export interface FieldMap extends FieldMapFromServer {
     [name: string]: any;
 }

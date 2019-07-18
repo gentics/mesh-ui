@@ -1,5 +1,15 @@
-<a [routerLink]="nodePathRouterLink"
-   (click)="focusList()">
+<a *ngIf="projectNode && !nodePath">
     <icon>folder_open</icon>
-    {{ nodePath() }}
+    {{ breadcrumbText() }}
+    <icon (click)="copy()"
+          class="copy">file_copy</icon>
 </a>
+
+<ng-container *ngIf="nodePath">
+    <gtx-input [value]="nodePath"
+               readonly="true"></gtx-input>
+    <a>
+        <icon (click)="copyToClipboard()"
+              class="copy">file_copy</icon>
+    </a>
+</ng-container>

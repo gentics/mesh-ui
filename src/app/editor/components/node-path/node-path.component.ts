@@ -1,5 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { MeshNode } from 'src/app/common/models/node.model';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import * as actualCopy from 'copy-to-clipboard';
+import { ProjectNode } from 'src/app/common/models/node.model';
+import { ApiService } from 'src/app/core/providers/api/api.service';
+import { I18nNotification } from 'src/app/core/providers/i18n-notification/i18n-notification.service';
 
 @Component({
     selector: 'mesh-node-path',
@@ -9,25 +12,53 @@ import { MeshNode } from 'src/app/common/models/node.model';
 })
 export class NodePathComponent implements OnInit {
     @Input()
-    public node: MeshNode;
+    public projectNode: ProjectNode | undefined;
 
-    constructor() {}
+    public nodePath: string | null = null;
+
+    constructor(private api: ApiService, private change: ChangeDetectorRef, private notification: I18nNotification) {}
 
     ngOnInit() {}
 
-    public nodePath() {
-        if (!this.node || !this.node.breadcrumb) {
+    public breadcrumbText() {
+        if (!this.projectNode || !this.projectNode.node.breadcrumb) {
             return '';
         }
 
         // We are using slice(1) here because we don't want to show the root node
-        if (this.node.breadcrumb) {
-            return this.node.breadcrumb
+        if (this.projectNode.node.breadcrumb) {
+            return this.projectNode.node.breadcrumb
                 .slice(1)
                 .map(b => b.displayName)
                 .join(' › ');
         } else {
             return '';
+        }
+    }
+
+    public async copy() {
+        if (!this.projectNode) {
+            return;
+        }
+        this.nodePath = await this.api.project.getPath(this.projectNode);
+        this.change.detectChanges();
+        if (this.nodePath === null) {
+            this.notification.show({
+                message: 'editor.path_copy_failed'
+            });
+        }
+    }
+
+    public copyToClipboard() {
+        if (this.nodePath !== null) {
+            actualCopy(this.nodePath);
+            this.notification.show({
+                message: 'editor.path_copied'
+            });
+        } else {
+            this.notification.show({
+                message: 'editor.path_copy_failed'
+            });
         }
     }
 }
