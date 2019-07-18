@@ -23,6 +23,7 @@ import { MultiFileUploadDialogComponent } from './components/multi-file-upload-d
 import { NodeConflictDialogComponent } from './components/node-conflict-dialog/node-conflict-dialog.component';
 import { NodeEditorComponent } from './components/node-editor/node-editor.component';
 import { NodeLanguageSwitcherComponent } from './components/node-language-switcher/node-language-switcher.component';
+import { NodePathComponent } from './components/node-path/node-path.component';
 import { NodeRowComponent } from './components/node-row/node-row.component';
 import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.component';
 import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
@@ -57,7 +58,8 @@ import { OpenerService } from './providers/opener.service';
         ProgressbarModalComponent,
         ProjectSwitcherComponent,
         SearchBarComponent,
-        VersionLabelComponent
+        VersionLabelComponent,
+        NodePathComponent
     ],
     entryComponents: [
         ConfirmNavigationModalComponent,

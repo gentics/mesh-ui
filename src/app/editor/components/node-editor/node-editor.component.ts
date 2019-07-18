@@ -36,7 +36,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     node: MeshNode | undefined;
     schema: Schema | undefined;
     nodePathRouterLink: any[];
-    nodePath: string;
     nodeTitle = '';
     // TODO: make a fullscreen non-closable dialog for binary files preventing user from navigating away while file is uploading
     // isSaving$: Observable<boolean>;
@@ -128,7 +127,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();
                 this.nodePathRouterLink = this.getNodePathRouterLink();
-                this.nodePath = this.getNodePath();
                 this.changeDetector.markForCheck();
             });
     }

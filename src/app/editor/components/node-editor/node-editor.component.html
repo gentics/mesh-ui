@@ -68,13 +68,7 @@
         </gtx-button>
     </div>
     <div class="info-row">
-        <div class="path">
-            <a [routerLink]="nodePathRouterLink"
-               (click)="focusList()">
-                <icon>folder_open</icon>
-                {{ nodePath }}
-            </a>
-        </div>
+        <mesh-node-path [node]="node"></mesh-node-path>
         <div class="language">
             <mesh-node-language-switcher [node]="node"></mesh-node-language-switcher>
         </div>

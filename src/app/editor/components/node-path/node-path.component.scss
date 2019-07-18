@@ -1,0 +1,18 @@
+@import "variables";
+
+:host {
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    icon {
+        font-size: 16px;
+        margin-right: 5px;
+    }
+    a {
+        display: flex;
+        align-items: center;
+        &:hover {
+            color: lighten($gtx-color-primary, 10%);
+        }
+    }
+}
