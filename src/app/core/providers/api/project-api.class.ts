@@ -1,3 +1,6 @@
+import { MeshNode, ProjectNode } from 'src/app/common/models/node.model';
+import { extractGraphQlResponse } from 'src/app/common/util/util';
+
 import { GenericMessageResponse, NodeResponse, NodeUpdateRequest } from '../../../common/models/server-models';
 
 import { ApiBase } from './api-base.service';
@@ -239,5 +242,32 @@ export class ProjectApi {
                 400: conflict => ({ node: null, conflict }),
                 409: conflict => ({ node: null, conflict })
             });
+    }
+
+    /**
+     * Returns the webroot path of the given node.
+     * Returns null if the node has no path.
+     */
+    getPath({ branch, node }: ProjectNode): Promise<string | null> {
+        return this.apiBase
+            .post(
+                '/{project}/graphql',
+                { project: node.project.name! },
+                {
+                    query: `query getPath($uuid: String, $lang: [String]){
+                node(uuid: $uuid, lang: $lang) {
+                  path
+                }
+              }
+            `,
+                    variables: {
+                        uuid: node.uuid,
+                        lang: node.language
+                    }
+                }
+            )
+            .map(extractGraphQlResponse)
+            .map(response => response.node && response.node.path)
+            .toPromise();
     }
 }

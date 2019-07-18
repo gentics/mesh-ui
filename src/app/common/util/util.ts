@@ -7,13 +7,23 @@ import {
     MeshNode,
     MicronodeFieldMap,
     MicronodeFieldType,
-    NodeFieldType
+    NodeFieldType,
+    ProjectNode
 } from '../models/node.model';
 import { FieldMapFromServer, GraphQLResponse } from '../models/server-models';
 
 type Supplier<T> = () => T;
 
 // Pure functions for utility
+
+export type ComponentChanges<T> = { [V in keyof T]: ComponentChange<T[V]> };
+
+export interface ComponentChange<T> {
+    previousValue: T;
+    currentValue: T;
+    firstChange: boolean;
+    isFirstChange(): boolean;
+}
 
 /**
  * Retrieves all values of an object as an array.
@@ -406,4 +416,24 @@ export function matchOtherValidator(otherControlName: string) {
 
         return null;
     };
+}
+
+export function projectNodeEquals(a?: ProjectNode, b?: ProjectNode): boolean {
+    if (!a && !b) {
+        return true;
+    }
+    if (!a || !b) {
+        return false;
+    }
+    return a.branch === b.branch && nodeEquals(a.node, b.node);
+}
+
+export function nodeEquals(a?: MeshNode, b?: MeshNode): boolean {
+    if (!a && !b) {
+        return true;
+    }
+    if (!a || !b) {
+        return false;
+    }
+    return a.uuid === b.uuid && a.language === b.language && a.version === b.version;
 }

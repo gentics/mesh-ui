@@ -130,5 +130,13 @@
     "server_error": {
       "en": "An error occured during server communication. Please repeat your action or get back to the software maintainer.",
       "de": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten. Bitte Vorgang wiederholen oder Hersteller kontaktieren."
+    },
+    "path_copied": {
+      "en": "Path copied to clipboard",
+      "de": "Pfad in die Zwischenablage kopiert"
+    },
+    "path_copy_failed": {
+      "en": "No webroot path for this node found",
+      "de": "Keinen Webroot-Pfad für diesen Node gefunden"
     }
   }

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { MeshPreviewUrl, MeshPreviewUrlResolver } from '../../../common/models/appconfig.model';
-import { MeshNode } from '../../../common/models/node.model';
+import { MeshNode, ProjectNode } from '../../../common/models/node.model';
 import { Project } from '../../../common/models/project.model';
 import { Schema } from '../../../common/models/schema.model';
 import { GraphQLErrorFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
@@ -36,7 +36,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     node: MeshNode | undefined;
     schema: Schema | undefined;
     nodePathRouterLink: any[];
-    nodePath: string;
     nodeTitle = '';
     // TODO: make a fullscreen non-closable dialog for binary files preventing user from navigating away while file is uploading
     // isSaving$: Observable<boolean>;
@@ -46,7 +45,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     /** defined in assests/config/mesh-ui-config.js */
     previewUrls: MeshPreviewUrl[];
 
-    currentProject: Project;
+    projectName: string;
 
     private destroy$ = new Subject<void>();
 
@@ -77,6 +76,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
             const language = paramMap.get('language');
 
             if (projectName && nodeUuid && language) {
+                this.projectName = projectName;
                 setTimeout(() => {
                     // Opening the node needs to be done on the next change detection tick,
                     // otherwise the parent component (MasterDetailComponent) will report
@@ -128,7 +128,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                 this.schema = schema;
                 this.nodeTitle = this.getNodeTitle();
                 this.nodePathRouterLink = this.getNodePathRouterLink();
-                this.nodePath = this.getNodePath();
                 this.changeDetector.markForCheck();
             });
     }
@@ -427,5 +426,13 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         } else {
             return this.node.uuid;
         }
+    }
+
+    public projectNode(): ProjectNode | undefined {
+        return (
+            this.node && {
+                node: this.node
+            }
+        );
     }
 }
