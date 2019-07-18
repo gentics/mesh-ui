@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as actualCopy from 'copy-to-clipboard';
 import { ProjectNode } from 'src/app/common/models/node.model';
+import { projectNodeEquals, ComponentChanges } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 import { I18nNotification } from 'src/app/core/providers/i18n-notification/i18n-notification.service';
 
@@ -10,7 +11,7 @@ import { I18nNotification } from 'src/app/core/providers/i18n-notification/i18n-
     styleUrls: ['./node-path.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodePathComponent implements OnInit {
+export class NodePathComponent implements OnChanges {
     @Input()
     public projectNode: ProjectNode | undefined;
 
@@ -18,7 +19,11 @@ export class NodePathComponent implements OnInit {
 
     constructor(private api: ApiService, private change: ChangeDetectorRef, private notification: I18nNotification) {}
 
-    ngOnInit() {}
+    ngOnChanges(changes: ComponentChanges<NodePathComponent>) {
+        if (!projectNodeEquals(changes.projectNode.previousValue, changes.projectNode.currentValue)) {
+            this.nodePath = null;
+        }
+    }
 
     public breadcrumbText() {
         if (!this.projectNode || !this.projectNode.node.breadcrumb) {

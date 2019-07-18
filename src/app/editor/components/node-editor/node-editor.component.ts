@@ -431,7 +431,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     public projectNode(): ProjectNode | undefined {
         return (
             this.node && {
-                project: this.projectName,
                 node: this.node
             }
         );

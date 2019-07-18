@@ -78,7 +78,6 @@ export interface MeshNode extends NodeResponse {
 
 export interface ProjectNode {
     node: MeshNode;
-    project: string;
     branch?: string;
 }
 

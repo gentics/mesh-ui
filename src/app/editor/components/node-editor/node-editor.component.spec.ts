@@ -26,7 +26,6 @@ import { MockNavigationService } from '../../../core/providers/navigation/naviga
 import { MockFormGeneratorComponent } from '../../../form-generator/components/form-generator/form-generator.component.mock';
 import { PublishOptionsComponent } from '../../../shared/components/publish-options/publish-options.component';
 import { SchemaLabelComponent } from '../../../shared/components/schema-label/schema-label.component';
-import { SharedModule } from '../../../shared/shared.module';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';

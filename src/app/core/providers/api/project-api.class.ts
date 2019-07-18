@@ -248,11 +248,11 @@ export class ProjectApi {
      * Returns the webroot path of the given node.
      * Returns null if the node has no path.
      */
-    getPath({ project, branch, node }: ProjectNode): Promise<string | null> {
+    getPath({ branch, node }: ProjectNode): Promise<string | null> {
         return this.apiBase
             .post(
                 '/{project}/graphql',
-                { project },
+                { project: node.project.name! },
                 {
                     query: `query getPath($uuid: String, $lang: [String]){
                 node(uuid: $uuid, lang: $lang) {
