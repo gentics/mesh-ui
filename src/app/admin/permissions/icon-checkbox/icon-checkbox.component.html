@@ -1,0 +1,12 @@
+<label class="gtx-icon-checkbox"
+       [title]="actionName">
+    <input type="checkbox"
+           [(ngModel)]="inputValue"
+           (click)="check($event)">
+    <i *ngIf="iconName"
+       class="material-icons"
+       [ngClass]="inputValue ? 'active' : ''">{{ iconName }}</i>
+    <span *ngIf="label"
+          class="gtx-icon-checkbox-label"
+          [ngClass]="inputValue ? 'active' : ''">{{ label }}</span>
+</label>

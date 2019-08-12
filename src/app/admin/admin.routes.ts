@@ -14,6 +14,7 @@ import { SchemaDetailComponent } from './components/schema-detail/schema-detail.
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { PermissionsComponent } from './permissions/permissions.component';
 import { MicrochemaDetailsGuard } from './providers/guards/microschema-editor-guard';
 import { SchemaDetailsGuard } from './providers/guards/schema-editor-guard';
 import { groupBreadcrumbFn, GroupResolver } from './providers/resolvers/group-resolver';
@@ -108,6 +109,11 @@ export const routes: Route[] = [
                         data: { breadcrumb: roleBreadcrumbFn }
                     }
                 ]
+            },
+            {
+                path: 'permissions',
+                data: { breadcrumb: 'common.permissions' },
+                component: PermissionsComponent
             }
         ]
     }

@@ -34,6 +34,7 @@ import { SchemaListComponent } from './components/schema-list/schema-list.compon
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserGroupSelectComponent } from './components/user-group-select/user-group-select.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { PermissionsModule } from './permissions/permissions.module';
 import { AdminGroupEffectsService } from './providers/effects/admin-group-effects.service';
 import { AdminPermissionEffectsService } from './providers/effects/admin-permission-effects.service';
 import { AdminProjectEffectsService } from './providers/effects/admin-project-effects.service';
@@ -79,7 +80,7 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         RoleDetailComponent
     ],
     entryComponents: [CreateProjectModalComponent, NameInputDialogComponent],
-    imports: [SharedModule, RouterModule.forChild(routes), ReactiveFormsModule, FormGeneratorModule],
+    imports: [SharedModule, RouterModule.forChild(routes), ReactiveFormsModule, FormGeneratorModule, PermissionsModule],
     providers: [
         ModalService,
         AdminSchemaEffectsService,

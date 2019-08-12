@@ -1,0 +1,655 @@
+<div class="content">
+
+    <h3>Roles / {{ roleName }}</h3>
+
+    <br>
+
+    <p-accordion (onOpen)="loadEntities($event.index)">
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">folder</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Projects
+                    </div>
+                </div>
+            </p-header>
+            <input class="gtx-entity-filter"
+                   name="projectsFilter"
+                   placeholder="Filter projects"
+                   [(ngModel)]="projectsFilter">
+            <p-treeTable [value]="treeTableData.projects"
+                         [columns]="commonColumns"
+                         sortMode="multiple">
+                <ng-template pTemplate="header"
+                             let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                            [ttSortableColumn]="col.field">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <mesh-icon-checkbox [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxAllClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                {{col.header}}
+                            </ng-container>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="select all">
+                            <mesh-icon-checkbox label="all"
+                                                actionName="check all"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-rowNode
+                             let-rowData="rowData"
+                             let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                                    [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData[col.field] }}
+                            </ng-container>
+                        </td>
+                        <td class="gtx-column-any"
+                            title="select all">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </p-accordionTab>
+
+        <p-accordionTab [selected]="true">
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">insert_drive_file</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Nodes
+                    </div>
+                </div>
+            </p-header>
+            <input class="gtx-entity-filter"
+                   name="nodesFilter"
+                   placeholder="Filter nodes"
+                   [(ngModel)]="nodesFilter">
+            <br>
+            <p-treeTable [value]="treeTableData.nodes"
+                         sortMode="multiple"
+                         [columns]="keysOfPropsMeshNodePerms">
+                <ng-template pTemplate="header"
+                             let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                            [ttSortableColumn]="col.field">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <mesh-icon-checkbox [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxAllClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                {{col.header}}
+                            </ng-container>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="select all">
+                            <mesh-icon-checkbox label="all"
+                                                actionName="check all"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="apply recursively">
+                            <mesh-icon-checkbox iconName="device_hub"
+                                                actionName="apply recursively"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-rowNode
+                             let-rowData="rowData"
+                             let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                                    [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData[col.field] }}
+                            </ng-container>
+                        </td>
+                        <td class="gtx-column-any"
+                            title="select all">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                        <td title="apply recursively">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">local_offer</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Tags
+                    </div>
+                </div>
+            </p-header>
+            <input class="gtx-entity-filter"
+                   name="tagsFilter"
+                   placeholder="Filter tags"
+                   [(ngModel)]="tagsFilter">
+            <br>
+            <p-treeTable [value]="treeTableData.tags"
+                         sortMode="multiple"
+                         [columns]="commonColumns">
+                <ng-template pTemplate="header"
+                             let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                            [ttSortableColumn]="col.field">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <mesh-icon-checkbox [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxAllClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                {{col.header}}
+                            </ng-container>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="select all">
+                            <mesh-icon-checkbox label="all"
+                                                actionName="check all"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-rowNode
+                             let-rowData="rowData"
+                             let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                                    [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData[col.field] }}
+                            </ng-container>
+                        </td>
+                        <td class="gtx-column-any"
+                            title="select all">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">view_quilt</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Schemas
+                    </div>
+                </div>
+            </p-header>
+            <input class="gtx-entity-filter"
+                   name="schemasFilter"
+                   placeholder="Filter schemas"
+                   [(ngModel)]="schemasFilter">
+            <br>
+            <p-treeTable [value]="treeTableData.schemas"
+                         sortMode="multiple"
+                         [columns]="commonColumns">
+                <ng-template pTemplate="header"
+                             let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                            [ttSortableColumn]="col.field">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <mesh-icon-checkbox [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxAllClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                {{col.header}}
+                            </ng-container>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="select all">
+                            <mesh-icon-checkbox label="all"
+                                                actionName="check all"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-rowNode
+                             let-rowData="rowData"
+                             let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                                    [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData[col.field] }}
+                            </ng-container>
+                        </td>
+                        <td class="gtx-column-any"
+                            title="select all">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">view_list</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Microschemas
+                    </div>
+                </div>
+            </p-header>
+            <input class="gtx-entity-filter"
+                   name="microschemasFilter"
+                   placeholder="Filter microschemas"
+                   [(ngModel)]="microschemasFilter">
+            <br>
+            <p-treeTable [value]="treeTableData.microschemas"
+                         sortMode="multiple"
+                         [columns]="commonColumns">
+                <ng-template pTemplate="header"
+                             let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                            [ttSortableColumn]="col.field">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <mesh-icon-checkbox [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxAllClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                {{col.header}}
+                            </ng-container>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="select all">
+                            <mesh-icon-checkbox label="all"
+                                                actionName="check all"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-rowNode
+                             let-rowData="rowData"
+                             let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                                    [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData[col.field] }}
+                            </ng-container>
+                        </td>
+                        <td class="gtx-column-any"
+                            title="select all">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">person</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Users
+                    </div>
+                </div>
+            </p-header>
+            <input class="gtx-entity-filter"
+                   name="usersFilter"
+                   placeholder="Filter users"
+                   [(ngModel)]="usersFilter">
+            <br>
+            <p-treeTable [value]="treeTableData.users"
+                         sortMode="multiple"
+                         [columns]="commonColumns">
+                <ng-template pTemplate="header"
+                             let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                            [ttSortableColumn]="col.field">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <mesh-icon-checkbox [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxAllClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                {{col.header}}
+                            </ng-container>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="select all">
+                            <mesh-icon-checkbox label="all"
+                                                actionName="check all"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-rowNode
+                             let-rowData="rowData"
+                             let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                                    [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData[col.field] }}
+                            </ng-container>
+                        </td>
+                        <td class="gtx-column-any"
+                            title="select all">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">people</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Groups
+                    </div>
+                </div>
+            </p-header>
+            <input class="gtx-entity-filter"
+                   name="groupsFilter"
+                   placeholder="Filter groups"
+                   [(ngModel)]="groupsFilter">
+            <br>
+            <p-treeTable [value]="treeTableData.groups"
+                         sortMode="multiple"
+                         [columns]="commonColumns">
+                <ng-template pTemplate="header"
+                             let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                            [ttSortableColumn]="col.field">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <mesh-icon-checkbox [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxAllClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                {{col.header}}
+                            </ng-container>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="select all">
+                            <mesh-icon-checkbox label="all"
+                                                actionName="check all"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="apply recursively">
+                            <mesh-icon-checkbox iconName="device_hub"
+                                                actionName="apply recursively"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-rowNode
+                             let-rowData="rowData"
+                             let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                                    [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData[col.field] }}
+                            </ng-container>
+                        </td>
+                        <td class="gtx-column-any"
+                            title="select all">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                        <td title="apply recursively">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">people_outline</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Roles
+                    </div>
+                </div>
+            </p-header>
+            <input class="gtx-entity-filter"
+                   name="rolesFilter"
+                   placeholder="Filter roles"
+                   [(ngModel)]="rolesFilter">
+            <br>
+            <p-treeTable [value]="treeTableData.roles"
+                         sortMode="multiple"
+                         [columns]="commonColumns">
+                <ng-template pTemplate="header"
+                             let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                            [ttSortableColumn]="col.field">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <mesh-icon-checkbox [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxAllClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                {{col.header}}
+                            </ng-container>
+                        </th>
+                        <th class="gtx-column-any"
+                            title="select all">
+                            <mesh-icon-checkbox label="all"
+                                                actionName="check all"
+                                                (action)="checkboxAllClicked($event)">
+                            </mesh-icon-checkbox>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"
+                             let-rowNode
+                             let-rowData="rowData"
+                             let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns; let i = index">
+                            <ng-container *ngIf="col.field !== 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                                    [iconName]="col.iconName"
+                                                    [actionName]="col.header"
+                                                    (action)="checkboxClicked($event)">
+                                </mesh-icon-checkbox>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.field === 'name'">
+                                <p-treeTableToggler *ngIf="i == 0"
+                                                    [rowNode]="rowNode"></p-treeTableToggler>
+                                {{ rowData[col.field] }}
+                            </ng-container>
+                        </td>
+                        <td class="gtx-column-any"
+                            title="select all">
+                            <p-checkbox binary="true"
+                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-treeTable>
+        </p-accordionTab>
+
+    </p-accordion>
+
+    <br>
+
+</div>
+
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;

@@ -1,0 +1,18 @@
+.gtx-icon-checkbox {
+    cursor: pointer;
+
+    input {
+        display: none;
+    }
+
+    .material-icons,
+    .gtx-icon-checkbox-label
+    {
+        font-size: 1rem;
+        color: LightGray;
+
+        &.active {
+            color: black;
+        }
+    }
+}
