@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
@@ -57,8 +57,11 @@ type MeshRolePerms = MeshBasePerms;
     styleUrls: ['./permissions.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PermissionsComponent {
+export class PermissionsComponent implements OnInit {
+    @Input()
+    roleUuid = '4c62668a1b2d499da2668a1b2d899d17';
     roleName: string;
+
     commonColumns = [
         {
             field: 'name',
@@ -82,7 +85,23 @@ export class PermissionsComponent {
         roles: []
     };
 
-    constructor(private api: ApiService) {}
+    constructor(private api: ApiService, private change: ChangeDetectorRef) {}
+
+    async ngOnInit() {
+        const response = await this.api.graphQLInAnyProject({
+            query: `query roleByUuid($uuid: String) {
+                role(uuid: $uuid) {
+                  name
+                }
+              }`,
+            variables: {
+                uuid: this.roleUuid
+            }
+        });
+
+        this.roleName = response.role.name;
+        this.change.markForCheck();
+    }
 
     checkboxClicked(event: any): void {}
 
@@ -130,5 +149,57 @@ export class PermissionsComponent {
         }
     }
 
-    private loadData(entity: keyof TreeTableData) {}
+    private async loadData(entity: keyof TreeTableData) {
+        const response = await this.fetchData(entity);
+
+        this.treeTableData[entity] = response.map((element: any) => ({
+            data: {
+                name: element.name,
+                ...element.rolePerms
+            },
+            children: []
+        }));
+        this.change.markForCheck();
+    }
+
+    private async fetchData(entity: keyof TreeTableData) {
+        // TODO set perPage param
+        // TODO loading spinner
+
+        if (entity === 'projects') {
+            const response = await this.api.project
+                .getProjects({ role: this.roleUuid, fields: 'uuid,name,rolePerms' })
+                .toPromise();
+            return response.data;
+        } else {
+            const response = await this.api.graphQLInAnyProject({
+                query: this.simpleQuery(entity),
+                variables: {
+                    roleUuid: this.roleUuid
+                }
+            });
+            return response.entity.elements;
+        }
+    }
+
+    /**
+     * This is used for everything besides projects, tags and nodes.
+     * @param entity
+     */
+    private simpleQuery(entity: string) {
+        const nameField = entity === 'users' ? 'username' : 'name';
+        return `query rolePermTest($roleUuid: String!) {
+            entity: ${entity} {
+              elements {
+                name: ${nameField}
+                rolePerms(role: $roleUuid) {
+                  create
+                  read
+                  update
+                  delete
+                }
+              }
+            }
+        }`;
+    }
 }

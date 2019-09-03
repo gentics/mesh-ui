@@ -386,6 +386,7 @@ export interface ApiEndpoints {
                      * @example "24cf92691c7641158f92691c76c115ef"
                      */
                     role?: string;
+                    fields?: string;
                 };
                 body?: undefined;
             };
