@@ -59,7 +59,7 @@
                             <ng-container *ngIf="col.field !== 'name'">
                                 <p-treeTableToggler *ngIf="i == 0"
                                                     [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
                                                     (action)="setPermission('projects', rowData.uuid, col.field, $event)">
@@ -75,7 +75,8 @@
                         <td class="gtx-column-any"
                             title="select all">
                             <p-checkbox binary="true"
-                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                                        [ngModel]="allChecked(rowData)"
+                                        (onChange)="setAllPermissions('projects', rowData.uuid, $event)"></p-checkbox>
                         </td>
                     </tr>
                 </ng-template>
@@ -143,7 +144,7 @@
                             <ng-container *ngIf="col.field !== 'name'">
                                 <p-treeTableToggler *ngIf="i == 0"
                                                     [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
                                                     (action)="checkboxClicked($event)">
@@ -224,7 +225,7 @@
                             <ng-container *ngIf="col.field !== 'name'">
                                 <p-treeTableToggler *ngIf="i == 0"
                                                     [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
                                                     (action)="checkboxClicked($event)">
@@ -301,7 +302,7 @@
                             <ng-container *ngIf="col.field !== 'name'">
                                 <p-treeTableToggler *ngIf="i == 0"
                                                     [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
                                                     (action)="setPermission('schemas', rowData.uuid, col.field, $event)">
@@ -317,7 +318,8 @@
                         <td class="gtx-column-any"
                             title="select all">
                             <p-checkbox binary="true"
-                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                                        [ngModel]="allChecked(rowData)"
+                                        (onChange)="setAllPermissions('schemas', rowData.uuid, $event)"></p-checkbox>
                         </td>
                     </tr>
                 </ng-template>
@@ -378,7 +380,7 @@
                             <ng-container *ngIf="col.field !== 'name'">
                                 <p-treeTableToggler *ngIf="i == 0"
                                                     [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
                                                     (action)="setPermission('microschemas', rowData.uuid, col.field, $event)">
@@ -394,7 +396,8 @@
                         <td class="gtx-column-any"
                             title="select all">
                             <p-checkbox binary="true"
-                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                                        [ngModel]="allChecked(rowData)"
+                                        (onChange)="setAllPermissions('microschemas', rowData.uuid, $event)"></p-checkbox>
                         </td>
                     </tr>
                 </ng-template>
@@ -455,10 +458,10 @@
                             <ng-container *ngIf="col.field !== 'name'">
                                 <p-treeTableToggler *ngIf="i == 0"
                                                     [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
-                                                    (action)="setPermission('users', rowData.uuid, col.field, $event)($event)">
+                                                    (action)="setPermission('users', rowData.uuid, col.field, $event)">
                                 </mesh-icon-checkbox>
                             </ng-container>
 
@@ -471,7 +474,8 @@
                         <td class="gtx-column-any"
                             title="select all">
                             <p-checkbox binary="true"
-                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                                        [ngModel]="allChecked(rowData)"
+                                        (onChange)="setAllPermissions('users', rowData.uuid, $event)"></p-checkbox>
                         </td>
                     </tr>
                 </ng-template>
@@ -521,13 +525,6 @@
                                                 (action)="checkboxAllClicked($event)">
                             </mesh-icon-checkbox>
                         </th>
-                        <th class="gtx-column-any"
-                            title="apply recursively">
-                            <mesh-icon-checkbox iconName="device_hub"
-                                                actionName="apply recursively"
-                                                (action)="checkboxAllClicked($event)">
-                            </mesh-icon-checkbox>
-                        </th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body"
@@ -539,7 +536,7 @@
                             <ng-container *ngIf="col.field !== 'name'">
                                 <p-treeTableToggler *ngIf="i == 0"
                                                     [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
                                                     (action)="setPermission('groups', rowData.uuid, col.field, $event)">
@@ -555,11 +552,8 @@
                         <td class="gtx-column-any"
                             title="select all">
                             <p-checkbox binary="true"
-                                        (onChange)="checkboxClicked($event)"></p-checkbox>
-                        </td>
-                        <td title="apply recursively">
-                            <p-checkbox binary="true"
-                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                                        [ngModel]="allChecked(rowData)"
+                                        (onChange)="setAllPermissions('groups', rowData.uuid, $event)"></p-checkbox>
                         </td>
                     </tr>
                 </ng-template>
@@ -620,7 +614,7 @@
                             <ng-container *ngIf="col.field !== 'name'">
                                 <p-treeTableToggler *ngIf="i == 0"
                                                     [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData[col.field]"
+                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
                                                     (action)="setPermission('roles', rowData.uuid, col.field, $event)">
@@ -636,7 +630,8 @@
                         <td class="gtx-column-any"
                             title="select all">
                             <p-checkbox binary="true"
-                                        (onChange)="checkboxClicked($event)"></p-checkbox>
+                                        [ngModel]="allChecked(rowData)"
+                                        (onChange)="setAllPermissions('roles', rowData.uuid, $event)"></p-checkbox>
                         </td>
                     </tr>
                 </ng-template>

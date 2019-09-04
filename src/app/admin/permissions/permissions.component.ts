@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { nodes } from 'e2e/uuids';
 import { TreeNode } from 'primeng/api';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
@@ -26,11 +27,14 @@ interface TreeTableData {
 }
 
 interface MeshBasePerms {
+    uuid: string;
     name: string;
-    create: boolean;
-    read: boolean;
-    update: boolean;
-    delete: boolean;
+    rolePerms: {
+        create: boolean;
+        read: boolean;
+        update: boolean;
+        delete: boolean;
+    };
 }
 
 interface MeshProjectPerms extends MeshBasePerms {
@@ -38,8 +42,14 @@ interface MeshProjectPerms extends MeshBasePerms {
 }
 
 interface MeshNodePerms extends MeshBasePerms {
-    publish: boolean;
-    readPublish: boolean;
+    rolePerms: {
+        create: boolean;
+        read: boolean;
+        update: boolean;
+        delete: boolean;
+        publish: boolean;
+        readPublish: boolean;
+    };
 }
 
 type MeshTagPerms = MeshBasePerms;
@@ -136,7 +146,19 @@ export class PermissionsComponent implements OnInit {
         }
     }
 
-    public setPermission(entity: keyof TreeTableData, uuid: string, permission: string, value: boolean) {
+    public allChecked(val: MeshBasePerms) {
+        return Object.values(val.rolePerms).every(x => x);
+    }
+
+    public setPermission(
+        entity: keyof TreeTableData,
+        uuid: string,
+        permission: keyof MeshBasePerms['rolePerms'],
+        value: boolean
+    ) {
+        this.treeTableData[entity].find(element => element.data.uuid === uuid)!.data.rolePerms[permission] = value;
+        this.change.markForCheck();
+
         this.api.admin
             .setRolePermissions(
                 {
@@ -153,15 +175,41 @@ export class PermissionsComponent implements OnInit {
             .subscribe();
     }
 
+    public setAllPermissions(entity: keyof TreeTableData, uuid: string, value: boolean) {
+        const permissions = {
+            create: value,
+            read: value,
+            update: value,
+            delete: value,
+            ...(entity === 'nodes'
+                ? {
+                      publish: value,
+                      readPublish: value
+                  }
+                : {})
+        };
+        this.treeTableData[entity].find(element => element.data.uuid === uuid)!.data.rolePerms = permissions;
+        this.change.markForCheck();
+
+        this.api.admin
+            .setRolePermissions(
+                {
+                    path: `${entity}/${uuid}`,
+                    roleUuid: this.role.uuid
+                },
+                {
+                    recursive: false,
+                    permissions
+                }
+            )
+            .subscribe();
+    }
+
     private async loadData(entity: keyof TreeTableData) {
         const response = await this.fetchData(entity);
 
         this.treeTableData[entity] = response.map((element: any) => ({
-            data: {
-                name: element.name,
-                uuid: element.uuid,
-                ...element.rolePerms
-            },
+            data: element,
             children: []
         }));
         this.change.markForCheck();

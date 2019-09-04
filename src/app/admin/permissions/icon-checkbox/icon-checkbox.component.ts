@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 @Component({
     selector: 'mesh-icon-checkbox',
     templateUrl: './icon-checkbox.component.html',
     styleUrls: ['./icon-checkbox.component.scss']
 })
-export class IconCheckboxComponent implements OnInit {
-    @Input() value: boolean;
+export class IconCheckboxComponent {
+    @Input() value = false;
 
     @Input() iconName: string | null = null;
 
@@ -16,13 +16,7 @@ export class IconCheckboxComponent implements OnInit {
 
     @Output() action = new EventEmitter<boolean>();
 
-    inputValue = false;
-
-    ngOnInit() {
-        this.inputValue = this.value;
-    }
-
     check(): void {
-        this.action.emit(!this.inputValue);
+        this.action.emit(!this.value);
     }
 }

@@ -46,7 +46,7 @@ export class AdminRoleEffectsService {
         return this.state
             .select(state => {
                 const project = head(values(state.entities.project));
-                return project!.name;
+                return (project && project.name) || '';
             })
             .filter<string>(Boolean)
             .take(1);

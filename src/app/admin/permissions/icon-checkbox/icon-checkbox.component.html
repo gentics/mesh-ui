@@ -1,12 +1,12 @@
 <label class="gtx-icon-checkbox"
        [title]="actionName">
     <input type="checkbox"
-           [(ngModel)]="inputValue"
+           [(ngModel)]="value"
            (click)="check($event)">
     <i *ngIf="iconName"
        class="material-icons"
-       [ngClass]="inputValue ? 'active' : ''">{{ iconName }}</i>
+       [ngClass]="value ? 'active' : ''">{{ iconName }}</i>
     <span *ngIf="label"
           class="gtx-icon-checkbox-label"
-          [ngClass]="inputValue ? 'active' : ''">{{ label }}</span>
+          [ngClass]="value ? 'active' : ''">{{ label }}</span>
 </label>
