@@ -1,6 +1,6 @@
 <div class="content">
 
-    <h3>Roles / {{ roleName }}</h3>
+    <h3>Roles / {{ role.name }}</h3>
 
     <br>
 
@@ -62,7 +62,7 @@
                                 <mesh-icon-checkbox [value]="rowData[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
-                                                    (action)="checkboxClicked($event)">
+                                                    (action)="setPermission('projects', rowData.uuid, col.field, $event)">
                                 </mesh-icon-checkbox>
                             </ng-container>
 
@@ -304,7 +304,7 @@
                                 <mesh-icon-checkbox [value]="rowData[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
-                                                    (action)="checkboxClicked($event)">
+                                                    (action)="setPermission('schemas', rowData.uuid, col.field, $event)">
                                 </mesh-icon-checkbox>
                             </ng-container>
 
@@ -381,7 +381,7 @@
                                 <mesh-icon-checkbox [value]="rowData[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
-                                                    (action)="checkboxClicked($event)">
+                                                    (action)="setPermission('microschemas', rowData.uuid, col.field, $event)">
                                 </mesh-icon-checkbox>
                             </ng-container>
 
@@ -458,7 +458,7 @@
                                 <mesh-icon-checkbox [value]="rowData[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
-                                                    (action)="checkboxClicked($event)">
+                                                    (action)="setPermission('users', rowData.uuid, col.field, $event)($event)">
                                 </mesh-icon-checkbox>
                             </ng-container>
 
@@ -542,7 +542,7 @@
                                 <mesh-icon-checkbox [value]="rowData[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
-                                                    (action)="checkboxClicked($event)">
+                                                    (action)="setPermission('groups', rowData.uuid, col.field, $event)">
                                 </mesh-icon-checkbox>
                             </ng-container>
 
@@ -623,7 +623,7 @@
                                 <mesh-icon-checkbox [value]="rowData[col.field]"
                                                     [iconName]="col.iconName"
                                                     [actionName]="col.header"
-                                                    (action)="checkboxClicked($event)">
+                                                    (action)="setPermission('roles', rowData.uuid, col.field, $event)">
                                 </mesh-icon-checkbox>
                             </ng-container>
 

@@ -106,6 +106,7 @@ export const routes: Route[] = [
                         path: ':uuid',
                         component: RoleDetailComponent,
                         resolve: { role: RoleResolver },
+
                         data: { breadcrumb: roleBreadcrumbFn }
                     }
                 ]
@@ -113,7 +114,14 @@ export const routes: Route[] = [
             {
                 path: 'permissions',
                 data: { breadcrumb: 'common.permissions' },
-                component: PermissionsComponent
+                children: [
+                    { path: '', component: RoleListComponent },
+                    {
+                        path: ':uuid',
+                        component: PermissionsComponent,
+                        resolve: { role: RoleResolver }
+                    }
+                ]
             }
         ]
     }

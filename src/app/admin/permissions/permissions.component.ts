@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TreeNode } from 'primeng/api';
 import { ApiService } from 'src/app/core/providers/api/api.service';
+
+import { AdminRoleResponse } from '../providers/effects/admin-role-effects.service';
 
 type Modify<T, R> = Pick<T, Exclude<keyof T, keyof R>> & R;
 
@@ -58,9 +61,7 @@ type MeshRolePerms = MeshBasePerms;
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionsComponent implements OnInit {
-    @Input()
-    roleUuid = '4c62668a1b2d499da2668a1b2d899d17';
-    roleName: string;
+    role: AdminRoleResponse;
 
     commonColumns = [
         {
@@ -85,25 +86,11 @@ export class PermissionsComponent implements OnInit {
         roles: []
     };
 
-    constructor(private api: ApiService, private change: ChangeDetectorRef) {}
+    constructor(private api: ApiService, private change: ChangeDetectorRef, private route: ActivatedRoute) {}
 
-    async ngOnInit() {
-        const response = await this.api.graphQLInAnyProject({
-            query: `query roleByUuid($uuid: String) {
-                role(uuid: $uuid) {
-                  name
-                }
-              }`,
-            variables: {
-                uuid: this.roleUuid
-            }
-        });
-
-        this.roleName = response.role.name;
-        this.change.markForCheck();
+    ngOnInit(): void {
+        this.route.data.subscribe(data => (this.role = data.role));
     }
-
-    checkboxClicked(event: any): void {}
 
     checkboxAllClicked(event: any): void {}
 
@@ -149,12 +136,30 @@ export class PermissionsComponent implements OnInit {
         }
     }
 
+    public setPermission(entity: keyof TreeTableData, uuid: string, permission: string, value: boolean) {
+        this.api.admin
+            .setRolePermissions(
+                {
+                    path: `${entity}/${uuid}`,
+                    roleUuid: this.role.uuid
+                },
+                {
+                    recursive: false,
+                    permissions: {
+                        [permission]: value
+                    }
+                }
+            )
+            .subscribe();
+    }
+
     private async loadData(entity: keyof TreeTableData) {
         const response = await this.fetchData(entity);
 
         this.treeTableData[entity] = response.map((element: any) => ({
             data: {
                 name: element.name,
+                uuid: element.uuid,
                 ...element.rolePerms
             },
             children: []
@@ -168,14 +173,14 @@ export class PermissionsComponent implements OnInit {
 
         if (entity === 'projects') {
             const response = await this.api.project
-                .getProjects({ role: this.roleUuid, fields: 'uuid,name,rolePerms' })
+                .getProjects({ role: this.role.uuid, fields: 'uuid,name,rolePerms' })
                 .toPromise();
             return response.data;
         } else {
             const response = await this.api.graphQLInAnyProject({
                 query: this.simpleQuery(entity),
                 variables: {
-                    roleUuid: this.roleUuid
+                    roleUuid: this.role.uuid
                 }
             });
             return response.entity.elements;
@@ -191,6 +196,7 @@ export class PermissionsComponent implements OnInit {
         return `query rolePermTest($roleUuid: String!) {
             entity: ${entity} {
               elements {
+                uuid
                 name: ${nameField}
                 rolePerms(role: $roleUuid) {
                   create
