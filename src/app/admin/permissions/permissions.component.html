@@ -2,8 +2,6 @@
 
     <h3>Roles / {{ role.name }}</h3>
 
-    <br>
-
     <p-accordion (onOpen)="loadEntities($event.index)">
 
         <p-accordionTab>
@@ -17,10 +15,6 @@
                     </div>
                 </div>
             </p-header>
-            <input class="gtx-entity-filter"
-                   name="projectsFilter"
-                   placeholder="Filter projects"
-                   [(ngModel)]="projectsFilter">
             <p-treeTable [value]="treeTableData.projects"
                          [columns]="commonColumns"
                          sortMode="multiple">
@@ -94,11 +88,6 @@
                     </div>
                 </div>
             </p-header>
-            <input class="gtx-entity-filter"
-                   name="nodesFilter"
-                   placeholder="Filter nodes"
-                   [(ngModel)]="nodesFilter">
-            <br>
             <p-treeTable [value]="treeTableData.nodes"
                          sortMode="multiple"
                          [columns]="keysOfPropsMeshNodePerms">
@@ -196,11 +185,6 @@
                     </div>
                 </div>
             </p-header>
-            <input class="gtx-entity-filter"
-                   name="schemasFilter"
-                   placeholder="Filter schemas"
-                   [(ngModel)]="schemasFilter">
-            <br>
             <p-treeTable [value]="treeTableData.schemas"
                          sortMode="multiple"
                          [columns]="commonColumns">
@@ -274,11 +258,6 @@
                     </div>
                 </div>
             </p-header>
-            <input class="gtx-entity-filter"
-                   name="microschemasFilter"
-                   placeholder="Filter microschemas"
-                   [(ngModel)]="microschemasFilter">
-            <br>
             <p-treeTable [value]="treeTableData.microschemas"
                          sortMode="multiple"
                          [columns]="commonColumns">
@@ -352,11 +331,6 @@
                     </div>
                 </div>
             </p-header>
-            <input class="gtx-entity-filter"
-                   name="usersFilter"
-                   placeholder="Filter users"
-                   [(ngModel)]="usersFilter">
-            <br>
             <p-treeTable [value]="treeTableData.users"
                          sortMode="multiple"
                          [columns]="commonColumns">
@@ -430,11 +404,6 @@
                     </div>
                 </div>
             </p-header>
-            <input class="gtx-entity-filter"
-                   name="groupsFilter"
-                   placeholder="Filter groups"
-                   [(ngModel)]="groupsFilter">
-            <br>
             <p-treeTable [value]="treeTableData.groups"
                          sortMode="multiple"
                          [columns]="commonColumns">
@@ -508,11 +477,6 @@
                     </div>
                 </div>
             </p-header>
-            <input class="gtx-entity-filter"
-                   name="rolesFilter"
-                   placeholder="Filter roles"
-                   [(ngModel)]="rolesFilter">
-            <br>
             <p-treeTable [value]="treeTableData.roles"
                          sortMode="multiple"
                          [columns]="commonColumns">
@@ -576,7 +540,4 @@
         </p-accordionTab>
 
     </p-accordion>
-
-    <br>
-
 </div>
