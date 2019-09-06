@@ -4570,17 +4570,17 @@ export interface PagingMetaInfoFromServer {
 
 export interface PermissionInfoFromServer {
     /** Flag which indicates whether the create permission is granted. */
-    readonly create: boolean;
+    create: boolean;
     /** Flag which indicates whether the delete permission is granted. */
-    readonly delete: boolean;
+    delete: boolean;
     /** Flag which indicates whether the publish permission is granted. */
-    readonly publish: boolean;
+    publish: boolean;
     /** Flag which indicates whether the read permission is granted. */
-    readonly read: boolean;
+    read: boolean;
     /** Flag which indicates whether the read published permission is granted. */
-    readonly readPublished: boolean;
+    readPublished: boolean;
     /** Flag which indicates whether the update permission is granted. */
-    readonly update: boolean;
+    update: boolean;
 }
 
 export interface PluginDeploymentRequest {
@@ -5073,7 +5073,7 @@ export interface TagFamilyResponse {
     /** Name of the tag family. */
     readonly name?: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    rolePerms: PermissionInfoFromServer;
     /** Uuid of the element */
     readonly uuid: string;
 }
@@ -5132,7 +5132,7 @@ export interface TagResponse {
     /** Name of the tag. */
     readonly name: string;
     readonly permissions: PermissionInfoFromServer;
-    readonly rolePerms: PermissionInfoFromServer;
+    rolePerms: PermissionInfoFromServer;
     /** Reference to the tag family to which the tag belongs. */
     readonly tagFamily: TagFamilyReferenceFromServer;
     /** Uuid of the element */

@@ -1,8 +1,3 @@
-<input class="gtx-entity-filter"
-       name="tagsFilter"
-       placeholder="Filter tags"
-       [(ngModel)]="tagsFilter">
-<br>
 <p-treeTable [value]="treeTableData"
              sortMode="multiple"
              [columns]="commonColumns"
@@ -40,14 +35,14 @@
                  let-columns="columns">
         <tr>
             <td *ngFor="let col of columns; let i = index">
-                <ng-container *ngIf="col.field !== 'name'">
+                <ng-container *ngIf="col.field !== 'name' && rowData.type !== 'project'">
                     <p-treeTableToggler *ngIf="i == 0"
                                         [rowNode]="rowNode"></p-treeTableToggler>
-                    <!-- <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
+                    <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                         [iconName]="col.iconName"
                                         [actionName]="col.header"
-                                        (action)="setPermission('tags', rowData.uuid, col.field, $event)">
-                    </mesh-icon-checkbox> -->
+                                        (action)="setPermission(rowData, col.field, $event)">
+                    </mesh-icon-checkbox>
                 </ng-container>
 
                 <ng-container *ngIf="col.field === 'name'">
@@ -59,7 +54,9 @@
             <td class="gtx-column-any"
                 title="select all">
                 <p-checkbox binary="true"
-                            (onChange)="setAllPermissions('tags', rowData.uuid, $event)"></p-checkbox>
+                            [ngModel]="allChecked(rowData)"
+                            (onChange)="setAllPermissions(rowData, $event)"
+                            *ngIf="rowData.type !== 'project'"></p-checkbox>
             </td>
         </tr>
     </ng-template>

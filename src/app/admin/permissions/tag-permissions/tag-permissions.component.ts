@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { TreeNode } from 'primeng/api';
-import { ProjectResponse, TagFamilyResponse, TagResponse } from 'src/app/common/models/server-models';
+import {
+    PermissionInfoFromServer,
+    ProjectResponse,
+    TagFamilyResponse,
+    TagResponse
+} from 'src/app/common/models/server-models';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
@@ -19,13 +24,19 @@ interface TagFamilyNode extends TreeNode {
 }
 
 interface TagFamilyData extends TagFamilyResponse {
-    projectName: string;
+    type: 'tagFamily';
+    project: ProjectResponse;
 }
 
 interface TagNode {
-    data: TagResponse & { type: 'tag' };
+    data: TagData;
     children: never;
     leaf: true;
+}
+
+interface TagData extends TagResponse {
+    type: 'tag';
+    tagFamily: TagFamilyData;
 }
 
 type GtxTreeNode = ProjectNode | TagFamilyNode | TagNode;
@@ -91,7 +102,7 @@ export class TagPermissionsComponent implements OnInit {
         return response.data.entity.elements.map((tagFamily: TagFamilyResponse) => ({
             data: {
                 type: 'tagFamily',
-                projectName: project.name,
+                project,
                 ...tagFamily
             },
             children: [],
@@ -103,7 +114,7 @@ export class TagPermissionsComponent implements OnInit {
         const response = await this.loadingPromise(
             this.api
                 .graphQL(
-                    { project: tagFamily.projectName },
+                    { project: tagFamily.project.name },
                     {
                         query: `query loadTags($tagFamilyUuid: String, $roleUuid: String!) {
         tagFamily(uuid: $tagFamilyUuid) {
@@ -133,15 +144,72 @@ export class TagPermissionsComponent implements OnInit {
         return response.data.tagFamily.tags.elements.map((tag: TagResponse) => ({
             data: {
                 type: 'tag',
+                tagFamily,
                 ...tag
             },
             leaf: true
         }));
     }
 
+    public async setPermission(
+        element: TagFamilyData | TagData,
+        permission: keyof PermissionInfoFromServer,
+        value: boolean
+    ) {
+        this.api.admin
+            .setRolePermissions(
+                { path: this.getPath(element), roleUuid: this.role.uuid },
+                {
+                    recursive: false,
+                    permissions: {
+                        [permission]: value
+                    }
+                }
+            )
+            .subscribe();
+        element.rolePerms[permission] = value;
+        this.change.markForCheck();
+    }
+
+    public async setAllPermissions(element: TagFamilyData | TagData, value: boolean) {
+        const permissions = {
+            create: value,
+            read: value,
+            update: value,
+            delete: value
+        };
+        this.api.admin
+            .setRolePermissions(
+                { path: this.getPath(element), roleUuid: this.role.uuid },
+                {
+                    recursive: false,
+                    permissions
+                }
+            )
+            .subscribe();
+        element.rolePerms = permissions as any;
+        this.change.markForCheck();
+    }
+
+    private getPath(element: TagFamilyData | TagData): string {
+        if (element.type === 'tag') {
+            return `projects/${element.tagFamily.project.uuid}/tagFamilies/${element.tagFamily.uuid}/tags/${
+                element.uuid
+            }`;
+        } else if (element.type === 'tagFamily') {
+            return `projects/${element.project.uuid}/tagFamilies/${element.uuid}`;
+        } else {
+            throw new Error('Unknown element');
+        }
+    }
+
     private loadingPromise<T extends PromiseLike<any>>(promise: T): T {
         this.loading = true;
         promise.then(() => (this.loading = false), () => (this.loading = false));
         return promise;
+    }
+
+    public allChecked(val: any) {
+        return Object.values(val.rolePerms).every(x => x);
     }
 }
