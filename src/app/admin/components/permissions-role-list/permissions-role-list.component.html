@@ -1,0 +1,23 @@
+<mesh-admin-list [items]="response.roles.elements"
+                 [itemsPerPage]="10"
+                 [currentPage]="currentPage"
+                 [selectable]="false"
+                 [totalItems]="response.roles.totalCount"
+                 (pageChange)="onPageChange($event)">
+    <div class="list-controls">
+        <div class="filter">
+            <gtx-input [label]="'admin.filter_by_name' | i18n"
+                       [formControl]="filterInput"></gtx-input>
+        </div>
+    </div>
+
+    <ng-template let-role="item">
+        <div class="item-row">
+            <a [routerLink]="['/admin/permissions', role.uuid]">
+                <div class="role-name"
+                     [innerHTML]="role.name"></div>
+            </a>
+        </div>
+    </ng-template>
+
+</mesh-admin-list>

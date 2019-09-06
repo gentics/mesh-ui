@@ -20,6 +20,7 @@ import { MicroschemaEditorComponent } from './components/microschema-editor/micr
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 import { NameInputDialogComponent } from './components/name-input-dialog/name-input-dialog.component';
+import { PermissionsRoleListComponent } from './components/permissions-role-list/permissions-role-list.component';
 import { ProjectDetailMicroschemasComponent } from './components/project-detail-microschemas/project-detail-microschemas.component';
 import { ProjectDetailSchemasComponent } from './components/project-detail-schemas/project-detail-schemas.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
@@ -77,7 +78,8 @@ import { UserResolver } from './providers/resolvers/user-resolver';
         GroupListComponent,
         GroupDetailComponent,
         RoleListComponent,
-        RoleDetailComponent
+        RoleDetailComponent,
+        PermissionsRoleListComponent
     ],
     entryComponents: [CreateProjectModalComponent, NameInputDialogComponent],
     imports: [SharedModule, RouterModule.forChild(routes), ReactiveFormsModule, FormGeneratorModule, PermissionsModule],

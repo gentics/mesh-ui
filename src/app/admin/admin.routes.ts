@@ -5,6 +5,7 @@ import { GroupDetailComponent } from './components/group-detail/group-detail.com
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
+import { PermissionsRoleListComponent } from './components/permissions-role-list/permissions-role-list.component';
 import { ProjectDetailSchemasComponent } from './components/project-detail-schemas/project-detail-schemas.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
@@ -115,7 +116,7 @@ export const routes: Route[] = [
                 path: 'permissions',
                 data: { breadcrumb: 'common.permissions' },
                 children: [
-                    { path: '', component: RoleListComponent },
+                    { path: '', component: PermissionsRoleListComponent },
                     {
                         path: ':uuid',
                         component: PermissionsComponent,
