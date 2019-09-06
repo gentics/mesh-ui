@@ -1,19 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { nodes } from 'e2e/uuids';
-import { TreeNode } from 'primeng/api';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../providers/effects/admin-role-effects.service';
 
-type Modify<T, R> = Pick<T, Exclude<keyof T, keyof R>> & R;
-
-type GtxTreeNode<T> = Modify<
-    TreeNode,
-    {
-        data: T;
-    }
->;
+import { commonColumns, simpleQuery } from './permissions.util';
+import { GtxTreeNode } from './tag-permissions/tag-permissions.component';
 
 interface TreeTableData {
     projects: GtxTreeNode<MeshProjectPerms>[];
@@ -73,17 +66,7 @@ type MeshRolePerms = MeshBasePerms;
 export class PermissionsComponent implements OnInit {
     role: AdminRoleResponse;
 
-    commonColumns = [
-        {
-            field: 'name',
-            header: 'Name'
-        },
-        ...['create', 'read', 'update', 'delete'].map(key => ({
-            field: key,
-            header: key,
-            iconName: this.mapKeyToIconName(key)
-        }))
-    ];
+    commonColumns = commonColumns;
 
     treeTableData: TreeTableData = {
         projects: [],
@@ -103,27 +86,6 @@ export class PermissionsComponent implements OnInit {
     }
 
     checkboxAllClicked(event: any): void {}
-
-    private mapKeyToIconName(key: string): string {
-        switch (key) {
-            case 'create':
-                return 'add';
-            case 'read':
-                return 'remove_red_eye';
-            case 'update':
-                return 'edit';
-            case 'delete':
-                return 'delete';
-            case 'publish':
-                return 'cloud_upload';
-            case 'readPublish':
-                return 'cloud_done';
-            case 'canCreateNewTagFamilies':
-                return 'local_offer';
-            default:
-                return '';
-        }
-    }
 
     public loadEntities(index: number) {
         switch (index) {
@@ -226,34 +188,12 @@ export class PermissionsComponent implements OnInit {
             return response.data;
         } else {
             const response = await this.api.graphQLInAnyProject({
-                query: this.simpleQuery(entity),
+                query: simpleQuery(entity),
                 variables: {
                     roleUuid: this.role.uuid
                 }
             });
             return response.entity.elements;
         }
-    }
-
-    /**
-     * This is used for everything besides projects, tags and nodes.
-     * @param entity
-     */
-    private simpleQuery(entity: string) {
-        const nameField = entity === 'users' ? 'username' : 'name';
-        return `query rolePermTest($roleUuid: String!) {
-            entity: ${entity} {
-              elements {
-                uuid
-                name: ${nameField}
-                rolePerms(role: $roleUuid) {
-                  create
-                  read
-                  update
-                  delete
-                }
-              }
-            }
-        }`;
     }
 }

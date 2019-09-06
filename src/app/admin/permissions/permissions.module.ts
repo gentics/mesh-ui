@@ -8,9 +8,10 @@ import { TreeTableModule } from 'primeng/treetable';
 
 import { IconCheckboxComponent } from './icon-checkbox/icon-checkbox.component';
 import { PermissionsComponent } from './permissions.component';
+import { TagPermissionsComponent } from './tag-permissions/tag-permissions.component';
 
 @NgModule({
-    declarations: [PermissionsComponent, IconCheckboxComponent],
+    declarations: [PermissionsComponent, IconCheckboxComponent, TagPermissionsComponent],
     imports: [AccordionModule, CheckboxModule, CommonModule, FormsModule, PaginatorModule, TreeTableModule],
     providers: []
 })
