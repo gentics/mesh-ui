@@ -6,7 +6,10 @@ import { ApiService } from 'src/app/core/providers/api/api.service';
 import { AdminRoleResponse } from '../providers/effects/admin-role-effects.service';
 
 import { commonColumns, simpleQuery } from './permissions.util';
-import { GtxTreeNode } from './tag-permissions/tag-permissions.component';
+
+interface GtxTreeNode<T> {
+    data: T;
+}
 
 interface TreeTableData {
     projects: GtxTreeNode<MeshProjectPerms>[];

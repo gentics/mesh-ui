@@ -1,3 +1,5 @@
+import { TreeNode } from 'primeng/api';
+
 type Modify<T, R> = Pick<T, Exclude<keyof T, keyof R>> & R;
 
 type GtxTreeNode<T> = Modify<

@@ -12,13 +12,17 @@ import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.se
 import { commonColumns, simpleQuery } from '../permissions.util';
 
 interface ProjectNode extends TreeNode {
-    data: ProjectResponse & { type: 'project' };
+    data: ProjectData;
     children: TagFamilyNode[];
     leaf: false;
 }
 
+interface ProjectData extends ProjectResponse {
+    type: 'project';
+}
+
 interface TagFamilyNode extends TreeNode {
-    data: TagFamilyData & { type: 'tagFamily' };
+    data: TagFamilyData;
     children: TagNode[];
     leaf: false;
 }
@@ -61,14 +65,17 @@ export class TagPermissionsComponent implements OnInit {
 
     async ngOnInit() {
         const response = await this.api.project.getProjects({ fields: 'uuid,name' }).toPromise();
-        this.treeTableData = response.data.map(project => ({
-            data: {
-                type: 'project',
-                ...project
-            },
-            children: [],
-            leaf: false
-        }));
+        this.treeTableData = response.data.map(
+            project =>
+                ({
+                    data: {
+                        type: 'project',
+                        ...project
+                    },
+                    children: [],
+                    leaf: false
+                } as ProjectNode)
+        );
         this.change.markForCheck();
     }
 
@@ -210,6 +217,6 @@ export class TagPermissionsComponent implements OnInit {
     }
 
     public allChecked(val: any) {
-        return Object.values(val.rolePerms).every(x => x);
+        return Object.values(val.rolePerms).every(x => !!x);
     }
 }
