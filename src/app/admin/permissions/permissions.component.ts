@@ -94,10 +94,11 @@ export class PermissionsComponent implements OnInit {
         switch (index) {
             case 0: // Projects
                 return this.loadData('projects');
-            case 1: // Nodes
-                return this.loadData('nodes');
-            case 2: // Tags
-                return this.loadData('tags');
+
+            // Don't do anything for tags and nodes, this is handled by their own components
+            // case 1: // Nodes
+            // case 2: // Tags
+
             case 3: // Schemas
                 return this.loadData('schemas');
             case 4: // Microschemas

@@ -14,12 +14,16 @@ export const commonColumns = [
         field: 'name',
         header: 'Name'
     },
-    ...['create', 'read', 'update', 'delete'].map(key => ({
+    ...createColumns(['create', 'read', 'update', 'delete'])
+];
+
+export function createColumns(permissionNames: string[]) {
+    return permissionNames.map(key => ({
         field: key,
         header: key,
         iconName: mapKeyToIconName(key)
-    }))
-];
+    }));
+}
 
 export function mapKeyToIconName(key: string): string {
     switch (key) {
@@ -33,7 +37,7 @@ export function mapKeyToIconName(key: string): string {
             return 'delete';
         case 'publish':
             return 'cloud_upload';
-        case 'readPublish':
+        case 'readPublished':
             return 'cloud_done';
         case 'canCreateNewTagFamilies':
             return 'local_offer';
