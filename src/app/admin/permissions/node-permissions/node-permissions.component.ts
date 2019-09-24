@@ -9,14 +9,24 @@ import { commonColumns, createColumns } from '../permissions.util';
 
 interface NodeNode extends TreeNode {
     data: NodeData;
-    children: NodeNode[];
+    children: GtxTreeNode[];
 }
+
+interface LoadMoreDummyNode extends TreeNode {
+    data: {
+        type: 'loadmore';
+    };
+}
+
+type GtxTreeNode = LoadMoreDummyNode | NodeNode;
 
 interface NodeData {
     uuid: string;
     name: string;
+    type: 'node';
     project: ProjectResponse;
     recursive: boolean;
+    lastPageLoaded: number;
     rolePerms: {
         create: boolean;
         read: boolean;
@@ -29,6 +39,17 @@ interface NodeData {
         size: 0 | 1;
     };
 }
+
+interface ChildrenResponse {
+    hasNextPage: boolean;
+    elements: NodeData[];
+}
+
+const loadMoreDummy: LoadMoreDummyNode = {
+    data: {
+        type: 'loadmore'
+    }
+};
 
 const nodePermsFragment = `
 fragment NodePerms on Node {
@@ -47,6 +68,20 @@ fragment NodePerms on Node {
   }
 }
 `;
+
+const childrenQuery = `
+      query rootNode($parentUuid: String, $roleUuid: String!, $page: Long) {
+        node(uuid: $parentUuid) {
+          children(perPage: 3, page: $page) {
+            elements {
+              ...NodePerms
+            }
+            hasNextPage
+          }
+        }
+      }
+      ${nodePermsFragment}
+      `;
 
 @Component({
     selector: 'mesh-node-permissions',
@@ -104,7 +139,10 @@ export class NodePermissionsComponent implements OnInit {
                 )
                 .map(extractGraphQlResponse)
                 .toPromise()
-                .then(response => response.rootNode)
+                .then(response => {
+                    response.rootNode.type = 'node';
+                    return response.rootNode;
+                })
         );
     }
 
@@ -118,47 +156,43 @@ export class NodePermissionsComponent implements OnInit {
     }
 
     public async onNodeExpand({ node }: { node: NodeNode }) {
-        const children = await this.fetchChildren(node.data);
-        node.children = children.map(this.toNodeNode);
+        const response = await this.fetchChildren(node.data);
+        node.children = response.elements.map(this.toNodeNode);
+        node.data.lastPageLoaded = 1;
+        if (response.hasNextPage) {
+            node.children.push(loadMoreDummy);
+        }
 
         // This forces angular to push the new data to the component
         this.treeTableData = [...this.treeTableData];
         this.change.markForCheck();
     }
 
-    private async fetchChildren(node: NodeData): Promise<NodeData[]> {
+    private async fetchChildren(node: NodeData, page?: number): Promise<ChildrenResponse> {
         return this.loadingPromise(
             this.api
                 .graphQL(
                     { project: node.project.name },
                     {
-                        query: `
-      query rootNode($parentUuid: String, $roleUuid: String!) {
-        node(uuid: $parentUuid) {
-          children(perPage: 20) {
-            elements {
-              ...NodePerms
-            }
-          }
-        }
-      }
-      ${nodePermsFragment}
-      `,
+                        query: childrenQuery,
                         variables: {
                             roleUuid: this.role.uuid,
-                            parentUuid: node.uuid
+                            parentUuid: node.uuid,
+                            page: page || 1
                         }
                     }
                 )
                 .map(extractGraphQlResponse)
                 .toPromise()
-                .then(response =>
-                    response.node.children.elements.map((child: NodeData) => ({
+                .then(response => ({
+                    hasNextPage: response.node.children.hasNextPage,
+                    elements: response.node.children.elements.map((child: NodeData) => ({
                         ...child,
                         project: node.project,
-                        recursive: false
+                        recursive: false,
+                        type: 'node'
                     }))
-                )
+                }))
         );
     }
 
@@ -219,8 +253,26 @@ export class NodePermissionsComponent implements OnInit {
             ...permissions
         };
         if (recursive) {
-            node.children.forEach(child => this.setPermissions(child, permissions, recursive));
+            node.children.filter(this.isRealNode).forEach(child => this.setPermissions(child, permissions, recursive));
         }
+    }
+
+    public async loadMore(node: NodeNode) {
+        const response = await this.fetchChildren(node.data, node.data.lastPageLoaded + 1);
+        node.children.pop();
+        node.children.push(...response.elements.map(this.toNodeNode));
+        node.data.lastPageLoaded++;
+        if (response.hasNextPage) {
+            node.children.push(loadMoreDummy);
+        }
+
+        // This forces angular to push the new data to the component
+        this.treeTableData = [...this.treeTableData];
+        this.change.markForCheck();
+    }
+
+    private isRealNode(node: GtxTreeNode): node is NodeNode {
+        return node.data.type === 'node';
     }
 
     public async columnClicked(perm: keyof PermissionInfoFromServer, value: boolean) {
@@ -312,7 +364,7 @@ export class NodePermissionsComponent implements OnInit {
         if (!parent.expanded) {
             return [parent];
         } else {
-            return [parent, ...flatMap(parent.children, item => this.getAllVisibleNodes(item))];
+            return [parent, ...flatMap(parent.children.filter(this.isRealNode), item => this.getAllVisibleNodes(item))];
         }
     }
 

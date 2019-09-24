@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
+import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { PaginatorModule } from 'primeng/paginator';
 import { TreeTableModule } from 'primeng/treetable';
@@ -20,7 +21,15 @@ import { TagPermissionsComponent } from './tag-permissions/tag-permissions.compo
         NodePermissionsComponent,
         SimplePermissionsComponent
     ],
-    imports: [AccordionModule, CheckboxModule, CommonModule, FormsModule, PaginatorModule, TreeTableModule],
+    imports: [
+        AccordionModule,
+        CheckboxModule,
+        CommonModule,
+        FormsModule,
+        PaginatorModule,
+        TreeTableModule,
+        ButtonModule
+    ],
     providers: []
 })
 export class PermissionsModule {}

@@ -44,7 +44,7 @@
                  let-columns="columns">
         <tr>
             <td *ngFor="let col of columns; let i = index">
-                <ng-container *ngIf="col.field !== 'name' && rowData.type !== 'project'">
+                <ng-container *ngIf="col.field !== 'name' && rowData.type === 'node'">
                     <p-treeTableToggler *ngIf="i == 0"
                                         [rowNode]="rowNode"></p-treeTableToggler>
                     <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
@@ -57,7 +57,13 @@
                 <ng-container *ngIf="col.field === 'name'">
                     <p-treeTableToggler *ngIf="i == 0"
                                         [rowNode]="rowNode"></p-treeTableToggler>
-                    {{ rowData[col.field] }}
+                    <ng-container *ngIf="rowData.type === 'node'">
+                        {{ rowData[col.field] }}
+                    </ng-container>
+                    <ng-container *ngIf="rowData.type === 'loadmore'">
+                        <p-button label="Load more..."
+                                  (onClick)="loadMore(rowNode.parent)"></p-button>
+                    </ng-container>
                 </ng-container>
             </td>
             <td class="gtx-column-any"
@@ -65,10 +71,11 @@
                 <p-checkbox binary="true"
                             [ngModel]="allChecked(rowData)"
                             (onChange)="setAllPermissions(rowNode, $event)"
-                            *ngIf="rowData.type !== 'project'"></p-checkbox>
+                            *ngIf="rowData.type === 'node'"></p-checkbox>
             </td>
             <td title="apply recursively">
                 <p-checkbox binary="true"
+                            *ngIf="rowData.type === 'node'"
                             [(ngModel)]="rowData.recursive"></p-checkbox>
             </td>
         </tr>
