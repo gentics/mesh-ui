@@ -22,6 +22,8 @@ interface MeshBasePerms {
     };
 }
 
+type Permission = keyof MeshBasePerms['rolePerms'];
+
 @Component({
     selector: 'mesh-simple-permissions',
     templateUrl: './simple-permissions.component.html',
@@ -54,7 +56,7 @@ export class SimplePermissionsComponent implements OnInit {
         return Object.values(val.rolePerms).every(x => x);
     }
 
-    public async setPermission(entity: MeshBasePerms, permission: keyof MeshBasePerms['rolePerms'], value: boolean) {
+    public async setPermission(entity: MeshBasePerms, permission: Permission, value: boolean) {
         await this.loadingPromise(
             this.api.admin
                 .setRolePermissions(
@@ -128,17 +130,19 @@ export class SimplePermissionsComponent implements OnInit {
         // TODO set perPage param
 
         if (this.entityType === 'projects') {
-            const response = await this.api.project
-                .getProjects({ role: this.role.uuid, fields: 'uuid,name,rolePerms' })
-                .toPromise();
+            const response = await this.loadingPromise(
+                this.api.project.getProjects({ role: this.role.uuid, fields: 'uuid,name,rolePerms' }).toPromise()
+            );
             return response.data;
         } else {
-            const response = await this.api.graphQLInAnyProject({
-                query: simpleQuery(this.entityType),
-                variables: {
-                    roleUuid: this.role.uuid
-                }
-            });
+            const response = await this.loadingPromise(
+                this.api.graphQLInAnyProject({
+                    query: simpleQuery(this.entityType),
+                    variables: {
+                        roleUuid: this.role.uuid
+                    }
+                })
+            );
             return response.entity.elements;
         }
     }
@@ -158,6 +162,73 @@ export class SimplePermissionsComponent implements OnInit {
                 )
                 .toPromise()
         );
+    }
+
+    public async columnClicked(perm: Permission, value: boolean) {
+        await this.loadingPromise(
+            Promise.all(
+                this.treeTableData
+                    .filter(entity => entity.data.rolePerms[perm] !== value)
+                    .map(entity =>
+                        this.api.admin
+                            .setRolePermissions(
+                                {
+                                    path: `${this.entityType}/${entity.data.uuid}`,
+                                    roleUuid: this.role.uuid
+                                },
+                                {
+                                    recursive: false,
+                                    permissions: {
+                                        [perm]: value
+                                    }
+                                }
+                            )
+                            .toPromise()
+                    )
+            )
+        );
+        this.treeTableData.forEach(entity => (entity.data.rolePerms[perm] = value));
+        this.change.markForCheck();
+    }
+
+    public async columnAllClicked(value: boolean) {
+        const permissions: MeshBasePerms['rolePerms'] = {
+            create: value,
+            read: value,
+            update: value,
+            delete: value
+        };
+
+        await this.loadingPromise(
+            Promise.all(
+                this.treeTableData
+                    .filter(entity => !Object.values(entity.data.rolePerms).every(perm => perm === value))
+                    .map(entity =>
+                        this.api.admin
+                            .setRolePermissions(
+                                {
+                                    path: `${this.entityType}/${entity.data.uuid}`,
+                                    roleUuid: this.role.uuid
+                                },
+                                {
+                                    recursive: false,
+                                    permissions
+                                }
+                            )
+                            .toPromise()
+                    )
+            )
+        );
+        this.treeTableData.forEach(entity => (entity.data.rolePerms = permissions));
+        this.change.markForCheck();
+    }
+
+    public allCheckedColumn(permission: Permission) {
+        return this.treeTableData.every(entity => entity.data.rolePerms[permission]);
+    }
+
+    public allCheckedAll() {
+        return this.treeTableData.every(entity => this.allChecked(entity.data));
     }
 
     private loadingPromise<T extends PromiseLike<any>>(promise: T): T {

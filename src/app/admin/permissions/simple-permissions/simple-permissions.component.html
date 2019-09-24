@@ -11,12 +11,12 @@
                  let-columns>
         <tr>
             <th *ngFor="let col of columns"
-                [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
-                [ttSortableColumn]="col.field">
+                [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'">
                 <ng-container *ngIf="col.field !== 'name'">
                     <mesh-icon-checkbox [iconName]="col.iconName"
                                         [actionName]="col.header"
-                                        (action)="checkboxAllClicked($event)">
+                                        [value]="allCheckedColumn(col.field)"
+                                        (action)="columnClicked(col.field, $event)">
                     </mesh-icon-checkbox>
                 </ng-container>
 
@@ -28,7 +28,8 @@
                 title="select all">
                 <mesh-icon-checkbox label="all"
                                     actionName="check all"
-                                    (action)="checkboxAllClicked($event)">
+                                    [value]="allCheckedAll()"
+                                    (action)="columnAllClicked($event)">
                 </mesh-icon-checkbox>
             </th>
         </tr>
