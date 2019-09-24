@@ -437,3 +437,9 @@ export function nodeEquals(a?: MeshNode, b?: MeshNode): boolean {
     }
     return a.uuid === b.uuid && a.language === b.language && a.version === b.version;
 }
+
+export function flatMap<T, R>(arr: T[], mapper: (item: T) => R[]): R[] {
+    const result: R[] = [];
+    arr.forEach(item => result.push(...mapper(item)));
+    return result;
+}

@@ -31,7 +31,8 @@
                 title="apply recursively">
                 <mesh-icon-checkbox iconName="device_hub"
                                     actionName="apply recursively"
-                                    (action)="checkboxAllClicked($event)">
+                                    [value]="isAllRecursive()"
+                                    (action)="setAllRecursive($event)">
                 </mesh-icon-checkbox>
             </th>
         </tr>

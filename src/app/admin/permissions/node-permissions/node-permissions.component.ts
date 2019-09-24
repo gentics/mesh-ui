@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { PermissionInfoFromServer, ProjectResponse } from 'src/app/common/models/server-models';
-import { extractGraphQlResponse } from 'src/app/common/util/util';
+import { extractGraphQlResponse, flatMap } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
@@ -220,6 +220,26 @@ export class NodePermissionsComponent implements OnInit {
         };
         if (recursive) {
             node.children.forEach(child => this.setPermissions(child, permissions, recursive));
+        }
+    }
+
+    public setAllRecursive(value: boolean) {
+        this.getAllVisibleNodes().forEach(node => (node.data.recursive = value));
+        this.change.markForCheck();
+    }
+
+    public isAllRecursive(): boolean {
+        return this.getAllVisibleNodes().every(node => node.data.recursive);
+    }
+
+    private getAllVisibleNodes(parent?: NodeNode): NodeNode[] {
+        if (!parent) {
+            return flatMap(this.treeTableData, item => this.getAllVisibleNodes(item));
+        }
+        if (!parent.expanded) {
+            return [parent];
+        } else {
+            return [parent, ...flatMap(parent.children, item => this.getAllVisibleNodes(item))];
         }
     }
 

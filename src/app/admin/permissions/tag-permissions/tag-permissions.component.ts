@@ -6,6 +6,7 @@ import {
     TagFamilyResponse,
     TagResponse
 } from 'src/app/common/models/server-models';
+import { flatMap } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
@@ -32,7 +33,7 @@ interface TagFamilyData extends TagFamilyResponse {
     project: ProjectResponse;
 }
 
-interface TagNode {
+interface TagNode extends TreeNode {
     data: TagData;
     children: never;
     leaf: true;
@@ -43,7 +44,9 @@ interface TagData extends TagResponse {
     tagFamily: TagFamilyData;
 }
 
-type GtxTreeNode = ProjectNode | TagFamilyNode | TagNode;
+type EditableNode = TagFamilyNode | TagNode;
+
+type GtxTreeNode = ProjectNode | EditableNode;
 
 @Component({
     selector: 'mesh-tag-permissions',
@@ -208,6 +211,93 @@ export class TagPermissionsComponent implements OnInit {
         } else {
             throw new Error('Unknown element');
         }
+    }
+
+    public async columnClicked(perm: keyof PermissionInfoFromServer, value: boolean) {
+        const elements = this.getAllVisibleElements();
+
+        await this.loadingPromise(
+            Promise.all(
+                elements
+                    .filter(entity => entity.data.rolePerms[perm] !== value)
+                    .map(entity =>
+                        this.api.admin
+                            .setRolePermissions(
+                                {
+                                    path: this.getPath(entity.data),
+                                    roleUuid: this.role.uuid
+                                },
+                                {
+                                    recursive: false,
+                                    permissions: {
+                                        [perm]: value
+                                    }
+                                }
+                            )
+                            .toPromise()
+                    )
+            )
+        );
+        elements.forEach(entity => (entity.data.rolePerms[perm] = value));
+        this.change.markForCheck();
+    }
+
+    public async columnAllClicked(value: boolean) {
+        const permissions = {
+            create: value,
+            read: value,
+            update: value,
+            delete: value
+        };
+
+        const elements = this.getAllVisibleElements();
+
+        await this.loadingPromise(
+            Promise.all(
+                elements
+                    .filter(entity => !Object.values(entity.data.rolePerms).every(perm => perm === value))
+                    .map(entity =>
+                        this.api.admin
+                            .setRolePermissions(
+                                {
+                                    path: this.getPath(entity.data),
+                                    roleUuid: this.role.uuid
+                                },
+                                {
+                                    recursive: false,
+                                    permissions
+                                }
+                            )
+                            .toPromise()
+                    )
+            )
+        );
+        elements.forEach(entity => (entity.data.rolePerms = permissions as any));
+        this.change.markForCheck();
+    }
+
+    public allCheckedColumn(permission: keyof PermissionInfoFromServer) {
+        return this.getAllVisibleElements().every(entity => entity.data.rolePerms[permission]);
+    }
+
+    public allCheckedAll() {
+        return this.getAllVisibleElements().every(entity => this.allChecked(entity.data));
+    }
+
+    private getAllVisibleElements(parent?: GtxTreeNode): EditableNode[] {
+        if (!parent) {
+            return flatMap(this.treeTableData, item => this.getAllVisibleElements(item));
+        }
+
+        const result: any[] = [];
+        if (parent.data.type !== 'project') {
+            result.push(parent);
+        }
+
+        if (parent.expanded) {
+            result.push(...flatMap(parent.children as any, (item: any) => this.getAllVisibleElements(item)));
+        }
+        return result;
     }
 
     private loadingPromise<T extends PromiseLike<any>>(promise: T): T {
