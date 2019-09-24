@@ -171,17 +171,19 @@ export class NodePermissionsComponent implements OnInit {
             [permission]: value
         };
 
-        this.api.admin
-            .setRolePermissions(
-                { path: `projects/${node.data.project.uuid}/nodes/${node.data.uuid}`, roleUuid: this.role.uuid },
-                {
-                    recursive: node.data.recursive,
-                    permissions: {
-                        [permission]: value
+        await this.loadingPromise(
+            this.api.admin
+                .setRolePermissions(
+                    { path: `projects/${node.data.project.uuid}/nodes/${node.data.uuid}`, roleUuid: this.role.uuid },
+                    {
+                        recursive: node.data.recursive,
+                        permissions: {
+                            [permission]: value
+                        }
                     }
-                }
-            )
-            .subscribe();
+                )
+                .toPromise()
+        );
         this.setPermissions(node, permissions as any, node.data.recursive);
         this.change.markForCheck();
     }
@@ -195,15 +197,17 @@ export class NodePermissionsComponent implements OnInit {
             publish: value,
             readPublished: value
         };
-        this.api.admin
-            .setRolePermissions(
-                { path: `projects/${node.data.project.uuid}/nodes/${node.data.uuid}`, roleUuid: this.role.uuid },
-                {
-                    recursive: node.data.recursive,
-                    permissions
-                }
-            )
-            .subscribe();
+        await this.loadingPromise(
+            this.api.admin
+                .setRolePermissions(
+                    { path: `projects/${node.data.project.uuid}/nodes/${node.data.uuid}`, roleUuid: this.role.uuid },
+                    {
+                        recursive: node.data.recursive,
+                        permissions
+                    }
+                )
+                .toPromise()
+        );
 
         this.setPermissions(node, permissions, node.data.recursive);
         this.change.markForCheck();
