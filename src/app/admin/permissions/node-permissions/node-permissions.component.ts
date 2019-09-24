@@ -174,7 +174,7 @@ export class NodePermissionsComponent implements OnInit {
         await this.loadingPromise(
             this.api.admin
                 .setRolePermissions(
-                    { path: `projects/${node.data.project.uuid}/nodes/${node.data.uuid}`, roleUuid: this.role.uuid },
+                    { path: this.getPath(node), roleUuid: this.role.uuid },
                     {
                         recursive: node.data.recursive,
                         permissions: {
@@ -200,7 +200,7 @@ export class NodePermissionsComponent implements OnInit {
         await this.loadingPromise(
             this.api.admin
                 .setRolePermissions(
-                    { path: `projects/${node.data.project.uuid}/nodes/${node.data.uuid}`, roleUuid: this.role.uuid },
+                    { path: this.getPath(node), roleUuid: this.role.uuid },
                     {
                         recursive: node.data.recursive,
                         permissions
@@ -221,6 +221,79 @@ export class NodePermissionsComponent implements OnInit {
         if (recursive) {
             node.children.forEach(child => this.setPermissions(child, permissions, recursive));
         }
+    }
+
+    public async columnClicked(perm: keyof PermissionInfoFromServer, value: boolean) {
+        const elements = this.getAllVisibleNodes();
+
+        await this.loadingPromise(
+            Promise.all(
+                elements
+                    .filter(entity => entity.data.rolePerms[perm] !== value)
+                    .map(entity =>
+                        this.api.admin
+                            .setRolePermissions(
+                                {
+                                    path: this.getPath(entity),
+                                    roleUuid: this.role.uuid
+                                },
+                                {
+                                    recursive: false,
+                                    permissions: {
+                                        [perm]: value
+                                    }
+                                }
+                            )
+                            .toPromise()
+                    )
+            )
+        );
+        elements.forEach(entity => (entity.data.rolePerms[perm] = value));
+        this.change.markForCheck();
+    }
+
+    public async columnAllClicked(value: boolean) {
+        const permissions = {
+            create: value,
+            read: value,
+            update: value,
+            delete: value,
+            publish: value,
+            readPublished: value
+        };
+
+        const elements = this.getAllVisibleNodes();
+
+        await this.loadingPromise(
+            Promise.all(
+                elements
+                    .filter(entity => !Object.values(entity.data.rolePerms).every(perm => perm === value))
+                    .map(entity =>
+                        this.api.admin
+                            .setRolePermissions(
+                                {
+                                    path: this.getPath(entity),
+                                    roleUuid: this.role.uuid
+                                },
+                                {
+                                    recursive: false,
+                                    permissions
+                                }
+                            )
+                            .toPromise()
+                    )
+            )
+        );
+        elements.forEach(entity => (entity.data.rolePerms = permissions as any));
+        this.change.markForCheck();
+    }
+
+    public allCheckedColumn(permission: keyof PermissionInfoFromServer) {
+        return this.getAllVisibleNodes().every(entity => entity.data.rolePerms[permission]);
+    }
+
+    public allCheckedAll() {
+        return this.getAllVisibleNodes().every(entity => this.allChecked(entity.data));
     }
 
     public setAllRecursive(value: boolean) {
@@ -245,6 +318,10 @@ export class NodePermissionsComponent implements OnInit {
 
     public allChecked(val: any) {
         return Object.values(val.rolePerms).every(x => !!x);
+    }
+
+    private getPath(node: NodeNode): string {
+        return `projects/${node.data.project.uuid}/nodes/${node.data.uuid}`;
     }
 
     private loadingPromise<T extends PromiseLike<any>>(promise: T): T {
