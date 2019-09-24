@@ -229,7 +229,17 @@ export class NodePermissionsComponent implements OnInit {
 
     private loadingPromise<T extends PromiseLike<any>>(promise: T): T {
         this.loading = true;
-        promise.then(() => (this.loading = false), () => (this.loading = false));
+        this.change.markForCheck();
+        promise.then(
+            () => {
+                this.loading = false;
+                this.change.markForCheck();
+            },
+            () => {
+                this.loading = false;
+                this.change.markForCheck();
+            }
+        );
         return promise;
     }
 }

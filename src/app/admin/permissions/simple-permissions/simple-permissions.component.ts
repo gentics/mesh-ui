@@ -41,10 +41,13 @@ export class SimplePermissionsComponent implements OnInit {
 
     loading = false;
 
+    canCreate = false;
+
     constructor(private api: ApiService, private change: ChangeDetectorRef) {}
 
     async ngOnInit() {
         this.loadData();
+        this.initCanCreate();
     }
 
     public allChecked(val: MeshBasePerms) {
@@ -100,6 +103,17 @@ export class SimplePermissionsComponent implements OnInit {
         this.change.markForCheck();
     }
 
+    private async initCanCreate() {
+        const response = await this.api.admin
+            .getRolePermissions({
+                path: this.entityType,
+                roleUuid: this.role.uuid
+            })
+            .toPromise();
+        this.canCreate = response.create;
+        this.change.markForCheck();
+    }
+
     private async loadData() {
         const response = await this.fetchData();
 
@@ -129,13 +143,36 @@ export class SimplePermissionsComponent implements OnInit {
         }
     }
 
-    public canCreateClicked(event: any) {
-        console.log(event);
+    public async canCreateClicked(create: any) {
+        this.loadingPromise(
+            this.api.admin
+                .setRolePermissions(
+                    {
+                        path: this.entityType,
+                        roleUuid: this.role.uuid
+                    },
+                    {
+                        recursive: false,
+                        permissions: { create }
+                    }
+                )
+                .toPromise()
+        );
     }
 
     private loadingPromise<T extends PromiseLike<any>>(promise: T): T {
         this.loading = true;
-        promise.then(() => (this.loading = false), () => (this.loading = false));
+        this.change.markForCheck();
+        promise.then(
+            () => {
+                this.loading = false;
+                this.change.markForCheck();
+            },
+            () => {
+                this.loading = false;
+                this.change.markForCheck();
+            }
+        );
         return promise;
     }
 }

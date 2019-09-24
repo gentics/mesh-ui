@@ -51,3 +51,12 @@ $material-design-icons-font-file-path: '~material-design-icons-iconfont/dist/fon
 .gtx-p-header-label {
     display: flex;
 }
+
+::ng-deep .gtx-can-create {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    label {
+        color: #333333;
+    }
+}

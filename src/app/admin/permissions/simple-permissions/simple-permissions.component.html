@@ -1,4 +1,7 @@
 <p-checkbox [label]="'Can create new ' + entityType"
+            [ngModel]="canCreate"
+            binary="true"
+            class="gtx-can-create"
             (onChange)="canCreateClicked($event)"></p-checkbox>
 <p-treeTable [value]="treeTableData"
              sortMode="multiple"
