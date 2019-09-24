@@ -16,8 +16,10 @@
                 </div>
             </p-header>
 
-            <mesh-simple-permissions [role]="role"
-                                     entityType="projects"></mesh-simple-permissions>
+            <ng-template pTemplate="content">
+                <mesh-simple-permissions [role]="role"
+                                         entityType="projects"></mesh-simple-permissions>
+            </ng-template>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -31,7 +33,11 @@
                     </div>
                 </div>
             </p-header>
-            <mesh-node-permissions [role]="role"></mesh-node-permissions>
+            <ng-template pTemplate="content">
+
+                <mesh-node-permissions [role]="role"></mesh-node-permissions>
+            </ng-template>
+
         </p-accordionTab>
 
         <p-accordionTab>
@@ -45,7 +51,11 @@
                     </div>
                 </div>
             </p-header>
-            <mesh-tag-permissions [role]="role"></mesh-tag-permissions>
+            <ng-template pTemplate="content">
+
+                <mesh-tag-permissions [role]="role"></mesh-tag-permissions>
+            </ng-template>
+
         </p-accordionTab>
 
         <p-accordionTab>
@@ -59,9 +69,12 @@
                     </div>
                 </div>
             </p-header>
+            <ng-template pTemplate="content">
 
-            <mesh-simple-permissions [role]="role"
-                                     entityType="schemas"></mesh-simple-permissions>
+                <mesh-simple-permissions [role]="role"
+                                         entityType="schemas"></mesh-simple-permissions>
+            </ng-template>
+
         </p-accordionTab>
 
         <p-accordionTab>
@@ -75,9 +88,11 @@
                     </div>
                 </div>
             </p-header>
+            <ng-template pTemplate="content">
 
-            <mesh-simple-permissions [role]="role"
-                                     entityType="microschemas"></mesh-simple-permissions>
+                <mesh-simple-permissions [role]="role"
+                                         entityType="microschemas"></mesh-simple-permissions>
+            </ng-template>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -91,8 +106,10 @@
                     </div>
                 </div>
             </p-header>
-            <mesh-simple-permissions [role]="role"
-                                     entityType="users"></mesh-simple-permissions>
+            <ng-template pTemplate="content">
+                <mesh-simple-permissions [role]="role"
+                                         entityType="users"></mesh-simple-permissions>
+            </ng-template>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -106,8 +123,10 @@
                     </div>
                 </div>
             </p-header>
-            <mesh-simple-permissions [role]="role"
-                                     entityType="groups"></mesh-simple-permissions>
+            <ng-template pTemplate="content">
+                <mesh-simple-permissions [role]="role"
+                                         entityType="groups"></mesh-simple-permissions>
+            </ng-template>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -121,8 +140,10 @@
                     </div>
                 </div>
             </p-header>
-            <mesh-simple-permissions [role]="role"
-                                     entityType="roles"></mesh-simple-permissions>
+            <ng-template pTemplate="content">
+                <mesh-simple-permissions [role]="role"
+                                         entityType="roles"></mesh-simple-permissions>
+            </ng-template>
         </p-accordionTab>
 
     </p-accordion>
