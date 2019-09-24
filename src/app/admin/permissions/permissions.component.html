@@ -2,7 +2,7 @@
 
     <h3>Roles / {{ role.name }}</h3>
 
-    <p-accordion (onOpen)="loadEntities($event.index)">
+    <p-accordion>
 
         <p-accordionTab>
             <p-header>
@@ -15,66 +15,9 @@
                     </div>
                 </div>
             </p-header>
-            <p-treeTable [value]="treeTableData.projects"
-                         [columns]="commonColumns"
-                         sortMode="multiple">
-                <ng-template pTemplate="header"
-                             let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns"
-                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
-                            [ttSortableColumn]="col.field">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <mesh-icon-checkbox [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="checkboxAllClicked($event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
 
-                            <ng-container *ngIf="col.field === 'name'">
-                                {{col.header}}
-                            </ng-container>
-                        </th>
-                        <th class="gtx-column-any"
-                            title="select all">
-                            <mesh-icon-checkbox label="all"
-                                                actionName="check all"
-                                                (action)="checkboxAllClicked($event)">
-                            </mesh-icon-checkbox>
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body"
-                             let-rowNode
-                             let-rowData="rowData"
-                             let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns; let i = index">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
-                                                    [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="setPermission('projects', rowData.uuid, col.field, $event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                {{ rowData[col.field] }}
-                            </ng-container>
-                        </td>
-                        <td class="gtx-column-any"
-                            title="select all">
-                            <p-checkbox binary="true"
-                                        [ngModel]="allChecked(rowData)"
-                                        (onChange)="setAllPermissions('projects', rowData.uuid, $event)"></p-checkbox>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-treeTable>
+            <mesh-simple-permissions [role]="role"
+                                     entityType="projects"></mesh-simple-permissions>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -116,66 +59,9 @@
                     </div>
                 </div>
             </p-header>
-            <p-treeTable [value]="treeTableData.schemas"
-                         sortMode="multiple"
-                         [columns]="commonColumns">
-                <ng-template pTemplate="header"
-                             let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns"
-                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
-                            [ttSortableColumn]="col.field">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <mesh-icon-checkbox [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="checkboxAllClicked($event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
 
-                            <ng-container *ngIf="col.field === 'name'">
-                                {{col.header}}
-                            </ng-container>
-                        </th>
-                        <th class="gtx-column-any"
-                            title="select all">
-                            <mesh-icon-checkbox label="all"
-                                                actionName="check all"
-                                                (action)="checkboxAllClicked($event)">
-                            </mesh-icon-checkbox>
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body"
-                             let-rowNode
-                             let-rowData="rowData"
-                             let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns; let i = index">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
-                                                    [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="setPermission('schemas', rowData.uuid, col.field, $event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                {{ rowData[col.field] }}
-                            </ng-container>
-                        </td>
-                        <td class="gtx-column-any"
-                            title="select all">
-                            <p-checkbox binary="true"
-                                        [ngModel]="allChecked(rowData)"
-                                        (onChange)="setAllPermissions('schemas', rowData.uuid, $event)"></p-checkbox>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-treeTable>
+            <mesh-simple-permissions [role]="role"
+                                     entityType="schemas"></mesh-simple-permissions>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -189,66 +75,9 @@
                     </div>
                 </div>
             </p-header>
-            <p-treeTable [value]="treeTableData.microschemas"
-                         sortMode="multiple"
-                         [columns]="commonColumns">
-                <ng-template pTemplate="header"
-                             let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns"
-                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
-                            [ttSortableColumn]="col.field">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <mesh-icon-checkbox [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="checkboxAllClicked($event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
 
-                            <ng-container *ngIf="col.field === 'name'">
-                                {{col.header}}
-                            </ng-container>
-                        </th>
-                        <th class="gtx-column-any"
-                            title="select all">
-                            <mesh-icon-checkbox label="all"
-                                                actionName="check all"
-                                                (action)="checkboxAllClicked($event)">
-                            </mesh-icon-checkbox>
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body"
-                             let-rowNode
-                             let-rowData="rowData"
-                             let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns; let i = index">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
-                                                    [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="setPermission('microschemas', rowData.uuid, col.field, $event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                {{ rowData[col.field] }}
-                            </ng-container>
-                        </td>
-                        <td class="gtx-column-any"
-                            title="select all">
-                            <p-checkbox binary="true"
-                                        [ngModel]="allChecked(rowData)"
-                                        (onChange)="setAllPermissions('microschemas', rowData.uuid, $event)"></p-checkbox>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-treeTable>
+            <mesh-simple-permissions [role]="role"
+                                     entityType="microschemas"></mesh-simple-permissions>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -262,66 +91,8 @@
                     </div>
                 </div>
             </p-header>
-            <p-treeTable [value]="treeTableData.users"
-                         sortMode="multiple"
-                         [columns]="commonColumns">
-                <ng-template pTemplate="header"
-                             let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns"
-                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
-                            [ttSortableColumn]="col.field">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <mesh-icon-checkbox [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="checkboxAllClicked($event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                {{col.header}}
-                            </ng-container>
-                        </th>
-                        <th class="gtx-column-any"
-                            title="select all">
-                            <mesh-icon-checkbox label="all"
-                                                actionName="check all"
-                                                (action)="checkboxAllClicked($event)">
-                            </mesh-icon-checkbox>
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body"
-                             let-rowNode
-                             let-rowData="rowData"
-                             let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns; let i = index">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
-                                                    [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="setPermission('users', rowData.uuid, col.field, $event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                {{ rowData[col.field] }}
-                            </ng-container>
-                        </td>
-                        <td class="gtx-column-any"
-                            title="select all">
-                            <p-checkbox binary="true"
-                                        [ngModel]="allChecked(rowData)"
-                                        (onChange)="setAllPermissions('users', rowData.uuid, $event)"></p-checkbox>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-treeTable>
+            <mesh-simple-permissions [role]="role"
+                                     entityType="users"></mesh-simple-permissions>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -335,66 +106,8 @@
                     </div>
                 </div>
             </p-header>
-            <p-treeTable [value]="treeTableData.groups"
-                         sortMode="multiple"
-                         [columns]="commonColumns">
-                <ng-template pTemplate="header"
-                             let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns"
-                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
-                            [ttSortableColumn]="col.field">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <mesh-icon-checkbox [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="checkboxAllClicked($event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                {{col.header}}
-                            </ng-container>
-                        </th>
-                        <th class="gtx-column-any"
-                            title="select all">
-                            <mesh-icon-checkbox label="all"
-                                                actionName="check all"
-                                                (action)="checkboxAllClicked($event)">
-                            </mesh-icon-checkbox>
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body"
-                             let-rowNode
-                             let-rowData="rowData"
-                             let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns; let i = index">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
-                                                    [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="setPermission('groups', rowData.uuid, col.field, $event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                {{ rowData[col.field] }}
-                            </ng-container>
-                        </td>
-                        <td class="gtx-column-any"
-                            title="select all">
-                            <p-checkbox binary="true"
-                                        [ngModel]="allChecked(rowData)"
-                                        (onChange)="setAllPermissions('groups', rowData.uuid, $event)"></p-checkbox>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-treeTable>
+            <mesh-simple-permissions [role]="role"
+                                     entityType="groups"></mesh-simple-permissions>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -408,66 +121,8 @@
                     </div>
                 </div>
             </p-header>
-            <p-treeTable [value]="treeTableData.roles"
-                         sortMode="multiple"
-                         [columns]="commonColumns">
-                <ng-template pTemplate="header"
-                             let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns"
-                            [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
-                            [ttSortableColumn]="col.field">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <mesh-icon-checkbox [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="checkboxAllClicked($event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                {{col.header}}
-                            </ng-container>
-                        </th>
-                        <th class="gtx-column-any"
-                            title="select all">
-                            <mesh-icon-checkbox label="all"
-                                                actionName="check all"
-                                                (action)="checkboxAllClicked($event)">
-                            </mesh-icon-checkbox>
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body"
-                             let-rowNode
-                             let-rowData="rowData"
-                             let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns; let i = index">
-                            <ng-container *ngIf="col.field !== 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
-                                                    [iconName]="col.iconName"
-                                                    [actionName]="col.header"
-                                                    (action)="setPermission('roles', rowData.uuid, col.field, $event)">
-                                </mesh-icon-checkbox>
-                            </ng-container>
-
-                            <ng-container *ngIf="col.field === 'name'">
-                                <p-treeTableToggler *ngIf="i == 0"
-                                                    [rowNode]="rowNode"></p-treeTableToggler>
-                                {{ rowData[col.field] }}
-                            </ng-container>
-                        </td>
-                        <td class="gtx-column-any"
-                            title="select all">
-                            <p-checkbox binary="true"
-                                        [ngModel]="allChecked(rowData)"
-                                        (onChange)="setAllPermissions('roles', rowData.uuid, $event)"></p-checkbox>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-treeTable>
+            <mesh-simple-permissions [role]="role"
+                                     entityType="roles"></mesh-simple-permissions>
         </p-accordionTab>
 
     </p-accordion>
