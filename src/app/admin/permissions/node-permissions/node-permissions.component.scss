@@ -25,6 +25,16 @@ $material-design-icons-font-file-path: '~material-design-icons-iconfont/dist/fon
     text-overflow: ellipsis;
 }
 
+tr {
+    .gtx-column-recursive {
+        width: 175px;
+        opacity: 0;
+    }
+    &:hover .gtx-column-recursive {
+        opacity: 1;
+    }
+}
+
 ::ng-deep .ui-treetable th,
 ::ng-deep .ui-treetable td
 {

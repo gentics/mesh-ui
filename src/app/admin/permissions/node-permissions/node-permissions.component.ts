@@ -25,7 +25,6 @@ interface NodeData {
     name: string;
     type: 'node';
     project: ProjectResponse;
-    recursive: boolean;
     lastPageLoaded: number;
     rolePerms: {
         create: boolean;
@@ -210,7 +209,7 @@ export class NodePermissionsComponent implements OnInit {
                 .setRolePermissions(
                     { path: this.getPath(node), roleUuid: this.role.uuid },
                     {
-                        recursive: node.data.recursive,
+                        recursive: false,
                         permissions: {
                             [permission]: value
                         }
@@ -218,7 +217,7 @@ export class NodePermissionsComponent implements OnInit {
                 )
                 .toPromise()
         );
-        this.setPermissions(node, permissions as any, node.data.recursive);
+        this.setPermissions(node, permissions as any, false);
         this.change.markForCheck();
     }
 
@@ -236,14 +235,14 @@ export class NodePermissionsComponent implements OnInit {
                 .setRolePermissions(
                     { path: this.getPath(node), roleUuid: this.role.uuid },
                     {
-                        recursive: node.data.recursive,
+                        recursive: false,
                         permissions
                     }
                 )
                 .toPromise()
         );
 
-        this.setPermissions(node, permissions, node.data.recursive);
+        this.setPermissions(node, permissions, false);
         this.change.markForCheck();
     }
 
@@ -348,13 +347,20 @@ export class NodePermissionsComponent implements OnInit {
         return this.getAllVisibleNodes().every(entity => this.allChecked(entity.data));
     }
 
-    public setAllRecursive(value: boolean) {
-        this.getAllVisibleNodes().forEach(node => (node.data.recursive = value));
+    public async applyRecursively({ node }: { node: NodeNode }) {
+        await this.loadingPromise(
+            this.api.admin
+                .setRolePermissions(
+                    { path: this.getPath(node), roleUuid: this.role.uuid },
+                    {
+                        recursive: true,
+                        permissions: node.data.rolePerms
+                    }
+                )
+                .toPromise()
+        );
+        this.setPermissions(node, node.data.rolePerms, true);
         this.change.markForCheck();
-    }
-
-    public isAllRecursive(): boolean {
-        return this.getAllVisibleNodes().every(node => node.data.recursive);
     }
 
     private getAllVisibleNodes(parent?: NodeNode): NodeNode[] {
