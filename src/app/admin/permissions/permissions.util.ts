@@ -9,8 +9,16 @@ type GtxTreeNode<T> = Modify<
     }
 >;
 
-export const basePermissions = <const>['create', 'read', 'update', 'delete'];
-export const nodePermissions = <const>[...basePermissions, 'publish', 'readPublished'];
+// TODO Replace with <const> in TS >= 3.4
+export const basePermissions = ['create', 'read', 'update', 'delete'] as ['create', 'read', 'update', 'delete'];
+export const nodePermissions = [...basePermissions, 'publish', 'readPublished'] as [
+    'create',
+    'read',
+    'update',
+    'delete',
+    'publish',
+    'readPublished'
+];
 
 export type BasePermission = typeof basePermissions[number];
 export type NodePermission = typeof nodePermissions[number];
