@@ -5,7 +5,7 @@ import { extractGraphQlResponse, flatMap } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
-import { commonColumns, createColumns } from '../permissions.util';
+import { commonColumns, createColumns, isNodePermission, NodePermission } from '../permissions.util';
 
 interface NodeNode extends TreeNode {
     data: NodeData;
@@ -85,7 +85,7 @@ const childrenQuery = `
 @Component({
     selector: 'mesh-node-permissions',
     templateUrl: './node-permissions.component.html',
-    styleUrls: ['./node-permissions.component.scss'],
+    styleUrls: ['../permissions.common.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodePermissionsComponent implements OnInit {
@@ -195,14 +195,13 @@ export class NodePermissionsComponent implements OnInit {
         );
     }
 
-    public async setPermission(
-        { node }: { node: NodeNode },
-        permission: keyof PermissionInfoFromServer,
-        value: boolean
-    ) {
-        const permissions = {
-            [permission]: value
-        };
+    public async togglePermission({ node }: { node: NodeNode }, permission: string) {
+        if (!isNodePermission(permission)) {
+            return;
+        }
+
+        const permissions = node.data.rolePerms;
+        permissions[permission] = !permissions[permission];
 
         await this.loadingPromise(
             this.api.admin
@@ -210,14 +209,11 @@ export class NodePermissionsComponent implements OnInit {
                     { path: this.getPath(node), roleUuid: this.role.uuid },
                     {
                         recursive: false,
-                        permissions: {
-                            [permission]: value
-                        }
+                        permissions
                     }
                 )
                 .toPromise()
         );
-        this.setPermissions(node, permissions as any, false);
         this.change.markForCheck();
     }
 
@@ -274,8 +270,9 @@ export class NodePermissionsComponent implements OnInit {
         return node.data.type === 'node';
     }
 
-    public async columnClicked(perm: keyof PermissionInfoFromServer, value: boolean) {
+    public async columnClicked(perm: NodePermission) {
         const elements = this.getAllVisibleNodes();
+        const value = !this.allCheckedColumn(perm);
 
         await this.loadingPromise(
             Promise.all(
@@ -303,7 +300,8 @@ export class NodePermissionsComponent implements OnInit {
         this.change.markForCheck();
     }
 
-    public async columnAllClicked(value: boolean) {
+    public async columnAllClicked() {
+        const value = !this.allCheckedAll();
         const permissions = {
             create: value,
             read: value,
@@ -339,7 +337,7 @@ export class NodePermissionsComponent implements OnInit {
         this.change.markForCheck();
     }
 
-    public allCheckedColumn(permission: keyof PermissionInfoFromServer) {
+    public allCheckedColumn(permission: NodePermission) {
         return this.getAllVisibleNodes().every(entity => entity.data.rolePerms[permission]);
     }
 

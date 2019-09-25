@@ -3,7 +3,7 @@ import { TreeNode } from 'primeng/api';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
-import { commonColumns, simpleQuery } from '../permissions.util';
+import { commonColumns, isNodePermission, simpleQuery } from '../permissions.util';
 
 export type EntityType = 'projects' | 'schemas' | 'microschemas' | 'users' | 'groups' | 'roles';
 
@@ -56,7 +56,14 @@ export class SimplePermissionsComponent implements OnInit {
         return Object.values(val.rolePerms).every(x => x);
     }
 
-    public async setPermission(entity: MeshBasePerms, permission: Permission, value: boolean) {
+    public async togglePermission(entity: MeshBasePerms, permission: Permission) {
+        if (!isNodePermission(permission)) {
+            return;
+        }
+
+        const permissions = entity.rolePerms;
+        permissions[permission] = !permissions[permission];
+
         await this.loadingPromise(
             this.api.admin
                 .setRolePermissions(
@@ -66,15 +73,12 @@ export class SimplePermissionsComponent implements OnInit {
                     },
                     {
                         recursive: false,
-                        permissions: {
-                            [permission]: value
-                        }
+                        permissions
                     }
                 )
                 .toPromise()
         );
 
-        entity.rolePerms[permission] = value;
         this.change.markForCheck();
     }
 
@@ -164,7 +168,8 @@ export class SimplePermissionsComponent implements OnInit {
         );
     }
 
-    public async columnClicked(perm: Permission, value: boolean) {
+    public async columnClicked(perm: Permission) {
+        const value = !this.allCheckedColumn(perm);
         await this.loadingPromise(
             Promise.all(
                 this.treeTableData
@@ -191,7 +196,8 @@ export class SimplePermissionsComponent implements OnInit {
         this.change.markForCheck();
     }
 
-    public async columnAllClicked(value: boolean) {
+    public async columnAllClicked() {
+        const value = !this.allCheckedAll();
         const permissions: MeshBasePerms['rolePerms'] = {
             create: value,
             read: value,

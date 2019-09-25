@@ -9,6 +9,20 @@ type GtxTreeNode<T> = Modify<
     }
 >;
 
+export const basePermissions = <const>['create', 'read', 'update', 'delete'];
+export const nodePermissions = <const>[...basePermissions, 'publish', 'readPublished'];
+
+export type BasePermission = typeof basePermissions[number];
+export type NodePermission = typeof nodePermissions[number];
+
+export function isBasePermission(perm: string): perm is BasePermission {
+    return basePermissions.indexOf(perm as any) >= 0;
+}
+
+export function isNodePermission(perm: string): perm is NodePermission {
+    return nodePermissions.indexOf(perm as any) >= 0;
+}
+
 export const commonColumns = [
     {
         field: 'name',
@@ -36,11 +50,9 @@ export function mapKeyToIconName(key: string): string {
         case 'delete':
             return 'delete';
         case 'publish':
-            return 'cloud_upload';
+            return 'cloud';
         case 'readPublished':
             return 'cloud_done';
-        case 'canCreateNewTagFamilies':
-            return 'local_offer';
         default:
             return '';
     }

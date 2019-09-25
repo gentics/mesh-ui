@@ -23,6 +23,10 @@ $material-design-icons-font-file-path: '~material-design-icons-iconfont/dist/fon
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
+    &:hover {
+        background-color: #ececec;
+    }
 }
 
 tr {

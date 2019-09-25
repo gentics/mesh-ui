@@ -10,7 +10,7 @@ import { flatMap } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
-import { commonColumns, simpleQuery } from '../permissions.util';
+import { commonColumns, isBasePermission, simpleQuery, BasePermission } from '../permissions.util';
 
 interface ProjectNode extends TreeNode {
     data: ProjectData;
@@ -51,7 +51,7 @@ type GtxTreeNode = ProjectNode | EditableNode;
 @Component({
     selector: 'mesh-tag-permissions',
     templateUrl: './tag-permissions.component.html',
-    styleUrls: ['./tag-permissions.component.scss'],
+    styleUrls: ['../permissions.common.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TagPermissionsComponent implements OnInit {
@@ -161,23 +161,25 @@ export class TagPermissionsComponent implements OnInit {
         }));
     }
 
-    public async setPermission(
-        element: TagFamilyData | TagData,
-        permission: keyof PermissionInfoFromServer,
-        value: boolean
-    ) {
-        this.api.admin
-            .setRolePermissions(
-                { path: this.getPath(element), roleUuid: this.role.uuid },
-                {
-                    recursive: false,
-                    permissions: {
-                        [permission]: value
+    public async togglePermission(element: TagFamilyData | TagData, permission: BasePermission) {
+        if (!isBasePermission(permission)) {
+            return;
+        }
+
+        const permissions = element.rolePerms;
+        permissions[permission] = !permissions[permission];
+
+        await this.loadingPromise(
+            this.api.admin
+                .setRolePermissions(
+                    { path: this.getPath(element), roleUuid: this.role.uuid },
+                    {
+                        recursive: false,
+                        permissions
                     }
-                }
-            )
-            .subscribe();
-        element.rolePerms[permission] = value;
+                )
+                .toPromise()
+        );
         this.change.markForCheck();
     }
 
@@ -213,9 +215,9 @@ export class TagPermissionsComponent implements OnInit {
         }
     }
 
-    public async columnClicked(perm: keyof PermissionInfoFromServer, value: boolean) {
+    public async columnClicked(perm: keyof PermissionInfoFromServer) {
+        const value = !this.allCheckedColumn(perm);
         const elements = this.getAllVisibleElements();
-
         await this.loadingPromise(
             Promise.all(
                 elements
@@ -242,7 +244,8 @@ export class TagPermissionsComponent implements OnInit {
         this.change.markForCheck();
     }
 
-    public async columnAllClicked(value: boolean) {
+    public async columnAllClicked() {
+        const value = !this.allCheckedAll();
         const permissions = {
             create: value,
             read: value,

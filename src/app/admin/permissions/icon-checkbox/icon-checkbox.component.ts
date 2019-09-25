@@ -14,6 +14,8 @@ export class IconCheckboxComponent {
 
     @Input() label: string | null = null;
 
+    @Input() disabled = false;
+
     @Output() action = new EventEmitter<boolean>();
 
     check(): void {

@@ -7,12 +7,13 @@
                  let-columns>
         <tr>
             <th *ngFor="let col of columns"
-                [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'">
+                [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                (click)="columnClicked(col.field)">
                 <ng-container *ngIf="col.field !== 'name'">
                     <mesh-icon-checkbox [iconName]="col.iconName"
                                         [actionName]="col.header"
                                         [value]="allCheckedColumn(col.field)"
-                                        (action)="columnClicked(col.field, $event)">
+                                        [disabled]="true">
                     </mesh-icon-checkbox>
                 </ng-container>
 
@@ -21,11 +22,12 @@
                 </ng-container>
             </th>
             <th class="gtx-column-any"
-                title="select all">
+                title="select all"
+                (click)="columnAllClicked()">
                 <mesh-icon-checkbox label="all"
                                     actionName="check all"
                                     [value]="allCheckedAll()"
-                                    (action)="columnAllClicked($event)">
+                                    [disabled]="true">
                 </mesh-icon-checkbox>
             </th>
         </tr>
@@ -35,14 +37,16 @@
                  let-rowData="rowData"
                  let-columns="columns">
         <tr>
-            <td *ngFor="let col of columns; let i = index">
+            <td *ngFor="let col of columns; let i = index"
+                (click)="togglePermission(rowData, col.field)"
+                class="gtx-column-any">
                 <ng-container *ngIf="col.field !== 'name' && rowData.type !== 'project'">
                     <p-treeTableToggler *ngIf="i == 0"
                                         [rowNode]="rowNode"></p-treeTableToggler>
                     <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
                                         [iconName]="col.iconName"
                                         [actionName]="col.header"
-                                        (action)="setPermission(rowData, col.field, $event)">
+                                        [disabled]="true">
                     </mesh-icon-checkbox>
                 </ng-container>
 
