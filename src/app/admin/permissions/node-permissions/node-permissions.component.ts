@@ -1,21 +1,16 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { PermissionInfoFromServer, ProjectResponse } from 'src/app/common/models/server-models';
-import { extractGraphQlResponse, flatMap } from 'src/app/common/util/util';
+import { extractGraphQlResponse } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
-import { commonColumns, createColumns, isNodePermission, NodePermission } from '../permissions.util';
+import { loadMoreDummy, AbstractPermissionsComponent, LoadMoreDummyNode } from '../abstract-permissions.component';
+import { commonColumns, createColumns } from '../permissions.util';
 
 interface NodeNode extends TreeNode {
     data: NodeData;
     children: GtxTreeNode[];
-}
-
-interface LoadMoreDummyNode extends TreeNode {
-    data: {
-        type: 'loadmore';
-    };
 }
 
 type GtxTreeNode = LoadMoreDummyNode | NodeNode;
@@ -44,12 +39,6 @@ interface ChildrenResponse {
     elements: NodeData[];
 }
 
-const loadMoreDummy: LoadMoreDummyNode = {
-    data: {
-        type: 'loadmore'
-    }
-};
-
 const nodePermsFragment = `
 fragment NodePerms on Node {
   uuid
@@ -71,7 +60,7 @@ fragment NodePerms on Node {
 const childrenQuery = `
       query rootNode($parentUuid: String, $roleUuid: String!, $page: Long) {
         node(uuid: $parentUuid) {
-          children(perPage: 3, page: $page) {
+          children(perPage: 20, page: $page) {
             elements {
               ...NodePerms
             }
@@ -88,17 +77,15 @@ const childrenQuery = `
     styleUrls: ['../permissions.common.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodePermissionsComponent implements OnInit {
+export class NodePermissionsComponent extends AbstractPermissionsComponent<NodeNode> implements OnInit {
     @Input()
     role: AdminRoleResponse;
 
-    treeTableData: NodeNode[] = [];
-
     columns = [...commonColumns, ...createColumns(['publish', 'readPublished'])];
 
-    loading = false;
-
-    constructor(private api: ApiService, private change: ChangeDetectorRef) {}
+    constructor(api: ApiService, change: ChangeDetectorRef) {
+        super(api, change);
+    }
 
     async ngOnInit() {
         const response = await this.api.project.getProjects({ fields: 'uuid,name' }).toPromise();
@@ -195,63 +182,6 @@ export class NodePermissionsComponent implements OnInit {
         );
     }
 
-    public async togglePermission({ node }: { node: NodeNode }, permission: string) {
-        if (!isNodePermission(permission)) {
-            return;
-        }
-
-        const permissions = node.data.rolePerms;
-        permissions[permission] = !permissions[permission];
-
-        await this.loadingPromise(
-            this.api.admin
-                .setRolePermissions(
-                    { path: this.getPath(node), roleUuid: this.role.uuid },
-                    {
-                        recursive: false,
-                        permissions
-                    }
-                )
-                .toPromise()
-        );
-        this.change.markForCheck();
-    }
-
-    public async setAllPermissions({ node }: { node: NodeNode }, value: boolean) {
-        const permissions = {
-            create: value,
-            read: value,
-            update: value,
-            delete: value,
-            publish: value,
-            readPublished: value
-        };
-        await this.loadingPromise(
-            this.api.admin
-                .setRolePermissions(
-                    { path: this.getPath(node), roleUuid: this.role.uuid },
-                    {
-                        recursive: false,
-                        permissions
-                    }
-                )
-                .toPromise()
-        );
-
-        this.setPermissions(node, permissions, false);
-        this.change.markForCheck();
-    }
-
-    private setPermissions(node: NodeNode, permissions: PermissionInfoFromServer, recursive: boolean) {
-        node.data.rolePerms = {
-            ...node.data.rolePerms,
-            ...permissions
-        };
-        if (recursive) {
-            node.children.filter(this.isRealNode).forEach(child => this.setPermissions(child, permissions, recursive));
-        }
-    }
-
     public async loadMore(node: NodeNode) {
         const response = await this.fetchChildren(node.data, node.data.lastPageLoaded + 1);
         node.children.pop();
@@ -266,85 +196,6 @@ export class NodePermissionsComponent implements OnInit {
         this.change.markForCheck();
     }
 
-    private isRealNode(node: GtxTreeNode): node is NodeNode {
-        return node.data.type === 'node';
-    }
-
-    public async columnClicked(perm: NodePermission) {
-        const elements = this.getAllVisibleNodes();
-        const value = !this.allCheckedColumn(perm);
-
-        await this.loadingPromise(
-            Promise.all(
-                elements
-                    .filter(entity => entity.data.rolePerms[perm] !== value)
-                    .map(entity =>
-                        this.api.admin
-                            .setRolePermissions(
-                                {
-                                    path: this.getPath(entity),
-                                    roleUuid: this.role.uuid
-                                },
-                                {
-                                    recursive: false,
-                                    permissions: {
-                                        [perm]: value
-                                    }
-                                }
-                            )
-                            .toPromise()
-                    )
-            )
-        );
-        elements.forEach(entity => (entity.data.rolePerms[perm] = value));
-        this.change.markForCheck();
-    }
-
-    public async columnAllClicked() {
-        const value = !this.allCheckedAll();
-        const permissions = {
-            create: value,
-            read: value,
-            update: value,
-            delete: value,
-            publish: value,
-            readPublished: value
-        };
-
-        const elements = this.getAllVisibleNodes();
-
-        await this.loadingPromise(
-            Promise.all(
-                elements
-                    .filter(entity => !Object.values(entity.data.rolePerms).every(perm => perm === value))
-                    .map(entity =>
-                        this.api.admin
-                            .setRolePermissions(
-                                {
-                                    path: this.getPath(entity),
-                                    roleUuid: this.role.uuid
-                                },
-                                {
-                                    recursive: false,
-                                    permissions
-                                }
-                            )
-                            .toPromise()
-                    )
-            )
-        );
-        elements.forEach(entity => (entity.data.rolePerms = permissions as any));
-        this.change.markForCheck();
-    }
-
-    public allCheckedColumn(permission: NodePermission) {
-        return this.getAllVisibleNodes().every(entity => entity.data.rolePerms[permission]);
-    }
-
-    public allCheckedAll() {
-        return this.getAllVisibleNodes().every(entity => this.allChecked(entity.data));
-    }
-
     public async applyRecursively({ node }: { node: NodeNode }) {
         await this.loadingPromise(
             this.api.admin
@@ -357,42 +208,19 @@ export class NodePermissionsComponent implements OnInit {
                 )
                 .toPromise()
         );
-        this.setPermissions(node, node.data.rolePerms, true);
+        this.setPermissionsRecursively(node, node.data.rolePerms);
         this.change.markForCheck();
     }
 
-    private getAllVisibleNodes(parent?: NodeNode): NodeNode[] {
-        if (!parent) {
-            return flatMap(this.treeTableData, item => this.getAllVisibleNodes(item));
-        }
-        if (!parent.expanded) {
-            return [parent];
-        } else {
-            return [parent, ...flatMap(parent.children.filter(this.isRealNode), item => this.getAllVisibleNodes(item))];
-        }
+    private setPermissionsRecursively(node: NodeNode, permissions: PermissionInfoFromServer) {
+        node.data.rolePerms = {
+            ...node.data.rolePerms,
+            ...permissions
+        };
+        node.children.filter(this.isRealNode).forEach(child => this.setPermissionsRecursively(child, permissions));
     }
 
-    public allChecked(val: any) {
-        return Object.values(val.rolePerms).every(x => !!x);
-    }
-
-    private getPath(node: NodeNode): string {
+    getPath(node: NodeNode): string {
         return `projects/${node.data.project.uuid}/nodes/${node.data.uuid}`;
-    }
-
-    private loadingPromise<T extends PromiseLike<any>>(promise: T): T {
-        this.loading = true;
-        this.change.markForCheck();
-        promise.then(
-            () => {
-                this.loading = false;
-                this.change.markForCheck();
-            },
-            () => {
-                this.loading = false;
-                this.change.markForCheck();
-            }
-        );
-        return promise;
     }
 }

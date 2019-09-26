@@ -67,7 +67,7 @@
                 title="select all">
                 <p-checkbox binary="true"
                             [ngModel]="allChecked(rowData)"
-                            (onChange)="setAllPermissions(rowNode, $event)"
+                            (onChange)="toggleAllPermissions(rowNode)"
                             *ngIf="rowData.type === 'node'"></p-checkbox>
             </td>
             <td class="gtx-column-recursive">

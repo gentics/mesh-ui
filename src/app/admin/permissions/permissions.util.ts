@@ -23,6 +23,10 @@ export const nodePermissions = [...basePermissions, 'publish', 'readPublished'] 
 export type BasePermission = typeof basePermissions[number];
 export type NodePermission = typeof nodePermissions[number];
 
+export type BasePermissions = { [K in BasePermission]: boolean };
+
+export type NodePermissions = { [K in NodePermission]: boolean };
+
 export function isBasePermission(perm: string): perm is BasePermission {
     return basePermissions.indexOf(perm as any) >= 0;
 }

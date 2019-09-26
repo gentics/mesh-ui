@@ -38,7 +38,7 @@
                  let-columns="columns">
         <tr>
             <td *ngFor="let col of columns; let i = index"
-                (click)="togglePermission(rowData, col.field)"
+                (click)="togglePermission(rowNode, col.field)"
                 class="gtx-column-any">
                 <ng-container *ngIf="col.field !== 'name' && rowData.type !== 'project'">
                     <p-treeTableToggler *ngIf="i == 0"
@@ -60,7 +60,7 @@
                 title="select all">
                 <p-checkbox binary="true"
                             [ngModel]="allChecked(rowData)"
-                            (onChange)="setAllPermissions(rowData, $event)"
+                            (onChange)="toggleAllPermissions(rowNode)"
                             *ngIf="rowData.type !== 'project'"></p-checkbox>
             </td>
         </tr>
