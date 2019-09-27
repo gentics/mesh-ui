@@ -47,7 +47,8 @@
                 <ng-container *ngIf="col.field !== 'name'">
                     <p-treeTableToggler *ngIf="i == 0"
                                         [rowNode]="rowNode"></p-treeTableToggler>
-                    <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
+                    <mesh-icon-checkbox *ngIf="rowData.type !== 'loadmore'"
+                                        [value]="rowData.rolePerms[col.field]"
                                         [iconName]="col.iconName"
                                         [actionName]="col.header"
                                         [disabled]="true">
@@ -57,12 +58,19 @@
                 <ng-container *ngIf="col.field === 'name'">
                     <p-treeTableToggler *ngIf="i == 0"
                                         [rowNode]="rowNode"></p-treeTableToggler>
-                    {{ rowData[col.field] }}
+                    <ng-container *ngIf="rowData.type !== 'loadmore'">
+                        {{ rowData[col.field] }}
+                    </ng-container>
+                    <ng-container *ngIf="rowData.type === 'loadmore'">
+                        <p-button label="Load more..."
+                                  (onClick)="loadData()"></p-button>
+                    </ng-container>
                 </ng-container>
             </td>
             <td class="gtx-column-any"
                 title="select all">
-                <p-checkbox binary="true"
+                <p-checkbox *ngIf="rowData.type !== 'loadmore'"
+                            binary="true"
                             [ngModel]="allChecked(rowData)"
                             (onChange)="toggleAllPermissions(rowNode)"></p-checkbox>
             </td>

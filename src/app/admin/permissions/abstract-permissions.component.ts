@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Input } from '@angular/core';
 import { TreeNode } from 'primeng/api';
-import { flatMap, toObject } from 'src/app/common/util/util';
+import { flatMap, last, toObject } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../providers/effects/admin-role-effects.service';
@@ -148,7 +148,7 @@ export abstract class AbstractPermissionsComponent<N extends GtxTreeNode> {
 
     protected getAllVisibleNodes(parent?: N): N[] {
         if (!parent) {
-            return flatMap(this.treeTableData, item => this.getAllVisibleNodes(item));
+            return flatMap(this.treeTableData.filter(this.isRealNode), item => this.getAllVisibleNodes(item));
         }
         if (!parent.expanded) {
             return [parent];
@@ -160,8 +160,14 @@ export abstract class AbstractPermissionsComponent<N extends GtxTreeNode> {
         }
     }
 
-    protected isRealNode(node: N): node is Exclude<N, LoadMoreDummyNode> {
+    protected isRealNode<T extends N>(node: T): node is Exclude<T, LoadMoreDummyNode> {
         return node.data.type !== 'loadmore';
+    }
+
+    protected removeLoadMoreDummy(arr: any[]) {
+        if (arr.length > 0 && !this.isRealNode(last(arr)!)) {
+            arr.pop();
+        }
     }
 
     abstract getPath(elem: N): string;

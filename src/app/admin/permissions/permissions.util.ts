@@ -76,8 +76,8 @@ export function mapKeyToIconName(key: string): string {
  */
 export function simpleQuery(entity: string) {
     const nameField = entity === 'users' ? 'username' : 'name';
-    return `query rolePerms($roleUuid: String!) {
-        entity: ${entity} {
+    return `query rolePerms($roleUuid: String!, $page: Long) {
+        entity: ${entity}(perPage: 20, page: $page) {
             elements {
             uuid
             name: ${nameField}
@@ -87,7 +87,13 @@ export function simpleQuery(entity: string) {
                 update
                 delete
             }
-            }
+          }
+          hasNextPage
         }
     }`;
+}
+
+export interface ChildrenResponse<T> {
+    hasNextPage: boolean;
+    elements: T[];
 }

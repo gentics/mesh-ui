@@ -6,7 +6,7 @@ import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
 import { loadMoreDummy, AbstractPermissionsComponent, LoadMoreDummyNode } from '../abstract-permissions.component';
-import { commonColumns, createColumns } from '../permissions.util';
+import { commonColumns, createColumns, ChildrenResponse } from '../permissions.util';
 
 interface NodeNode extends TreeNode {
     data: NodeData;
@@ -32,11 +32,6 @@ interface NodeData {
     children: {
         size: 0 | 1;
     };
-}
-
-interface ChildrenResponse {
-    hasNextPage: boolean;
-    elements: NodeData[];
 }
 
 const nodePermsFragment = `
@@ -154,7 +149,7 @@ export class NodePermissionsComponent extends AbstractPermissionsComponent<NodeN
         this.change.markForCheck();
     }
 
-    private async fetchChildren(node: NodeData, page?: number): Promise<ChildrenResponse> {
+    private async fetchChildren(node: NodeData, page?: number): Promise<ChildrenResponse<NodeData>> {
         return this.loadingPromise(
             this.api
                 .graphQL(

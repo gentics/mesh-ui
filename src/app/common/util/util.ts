@@ -443,3 +443,13 @@ export function flatMap<T, R>(arr: T[], mapper: (item: T) => R[]): R[] {
     arr.forEach(item => result.push(...mapper(item)));
     return result;
 }
+
+/**
+ * Returns the last element of an array or undefined if the array is empty or undefined.
+ * @param arr
+ */
+export function last<T>(arr: T[]): T | undefined {
+    if (arr && arr.length > 0) {
+        return arr[arr.length - 1];
+    }
+}

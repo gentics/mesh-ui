@@ -10,27 +10,29 @@ import { flatMap } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { AdminRoleResponse } from '../../providers/effects/admin-role-effects.service';
-import { AbstractPermissionsComponent } from '../abstract-permissions.component';
-import { commonColumns, isBasePermission, simpleQuery, BasePermission } from '../permissions.util';
+import { loadMoreDummy, AbstractPermissionsComponent, LoadMoreDummyNode } from '../abstract-permissions.component';
+import { commonColumns, isBasePermission, simpleQuery, BasePermission, ChildrenResponse } from '../permissions.util';
 
 interface ProjectNode extends TreeNode {
     data: ProjectData;
-    children: TagFamilyNode[];
+    children: Array<LoadMoreDummyNode | TagFamilyNode>;
     leaf: false;
 }
 
 interface ProjectData extends ProjectResponse {
     type: 'project';
+    nextPage: number;
 }
 
 interface TagFamilyNode extends TreeNode {
     data: TagFamilyData;
-    children: TagNode[];
+    children: Array<LoadMoreDummyNode | TagNode>;
     leaf: false;
 }
 
 interface TagFamilyData extends TagFamilyResponse {
     type: 'tagFamily';
+    nextPage: number;
     project: ProjectResponse;
 }
 
@@ -72,6 +74,7 @@ export class TagPermissionsComponent extends AbstractPermissionsComponent<GtxTre
                 ({
                     data: {
                         type: 'project',
+                        nextPage: 1,
                         ...project
                     },
                     children: [],
@@ -81,12 +84,23 @@ export class TagPermissionsComponent extends AbstractPermissionsComponent<GtxTre
         this.change.markForCheck();
     }
 
-    public async onNodeExpand({ node }: { node: GtxTreeNode }) {
+    public async loadData({ node }: { node: GtxTreeNode }) {
         const data = node.data;
+        let response: ChildrenResponse<any>;
         if (data.type === 'project') {
-            node.children = await this.loadTagFamilies(data);
+            response = await this.loadTagFamilies(data);
         } else if (data.type === 'tagFamily') {
-            node.children = await this.loadTags(data);
+            response = await this.loadTags(data);
+        } else {
+            throw new Error('Cannot expand other types of nodes');
+        }
+
+        this.removeLoadMoreDummy(node.children);
+
+        node.children = [...node.children, ...response.elements];
+
+        if (response.hasNextPage) {
+            (node.children as any).push(loadMoreDummy);
         }
 
         // This forces angular to push the new data to the component
@@ -94,7 +108,7 @@ export class TagPermissionsComponent extends AbstractPermissionsComponent<GtxTre
         this.change.markForCheck();
     }
 
-    private async loadTagFamilies(project: ProjectResponse): Promise<TagFamilyNode[]> {
+    private async loadTagFamilies(project: ProjectData): Promise<ChildrenResponse<TagFamilyNode>> {
         const response = await this.loadingPromise(
             this.api
                 .graphQL(
@@ -102,32 +116,37 @@ export class TagPermissionsComponent extends AbstractPermissionsComponent<GtxTre
                     {
                         query: simpleQuery('tagFamilies'),
                         variables: {
-                            roleUuid: this.role.uuid
+                            roleUuid: this.role.uuid,
+                            page: project.nextPage++
                         }
                     }
                 )
                 .toPromise()
         );
-        return response.data.entity.elements.map((tagFamily: TagFamilyResponse) => ({
-            data: {
-                type: 'tagFamily',
-                project,
-                ...tagFamily
-            },
-            children: [],
-            leaf: false
-        }));
+        return {
+            hasNextPage: response.data.entity.hasNextPage,
+            elements: response.data.entity.elements.map((tagFamily: TagFamilyResponse) => ({
+                data: {
+                    type: 'tagFamily',
+                    nextPage: 1,
+                    project,
+                    ...tagFamily
+                },
+                children: [],
+                leaf: false
+            }))
+        };
     }
 
-    private async loadTags(tagFamily: TagFamilyData): Promise<TagFamilyNode[]> {
+    private async loadTags(tagFamily: TagFamilyData): Promise<ChildrenResponse<TagFamilyNode>> {
         const response = await this.loadingPromise(
             this.api
                 .graphQL(
                     { project: tagFamily.project.name },
                     {
-                        query: `query loadTags($tagFamilyUuid: String, $roleUuid: String!) {
+                        query: `query loadTags($tagFamilyUuid: String, $roleUuid: String!, $page: Long) {
         tagFamily(uuid: $tagFamilyUuid) {
-          tags {
+          tags(perPage: 20, page: $page) {
             elements {
               uuid
               name
@@ -138,26 +157,31 @@ export class TagPermissionsComponent extends AbstractPermissionsComponent<GtxTre
                 delete
               }
             }
+            hasNextPage
           }
         }
       }
       `,
                         variables: {
                             tagFamilyUuid: tagFamily.uuid,
-                            roleUuid: this.role.uuid
+                            roleUuid: this.role.uuid,
+                            page: tagFamily.nextPage++
                         }
                     }
                 )
                 .toPromise()
         );
-        return response.data.tagFamily.tags.elements.map((tag: TagResponse) => ({
-            data: {
-                type: 'tag',
-                tagFamily,
-                ...tag
-            },
-            leaf: true
-        }));
+        return {
+            hasNextPage: response.data.tagFamily.tags.hasNextPage,
+            elements: response.data.tagFamily.tags.elements.map((tag: TagResponse) => ({
+                data: {
+                    type: 'tag',
+                    tagFamily,
+                    ...tag
+                },
+                leaf: true
+            }))
+        };
     }
 
     getPath(node: EditableNode): string {
@@ -175,7 +199,7 @@ export class TagPermissionsComponent extends AbstractPermissionsComponent<GtxTre
 
     protected getAllVisibleNodes(parent?: GtxTreeNode): EditableNode[] {
         if (!parent) {
-            return flatMap(this.treeTableData, item => this.getAllVisibleNodes(item));
+            return flatMap(this.treeTableData.filter(this.isRealNode), item => this.getAllVisibleNodes(item));
         }
 
         const result: any[] = [];
@@ -184,7 +208,11 @@ export class TagPermissionsComponent extends AbstractPermissionsComponent<GtxTre
         }
 
         if (parent.expanded) {
-            result.push(...flatMap(parent.children as any, (item: any) => this.getAllVisibleNodes(item)));
+            result.push(
+                ...flatMap((parent.children as any).filter(this.isRealNode) as any, (item: any) =>
+                    this.getAllVisibleNodes(item)
+                )
+            );
         }
         return result;
     }

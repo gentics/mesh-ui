@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { TreeNode } from 'primeng/api';
+import { last } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
-import { AbstractPermissionsComponent } from '../abstract-permissions.component';
+import { loadMoreDummy, AbstractPermissionsComponent } from '../abstract-permissions.component';
 import { commonColumns, simpleQuery, NodePermissions } from '../permissions.util';
 
 export type EntityType = 'projects' | 'schemas' | 'microschemas' | 'users' | 'groups' | 'roles';
@@ -32,6 +33,8 @@ export class SimplePermissionsComponent extends AbstractPermissionsComponent<Gtx
 
     canCreate = false;
 
+    nextPage = 1;
+
     constructor(api: ApiService, change: ChangeDetectorRef) {
         super(api, change);
     }
@@ -53,18 +56,20 @@ export class SimplePermissionsComponent extends AbstractPermissionsComponent<Gtx
     }
 
     private async loadData() {
+        this.removeLoadMoreDummy(this.treeTableData);
         const response = await this.fetchData();
 
-        this.treeTableData = response.map((element: any) => ({
-            data: element,
-            children: []
-        }));
+        this.treeTableData = [
+            ...this.treeTableData,
+            ...response.map((element: any) => ({
+                data: element,
+                children: []
+            }))
+        ];
         this.change.markForCheck();
     }
 
     private async fetchData() {
-        // TODO set perPage param
-
         if (this.entityType === 'projects') {
             const response = await this.loadingPromise(
                 this.api.project.getProjects({ role: this.role.uuid, fields: 'uuid,name,rolePerms' }).toPromise()
@@ -75,11 +80,16 @@ export class SimplePermissionsComponent extends AbstractPermissionsComponent<Gtx
                 this.api.graphQLInAnyProject({
                     query: simpleQuery(this.entityType),
                     variables: {
-                        roleUuid: this.role.uuid
+                        roleUuid: this.role.uuid,
+                        page: this.nextPage++
                     }
                 })
             );
-            return response.entity.elements;
+            const elements = response.entity.elements;
+            if (response.entity.hasNextPage) {
+                elements.push(loadMoreDummy.data);
+            }
+            return elements;
         }
     }
 
