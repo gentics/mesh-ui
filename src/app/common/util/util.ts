@@ -453,3 +453,11 @@ export function last<T>(arr: T[]): T | undefined {
         return arr[arr.length - 1];
     }
 }
+
+/**
+ * Upper cases the first letter of a string.
+ * @param str
+ */
+export function capitalize(str: string): string {
+    return str[0].toUpperCase() + str.substring(1);
+}
