@@ -1,5 +1,65 @@
 $material-design-icons-font-file-path: '~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular';
-@import '~material-design-icons-iconfont/src/material-design-icons';
+@import "~material-design-icons-iconfont/src/material-design-icons";
+@import "variables";
+
+/** PrimeNG components overrides START */
+// p-accordiontab
+p-accordion {
+    p-accordiontab ::ng-deep {
+
+        // header
+        .ui-accordion-header a {
+            margin: 0;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            padding: 0.5rem;
+            color: $gtx-color-dark-gray;
+        
+            .ui-accordion-toggle-icon {
+                margin-top: -1rem;
+            }
+        }
+        // state hover
+        .ui-accordion-header:not(.ui-state-active):not(.ui-state-disabled):hover a {
+            border-left: none;
+            border-right: none;
+            border-top: none;
+        }
+        // state active
+        .ui-accordion-header:not(.ui-state-disabled).ui-state-active a {
+            background-color: $gtx-color-dark-gray;
+            border-color: $gtx-color-dark-gray;
+        }
+
+        // body
+        .ui-accordion-content {
+            background-color: transparent;
+            border: none;
+
+            // inner
+            .ui-treetable  {
+                .ui-treetable-tbody > tr, table th {
+                    background-color: transparent;
+                }
+                table thead tr {
+                    border-bottom-color: $gtx-color-mid-gray;
+                }
+                table th, .ui-treetable-tbody > tr > td {
+                    border-top: none;
+                    border-bottom: $gtx-color-light-gray;
+                    border-left: none;
+                    border-right: none;
+                }
+            }
+        }
+    }
+
+    // p-header ::ng-deep {
+        
+    // }
+}
+/** PrimeNG components overrides END */
 
 .gtx-entity-filter {
     width: 25%;
