@@ -208,6 +208,18 @@ export class PermissionsPath {
         return this.simpleEntity('roles', role.uuid);
     }
 
+    static project(project: HasUuid) {
+        return this.simpleEntity('projects', project.uuid);
+    }
+
+    static roleRoot() {
+        return new PermissionsPath('/roles');
+    }
+
+    static projectRoot() {
+        return new PermissionsPath('/projects');
+    }
+
     private static simpleEntity(entity: string, uuid: string) {
         return new PermissionsPath(`/${entity}/${uuid}`);
     }

@@ -80,9 +80,9 @@ export abstract class AbstractPermissionsComponent<N extends GtxTreeNode> {
         const permissions = node.data.rolePerms;
         const value = !this.allChecked(node.data);
 
-        await this.setPermissions(this.getPath(node), permissions);
-
         Object.keys(permissions).forEach((perm: NodePermission) => (permissions[perm] = value));
+
+        await this.setPermissions(this.getPath(node), permissions);
 
         this.change.markForCheck();
     }

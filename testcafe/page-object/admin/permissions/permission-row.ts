@@ -18,5 +18,7 @@ export class PermissionsRow {
         }
     }
 
-    toggleAll() {}
+    async toggleAll() {
+        await t.click(this.elem.find(`td[title="select all"] p-checkbox`));
+    }
 }
