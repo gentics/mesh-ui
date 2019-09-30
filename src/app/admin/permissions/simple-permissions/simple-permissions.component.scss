@@ -1,0 +1,10 @@
+@import '../permissions.common.scss';
+
+::ng-deep .gtx-can-create {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    label {
+        color: #333333;
+    }
+}

@@ -13,8 +13,8 @@ export interface User {
 
 export async function createUser(user: User) {
     const typeIfDefined = async (prop: string) => {
-        if (user[prop]) {
-            await t.typeText(formControlInput(prop), user[prop]);
+        if ((user as any)[prop]) {
+            await t.typeText(formControlInput(prop), (user as any)[prop]);
         }
     };
     await typeIfDefined('userName');
