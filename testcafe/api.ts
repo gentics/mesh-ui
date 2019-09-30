@@ -3,7 +3,18 @@ import * as rp from 'request-promise';
 import { HasUuid } from '../src/app/common/models/common.model';
 import { MeshNode } from '../src/app/common/models/node.model';
 import { Project } from '../src/app/common/models/project.model';
-import { MicroschemaCreateRequest, ProjectResponse, UserListResponse } from '../src/app/common/models/server-models';
+import {
+    MicroschemaCreateRequest,
+    PermissionInfoFromServer,
+    ProjectResponse,
+    RoleListResponse,
+    RoleResponse,
+    TagFamilyListResponse,
+    TagFamilyResponse,
+    TagListResponse,
+    TagResponse,
+    UserListResponse
+} from '../src/app/common/models/server-models';
 import { SchemaCreateRequest } from '../src/app/common/models/server-models';
 
 export namespace api {
@@ -113,6 +124,10 @@ export namespace api {
         return get(`/${project}/nodes/${uuid}`);
     }
 
+    export function webroot(path: string): Promise<MeshNode> {
+        return get(`/${project}/webroot${path}`);
+    }
+
     export function updateNode(node: MeshNode): Promise<MeshNode> {
         return post(`/${project}/nodes/${node.uuid}`, node);
     }
@@ -128,6 +143,55 @@ export namespace api {
     export function assignMicroschemaToProject(schema: HasUuid) {
         return post(`/${project}/microschemas/${schema.uuid}`);
     }
+
+    // TAGFAMILIES
+
+    export function findTagFamilies(): Promise<TagFamilyListResponse> {
+        return get(`/${project}/tagFamilies`);
+    }
+
+    export async function getTagFamilyByName(tagFamilyName: string): Promise<TagFamilyResponse> {
+        const tagFamilies = await findTagFamilies();
+        return tagFamilies.data.find(tagFamily => tagFamily.name === tagFamilyName)!;
+    }
+
+    // TAGS
+
+    export function findTags(tagFamily: HasUuid): Promise<TagListResponse> {
+        return get(`/${project}/tagFamilies/${tagFamily.uuid}/tags`);
+    }
+
+    export async function getTagByName(tagFamily: HasUuid, tagName: string): Promise<TagResponse> {
+        const tagFamilies = await findTags(tagFamily);
+        return tagFamilies.data.find(tag => tag.name === tagName)!;
+    }
+
+    // ROLE
+
+    export async function getRoleByName(name: string): Promise<RoleResponse> {
+        const roles = await findRoles();
+        return roles.data.find(role => role.name === name)!;
+    }
+
+    export function findRoles(): Promise<RoleListResponse> {
+        return get('/roles');
+    }
+
+    export function createRole(name: string): Promise<RoleResponse> {
+        return post(`/roles`, { name });
+    }
+
+    export function deleteRole({ uuid }: HasUuid): Promise<any> {
+        return deleteReq(`/roles/${uuid}`);
+    }
+
+    // PERMISSIONS
+
+    export function getPermissions(role: HasUuid, path: PermissionsPath): Promise<PermissionInfoFromServer> {
+        return get(`/roles/${role.uuid}/permissions${path.path}`);
+    }
+
+    // USER
 
     export async function deleteUserByName(name: string) {
         const users: UserListResponse = await get(`/users`);
@@ -166,6 +230,39 @@ export namespace api {
         await deleteProject(project);
     }
 }
+
+export class PermissionsPath {
+    private constructor(public readonly path: string) {}
+
+    static role(role: HasUuid) {
+        return new PermissionsPath(`/roles/${role.uuid}`);
+    }
+
+    static project(project: HasUuid) {
+        return new PermissionsPath(`/projects/${project.uuid}`);
+    }
+
+    static node(project: HasUuid, node: HasUuid) {
+        return new PermissionsPath(`/projects/${project.uuid}/nodes/${node.uuid}`);
+    }
+
+    static tagFamily(project: HasUuid, tagFamily: HasUuid) {
+        return new PermissionsPath(`/projects/${project.uuid}/tagFamilies/${tagFamily.uuid}`);
+    }
+
+    static tag(project: HasUuid, tagFamily: HasUuid, tag: HasUuid) {
+        return new PermissionsPath(`/projects/${project.uuid}/tagFamilies/${tagFamily.uuid}/tags/${tag.uuid}`);
+    }
+
+    static roleRoot() {
+        return new PermissionsPath('/roles');
+    }
+
+    static projectRoot() {
+        return new PermissionsPath('/projects');
+    }
+}
+
 function get(url: string, body?: any, qs?: any) {
     return request('GET', url, body, qs);
 }

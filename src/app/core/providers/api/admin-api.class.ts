@@ -115,6 +115,9 @@ export class AdminApi {
     /** Set the permissions between role and the targeted element. */
     setRolePermissions = apiPost('/roles/{roleUuid}/permissions/{path}');
 
+    /** Get the permissions between role and the targeted element. */
+    getRolePermissions = apiGet('/roles/{roleUuid}/permissions/{path}');
+
     /**
      * Invoke a graph database backup and dump the data to the configured backup
      * location. Note that this operation will block all current operation.

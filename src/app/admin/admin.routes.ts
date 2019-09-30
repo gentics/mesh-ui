@@ -5,6 +5,7 @@ import { GroupDetailComponent } from './components/group-detail/group-detail.com
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { MicroschemaDetailComponent } from './components/microschema-detail/microschema-detail.component';
 import { MicroschemaListComponent } from './components/microschema-list/microschema-list.component';
+import { PermissionsRoleListComponent } from './components/permissions-role-list/permissions-role-list.component';
 import { ProjectDetailSchemasComponent } from './components/project-detail-schemas/project-detail-schemas.component';
 import { ProjectDetailComponent } from './components/project-detail/project-detail.component';
 import { ProjectListComponent } from './components/project-list/project-list.component';
@@ -14,6 +15,7 @@ import { SchemaDetailComponent } from './components/schema-detail/schema-detail.
 import { SchemaListComponent } from './components/schema-list/schema-list.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserListComponent } from './components/user-list/user-list.component';
+import { PermissionsComponent } from './permissions/permissions.component';
 import { MicrochemaDetailsGuard } from './providers/guards/microschema-editor-guard';
 import { SchemaDetailsGuard } from './providers/guards/schema-editor-guard';
 import { groupBreadcrumbFn, GroupResolver } from './providers/resolvers/group-resolver';
@@ -105,7 +107,20 @@ export const routes: Route[] = [
                         path: ':uuid',
                         component: RoleDetailComponent,
                         resolve: { role: RoleResolver },
+
                         data: { breadcrumb: roleBreadcrumbFn }
+                    }
+                ]
+            },
+            {
+                path: 'permissions',
+                data: { breadcrumb: 'common.permissions' },
+                children: [
+                    { path: '', component: PermissionsRoleListComponent },
+                    {
+                        path: ':uuid',
+                        component: PermissionsComponent,
+                        resolve: { role: RoleResolver }
                     }
                 ]
             }

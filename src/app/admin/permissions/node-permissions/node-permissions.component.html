@@ -1,0 +1,79 @@
+<p-treeTable [value]="treeTableData"
+             sortMode="multiple"
+             [columns]="columns"
+             (onNodeExpand)="onNodeExpand($event)"
+             [loading]="loading">
+    <ng-template pTemplate="header"
+                 let-columns>
+        <tr>
+            <th *ngFor="let col of columns"
+                [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
+                (click)="columnClicked(col.field)">
+                <ng-container *ngIf="col.field !== 'name'">
+                    <mesh-icon-checkbox [iconName]="col.iconName"
+                                        [actionName]="col.header"
+                                        [value]="allCheckedColumn(col.field)"
+                                        [disabled]="true">
+                    </mesh-icon-checkbox>
+                </ng-container>
+
+                <ng-container *ngIf="col.field === 'name'">
+                    {{col.header}}
+                </ng-container>
+            </th>
+            <th class="gtx-column-any"
+                title="select all"
+                (click)="columnAllClicked()">
+                <mesh-icon-checkbox label="all"
+                                    actionName="check all"
+                                    [value]="allCheckedAll()"
+                                    [disabled]="true">
+                </mesh-icon-checkbox>
+            </th>
+            <th class="gtx-column-recursive"></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body"
+                 let-rowNode
+                 let-rowData="rowData"
+                 let-columns="columns">
+        <tr>
+            <td *ngFor="let col of columns; let i = index"
+                (click)="togglePermission(rowNode, col.field)"
+                class="gtx-column-any">
+                <ng-container *ngIf="col.field !== 'name' && rowData.type === 'node'">
+                    <p-treeTableToggler *ngIf="i == 0"
+                                        [rowNode]="rowNode"></p-treeTableToggler>
+                    <mesh-icon-checkbox [value]="rowData.rolePerms[col.field]"
+                                        [iconName]="col.iconName"
+                                        [actionName]="col.header"
+                                        [disabled]="true">
+                    </mesh-icon-checkbox>
+                </ng-container>
+
+                <ng-container *ngIf="col.field === 'name'">
+                    <p-treeTableToggler *ngIf="i == 0"
+                                        [rowNode]="rowNode"></p-treeTableToggler>
+                    <ng-container *ngIf="rowData.type === 'node'">
+                        {{ rowData[col.field] }}
+                    </ng-container>
+                    <ng-container *ngIf="rowData.type === 'loadmore'">
+                        <p-button label="Load more..."
+                                  (onClick)="loadMore(rowNode.parent)"></p-button>
+                    </ng-container>
+                </ng-container>
+            </td>
+            <td class="gtx-column-any"
+                title="select all">
+                <p-checkbox binary="true"
+                            [ngModel]="allChecked(rowData)"
+                            (onChange)="toggleAllPermissions(rowNode)"
+                            *ngIf="rowData.type === 'node'"></p-checkbox>
+            </td>
+            <td class="gtx-column-recursive">
+                <p-button label="Apply recursively"
+                          (onClick)="applyRecursively(rowNode)"></p-button>
+            </td>
+        </tr>
+    </ng-template>
+</p-treeTable>

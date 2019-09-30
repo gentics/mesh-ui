@@ -1,4 +1,5 @@
 {
     "browsers": "chrome",
-    "src": "testcafe/test/**/*.ts"
+    "src": "testcafe/test/**/*.ts",
+    "tsConfigPath": "./testcafe/tsconfig.json"
 }

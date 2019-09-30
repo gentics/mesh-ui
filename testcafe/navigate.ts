@@ -23,6 +23,10 @@ export namespace navigate {
         await goToRoute(`admin/projects`);
     }
 
+    export async function toPermissionAdmin() {
+        await goToRoute(`admin/permissions`);
+    }
+
     /** @description Navigate to schema editor */
     export async function toAdminSchemaEditor() {
         await goToRoute(`admin/schemas`);

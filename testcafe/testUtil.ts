@@ -1,12 +1,13 @@
 import { t, Selector } from 'testcafe';
-import * as uuid from 'uuid-random';
 
 import {
     MicroschemaCreateRequest,
     MicroschemaResponse,
     NodeResponse,
+    RoleResponse,
     SchemaCreateRequest,
-    SchemaResponse
+    SchemaResponse,
+    UserResponse
 } from '../src/app/common/models/server-models';
 
 import { api } from './api';
@@ -31,7 +32,7 @@ export function formControlCheckbox(name: string) {
  */
 export async function inTemporaryFolder(body: (parentNode: NodeResponse) => Promise<any>): Promise<any> {
     const project = await api.getProject();
-    const parentNode = await api.createFolder(project.rootNode, 'tmpFolder' + uuid());
+    const parentNode = await api.createFolder(project.rootNode, 'tmpFolder' + randomString());
 
     try {
         return await body(parentNode);
@@ -70,4 +71,19 @@ export async function requiresMicroSchema(
     } finally {
         await api.deleteMicroschema(response);
     }
+}
+
+export async function withTemporaryRole(body: (role: RoleResponse) => Promise<any>) {
+    const response = await api.createRole(`tmpRole${randomString()}`);
+    try {
+        return await body(response);
+    } finally {
+        await api.deleteRole(response);
+    }
+}
+
+export function randomString() {
+    return Math.random()
+        .toString(36)
+        .substring(2);
 }

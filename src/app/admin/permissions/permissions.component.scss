@@ -1,0 +1,53 @@
+$material-design-icons-font-file-path: '~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular';
+@import '~material-design-icons-iconfont/src/material-design-icons';
+
+.gtx-entity-filter {
+    width: 25%;
+    margin-bottom: 1rem;
+    padding: 0.2rem;
+    font-size: 1rem;
+}
+
+.gtx-recursive-checkbox-container {
+    float: right;
+}
+
+.gtx-column-name {
+    width: auto;
+    text-align: left;
+}
+
+.gtx-column-any {
+    width: 6%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+::ng-deep .ui-treetable th,
+::ng-deep .ui-treetable td
+{
+    &:not(:first-child) {
+        text-align: center !important;
+    }
+}
+
+::ng-deep .ui-accordion-header .ui-accordion-toggle-icon {
+    margin-top: -0.6rem;
+}
+
+.gtx-p-header {
+    display: inline-flex;
+    align-items: center;
+}
+
+.gtx-p-header-icon {
+    display: flex;
+    margin-right: 0.4rem;
+    font-size: 1.4rem;
+}
+
+.gtx-p-header-label {
+    display: flex;
+}

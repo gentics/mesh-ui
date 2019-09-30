@@ -1,0 +1,150 @@
+<div class="content">
+
+    <h3>Permissions / {{ role.name }}</h3>
+
+    <p-accordion>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">folder</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Projects
+                    </div>
+                </div>
+            </p-header>
+
+            <ng-template pTemplate="content">
+                <mesh-simple-permissions [role]="role"
+                                         entityType="projects"></mesh-simple-permissions>
+            </ng-template>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">insert_drive_file</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Nodes
+                    </div>
+                </div>
+            </p-header>
+            <ng-template pTemplate="content">
+
+                <mesh-node-permissions [role]="role"></mesh-node-permissions>
+            </ng-template>
+
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">local_offer</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Tags
+                    </div>
+                </div>
+            </p-header>
+            <ng-template pTemplate="content">
+
+                <mesh-tag-permissions [role]="role"></mesh-tag-permissions>
+            </ng-template>
+
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">view_quilt</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Schemas
+                    </div>
+                </div>
+            </p-header>
+            <ng-template pTemplate="content">
+
+                <mesh-simple-permissions [role]="role"
+                                         entityType="schemas"></mesh-simple-permissions>
+            </ng-template>
+
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">view_list</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Microschemas
+                    </div>
+                </div>
+            </p-header>
+            <ng-template pTemplate="content">
+
+                <mesh-simple-permissions [role]="role"
+                                         entityType="microschemas"></mesh-simple-permissions>
+            </ng-template>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">person</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Users
+                    </div>
+                </div>
+            </p-header>
+            <ng-template pTemplate="content">
+                <mesh-simple-permissions [role]="role"
+                                         entityType="users"></mesh-simple-permissions>
+            </ng-template>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">people</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Groups
+                    </div>
+                </div>
+            </p-header>
+            <ng-template pTemplate="content">
+                <mesh-simple-permissions [role]="role"
+                                         entityType="groups"></mesh-simple-permissions>
+            </ng-template>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <p-header>
+                <div class="gtx-p-header">
+                    <div class="gtx-p-header-icon">
+                        <i class="material-icons">people_outline</i>
+                    </div>
+                    <div class="gtx-p-header-label">
+                        Roles
+                    </div>
+                </div>
+            </p-header>
+            <ng-template pTemplate="content">
+                <mesh-simple-permissions [role]="role"
+                                         entityType="roles"></mesh-simple-permissions>
+            </ng-template>
+        </p-accordionTab>
+
+    </p-accordion>
+</div>
