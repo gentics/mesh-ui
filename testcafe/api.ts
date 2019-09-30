@@ -124,6 +124,10 @@ export namespace api {
         return get(`/${project}/nodes/${uuid}`);
     }
 
+    export function webroot(path: string): Promise<MeshNode> {
+        return get(`/${project}/webroot${path}`);
+    }
+
     export function updateNode(node: MeshNode): Promise<MeshNode> {
         return post(`/${project}/nodes/${node.uuid}`, node);
     }
@@ -236,6 +240,10 @@ export class PermissionsPath {
 
     static project(project: HasUuid) {
         return new PermissionsPath(`/projects/${project.uuid}`);
+    }
+
+    static node(project: HasUuid, node: HasUuid) {
+        return new PermissionsPath(`/projects/${project.uuid}/nodes/${node.uuid}`);
     }
 
     static tagFamily(project: HasUuid, tagFamily: HasUuid) {

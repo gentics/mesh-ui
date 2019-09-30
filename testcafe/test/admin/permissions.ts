@@ -68,7 +68,7 @@ test('Project permissions', async t =>
             .eql(onlyPermissions('create'));
     }));
 
-test.only('Tag permissions', async t =>
+test('Tag permissions', async t =>
     withTemporaryRole(async role => {
         await t.useRole(Admin);
         await navigate.toPermissionAdmin();
@@ -114,6 +114,44 @@ test.only('Tag permissions', async t =>
                 )
             )
             .eql(onlyPermissions());
+    }));
+
+test.only('Node permissions', async t =>
+    withTemporaryRole(async role => {
+        await t.useRole(Admin);
+        await navigate.toPermissionAdmin();
+        await permissionsRoleList.chooseRole(role.name);
+
+        const project = await api.getProject();
+
+        await permissions.openEntityType('nodes');
+
+        await permissionsRow.byName('demo').togglePermissions('read', 'readPublished');
+        await permissionsRow.byName('demo').expand();
+        await permissionsRow.byName('demo').applyRecursively();
+
+        const nodePermission = async (path: string) =>
+            api.getPermissions(role, PermissionsPath.node(project, await api.webroot(path)));
+
+        await t
+            .expect(await nodePermission('/'))
+            .eql(onlyPermissions('read', 'readPublished'))
+            .expect(await nodePermission('/aircrafts'))
+            .eql(onlyPermissions('read', 'readPublished'));
+
+        await permissionsRow.byName('Aircraft').togglePermissions('update', 'publish');
+
+        await t
+            .expect(await nodePermission('/aircrafts'))
+            .eql(onlyPermissions('read', 'readPublished', 'update', 'publish'));
+
+        await permissionsRow.byName('Yachts').toggleAll();
+
+        await t
+            .expect(await nodePermission('/yachts'))
+            .eql(onlyPermissions('read', 'readPublished', 'update', 'publish', 'delete', 'create'))
+            .expect(await nodePermission('/yachts/pelorus'))
+            .eql(onlyPermissions('read', 'readPublished'));
     }));
 
 function onlyPermissions(...perms: NodePermission[]): PermissionInfoFromServer {

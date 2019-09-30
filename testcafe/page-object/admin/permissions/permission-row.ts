@@ -22,6 +22,11 @@ export class PermissionsRow {
         await t.click(this.elem.find(`td[title="select all"] p-checkbox`));
     }
 
+    async applyRecursively() {
+        await t.hover(this.elem);
+        await t.click(Selector('p-button').withText('Apply recursively'));
+    }
+
     async expand() {
         await t.click(
             this.elem
