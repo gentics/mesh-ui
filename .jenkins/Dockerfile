@@ -1,4 +1,4 @@
-FROM node:12.10.0-alpine
+FROM node:10.16.3-alpine
 
 ARG USER_NAME="jenkins"
 
