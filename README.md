@@ -6,18 +6,17 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development
 
-1. Install Yarn (we enforce the use of Yarn over npm due to reliability issues experienced with npm)
-2. `$ git clone git@github.com:gentics/mesh-ui.git`
-3. `$ git checkout develop`
-4. `$ yarn install`
-5. `$ yarn start`
-6. Download and run the Mesh Demo: https://getmesh.io/Download
-7. Open `http://localhost:4200` in a browser.
+1. `$ git clone git@github.com:gentics/mesh-ui.git`
+2. `$ git checkout develop`
+3. `$ npm ci`
+4. `$ npm start`
+5. Download and run the Mesh Demo: https://getmesh.io/Download
+6. Open `http://localhost:4200` in a browser.
 
 ## Testing
 
 ```
-$ yarn test
+$ npm test
 ```
 
 ## Developer Notes
@@ -40,7 +39,7 @@ assertion operator and try to make better use of correct typings, type guards an
 This is not a hard rule and there are the following valid exceptions:
 
 * Certain JavaScript patterns are not easy to express without falling back on `!`, for example when working with JavaScript Maps
- (See this discusion: https://github.com/Microsoft/TypeScript/issues/9619). So we do not ban its use, but
+ (See this discussion: https://github.com/Microsoft/TypeScript/issues/9619). So we do not ban its use, but
 it should be a last resort.
 * In spec files we are less strict, since we are often purposefully constructing partial mock objects or creating
 non-null states explicitly, so `!` is okay in specs in general if they cannot be easily avoided.
@@ -53,5 +52,5 @@ Once the Mesh interfaces have been fixed, that class of `!` operators can be rem
 In order to build the bundled static files for a web server to be served:
 
 0. Optionally: Edit the base path in /src/app/index.html at ```<base href="/">``` to your need. E. g. ```<base href="/cms">```
-1. ```$ yarn build```
+1. ```$ npm run build```
 2. At /dist are the files ready to be served.

@@ -59,10 +59,7 @@ node("docker") {
 
 						stage("Install dependencies") {
 							container('buildenv') {
-								sh "/usr/local/bin/npm install --global yarn"
-								sh "/usr/local/bin/yarn"
-								echo "Preparing basepath"
-								sh '''sed -i 's/href="\\(.*\\)\\"/href=\\"\\/ui\\/\\"/' src/index.html'''
+								sh "/usr/local/bin/npm ci"
 							}
 						}
 
@@ -78,7 +75,7 @@ node("docker") {
 
 						stage("Build") {
 							container('buildenv') {
-								sh "until /usr/local/bin/yarn build ; do echo retry.. ; sleep 1 ; done"
+								sh "until /usr/local/bin/npm run build ; do echo retry.. ; sleep 1 ; done"
 							}
 						}
 

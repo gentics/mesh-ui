@@ -6,7 +6,7 @@
     "ng": "ng",
     "start-original": "ng serve",
     "start": "ng serve --verbose --proxy-config proxy.conf.json --live-reload true",
-    "build": "ng build --prod",
+    "build": "ng build --prod --base-href=/ui",
     "generate-models": "node config/build-models-from-raml",
     "test": "ng test",
     "test-no-sourcemaps": "ng test -sm=false --browsers=ChromeHeadless",
