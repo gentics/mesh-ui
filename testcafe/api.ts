@@ -9,6 +9,10 @@ import {
     ProjectResponse,
     RoleListResponse,
     RoleResponse,
+    TagFamilyListResponse,
+    TagFamilyResponse,
+    TagListResponse,
+    TagResponse,
     UserListResponse
 } from '../src/app/common/models/server-models';
 import { SchemaCreateRequest } from '../src/app/common/models/server-models';
@@ -136,6 +140,28 @@ export namespace api {
         return post(`/${project}/microschemas/${schema.uuid}`);
     }
 
+    // TAGFAMILIES
+
+    export function findTagFamilies(): Promise<TagFamilyListResponse> {
+        return get(`/${project}/tagFamilies`);
+    }
+
+    export async function getTagFamilyByName(tagFamilyName: string): Promise<TagFamilyResponse> {
+        const tagFamilies = await findTagFamilies();
+        return tagFamilies.data.find(tagFamily => tagFamily.name === tagFamilyName)!;
+    }
+
+    // TAGS
+
+    export function findTags(tagFamily: HasUuid): Promise<TagListResponse> {
+        return get(`/${project}/tagFamilies/${tagFamily.uuid}/tags`);
+    }
+
+    export async function getTagByName(tagFamily: HasUuid, tagName: string): Promise<TagResponse> {
+        const tagFamilies = await findTags(tagFamily);
+        return tagFamilies.data.find(tag => tag.name === tagName)!;
+    }
+
     // ROLE
 
     export async function getRoleByName(name: string): Promise<RoleResponse> {
@@ -205,11 +231,19 @@ export class PermissionsPath {
     private constructor(public readonly path: string) {}
 
     static role(role: HasUuid) {
-        return this.simpleEntity('roles', role.uuid);
+        return new PermissionsPath(`/roles/${role.uuid}`);
     }
 
     static project(project: HasUuid) {
-        return this.simpleEntity('projects', project.uuid);
+        return new PermissionsPath(`/projects/${project.uuid}`);
+    }
+
+    static tagFamily(project: HasUuid, tagFamily: HasUuid) {
+        return new PermissionsPath(`/projects/${project.uuid}/tagFamilies/${tagFamily.uuid}`);
+    }
+
+    static tag(project: HasUuid, tagFamily: HasUuid, tag: HasUuid) {
+        return new PermissionsPath(`/projects/${project.uuid}/tagFamilies/${tagFamily.uuid}/tags/${tag.uuid}`);
     }
 
     static roleRoot() {
@@ -218,10 +252,6 @@ export class PermissionsPath {
 
     static projectRoot() {
         return new PermissionsPath('/projects');
-    }
-
-    private static simpleEntity(entity: string, uuid: string) {
-        return new PermissionsPath(`/${entity}/${uuid}`);
     }
 }
 

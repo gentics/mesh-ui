@@ -27,6 +27,6 @@ export namespace permissions {
     }
 
     export async function toggleColumn(perm: NodePermission) {
-        await t.click(Selector('th').withText(perm));
+        await t.click(Selector(`th label[title="${perm}"]`));
     }
 }

@@ -21,4 +21,13 @@ export class PermissionsRow {
     async toggleAll() {
         await t.click(this.elem.find(`td[title="select all"] p-checkbox`));
     }
+
+    async expand() {
+        await t.click(
+            this.elem
+                .find('td')
+                .nth(0)
+                .find('p-treetabletoggler a')
+        );
+    }
 }

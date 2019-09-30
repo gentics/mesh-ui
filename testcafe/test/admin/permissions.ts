@@ -9,9 +9,9 @@ import { permissionsRoleList } from '../../page-object/admin/permissions/permiss
 import { Admin } from '../../roles';
 import { withTemporaryRole } from '../../testUtil';
 
-fixture.only`Permission administration`.page(api.baseUrl());
+fixture`Permission administration`.page(api.baseUrl());
 
-test('Setting role permissions', async t =>
+test('Role permissions', async t =>
     withTemporaryRole(async role => {
         await t.useRole(Admin);
         await navigate.toPermissionAdmin();
@@ -29,28 +29,28 @@ test('Setting role permissions', async t =>
 
         await t
             .expect(await rolePermissions('admin'))
-            .eql(onlyNodePermissions('create', 'read', 'update', 'delete'))
+            .eql(onlyPermissions('create', 'read', 'update', 'delete'))
             .expect(await rolePermissions('anonymous'))
-            .eql(onlyNodePermissions('read'))
+            .eql(onlyPermissions('read'))
             .expect(await rolePermissions('Editor Role'))
-            .eql(onlyNodePermissions('create', 'read', 'update', 'delete'))
+            .eql(onlyPermissions('create', 'read', 'update', 'delete'))
             .expect(await api.getPermissions(role, PermissionsPath.roleRoot()))
-            .eql(onlyNodePermissions('create'));
+            .eql(onlyPermissions('create'));
 
         await permissions.toggleColumn('delete');
 
         await t
             .expect(await rolePermissions('admin'))
-            .eql(onlyNodePermissions('create', 'read', 'update', 'delete'))
+            .eql(onlyPermissions('create', 'read', 'update', 'delete'))
             .expect(await rolePermissions('anonymous'))
-            .eql(onlyNodePermissions('read', 'delete'))
+            .eql(onlyPermissions('read', 'delete'))
             .expect(await rolePermissions('Editor Role'))
-            .eql(onlyNodePermissions('create', 'read', 'update', 'delete'))
+            .eql(onlyPermissions('create', 'read', 'update', 'delete'))
             .expect(await rolePermissions('Client Role'))
-            .eql(onlyNodePermissions('delete'));
+            .eql(onlyPermissions('delete'));
     }));
 
-test('Setting project permissions', async t =>
+test('Project permissions', async t =>
     withTemporaryRole(async role => {
         await t.useRole(Admin);
         await navigate.toPermissionAdmin();
@@ -63,12 +63,60 @@ test('Setting project permissions', async t =>
 
         await t
             .expect(await api.getPermissions(role, PermissionsPath.project(await api.getProjectByName('demo'))))
-            .eql(onlyNodePermissions('create', 'update'))
+            .eql(onlyPermissions('create', 'update'))
             .expect(await api.getPermissions(role, PermissionsPath.projectRoot()))
-            .eql(onlyNodePermissions('create'));
+            .eql(onlyPermissions('create'));
     }));
 
-function onlyNodePermissions(...perms: NodePermission[]): PermissionInfoFromServer {
+test.only('Tag permissions', async t =>
+    withTemporaryRole(async role => {
+        await t.useRole(Admin);
+        await navigate.toPermissionAdmin();
+        await permissionsRoleList.chooseRole(role.name);
+
+        await permissions.openEntityType('tags');
+
+        await permissionsRow.byName('demo').expand();
+        await permissionsRow.byName('Fuels').togglePermissions('read', 'delete');
+        await permissionsRow.byName('Fuels').expand();
+        await permissionsRow.byName('Hydrogen').toggleAll();
+
+        await permissions.toggleColumn('create');
+        await permissionsRow.byName('Colors').expand();
+
+        const project = await api.getProjectByName('demo');
+        const fuels = await api.getTagFamilyByName('Fuels');
+        const colors = await api.getTagFamilyByName('Colors');
+
+        await t
+            .expect(await api.getPermissions(role, PermissionsPath.tagFamily(project, fuels)))
+            .eql(onlyPermissions('create', 'read', 'delete'))
+            .expect(
+                await api.getPermissions(
+                    role,
+                    PermissionsPath.tag(project, fuels, await api.getTagByName(fuels, 'Hydrogen'))
+                )
+            )
+            .eql(onlyPermissions('create', 'read', 'update', 'delete'))
+            .expect(
+                await api.getPermissions(
+                    role,
+                    PermissionsPath.tag(project, fuels, await api.getTagByName(fuels, 'Solar'))
+                )
+            )
+            .eql(onlyPermissions('create'))
+            .expect(await api.getPermissions(role, PermissionsPath.tagFamily(project, colors)))
+            .eql(onlyPermissions('create'))
+            .expect(
+                await api.getPermissions(
+                    role,
+                    PermissionsPath.tag(project, colors, await api.getTagByName(colors, 'Orange'))
+                )
+            )
+            .eql(onlyPermissions());
+    }));
+
+function onlyPermissions(...perms: NodePermission[]): PermissionInfoFromServer {
     const permObject = toObject(k => k, () => false, nodePermissions);
     perms.forEach(k => (permObject[k] = true));
     return permObject as any;
