@@ -45,7 +45,7 @@ node("docker") {
 				imagePullSecrets: ['docker-jenkinsbuilds-apa-it'],
 				volumes: [
 					emptyDirVolume(memory: false, mountPath: '/var/run'),
-					hostPathVolume(hostPath: '/opt/jenkins-slave/maven-repo', mountPath: '/ci/.m2/repository'),
+					hostPathVolume(hostPath: '/opt/kubernetes/cache/maven', mountPath: '/ci/.m2/repository'),
 					persistentVolumeClaim(claimName: 'jenkins-credentials', mountPath: '/ci/credentials', readOnly: true)
 				], 
 				workspaceVolume: emptyDirWorkspaceVolume(false)) {
