@@ -116,7 +116,7 @@ test('Tag permissions', async t =>
             .eql(onlyPermissions());
     }));
 
-test.only('Node permissions', async t =>
+test('Node permissions', async t =>
     withTemporaryRole(async role => {
         await t.useRole(Admin);
         await navigate.toPermissionAdmin();
