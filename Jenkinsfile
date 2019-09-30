@@ -5,7 +5,7 @@ import com.gentics.*
 // Make the helpers aware of this jobs environment
 JobContext.set(this)
 
-final def dockerRegistry       = "gentics-docker-jenkinsbuilds.docker.apa-it.at"
+final def dockerRegistry       = "gtx-docker-jenkinsbuilds.docker.apa-it.at"
 final def dockerImageName      = dockerRegistry + "/gentics/jenkinsbuilds/mesh-slave-ui"
 
 properties([

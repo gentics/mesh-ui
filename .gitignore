@@ -77,3 +77,6 @@ mesh-ui.code-workspace
 .settings
 .classpath
 .project
+
+# Other
+/.scannerwork
