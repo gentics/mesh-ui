@@ -1,12 +1,12 @@
 {
   "name": "mesh-ui",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start-original": "ng serve",
     "start": "ng serve --verbose --proxy-config proxy.conf.json --live-reload true",
-    "build": "ng build --prod --base-href=/ui",
+    "build": "ng build --prod --base-href /ui/",
     "generate-models": "node config/build-models-from-raml",
     "test": "ng test",
     "test-no-sourcemaps": "ng test -sm=false --browsers=ChromeHeadless",
