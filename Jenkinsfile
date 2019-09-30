@@ -39,7 +39,7 @@ node("docker") {
 				)],
 				label: 'mesh-ui',
 				name: 'jenkins-slave-mesh-ui',
-				namespace: 'default', 
+				namespace: 'jenkins', 
 				nodeSelector: 'jenkins_mesh_worker=true',
 				serviceAccount: 'jenkins',
 				imagePullSecrets: ['docker-jenkinsbuilds-apa-it'],
