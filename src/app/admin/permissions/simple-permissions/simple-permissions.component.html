@@ -14,11 +14,11 @@
                 [class]="col.field === 'name' ? 'gtx-column-name': 'gtx-column-any'"
                 (click)="columnClicked(col.field)">
                 <ng-container *ngIf="col.field !== 'name'">
-                    <mesh-icon-checkbox [iconName]="col.iconName"
-                                        [actionName]="col.header"
-                                        [value]="allCheckedColumn(col.field)"
-                                        [disabled]="true">
-                    </mesh-icon-checkbox>
+                    <mesh-permission-icon-checkbox [iconName]="col.iconName"
+                                                   [actionName]="col.header"
+                                                   [value]="allCheckedColumn(col.field)"
+                                                   [disabled]="true">
+                    </mesh-permission-icon-checkbox>
                 </ng-container>
 
                 <ng-container *ngIf="col.field === 'name'">
@@ -28,11 +28,11 @@
             <th class="gtx-column-any"
                 title="select all"
                 (click)="columnAllClicked()">
-                <mesh-icon-checkbox label="all"
-                                    actionName="check all"
-                                    [value]="allCheckedAll()"
-                                    [disabled]="true">
-                </mesh-icon-checkbox>
+                <mesh-permission-icon-checkbox [label]="'admin.all' | i18n"
+                                               actionName="check all"
+                                               [value]="allCheckedAll()"
+                                               [disabled]="true">
+                </mesh-permission-icon-checkbox>
             </th>
         </tr>
     </ng-template>
@@ -47,12 +47,12 @@
                 <ng-container *ngIf="col.field !== 'name'">
                     <p-treeTableToggler *ngIf="i == 0"
                                         [rowNode]="rowNode"></p-treeTableToggler>
-                    <mesh-icon-checkbox *ngIf="rowData.type !== 'loadmore'"
-                                        [value]="rowData.rolePerms[col.field]"
-                                        [iconName]="col.iconName"
-                                        [actionName]="col.header"
-                                        [disabled]="true">
-                    </mesh-icon-checkbox>
+                    <mesh-permission-icon-checkbox *ngIf="rowData.type !== 'loadmore'"
+                                                   [value]="rowData.rolePerms[col.field]"
+                                                   [iconName]="col.iconName"
+                                                   [actionName]="col.header"
+                                                   [disabled]="true">
+                    </mesh-permission-icon-checkbox>
                 </ng-container>
 
                 <ng-container *ngIf="col.field === 'name'">
@@ -62,8 +62,8 @@
                         {{ rowData[col.field] }}
                     </ng-container>
                     <ng-container *ngIf="rowData.type === 'loadmore'">
-                        <p-button label="Load more..."
-                                  (onClick)="loadData()"></p-button>
+                        <gtx-button size="small"
+                                    (click)="loadData()">{{ 'admin.load_more' | i18n }}</gtx-button>
                     </ng-container>
                 </ng-container>
             </td>

@@ -3,6 +3,17 @@
 :host {
     display: block;
     position: relative;
+
+    ::ng-deep gtx-breadcrumbs > nav {
+        box-shadow: none;
+    }
+    
+    ::ng-deep gtx-breadcrumbs > nav a.breadcrumb,
+    ::ng-deep gtx-breadcrumbs > nav a.breadcrumb:last-child,
+    ::ng-deep gtx-breadcrumbs > nav a.breadcrumb::before
+    {
+        color: $gtx-color-mid-gray !important;
+    }
 }
 
 .bar-wrapper {
@@ -19,14 +30,4 @@ mesh-content-portal {
     display: flex;
     align-items: center;
     padding: 0 10px;
-}
-
-::ng-deep gtx-breadcrumbs > nav {
-    box-shadow: none;
-}
-
-::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
-::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb:last-child,
-::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
-    color: white;
 }

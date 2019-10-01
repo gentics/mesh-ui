@@ -15,6 +15,10 @@
         "en": "Assign to role",
         "de": "Zu Rolle zuweisen"
     },
+    "all": {
+        "en": "all",
+        "de": "alle"
+    },
     "all_groups": {
         "en": "All groups",
         "de": "Alle Gruppen"
@@ -30,6 +34,10 @@
     "assign_schema_confirmation": {
         "en": "Do you want to assign schema \"{{ name }}\" to a project?",
         "de": "Wollen Sie das Schema \"{{ name }}\" einem Projekt zuordnen?"
+    },
+    "apply_recursively": {
+        "en": "Apply recursively",
+        "de": "Rekursiv anwenden"
     },
     "delete_selected_schemas" : {
         "en": "Delete {{count}} schemas",
@@ -606,5 +614,41 @@
     "schema_editor_tooltip_removefield": {
         "en": "Remove field",
         "de": "Feld entfernen"
+    },
+    "load_more": {
+        "en": "Load more",
+        "de": "Weitere laden"
+    },
+    "entity_name_projects": {
+        "en": "Projects",
+        "de": "Projekte"
+    },
+    "entity_name_nodes": {
+        "en": "Nodes",
+        "de": "Nodes"
+    },
+    "entity_name_tags": {
+        "en": "Tags",
+        "de": "Tags"
+    },
+    "entity_name_schemas": {
+        "en": "Schemas",
+        "de": "Schemas"
+    },
+    "entity_name_microschemas": {
+        "en": "Microschemas",
+        "de": "Microschemas"
+    },
+    "entity_name_users": {
+        "en": "Users",
+        "de": "Benutzer"
+    },
+    "entity_name_groups": {
+        "en": "Groups",
+        "de": "Gruppen"
+    },
+    "entity_name_roles": {
+        "en": "Roles",
+        "de": "Rollen"
     }
 }

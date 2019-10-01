@@ -55,6 +55,10 @@ gtx-top-bar {
     margin-top: 2rem;
     text-align: left;
 
+    & > ul {
+        padding-right: 4rem;
+    }
+
     li {
         display: block;
 

@@ -1,5 +1,6 @@
 $material-design-icons-font-file-path: '~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular';
 @import '~material-design-icons-iconfont/src/material-design-icons';
+@import "variables";
 
 .gtx-entity-filter {
     width: 25%;
@@ -31,8 +32,21 @@ $material-design-icons-font-file-path: '~material-design-icons-iconfont/dist/fon
 
 tr {
     .gtx-column-recursive {
-        width: 175px;
         opacity: 0;
+        width: 0;
+        transition: opacity 0.1s ease-in-out;
+
+        .gtx-column-recursive-button {
+            position: absolute;
+            margin-top: -1rem;
+            background-color: $gtx-color-primary;
+            color: white;
+
+            ::ng-deep button {
+                line-height: 1rem !important;
+                height: 2rem !important;
+            }
+        }
     }
     &:hover .gtx-column-recursive {
         opacity: 1;
