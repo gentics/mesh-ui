@@ -120,7 +120,8 @@ export const routes: Route[] = [
                     {
                         path: ':uuid',
                         component: PermissionsComponent,
-                        resolve: { role: RoleResolver }
+                        resolve: { role: RoleResolver },
+                        data: { breadcrumb: roleBreadcrumbFn }
                     }
                 ]
             }

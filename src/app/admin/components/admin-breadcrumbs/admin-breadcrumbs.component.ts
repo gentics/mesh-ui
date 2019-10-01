@@ -77,7 +77,7 @@ export class AdminBreadcrumbsComponent implements OnInit {
                     return typeof stringOrObservable === 'string' ? [stringOrObservable] : stringOrObservable;
                 })
                 .map(text => ({
-                    text: this.i18nService.translate(text),
+                    text,
                     route: paths
                 }));
         } else if (typeof breadcrumbSource === 'string') {
