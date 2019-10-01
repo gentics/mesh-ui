@@ -58,7 +58,7 @@
                         {{ rowData[col.field] }}
                     </ng-container>
                     <ng-container *ngIf="rowData.type === 'loadmore'">
-                        <p-button label="Load more..."
+                        <p-button [label]="'admin.load_more' | i18n"
                                   (onClick)="loadMore(rowNode.parent)"></p-button>
                     </ng-container>
                 </ng-container>
@@ -71,7 +71,7 @@
                             *ngIf="rowData.type === 'node'"></p-checkbox>
             </td>
             <td class="gtx-column-recursive">
-                <p-button label="Apply recursively"
+                <p-button [label]="'admin.apply_recursively' | i18n"
                           (onClick)="applyRecursively(rowNode)"></p-button>
             </td>
         </tr>

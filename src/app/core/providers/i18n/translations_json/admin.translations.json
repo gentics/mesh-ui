@@ -35,6 +35,10 @@
         "en": "Do you want to assign schema \"{{ name }}\" to a project?",
         "de": "Wollen Sie das Schema \"{{ name }}\" einem Projekt zuordnen?"
     },
+    "apply_recursively": {
+        "en": "Apply recursively",
+        "de": "Rekursiv anwenden"
+    },
     "delete_selected_schemas" : {
         "en": "Delete {{count}} schemas",
         "de": "{{count }} Schemas löschen"
@@ -610,5 +614,9 @@
     "schema_editor_tooltip_removefield": {
         "en": "Remove field",
         "de": "Feld entfernen"
+    },
+    "load_more": {
+        "en": "Load more",
+        "de": "Weitere laden"
     }
 }
