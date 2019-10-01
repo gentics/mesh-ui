@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
-import { throwError, timer } from 'rxjs';
+import { empty, throwError, timer } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { catchError, debounce, filter, switchMap, tap } from 'rxjs/operators';
@@ -44,7 +44,8 @@ export class AuthInterceptor implements HttpInterceptor {
                 filter(validDuration => validDuration < MIN_TOKEN_VALID_DURATION),
                 // Refresh 10 seconds before expiration
                 debounce(timeout => timer((timeout - 10) * 1000)),
-                switchMap(() => api.auth.refreshToken())
+                switchMap(() => api.auth.refreshToken()),
+                catchError(() => empty())
             )
             .subscribe();
     }
@@ -57,7 +58,14 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(newReq).pipe(
             tap(response => this.resetRefreshTimer(response)),
             catchError(err => {
-                if (err instanceof HttpErrorResponse && err.status === 401) {
+                // 401 happens when the user session is timed out. This can happen anywhere and should display a special error message.
+                // One exception is the login endpoint where a 401 means that the user provided wrong credentials. In that case,
+                // error handling should continue normally.
+                if (
+                    err instanceof HttpErrorResponse &&
+                    err.status === 401 &&
+                    (err.url && !err.url.endsWith('/auth/login'))
+                ) {
                     const url = this.router.routerState.snapshot.url;
                     if (url && url !== '/login') {
                         this.router.navigate(['login']);
@@ -79,9 +87,12 @@ export class AuthInterceptor implements HttpInterceptor {
             return;
         }
         const jwt = this.cookies.get('mesh.token');
-        const token: MeshToken = jwtDecode(jwt);
-        const validDuration = token.exp - token.iat;
+        // There are some requests that do not respond with a token (logout)
+        if (jwt) {
+            const token: MeshToken = jwtDecode(jwt);
+            const validDuration = token.exp - token.iat;
 
-        this.expiresIn.next(validDuration);
+            this.expiresIn.next(validDuration);
+        }
     }
 }

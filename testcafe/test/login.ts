@@ -3,6 +3,7 @@ import { goToUsers } from '../page-object/admin/admin-main-menu';
 import { createUser } from '../page-object/admin/user/user-detail';
 import { newUser } from '../page-object/admin/user/user-list';
 import { login } from '../page-object/login';
+import { toast } from '../page-object/toast';
 import { topnav } from '../page-object/topnav';
 
 fixture`Login`.page(api.baseUrl());
@@ -33,4 +34,9 @@ test('Change password on login', async t => {
     if (t.ctx.username) {
         await api.deleteUserByName(t.ctx.username);
     }
+});
+
+test('Invalid credentials', async t => {
+    await login('admin', 'invalid');
+    await toast.expectErrorMessage('Login failed.');
 });
