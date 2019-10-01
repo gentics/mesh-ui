@@ -298,6 +298,8 @@ export class ApiBase {
                         const originalError = notification.error.originalError;
                         status = originalError.status;
                         body = originalError.error;
+                    } else if (notification.error instanceof AlreadyHandledError) {
+                        throw notification.error;
                     } else if (notification.hasValue && notification.value) {
                         status = notification.value.status;
                         body = notification.value.body;
