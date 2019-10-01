@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 @Component({
-    selector: 'mesh-icon-checkbox',
-    templateUrl: './icon-checkbox.component.html',
-    styleUrls: ['./icon-checkbox.component.scss']
+    selector: 'mesh-permission-icon-checkbox',
+    templateUrl: './permission-icon-checkbox.component.html',
+    styleUrls: ['./permission-icon-checkbox.component.scss']
 })
-export class IconCheckboxComponent {
+export class PermissionIconCheckboxComponent {
     @Input() value = false;
 
     @Input() iconName: string | null = null;

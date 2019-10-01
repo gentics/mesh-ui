@@ -8,16 +8,26 @@ p-accordion {
     p-accordiontab ::ng-deep {
 
         // header
-        .ui-accordion-header a {
-            margin: 0;
-            border-left: none;
-            border-right: none;
-            border-top: none;
-            padding: 0.5rem;
-            color: $gtx-color-dark-gray;
-        
-            .ui-accordion-toggle-icon {
-                margin-top: -1rem;
+        .ui-accordion-header {
+            margin-top: 0;
+            margin-bottom: 0;
+
+            a {
+                background-color: transparent;
+                margin: 0;
+                border-left: none;
+                border-right: none;
+                border-top: none;
+                padding: 0.5rem;
+                color: $gtx-color-dark-gray;
+
+                &:last {
+                    border-bottom: none;
+                }
+
+                .ui-accordion-toggle-icon {
+                    margin-top: -1rem;
+                }
             }
         }
         // state hover
@@ -42,14 +52,25 @@ p-accordion {
                 .ui-treetable-tbody > tr, table th {
                     background-color: transparent;
                 }
-                table thead tr {
-                    border-bottom-color: $gtx-color-mid-gray;
+                table {
+                    thead tr {
+                        border-bottom-color: $gtx-color-mid-gray;
+                    }
+                    th {
+                        border-top: none;
+                        border-bottom: none;
+                        border-left: none;
+                        border-right: none;
+                    }
                 }
-                table th, .ui-treetable-tbody > tr > td {
-                    border-top: none;
-                    border-bottom: $gtx-color-light-gray;
-                    border-left: none;
-                    border-right: none;
+                .ui-treetable-tbody > tr {
+
+                    & > td {
+                        border-top: none;
+                        border-bottom: $gtx-color-very-light-gray;
+                        border-left: none;
+                        border-right: none;
+                    }
                 }
             }
         }
@@ -59,6 +80,31 @@ p-accordion {
         
     // }
 }
+
+// p-checkbox
+::ng-deep p-checkbox {
+    .ui-chkbox {
+        .ui-chkbox-box {
+            background-color: transparent;
+            border-radius: 0;
+            border-color: $gtx-color-mid-gray;
+        }
+        // checkbox icon
+        .ui-chkbox-box .ui-chkbox-icon {
+            overflow: visible;
+            font-size: 1.5rem;
+            left: -0.2rem;
+            top: -0.2rem;
+        }
+        // active
+        .ui-chkbox-box.ui-state-active {
+            background-color: transparent;
+            color: $gtx-color-very-dark-gray;
+            border-color: transparent;
+        }
+    }
+}
+
 /** PrimeNG components overrides END */
 
 .gtx-entity-filter {

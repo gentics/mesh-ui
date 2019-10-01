@@ -1,3 +1,5 @@
+@import "variables";
+
 .gtx-icon-checkbox {
     cursor: pointer;
 
@@ -9,10 +11,10 @@
     .gtx-icon-checkbox-label
     {
         font-size: 1rem;
-        color: LightGray;
+        color: $gtx-color-light-gray;
 
         &.active {
-            color: black;
+            color: $gtx-color-off-black;
         }
     }
 }

@@ -15,6 +15,10 @@
         "en": "Assign to role",
         "de": "Zu Rolle zuweisen"
     },
+    "all": {
+        "en": "all",
+        "de": "alle"
+    },
     "all_groups": {
         "en": "All groups",
         "de": "Alle Gruppen"
