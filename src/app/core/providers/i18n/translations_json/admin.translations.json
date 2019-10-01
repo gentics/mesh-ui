@@ -618,5 +618,37 @@
     "load_more": {
         "en": "Load more",
         "de": "Weitere laden"
+    },
+    "entity_name_projects": {
+        "en": "Projects",
+        "de": "Projekte"
+    },
+    "entity_name_nodes": {
+        "en": "Nodes",
+        "de": "Nodes"
+    },
+    "entity_name_tags": {
+        "en": "Tags",
+        "de": "Tags"
+    },
+    "entity_name_schemas": {
+        "en": "Schemas",
+        "de": "Schemas"
+    },
+    "entity_name_microschemas": {
+        "en": "Microschemas",
+        "de": "Microschemas"
+    },
+    "entity_name_users": {
+        "en": "Users",
+        "de": "Benutzer"
+    },
+    "entity_name_groups": {
+        "en": "Groups",
+        "de": "Gruppen"
+    },
+    "entity_name_roles": {
+        "en": "Roles",
+        "de": "Rollen"
     }
 }
