@@ -58,8 +58,8 @@
                         {{ rowData[col.field] }}
                     </ng-container>
                     <ng-container *ngIf="rowData.type === 'loadmore'">
-                        <p-button [label]="'admin.load_more' | i18n"
-                                  (onClick)="loadData({node: rowNode.parent})"></p-button>
+                        <gtx-button size="small"
+                                    (click)="loadData({node: rowNode.parent})">{{ 'admin.load_more' | i18n }}</gtx-button>
                     </ng-container>
                 </ng-container>
             </td>

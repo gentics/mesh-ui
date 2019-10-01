@@ -47,6 +47,7 @@ p-accordion {
         .ui-accordion-content {
             background-color: transparent;
             border: none;
+            padding-bottom: 2rem;
 
             // inner
             .ui-treetable  {
@@ -72,14 +73,14 @@ p-accordion {
                         border-left: none;
                         border-right: none;
                     }
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
                 }
             }
         }
     }
-
-    // p-header ::ng-deep {
-        
-    // }
 }
 
 // p-checkbox
