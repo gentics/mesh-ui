@@ -71,8 +71,11 @@
                             *ngIf="rowData.type === 'node'"></p-checkbox>
             </td>
             <td class="gtx-column-recursive">
-                <p-button [label]="'admin.apply_recursively' | i18n"
-                          (onClick)="applyRecursively(rowNode)"></p-button>
+                <gtx-button class="gtx-column-recursive-button"
+                            size="small"
+                            (click)="applyRecursively(rowNode)">
+                    {{ 'admin.apply_recursively' | i18n }}
+                </gtx-button>
             </td>
         </tr>
     </ng-template>

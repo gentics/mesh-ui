@@ -18,6 +18,7 @@ p-accordion {
                 border-left: none;
                 border-right: none;
                 border-top: none;
+                border-bottom-color: $gtx-color-light-gray;
                 padding: 0.5rem;
                 color: $gtx-color-dark-gray;
 
@@ -39,7 +40,7 @@ p-accordion {
         // state active
         .ui-accordion-header:not(.ui-state-disabled).ui-state-active a {
             background-color: $gtx-color-dark-gray;
-            border-color: $gtx-color-dark-gray;
+            border-color: transparent;
         }
 
         // body
@@ -104,7 +105,6 @@ p-accordion {
         }
     }
 }
-
 /** PrimeNG components overrides END */
 
 .gtx-entity-filter {
