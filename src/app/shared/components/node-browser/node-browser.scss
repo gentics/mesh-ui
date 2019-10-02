@@ -21,9 +21,13 @@
         width: 400px;
     }
 
-    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb,
-    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
-        color: white;
+    ::ng-deep gtx-breadcrumbs > nav a.breadcrumb {
+        color: $gtx-color-mid-gray !important;
         cursor: pointer;
+    }
+    ::ng-deep gtx-breadcrumbs > nav a.breadcrumb:last-child,
+    ::ng-deep gtx-breadcrumbs > nav a.breadcrumb::before
+    {
+        color: $gtx-color-very-light-gray !important;
     }
 }
