@@ -17,6 +17,13 @@ import {
 } from '../src/app/common/models/server-models';
 import { SchemaCreateRequest } from '../src/app/common/models/server-models';
 
+export interface FolderNode extends MeshNode {
+    fields: {
+        name: string;
+        slug: string;
+    };
+}
+
 export namespace api {
     export function baseUrl() {
         return process.env.MESHUI_URL || 'http://localhost:4200';
@@ -26,7 +33,7 @@ export namespace api {
         return get(`/${project}`);
     }
 
-    export function createFolder(parent: HasUuid, name: string, language = 'en'): Promise<MeshNode> {
+    export function createFolder(parent: HasUuid, name: string, language = 'en'): Promise<FolderNode> {
         return post(
             `/${project}/nodes`,
             {
@@ -120,8 +127,8 @@ export namespace api {
         });
     }
 
-    export function findNodeByUuid(uuid: string): Promise<MeshNode> {
-        return get(`/${project}/nodes/${uuid}`);
+    export function findNodeByUuid(uuid: string, lang?: string): Promise<MeshNode> {
+        return get(`/${project}/nodes/${uuid}`, undefined, { lang });
     }
 
     export function webroot(path: string): Promise<MeshNode> {

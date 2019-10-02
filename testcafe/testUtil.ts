@@ -10,7 +10,7 @@ import {
     UserResponse
 } from '../src/app/common/models/server-models';
 
-import { api } from './api';
+import { api, FolderNode } from './api';
 
 export function formControlInput(name: string) {
     return Selector('gtx-input')
@@ -30,7 +30,7 @@ export function formControlCheckbox(name: string) {
  *
  * @param body A function that is executed
  */
-export async function inTemporaryFolder(body: (parentNode: NodeResponse) => Promise<any>): Promise<any> {
+export async function inTemporaryFolder(body: (parentNode: FolderNode) => Promise<any>): Promise<any> {
     const project = await api.getProject();
     const parentNode = await api.createFolder(project.rootNode, 'tmpFolder' + randomString());
 

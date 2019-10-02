@@ -32,3 +32,25 @@ test('Display node path', async t => {
     await nodeEditor.showPath();
     await t.expect(await nodeEditor.getNodePath()).eql('/aircrafts/space-shuttle');
 });
+
+test('Create language version of node', async t =>
+    inTemporaryFolder(async parent => {
+        const node = await api.createVehicle(parent, 'TestVehicle');
+
+        await t.useRole(Admin);
+
+        await containerContents.getListItemByName(parent.fields.name).open();
+        await containerContents.getListItemByName('TestVehicle').open();
+
+        await nodeEditor.createLanguageVersion('German');
+
+        const nodeDE = await api.findNodeByUuid(node.uuid, 'de');
+
+        await t
+            .expect(nodeDE.language)
+            .eql('de')
+            .expect(nodeDE.fields.name)
+            .eql('TestVehicle-DE')
+            .expect(nodeDE.fields.slug)
+            .eql('TestVehicle-DE');
+    }));
