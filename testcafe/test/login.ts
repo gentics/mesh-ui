@@ -2,9 +2,11 @@ import { api } from '../api';
 import { goToUsers } from '../page-object/admin/admin-main-menu';
 import { createUser } from '../page-object/admin/user/user-detail';
 import { newUser } from '../page-object/admin/user/user-list';
+import { containerContents } from '../page-object/editor/container-contents';
 import { login } from '../page-object/login';
 import { toast } from '../page-object/toast';
 import { topnav } from '../page-object/topnav';
+import { Admin } from '../roles';
 
 fixture`Login`.page(api.baseUrl());
 
@@ -39,4 +41,12 @@ test('Change password on login', async t => {
 test('Invalid credentials', async t => {
     await login('admin', 'invalid');
     await toast.expectErrorMessage('Login failed.');
+});
+
+test.only('Home button', async t => {
+    await t.useRole(Admin);
+    await topnav.goToAdmin();
+    await topnav.goHome();
+
+    await containerContents.expectVisible();
 });
