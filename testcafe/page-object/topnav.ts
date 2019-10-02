@@ -11,6 +11,10 @@ export namespace topnav {
         await openSidebar();
         await t.click(Selector('gtx-side-menu gtx-button').withText('LOG OUT'));
     }
+
+    export async function goHome() {
+        await t.click('gtx-top-bar a.logo-container');
+    }
 }
 
 async function openSidebar() {
