@@ -361,10 +361,15 @@ export class EditorEffectsService {
                 if (!fieldKey) {
                     return;
                 }
-                if (node.fields[fieldKey].sha512sum) {
-                    clone.fields[fieldKey].fileName = this.addSuffixToString(node.fields[fieldKey].fileName, suffix);
-                } else {
-                    fieldsToBeSuffixed.add(fieldKey);
+                if (node.fields[fieldKey]) {
+                    if (node.fields[fieldKey].sha512sum) {
+                        clone.fields[fieldKey].fileName = this.addSuffixToString(
+                            node.fields[fieldKey].fileName,
+                            suffix
+                        );
+                    } else {
+                        fieldsToBeSuffixed.add(fieldKey);
+                    }
                 }
             };
 

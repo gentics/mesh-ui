@@ -2,6 +2,8 @@ import { t, ClientFunction, Selector } from 'testcafe';
 
 const getWindowLocation = ClientFunction(() => window.location.href);
 
+export type LanguageVersion = 'English' | 'German';
+
 export namespace nodeEditor {
     export async function save() {
         await t.click(Selector('button').withText('SAVE'));
@@ -22,5 +24,10 @@ export namespace nodeEditor {
 
     export async function getNodePath(): Promise<string | undefined> {
         return Selector('mesh-node-path input').value;
+    }
+
+    export async function createLanguageVersion(language: LanguageVersion) {
+        await t.click('mesh-node-language-switcher');
+        await t.click(Selector('gtx-dropdown-item').withText(`Create ${language} version`));
     }
 }
