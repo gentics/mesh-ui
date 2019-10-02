@@ -24,3 +24,17 @@
         color: $gtx-breadcrumbs-inactive-color;
     }
 }
+
+gtx-breadcrumbs
+> ::ng-deep nav
+> div
+> div
+> div.other-content
+> mesh-project-switcher
+> gtx-dropdown-list
+> div
+> gtx-dropdown-trigger
+> div
+{
+    margin-top: 10px;
+}
