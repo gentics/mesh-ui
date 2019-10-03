@@ -24,7 +24,7 @@ export class PermissionsRow {
 
     async applyRecursively() {
         await t.hover(this.elem);
-        await t.click(Selector('p-button').withText('Apply recursively'));
+        await t.click(Selector('gtx-button').withText('APPLY RECURSIVELY'));
     }
 
     async expand() {

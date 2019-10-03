@@ -1,3 +1,5 @@
+import { Role } from 'testcafe';
+
 import { api } from '../api';
 import { goToUsers } from '../page-object/admin/admin-main-menu';
 import { createUser } from '../page-object/admin/user/user-detail';
@@ -12,6 +14,8 @@ fixture`Login`.page(api.baseUrl());
 
 test('Change password on login', async t => {
     const username = `user-` + new Date().toISOString();
+
+    await t.useRole(Role.anonymous());
 
     await login('admin', 'admin');
     await topnav.goToAdmin();
@@ -39,11 +43,12 @@ test('Change password on login', async t => {
 });
 
 test('Invalid credentials', async t => {
+    await t.useRole(Role.anonymous());
     await login('admin', 'invalid');
     await toast.expectErrorMessage('Login failed.');
 });
 
-test.only('Home button', async t => {
+test('Home button', async t => {
     await t.useRole(Admin);
     await topnav.goToAdmin();
     await topnav.goHome();
