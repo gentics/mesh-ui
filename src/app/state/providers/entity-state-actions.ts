@@ -86,7 +86,7 @@ export function mergeEntityState(
         const discriminator = getDiscriminator(key as keyof EntityDiscriminators);
         const branch = mergeBranch(oldBranch, branchChanges, discriminator, strict);
         if (branch !== oldBranch) {
-            newState[key as keyof EntityState] = branch;
+            newState[key as keyof EntityState] = branch as any;
             anyBranchChanged = true;
         }
     }
@@ -139,11 +139,11 @@ function mergeBranch<B extends keyof EntityState>(
 export function getDiscriminator<K extends keyof EntityDiscriminators>(type: K): EntityDiscriminators[K] {
     switch (type) {
         case 'node':
-            return nodeDiscriminator;
+            return nodeDiscriminator as any;
         case 'schema':
-            return schemaDiscriminator;
+            return schemaDiscriminator as any;
         case 'microschema':
-            return microschemaDiscriminator;
+            return microschemaDiscriminator as any;
         default:
             return defaultDiscriminator;
     }
@@ -170,7 +170,7 @@ export function getNestedEntity<B extends keyof EntityState>(
         if (k === 'language' && Array.isArray(languageFallbacks) && 0 < languageFallbacks.length) {
             const availableLanguages = Object.keys(o);
             if (getLanguageKeyFromFallbackArray(availableLanguages, languageFallbacks)) {
-                key = getLanguageKeyFromFallbackArray(availableLanguages, languageFallbacks) as string;
+                key = getLanguageKeyFromFallbackArray(availableLanguages, languageFallbacks) as any;
             } else {
                 return;
             }
@@ -180,7 +180,7 @@ export function getNestedEntity<B extends keyof EntityState>(
             const alternativeKeys = Object.keys(o);
             if (k === 'version') {
                 // return the most recent version
-                key = alternativeKeys.sort((a, b) => parseFloat(b) - parseFloat(a))[0];
+                key = alternativeKeys.sort((a, b) => parseFloat(b) - parseFloat(a))[0] as any;
             }
         }
         o = o[key];

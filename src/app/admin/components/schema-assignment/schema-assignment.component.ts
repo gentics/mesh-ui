@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit
 import { difference } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { ProjectAssignments } from 'src/app/state/models/admin-schemas-state.model';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { AdminSchemaEffectsService } from '../../providers/effects/admin-schema-effects.service';
@@ -32,7 +33,7 @@ export class SchemaAssignmentComponent implements OnChanges, OnDestroy, OnInit {
     ngOnInit() {
         const stateAssignments$ = this.state
             .select(state => state.adminSchemas.assignedToProject)
-            .pipe(filter(Boolean));
+            .pipe(filter<ProjectAssignments>(Boolean));
 
         this.assignments$ = stateAssignments$.pipe(
             map(assignments =>

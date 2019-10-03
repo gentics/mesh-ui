@@ -57,7 +57,7 @@ export class EntitiesService {
 
     constructor(private state: ApplicationStateService, private config: ConfigService) {
         Object.keys(this.discriminator).forEach((key: keyof EntityDiscriminators) => {
-            this.discriminator[key] = getDiscriminator(key);
+            this.discriminator[key] = getDiscriminator(key) as any;
         });
     }
 

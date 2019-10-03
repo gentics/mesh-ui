@@ -2,7 +2,6 @@ import { of as observableOf, throwError as observableThrowError, Observable } fr
 
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Response, URLSearchParams } from '@angular/http';
 import { catchError, last, map, materialize } from 'rxjs/operators';
 
 import { ApiEndpoints } from '../../../common/models/server-models';

@@ -66,7 +66,7 @@ export class AdminGroupEffectsService {
                 return project && project.name;
             })
             .pipe(
-                filter(Boolean),
+                filter<string>(Boolean),
                 take(1)
             );
     }
