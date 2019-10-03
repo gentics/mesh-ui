@@ -1,8 +1,6 @@
 # MeshUI
 
-The new UI for [Gentics Mesh](https://getmesh.io). Currently under construction.
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.3.
+The UI for [Gentics Mesh](https://getmesh.io).
 
 ## Development
 
@@ -10,7 +8,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 2. `$ git checkout develop`
 3. `$ npm ci`
 4. `$ npm start`
-5. Download and run the Mesh Demo: https://getmesh.io/Download
+5. Download and run the Mesh Demo: https://getmesh.io/Download OR you can run `npm run mesh` if you have docker installed.
 6. Open `http://localhost:4200` in a browser.
 
 ## Testing
