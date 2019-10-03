@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { ChangeDetectorRef, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 
@@ -73,7 +74,8 @@ const SHARED_PIPES = [DisplayFieldPipe, FileSizePipe, I18nPipe, HighlightPipe];
         ReactiveFormsModule,
         GenticsUICoreModule,
         RouterModule.forChild([]),
-        NgxPaginationModule
+        NgxPaginationModule,
+        TranslateModule
     ],
     declarations: [...COMPONENTS, ...SHARED_COMPONENTS, ...ENTRY_COMPONENTS, ...SHARED_PIPES, ...SHARED_DIRECTIVES],
     exports: [

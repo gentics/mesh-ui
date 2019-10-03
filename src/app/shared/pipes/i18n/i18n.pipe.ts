@@ -49,11 +49,7 @@ export class I18nPipe implements PipeTransform, OnDestroy {
     _lastResult: string | undefined;
     subscription: Subscription;
 
-    constructor(
-        private translate: TranslateService,
-        private changeDetector: ChangeDetectorRef,
-        private translatePipe: TranslatePipe
-    ) {
+    constructor(private translate: TranslateService, private changeDetector: ChangeDetectorRef) {
         this.subscription = translate.onLangChange.subscribe(() => {
             I18nPipe.memoized = {};
             this._lastParams = undefined;
@@ -74,7 +70,7 @@ export class I18nPipe implements PipeTransform, OnDestroy {
         if (memoized) {
             result = memoized;
         } else {
-            result = this.translatePipe.transform(value, params);
+            result = this.translate.instant(value, params);
             I18nPipe.memoized[token] = result;
         }
         this._lastValue = value;
