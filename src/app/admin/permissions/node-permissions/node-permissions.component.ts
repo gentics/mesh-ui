@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { TreeNode } from 'primeng/api';
+import { map } from 'rxjs/operators';
 import { PermissionInfoFromServer, ProjectResponse } from 'src/app/common/models/server-models';
 import { extractGraphQlResponse } from 'src/app/common/util/util';
 import { ApiService } from 'src/app/core/providers/api/api.service';
@@ -118,7 +119,7 @@ export class NodePermissionsComponent extends AbstractPermissionsComponent<NodeN
                         }
                     }
                 )
-                .map(extractGraphQlResponse)
+                .pipe(map(extractGraphQlResponse))
                 .toPromise()
                 .then(response => {
                     response.rootNode.type = 'node';
@@ -163,7 +164,7 @@ export class NodePermissionsComponent extends AbstractPermissionsComponent<NodeN
                         }
                     }
                 )
-                .map(extractGraphQlResponse)
+                .pipe(map(extractGraphQlResponse))
                 .toPromise()
                 .then(response => ({
                     hasNextPage: response.node.children.hasNextPage,

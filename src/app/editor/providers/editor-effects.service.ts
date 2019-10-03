@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { filter } from 'rxjs/operators';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
 
 import { BinaryField, FieldMap, ImageTransform, MeshNode } from '../../common/models/node.model';
@@ -110,7 +110,7 @@ export class EditorEffectsService {
                     // That way the editor will decide what to do next (stay in an unchanged state?),
                     this.api.project
                         .deleteNode({ project: projectName, nodeUuid: error.node.uuid })
-                        .take(1)
+                        .pipe(take(1))
                         .subscribe();
                     throw error.error;
                 }
@@ -234,13 +234,15 @@ export class EditorEffectsService {
 
         this.api.project
             .unpublishNode({ project: node.project.name, nodeUuid: node.uuid })
-            .switchMap(() =>
-                this.api.project.getNodePublishStatus({
-                    project: node.project.name!,
-                    nodeUuid: node.uuid
-                })
+            .pipe(
+                switchMap(() =>
+                    this.api.project.getNodePublishStatus({
+                        project: node.project.name!,
+                        nodeUuid: node.uuid
+                    })
+                ),
+                this.notification.rxSuccess('editor.node_unpublished')
             )
-            .pipe(this.notification.rxSuccess('editor.node_unpublished'))
             .subscribe(
                 response => {
                     if (!node.language) {
@@ -274,13 +276,15 @@ export class EditorEffectsService {
         }
         this.api.project
             .unpublishNodeLanguage({ project: node.project.name, nodeUuid: node.uuid, language: node.language })
-            .switchMap(() =>
-                this.api.project.getNodePublishStatus({
-                    project: node.project.name!,
-                    nodeUuid: node.uuid
-                })
+            .pipe(
+                switchMap(() =>
+                    this.api.project.getNodePublishStatus({
+                        project: node.project.name!,
+                        nodeUuid: node.uuid
+                    })
+                ),
+                this.notification.rxSuccess('editor.node_unpublished')
             )
-            .pipe(this.notification.rxSuccess('editor.node_unpublished'))
             .subscribe(
                 response => {
                     if (!node.language) {

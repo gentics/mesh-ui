@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { MeshNode, NodeField, NodeFieldType } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
@@ -60,7 +61,7 @@ export class NodeFieldComponent extends BaseFieldComponent implements OnDestroy 
         if (this.userValue) {
             const node$ = this.entities.selectNode(this.userValue!, { language: this.node.language });
 
-            node$.takeUntil(this.destroy$).subscribe(node => {
+            node$.pipe(takeUntil(this.destroy$)).subscribe(node => {
                 this.schemaName = node.schema.name;
                 this.isContainer = node.container;
                 this.displayName = node.displayName!;

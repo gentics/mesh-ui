@@ -41,7 +41,7 @@ export class TagSelectorComponent implements OnChanges, OnDestroy {
     /** Fired when the underlying DropdownList closes */
     @Output() close = new EventEmitter<void>();
 
-    @ViewChild(DropdownList) private dropDown: DropdownList;
+    @ViewChild(DropdownList, { static: true }) private dropDown: DropdownList;
     newTagName = '';
     selectedIndex = -1;
 

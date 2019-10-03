@@ -1,3 +1,5 @@
+import { of as observableOf, Observable } from 'rxjs';
+
 import { Component, DebugElement } from '@angular/core';
 import { tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -5,7 +7,7 @@ import { By } from '@angular/platform-browser';
 import { convertToParamMap, ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GenticsUICoreModule, InputField, OverlayHostService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { take } from 'rxjs/operators';
 
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
@@ -57,7 +59,7 @@ describe('Search-bar component:', () => {
     });
 
     const activeRoute = {
-        paramMap: Observable.of(
+        paramMap: observableOf(
             convertToParamMap({
                 containerUuid: 'container_uuid',
                 projectName: 'demo_project',
@@ -66,7 +68,7 @@ describe('Search-bar component:', () => {
                 t: 'tagUuid,tagUuid2'
             })
         ),
-        queryParamMap: Observable.of(
+        queryParamMap: observableOf(
             convertToParamMap({
                 containerUuid: 'container_uuid',
                 projectName: 'demo_project',
@@ -153,7 +155,7 @@ describe('Search-bar component:', () => {
                     fixture.detectChanges();
                     const searchBar: SearchBarComponent = fixture.debugElement.query(By.directive(SearchBarComponent))
                         .componentInstance;
-                    activeRoute.queryParamMap.take(1).subscribe(urlParams => {
+                    activeRoute.queryParamMap.pipe(take(1)).subscribe(urlParams => {
                         expect(searchBar.searchQuery).toEqual(urlParams.get('q')!);
                     });
                 }
@@ -234,6 +236,7 @@ function typeSearchTerm(fixture: ComponentFixture<TestComponent>, term: string):
 @Component({
     template: `
         <mesh-search-bar></mesh-search-bar>
-        <gtx-overlay-host></gtx-overlay-host>`
+        <gtx-overlay-host></gtx-overlay-host>
+    `
 })
 class TestComponent {}

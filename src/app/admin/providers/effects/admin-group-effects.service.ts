@@ -1,8 +1,10 @@
+import { from as observableFrom, Observable } from 'rxjs';
+
 import { Injectable } from '@angular/core';
 import { head, values } from 'ramda';
 import * as GroupQuery from 'raw-loader!./admin-group-query.gql';
 import * as GroupsQuery from 'raw-loader!./admin-groups-query.gql';
-import { Observable } from 'rxjs/Observable';
+import { filter, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 
 import { GroupCreateRequest, GroupUpdateRequest } from '../../../common/models/server-models';
 import { extractGraphQlResponse } from '../../../common/util/util';
@@ -63,8 +65,10 @@ export class AdminGroupEffectsService {
                 const project = head(values(state.entities.project));
                 return project && project.name;
             })
-            .filter(Boolean)
-            .take(1);
+            .pipe(
+                filter(Boolean),
+                take(1)
+            );
     }
 
     /**
@@ -74,8 +78,8 @@ export class AdminGroupEffectsService {
      */
     loadGroups(page: number, query?: string): Observable<AdminGroupListResponse> {
         // TODO Make filterable by role
-        return this.getAnyProjectName()
-            .flatMap(project =>
+        return this.getAnyProjectName().pipe(
+            mergeMap(project =>
                 this.api.graphQL(
                     { project },
                     {
@@ -83,13 +87,14 @@ export class AdminGroupEffectsService {
                         variables: { page, query }
                     }
                 )
-            )
-            .map(extractGraphQlResponse);
+            ),
+            map(extractGraphQlResponse)
+        );
     }
 
     loadGroup(uuid: string): Observable<AdminGroupOnlyResponse> {
-        return this.getAnyProjectName()
-            .flatMap(project =>
+        return this.getAnyProjectName().pipe(
+            mergeMap(project =>
                 this.api.graphQL(
                     { project },
                     {
@@ -97,45 +102,50 @@ export class AdminGroupEffectsService {
                         variables: { uuid }
                     }
                 )
-            )
-            .map(extractGraphQlResponse)
-            .map(response => response.group)
-            .do(group => this.state.actions.adminGroups.loadGroupSuccess(group));
+            ),
+            map(extractGraphQlResponse),
+            map(response => response.group),
+            tap(group => this.state.actions.adminGroups.loadGroupSuccess(group))
+        );
     }
 
     addGroupsToRole(groups: AdminGroupResponse[], role: AdminGroupRoleResponse) {
-        return Observable.from(groups)
-            .flatMap(group =>
+        return observableFrom(groups).pipe(
+            mergeMap(group =>
                 this.api.admin.addRoleToGroup({
                     groupUuid: group.uuid,
                     roleUuid: role.uuid
                 })
-            )
-            .toArray();
+            ),
+            toArray()
+        );
     }
 
     removeGroupsFromRole(groups: AdminGroupResponse[], role: AdminGroupRoleResponse) {
-        return Observable.from(groups)
-            .flatMap(group =>
+        return observableFrom(groups).pipe(
+            mergeMap(group =>
                 this.api.admin.removeRoleFromGroup({
                     groupUuid: group.uuid,
                     roleUuid: role.uuid
                 })
-            )
-            .toArray();
+            ),
+            toArray()
+        );
     }
 
     deleteGroups(groups: AdminGroupResponse[]) {
         const notificationKey = groups.length === 1 ? 'admin.group_deleted' : 'admin.groups_deleted';
 
-        return Observable.from(groups)
-            .flatMap(group =>
-                this.api.admin.deleteGroup({
-                    groupUuid: group.uuid
-                })
+        return observableFrom(groups)
+            .pipe(
+                mergeMap(group =>
+                    this.api.admin.deleteGroup({
+                        groupUuid: group.uuid
+                    })
+                )
             )
             .pipe(this.notification.rxSuccess(notificationKey))
-            .toArray();
+            .pipe(toArray());
     }
 
     createGroup(createRequest: GroupCreateRequest) {

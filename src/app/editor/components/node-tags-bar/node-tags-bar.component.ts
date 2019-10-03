@@ -11,8 +11,8 @@ import {
     ViewChild
 } from '@angular/core';
 import { InputField, ModalService } from 'gentics-ui-core';
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { TagReferenceFromServer } from '../../../common/models/server-models';
@@ -35,7 +35,7 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
-    @ViewChild(InputField, { read: ElementRef })
+    @ViewChild(InputField, { read: ElementRef, static: true })
     inputField: ElementRef;
 
     @Input() node: MeshNode;
@@ -60,7 +60,7 @@ export class NodeTagsBarComponent implements OnChanges, OnInit, OnDestroy {
     ngOnInit(): void {
         this.state
             .select(state => state.tags.tags)
-            .takeUntil(this.destroyed$)
+            .pipe(takeUntil(this.destroyed$))
             .subscribe(tags => {
                 this.allTags = tags.map(uuid => this.entities.getTag(uuid)).filter(notNullOrUndefined);
             });

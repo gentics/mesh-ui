@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { IDialogConfig, ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';

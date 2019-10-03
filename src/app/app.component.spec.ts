@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { GenticsUICoreModule } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { never as observableNever, Observable } from 'rxjs';
 
 import { AppComponent } from './app.component';
 import { ConfigService } from './core/providers/config/config.service';
@@ -42,5 +42,5 @@ describe(`App`, () => {
 });
 
 class MockRouter {
-    events = Observable.never();
+    events = observableNever();
 }

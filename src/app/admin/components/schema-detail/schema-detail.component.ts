@@ -2,10 +2,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { debounceTime, filter, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
@@ -99,19 +97,22 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.schema$ = this.route.data
-            .map(data => data.schema)
-            .do((schema: Schema) => {
+        this.schema$ = this.route.data.pipe(
+            map(data => data.schema),
+            tap((schema: Schema) => {
                 this.isNew$.next(!schema);
-            });
+            })
+        );
 
         this.subscription = this.schema$.subscribe(schema => {
             this.schemaJson$.next(schema ? JSON.stringify(stripSchemaFields(schema), undefined, 4) : `{}`);
         });
 
         this.schema$
-            .filter(schema => !!schema)
-            .take(1)
+            .pipe(
+                filter(schema => !!schema),
+                take(1)
+            )
             .toPromise()
             .then(schema => {
                 // keep original to compare
@@ -124,7 +125,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
         this.adminProjectEffects.loadProjects();
 
-        this.filterInput.valueChanges.debounceTime(100).subscribe(term => {
+        this.filterInput.valueChanges.pipe(debounceTime(100)).subscribe(term => {
             setQueryParams(this.router, this.route, { q: term });
         });
 
@@ -135,18 +136,20 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
         this.allProjects$ = this.state
             .select(state => state.adminProjects.projectList)
-            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)).filter(notNullOrUndefined));
+            .pipe(map(uuids => uuids.map(uuid => this.entities.getProject(uuid)).filter(notNullOrUndefined)));
 
         const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
 
-        this.projects$ = combineLatest(this.allProjects$, filterTerm$).map(([projects, filterTerm]) => {
-            this.filterTerm = filterTerm;
-            return projects
-                .filter(project => fuzzyMatch(filterTerm, project.name) !== null)
-                .sort((pro1, pro2) => {
-                    return pro1.name < pro2.name ? -1 : 1;
-                });
-        });
+        this.projects$ = combineLatest(this.allProjects$, filterTerm$).pipe(
+            map(([projects, filterTerm]) => {
+                this.filterTerm = filterTerm;
+                return projects
+                    .filter(project => fuzzyMatch(filterTerm, project.name) !== null)
+                    .sort((pro1, pro2) => {
+                        return pro1.name < pro2.name ? -1 : 1;
+                    });
+            })
+        );
     }
 
     ngOnDestroy(): void {
@@ -192,7 +195,7 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
                     });
             });
         } else {
-            this.schema$.take(1).subscribe(schema => {
+            this.schema$.pipe(take(1)).subscribe(schema => {
                 this.schemaEffects.updateSchema({ ...schema, ...changedSchema }).then(schemaNew => {
                     if (schemaNew) {
                         this.version = schemaNew.version;
@@ -204,8 +207,10 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
 
     delete() {
         this.schema$
-            .take(1)
-            .switchMap(schema => this.schemaEffects.deleteSchema(schema.uuid))
+            .pipe(
+                take(1),
+                switchMap(schema => this.schemaEffects.deleteSchema(schema.uuid))
+            )
             .subscribe(() => {
                 this.doesDelete = true;
                 this.router.navigate(['admin', 'schemas']);
@@ -215,11 +220,11 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
     onAssignmentChange(project: Project, isChecked: boolean) {
         if (isChecked) {
             this.schema$
-                .take(1)
+                .pipe(take(1))
                 .subscribe(schema => this.schemaEffects.assignEntityToProject('schema', schema.uuid, project.name));
         } else {
             this.schema$
-                .take(1)
+                .pipe(take(1))
                 .subscribe(schema => this.schemaEffects.removeEntityFromProject('schema', schema.uuid, project.name));
         }
 

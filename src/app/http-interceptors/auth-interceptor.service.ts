@@ -10,9 +10,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
-import { empty, throwError, timer } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { empty, throwError, timer, Observable, Subject } from 'rxjs';
 import { catchError, debounce, filter, switchMap, tap } from 'rxjs/operators';
 
 import { ApiService } from '../core/providers/api/api.service';

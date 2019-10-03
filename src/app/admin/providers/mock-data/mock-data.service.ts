@@ -1,6 +1,7 @@
+import { from as observableFrom, Observable, Subject } from 'rxjs';
+
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { concatMap, takeUntil } from 'rxjs/operators';
 
 import { UserCreateRequest } from '../../../common/models/server-models';
 import { AdminUserEffectsService } from '../effects/admin-user-effects.service';
@@ -47,9 +48,11 @@ export class MockDataService implements OnDestroy {
             [] as UserCreateRequest[]
         );
 
-        Observable.from(userCreateRequests)
-            .takeUntil(this.destroy$)
-            .concatMap(request => this.adminUserEffects.createUser(request))
+        observableFrom(userCreateRequests)
+            .pipe(
+                takeUntil(this.destroy$),
+                concatMap(request => this.adminUserEffects.createUser(request))
+            )
             .subscribe(result => {
                 console.log(`Created a new mock user:`, result);
             });

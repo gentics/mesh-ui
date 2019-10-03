@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 import { User } from '../../../common/models/user.model';
 import { BreadcrumbTextFunction } from '../../components/admin-breadcrumbs/admin-breadcrumbs.component';
@@ -31,11 +32,13 @@ export const userBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities)
     if (!userUuid) {
         return 'admin.new_user';
     } else {
-        return entities.selectUser(userUuid).map(user => {
-            if (user.firstname && user.lastname) {
-                return `${user.firstname} ${user.lastname} (${user.username})`;
-            }
-            return `${user.username}`;
-        });
+        return entities.selectUser(userUuid).pipe(
+            map(user => {
+                if (user.firstname && user.lastname) {
+                    return `${user.firstname} ${user.lastname} (${user.username})`;
+                }
+                return `${user.username}`;
+            })
+        );
     }
 };

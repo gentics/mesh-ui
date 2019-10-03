@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, flatMap, takeUntil } from 'rxjs/operators';
 
 import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -52,22 +51,26 @@ export class RoleListComponent implements OnInit, OnDestroy {
             observeQueryParam(this.route.queryParamMap, 'role', ''),
             this.refetch$
         )
-            .takeUntil(this.destroy$)
-            .flatMap(([page, query, role]) => this.adminRoleEffects.loadRoles(page, query))
+            .pipe(
+                takeUntil(this.destroy$),
+                flatMap(([page, query, role]) => this.adminRoleEffects.loadRoles(page, query))
+            )
             .subscribe(response => {
                 this.response = response;
                 this.change.markForCheck();
             });
 
         observeQueryParam(this.route.queryParamMap, 'q', '')
-            .takeUntil(this.destroy$)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(filterTerm => {
                 this.filterInput.setValue(filterTerm, { emitEvent: false });
             });
 
         this.filterInput.valueChanges
-            .debounceTime(300)
-            .takeUntil(this.destroy$)
+            .pipe(
+                debounceTime(300),
+                takeUntil(this.destroy$)
+            )
             .subscribe(term => {
                 setQueryParams(this.router, this.route, { q: term });
             });

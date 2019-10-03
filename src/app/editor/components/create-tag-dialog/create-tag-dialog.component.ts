@@ -21,9 +21,9 @@ export interface CreateTagDialogComponentResult {
     styleUrls: ['./create-tag-dialog.component.scss']
 })
 export class CreateTagDialogComponent implements IModalDialog, OnInit {
-    @ViewChild('InputTagName') inputTagName: InputField;
-    @ViewChild('InputTagFamily') inputTagFamily: InputField;
-    @ViewChild('TagFamilyList') familyDropDown: DropdownList;
+    @ViewChild('InputTagName', { static: true }) inputTagName: InputField;
+    @ViewChild('InputTagFamily', { static: true }) inputTagFamily: InputField;
+    @ViewChild('TagFamilyList', { static: true }) familyDropDown: DropdownList;
 
     closeFn: (result: CreateTagDialogComponentResult) => void;
     cancelFn: (val?: any) => void;
@@ -45,10 +45,11 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
     ) {}
 
     ngOnInit() {
-        this.tagFamilies = this.state.now.tags.tagFamilies.map(uuid => {
-            return this.entities.getTagFamily(uuid);
-        })
-        .filter(notNullOrUndefined);
+        this.tagFamilies = this.state.now.tags.tagFamilies
+            .map(uuid => {
+                return this.entities.getTagFamily(uuid);
+            })
+            .filter(notNullOrUndefined);
     }
 
     onFamilyNameInputChange(term: string): void {

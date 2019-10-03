@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Project } from '../../../common/models/project.model';
 import { hashValues } from '../../../common/util/util';
@@ -20,7 +21,7 @@ export class ProjectSwitcherComponent {
     projects$: Observable<Project[]>;
 
     constructor(private appState: ApplicationStateService, private navigation: NavigationService) {
-        this.projects$ = this.appState.select(state => state.entities.project).map(hashValues);
+        this.projects$ = this.appState.select(state => state.entities.project).pipe(map(hashValues));
     }
 
     changeProject(project: Project) {

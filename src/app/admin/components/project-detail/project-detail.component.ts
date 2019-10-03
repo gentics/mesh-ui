@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
@@ -87,9 +86,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        const project$: Observable<Project> = this.route.data.map(data => data.project).filter(notNullOrUndefined);
+        const project$: Observable<Project> = this.route.data.pipe(
+            map(data => data.project),
+            filter(notNullOrUndefined)
+        );
 
-        project$.takeUntil(this.destroy$).subscribe(project => {
+        project$.pipe(takeUntil(this.destroy$)).subscribe(project => {
             this.project = project;
             this.readOnly = !!project && !project.permissions.update;
             this.form = this.formBuilder.group({
@@ -100,14 +102,16 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         });
 
         this.filterInput.valueChanges
-            .debounceTime(100)
-            .takeUntil(this.destroy$)
+            .pipe(
+                debounceTime(100),
+                takeUntil(this.destroy$)
+            )
             .subscribe(term => {
                 setQueryParams(this.router, this.route, { q: term });
             });
 
         observeQueryParam(this.route.queryParamMap, 'q', '')
-            .takeUntil(this.destroy$)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(filterTerm => {
                 this.projectEffect.setTagFilterTerm(filterTerm);
                 this.filterInput.setValue(filterTerm, { emitEvent: false });
@@ -115,7 +119,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
         this.state
             .select(state => state.adminProjects.filterTagsTerm)
-            .takeUntil(this.destroy$)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(result => {
                 this.tagFilterTerm = result.toLowerCase();
                 this.changeDetector.markForCheck();
@@ -137,34 +141,38 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.state.select(state => state.entities.tagFamily), // We need to subscribe to entities because editing of a family name does not alter the state.tag[s] state
             this.state.select(state => state.entities.tag) // We need to subscribe to entities because editing of a tag name of does not alter the state.tag[s] state
         )
-            .takeUntil(this.preventTagFamiliesUpdate$)
-            .map(([families]) => {
-                const allTags = this.entities.getAllTags();
-                return Object.values(families)
-                    .map(family => {
-                        const familyTags = allTags.filter(tag => tag.tagFamily.uuid === family).map(tag => {
-                            const localTag: LocalTag = {
+            .pipe(
+                takeUntil(this.preventTagFamiliesUpdate$),
+                map(([families]) => {
+                    const allTags = this.entities.getAllTags();
+                    return Object.values(families)
+                        .map(family => {
+                            const familyTags = allTags
+                                .filter(tag => tag.tagFamily.uuid === family)
+                                .map(tag => {
+                                    const localTag: LocalTag = {
+                                        status: TagStatus.PRISTINE,
+                                        data: tag
+                                    };
+                                    return localTag;
+                                });
+
+                            const familyData = this.entities.getTagFamily(family);
+
+                            if (!familyData) {
+                                return null;
+                            }
+
+                            const localTagFamily: LocalTagFamily = {
                                 status: TagStatus.PRISTINE,
-                                data: tag
+                                data: familyData,
+                                tags: familyTags
                             };
-                            return localTag;
-                        });
-
-                        const familyData = this.entities.getTagFamily(family);
-
-                        if (!familyData) {
-                            return null;
-                        }
-
-                        const localTagFamily: LocalTagFamily = {
-                            status: TagStatus.PRISTINE,
-                            data: familyData,
-                            tags: familyTags
-                        };
-                        return localTagFamily;
-                    })
-                    .filter(notNullOrUndefined);
-            })
+                            return localTagFamily;
+                        })
+                        .filter(notNullOrUndefined);
+                })
+            )
             .subscribe(families => {
                 this.tagFamilies = families;
                 this.changeDetector.markForCheck();
@@ -413,35 +421,37 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     }
 
     updateTags(project: Project, family: LocalTagFamily): Promise<any> {
-        const tagRequests = family.tags.filter(tag => tag.status !== TagStatus.DELETED).map(async tag => {
-            let result: TagResponse | null;
-            switch (tag.status) {
-                case TagStatus.NEW:
-                    result = await this.tagEffects.createTag(
-                        project.name,
-                        (family.data as TagFamily).uuid,
-                        tag.data.name
-                    );
-                    break;
-                case TagStatus.EDITED:
-                    result = await this.tagEffects.updateTag(
-                        project.name,
-                        (family.data as TagFamily).uuid,
-                        (tag.data as Tag).uuid,
-                        tag.data.name!
-                    );
-                    break;
-                default:
-                    result = null;
-                    break;
-            }
+        const tagRequests = family.tags
+            .filter(tag => tag.status !== TagStatus.DELETED)
+            .map(async tag => {
+                let result: TagResponse | null;
+                switch (tag.status) {
+                    case TagStatus.NEW:
+                        result = await this.tagEffects.createTag(
+                            project.name,
+                            (family.data as TagFamily).uuid,
+                            tag.data.name
+                        );
+                        break;
+                    case TagStatus.EDITED:
+                        result = await this.tagEffects.updateTag(
+                            project.name,
+                            (family.data as TagFamily).uuid,
+                            (tag.data as Tag).uuid,
+                            tag.data.name!
+                        );
+                        break;
+                    default:
+                        result = null;
+                        break;
+                }
 
-            if (result) {
-                tag.status = TagStatus.PRISTINE;
-                tag.data = result;
-            }
-            return Promise.resolve();
-        });
+                if (result) {
+                    tag.status = TagStatus.PRISTINE;
+                    tag.data = result;
+                }
+                return Promise.resolve();
+            });
 
         return Promise.all(tagRequests);
     }
@@ -457,33 +467,35 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     }
 
     updateTagFamilies(project: Project): Promise<any> {
-        const tagRequests = this.tagFamilies.filter(family => family.status !== TagStatus.DELETED).map(async family => {
-            let result: TagFamilyResponse | null;
-            switch (family.status) {
-                case TagStatus.NEW:
-                    result = await this.tagEffects.createTagFamily(project.name, family.data.name!);
-                    break;
+        const tagRequests = this.tagFamilies
+            .filter(family => family.status !== TagStatus.DELETED)
+            .map(async family => {
+                let result: TagFamilyResponse | null;
+                switch (family.status) {
+                    case TagStatus.NEW:
+                        result = await this.tagEffects.createTagFamily(project.name, family.data.name!);
+                        break;
 
-                case TagStatus.EDITED:
-                    result = await this.tagEffects.updateTagFamily(
-                        project.name,
-                        (family.data as TagFamily).uuid,
-                        family.data.name!
-                    );
-                    break;
-                default:
-                    result = null;
-                    break;
-            }
+                    case TagStatus.EDITED:
+                        result = await this.tagEffects.updateTagFamily(
+                            project.name,
+                            (family.data as TagFamily).uuid,
+                            family.data.name!
+                        );
+                        break;
+                    default:
+                        result = null;
+                        break;
+                }
 
-            if (result) {
-                family.status = TagStatus.PRISTINE;
-                family.data = result;
-            }
+                if (result) {
+                    family.status = TagStatus.PRISTINE;
+                    family.data = result;
+                }
 
-            await this.deleteMarkedTags(project, family);
-            return this.updateTags(project, family);
-        });
+                await this.deleteMarkedTags(project, family);
+                return this.updateTags(project, family);
+            });
 
         return Promise.all(tagRequests);
     }

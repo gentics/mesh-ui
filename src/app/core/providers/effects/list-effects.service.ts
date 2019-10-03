@@ -1,6 +1,7 @@
+import { forkJoin, of as observableOf, Observable } from 'rxjs';
+
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { map, tap } from 'rxjs/operators';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
@@ -110,15 +111,17 @@ export class ListEffectsService {
                 perPage,
                 lang: this.languageWithFallbacks(language)
             })
-            .do(
-                response => {
-                    this.state.actions.list.fetchChildrenSuccess(containerUuid, response.data);
-                    return response.data;
-                },
-                error => {
-                    this.state.actions.list.fetchChildrenError();
-                    throw new Error('TODO: Error handling');
-                }
+            .pipe(
+                tap(
+                    response => {
+                        this.state.actions.list.fetchChildrenSuccess(containerUuid, response.data);
+                        return response.data;
+                    },
+                    error => {
+                        this.state.actions.list.fetchChildrenError();
+                        throw new Error('TODO: Error handling');
+                    }
+                )
             )
             .toPromise();
     }
@@ -129,8 +132,8 @@ export class ListEffectsService {
         const hasSearchTerm = 0 < searchTerm.trim().length;
 
         const searchRequests: Array<Observable<MeshNode[]>> = [
-            hasTags ? this.searchNodesByTags(tags, projectName, languageCode) : Observable.of([]),
-            hasSearchTerm ? this.searchNodesByKeyword(searchTerm, projectName, languageCode) : Observable.of([])
+            hasTags ? this.searchNodesByTags(tags, projectName, languageCode) : observableOf([]),
+            hasSearchTerm ? this.searchNodesByKeyword(searchTerm, projectName, languageCode) : observableOf([])
         ];
 
         forkJoin(searchRequests).subscribe(results => {
@@ -212,9 +215,11 @@ export class ListEffectsService {
             ]
         };
 
-        return this.api.project.searchNodes({ project }, query).map(results => {
-            return results.data as MeshNode[];
-        });
+        return this.api.project.searchNodes({ project }, query).pipe(
+            map(results => {
+                return results.data as MeshNode[];
+            })
+        );
     }
 
     /**
@@ -234,9 +239,11 @@ export class ListEffectsService {
             sort: [{ created: 'asc' }]
         };
 
-        return this.api.project.searchNodes({ project }, query).map(results => {
-            return results.data as MeshNode[];
-        });
+        return this.api.project.searchNodes({ project }, query).pipe(
+            map(results => {
+                return results.data as MeshNode[];
+            })
+        );
     }
 
     /**

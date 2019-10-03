@@ -1,4 +1,5 @@
 import * as Quill from 'quill';
+import { filter, first } from 'rxjs/operators';
 
 import { MeshNode } from '../../../../common/models/node.model';
 import { EditorEffectsService } from '../../../../editor/providers/editor-effects.service';
@@ -69,8 +70,10 @@ class BaseTooltip extends Tooltip {
         // get editor language
         const currentLanguage = await this.state
             .select(state => state.editor.openNode!.language)
-            .filter(language => !!language)
-            .first()
+            .pipe(
+                filter(language => !!language),
+                first()
+            )
             .toPromise();
 
         // get node from state

@@ -1,4 +1,6 @@
-import { Observable } from 'rxjs/Observable';
+import { never as observableNever, Observable } from 'rxjs';
+
+import { catchError } from 'rxjs/operators';
 
 import { MockApiBase } from './api-base.mock';
 import { AuthApi } from './auth-api.class';
@@ -52,10 +54,12 @@ describe('AuthApi', () => {
             let emittedError = false;
             authApi
                 .login({ username: 'exampleuser', password: 'rosebud' })
-                .catch(() => {
-                    emittedError = true;
-                    return Observable.never();
-                })
+                .pipe(
+                    catchError(() => {
+                        emittedError = true;
+                        return observableNever();
+                    })
+                )
                 .subscribe();
             expect(apiBase.lastRequest).toBeDefined();
             apiBase.lastRequest.respond(500, 'Internal Server Error');

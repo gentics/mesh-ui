@@ -42,7 +42,9 @@ export enum Severity {
 
 @Component({
     selector: 'mesh-monaco-editor',
-    template: `<div (window:resize)="onResize()" id='editor' #editor class="monaco-editor"></div>`,
+    template: `
+        <div (window:resize)="onResize()" id="editor" #editor class="monaco-editor"></div>
+    `,
     styleUrls: ['./monaco-editor.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
@@ -54,7 +56,7 @@ export enum Severity {
     ]
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
-    @ViewChild('editor') editorContent: ElementRef;
+    @ViewChild('editor', { static: true }) editorContent: ElementRef;
     @Input() language: string;
     @Input() options: any = {};
     @Input() jsonSchema: any;

@@ -28,7 +28,7 @@ export class MicronodeFieldComponent extends BaseFieldComponent implements After
     api: MeshFieldControlApi;
     value: NodeFieldMicronode;
 
-    @ViewChild('micronodeControlAnchor', { read: ViewContainerRef })
+    @ViewChild('micronodeControlAnchor', { read: ViewContainerRef, static: true })
     private micronodeControlAnchor: ViewContainerRef;
     private fieldGenerator: FieldGenerator;
 

@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { GroupCreateRequest, GroupUpdateRequest } from '../../../common/models/server-models';
@@ -21,7 +22,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
     BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
     readOnly = true;
 
-    @ViewChild('formGenerator') private formGenerator: FormGeneratorComponent;
+    @ViewChild('formGenerator', { static: false }) private formGenerator: FormGeneratorComponent;
     private destroy$ = new Subject<void>();
 
     constructor(
@@ -33,8 +34,10 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.route.data
-            .map(data => data.group)
-            .takeUntil(this.destroy$)
+            .pipe(
+                map(data => data.group),
+                takeUntil(this.destroy$)
+            )
             .subscribe((group: AdminGroupOnlyResponse) => {
                 this.isNew = !group;
                 this.group = group;

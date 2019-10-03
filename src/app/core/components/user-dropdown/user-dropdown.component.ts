@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 
 import { UserResponse } from '../../../common/models/server-models';
 import { User } from '../../../common/models/user.model';
@@ -26,11 +27,13 @@ export class UserDropdownComponent implements OnInit {
     ngOnInit(): void {
         this.currentUsername$ = this.state
             .select(state => state.auth.currentUser)
-            // Filter so that nothing emits if no user is logged in
-            .filter(user => !!user)
-            .switchMap((userUuid: string) => this.state.select(state => state.entities.user[userUuid]))
-            .map(this.toUserName)
-            .distinctUntilChanged();
+            .pipe(
+                // Filter so that nothing emits if no user is logged in
+                filter(user => !!user),
+                switchMap((userUuid: string) => this.state.select(state => state.entities.user[userUuid])),
+                map(this.toUserName),
+                distinctUntilChanged()
+            );
     }
 
     logOut(): void {

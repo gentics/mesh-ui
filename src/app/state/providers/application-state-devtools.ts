@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { logMethodCallToConsole } from 'immutablets';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { AppState } from '../models/app-state.model';
 

@@ -1,7 +1,7 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { getTestBed, TestModuleMetadata } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { ConfigService } from '../app/core/providers/config/config.service';
 import { MockConfigService } from '../app/core/providers/config/config.service.mock';
@@ -41,10 +41,10 @@ export function provideMockI18n(config: NgModule): NgModule {
 }
 
 class MockTranslateService {
-    onTranslationChange = Observable.of({});
-    onLangChange = Observable.of({});
+    onTranslationChange = observableOf({});
+    onLangChange = observableOf({});
     get(): Observable<string> {
-        return Observable.of('mocked i18n string');
+        return observableOf('mocked i18n string');
     }
 }
 

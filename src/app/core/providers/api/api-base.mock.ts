@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Headers, Http, Request, RequestMethod, Response, ResponseOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable, Subject } from 'rxjs';
 
 import { MockI18nNotification } from '../i18n-notification/i18n-notification.service.mock';
 

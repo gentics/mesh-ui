@@ -10,7 +10,7 @@ export class AudioPlayButtonComponent implements OnInit {
     @Input() src: SafeUrl;
     @Input() autoPlay = false;
     @Output() load = new EventEmitter<void>();
-    @ViewChild('AudioElement') audio: ElementRef;
+    @ViewChild('AudioElement', { static: true }) audio: ElementRef;
 
     loadingPreview = false;
 

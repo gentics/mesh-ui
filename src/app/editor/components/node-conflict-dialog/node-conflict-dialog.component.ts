@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { IModalDialog } from 'gentics-ui-core';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin } from 'rxjs';
 
 import { ConflictedField, TAGS_FIELD_TYPE } from '../../../common/models/common.model';
 import { BinaryField, MeshNode, NodeField, NodeFieldMicronode } from '../../../common/models/node.model';

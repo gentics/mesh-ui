@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 import { Schema } from '../../../common/models/schema.model';
 import { BreadcrumbTextFunction } from '../../components/admin-breadcrumbs/admin-breadcrumbs.component';
@@ -31,6 +32,6 @@ export const schemaBreadcrumbFn: BreadcrumbTextFunction = (route, state, entitie
     if (!schemaUuid) {
         return 'admin.new_schema';
     } else {
-        return entities.selectSchema(schemaUuid).map(schema => `${schema.name}`);
+        return entities.selectSchema(schemaUuid).pipe(map(schema => `${schema.name}`));
     }
 };

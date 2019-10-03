@@ -1,6 +1,7 @@
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { Project } from '../../../common/models/project.model';
@@ -25,13 +26,15 @@ export class BreadcrumbsComponent implements OnInit {
     ngOnInit() {
         this.routerLinks$ = this.state
             .select(state => state.list)
-            .map(({ currentNode, language }) => {
-                let node: MeshNode | undefined;
-                if (currentNode) {
-                    node = this.entities.getNode(currentNode, { language, strictLanguageMatch: false });
-                }
-                return this.toRouterLinks(node, language);
-            });
+            .pipe(
+                map(({ currentNode, language }) => {
+                    let node: MeshNode | undefined;
+                    if (currentNode) {
+                        node = this.entities.getNode(currentNode, { language, strictLanguageMatch: false });
+                    }
+                    return this.toRouterLinks(node, language);
+                })
+            );
     }
 
     /**

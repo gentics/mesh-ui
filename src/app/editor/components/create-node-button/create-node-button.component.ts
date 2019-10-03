@@ -1,6 +1,6 @@
 import { AfterViewChecked, ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Schema } from '../../../common/models/schema.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
@@ -33,7 +33,7 @@ export class CreateNodeButtonComponent implements AfterViewChecked {
     ngAfterViewChecked() {
         this.schemas$ = this.entities
             .selectAllSchemas()
-            .map(schemas => schemas.sort(this.nameSort).map(this.getSchemaDisplayProperties));
+            .pipe(map(schemas => schemas.sort(this.nameSort).map(this.getSchemaDisplayProperties)));
     }
 
     itemClick(schema: SchemaDisplayProperties): void {

@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 
 import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Schema } from '../../../common/models/schema.model';
@@ -50,8 +49,12 @@ export class SchemaListComponent implements OnInit, OnDestroy {
 
         this.schemas$ = this.entities
             .selectAllSchemas()
-            .map(schemas =>
-                schemas.sort((a, b) => a.name.localeCompare(b.name, this.availableLanguages, { sensitivity: 'case' }))
+            .pipe(
+                map(schemas =>
+                    schemas.sort((a, b) =>
+                        a.name.localeCompare(b.name, this.availableLanguages, { sensitivity: 'case' })
+                    )
+                )
             );
 
         this.adminSchemaEffects.loadSchemas();
@@ -68,20 +71,21 @@ export class SchemaListComponent implements OnInit, OnDestroy {
             this.filterInput.setValue(filterTerm, { emitEvent: false });
         });
 
-        this.filterInput.valueChanges.debounceTime(300).subscribe(term => {
+        this.filterInput.valueChanges.pipe(debounceTime(300)).subscribe(term => {
             setQueryParams(this.router, this.route, { q: term });
         });
 
         const allSchemas$ = this.state
             .select(state => state.adminSchemas.schemaList)
-            .map(uuids => uuids.map(uuid => this.entities.getSchema(uuid)).filter(notNullOrUndefined));
+            .pipe(map(uuids => uuids.map(uuid => this.entities.getSchema(uuid)).filter(notNullOrUndefined)));
         const filterTerm$ = this.state.select(state => state.adminSchemas.filterTerm);
 
-        this.schemas$ = combineLatest(allSchemas$, filterTerm$)
-            .map(([schemas, filterTerm]) => this.filterSchemas(schemas, filterTerm))
-            .map(schemas =>
+        this.schemas$ = combineLatest(allSchemas$, filterTerm$).pipe(
+            map(([schemas, filterTerm]) => this.filterSchemas(schemas, filterTerm)),
+            map(schemas =>
                 schemas.sort((a, b) => a.name.localeCompare(b.name, this.availableLanguages, { sensitivity: 'case' }))
-            );
+            )
+        );
 
         this.currentPage$ = this.state.select(state => state.adminSchemas.pagination.currentPage);
         this.itemsPerPage$ = this.state.select(state => state.adminSchemas.pagination.itemsPerPage);

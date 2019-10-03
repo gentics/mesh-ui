@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { INotificationOptions, Notification as BaseNotification } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { OperatorFunction } from 'rxjs/interfaces';
+import { Observable, OperatorFunction } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 import { I18nService } from '../i18n/i18n.service';
 
@@ -46,20 +46,22 @@ export class I18nNotification {
      * Displays an error notification when the observable emits an error.
      */
     rxError<T>(source: Observable<T>): Observable<T> {
-        return source.do({
-            error: (err: any) => {
-                if (err instanceof AlreadyHandledError) {
-                    return;
-                }
-                // This could fire very early after app startup. Therefore, wait for gtx-overlay-host to be initialized.
-                setTimeout(() => {
-                    this.notification.show({
-                        type: 'error',
-                        message: String(err)
+        return source.pipe(
+            tap({
+                error: (err: any) => {
+                    if (err instanceof AlreadyHandledError) {
+                        return;
+                    }
+                    // This could fire very early after app startup. Therefore, wait for gtx-overlay-host to be initialized.
+                    setTimeout(() => {
+                        this.notification.show({
+                            type: 'error',
+                            message: String(err)
+                        });
                     });
-                });
-            }
-        });
+                }
+            })
+        );
     }
 
     /**
@@ -69,14 +71,16 @@ export class I18nNotification {
      */
     rxSuccess<T>(successKey: string, translationParams?: { [key: string]: any }): OperatorFunction<T, T> {
         return source =>
-            source.do({
-                complete: () =>
-                    this.show({
-                        type: 'success',
-                        message: successKey,
-                        translationParams
-                    })
-            });
+            source.pipe(
+                tap({
+                    complete: () =>
+                        this.show({
+                            type: 'success',
+                            message: successKey,
+                            translationParams
+                        })
+                })
+            );
     }
 
     /**
@@ -86,14 +90,16 @@ export class I18nNotification {
      */
     rxSuccessNext<T>(successKey: string, translationParamsMapper: (emittedItem: T) => any): OperatorFunction<T, T> {
         return source =>
-            source.do({
-                next: item =>
-                    this.show({
-                        type: 'success',
-                        message: successKey,
-                        translationParams: translationParamsMapper(item)
-                    })
-            });
+            source.pipe(
+                tap({
+                    next: item =>
+                        this.show({
+                            type: 'success',
+                            message: successKey,
+                            translationParams: translationParamsMapper(item)
+                        })
+                })
+            );
     }
 
     /**

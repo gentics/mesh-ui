@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { async, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { mockMeshNode, mockMicroschema, mockProject, mockSchema, mockTag } from '../../../../testing/mock-models';
 import { MockModalService } from '../../../../testing/modal.service.mock';

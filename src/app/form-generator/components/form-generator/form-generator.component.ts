@@ -16,9 +16,8 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { SplitViewContainer } from 'gentics-ui-core';
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
-import { merge } from 'rxjs/observable/merge';
+import { merge, Subject, Subscription } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 
 import { MeshNode, NodeFieldType } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
@@ -64,9 +63,9 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
         return this.meshControlGroup.isDirty();
     }
 
-    @ViewChild('formContainer', { read: ElementRef })
+    @ViewChild('formContainer', { read: ElementRef, static: true })
     private formContainer: ElementRef;
-    @ViewChild('formRoot', { read: ViewContainerRef })
+    @ViewChild('formRoot', { read: ViewContainerRef, static: true })
     private formRoot: ViewContainerRef;
     private fieldSets: Array<FieldSet<BaseFieldComponent>> = [];
     private fieldGenerator: FieldGenerator;
@@ -100,8 +99,10 @@ export class FormGeneratorComponent implements OnChanges, AfterViewInit, OnDestr
             this.formGenerated$,
             (this.splitViewContainer && this.splitViewContainer.splitDragEnd) || []
         )
-            .debounceTime(200)
-            .map(() => this.formContainer.nativeElement.offsetWidth)
+            .pipe(
+                debounceTime(200),
+                map(() => this.formContainer.nativeElement.offsetWidth)
+            )
             .subscribe(widthInPixels => {
                 this.meshControlGroup.formWidthChanged(widthInPixels);
                 this.isCompact = widthInPixels <= SMALL_SCREEN_LIMIT;

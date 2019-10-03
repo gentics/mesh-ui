@@ -11,9 +11,7 @@ import {
     ResponseOptions
 } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 import { I18nNotification } from '../i18n-notification/i18n-notification.service';
 import { MockI18nNotification } from '../i18n-notification/i18n-notification.service.mock';

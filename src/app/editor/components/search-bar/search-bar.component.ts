@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Tag } from '../../../common/models/tag.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
@@ -36,14 +36,14 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         combineLatest(this.route.queryParamMap, this.state.select(state => state.entities.tag))
-            .takeUntil(this.destroyed$)
+            .pipe(takeUntil(this.destroyed$))
             .subscribe(([paramMap]) => {
                 this.searchParamsChanged(paramMap);
             });
 
         this.state
             .select(state => state.tags.tags)
-            .takeUntil(this.destroyed$)
+            .pipe(takeUntil(this.destroyed$))
             .subscribe(tags => {
                 this.allTags = tags.map(uuid => this.entities.getTag(uuid)).filter(notNullOrUndefined);
             });

@@ -1,5 +1,5 @@
 import { TranslateLoader } from '@ngx-translate/core';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 const translationFiles = ['admin', 'auth', 'common', 'editor', 'lang', 'list', 'modal', 'nodebrowser'].reduce(
     (hash, name) => {
@@ -39,6 +39,6 @@ export class CustomLoader implements TranslateLoader {
                 }
             }
         }
-        return Observable.of(output);
+        return observableOf(output);
     }
 }

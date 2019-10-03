@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Injectable, OnDestroy, Pipe, PipeTransform } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 /**
  * A wrapper around the ngx-translate TranslatePipe. Adds some convenience shortcuts to allow
@@ -42,20 +42,18 @@ import { Subscription } from 'rxjs/Subscription';
     pure: false
 })
 export class I18nPipe implements PipeTransform, OnDestroy {
-
     static memoized: { [key: string]: string } = {};
-
-    translatePipe: TranslatePipe;
 
     _lastValue: string | undefined;
     _lastParams: any;
     _lastResult: string | undefined;
     subscription: Subscription;
 
-    constructor(private translate: TranslateService,
-                private changeDetector: ChangeDetectorRef) {
-        this.translatePipe = new TranslatePipe(translate, changeDetector);
-
+    constructor(
+        private translate: TranslateService,
+        private changeDetector: ChangeDetectorRef,
+        private translatePipe: TranslatePipe
+    ) {
         this.subscription = translate.onLangChange.subscribe(() => {
             I18nPipe.memoized = {};
             this._lastParams = undefined;
@@ -86,7 +84,6 @@ export class I18nPipe implements PipeTransform, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.translatePipe._dispose();
         this.subscription.unsubscribe();
     }
 

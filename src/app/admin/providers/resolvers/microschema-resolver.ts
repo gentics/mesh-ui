@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 import { Microschema } from '../../../common/models/microschema.model';
 import { BreadcrumbTextFunction } from '../../components/admin-breadcrumbs/admin-breadcrumbs.component';
@@ -31,6 +32,6 @@ export const microschemaBreadcrumbFn: BreadcrumbTextFunction = (route, state, en
     if (!microschemaUuid) {
         return 'admin.new_microschema';
     } else {
-        return entities.selectMicroschema(microschemaUuid).map(microschema => `${microschema.name}`);
+        return entities.selectMicroschema(microschemaUuid).pipe(map(microschema => `${microschema.name}`));
     }
 };

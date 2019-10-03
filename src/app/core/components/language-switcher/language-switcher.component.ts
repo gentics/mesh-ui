@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { ConfigService } from '../../providers/config/config.service';
@@ -17,7 +18,7 @@ export class LanguageSwitcherComponent {
         this.availableLanguages = config.UI_LANGUAGES;
         this.currentLanguage$ = appState
             .select(state => state.ui.currentLanguage)
-            .map(languageCode => `lang.${languageCode}` as UILanguage);
+            .pipe(map(languageCode => `lang.${languageCode}` as UILanguage));
     }
 
     changeLanguage(language: UILanguage): void {

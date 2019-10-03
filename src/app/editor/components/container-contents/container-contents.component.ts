@@ -1,9 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginationInstance } from 'ngx-pagination';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, from, of, Observable, Subject } from 'rxjs';
+import {
+    combineAll,
+    distinctUntilChanged,
+    filter,
+    map,
+    startWith,
+    switchMap,
+    switchMapTo,
+    takeUntil,
+    withLatestFrom
+} from 'rxjs/operators';
 
 import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
@@ -24,7 +33,7 @@ import { ContainerFileDropAreaComponent } from '../container-file-drop-area/cont
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContainerContentsComponent implements OnInit, OnDestroy {
-    @ViewChild(ContainerFileDropAreaComponent) fileDropArea: ContainerFileDropAreaComponent;
+    @ViewChild(ContainerFileDropAreaComponent, { static: true }) fileDropArea: ContainerFileDropAreaComponent;
 
     /** @internal */
     schemas$: Observable<SchemaReference[]>;
@@ -58,36 +67,40 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        const onLogin$ = this.state.select(state => state.auth.loggedIn).filter(loggedIn => loggedIn);
+        const onLogin$ = this.state.select(state => state.auth.loggedIn).pipe(filter(loggedIn => loggedIn));
 
         // set current parent node
         onLogin$
-            .let(obs => this.switchMapToParams(obs))
-            .takeUntil(this.destroy$)
+            .pipe(
+                this.switchMapToParams,
+                takeUntil(this.destroy$)
+            )
             .subscribe(({ containerUuid, projectName, language }) => {
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
         // get list details from url parameters
-        const listParams$ = Observable.of([]).let(obs => this.switchMapToParams(obs));
+        const listParams$ = of([]).pipe(this.switchMapToParams);
 
         // get search filter from url parameters
-        const searchParams$ = this.route.queryParamMap.map(paramMap => {
-            // get search query
-            const keyword = (paramMap.get('q') || '').trim();
-            // get filter for tags
-            const tags = (paramMap.get('t') || '').trim();
-            // get current page
-            const page = paramMap.get('p') || this.currentPage;
-            // get max items per page
-            const perPage = paramMap.get('perPage') || this.itemsPerPage;
+        const searchParams$ = this.route.queryParamMap.pipe(
+            map(paramMap => {
+                // get search query
+                const keyword = (paramMap.get('q') || '').trim();
+                // get filter for tags
+                const tags = (paramMap.get('t') || '').trim();
+                // get current page
+                const page = paramMap.get('p') || this.currentPage;
+                // get max items per page
+                const perPage = paramMap.get('perPage') || this.itemsPerPage;
 
-            return { keyword, tags, page, perPage };
-        });
+                return { keyword, tags, page, perPage };
+            })
+        );
 
         // request node children
         combineLatest(searchParams$, listParams$, this.state.select(state => state.entities.tag))
-            .takeUntil(this.destroy$)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(([{ keyword, tags, page, perPage }, { containerUuid, projectName, language }]) => {
                 if (keyword === '' && tags === '') {
                     this.listEffects
@@ -107,8 +120,10 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         // load project-associated data
         this.state
             .select(state => state.list.currentProject)
-            .filter(notNullOrUndefined)
-            .takeUntil(this.destroy$)
+            .pipe(
+                filter(notNullOrUndefined),
+                takeUntil(this.destroy$)
+            )
             .subscribe(projectName => {
                 this.listEffects.loadSchemasForProject(projectName);
                 this.listEffects.loadMicroschemasForProject(projectName);
@@ -119,38 +134,42 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         this.childrenBySchema$ = combineLatest(
             this.state.select(state => state.list.items),
             this.state.select(state => state.list.language)
-        )
-            .switchMap(([items, language]) =>
-                Observable.from(items)
-                    .map(uuid => this.entities.selectNode(uuid, { language }))
-                    .combineAll<Observable<MeshNode>, MeshNode>()
-                    .startWith([])
-            )
-            .map(items => items.filter(notNullOrUndefined))
-            .combineLatest(this.state.select(state => state.list.filterTerm))
-            .map(([items, filterTerm]) => this.filterNodes(items, filterTerm))
-            .map(this.groupNodesBySchema);
-
-        // get schemas
-        this.schemas$ = this.childrenBySchema$.map(childrenBySchema =>
-            Object.values(childrenBySchema)
-                .map(nodes => nodes[0])
-                .sort((a: MeshNode, b: MeshNode) => {
-                    if (a.container === true && b.container === false) {
-                        // Push containers to the top.
-                        return -1;
-                    } else if (a.container === false && b.container === true) {
-                        // Push containers to the top.
-                        return 1;
-                    } else {
-                        // If both nodes are containers or both are not - order by name.
-                        return a.schema.name! > b.schema.name! ? 1 : -1;
-                    }
-                })
-                .map(node => node.schema as SchemaReference)
+        ).pipe(
+            switchMap(([items, language]) =>
+                from(items).pipe(
+                    map(uuid => this.entities.selectNode(uuid, { language })),
+                    combineAll(),
+                    startWith([])
+                )
+            ),
+            map(items => items.filter(notNullOrUndefined)),
+            withLatestFrom(this.state.select(state => state.list.filterTerm)),
+            map(([items, filterTerm]) => this.filterNodes(items, filterTerm)),
+            map(this.groupNodesBySchema)
         );
 
-        this.searching$ = searchParams$.map(({ keyword, tags }) => keyword !== '' || tags !== '');
+        // get schemas
+        this.schemas$ = this.childrenBySchema$.pipe(
+            map(childrenBySchema =>
+                Object.values(childrenBySchema)
+                    .map(nodes => nodes[0])
+                    .sort((a: MeshNode, b: MeshNode) => {
+                        if (a.container === true && b.container === false) {
+                            // Push containers to the top.
+                            return -1;
+                        } else if (a.container === false && b.container === true) {
+                            // Push containers to the top.
+                            return 1;
+                        } else {
+                            // If both nodes are containers or both are not - order by name.
+                            return a.schema.name! > b.schema.name! ? 1 : -1;
+                        }
+                    })
+                    .map(node => node.schema as SchemaReference)
+            )
+        );
+
+        this.searching$ = searchParams$.pipe(map(({ keyword, tags }) => keyword !== '' || tags !== ''));
     }
 
     updatePagination(loadChildrenResponse: NodeListResponse) {
@@ -207,19 +226,20 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     private switchMapToParams(
         input$: Observable<any>
     ): Observable<{ containerUuid: string; projectName: string; language: string }> {
-        return input$
-            .switchMapTo(this.route.paramMap)
-            .filter(params => params.has('containerUuid') && params.has('projectName') && params.has('language'))
-            .map(paramMap => ({
+        return input$.pipe(
+            switchMapTo(this.route.paramMap),
+            filter(params => params.has('containerUuid') && params.has('projectName') && params.has('language')),
+            map(paramMap => ({
                 // https://github.com/Microsoft/TypeScript/issues/9619
                 containerUuid: paramMap.get('containerUuid')!,
                 projectName: paramMap.get('projectName')!,
                 language: paramMap.get('language')!
-            }))
-            .distinctUntilChanged(
+            })),
+            distinctUntilChanged(
                 (a, b) =>
                     a.containerUuid === b.containerUuid && a.projectName === b.projectName && a.language === b.language
-            );
+            )
+        );
     }
 
     private filterNodes(childNodes: MeshNode[], filterTerm: string): MeshNode[] {

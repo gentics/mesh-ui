@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { Group } from '../../common/models/group.model';
 import { Microschema } from '../../common/models/microschema.model';
@@ -280,6 +281,6 @@ export class EntitiesService {
      * Applies the selectorFn to the AppState and filters out any undefined values.
      */
     private selectWithFilter<T>(selectorFn: (state: AppState) => T | undefined): Observable<T> {
-        return this.state.select(selectorFn).filter(notNullOrUndefined as any);
+        return this.state.select(selectorFn).pipe(filter(notNullOrUndefined as any));
     }
 }

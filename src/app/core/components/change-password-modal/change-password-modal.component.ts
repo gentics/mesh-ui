@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IModalDialog, Notification } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { AuthEffectsService } from '../../../login/providers/auth-effects.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';

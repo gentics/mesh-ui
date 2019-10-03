@@ -1,8 +1,7 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { PublishStatusModelFromServer } from '../../../common/models/server-models';
@@ -99,9 +98,11 @@ export class NodeStatusComponent implements OnChanges, OnDestroy {
         date: string;
         time: string;
     }> {
-        return this.currentUiLanguage$.map((currentUiLanguage: UILanguage) => {
-            return this.dateTimeFormat[currentUiLanguage];
-        });
+        return this.currentUiLanguage$.pipe(
+            map((currentUiLanguage: UILanguage) => {
+                return this.dateTimeFormat[currentUiLanguage];
+            })
+        );
     }
 
     onMouseenter(): void {

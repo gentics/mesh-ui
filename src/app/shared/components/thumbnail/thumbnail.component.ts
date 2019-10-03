@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 
 import { BinaryField, MeshNode } from '../../../common/models/node.model';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
@@ -60,17 +60,17 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
         const node$ = this.entities
             .selectNode(this.nodeUuid, { strictLanguageMatch: false })
             // Does not emit node if it was not found
-            .filter(node => !!node);
-        const schema$ = node$.switchMap(node => this.entities.selectSchema(node.schema.uuid!));
+            .pipe(filter(node => !!node));
+        const schema$ = node$.pipe(switchMap(node => this.entities.selectSchema(node.schema.uuid!)));
 
-        this.isContainer$ = node$.map(node => node.container);
+        this.isContainer$ = node$.pipe(map(node => node.container));
 
         this.isContainer$.subscribe(isContainer => {
             this.isContainer = isContainer;
         });
 
-        this.subscription = Observable.combineLatest(node$, schema$)
-            .map(value => this.getBinaryProperties(value))
+        this.subscription = combineLatest(node$, schema$)
+            .pipe(map(value => this.getBinaryProperties(value)))
             .subscribe(binaryProperties => {
                 this.binaryProperties = binaryProperties;
                 this.changeDetector.detectChanges();
@@ -116,18 +116,20 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
 
         let binaryProperties: BinaryProperties;
 
-        schema.fields.filter(field => this.binaryFilter(field)).forEach(field => {
-            // TODO Remove exclamation mark as soon as mesh typing is fixed
-            const nodeField: BinaryField = node.fields[field.name!] as BinaryField;
-            if (!firstBinaryField) {
-                firstBinaryField = nodeField;
-                firstBinaryFieldName = field.name;
-            }
-            if (!firstImageField && isImageField(nodeField)) {
-                firstImageField = nodeField;
-                firstImageFieldName = field.name;
-            }
-        });
+        schema.fields
+            .filter(field => this.binaryFilter(field))
+            .forEach(field => {
+                // TODO Remove exclamation mark as soon as mesh typing is fixed
+                const nodeField: BinaryField = node.fields[field.name!] as BinaryField;
+                if (!firstBinaryField) {
+                    firstBinaryField = nodeField;
+                    firstBinaryFieldName = field.name;
+                }
+                if (!firstImageField && isImageField(nodeField)) {
+                    firstImageField = nodeField;
+                    firstImageFieldName = field.name;
+                }
+            });
 
         if (firstImageField && firstImageFieldName) {
             binaryProperties = {
