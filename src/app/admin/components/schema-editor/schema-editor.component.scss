@@ -57,7 +57,7 @@
         gtx-drag-handle {
             float: right;
     
-            /deep/ .gtx-drag-handle > i {
+            ::ng-deep .gtx-drag-handle > i {
                 color: $gtx-color-primary;
                 line-height: 0.35;
                 font-size: 2rem;
@@ -95,7 +95,7 @@
     }
     
     /* Remove margins for warning texts */
-    /deep/ gtx-select {
+    ::ng-deep gtx-select {
         margin-bottom: 2rem !important;
     
     
@@ -112,7 +112,7 @@
         }
     }
 
-    /deep/ gtx-search-bar {
+    ::ng-deep gtx-search-bar {
         position: relative;
         // margin-bottom: 2rem !important;
         border: none !important;
@@ -144,7 +144,7 @@
         position: relative;
     }
     
-    /deep/ gtx-input {
+    ::ng-deep gtx-input {
         input {
             margin-bottom: 2rem !important;
     
@@ -154,7 +154,7 @@
         }
     }
     
-    /deep/ gtx-textarea {
+    ::ng-deep gtx-textarea {
         line-height: 0.8;
         label {
             line-height: 1.5;
@@ -169,7 +169,7 @@
         }
     }
     
-    /deep/ gtx-search-bar {
+    ::ng-deep gtx-search-bar {
         border: 2px solid #d6d6da;
         border-radius: 3px;
         margin-top: 1.2rem;
@@ -188,7 +188,7 @@
             display: none;
         }
     
-        /deep/ mesh-chip {
+        ::ng-deep mesh-chip {
             margin-bottom: 0.2rem !important;
             margin-top: 0.2rem !important;
             margin-left: 0.3rem;

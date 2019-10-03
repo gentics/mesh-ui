@@ -38,8 +38,8 @@ gtx-input {
     transition: max-width 0.2s, opacity 0.2s;
     color: $gtx-color-off-black;
 
-    /deep/ input[type=text],
-    /deep/ input[type=text]:focus:not([readonly]) {
+    ::ng-deep input[type=text],
+    ::ng-deep input[type=text]:focus:not([readonly]) {
         margin: 0 !important;
         border-color: transparent;
         background-color: white;

@@ -23,7 +23,7 @@
         }
     }
 
-    gtx-search-bar /deep/ .contents {
+    gtx-search-bar ::ng-deep .contents {
         display: flex;
         max-width: 50%;
         overflow: hidden;

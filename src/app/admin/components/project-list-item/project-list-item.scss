@@ -4,11 +4,11 @@ gtx-input {
     padding-left: 5px;
 }
 
-:host /deep/ gtx-input input {
+:host ::ng-deep gtx-input input {
     border-width: 2px;
     border-color: transparent;
 }
 
-:host /deep/ gtx-input input:hover {
+:host ::ng-deep gtx-input input:hover {
     border-color: $gtx-color-light-gray;
 }

@@ -1,6 +1,6 @@
 @import "variables";
 
-/deep/ gtx-input > input[type] {
+::ng-deep gtx-input > input[type] {
     background-color: white;
 }
 

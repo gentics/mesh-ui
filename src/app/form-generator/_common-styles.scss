@@ -27,7 +27,7 @@ $left-bar-width: 6px;
 }
 
 @mixin input-styles {
-    /deep/ gtx-input {
+    ::ng-deep gtx-input {
         display: flex;
         flex-direction: row-reverse;
         justify-content: space-between;
@@ -47,7 +47,7 @@ $left-bar-width: 6px;
     :host-context(mesh-micronode-field),
     :host-context(mesh-list-field),
     &.compact {
-        & /deep/ gtx-input {
+        & ::ng-deep gtx-input {
             flex-direction: column-reverse;
 
             input[type="number"],
@@ -66,7 +66,7 @@ $left-bar-width: 6px;
     }
 
     &.list-item {
-        & /deep/ gtx-input {
+        & ::ng-deep gtx-input {
             input[type="number"],
             input[type="text"],
             input[type="password"] {
