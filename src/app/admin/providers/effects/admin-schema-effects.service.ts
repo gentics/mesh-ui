@@ -1,7 +1,9 @@
+import { from as observableFrom, Observable } from 'rxjs';
+
 import { Injectable } from '@angular/core';
 import { reject } from 'bluebird';
 import { Notification } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { defaultIfEmpty, map, mergeMap, reduce } from 'rxjs/operators';
 
 import { Microschema } from '../../../common/models/microschema.model';
 import { Schema } from '../../../common/models/schema.model';
@@ -228,19 +230,23 @@ export class AdminSchemaEffectsService {
         // Get all projects
         return this.api.project
             .getProjects({})
-            .flatMap(projects => {
-                actions.fetchEntityAssignmentProjectsSuccess(projects.data);
-                return Observable.from(projects.data);
-            })
-            .flatMap(project =>
-                // TODO again, consider paging
-                // Get all schemas/microschemas from the projects
-                loadEntities(project).map(schemas => ({
-                    [project.uuid]: schemas.data.some(schema => schema.uuid === uuid)
-                }))
+            .pipe(
+                mergeMap(projects => {
+                    actions.fetchEntityAssignmentProjectsSuccess(projects.data);
+                    return observableFrom(projects.data);
+                }),
+                mergeMap(project =>
+                    // TODO again, consider paging
+                    // Get all schemas/microschemas from the projects
+                    loadEntities(project).pipe(
+                        map(schemas => ({
+                            [project.uuid]: schemas.data.some(schema => schema.uuid === uuid)
+                        }))
+                    )
+                ),
+                reduce(merge),
+                defaultIfEmpty({})
             )
-            .reduce(merge)
-            .defaultIfEmpty({})
             .toPromise()
             .then(assignments => {
                 actions.fetchEntityAssignmentsSuccess(assignments);

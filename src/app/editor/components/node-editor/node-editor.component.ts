@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { MeshPreviewUrl, MeshPreviewUrlResolver } from '../../../common/models/appconfig.model';
 import { MeshNode, ProjectNode } from '../../../common/models/node.model';
@@ -49,8 +49,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
 
     private destroy$ = new Subject<void>();
 
-    @ViewChild('formGenerator') formGenerator?: FormGeneratorComponent;
-    @ViewChild('tagsBar') tagsBar?: NodeTagsBarComponent;
+    @ViewChild('formGenerator', { static: true }) formGenerator?: FormGeneratorComponent;
+    @ViewChild('tagsBar', { static: true }) tagsBar?: NodeTagsBarComponent;
 
     constructor(
         private state: ApplicationStateService,
@@ -93,30 +93,32 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         // get node opened in editor
         this.state
             .select(state => state.editor.openNode)
-            .filter(notNullOrUndefined)
-            .switchMap(openNode => {
-                const schemaUuid = openNode.schemaUuid;
-                const parentNodeUuid = openNode.parentNodeUuid;
-                if (schemaUuid && parentNodeUuid) {
-                    return this.entities.selectSchema(schemaUuid).map(schema => {
-                        const node = initializeNode(schema, parentNodeUuid, openNode.language);
-                        return [node, schema] as [MeshNode, Schema];
-                    });
-                } else {
-                    const node$ = this.entities.selectNode(openNode.uuid, { language: openNode.language });
+            .pipe(
+                filter(notNullOrUndefined),
+                switchMap(openNode => {
+                    const schemaUuid = openNode.schemaUuid;
+                    const parentNodeUuid = openNode.parentNodeUuid;
+                    if (schemaUuid && parentNodeUuid) {
+                        return this.entities.selectSchema(schemaUuid).pipe(
+                            map(schema => {
+                                const node = initializeNode(schema, parentNodeUuid, openNode.language);
+                                return [node, schema] as [MeshNode, Schema];
+                            })
+                        );
+                    } else {
+                        const node$ = this.entities.selectNode(openNode.uuid, { language: openNode.language });
 
-                    const latest = Observable.combineLatest(
-                        node$.filter<MeshNode>(Boolean).map(node => {
-                            return simpleCloneDeep(node);
-                        }),
-                        node$.switchMap(node => {
-                            return this.entities.selectSchema(node.schema.uuid!);
-                        })
-                    );
-                    return latest;
-                }
-            })
-            .takeUntil(this.destroy$)
+                        return combineLatest(
+                            node$.pipe(
+                                filter<MeshNode>(Boolean),
+                                map(node => simpleCloneDeep(node))
+                            ),
+                            node$.pipe(switchMap(node => this.entities.selectSchema(node.schema.uuid!)))
+                        );
+                    }
+                }),
+                takeUntil(this.destroy$)
+            )
             .subscribe(([node, schema]) => {
                 if (this.formGenerator) {
                     this.formGenerator.setPristine(node);
@@ -339,7 +341,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
         // Handle save conflicts via modal
         this.api.project
             .getNode({ project: this.node.project.name!, nodeUuid: this.node.uuid })
-            .take(1)
+            .pipe(take(1))
             .subscribe((response: NodeResponse) => {
                 this.modalService
                     .fromComponent(

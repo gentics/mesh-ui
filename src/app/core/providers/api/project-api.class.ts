@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { MeshNode, ProjectNode } from 'src/app/common/models/node.model';
 import { extractGraphQlResponse } from 'src/app/common/util/util';
 
@@ -266,8 +267,10 @@ export class ProjectApi {
                     }
                 }
             )
-            .map(extractGraphQlResponse)
-            .map(response => response.node && response.node.path)
+            .pipe(
+                map(extractGraphQlResponse),
+                map(response => response.node && response.node.path)
+            )
             .toPromise();
     }
 }

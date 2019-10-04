@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { MeshNode } from '../../../common/models/node.model';
@@ -30,7 +30,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     userNodeLink$: Observable<any[]>;
     BREADCRUMBS_BAR_PORTAL_ID = BREADCRUMBS_BAR_PORTAL_ID;
 
-    @ViewChild('formGenerator') private formGenerator: FormGeneratorComponent;
+    @ViewChild('formGenerator', { static: false }) private formGenerator: FormGeneratorComponent;
     private destroy$ = new Subject<void>();
 
     constructor(
@@ -43,42 +43,47 @@ export class UserDetailComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        const user$: Observable<User> = this.route.data.map(data => data.user);
-        const nodeReference$ = user$
-            .filter(notNullOrUndefined)
-            .map(user => user.nodeReference)
-            .filter(notNullOrUndefined);
+        const user$: Observable<User> = this.route.data.pipe(map(data => data.user));
+        const nodeReference$ = user$.pipe(
+            filter(notNullOrUndefined),
+            map(user => user.nodeReference),
+            filter(notNullOrUndefined)
+        );
 
-        this.userNode$ = nodeReference$
-            .map(nodeReference => this.entities.getNode(nodeReference.uuid, { strictLanguageMatch: false }))
-            .filter(notNullOrUndefined);
+        this.userNode$ = nodeReference$.pipe(
+            map(nodeReference => this.entities.getNode(nodeReference.uuid, { strictLanguageMatch: false })),
+            filter(notNullOrUndefined)
+        );
 
-        this.userNodeSchema$ = nodeReference$
-            .map(nodeReference => this.entities.getSchema(nodeReference.schema.uuid || ''))
-            .filter(notNullOrUndefined);
+        this.userNodeSchema$ = nodeReference$.pipe(
+            map(nodeReference => this.entities.getSchema(nodeReference.schema.uuid || '')),
+            filter(notNullOrUndefined)
+        );
 
-        this.userNodeLink$ = this.userNode$.map(node => {
-            if (node.language && node.project && node.project.name) {
-                return this.navigationService
-                    .instruction({
-                        detail: {
-                            projectName: node.project.name,
-                            nodeUuid: node.uuid,
-                            language: node.language
-                        },
-                        list: {
-                            containerUuid: node.parentNode.uuid,
-                            projectName: node.project.name,
-                            language: node.language
-                        }
-                    })
-                    .commands();
-            } else {
-                return [];
-            }
-        });
+        this.userNodeLink$ = this.userNode$.pipe(
+            map(node => {
+                if (node.language && node.project && node.project.name) {
+                    return this.navigationService
+                        .instruction({
+                            detail: {
+                                projectName: node.project.name,
+                                nodeUuid: node.uuid,
+                                language: node.language
+                            },
+                            list: {
+                                containerUuid: node.parentNode.uuid,
+                                projectName: node.project.name,
+                                language: node.language
+                            }
+                        })
+                        .commands();
+                } else {
+                    return [];
+                }
+            })
+        );
 
-        user$.takeUntil(this.destroy$).subscribe(user => {
+        user$.pipe(takeUntil(this.destroy$)).subscribe(user => {
             this.isNew = !user;
             this.readOnly = !!user && !user.permissions.update;
             this.form = this.formBuilder.group({

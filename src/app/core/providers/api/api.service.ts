@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { GraphQLRequest, GraphQLResponse } from 'src/app/common/models/server-models';
 import { extractGraphQlResponse } from 'src/app/common/util/util';
 
@@ -44,13 +45,13 @@ export class ApiService {
     private getAnyProjectName(): Promise<string> {
         return this.apiBase
             .get('/projects', { perPage: 1, fields: 'name' })
-            .map(projects => projects.data[0].name)
+            .pipe(map(projects => projects.data[0].name))
             .toPromise();
     }
 
     public async graphQLInAnyProject(request: GraphQLRequest): Promise<any> {
         return this.graphQL({ project: await this.getAnyProjectName() }, request)
-            .map(extractGraphQlResponse)
+            .pipe(map(extractGraphQlResponse))
             .toPromise();
     }
 }

@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 import { ApplicationStateDevtools } from './state/providers/application-state-devtools';
 import { ApplicationStateService } from './state/providers/application-state.service';
@@ -19,11 +20,12 @@ export class AppComponent {
 
     constructor(public state: ApplicationStateService, devtools: ApplicationStateDevtools, private router: Router) {
         this.loggedIn$ = state.select(_state => _state.auth.loggedIn);
-        this.adminMode$ = this.router.events
-            .filter(event => event instanceof NavigationEnd)
-            .map((event: NavigationEnd) => {
+        this.adminMode$ = this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd),
+            map((event: NavigationEnd) => {
                 this.displayMenu = false;
                 return /^\/admin/.test(event.url);
-            });
+            })
+        );
     }
 }

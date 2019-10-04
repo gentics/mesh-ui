@@ -1,5 +1,5 @@
 import { fakeAsync, tick, TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { mockMeshNode } from '../../../testing/mock-models';
 import { MeshNode } from '../../common/models/node.model';
@@ -88,10 +88,10 @@ describe('EditorEffectsService', () => {
 
             beforeEach(() => {
                 createdNode = { ...originalNode, ...{ version: '1.1' } };
-                api.project.createNode = jasmine.createSpy('createNode').and.returnValue(Observable.of(createdNode));
+                api.project.createNode = jasmine.createSpy('createNode').and.returnValue(observableOf(createdNode));
                 api.project.assignTagsToNode = jasmine
                     .createSpy('createNode')
-                    .and.returnValue(Observable.of(createdNode));
+                    .and.returnValue(observableOf(createdNode));
             });
 
             it('calls api.project.createNode() with correct args', () => {
@@ -108,69 +108,60 @@ describe('EditorEffectsService', () => {
                 );
             });
 
-            it(
-                'calls api.project.assignTagsToNode() with supplied tags',
-                fakeAsync(() => {
-                    const tags = [{ uuid: 'tag1_uuid' }, { uuid: 'tag2_uuid' }];
-                    editorEffectsService.saveNewNode('project', originalNode, tags);
-                    tick();
+            it('calls api.project.assignTagsToNode() with supplied tags', fakeAsync(() => {
+                const tags = [{ uuid: 'tag1_uuid' }, { uuid: 'tag2_uuid' }];
+                editorEffectsService.saveNewNode('project', originalNode, tags);
+                tick();
 
-                    expect(api.project.assignTagsToNode).toHaveBeenCalledWith(
-                        { project: createdNode.project.name, nodeUuid: createdNode.uuid },
-                        { tags }
-                    );
-                })
-            );
+                expect(api.project.assignTagsToNode).toHaveBeenCalledWith(
+                    { project: createdNode.project.name, nodeUuid: createdNode.uuid },
+                    { tags }
+                );
+            }));
 
-            it(
-                'calls api.project.updateBinaryField() with binary fields',
-                fakeAsync(() => {
-                    const mockFile = new File([], 'mock-file.jpg');
-                    originalNode.fields['image'] = {
-                        file: mockFile
-                    };
-                    editorEffectsService.saveNewNode('project', originalNode);
-                    tick();
+            it('calls api.project.updateBinaryField() with binary fields', fakeAsync(() => {
+                const mockFile = new File([], 'mock-file.jpg');
+                originalNode.fields['image'] = {
+                    file: mockFile
+                };
+                editorEffectsService.saveNewNode('project', originalNode);
+                tick();
 
-                    expect(api.project.updateBinaryField).toHaveBeenCalledWith(
-                        {
-                            project: createdNode.project.name,
-                            nodeUuid: createdNode.uuid,
-                            fieldName: 'image',
-                            lang: 'en'
-                        },
-                        {
-                            binary: mockFile,
-                            language: 'en',
-                            version: '1.1'
-                        }
-                    );
-                })
-            );
+                expect(api.project.updateBinaryField).toHaveBeenCalledWith(
+                    {
+                        project: createdNode.project.name,
+                        nodeUuid: createdNode.uuid,
+                        fieldName: 'image',
+                        lang: 'en'
+                    },
+                    {
+                        binary: mockFile,
+                        language: 'en',
+                        version: '1.1'
+                    }
+                );
+            }));
 
-            it(
-                'calls api.project.transformBinaryField() with binary transforms',
-                fakeAsync(() => {
-                    originalNode.fields['image'] = { transform: mockTransform };
-                    editorEffectsService.saveNewNode('project', originalNode);
-                    tick();
+            it('calls api.project.transformBinaryField() with binary transforms', fakeAsync(() => {
+                originalNode.fields['image'] = { transform: mockTransform };
+                editorEffectsService.saveNewNode('project', originalNode);
+                tick();
 
-                    expect(api.project.transformBinaryField).toHaveBeenCalledWith(
-                        {
-                            project: createdNode.project.name,
-                            nodeUuid: createdNode.uuid,
-                            fieldName: 'image'
-                        },
-                        {
-                            version: '1.1',
-                            language: 'en',
-                            width: mockTransform.width,
-                            height: mockTransform.height,
-                            cropRect: mockTransform.cropRect
-                        }
-                    );
-                })
-            );
+                expect(api.project.transformBinaryField).toHaveBeenCalledWith(
+                    {
+                        project: createdNode.project.name,
+                        nodeUuid: createdNode.uuid,
+                        fieldName: 'image'
+                    },
+                    {
+                        version: '1.1',
+                        language: 'en',
+                        width: mockTransform.width,
+                        height: mockTransform.height,
+                        cropRect: mockTransform.cropRect
+                    }
+                );
+            }));
         });
 
         describe('saveNode()', () => {
@@ -180,10 +171,10 @@ describe('EditorEffectsService', () => {
                 updatedNode = { ...originalNode, ...{ version: '1.1' } };
                 api.project.updateNode = jasmine
                     .createSpy('createNode')
-                    .and.returnValue(Observable.of({ node: updatedNode }));
+                    .and.returnValue(observableOf({ node: updatedNode }));
                 api.project.assignTagsToNode = jasmine
                     .createSpy('createNode')
-                    .and.returnValue(Observable.of(updatedNode));
+                    .and.returnValue(observableOf(updatedNode));
             });
 
             it('calls api.project.createNode() with correct args', () => {
@@ -203,69 +194,60 @@ describe('EditorEffectsService', () => {
                 );
             });
 
-            it(
-                'calls api.project.assignTagsToNode() with supplied tags',
-                fakeAsync(() => {
-                    const tags = [{ uuid: 'tag1_uuid' }, { uuid: 'tag2_uuid' }];
-                    editorEffectsService.saveNode(originalNode, tags);
-                    tick();
+            it('calls api.project.assignTagsToNode() with supplied tags', fakeAsync(() => {
+                const tags = [{ uuid: 'tag1_uuid' }, { uuid: 'tag2_uuid' }];
+                editorEffectsService.saveNode(originalNode, tags);
+                tick();
 
-                    expect(api.project.assignTagsToNode).toHaveBeenCalledWith(
-                        { project: updatedNode.project.name, nodeUuid: updatedNode.uuid },
-                        { tags }
-                    );
-                })
-            );
+                expect(api.project.assignTagsToNode).toHaveBeenCalledWith(
+                    { project: updatedNode.project.name, nodeUuid: updatedNode.uuid },
+                    { tags }
+                );
+            }));
 
-            it(
-                'calls api.project.updateBinaryField() with binary fields',
-                fakeAsync(() => {
-                    const mockFile = new File([], 'mock-file.jpg');
-                    originalNode.fields['image'] = {
-                        file: mockFile
-                    };
-                    editorEffectsService.saveNode(originalNode);
-                    tick();
+            it('calls api.project.updateBinaryField() with binary fields', fakeAsync(() => {
+                const mockFile = new File([], 'mock-file.jpg');
+                originalNode.fields['image'] = {
+                    file: mockFile
+                };
+                editorEffectsService.saveNode(originalNode);
+                tick();
 
-                    expect(api.project.updateBinaryField).toHaveBeenCalledWith(
-                        {
-                            project: updatedNode.project.name,
-                            nodeUuid: updatedNode.uuid,
-                            fieldName: 'image',
-                            lang: 'en'
-                        },
-                        {
-                            binary: mockFile,
-                            language: 'en',
-                            version: '1.1'
-                        }
-                    );
-                })
-            );
+                expect(api.project.updateBinaryField).toHaveBeenCalledWith(
+                    {
+                        project: updatedNode.project.name,
+                        nodeUuid: updatedNode.uuid,
+                        fieldName: 'image',
+                        lang: 'en'
+                    },
+                    {
+                        binary: mockFile,
+                        language: 'en',
+                        version: '1.1'
+                    }
+                );
+            }));
 
-            it(
-                'calls api.project.transformBinaryField() with binary transforms',
-                fakeAsync(() => {
-                    originalNode.fields['image'] = { transform: mockTransform };
-                    editorEffectsService.saveNode(originalNode);
-                    tick();
+            it('calls api.project.transformBinaryField() with binary transforms', fakeAsync(() => {
+                originalNode.fields['image'] = { transform: mockTransform };
+                editorEffectsService.saveNode(originalNode);
+                tick();
 
-                    expect(api.project.transformBinaryField).toHaveBeenCalledWith(
-                        {
-                            project: updatedNode.project.name,
-                            nodeUuid: updatedNode.uuid,
-                            fieldName: 'image'
-                        },
-                        {
-                            version: '1.1',
-                            language: 'en',
-                            width: mockTransform.width,
-                            height: mockTransform.height,
-                            cropRect: mockTransform.cropRect
-                        }
-                    );
-                })
-            );
+                expect(api.project.transformBinaryField).toHaveBeenCalledWith(
+                    {
+                        project: updatedNode.project.name,
+                        nodeUuid: updatedNode.uuid,
+                        fieldName: 'image'
+                    },
+                    {
+                        version: '1.1',
+                        language: 'en',
+                        width: mockTransform.width,
+                        height: mockTransform.height,
+                        cropRect: mockTransform.cropRect
+                    }
+                );
+            }));
         });
     });
 });

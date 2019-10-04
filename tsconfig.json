@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "downlevelIteration": true,
     "importHelpers": true,
     "skipLibCheck": true,
     "outDir": "./dist/out-tsc",
@@ -11,7 +12,7 @@
     "experimentalDecorators": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
-    "target": "es5",
+    "target": "es2015",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -20,7 +21,7 @@
       "dom",
       "es2017.object"
     ],
-    "module": "es2015",
+    "module": "esnext",
     "baseUrl": "./"
   }
 }

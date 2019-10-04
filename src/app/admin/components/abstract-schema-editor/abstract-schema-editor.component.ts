@@ -21,8 +21,8 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalService, SortableItem } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 
 import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Microschema } from '../../../common/models/microschema.model';
@@ -127,7 +127,7 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
     abstract schemaDataConditions: { [key: string]: (property: any) => boolean };
 
     /** Main container for autoscroll */
-    @ViewChild('scrollContainer') protected scrollContainer: ElementRef;
+    @ViewChild('scrollContainer', { static: false }) protected scrollContainer: ElementRef;
 
     /** FormArray fields from template-ngFor */
     @ViewChildren('fields') protected fields: QueryList<ElementRef>;
@@ -165,14 +165,14 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         this.formGroupInit();
 
         // get all schemas
-        this.allSchemas$.takeUntil(this.destroyed$).subscribe(allSchemas => (this.allSchemas = allSchemas));
+        this.allSchemas$.pipe(takeUntil(this.destroyed$)).subscribe(allSchemas => (this.allSchemas = allSchemas));
         // get all microschemas
         this.allMicroschemas$
-            .takeUntil(this.destroyed$)
+            .pipe(takeUntil(this.destroyed$))
             .subscribe(allMicroschemas => (this.allMicroschemas = allMicroschemas));
 
         // refresh entities on router change to update validators
-        this.router.events.takeUntil(this.destroyed$).subscribe(() => {
+        this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(() => {
             this.loadComponentData();
         });
     }
@@ -192,33 +192,37 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             .select(state => {
                 return state.adminSchemas.filterTerm;
             })
-            .first()
+            .pipe(first())
             .subscribe(currentSearchTerm => {
                 this.schemaTitlePrefilled = currentSearchTerm;
             });
 
         // assign data streams
-        this.allSchemas$ = this.entities.selectAllSchemas().map(
-            schemas =>
-                schemas &&
-                schemas.sort((a, b) => {
-                    if (a && a.name) {
-                        return a.name.localeCompare(b.name);
-                    } else {
-                        return 0;
-                    }
-                })
+        this.allSchemas$ = this.entities.selectAllSchemas().pipe(
+            map(
+                schemas =>
+                    schemas &&
+                    schemas.sort((a, b) => {
+                        if (a && a.name) {
+                            return a.name.localeCompare(b.name);
+                        } else {
+                            return 0;
+                        }
+                    })
+            )
         );
-        this.allMicroschemas$ = this.entities.selectAllMicroschemas().map(
-            microschemas =>
-                microschemas &&
-                microschemas.sort((a, b) => {
-                    if (a && a.name) {
-                        return a.name.localeCompare(b.name);
-                    } else {
-                        return 0;
-                    }
-                })
+        this.allMicroschemas$ = this.entities.selectAllMicroschemas().pipe(
+            map(
+                microschemas =>
+                    microschemas &&
+                    microschemas.sort((a, b) => {
+                        if (a && a.name) {
+                            return a.name.localeCompare(b.name);
+                        } else {
+                            return 0;
+                        }
+                    })
+            )
         );
         // request data
         this.adminSchemaEffects.loadSchemas();

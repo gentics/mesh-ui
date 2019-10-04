@@ -569,13 +569,15 @@ function pretendUserUploadsFile(fixture: ComponentFixture<any>, file: Partial<Fi
 }
 
 @Component({
-    template: `<mesh-binary-field></mesh-binary-field>`
+    template: `
+        <mesh-binary-field></mesh-binary-field>
+    `
 })
 class TestComponent implements OnInit {
     api: MockMeshFieldControlApi;
     apiService: MockApiService;
 
-    @ViewChild(BinaryFieldComponent) binaryFieldComponent: BinaryFieldComponent;
+    @ViewChild(BinaryFieldComponent, /* TODO: add static flag */ {}) binaryFieldComponent: BinaryFieldComponent;
 
     ngOnInit() {
         const api = new MockMeshFieldControlApi();

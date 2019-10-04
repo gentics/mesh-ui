@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { Microschema, MicroschemaField } from '../../../common/models/microschema.model';
 import { MicroschemaFieldType } from '../../../common/models/schema.model';
@@ -152,8 +153,10 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
 
         // listen to form changes
         this.formGroup.valueChanges
-            .distinctUntilChanged()
-            .takeUntil(this.destroyed$)
+            .pipe(
+                distinctUntilChanged(),
+                takeUntil(this.destroyed$)
+            )
             .subscribe((value: any) => {
                 // set flag to identify change trigger source
                 this.schemaJsonFromExternalSource = false;

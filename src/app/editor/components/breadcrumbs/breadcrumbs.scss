@@ -6,21 +6,21 @@
         line-height: 40px;
         width: 100%;
 
-        /deep/ nav {
+        ::ng-deep nav {
             box-shadow: none;
             background-color: $gtx-color-white;
             color: $gtx-color-primary;
         }
     }
 
-    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb {
+    ::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb {
         color: $gtx-color-primary;
         &:last-child {
             color: $gtx-color-primary;
         }
     }
 
-    /deep/ gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
+    ::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
         color: $gtx-breadcrumbs-inactive-color;
     }
 }

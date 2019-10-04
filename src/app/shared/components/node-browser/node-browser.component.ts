@@ -2,10 +2,8 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { IBreadcrumbLink, IModalDialog } from 'gentics-ui-core';
 import * as esGqlQuery from 'raw-loader!./es-query.gql';
 import * as gqlQuery from 'raw-loader!./query.gql';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { filter, flatMap, map, share } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { filter, flatMap, map, share, skip, take } from 'rxjs/operators';
 
 import { notNullOrUndefined } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
@@ -81,10 +79,10 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
             page: 1
         });
 
-        this.currentPage$ = this.queryParams.map(params => params.page);
+        this.currentPage$ = this.queryParams.pipe(map(params => params.page));
 
-        const esQuery = this.search.map(
-            term =>
+        const esQuery = this.search.pipe(
+            map(term =>
                 term
                     ? {
                           query: {
@@ -94,6 +92,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
                           }
                       }
                     : null
+            )
         );
 
         // Empty search box when folder is changed and set page to 1
@@ -107,8 +106,8 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
         });
 
         // Start search when search was pressed
-        esQuery.skip(1).subscribe(query => {
-            this.queryParams.take(1).subscribe(prevParams => {
+        esQuery.pipe(skip(1)).subscribe(query => {
+            this.queryParams.pipe(take(1)).subscribe(prevParams => {
                 this.queryParams.next({
                     parent: prevParams.parent,
                     esQuery: query ? JSON.stringify(query) : undefined,
@@ -139,12 +138,13 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
             share()
         ) as Observable<QueryResult>;
 
-        this.currentPageContent$ = this.queryResult$.map(result => result.nodes.elements);
-        this.breadcrumb$ = this.queryResult$
-            .filter(result => !!result.breadcrumb)
-            .map(result => this.toBreadcrumb(result));
-        this.totalItems$ = this.queryResult$.map(result => result.nodes.totalCount);
-        this.pageCount$ = this.queryResult$.map(result => result.nodes.pageCount);
+        this.currentPageContent$ = this.queryResult$.pipe(map(result => result.nodes.elements));
+        this.breadcrumb$ = this.queryResult$.pipe(
+            filter(result => !!result.breadcrumb),
+            map(result => this.toBreadcrumb(result))
+        );
+        this.totalItems$ = this.queryResult$.pipe(map(result => result.nodes.totalCount));
+        this.pageCount$ = this.queryResult$.pipe(map(result => result.nodes.pageCount));
         this.queryResult$.subscribe(result => (this.currentNode = result));
     }
 
@@ -184,7 +184,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
 
     submitClicked() {
         if (this.options.chooseContainer) {
-            this.currentNode$.take(1).subscribe(uuid => this.closeFn([uuid]));
+            this.currentNode$.pipe(take(1)).subscribe(uuid => this.closeFn([uuid]));
         } else {
             this.closeFn(this.selected.map(item => item.uuid));
         }
@@ -203,7 +203,7 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
     }
 
     pageChanged(page: number) {
-        this.queryParams.take(1).subscribe(prevParams => {
+        this.queryParams.pipe(take(1)).subscribe(prevParams => {
             this.queryParams.next({ ...prevParams, page });
         });
     }

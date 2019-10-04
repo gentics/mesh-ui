@@ -298,7 +298,7 @@ describe('FieldGeneratorService', () => {
 class TestComponent implements AfterViewInit {
     fieldGenerator: FieldGenerator;
     onChangeFn = createSpy('onChangeFn');
-    @ViewChild('insertionPoint', { read: ViewContainerRef })
+    @ViewChild('insertionPoint', /* TODO: add static flag */ { read: ViewContainerRef })
     insertionPoint: ViewContainerRef;
 
     constructor(private fieldGeneratorService: FieldGeneratorService) {}

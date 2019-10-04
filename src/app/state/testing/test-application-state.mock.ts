@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 
 import { AppState } from '../models/app-state.model';
 import { ApplicationStateService } from '../providers/application-state.service';
@@ -30,34 +29,36 @@ export class TestApplicationState extends ApplicationStateService {
         const subscriptionList = this.trackedSubscriptions;
 
         const originalSelect = super.select;
-        this.select = jasmine.createSpy('select').and.callFake((selector: any): Observable<any> => {
-            const observable = super.select(selector);
-            const originalSubscribe = observable.subscribe;
-            const self = this;
-            observable.subscribe = jasmine
-                .createSpy('subscribe')
-                .and.callFake(function fakeSubscribe(...args: any[]): any {
-                    subscriptionList.push(selector);
+        this.select = jasmine.createSpy('select').and.callFake(
+            (selector: any): Observable<any> => {
+                const observable = super.select(selector);
+                const originalSubscribe = observable.subscribe;
+                const self = this;
+                observable.subscribe = jasmine
+                    .createSpy('subscribe')
+                    .and.callFake(function fakeSubscribe(...args: any[]): any {
+                        subscriptionList.push(selector);
 
-                    const subscription: Subscription = originalSubscribe.call(this, ...args);
-                    const originalUnsubscribe = subscription.unsubscribe;
-                    let unsubscribed = false;
+                        const subscription: Subscription = originalSubscribe.call(this, ...args);
+                        const originalUnsubscribe = subscription.unsubscribe;
+                        let unsubscribed = false;
 
-                    subscription.unsubscribe = jasmine
-                        .createSpy('unsubscribe')
-                        .and.callFake(function fakeUnsubscribe(): void {
-                            const index = subscriptionList.indexOf(selector);
-                            if (!unsubscribed && index >= 0) {
-                                subscriptionList.splice(index, 1);
-                                unsubscribed = true;
-                            }
-                            return originalUnsubscribe.call(this);
-                        });
+                        subscription.unsubscribe = jasmine
+                            .createSpy('unsubscribe')
+                            .and.callFake(function fakeUnsubscribe(): void {
+                                const index = subscriptionList.indexOf(selector);
+                                if (!unsubscribed && index >= 0) {
+                                    subscriptionList.splice(index, 1);
+                                    unsubscribed = true;
+                                }
+                                return originalUnsubscribe.call(this);
+                            });
 
-                    return subscription;
-                });
-            return observable;
-        });
+                        return subscription;
+                    });
+                return observable;
+            }
+        );
 
         return subscriptionList;
     }

@@ -1,6 +1,6 @@
 import { async, fakeAsync, tick, TestBed } from '@angular/core/testing';
 import { Notification } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { Schema } from '../../../common/models/schema.model';
@@ -49,11 +49,11 @@ describe('AdminUserEffects', () => {
         let mockUserNodeSchema: Partial<Schema> & { uuid: string };
 
         function setUpSpies() {
-            api.user.getUser = jasmine.createSpy('user.getUser').and.returnValue(Observable.of(mockUser));
-            api.project.getNode = jasmine.createSpy('project.getNode').and.returnValue(Observable.of(mockUserNode));
+            api.user.getUser = jasmine.createSpy('user.getUser').and.returnValue(observableOf(mockUser));
+            api.project.getNode = jasmine.createSpy('project.getNode').and.returnValue(observableOf(mockUserNode));
             api.admin.getSchema = jasmine
                 .createSpy('admin.getSchema')
-                .and.returnValue(Observable.of(mockUserNodeSchema));
+                .and.returnValue(observableOf(mockUserNodeSchema));
         }
 
         beforeEach(() => {
@@ -92,28 +92,25 @@ describe('AdminUserEffects', () => {
             expect(api.admin.getSchema).toHaveBeenCalledWith({ schemaUuid: mockUserNodeSchema.uuid });
         });
 
-        it(
-            'calls openUserSuccess() action with user, node and schema',
-            fakeAsync(() => {
-                mockUser.nodeReference = {
-                    uuid: mockUserNode.uuid,
-                    projectName: 'test_project',
-                    schema: {
-                        uuid: mockUserNodeSchema.uuid
-                    }
-                } as any;
-                setUpSpies();
-                adminUserEffects.openUser(mockUser.uuid);
-                tick();
+        it('calls openUserSuccess() action with user, node and schema', fakeAsync(() => {
+            mockUser.nodeReference = {
+                uuid: mockUserNode.uuid,
+                projectName: 'test_project',
+                schema: {
+                    uuid: mockUserNodeSchema.uuid
+                }
+            } as any;
+            setUpSpies();
+            adminUserEffects.openUser(mockUser.uuid);
+            tick();
 
-                expect(state.actions.adminUsers.openUserSuccess).toHaveBeenCalledWith(
-                    mockUser,
-                    mockUserNode,
-                    mockUserNodeSchema,
-                    undefined
-                );
-            })
-        );
+            expect(state.actions.adminUsers.openUserSuccess).toHaveBeenCalledWith(
+                mockUser,
+                mockUserNode,
+                mockUserNodeSchema,
+                undefined
+            );
+        }));
 
         it('returns a promise which resolves with the User object', async(() => {
             setUpSpies();
@@ -166,7 +163,7 @@ describe('AdminUserEffects', () => {
                 api.admin.getMicroschema = jasmine
                     .createSpy('admin.getMicroschema')
                     .and.callFake(({ microschemaUuid, version }: { microschemaUuid: string; version: string }) => {
-                        return Observable.of({ uuid: microschemaUuid, version });
+                        return observableOf({ uuid: microschemaUuid, version });
                     });
             });
 
@@ -187,25 +184,22 @@ describe('AdminUserEffects', () => {
                 });
             });
 
-            it(
-                'calls openUserSuccess() action with user, node, schema and microschemas',
-                fakeAsync(() => {
-                    const mockMicroschemas = [
-                        { uuid: 'microschema1_uuid', version: '1.0' },
-                        { uuid: 'microschema2_uuid', version: '1.0' },
-                        { uuid: 'microschema1_uuid', version: '2.0' }
-                    ];
-                    adminUserEffects.openUser(mockUser.uuid);
-                    tick();
+            it('calls openUserSuccess() action with user, node, schema and microschemas', fakeAsync(() => {
+                const mockMicroschemas = [
+                    { uuid: 'microschema1_uuid', version: '1.0' },
+                    { uuid: 'microschema2_uuid', version: '1.0' },
+                    { uuid: 'microschema1_uuid', version: '2.0' }
+                ];
+                adminUserEffects.openUser(mockUser.uuid);
+                tick();
 
-                    expect(state.actions.adminUsers.openUserSuccess).toHaveBeenCalledWith(
-                        mockUser,
-                        mockUserNode,
-                        mockUserNodeSchema,
-                        mockMicroschemas
-                    );
-                })
-            );
+                expect(state.actions.adminUsers.openUserSuccess).toHaveBeenCalledWith(
+                    mockUser,
+                    mockUserNode,
+                    mockUserNodeSchema,
+                    mockMicroschemas
+                );
+            }));
         });
     });
 
@@ -220,7 +214,7 @@ describe('AdminUserEffects', () => {
             ]
         };
         api.admin.addUserToGroup = jasmine.createSpy('addUserToGroup').and.returnValue(
-            Observable.of({
+            observableOf({
                 name: 'group2',
                 uuid: 'group2_uuid'
             })
@@ -262,7 +256,7 @@ describe('AdminUserEffects', () => {
             groups: []
         };
 
-        api.admin.addUserToGroup = jasmine.createSpy('addUserToGroup').and.returnValue(Observable.of(mockGroup1));
+        api.admin.addUserToGroup = jasmine.createSpy('addUserToGroup').and.returnValue(observableOf(mockGroup1));
 
         adminUserEffects.addUsersToGroup([mockUser1, mockUser2], mockGroup1.uuid);
 
@@ -280,7 +274,7 @@ describe('AdminUserEffects', () => {
                 }
             ]
         };
-        api.admin.removeUserFromGroup = jasmine.createSpy('removeUserFromGroup').and.returnValue(Observable.of({}));
+        api.admin.removeUserFromGroup = jasmine.createSpy('removeUserFromGroup').and.returnValue(observableOf({}));
 
         adminUserEffects.removeUserFromGroup(mockUser, 'group1_uuid');
 
@@ -300,7 +294,7 @@ describe('AdminUserEffects', () => {
                 }
             ]
         };
-        api.admin.removeUserFromGroup = jasmine.createSpy('removeUserFromGroup').and.returnValue(Observable.of({}));
+        api.admin.removeUserFromGroup = jasmine.createSpy('removeUserFromGroup').and.returnValue(observableOf({}));
 
         adminUserEffects.removeUserFromGroup(mockUser, 'group3_uuid');
 
@@ -334,7 +328,7 @@ describe('AdminUserEffects', () => {
             groups: []
         };
 
-        api.admin.removeUserFromGroup = jasmine.createSpy('removeUserFromGroup').and.returnValue(Observable.of({}));
+        api.admin.removeUserFromGroup = jasmine.createSpy('removeUserFromGroup').and.returnValue(observableOf({}));
 
         adminUserEffects.removeUsersFromGroup([mockUser1, mockUser2], mockGroup1.uuid);
 

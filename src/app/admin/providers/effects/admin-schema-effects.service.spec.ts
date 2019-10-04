@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Notification } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ConfigService } from '../../../core/providers/config/config.service';
@@ -50,7 +50,7 @@ describe('AdminSchemaEffects', () => {
         };
 
         it('sends empty object on no projects', async () => {
-            apiServiceSpy.project.getProjects.and.returnValue(Observable.of({ data: [] }));
+            apiServiceSpy.project.getProjects.and.returnValue(observableOf({ data: [] }));
             await adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith({});
@@ -62,8 +62,8 @@ describe('AdminSchemaEffects', () => {
                 uuid2: true
             };
 
-            apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
-            apiServiceSpy.project.getProjectSchemas.and.returnValue(Observable.of(schemasResponse(['test'])));
+            apiServiceSpy.project.getProjects.and.returnValue(observableOf(projects));
+            apiServiceSpy.project.getProjectSchemas.and.returnValue(observableOf(schemasResponse(['test'])));
             await adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);
@@ -75,10 +75,10 @@ describe('AdminSchemaEffects', () => {
                 uuid2: true
             };
 
-            apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
+            apiServiceSpy.project.getProjects.and.returnValue(observableOf(projects));
             apiServiceSpy.project.getProjectSchemas.and.returnValues(
-                Observable.of(schemasResponse([])),
-                Observable.of(schemasResponse(['test']))
+                observableOf(schemasResponse([])),
+                observableOf(schemasResponse(['test']))
             );
             await adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
@@ -91,8 +91,8 @@ describe('AdminSchemaEffects', () => {
                 uuid2: false
             };
 
-            apiServiceSpy.project.getProjects.and.returnValue(Observable.of(projects));
-            apiServiceSpy.project.getProjectSchemas.and.returnValue(Observable.of(schemasResponse([])));
+            apiServiceSpy.project.getProjects.and.returnValue(observableOf(projects));
+            apiServiceSpy.project.getProjectSchemas.and.returnValue(observableOf(schemasResponse([])));
             await adminSchemaEffects.loadEntityAssignments('schema', 'test');
             expect(state.actions.adminSchemas.fetchEntityAssignmentProjectsSuccess).toHaveBeenCalled();
             expect(state.actions.adminSchemas.fetchEntityAssignmentsSuccess).toHaveBeenCalledWith(expected);

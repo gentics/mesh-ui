@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { convertToParamMap, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { mockMeshNode, mockProject, mockSchema } from '../../../../testing/mock-models';
@@ -56,7 +56,7 @@ describe('ContainerContentsComponent', () => {
                 {
                     provide: ActivatedRoute,
                     useValue: {
-                        paramMap: Observable.of(
+                        paramMap: observableOf(
                             convertToParamMap({
                                 containerUuid: 'container_uuid',
                                 projectName: 'demo_project',
@@ -111,6 +111,7 @@ describe('ContainerContentsComponent', () => {
 @Component({
     template: `
         <container-contents></container-contents>
-        <gtx-overlay-host></gtx-overlay-host>`
+        <gtx-overlay-host></gtx-overlay-host>
+    `
 })
 class TestComponent {}

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ImmutableStateStore, TrackedMethodCall } from 'immutablets';
-import { of } from 'rxjs';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { of, BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 import { ConfigService } from '../../core/providers/config/config.service';
 import { AppState } from '../models/app-state.model';
@@ -88,10 +86,10 @@ export class ApplicationStateService {
      * If the mapped value did not change during an action, no values are emitted.
      */
     select<R>(selector: (state: AppState) => R): Observable<R> {
-        return this.stateSubject
-            .asObservable()
-            .map(selector)
-            .distinctUntilChanged();
+        return this.stateSubject.asObservable().pipe(
+            map(selector),
+            distinctUntilChanged()
+        );
     }
 
     destroy(): void {

@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, map, takeUntil } from 'rxjs/operators';
 
 import { Project } from '../../../common/models/project.model';
 import { ProjectResponse } from '../../../common/models/server-models';
@@ -47,14 +46,16 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this.adminProjectEffects.loadProjects();
 
         this.filterInput.valueChanges
-            .debounceTime(100)
-            .takeUntil(this.destroy$)
+            .pipe(
+                debounceTime(100),
+                takeUntil(this.destroy$)
+            )
             .subscribe(term => {
                 setQueryParams(this.router, this.route, { q: term });
             });
 
         observeQueryParam(this.route.queryParamMap, 'q', '')
-            .takeUntil(this.destroy$)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(filterTerm => {
                 this.adminProjectEffects.setFilterTerm(filterTerm);
                 this.filterInput.setValue(filterTerm, { emitEvent: false });
@@ -62,16 +63,20 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
         const allProjects$ = this.state
             .select(state => state.adminProjects.projectList)
-            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)).filter(notNullOrUndefined));
+            .pipe(map(uuids => uuids.map(uuid => this.entities.getProject(uuid)).filter(notNullOrUndefined)));
 
         const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
 
-        this.projects$ = combineLatest(allProjects$, filterTerm$).map(([projects, filterTerm]) => {
-            this.filterTerm = filterTerm;
-            return projects.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
-                return pro1.name < pro2.name ? -1 : 1;
-            });
-        });
+        this.projects$ = combineLatest(allProjects$, filterTerm$).pipe(
+            map(([projects, filterTerm]) => {
+                this.filterTerm = filterTerm;
+                return projects
+                    .filter(project => fuzzyMatch(filterTerm, project.name) !== null)
+                    .sort((pro1, pro2) => {
+                        return pro1.name < pro2.name ? -1 : 1;
+                    });
+            })
+        );
     }
 
     ngOnDestroy(): void {

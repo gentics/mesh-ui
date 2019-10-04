@@ -68,7 +68,7 @@ export class HtmlFieldComponent extends BaseFieldComponent implements AfterViewI
     field: SchemaField;
     api: MeshFieldControlApi;
     value: NodeFieldType;
-    @ViewChild('editor') private editorRef: ElementRef;
+    @ViewChild('editor', { static: true }) private editorRef: ElementRef;
     private editor: ThemedQuill;
     private blurTimer: any;
 

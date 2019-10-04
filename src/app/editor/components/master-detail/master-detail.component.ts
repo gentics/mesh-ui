@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
 
 import { Project } from '../../../common/models/project.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -34,16 +35,18 @@ export class MasterDetailComponent implements OnInit {
         // this.navigationService.list('demo', 'container_uuid').navigate();
         this.state
             .select(state => state.auth.loggedIn)
-            .filter(Boolean)
-            .switchMap(() =>
-                this.state.select(state => {
-                    const projects = state.entities.project;
-                    const firstProjectUuid = Object.keys(projects)[0];
-                    return firstProjectUuid && projects[firstProjectUuid];
-                })
+            .pipe(
+                filter(Boolean),
+                switchMap(() =>
+                    this.state.select(state => {
+                        const projects = state.entities.project;
+                        const firstProjectUuid = Object.keys(projects)[0];
+                        return firstProjectUuid && projects[firstProjectUuid];
+                    })
+                ),
+                filter(Boolean),
+                take(1)
             )
-            .filter(Boolean)
-            .take(1)
             .subscribe((firstProject: Project) => {
                 // If the list params are already set in the URL, use those. Otherwise
                 // default to the first project.

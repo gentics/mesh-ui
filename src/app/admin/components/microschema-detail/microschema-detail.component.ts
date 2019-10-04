@@ -2,10 +2,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { debounceTime, filter, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
@@ -100,9 +98,12 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.microschema$ = this.route.data.map(data => data.microschema).do(microschema => {
-            this.isNew$.next(!microschema);
-        });
+        this.microschema$ = this.route.data.pipe(
+            map(data => data.microschema),
+            tap(microschema => {
+                this.isNew$.next(!microschema);
+            })
+        );
 
         this.subscription = this.microschema$.subscribe(microschema => {
             this.microschemaJson = microschema
@@ -111,8 +112,10 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         });
 
         this.microschema$
-            .filter(microschema => !!microschema)
-            .take(1)
+            .pipe(
+                filter(microschema => !!microschema),
+                take(1)
+            )
             .toPromise()
             .then(microschema => {
                 // keep original to compare
@@ -125,7 +128,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
         this.adminProjectEffects.loadProjects();
 
-        this.filterInput.valueChanges.debounceTime(100).subscribe(term => {
+        this.filterInput.valueChanges.pipe(debounceTime(100)).subscribe(term => {
             setQueryParams(this.router, this.route, { q: term });
         });
 
@@ -136,16 +139,20 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
         const allProjects$ = this.state
             .select(state => state.adminProjects.projectList)
-            .map(uuids => uuids.map(uuid => this.entities.getProject(uuid)).filter(notNullOrUndefined));
+            .pipe(map(uuids => uuids.map(uuid => this.entities.getProject(uuid)).filter(notNullOrUndefined)));
 
         const filterTerm$ = this.state.select(state => state.adminProjects.filterTerm);
 
-        this.projects$ = combineLatest(allProjects$, filterTerm$).map(([projects, filterTerm]) => {
-            this.filterTerm = filterTerm;
-            return projects.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
-                return pro1.name < pro2.name ? -1 : 1;
-            });
-        });
+        this.projects$ = combineLatest(allProjects$, filterTerm$).pipe(
+            map(([projects, filterTerm]) => {
+                this.filterTerm = filterTerm;
+                return projects
+                    .filter(project => fuzzyMatch(filterTerm, project.name) !== null)
+                    .sort((pro1, pro2) => {
+                        return pro1.name < pro2.name ? -1 : 1;
+                    });
+            })
+        );
     }
 
     ngOnDestroy(): void {
@@ -191,7 +198,7 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
                     });
             });
         } else {
-            this.microschema$.take(1).subscribe(microschema => {
+            this.microschema$.pipe(take(1)).subscribe(microschema => {
                 this.schemaEffects.updateMicroschema({ ...microschema, ...changedSchema }).then(microschemaNew => {
                     if (microschemaNew) {
                         this.version = microschemaNew.version;
@@ -203,8 +210,10 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
 
     delete() {
         this.microschema$
-            .take(1)
-            .switchMap(microschema => this.schemaEffects.deleteMicroschema(microschema.uuid))
+            .pipe(
+                take(1),
+                switchMap(microschema => this.schemaEffects.deleteMicroschema(microschema.uuid))
+            )
             .subscribe(() => {
                 this.doesDelete = true;
                 this.router.navigate(['admin', 'microschemas']);
@@ -214,13 +223,13 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
     onAssignmentChange(project: Project, isChecked: boolean) {
         if (isChecked) {
             this.microschema$
-                .take(1)
+                .pipe(take(1))
                 .subscribe(microschema =>
                     this.schemaEffects.assignEntityToProject('microschema', microschema.uuid, project.name)
                 );
         } else {
             this.microschema$
-                .take(1)
+                .pipe(take(1))
                 .subscribe(microschema =>
                     this.schemaEffects.removeEntityFromProject('microschema', microschema.uuid, project.name)
                 );

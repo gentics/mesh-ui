@@ -29,7 +29,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     loadingPreview = false;
     scaledTransform: Partial<ImageTransformParams> = {};
 
-    @ViewChild(GenticsImagePreviewComponent) private imagePreview: GenticsImagePreviewComponent;
+    @ViewChild(GenticsImagePreviewComponent, { static: false }) private imagePreview: GenticsImagePreviewComponent;
     private lastParams?: ImageTransformParams;
     private transformParams: ImageTransformParams | undefined;
     private readonly maxImageWidth = 750;

@@ -6,7 +6,7 @@
         line-height: 40px;
         width: 100%;
 
-        /deep/ nav {
+        ::ng-deep nav {
             box-shadow: none;
         }
     }

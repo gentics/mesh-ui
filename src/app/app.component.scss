@@ -71,16 +71,16 @@ gtx-top-bar {
         }
     }
 
-    /deep/ gtx-button,
-    /deep/ gtx-button .button-event-wrapper,
-    /deep/ gtx-button .button-event-wrapper button,
-    /deep/ mesh-language-switcher,
-    /deep/ mesh-language-switcher gtx-dropdown-list,
-    /deep/ mesh-language-switcher gtx-dropdown-list div,
-    /deep/ mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger,
-    /deep/ mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button,
-    /deep/ mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button .button-event-wrapper,
-    /deep/ mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button .button-event-wrapper button
+    ::ng-deep gtx-button,
+    ::ng-deep gtx-button .button-event-wrapper,
+    ::ng-deep gtx-button .button-event-wrapper button,
+    ::ng-deep mesh-language-switcher,
+    ::ng-deep mesh-language-switcher gtx-dropdown-list,
+    ::ng-deep mesh-language-switcher gtx-dropdown-list div,
+    ::ng-deep mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger,
+    ::ng-deep mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button,
+    ::ng-deep mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button .button-event-wrapper,
+    ::ng-deep mesh-language-switcher gtx-dropdown-list div gtx-dropdown-trigger gtx-button .button-event-wrapper button
     {
         width: 100%;
     }

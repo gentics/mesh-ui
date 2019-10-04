@@ -1,8 +1,17 @@
 import {
-    ChangeDetectorRef, Directive, ElementRef, HostBinding, Input, OnChanges, OnDestroy, OnInit, Optional,
+    ChangeDetectorRef,
+    Directive,
+    ElementRef,
+    HostBinding,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    Optional,
     SimpleChanges
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 import { ScrollFrameDirective } from './scroll-frame.directive';
 
@@ -42,9 +51,8 @@ const DEFAULT_OPTIONS: Options = {
  * </div>
  * ```
  */
-@Directive({selector: '[meshScrollFrameHeading]'})
+@Directive({ selector: '[meshScrollFrameHeading]' })
 export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges {
-
     @Input('meshScrollFrameHeading') options: ScrollFrameTrackingOptions;
     @Input() disableScrollTarget: boolean;
 
@@ -62,9 +70,11 @@ export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges
 
     private subscription: Subscription;
 
-    constructor(private elementRef: ElementRef,
-                private changeDetector: ChangeDetectorRef,
-                @Optional() private scrollFrame?: ScrollFrameDirective) {}
+    constructor(
+        private elementRef: ElementRef,
+        private changeDetector: ChangeDetectorRef,
+        @Optional() private scrollFrame?: ScrollFrameDirective
+    ) {}
 
     ngOnInit() {
         if (!this.disableScrollTarget) {
@@ -94,14 +104,17 @@ export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges
         if (!this.scrollFrame) {
             throw new Error('ScrollFrameTargetDirective could not find any ScrollFrameDirective');
         }
-        const target = this.options.target instanceof ElementRef ? this.options.target.nativeElement : this.options.target;
+        const target =
+            this.options.target instanceof ElementRef ? this.options.target.nativeElement : this.options.target;
         const frameElement = this.scrollFrame.frameElement;
         const options: Options & ScrollFrameTrackingOptions = { ...DEFAULT_OPTIONS, ...this.options };
 
         this.subscription = this.scrollFrame.scrollEnd$
-            .debounceTime(options.debounce)
-            .map(() => this.targetShouldFloat(frameElement, target, options))
-            .distinctUntilChanged()
+            .pipe(
+                debounceTime(options.debounce),
+                map(() => this.targetShouldFloat(frameElement, target, options)),
+                distinctUntilChanged()
+            )
             .subscribe(float => {
                 if (float) {
                     this.position = 'fixed';
@@ -139,7 +152,8 @@ export class ScrollFrameHeadingDirective implements OnInit, OnDestroy, OnChanges
         const frameTop = frameElement.getBoundingClientRect().top - globalOffset;
         const frameBottom = frameElement.getBoundingClientRect().bottom - globalOffset;
 
-        const isInView = targetTop < frameBottom &&  frameTop < (targetBottom - this.elementRef.nativeElement.offsetHeight);
+        const isInView =
+            targetTop < frameBottom && frameTop < targetBottom - this.elementRef.nativeElement.offsetHeight;
         const topIsAboveFrame = targetTop < frameTop;
         return isInView && topIsAboveFrame;
     }

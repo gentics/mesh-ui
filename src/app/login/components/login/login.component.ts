@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { matchOtherValidator } from 'src/app/common/util/util';
 
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -33,8 +34,10 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
     ) {
         this.subscription = this.appState
             .select(state => state.auth.loggedIn)
-            .filter(isLoggedIn => isLoggedIn)
-            .take(1)
+            .pipe(
+                filter(isLoggedIn => isLoggedIn),
+                take(1)
+            )
             .subscribe(() => {
                 this.router.navigate(['/editor', 'project']);
             });

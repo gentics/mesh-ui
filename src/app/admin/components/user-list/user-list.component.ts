@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, map, takeUntil } from 'rxjs/operators';
 
 import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
 import { Group } from '../../../common/models/group.model';
@@ -57,20 +56,20 @@ export class UserListComponent implements OnInit, OnDestroy {
             observeQueryParam(this.route.queryParamMap, 'p', 1),
             observeQueryParam(this.route.queryParamMap, 'perPage', 25)
         )
-            .takeUntil(this.destroy$)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(([page, perPage]) => {
                 this.adminUserEffects.setListPagination(page, perPage);
             });
 
         observeQueryParam(this.route.queryParamMap, 'q', '')
-            .takeUntil(this.destroy$)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(filterTerm => {
                 this.adminUserEffects.setFilterTerm(filterTerm);
                 this.filterInput.setValue(filterTerm, { emitEvent: false });
             });
 
         observeQueryParam(this.route.queryParamMap, 'group', '')
-            .takeUntil(this.destroy$)
+            .pipe(takeUntil(this.destroy$))
             .subscribe(groupUuid => {
                 this.adminUserEffects.setFilterGroups([groupUuid]);
 
@@ -83,24 +82,26 @@ export class UserListComponent implements OnInit, OnDestroy {
             });
 
         this.filterInput.valueChanges
-            .debounceTime(300)
-            .takeUntil(this.destroy$)
+            .pipe(
+                debounceTime(300),
+                takeUntil(this.destroy$)
+            )
             .subscribe(term => {
                 setQueryParams(this.router, this.route, { q: term });
             });
 
-        this.filterGroupSelect.valueChanges.takeUntil(this.destroy$).subscribe(groupUuid => {
+        this.filterGroupSelect.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(groupUuid => {
             setQueryParams(this.router, this.route, { group: groupUuid });
         });
 
         const allUsers$ = this.state
             .select(state => state.adminUsers.userList)
-            .map(uuids => uuids.map(uuid => this.entities.getUser(uuid)).filter(notNullOrUndefined));
+            .pipe(map(uuids => uuids.map(uuid => this.entities.getUser(uuid)).filter(notNullOrUndefined)));
         const filterTerm$ = this.state.select(state => state.adminUsers.filterTerm);
         const filterGroups$ = this.state.select(state => state.adminUsers.filterGroups);
 
-        this.users$ = combineLatest(allUsers$, filterTerm$, filterGroups$).map(([users, filterTerm, filterGroups]) =>
-            this.filterUsers(users, filterTerm, filterGroups)
+        this.users$ = combineLatest(allUsers$, filterTerm$, filterGroups$).pipe(
+            map(([users, filterTerm, filterGroups]) => this.filterUsers(users, filterTerm, filterGroups))
         );
 
         this.allGroups$ = this.entities.selectAllGroups();

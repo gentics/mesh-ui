@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { flatMap, tap } from 'rxjs/operators';
 import { UserResponse } from 'src/app/common/models/server-models';
 
 import { ApiError } from '../../core/providers/api/api-error';
@@ -37,27 +38,29 @@ export class AuthEffectsService {
         this.state.actions.auth.loginStart();
         return this.api.auth
             .login({ username, password, newPassword })
-            .flatMap(response => {
-                if (typeof response === 'boolean') {
-                    return this.api.auth.getCurrentUser();
-                } else if (response && response.i18nKey) {
-                    throw response;
-                } else {
-                    return [];
-                }
-            })
-            .do(
-                user => {
-                    if (!user || user.username === this.config.ANONYMOUS_USER_NAME) {
-                        this.state.actions.auth.loginError();
+            .pipe(
+                flatMap(response => {
+                    if (typeof response === 'boolean') {
+                        return this.api.auth.getCurrentUser();
+                    } else if (response && response.i18nKey) {
+                        throw response;
                     } else {
-                        this.state.actions.auth.loginSuccess(user);
+                        return [];
                     }
-                },
-                error => {
-                    this.state.actions.auth.loginError();
-                    throw error;
-                }
+                }),
+                tap(
+                    user => {
+                        if (!user || user.username === this.config.ANONYMOUS_USER_NAME) {
+                            this.state.actions.auth.loginError();
+                        } else {
+                            this.state.actions.auth.loginSuccess(user);
+                        }
+                    },
+                    error => {
+                        this.state.actions.auth.loginError();
+                        throw error;
+                    }
+                )
             )
             .toPromise();
     }

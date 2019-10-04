@@ -204,10 +204,10 @@ gtx-sortable-list {
         border-left: $left-bar-width solid $gtx-color-very-light-gray;
         transition: background-color 0.3s, border-color 0.3s;
 
-        /deep/ & > mesh-micronode-field,
-        /deep/ & > mesh-number-field,
-        /deep/ & > mesh-html-field,
-        /deep/ & > mesh-string-field {
+        ::ng-deep & > mesh-micronode-field,
+        ::ng-deep & > mesh-number-field,
+        ::ng-deep & > mesh-html-field,
+        ::ng-deep & > mesh-string-field {
             flex-grow: 1;
         }
     }

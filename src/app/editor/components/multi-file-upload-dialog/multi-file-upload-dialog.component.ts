@@ -2,6 +2,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { IModalDialog } from 'gentics-ui-core';
+import { take } from 'rxjs/operators';
 
 import { BinaryField, MeshNode } from '../../../common/models/node.model';
 import { Schema, SchemaField } from '../../../common/models/schema.model';
@@ -29,7 +30,7 @@ interface FileWithBlob {
     ]
 })
 export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
-    @ViewChild('fileInput') fileInput: ElementRef;
+    @ViewChild('fileInput', { static: true }) fileInput: ElementRef;
 
     closeFn: (val: any) => void;
     cancelFn: (val: any) => void;
@@ -62,7 +63,7 @@ export class MultiFileUploadDialogComponent implements IModalDialog, OnInit {
     ngOnInit() {
         this.state
             .select(state => state.entities.schema)
-            .take(1)
+            .pipe(take(1))
             .subscribe(schemas => {
                 Object.keys(schemas).forEach(key => {
                     const schema = this.entitiesService.getSchema(key);

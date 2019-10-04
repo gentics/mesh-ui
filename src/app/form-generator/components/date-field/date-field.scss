@@ -3,7 +3,7 @@
 
 :host {
     @include input-styles;
-    /deep/ gtx-input {
+    ::ng-deep gtx-input {
         width: 100%;
     }
 }

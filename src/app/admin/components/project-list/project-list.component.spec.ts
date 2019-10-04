@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Button, GenticsUICoreModule, ModalService } from 'gentics-ui-core';
+import { take } from 'rxjs/operators';
 
 import { componentTest } from '../../../../testing/component-test';
 import { mockProject } from '../../../../testing/mock-models';
@@ -135,7 +136,7 @@ describe('ProjectListComponent', () => {
                 tick();
                 fixture.detectChanges();
 
-                fixture.componentInstance.projects$.take(1).subscribe(result => {
+                fixture.componentInstance.projects$.pipe(take(1)).subscribe(result => {
                     fixture.componentInstance.deleteProject(result[0]);
 
                     tick();
@@ -159,7 +160,7 @@ describe('ProjectListComponent', () => {
                 tick();
                 fixture.detectChanges();
 
-                fixture.componentInstance.projects$.take(1).subscribe(result => {
+                fixture.componentInstance.projects$.pipe(take(1)).subscribe(result => {
                     const itemsBefore = fixture.debugElement.queryAll(By.css('mesh-admin-list-item'));
                     appState.actions.adminProjects.setFilterTerm('tvc');
 

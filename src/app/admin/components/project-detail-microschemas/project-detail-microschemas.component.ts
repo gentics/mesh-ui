@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, BehaviorSubject, Observable, Subject } from 'rxjs';
+import { debounceTime, filter, first, map, takeUntil } from 'rxjs/operators';
 
 import { MicroschemaReference } from '../../../common/models/common.model';
 import { Microschema } from '../../../common/models/microschema.model';
@@ -67,9 +65,12 @@ export class ProjectDetailMicroschemasComponent implements OnInit, OnDestroy {
         // PROJECT
 
         // get project from route
-        this.project$ = this.route.data.map(data => data.project).filter(notNullOrUndefined);
+        this.project$ = this.route.data.pipe(
+            map(data => data.project),
+            filter(notNullOrUndefined)
+        );
 
-        this.project$.takeUntil(this.destroy$).subscribe(project => {
+        this.project$.pipe(takeUntil(this.destroy$)).subscribe(project => {
             this.project = project;
             this.readOnly = !!project && !project.permissions.update;
             this.form = this.formBuilder.group({
@@ -85,8 +86,10 @@ export class ProjectDetailMicroschemasComponent implements OnInit, OnDestroy {
         // if filter term is already set, update input
         this.state
             .select(state => state.adminProjects.filterTermMicroschema)
-            .filter(filterTerm => !!filterTerm)
-            .first()
+            .pipe(
+                filter(filterTerm => !!filterTerm),
+                first()
+            )
             .toPromise()
             .then(filterTerm => this.filterInput.setValue(filterTerm));
 
@@ -100,8 +103,10 @@ export class ProjectDetailMicroschemasComponent implements OnInit, OnDestroy {
 
         // listen to input changes and page changes
         combineLatest(this.filterInput.valueChanges, this.currentPage$)
-            .debounceTime(100)
-            .takeUntil(this.destroy$)
+            .pipe(
+                debounceTime(100),
+                takeUntil(this.destroy$)
+            )
             .subscribe(([filterTerm, currentPage]) => {
                 const queryParams = { p: currentPage || 1 };
                 if (filterTerm || filterTerm === '') {
@@ -114,8 +119,10 @@ export class ProjectDetailMicroschemasComponent implements OnInit, OnDestroy {
         // Watch URL parameter:
         // Search query and pagination data are bookmarkable.
         observeQueryParam(this.route.queryParamMap, 'microschemas', JSON.stringify({ p: this.currentPage$.getValue() }))
-            .filter(schemaData => !!schemaData)
-            .takeUntil(this.destroy$)
+            .pipe(
+                filter(schemaData => !!schemaData),
+                takeUntil(this.destroy$)
+            )
             .subscribe(schemaData => {
                 // parse query and pagination information from url parameter
                 const parsedData = JSON.parse(schemaData);
@@ -132,16 +139,18 @@ export class ProjectDetailMicroschemasComponent implements OnInit, OnDestroy {
         this.allSchemas$ = this.entities.selectAllMicroschemas();
 
         // get project schemas
-        this.projectSchemas$ = this.entities.selectProject(this.project.uuid).map(project => {
-            if (!project.microschemas) {
-                return [];
-            }
-            return project.microschemas;
-        });
+        this.projectSchemas$ = this.entities.selectProject(this.project.uuid).pipe(
+            map(project => {
+                if (!project.microschemas) {
+                    return [];
+                }
+                return project.microschemas;
+            })
+        );
 
         // get schema asignments
-        this.schemaAssignments$ = combineLatest(this.allSchemas$, this.projectSchemas$).map(
-            ([allSchemas, projectSchemas]) => {
+        this.schemaAssignments$ = combineLatest(this.allSchemas$, this.projectSchemas$).pipe(
+            map(([allSchemas, projectSchemas]) => {
                 const schemaAssignments = {};
                 allSchemas.map(schema => {
                     const match: string | undefined = projectSchemas!
@@ -150,24 +159,30 @@ export class ProjectDetailMicroschemasComponent implements OnInit, OnDestroy {
                     Object.assign(schemaAssignments, { [schema.uuid]: match ? true : false });
                 });
                 return schemaAssignments;
-            }
+            })
         );
 
         // get schema asignments for view
         this.schemaAssignments$
-            .filter(schema => !!schema)
-            .takeUntil(this.destroy$)
+            .pipe(
+                filter(schema => !!schema),
+                takeUntil(this.destroy$)
+            )
             .subscribe(schemaAssignments => {
                 this.schemaAssignments = schemaAssignments;
             });
 
         // all schemas filtered by search term
-        this.schemas$ = combineLatest(this.allSchemas$, filterTermSchema$).map(([schemas, filterTerm]) => {
-            this.filterTermSchema = filterTerm.toLocaleLowerCase();
-            return schemas.filter(project => fuzzyMatch(filterTerm, project.name) !== null).sort((pro1, pro2) => {
-                return pro1.name < pro2.name ? -1 : 1;
-            });
-        });
+        this.schemas$ = combineLatest(this.allSchemas$, filterTermSchema$).pipe(
+            map(([schemas, filterTerm]) => {
+                this.filterTermSchema = filterTerm.toLocaleLowerCase();
+                return schemas
+                    .filter(project => fuzzyMatch(filterTerm, project.name) !== null)
+                    .sort((pro1, pro2) => {
+                        return pro1.name < pro2.name ? -1 : 1;
+                    });
+            })
+        );
 
         // get schema total count from store
         this.totalCount$ = this.state.select(state => state.adminSchemas.pagination.totalItems);

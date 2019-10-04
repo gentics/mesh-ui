@@ -1,4 +1,5 @@
 import * as Quill from 'quill';
+import { filter, first } from 'rxjs/operators';
 
 import { MeshNode } from '../../../../common/models/node.model';
 import { EditorEffectsService } from '../../../../editor/providers/editor-effects.service';
@@ -30,6 +31,9 @@ class Range {
 
 // Based on `quill/themes/base.js`
 class BaseTooltip extends Tooltip {
+    protected textbox: HTMLInputElement;
+    protected meshNode: HTMLElement;
+
     constructor(
         quill: any,
         protected api: MeshFieldControlApi,
@@ -69,8 +73,10 @@ class BaseTooltip extends Tooltip {
         // get editor language
         const currentLanguage = await this.state
             .select(state => state.editor.openNode!.language)
-            .filter(language => !!language)
-            .first()
+            .pipe(
+                filter(language => !!language),
+                first()
+            )
             .toPromise();
 
         // get node from state
@@ -122,7 +128,7 @@ class BaseTooltip extends Tooltip {
             this.textbox.value = '';
             this.quill.root.scrollTop = scrollTop;
             // set tooltip linked node display name
-            this.meshNode.textContent = selectedNodeDisplayName;
+            this.meshNode.textContent = selectedNodeDisplayName || null;
 
             // if link to external URL
         } else {
@@ -193,6 +199,9 @@ class BaseTooltip extends Tooltip {
 
 // Heavily based on `quill/themes/snow.js`
 class MeshTooltip extends BaseTooltip {
+    private preview: HTMLElement;
+    private linkRange: Range;
+
     constructor(
         quill: any,
         api: MeshFieldControlApi,
@@ -255,7 +264,7 @@ class MeshTooltip extends BaseTooltip {
                         // get node data
                         const selectedNodeDisplayName = await this.getNodeDisplayname(preview!);
                         // set preview text to node display name
-                        this.meshNode.textContent = selectedNodeDisplayName;
+                        this.meshNode.textContent = selectedNodeDisplayName || null;
                     }
                     this.show();
                     this.position(this.quill.getBounds(this.linkRange));

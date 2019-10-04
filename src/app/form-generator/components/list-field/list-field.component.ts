@@ -14,8 +14,8 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { ISortableEvent, ISortableGroupOptions, ISortableMoveEvent } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { of, Observable, Subscription } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 import { Microschema } from '../../../common/models/microschema.model';
 import { ListField, ListNodeFieldType, NodeFieldType } from '../../../common/models/node.model';
@@ -56,7 +56,7 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
     value: ListField<ListNodeFieldType>;
     @ViewChildren('listItem', { read: ViewContainerRef })
     listItems: QueryList<ViewContainerRef>;
-    @ViewChild('listContainer', { read: ElementRef })
+    @ViewChild('listContainer', { read: ElementRef, static: true })
     listContainer: ElementRef;
     @HostBinding('class.micronode-list') isMicronodeList = false;
     listHeight = 'auto';
@@ -195,12 +195,12 @@ export class ListFieldComponent extends BaseFieldComponent implements AfterViewI
         if (typeof microschemaName === 'string') {
             lookup = this.entities
                 .selectAllMicroschemas()
-                .map(microschemas => microschemas.find(microschema => microschema.name === microschemaName));
+                .pipe(map(microschemas => microschemas.find(microschema => microschema.name === microschemaName)));
         } else {
-            lookup = Observable.of(undefined);
+            lookup = of(undefined);
         }
 
-        lookup.take(1).subscribe(result => {
+        lookup.pipe(take(1)).subscribe(result => {
             const newItem = initializeListValue(this.field, result);
             const newValue = Array.isArray(this.value) ? this.value.slice() : [];
             newValue.splice(insertIndex, 0, newItem);

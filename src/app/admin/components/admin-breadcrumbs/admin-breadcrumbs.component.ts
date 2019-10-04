@@ -1,7 +1,9 @@
+import { combineLatest as observableCombineLatest, of as observableOf, Observable } from 'rxjs';
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router, RouteConfigLoadEnd } from '@angular/router';
 import { IBreadcrumbRouterLink } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { filter, map, switchMap } from 'rxjs/operators';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -41,15 +43,17 @@ export class AdminBreadcrumbsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.breadcrumbs$ = this.router.events // On router event
-            .filter(event => event instanceof NavigationEnd || event instanceof RouteConfigLoadEnd) // when user navigated somewhere...
-            .switchMap(() =>
-                Observable.combineLatest(
+        this.breadcrumbs$ = this.router.events.pipe(
+            // On router event
+            filter(event => event instanceof NavigationEnd || event instanceof RouteConfigLoadEnd), // when user navigated somewhere...
+            switchMap(() =>
+                observableCombineLatest(
                     ...flatRoute(this.route.root.snapshot) // get the current route,
                         .filter(getBreadcrumbSource) // that have breadcrumb options set
                         .map(it => this.toBreadcrumb(it)) // and map them to breadcrumbs
                 )
-            );
+            )
+        );
 
         this.loading$ = this.state.select(
             state =>
@@ -72,16 +76,18 @@ export class AdminBreadcrumbsComponent implements OnInit {
         if (typeof breadcrumbSource === 'function') {
             return this.state
                 .select(state => state)
-                .switchMap(state => {
-                    const stringOrObservable = breadcrumbSource(route, state, this.entities);
-                    return typeof stringOrObservable === 'string' ? [stringOrObservable] : stringOrObservable;
-                })
-                .map(text => ({
-                    text,
-                    route: paths
-                }));
+                .pipe(
+                    switchMap(state => {
+                        const stringOrObservable = breadcrumbSource(route, state, this.entities);
+                        return typeof stringOrObservable === 'string' ? [stringOrObservable] : stringOrObservable;
+                    }),
+                    map(text => ({
+                        text,
+                        route: paths
+                    }))
+                );
         } else if (typeof breadcrumbSource === 'string') {
-            return Observable.of({
+            return observableOf({
                 text: this.i18nService.translate(breadcrumbSource),
                 route: paths
             });

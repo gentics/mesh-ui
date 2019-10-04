@@ -20,7 +20,7 @@ export class CustomFieldComponent extends BaseFieldComponent implements AfterVie
     api: MeshFieldControlApi;
     iframeHeight = '150px';
     iframeWidth = '100%';
-    @ViewChild('iframe') private iframe: ElementRef;
+    @ViewChild('iframe', { static: true }) private iframe: ElementRef;
 
     constructor(changeDetector: ChangeDetectorRef, private ngZone: NgZone) {
         super(changeDetector);

@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, of as observableOf, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { MeshNode } from '../../../common/models/node.model';
 import { concatUnique, notNullOrUndefined } from '../../../common/util/util';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
-
 
 @Component({
     selector: 'mesh-container-language-switcher',
@@ -19,17 +19,19 @@ export class ContainerLanguageSwitcherComponent {
     currentLanguage$: Observable<string>;
     availableLanguages$: Observable<string[]>;
 
-    constructor(private state: ApplicationStateService,
-                private config: ConfigService,
-                private entities: EntitiesService,
-                private navigationService: NavigationService) {
-
+    constructor(
+        private state: ApplicationStateService,
+        private config: ConfigService,
+        private entities: EntitiesService,
+        private navigationService: NavigationService
+    ) {
         this.currentLanguage$ = this.state.select(state => state.list.language);
 
-        this.availableLanguages$ = combineLatest([Observable.of(config.CONTENT_LANGUAGES), this.currentLanguage$])
-            .map(([languages, currentLanguage]) => {
+        this.availableLanguages$ = combineLatest([observableOf(config.CONTENT_LANGUAGES), this.currentLanguage$]).pipe(
+            map(([languages, currentLanguage]) => {
                 return this.removeCurrentLanguage(languages, currentLanguage);
-            });
+            })
+        );
     }
 
     private removeCurrentLanguage(languages: string[], currentLanguage: string): string[] {

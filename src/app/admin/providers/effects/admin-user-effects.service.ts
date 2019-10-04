@@ -1,6 +1,7 @@
+import { forkJoin, of as observableOf, Observable } from 'rxjs';
+
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { flatMap, map, mergeMap, tap } from 'rxjs/operators';
 
 import { MicroschemaReference } from '../../../common/models/common.model';
 import { Microschema } from '../../../common/models/microschema.model';
@@ -100,13 +101,15 @@ export class AdminUserEffectsService {
 
         return this.api.user
             .getUser({ userUuid: uuid })
-            .flatMap<UserResponse, UserWithNodeReferenceEntities>((userResponse: User) => {
-                if (userResponse.nodeReference) {
-                    return this.fetchNodeReferenceEntities(userResponse);
-                } else {
-                    return Observable.of({ user: userResponse });
-                }
-            })
+            .pipe(
+                mergeMap((userResponse: User) => {
+                    if (userResponse.nodeReference) {
+                        return this.fetchNodeReferenceEntities(userResponse);
+                    } else {
+                        return observableOf({ user: userResponse } as UserWithNodeReferenceEntities);
+                    }
+                })
+            )
             .toPromise()
             .then(
                 ({ user, node, nodeSchema, microschemas }) => {
@@ -125,36 +128,40 @@ export class AdminUserEffectsService {
      */
     private fetchNodeReferenceEntities(user: User): Observable<UserWithNodeReferenceEntities> {
         if (!user.nodeReference) {
-            return Observable.of({ user });
+            return observableOf({ user });
         }
 
         const { uuid, projectName, schema } = user.nodeReference;
 
         return forkJoin(
-            Observable.of(user),
+            observableOf(user),
             this.api.project.getNode({ nodeUuid: uuid, project: projectName }),
             this.api.admin.getSchema({ schemaUuid: schema.uuid })
-        ).flatMap(([user, node, nodeSchema]) => {
-            // We also need to check whether this node contains any micronodes.
-            // If so we must additionally fetch the corresponding microschemas
-            // in order to render the node data.
-            const requiredMicroschemas = this.getMicroschemasUsedInNode(node);
-            let microSchemasObservable: Observable<MicroschemaResponse[] | undefined>;
+        ).pipe(
+            flatMap(([user, node, nodeSchema]) => {
+                // We also need to check whether this node contains any micronodes.
+                // If so we must additionally fetch the corresponding microschemas
+                // in order to render the node data.
+                const requiredMicroschemas = this.getMicroschemasUsedInNode(node);
+                let microSchemasObservable: Observable<MicroschemaResponse[] | undefined>;
 
-            if (0 < requiredMicroschemas.length) {
-                microSchemasObservable = forkJoin(
-                    requiredMicroschemas.map(({ uuid: microschemaUuid, version }) =>
-                        this.api.admin.getMicroschema({ microschemaUuid, version })
-                    )
+                if (0 < requiredMicroschemas.length) {
+                    microSchemasObservable = forkJoin(
+                        requiredMicroschemas.map(({ uuid: microschemaUuid, version }) =>
+                            this.api.admin.getMicroschema({ microschemaUuid, version })
+                        )
+                    );
+                } else {
+                    microSchemasObservable = observableOf(undefined);
+                }
+
+                return microSchemasObservable.pipe(
+                    map((microschemas: Microschema[]) => {
+                        return { user, node, nodeSchema: nodeSchema as Schema, microschemas };
+                    })
                 );
-            } else {
-                microSchemasObservable = Observable.of(undefined);
-            }
-
-            return microSchemasObservable.map((microschemas: Microschema[]) => {
-                return { user, node, nodeSchema: nodeSchema as Schema, microschemas };
-            });
-        });
+            })
+        );
     }
 
     /**
@@ -184,11 +191,13 @@ export class AdminUserEffectsService {
         return this.api.admin
             .createUser({}, userRequest)
             .pipe(this.notification.rxSuccess('admin.user_created'))
-            .do(
-                user => {
-                    this.state.actions.adminUsers.createUserSuccess(user);
-                },
-                () => this.state.actions.adminUsers.createUserError()
+            .pipe(
+                tap(
+                    user => {
+                        this.state.actions.adminUsers.createUserSuccess(user);
+                    },
+                    () => this.state.actions.adminUsers.createUserError()
+                )
             )
             .toPromise();
     }

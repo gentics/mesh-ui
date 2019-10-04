@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { IModalDialog, Notification } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { skipWhile, take } from 'rxjs/operators';
 import { ApiService } from 'src/app/core/providers/api/api.service';
 
 import { ProjectCreateRequest, ProjectResponse, SchemaResponse } from '../../../common/models/server-models';
@@ -58,8 +59,10 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     /** Set folder schema as default if it exists. (It will be chosen most of the time) */
     setDefaultSchema() {
         this.schemas$
-            .skipWhile(schemas => schemas.length === 0)
-            .take(1)
+            .pipe(
+                skipWhile(schemas => schemas.length === 0),
+                take(1)
+            )
             .subscribe(schemas => {
                 const folderSchema = schemas.find(schema => schema.name === 'folder');
                 if (folderSchema) {

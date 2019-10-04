@@ -1,16 +1,16 @@
-/deep/ .split-view-container {
+::ng-deep .split-view-container {
     top: 4rem !important;
 }
 
-/deep/ .content-pane {
+::ng-deep .content-pane {
     height: 100%;
 }
 
-/deep/ .left-panel {
+::ng-deep .left-panel {
     background-color: white;
 }
 
-/deep/ .right-panel {
+::ng-deep .right-panel {
     position: relative;
     transform: translateX(0);
 }

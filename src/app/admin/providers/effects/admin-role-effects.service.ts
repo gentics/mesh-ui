@@ -1,8 +1,10 @@
+import { from as observableFrom, Observable } from 'rxjs';
+
 import { Injectable } from '@angular/core';
 import { head, values } from 'ramda';
 import * as RoleQuery from 'raw-loader!./admin-role-query.gql';
 import * as RolesQuery from 'raw-loader!./admin-roles-query.gql';
-import { Observable } from 'rxjs/Observable';
+import { filter, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 
 import { RoleCreateRequest, RoleUpdateRequest } from '../../../common/models/server-models';
 import { extractGraphQlResponse } from '../../../common/util/util';
@@ -48,8 +50,10 @@ export class AdminRoleEffectsService {
                 const project = head(values(state.entities.project));
                 return (project && project.name) || '';
             })
-            .filter<string>(Boolean)
-            .take(1);
+            .pipe(
+                filter<string>(Boolean),
+                take(1)
+            );
     }
 
     /**
@@ -59,8 +63,8 @@ export class AdminRoleEffectsService {
      */
     loadRoles(page: number, query?: string): Observable<AdminRoleListResponse> {
         // TODO Make filterable by role
-        return this.getAnyProjectName()
-            .flatMap(project =>
+        return this.getAnyProjectName().pipe(
+            mergeMap(project =>
                 this.api.graphQL(
                     { project },
                     {
@@ -68,13 +72,14 @@ export class AdminRoleEffectsService {
                         variables: { page, query }
                     }
                 )
-            )
-            .map(extractGraphQlResponse);
+            ),
+            map(extractGraphQlResponse)
+        );
     }
 
     loadRole(uuid: string): Observable<AdminRoleResponse> {
-        return this.getAnyProjectName()
-            .flatMap(project =>
+        return this.getAnyProjectName().pipe(
+            mergeMap(project =>
                 this.api.graphQL(
                     { project },
                     {
@@ -82,10 +87,11 @@ export class AdminRoleEffectsService {
                         variables: { uuid }
                     }
                 )
-            )
-            .map(extractGraphQlResponse)
-            .map(response => response.role)
-            .do(role => this.state.actions.adminRoles.loadRoleSuccess(role));
+            ),
+            map(extractGraphQlResponse),
+            map(response => response.role),
+            tap(role => this.state.actions.adminRoles.loadRoleSuccess(role))
+        );
     }
 
     async loadRoleUuidByName(name: string): Promise<string> {
@@ -104,8 +110,10 @@ export class AdminRoleEffectsService {
                     variables: { name }
                 }
             )
-            .map(extractGraphQlResponse)
-            .map(response => response.role.uuid)
+            .pipe(
+                map(extractGraphQlResponse),
+                map(response => response.role.uuid)
+            )
             .toPromise();
     }
 
@@ -116,14 +124,16 @@ export class AdminRoleEffectsService {
     deleteRoles(roles: AdminRoleResponse[]) {
         const notificationKey = roles.length === 1 ? 'admin.role_deleted' : 'admin.roles_deleted';
 
-        return Observable.from(roles)
-            .flatMap(role =>
-                this.api.admin.deleteRole({
-                    roleUuid: role.uuid
-                })
+        return observableFrom(roles)
+            .pipe(
+                mergeMap(role =>
+                    this.api.admin.deleteRole({
+                        roleUuid: role.uuid
+                    })
+                )
             )
             .pipe(this.notification.rxSuccess(notificationKey))
-            .toArray();
+            .pipe(toArray());
     }
 
     createRole(createRequest: RoleCreateRequest) {

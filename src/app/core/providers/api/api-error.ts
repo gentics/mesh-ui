@@ -1,5 +1,4 @@
 import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Response } from '@angular/http';
 
 import { I18NErrorKey } from './api-error-i18n-keys';
 

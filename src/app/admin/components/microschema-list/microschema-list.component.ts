@@ -1,10 +1,10 @@
+import { combineLatest, empty as observableEmpty, of as observableOf, Observable, Subject } from 'rxjs';
+
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { debounceTime, map, mergeMap } from 'rxjs/operators';
 
 import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Microschema } from '../../../common/models/microschema.model';
@@ -50,8 +50,12 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
 
         this.microschemas$ = this.entities
             .selectAllMicroschemas()
-            .map(schemas =>
-                schemas.sort((a, b) => a.name.localeCompare(b.name, this.availableLanguages, { sensitivity: 'case' }))
+            .pipe(
+                map(schemas =>
+                    schemas.sort((a, b) =>
+                        a.name.localeCompare(b.name, this.availableLanguages, { sensitivity: 'case' })
+                    )
+                )
             );
 
         this.adminSchemaEffects.loadMicroschemas();
@@ -68,20 +72,21 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
             this.filterInput.setValue(filterTerm, { emitEvent: false });
         });
 
-        this.filterInput.valueChanges.debounceTime(300).subscribe(term => {
+        this.filterInput.valueChanges.pipe(debounceTime(300)).subscribe(term => {
             setQueryParams(this.router, this.route, { q: term });
         });
 
         const allMicroschemas$ = this.state
             .select(state => state.adminSchemas.microschemaList)
-            .map(uuids => uuids.map(uuid => this.entities.getMicroschema(uuid)).filter(notNullOrUndefined));
+            .pipe(map(uuids => uuids.map(uuid => this.entities.getMicroschema(uuid)).filter(notNullOrUndefined)));
         const filterTerm$ = this.state.select(state => state.adminSchemas.filterTerm);
 
-        this.microschemas$ = combineLatest(allMicroschemas$, filterTerm$)
-            .map(([microschemas, filterTerm]) => this.filterSchemas(microschemas, filterTerm))
-            .map(schemas =>
+        this.microschemas$ = combineLatest(allMicroschemas$, filterTerm$).pipe(
+            map(([microschemas, filterTerm]) => this.filterSchemas(microschemas, filterTerm)),
+            map(schemas =>
                 schemas.sort((a, b) => a.name.localeCompare(b.name, this.availableLanguages, { sensitivity: 'case' }))
-            );
+            )
+        );
 
         this.currentPage$ = this.state.select(state => state.adminSchemas.pagination.currentPage);
         this.itemsPerPage$ = this.state.select(state => state.adminSchemas.pagination.itemsPerPage);
@@ -111,26 +116,28 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
     }
 
     deleteMicroschemas(selectedIndices: Microschema[]): void {
-        Observable.of(selectedIndices)
-            .flatMap(selectedMicroschemas => {
-                const deletableMicroschemas = selectedMicroschemas.filter(
-                    microschema => microschema.permissions.delete && microschema.name !== ADMIN_USER_NAME
-                );
-                if (deletableMicroschemas.length === 0) {
-                    return Observable.empty();
-                } else {
-                    return this.displayDeleteMicroschemaModal(
-                        {
-                            token: 'admin.delete_selected_microschemas',
-                            params: { count: deletableMicroschemas.length }
-                        },
-                        {
-                            token: 'admin.delete_selected_microschemas_confirmation',
-                            params: { count: deletableMicroschemas.length }
-                        }
-                    ).then(() => deletableMicroschemas);
-                }
-            })
+        observableOf(selectedIndices)
+            .pipe(
+                mergeMap(selectedMicroschemas => {
+                    const deletableMicroschemas = selectedMicroschemas.filter(
+                        microschema => microschema.permissions.delete && microschema.name !== ADMIN_USER_NAME
+                    );
+                    if (deletableMicroschemas.length === 0) {
+                        return observableEmpty();
+                    } else {
+                        return this.displayDeleteMicroschemaModal(
+                            {
+                                token: 'admin.delete_selected_microschemas',
+                                params: { count: deletableMicroschemas.length }
+                            },
+                            {
+                                token: 'admin.delete_selected_microschemas_confirmation',
+                                params: { count: deletableMicroschemas.length }
+                            }
+                        ).then(() => deletableMicroschemas);
+                    }
+                })
+            )
             .subscribe((deletableMicroschemas: Microschema[]) => {
                 deletableMicroschemas.forEach(microschema => {
                     this.adminSchemaEffects.deleteMicroschema(microschema.uuid);

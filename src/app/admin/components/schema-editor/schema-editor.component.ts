@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { Schema, SchemaField, SchemaFieldType } from '../../../common/models/schema.model';
 import { FieldSchemaFromServer, SchemaResponse, SchemaUpdateRequest } from '../../../common/models/server-models';
@@ -217,8 +218,10 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
         // listen to form changes
         this.formGroup.valueChanges
-            .distinctUntilChanged()
-            .takeUntil(this.destroyed$)
+            .pipe(
+                distinctUntilChanged(),
+                takeUntil(this.destroyed$)
+            )
             .subscribe((value: any) => {
                 // set flag to identify change trigger source
                 this.schemaJsonFromExternalSource = false;

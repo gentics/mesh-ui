@@ -1,8 +1,8 @@
+import { of as observableOf, throwError as observableThrowError, Observable } from 'rxjs';
+
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { catchError, last, map } from 'rxjs/operators';
+import { catchError, last, map, materialize } from 'rxjs/operators';
 
 import { ApiEndpoints } from '../../../common/models/server-models';
 import { AlreadyHandledError, I18nNotification } from '../i18n-notification/i18n-notification.service';
@@ -207,11 +207,11 @@ export class ApiBase {
                 if (errorOrResponse instanceof Response) {
                     // Non-OK statuses will be thrown by angular, but that could be expected.
                     // The function `toResponseObservable` will wrap it accordingly.
-                    return Observable.of(errorOrResponse);
+                    return observableOf(errorOrResponse);
                 } else if (errorOrResponse instanceof AlreadyHandledError) {
-                    return Observable.throw(errorOrResponse);
+                    return observableThrowError(errorOrResponse);
                 } else {
-                    return Observable.throw(new ApiError({ url, request, originalError: errorOrResponse }));
+                    return observableThrowError(new ApiError({ url, request, originalError: errorOrResponse }));
                 }
             }),
             last(),
@@ -274,56 +274,61 @@ export class ApiBase {
     ): HttpResponseObservable<T> {
         // The returned observable throws on HTTP errors, mapResponses does not.
         const resultObservable = (inputObservable
-            .map(response => {
-                if (response.ok) {
-                    return response.body;
-                } else {
-                    throw new ApiError({ url, request, response });
-                }
-            })
+            .pipe(
+                map(response => {
+                    if (response.ok) {
+                        return response.body;
+                    } else {
+                        throw new ApiError({ url, request, response });
+                    }
+                })
+            )
             .pipe(this.I18nNotification.rxError) as any) as HttpResponseObservable<T>;
 
         resultObservable.rawResponse = inputObservable;
 
         resultObservable.mapResponses = <TResult>(mapping: ResponseMap<T, TResult>): Observable<TResult> => {
             return inputObservable
-                .materialize()
-                .map(notification => {
-                    let status: number;
-                    let body: any;
-                    if (
-                        notification.error instanceof ApiError &&
-                        notification.error.originalError instanceof HttpErrorResponse
-                    ) {
-                        const originalError = notification.error.originalError;
-                        status = originalError.status;
-                        body = originalError.error;
-                    } else if (notification.error instanceof AlreadyHandledError) {
-                        throw notification.error;
-                    } else if (notification.hasValue && notification.value) {
-                        status = notification.value.status;
-                        body = notification.value.body;
-                    } else if (notification.kind === 'C') {
-                        return;
-                    } else {
-                        throw new ApiError({ url, request, response: notification.value || notification.error });
-                    }
-                    const ok = status >= 200 && status < 300;
-                    if (status in mapping || (ok && (mapping as any).success)) {
-                        const mappedTo: any = status in mapping ? (mapping as any)[status] : (mapping as any).success;
-                        if (typeof mappedTo === 'function') {
-                            return mappedTo.call(this, body);
+                .pipe(
+                    materialize(),
+                    map(notification => {
+                        let status: number;
+                        let body: any;
+                        if (
+                            notification.error instanceof ApiError &&
+                            notification.error.originalError instanceof HttpErrorResponse
+                        ) {
+                            const originalError = notification.error.originalError;
+                            status = originalError.status;
+                            body = originalError.error;
+                        } else if (notification.error instanceof AlreadyHandledError) {
+                            throw notification.error;
+                        } else if (notification.hasValue && notification.value) {
+                            status = notification.value.status;
+                            body = notification.value.body;
+                        } else if (notification.kind === 'C') {
+                            return;
                         } else {
-                            return mappedTo;
+                            throw new ApiError({ url, request, response: notification.value || notification.error });
                         }
-                    } else {
-                        if (notification.value) {
-                            throw new ApiError({ url, request, response: notification.value });
+                        const ok = status >= 200 && status < 300;
+                        if (status in mapping || (ok && (mapping as any).success)) {
+                            const mappedTo: any =
+                                status in mapping ? (mapping as any)[status] : (mapping as any).success;
+                            if (typeof mappedTo === 'function') {
+                                return mappedTo.call(this, body);
+                            } else {
+                                return mappedTo;
+                            }
                         } else {
-                            throw new ApiError({ url, request, originalError: notification.error.originalError });
+                            if (notification.value) {
+                                throw new ApiError({ url, request, response: notification.value });
+                            } else {
+                                throw new ApiError({ url, request, originalError: notification.error.originalError });
+                            }
                         }
-                    }
-                })
+                    })
+                )
                 .pipe(this.I18nNotification.rxError);
         };
 

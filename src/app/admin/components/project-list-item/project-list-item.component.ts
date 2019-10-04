@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { ModalService, Notification } from 'gentics-ui-core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { Project } from '../../../common/models/project.model';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';

@@ -7,7 +7,7 @@ gtx-dropdown-list, gtx-dropdown-trigger {
 }
 
 
-gtx-input /deep/ input {
+gtx-input ::ng-deep input {
     margin-bottom: 0 !important;
 }
 
