@@ -1,5 +1,7 @@
 import { t, ClientFunction, Selector } from 'testcafe';
 
+import { NumberField } from './fields/number-field';
+
 const getWindowLocation = ClientFunction(() => window.location.href);
 
 export type LanguageVersion = 'English' | 'German';
@@ -29,5 +31,14 @@ export namespace nodeEditor {
     export async function createLanguageVersion(language: LanguageVersion) {
         await t.click('mesh-node-language-switcher');
         await t.click(Selector('gtx-dropdown-item').withText(`Create ${language} version`));
+    }
+
+    export function getNumberField(fieldName: string) {
+        return new NumberField(
+            Selector('mesh-number-field')
+                .find('label')
+                .withText(fieldName)
+                .parent('mesh-number-field')
+        );
     }
 }

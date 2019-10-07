@@ -4,6 +4,7 @@ import * as microschemas from '../microschemas';
 import { navigate } from '../navigate';
 import { containerContents } from '../page-object/editor/container-contents';
 import { nodeEditor } from '../page-object/editor/node-editor';
+import { toast } from '../page-object/toast';
 import { Admin } from '../roles';
 import { schemas } from '../schemas';
 import { inTemporaryFolder, requiresMicroSchema, requiresSchema } from '../testUtil';
@@ -53,4 +54,17 @@ test('Create language version of node', async t =>
             .eql('TestVehicle-DE')
             .expect(nodeDE.fields.slug)
             .eql('TestVehicle-DE');
+    }));
+
+// https://github.com/gentics/mesh-ui/issues/253
+test('Changing number field', async t =>
+    inTemporaryFolder(async parent => {
+        const node = await api.createVehicle(parent, 'TestVehicle');
+
+        await t.useRole(Admin);
+        await navigate.toNodeEdit(node);
+        await nodeEditor.getNumberField('Weight').setValue(123);
+        await nodeEditor.save();
+
+        await toast.expectSuccessMessage('Node successfully saved');
     }));
