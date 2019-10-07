@@ -9,6 +9,7 @@ import {
     ProjectResponse,
     RoleListResponse,
     RoleResponse,
+    SchemaListResponse,
     TagFamilyListResponse,
     TagFamilyResponse,
     TagListResponse,
@@ -83,6 +84,15 @@ export namespace api {
     export async function getSchema(schemaId: string) {
         const response = await get(`/schemas/${schemaId}`);
         return response.data || response;
+    }
+
+    export function getSchemas(): Promise<SchemaListResponse> {
+        return get(`/schemas`);
+    }
+
+    export async function getSchemaByName(name: string) {
+        const response = await getSchemas();
+        return response.data.find(schema => schema.name === name)!;
     }
 
     export function createSchema(schema: SchemaCreateRequest) {

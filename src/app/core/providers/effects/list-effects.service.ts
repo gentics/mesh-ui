@@ -45,13 +45,15 @@ export class ListEffectsService {
      */
     loadSchemasForProject(project: string) {
         this.state.actions.list.fetchSchemasStart(project);
-        this.api.project.getProjectSchemas({ project }).subscribe(
-            ({ data }) => {
-                return this.state.actions.list.fetchSchemasSuccess(project, data);
-            },
-            error => {
-                return this.state.actions.list.fetchSchemasError(); /* TODO: error handling */
-            }
+        return this.api.project.getProjectSchemas({ project }).pipe(
+            tap(
+                ({ data }) => {
+                    return this.state.actions.list.fetchSchemasSuccess(project, data);
+                },
+                error => {
+                    return this.state.actions.list.fetchSchemasError(); /* TODO: error handling */
+                }
+            )
         );
     }
 

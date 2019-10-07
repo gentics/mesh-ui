@@ -26,10 +26,10 @@ export class ProjectResolver implements Resolve<Project> {
     }
 }
 
-export const projectBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities) => {
+export const projectBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities, i18n) => {
     const uuid = state.adminProjects.projectDetail;
     if (!uuid) {
-        return 'admin.new_project';
+        return i18n.translate('admin.new_project');
     } else {
         return entities.selectProject(uuid).pipe(
             map(project => {
