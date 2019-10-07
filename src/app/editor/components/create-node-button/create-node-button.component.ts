@@ -1,11 +1,12 @@
-import { AfterViewChecked, ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Observable } from 'rxjs';
+import { filter, flatMap, map } from 'rxjs/operators';
+import { isValidString } from 'src/app/common/util/util';
+import { ListEffectsService } from 'src/app/core/providers/effects/list-effects.service';
 
 import { Schema } from '../../../common/models/schema.model';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-import { EntitiesService } from '../../../state/providers/entities.service';
 
 export interface SchemaDisplayProperties {
     name: string;
@@ -20,20 +21,22 @@ export interface SchemaDisplayProperties {
     styleUrls: ['create-node-button.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreateNodeButtonComponent implements AfterViewChecked {
+export class CreateNodeButtonComponent {
     @Input() disabled: boolean;
     schemas$: Observable<SchemaDisplayProperties[]>;
 
     constructor(
-        private entities: EntitiesService,
+        private listEffects: ListEffectsService,
         private navigationService: NavigationService,
         private state: ApplicationStateService
-    ) {}
-
-    ngAfterViewChecked() {
-        this.schemas$ = this.entities
-            .selectAllSchemas()
-            .pipe(map(schemas => schemas.sort(this.nameSort).map(this.getSchemaDisplayProperties)));
+    ) {
+        this.schemas$ = this.state
+            .select(state => state.list.currentProject)
+            .pipe(
+                filter(isValidString),
+                flatMap(project => this.listEffects.loadSchemasForProject(project)),
+                map(schemas => schemas.data.sort(this.nameSort).map(this.getSchemaDisplayProperties))
+            );
     }
 
     itemClick(schema: SchemaDisplayProperties): void {
