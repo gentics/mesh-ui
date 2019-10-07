@@ -11,9 +11,15 @@ export namespace containerContents {
     }
 
     export async function createNode(schemaName: string) {
-        await t
-            .click(Selector('button').withText('CREATE NODE'))
-            .click(Selector('gtx-dropdown-item').withText(schemaName));
+        await t.click(createNodeButton()).click(createNodeSchema(schemaName));
+    }
+
+    export function createNodeButton() {
+        return Selector('button').withText('CREATE NODE');
+    }
+
+    export function createNodeSchema(schemaName: string) {
+        return Selector('gtx-dropdown-item').withText(schemaName);
     }
 
     export function getListItemByName(displayName: string) {

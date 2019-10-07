@@ -58,6 +58,21 @@ export async function requiresSchema(
 }
 
 /**
+ * Creates a schema for the test and deletes it afterwards.
+ */
+export async function requiresSchemaWithoutAssignment(
+    schema: SchemaCreateRequest,
+    body: (schema: SchemaResponse) => Promise<any>
+): Promise<any> {
+    const response = await api.createSchema(schema);
+    try {
+        return await body(response);
+    } finally {
+        await api.deleteSchema(response);
+    }
+}
+
+/**
  * Creates a microschema for the test and deletes it afterwards.
  */
 export async function requiresMicroSchema(

@@ -5,7 +5,7 @@ import { navigate } from '../navigate';
 import { containerContents } from '../page-object/editor/container-contents';
 import { nodeEditor } from '../page-object/editor/node-editor';
 import { Admin } from '../roles';
-import * as schemas from '../schemas';
+import { schemas } from '../schemas';
 import { inTemporaryFolder, requiresMicroSchema, requiresSchema } from '../testUtil';
 
 fixture`Node Editing`.page(api.baseUrl());
