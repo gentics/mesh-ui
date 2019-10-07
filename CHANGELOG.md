@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Update to Angular 8
+- Fix saving node after changing a number field [#253](https://github.com/gentics/mesh-ui/issues/253)
 
 ## [1.0.0] - 2019-10-03
 - Public release

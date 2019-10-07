@@ -26,7 +26,8 @@ export class NumberFieldComponent extends BaseFieldComponent {
         this.value = value;
     }
 
-    onChange(value: number): void {
+    onChange(value: any): void {
+        value = Number(value);
         this.api.setValue(value);
         this.setValidity(value);
     }
