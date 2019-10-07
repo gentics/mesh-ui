@@ -17,11 +17,11 @@ export class RoleResolver implements Resolve<AdminRoleResponse | undefined> {
     }
 }
 
-export const roleBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities) => {
+export const roleBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities, i18n) => {
     const role = state.adminRoles.roleDetail;
     if (role) {
         return role.name;
     } else {
-        return 'admin.new_role';
+        return i18n.translate('admin.new_role');
     }
 };

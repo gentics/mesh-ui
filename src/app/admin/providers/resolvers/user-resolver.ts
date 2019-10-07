@@ -27,10 +27,10 @@ export class UserResolver implements Resolve<User | undefined> {
     }
 }
 
-export const userBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities) => {
+export const userBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities, i18n) => {
     const userUuid = state.adminUsers.userDetail;
     if (!userUuid) {
-        return 'admin.new_user';
+        return i18n.translate('admin.new_user');
     } else {
         return entities.selectUser(userUuid).pipe(
             map(user => {

@@ -27,10 +27,10 @@ export class SchemaResolver implements Resolve<Schema | undefined> {
     }
 }
 
-export const schemaBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities) => {
+export const schemaBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities, i18n) => {
     const schemaUuid = state.adminSchemas.schemaDetail;
     if (!schemaUuid) {
-        return 'admin.new_schema';
+        return i18n.translate('admin.new_schema');
     } else {
         return entities.selectSchema(schemaUuid).pipe(map(schema => `${schema.name}`));
     }

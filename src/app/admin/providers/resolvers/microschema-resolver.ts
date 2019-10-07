@@ -27,10 +27,10 @@ export class MicroschemaResolver implements Resolve<Microschema | undefined> {
     }
 }
 
-export const microschemaBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities) => {
+export const microschemaBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities, i18n) => {
     const microschemaUuid = state.adminSchemas.microschemaDetail;
     if (!microschemaUuid) {
-        return 'admin.new_microschema';
+        return i18n.translate('admin.new_microschema');
     } else {
         return entities.selectMicroschema(microschemaUuid).pipe(map(microschema => `${microschema.name}`));
     }

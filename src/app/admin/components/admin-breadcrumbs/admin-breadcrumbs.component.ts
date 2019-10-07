@@ -14,7 +14,8 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 export type BreadcrumbTextFunction = (
     route: ActivatedRouteSnapshot,
     state: AppState,
-    entities: EntitiesService
+    entities: EntitiesService,
+    i18n: I18nService
 ) => string | Observable<string>;
 
 /**
@@ -78,7 +79,7 @@ export class AdminBreadcrumbsComponent implements OnInit {
                 .select(state => state)
                 .pipe(
                     switchMap(state => {
-                        const stringOrObservable = breadcrumbSource(route, state, this.entities);
+                        const stringOrObservable = breadcrumbSource(route, state, this.entities, this.i18nService);
                         return typeof stringOrObservable === 'string' ? [stringOrObservable] : stringOrObservable;
                     }),
                     map(text => ({

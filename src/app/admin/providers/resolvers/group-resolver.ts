@@ -17,11 +17,11 @@ export class GroupResolver implements Resolve<AdminGroupOnlyResponse | undefined
     }
 }
 
-export const groupBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities) => {
+export const groupBreadcrumbFn: BreadcrumbTextFunction = (route, state, entities, i18n) => {
     const group = state.adminGroups.groupDetail;
     if (group) {
         return group.name;
     } else {
-        return 'admin.new_group';
+        return i18n.translate('admin.new_group');
     }
 };
