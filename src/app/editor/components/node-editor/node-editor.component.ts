@@ -254,7 +254,9 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                             this.listEffects.loadChildren(projectName, parentNode.uuid, node.language);
 
                             if (navigateOnSave) {
-                                this.navigationService.detail(projectName, node.uuid, node.language).navigate();
+                                this.navigationService
+                                    .detail(projectName, node.uuid, node.language)
+                                    .navigate({ queryParamsHandling: 'preserve' });
                             }
                         }
                     },
@@ -272,7 +274,6 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
                     this.opener.reload();
                     if (node && node.project.name && node.language) {
                         formGenerator.setPristine(node);
-                        this.listEffects.loadChildren(node.project.name, node.parentNode.uuid, node.language);
                         this.changeDetector.markForCheck();
                     }
                 },
@@ -408,7 +409,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
     };
 
     closeEditor(): void {
-        this.navigationService.clearDetail().navigate();
+        this.navigationService.clearDetail().navigate({ queryParamsHandling: 'preserve' });
     }
 
     focusList(): void {

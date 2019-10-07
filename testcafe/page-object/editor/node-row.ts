@@ -1,9 +1,9 @@
 import { t, Selector } from 'testcafe';
 
 export class NodeRow {
-    constructor(private root: Selector) {}
+    constructor(public element: Selector) {}
 
     public async open() {
-        await t.click(this.root.find('.title a'));
+        await t.click(this.element.find('.title a'));
     }
 }

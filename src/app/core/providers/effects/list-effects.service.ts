@@ -1,7 +1,8 @@
-import { forkJoin, of as observableOf, Observable } from 'rxjs';
-
 import { Injectable } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { forkJoin, of as observableOf, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { DEFAULT_ITEMS_PER_PAGE, QUERY_KEY_PAGE, QUERY_KEY_PERPAGE } from 'src/app/common/constants';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { SchemaField } from '../../../common/models/schema.model';
@@ -21,7 +22,8 @@ export class ListEffectsService {
         private config: ConfigService,
         private state: ApplicationStateService,
         private notification: I18nNotification,
-        private entities: EntitiesService
+        private entities: EntitiesService,
+        private route: ActivatedRoute
     ) {}
 
     /**
@@ -109,8 +111,8 @@ export class ListEffectsService {
             .getNodeChildren({
                 project: projectName,
                 nodeUuid: containerUuid,
-                page,
-                perPage,
+                page: page || this.route.snapshot.queryParams[QUERY_KEY_PAGE],
+                perPage: perPage || this.route.snapshot.queryParams[QUERY_KEY_PERPAGE] || DEFAULT_ITEMS_PER_PAGE,
                 lang: this.languageWithFallbacks(language)
             })
             .pipe(

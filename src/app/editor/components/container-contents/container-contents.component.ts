@@ -13,6 +13,7 @@ import {
     takeUntil,
     withLatestFrom
 } from 'rxjs/operators';
+import { QUERY_KEY_KEYWORD, QUERY_KEY_PAGE, QUERY_KEY_PERPAGE, QUERY_KEY_TAGS } from 'src/app/common/constants';
 
 import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
@@ -86,13 +87,13 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         const searchParams$ = this.route.queryParamMap.pipe(
             map(paramMap => {
                 // get search query
-                const keyword = (paramMap.get('q') || '').trim();
+                const keyword = (paramMap.get(QUERY_KEY_KEYWORD) || '').trim();
                 // get filter for tags
-                const tags = (paramMap.get('t') || '').trim();
+                const tags = (paramMap.get(QUERY_KEY_TAGS) || '').trim();
                 // get current page
-                const page = paramMap.get('p') || this.currentPage;
+                const page = paramMap.get(QUERY_KEY_PAGE) || this.currentPage;
                 // get max items per page
-                const perPage = paramMap.get('perPage') || this.itemsPerPage;
+                const perPage = paramMap.get(QUERY_KEY_PERPAGE) || this.itemsPerPage;
 
                 return { keyword, tags, page, perPage };
             })
@@ -205,10 +206,6 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     }
 
     private groupNodesBySchema(nodes: MeshNode[]): { [schemaUuid: string]: MeshNode[] } {
-        nodes.sort((a: MeshNode, b: MeshNode) => {
-            return (a.displayName || '') > (b.displayName || '') ? 1 : -1;
-        });
-
         const childrenBySchema: { [schemaUuid: string]: MeshNode[] } = {};
 
         for (const node of nodes || []) {
