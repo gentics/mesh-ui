@@ -51,11 +51,15 @@ export class NodeRowComponent implements OnInit {
     }
 
     editNode(): void {
-        this.navigationService.detail(this.node.project.name!, this.node.uuid, this.node.language).navigate();
+        this.navigationService
+            .detail(this.node.project.name!, this.node.uuid, this.node.language)
+            .navigate({ queryParamsHandling: 'preserve' });
     }
 
     editNodeTranslation(language: string): void {
-        this.navigationService.detail(this.node.project.name!, this.node.uuid, language).navigate();
+        this.navigationService
+            .detail(this.node.project.name!, this.node.uuid, language)
+            .navigate({ queryParamsHandling: 'preserve' });
     }
 
     async copyNode() {

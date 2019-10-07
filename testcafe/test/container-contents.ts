@@ -33,13 +33,13 @@ test('Only assigned schemas are visible', async t => {
     }
 });
 
-test.only('Current page stays the same after opening Node', async t =>
+test('Current page stays the same after opening Node', async t =>
     inTemporaryFolder(async folder => {
         for (let i = 0; i < 50; i++) {
             await api.createVehicle(folder, `vehicle${i}`);
         }
         await t.useRole(Admin);
-        await navigate.toFolder(folder);
+        await containerContents.getListItemByName(folder.fields.name).open();
         await paginationControls.goToPage(2);
         await containerContents.getFirstListItem().open();
 
