@@ -72,7 +72,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         // set current parent node
         onLogin$
             .pipe(
-                this.switchMapToParams,
+                obs => this.switchMapToParams(obs),
                 takeUntil(this.destroy$)
             )
             .subscribe(({ containerUuid, projectName, language }) => {
@@ -80,7 +80,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             });
 
         // get list details from url parameters
-        const listParams$ = of([]).pipe(this.switchMapToParams);
+        const listParams$ = of([]).pipe(obs => this.switchMapToParams(obs));
 
         // get search filter from url parameters
         const searchParams$ = this.route.queryParamMap.pipe(
