@@ -51,4 +51,13 @@ export namespace nodeEditor {
                 .parent('mesh-string-field')
         );
     }
+
+    export function getOptionStringField(fieldName: string) {
+        return new StringField(
+            Selector('mesh-string-field')
+                .find('label')
+                .withText(fieldName)
+                .parent('mesh-string-field')
+        );
+    }
 }

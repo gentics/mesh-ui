@@ -68,3 +68,24 @@ test('Changing number field', async t =>
 
         await toast.expectSuccessMessage('Node successfully saved');
     }));
+
+// https://github.com/gentics/mesh-ui/issues/256
+test.only('String field with allowed values', async t =>
+    requiresSchema(schemas.AllowedStringField, async schema =>
+        inTemporaryFolder(async parent => {
+            const node = await api.createNode(parent, schema.name);
+            await t.debug();
+
+            await t.useRole(Admin);
+            await navigate.toNodeEdit(node);
+            await nodeEditor.getOptionStringField('choose').setValue('option2');
+            await nodeEditor.save();
+
+            await toast.expectSuccessMessage('Node successfully saved');
+
+            const uuid = await nodeEditor.getCurrentNodeUuid();
+            const updatedNode = await api.findNodeByUuid(uuid);
+
+            await t.expect(updatedNode.fields.choose).eql('option2', 'Field was not updated');
+        })
+    ));

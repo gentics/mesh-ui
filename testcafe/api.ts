@@ -34,6 +34,17 @@ export namespace api {
         return get(`/${project}`);
     }
 
+    export function createNode(parent: HasUuid, schemaName: string, fields?: any): Promise<MeshNode> {
+        return post(`/${project}/nodes`, {
+            schema: {
+                name: schemaName
+            },
+            language: 'en',
+            parentNodeUuid: parent.uuid,
+            fields
+        });
+    }
+
     export function createFolder(parent: HasUuid, name: string, language = 'en'): Promise<FolderNode> {
         return post(
             `/${project}/nodes`,
