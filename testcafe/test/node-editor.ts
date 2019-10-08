@@ -70,7 +70,7 @@ test('Changing number field', async t =>
     }));
 
 // https://github.com/gentics/mesh-ui/issues/256
-test.only('String field with allowed values', async t =>
+test('String field with allowed values', async t =>
     requiresSchema(schemas.AllowedStringField, async schema =>
         inTemporaryFolder(async parent => {
             const node = await api.createNode(parent, schema.name, { requiredChoose: 'option1' });
