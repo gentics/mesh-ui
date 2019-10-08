@@ -1,6 +1,9 @@
 import { t, ClientFunction, Selector } from 'testcafe';
 
+import { toast } from '../toast';
+
 import { NumberField } from './fields/number-field';
+import { OptionStringField } from './fields/option-string-field';
 import { StringField } from './fields/string-field';
 
 const getWindowLocation = ClientFunction(() => window.location.href);
@@ -8,8 +11,11 @@ const getWindowLocation = ClientFunction(() => window.location.href);
 export type LanguageVersion = 'English' | 'German';
 
 export namespace nodeEditor {
-    export async function save() {
+    export async function save(expectSuccess = true) {
         await t.click(Selector('button').withText('SAVE'));
+        if (expectSuccess) {
+            await toast.expectSuccessMessage('Node successfully saved');
+        }
     }
 
     export async function getCurrentNodeUuid(): Promise<string> {
@@ -53,7 +59,7 @@ export namespace nodeEditor {
     }
 
     export function getOptionStringField(fieldName: string) {
-        return new StringField(
+        return new OptionStringField(
             Selector('mesh-string-field')
                 .find('label')
                 .withText(fieldName)

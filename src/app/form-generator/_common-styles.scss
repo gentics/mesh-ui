@@ -44,6 +44,31 @@ $left-bar-width: 6px;
         }
     }
 
+    ::ng-deep gtx-select {
+        .with-label {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            label {
+                position: relative;
+                font-size: $gtx-font-size-regular;
+                cursor: pointer;
+                color: $gtx-color-dark-gray;
+                transition: margin 0.2s;
+                align-self: center;
+            }
+            .select-input {
+                width: $half-width-right;
+            }
+        }
+        .clearable .select-input {
+            // The clear button is 28 pixels wide.
+            // To size the select box correctly we need to accommodate for that.
+            // 8.4 = $half-width-right * 28 - 28
+            width: calc(#{$half-width-right} - 8.4px);
+        }
+    }
+
     :host-context(mesh-micronode-field),
     :host-context(mesh-list-field),
     &.compact {

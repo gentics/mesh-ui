@@ -28,9 +28,19 @@ export namespace schemas {
         name: 'AllowedStringField',
         fields: [
             {
+                name: 'name',
+                type: 'string'
+            },
+            {
                 name: 'choose',
                 type: 'string',
                 allow: ['option1', 'option2', 'option3']
+            },
+            {
+                name: 'requiredChoose',
+                type: 'string',
+                allow: ['option1', 'option2', 'option3'],
+                required: true
             }
         ]
     };

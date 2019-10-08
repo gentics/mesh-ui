@@ -1,6 +1,18 @@
-<gtx-input [label]="api.field.label || api.field.name"
+<gtx-input *ngIf="!hasOptions"
+           [label]="api.field.label || api.field.name"
            [name]="api.path"
            [required]="api.field.required"
            [ngModel]="value"
            [readonly]="api.readOnly"
            (change)="onChange($event)"></gtx-input>
+
+<gtx-select *ngIf="hasOptions"
+            [label]="api.field.label || api.field.name"
+            [name]="api.path"
+            [ngModel]="value"
+            [disabled]="api.readOnly"
+            [clearable]="!api.field.required"
+            (change)="onChange($event)">
+    <gtx-option *ngFor="let item of api.field.allow"
+                [value]="item"></gtx-option>
+</gtx-select>

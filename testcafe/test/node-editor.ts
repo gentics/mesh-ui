@@ -73,19 +73,25 @@ test('Changing number field', async t =>
 test.only('String field with allowed values', async t =>
     requiresSchema(schemas.AllowedStringField, async schema =>
         inTemporaryFolder(async parent => {
-            const node = await api.createNode(parent, schema.name);
-            await t.debug();
-
+            const node = await api.createNode(parent, schema.name, { requiredChoose: 'option1' });
             await t.useRole(Admin);
-            await navigate.toNodeEdit(node);
+
+            await containerContents.getListItemByName(parent.fields.name).open();
+            await containerContents.getListItemByName('undefined').open();
+
+            await nodeEditor.getStringField('name').setValue('testName');
             await nodeEditor.getOptionStringField('choose').setValue('option2');
+            await nodeEditor.getOptionStringField('requiredChoose').setValue('option3');
             await nodeEditor.save();
 
-            await toast.expectSuccessMessage('Node successfully saved');
+            const updatedNode = await api.findNodeByUuid(node.uuid);
 
-            const uuid = await nodeEditor.getCurrentNodeUuid();
-            const updatedNode = await api.findNodeByUuid(uuid);
-
-            await t.expect(updatedNode.fields.choose).eql('option2', 'Field was not updated');
+            await t
+                .expect(updatedNode.fields.name)
+                .eql('testName', 'Field was not updated')
+                .expect(updatedNode.fields.choose)
+                .eql('option2', 'Field was not updated')
+                .expect(updatedNode.fields.requiredChoose)
+                .eql('option3', 'Field was not updated');
         })
     ));
