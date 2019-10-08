@@ -24,6 +24,27 @@ export namespace schemas {
         ]
     };
 
+    export const AllowedStringField: SchemaCreateRequest = {
+        name: 'AllowedStringField',
+        fields: [
+            {
+                name: 'name',
+                type: 'string'
+            },
+            {
+                name: 'choose',
+                type: 'string',
+                allow: ['option1', 'option2', 'option3']
+            },
+            {
+                name: 'requiredChoose',
+                type: 'string',
+                allow: ['option1', 'option2', 'option3'],
+                required: true
+            }
+        ]
+    };
+
     export const allFields: SchemaCreateRequest = {
         name: 'allFields',
         fields: [

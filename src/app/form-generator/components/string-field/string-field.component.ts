@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 
 import { NodeFieldType } from '../../../common/models/node.model';
-import { errorHashFor, ErrorCode } from '../../common/form-errors';
+import { errorHashFor } from '../../common/form-errors';
 import { MeshFieldControlApi } from '../../common/form-generator-models';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
@@ -14,9 +14,15 @@ export class StringFieldComponent extends BaseFieldComponent {
     api: MeshFieldControlApi;
     value: NodeFieldType;
 
+    hasOptions: boolean;
+
     init(api: MeshFieldControlApi): void {
         this.value = api.getValue();
         this.api = api;
+
+        const allow = api.field.allow;
+        this.hasOptions = !!allow && allow.length > 0;
+
         this.setValidity(this.value);
     }
 
