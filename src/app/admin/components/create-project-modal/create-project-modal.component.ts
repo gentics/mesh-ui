@@ -24,6 +24,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
 
     schema: FormControl;
     name: FormControl;
+    projectName: string;
     anonymousAccess: FormControl;
     form: FormGroup;
 
@@ -54,6 +55,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
         this.adminSchemaEffects.loadSchemas();
 
         this.setDefaultSchema();
+        this.name.setValue(this.projectName);
     }
 
     /** Set folder schema as default if it exists. (It will be chosen most of the time) */
