@@ -1,6 +1,7 @@
 import { t, ClientFunction, Selector } from 'testcafe';
 
 import { NumberField } from './fields/number-field';
+import { StringField } from './fields/string-field';
 
 const getWindowLocation = ClientFunction(() => window.location.href);
 
@@ -39,6 +40,15 @@ export namespace nodeEditor {
                 .find('label')
                 .withText(fieldName)
                 .parent('mesh-number-field')
+        );
+    }
+
+    export function getStringField(fieldName: string) {
+        return new StringField(
+            Selector('mesh-string-field')
+                .find('label')
+                .withText(fieldName)
+                .parent('mesh-string-field')
         );
     }
 }

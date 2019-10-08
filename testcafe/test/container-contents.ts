@@ -1,16 +1,18 @@
 import { api } from '../api';
 import { navigate } from '../navigate';
 import { containerContents } from '../page-object/editor/container-contents';
+import { nodeEditor } from '../page-object/editor/node-editor';
+import { paginationControls } from '../page-object/pagination-controls';
 import { topnav } from '../page-object/topnav';
 import { Admin } from '../roles';
-import { selectors } from '../selectors';
+import { inTemporaryFolder } from '../testUtil';
 
 import { schemaEditor } from './admin/schema-editor';
 
 fixture`Container contents`.page(api.baseUrl());
 
 const schemaName = 'dummy';
-test.only('Only assigned schemas are visible', async t => {
+test('Only assigned schemas are visible', async t => {
     await t.useRole(Admin);
 
     await navigate.toAdminSchemaEditorNew();
@@ -31,3 +33,56 @@ test.only('Only assigned schemas are visible', async t => {
         await api.deleteSchema(await api.getSchemaByName(schemaName));
     }
 });
+
+test('Current page stays the same after opening Node', async t =>
+    inTemporaryFolder(async folder => {
+        for (let i = 0; i < 20; i++) {
+            await api.createVehicle(folder, `vehicle${i}`);
+        }
+        await t.useRole(Admin);
+        await containerContents.getListItemByName(folder.fields.name).open();
+        await paginationControls.goToPage(2);
+        await containerContents.getFirstListItem().open();
+
+        await t.expect(await paginationControls.currentPage()).eql(2, 'Page changed after opening node');
+    }));
+
+test('Current page stays the same after saving a node', async t =>
+    inTemporaryFolder(async folder => {
+        for (let i = 0; i < 20; i++) {
+            await api.createVehicle(folder, `vehicle${i}`);
+        }
+        await t.useRole(Admin);
+        await containerContents.getListItemByName(folder.fields.name).open();
+        await paginationControls.goToPage(2);
+        await containerContents.getFirstListItem().open();
+
+        await nodeEditor.getStringField('Name').setValue('testName');
+        await nodeEditor.save();
+
+        await t
+            .expect(containerContents.getListItemByName('testName').element.exists)
+            .ok('Could not find node with updated name');
+
+        await t.expect(await paginationControls.currentPage()).eql(2, 'Page changed after opening node');
+    }));
+
+test('Current page stays the same after creating a new node', async t =>
+    inTemporaryFolder(async folder => {
+        for (let i = 0; i < 20; i++) {
+            await api.createVehicle(folder, `vehicle${i}`);
+        }
+        await t.useRole(Admin);
+        await containerContents.getListItemByName(folder.fields.name).open();
+        await paginationControls.goToPage(2);
+
+        await containerContents.createNode('vehicle');
+
+        await t.expect(await paginationControls.currentPage()).eql(2, 'Page changed after opening node');
+
+        await nodeEditor.getStringField('Slug').setValue('testName');
+        await nodeEditor.getStringField('Name').setValue('testName');
+        await nodeEditor.save();
+
+        await t.expect(await paginationControls.currentPage()).eql(2, 'Page changed after creating node');
+    }));

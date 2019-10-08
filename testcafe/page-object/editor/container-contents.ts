@@ -32,4 +32,8 @@ export namespace containerContents {
             )
         );
     }
+
+    export function getFirstListItem() {
+        return new NodeRow(Selector('mesh-node-row').nth(0));
+    }
 }

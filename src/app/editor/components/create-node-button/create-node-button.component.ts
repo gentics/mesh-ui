@@ -42,7 +42,9 @@ export class CreateNodeButtonComponent {
     itemClick(schema: SchemaDisplayProperties): void {
         const { currentProject, currentNode, language } = this.state.now.list;
         if (currentProject && currentNode) {
-            this.navigationService.createNode(currentProject, schema.uuid, currentNode, language).navigate();
+            this.navigationService
+                .createNode(currentProject, schema.uuid, currentNode, language)
+                .navigate({ queryParamsHandling: 'preserve' });
             this.state.actions.editor.focusEditor();
         }
     }
