@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The project create dialog will now automatically use the last search term as name for the new project.
+- Node browser usability tweaks [#250](https://github.com/gentics/mesh-ui/issues/250)
+  - The choose button is disabled if no node has been chosen
+  - The checkbox for choosing a node will now appear when hovering the row instead of only when hovering the icon.
 
 ## [1.0.1] - 2019-10-08
 ### Changed

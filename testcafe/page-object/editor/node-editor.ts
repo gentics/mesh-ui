@@ -1,7 +1,9 @@
 import { t, ClientFunction, Selector } from 'testcafe';
 
+import { selectors } from '../../selectors';
 import { toast } from '../toast';
 
+import { NodeField } from './fields/node-field';
 import { NumberField } from './fields/number-field';
 import { OptionStringField } from './fields/option-string-field';
 import { StringField } from './fields/string-field';
@@ -41,29 +43,18 @@ export namespace nodeEditor {
     }
 
     export function getNumberField(fieldName: string) {
-        return new NumberField(
-            Selector('mesh-number-field')
-                .find('label')
-                .withText(fieldName)
-                .parent('mesh-number-field')
-        );
+        return new NumberField(selectors.labeledElement('mesh-number-field', fieldName));
     }
 
     export function getStringField(fieldName: string) {
-        return new StringField(
-            Selector('mesh-string-field')
-                .find('label')
-                .withText(fieldName)
-                .parent('mesh-string-field')
-        );
+        return new StringField(selectors.labeledElement('mesh-string-field', fieldName));
     }
 
     export function getOptionStringField(fieldName: string) {
-        return new OptionStringField(
-            Selector('mesh-string-field')
-                .find('label')
-                .withText(fieldName)
-                .parent('mesh-string-field')
-        );
+        return new OptionStringField(selectors.labeledElement('mesh-string-field', fieldName));
+    }
+
+    export function getNodeField(fieldName: string) {
+        return new NodeField(selectors.labeledElement('mesh-node-field', fieldName));
     }
 }

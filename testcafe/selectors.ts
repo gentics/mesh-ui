@@ -7,4 +7,11 @@ export namespace selectors {
             .withText(label)
             .sibling('input');
     }
+
+    export function labeledElement(tagName: string, label: string) {
+        return Selector(tagName)
+            .find('label')
+            .withText(label)
+            .parent(tagName);
+    }
 }

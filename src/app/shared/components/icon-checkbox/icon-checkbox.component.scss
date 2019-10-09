@@ -46,7 +46,7 @@
     }
 }
 
-.datatable-row-group {
+.datatable-row-group, .icon-checkbox-trigger {
     &:hover :host .icon-checkbox-wrapper:not(.disabled) {
         .item-checkbox {
             opacity: 1;

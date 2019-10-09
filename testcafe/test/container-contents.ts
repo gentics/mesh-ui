@@ -1,10 +1,10 @@
 import { api } from '../api';
 import { adminMainMenu } from '../page-object/admin/admin-main-menu';
 import { schemaList } from '../page-object/admin/schema/schema-list';
+import { paginationControls } from '../page-object/common/pagination-controls';
 import { containerContents } from '../page-object/editor/container-contents';
 import { nodeEditor } from '../page-object/editor/node-editor';
 import { login } from '../page-object/login';
-import { paginationControls } from '../page-object/pagination-controls';
 import { topnav } from '../page-object/topnav';
 import { inTemporaryFolder } from '../testUtil';
 
