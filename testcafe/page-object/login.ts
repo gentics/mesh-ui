@@ -13,3 +13,7 @@ export async function login(username: string, password: string, newPassword?: st
     }
     await t.click(Selector('button').withExactText('LOG IN'));
 }
+
+export async function loginAsAdmin() {
+    await login('admin', 'admin');
+}

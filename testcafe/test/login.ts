@@ -1,7 +1,7 @@
 import { Role } from 'testcafe';
 
 import { api } from '../api';
-import { goToUsers } from '../page-object/admin/admin-main-menu';
+import { adminMainMenu } from '../page-object/admin/admin-main-menu';
 import { createUser } from '../page-object/admin/user/user-detail';
 import { newUser } from '../page-object/admin/user/user-list';
 import { containerContents } from '../page-object/editor/container-contents';
@@ -19,7 +19,7 @@ test('Change password on login', async t => {
 
     await login('admin', 'admin');
     await topnav.goToAdmin();
-    await goToUsers();
+    await adminMainMenu.goTo('Users');
     await newUser();
     await createUser({
         userName: username,

@@ -1,4 +1,4 @@
-import { Role } from 'testcafe';
+import { t, Role } from 'testcafe';
 
 import { api } from './api';
 import { containerContents } from './page-object/editor/container-contents';
@@ -14,3 +14,8 @@ export const Admin = Role(
         preserveUrl: false
     }
 );
+
+export async function loginAsAdmin() {
+    await login('admin', 'admin');
+    await containerContents.expectVisible();
+}
