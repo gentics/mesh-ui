@@ -1,13 +1,13 @@
-name: Node CI
+name: Build & e2e
 
 on: push
 
 jobs:
-  build:
+  e2e:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: install, build, and test
+    - name: install
       run: npm ci
     - name: build
       run: npm run build
