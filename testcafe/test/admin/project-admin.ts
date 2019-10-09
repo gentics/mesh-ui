@@ -1,9 +1,9 @@
-import { Selector } from 'testcafe';
-
 import { api } from '../../api';
 import { assert } from '../../assert';
 import { navigate } from '../../navigate';
+import { createProjectModal } from '../../page-object/admin/project/create-project-modal';
 import { projectList } from '../../page-object/admin/project/project-list';
+import { topnav } from '../../page-object/topnav';
 import { Admin } from '../../roles';
 
 fixture`Project administration`.page(api.baseUrl());
@@ -35,4 +35,13 @@ test('Create project without anonymous permissions', async t => {
     });
 }).after(async t => {
     await api.deleteProjectByName(projectName);
+});
+
+test('Create project with name from search input', async t => {
+    const projectName = 'ABCDEFG';
+    await t.useRole(Admin);
+    await topnav.goToAdmin();
+    await projectList.enterSearchTerm(projectName);
+    await projectList.clickProjectCreateButton();
+    await t.expect(await createProjectModal.getName()).eql(projectName);
 });

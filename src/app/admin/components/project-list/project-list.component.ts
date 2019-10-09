@@ -86,10 +86,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
     onCreateProjectClick() {
         this.modalService
-            .fromComponent(CreateProjectModalComponent, {
-                closeOnOverlayClick: false,
-                width: '90%'
-            })
+            .fromComponent(
+                CreateProjectModalComponent,
+                {
+                    closeOnOverlayClick: false,
+                    width: '90%'
+                },
+                { projectName: this.filterInput.value }
+            )
             .then(modal => modal.open())
             .then((project: ProjectResponse) => {
                 this.router.navigate(['/admin/projects', project.uuid]);

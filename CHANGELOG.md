@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The project create dialog will now automatically use the last search term as name for the new project.
+
 ## [1.0.1] - 2019-10-08
 ### Changed
 - Update to Angular 8
