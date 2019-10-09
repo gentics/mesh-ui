@@ -1,10 +1,11 @@
 import { api } from '../api';
-import { navigate } from '../navigate';
+import { adminMainMenu } from '../page-object/admin/admin-main-menu';
+import { schemaList } from '../page-object/admin/schema/schema-list';
 import { containerContents } from '../page-object/editor/container-contents';
 import { nodeEditor } from '../page-object/editor/node-editor';
+import { login } from '../page-object/login';
 import { paginationControls } from '../page-object/pagination-controls';
 import { topnav } from '../page-object/topnav';
-import { Admin } from '../roles';
 import { inTemporaryFolder } from '../testUtil';
 
 import { schemaEditor } from './admin/schema-editor';
@@ -13,9 +14,11 @@ fixture`Container contents`.page(api.baseUrl());
 
 const schemaName = 'dummy';
 test('Only assigned schemas are visible', async t => {
-    await t.useRole(Admin);
+    await login.loginAsAdmin();
 
-    await navigate.toAdminSchemaEditorNew();
+    await topnav.goToAdmin();
+    await adminMainMenu.goTo('Schemas');
+    await t.click(schemaList.createSchemaButton);
 
     await schemaEditor.setName(schemaName);
     await schemaEditor.create();
@@ -39,7 +42,7 @@ test('Current page stays the same after opening Node', async t =>
         for (let i = 0; i < 20; i++) {
             await api.createVehicle(folder, `vehicle${i}`);
         }
-        await t.useRole(Admin);
+        await login.loginAsAdmin();
         await containerContents.getListItemByName(folder.fields.name).open();
         await paginationControls.goToPage(2);
         await containerContents.getFirstListItem().open();
@@ -52,7 +55,7 @@ test('Current page stays the same after saving a node', async t =>
         for (let i = 0; i < 20; i++) {
             await api.createVehicle(folder, `vehicle${i}`);
         }
-        await t.useRole(Admin);
+        await login.loginAsAdmin();
         await containerContents.getListItemByName(folder.fields.name).open();
         await paginationControls.goToPage(2);
         await containerContents.getFirstListItem().open();
@@ -72,7 +75,7 @@ test('Current page stays the same after creating a new node', async t =>
         for (let i = 0; i < 20; i++) {
             await api.createVehicle(folder, `vehicle${i}`);
         }
-        await t.useRole(Admin);
+        await login.loginAsAdmin();
         await containerContents.getListItemByName(folder.fields.name).open();
         await paginationControls.goToPage(2);
 

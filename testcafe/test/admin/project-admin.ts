@@ -1,17 +1,17 @@
 import { api } from '../../api';
 import { assert } from '../../assert';
-import { navigate } from '../../navigate';
+import { adminMainMenu } from '../../page-object/admin/admin-main-menu';
 import { createProjectModal } from '../../page-object/admin/project/create-project-modal';
 import { projectList } from '../../page-object/admin/project/project-list';
+import { login } from '../../page-object/login';
 import { topnav } from '../../page-object/topnav';
-import { Admin } from '../../roles';
 
 fixture`Project administration`.page(api.baseUrl());
 
 const projectName = 'testProject';
 test('Create project with anonymous permissions', async t => {
-    await t.useRole(Admin);
-    await navigate.toProjectAdmin();
+    await login.loginAsAdmin();
+    await topnav.goToAdmin();
     await projectList.createProject({ name: projectName });
     await api.asAnonymousUser(async () => {
         // Should be successful because it is readable
@@ -22,8 +22,8 @@ test('Create project with anonymous permissions', async t => {
 });
 
 test('Create project without anonymous permissions', async t => {
-    await t.useRole(Admin);
-    await navigate.toProjectAdmin();
+    await login.loginAsAdmin();
+    await topnav.goToAdmin();
     await projectList.createProject({ name: projectName, anonymousAccess: false });
     await api.asAnonymousUser(async () => {
         try {
@@ -39,7 +39,7 @@ test('Create project without anonymous permissions', async t => {
 
 test('Create project with name from search input', async t => {
     const projectName = 'ABCDEFG';
-    await t.useRole(Admin);
+    await login.loginAsAdmin();
     await topnav.goToAdmin();
     await projectList.enterSearchTerm(projectName);
     await projectList.clickProjectCreateButton();

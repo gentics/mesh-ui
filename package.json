@@ -15,9 +15,11 @@
     "precommit": "lint-staged",
     "postcommit": "git update-index --again",
     "mesh": "docker run --rm -p '8080:8080' -e MESH_ELASTICSEARCH_URL=null -e MESH_ELASTICSEARCH_START_EMBEDDED=false -e MESH_MONITORING_ENABLED=false gentics/mesh-demo",
+    "mesh-daemon": "docker run --rm -d -p '8080:8080' -e MESH_ELASTICSEARCH_URL=null -e MESH_ELASTICSEARCH_START_EMBEDDED=false -e MESH_MONITORING_ENABLED=false gentics/mesh-demo",
     "e2e": "cross-env MESHUI_URL=http://localhost:4200 testcafe",
     "e2e-watch": "cross-env MESHUI_URL=http://localhost:4200 testcafe --live",
-    "e2e-headless": "cross-env MESHUI_URL=http://localhost:4200 testcafe 'chrome:headless --window-size=1920x1080'"
+    "e2e-headless": "cross-env MESHUI_URL=http://localhost:4200 testcafe 'chrome:headless --window-size=1920x1080'",
+    "e2e-ci": "cross-env TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ts-node testcafe/test-ci.ts"
   },
   "lint-staged": {
     "concurrent": false,
@@ -85,6 +87,7 @@
     "@angular/cli": "^8.3.7",
     "@angular/compiler-cli": "^8.2.9",
     "@angular/language-service": "^8.2.9",
+    "@types/http-server": "^0.10.0",
     "@types/jasmine": "~3.3.12",
     "@types/jasminewd2": "~2.0.6",
     "@types/jwt-decode": "^2.2.1",
@@ -109,7 +112,7 @@
     "raw-loader": "^0.5.1",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
-    "ts-node": "~3.2.0",
+    "ts-node": "^8.4.1",
     "tslint": "~5.8.0",
     "typescript": "~3.5.3",
     "uuid-random": "^1.0.6",

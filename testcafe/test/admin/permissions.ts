@@ -2,19 +2,21 @@ import { nodePermissions, NodePermission } from '../../../src/app/admin/permissi
 import { PermissionInfoFromServer } from '../../../src/app/common/models/server-models';
 import { toObject } from '../../../src/app/common/util/util';
 import { api, PermissionsPath } from '../../api';
-import { navigate } from '../../navigate';
+import { adminMainMenu } from '../../page-object/admin/admin-main-menu';
 import { permissionsRow } from '../../page-object/admin/permissions/permission-row';
 import { permissions } from '../../page-object/admin/permissions/permissions';
 import { permissionsRoleList } from '../../page-object/admin/permissions/permissions-role-list';
-import { Admin } from '../../roles';
+import { login } from '../../page-object/login';
+import { topnav } from '../../page-object/topnav';
 import { withTemporaryRole } from '../../testUtil';
 
 fixture`Permission administration`.page(api.baseUrl());
 
 test('Role permissions', async t =>
     withTemporaryRole(async role => {
-        await t.useRole(Admin);
-        await navigate.toPermissionAdmin();
+        await login.loginAsAdmin();
+        await topnav.goToAdmin();
+        await adminMainMenu.goTo('Permissions');
         await permissionsRoleList.chooseRole(role.name);
 
         await permissions.openEntityType('roles');
@@ -52,8 +54,9 @@ test('Role permissions', async t =>
 
 test('Project permissions', async t =>
     withTemporaryRole(async role => {
-        await t.useRole(Admin);
-        await navigate.toPermissionAdmin();
+        await login.loginAsAdmin();
+        await topnav.goToAdmin();
+        await adminMainMenu.goTo('Permissions');
         await permissionsRoleList.chooseRole(role.name);
 
         await permissions.openEntityType('projects');
@@ -70,8 +73,10 @@ test('Project permissions', async t =>
 
 test('Tag permissions', async t =>
     withTemporaryRole(async role => {
-        await t.useRole(Admin);
-        await navigate.toPermissionAdmin();
+        await login.loginAsAdmin();
+        await topnav.goToAdmin();
+        await adminMainMenu.goTo('Permissions');
+
         await permissionsRoleList.chooseRole(role.name);
 
         await permissions.openEntityType('tags');
@@ -118,8 +123,10 @@ test('Tag permissions', async t =>
 
 test('Node permissions', async t =>
     withTemporaryRole(async role => {
-        await t.useRole(Admin);
-        await navigate.toPermissionAdmin();
+        await login.loginAsAdmin();
+        await topnav.goToAdmin();
+        await adminMainMenu.goTo('Permissions');
+
         await permissionsRoleList.chooseRole(role.name);
 
         const project = await api.getProject();
