@@ -7,9 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: npm install, build, and test
-      run: |
-        npm ci
-        npm run mesh-daemon
-        npm run build
-        npm run e2e-ci
+    - name: install, build, and test
+      run: npm ci
+    - name: build
+      run: npm run build
+    - name: run mesh
+      run: npm run mesh-daemon
+    - name: e2e tests
+      run: npm run e2e-ci
