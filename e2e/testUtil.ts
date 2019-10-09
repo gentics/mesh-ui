@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { browser, promise, ElementFinder, WebElement } from 'protractor';
-import * as uuid from 'uuid-random';
+import { randomString } from 'testcafe/testUtil';
 
 import { MeshNode } from '../src/app/common/models/node.model';
 import { SchemaCreateRequest, SchemaResponse } from '../src/app/common/models/server-models';
@@ -87,7 +87,7 @@ export function inTemporaryFolderWithLanguage(language: string, body: (folder: M
     return createWrapper({
         async before() {
             const project = await api.getProject();
-            return await api.createFolder(project.rootNode, 'tmpFolder' + uuid(), language);
+            return await api.createFolder(project.rootNode, 'tmpFolder' + randomString(), language);
         },
         test: body,
         after: api.deleteNode

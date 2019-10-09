@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { flatMap, tap } from 'rxjs/operators';
 import { UserResponse } from 'src/app/common/models/server-models';
 
-import { ApiError } from '../../core/providers/api/api-error';
 import { ApiService } from '../../core/providers/api/api.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { ApplicationStateService } from '../../state/providers/application-state.service';

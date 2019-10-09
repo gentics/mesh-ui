@@ -45,28 +45,28 @@ describe('StringFieldComponent:', () => {
         it('correctly sets error when required == true', () => {
             api.field.required = true;
             instance.init(api);
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required'));
 
             instance.onChange('foo');
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
         });
 
         it('correctly sets error when required == false', () => {
             api.field.required = false;
             instance.init(api);
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
 
             instance.onChange('foo');
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
         });
 
         it('correctly sets error when required == undefined', () => {
             api.field.required = undefined;
             instance.init(api);
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
 
             instance.onChange('foo');
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
         });
     });
 });

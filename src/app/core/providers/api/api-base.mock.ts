@@ -1,5 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Headers, Http, Request, RequestMethod, Response, ResponseOptions } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 
 import { MockI18nNotification } from '../i18n-notification/i18n-notification.service.mock';
@@ -44,7 +43,7 @@ export class MockApiBase extends ApiBase {
 
         // Add the passed arguments to the tracked request.
         // They are not available on the actual `Request` object.
-        this.lastRequest.method = requestMethodToString(method);
+        this.lastRequest.method = method;
         this.lastRequest.body = body === null ? undefined : body;
         this.lastRequest.url = url;
         this.lastRequest.params = params;
@@ -54,9 +53,9 @@ export class MockApiBase extends ApiBase {
     }
 
     /** Intercepts requests made via Angulars `Http` service and stores them on this instance. */
-    private interceptHttpRequest(request: Request): Observable<Response> {
+    private interceptHttpRequest(request: Request): Observable<HttpResponse<any>> {
         const trackedRequest = {} as MockedApiRequest;
-        const returnedObservable = new Subject<Response>();
+        const returnedObservable = new Subject<HttpResponse<any>>();
 
         // Add a non-enumerable "respond" method
         Object.defineProperty(trackedRequest, 'respond', {
@@ -64,44 +63,20 @@ export class MockApiBase extends ApiBase {
             enumerable: false,
             writable: true,
             value: (status: number, body: any) => {
-                const response = new Response(
-                    new ResponseOptions({
-                        body: JSON.stringify(body),
-                        headers: new Headers({
-                            'Content-Type': 'application/json'
-                        }),
-                        status,
-                        url: request.url
-                    })
-                );
+                const response = new HttpResponse({
+                    body: JSON.stringify(body),
+                    headers: new HttpHeaders({
+                        'Content-Type': 'application/json'
+                    }),
+                    status,
+                    url: request.url
+                });
                 returnedObservable.next(response);
                 returnedObservable.complete();
                 trackedRequest.respond = () => {};
             }
         });
         this.allRequests.push((this.lastRequest = trackedRequest));
-        return returnedObservable as Observable<Response>;
-    }
-}
-
-function requestMethodToString(method: string | RequestMethod): typeof MockedApiRequest.prototype.method {
-    switch (method) {
-        case 'DELETE':
-        case RequestMethod.Delete:
-            return 'DELETE';
-        case 'GET':
-        case RequestMethod.Get:
-            return 'GET';
-        case 'POST':
-        case RequestMethod.Post:
-            return 'POST';
-        case 'PATCH':
-        case RequestMethod.Patch:
-            return 'PATCH';
-        case 'PUT':
-        case RequestMethod.Put:
-            return 'PUT';
-        default:
-            return '[invalid request method]' as any;
+        return returnedObservable as Observable<HttpResponse<any>>;
     }
 }

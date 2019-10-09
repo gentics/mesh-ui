@@ -577,7 +577,7 @@ class TestComponent implements OnInit {
     api: MockMeshFieldControlApi;
     apiService: MockApiService;
 
-    @ViewChild(BinaryFieldComponent, /* TODO: add static flag */ {}) binaryFieldComponent: BinaryFieldComponent;
+    @ViewChild(BinaryFieldComponent, { static: false }) binaryFieldComponent: BinaryFieldComponent;
 
     ngOnInit() {
         const api = new MockMeshFieldControlApi();

@@ -4,14 +4,11 @@ import { I18nPipe } from './i18n.pipe';
 
 describe('I18nPipe', () => {
     let i18nPipe: I18nPipe;
-    let mockTranslatePipe: MockTranslatePipe;
     let mockTranslateService: MockTranslateService;
 
     beforeEach(() => {
-        mockTranslatePipe = new MockTranslatePipe();
         mockTranslateService = new MockTranslateService();
         i18nPipe = new I18nPipe(mockTranslateService as any, {} as any);
-        i18nPipe.translatePipe = mockTranslatePipe as any;
     });
 
     afterEach(() => {
@@ -26,7 +23,7 @@ describe('I18nPipe', () => {
             };
             i18nPipe.transform(key, params);
 
-            expect(mockTranslatePipe.transform).toHaveBeenCalledWith(key, params);
+            expect(mockTranslateService.instant).toHaveBeenCalledWith(key, params);
         }
     });
 });
