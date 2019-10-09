@@ -1,11 +1,10 @@
 import { api } from '../api';
 import { assert } from '../assert';
 import * as microschemas from '../microschemas';
-import { navigate } from '../navigate';
 import { containerContents } from '../page-object/editor/container-contents';
 import { nodeEditor } from '../page-object/editor/node-editor';
+import { login } from '../page-object/login';
 import { toast } from '../page-object/toast';
-import { Admin } from '../roles';
 import { schemas } from '../schemas';
 import { inTemporaryFolder, requiresMicroSchema, requiresSchema } from '../testUtil';
 
@@ -15,8 +14,8 @@ test('Create empty node of all possible fields', async t =>
     requiresMicroSchema(microschemas.allMicroFields, () =>
         requiresSchema(schemas.allFields, schema =>
             inTemporaryFolder(async parent => {
-                await t.useRole(Admin);
-                await navigate.toFolder(parent);
+                await login.loginAsAdmin();
+                await containerContents.getListItemByName(parent.fields.name).open();
                 await containerContents.createNode(schema.name);
                 await nodeEditor.save();
 
@@ -27,7 +26,7 @@ test('Create empty node of all possible fields', async t =>
     ));
 
 test('Display node path', async t => {
-    await t.useRole(Admin);
+    await login.loginAsAdmin();
     await containerContents.getListItemByName('Aircraft').open();
     await containerContents.getListItemByName('Space Shuttle').open();
     await nodeEditor.showPath();
@@ -38,7 +37,7 @@ test('Create language version of node', async t =>
     inTemporaryFolder(async parent => {
         const node = await api.createVehicle(parent, 'TestVehicle');
 
-        await t.useRole(Admin);
+        await login.loginAsAdmin();
 
         await containerContents.getListItemByName(parent.fields.name).open();
         await containerContents.getListItemByName('TestVehicle').open();
@@ -61,8 +60,9 @@ test('Changing number field', async t =>
     inTemporaryFolder(async parent => {
         const node = await api.createVehicle(parent, 'TestVehicle');
 
-        await t.useRole(Admin);
-        await navigate.toNodeEdit(node);
+        await login.loginAsAdmin();
+        await containerContents.getListItemByName(parent.fields.name).open();
+        await containerContents.getListItemByName(node.fields.name).open();
         await nodeEditor.getNumberField('Weight').setValue(123);
         await nodeEditor.save();
 
@@ -74,7 +74,7 @@ test('String field with allowed values', async t =>
     requiresSchema(schemas.AllowedStringField, async schema =>
         inTemporaryFolder(async parent => {
             const node = await api.createNode(parent, schema.name, { requiredChoose: 'option1' });
-            await t.useRole(Admin);
+            await login.loginAsAdmin();
 
             await containerContents.getListItemByName(parent.fields.name).open();
             await containerContents.getListItemByName('undefined').open();

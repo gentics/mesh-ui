@@ -2,7 +2,8 @@ import { t } from 'testcafe';
 
 import { HasUuid } from '../src/app/common/models/common.model';
 
-export namespace navigate {
+// Private for now because angular 8 seems to have broken navigation from testcafe
+namespace navigate {
     export async function toNodeEdit(node: HasUuid, language = 'en') {
         await goToRoute(`/editor/project/(detail:demo/${node.uuid}/${language})`);
     }
