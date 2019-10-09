@@ -98,7 +98,7 @@ test('String field with allowed values', async t =>
     ));
 
 // https://github.com/gentics/mesh-ui/issues/250
-test.only('Choose node dialog usability', async t => {
+test('Choose node dialog usability', async t => {
     await login.loginAsAdmin();
     await containerContents.getListItemByName('Aircraft').open();
     await containerContents.getListItemByName('Space Shuttle').open();
