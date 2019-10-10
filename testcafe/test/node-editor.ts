@@ -88,7 +88,7 @@ test('String field with allowed values', async t =>
 
             await t
                 .expect(updatedNode.fields.name)
-                .eql('testNameasd', 'Field was not updated')
+                .eql('testName', 'Field was not updated')
                 .expect(updatedNode.fields.choose)
                 .eql('option2', 'Field was not updated')
                 .expect(updatedNode.fields.requiredChoose)
