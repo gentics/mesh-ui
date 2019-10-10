@@ -160,11 +160,11 @@ export class NodeBrowserComponent implements IModalDialog, OnInit {
                 (() => true);
         } else if (this.options.selectablePredicate) {
             this.selectableFn = this.options.selectablePredicate;
-            this.closableFn = () => true;
+            this.closableFn = () => this.selected.length > 0;
         } else {
             // By default everything can be chosen
             this.selectableFn = () => true;
-            this.closableFn = () => true;
+            this.closableFn = () => this.selected.length > 0;
         }
     }
 
