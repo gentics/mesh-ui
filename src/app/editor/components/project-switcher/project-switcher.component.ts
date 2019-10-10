@@ -17,12 +17,7 @@ export class ProjectSwitcherComponent {
     projects$: Observable<Project[]>;
 
     constructor(private appState: ApplicationStateService, private navigation: NavigationService) {
-        this.projects$ = this.appState
-            .select(state => state.entities.project)
-            .pipe(
-                map(hashValues),
-                tap(console.log)
-            );
+        this.projects$ = this.appState.select(state => state.entities.project).pipe(map(hashValues));
     }
 
     changeProject(project: Project) {
