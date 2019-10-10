@@ -1,16 +1,6 @@
-import { HttpRequest } from '@angular/common/http';
+import { HttpClientModule, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import {
-    ConnectionBackend,
-    Headers,
-    Http,
-    HttpModule,
-    Request,
-    RequestMethod,
-    Response,
-    ResponseOptions
-} from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
 import { Observable, Subject, Subscription } from 'rxjs';
 
 import { I18nNotification } from '../i18n-notification/i18n-notification.service';
@@ -19,25 +9,21 @@ import { MockI18nNotification } from '../i18n-notification/i18n-notification.ser
 import { ApiBase, HttpResponseObservable } from './api-base.service';
 import { ApiError } from './api-error';
 
+const ANY = () => true;
+
 describe('ApiBase', () => {
     let apiBase: ApiBase;
-    let backend: MockBackend;
+    let backend: HttpTestingController;
     let subscription: Subscription | undefined;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpModule],
-            providers: [
-                ApiBase,
-                Http,
-                { provide: ConnectionBackend, useClass: MockBackend },
-                { provide: I18nNotification, useClass: MockI18nNotification }
-            ]
+            imports: [HttpClientTestingModule],
+            providers: [ApiBase, { provide: I18nNotification, useClass: MockI18nNotification }]
         });
 
         apiBase = TestBed.get(ApiBase);
-        backend = TestBed.get(ConnectionBackend);
-        expect(backend instanceof MockBackend).toBe(true);
+        backend = TestBed.get(HttpTestingController);
     });
 
     afterEach(() => {
@@ -54,8 +40,8 @@ describe('ApiBase', () => {
     describe('get()', () => {
         it('creates a GET request', () => {
             apiBase.get('/some-api-endpoint' as any, {}).subscribe();
-            expect(backend.connectionsArray.length).toBe(1);
-            expect(backend.connectionsArray[0].request.method).toBe(RequestMethod.Get);
+            const req = backend.expectOne('/some-api-endpoint');
+            expect(req.request.method).toEqual('GET');
         });
 
         it('sets the passed properties on the request', () => {
@@ -67,11 +53,9 @@ describe('ApiBase', () => {
                 })
                 .subscribe();
 
-            expect(backend.connectionsArray.length).toBe(1);
-            const request = backend.connectionsArray[0].request;
+            const request = backend.expectOne('/api/v1/groups/some-uuid?role=some-role').request;
 
-            expect(request.method).toBe(RequestMethod.Get);
-            expect(request.url).toBe('/api/v1/groups/some-uuid?role=some-role');
+            expect(request.method).toBe('GET');
             expect(request.headers.getAll('Accept')).toEqual(['application/json']);
             expect(request.headers.getAll('Accept-Language')).toEqual(['en']);
             expect(request.headers.getAll('Content-Type')).toEqual(null);
@@ -84,21 +68,10 @@ describe('ApiBase', () => {
                 receivedResponse = true;
             });
 
-            expect(backend.connectionsArray.length).toBe(1);
-            backend.connectionsArray[0].mockRespond(
-                new Response(
-                    new ResponseOptions({
-                        status: 200,
-                        statusText: 'OK',
-                        headers: new Headers({
-                            'Content-Type': 'application/json'
-                        }),
-                        body: JSON.stringify({
-                            pi: 3.14
-                        })
-                    })
-                )
-            );
+            const request = backend.expectOne('/math/pi');
+            request.flush({
+                pi: 3.14
+            });
 
             expect(receivedResponse).toBe(true);
         });
@@ -114,18 +87,11 @@ describe('ApiBase', () => {
                 didThrow = true;
             });
 
-            backend.connectionsArray[0].mockRespond(
-                new Response(
-                    new ResponseOptions({
-                        status: 404,
-                        statusText: 'Not Found',
-                        headers: new Headers({
-                            'Content-Type': 'text/plain'
-                        }),
-                        body: 'Endpoint not found'
-                    })
-                )
-            );
+            const req = backend.expectOne('/math/raspberrypi');
+            req.flush('Endpoint not found', {
+                status: 404,
+                statusText: 'Not Found'
+            });
 
             expect(didThrow).toBe(true);
         });
@@ -136,7 +102,7 @@ describe('ApiBase', () => {
                 thrownError = error;
             });
 
-            backend.connectionsArray[0].mockError(new Error('some unexpected error'));
+            backend.expectOne('/some/endpoint').error(new ErrorEvent('some unexpected error'));
 
             expect(thrownError).toBeDefined('no thrownError');
             expect(thrownError.name).toBe('ApiError');
@@ -168,8 +134,7 @@ describe('ApiBase', () => {
     describe('post()', () => {
         it('creates a POST request', () => {
             apiBase.post('/some-api-endpoint' as any, {}, undefined).subscribe();
-            expect(backend.connectionsArray.length).toBe(1);
-            expect(backend.connectionsArray[0].request.method).toBe(RequestMethod.Post);
+            expect(backend.expectOne(ANY).request.method).toBe('POST');
         });
 
         it('sets the passed properties on the request', () => {
@@ -184,13 +149,13 @@ describe('ApiBase', () => {
                 )
                 .subscribe();
 
-            const request = backend.connectionsArray[0].request;
-            expect(request.method).toBe(RequestMethod.Post);
+            const request = backend.expectOne(ANY).request;
+            expect(request.method).toBe('POST');
             expect(request.url).toBe('/api/v1/some-api-endpoint/some-uuid?pi=3.14');
             expect(request.headers.getAll('Accept')).toEqual(['application/json']);
             expect(request.headers.getAll('Accept-Language')).toEqual(['en']);
             expect(request.headers.getAll('Content-Type')).toEqual(['application/json']);
-            expect(request.json()).toEqual({ unitTestPostBody: true });
+            expect(request.body).toEqual({ unitTestPostBody: true });
         });
 
         it('emits the response body on successful status codes', () => {
@@ -200,21 +165,9 @@ describe('ApiBase', () => {
                 receivedResponse = true;
             });
 
-            expect(backend.connectionsArray.length).toBe(1);
-            backend.connectionsArray[0].mockRespond(
-                new Response(
-                    new ResponseOptions({
-                        status: 200,
-                        statusText: 'OK',
-                        headers: new Headers({
-                            'Content-Type': 'application/json'
-                        }),
-                        body: JSON.stringify({
-                            pi: 3.14
-                        })
-                    })
-                )
-            );
+            backend.expectOne(ANY).flush({
+                pi: 3.14
+            });
 
             expect(receivedResponse).toBe(true);
         });
@@ -225,18 +178,13 @@ describe('ApiBase', () => {
                 thrownError = error;
             });
 
-            backend.connectionsArray[0].mockRespond(
-                new Response(
-                    new ResponseOptions({
-                        status: 404,
-                        statusText: 'Not Found',
-                        headers: new Headers({
-                            'Content-Type': 'text/plain'
-                        }),
-                        body: 'Endpoint not found'
-                    })
-                )
-            );
+            backend.expectOne(ANY).flush('Endpoint not found', {
+                status: 404,
+                statusText: 'Not Found',
+                headers: {
+                    'Content-Type': 'text/plain'
+                }
+            });
 
             expect(thrownError).toBeDefined();
             expect(thrownError.response!.status).toBe(404);
@@ -251,7 +199,7 @@ describe('ApiBase', () => {
                 thrownError = error;
             });
 
-            backend.connectionsArray[0].mockError(new Error('some unexpected error'));
+            backend.expectOne(ANY).error(new ErrorEvent('some unexpected error'));
 
             expect(thrownError).toBeDefined('no thrownError');
             expect(thrownError.name).toBe('ApiError');
@@ -291,7 +239,7 @@ describe('ApiBase', () => {
 
             apiBase.post('/some-api-endpoint' as any, {}, formData).subscribe();
 
-            const requestBody: FormData = backend.connectionsArray[0].request.getBody();
+            const requestBody: FormData = backend.expectOne(ANY).request.body;
             expect(requestBody instanceof FormData).toBe(true, 'not a FormData instance');
             expect(requestBody.get('testfile') instanceof File).toBe(true, 'not a File instance');
         });
@@ -310,7 +258,7 @@ describe('ApiBase', () => {
 
             apiBase.post('/some-api-endpoint' as any, {}, body).subscribe();
 
-            const requestBody: FormData = backend.connectionsArray[0].request.getBody();
+            const requestBody: FormData = backend.expectOne(ANY).request.body;
             expect(requestBody instanceof FormData).toBe(true, 'not a FormData instance');
             expect(requestBody.get('testfile') instanceof File).toBe(true, 'not a File instance');
         });
@@ -324,10 +272,7 @@ describe('ApiBase', () => {
             apiBase.setLanguageForServerMessages('en');
             apiBase.get('/some-api-endpoint' as any, {}).subscribe();
 
-            expect(backend.connectionsArray.map(conn => conn.request.headers.get('Accept-Language'))).toEqual([
-                'de',
-                'en'
-            ]);
+            expect(backend.match(ANY).map(conn => conn.request.headers.get('Accept-Language'))).toEqual(['de', 'en']);
         });
 
         it('changes the AcceptLanguage header of POST request', () => {
@@ -337,10 +282,7 @@ describe('ApiBase', () => {
             apiBase.setLanguageForServerMessages('en');
             apiBase.post('/some-api-endpoint' as any, {}, undefined).subscribe();
 
-            expect(backend.connectionsArray.map(conn => conn.request.headers.get('Accept-Language'))).toEqual([
-                'de',
-                'en'
-            ]);
+            expect(backend.match(ANY).map(conn => conn.request.headers.get('Accept-Language'))).toEqual(['de', 'en']);
         });
     });
 
@@ -444,40 +386,34 @@ describe('ApiBase', () => {
                 expect(emittedValues).toEqual([]);
 
                 subject.next(
-                    new Response(
-                        new ResponseOptions({
-                            status: 200,
-                            statusText: 'OK',
-                            headers: new Headers({ 'Content-Type': 'text/plain' }),
-                            body: 'Everything OK'
-                        })
-                    )
+                    new HttpResponse({
+                        status: 200,
+                        statusText: 'OK',
+                        headers: new HttpHeaders({ 'Content-Type': 'text/plain' }),
+                        body: 'Everything OK'
+                    })
                 );
 
                 expect(emittedValues).toEqual(['twohundred: Everything OK']);
 
                 subject.next(
-                    new Response(
-                        new ResponseOptions({
-                            status: 201,
-                            statusText: 'Created',
-                            headers: new Headers({ 'Content-Type': 'text/plain' }),
-                            body: 'Something was created'
-                        })
-                    )
+                    new HttpResponse({
+                        status: 201,
+                        statusText: 'Created',
+                        headers: new HttpHeaders({ 'Content-Type': 'text/plain' }),
+                        body: 'Something was created'
+                    })
                 );
 
                 expect(emittedValues).toEqual(['twohundred: Everything OK', 'twohundredone: Something was created']);
 
                 subject.next(
-                    new Response(
-                        new ResponseOptions({
-                            status: 404,
-                            statusText: 'Not found',
-                            headers: new Headers({ 'Content-Type': 'text/plain' }),
-                            body: 'Something is missing'
-                        })
-                    )
+                    new HttpResponse({
+                        status: 404,
+                        statusText: 'Not found',
+                        headers: new HttpHeaders({ 'Content-Type': 'text/plain' }),
+                        body: 'Something is missing'
+                    })
                 );
 
                 expect(emittedValues).toEqual([
@@ -501,27 +437,23 @@ describe('ApiBase', () => {
                 expect(emittedValues).toEqual([]);
 
                 subject.next(
-                    new Response(
-                        new ResponseOptions({
-                            status: 200,
-                            statusText: 'OK',
-                            headers: new Headers({ 'Content-Type': 'text/plain' }),
-                            body: 'Everything OK'
-                        })
-                    )
+                    new HttpResponse({
+                        status: 200,
+                        statusText: 'OK',
+                        headers: new HttpHeaders({ 'Content-Type': 'text/plain' }),
+                        body: 'Everything OK'
+                    })
                 );
 
                 expect(emittedValues).toEqual(['ok200']);
 
                 subject.next(
-                    new Response(
-                        new ResponseOptions({
-                            status: 404,
-                            statusText: 'Not found',
-                            headers: new Headers({ 'Content-Type': 'text/plain' }),
-                            body: 'Something is missing'
-                        })
-                    )
+                    new HttpResponse({
+                        status: 404,
+                        statusText: 'Not found',
+                        headers: new HttpHeaders({ 'Content-Type': 'text/plain' }),
+                        body: 'Something is missing'
+                    })
                 );
 
                 expect(emittedValues).toEqual(['ok200', 'notfound404']);
@@ -547,27 +479,23 @@ describe('ApiBase', () => {
                 expect(emittedValues).toEqual([]);
 
                 subject.next(
-                    new Response(
-                        new ResponseOptions({
-                            status: 200,
-                            statusText: 'OK',
-                            headers: new Headers({ 'Content-Type': 'text/plain' }),
-                            body: 'Everything OK'
-                        })
-                    )
+                    new HttpResponse({
+                        status: 200,
+                        statusText: 'OK',
+                        headers: new HttpHeaders({ 'Content-Type': 'text/plain' }),
+                        body: 'Everything OK'
+                    })
                 );
 
                 expect(emittedValues).toEqual(['successful: Everything OK']);
 
                 subject.next(
-                    new Response(
-                        new ResponseOptions({
-                            status: 404,
-                            statusText: 'Not found',
-                            headers: new Headers({ 'Content-Type': 'text/plain' }),
-                            body: 'Something is missing'
-                        })
-                    )
+                    new HttpResponse({
+                        status: 404,
+                        statusText: 'Not found',
+                        headers: new HttpHeaders({ 'Content-Type': 'text/plain' }),
+                        body: 'Something is missing'
+                    })
                 );
 
                 expect(emittedValues).toEqual(['successful: Everything OK']);

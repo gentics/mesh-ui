@@ -8,7 +8,7 @@
     "start": "ng serve --verbose --proxy-config proxy.conf.json --live-reload true",
     "build": "ng build --prod",
     "generate-models": "node config/build-models-from-raml",
-    "test": "ng test",
+    "test": "ng test --tsConfig=tsconfig.json",
     "test-no-sourcemaps": "ng test -sm=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e-protractor": "ng e2e",

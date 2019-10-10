@@ -20,6 +20,119 @@ import { StringFieldComponent } from '../string-field/string-field.component';
 
 import { FormGeneratorComponent } from './form-generator.component';
 
+const mockUser = {
+    uuid: 'abc',
+    firstName: 'test',
+    lastName: 'user'
+};
+const mockNode: MeshNode = {
+    uuid: '6b415925881043f1815925881063f147',
+    displayField: 'name',
+    project: {
+        uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
+        name: 'demo'
+    },
+    language: 'en',
+    creator: mockUser,
+    created: '2017-01-19T12:08:02Z',
+    editor: mockUser,
+    edited: '2017-01-19T12:08:05Z',
+    permissions: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+        publish: true,
+        readPublished: true
+    },
+    rolePerms: {} as any,
+    availableLanguages: {
+        en: {
+            published: false,
+            version: '0.1',
+            publisher: {
+                uuid: 'publisher_uuid'
+            }
+        }
+    },
+    parentNode: {
+        projectName: 'demo',
+        uuid: '69e74dfa02a24a1da74dfa02a2aa1d6f',
+        displayName: 'Aircraft',
+        schema: {
+            name: 'category',
+            uuid: '1c401518014a407d801518014a507d2b',
+            version: '1.0'
+        }
+    },
+    tags: [],
+    version: '0.1',
+    childrenInfo: {},
+    schema: {
+        name: 'person',
+        uuid: 'b85a103e9902460e9a103e9902b60eee',
+        version: '1.0'
+    },
+    fields: {
+        name: 'Ada',
+        age: 42
+    } as any,
+    languagePaths: {
+        en: ''
+    },
+    path: '',
+    breadcrumb: [
+        {
+            uuid: '69e74dfa02a24a1da74dfa02a2aa1d6f',
+            displayName: 'Aircraft',
+            projectName: 'demo',
+            schema: {
+                name: 'folder',
+                uuid: 'abcdef',
+                version: '1.0'
+            }
+        }
+    ],
+    container: false
+};
+
+const mockSchema: Schema = {
+    uuid: 'b85a103e9902460e9a103e9902b60eee',
+    creator: mockUser,
+    created: '2017-01-19T12:08:02Z',
+    editor: mockUser,
+    edited: '2017-01-19T12:08:05Z',
+    autoPurge: false,
+    permissions: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+        publish: true,
+        readPublished: true
+    },
+    version: '1.0',
+    name: 'vehicle',
+    fields: [
+        {
+            name: 'name',
+            label: 'Name',
+            required: true,
+            type: 'string'
+        },
+        {
+            name: 'age',
+            label: 'Age',
+            required: true,
+            type: 'number'
+        }
+    ],
+    displayField: 'name',
+    segmentField: 'name',
+    container: false,
+    rolePerms: {} as any
+};
+
 describe('FormGeneratorComponent:', () => {
     let instance: FormGeneratorComponent;
     let fixture: ComponentFixture<FormGeneratorComponent>;
@@ -185,118 +298,6 @@ describe('FormGeneratorComponent:', () => {
 function getFormField<T>(fixture: ComponentFixture<FormGeneratorComponent>, type: Type<T>): T {
     return fixture.debugElement.query(By.directive(type)).componentInstance;
 }
-
-const mockUser = {
-    uuid: 'abc',
-    firstName: 'test',
-    lastName: 'user'
-};
-const mockNode: MeshNode = {
-    uuid: '6b415925881043f1815925881063f147',
-    displayField: 'name',
-    project: {
-        uuid: '079bc38c5cb94db69bc38c5cb97db6b0',
-        name: 'demo'
-    },
-    language: 'en',
-    creator: mockUser,
-    created: '2017-01-19T12:08:02Z',
-    editor: mockUser,
-    edited: '2017-01-19T12:08:05Z',
-    permissions: {
-        create: true,
-        read: true,
-        update: true,
-        delete: true,
-        publish: true,
-        readPublished: true
-    },
-    rolePerms: {} as any,
-    availableLanguages: {
-        en: {
-            published: false,
-            version: '0.1',
-            publisher: {
-                uuid: 'publisher_uuid'
-            }
-        }
-    },
-    parentNode: {
-        projectName: 'demo',
-        uuid: '69e74dfa02a24a1da74dfa02a2aa1d6f',
-        displayName: 'Aircraft',
-        schema: {
-            name: 'category',
-            uuid: '1c401518014a407d801518014a507d2b',
-            version: '1.0'
-        }
-    },
-    tags: [],
-    version: '0.1',
-    childrenInfo: {},
-    schema: {
-        name: 'person',
-        uuid: 'b85a103e9902460e9a103e9902b60eee',
-        version: '1.0'
-    },
-    fields: {
-        name: 'Ada',
-        age: 42
-    } as any,
-    languagePaths: {
-        en: ''
-    },
-    path: '',
-    breadcrumb: [
-        {
-            uuid: '69e74dfa02a24a1da74dfa02a2aa1d6f',
-            displayName: 'Aircraft',
-            projectName: 'demo',
-            schema: {
-                name: 'folder',
-                uuid: 'abcdef',
-                version: '1.0'
-            }
-        }
-    ],
-    container: false
-};
-
-const mockSchema: Schema = {
-    uuid: 'b85a103e9902460e9a103e9902b60eee',
-    creator: mockUser,
-    created: '2017-01-19T12:08:02Z',
-    editor: mockUser,
-    edited: '2017-01-19T12:08:05Z',
-    permissions: {
-        create: true,
-        read: true,
-        update: true,
-        delete: true,
-        publish: true,
-        readPublished: true
-    },
-    version: '1.0',
-    name: 'vehicle',
-    fields: [
-        {
-            name: 'name',
-            label: 'Name',
-            required: true,
-            type: 'string'
-        },
-        {
-            name: 'age',
-            label: 'Age',
-            required: true,
-            type: 'number'
-        }
-    ],
-    displayField: 'name',
-    segmentField: 'name',
-    container: false,
-    rolePerms: {} as any
-};
 
 function populateMockData(fixture: ComponentFixture<FormGeneratorComponent>, node: MeshNode = mockNode): void {
     const instance = fixture.componentInstance;

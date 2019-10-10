@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { URLSearchParams } from '@angular/http';
 import { By } from '@angular/platform-browser';
 
 import { componentTest } from '../../../../testing/component-test';
@@ -475,7 +474,13 @@ function getThumbnail(fixture: ComponentFixture<TestComponent>) {
 
 @Component({
     template: `
-        <mesh-thumbnail [width]="width" [height]="height" [nodeUuid]="nodeUuid" [fieldName]="fieldName"></mesh-thumbnail>`
+        <mesh-thumbnail
+            [width]="width"
+            [height]="height"
+            [nodeUuid]="nodeUuid"
+            [fieldName]="fieldName"
+        ></mesh-thumbnail>
+    `
 })
 class TestComponent {
     width?: number;

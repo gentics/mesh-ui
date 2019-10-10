@@ -45,64 +45,48 @@ describe('NumberFieldComponent:', () => {
             api.field.required = true;
             api.getValue = createSpy('getValue').and.returnValue(null);
             instance.init(api);
-            expect(api.setError.calls.argsFor(0)[0]).toEqual(
-                jasmine.objectContaining(errorHashFor(ErrorCode.REQUIRED))
-            );
+            expect(api.setError.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining(errorHashFor('required')));
 
             instance.onChange(42);
-            expect(api.setError.calls.argsFor(1)[0]).toEqual(
-                jasmine.objectContaining(errorHashFor(ErrorCode.REQUIRED, false))
-            );
+            expect(api.setError.calls.argsFor(1)[0]).toEqual(jasmine.objectContaining(errorHashFor('required', false)));
         });
 
         it('correctly sets error when required == true for a value of 0', () => {
             api.field.required = true;
             api.getValue = createSpy('getValue').and.returnValue(0);
             instance.init(api);
-            expect(api.setError.calls.argsFor(0)[0]).toEqual(
-                jasmine.objectContaining(errorHashFor(ErrorCode.REQUIRED, false))
-            );
+            expect(api.setError.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining(errorHashFor('required', false)));
         });
 
         it('correctly sets error when required == true for a value of NaN', () => {
             api.field.required = true;
             api.getValue = createSpy('getValue').and.returnValue(NaN);
             instance.init(api);
-            expect(api.setError.calls.argsFor(0)[0]).toEqual(
-                jasmine.objectContaining(errorHashFor(ErrorCode.REQUIRED))
-            );
+            expect(api.setError.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining(errorHashFor('required')));
         });
 
         it('correctly sets error when required == false', () => {
             api.getValue = createSpy('getValue').and.returnValue(null);
             api.field.required = false;
             instance.init(api);
-            expect(api.setError.calls.argsFor(0)[0]).toEqual(
-                jasmine.objectContaining(errorHashFor(ErrorCode.REQUIRED, false))
-            );
+            expect(api.setError.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining(errorHashFor('required', false)));
 
             instance.onChange(42);
-            expect(api.setError.calls.argsFor(1)[0]).toEqual(
-                jasmine.objectContaining(errorHashFor(ErrorCode.REQUIRED, false))
-            );
+            expect(api.setError.calls.argsFor(1)[0]).toEqual(jasmine.objectContaining(errorHashFor('required', false)));
         });
 
         it('correctly sets error when min is violated', () => {
             api.getValue = createSpy('getValue').and.returnValue(9);
             api.field.min = 10;
             instance.init(api);
-            expect(api.setError.calls.argsFor(0)[0]).toEqual(
-                jasmine.objectContaining(errorHashFor(ErrorCode.MIN_VALUE))
-            );
+            expect(api.setError.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining(errorHashFor('min_value')));
         });
 
         it('correctly sets error when max is violated', () => {
             api.getValue = createSpy('getValue').and.returnValue(101);
             api.field.max = 100;
             instance.init(api);
-            expect(api.setError.calls.argsFor(0)[0]).toEqual(
-                jasmine.objectContaining(errorHashFor(ErrorCode.MAX_VALUE))
-            );
+            expect(api.setError.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining(errorHashFor('max_value')));
         });
     });
 });

@@ -96,10 +96,10 @@ describe('HtmlFieldComponent:', () => {
             api.field.required = true;
             instance.init(api);
             fixture.detectChanges();
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required'));
 
             insertText(fixture, 0, 'foo');
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
         });
 
         it('correctly sets validity when required == true with empty <p> tag', () => {
@@ -107,20 +107,20 @@ describe('HtmlFieldComponent:', () => {
             api.getValue = createSpy('getValue').and.returnValue('initial');
             instance.init(api);
             fixture.detectChanges();
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
 
             clearText(fixture);
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required'));
         });
 
         it('correctly sets validity when required == false', () => {
             api.field.required = false;
             instance.init(api);
             fixture.detectChanges();
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
 
             insertText(fixture, 0, 'foo');
-            expect(api.setError).toHaveBeenCalledWith(errorHashFor(ErrorCode.REQUIRED, false));
+            expect(api.setError).toHaveBeenCalledWith(errorHashFor('required', false));
         });
     });
 });
