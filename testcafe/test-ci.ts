@@ -12,7 +12,7 @@ import * as createTestCafe from 'testcafe';
     const server = startHttpServer();
     try {
         const failed = await runTests();
-        process.exitCode = failed ? 1 : 0;
+        process.exit(failed ? 1 : 0);
     } finally {
         server.close();
     }
