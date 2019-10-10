@@ -1,15 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { Project } from '../../../common/models/project.model';
 import { hashValues } from '../../../common/util/util';
 import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
-
-interface ProjectHash {
-    [uuid: string]: Project;
-}
 
 @Component({
     selector: 'mesh-project-switcher',
@@ -21,7 +17,12 @@ export class ProjectSwitcherComponent {
     projects$: Observable<Project[]>;
 
     constructor(private appState: ApplicationStateService, private navigation: NavigationService) {
-        this.projects$ = this.appState.select(state => state.entities.project).pipe(map(hashValues));
+        this.projects$ = this.appState
+            .select(state => state.entities.project)
+            .pipe(
+                map(hashValues),
+                tap(console.log)
+            );
     }
 
     changeProject(project: Project) {
