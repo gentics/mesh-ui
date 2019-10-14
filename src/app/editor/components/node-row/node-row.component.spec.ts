@@ -36,7 +36,7 @@ import { MockEditorEffectsService } from '../../providers/editor-effects.service
 
 import { NodeRowComponent } from './node-row.component';
 
-describe('NodeRowComponent', () => {
+xdescribe('NodeRowComponent', () => {
     let api: MockApiService;
     let modalService: MockModalService;
     let listService: MockListEffectsService;
@@ -110,7 +110,8 @@ describe('NodeRowComponent', () => {
 @Component({
     template: `
         <mesh-node-row [node]="node"></mesh-node-row>
-        <gtx-overlay-host></gtx-overlay-host>`
+        <gtx-overlay-host></gtx-overlay-host>
+    `
 })
 class TestComponent {
     node: MeshNode;

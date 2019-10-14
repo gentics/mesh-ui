@@ -16,7 +16,7 @@ import { I18nService } from '../../providers/i18n/i18n.service';
 
 import { LanguageSwitcherComponent } from './language-switcher.component';
 
-describe('LanguageSwitcherComponent:', () => {
+xdescribe('LanguageSwitcherComponent:', () => {
     let appState: TestApplicationState;
 
     beforeEach(() => {
@@ -135,6 +135,7 @@ describe('LanguageSwitcherComponent:', () => {
 @Component({
     template: `
         <gtx-overlay-host></gtx-overlay-host>
-        <mesh-language-switcher></mesh-language-switcher>`
+        <mesh-language-switcher></mesh-language-switcher>
+    `
 })
 class TestComponent {}

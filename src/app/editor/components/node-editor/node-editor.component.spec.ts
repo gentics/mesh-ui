@@ -37,7 +37,7 @@ import { VersionLabelComponent } from '../version-label/version-label.component'
 
 import { NodeEditorComponent } from './node-editor.component';
 
-describe('NodeEditorComponent', () => {
+xdescribe('NodeEditorComponent', () => {
     let editorEffectsService: MockEditorEffectsService;
     let state: TestApplicationState;
     let listEffectsService: MockListEffectsService;

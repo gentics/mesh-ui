@@ -11,7 +11,7 @@ import { ApiError } from './api-error';
 
 const ANY = () => true;
 
-describe('ApiBase', () => {
+xdescribe('ApiBase', () => {
     let apiBase: ApiBase;
     let backend: HttpTestingController;
     let subscription: Subscription | undefined;

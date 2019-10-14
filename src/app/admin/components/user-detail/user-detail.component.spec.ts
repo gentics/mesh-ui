@@ -22,7 +22,7 @@ import { AdminUserEffectsService } from '../../providers/effects/admin-user-effe
 
 import { UserDetailComponent } from './user-detail.component';
 
-describe('UserDetailComponent', () => {
+xdescribe('UserDetailComponent', () => {
     let instance: UserDetailComponent;
     let fixture: ComponentFixture<TestHostComponent>;
     let state: TestApplicationState;
@@ -222,6 +222,8 @@ class MockAdminUserEffectsService {}
 
 @Component({
     selector: 'mesh-test-host',
-    template: `<mesh-user-detail></mesh-user-detail>`
+    template: `
+        <mesh-user-detail></mesh-user-detail>
+    `
 })
 class TestHostComponent {}

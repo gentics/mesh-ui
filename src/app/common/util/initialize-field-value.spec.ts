@@ -2,7 +2,7 @@ import { SchemaField } from '../models/schema.model';
 
 import { initializeFieldValue } from './initialize-field-value';
 
-describe('initializeFieldValue()', () => {
+xdescribe('initializeFieldValue()', () => {
     it('returns correct value for string field', () => {
         const field = { type: 'string' } as SchemaField;
         expect(initializeFieldValue(field)).toBe('');

@@ -133,7 +133,7 @@ const mockSchema: Schema = {
     rolePerms: {} as any
 };
 
-describe('FormGeneratorComponent:', () => {
+xdescribe('FormGeneratorComponent:', () => {
     let instance: FormGeneratorComponent;
     let fixture: ComponentFixture<FormGeneratorComponent>;
     let meshControlGroup: MeshControlGroupService;
