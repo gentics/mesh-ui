@@ -1,9 +1,9 @@
 import { api } from '../../api';
 import { assert } from '../../assert';
-import { adminMainMenu } from '../../page-object/admin/admin-main-menu';
 import { createProjectModal } from '../../page-object/admin/project/create-project-modal';
 import { projectList } from '../../page-object/admin/project/project-list';
 import { login } from '../../page-object/login';
+import { toast } from '../../page-object/toast';
 import { topnav } from '../../page-object/topnav';
 
 fixture`Project administration`.page(api.baseUrl());
@@ -13,6 +13,7 @@ test('Create project with anonymous permissions', async t => {
     await login.loginAsAdmin();
     await topnav.goToAdmin();
     await projectList.createProject({ name: projectName });
+    await toast.expectSuccessMessage('Project created');
     await api.asAnonymousUser(async () => {
         // Should be successful because it is readable
         await api.getProjectByName(projectName);

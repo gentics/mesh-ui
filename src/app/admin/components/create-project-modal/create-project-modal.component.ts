@@ -4,6 +4,7 @@ import { IModalDialog, Notification } from 'gentics-ui-core';
 import { Observable } from 'rxjs';
 import { skipWhile, take } from 'rxjs/operators';
 import { ApiService } from 'src/app/core/providers/api/api.service';
+import { I18nService } from 'src/app/core/providers/i18n/i18n.service';
 
 import { ProjectCreateRequest, ProjectResponse, SchemaResponse } from '../../../common/models/server-models';
 import { ApiError } from '../../../core/providers/api/api-error';
@@ -34,6 +35,7 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
     constructor(
         entities: EntitiesService,
         private notification: Notification,
+        private i18n: I18nService,
         private adminSchemaEffects: AdminSchemaEffectsService,
         private adminProjectEffects: AdminProjectEffectsService,
         private adminRoleEffects: AdminRoleEffectsService,
@@ -104,12 +106,16 @@ export class CreateProjectModalComponent implements IModalDialog, OnInit {
                 if (this.anonymousAccess.value) {
                     // Required by https://github.com/gentics/mesh-ui/issues/42
                     const uuid = await this.adminRoleEffects.loadAnonymousRoleUuid();
-                    this.adminPermissionEffects.grantPermissionToProject(uuid, response.uuid, {
+                    await this.adminPermissionEffects.grantPermissionToProject(uuid, response.uuid, {
                         permissions: { read: true },
                         recursive: true
                     });
                 }
                 this.closeFn(response);
+                this.notification.show({
+                    message: this.i18n.translate('admin.project_created'),
+                    type: 'success'
+                });
                 this.creating = false;
             } catch (err) {
                 if (err instanceof ApiError && err.response && err.response.status === 409) {

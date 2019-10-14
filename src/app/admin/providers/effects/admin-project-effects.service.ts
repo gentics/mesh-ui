@@ -54,7 +54,6 @@ export class AdminProjectEffectsService {
         return this.api.admin
             .createProject({}, projectRequest)
             .toPromise()
-            .then(this.notification.promiseSuccess('admin.project_created'))
             .then(project => {
                 this.state.actions.adminProjects.createProjectSuccess(project);
                 return project;
