@@ -18,7 +18,7 @@ import { TestStateModule } from '../../../state/testing/test-state.module';
 
 import { AdminBreadcrumbsComponent } from './admin-breadcrumbs.component';
 
-describe('AdminBreadcrumbsComponent', () => {
+xdescribe('AdminBreadcrumbsComponent', () => {
     let testingRouter: Router;
     let fixture: ComponentFixture<TestComponent>;
     let instance: AdminBreadcrumbsComponent;

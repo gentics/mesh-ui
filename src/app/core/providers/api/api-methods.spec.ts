@@ -1,7 +1,7 @@
 import { MockApiBase } from './api-base.mock';
 import { apiDelete, apiGet, apiPost, apiPostWithoutBody } from './api-methods';
 
-describe('api-methods helper functions', () => {
+xdescribe('api-methods helper functions', () => {
     let apiBase: MockApiBase = undefined as any;
     let testApi: TestApi = undefined as any;
     beforeEach(() => {

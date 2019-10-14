@@ -57,7 +57,7 @@ describe('HtmlFieldComponent:', () => {
         expect(api.setValue).toHaveBeenCalledWith('<p>foo</p>');
     });
 
-    it('sets focus when editor div is clicked', () => {
+    xit('sets focus when editor div is clicked', () => {
         const api = new MockMeshFieldControlApi();
         api.getValue = createSpy('getValue').and.returnValue('');
         instance.init(api);

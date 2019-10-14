@@ -83,7 +83,7 @@ describe('ProjectSwitcherComponent:', () => {
         });
     });
 
-    it(
+    xit(
         `shows the names of all available projects`,
         componentTest(
             () => TestComponent,
@@ -101,7 +101,7 @@ describe('ProjectSwitcherComponent:', () => {
         )
     );
 
-    it(
+    xit(
         `navigates to the selected project`,
         componentTest(
             () => TestComponent,
@@ -129,6 +129,7 @@ describe('ProjectSwitcherComponent:', () => {
 @Component({
     template: `
         <gtx-overlay-host></gtx-overlay-host>
-        <mesh-project-switcher></mesh-project-switcher>`
+        <mesh-project-switcher></mesh-project-switcher>
+    `
 })
 class TestComponent {}
