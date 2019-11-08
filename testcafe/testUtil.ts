@@ -12,6 +12,18 @@ import {
 
 import { api, FolderNode } from './api';
 
+export type Writeable<T> = T extends (infer R)[]
+    ? DeepWriteableArray<R>
+    : T extends Function
+    ? T
+    : T extends object
+    ? DeepWriteableObject<T>
+    : T;
+
+interface DeepWriteableArray<T> extends Array<Writeable<T>> {}
+
+type DeepWriteableObject<T> = { -readonly [P in keyof T]: Writeable<T[P]> };
+
 export function formControlInput(name: string) {
     return Selector('gtx-input')
         .withAttribute('formcontrolname', name)

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The number of items displayed per page in the content list is now configurable. Set the `contentItemsPerPage` property in the `mesh-ui-config.js` to do so. By default the number of items is 8.
 - The project create dialog will now automatically use the last search term as name for the new project.
 - Node browser usability tweaks [#250](https://github.com/gentics/mesh-ui/issues/250)
   - The choose button is disabled if no node has been chosen

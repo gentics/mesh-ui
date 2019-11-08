@@ -8,6 +8,7 @@ export class MockConfigService implements ConfigService {
     readonly UI_LANGUAGES = ['en', 'de'];
     FALLBACK_LANGUAGE = 'en';
     CONTENT_LANGUAGES = ['en', 'de'];
+    readonly CONTENT_ITEMS_PER_PAGE = 8;
     getPreviewUrlsByProjectName(projectName: string) {
         return [
             {
@@ -25,6 +26,6 @@ export class MockConfigService implements ConfigService {
         ];
     }
     getConfigValueFromProperty() {
-        return '';
+        return '' as any;
     }
 }

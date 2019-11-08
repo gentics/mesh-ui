@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 
 import { MeshPreviewUrl, MeshUiAppConfig } from '../../../common/models/appconfig.model';
 
-interface MeshWindow {
-    [key: string]: any | MeshUiAppConfig | undefined;
+declare const window: MeshWindow;
+
+export interface MeshWindow extends Window {
+    MeshUiConfig: MeshUiAppConfig;
 }
 
 /**
@@ -18,8 +20,7 @@ export class ConfigService {
      * @return UI application configuration
      */
     get appConfig(): MeshUiAppConfig {
-        const meshWindow = window as MeshWindow;
-        const config: any = (meshWindow && meshWindow['MeshUiConfig']) || undefined;
+        const config: any = (window && window['MeshUiConfig']) || undefined;
         if (!config) {
             throw new Error('No Mesh UI configuration found!');
         }
@@ -56,16 +57,27 @@ export class ConfigService {
         })[projectName] as MeshPreviewUrl[];
     }
 
+    /** Username of the default anonymous (unauthenticated) user in Mesh */
+    get CONTENT_ITEMS_PER_PAGE(): number {
+        return this.getConfigValueFromProperty('contentItemsPerPage', 8) as number;
+    }
+
     /**
      * Helper function to retrieve values from app config
      * @param property key of config object
+     * @param fallbackValue key of config object
      */
-    getConfigValueFromProperty(property: keyof MeshUiAppConfig) {
+    getConfigValueFromProperty<K extends keyof MeshUiAppConfig>(property: K, fallbackValue?: MeshUiAppConfig[K]): MeshUiAppConfig[K] {
         const retVal = this.appConfig[property];
         if (retVal) {
             return retVal;
         } else {
-            throw new Error(`Property '${property}' not set in /src/assets/config/mesh-ui-config.js`);
+            const errorMessage = `Property '${property}' not set in /src/assets/config/mesh-ui-config.js`;
+            if (fallbackValue) {
+                console.warn(`${errorMessage} - Fallbackvalue '${fallbackValue}' will be used.`);
+                return fallbackValue;
+            }
+            throw new Error(errorMessage);
         }
     }
 }
