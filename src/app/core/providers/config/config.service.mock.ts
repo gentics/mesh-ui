@@ -26,6 +26,6 @@ export class MockConfigService implements ConfigService {
         ];
     }
     getConfigValueFromProperty() {
-        return '';
+        return '' as any;
     }
 }
