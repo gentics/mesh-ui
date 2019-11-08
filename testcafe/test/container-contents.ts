@@ -1,3 +1,6 @@
+import { ClientFunction } from 'testcafe';
+
+import { MeshWindow } from '../../src/app/core/providers/config/config.service';
 import { api } from '../api';
 import { adminMainMenu } from '../page-object/admin/admin-main-menu';
 import { schemaList } from '../page-object/admin/schema/schema-list';
@@ -6,9 +9,11 @@ import { containerContents } from '../page-object/editor/container-contents';
 import { nodeEditor } from '../page-object/editor/node-editor';
 import { login } from '../page-object/login';
 import { topnav } from '../page-object/topnav';
-import { inTemporaryFolder } from '../testUtil';
+import { inTemporaryFolder, Writeable } from '../testUtil';
 
 import { schemaEditor } from './admin/schema-editor';
+
+declare const window: Writeable<MeshWindow>;
 
 fixture`Container contents`.page(api.baseUrl());
 
@@ -88,4 +93,23 @@ test('Current page stays the same after creating a new node', async t =>
         await nodeEditor.save();
 
         await t.expect(await paginationControls.currentPage()).eql(2, 'Page changed after creating node');
+    }));
+
+test('Per page items configuration', async t =>
+    inTemporaryFolder(async folder => {
+        const perPageItems = 20;
+        for (let i = 0; i <= perPageItems; i++) {
+            await api.createVehicle(folder, `vehicle${i}`);
+        }
+        await ClientFunction(() => (window.MeshUiConfig.contentItemsPerPage = perPageItems), {
+            dependencies: {
+                perPageItems
+            }
+        })();
+        await login.loginAsAdmin();
+        await containerContents.getListItemByName(folder.fields.name).open();
+
+        await t
+            .expect(await containerContents.getNumberOfItems())
+            .eql(perPageItems, 'Number of items displayed is lower then the configured itemsPerPage');
     }));

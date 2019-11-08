@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 
 import { MeshPreviewUrl, MeshUiAppConfig } from '../../../common/models/appconfig.model';
 
-interface MeshWindow {
-    [key: string]: any | MeshUiAppConfig | undefined;
+declare const window: MeshWindow;
+
+export interface MeshWindow extends Window {
+    MeshUiConfig: MeshUiAppConfig;
 }
 
 /**
@@ -18,8 +20,7 @@ export class ConfigService {
      * @return UI application configuration
      */
     get appConfig(): MeshUiAppConfig {
-        const meshWindow = window as MeshWindow;
-        const config: any = (meshWindow && meshWindow['MeshUiConfig']) || undefined;
+        const config: any = (window && window['MeshUiConfig']) || undefined;
         if (!config) {
             throw new Error('No Mesh UI configuration found!');
         }
