@@ -11,11 +11,13 @@ window.MeshUiConfig = {
     fallbackLanguage: 'en',
     /** This is the credential username for a ressource requested without authentication */
     anonymousUsername: 'anonymous',
+    /** This is the number of items displayed per page in the content list (pagination) */
+    // contentItemsPerPage: 8,
     /**
      * Within the node editor in UI the feature "Preview" of a node will open a new tab to a defined frontend app.
      * Here, a function can be provided returning the URL which will be called by that component.
      * Preview URLs are defined per project, identified via project name property.
-     * 
+     *
      * @example:
      * ```javascript
      * previewUrls: {
@@ -50,7 +52,7 @@ window.MeshUiConfig = {
                         case 'vehicle':
                             segmentParent = 'product';
                             break;
-                    
+
                         default:
                             throw new Error('No existing app route preview mapping configured for node of schema: ' + node.schema.name);
                     }

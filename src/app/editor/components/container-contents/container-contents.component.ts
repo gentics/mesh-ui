@@ -14,6 +14,7 @@ import {
     withLatestFrom
 } from 'rxjs/operators';
 import { QUERY_KEY_KEYWORD, QUERY_KEY_PAGE, QUERY_KEY_PERPAGE, QUERY_KEY_TAGS } from 'src/app/common/constants';
+import { ConfigService } from 'src/app/core/providers/config/config.service';
 
 import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
@@ -45,7 +46,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     searching$: Observable<boolean>;
 
     /** Number of items on each paginated page */
-    itemsPerPage = 8;
+    itemsPerPage: number;
     /** Current page of pagination */
     currentPage = 1;
 
@@ -64,10 +65,13 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private entities: EntitiesService,
         private state: ApplicationStateService,
-        private router: Router
+        private router: Router,
+        private config: ConfigService
     ) {}
 
     ngOnInit(): void {
+        // set number of items displayed per page from config
+        this.itemsPerPage = this.config.CONTENT_ITEMS_PER_PAGE;
         const onLogin$ = this.state.select(state => state.auth.loggedIn).pipe(filter(loggedIn => loggedIn));
 
         // set current parent node
@@ -100,7 +104,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         );
 
         // request node children
-        combineLatest(searchParams$, listParams$, this.state.select(state => state.entities.tag))
+        combineLatest([searchParams$, listParams$, this.state.select(state => state.entities.tag)])
             .pipe(takeUntil(this.destroy$))
             .subscribe(([{ keyword, tags, page, perPage }, { containerUuid, projectName, language }]) => {
                 if (keyword === '' && tags === '') {

@@ -15,6 +15,8 @@ export interface MeshUiAppConfig {
     readonly fallbackLanguage: string;
     /** This is the credential username for a ressource requested without authentication */
     readonly anonymousUsername: string;
+    /** This is the number of items displayed per page in the content list (pagination) */
+    readonly contentItemsPerPage: number;
     /**
      * Within the node editor in UI the feature "Preview" of a node will open a new tab to a defined frontend app.
      * Here, a function can be provided returning the URL which will be called by that component.

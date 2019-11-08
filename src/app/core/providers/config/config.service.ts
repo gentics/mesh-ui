@@ -56,16 +56,27 @@ export class ConfigService {
         })[projectName] as MeshPreviewUrl[];
     }
 
+    /** Username of the default anonymous (unauthenticated) user in Mesh */
+    get CONTENT_ITEMS_PER_PAGE(): number {
+        return this.getConfigValueFromProperty('contentItemsPerPage', 8) as number;
+    }
+
     /**
      * Helper function to retrieve values from app config
      * @param property key of config object
+     * @param fallbackValue key of config object
      */
-    getConfigValueFromProperty(property: keyof MeshUiAppConfig) {
+    getConfigValueFromProperty(property: keyof MeshUiAppConfig, fallbackValue?: any) {
         const retVal = this.appConfig[property];
         if (retVal) {
             return retVal;
         } else {
-            throw new Error(`Property '${property}' not set in /src/assets/config/mesh-ui-config.js`);
+            const errorMessage = `Property '${property}' not set in /src/assets/config/mesh-ui-config.js`;
+            if (fallbackValue) {
+                console.warn(`${errorMessage} - Fallbackvalue '${fallbackValue}' will be used.`);
+                return fallbackValue;
+            }
+            throw new Error(errorMessage);
         }
     }
 }
