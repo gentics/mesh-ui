@@ -1,26 +1,37 @@
 {
     "auth_error": {
       "en": "Login failed",
-      "de": "Anmeldung fehlgeschlagen"
+      "de": "Anmeldung fehlgeschlagen",
+      "zh": "登录失败"
     },
     "change_password": {
       "en": "Change password",
-      "de": "Passwort ändern"
+      "de": "Passwort ändern",
+      "zh": "更改密码"
+    },
+    "login": {
+      "en": "Log In",
+      "de": "Einzuloggen",
+      "zh": "登录"
     },
     "logout": {
-      "en": "Log out",
-      "de": "Ausloggen"
+        "en": "Log out",
+        "de": "Ausloggen",
+        "zh": "退出登录"
     },
     "forced_password_change_message": {
       "en": "You have to change your password to login.",
-      "de": "Sie müssen Ihr Passwort ändern, um sich einzuloggen."
+      "de": "Sie müssen Ihr Passwort ändern, um sich einzuloggen.",
+      "zh": "你必须更改密码才能登录。"
     },
     "password_mismatch": {
       "en": "Password doesn't match",
-      "de": "Die Passwörter stimmen nicht überein"
+      "de": "Die Passwörter stimmen nicht überein",
+      "zh": "密码不匹配"
     },
     "session_expired": {
       "en": "Your session has expired. Please login again.",
-      "de": "Ihre Sitzung ist abgelaufen. Bitte loggen Sie sich erneut ein."
+      "de": "Ihre Sitzung ist abgelaufen. Bitte loggen Sie sich erneut ein.",
+      "zh": "你的会话已过期。 请重新登录。"
     }
 }

@@ -1,154 +1,192 @@
 {
     "added_tags": {
         "en": "Added tags",
-        "de": "Tags hinzugefügt"
+        "de": "Tags hinzugefügt",
+        "zh": "添加的标签"
     },
     "additional_changes_label": {
         "en": "+ {{count}} additional changes",
-        "de": "+ {{count}} weitere Änderungen"
+        "de": "+ {{count}} weitere Änderungen",
+        "zh": "+ {{count}} 个其他更改"
     },
     "apply_edits": {
         "en": "Apply edits",
-        "de": "Änderungen übernehmen"
+        "de": "Änderungen übernehmen",
+        "zh": "应用修改"
     },
     "change_password_title": {
         "en": "Change Password",
-        "de": "Passwort ändern"
+        "de": "Passwort ändern",
+        "zh": "更改密码"
     },
     "change_password_button": {
         "en": "Change password",
-        "de": "Passwort ändern"
+        "de": "Passwort ändern",
+        "zh": "更改密码"
     },
     "change_password_success": {
         "en": "Password changed successfully",
-        "de": "Passwort erfolgreich geändert"
+        "de": "Passwort erfolgreich geändert",
+        "zh": "密码更改成功"
     },
     "confirm_navigation_body": {
         "en": "Unsaved changes will be lost.",
-        "de": "Ungespeicherte Änderungen gehen verloren."
+        "de": "Ungespeicherte Änderungen gehen verloren.",
+        "zh": "未保存的更改将丢失。"
     },
     "confirm_navigation_title": {
         "en": "Discard changes?",
-        "de": "Änderungen verwerfen?"
+        "de": "Änderungen verwerfen?",
+        "zh": "放弃更改？"
     },
     "confirm_password_label": {
         "en": "Confirm password",
-        "de": "Passwort bestätigen"
+        "de": "Passwort bestätigen",
+        "zh": "确认密码"
     },
     "create_project_button": {
         "en": "Create Project",
-        "de": "Projekt erstellen"
+        "de": "Projekt erstellen",
+        "zh": "创建项目"
     },
     "create_project_conflict": {
         "en": "A project with this name already exists. Please choose another name.",
-        "de": "Es existiert bereits ein Projekt mit diesem Namen. Bitte wählen Sie einen anderen Namen."
+        "de": "Es existiert bereits ein Projekt mit diesem Namen. Bitte wählen Sie einen anderen Namen.",
+        "zh": "已经存在此名称的项目。请选择其他名称。"
     },
     "create_project_non_container_hint": {
         "en": "The chosen schema is not a container. You will not be able to create other nodes in this project.",
-        "de": "Das gewählte Schema is kein Container. Sie werden in diesem Projekt keine anderen Nodes erstellen können."
+        "de": "Das gewählte Schema is kein Container. Sie werden in diesem Projekt keine anderen Nodes erstellen können.",
+        "zh": "所选数据模型不是容器。你将无法在该项目中创建其他数据节点。"
     },
     "create_project_schema_label": {
         "en": "Schema for root node",
-        "de": "Schema für Root-Node"
+        "de": "Schema für Root-Node",
+        "zh": "根节点的数据模型"
     },
     "create_project_title": {
         "en": "New Project",
-        "de": "Neues Projekt"
+        "de": "Neues Projekt",
+        "zh": "新项目"
     },
     "create_project_anonymous_access": {
         "en": "Allow anonymous users to read contents",
-        "de": "Erlaube anonymen Benutzern Inhalte zu lesen"
+        "de": "Erlaube anonymen Benutzern Inhalte zu lesen",
+        "zh": "允许匿名用户读取数据内容"
     },
     "delete_project_title": {
         "en": "Delete Project",
-        "de": "Projekt löschen"
+        "de": "Projekt löschen",
+        "zh": "删除项目"
     },
     "delete_project_body": {
         "en": "Are you sure you want to delete project <strong>\"{{ name }}\"</strong>?",
-        "de": "Sind Sie sicher, dass sie Projekt <strong>\"{{ name }}\"</strong> löschen wollen?"
+        "de": "Sind Sie sicher, dass sie Projekt <strong>\"{{ name }}\"</strong> löschen wollen?",
+        "zh": "你确定要删除项目 <strong>\"{{ name }}\"</strong> 吗？"
     },
     "delete_node_title": {
         "en": "Delete node",
-        "de": "Node löschen"
+        "de": "Node löschen",
+        "zh": "删除节点"
     },
     "delete_node_body": {
         "en": "Are you sure you want to delete this node <strong>\"{{ name }}\"</strong>?",
-        "de": "Sind Sie sicher, dass sie die Node <strong>\"{{ name }}\"</strong> löschen wollen?"
+        "de": "Sind Sie sicher, dass sie die Node <strong>\"{{ name }}\"</strong> löschen wollen?",
+        "zh": "你确定要删除这个节点 <strong>\"{{ name }}\"</strong> 吗？"
     },
     "discard_changes_button": {
         "en": "Discard changes",
-        "de": "Änderungen verwerfen"
+        "de": "Änderungen verwerfen",
+        "zh": "放弃更改"
     },
     "edit_image_title": {
         "en": "Edit Image",
-        "de": "Bild bearbeiten"
+        "de": "Bild bearbeiten",
+        "zh": "编辑图像"
     },
     "image_edited_label": {
         "en": "image edited",
-        "de": "Bild bearbeitet"
+        "de": "Bild bearbeitet",
+        "zh": "图像已编辑"
     },
     "list_changed_label": {
         "en": "list changed",
-        "de": "Liste geändert"
+        "de": "Liste geändert",
+        "zh": "列表已更改"
     },
     "new_file_selected_label": {
         "en": "new file selected",
-        "de": "Neue Datei ausgewählt"
+        "de": "Neue Datei ausgewählt",
+        "zh": "已选择新文件"
     },
     "new_password_label": {
         "en": "New password",
-        "de": "Neues Passwort"
+        "de": "Neues Passwort",
+        "zh": "新密码"
     },
     "removed_tags": {
         "en": "Removed tags",
-        "de": "Tags gelöscht"
+        "de": "Tags gelöscht",
+        "zh": "已移除标签"
     },
     "save_and_close_button": {
         "en": "Save and close",
-        "de": "Speichern und schließen"
+        "de": "Speichern und schließen",
+        "zh": "保存并关闭"
     },
     "uploading_file": {
         "en": "Uploading file…",
-        "de": "Lade Datei hoch …"
+        "de": "Lade Datei hoch …",
+        "zh": "正在上传文件…"
     },
     "uploading_files": {
         "en": "Uploading files…",
-        "de": "Lade Dateien hoch …"
+        "de": "Lade Dateien hoch …",
+        "zh": "正在上传文件…"
     },
     "node_conflict": {
         "en": "Resolve conflicts",
-        "de": "Änderungskonflikte beheben"
+        "de": "Änderungskonflikte beheben",
+        "zh": "解决冲突"
     },
     "node_conflict_description": {
         "en": "Your changes conflict with the saved version on the server.",
-        "de": "Ihre Änderungen würden Änderungen am Server überschreiben."
+        "de": "Ihre Änderungen würden Änderungen am Server überschreiben.",
+        "zh": "你的更改与服务器上保存的版本冲突。"
     },
     "theirs_version": {
         "en": "Changes on the server",
-        "de": "Änderungen am Server"
+        "de": "Änderungen am Server",
+        "zh": "服务器上的更改"
     },
     "my_version": {
         "en": "Your changes",
-        "de": "Ihre Änderungen"
+        "de": "Ihre Änderungen",
+        "zh": "你的更改"
     },
     "save_changes": {
         "en": "Save changes",
-        "de": "Änderungen übernehmen"
+        "de": "Änderungen übernehmen",
+        "zh": "保存更改"
     },
     "use_this_version": {
         "en": "Apply",
-        "de": "Übernehmen"
+        "de": "Übernehmen",
+        "zh": "应用"
     },
     "no_preview_available": {
         "en": "No Preview Available",
-        "de": "Keine Vorschau verfügbar"
+        "de": "Keine Vorschau verfügbar",
+        "zh": "没有预览可用"
     },
     "file_too_large": {
         "en": "File too large",
-        "de": "Zu große Datei"
+        "de": "Zu große Datei",
+        "zh": "文件太大"
     },
     "file_too_large_body": {
         "en": "The file <code>{{ fileName }}</code> is too large to upload. Please choose a smaller file or <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">change the upload limit in the configuration</a>.",
-        "de": "Die Datei <code>{{ fileName }}</code> ist zu groß zum Hochladen. Bitte wählen Sie eine kleinere Datei, oder <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">ändern Sie das Upload-Limit in der Konfiguration</a>."
+        "de": "Die Datei <code>{{ fileName }}</code> ist zu groß zum Hochladen. Bitte wählen Sie eine kleinere Datei, oder <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">ändern Sie das Upload-Limit in der Konfiguration</a>.",
+        "zh": "上传的文件 <code>{{ fileName }}</code> 太大。请选择一个较小的文件，或<a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">更改配置中的上传限制</a>。"
     }
 }

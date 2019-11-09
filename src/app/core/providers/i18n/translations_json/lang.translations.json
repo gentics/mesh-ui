@@ -1,10 +1,17 @@
 {
     "de": {
       "en": "German",
-      "de": "Deutsch"
+      "de": "Deutsch",
+      "zh": "德语"
     },
     "en": {
       "en": "English",
-      "de": "Englisch"
+      "de": "Englisch",
+      "zh": "英语"
+    },
+    "zh": {
+      "en": "Chinese",
+      "de": "Chinesisch",
+      "zh": "中文"
     }
   }
