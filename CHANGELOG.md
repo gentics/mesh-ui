@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2019-11-11
 ### Changed
 
 - The number of items displayed per page in the content list is now configurable. Set the `contentItemsPerPage` property in the `mesh-ui-config.js` to do so. By default the number of items is 8.
