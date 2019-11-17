@@ -1,142 +1,177 @@
 {
     "add_tag": {
       "en": "Add tag",
-      "de": "Tag hinzufügen"
+      "de": "Tag hinzufügen",
+      "zh": "添加标签"
     },
     "binary_info": {
       "en": "File info",
-      "de": "Datei-Info"
+      "de": "Datei-Info",
+      "zh": "文件信息"
     },
     "create_node": {
       "en": "Create node",
-      "de": "Node erstellen"
+      "de": "Node erstellen",
+      "zh": "创建节点"
     },
     "create_new_tag": {
-        "en": "Create new tag",
-        "de": "Neuen Tag erstellen"
+      "en": "Create new tag",
+      "de": "Neuen Tag erstellen",
+      "zh": "创建新标签"
     },
     "edit_image": {
       "en": "Edit image",
-      "de": "Bild bearbeiten"
+      "de": "Bild bearbeiten",
+      "zh": "编辑图像"
     },
     "error_max_value": {
       "en": "The value is greater than the maximum",
-      "de": "Der Wert is größer als Maximum"
+      "de": "Der Wert is größer als Maximum",
+      "zh": "该值大于最大值"
     },
     "error_min_value": {
       "en": "The value is below the minimum",
-      "de": "Der Wert is weniger als Minimum"
+      "de": "Der Wert is weniger als Minimum",
+      "zh": "该值低于最小值"
     },
     "error_required": {
       "en": "This field is required",
-      "de": "Dieses Feld is erforderlich"
+      "de": "Dieses Feld is erforderlich",
+      "zh": "此字段为必填"
     },
     "error_number": {
       "en": "This field must be a valid number",
-      "de": "Dieses Feld muss eine gültige Zahl sein"
+      "de": "Dieses Feld muss eine gültige Zahl sein",
+      "zh": "此字段必须为有效数字"
     },
     "language_switch_to": {
       "en": "Switch to {{language}}",
-      "de": "Auf {{language}} umschalten"
+      "de": "Auf {{language}} umschalten",
+      "zh": "切换至 {{language}}"
     },
     "language_translate_to": {
       "en": "Create {{language}} version",
-      "de": "{{language}} Variante erstellen"
+      "de": "{{language}} Variante erstellen",
+      "zh": "创建 {{language}} 版本"
     },
     "node_already_unpublished": {
       "en": "The node is already unpublished",
-      "de": "Der Node ist bereits depubliziert"
+      "de": "Der Node ist bereits depubliziert",
+      "zh": "该节点已经是未发布状态"
     },
     "node_published": {
       "en": "Node successfully published",
-      "de": "Node erfolgreich veröffentlicht"
+      "de": "Node erfolgreich veröffentlicht",
+      "zh": "节点发布成功"
     },
     "node_language_published": {
       "en": "Node successfully published as version {{version}}",
-      "de": "Node erfolgreich veröffentlicht als Version {{version}}"
+      "de": "Node erfolgreich veröffentlicht als Version {{version}}",
+      "zh": "节点已成功发布为版本{{version}}"
     },
     "node_publish_error": {
       "en": "Node could not be published",
-      "de": "Node könnte nicht veröffentlicht werden"
+      "de": "Node könnte nicht veröffentlicht werden",
+      "zh": "节点无法发布"
     },
     "node_saved": {
       "en": "Node successfully saved",
-      "de": "Node erfolgreich gespeichert"
+      "de": "Node erfolgreich gespeichert",
+      "zh": "节点保存成功"
     },
     "node_save_error": {
       "en": "Node could not be saved",
-      "de": "Node könnte nicht gespeichert werden"
+      "de": "Node könnte nicht gespeichert werden",
+      "zh": "无法保存节点"
     },
     "node_unpublished": {
       "en": "Node unpublished successfully",
-      "de": "Node erfolgreich depubliziert"
+      "de": "Node erfolgreich depubliziert",
+      "zh": "节点已成功更改为未发布状态"
     },
     "publish_all": {
       "en": "Publish all languages",
-      "de": "Alle Sprachen veröffentlichen"
+      "de": "Alle Sprachen veröffentlichen",
+      "zh": "发布所有语言"
     },
     "publish_button": {
       "en": "Publish",
-      "de": "Veröffentlichen"
+      "de": "Veröffentlichen",
+      "zh": "发布"
     },
     "preview_button": {
       "en": "Preview",
-      "de": "Vorschau"
+      "de": "Vorschau",
+      "zh": "预览"
     },
     "remove_list_item_tooltip": {
       "en": "Drop here to remove",
-      "de": "Zum Entfernen hier ablegen"
+      "de": "Zum Entfernen hier ablegen",
+      "zh": "拖放到此处以删除"
     },
     "replace_file": {
       "en": "Replace file",
-      "de": "Datei ersetzen"
+      "de": "Datei ersetzen",
+      "zh": "替换文件"
     },
     "remove_file": {
       "en": "Remove file",
-      "de": "Datei entfernen"
+      "de": "Datei entfernen",
+      "zh": "删除文件"
     },
     "save_button": {
       "en": "Save",
-      "de": "Speichern"
+      "de": "Speichern",
+      "zh": "保存"
     },
     "select_file": {
       "en": "Select file",
-      "de": "Datei auswählen"
+      "de": "Datei auswählen",
+      "zh": "选择文件"
     },
     "select_node": {
       "en": "Select node",
-      "de": "Node auswählen"
+      "de": "Node auswählen",
+      "zh": "选择节点"
     },
     "tag_name": {
       "en": "Tag name",
-      "de": "Tag hinzufügen"
+      "de": "Tag hinzufügen",
+      "zh": "标签名称"
     },
     "unpublish": {
       "en": "Unpublish",
-      "de": "Depublizieren"
+      "de": "Depublizieren",
+      "zh": "取消发布"
     },
     "unpublish_all": {
       "en": "Unpublish all languages",
-      "de": "Alle Sprachen depublizieren"
+      "de": "Alle Sprachen depublizieren",
+      "zh": "取消发布所有语言"
     },
     "no_projects": {
       "en": "No projects to display.",
-      "de": "Es existieren keine Projekte."
+      "de": "Es existieren keine Projekte.",
+      "zh": "没有要显示的项目。"
     },
     "create_new_project": {
       "en": "Create a new project",
-      "de": "Neues Projekt erstellen"
+      "de": "Neues Projekt erstellen",
+      "zh": "创建一个新项目"
     },
     "server_error": {
       "en": "An error occured during server communication. Please repeat your action or get back to the software maintainer.",
-      "de": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten. Bitte Vorgang wiederholen oder Hersteller kontaktieren."
+      "de": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten. Bitte Vorgang wiederholen oder Hersteller kontaktieren.",
+      "zh": "服务器通信期间发生错误。请重复你的操作或求助系统管理员。"
     },
     "path_copied": {
       "en": "Path copied to clipboard",
-      "de": "Pfad in die Zwischenablage kopiert"
+      "de": "Pfad in die Zwischenablage kopiert",
+      "zh": "路径已复制到剪贴板"
     },
     "path_copy_failed": {
       "en": "No webroot path for this node found",
-      "de": "Keinen Webroot-Pfad für diesen Node gefunden"
+      "de": "Keinen Webroot-Pfad für diesen Node gefunden",
+      "zh": "找不到此节点的webroot路径"
     }
   }

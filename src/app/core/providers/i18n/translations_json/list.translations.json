@@ -1,58 +1,72 @@
 {
     "copy": {
         "en": "Copy",
-        "de": "Kopieren"
+        "de": "Kopieren",
+        "zh": "复制"
     },
     "copy_success": {
         "en": "Node copied successfully",
-        "de": "Node erfolgreich kopiert"
+        "de": "Node erfolgreich kopiert",
+        "zh": "节点复制成功"
     },
     "copy_error": {
         "en": "Copying node failed\n{{error}}",
-        "de": "Kopieren des Nodes fehlgeschlagen\n{{error}}"
+        "de": "Kopieren des Nodes fehlgeschlagen\n{{error}}",
+        "zh": "复制节点失败\n{{error}}"
     },
     "language_select_switch_to": {
         "en": "Display nodes in {{language}}",
-        "de": "Nodes in {{language}} zeigen"
+        "de": "Nodes in {{language}} zeigen",
+        "zh": "显示 {{language}} 节点"
     },
     "move": {
         "en": "Move",
-        "de": "Verschieben"
+        "de": "Verschieben",
+        "zh": "移动"
     },
     "move_success": {
         "en": "Node moved successfully",
-        "de": "Node erfolgreich verschoben"
+        "de": "Node erfolgreich verschoben",
+        "zh": "节点移动成功"
     },
     "move_error": {
         "en": "Moving node failed\n{{error}}",
-        "de": "Verschieben des Nodes fehlgeschlagen\n{{error}}"
+        "de": "Verschieben des Nodes fehlgeschlagen\n{{error}}",
+        "zh": "移动节点失败\n{{error}}"
     },
     "folder_dialog_title": {
         "en": "Choose destination container",
-        "de": "Zielcontainer wählen"
+        "de": "Zielcontainer wählen",
+        "zh": "选择目标容器"
     },
     "delete": {
         "en": "Delete",
-        "de": "Löschen"
+        "de": "Löschen",
+        "zh": "删除"
     },
     "edit": {
         "en": "Edit",
-        "de": "Bearbeiten"
+        "de": "Bearbeiten",
+        "zh": "编辑"
     },
     "no_results": {
         "en": "No results",
-        "de": "Keine Ergebnisse"
+        "de": "Keine Ergebnisse",
+        "zh": "没有找到结果"
     },
     "search_error_occured": {
         "en": "An error has occurred while performing search",
-        "de": "Ein Fehler ist aufgetreten"
+        "de": "Ein Fehler ist aufgetreten",
+        "zh": "执行搜索时发生错误"
     },
     "upload_files": {
         "en": "Upload files",
-        "de": "Dateien hochladen"
+        "de": "Dateien hochladen",
+        "zh": "上传文件"
     },
     "choose_files": {
         "en": "Select or drop files...",
-        "de": "Dateien auswählen oder hier ablegen..."
+        "de": "Dateien auswählen oder hier ablegen...",
+        "zh": "选择或拖放文件到此处..."
     }
 }
