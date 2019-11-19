@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from '../config/config.service';
 
-export type UILanguage = 'en' | 'de' | 'zh';
+export type UILanguage = 'en' | 'de' | 'zh' | 'pt';
 
 @Injectable()
 export class I18nService {

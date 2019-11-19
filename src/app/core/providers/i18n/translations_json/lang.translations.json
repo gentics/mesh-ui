@@ -2,16 +2,25 @@
     "de": {
       "en": "German",
       "de": "Deutsch",
-      "zh": "德语"
+      "zh": "德语",
+      "pt": "Alemão"
     },
     "en": {
       "en": "English",
       "de": "Englisch",
-      "zh": "英语"
+      "zh": "英语",
+      "pt": "Inglês"
     },
     "zh": {
       "en": "Chinese",
       "de": "Chinesisch",
-      "zh": "中文"
+      "zh": "中文",
+      "pt": "Chinês"
+    },
+    "pt": {
+      "en": "Portuguese",
+      "de": "Portugiesisch",
+      "zh": "葡萄牙语",
+      "pt": "Português"
     }
   }
