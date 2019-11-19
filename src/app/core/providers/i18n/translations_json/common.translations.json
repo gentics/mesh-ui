@@ -2,466 +2,559 @@
     "apply_button": {
       "en": "Apply",
       "de": "Übernehmen",
-      "zh": "应用"
+      "zh": "应用",
+      "pt": "Aplicar"
     },
     "apply_recursively_label": {
       "en": "Apply recursively",
       "de": "Rekursiv übernehmen",
-      "zh": "应用到所有子项"
+      "zh": "应用到所有子项",
+      "pt": "Aplicar recursivamente"
     },
     "apply_recursively_button": {
       "en": "Apply recursively",
       "de": "Rekursiv übernehmen",
-      "zh": "应用到所有子项"
+      "zh": "应用到所有子项",
+      "pt": "Aplicar recursivamente"
     },
     "at": {
       "en": "at",
       "de": "am",
-      "zh": "at"
+      "zh": "at",
+      "pt": "no"
     },
     "cancel_button": {
       "en": "Cancel",
       "de": "Abbrechen",
-      "zh": "取消"
+      "zh": "取消",
+      "pt": "Cancelar"
     },
     "choose": {
       "en": "Choose",
       "de": "Auswählen",
-      "zh": "选择"
+      "zh": "选择",
+      "pt": "Escolha"
     },
     "close_button": {
       "en": "Close",
       "de": "Schließen",
-      "zh": "关闭"
+      "zh": "关闭",
+      "pt": "Fechar"
     },
     "creator_label": {
       "en": "Creator",
       "de": "Erstellt von",
-      "zh": "创建者"
+      "zh": "创建者",
+      "pt": "Criador"
     },
     "copy": {
       "en": "copy",
       "de": "Kopie",
-      "zh": "复制"
+      "zh": "复制",
+      "pt": "Copiar"
     },
     "date_created_label": {
       "en": "Date created",
       "de": "Erstellt am",
-      "zh": "创建日期"
+      "zh": "创建日期",
+      "pt": "Data de criação"
     },
     "date_edited_label": {
       "en": "Date edited",
       "de": "Bearbeitet am",
-      "zh": "修改日期"
+      "zh": "修改日期",
+      "pt": "Data da edição"
     },
     "delete_button": {
       "en": "Delete",
       "de": "Löschen",
-      "zh": "删除"
+      "zh": "删除",
+      "pt": "Apagar"
     },
     "editor_label": {
       "en": "Editor",
       "de": "Bearbeitet von",
-      "zh": "编辑者"
+      "zh": "编辑者",
+      "pt": "Editor"
     },
     "file_size_label": {
       "en": "File size",
       "de": "Dateigröße",
-      "zh": "文件大小"
+      "zh": "文件大小",
+      "pt": "Tamanho do ficheiro"
     },
     "file_type_label": {
       "en": "File type",
       "de": "Dateityp",
-      "zh": "文件类型"
+      "zh": "文件类型",
+      "pt": "Tipo de ficheiro"
     },
     "id_label": {
       "en": "ID",
       "de": "ID",
-      "zh": "ID"
+      "zh": "ID",
+      "pt": "ID"
     },
     "last_edited": {
       "en": "last edited",
       "de": "zuletzt bearbeitet",
-      "zh": "最后编辑"
+      "zh": "最后编辑",
+      "pt": "Última edição"
     },
     "not_found": {
       "en": "Not found",
       "de": "Nicht gefunden",
-      "zh": "未找到"
+      "zh": "未找到",
+      "pt": "Não encontrado"
     },
     "page_not_found": {
       "en": "The URL you entered is not available.",
       "de": "Die eingegebene URL ist nicht verfügbar.",
-      "zh": "你输入的URL不可用。"
+      "zh": "你输入的URL不可用。",
+      "pt": "O URL introduzido não está disponível"
     },
     "navigate_to_fallback": {
       "en": "Navigate to Editor",
       "de": "Zum Editor navigieren",
-      "zh": "转到编辑器"
+      "zh": "转到编辑器",
+      "pt": "Navegar para o Editor"
     },
     "okay_button": {
       "en": "Okay",
       "de": "OK",
-      "zh": "好"
+      "zh": "好",
+      "pt": "OK"
     },
     "no_button": {
       "en": "No",
       "de": "Nein",
-      "zh": "否"
+      "zh": "否",
+      "pt": "Não"
     },
     "yes_button": {
       "en": "Yes",
       "de": "Ja",
-      "zh": "是"
+      "zh": "是",
+      "pt": "Sim"
     },
     "published": {
       "en": "published",
       "de": "veröffentlicht",
-      "zh": "已发布"
+      "zh": "已发布",
+      "pt": "publicado"
     },
     "draft": {
       "en": "draft",
       "de": "Entwurf",
-      "zh": "草稿"
+      "zh": "草稿",
+      "pt": "rascunho"
     },
     "updated": {
       "en": "updated",
       "de": "Bearbeitet",
-      "zh": "已更新"
+      "zh": "已更新",
+      "pt": "actualizado"
     },
     "archived": {
       "en": "archived",
       "de": "Archiviert",
-      "zh": "已存档"
+      "zh": "已存档",
+      "pt": "arquivado"
     },
     "publish_button": {
       "en": "Publish",
       "de": "Veröffentlichen",
-      "zh": "发布"
+      "zh": "发布",
+      "pt": "Publicar"
     },
     "publish_tooltip": {
       "en": "Publish",
       "de": "Veröffentlichen",
-      "zh": "发布"
+      "zh": "发布",
+      "pt": "Publicar"
     },
     "priority_label": {
       "en": "Priority",
       "de": "Priorität",
-      "zh": "优先级"
+      "zh": "优先级",
+      "pt": "Prioridade"
     },
     "retry_button": {
       "en": "Retry",
       "de": "Erneut versuchen",
-      "zh": "重试"
+      "zh": "重试",
+      "pt": "Tentar de novo"
     },
     "save": {
       "en": "Save",
       "de": "Speichern",
-      "zh": "保存"
+      "zh": "保存",
+      "pt": "Gravar"
     },
     "search_placeholder": {
       "en": "Search",
       "de": "Suche",
-      "zh": "搜索"
+      "zh": "搜索",
+      "pt": "Procurar"
     },
     "searching": {
       "en": "Searching: '{{ term }}'",
       "de": "Suche: '{{ term }}'",
-      "zh": "搜索： '{{ term }}'"
+      "zh": "搜索： '{{ term }}'",
+      "pt": "Procurando: '{{ term }}'"
     },
     "select_all_label": {
       "en": "Select all",
       "de": "Alle auswählen",
-      "zh": "全选"
+      "zh": "全选",
+      "pt": "Selecionar tudo"
     },
     "select_channel": {
       "en": "Select channel",
       "de": "Channel auswählen",
-      "zh": "选择途径"
+      "zh": "选择途径",
+      "pt": "Selecionar canal"
     },
     "sort_asc": {
       "en": "ASC",
       "de": "aufsteigend",
-      "zh": "升序"
+      "zh": "升序",
+      "pt": "ASC"
     },
     "sort_desc": {
       "en": "DESC",
       "de": "absteigend",
-      "zh": "降序"
+      "zh": "降序",
+      "pt": "DESC"
     },
     "sort_cdate": {
       "en": "Date created",
       "de": "Erstellt am",
-      "zh": "创建日期"
+      "zh": "创建日期",
+      "pt": "Data criação"
     },
     "sort_deletedate": {
       "en": "Date deleted",
       "de": "Gelösched am",
-      "zh": "删除日期"
+      "zh": "删除日期",
+      "pt": "Data eliminação"
     },
     "sort_edate": {
       "en": "Date edited",
       "de": "Bearbeitet am",
-      "zh": "编辑日期"
+      "zh": "编辑日期",
+      "pt": "Data edição"
     },
     "sort_filename": {
       "en": "File name",
       "de": "Dateiname",
-      "zh": "文件名"
+      "zh": "文件名",
+      "pt": "Nome ficheiro"
     },
     "sort_filesize": {
       "en": "File size",
       "de": "Dateigröße",
-      "zh": "文件大小"
+      "zh": "文件大小",
+      "pt": "Tamanho ficheiro"
     },
     "sort_name": {
       "en": "Name",
       "de": "Name",
-      "zh": "名称"
+      "zh": "名称",
+      "pt": "Nome"
     },
     "sort_pdate": {
       "en": "Date published",
       "de": "Publiziert am",
-      "zh": "发布日期"
+      "zh": "发布日期",
+      "pt": "Data publicação"
     },
     "sort_priority": {
       "en": "Priority",
       "de": "Priorität",
-      "zh": "优先级"
+      "zh": "优先级",
+      "pt": "Prioridade"
     },
     "sort_template": {
       "en": "Template",
       "de": "Vorlage",
-      "zh": "模板"
+      "zh": "模板",
+      "pt": "Template"
     },
     "sort_type": {
       "en": "File type",
       "de": "Dateityp",
-      "zh": "文件类型"
+      "zh": "文件类型",
+      "pt": "Tipo de ficheiro"
     },
     "status_edited": {
       "en": "Edited",
       "de": "Bearbeitet",
-      "zh": "已编辑"
+      "zh": "已编辑",
+      "pt": "Editado"
     },
     "status_published": {
       "en": "Published",
       "de": "Veröffentlicht",
-      "zh": "已发布"
+      "zh": "已发布",
+      "pt": "Publicado"
     },
     "status_publishat": {
       "en": "Planned",
       "de": "Geplant",
-      "zh": "已计划发布"
+      "zh": "已计划发布",
+      "pt": "Planeado"
     },
     "status_offline": {
       "en": "Offline",
       "de": "Unveröffentlicht",
-      "zh": "离线"
+      "zh": "离线",
+      "pt": "Offline"
     },
     "status_queue": {
       "en": "Queued",
       "de": "In Warteschlange",
-      "zh": "队列"
+      "zh": "队列",
+      "pt": "Em fila"
     },
     "status_timeframe": {
       "en": "Not in time frame",
       "de": "Außerhalb Zeitrahmen",
-      "zh": "不在时间范围内"
+      "zh": "不在时间范围内",
+      "pt": "Fora do intervalo de tempo"
     },
     "template_label": {
       "en": "Template",
       "de": "Vorlage",
-      "zh": "模板"
+      "zh": "模板",
+      "pt": "Template"
     },
     "type_contenttag": {
       "en": "content tag",
       "de": "Seitentag",
-      "zh": "内容标签"
+      "zh": "内容标签",
+      "pt": "etiqueta de conteúdo"
     },
     "type_contenttags": {
       "en": "content tags",
       "de": "Seitentags",
-      "zh": "内容标签"
+      "zh": "内容标签",
+      "pt": "etiquetas de conteúdo"
     },
     "type_folder": {
       "en": "folder",
       "de": "Ordner",
-      "zh": "文件夹"
+      "zh": "文件夹",
+      "pt": "pasta"
     },
     "type_folders": {
       "en": "folders",
       "de": "Ordner",
-      "zh": "文件夹"
+      "zh": "文件夹",
+      "pt": "pastas"
     },
     "type_page": {
       "en": "page",
       "de": "Seite",
-      "zh": "页面"
+      "zh": "页面",
+      "pt": "página"
     },
     "type_pages": {
       "en": "pages",
       "de": "Seiten",
-      "zh": "页面"
+      "zh": "页面",
+      "pt": "páginas"
     },
     "type_file": {
       "en": "file",
       "de": "Datei",
-      "zh": "文件"
+      "zh": "文件",
+      "pt": "ficheiro"
     },
     "type_files": {
       "en": "files",
       "de": "Dateien",
-      "zh": "文件"
+      "zh": "文件",
+      "pt": "ficheiros"
     },
     "type_image": {
       "en": "image",
       "de": "Bild",
-      "zh": "图片"
+      "zh": "图片",
+      "pt": "imagem"
     },
     "type_images": {
       "en": "images",
       "de": "Bilder",
-      "zh": "图片"
+      "zh": "图片",
+      "pt": "imagens"
     },
     "type_object": {
       "en": "object",
       "de": "Objekt",
-      "zh": "对象"
+      "zh": "对象",
+      "pt": "objecto"
     },
     "type_objects": {
       "en": "objects",
       "de": "Objekte",
-      "zh": "对象"
+      "zh": "对象",
+      "pt": "objectos"
     },
     "type_tag": {
       "en": "tag",
       "de": "Tag",
-      "zh": "标签"
+      "zh": "标签",
+      "pt": "etiqueta"
     },
     "type_tags": {
       "en": "tags",
       "de": "Tags",
-      "zh": "标签"
+      "zh": "标签",
+      "pt": "etiquetas"
     },
     "type_template": {
       "en": "template",
       "de": "Vorlage",
-      "zh": "模板"
+      "zh": "模板",
+      "pt": "template"
     },
     "type_templates": {
       "en": "templates",
       "de": "Vorlagen",
-      "zh": "模板"
+      "zh": "模板",
+      "pt": "templates"
     },
     "type_templatetag": {
       "en": "template tag",
       "de": "Vorlagentag",
-      "zh": "模板标签"
+      "zh": "模板标签",
+      "pt": "etiqueta de template"
     },
     "type_templatetags": {
       "en": "template tags",
       "de": "Vorlagentags",
-      "zh": "模板标签"
+      "zh": "模板标签",
+      "pt": "etiquetas de template"
     },
     "type_variant": {
       "en": "variant",
       "de": "Variante",
-      "zh": "变体"
+      "zh": "变体",
+      "pt": "variante"
     },
     "type_variants": {
       "en": "variants",
       "de": "Varianten",
-      "zh": "变体"
+      "zh": "变体",
+      "pt": "variantes"
     },
     "type_node": {
       "en": "node",
       "de": "Node",
-      "zh": "节点"
+      "zh": "节点",
+      "pt": "nó"
     },
     "type_nodes": {
       "en": "nodes",
       "de": "Nodes",
-      "zh": "节点"
+      "zh": "节点",
+      "pt": "nós"
     },
     "undo_button": {
       "en": "Undo",
       "de": "Rückgängig",
-      "zh": "撤消"
+      "zh": "撤消",
+      "pt": "Desfazer"
     },
     "usage_label": {
       "en": "Usage",
       "de": "Verwendung",
-      "zh": "用法"
+      "zh": "用法",
+      "pt": "Uso"
     },
     "title_label": {
       "en": "Title",
       "de": "Titel",
-      "zh": "标题"
+      "zh": "标题",
+      "pt": "Título"
     },
     "project": {
       "en": "Project",
       "de": "Projekt",
-      "zh": "项目"
+      "zh": "项目",
+      "pt": "Projeto"
     },
     "projects": {
       "en": "Projects",
       "de": "Projekte",
-      "zh": "项目"
+      "zh": "项目",
+      "pt": "Projetos"
     },
     "user": {
       "en": "User",
       "de": "Benutzer",
-      "zh": "用户"
+      "zh": "用户",
+      "pt": "Utilizador"
     },
     "users": {
       "en": "Users",
       "de": "Benutzer",
-      "zh": "用户"
+      "zh": "用户",
+      "pt": "Utilizadores"
     },
     "permission": {
       "en": "Permission",
       "de": "Berechtigung",
-      "zh": "权限"
+      "zh": "权限",
+      "pt": "Permissão"
     },
     "permissions": {
       "en": "Permissions",
       "de": "Berechtigungen",
-      "zh": "权限"
+      "zh": "权限",
+      "pt": "Permissões"
     },
     "schema": {
       "en": "Schema",
       "de": "Schema",
-      "zh": "数据模型"
+      "zh": "数据模型",
+      "pt": "Esquema"
     },
     "schemas": {
       "en": "Schemas",
       "de": "Schemas",
-      "zh": "数据模型"
+      "zh": "数据模型",
+      "pt": "Esquemas"
     },
     "microschema": {
       "en": "Microschema",
       "de": "Microschema",
-      "zh": "内嵌数据模型"
+      "zh": "内嵌数据模型",
+      "pt": "Microesquema"
     },
     "microschemas": {
       "en": "Microschemas",
       "de": "Microschemas",
-      "zh": "内嵌数据模型"
+      "zh": "内嵌数据模型",
+      "pt": "Microesquemas"
     },
     "groups": {
       "en": "Groups",
       "de": "Gruppen",
-      "zh": "用户组"
+      "zh": "用户组",
+      "pt": "Grupos"
     },
     "roles": {
       "en": "Roles",
       "de": "Rollen",
-      "zh": "角色"
+      "zh": "角色",
+      "pt": "Papeis"
     },
     "field_required": {
       "en": "This field is required",
       "de": "Dieses Feld is erforderlich",
-      "zh": "此字段为必填"
+      "zh": "此字段为必填",
+      "pt": "Este campo é obrigatório"
     }
 }
