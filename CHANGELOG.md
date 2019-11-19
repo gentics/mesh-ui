@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+
+- Added i18n support for (simplified) Chinese [#278](https://github.com/gentics/mesh-ui/pull/278)
+- Added i18n support for portuguese [#281](https://github.com/gentics/mesh-ui/pull/281)
 
 ## [1.0.2] - 2019-11-11
 ### Changed
