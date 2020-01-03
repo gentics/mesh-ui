@@ -1,27 +1,75 @@
-# MeshUI
+<h1 align="center">
+  <a href="https://getmesh.io">
+    <img src="https://getmesh.io/assets/gentics-mesh-logo.png" width="420" alt="Gentics Mesh" />
+  </a>
+</h1>
 
-The UI for [Gentics Mesh](https://getmesh.io).
+<h3 align="center">Gentics Mesh is your friendly, enterprise-grade, open-source headless CMS.</h3>
 
-## Development
+<p align="center">
+To be honest, it’s more than that: it’s your application development platform
+to develop your websites, your IoT applications, your mobile apps, your smart
+devices and your digital signage solutions. With its best-in-class APIs, a
+complete feature list and great documentation, you’ll get your projects done
+successfully in less time, no matter which technology you prefer.
+</p>
+
+<br />
+
+<p align="center">
+
+ <img src="https://img.shields.io/badge/status-stable-brightgreen.svg" alt="stable" />
+
+ <a href="https://www.apache.org/licenses/LICENSE-2.0">
+  <img src="https://img.shields.io/:license-apache-brightgreen.svg" alt="License" />
+ </a>
+ <a href="https://stackoverflow.com/questions/tagged/gentics-mesh">
+  <img src="https://img.shields.io/badge/stack%20overflow-gentics--mesh-brightgreen.svg" alt="Stack Overflow" />
+ </a>
+ <a href="https://gitter.im/gentics/mesh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
+  <img src="https://badges.gitter.im/gentics/mesh.svg" alt="Join the chat at https://gitter.im/gentics/mesh" />
+ </a>
+ <a href="https://github.com/gentics/mesh/releases">
+  <img src="https://img.shields.io/github/v/release/gentics/mesh?sort=semver" alt="Latest release" />
+ </a>
+ <a href="https://cla-assistant.io/gentics/mesh">
+  <img src="https://cla-assistant.io/readme/badge/gentics/mesh-ui" alt="CLA assistant" />
+ </a>
+</p>
+
+<br />
+
+<p align="center">
+  <a href="https://getmesh.io/">
+    <img src="https://getmesh.io/assets/mesh-heroimg.png" alt="Gentics Mesh Screenshot" style="max-width: 80%" />
+  </a>
+</p>
+
+# Quick Start
+
+This repository contains the source code for the *user interface* of [Gentics Mesh](https://getmesh.io/). Please check out the [Gentics Mesh backend repository](https://github.com/gentics/mesh) for further information.
+
+
+# Development
 
 1. `$ git clone git@github.com:gentics/mesh-ui.git`
 2. `$ git checkout develop`
 3. `$ npm ci`
 4. `$ npm start`
-5. Download and run the Mesh Demo: https://getmesh.io/Download OR you can run `npm run mesh` if you have docker installed.
+5. Download and run the Mesh Demo: https://getmesh.io/download/ OR you can run `npm run mesh` if you have docker installed.
 6. Open `http://localhost:4200` in a browser.
 
-## Testing
+# Testing
 
 ```
 $ npm test
 ```
 
-## Developer Notes
+# Developer Notes
 
-### Code Formatting
+## Code Formatting
 
-This project uses [TSLint](https://palantir.github.io/tslint/) and [Prettier](https://prettier.io/) to automatically format the TypeScript code, 
+This project uses [TSLint](https://palantir.github.io/tslint/) and [Prettier](https://prettier.io/) to automatically format the TypeScript code,
 and [js-beautify](https://github.com/beautify-web/js-beautify) to format the HTML templates.
 
 Formatting is performed automatically with every commit (by means of [lint-staged](https://github.com/okonet/lint-staged)). This means that
@@ -29,7 +77,7 @@ only well-formatted code should ever make it into the repo. In the event that th
 fixed, the commit will fail with an error message from TSLint explaining what needs to be fixed manually.
 
 
-### Strict null checks and the `!` operator
+## Strict null checks and the `!` operator
 
 This project makes use of TypeScript's `strictNullChecks`. In general, we should avoid the use of the `!` non-null
 assertion operator and try to make better use of correct typings, type guards and defensive programming.
@@ -45,7 +93,7 @@ non-null states explicitly, so `!` is okay in specs in general if they cannot be
 properties force the use of `!` until the RAML definitions are fixed. See https://github.com/gentics/mesh/issues/402
 Once the Mesh interfaces have been fixed, that class of `!` operators can be removed.
 
-## Distribution
+# Distribution
 
 In order to build the bundled static files for a web server to be served:
 
