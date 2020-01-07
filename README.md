@@ -100,3 +100,11 @@ In order to build the bundled static files for a web server to be served:
 0. Optionally: Edit the base path in /src/app/index.html at ```<base href="/">``` to your need. E. g. ```<base href="/cms">```
 1. ```$ npm run build```
 2. At /dist are the files ready to be served.
+
+
+# Copyright & License
+
+Copyright 2014-2020 APA-IT Informations Technologie GmbH. Licensed under the
+Apache License, Version 2.0.
+
+Gentics is a registered trade mark of APA-IT Informations Technologie GmbH.
