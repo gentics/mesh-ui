@@ -10,8 +10,8 @@ final def dockerImageName      = dockerRegistry + "/gentics/jenkinsbuilds/mesh-s
 
 properties([
 	parameters([
-		booleanParam(name: 'e2etest', defaultValue: true, description: "Run e2e tests with testcafe")
-		booleanParam(name: 'unittest', defaultValue: true, description: "Run unit tests")
+		booleanParam(name: 'e2etest', defaultValue: true, description: "Run e2e tests with testcafe"),
+		booleanParam(name: 'unittest', defaultValue: true, description: "Run unit tests"),
 		booleanParam(name: 'release', defaultValue: false, description: "Whether to run the release steps.")
 	])
 ])
