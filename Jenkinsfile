@@ -10,6 +10,8 @@ final def dockerImageName      = dockerRegistry + "/gentics/jenkinsbuilds/mesh-s
 
 properties([
 	parameters([
+		booleanParam(name: 'e2etest', defaultValue: true, description: "Run e2e tests with testcafe")
+		booleanParam(name: 'unittest', defaultValue: true, description: "Run unit tests")
 		booleanParam(name: 'release', defaultValue: false, description: "Whether to run the release steps.")
 	])
 ])
@@ -59,7 +61,7 @@ node("docker") {
 
 						stage("Install dependencies") {
 							container('buildenv') {
-								sh "/usr/local/bin/npm ci"
+								sh "npm ci"
 							}
 						}
 
@@ -75,7 +77,24 @@ node("docker") {
 
 						stage("Build") {
 							container('buildenv') {
-								sh "until /usr/local/bin/npm run build ; do echo retry.. ; sleep 1 ; done"
+								sh "npm run build"
+							}
+						}
+
+						stage("Unit Testing") {
+							if (params.e2etest) {
+								container('buildenv') {
+									sh "npm run test-ci"
+								}
+							}
+						}
+
+						stage("e2e Testing") {
+							if (params.unittest) {
+								// TODO Start Mesh
+								container('buildenv') {
+									sh "npm run e2e-ci"
+								}
 							}
 						}
 
