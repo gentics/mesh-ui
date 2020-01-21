@@ -85,7 +85,9 @@ node("docker") {
 						stage("Unit Testing") {
 							if (params.unittest) {
 								try {
+									sh "whoami && id"
 									container('buildenv') {
+										sh "whoami && id"
 										sh "mkdir -p /ci/junit/unit && npm run test-ci"
 									}
 								} finally {
