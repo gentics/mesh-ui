@@ -7,6 +7,7 @@ RUN apk add --no-cache \
     openjdk8 \
     git \
     openssh \
+    docker \
     # Chrome headless
     chromium \
     nss \

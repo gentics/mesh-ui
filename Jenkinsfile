@@ -23,6 +23,12 @@ node("docker") {
 	stage("Setup Build Environment") {
 		checkout scm
 
+		withDockerRegistry([ credentialsId: "repo.gentics.com", url: "https://" + dockerRegistry + "/v2" ]) {
+			sh "docker pull " + dockerImageName + " || true"
+			sh "cd .jenkins && docker build -t " + dockerImageName + " ."
+			sh "cd .jenkins && docker push " + dockerImageName
+		}
+
 		podTemplate(containers: [
 			containerTemplate(alwaysPullImage: true,
 				command: 'cat',
@@ -80,8 +86,6 @@ node("docker") {
 								container('buildenv') {
 									try {
 										sh "npm run test-ci"
-										sh "ls -lah"
-										sh "ls -lah reports"
 									} finally {
 										step([$class: 'JUnitResultArchiver', testResults: 'reports/karma/*.xml'])
 									}
@@ -90,10 +94,9 @@ node("docker") {
 						}
 
 						stage("e2e Testing") {
-							if (params.e2etest) {
-								// TODO Start Mesh
+							if (params.e2etest) {								
 								container('buildenv') {
-									sh "npm run e2e-ci"
+									sh "npm run mesh-daemon && npm run e2e-ci"
 								}
 							}
 						}
