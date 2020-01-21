@@ -10,8 +10,8 @@ final def dockerImageName      = dockerRegistry + "/gentics/jenkinsbuilds/mesh-s
 
 properties([
 	parameters([
-		booleanParam(name: 'e2etest', defaultValue: true, description: "Run e2e tests with testcafe"),
 		booleanParam(name: 'unittest', defaultValue: true, description: "Run unit tests"),
+		booleanParam(name: 'e2etest', defaultValue: true, description: "Run e2e tests with testcafe"),
 		booleanParam(name: 'release', defaultValue: false, description: "Whether to run the release steps.")
 	])
 ])
@@ -48,6 +48,7 @@ node("docker") {
 				volumes: [
 					emptyDirVolume(memory: false, mountPath: '/var/run'),
 					hostPathVolume(hostPath: '/opt/kubernetes/cache/maven', mountPath: '/ci/.m2/repository'),
+					hostPathVolume(hostPath: '/opt/junit', mountPath: '/ci/junit'),
 					persistentVolumeClaim(claimName: 'jenkins-credentials', mountPath: '/ci/credentials', readOnly: true)
 				], 
 				workspaceVolume: emptyDirWorkspaceVolume(false)) {
@@ -83,12 +84,12 @@ node("docker") {
 
 						stage("Unit Testing") {
 							if (params.unittest) {
-								container('buildenv') {
-									try {
-										sh "npm run test-ci"
-									} finally {
-										step([$class: 'JUnitResultArchiver', testResults: '/ci/junit/unit/*.xml'])
+								try {
+									container('buildenv') {
+										sh "mkdir -p /ci/junit/unit && npm run test-ci"
 									}
+								} finally {
+									step([$class: 'JUnitResultArchiver', testResults: '/opt/junit/**/*.xml'])
 								}
 							}
 						}
