@@ -84,7 +84,11 @@ node("docker") {
 						stage("Unit Testing") {
 							if (params.e2etest) {
 								container('buildenv') {
-									sh "npm run test-ci"
+									try {
+										sh "npm run test-ci"
+									} finally {
+										step([$class: 'JUnitResultArchiver', testResults: '/ci/junit/unit/*.xml'])
+									}
 								}
 							}
 						}
