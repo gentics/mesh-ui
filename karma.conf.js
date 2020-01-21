@@ -31,8 +31,6 @@ module.exports = function (config) {
                 base: 'ChromeHeadless',
                 flags: [
                     '--no-sandbox',
-                    '--disable-web-security',
-                    '--user-data-dir=/ci/chrome-test-profile'
                 ]
             }
         },

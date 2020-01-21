@@ -9,7 +9,7 @@
     "build": "ng build --prod",
     "generate-models": "node config/build-models-from-raml",
     "test": "ng test --tsConfig=tsconfig.json",
-    "test-ci": "ng test --tsConfig=tsconfig.json --watch=false --browsers ChromeHeadless",
+    "test-ci": "ng test --tsConfig=tsconfig.json --watch=false --browsers DockerChromeHeadless",
     "test-no-sourcemaps": "ng test -sm=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e-protractor": "ng e2e",
