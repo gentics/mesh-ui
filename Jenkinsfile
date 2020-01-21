@@ -82,7 +82,7 @@ node("docker") {
 						}
 
 						stage("Unit Testing") {
-							if (params.e2etest) {
+							if (params.unittest) {
 								container('buildenv') {
 									try {
 										sh "npm run test-ci"
@@ -94,7 +94,7 @@ node("docker") {
 						}
 
 						stage("e2e Testing") {
-							if (params.unittest) {
+							if (params.e2etest) {
 								// TODO Start Mesh
 								container('buildenv') {
 									sh "npm run e2e-ci"
