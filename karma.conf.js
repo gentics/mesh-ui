@@ -9,6 +9,7 @@ module.exports = function (config) {
             require('karma-jasmine'),
             require('karma-chrome-launcher'),
             require('karma-jasmine-html-reporter'),
+            require('karma-junit-reporter'),
             require('karma-coverage-istanbul-reporter'),
             require('@angular-devkit/build-angular/plugins/karma')
         ],
@@ -18,6 +19,10 @@ module.exports = function (config) {
         coverageIstanbulReporter: {
             dir: require('path').join(__dirname, 'coverage'), reports: [ 'html', 'lcovonly' ],
             fixWebpackSourcePaths: true
+        },
+
+        junitReporter: {
+            outputDir: '/ci/junit/unit/'
         },
         
         reporters: ['progress', 'kjhtml'],
