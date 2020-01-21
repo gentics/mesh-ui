@@ -22,13 +22,17 @@ import * as createTestCafe from 'testcafe';
  * Waits until mesh is ready to take requests.
  */
 async function meshReady() {
-    while (true) {
+    const interval = 1000;
+    const timeout = 5 * 60 * 1000;
+    let timePassed = 0;
+    while (timePassed < timeout) {
         console.log('Waiting for mesh startup...');
         try {
             await rq.get('http://localhost:8080/api/v2/demo');
             console.log('Mesh is ready!');
             break;
         } catch (err) {
+            timePassed += interval;
             await wait(1000);
         }
     }
