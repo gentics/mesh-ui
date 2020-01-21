@@ -29,7 +29,11 @@ module.exports = function (config) {
         customLaunchers: {
             DockerChromeHeadless: {
                 base: 'ChromeHeadless',
-                flags: ['--no-sandbox']
+                flags: [
+                    '--no-sandbox',
+                    '--disable-web-security',
+                    '--user-data-dir=/ci/chrome-test-profile'
+                ]
             }
         },
         singleRun: false
