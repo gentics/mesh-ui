@@ -22,13 +22,7 @@ def version = null
 node("docker") {
 	stage("Setup Build Environment") {
 		checkout scm
-		
-		withDockerRegistry([ credentialsId: "repo.gentics.com", url: "https://" + dockerRegistry + "/v2" ]) {
-			sh "docker pull " + dockerImageName + " || true"
-			sh "cd .jenkins && docker build -t " + dockerImageName + " ."
-			sh "cd .jenkins && docker push " + dockerImageName
-		}
-		
+
 		podTemplate(containers: [
 			containerTemplate(alwaysPullImage: true,
 				command: 'cat',
@@ -48,7 +42,6 @@ node("docker") {
 				volumes: [
 					emptyDirVolume(memory: false, mountPath: '/var/run'),
 					hostPathVolume(hostPath: '/opt/kubernetes/cache/maven', mountPath: '/ci/.m2/repository'),
-					hostPathVolume(hostPath: '/opt/junit', mountPath: '/ci/junit'),
 					persistentVolumeClaim(claimName: 'jenkins-credentials', mountPath: '/ci/credentials', readOnly: true)
 				], 
 				workspaceVolume: emptyDirWorkspaceVolume(false)) {
@@ -84,14 +77,14 @@ node("docker") {
 
 						stage("Unit Testing") {
 							if (params.unittest) {
-								try {
-									sh "whoami && id"
-									container('buildenv') {
-										sh "whoami && id && stat /ci/junit"
-										sh "mkdir -p /ci/junit/unit && npm run test-ci"
+								container('buildenv') {
+									try {
+										sh "npm run test-ci"
+										sh "ls -lah"
+										sh "ls -lah reports"
+									} finally {
+										step([$class: 'JUnitResultArchiver', testResults: 'reports/karma/*.xml'])
 									}
-								} finally {
-									step([$class: 'JUnitResultArchiver', testResults: '/opt/junit/**/*.xml'])
 								}
 							}
 						}

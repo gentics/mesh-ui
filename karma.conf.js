@@ -22,7 +22,7 @@ module.exports = function (config) {
         },
 
         junitReporter: {
-            outputDir: '/ci/junit/unit/'
+            outputDir: 'reports/karma'
         },
         
         reporters: ['progress', 'kjhtml'],

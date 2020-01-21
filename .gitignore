@@ -80,3 +80,6 @@ mesh-ui.code-workspace
 
 # Other
 /.scannerwork
+
+# Test reports
+/reports
