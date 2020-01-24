@@ -70,34 +70,36 @@ def tagName = null
                 }
             }
 
-            stage("Unit Testing") {
-                when {
-                    expression {
-                        return params.unittest
+            parallel {
+                stage("Unit Testing") {
+                    when {
+                        expression {
+                            return params.unittest
+                        }
                     }
-                }
-                steps {
-                    script {
-                        sh "npm run test-ci"
-                    }
-                }
-                post {
-                    always {
+                    steps {
                         script {
-                            junit testResults: "reports/karma/*.xml"
+                            sh "npm run test-ci"
+                        }
+                    }
+                    post {
+                        always {
+                            script {
+                                junit testResults: "reports/karma/*.xml"
+                            }
                         }
                     }
                 }
-            }
 
-            stage("e2e Testing") {
-                when {
-                    expression {
-                        return params.e2etest
+                stage("e2e Testing") {
+                    when {
+                        expression {
+                            return params.e2etest
+                        }
                     }
-                }
-                steps {
-                    sh "npm run mesh-daemon && npm run e2e-ci"
+                    steps {
+                        sh "npm run mesh-daemon && npm run e2e-ci"
+                    }
                 }
             }
 
