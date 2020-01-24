@@ -1,120 +1,134 @@
-// The GIT repository for this pipeline lib is defined in the global Jenkins setting
-@Library('jenkins-pipeline-library')
 import com.gentics.*
 
-// Make the helpers aware of this jobs environment
 JobContext.set(this)
 
-final def dockerRegistry       = "gtx-docker-jenkinsbuilds.docker.apa-it.at"
-final def dockerImageName      = dockerRegistry + "/gentics/jenkinsbuilds/mesh-slave-ui"
+def tagName = null
 
-properties([
-	parameters([
-		booleanParam(name: 'unittest', defaultValue: true, description: "Run unit tests"),
-		booleanParam(name: 'e2etest', defaultValue: true, description: "Run e2e tests with testcafe"),
-		booleanParam(name: 'release', defaultValue: false, description: "Whether to run the release steps.")
-	])
-])
+    pipeline {
+        agent {
+            kubernetes {
+                label env.BUILD_TAG.take(63)
+                defaultContainer 'build'
+                yaml (readFile ".jenkins/pod.yaml")
+            }
+        }
 
-final def gitCommitTag = '[Jenkins | ' + env.JOB_BASE_NAME + ']'
-def version = null
+        parameters {
+            booleanParam(name: 'unittest', defaultValue: true, description: "Run unit tests")
+            booleanParam(name: 'e2etest', defaultValue: true, description: "Run e2e tests with testcafe")
+            choice(name: 'release', defaultValue: 'none', choices: ['none', 'patch', 'minor', 'major'])
+        }
 
-node("docker") {
-	stage("Setup Build Environment") {
-		checkout scm
+        options {
+            withCredentials([
+                usernamePassword(credentialsId: 'repo.gentics.com', usernameVariable: 'repoUsername', passwordVariable: 'repoPassword'),
+                usernamePassword(credentialsId: 'gentics.gpg', usernameVariable: 'gpgKeyName', passwordVariable: 'gpgKeyPass'),
+                string(credentialsId: 'sonarcube.key', variable: 'SONARCUBE_TOKEN'),
+                string(credentialsId: 'sonarcloud.key', variable: 'SONARCLOUD_TOKEN')
+            ])
+            timestamps()
+            timeout(time: 1, unit: 'HOURS')
+            gitLabConnection('git.gentics.com')
+            gitlabBuilds(builds: ['Jenkins build'])
+            ansiColor('xterm')
+        }
 
-		withDockerRegistry([ credentialsId: "repo.gentics.com", url: "https://" + dockerRegistry + "/v2" ]) {
-			sh "docker pull " + dockerImageName + " || true"
-			sh "cd .jenkins && docker build -t " + dockerImageName + " ."
-			sh "cd .jenkins && docker push " + dockerImageName
-		}
+        environment {
+            DOCKER_TAG = "${env.GIT_BRANCH}"
+            GITLAB_WEBHOOK_SECRETTOKEN = credentials('gitlab-webhook-secrettoken')
+        }
 
-		podTemplate(containers: [
-			containerTemplate(alwaysPullImage: true,
-				command: 'cat',
-				image: dockerImageName,
-				name: 'buildenv',
-				privileged: false,
-				ttyEnabled: true,
-				resourceRequestCpu: '1000m',
-				resourceRequestMemory: '1048Mi'
-				)],
-				label: 'mesh-ui',
-				name: 'jenkins-slave-mesh-ui',
-				namespace: 'jenkins', 
-				nodeSelector: 'jenkins_mesh_worker=true',
-				serviceAccount: 'jenkins',
-				imagePullSecrets: ['docker-jenkinsbuilds-apa-it'],
-				volumes: [
-					emptyDirVolume(memory: false, mountPath: '/var/run'),
-					hostPathVolume(hostPath: '/opt/kubernetes/cache/maven', mountPath: '/ci/.m2/repository'),
-					persistentVolumeClaim(claimName: 'jenkins-credentials', mountPath: '/ci/credentials', readOnly: true)
-				], 
-				workspaceVolume: emptyDirWorkspaceVolume(false)) {
-					node("mesh-ui") {
-						stage("Checkout") {
-							sshagent(["git"]) {
-								checkout scm
-							}
-							echo "Building " + env.BRANCH_NAME
-						}
+        triggers {
+            gitlab(
+                triggerOnPush: true,
+                triggerOnMergeRequest: true,
+                triggerOpenMergeRequestOnPush: 'source',
+                triggerOnNoteRequest: true,
+                noteRegex: 'Jenkins please retry a build',
+                ciSkip: true,
+                skipWorkInProgressMergeRequest: true,
+                addNoteOnMergeRequest: true,
+                setBuildDescription: true,
+                branchFilterType: 'All',
+                secretToken: env.GITLAB_WEBHOOK_SECRETTOKEN)
+        }
 
-						stage("Install dependencies") {
-							container('buildenv') {
-								sh "npm ci"
-							}
-						}
+        stages {
+            stage("Install dependencies") {
+                steps {
+                    script {
+                        sh "npm ci"
+                    }
+                }
+            }
 
-						stage("Set version") {
-							if (params.release) {
-								def buildVars = readJSON file: 'package.json'
-								version = buildVars.version
-								sh "./mvnw -B versions:set -DgenerateBackupPoms=false -DnewVersion=" + version
-							} else {
-								echo "Not setting version"
-							}
-						}
+            stage("Build") {
+                steps {
+                    script {
+                        sh "npm run build"
+                    }
+                }
+            }
 
-						stage("Build") {
-							container('buildenv') {
-								sh "npm run build"
-							}
-						}
+            stage("Unit Testing") {
+                when {
+                    expression {
+                        return params.unittest
+                    }
+                }
+                steps {
+                    script {
+                        sh "npm run test-ci"
+                    }
+                }
+                post {
+                    always {
+                        script {
+                            junit testResults: "reports/karma/*.xml"
+                        }
+                    }
+                }
+            }
 
-						stage("Unit Testing") {
-							if (params.unittest) {
-								container('buildenv') {
-									try {
-										sh "npm run test-ci"
-									} finally {
-										step([$class: 'JUnitResultArchiver', testResults: 'reports/karma/*.xml'])
-									}
-								}
-							}
-						}
+            stage("e2e Testing") {
+                when {
+                    expression {
+                        return params.e2etest
+                    }
+                }
+                steps {
+                    sh "npm run mesh-daemon && npm run e2e-ci"
+                }
+            }
 
-						stage("e2e Testing") {
-							if (params.e2etest) {								
-								container('buildenv') {
-									sh "npm run mesh-daemon && npm run e2e-ci"
-								}
-							}
-						}
+            stage("Deploy") {
+                when {
+                    expression {
+                        return params.release != null && params.release != 'none'
+                    }
+                }
 
-						stage("Deploy") {
-							if (params.release) {
-								container('buildenv') {
-									sshagent(["git"]) {
-										withEnv(["EMAIL=entwicklung@gentics.com", "GIT_AUTHOR_NAME=JenkinsCI", "GIT_COMMITTER_NAME=JenkinsCI"]) {
-											GitHelper.addCommit('pom.xml', gitCommitTag + ' Release version ' + version)
-											sh "./mvnw -B deploy"
-											GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-	}
-}
+                steps {
+                    script {
+                        def tagName = sh "npm version ${params.release}"
+                        sshagent(["git"]) {
+                            def branchName = GitHelper.fetchCurrentBranchName()
+                            GitHelper.pushBranch(branchName)
+
+                            if (tagName != null) {
+                                GitHelper.pushTag(tagName)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        post {
+            always {
+                notifyMattermostUsers()
+            }
+        }
+    }
+
+
