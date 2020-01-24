@@ -56,7 +56,7 @@ async function runTests() {
     const testcafe = await (createTestCafe as any)('localhost', 1337, 1338);
     const failedCount = await testcafe
         .createRunner()
-        .browsers(['chrome:headless --window-size=1920x1080'])
+        .browsers(['chromium:headless --window-size=1920x1080'])
         .run();
     testcafe.close();
     return failedCount > 0;
