@@ -55,6 +55,7 @@ pipeline {
         stage("Install dependencies") {
             steps {
                 script {
+                    githubBuildStarted()
                     sh "npm ci"
                 }
             }
@@ -122,6 +123,9 @@ pipeline {
 
     post {
         always {
+            script {
+                githubBuildEnded()
+            }
             junit testResults: "reports/**/*.xml"
             notifyMattermostUsers()
         }
