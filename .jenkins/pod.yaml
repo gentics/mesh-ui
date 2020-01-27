@@ -17,7 +17,7 @@ spec:
     terminationGracePeriodSeconds: 0
 
   - name: build
-    image: gtx-docker-jenkinsbuilds.docker.apa-it.at/gentics/jenkinsbuilds/mesh-slave-ui
+    image: gtx-docker-jenkinsbuilds.docker.apa-it.at/gentics/jenkinsbuilds/nodejs-worker:1.0
     workingDir: '/home/jenkins'
     imagePullPolicy: Always
     terminationGracePeriodSeconds: 0
