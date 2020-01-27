@@ -81,13 +81,7 @@ pipeline {
                             sh "npm run test-ci"
                         }
                     }
-                    post {
-                        always {
-                            script {
-                                junit testResults: "reports/karma/*.xml"
-                            }
-                        }
-                    }
+
                 }
 
                 stage("e2e Test") {
@@ -128,6 +122,7 @@ pipeline {
 
     post {
         always {
+            junit testResults: "reports/**/*.xml"
             notifyMattermostUsers()
         }
     }
