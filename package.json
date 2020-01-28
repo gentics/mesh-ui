@@ -17,6 +17,7 @@
     "postcommit": "git update-index --again",
     "mesh": "docker run --rm -p '8080:8080' -e MESH_ELASTICSEARCH_URL=null -e MESH_ELASTICSEARCH_START_EMBEDDED=false -e MESH_MONITORING_ENABLED=false gentics/mesh-demo",
     "mesh-daemon": "docker run --rm -d -p '8080:8080' -e MESH_ELASTICSEARCH_URL=null -e MESH_ELASTICSEARCH_START_EMBEDDED=false -e MESH_MONITORING_ENABLED=false gentics/mesh-demo",
+    "mesh-ci": "docker pull gentics/mesh-demo && npm run mesh-daemon",
     "e2e": "cross-env MESHUI_URL=http://localhost:4200 testcafe",
     "e2e-watch": "cross-env MESHUI_URL=http://localhost:4200 testcafe --live",
     "e2e-headless": "cross-env MESHUI_URL=http://localhost:4200 testcafe 'chrome:headless --window-size=1920x1080'",

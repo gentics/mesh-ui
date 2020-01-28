@@ -92,7 +92,7 @@ pipeline {
                         }
                     }
                     steps {
-                        sh "npm run mesh-daemon && npm run e2e-ci"
+                        sh "npm run mesh-ci && npm run e2e-ci"
                     }
                 }
             }
