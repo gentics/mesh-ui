@@ -4,11 +4,7 @@ JobContext.set(this)
 
 pipeline {
     agent {
-        kubernetes {
-            label env.BUILD_TAG.take(63)
-            defaultContainer 'build'
-            yamlFile '.jenkins/pod.yaml'
-        }
+        nodejsWorker(version: "1.0")
     }
 
     parameters {
