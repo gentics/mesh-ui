@@ -4,7 +4,9 @@ JobContext.set(this)
 
 pipeline {
     agent {
-        nodejsWorker(version: "1.0")
+        kubernetes {
+            nodejsWorker(version: "1.0")
+        }
     }
 
     parameters {
@@ -121,8 +123,10 @@ pipeline {
         always {
             script {
                 githubBuildEnded()
+                if (params.unittest || params.e2etest) {
+                    junit testResults: "reports/**/*.xml"
+                }
             }
-            junit testResults: "reports/**/*.xml"
             notifyMattermostUsers()
         }
     }
