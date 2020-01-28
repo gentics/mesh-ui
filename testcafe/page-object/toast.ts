@@ -10,8 +10,6 @@ export namespace toast {
     }
 
     async function expectMessage(msg: string, type: string) {
-        const text = await Selector(`gtx-toast div.${type}`).innerText;
-        console.log(text);
         await t
             .expect(Selector(`gtx-toast div.${type}`).withText(msg).exists)
             .ok(`Expected toast ${type} message containing "${msg}"`);
