@@ -5,7 +5,9 @@ JobContext.set(this)
 pipeline {
     agent {
         kubernetes {
-            nodejsWorker(version: "1.0")
+            label env.BUILD_TAG.take(63)
+            defaultContainer 'build'
+            yamlFile '.jenkins/pod.yaml'
         }
     }
 
@@ -105,14 +107,16 @@ pipeline {
 
             steps {
                 script {
-                    def tagName = sh "npm version ${params.release}"
-                    sshagent(["git"]) {
-                        def branchName = GitHelper.fetchCurrentBranchName()
-                        GitHelper.pushBranch(branchName)
+                    sh "npm --no-git-tag-version version ${params.release}"
+                    def buildVars = readJSON file: 'package.json'
+                    sh "./mvnw -B versions:set -DgenerateBackupPoms=false -DnewVersion=" + buildVars.version
 
-                        if (tagName != null) {
-                            GitHelper.pushTag(tagName)
-                        }
+                    sshagent(["git"]) {
+                        GitHelper.addCommit('pom.xml package.json package-lock.json', 'Release version ' + buildVars.version)
+                        GitHelper.addTag(buildVars.version)
+                        sh "./mvnw -B deploy"
+                        GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
+                        GitHelper.pushTag(buildVars.version)
                     }
                 }
             }
@@ -124,7 +128,7 @@ pipeline {
             script {
                 githubBuildEnded()
                 if (params.unittest || params.e2etest) {
-                    junit testResults: "reports/**/*.xml"
+                    junit(testResults: "reports/**/*.xml")
                 }
             }
             notifyMattermostUsers()
