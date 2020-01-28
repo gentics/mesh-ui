@@ -12,6 +12,6 @@ export namespace toast {
     async function expectMessage(msg: string, type: string) {
         await t
             .expect(Selector(`gtx-toast div.${type}`).withText(msg).exists)
-            .ok(`Expected toast error message containing "${msg}"`);
+            .ok(`Expected toast ${type} message containing "${msg}"`);
     }
 }
