@@ -113,3 +113,20 @@ test('Per page items configuration', async t =>
             .expect(await containerContents.getNumberOfItems())
             .eql(perPageItems, 'Number of items displayed is lower then the configured itemsPerPage');
     }));
+
+test.only('Page is reset after changing folder', async t =>
+    inTemporaryFolder(async folder => {
+        for (let i = 0; i < 20; i++) {
+            const subFolder = await api.createFolder(folder, `folder${i}`);
+            await api.createFolder(subFolder, `subFolder`);
+        }
+        await login.loginAsAdmin();
+        await containerContents.getListItemByName(folder.fields.name).open();
+        await paginationControls.goToPage(2);
+        await containerContents.getFirstListItem().open();
+        await t
+            .expect(await containerContents.getFirstListItem().displayName())
+            .eql('subFolder')
+            .expect(await paginationControls.exists())
+            .eql(false);
+    }));
