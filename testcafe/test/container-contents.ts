@@ -114,7 +114,7 @@ test('Per page items configuration', async t =>
             .eql(perPageItems, 'Number of items displayed is lower then the configured itemsPerPage');
     }));
 
-test.only('Page is reset after changing folder', async t =>
+test('Page is reset after changing folder', async t =>
     inTemporaryFolder(async folder => {
         for (let i = 0; i < 20; i++) {
             const subFolder = await api.createFolder(folder, `folder${i}`);
