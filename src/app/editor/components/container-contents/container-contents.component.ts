@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, ParamMap, Router } from '@angular/router';
 import { PaginationInstance } from 'ngx-pagination';
 import { combineLatest, from, of, Observable, Subject } from 'rxjs';
 import {
@@ -84,29 +84,16 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
-        // get list details from url parameters
-        const listParams$ = of([]).pipe(obs => this.switchMapToParams(obs));
-
         // get search filter from url parameters
-        const searchParams$ = this.route.queryParamMap.pipe(
-            map(paramMap => {
-                // get search query
-                const keyword = (paramMap.get(QUERY_KEY_KEYWORD) || '').trim();
-                // get filter for tags
-                const tags = (paramMap.get(QUERY_KEY_TAGS) || '').trim();
-                // get current page
-                const page = paramMap.get(QUERY_KEY_PAGE) || this.currentPage;
-                // get max items per page
-                const perPage = paramMap.get(QUERY_KEY_PERPAGE) || this.itemsPerPage;
-
-                return { keyword, tags, page, perPage };
-            })
-        );
+        const searchParams$ = this.route.queryParamMap.pipe(map(this.extractQueryParams));
 
         // request node children
-        combineLatest([searchParams$, listParams$, this.state.select(state => state.entities.tag)])
+        this.router.events
+            .filter(ev => ev instanceof NavigationEnd)
             .pipe(takeUntil(this.destroy$))
-            .subscribe(([{ keyword, tags, page, perPage }, { containerUuid, projectName, language }]) => {
+            .subscribe(() => {
+                const { keyword, tags, page, perPage } = this.extractQueryParams(this.route.snapshot.queryParamMap);
+                const { containerUuid, projectName, language } = this.extractPathParams(this.route.snapshot.paramMap);
                 if (keyword === '' && tags === '') {
                     this.listEffects
                         .loadChildren(projectName, containerUuid, language, +page, +perPage)
@@ -230,12 +217,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         return input$.pipe(
             switchMapTo(this.route.paramMap),
             filter(params => params.has('containerUuid') && params.has('projectName') && params.has('language')),
-            map(paramMap => ({
-                // https://github.com/Microsoft/TypeScript/issues/9619
-                containerUuid: paramMap.get('containerUuid')!,
-                projectName: paramMap.get('projectName')!,
-                language: paramMap.get('language')!
-            })),
+            map(this.extractPathParams),
             distinctUntilChanged(
                 (a, b) =>
                     a.containerUuid === b.containerUuid && a.projectName === b.projectName && a.language === b.language
@@ -248,5 +230,26 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             const matchedNode = fuzzyMatch(filterTerm, node.displayName || '');
             return matchedNode ? [...filteredNodes, node] : filteredNodes;
         }, []);
+    }
+
+    private extractQueryParams(queryParamMap: ParamMap) {
+        // get search query
+        const keyword = (queryParamMap.get(QUERY_KEY_KEYWORD) || '').trim();
+        // get filter for tags
+        const tags = (queryParamMap.get(QUERY_KEY_TAGS) || '').trim();
+        // get current page
+        const page = queryParamMap.get(QUERY_KEY_PAGE) || this.currentPage;
+        // get max items per page
+        const perPage = queryParamMap.get(QUERY_KEY_PERPAGE) || this.itemsPerPage;
+
+        return { keyword, tags, page, perPage };
+    }
+
+    private extractPathParams(paramMap: ParamMap) {
+        return {
+            containerUuid: paramMap.get('containerUuid')!,
+            projectName: paramMap.get('projectName')!,
+            language: paramMap.get('language')!
+        };
     }
 }

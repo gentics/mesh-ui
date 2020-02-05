@@ -6,4 +6,8 @@ export class NodeRow {
     public async open() {
         await t.click(this.element.find('.title a'));
     }
+
+    public displayName() {
+        return this.element.find('.title > a').innerText;
+    }
 }

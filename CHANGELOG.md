@@ -6,10 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Fixed
+
+- Fix paging not being reset after navigating to another node. [#276](https://github.com/gentics/mesh-ui/issues/276)
 - Fix bug that prevented JWT refreshes.
 
 ## [1.1.0] - 2019-11-20
-### Changed
+### Added
 
 - Added i18n support for (simplified) Chinese [#278](https://github.com/gentics/mesh-ui/pull/278)
 - Added i18n support for portuguese [#281](https://github.com/gentics/mesh-ui/pull/281)
@@ -20,8 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The number of items displayed per page in the content list is now configurable. Set the `contentItemsPerPage` property in the `mesh-ui-config.js` to do so. By default the number of items is 8.
 - The project create dialog will now automatically use the last search term as name for the new project.
 - Node browser usability tweaks [#250](https://github.com/gentics/mesh-ui/issues/250)
-  - The choose button is disabled if no node has been chosen
-  - The checkbox for choosing a node will now appear when hovering the row instead of only when hovering the icon.
+- The choose button is disabled if no node has been chosen
+- The checkbox for choosing a node will now appear when hovering the row instead of only when hovering the icon.
 
 ## [1.0.1] - 2019-10-08
 ### Changed
