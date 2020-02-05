@@ -8,7 +8,6 @@
         <div class="title">
             <a href
                [routerLink]="routerLink"
-               queryParamsHandling="preserve"
                (click)="focusEditor()"
                [innerHTML]="node.displayName | highlight:(filterTerm$ | async)"></a>
             <mesh-node-status [node]="node"
