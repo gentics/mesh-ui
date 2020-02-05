@@ -15,7 +15,7 @@ import { schemaEditor } from './admin/schema-editor';
 
 declare const window: Writeable<MeshWindow>;
 
-fixture.only`Container contents`.page(api.baseUrl());
+fixture`Container contents`.page(api.baseUrl());
 
 const schemaName = 'dummy';
 test('Only assigned schemas are visible', async t => {
