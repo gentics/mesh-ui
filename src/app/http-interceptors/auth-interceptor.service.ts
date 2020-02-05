@@ -39,7 +39,7 @@ export class AuthInterceptor implements HttpInterceptor {
         this.expiresIn
             .pipe(
                 // Don't refresh the token when it expires too fast
-                filter(validDuration => validDuration < MIN_TOKEN_VALID_DURATION),
+                filter(validDuration => validDuration > MIN_TOKEN_VALID_DURATION),
                 // Refresh 10 seconds before expiration
                 debounce(timeout => timer((timeout - 10) * 1000)),
                 switchMap(() => api.auth.refreshToken()),
