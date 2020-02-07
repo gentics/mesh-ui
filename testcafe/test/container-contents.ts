@@ -146,7 +146,7 @@ test.only('Display name of nodes', async t =>
             .eql(4)
             .expect(await containerContents.getListItemByName('test1').element.exists)
             .eql(true)
-            .expect(await containerContents.getListItemByName('test2').element.exists)
+            .expect(await containerContents.getListItemByName(slugOnly.uuid).element.exists)
             .eql(true)
             .expect(await containerContents.getListItemByName('test3').element.exists)
             .eql(true)
