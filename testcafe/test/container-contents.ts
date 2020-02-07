@@ -131,7 +131,7 @@ test('Page is reset after changing folder', async t =>
             .eql(false);
         }));
 
-test.only('Display name of nodes', async t =>
+test('Display name of nodes', async t =>
     inTemporaryFolder(async folder => {
         const nameOnly = await api.createFolder(folder, { name: 'test1' });
         const slugOnly = await api.createFolder(folder, { slug: 'test2' });
