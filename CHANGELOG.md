@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix paging not being reset after navigating to another node. [#276](https://github.com/gentics/mesh-ui/issues/276)
 - Fix bug that prevented JWT refreshes.
+- Fix bug that prevented schemas to be assigned from the project detail view.
 
 ## [1.1.0] - 2019-11-20
 ### Added
