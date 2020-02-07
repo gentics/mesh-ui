@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix paging not being reset after navigating to another node. [#276](https://github.com/gentics/mesh-ui/issues/276)
-- Fix bug that prevented JWT refreshes.
-- Fix nodes sometimes named `undefined` in node list.
+- Fix bug that prevented JWT refreshes. [#285](https://github.com/gentics/mesh-ui/issues/285)
+- Fix nodes sometimes named `undefined` in node list. [#283](https://github.com/gentics/mesh-ui/issues/283)
 
 ## [1.1.0] - 2019-11-20
 ### Added
