@@ -77,7 +77,7 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
             });
 
             // load related project data
-            this.listEffects.loadSchemasForProject(project.name);
+            this.listEffects.loadSchemasForProject(project.name).subscribe();
         });
 
         // SCHEMAS
@@ -208,11 +208,11 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
         if (isChecked) {
             this.schemaEffects
                 .assignEntityToProject('schema', schema.uuid, this.project.name)
-                .then(() => this.listEffects.loadSchemasForProject(this.project.name));
+                .then(() => this.listEffects.loadSchemasForProject(this.project.name).subscribe());
         } else {
             this.schemaEffects
                 .removeEntityFromProject('schema', schema.uuid, this.project.name)
-                .then(() => this.listEffects.loadSchemasForProject(this.project.name));
+                .then(() => this.listEffects.loadSchemasForProject(this.project.name).subscribe());
         }
     }
 }

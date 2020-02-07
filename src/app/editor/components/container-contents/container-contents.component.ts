@@ -117,7 +117,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 takeUntil(this.destroy$)
             )
             .subscribe(projectName => {
-                this.listEffects.loadSchemasForProject(projectName);
+                this.listEffects.loadSchemasForProject(projectName).subscribe();
                 this.listEffects.loadMicroschemasForProject(projectName);
                 this.tagEffects.loadTagFamiliesAndTheirTags(projectName);
             });
