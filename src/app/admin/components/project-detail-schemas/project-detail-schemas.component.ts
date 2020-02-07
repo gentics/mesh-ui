@@ -147,7 +147,7 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
             })
         );
 
-        // get schema asignments
+        // get schema assignments
         this.schemaAssignments$ = combineLatest(this.allSchemas$, this.projectSchemas$).pipe(
             map(([allSchemas, projectSchemas]) => {
                 const schemaAssignments = {};
@@ -161,7 +161,7 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
             })
         );
 
-        // get schema asignments for view
+        // get schema assignments for view
         this.schemaAssignments$
             .pipe(
                 filter(schema => !!schema),
