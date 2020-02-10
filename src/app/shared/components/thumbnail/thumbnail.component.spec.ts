@@ -15,7 +15,7 @@ import { SharedModule } from '../../shared.module';
 
 import { ThumbnailComponent } from './thumbnail.component';
 
-describe('Thumbnail', () => {
+fdescribe('Thumbnail', () => {
     let appState: TestApplicationState;
 
     beforeEach(async(() => {
@@ -479,6 +479,7 @@ function getThumbnail(fixture: ComponentFixture<TestComponent>) {
             [height]="height"
             [nodeUuid]="nodeUuid"
             [fieldName]="fieldName"
+            language="en"
         ></mesh-thumbnail>
     `
 })
