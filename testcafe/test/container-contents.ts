@@ -129,4 +129,29 @@ test('Page is reset after changing folder', async t =>
             .eql('subFolder')
             .expect(await paginationControls.exists())
             .eql(false);
+        }));
+
+test('Display name of nodes', async t =>
+    inTemporaryFolder(async folder => {
+        const nameOnly = await api.createFolder(folder, { name: 'test1' });
+        const slugOnly = await api.createFolder(folder, { slug: 'test2' });
+        const both = await api.createFolder(folder, { name: 'test3', slug: 'shouldNotBeSeen' });
+        const none = await api.createFolder(folder, {});
+
+        await login.loginAsAdmin();
+        await containerContents.getListItemByName(folder.fields.name).open();
+
+        await t
+            .expect(await containerContents.getNumberOfItems())
+            .eql(4)
+            .expect(await containerContents.getListItemByName('test1').element.exists)
+            .eql(true)
+            .expect(await containerContents.getListItemByName(slugOnly.uuid).element.exists)
+            .eql(true)
+            .expect(await containerContents.getListItemByName('test3').element.exists)
+            .eql(true)
+            .expect(await containerContents.getListItemByName(none.uuid).element.exists)
+            .eql(true)
+            .expect(await containerContents.getListItemByName('shouldNotBeSeen').element.exists)
+            .eql(false);
     }));

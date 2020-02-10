@@ -126,4 +126,8 @@ export class NodeRowComponent implements OnInit {
 
         this.state.actions.editor.focusEditor();
     }
+
+    displayedName() {
+        return this.node.displayName || this.node.uuid;
+    }
 }

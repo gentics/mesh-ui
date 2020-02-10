@@ -20,11 +20,13 @@ import {
 } from '../src/app/common/models/server-models';
 import { SchemaCreateRequest } from '../src/app/common/models/server-models';
 
+interface FolderFields {
+    name: string;
+    slug: string;
+}
+
 export interface FolderNode extends MeshNode {
-    fields: {
-        name: string;
-        slug: string;
-    };
+    fields: FolderFields;
 }
 
 export interface VehicleFields {
@@ -59,7 +61,21 @@ export namespace api {
         });
     }
 
-    export function createFolder(parent: HasUuid, name: string, language = 'en'): Promise<FolderNode> {
+    export function createFolder(parent: HasUuid, fields: Partial<FolderFields>): Promise<FolderNode>;
+    export function createFolder(parent: HasUuid, name: string): Promise<FolderNode>;
+    export function createFolder(parent: HasUuid, fields: Partial<FolderFields>, language: string): Promise<FolderNode>;
+    export function createFolder(parent: HasUuid, name: string, language: string): Promise<FolderNode>;
+    export function createFolder(
+        parent: HasUuid,
+        fields: string | Partial<FolderFields>,
+        language = 'en'
+    ): Promise<FolderNode> {
+        if (typeof fields === 'string') {
+            fields = {
+                name: fields,
+                slug: fields
+            };
+        }
         return post(
             `/${project}/nodes`,
             {
@@ -68,10 +84,7 @@ export namespace api {
                 },
                 language,
                 parentNodeUuid: parent.uuid,
-                fields: {
-                    name,
-                    slug: name
-                }
+                fields
             },
             {
                 lang: 'en,de'
