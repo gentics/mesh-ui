@@ -5,7 +5,7 @@ export interface ProjectAssignments {
 }
 
 export interface SchemaAssignments {
-    [projectUuid: string]: boolean;
+    [schemaUuid: string]: boolean;
 }
 
 export interface AdminSchemasState {

@@ -77,7 +77,7 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
             });
 
             // load related project data
-            this.listEffects.loadSchemasForProject(project.name);
+            this.listEffects.loadSchemasForProject(project.name).subscribe();
         });
 
         // SCHEMAS
@@ -147,7 +147,7 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
             })
         );
 
-        // get schema asignments
+        // get schema assignments
         this.schemaAssignments$ = combineLatest(this.allSchemas$, this.projectSchemas$).pipe(
             map(([allSchemas, projectSchemas]) => {
                 const schemaAssignments = {};
@@ -161,7 +161,7 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
             })
         );
 
-        // get schema asignments for view
+        // get schema assignments for view
         this.schemaAssignments$
             .pipe(
                 filter(schema => !!schema),
@@ -208,11 +208,11 @@ export class ProjectDetailSchemasComponent implements OnInit, OnDestroy {
         if (isChecked) {
             this.schemaEffects
                 .assignEntityToProject('schema', schema.uuid, this.project.name)
-                .then(() => this.listEffects.loadSchemasForProject(this.project.name));
+                .then(() => this.listEffects.loadSchemasForProject(this.project.name).subscribe());
         } else {
             this.schemaEffects
                 .removeEntityFromProject('schema', schema.uuid, this.project.name)
-                .then(() => this.listEffects.loadSchemasForProject(this.project.name));
+                .then(() => this.listEffects.loadSchemasForProject(this.project.name).subscribe());
         }
     }
 }
