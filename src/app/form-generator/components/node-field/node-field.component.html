@@ -11,7 +11,8 @@
 
     <div *ngIf="userValue"
          class="icon">
-        <mesh-thumbnail [nodeUuid]="userValue">
+        <mesh-thumbnail [nodeUuid]="userValue"
+                        [language]="node.language">
         </mesh-thumbnail>
     </div>
 

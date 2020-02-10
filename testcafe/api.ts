@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as Path from 'path';
 import * as rp from 'request-promise';
 
 import { HasUuid } from '../src/app/common/models/common.model';
@@ -23,6 +25,18 @@ export interface FolderNode extends MeshNode {
         name: string;
         slug: string;
     };
+}
+
+export interface VehicleFields {
+    description?: string;
+    name: string;
+    niceUrl?: string;
+    price?: number;
+    SKU?: number;
+    slug: string;
+    stocklevel?: number;
+    vehicleImage?: HasUuid;
+    weight?: number;
 }
 
 export namespace api {
@@ -65,17 +79,17 @@ export namespace api {
         );
     }
 
-    export function createVehicle(parent: HasUuid, name: string): Promise<MeshNode> {
+    export function createVehicle(parent: HasUuid, name: string): Promise<MeshNode>;
+    export function createVehicle(parent: HasUuid, fields: VehicleFields): Promise<MeshNode>;
+    export function createVehicle(parent: HasUuid, fieldsOrName: string | VehicleFields): Promise<MeshNode> {
+        const fields = typeof fieldsOrName === 'string' ? { name: fieldsOrName, slug: fieldsOrName } : fieldsOrName;
         return post(`/${project}/nodes`, {
             schema: {
                 name: 'vehicle'
             },
             language: 'en',
             parentNodeUuid: parent.uuid,
-            fields: {
-                name,
-                slug: name
-            }
+            fields
         });
     }
 
@@ -88,6 +102,37 @@ export namespace api {
             parentNodeUuid: parent.uuid,
             fields: {
                 name
+            }
+        });
+    }
+
+    export function createVehicleImageLanguage(node: HasUuid, name: string, language = 'en'): Promise<MeshNode> {
+        return post(`/${project}/nodes/${node.uuid}`, {
+            language,
+            fields: {
+                name
+            }
+        });
+    }
+
+    export async function uploadVehicleImage(
+        node: HasUuid,
+        filename = 'testImage.jpg',
+        language = 'en'
+    ): Promise<MeshNode> {
+        await login$;
+        return request(`/${project}/nodes/${node.uuid}/binary/image`, {
+            method: 'POST',
+            formData: {
+                language,
+                version: 'draft',
+                binary: {
+                    value: fs.createReadStream(Path.join(__dirname, 'assets', 'testVehicle.jpg')),
+                    options: {
+                        filename,
+                        contentType: 'image/jpeg'
+                    }
+                }
             }
         });
     }
@@ -292,20 +337,20 @@ export class PermissionsPath {
 }
 
 function get(url: string, body?: any, qs?: any) {
-    return request('GET', url, body, qs);
+    return request(url, { method: 'GET', body, qs });
 }
 
 function post(url: string, body?: any, qs?: any) {
-    return request('POST', url, body, qs);
+    return request(url, { method: 'POST', body, qs });
 }
 
 function deleteReq(url: string, qs?: any) {
-    return request('DELETE', url, undefined, qs);
+    return request(url, { method: 'DELETE', qs });
 }
 
-async function request(method: string, url: string, body?: any, qs?: any) {
+async function request(url: string, options?: rp.RequestPromiseOptions) {
     await login$;
-    return activeApi(url, { method, body, qs });
+    return activeApi(url, options);
 }
 
 const project = 'demo';
