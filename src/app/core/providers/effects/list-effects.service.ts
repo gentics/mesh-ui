@@ -72,7 +72,7 @@ export class ListEffectsService {
             );
     }
     /**
-     * Basicaly display the content of the folder in the list view
+     * Basically display the content of the folder in the list view
      */
     setActiveContainer(projectName: string, containerUuid: string, language: string) {
         // Update active container in state

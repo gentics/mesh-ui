@@ -1,5 +1,7 @@
 import { Selector } from 'testcafe';
 
+import { range } from './testUtil';
+
 export namespace selectors {
     export function gtxInputWithLabel(label: string) {
         return Selector('gtx-input')
@@ -13,5 +15,10 @@ export namespace selectors {
             .find('label')
             .withText(label)
             .parent(tagName);
+    }
+
+    export async function all(selector: Selector) {
+        const count = await selector.count;
+        return range(count).map(i => selector.nth(i));
     }
 }

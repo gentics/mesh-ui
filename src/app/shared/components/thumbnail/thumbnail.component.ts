@@ -12,6 +12,7 @@ import { EntitiesService } from '../../../state/providers/entities.service';
  * Thumbnail component for displaying node references or fields in a node.
  * # Inputs:
  * * nodeUuid (required): The node to display the the thumbnail of
+ * * language (required): The language of the referenced node to display
  * * fieldName (optional): The field to display the preview of.
  * Is none is provided, one is choosen by certain rules. See method getBinaryProperties for more details.
  * * width: The width of the thumbnail.
@@ -26,9 +27,11 @@ import { EntitiesService } from '../../../state/providers/entities.service';
 export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     @Input() nodeUuid: string;
 
+    @Input() language: string;
+
     @Input() fieldName?: string;
 
-    @Input() width?: number;
+    @Input() width = 128;
 
     @Input() height?: number;
 
@@ -58,7 +61,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         const node$ = this.entities
-            .selectNode(this.nodeUuid, { strictLanguageMatch: false })
+            .selectNode(this.nodeUuid, { language: this.language })
             // Does not emit node if it was not found
             .pipe(filter(node => !!node));
         const schema$ = node$.pipe(switchMap(node => this.entities.selectSchema(node.schema.uuid!)));
@@ -103,9 +106,11 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * Gets all the information from a node to display the thumbnail.
      * Choosing the field follows these rules:
-     * 1. If a fieldname is set in this component, that field will be chosen.
-     * 2. If not, the first binary field that contains an image will be chosen.
-     * 3. If there is no image, the first binary field will be chosen.
+     *
+     * 1. If the node does not exist in the requested language, no field will be chosen.
+     * 2. If a fieldname is set in this component, that field will be chosen.
+     * 3. If not, the first binary field that contains an image will be chosen.
+     * 4. If there is no image, the first binary field will be chosen.
      */
     private getBinaryProperties([node, schema]: [MeshNode, Schema]): BinaryProperties {
         let firstBinaryField: BinaryField | undefined;
@@ -116,11 +121,16 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
 
         let binaryProperties: BinaryProperties;
 
+        if (node.language !== this.language) {
+            return {
+                type: 'noBinary'
+            };
+        }
+
         schema.fields
             .filter(field => this.binaryFilter(field))
             .forEach(field => {
-                // TODO Remove exclamation mark as soon as mesh typing is fixed
-                const nodeField: BinaryField = node.fields[field.name!] as BinaryField;
+                const nodeField: BinaryField = node.fields[field.name] as BinaryField;
                 if (!firstBinaryField) {
                     firstBinaryField = nodeField;
                     firstBinaryFieldName = field.name;

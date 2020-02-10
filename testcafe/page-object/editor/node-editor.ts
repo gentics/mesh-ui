@@ -10,7 +10,7 @@ import { StringField } from './fields/string-field';
 
 const getWindowLocation = ClientFunction(() => window.location.href);
 
-export type LanguageVersion = 'English' | 'German';
+export type LanguageVersion = 'English' | 'German' | 'Portuguese' | 'Chinese';
 
 export namespace nodeEditor {
     export async function save(expectSuccess = true) {
