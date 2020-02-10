@@ -9,7 +9,7 @@ import { topnav } from '../../page-object/topnav';
 fixture`Project administration`.page(api.baseUrl());
 
 const projectName = 'testProject';
-test('Create project with anonymous permissions', async t => {
+test.skip('Create project with anonymous permissions', async t => {
     await login.loginAsAdmin();
     await topnav.goToAdmin();
     await projectList.createProject({ name: projectName });
@@ -22,7 +22,7 @@ test('Create project with anonymous permissions', async t => {
     await api.deleteProjectByName(projectName);
 });
 
-test('Create project without anonymous permissions', async t => {
+test.skip('Create project without anonymous permissions', async t => {
     await login.loginAsAdmin();
     await topnav.goToAdmin();
     await projectList.createProject({ name: projectName, anonymousAccess: false });
