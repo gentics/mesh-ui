@@ -9,4 +9,11 @@ export class NodeBrowserRow {
     public async open() {
         await t.click(this.element.find('.displayName a'));
     }
+
+    /**
+     * Checks the checkbox to choose the node.
+     */
+    public async choose() {
+        await t.hover(this.element).click(this.element.find('gtx-checkbox label'));
+    }
 }

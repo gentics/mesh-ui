@@ -5,6 +5,8 @@ import { login } from '../../../page-object/login';
 import { toast } from '../../../page-object/toast';
 import { inTemporaryFolder } from '../../../testUtil';
 
+fixture`Number Field`.page(api.baseUrl());
+
 // https://github.com/gentics/mesh-ui/issues/253
 test('Changing number field', async t =>
     inTemporaryFolder(async parent => {

@@ -1,4 +1,4 @@
-import { Selector } from 'testcafe';
+import { t, Selector } from 'testcafe';
 
 import { Breadcrumbs } from '../../common/breadcrumbs';
 
@@ -14,5 +14,9 @@ export namespace nodeBrowser {
                 .withText(displayName)
                 .parent('gtx-contents-list-item')
         );
+    }
+
+    export function choose() {
+        return t.click(chooseButton);
     }
 }

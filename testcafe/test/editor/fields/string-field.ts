@@ -5,6 +5,8 @@ import { login } from '../../../page-object/login';
 import { schemas } from '../../../schemas';
 import { inTemporaryFolder, requiresSchema } from '../../../testUtil';
 
+fixture`String Field`.page(api.baseUrl());
+
 // https://github.com/gentics/mesh-ui/issues/256
 test('String field with allowed values', async t =>
     requiresSchema(schemas.AllowedStringField, async schema =>
