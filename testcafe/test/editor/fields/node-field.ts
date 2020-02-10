@@ -34,7 +34,7 @@ test('Choose node dialog usability', async t => {
  * * Image in the same language of the original node
  * * Generic file icon
  */
-test.only('Preview image for non-default language', async t =>
+test('Preview image for non-default language', async t =>
     inTemporaryFolder(async parent => {
         const noImages = await api.createVehicleImage(parent, 'noImages');
         const englishOnly = await api.createVehicleImage(parent, 'englishOnly');
