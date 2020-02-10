@@ -6,7 +6,7 @@ import { topnav } from '../../page-object/topnav';
 
 fixture`Project detail`.page(api.baseUrl());
 
-test.only('Schema assignment', async t => {
+test('Schema assignment', async t => {
     await login.loginAsAdmin();
     await topnav.goToAdmin();
     await adminList.getItemByName('demo').open();
