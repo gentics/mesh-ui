@@ -15,7 +15,7 @@ test('String field with allowed values', async t =>
             await login.loginAsAdmin();
 
             await containerContents.getListItemByName(parent.fields.name).open();
-            await containerContents.getListItemByName('undefined').open();
+            await containerContents.getListItemByName(node.uuid).open();
 
             await nodeEditor.getStringField('name').setValue('testName');
             await nodeEditor.getOptionStringField('choose').setValue('option2');
