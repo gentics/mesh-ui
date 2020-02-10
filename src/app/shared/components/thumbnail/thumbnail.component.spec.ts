@@ -15,7 +15,7 @@ import { SharedModule } from '../../shared.module';
 
 import { ThumbnailComponent } from './thumbnail.component';
 
-fdescribe('Thumbnail', () => {
+describe('Thumbnail', () => {
     let appState: TestApplicationState;
 
     beforeEach(async(() => {
