@@ -69,7 +69,7 @@ export class NodeFieldComponent extends BaseFieldComponent implements OnDestroy 
                 this.changeDetector.detectChanges();
             });
 
-            this.editorEffects.loadNode(this.api.project(), this.userValue);
+            this.editorEffects.loadNode(this.api.project(), this.userValue, this.node.language);
         }
     }
 

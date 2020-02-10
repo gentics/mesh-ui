@@ -479,6 +479,7 @@ function getThumbnail(fixture: ComponentFixture<TestComponent>) {
             [height]="height"
             [nodeUuid]="nodeUuid"
             [fieldName]="fieldName"
+            language="en"
         ></mesh-thumbnail>
     `
 })
