@@ -1,7 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { fuzzyEscapeRegExp, getFuzzyRegExp } from '../../../common/util/fuzzy-search';
+import { getFuzzyRegExp } from '../../../common/util/fuzzy-search';
 
 /**
  * Adds highlighting markup to a string based on matching against a provided term, and
@@ -11,7 +10,7 @@ import { fuzzyEscapeRegExp, getFuzzyRegExp } from '../../../common/util/fuzzy-se
 export class HighlightPipe implements PipeTransform {
     constructor() {}
 
-    transform(value: string, term: string = ''): SafeHtml {
+    transform(value: string, term: string = '') {
         if (typeof term !== 'string' || term === '') {
             return value;
         }
