@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { DropdownList, InputField, IModalDialog } from 'gentics-ui-core';
 
 import { TagFamily } from '../../../common/models/tag-family.model';
@@ -37,9 +36,7 @@ export class CreateTagDialogComponent implements IModalDialog, OnInit {
     private tagFamilies: TagFamily[] = [];
 
     constructor(
-        private i18n: I18nService,
         private state: ApplicationStateService,
-        private sanitizer: DomSanitizer,
         private tagsEffects: TagsEffectsService,
         private entities: EntitiesService
     ) {}

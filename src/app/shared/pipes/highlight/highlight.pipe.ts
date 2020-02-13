@@ -9,16 +9,14 @@ import { fuzzyEscapeRegExp, getFuzzyRegExp } from '../../../common/util/fuzzy-se
  */
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
-
-    constructor(private sanitizer: DomSanitizer) {}
+    constructor() {}
 
     transform(value: string, term: string = ''): SafeHtml {
         if (typeof term !== 'string' || term === '') {
-            return this.sanitizer.bypassSecurityTrustHtml(value);
+            return value;
         }
 
         const re = getFuzzyRegExp(term);
-        const rawHtml = value.replace(re, `<span class="hl-pipe">$1</span>`);
-        return this.sanitizer.bypassSecurityTrustHtml(rawHtml);
+        return value.replace(re, `<span class="hl-pipe">$1</span>`);
     }
 }
