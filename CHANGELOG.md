@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix bug that prevented schemas to be assigned from the project detail view. [#274](https://github.com/gentics/mesh-ui/issues/274)
 - Fix node references not showing images of the same language as the edited node. [#284](https://github.com/gentics/mesh-ui/issues/284)
 
+### Security
+- Fix an XSS vulnerability in the container contents component. Thank you [@prprhyt](https://github.com/prprhyt) for making us aware of this issue!
+
 ## [1.1.0] - 2019-11-20
 ### Added
 
