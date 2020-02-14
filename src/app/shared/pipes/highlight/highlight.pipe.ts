@@ -1,7 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { fuzzyEscapeRegExp, getFuzzyRegExp } from '../../../common/util/fuzzy-search';
+import { getFuzzyRegExp } from '../../../common/util/fuzzy-search';
 
 /**
  * Adds highlighting markup to a string based on matching against a provided term, and
@@ -9,16 +8,14 @@ import { fuzzyEscapeRegExp, getFuzzyRegExp } from '../../../common/util/fuzzy-se
  */
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
+    constructor() {}
 
-    constructor(private sanitizer: DomSanitizer) {}
-
-    transform(value: string, term: string = ''): SafeHtml {
+    transform(value: string, term: string = '') {
         if (typeof term !== 'string' || term === '') {
-            return this.sanitizer.bypassSecurityTrustHtml(value);
+            return value;
         }
 
         const re = getFuzzyRegExp(term);
-        const rawHtml = value.replace(re, `<span class="hl-pipe">$1</span>`);
-        return this.sanitizer.bypassSecurityTrustHtml(rawHtml);
+        return value.replace(re, `<span class="hl-pipe">$1</span>`);
     }
 }
