@@ -115,7 +115,7 @@ pipeline {
                         GitHelper.addCommit('pom.xml package.json package-lock.json', 'Release version ' + buildVars.version)
                         GitHelper.addTag(buildVars.version, "Release of version " + buildVars.version)
                         withCredentials([usernamePassword(credentialsId: 'repo.gentics.com', usernameVariable: 'repoUsername', passwordVariable: 'repoPassword')]) {
-                            sh "./mvnw -B deploy"
+                            sh "./mvnw --settings /etc/maven-settings.xml -B deploy"
                         }
                         GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
                         GitHelper.pushTag(buildVars.version)
