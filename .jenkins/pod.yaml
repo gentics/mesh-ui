@@ -17,7 +17,7 @@ spec:
     terminationGracePeriodSeconds: 0
 
   - name: build
-    image: gtx-docker-jenkinsbuilds.docker.apa-it.at/gentics/jenkinsbuilds/nodejs-worker:2.0
+    image: gtx-docker-jenkinsbuilds.docker.apa-it.at/gentics/jenkinsbuilds/nodejs-worker:3.0
     workingDir: '/home/jenkins'
     imagePullPolicy: Always
     terminationGracePeriodSeconds: 0
