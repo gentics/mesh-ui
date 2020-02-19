@@ -114,7 +114,9 @@ pipeline {
                     sshagent(["git"]) {
                         GitHelper.addCommit('pom.xml package.json package-lock.json', 'Release version ' + buildVars.version)
                         GitHelper.addTag(buildVars.version, "Release of version " + buildVars.version)
-                        sh "./mvnw -B deploy"
+                        withCredentials([usernamePassword(credentialsId: 'repo.gentics.com', usernameVariable: 'repoUsername', passwordVariable: 'repoPassword')]) {
+                            sh "./mvnw -B deploy"
+                        }
                         GitHelper.pushBranch(GitHelper.fetchCurrentBranchName())
                         GitHelper.pushTag(buildVars.version)
                     }
