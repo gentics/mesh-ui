@@ -59,7 +59,7 @@
     "copy-to-clipboard": "^3.2.0",
     "core-js": "^2.4.1",
     "cross-env": "^5.2.0",
-    "gentics-ui-core": "^7.5.1",
+    "gentics-ui-core": "^7.10.0",
     "gentics-ui-image-editor": "^0.4.0",
     "http-server": "^0.12.1",
     "ie-shim": "^0.1.0",
