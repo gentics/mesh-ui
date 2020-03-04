@@ -1,5 +1,6 @@
 <gtx-progress-bar [active]="loading$ | async"></gtx-progress-bar>
 <div class="bar-wrapper">
-    <gtx-breadcrumbs [routerLinks]="breadcrumbs$ | async"></gtx-breadcrumbs>
+    <gtx-breadcrumbs collapsedColor="#3d3d42"
+                     [routerLinks]="breadcrumbs$ | async"></gtx-breadcrumbs>
     <mesh-content-portal [id]="BREADCRUMBS_BAR_PORTAL_ID"></mesh-content-portal>
 </div>

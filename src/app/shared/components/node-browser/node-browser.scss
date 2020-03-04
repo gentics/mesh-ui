@@ -30,4 +30,7 @@
     {
         color: $gtx-color-very-light-gray !important;
     }
+    ::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > .inner-wrapper > .lastPart::before {
+        top: 0;
+    }
 }

@@ -15,7 +15,8 @@
         </mesh-chip>
     </gtx-search-bar>
 
-    <gtx-breadcrumbs [links]="breadcrumb$ | async"
+    <gtx-breadcrumbs collapsedColor="#3d3d42"
+                     [links]="breadcrumb$ | async"
                      (linkClick)="currentNode$.next($event.uuid)"></gtx-breadcrumbs>
 </div>
 <div class="modal-content">

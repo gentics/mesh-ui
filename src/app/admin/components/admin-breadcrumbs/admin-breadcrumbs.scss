@@ -7,7 +7,7 @@
     ::ng-deep gtx-breadcrumbs > nav {
         box-shadow: none;
     }
-    
+
     ::ng-deep gtx-breadcrumbs > nav a.breadcrumb {
         color: $gtx-color-mid-gray !important;
         cursor: pointer;
@@ -16,6 +16,11 @@
     ::ng-deep gtx-breadcrumbs > nav a.breadcrumb::before
     {
         color: $gtx-color-very-light-gray !important;
+    }
+    ::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > .inner-wrapper > .lastPart::before {
+        left: 110px;
+        top: 5px;
+        height: 75%;
     }
 }
 
