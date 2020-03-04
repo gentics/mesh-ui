@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Updated several vulnerable dependencies reported by `npm audit`
 
+### Fixed
+- Fixed breadcrumbs styling (SUP-9200)
+
 ## [1.1.1] - 2020-02-19
 ### Fixed
 
