@@ -20,6 +20,11 @@
         }
     }
 
+    ::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > .inner-wrapper > .lastPart::before {
+        left: 115px;
+        top: 3px;
+    }
+
     ::ng-deep gtx-breadcrumbs > nav > .nav-wrapper > a.breadcrumb::before {
         color: $gtx-breadcrumbs-inactive-color;
     }
