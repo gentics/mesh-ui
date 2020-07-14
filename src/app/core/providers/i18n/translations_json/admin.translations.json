@@ -21,13 +21,13 @@
         "en": "Assign to role",
         "de": "Zu Rolle zuweisen",
         "zh": "分配给角色",
-        "en": "Atribuir a papel"
+        "pt": "Atribuir a papel"
     },
     "all": {
         "en": "all",
         "de": "alle",
         "zh": "全部",
-        "en": "todos"
+        "pt": "todos"
     },
     "all_groups": {
         "en": "All groups",
