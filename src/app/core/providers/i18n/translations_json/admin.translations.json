@@ -257,6 +257,10 @@
         "zh": "名字",
         "pt": "Primeiro nome"
     },
+    "admin_flag_label": {
+        "en": "Administrator permissions",
+        "de": "Administrator Berechtigungen"
+    },
     "forced_password_change_label": {
         "en": "Force user to change password on login",
         "de": "Benutzer muss Passwort beim nächsten Login ändern",
