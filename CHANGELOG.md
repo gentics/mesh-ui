@@ -4,16 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [1.1.2] - 2020-07-16
 ### Security
 - Updated several vulnerable dependencies reported by `npm audit`
 
 ### Fixed
 - Fixed breadcrumbs styling (SUP-9200)
+- Fixed I18n errors
+
+### Added
+- Added admin field support in the users dialogue.
 
 ## [1.1.1] - 2020-02-19
 ### Fixed
-
 - Fix paging not being reset after navigating to another node. [#276](https://github.com/gentics/mesh-ui/issues/276)
 - Fix bug that prevented JWT refreshes. [#285](https://github.com/gentics/mesh-ui/issues/285)
 - Fix nodes sometimes named `undefined` in node list. [#283](https://github.com/gentics/mesh-ui/issues/283)
@@ -25,13 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] - 2019-11-20
 ### Added
-
 - Added i18n support for (simplified) Chinese [#278](https://github.com/gentics/mesh-ui/pull/278)
 - Added i18n support for portuguese [#281](https://github.com/gentics/mesh-ui/pull/281)
 
 ## [1.0.2] - 2019-11-11
 ### Changed
-
 - The number of items displayed per page in the content list is now configurable. Set the `contentItemsPerPage` property in the `mesh-ui-config.js` to do so. By default the number of items is 8.
 - The project create dialog will now automatically use the last search term as name for the new project.
 - Node browser usability tweaks [#250](https://github.com/gentics/mesh-ui/issues/250)
