@@ -39,14 +39,14 @@
       "de": "Alle Gruppen",
       "zh": "所有用户组",
       "pt": "Todos os grupos",
-      "hu": "Minden csoport"
+      "hu": "Összes csoport"
     },
     "all_roles": {
       "en": "All roles",
       "de": "Alle Rollen",
       "zh": "所有角色",
       "pt": "Todos os papeis",
-      "hu": "Minden szerep"
+      "hu": "Összes szerep"
     },
     "assign_schema": {
       "en": "Assign schema",

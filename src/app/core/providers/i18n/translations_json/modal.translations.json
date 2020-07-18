@@ -18,7 +18,7 @@
       "de": "Änderungen übernehmen",
       "zh": "应用修改",
       "pt": "Aplicar edições",
-      "hu": "Alkalmazza a szerkesztéseket"
+      "hu": "Módosítások alkalmazása"
     },
     "change_password_title": {
       "en": "Change Password",
@@ -39,7 +39,7 @@
       "de": "Passwort erfolgreich geändert",
       "zh": "密码更改成功",
       "pt": "Password alterada com sucesso",
-      "hu": "A jelszó sikeresen megváltozott"
+      "hu": "Sikeres jelszó változtatás"
     },
     "confirm_navigation_body": {
       "en": "Unsaved changes will be lost.",
@@ -74,7 +74,7 @@
       "de": "Es existiert bereits ein Projekt mit diesem Namen. Bitte wählen Sie einen anderen Namen.",
       "zh": "已经存在此名称的项目。请选择其他名称。",
       "pt": "Um projeto com este nome já existe. Por favor escolha outro nome",
-      "hu": "Ilyen névvel rendelkező projekt már létezik. Kérjük, válassz másik nevet."
+      "hu": "Ilyen névve már létezik projekt. Kérjük, válassz másik nevet."
     },
     "create_project_non_container_hint": {
       "en": "The chosen schema is not a container. You will not be able to create other nodes in this project.",

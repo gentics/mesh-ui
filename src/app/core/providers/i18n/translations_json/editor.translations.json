@@ -95,7 +95,7 @@
       "de": "Node erfolgreich veröffentlicht als Version {{version}}",
       "zh": "节点已成功发布为版本{{version}}",
       "pt": "Nó publicado com sucesso como versão {{version}}",
-      "hu": "A csomópont sikeresen közzétette a(z) {{version}} verzióban"
+      "hu": "A csomópont sikeresen közzétéve {{version}} verzióval"
     },
     "node_publish_error": {
       "en": "Node could not be published",
@@ -179,14 +179,14 @@
       "de": "Datei auswählen",
       "zh": "选择文件",
       "pt": "Selecionar ficheiro",
-      "hu": "Válaszd ki a fájlt"
+      "hu": "Fájl kiválasztása"
     },
     "select_node": {
       "en": "Select node",
       "de": "Node auswählen",
       "zh": "选择节点",
       "pt": "Selecionar nó",
-      "hu": "Válaszd ki a csomópontot"
+      "hu": "Csomópont kiválasztása"
     },
     "tag_name": {
       "en": "Tag name",
@@ -228,7 +228,7 @@
       "de": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten. Bitte Vorgang wiederholen oder Hersteller kontaktieren.",
       "zh": "服务器通信期间发生错误。请重复你的操作或求助系统管理员。",
       "pt": "Um erro ocorreu durante a comunicação com o servidor. Por favor repita a ação ou comunique com a manutenção do sofware",
-      "hu": "Hiba történt a szerverrel való kommunikáció során. Kérjük, ismételd meg a műveletet vagy vedd fel a kapcsolatot a szoftver karbantartójához."
+      "hu": "Hiba történt a szerverrel való kommunikáció során. Kérjük, ismételd meg a műveletet vagy vedd fel a kapcsolatot a szoftver karbantartójával."
     },
     "path_copied": {
       "en": "Path copied to clipboard",
