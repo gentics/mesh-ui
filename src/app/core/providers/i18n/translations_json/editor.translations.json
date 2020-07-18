@@ -1,212 +1,247 @@
 {
     "add_tag": {
-      "en": "Add tag",
-      "de": "Tag hinzufügen",
-      "zh": "添加标签",
-      "pt": "Adicionar etiqueta"
+        "en": "Add tag",
+        "de": "Tag hinzufügen",
+        "zh": "添加标签",
+        "pt": "Adicionar etiqueta",
+        "hu": "Címke hozzáadása"
     },
     "binary_info": {
-      "en": "File info",
-      "de": "Datei-Info",
-      "zh": "文件信息",
-      "pt": "Informação do ficheiro"
+        "en": "File info",
+        "de": "Datei-Info",
+        "zh": "文件信息",
+        "pt": "Informação do ficheiro",
+        "hu": "Fájl információ"
     },
     "create_node": {
-      "en": "Create node",
-      "de": "Node erstellen",
-      "zh": "创建节点",
-      "pt": "Criar nó"
+        "en": "Create node",
+        "de": "Node erstellen",
+        "zh": "创建节点",
+        "pt": "Criar nó",
+        "hu": "Csomópont létrehozása"
     },
     "create_new_tag": {
-      "en": "Create new tag",
-      "de": "Neuen Tag erstellen",
-      "zh": "创建新标签",
-      "pt": "Criar etiqueta"
+        "en": "Create new tag",
+        "de": "Neuen Tag erstellen",
+        "zh": "创建新标签",
+        "pt": "Criar etiqueta",
+        "hu": "Új címke létrehozása"
     },
     "edit_image": {
-      "en": "Edit image",
-      "de": "Bild bearbeiten",
-      "zh": "编辑图像",
-      "pt": "Editar imagem"
+        "en": "Edit image",
+        "de": "Bild bearbeiten",
+        "zh": "编辑图像",
+        "pt": "Editar imagem",
+        "hu": "Kép szerkesztése"
     },
     "error_max_value": {
-      "en": "The value is greater than the maximum",
-      "de": "Der Wert is größer als Maximum",
-      "zh": "该值大于最大值",
-      "pt": "O valor é maior que o máximo"
+        "en": "The value is greater than the maximum",
+        "de": "Der Wert is größer als Maximum",
+        "zh": "该值大于最大值",
+        "pt": "O valor é maior que o máximo",
+        "hu": "Az érték nagyobb, mint a maximális"
     },
     "error_min_value": {
-      "en": "The value is below the minimum",
-      "de": "Der Wert is weniger als Minimum",
-      "zh": "该值低于最小值",
-      "pt": "O valor é menor que o mínimo"
+        "en": "The value is below the minimum",
+        "de": "Der Wert is weniger als Minimum",
+        "zh": "该值低于最小值",
+        "pt": "O valor é menor que o mínimo",
+        "hu": "Az érték a minimum alatt van"
     },
     "error_required": {
-      "en": "This field is required",
-      "de": "Dieses Feld is erforderlich",
-      "zh": "此字段为必填",
-      "pt": "Este campo é obrigatório"
+        "en": "This field is required",
+        "de": "Dieses Feld is erforderlich",
+        "zh": "此字段为必填",
+        "pt": "Este campo é obrigatório",
+        "hu": "Ez a mező kötelező"
     },
     "error_number": {
-      "en": "This field must be a valid number",
-      "de": "Dieses Feld muss eine gültige Zahl sein",
-      "zh": "此字段必须为有效数字",
-      "pt": "Este campo deve ser um número válido"
+        "en": "This field must be a valid number",
+        "de": "Dieses Feld muss eine gültige Zahl sein",
+        "zh": "此字段必须为有效数字",
+        "pt": "Este campo deve ser um número válido",
+        "hu": "Ennek a mezőnek érvényes számnak kell lennie"
     },
     "language_switch_to": {
-      "en": "Switch to {{language}}",
-      "de": "Auf {{language}} umschalten",
-      "zh": "切换至 {{language}}",
-      "pt": "Alterar para {{language}}"
+        "en": "Switch to {{language}}",
+        "de": "Auf {{language}} umschalten",
+        "zh": "切换至 {{language}}",
+        "pt": "Alterar para {{language}}",
+        "hu": "Váltás a következőre: {{language}}"
     },
     "language_translate_to": {
-      "en": "Create {{language}} version",
-      "de": "{{language}} Variante erstellen",
-      "zh": "创建 {{language}} 版本",
-      "pt": "Criar versão {{language}}"
+        "en": "Create {{language}} version",
+        "de": "{{language}} Variante erstellen",
+        "zh": "创建 {{language}} 版本",
+        "pt": "Criar versão {{language}}",
+        "hu": "{{language}} verzió létrehozása"
     },
     "node_already_unpublished": {
-      "en": "The node is already unpublished",
-      "de": "Der Node ist bereits depubliziert",
-      "zh": "该节点已经是未发布状态",
-      "pt": "Já foi removida a publicação deste nó"
+        "en": "The node is already unpublished",
+        "de": "Der Node ist bereits depubliziert",
+        "zh": "该节点已经是未发布状态",
+        "pt": "Já foi removida a publicação deste nó",
+        "hu": "A csomópont már nincs közzétéve"
     },
     "node_published": {
-      "en": "Node successfully published",
-      "de": "Node erfolgreich veröffentlicht",
-      "zh": "节点发布成功",
-      "pt": "Nó publicado com sucesso"
+        "en": "Node successfully published",
+        "de": "Node erfolgreich veröffentlicht",
+        "zh": "节点发布成功",
+        "pt": "Nó publicado com sucesso",
+        "hu": "A csomópont sikeresen közzétéve"
     },
     "node_language_published": {
-      "en": "Node successfully published as version {{version}}",
-      "de": "Node erfolgreich veröffentlicht als Version {{version}}",
-      "zh": "节点已成功发布为版本{{version}}",
-      "pt": "Nó publicado com sucesso como versão {{version}}"
+        "en": "Node successfully published as version {{version}}",
+        "de": "Node erfolgreich veröffentlicht als Version {{version}}",
+        "zh": "节点已成功发布为版本{{version}}",
+        "pt": "Nó publicado com sucesso como versão {{version}}",
+        "hu": "A csomópont sikeresen közzétette a(z) {{version}} verzióban"
     },
     "node_publish_error": {
-      "en": "Node could not be published",
-      "de": "Node könnte nicht veröffentlicht werden",
-      "zh": "节点无法发布",
-      "pt": "Não foi possível publicar o nó"
+        "en": "Node could not be published",
+        "de": "Node könnte nicht veröffentlicht werden",
+        "zh": "节点无法发布",
+        "pt": "Não foi possível publicar o nó",
+        "hu": "A csomópontot nem lehetett közzétenni"
     },
     "node_saved": {
-      "en": "Node successfully saved",
-      "de": "Node erfolgreich gespeichert",
-      "zh": "节点保存成功",
-      "pt": "Nó gravado com sucesso"
+        "en": "Node successfully saved",
+        "de": "Node erfolgreich gespeichert",
+        "zh": "节点保存成功",
+        "pt": "Nó gravado com sucesso",
+        "hu": "A csomópont mentése sikeres volt"
     },
     "node_save_error": {
-      "en": "Node could not be saved",
-      "de": "Node könnte nicht gespeichert werden",
-      "zh": "无法保存节点",
-      "pt": "Não foi possível gravar o nó"
+        "en": "Node could not be saved",
+        "de": "Node könnte nicht gespeichert werden",
+        "zh": "无法保存节点",
+        "pt": "Não foi possível gravar o nó",
+        "hu": "A csomópont nem menthető"
     },
     "node_unpublished": {
-      "en": "Node unpublished successfully",
-      "de": "Node erfolgreich depubliziert",
-      "zh": "节点已成功更改为未发布状态",
-      "pt": "Removida a publicação do nó com sucesso"
+        "en": "Node unpublished successfully",
+        "de": "Node erfolgreich depubliziert",
+        "zh": "节点已成功更改为未发布状态",
+        "pt": "Removida a publicação do nó com sucesso",
+        "hu": "A csomópont sikeresen visszavonva"
     },
     "publish_all": {
-      "en": "Publish all languages",
-      "de": "Alle Sprachen veröffentlichen",
-      "zh": "发布所有语言",
-      "pt": "Publicar todas as línguas"
+        "en": "Publish all languages",
+        "de": "Alle Sprachen veröffentlichen",
+        "zh": "发布所有语言",
+        "pt": "Publicar todas as línguas",
+        "hu": "Közzététel az összes nyelven"
     },
     "publish_button": {
-      "en": "Publish",
-      "de": "Veröffentlichen",
-      "zh": "发布",
-      "pt": "Publicar"
+        "en": "Publish",
+        "de": "Veröffentlichen",
+        "zh": "发布",
+        "pt": "Publicar",
+        "hu": "Közzététel"
     },
     "preview_button": {
-      "en": "Preview",
-      "de": "Vorschau",
-      "zh": "预览",
-      "pt": "Pré-visualizar"
+        "en": "Preview",
+        "de": "Vorschau",
+        "zh": "预览",
+        "pt": "Pré-visualizar",
+        "hu": "Előnézet"
     },
     "remove_list_item_tooltip": {
-      "en": "Drop here to remove",
-      "de": "Zum Entfernen hier ablegen",
-      "zh": "拖放到此处以删除",
-      "pt": "Solte aqui para remover"
+        "en": "Drop here to remove",
+        "de": "Zum Entfernen hier ablegen",
+        "zh": "拖放到此处以删除",
+        "pt": "Solte aqui para remover",
+        "hu": "Dobd ide az eltávolításhoz"
     },
     "replace_file": {
-      "en": "Replace file",
-      "de": "Datei ersetzen",
-      "zh": "替换文件",
-      "pt": "Substituir ficheiro"
+        "en": "Replace file",
+        "de": "Datei ersetzen",
+        "zh": "替换文件",
+        "pt": "Substituir ficheiro",
+        "hu": "Fájl cseréje"
     },
     "remove_file": {
-      "en": "Remove file",
-      "de": "Datei entfernen",
-      "zh": "删除文件",
-      "pt": "Remover ficheiro"
+        "en": "Remove file",
+        "de": "Datei entfernen",
+        "zh": "删除文件",
+        "pt": "Remover ficheiro",
+        "hu": "Fájl törlése"
     },
     "save_button": {
-      "en": "Save",
-      "de": "Speichern",
-      "zh": "保存",
-      "pt": "Gravar"
+        "en": "Save",
+        "de": "Speichern",
+        "zh": "保存",
+        "pt": "Gravar",
+        "hu": "Mentés"
     },
     "select_file": {
-      "en": "Select file",
-      "de": "Datei auswählen",
-      "zh": "选择文件",
-      "pt": "Selecionar ficheiro"
+        "en": "Select file",
+        "de": "Datei auswählen",
+        "zh": "选择文件",
+        "pt": "Selecionar ficheiro",
+        "hu": "Válaszd ki a fájlt"
     },
     "select_node": {
-      "en": "Select node",
-      "de": "Node auswählen",
-      "zh": "选择节点",
-      "pt": "Selecionar nó"
+        "en": "Select node",
+        "de": "Node auswählen",
+        "zh": "选择节点",
+        "pt": "Selecionar nó",
+        "hu": "Válaszd ki a csomópontot"
     },
     "tag_name": {
-      "en": "Tag name",
-      "de": "Tag hinzufügen",
-      "zh": "标签名称",
-      "pt": "Nome da etiqueta"
+        "en": "Tag name",
+        "de": "Tag hinzufügen",
+        "zh": "标签名称",
+        "pt": "Nome da etiqueta",
+        "hu": "Címke neve"
     },
     "unpublish": {
-      "en": "Unpublish",
-      "de": "Depublizieren",
-      "zh": "取消发布",
-      "pt": "Remover publicação"
+        "en": "Unpublish",
+        "de": "Depublizieren",
+        "zh": "取消发布",
+        "pt": "Remover publicação",
+        "hu": "Visszavonás"
     },
     "unpublish_all": {
-      "en": "Unpublish all languages",
-      "de": "Alle Sprachen depublizieren",
-      "zh": "取消发布所有语言",
-      "pt": "Remover publicação de todas as linguas"
+        "en": "Unpublish all languages",
+        "de": "Alle Sprachen depublizieren",
+        "zh": "取消发布所有语言",
+        "pt": "Remover publicação de todas as linguas",
+        "hu": "Az összes nyelv közzétételének visszavonása"
     },
     "no_projects": {
-      "en": "No projects to display.",
-      "de": "Es existieren keine Projekte.",
-      "zh": "没有要显示的项目。",
-      "pt": "Nenhum projeto para mostrar"
+        "en": "No projects to display.",
+        "de": "Es existieren keine Projekte.",
+        "zh": "没有要显示的项目。",
+        "pt": "Nenhum projeto para mostrar",
+        "hu": "Nincs megjeleníthető projekt"
     },
     "create_new_project": {
-      "en": "Create a new project",
-      "de": "Neues Projekt erstellen",
-      "zh": "创建一个新项目",
-      "pt": "Criar novo projeto"
+        "en": "Create a new project",
+        "de": "Neues Projekt erstellen",
+        "zh": "创建一个新项目",
+        "pt": "Criar novo projeto",
+        "hu": "Új projekt létrehozása"
     },
     "server_error": {
-      "en": "An error occured during server communication. Please repeat your action or get back to the software maintainer.",
-      "de": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten. Bitte Vorgang wiederholen oder Hersteller kontaktieren.",
-      "zh": "服务器通信期间发生错误。请重复你的操作或求助系统管理员。",
-      "pt": "Um erro ocorreu durante a comunicação com o servidor. Por favor repita a ação ou comunique com a manutenção do sofware"
+        "en": "An error occured during server communication. Please repeat your action or get back to the software maintainer.",
+        "de": "Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten. Bitte Vorgang wiederholen oder Hersteller kontaktieren.",
+        "zh": "服务器通信期间发生错误。请重复你的操作或求助系统管理员。",
+        "pt": "Um erro ocorreu durante a comunicação com o servidor. Por favor repita a ação ou comunique com a manutenção do sofware",
+        "hu": "Hiba történt a szerverrel való kommunikáció során. Kérjük, ismételd meg a műveletet vagy vedd fel a kapcsolatot a szoftver karbantartójához."
     },
     "path_copied": {
-      "en": "Path copied to clipboard",
-      "de": "Pfad in die Zwischenablage kopiert",
-      "zh": "路径已复制到剪贴板",
-      "pt": "Caminho copiado para a zona de transferência"
+        "en": "Path copied to clipboard",
+        "de": "Pfad in die Zwischenablage kopiert",
+        "zh": "路径已复制到剪贴板",
+        "pt": "Caminho copiado para a zona de transferência",
+        "hu": "Elérési út másolása a vágólapra"
     },
     "path_copy_failed": {
-      "en": "No webroot path for this node found",
-      "de": "Keinen Webroot-Pfad für diesen Node gefunden",
-      "zh": "找不到此节点的webroot路径",
-      "pt": "Nenhum caminho webroot para este nó foi encontrado"
+        "en": "No webroot path for this node found",
+        "de": "Keinen Webroot-Pfad für diesen Node gefunden",
+        "zh": "找不到此节点的webroot路径",
+        "pt": "Nenhum caminho webroot para este nó foi encontrado",
+        "hu": "Nem található webroot elérési út ehhez a csomóponthoz"
     }
-  }
+}

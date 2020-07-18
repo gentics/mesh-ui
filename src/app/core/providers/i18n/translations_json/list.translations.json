@@ -3,84 +3,98 @@
         "en": "Copy",
         "de": "Kopieren",
         "zh": "复制",
-        "pt": "Copiar"
+        "pt": "Copiar",
+        "hu": "Másolás"
     },
     "copy_success": {
         "en": "Node copied successfully",
         "de": "Node erfolgreich kopiert",
         "zh": "节点复制成功",
-        "pt": "Nó copiado com sucesso"
+        "pt": "Nó copiado com sucesso",
+        "hu": "Sikeres csomópont másolás"
     },
     "copy_error": {
         "en": "Copying node failed\n{{error}}",
         "de": "Kopieren des Nodes fehlgeschlagen\n{{error}}",
         "zh": "复制节点失败\n{{error}}",
-        "pt": "Falha ao copiar o nó\n{{error}}"
+        "pt": "Falha ao copiar o nó\n{{error}}",
+        "hu": "Sikertelen csomópont másolás\n{{error}}"
     },
     "language_select_switch_to": {
         "en": "Display nodes in {{language}}",
         "de": "Nodes in {{language}} zeigen",
         "zh": "显示 {{language}} 节点",
-        "pt": "Mostrar os nós em {{language}}"
+        "pt": "Mostrar os nós em {{language}}",
+        "hu": "{{language}} nyelvű csomópontok megjelenítése"
     },
     "move": {
         "en": "Move",
         "de": "Verschieben",
         "zh": "移动",
-        "pt": "Mover"
+        "pt": "Mover",
+        "hu": "Áthelyezés"
     },
     "move_success": {
         "en": "Node moved successfully",
         "de": "Node erfolgreich verschoben",
         "zh": "节点移动成功",
-        "pt": "Nó movido com sucesso"
+        "pt": "Nó movido com sucesso",
+        "hu": "Sikeres csomópont áthelyezés"
     },
     "move_error": {
         "en": "Moving node failed\n{{error}}",
         "de": "Verschieben des Nodes fehlgeschlagen\n{{error}}",
         "zh": "移动节点失败\n{{error}}",
-        "pt": "Falha ao mover o nó\n{{error}}"
+        "pt": "Falha ao mover o nó\n{{error}}",
+        "hu": "Sikertelen csomópont áthelyezés\n{{error}}"
     },
     "folder_dialog_title": {
         "en": "Choose destination container",
         "de": "Zielcontainer wählen",
         "zh": "选择目标容器",
-        "pt": "Escolha o contentor destino"
+        "pt": "Escolha o contentor destino",
+        "hu": "Válaszd ki a cél tárolót"
     },
     "delete": {
         "en": "Delete",
         "de": "Löschen",
         "zh": "删除",
-        "pt": "Apagar"
+        "pt": "Apagar",
+        "hu": "Törlés"
     },
     "edit": {
         "en": "Edit",
         "de": "Bearbeiten",
         "zh": "编辑",
-        "pt": "Editar"
+        "pt": "Editar",
+        "hu": "Szerkesztés"
     },
     "no_results": {
         "en": "No results",
         "de": "Keine Ergebnisse",
         "zh": "没有找到结果",
-        "pt": "Nenhum resultado"
+        "pt": "Nenhum resultado",
+        "hu": "Nincs találat"
     },
     "search_error_occured": {
         "en": "An error has occurred while performing search",
         "de": "Ein Fehler ist aufgetreten",
         "zh": "执行搜索时发生错误",
-        "pt": "Um erro ocorreu ao realizar a procura"
+        "pt": "Um erro ocorreu ao realizar a procura",
+        "hu": "Hiba történt a keresés közben"
     },
     "upload_files": {
         "en": "Upload files",
         "de": "Dateien hochladen",
         "zh": "上传文件",
-        "pt": "Carregar ficheiros"
+        "pt": "Carregar ficheiros",
+        "hu": "Fájl feltöltés"
     },
     "choose_files": {
         "en": "Select or drop files...",
         "de": "Dateien auswählen oder hier ablegen...",
         "zh": "选择或拖放文件到此处...",
-        "pt": "Selecione ou large ficheiros"
+        "pt": "Selecione ou large ficheiros",
+        "hu": "Válassz vagy ejts ide fájlokat..."
     }
 }
