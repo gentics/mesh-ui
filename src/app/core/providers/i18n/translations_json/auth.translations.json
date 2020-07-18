@@ -3,42 +3,49 @@
       "en": "Login failed",
       "de": "Anmeldung fehlgeschlagen",
       "zh": "登录失败",
-      "pt": "Autenticação falhou"
+      "pt": "Autenticação falhou",
+      "hu": "Sikertelen bejelentkezés"
     },
     "change_password": {
       "en": "Change password",
       "de": "Passwort ändern",
       "zh": "更改密码",
-      "pt": "Alterar palavra-chave"
+      "pt": "Alterar palavra-chave",
+      "hu": "Jelszó módosítása"
     },
     "login": {
       "en": "Log In",
       "de": "Einzuloggen",
       "zh": "登录",
-      "pt": "Entrar"
+      "pt": "Entrar",
+      "hu": "Bejelentkezés"
     },
     "logout": {
-        "en": "Log out",
-        "de": "Ausloggen",
-        "zh": "退出登录",
-        "pt": "Sair"
+      "en": "Log out",
+      "de": "Ausloggen",
+      "zh": "退出登录",
+      "pt": "Sair",
+      "hu": "Kijelentkezés"
     },
     "forced_password_change_message": {
       "en": "You have to change your password to login.",
       "de": "Sie müssen Ihr Passwort ändern, um sich einzuloggen.",
       "zh": "你必须更改密码才能登录。",
-      "pt": "Tem de alterar a palavra-chave para entrar"
+      "pt": "Tem de alterar a palavra-chave para entrar",
+      "hu": "Meg kell változtatnod a jelszót a bejelentkezéshez."
     },
     "password_mismatch": {
       "en": "Password doesn't match",
       "de": "Die Passwörter stimmen nicht überein",
       "zh": "密码不匹配",
-      "pt": "Palavra-chave difere"
+      "pt": "Palavra-chave difere",
+      "hu": "A jelszavak nem egyeznek"
     },
     "session_expired": {
       "en": "Your session has expired. Please login again.",
       "de": "Ihre Sitzung ist abgelaufen. Bitte loggen Sie sich erneut ein.",
       "zh": "你的会话已过期。 请重新登录。",
-      "pt": "A sessão expirou. Por favor autentique-se novamente"
+      "pt": "A sessão expirou. Por favor autentique-se novamente",
+      "hu": "A munkameneted lejárt. Kérlek jelentkezz be újra."
     }
 }

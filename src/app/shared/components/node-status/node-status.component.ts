@@ -73,6 +73,10 @@ export class NodeStatusComponent implements OnChanges, OnDestroy {
         pt: {
             date: 'dd-MM-yyyy',
             time: 'HH:mm:ss'
+        },
+        hu: {
+            date: 'yyyy.MM.dd.',
+            time: 'HH:mm:ss'
         }
     };
 

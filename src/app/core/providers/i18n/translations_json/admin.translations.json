@@ -1,972 +1,1134 @@
 {
     "add_selected_groups_to_role": {
-        "en": "Assign {{count}} groups to role",
-        "de": "{{count}} Gruppen zu Rolle zuweisen",
-        "zh": "将 {{count}} 个用户组分配给角色",
-        "pt": "Atribuir {{count}} grupos a papel"
+      "en": "Assign {{count}} groups to role",
+      "de": "{{count}} Gruppen zu Rolle zuweisen",
+      "zh": "将 {{count}} 个用户组分配给角色",
+      "pt": "Atribuir {{count}} grupos a papel",
+      "hu": "{{count}} csoport szerephez rendelése"
     },
     "add_selected_users_to_group": {
-        "en": "Assign {{count}} users to group",
-        "de": "{{count}} Benutzer zu Gruppe zuweisen",
-        "zh": "分配 {{count}} 个用户到用户组",
-        "pt": "Atribuir {{count}} utilizadores a grupo"
+      "en": "Assign {{count}} users to group",
+      "de": "{{count}} Benutzer zu Gruppe zuweisen",
+      "zh": "分配 {{count}} 个用户到用户组",
+      "pt": "Atribuir {{count}} utilizadores a grupo",
+      "hu": "{{count}} felhasználó csoporthoz rendelése"
     },
     "add_user_to_group": {
-        "en": "Assign to group",
-        "de": "Zu Gruppe zuweisen",
-        "zh": "分配给用户组",
-        "pt": "Atribuir a grupo"
+      "en": "Assign to group",
+      "de": "Zu Gruppe zuweisen",
+      "zh": "分配给用户组",
+      "pt": "Atribuir a grupo",
+      "hu": "Hozzárendelés csoporthoz"
     },
     "add_permission_to_role": {
-        "en": "Assign to role",
-        "de": "Zu Rolle zuweisen",
-        "zh": "分配给角色",
-        "pt": "Atribuir a papel"
+      "en": "Assign to role",
+      "de": "Zu Rolle zuweisen",
+      "zh": "分配给角色",
+      "pt": "Atribuir a papel",
+      "hu": "Hozzárendelés szerephez"
     },
     "all": {
-        "en": "all",
-        "de": "alle",
-        "zh": "全部",
-        "pt": "todos"
+      "en": "all",
+      "de": "alle",
+      "zh": "全部",
+      "pt": "todos",
+      "hu": "összes"
     },
     "all_groups": {
-        "en": "All groups",
-        "de": "Alle Gruppen",
-        "zh": "所有用户组",
-        "pt": "Todos os grupos"
+      "en": "All groups",
+      "de": "Alle Gruppen",
+      "zh": "所有用户组",
+      "pt": "Todos os grupos",
+      "hu": "Összes csoport"
     },
     "all_roles": {
-        "en": "All roles",
-        "de": "Alle Rollen",
-        "zh": "所有角色",
-        "pt": "Todos os papeis"
+      "en": "All roles",
+      "de": "Alle Rollen",
+      "zh": "所有角色",
+      "pt": "Todos os papeis",
+      "hu": "Összes szerep"
     },
     "assign_schema": {
-        "en": "Assign schema",
-        "de": "Schema zuordnen",
-        "zh": "分配数据模型",
-        "pt": "Atribuir esquema"
+      "en": "Assign schema",
+      "de": "Schema zuordnen",
+      "zh": "分配数据模型",
+      "pt": "Atribuir esquema",
+      "hu": "Hozzárendelés sémához"
     },
     "assign_schema_confirmation": {
-        "en": "Do you want to assign schema \"{{ name }}\" to a project?",
-        "de": "Wollen Sie das Schema \"{{ name }}\" einem Projekt zuordnen?",
-        "zh": "你是否要为项目分配数据模型 \"{{name}}\"？",
-        "pt": "Deseja atribuir o esquema \"{{name}}\" a um projeto？"
+      "en": "Do you want to assign schema \"{{ name }}\" to a project?",
+      "de": "Wollen Sie das Schema \"{{ name }}\" einem Projekt zuordnen?",
+      "zh": "你是否要为项目分配数据模型 \"{{name}}\"？",
+      "pt": "Deseja atribuir o esquema \"{{name}}\" a um projeto？",
+      "hu": "Szeretnéd a(z) \"{{ name }}\" sémát hozzárendelni a projekthez?"
     },
     "apply_recursively": {
-        "en": "Apply recursively",
-        "de": "Rekursiv anwenden",
-        "zh": "应用到所有子项",
-        "pt": "Aplicar recursivamente"
+      "en": "Apply recursively",
+      "de": "Rekursiv anwenden",
+      "zh": "应用到所有子项",
+      "pt": "Aplicar recursivamente",
+      "hu": "Alkalmazás mindre"
     },
     "delete_selected_schemas": {
-        "en": "Delete {{count}} schemas",
-        "de": "{{count }} Schemas löschen",
-        "zh": "删除 {{count}} 个数据模型",
-        "pt": "Apagar {{count}} esquemas"
+      "en": "Delete {{count}} schemas",
+      "de": "{{count }} Schemas löschen",
+      "zh": "删除 {{count}} 个数据模型",
+      "pt": "Apagar {{count}} esquemas",
+      "hu": "{{count}} séma törlése"
     },
     "delete_selected_microschemas": {
-        "en": "Delete {{count}} microschemas",
-        "de": "{{count }} Microschemas löschen",
-        "zh": "删除 {{count}} 个内嵌数据模型",
-        "pt": "Apagar {{count}} microesquemas"
+      "en": "Delete {{count}} microschemas",
+      "de": "{{count }} Microschemas löschen",
+      "zh": "删除 {{count}} 个内嵌数据模型",
+      "pt": "Apagar {{count}} microesquemas",
+      "hu": "{{count}} mikroséma törlése"
     },
     "delete_selected_schemas_confirmation": {
-        "en": "You are about to permanently delete {{ count }} schemas.",
-        "de": "Wollen Sie {{ count }} Schemas permanent löschen?",
-        "zh": "你将永久删除 {{count}} 个数据模型。",
-        "pt": "Está prestes a apagar permanentemente {{ count }} esquemas"
+      "en": "You are about to permanently delete {{ count }} schemas.",
+      "de": "Wollen Sie {{ count }} Schemas permanent löschen?",
+      "zh": "你将永久删除 {{count}} 个数据模型。",
+      "pt": "Está prestes a apagar permanentemente {{ count }} esquemas",
+      "hu": "Véglegesen törölsz {{ count }} sémát?"
     },
     "delete_selected_microschemas_confirmation": {
-        "en": "You are about to permanently delete {{ count }} microschemas.",
-        "de": "Wollen Sie {{ count }} Microschemas permanent löschen?",
-        "zh": "你将要永久删除 {{count}} 个内嵌数据模型。",
-        "pt": "Está prestes a apagar permanentemente {{ count }} microesquemas"
+      "en": "You are about to permanently delete {{ count }} microschemas.",
+      "de": "Wollen Sie {{ count }} Microschemas permanent löschen?",
+      "zh": "你将要永久删除 {{count}} 个内嵌数据模型。",
+      "pt": "Está prestes a apagar permanentemente {{ count }} microesquemas",
+      "hu": "Véglegesen törölsz {{ count }} mikrosémát?"
     },
     "delete_schema": {
-        "en": "Delete schema",
-        "de": "Schema löschen",
-        "zh": "删除数据模型",
-        "pt": "Apagar esquema"
+      "en": "Delete schema",
+      "de": "Schema löschen",
+      "zh": "删除数据模型",
+      "pt": "Apagar esquema",
+      "hu": "Séma törlése"
     },
     "delete_schemafield": {
-        "en": "Delete schemafield",
-        "de": "Schemafeld löschen",
-        "zh": "删除数据模型字段",
-        "pt": "Apagar campo de esquema"
+      "en": "Delete schemafield",
+      "de": "Schemafeld löschen",
+      "zh": "删除数据模型字段",
+      "pt": "Apagar campo de esquema",
+      "hu": "Sémamező törlése"
     },
     "delete_microschema": {
-        "en": "Delete microschema",
-        "de": "Microschema löschen",
-        "zh": "删除内嵌数据模型",
-        "pt": "Apagar microesquema"
+      "en": "Delete microschema",
+      "de": "Microschema löschen",
+      "zh": "删除内嵌数据模型",
+      "pt": "Apagar microesquema",
+      "hu": "Mikroséma törlése"
     },
     "delete_schema_confirmation": {
-        "en": "You are about to permanently delete schema '{{ name }}'.",
-        "de": "Wollen Sie '{{ name }}' permanent löschen?",
-        "zh": "你将要永久删除数据模型'{{name}}'。",
-        "pt": "Está prestes a apagar permanentemente o esquema '{{ name }}'."
+      "en": "You are about to permanently delete schema '{{ name }}'.",
+      "de": "Wollen Sie '{{ name }}' permanent löschen?",
+      "zh": "你将要永久删除数据模型'{{name}}'。",
+      "pt": "Está prestes a apagar permanentemente o esquema '{{ name }}'.",
+      "hu": "Véglegesen törlöd a(z) '{{ name }}' sémát?"
     },
     "delete_microschema_confirmation": {
-        "en": "You are about to permanently delete microschema '{{ name }}'.",
-        "de": "Wollen Sie '{{ name }}' permanent löschen?",
-        "zh": "你将永久删除内嵌数据模型'{{name}}'。",
-        "pt": "Está prestes a apagar permanentemente o microesquema '{{ name }}'."
+      "en": "You are about to permanently delete microschema '{{ name }}'.",
+      "de": "Wollen Sie '{{ name }}' permanent löschen?",
+      "zh": "你将永久删除内嵌数据模型'{{name}}'。",
+      "pt": "Está prestes a apagar permanentemente o microesquema '{{ name }}'.",
+      "hu": "Véglegesen törlöd a(z) '{{ name }}' mikrosémát."
     },
     "assigned_to_projects": {
-        "en": "Assigned to projects",
-        "de": "Zugewiesen zu Projekte",
-        "zh": "分配给项目",
-        "pt": "Atribuido aos projectos"
+      "en": "Assigned to projects",
+      "de": "Zugewiesen zu Projekte",
+      "zh": "分配给项目",
+      "pt": "Atribuido aos projectos",
+      "hu": "Projektekhez rendelve"
     },
     "create_group": {
-        "en": "Create group",
-        "de": "Gruppe erstellen",
-        "zh": "创建用户组",
-        "pt": "Criar grupo"
+      "en": "Create group",
+      "de": "Gruppe erstellen",
+      "zh": "创建用户组",
+      "pt": "Criar grupo",
+      "hu": "Csoport létrehozása"
     },
     "create_role": {
-        "en": "Create role",
-        "de": "Rolle erstellen",
-        "zh": "创建角色",
-        "pt": "Criar papel"
+      "en": "Create role",
+      "de": "Rolle erstellen",
+      "zh": "创建角色",
+      "pt": "Criar papel",
+      "hu": "Szerep létrehozása"
     },
     "create_tag": {
-        "en": "Create tag",
-        "de": "Tag erstellen",
-        "zh": "创建标签",
-        "pt": "Criar etiqueta"
+      "en": "Create tag",
+      "de": "Tag erstellen",
+      "zh": "创建标签",
+      "pt": "Criar etiqueta",
+      "hu": "Címke létrehozása"
     },
     "create_user": {
-        "en": "Create user",
-        "de": "Benutzer erstellen",
-        "zh": "创建用户",
-        "pt": "Criar utilizador"
+      "en": "Create user",
+      "de": "Benutzer erstellen",
+      "zh": "创建用户",
+      "pt": "Criar utilizador",
+      "hu": "Felhasználó létrehozása"
     },
     "delete_group": {
-        "en": "Delete group",
-        "de": "Gruppe löschen",
-        "zh": "删除用户组",
-        "pt": "Apagar grupo"
+      "en": "Delete group",
+      "de": "Gruppe löschen",
+      "zh": "删除用户组",
+      "pt": "Apagar grupo",
+      "hu": "Csoport törlése"
     },
     "delete_role": {
-        "en": "Delete role",
-        "de": "Rolle löschen",
-        "zh": "删除角色",
-        "pt": "Apagar papel"
+      "en": "Delete role",
+      "de": "Rolle löschen",
+      "zh": "删除角色",
+      "pt": "Apagar papel",
+      "hu": "Szerep törlése"
     },
     "delete_label": {
-        "en": "Delete",
-        "de": "Löschen",
-        "zh": "删除",
-        "pt": "Apagar"
+      "en": "Delete",
+      "de": "Löschen",
+      "zh": "删除",
+      "pt": "Apagar",
+      "hu": "Törlés"
     },
     "delete_selected_users": {
-        "en": "Delete {{ count }} users",
-        "de": "{{ count }} Benutzer löschen",
-        "zh": "删除 {{count}} 个用户",
-        "pt": "Apagar {{ count }} utilizadores"
+      "en": "Delete {{ count }} users",
+      "de": "{{ count }} Benutzer löschen",
+      "zh": "删除 {{count}} 个用户",
+      "pt": "Apagar {{ count }} utilizadores",
+      "hu": "{{ count }} felhasználó törlése"
     },
     "delete_selected_users_confirmation": {
-        "en": "You are about to permanently delete {{ count }} users.",
-        "de": "Wollen Sie {{ count }} Benutzer permanent löschen?",
-        "zh": "你将要永久删除 {{count}} 个用户。",
-        "pt": "Está prestes a apagar permanentemente {{ count }} utilizadores"
+      "en": "You are about to permanently delete {{ count }} users.",
+      "de": "Wollen Sie {{ count }} Benutzer permanent löschen?",
+      "zh": "你将要永久删除 {{count}} 个用户。",
+      "pt": "Está prestes a apagar permanentemente {{ count }} utilizadores",
+      "hu": "Véglegesen törölsz {{ count }} felhasználót?"
     },
     "delete_user": {
-        "en": "Delete user",
-        "de": "Benutzer löschen",
-        "zh": "删除用户",
-        "pt": "Apagar utilizador"
+      "en": "Delete user",
+      "de": "Benutzer löschen",
+      "zh": "删除用户",
+      "pt": "Apagar utilizador",
+      "hu": "Felhasználó törlése"
     },
     "delete_user_confirmation": {
-        "en": "You are about to permanently delete user '{{ username }}'.",
-        "de": "Wollen Sie '{{ username }}' permanent löschen?",
-        "zh": "你将永久删除用户 '{{username}}'。",
-        "pt": "Está prestes a apagar permanentemente o utilizador '{{ username }}'."
+      "en": "You are about to permanently delete user '{{ username }}'.",
+      "de": "Wollen Sie '{{ username }}' permanent löschen?",
+      "zh": "你将永久删除用户 '{{username}}'。",
+      "pt": "Está prestes a apagar permanentemente o utilizador '{{ username }}'.",
+      "hu": "Véglegesen törlöd a(z) '{{ username }}' felhasználót?"
     },
     "delete_selected_groups": {
-        "en": "Delete {{ count }} groups",
-        "de": "{{ count }} Gruppen löschen",
-        "zh": "删除 {{count}} 个用户组",
-        "pt": "Apagar {{ count }} grupos"
+      "en": "Delete {{ count }} groups",
+      "de": "{{ count }} Gruppen löschen",
+      "zh": "删除 {{count}} 个用户组",
+      "pt": "Apagar {{ count }} grupos",
+      "hu": "{{ count }} csoport törlése"
     },
     "delete_selected_groups_confirmation": {
-        "en": "You are about to permanently delete {{ count }} groups.",
-        "de": "Wollen Sie {{ count }} Gruppen permanent löschen?",
-        "zh": "你将要永久删除 {{count}} 个用户组。",
-        "pt": "Está prestes a apagar permanentemente {{ count }} grupos"
+      "en": "You are about to permanently delete {{ count }} groups.",
+      "de": "Wollen Sie {{ count }} Gruppen permanent löschen?",
+      "zh": "你将要永久删除 {{count}} 个用户组。",
+      "pt": "Está prestes a apagar permanentemente {{ count }} grupos",
+      "hu": "Véglegesen törölsz {{ count }} csoportot?"
     },
     "delete_group_confirmation": {
-        "en": "You are about to permanently delete group '{{ groupname }}'.",
-        "de": "Wollen Sie '{{ groupname }}' permanent löschen?",
-        "zh": "你将要永久删除用户组 '{{groupname}}'。",
-        "pt": "Está prestes a apagar permanentemente o grupo '{{ groupname }}'."
+      "en": "You are about to permanently delete group '{{ groupname }}'.",
+      "de": "Wollen Sie '{{ groupname }}' permanent löschen?",
+      "zh": "你将要永久删除用户组 '{{groupname}}'。",
+      "pt": "Está prestes a apagar permanentemente o grupo '{{ groupname }}'.",
+      "hu": "Véglegesen törlöd a(z) '{{ groupname }}' csoportot?"
     },
     "delete_selected_roles": {
-        "en": "Delete {{ count }} roles",
-        "de": "{{ count }} Rollen löschen",
-        "zh": "删除 {{count}} 个角色",
-        "pt": "Apagar {{ count }} papeis"
+      "en": "Delete {{ count }} roles",
+      "de": "{{ count }} Rollen löschen",
+      "zh": "删除 {{count}} 个角色",
+      "pt": "Apagar {{ count }} papeis",
+      "hu": "{{ count }} szerep törlése"
     },
     "delete_selected_roles_confirmation": {
-        "en": "You are about to permanently delete {{ count }} roles.",
-        "de": "Wollen Sie {{ count }} Rollen permanent löschen?",
-        "zh": "你将要永久删除 {{count}} 个角色。",
-        "pt": "Está prestes a apagar permanentemente {{ count }} papeis"
+      "en": "You are about to permanently delete {{ count }} roles.",
+      "de": "Wollen Sie {{ count }} Rollen permanent löschen?",
+      "zh": "你将要永久删除 {{count}} 个角色。",
+      "pt": "Está prestes a apagar permanentemente {{ count }} papeis",
+      "hu": "Véglegesen törölsz {{ count }} szerepet?"
     },
     "delete_role_confirmation": {
-        "en": "You are about to permanently delete role '{{ rolename }}'.",
-        "de": "Wollen Sie '{{ rolename }}' permanent löschen?",
-        "zh": "你将要永久删除角色 \"{{rolename}}\"。",
-        "pt": "Está prestes a apagar permanentemente o papel '{{ rolename }}'."
+      "en": "You are about to permanently delete role '{{ rolename }}'.",
+      "de": "Wollen Sie '{{ rolename }}' permanent löschen?",
+      "zh": "你将要永久删除角色 \"{{rolename}}\"。",
+      "pt": "Está prestes a apagar permanentemente o papel '{{ rolename }}'.",
+      "hu": "Véglegesen törlöd a(z) '{{ rolename }}' szerepet?"
     },
     "edit_user_node": {
-        "en": "Edit node",
-        "de": "Node bearbeiten",
-        "zh": "编辑节点",
-        "pt": "Editar nó"
+      "en": "Edit node",
+      "de": "Node bearbeiten",
+      "zh": "编辑节点",
+      "pt": "Editar nó",
+      "hu": "Csomópont szerkesztése"
     },
     "email_address_label": {
-        "en": "Email address",
-        "de": "Email-Addresse",
-        "zh": "电子邮件地址",
-        "pt": "Endereço email"
+      "en": "Email address",
+      "de": "Email-Addresse",
+      "zh": "电子邮件地址",
+      "pt": "Endereço email",
+      "hu": "Email cím"
     },
     "filter_by_group": {
-        "en": "Filter by group",
-        "de": "nach Gruppe durchsuchen",
-        "zh": "按用户组过滤",
-        "pt": "Filtrar por grupo"
+      "en": "Filter by group",
+      "de": "nach Gruppe durchsuchen",
+      "zh": "按用户组过滤",
+      "pt": "Filtrar por grupo",
+      "hu": "Szűrés csoport szerint"
     },
     "filter_by_name": {
-        "en": "Filter by name",
-        "de": "nach Name durchsuchen",
-        "zh": "按名称过滤",
-        "pt": "Filtrar por nome"
+      "en": "Filter by name",
+      "de": "nach Name durchsuchen",
+      "zh": "按名称过滤",
+      "pt": "Filtrar por nome",
+      "hu": "Szűrés név szerint"
     },
     "filter_by_role": {
-        "en": "Filter by role",
-        "de": "nach Rolle durchsuchen",
-        "zh": "按角色过滤",
-        "pt": "Filtrar por papel"
+      "en": "Filter by role",
+      "de": "nach Rolle durchsuchen",
+      "zh": "按角色过滤",
+      "pt": "Filtrar por papel",
+      "hu": "Szűrés szerep szerint"
     },
     "first_name_label": {
-        "en": "First name",
-        "de": "Vorname",
-        "zh": "名字",
-        "pt": "Primeiro nome"
+      "en": "First name",
+      "de": "Vorname",
+      "zh": "名字",
+      "pt": "Primeiro nome",
+      "hu": "Keresztnév"
     },
     "admin_flag_label": {
-        "en": "Administrator permissions",
-        "de": "Administrator Berechtigungen"
+      "en": "Administrator permissions",
+      "de": "Administrator Berechtigungen",
+      "hu": "Rendszergazda jogosultságok"
     },
     "forced_password_change_label": {
-        "en": "Force user to change password on login",
-        "de": "Benutzer muss Passwort beim nächsten Login ändern",
-        "zh": "强制用户在登录时更改密码",
-        "pt": "Forçar utilizador a redefinir a password no login"
+      "en": "Force user to change password on login",
+      "de": "Benutzer muss Passwort beim nächsten Login ändern",
+      "zh": "强制用户在登录时更改密码",
+      "pt": "Forçar utilizador a redefinir a password no login",
+      "hu": "Felhasználó kényszerítése a jelszó megváltoztatására bejelentkezéskor"
     },
     "group_created": {
-        "en": "New group created",
-        "de": "Neue Gruppe erstellt",
-        "zh": "已创建用户组",
-        "pt": "Novo grupo criado"
+      "en": "New group created",
+      "de": "Neue Gruppe erstellt",
+      "zh": "已创建用户组",
+      "pt": "Novo grupo criado",
+      "hu": "Új csoport jött létre"
     },
     "group_deleted": {
-        "en": "Group deleted",
-        "de": "Gruppe gelöscht",
-        "zh": "用户组已删除",
-        "pt": "Grupo apagado"
+      "en": "Group deleted",
+      "de": "Gruppe gelöscht",
+      "zh": "用户组已删除",
+      "pt": "Grupo apagado",
+      "hu": "Csoport törölve"
     },
     "group_updated": {
-        "en": "Group updated",
-        "de": "Gruppe gespeichert",
-        "zh": "已更新用户组",
-        "pt": "Grupo atualizado"
+      "en": "Group updated",
+      "de": "Gruppe gespeichert",
+      "zh": "已更新用户组",
+      "pt": "Grupo atualizado",
+      "hu": "A csoport frissítve"
     },
     "groups_deleted": {
-        "en": "Groups deleted",
-        "de": "Gruppen gelöscht",
-        "zh": "用户组已删除",
-        "pt": "Grupos apagados"
+      "en": "Groups deleted",
+      "de": "Gruppen gelöscht",
+      "zh": "用户组已删除",
+      "pt": "Grupos apagados",
+      "hu": "Csoportok törölve"
     },
     "group_name_label": {
-        "en": "Group name",
-        "de": "Gruppenname",
-        "zh": "用户组名",
-        "pt": "Nome do grupo"
+      "en": "Group name",
+      "de": "Gruppenname",
+      "zh": "用户组名",
+      "pt": "Nome do grupo",
+      "hu": "Csoport név"
     },
     "role_created": {
-        "en": "New role created",
-        "de": "Neue Rolle erstellt",
-        "zh": "已创建新角色",
-        "pt": "Novo papel criado"
+      "en": "New role created",
+      "de": "Neue Rolle erstellt",
+      "zh": "已创建新角色",
+      "pt": "Novo papel criado",
+      "hu": "Új szerep jött létre"
     },
     "role_deleted": {
-        "en": "Role deleted",
-        "de": "Rolle gelöscht",
-        "zh": "角色已删除",
-        "pt": "Papel apagado"
+      "en": "Role deleted",
+      "de": "Rolle gelöscht",
+      "zh": "角色已删除",
+      "pt": "Papel apagado",
+      "hu": "Szerep törölve"
     },
     "role_updated": {
-        "en": "Role updated",
-        "de": "Rolle gespeichert",
-        "zh": "角色已更新",
-        "pt": "Papel atualizado"
+      "en": "Role updated",
+      "de": "Rolle gespeichert",
+      "zh": "角色已更新",
+      "pt": "Papel atualizado",
+      "hu": "Szerep frissült"
     },
     "role_name_label": {
-        "en": "Role name",
-        "de": "Rollenname",
-        "zh": "角色名称",
-        "pt": "Nome do papel"
+      "en": "Role name",
+      "de": "Rollenname",
+      "zh": "角色名称",
+      "pt": "Nome do papel",
+      "hu": "Szerep neve"
     },
     "last_name_label": {
-        "en": "Last name",
-        "de": "Nachname",
-        "zh": "姓氏",
-        "pt": "Último nome"
+      "en": "Last name",
+      "de": "Nachname",
+      "zh": "姓氏",
+      "pt": "Último nome",
+      "hu": "Vezetéknév"
     },
     "list_clear_selection": {
-        "en": "clear selection",
-        "de": "Auswahl aufheben",
-        "zh": "清除选择",
-        "pt": "limpar seleção"
+      "en": "clear selection",
+      "de": "Auswahl aufheben",
+      "zh": "清除选择",
+      "pt": "limpar seleção",
+      "hu": "Kijelölés megszüntetése"
     },
     "list_items_selected": {
-        "en": "Selected: {{ count }}",
-        "de": "Ausgewählt: {{ count }}",
-        "zh": "已选择：{{count}}",
-        "pt": "Selecionado: {{ count }}"
+      "en": "Selected: {{ count }}",
+      "de": "Ausgewählt: {{ count }}",
+      "zh": "已选择：{{count}}",
+      "pt": "Selecionado: {{ count }}",
+      "hu": "Kijelölve: {{ count }}"
     },
     "microschema_create": {
-        "en": "Create Microschema",
-        "de": "Microschema erstellen",
-        "zh": "创建内嵌数据模型",
-        "pt": "Criar microesquema"
+      "en": "Create Microschema",
+      "de": "Microschema erstellen",
+      "zh": "创建内嵌数据模型",
+      "pt": "Criar microesquema",
+      "hu": "Új mikroséma"
     },
     "microschema_deleted": {
-        "en": "Microschema deleted",
-        "de": "Microschema gelöscht",
-        "zh": "内嵌数据模型已删除",
-        "pt": "Microesquema apagado"
+      "en": "Microschema deleted",
+      "de": "Microschema gelöscht",
+      "zh": "内嵌数据模型已删除",
+      "pt": "Microesquema apagado",
+      "hu": "Mikroséma törölve"
     },
     "microschema_deleted_error": {
-        "en": "Microschema could not be deleted",
-        "de": "Microschema konnte nicht gelöscht werden",
-        "zh": "无法删除内嵌数据模型",
-        "pt": "Microesquema não pode ser apagado"
+      "en": "Microschema could not be deleted",
+      "de": "Microschema konnte nicht gelöscht werden",
+      "zh": "无法删除内嵌数据模型",
+      "pt": "Microesquema não pode ser apagado",
+      "hu": "Mikroséma nem törölhető"
     },
     "microschema_created": {
-        "en": "Microschema created",
-        "de": "Microschema erstellt",
-        "zh": "已创建内嵌数据模型",
-        "pt": "Microesquema criado"
+      "en": "Microschema created",
+      "de": "Microschema erstellt",
+      "zh": "已创建内嵌数据模型",
+      "pt": "Microesquema criado",
+      "hu": "Mikroséma létrehozva"
     },
     "microschema_updated": {
-        "en": "Microschema updated",
-        "de": "Microschema gespeichert",
-        "zh": "内嵌数据模型已更新",
-        "pt": "Microesquema atualizado"
+      "en": "Microschema updated",
+      "de": "Microschema gespeichert",
+      "zh": "内嵌数据模型已更新",
+      "pt": "Microesquema atualizado",
+      "hu": "Mikroséma frissítve"
     },
     "microschema_none_found": {
-        "en": "No microschemas found",
-        "de": "Keine Microschemas gefunden",
-        "zh": "未找到内嵌数据模型",
-        "pt": "Nenhum microesquema encontrado"
+      "en": "No microschemas found",
+      "de": "Keine Microschemas gefunden",
+      "zh": "未找到内嵌数据模型",
+      "pt": "Nenhum microesquema encontrado",
+      "hu": "Nem található mikroséma"
     },
     "new_group": {
-        "en": "New group",
-        "de": "Neue Gruppe",
-        "zh": "新建用户组",
-        "pt": "Novo grupo"
+      "en": "New group",
+      "de": "Neue Gruppe",
+      "zh": "新建用户组",
+      "pt": "Novo grupo",
+      "hu": "Új csoport"
     },
     "new_role": {
-        "en": "New role",
-        "de": "Neue Rolle",
-        "zh": "新角色",
-        "pt": "Novo papel"
+      "en": "New role",
+      "de": "Neue Rolle",
+      "zh": "新角色",
+      "pt": "Novo papel",
+      "hu": "Új szerep"
     },
     "new_project": {
-        "en": "New project",
-        "de": "Neues Projekt",
-        "zh": "新建项目",
-        "pt": "Novo projeto"
+      "en": "New project",
+      "de": "Neues Projekt",
+      "zh": "新建项目",
+      "pt": "Novo projeto",
+      "hu": "Új projekt"
     },
     "new_user": {
-        "en": "New user",
-        "de": "Neuer Benutzer",
-        "zh": "新用户",
-        "pt": "Novo utilizador"
+      "en": "New user",
+      "de": "Neuer Benutzer",
+      "zh": "新用户",
+      "pt": "Novo utilizador",
+      "hu": "Új felhasználó"
     },
     "new_microschema": {
-        "en": "New microschema",
-        "de": "Neues Microschema",
-        "zh": "新建内嵌数据模型",
-        "pt": "Novo microesquema"
+      "en": "New microschema",
+      "de": "Neues Microschema",
+      "zh": "新建内嵌数据模型",
+      "pt": "Novo microesquema",
+      "hu": "Új mikroséma"
     },
     "new_schema": {
-        "en": "New schema",
-        "de": "Neues Schema",
-        "zh": "新建数据模型",
-        "pt": "Novo esquema"
+      "en": "New schema",
+      "de": "Neues Schema",
+      "zh": "新建数据模型",
+      "pt": "Novo esquema",
+      "hu": "Új séma"
     },
     "no_available_groups": {
-        "en": "No available groups",
-        "de": "Keine gültige Gruppen",
-        "zh": "没有可用的用户组",
-        "pt": "Nenhum grupo disponível"
+      "en": "No available groups",
+      "de": "Keine gültige Gruppen",
+      "zh": "没有可用的用户组",
+      "pt": "Nenhum grupo disponível",
+      "hu": "Nincs elérhető csoport"
     },
     "no_available_roles": {
-        "en": "No available roles",
-        "de": "Keine gültige Rollen",
-        "zh": "没有可用的角色",
-        "pt": "Nenhum papel disponível"
+      "en": "No available roles",
+      "de": "Keine gültige Rollen",
+      "zh": "没有可用的角色",
+      "pt": "Nenhum papel disponível",
+      "hu": "Nincs elérhető szerep"
     },
     "no_results": {
-        "en": "No results",
-        "de": "Keine Ergebnisse",
-        "zh": "未找到结果",
-        "pt": "Nenhum resultado"
+      "en": "No results",
+      "de": "Keine Ergebnisse",
+      "zh": "未找到结果",
+      "pt": "Nenhum resultado",
+      "hu": "Nincs találat"
     },
     "password_label": {
-        "en": "Password",
-        "de": "Kennwort",
-        "zh": "密码",
-        "pt": "Palavra-passe"
+      "en": "Password",
+      "de": "Kennwort",
+      "zh": "密码",
+      "pt": "Palavra-passe",
+      "hu": "Jelszó"
     },
     "projects_create": {
-        "en": "Create project",
-        "de": "Projekt erstellen",
-        "zh": "创建项目",
-        "pt": "Criar projeto"
+      "en": "Create project",
+      "de": "Projekt erstellen",
+      "zh": "创建项目",
+      "pt": "Criar projeto",
+      "hu": "Új projekt"
     },
     "project_created": {
-        "en": "Project created",
-        "de": "Projekt erstellt",
-        "zh": "项目已创建",
-        "pt": "Projeto criado"
+      "en": "Project created",
+      "de": "Projekt erstellt",
+      "zh": "项目已创建",
+      "pt": "Projeto criado",
+      "hu": "Projekt létrehozva"
     },
     "project_assigned": {
-        "en": "Project assigned",
-        "de": "Projekt zugewiesen",
-        "zh": "项目已分配",
-        "pt": "Projeto atribuido"
+      "en": "Project assigned",
+      "de": "Projekt zugewiesen",
+      "zh": "项目已分配",
+      "pt": "Projeto atribuido",
+      "hu": "Projekt kiosztva"
     },
     "project_unassigned": {
-        "en": "Project unassigned",
-        "de": "Projekt unzugewiesen",
-        "zh": "未分配项目",
-        "pt": "Projeto não atribuido"
+      "en": "Project unassigned",
+      "de": "Projekt unzugewiesen",
+      "zh": "未分配项目",
+      "pt": "Projeto não atribuido",
+      "hu": "Projekt kiosztatlan"
     },
     "delete_project": {
-        "en": "Delete project",
-        "de": "Projekt löschen",
-        "zh": "删除项目",
-        "pt": "Apagar projeto"
+      "en": "Delete project",
+      "de": "Projekt löschen",
+      "zh": "删除项目",
+      "pt": "Apagar projeto",
+      "hu": "Projekt törlése"
     },
     "project_deleted": {
-        "en": "Project deleted",
-        "de": "Projekt gelöscht",
-        "zh": "项目已删除",
-        "pt": "Projeto apagado"
+      "en": "Project deleted",
+      "de": "Projekt gelöscht",
+      "zh": "项目已删除",
+      "pt": "Projeto apagado",
+      "hu": "Projekt törölve"
     },
     "project_deleted_error": {
-        "en": "Project could not be deleted",
-        "de": "Projekt konnte nicht gelöscht werden",
-        "zh": "无法删除项目",
-        "pt": "Projeto não pode ser apagado"
+      "en": "Project could not be deleted",
+      "de": "Projekt konnte nicht gelöscht werden",
+      "zh": "无法删除项目",
+      "pt": "Projeto não pode ser apagado",
+      "hu": "Nem sikerült törölni a projektet"
     },
     "projects_none_found": {
-        "en": "No projects found",
-        "de": "Keine Projekte gefunden",
-        "zh": "未找到项目",
-        "pt": "Nenhum projeto encontrado"
+      "en": "No projects found",
+      "de": "Keine Projekte gefunden",
+      "zh": "未找到项目",
+      "pt": "Nenhum projeto encontrado",
+      "hu": "Nem található projekt"
     },
     "project_label": {
-        "en": "Project",
-        "de": "Projekt",
-        "zh": "项目",
-        "pt": "Projeto"
+      "en": "Project",
+      "de": "Projekt",
+      "zh": "项目",
+      "pt": "Projeto",
+      "hu": "Projekt"
     },
     "project_tags": {
-        "en": "Project tags",
-        "de": "Tags im Projekt",
-        "zh": "项目标签",
-        "pt": "Etiquetas de projeto"
+      "en": "Project tags",
+      "de": "Tags im Projekt",
+      "zh": "项目标签",
+      "pt": "Etiquetas de projeto",
+      "hu": "Projekt Címkék"
     },
     "create_tag_family": {
-        "en": "Create new tag family",
-        "de": "Neue Tag-Familie erstellen",
-        "zh": "创建新的标签组",
-        "pt": "Criar nova familia de etiquetas"
+      "en": "Create new tag family",
+      "de": "Neue Tag-Familie erstellen",
+      "zh": "创建新的标签组",
+      "pt": "Criar nova familia de etiquetas",
+      "hu": "Új címkecsalád"
     },
     "edit_tag_family": {
-        "en": "Edit tag family",
-        "de": "Tag-Familie bearbeiten",
-        "zh": "编辑标签组",
-        "pt": "Editar familia de etiquetas"
+      "en": "Edit tag family",
+      "de": "Tag-Familie bearbeiten",
+      "zh": "编辑标签组",
+      "pt": "Editar familia de etiquetas",
+      "hu": "Címkecsalád szerkesztése"
     },
     "delete_tag_family": {
-        "en": "Delete tag family",
-        "de": "Tag-Familie löschen",
-        "zh": "删除标签组",
-        "pt": "Apagar familia de etiquetas"
+      "en": "Delete tag family",
+      "de": "Tag-Familie löschen",
+      "zh": "删除标签组",
+      "pt": "Apagar familia de etiquetas",
+      "hu": "Címkecsalád törlése"
     },
     "delete_tag_family_confirmation": {
-        "en": "Delete this tag family and all tags?",
-        "de": "Diese Tag-Familie und all ihre Tags löschen?",
-        "zh": "要删除该标签组和所有标签？",
-        "pt": "Apagar esta familia de etiquetas e todas as etiquetas?"
+      "en": "Delete this tag family and all tags?",
+      "de": "Diese Tag-Familie und all ihre Tags löschen?",
+      "zh": "要删除该标签组和所有标签？",
+      "pt": "Apagar esta familia de etiquetas e todas as etiquetas?",
+      "hu": "Törlöd ezt a címkecsaládot és az összes címkét?"
     },
     "edit_tag": {
-        "en": "Edit tag",
-        "de": "Tag bearbeiten",
-        "zh": "编辑标签",
-        "pt": "Editar etiqueta"
+      "en": "Edit tag",
+      "de": "Tag bearbeiten",
+      "zh": "编辑标签",
+      "pt": "Editar etiqueta",
+      "hu": "Címke szerkesztése"
     },
     "delete_tag_confirmation": {
-        "en": "Delete this tag?",
-        "de": "Tag löschen?",
-        "zh": "删除该标签？",
-        "pt": "Apagar esta etiqueta?"
+      "en": "Delete this tag?",
+      "de": "Tag löschen?",
+      "zh": "删除该标签？",
+      "pt": "Apagar esta etiqueta?",
+      "hu": "Törlöd ezt a címkét?"
     },
     "duplicate_tag": {
-        "en": "Tag \"{{tag}}\" already exists",
-        "de": "Der Tag \"{{tag}}\" existiert bereits.",
-        "zh": "标签 \"{{tag}}\" 已存在",
-        "pt": "Etiqueta \"{{tag}}\" já existe"
+      "en": "Tag \"{{tag}}\" already exists",
+      "de": "Der Tag \"{{tag}}\" existiert bereits.",
+      "zh": "标签 \"{{tag}}\" 已存在",
+      "pt": "Etiqueta \"{{tag}}\" já existe",
+      "hu": "A(z) \"{{tag}}\" címke már létezik"
     },
     "duplicate_tag_family": {
-        "en": "Tag family \"{{family}}\" already exists",
-        "de": "Die Tagfamillie \"{{family}}\" existiert bereits.",
-        "zh": "标签组 \"{{family}}\" 已经存在",
-        "pt": "Familia de etiquetas \"{{family}}\" já existe"
+      "en": "Tag family \"{{family}}\" already exists",
+      "de": "Die Tagfamillie \"{{family}}\" existiert bereits.",
+      "zh": "标签组 \"{{family}}\" 已经存在",
+      "pt": "Familia de etiquetas \"{{family}}\" já existe",
+      "hu": "A(z) \"{{family}}\" címekcsalád már létezik"
     },
     "update_project": {
-        "en": "Update Project",
-        "de": "Projekt speichern",
-        "zh": "更新项目",
-        "pt": "Atualizar projeto"
+      "en": "Update Project",
+      "de": "Projekt speichern",
+      "zh": "更新项目",
+      "pt": "Atualizar projeto",
+      "hu": "Projekt frissítése"
     },
     "remove_selected_groups_from_role": {
-        "en": "Remove {{count}} groups from role",
-        "de": "{{count}} Gruppen von Rolle entfernen",
-        "zh": "从角色中删除 {{count}} 个用户组",
-        "pt": "Remover {{count}} grupos do papel"
+      "en": "Remove {{count}} groups from role",
+      "de": "{{count}} Gruppen von Rolle entfernen",
+      "zh": "从角色中删除 {{count}} 个用户组",
+      "pt": "Remover {{count}} grupos do papel",
+      "hu": "{{count}} csoportok eltávolítása a szerepből"
     },
     "remove_selected_users_from_group": {
-        "en": "Remove {{count}} users from group",
-        "de": "{{count}} Benutzer von Gruppe entfernen",
-        "zh": "从用户组中删除 {{count}} 个用户",
-        "pt": "Remover {{count}} utilizadores do grupo"
+      "en": "Remove {{count}} users from group",
+      "de": "{{count}} Benutzer von Gruppe entfernen",
+      "zh": "从用户组中删除 {{count}} 个用户",
+      "pt": "Remover {{count}} utilizadores do grupo",
+      "hu": "{{count}} felhasználó eltávolítása a csoportból"
     },
     "remove_user_from_group": {
-        "en": "Remove from group",
-        "de": "Von Gruppe entfernen",
-        "zh": "从用户组中删除",
-        "pt": "Remover do grupo"
+      "en": "Remove from group",
+      "de": "Von Gruppe entfernen",
+      "zh": "从用户组中删除",
+      "pt": "Remover do grupo",
+      "hu": "Eltávolítás a csoportból"
     },
     "remove_group_from_role": {
-        "en": "Remove from role",
-        "de": "Von Rolle entfernen",
-        "zh": "从角色中移除",
-        "pt": "Remover do papel"
+      "en": "Remove from role",
+      "de": "Von Rolle entfernen",
+      "zh": "从角色中移除",
+      "pt": "Remover do papel",
+      "hu": "Eltávolítás a szerepről"
     },
     "schema_create": {
-        "en": "Create Schema",
-        "de": "Schema erstellen",
-        "zh": "创建数据模型",
-        "pt": "Criar esquema"
+      "en": "Create Schema",
+      "de": "Schema erstellen",
+      "zh": "创建数据模型",
+      "pt": "Criar esquema",
+      "hu": "Új séma"
     },
     "schema_update": {
-        "en": "Save Schema",
-        "de": "Schema speichern",
-        "zh": "保存数据模型",
-        "pt": "Gravar esquema"
+      "en": "Save Schema",
+      "de": "Schema speichern",
+      "zh": "保存数据模型",
+      "pt": "Gravar esquema",
+      "hu": "Séma mentése"
     },
     "schema_deleted": {
-        "en": "Schema deleted",
-        "de": "Schema gelöscht",
-        "zh": "数据模型已删除",
-        "pt": "Esquema apagado"
+      "en": "Schema deleted",
+      "de": "Schema gelöscht",
+      "zh": "数据模型已删除",
+      "pt": "Esquema apagado",
+      "hu": "Séma törölve"
     },
     "schema_deleted_error": {
-        "en": "Schema could not be deleted",
-        "de": "Schema konnte nicht gelöscht werden",
-        "zh": "数据模型无法删除",
-        "pt": "Esquema não pode ser apagado"
+      "en": "Schema could not be deleted",
+      "de": "Schema konnte nicht gelöscht werden",
+      "zh": "数据模型无法删除",
+      "pt": "Esquema não pode ser apagado",
+      "hu": "A séma nem törölhető"
     },
     "schema_created": {
-        "en": "Schema created",
-        "de": "Schema erstellt",
-        "zh": "已创建数据模型",
-        "pt": "Esquema criado"
+      "en": "Schema created",
+      "de": "Schema erstellt",
+      "zh": "已创建数据模型",
+      "pt": "Esquema criado",
+      "hu": "Séma létrehozva"
     },
     "schema_updated": {
-        "en": "Schema updated",
-        "de": "Schema gespeichert",
-        "zh": "数据模型已更新",
-        "pt": "Esquema atualizado"
+      "en": "Schema updated",
+      "de": "Schema gespeichert",
+      "zh": "数据模型已更新",
+      "pt": "Esquema atualizado",
+      "hu": "Séma frissítve"
     },
     "schema_updated_confirmation": {
-        "en": "You are about to save schema '{{ name }}'.",
-        "de": "Wollen Sie '{{ name }}' speichern?",
-        "zh": "你将要保存数据模型 '{{name}}'。",
-        "pt": "Está prestes a gravar o esquema '{{ name }}'."
+      "en": "You are about to save schema '{{ name }}'.",
+      "de": "Wollen Sie '{{ name }}' speichern?",
+      "zh": "你将要保存数据模型 '{{name}}'。",
+      "pt": "Está prestes a gravar o esquema '{{ name }}'.",
+      "hu": "A(z) '{{ name }}' sémát fogja menteni."
     },
     "schemafield_delete_confirmation": {
-        "en": "You are about to delete schemafield '{{ name }}'.",
-        "de": "Wollen Sie das Schemafeld'{{ name }}' löschen?",
-        "zh": "你将要删除数据模型字段'{{name}}'。",
-        "pt": "Está prestes a apagar o campo de esquema '{{ name }}'."
+      "en": "You are about to delete schemafield '{{ name }}'.",
+      "de": "Wollen Sie das Schemafeld'{{ name }}' löschen?",
+      "zh": "你将要删除数据模型字段'{{name}}'。",
+      "pt": "Está prestes a apagar o campo de esquema '{{ name }}'.",
+      "hu": "Arra készül, hogy törli a(z) '{{ name }}' sémát."
     },
     "schema_none_found": {
-        "en": "No schemas found",
-        "de": "Keine Schemas gefunden",
-        "zh": "未找到数据模型",
-        "pt": "Nenhum esquema encontrado"
+      "en": "No schemas found",
+      "de": "Keine Schemas gefunden",
+      "zh": "未找到数据模型",
+      "pt": "Nenhum esquema encontrado",
+      "hu": "Nem található séma"
     },
     "select_all": {
-        "en": "Select all",
-        "de": "Alle auswählen",
-        "zh": "全选",
-        "pt": "Selecionar tudo"
+      "en": "Select all",
+      "de": "Alle auswählen",
+      "zh": "全选",
+      "pt": "Selecionar tudo",
+      "hu": "Összes kijelölése"
     },
     "select_node_reference": {
-        "en": "Select node",
-        "de": "Node auswählen",
-        "zh": "选择节点",
-        "pt": "Selecionar nó"
+      "en": "Select node",
+      "de": "Node auswählen",
+      "zh": "选择节点",
+      "pt": "Selecionar nó",
+      "hu": "Válassza ki a csomópontot"
     },
     "select_new_node_reference": {
-        "en": "Select a different node",
-        "de": "Andere Node auswählen",
-        "zh": "选择其他节点",
-        "pt": "Selecione um nó diferente"
+      "en": "Select a different node",
+      "de": "Andere Node auswählen",
+      "zh": "选择其他节点",
+      "pt": "Selecione um nó diferente",
+      "hu": "Válasszon másik csomópontot"
     },
     "tag": {
-        "en": "Tag",
-        "de": "Tag",
-        "zh": "标签",
-        "pt": "Etiqueta"
+      "en": "Tag",
+      "de": "Tag",
+      "zh": "标签",
+      "pt": "Etiqueta",
+      "hu": "Címke"
     },
     "update_group": {
-        "en": "Update group",
-        "de": "Gruppe speichern",
-        "zh": "更新用户组",
-        "pt": "Atualizar grupo"
+      "en": "Update group",
+      "de": "Gruppe speichern",
+      "zh": "更新用户组",
+      "pt": "Atualizar grupo",
+      "hu": "Frissítse a csoportot"
     },
     "update_role": {
-        "en": "Update role",
-        "de": "Rolle speichern",
-        "zh": "更新角色",
-        "pt": "Atualizar papel"
+      "en": "Update role",
+      "de": "Rolle speichern",
+      "zh": "更新角色",
+      "pt": "Atualizar papel",
+      "hu": "Frissítse a szerepet"
     },
     "update_user": {
-        "en": "Update user",
-        "de": "Benutzer speichern",
-        "zh": "更新用户",
-        "pt": "Atualizar utilizador"
+      "en": "Update user",
+      "de": "Benutzer speichern",
+      "zh": "更新用户",
+      "pt": "Atualizar utilizador",
+      "hu": "Frissítse a felhasználót"
     },
     "user_created": {
-        "en": "New user created",
-        "de": "Neuer Benutzer erstellt",
-        "zh": "已创建新用户",
-        "pt": "Novo utilizador criado"
+      "en": "New user created",
+      "de": "Neuer Benutzer erstellt",
+      "zh": "已创建新用户",
+      "pt": "Novo utilizador criado",
+      "hu": "Új felhasználó jött létre"
     },
     "user_deleted": {
-        "en": "User '{{username}}' deleted",
-        "de": "Benutzer '{{username}}' gelöscht",
-        "zh": "用户 '{{username}}' 已删除",
-        "pt": "Utilizador '{{username}}' apagado"
+      "en": "User '{{username}}' deleted",
+      "de": "Benutzer '{{username}}' gelöscht",
+      "zh": "用户 '{{username}}' 已删除",
+      "pt": "Utilizador '{{username}}' apagado",
+      "hu": "'{{username}}' felhasználó törölve"
     },
     "user_deleted_error": {
-        "en": "User '{{username}}' could not be deleted",
-        "de": "Benutzer '{{username}}' könnte nicht gelöscht werden",
-        "zh": "用户 '{{username}}' 无法删除",
-        "pt": "Utilizador '{{username}}' não pode ser apagado"
+      "en": "User '{{username}}' could not be deleted",
+      "de": "Benutzer '{{username}}' könnte nicht gelöscht werden",
+      "zh": "用户 '{{username}}' 无法删除",
+      "pt": "Utilizador '{{username}}' não pode ser apagado",
+      "hu": "A (z) {{username}} felhasználót nem lehet törölni"
     },
     "user_name_label": {
-        "en": "Username",
-        "de": "Benutzername",
-        "zh": "用户名",
-        "pt": "Nome de utilizador"
+      "en": "Username",
+      "de": "Benutzername",
+      "zh": "用户名",
+      "pt": "Nome de utilizador",
+      "hu": "Felhasználónév"
     },
     "user_node_reference_label": {
-        "en": "User Node",
-        "de": "Benutzer Node",
-        "zh": "用户节点",
-        "pt": "Nó de utilizador"
+      "en": "User Node",
+      "de": "Benutzer Node",
+      "zh": "用户节点",
+      "pt": "Nó de utilizador",
+      "hu": "Felhasználói csomópont"
     },
     "user_updated": {
-        "en": "User updated",
-        "de": "Benutzer gespeichert",
-        "zh": "用户已更新",
-        "pt": "Utilizador atualizado"
+      "en": "User updated",
+      "de": "Benutzer gespeichert",
+      "zh": "用户已更新",
+      "pt": "Utilizador atualizado",
+      "hu": "Felhasználó frissítve"
     },
     "schema_details_tab_label_editor": {
-        "en": "Editor",
-        "de": "Editor",
-        "zh": "编辑器",
-        "pt": "Editor"
+      "en": "Editor",
+      "de": "Editor",
+      "zh": "编辑器",
+      "pt": "Editor",
+      "hu": "Szerkesztő"
     },
     "schema_details_tab_label_json": {
-        "en": "JSON",
-        "de": "JSON",
-        "zh": "JSON",
-        "pt": "JSON"
+      "en": "JSON",
+      "de": "JSON",
+      "zh": "JSON",
+      "pt": "JSON",
+      "hu": "JSON"
     },
     "schema_details_tab_label_projects": {
-        "en": "Project Assignments",
-        "de": "Projektzuordnungen",
-        "zh": "项目分配",
-        "pt": "Atribuições do projecto"
+      "en": "Project Assignments",
+      "de": "Projektzuordnungen",
+      "zh": "项目分配",
+      "pt": "Atribuições do projecto",
+      "hu": "Projekt hozzárendelés"
     },
     "schema_editor_validator_pattern": {
-        "en": "This field may contain allowed charaters only: alphanumeric characters and {{allowedchars}}",
-        "de": "Für die Eingabe sind nur folgende Zeichen erlaubt: alphanumerische Zeichen und {{allowedchars}}",
-        "zh": "此字段只能包含允许的字符：数字、字母和{{allowedchars}}",
-        "pt": "Este campo deve conter apenas caracteres permitidos: caracteres alfanuméricos e {{allowedchars}}"
+      "en": "This field may contain allowed characters only: alphanumeric characters and {{allowedchars}}",
+      "de": "Für die Eingabe sind nur folgende Zeichen erlaubt: alphanumerische Zeichen und {{allowedchars}}",
+      "zh": "此字段只能包含允许的字符：数字、字母和{{allowedchars}}",
+      "pt": "Este campo deve conter apenas caracteres permitidos: caracteres alfanuméricos e {{allowedchars}}",
+      "hu": "Ez a mező csak a következő megengedett karaktereket tartalmazhatja: alfanumerikus karakterek és {{allowedchars}}"
     },
     "schema_editor_validator_duplicate": {
-        "en": "This value is already in use",
-        "de": "Dieser Wert wird bereits verwendet",
-        "zh": "该值已被使用",
-        "pt": "Este valor está já em uso"
+      "en": "This value is already in use",
+      "de": "Dieser Wert wird bereits verwendet",
+      "zh": "该值已被使用",
+      "pt": "Este valor está já em uso",
+      "hu": "Ez az érték már használatban van"
     },
     "schema_editor_validator_conflict": {
-        "en": "This value is already in use",
-        "de": "Dieser Wert wird bereits verwendet",
-        "zh": "该值已被使用",
-        "pt": "Este valor está já em uso"
+      "en": "This value is already in use",
+      "de": "Dieser Wert wird bereits verwendet",
+      "zh": "该值已被使用",
+      "pt": "Este valor está já em uso",
+      "hu": "Ez az érték már használatban van"
     },
     "schema_editor_warning_displayfield": {
-        "en": "Create valid schema field of type 'binary' or 'string'",
-        "de": "Erstellen Sie ein gültiges Feld vom Typ 'binary' oder 'string'",
-        "zh": "创建类型为'binary'或'string'的有效数据模型字段",
-        "pt": "Crie um campo de esquema válido do tipo 'binary' ou 'string'"
+      "en": "Create valid schema field of type 'binary' or 'string'",
+      "de": "Erstellen Sie ein gültiges Feld vom Typ 'binary' oder 'string'",
+      "zh": "创建类型为'binary'或'string'的有效数据模型字段",
+      "pt": "Crie um campo de esquema válido do tipo 'binary' ou 'string'",
+      "hu": "Hozz létre érvényes sémamezőt a 'bináris' vagy 'karakterlánc' típushoz"
     },
     "schema_editor_warning_segmentfield": {
-        "en": "Create valid schema field of type 'binary' or 'string'",
-        "de": "Erstellen Sie ein gültiges Feld vom Typ 'binary' oder 'string'",
-        "zh": "创建类型为'binary'或'string'的有效数据模型字段",
-        "pt": "Crie um campo de esquema válido do tipo 'binary' ou 'string'"
+      "en": "Create valid schema field of type 'binary' or 'string'",
+      "de": "Erstellen Sie ein gültiges Feld vom Typ 'binary' oder 'string'",
+      "zh": "创建类型为'binary'或'string'的有效数据模型字段",
+      "pt": "Crie um campo de esquema válido do tipo 'binary' ou 'string'",
+      "hu": "Hozz létre érvényes sémamezőt a 'bináris' vagy 'karakterlánc' típushoz"
     },
     "schema_editor_warning_urlfield": {
-        "en": "Create valid schema field of type 'string' or type 'list' of list type 'string'",
-        "de": "Erstellen Sie ein gültiges Feld vom Typ 'string' oder 'list' mit Listentyp 'string'",
-        "zh": "创建类型为'string'或列表类型为'string'的有效数据模型字段",
-        "pt": "Crie um campo de esquema válido do tipo 'string' ou tipo 'list' do tipo de lista 'string'"
+      "en": "Create valid schema field of type 'string' or type 'list' of list type 'string'",
+      "de": "Erstellen Sie ein gültiges Feld vom Typ 'string' oder 'list' mit Listentyp 'string'",
+      "zh": "创建类型为'string'或列表类型为'string'的有效数据模型字段",
+      "pt": "Crie um campo de esquema válido do tipo 'string' ou tipo 'list' do tipo de lista 'string'",
+      "hu": "Hozz létre érvényes sémamezőt a 'karakterlánc' típushoz vagy 'lista' típusú karakterlánc típushoz 'karakterlánc' típushoz"
     },
     "schema_editor_warning_nofields": {
-        "en": "This Schema has no fields",
-        "de": "Dieses Schema hat keine Felder",
-        "zh": "此数据模型没有字段",
-        "pt": "Este esquema não tem campos"
+      "en": "This Schema has no fields",
+      "de": "Dieses Schema hat keine Felder",
+      "zh": "此数据模型没有字段",
+      "pt": "Este esquema não tem campos",
+      "hu": "Ennek a sémanak nincs mezője"
     },
     "schema_editor_placeholder_allowedstrings": {
-        "en": "Type and press ENTER or SPACE to add, BACKSPACE to remove",
-        "de": "Tippen und EINGABE oder LEER drücken zum hinzufügen, RÜCK zum entfernen",
-        "zh": "输入并按 回车键 或 空格键 添加，按 回退键 删除",
-        "pt": "Digite e pressione ENTER ou SPACE para adicionar, BACKSPACE para apagar"
+      "en": "Type and press ENTER or SPACE to add, BACKSPACE to remove",
+      "de": "Tippen und EINGABE oder LEER drücken zum hinzufügen, RÜCK zum entfernen",
+      "zh": "输入并按 回车键 或 空格键 添加，按 回退键 删除",
+      "pt": "Digite e pressione ENTER ou SPACE para adicionar, BACKSPACE para apagar",
+      "hu": "Írd be és nyomd meg az ENTER vagy a SPACE billentyűt a hozzáadáshoz, illetve a BACKSPACE-t az eltávolításához"
     },
     "schema_editor_sectionlabel_schemaproperties": {
-        "en": "Schema Properties",
-        "de": "Schemaeigenschaften",
-        "zh": "数据模型属性",
-        "pt": "Propriedades do esquema"
+      "en": "Schema Properties",
+      "de": "Schemaeigenschaften",
+      "zh": "数据模型属性",
+      "pt": "Propriedades do esquema",
+      "hu": "Séma tulajdonságai"
     },
     "schema_editor_sectionlabel_schemafields": {
-        "en": "Schema Fields",
-        "de": "Schemafelder",
-        "zh": "数据模型字段",
-        "pt": "Campos do esquema"
+      "en": "Schema Fields",
+      "de": "Schemafelder",
+      "zh": "数据模型字段",
+      "pt": "Campos do esquema",
+      "hu": "Sémamezők"
     },
     "schema_editor_sectionlabel_microschemaproperties": {
-        "en": "Microschema Properties",
-        "de": "Mikroschemaeigenschaften",
-        "zh": "内嵌数据模型属性",
-        "pt": "Propriedades do microesquema"
+      "en": "Microschema Properties",
+      "de": "Mikroschemaeigenschaften",
+      "zh": "内嵌数据模型属性",
+      "pt": "Propriedades do microesquema",
+      "hu": "Mikroséma tulajdonságai"
     },
     "schema_editor_sectionlabel_microschemafields": {
-        "en": "Microschema Fields",
-        "de": "Mikroschemafelder",
-        "zh": "内嵌数据模型字段",
-        "pt": "Campos do microesquema"
+      "en": "Microschema Fields",
+      "de": "Mikroschemafelder",
+      "zh": "内嵌数据模型字段",
+      "pt": "Campos do microesquema",
+      "hu": "Mikroséma mezők"
     },
     "schema_editor_inputlabel_name": {
-        "en": "Name *",
-        "de": "Name *",
-        "zh": "名称 *",
-        "pt": "Nome"
+      "en": "Name *",
+      "de": "Name *",
+      "zh": "名称 *",
+      "pt": "Nome",
+      "hu": "Név *"
     },
     "schema_editor_inputlabel_container": {
-        "en": "Container",
-        "de": "Container",
-        "zh": "容器",
-        "pt": "Contentor"
+      "en": "Container",
+      "de": "Container",
+      "zh": "容器",
+      "pt": "Contentor",
+      "hu": "Tároló"
     },
     "schema_editor_inputlabel_autopurge": {
-        "en": "Auto Purge",
-        "de": "Auto-Purge",
-        "zh": "自动清除",
-        "pt": "Auto-Purge"
+      "en": "Auto Purge",
+      "de": "Auto-Purge",
+      "zh": "自动清除",
+      "pt": "Auto-Purge",
+      "hu": "Automatikus tisztítás"
     },
     "schema_editor_inputlabel_description": {
-        "en": "Description",
-        "de": "Beschreibung",
-        "zh": "描述",
-        "pt": "Descrição"
+      "en": "Description",
+      "de": "Beschreibung",
+      "zh": "描述",
+      "pt": "Descrição",
+      "hu": "Leírás"
     },
     "schema_editor_inputlabel_displayfield": {
-        "en": "Display Field",
-        "de": "Display-Feld",
-        "zh": "显示栏",
-        "pt": "Campo de Display"
+      "en": "Display Field",
+      "de": "Display-Feld",
+      "zh": "显示栏",
+      "pt": "Campo de Display",
+      "hu": "Megjelenítő mező"
     },
     "schema_editor_inputlabel_segmentfield": {
-        "en": "Segment Field",
-        "de": "Segment-Feld",
-        "zh": "分节字段",
-        "pt": "Campo de Segmento"
+      "en": "Segment Field",
+      "de": "Segment-Feld",
+      "zh": "分节字段",
+      "pt": "Campo de Segmento",
+      "hu": "Szegmens mező"
     },
     "schema_editor_inputlabel_urlfield": {
-        "en": "URL Field",
-        "de": "URL-Feld",
-        "zh": "URL字段",
-        "pt": "Campo de URL"
+      "en": "URL Field",
+      "de": "URL-Feld",
+      "zh": "URL字段",
+      "pt": "Campo de URL",
+      "hu": "URL mező"
     },
     "schema_editor_inputlabel_label": {
-        "en": "Label",
-        "de": "Anzeigename",
-        "zh": "显示",
-        "pt": "Label"
+      "en": "Label",
+      "de": "Anzeigename",
+      "zh": "显示",
+      "pt": "Label",
+      "hu": "Címke"
     },
     "schema_editor_inputlabel_type": {
-        "en": "Type *",
-        "de": "Typ *",
-        "zh": "类型 *",
-        "pt": "Tipo *"
+      "en": "Type *",
+      "de": "Typ *",
+      "zh": "类型 *",
+      "pt": "Tipo *",
+      "hu": "Típus *"
     },
     "schema_editor_inputlabel_required": {
-        "en": "Required",
-        "de": "Erforderlich",
-        "zh": "必填",
-        "pt": "Obrigatório"
+      "en": "Required",
+      "de": "Erforderlich",
+      "zh": "必填",
+      "pt": "Obrigatório",
+      "hu": "Kötelező"
     },
     "schema_editor_inputlabel_listtype": {
-        "en": "List Type",
-        "de": "Listentyp",
-        "zh": "列表类型",
-        "pt": "Tipo de lista"
+      "en": "List Type",
+      "de": "Listentyp",
+      "zh": "列表类型",
+      "pt": "Tipo de lista",
+      "hu": "Lista típusa"
     },
     "schema_editor_inputlabel_allowedschemas": {
-        "en": "Allowed Schemas",
-        "de": "Erlaubte Schemata",
-        "zh": "允许的数据模型",
-        "pt": "Esquemas permitidos"
+      "en": "Allowed Schemas",
+      "de": "Erlaubte Schemata",
+      "zh": "允许的数据模型",
+      "pt": "Esquemas permitidos",
+      "hu": "Engedélyezett sémák"
     },
     "schema_editor_inputlabel_allowedmicroschemas": {
-        "en": "Allowed Microschemas",
-        "de": "Erlaubte Mikroschemata",
-        "zh": "允许的内嵌数据模型",
-        "pt": "Microesquemas permitidos"
+      "en": "Allowed Microschemas",
+      "de": "Erlaubte Mikroschemata",
+      "zh": "允许的内嵌数据模型",
+      "pt": "Microesquemas permitidos",
+      "hu": "Engedélyezett mikrosémák"
     },
     "schema_editor_inputlabel_allowedstrings": {
-        "en": "Allowed Strings",
-        "de": "Erlaubte Zeichenketten",
-        "zh": "允许的字符串",
-        "pt": "Strings permitidas"
+      "en": "Allowed Strings",
+      "de": "Erlaubte Zeichenketten",
+      "zh": "允许的字符串",
+      "pt": "Strings permitidas",
+      "hu": "Megengedett karakterek"
     },
     "schema_editor_buttonlabel_newfield": {
-        "en": "New Field",
-        "de": "Neues Feld",
-        "zh": "新建字段",
-        "pt": "Novo campo"
+      "en": "New Field",
+      "de": "Neues Feld",
+      "zh": "新建字段",
+      "pt": "Novo campo",
+      "hu": "Új mező"
     },
     "schema_editor_buttonlabel_create": {
-        "en": "Create",
-        "de": "Erstellen",
-        "zh": "创建",
-        "pt": "Criar"
+      "en": "Create",
+      "de": "Erstellen",
+      "zh": "创建",
+      "pt": "Criar",
+      "hu": "Létrehozás"
     },
     "schema_editor_buttonlabel_save": {
-        "en": "Save",
-        "de": "Speichern",
-        "zh": "保存",
-        "pt": "Gravar"
+      "en": "Save",
+      "de": "Speichern",
+      "zh": "保存",
+      "pt": "Gravar",
+      "hu": "Mentés"
     },
     "schema_editor_buttonlabel_delete": {
-        "en": "Delete",
-        "de": "Löschen",
-        "zh": "删除",
-        "pt": "Apagar"
+      "en": "Delete",
+      "de": "Löschen",
+      "zh": "删除",
+      "pt": "Apagar",
+      "hu": "Törlés"
     },
     "schema_editor_tooltip_insertnewfield": {
-        "en": "Insert new field",
-        "de": "Neues Feld einfügen",
-        "zh": "插入新字段",
-        "pt": "Inserir novo campo"
+      "en": "Insert new field",
+      "de": "Neues Feld einfügen",
+      "zh": "插入新字段",
+      "pt": "Inserir novo campo",
+      "hu": "Új mező beszúráa"
     },
     "schema_editor_tooltip_removefield": {
-        "en": "Remove field",
-        "de": "Feld entfernen",
-        "zh": "删除字段",
-        "pt": "Remover campo"
+      "en": "Remove field",
+      "de": "Feld entfernen",
+      "zh": "删除字段",
+      "pt": "Remover campo",
+      "hu": "Mező törlése"
     },
     "load_more": {
-        "en": "Load more",
-        "de": "Weitere laden",
-        "zh": "加载更多",
-        "pt": "Carregar mais"
+      "en": "Load more",
+      "de": "Weitere laden",
+      "zh": "加载更多",
+      "pt": "Carregar mais",
+      "hu": "Továbbiak betöltése"
     },
     "entity_name_projects": {
-        "en": "Projects",
-        "de": "Projekte",
-        "zh": "项目",
-        "pt": "Projetos"
+      "en": "Projects",
+      "de": "Projekte",
+      "zh": "项目",
+      "pt": "Projetos",
+      "hu": "Projektek"
     },
     "entity_name_nodes": {
-        "en": "Nodes",
-        "de": "Nodes",
-        "zh": "节点",
-        "pt": "Nós"
+      "en": "Nodes",
+      "de": "Nodes",
+      "zh": "节点",
+      "pt": "Nós",
+      "hu": "Csomópontok"
     },
     "entity_name_tags": {
-        "en": "Tags",
-        "de": "Tags",
-        "zh": "标签",
-        "pt": "Etiquetas"
+      "en": "Tags",
+      "de": "Tags",
+      "zh": "标签",
+      "pt": "Etiquetas",
+      "hu": "Címkék"
     },
     "entity_name_schemas": {
-        "en": "Schemas",
-        "de": "Schemas",
-        "zh": "数据模型",
-        "pt": "Esquemas"
+      "en": "Schemas",
+      "de": "Schemas",
+      "zh": "数据模型",
+      "pt": "Esquemas",
+      "hu": "Sémák"
     },
     "entity_name_microschemas": {
-        "en": "Microschemas",
-        "de": "Microschemas",
-        "zh": "内嵌数据模型",
-        "pt": "Microesquemas"
+      "en": "Microschemas",
+      "de": "Microschemas",
+      "zh": "内嵌数据模型",
+      "pt": "Microesquemas",
+      "hu": "Mikrosémák"
     },
     "entity_name_users": {
-        "en": "Users",
-        "de": "Benutzer",
-        "zh": "用户",
-        "pt": "utilizadores"
+      "en": "Users",
+      "de": "Benutzer",
+      "zh": "用户",
+      "pt": "utilizadores",
+      "hu": "Felhasználók"
     },
     "entity_name_groups": {
-        "en": "Groups",
-        "de": "Gruppen",
-        "zh": "用户组",
-        "pt": "Grupos"
+      "en": "Groups",
+      "de": "Gruppen",
+      "zh": "用户组",
+      "pt": "Grupos",
+      "hu": "Csoportok"
     },
     "entity_name_roles": {
-        "en": "Roles",
-        "de": "Rollen",
-        "zh": "角色",
-        "pt": "Papeis"
+      "en": "Roles",
+      "de": "Rollen",
+      "zh": "角色",
+      "pt": "Papeis",
+      "hu": "Szerepek"
     }
 }

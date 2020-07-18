@@ -3,558 +3,651 @@
       "en": "Apply",
       "de": "Übernehmen",
       "zh": "应用",
-      "pt": "Aplicar"
+      "pt": "Aplicar",
+      "hu": "Alkalmaz"
     },
     "apply_recursively_label": {
       "en": "Apply recursively",
       "de": "Rekursiv übernehmen",
       "zh": "应用到所有子项",
-      "pt": "Aplicar recursivamente"
+      "pt": "Aplicar recursivamente",
+      "hu": "Alkalmaz mindre"
     },
     "apply_recursively_button": {
       "en": "Apply recursively",
       "de": "Rekursiv übernehmen",
       "zh": "应用到所有子项",
-      "pt": "Aplicar recursivamente"
+      "pt": "Aplicar recursivamente",
+      "hu": "Alkalmaz mindre"
     },
     "at": {
       "en": "at",
       "de": "am",
       "zh": "at",
-      "pt": "no"
+      "pt": "no",
+      "hu": "ekkor:"
     },
     "cancel_button": {
       "en": "Cancel",
       "de": "Abbrechen",
       "zh": "取消",
-      "pt": "Cancelar"
+      "pt": "Cancelar",
+      "hu": "Mégsem"
     },
     "choose": {
       "en": "Choose",
       "de": "Auswählen",
       "zh": "选择",
-      "pt": "Escolha"
+      "pt": "Escolha",
+      "hu": "Kiválasztás"
     },
     "close_button": {
       "en": "Close",
       "de": "Schließen",
       "zh": "关闭",
-      "pt": "Fechar"
+      "pt": "Fechar",
+      "hu": "Bezárás"
     },
     "creator_label": {
       "en": "Creator",
       "de": "Erstellt von",
       "zh": "创建者",
-      "pt": "Criador"
+      "pt": "Criador",
+      "hu": "Készítő"
     },
     "copy": {
       "en": "copy",
       "de": "Kopie",
       "zh": "复制",
-      "pt": "Copiar"
+      "pt": "Copiar",
+      "hu": "másolás"
     },
     "date_created_label": {
       "en": "Date created",
       "de": "Erstellt am",
       "zh": "创建日期",
-      "pt": "Data de criação"
+      "pt": "Data de criação",
+      "hu": "Létrehozás dátuma"
     },
     "date_edited_label": {
       "en": "Date edited",
       "de": "Bearbeitet am",
       "zh": "修改日期",
-      "pt": "Data da edição"
+      "pt": "Data da edição",
+      "hu": "Módosítás dátuma"
     },
     "delete_button": {
       "en": "Delete",
       "de": "Löschen",
       "zh": "删除",
-      "pt": "Apagar"
+      "pt": "Apagar",
+      "hu": "Törlés"
     },
     "editor_label": {
       "en": "Editor",
       "de": "Bearbeitet von",
       "zh": "编辑者",
-      "pt": "Editor"
+      "pt": "Editor",
+      "hu": "Szerkesztő"
     },
     "file_size_label": {
       "en": "File size",
       "de": "Dateigröße",
       "zh": "文件大小",
-      "pt": "Tamanho do ficheiro"
+      "pt": "Tamanho do ficheiro",
+      "hu": "Fájl méret"
     },
     "file_type_label": {
       "en": "File type",
       "de": "Dateityp",
       "zh": "文件类型",
-      "pt": "Tipo de ficheiro"
+      "pt": "Tipo de ficheiro",
+      "hu": "Fájl típus"
     },
     "id_label": {
       "en": "ID",
       "de": "ID",
       "zh": "ID",
-      "pt": "ID"
+      "pt": "ID",
+      "hu": "ID"
     },
     "last_edited": {
       "en": "last edited",
       "de": "zuletzt bearbeitet",
       "zh": "最后编辑",
-      "pt": "Última edição"
+      "pt": "Última edição",
+      "hu": "Utoljára szerkesztve"
     },
     "not_found": {
       "en": "Not found",
       "de": "Nicht gefunden",
       "zh": "未找到",
-      "pt": "Não encontrado"
+      "pt": "Não encontrado",
+      "hu": "Nem található"
     },
     "page_not_found": {
       "en": "The URL you entered is not available.",
       "de": "Die eingegebene URL ist nicht verfügbar.",
       "zh": "你输入的URL不可用。",
-      "pt": "O URL introduzido não está disponível"
+      "pt": "O URL introduzido não está disponível",
+      "hu": "A megadott URL nem elérhető"
     },
     "navigate_to_fallback": {
       "en": "Navigate to Editor",
       "de": "Zum Editor navigieren",
       "zh": "转到编辑器",
-      "pt": "Navegar para o Editor"
+      "pt": "Navegar para o Editor",
+      "hu": "Ugrás a szerkesztőbe"
     },
     "okay_button": {
       "en": "Okay",
       "de": "OK",
       "zh": "好",
-      "pt": "OK"
+      "pt": "OK",
+      "hu": "Rendben"
     },
     "no_button": {
       "en": "No",
       "de": "Nein",
       "zh": "否",
-      "pt": "Não"
+      "pt": "Não",
+      "hu": "Nem"
     },
     "yes_button": {
       "en": "Yes",
       "de": "Ja",
       "zh": "是",
-      "pt": "Sim"
+      "pt": "Sim",
+      "hu": "Igen"
     },
     "published": {
       "en": "published",
       "de": "veröffentlicht",
       "zh": "已发布",
-      "pt": "publicado"
+      "pt": "publicado",
+      "hu": "közzétéve"
     },
     "draft": {
       "en": "draft",
       "de": "Entwurf",
       "zh": "草稿",
-      "pt": "rascunho"
+      "pt": "rascunho",
+      "hu": "piszkozat"
     },
     "updated": {
       "en": "updated",
       "de": "Bearbeitet",
       "zh": "已更新",
-      "pt": "actualizado"
+      "pt": "actualizado",
+      "hu": "frissítve"
     },
     "archived": {
       "en": "archived",
       "de": "Archiviert",
       "zh": "已存档",
-      "pt": "arquivado"
+      "pt": "arquivado",
+      "hu": "archiválva"
     },
     "publish_button": {
       "en": "Publish",
       "de": "Veröffentlichen",
       "zh": "发布",
-      "pt": "Publicar"
+      "pt": "Publicar",
+      "hu": "Közzététel"
     },
     "publish_tooltip": {
       "en": "Publish",
       "de": "Veröffentlichen",
       "zh": "发布",
-      "pt": "Publicar"
+      "pt": "Publicar",
+      "hu": "Közzététel"
     },
     "priority_label": {
       "en": "Priority",
       "de": "Priorität",
       "zh": "优先级",
-      "pt": "Prioridade"
+      "pt": "Prioridade",
+      "hu": "Prioritás"
     },
     "retry_button": {
       "en": "Retry",
       "de": "Erneut versuchen",
       "zh": "重试",
-      "pt": "Tentar de novo"
+      "pt": "Tentar de novo",
+      "hu": "Újrapróbálkozás"
     },
     "save": {
       "en": "Save",
       "de": "Speichern",
       "zh": "保存",
-      "pt": "Gravar"
+      "pt": "Gravar",
+      "hu": "Mentés"
     },
     "search_placeholder": {
       "en": "Search",
       "de": "Suche",
       "zh": "搜索",
-      "pt": "Procurar"
+      "pt": "Procurar",
+      "hu": "Keresés"
     },
     "searching": {
       "en": "Searching: '{{ term }}'",
       "de": "Suche: '{{ term }}'",
       "zh": "搜索： '{{ term }}'",
-      "pt": "Procurando: '{{ term }}'"
+      "pt": "Procurando: '{{ term }}'",
+      "hu": "Keresés: '{{ term }}'"
     },
     "select_all_label": {
       "en": "Select all",
       "de": "Alle auswählen",
       "zh": "全选",
-      "pt": "Selecionar tudo"
+      "pt": "Selecionar tudo",
+      "hu": "Összes kijelölése"
     },
     "select_channel": {
       "en": "Select channel",
       "de": "Channel auswählen",
       "zh": "选择途径",
-      "pt": "Selecionar canal"
+      "pt": "Selecionar canal",
+      "hu": "Csatorna kiválasztása"
     },
     "sort_asc": {
       "en": "ASC",
       "de": "aufsteigend",
       "zh": "升序",
-      "pt": "ASC"
+      "pt": "ASC",
+      "hu": "növekvő"
     },
     "sort_desc": {
       "en": "DESC",
       "de": "absteigend",
       "zh": "降序",
-      "pt": "DESC"
+      "pt": "DESC",
+      "hu": "csökkenő"
     },
     "sort_cdate": {
       "en": "Date created",
       "de": "Erstellt am",
       "zh": "创建日期",
-      "pt": "Data criação"
+      "pt": "Data criação",
+      "hu": "Létrehozás dátuma"
     },
     "sort_deletedate": {
       "en": "Date deleted",
       "de": "Gelösched am",
       "zh": "删除日期",
-      "pt": "Data eliminação"
+      "pt": "Data eliminação",
+      "hu": "Törlés dátuma"
     },
     "sort_edate": {
       "en": "Date edited",
       "de": "Bearbeitet am",
       "zh": "编辑日期",
-      "pt": "Data edição"
+      "pt": "Data edição",
+      "hu": "Módosítás dátuma"
     },
     "sort_filename": {
       "en": "File name",
       "de": "Dateiname",
       "zh": "文件名",
-      "pt": "Nome ficheiro"
+      "pt": "Nome ficheiro",
+      "hu": "Fájl név"
     },
     "sort_filesize": {
       "en": "File size",
       "de": "Dateigröße",
       "zh": "文件大小",
-      "pt": "Tamanho ficheiro"
+      "pt": "Tamanho ficheiro",
+      "hu": "Fájl méret"
     },
     "sort_name": {
       "en": "Name",
       "de": "Name",
       "zh": "名称",
-      "pt": "Nome"
+      "pt": "Nome",
+      "hu": "Név"
     },
     "sort_pdate": {
       "en": "Date published",
       "de": "Publiziert am",
       "zh": "发布日期",
-      "pt": "Data publicação"
+      "pt": "Data publicação",
+      "hu": "Közzététel dátuma"
     },
     "sort_priority": {
       "en": "Priority",
       "de": "Priorität",
       "zh": "优先级",
-      "pt": "Prioridade"
+      "pt": "Prioridade",
+      "hu": "Prioritás"
     },
     "sort_template": {
       "en": "Template",
       "de": "Vorlage",
       "zh": "模板",
-      "pt": "Template"
+      "pt": "Template",
+      "hu": "Sablon"
     },
     "sort_type": {
       "en": "File type",
       "de": "Dateityp",
       "zh": "文件类型",
-      "pt": "Tipo de ficheiro"
+      "pt": "Tipo de ficheiro",
+      "hu": "Fájl típus"
     },
     "status_edited": {
       "en": "Edited",
       "de": "Bearbeitet",
       "zh": "已编辑",
-      "pt": "Editado"
+      "pt": "Editado",
+      "hu": "Módosítva"
     },
     "status_published": {
       "en": "Published",
       "de": "Veröffentlicht",
       "zh": "已发布",
-      "pt": "Publicado"
+      "pt": "Publicado",
+      "hu": "Közzétéve"
     },
     "status_publishat": {
       "en": "Planned",
       "de": "Geplant",
       "zh": "已计划发布",
-      "pt": "Planeado"
+      "pt": "Planeado",
+      "hu": "Tervezett"
     },
     "status_offline": {
       "en": "Offline",
       "de": "Unveröffentlicht",
       "zh": "离线",
-      "pt": "Offline"
+      "pt": "Offline",
+      "hu": "Vázlat"
     },
     "status_queue": {
       "en": "Queued",
       "de": "In Warteschlange",
       "zh": "队列",
-      "pt": "Em fila"
+      "pt": "Em fila",
+      "hu": "Sorban áll"
     },
     "status_timeframe": {
       "en": "Not in time frame",
       "de": "Außerhalb Zeitrahmen",
       "zh": "不在时间范围内",
-      "pt": "Fora do intervalo de tempo"
+      "pt": "Fora do intervalo de tempo",
+      "hu": "Időkereten kívül"
     },
     "template_label": {
       "en": "Template",
       "de": "Vorlage",
       "zh": "模板",
-      "pt": "Template"
+      "pt": "Template",
+      "hu": "Sablon"
     },
     "type_contenttag": {
       "en": "content tag",
       "de": "Seitentag",
       "zh": "内容标签",
-      "pt": "etiqueta de conteúdo"
+      "pt": "etiqueta de conteúdo",
+      "hu": "tartalom címke"
     },
     "type_contenttags": {
       "en": "content tags",
       "de": "Seitentags",
       "zh": "内容标签",
-      "pt": "etiquetas de conteúdo"
+      "pt": "etiquetas de conteúdo",
+      "hu": "tartalom címkék"
     },
     "type_folder": {
       "en": "folder",
       "de": "Ordner",
       "zh": "文件夹",
-      "pt": "pasta"
+      "pt": "pasta",
+      "hu": "mappa"
     },
     "type_folders": {
       "en": "folders",
       "de": "Ordner",
       "zh": "文件夹",
-      "pt": "pastas"
+      "pt": "pastas",
+      "hu": "mappák"
     },
     "type_page": {
       "en": "page",
       "de": "Seite",
       "zh": "页面",
-      "pt": "página"
+      "pt": "página",
+      "hu": "oldal"
     },
     "type_pages": {
       "en": "pages",
       "de": "Seiten",
       "zh": "页面",
-      "pt": "páginas"
+      "pt": "páginas",
+      "hu": "oldalak"
     },
     "type_file": {
       "en": "file",
       "de": "Datei",
       "zh": "文件",
-      "pt": "ficheiro"
+      "pt": "ficheiro",
+      "hu": "fájl"
     },
     "type_files": {
       "en": "files",
       "de": "Dateien",
       "zh": "文件",
-      "pt": "ficheiros"
+      "pt": "ficheiros",
+      "hu": "fájlok"
     },
     "type_image": {
       "en": "image",
       "de": "Bild",
       "zh": "图片",
-      "pt": "imagem"
+      "pt": "imagem",
+      "hu": "kép"
     },
     "type_images": {
       "en": "images",
       "de": "Bilder",
       "zh": "图片",
-      "pt": "imagens"
+      "pt": "imagens",
+      "hu": "képek"
     },
     "type_object": {
       "en": "object",
       "de": "Objekt",
       "zh": "对象",
-      "pt": "objecto"
+      "pt": "objecto",
+      "hu": "objektum"
     },
     "type_objects": {
       "en": "objects",
       "de": "Objekte",
       "zh": "对象",
-      "pt": "objectos"
+      "pt": "objectos",
+      "hu": "objektumok"
     },
     "type_tag": {
       "en": "tag",
       "de": "Tag",
       "zh": "标签",
-      "pt": "etiqueta"
+      "pt": "etiqueta",
+      "hu": "címke"
     },
     "type_tags": {
       "en": "tags",
       "de": "Tags",
       "zh": "标签",
-      "pt": "etiquetas"
+      "pt": "etiquetas",
+      "hu": "címkék"
     },
     "type_template": {
       "en": "template",
       "de": "Vorlage",
       "zh": "模板",
-      "pt": "template"
+      "pt": "template",
+      "hu": "sablon"
     },
     "type_templates": {
       "en": "templates",
       "de": "Vorlagen",
       "zh": "模板",
-      "pt": "templates"
+      "pt": "templates",
+      "hu": "sablonok"
     },
     "type_templatetag": {
       "en": "template tag",
       "de": "Vorlagentag",
       "zh": "模板标签",
-      "pt": "etiqueta de template"
+      "pt": "etiqueta de template",
+      "hu": "sablon címke"
     },
     "type_templatetags": {
       "en": "template tags",
       "de": "Vorlagentags",
       "zh": "模板标签",
-      "pt": "etiquetas de template"
+      "pt": "etiquetas de template",
+      "hu": "sablon címkék"
     },
     "type_variant": {
       "en": "variant",
       "de": "Variante",
       "zh": "变体",
-      "pt": "variante"
+      "pt": "variante",
+      "hu": "változat"
     },
     "type_variants": {
       "en": "variants",
       "de": "Varianten",
       "zh": "变体",
-      "pt": "variantes"
+      "pt": "variantes",
+      "hu": "változatok"
     },
     "type_node": {
       "en": "node",
       "de": "Node",
       "zh": "节点",
-      "pt": "nó"
+      "pt": "nó",
+      "hu": "csomópont"
     },
     "type_nodes": {
       "en": "nodes",
       "de": "Nodes",
       "zh": "节点",
-      "pt": "nós"
+      "pt": "nós",
+      "hu": "csomópontok"
     },
     "undo_button": {
       "en": "Undo",
       "de": "Rückgängig",
       "zh": "撤消",
-      "pt": "Desfazer"
+      "pt": "Desfazer",
+      "hu": "Visszavonás"
     },
     "usage_label": {
       "en": "Usage",
       "de": "Verwendung",
       "zh": "用法",
-      "pt": "Uso"
+      "pt": "Uso",
+      "hu": "Használat"
     },
     "title_label": {
       "en": "Title",
       "de": "Titel",
       "zh": "标题",
-      "pt": "Título"
+      "pt": "Título",
+      "hu": "Cím"
     },
     "project": {
       "en": "Project",
       "de": "Projekt",
       "zh": "项目",
-      "pt": "Projeto"
+      "pt": "Projeto",
+      "hu": "Projekt"
     },
     "projects": {
       "en": "Projects",
       "de": "Projekte",
       "zh": "项目",
-      "pt": "Projetos"
+      "pt": "Projetos",
+      "hu": "Projektek"
     },
     "user": {
       "en": "User",
       "de": "Benutzer",
       "zh": "用户",
-      "pt": "Utilizador"
+      "pt": "Utilizador",
+      "hu": "Felhasználó"
     },
     "users": {
       "en": "Users",
       "de": "Benutzer",
       "zh": "用户",
-      "pt": "Utilizadores"
+      "pt": "Utilizadores",
+      "hu": "Felhasználók"
     },
     "permission": {
       "en": "Permission",
       "de": "Berechtigung",
       "zh": "权限",
-      "pt": "Permissão"
+      "pt": "Permissão",
+      "hu": "Jogosultság"
     },
     "permissions": {
       "en": "Permissions",
       "de": "Berechtigungen",
       "zh": "权限",
-      "pt": "Permissões"
+      "pt": "Permissões",
+      "hu": "Jogosultságok"
     },
     "schema": {
       "en": "Schema",
       "de": "Schema",
       "zh": "数据模型",
-      "pt": "Esquema"
+      "pt": "Esquema",
+      "hu": "Séma"
     },
     "schemas": {
       "en": "Schemas",
       "de": "Schemas",
       "zh": "数据模型",
-      "pt": "Esquemas"
+      "pt": "Esquemas",
+      "hu": "Sémák"
     },
     "microschema": {
       "en": "Microschema",
       "de": "Microschema",
       "zh": "内嵌数据模型",
-      "pt": "Microesquema"
+      "pt": "Microesquema",
+      "hu": "Microséma"
     },
     "microschemas": {
       "en": "Microschemas",
       "de": "Microschemas",
       "zh": "内嵌数据模型",
-      "pt": "Microesquemas"
+      "pt": "Microesquemas",
+      "hu": "Mikrosémák"
     },
     "groups": {
       "en": "Groups",
       "de": "Gruppen",
       "zh": "用户组",
-      "pt": "Grupos"
+      "pt": "Grupos",
+      "hu": "Csoportok"
     },
     "roles": {
       "en": "Roles",
       "de": "Rollen",
       "zh": "角色",
-      "pt": "Papeis"
+      "pt": "Papeis",
+      "hu": "Szerepek"
     },
     "field_required": {
       "en": "This field is required",
       "de": "Dieses Feld is erforderlich",
       "zh": "此字段为必填",
-      "pt": "Este campo é obrigatório"
+      "pt": "Este campo é obrigatório",
+      "hu": "Ez a mező kötelező"
     }
 }

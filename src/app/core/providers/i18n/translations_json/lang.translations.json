@@ -3,24 +3,35 @@
       "en": "German",
       "de": "Deutsch",
       "zh": "德语",
-      "pt": "Alemão"
+      "pt": "Alemão",
+      "hu": "Német"
     },
     "en": {
       "en": "English",
       "de": "Englisch",
       "zh": "英语",
-      "pt": "Inglês"
+      "pt": "Inglês",
+      "hu": "Angol"
     },
     "zh": {
       "en": "Chinese",
       "de": "Chinesisch",
       "zh": "中文",
-      "pt": "Chinês"
+      "pt": "Chinês",
+      "hu": "Kínai"
     },
     "pt": {
       "en": "Portuguese",
       "de": "Portugiesisch",
       "zh": "葡萄牙语",
-      "pt": "Português"
+      "pt": "Português",
+      "hu": "Portugál"
+    },
+    "hu": {
+      "en": "Hungarian",
+      "de": "Ungarisch",
+      "zh": "匈牙利語",
+      "pt": "Húngaro",
+      "hu": "Magyar"
     }
   }

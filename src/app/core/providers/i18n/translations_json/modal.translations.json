@@ -1,230 +1,275 @@
 {
     "added_tags": {
-        "en": "Added tags",
-        "de": "Tags hinzugefügt",
-        "zh": "添加的标签",
-        "pt": "Etiquetas adicionadas"
+      "en": "Added tags",
+      "de": "Tags hinzugefügt",
+      "zh": "添加的标签",
+      "pt": "Etiquetas adicionadas",
+      "hu": "Hozzáadott címkék"
     },
     "additional_changes_label": {
-        "en": "+ {{count}} additional changes",
-        "de": "+ {{count}} weitere Änderungen",
-        "zh": "+ {{count}} 个其他更改",
-        "pt": "+ {{count}} alterações adicionais"
+      "en": "+ {{count}} additional changes",
+      "de": "+ {{count}} weitere Änderungen",
+      "zh": "+ {{count}} 个其他更改",
+      "pt": "+ {{count}} alterações adicionais",
+      "hu": "+ {{count}} további változtatások"
     },
     "apply_edits": {
-        "en": "Apply edits",
-        "de": "Änderungen übernehmen",
-        "zh": "应用修改",
-        "pt": "Aplicar edições"
+      "en": "Apply edits",
+      "de": "Änderungen übernehmen",
+      "zh": "应用修改",
+      "pt": "Aplicar edições",
+      "hu": "Módosítások alkalmazása"
     },
     "change_password_title": {
-        "en": "Change Password",
-        "de": "Passwort ändern",
-        "zh": "更改密码",
-        "pt": "Alterar Palavra-chave"
+      "en": "Change Password",
+      "de": "Passwort ändern",
+      "zh": "更改密码",
+      "pt": "Alterar Palavra-chave",
+      "hu": "Jelszó módosítása"
     },
     "change_password_button": {
-        "en": "Change password",
-        "de": "Passwort ändern",
-        "zh": "更改密码",
-        "pt": "Alterar palavra-chave"
+      "en": "Change password",
+      "de": "Passwort ändern",
+      "zh": "更改密码",
+      "pt": "Alterar palavra-chave",
+      "hu": "Jelszó módosítása"
     },
     "change_password_success": {
-        "en": "Password changed successfully",
-        "de": "Passwort erfolgreich geändert",
-        "zh": "密码更改成功",
-        "pt": "Password alterada com sucesso"
+      "en": "Password changed successfully",
+      "de": "Passwort erfolgreich geändert",
+      "zh": "密码更改成功",
+      "pt": "Password alterada com sucesso",
+      "hu": "Sikeres jelszó változtatás"
     },
     "confirm_navigation_body": {
-        "en": "Unsaved changes will be lost.",
-        "de": "Ungespeicherte Änderungen gehen verloren.",
-        "zh": "未保存的更改将丢失。",
-        "pt": "Alterações não gravadas serão perdidas"
+      "en": "Unsaved changes will be lost.",
+      "de": "Ungespeicherte Änderungen gehen verloren.",
+      "zh": "未保存的更改将丢失。",
+      "pt": "Alterações não gravadas serão perdidas",
+      "hu": "A nem mentett módosítások elvesznek."
     },
     "confirm_navigation_title": {
-        "en": "Discard changes?",
-        "de": "Änderungen verwerfen?",
-        "zh": "放弃更改？",
-        "pt": "Descartar alterações?"
+      "en": "Discard changes?",
+      "de": "Änderungen verwerfen?",
+      "zh": "放弃更改？",
+      "pt": "Descartar alterações?",
+      "hu": "Módosítások elvetése?"
     },
     "confirm_password_label": {
-        "en": "Confirm password",
-        "de": "Passwort bestätigen",
-        "zh": "确认密码",
-        "pt": "Confirme a palavra-chave"
+      "en": "Confirm password",
+      "de": "Passwort bestätigen",
+      "zh": "确认密码",
+      "pt": "Confirme a palavra-chave",
+      "hu": "Jelszó megerősítése"
     },
     "create_project_button": {
-        "en": "Create Project",
-        "de": "Projekt erstellen",
-        "zh": "创建项目",
-        "pt": "Criar projeto"
+      "en": "Create Project",
+      "de": "Projekt erstellen",
+      "zh": "创建项目",
+      "pt": "Criar projeto",
+      "hu": "Projekt létrehozása"
     },
     "create_project_conflict": {
-        "en": "A project with this name already exists. Please choose another name.",
-        "de": "Es existiert bereits ein Projekt mit diesem Namen. Bitte wählen Sie einen anderen Namen.",
-        "zh": "已经存在此名称的项目。请选择其他名称。",
-        "pt": "Um projeto com este nome já existe. Por favor escolha outro nome"
+      "en": "A project with this name already exists. Please choose another name.",
+      "de": "Es existiert bereits ein Projekt mit diesem Namen. Bitte wählen Sie einen anderen Namen.",
+      "zh": "已经存在此名称的项目。请选择其他名称。",
+      "pt": "Um projeto com este nome já existe. Por favor escolha outro nome",
+      "hu": "Ilyen névve már létezik projekt. Kérjük, válassz másik nevet."
     },
     "create_project_non_container_hint": {
-        "en": "The chosen schema is not a container. You will not be able to create other nodes in this project.",
-        "de": "Das gewählte Schema is kein Container. Sie werden in diesem Projekt keine anderen Nodes erstellen können.",
-        "zh": "所选数据模型不是容器。你将无法在该项目中创建其他数据节点。",
-        "pt": "O esquema escolhido não é um contentor. Não conseguirá criar outos nós neste projeto"
+      "en": "The chosen schema is not a container. You will not be able to create other nodes in this project.",
+      "de": "Das gewählte Schema is kein Container. Sie werden in diesem Projekt keine anderen Nodes erstellen können.",
+      "zh": "所选数据模型不是容器。你将无法在该项目中创建其他数据节点。",
+      "pt": "O esquema escolhido não é um contentor. Não conseguirá criar outos nós neste projeto",
+      "hu": "A kiválasztott séma nem tároló. Nem tudsz más csomópontot létrehozni ebben a projektben."
     },
     "create_project_schema_label": {
-        "en": "Schema for root node",
-        "de": "Schema für Root-Node",
-        "zh": "根节点的数据模型",
-        "pt": "Esquema para nó raiz"
+      "en": "Schema for root node",
+      "de": "Schema für Root-Node",
+      "zh": "根节点的数据模型",
+      "pt": "Esquema para nó raiz",
+      "hu": "Gyökér csomópont sémája"
     },
     "create_project_title": {
-        "en": "New Project",
-        "de": "Neues Projekt",
-        "zh": "新项目",
-        "pt": "Novo Projeto"
+      "en": "New Project",
+      "de": "Neues Projekt",
+      "zh": "新项目",
+      "pt": "Novo Projeto",
+      "hu": "Új projekt"
     },
     "create_project_anonymous_access": {
-        "en": "Allow anonymous users to read contents",
-        "de": "Erlaube anonymen Benutzern Inhalte zu lesen",
-        "zh": "允许匿名用户读取数据内容",
-        "pt": "Permitir a utilizadores anónimos a leitura de conteúdos"
+      "en": "Allow anonymous users to read contents",
+      "de": "Erlaube anonymen Benutzern Inhalte zu lesen",
+      "zh": "允许匿名用户读取数据内容",
+      "pt": "Permitir a utilizadores anónimos a leitura de conteúdos",
+      "hu": "Engedélyezett a névtelen felhasználók számára a tartalom olvasás"
     },
     "delete_project_title": {
-        "en": "Delete Project",
-        "de": "Projekt löschen",
-        "zh": "删除项目",
-        "pt": "Apagar projeto"
+      "en": "Delete Project",
+      "de": "Projekt löschen",
+      "zh": "删除项目",
+      "pt": "Apagar projeto",
+      "hu": "Projekt törlése"
     },
     "delete_project_body": {
-        "en": "Are you sure you want to delete project <strong>\"{{ name }}\"</strong>?",
-        "de": "Sind Sie sicher, dass sie Projekt <strong>\"{{ name }}\"</strong> löschen wollen?",
-        "zh": "你确定要删除项目 <strong>\"{{ name }}\"</strong> 吗？",
-        "pt": "Tem a certeza de querer apagar o projeto <strong>\"{{ name }}\"</strong>?"
+      "en": "Are you sure you want to delete project <strong>\"{{ name }}\"</strong>?",
+      "de": "Sind Sie sicher, dass sie Projekt <strong>\"{{ name }}\"</strong> löschen wollen?",
+      "zh": "你确定要删除项目 <strong>\"{{ name }}\"</strong> 吗？",
+      "pt": "Tem a certeza de querer apagar o projeto <strong>\"{{ name }}\"</strong>?",
+      "hu": "Biztosan törlöd a(z) <strong>\"{{ name }}\"</strong> projektet?"
     },
     "delete_node_title": {
-        "en": "Delete node",
-        "de": "Node löschen",
-        "zh": "删除节点",
-        "pt": "Apagar nó"
+      "en": "Delete node",
+      "de": "Node löschen",
+      "zh": "删除节点",
+      "pt": "Apagar nó",
+      "hu": "Csomópont törlése"
     },
     "delete_node_body": {
-        "en": "Are you sure you want to delete this node <strong>\"{{ name }}\"</strong>?",
-        "de": "Sind Sie sicher, dass sie die Node <strong>\"{{ name }}\"</strong> löschen wollen?",
-        "zh": "你确定要删除这个节点 <strong>\"{{ name }}\"</strong> 吗？",
-        "pt": "Tem a certeza de querer apagar o nó <strong>\"{{ name }}\"</strong>?"
+      "en": "Are you sure you want to delete this node <strong>\"{{ name }}\"</strong>?",
+      "de": "Sind Sie sicher, dass sie die Node <strong>\"{{ name }}\"</strong> löschen wollen?",
+      "zh": "你确定要删除这个节点 <strong>\"{{ name }}\"</strong> 吗？",
+      "pt": "Tem a certeza de querer apagar o nó <strong>\"{{ name }}\"</strong>?",
+      "hu": "Biztosan törlöd a(z) <strong>\"{{ name }}\"</strong> csomópontot?"
     },
     "discard_changes_button": {
-        "en": "Discard changes",
-        "de": "Änderungen verwerfen",
-        "zh": "放弃更改",
-        "pt": "Descartar alterações"
+      "en": "Discard changes",
+      "de": "Änderungen verwerfen",
+      "zh": "放弃更改",
+      "pt": "Descartar alterações",
+      "hu": "Módosítások elvetése"
     },
     "edit_image_title": {
-        "en": "Edit Image",
-        "de": "Bild bearbeiten",
-        "zh": "编辑图像",
-        "pt": "Editar imagem"
+      "en": "Edit Image",
+      "de": "Bild bearbeiten",
+      "zh": "编辑图像",
+      "pt": "Editar imagem",
+      "hu": "Kép szerkesztése"
     },
     "image_edited_label": {
-        "en": "image edited",
-        "de": "Bild bearbeitet",
-        "zh": "图像已编辑",
-        "pt": "imagem editada"
+      "en": "image edited",
+      "de": "Bild bearbeitet",
+      "zh": "图像已编辑",
+      "pt": "imagem editada",
+      "hu": "szerkesztett kép"
     },
     "list_changed_label": {
-        "en": "list changed",
-        "de": "Liste geändert",
-        "zh": "列表已更改",
-        "pt": "lista alterada"
+      "en": "list changed",
+      "de": "Liste geändert",
+      "zh": "列表已更改",
+      "pt": "lista alterada",
+      "hu": "lista megváltozott"
     },
     "new_file_selected_label": {
-        "en": "new file selected",
-        "de": "Neue Datei ausgewählt",
-        "zh": "已选择新文件",
-        "pt": "Novo ficheiro selecionado"
+      "en": "new file selected",
+      "de": "Neue Datei ausgewählt",
+      "zh": "已选择新文件",
+      "pt": "Novo ficheiro selecionado",
+      "hu": "új fájl kiválasztva"
     },
     "new_password_label": {
-        "en": "New password",
-        "de": "Neues Passwort",
-        "zh": "新密码",
-        "pt": "Nova palavra-chave"
+      "en": "New password",
+      "de": "Neues Passwort",
+      "zh": "新密码",
+      "pt": "Nova palavra-chave",
+      "hu": "Új jelszó"
     },
     "removed_tags": {
-        "en": "Removed tags",
-        "de": "Tags gelöscht",
-        "zh": "已移除标签",
-        "pt": "Etiquetas removidas"
+      "en": "Removed tags",
+      "de": "Tags gelöscht",
+      "zh": "已移除标签",
+      "pt": "Etiquetas removidas",
+      "hu": "Eltávolított címkék"
     },
     "save_and_close_button": {
-        "en": "Save and close",
-        "de": "Speichern und schließen",
-        "zh": "保存并关闭",
-        "pt": "Gravar e fechar"
+      "en": "Save and close",
+      "de": "Speichern und schließen",
+      "zh": "保存并关闭",
+      "pt": "Gravar e fechar",
+      "hu": "Mentés és bezárás"
     },
     "uploading_file": {
-        "en": "Uploading file…",
-        "de": "Lade Datei hoch …",
-        "zh": "正在上传文件…",
-        "pt": "Carregando ficheiro…"
+      "en": "Uploading file…",
+      "de": "Lade Datei hoch …",
+      "zh": "正在上传文件…",
+      "pt": "Carregando ficheiro…",
+      "hu": "Fájl feltöltése…"
     },
     "uploading_files": {
-        "en": "Uploading files…",
-        "de": "Lade Dateien hoch …",
-        "zh": "正在上传文件…",
-        "pt": "Carregando ficheiros…"
+      "en": "Uploading files…",
+      "de": "Lade Dateien hoch …",
+      "zh": "正在上传文件…",
+      "pt": "Carregando ficheiros…",
+      "hu": "Fájlok feltöltése…"
     },
     "node_conflict": {
-        "en": "Resolve conflicts",
-        "de": "Änderungskonflikte beheben",
-        "zh": "解决冲突",
-        "pt": "Resolver conflitos"
+      "en": "Resolve conflicts",
+      "de": "Änderungskonflikte beheben",
+      "zh": "解决冲突",
+      "pt": "Resolver conflitos",
+      "hu": "Konfliktusok megoldása"
     },
     "node_conflict_description": {
-        "en": "Your changes conflict with the saved version on the server.",
-        "de": "Ihre Änderungen würden Änderungen am Server überschreiben.",
-        "zh": "你的更改与服务器上保存的版本冲突。",
-        "pt": "As suas alterações entram em conflito com a versão gravada no servidor"
+      "en": "Your changes conflict with the saved version on the server.",
+      "de": "Ihre Änderungen würden Änderungen am Server überschreiben.",
+      "zh": "你的更改与服务器上保存的版本冲突。",
+      "pt": "As suas alterações entram em conflito com a versão gravada no servidor",
+      "hu": "A módosítások ütköznek a kiszolgálón elmentett verzióval."
     },
     "theirs_version": {
-        "en": "Changes on the server",
-        "de": "Änderungen am Server",
-        "zh": "服务器上的更改",
-        "pt": "Alterações no servidor"
+      "en": "Changes on the server",
+      "de": "Änderungen am Server",
+      "zh": "服务器上的更改",
+      "pt": "Alterações no servidor",
+      "hu": "Változások a szerveren"
     },
     "my_version": {
-        "en": "Your changes",
-        "de": "Ihre Änderungen",
-        "zh": "你的更改",
-        "pt": "As suas alterações"
+      "en": "Your changes",
+      "de": "Ihre Änderungen",
+      "zh": "你的更改",
+      "pt": "As suas alterações",
+      "hu": "Saját változások"
     },
     "save_changes": {
-        "en": "Save changes",
-        "de": "Änderungen übernehmen",
-        "zh": "保存更改",
-        "pt": "Guardar alterações"
+      "en": "Save changes",
+      "de": "Änderungen übernehmen",
+      "zh": "保存更改",
+      "pt": "Guardar alterações",
+      "hu": "Változtatások mentése"
     },
     "use_this_version": {
-        "en": "Apply",
-        "de": "Übernehmen",
-        "zh": "应用",
-        "pt": "Aplicar"
+      "en": "Apply",
+      "de": "Übernehmen",
+      "zh": "应用",
+      "pt": "Aplicar",
+      "hu": "Alkalmaz"
     },
     "no_preview_available": {
-        "en": "No Preview Available",
-        "de": "Keine Vorschau verfügbar",
-        "zh": "没有预览可用",
-        "pt": "Nenhuma pré-visualização disponível"
+      "en": "No Preview Available",
+      "de": "Keine Vorschau verfügbar",
+      "zh": "没有预览可用",
+      "pt": "Nenhuma pré-visualização disponível",
+      "hu": "Az előnézet nem elérhető"
     },
     "file_too_large": {
-        "en": "File too large",
-        "de": "Zu große Datei",
-        "zh": "文件太大",
-        "pt": "Ficheiro demasiado grande"
+      "en": "File too large",
+      "de": "Zu große Datei",
+      "zh": "文件太大",
+      "pt": "Ficheiro demasiado grande",
+      "hu": "A fájl túl nagy"
     },
     "file_too_large_body": {
-        "en": "The file <code>{{ fileName }}</code> is too large to upload. Please choose a smaller file or <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">change the upload limit in the configuration</a>.",
-        "de": "Die Datei <code>{{ fileName }}</code> ist zu groß zum Hochladen. Bitte wählen Sie eine kleinere Datei, oder <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">ändern Sie das Upload-Limit in der Konfiguration</a>.",
-        "zh": "上传的文件 <code>{{ fileName }}</code> 太大。请选择一个较小的文件，或<a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">更改配置中的上传限制</a>。",
-        "pt": "O ficheiro <code>{{ fileName }}</code> é demasiado grande para ser carregado. Por favor escolha um ficheiro mais pequeno ou <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">altere o limite de carregamento na configuração</a>."
+      "en": "The file <code>{{ fileName }}</code> is too large to upload. Please choose a smaller file or <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">change the upload limit in the configuration</a>.",
+      "de": "Die Datei <code>{{ fileName }}</code> ist zu groß zum Hochladen. Bitte wählen Sie eine kleinere Datei, oder <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">ändern Sie das Upload-Limit in der Konfiguration</a>.",
+      "zh": "上传的文件 <code>{{ fileName }}</code> 太大。请选择一个较小的文件，或<a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">更改配置中的上传限制</a>。",
+      "pt": "O ficheiro <code>{{ fileName }}</code> é demasiado grande para ser carregado. Por favor escolha um ficheiro mais pequeno ou <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">altere o limite de carregamento na configuração</a>.",
+      "hu": "A(z) <code>{{ fileName }}</code> fájl túl nagy a feltöltéshez. Kérjük, válassz egy kisebb fájlt, vagy <a target=\"_blank\" href=\"https://getmesh.io/docs/administration-guide/#_upload_options\">módosítsd a feltöltési korlátot a konfigurációban</a> ."
+    },
+    "validation_passwords_must_match": {
+      "en": "Password doesn't match",
+      "de": "Die Passwörter stimmen nicht überein",
+      "zh": "密码不匹配",
+      "pt": "Palavra-chave difere",
+      "hu": "A jelszavak nem egyeznek"
     }
 }
