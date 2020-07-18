@@ -5177,6 +5177,8 @@ export interface UserCreateRequest {
     readonly username: string;
     /** When true, the user needs to change their password on the next login. */
     readonly forcedPasswordChange?: boolean;
+    /** Grant the user admin privileges */
+    readonly admin?: boolean;
 }
 
 /**
@@ -5273,6 +5275,8 @@ export interface UserResponse {
     readonly uuid: string;
     /** When true, the user needs to change their password on the next login. */
     readonly forcedPasswordChange: boolean;
+    /** Grant the user admin privileges */
+    readonly admin?: boolean;
 }
 
 export interface UserUpdateRequest {
@@ -5294,4 +5298,6 @@ export interface UserUpdateRequest {
     readonly username?: string;
     /** When true, the user needs to change their password on the next login. */
     readonly forcedPasswordChange?: boolean;
+    /** Grant the user admin privileges */
+    readonly admin?: boolean;
 }

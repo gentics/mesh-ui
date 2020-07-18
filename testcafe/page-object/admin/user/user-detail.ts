@@ -9,6 +9,7 @@ export interface User {
     lastName?: string;
     emailAddress?: string;
     forcedPasswordChange?: boolean;
+    admin?: boolean;
 }
 
 export async function createUser(user: User) {

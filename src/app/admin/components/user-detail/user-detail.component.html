@@ -36,6 +36,12 @@
         </div>
         <div class="row">
             <div class="small-12 columns">
+                <gtx-checkbox formControlName="adminFlag"
+                              [label]="'admin.admin_flag_label' | i18n"></gtx-checkbox>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-12 columns">
                 <gtx-checkbox formControlName="forcedPasswordChange"
                               [label]="'admin.forced_password_change_label' | i18n"></gtx-checkbox>
             </div>

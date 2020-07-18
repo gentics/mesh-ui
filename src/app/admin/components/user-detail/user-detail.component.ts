@@ -92,7 +92,8 @@ export class UserDetailComponent implements OnInit, OnDestroy {
                 firstName: user ? user.firstname : '',
                 lastName: user ? user.lastname : '',
                 emailAddress: user ? user.emailAddress : '',
-                forcedPasswordChange: user ? user.forcedPasswordChange : false
+                forcedPasswordChange: user ? user.forcedPasswordChange : false,
+                adminFlag: user ? user.admin : false
             });
         });
     }
@@ -155,7 +156,8 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             firstname: formValue.firstName,
             lastname: formValue.lastName,
             emailAddress: formValue.emailAddress,
-            forcedPasswordChange: formValue.forcedPasswordChange
+            forcedPasswordChange: formValue.forcedPasswordChange,
+            admin: formValue.adminFlag
         };
     }
 }
