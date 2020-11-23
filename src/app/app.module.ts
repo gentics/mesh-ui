@@ -52,7 +52,6 @@ export class AppModule {
         authEffects: AuthEffectsService,
         searchEffects: SearchEffectsService
     ) {
-        i18nService.setLanguage('en');
         authEffects.validateSession();
         searchEffects.checkSearchAvailability();
         // router.events.subscribe(event => console.log(event));
