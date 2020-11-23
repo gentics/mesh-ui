@@ -61,7 +61,7 @@ export class ApplicationStateService {
             entity: new EntityStateActions(),
             editor: new EditorStateActions(config),
             list: new ListStateActions(config),
-            ui: new UIStateActions(),
+            ui: new UIStateActions(config),
             tag: new TagsStateActions()
         });
 

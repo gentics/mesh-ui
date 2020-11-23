@@ -9,6 +9,8 @@ export interface MeshUiAppConfig {
     readonly defaultLanguage: string;
     /** The ISO-639-1 codes of the available languages for the frontend app */
     readonly uiLanguages: string[];
+    /** The ISO-639-1 code of the default language for Mesh */
+    readonly defaultContentLanguage: string;
     /** The ISO-639-1 codes of the available languages for Mesh */
     readonly contentLanguages: string[];
     /** The ISO-639-1 code of the language to be used in case a requested ressource is not available in the requested langauge */

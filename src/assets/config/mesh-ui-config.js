@@ -5,6 +5,8 @@ window.MeshUiConfig = {
     defaultLanguage: 'en',
     /** The ISO-639-1 codes of the available languages for the frontend app */
     uiLanguages: ['en', 'de', 'zh', 'pt', 'hu'],
+    /** The ISO-639-1 code of the default language for Mesh */
+    defaultContentLanguage: 'en',
     /** The ISO-639-1 codes of the available languages for Mesh */
     contentLanguages: ['en', 'de', 'zh', 'pt', 'hu'],
     /** The ISO-639-1 code of the language to be used in case a requested ressource is not available in the requested langauge */

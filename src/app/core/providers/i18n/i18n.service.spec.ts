@@ -126,4 +126,5 @@ class MockTranslateService {
         return `${key}_translated`;
     });
     setDefaultLang = jasmine.createSpy('setDefaultLang');
+    use = jasmine.createSpy('use');
 }

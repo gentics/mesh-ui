@@ -7,6 +7,7 @@ export class MockConfigService implements ConfigService {
     readonly ANONYMOUS_USER_NAME = 'anonymous';
     readonly UI_LANGUAGES = ['en', 'de'];
     FALLBACK_LANGUAGE = 'en';
+    DEFAULT_CONTENT_LANGUAGE = 'en';
     CONTENT_LANGUAGES = ['en', 'de'];
     readonly CONTENT_ITEMS_PER_PAGE = 8;
     getPreviewUrlsByProjectName(projectName: string) {
