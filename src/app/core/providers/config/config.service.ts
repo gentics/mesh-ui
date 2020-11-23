@@ -32,6 +32,9 @@ export class ConfigService {
         return this.getConfigValueFromProperty('uiLanguages') as string[];
     }
 
+    get DEFAULT_CONTENT_LANGUAGE(): string {
+        return this.getConfigValueFromProperty('defaultContentLanguage', 'en') as string;
+    }
     /**
      * Languages in which the content is available.
      * TODO: This will need to be user-configurable eventually.
@@ -67,7 +70,10 @@ export class ConfigService {
      * @param property key of config object
      * @param fallbackValue key of config object
      */
-    getConfigValueFromProperty<K extends keyof MeshUiAppConfig>(property: K, fallbackValue?: MeshUiAppConfig[K]): MeshUiAppConfig[K] {
+    getConfigValueFromProperty<K extends keyof MeshUiAppConfig>(
+        property: K,
+        fallbackValue?: MeshUiAppConfig[K]
+    ): MeshUiAppConfig[K] {
         const retVal = this.appConfig[property];
         if (retVal) {
             return retVal;
