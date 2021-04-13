@@ -72,6 +72,10 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         {
             value: 'list',
             label: 'list'
+        },
+        {
+            value: 's3binary',
+            label: 's3binary'
         }
     ].sort((a, b) => a.value.localeCompare(b.value)) as Array<{
         value: SchemaFieldType;
