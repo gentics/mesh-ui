@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
@@ -7,6 +8,7 @@ import {
     NodeCreateRequest,
     NodeResponse,
     NodeUpdateRequest,
+    S3BinaryUrlGenerationResponse,
     TagReferenceFromServer
 } from '../../common/models/server-models';
 import {
@@ -28,7 +30,8 @@ export class EditorEffectsService {
         private entities: EntitiesService,
         private notification: I18nNotification,
         private config: ConfigService,
-        private api: ApiService
+        private api: ApiService,
+        private http: HttpClient
     ) {}
 
     openNode(projectName: string, nodeUuid: string, language?: string): void {
@@ -332,9 +335,15 @@ export class EditorEffectsService {
         updatedNode: MeshNode,
         tags?: TagReferenceFromServer[]
     ): Promise<MeshNode> {
-        return this.assignTagsToNode(updatedNode, tags)
-            .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(originalNode)))
-            .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
+        if (Object.keys(originalNode.fields).includes('binary')) {
+            return this.assignTagsToNode(updatedNode, tags)
+                .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(originalNode)))
+                .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
+        } else {
+            return this.assignTagsToNode(updatedNode, tags)
+                .then(newNode => this.uploadS3Binaries(newNode, getMeshNodeBinaryFields(originalNode)))
+                .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
+        }
     }
 
     private assignTagsToNode(node: NodeResponse, tags?: TagReferenceFromServer[]): Promise<NodeResponse> {
@@ -459,9 +468,30 @@ export class EditorEffectsService {
         if (Object.keys(fields).length === 0 || !projectName || !language) {
             return Promise.resolve(node);
         }
-
         const promiseSuppliers = Object.keys(fields).map(key => () =>
             this.uploadBinary(projectName, node.uuid, key, fields[key].file, language, node.version).catch(error => {
+                throw { field: fields[key], node, error };
+            })
+        );
+
+        return (
+            promiseConcat(promiseSuppliers)
+                // return the node from the last successful request
+                .then(nodes => nodes[nodes.length - 1])
+        );
+    }
+
+    private uploadS3Binaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
+        const projectName = node.project.name;
+        const language = node.language;
+
+        // if no binaries are present - return the same node
+        if (Object.keys(fields).length === 0 || !projectName || !language) {
+            return Promise.resolve(node);
+        }
+
+        const promiseSuppliers = Object.keys(fields).map(key => () =>
+            this.uploadS3Binary(projectName, node.uuid, key, fields[key].file, language, node.version).catch(error => {
                 throw { field: fields[key], node, error };
             })
         );
@@ -499,6 +529,56 @@ export class EditorEffectsService {
                 }
             )
             .toPromise();
+    }
+
+    private uploadS3Binary(
+        project: string,
+        nodeUuid: string,
+        fieldName: string,
+        s3binary: File,
+        language: string,
+        version: string
+    ): Promise<any> {
+        return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name)
+            .then(response => this.uploadToS3(response, s3binary))
+            .catch(console.log);
+    }
+
+    private generateS3Url(
+        project: string,
+        nodeUuid: string,
+        fieldName: string,
+        language: string,
+        version: string,
+        filename: string
+    ): Promise<S3BinaryUrlGenerationResponse> {
+        const formData = new FormData();
+        formData.append('language', language);
+        formData.append('version', version);
+        formData.append('filename', filename);
+        return this.api.project
+            .generateS3Url(
+                {
+                    project,
+                    nodeUuid,
+                    fieldName
+                },
+                formData as any
+            )
+            .toPromise();
+    }
+
+    private uploadToS3(properties: S3BinaryUrlGenerationResponse, s3binary: File): any {
+        console.log('uploadToS3');
+
+        const upload = this.http.put(properties.presignedUrl, s3binary).toPromise();
+        upload
+            .then(data => {
+                console.log('=> ', data);
+            })
+            .catch(err => console.log('error: ', err));
+
+        return upload;
     }
 
     private applyBinaryTransforms(node: MeshNode, fields: FieldMap): Promise<MeshNode> {

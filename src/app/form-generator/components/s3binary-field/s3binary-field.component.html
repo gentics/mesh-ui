@@ -1,0 +1,66 @@
+<label>{{ api.field.label || api.field.name }}</label>
+<div class="binary-preview">
+    <div *ngIf="binaryProperties"
+         class="media-preview">
+        <ng-container [ngSwitch]="binaryMediaType">
+            <div *ngSwitchCase="'image'"
+                 class="image-preview"
+                 [class.loading]="loadingPreview">
+                <gtx-progress-bar [active]="loadingPreview"></gtx-progress-bar>
+                <gentics-ui-image-preview [src]="objectUrl"
+                                          [maxHeight]="800"
+                                          [transform]="scaledTransform"
+                                          (imageLoad)="onImageLoad()"></gentics-ui-image-preview>
+            </div>
+
+            <div *ngSwitchDefault>
+                <mesh-file-preview [mimeType]="binaryProperties.mimeType"
+                                   [fileName]="binaryProperties.fileName"
+                                   [url]="objectUrl">
+                </mesh-file-preview>
+            </div>
+        </ng-container>
+    </div>
+    <div class="binary-controls"
+         [class.no-binary]="!binaryProperties">
+        <div class="basic-info">
+            <div class="file-name">
+                <a [href]="objectUrl"
+                   [download]="binaryProperties?.file?.name || binaryProperties?.fileName">
+                    <icon>file_download</icon>
+                    <span>{{ binaryProperties?.file?.name || binaryProperties?.fileName }}</span>
+                </a>
+            </div>
+            <div class="file-size">{{ binaryProperties?.file?.size || binaryProperties?.fileSize | filesize }}</div>
+            <div class="image-dimensions"
+                 *ngIf="binaryProperties?.width">
+                {{ binaryProperties.width | number }} x {{ binaryProperties.height | number }}
+            </div>
+        </div>
+        <gtx-file-picker *ngIf="!api.readOnly"
+                         (fileSelect)="onFilesSelected($event)"
+                         size="small"
+                         flat
+                         type="secondary"
+                         [multiple]="false">
+            <icon left>file_upload</icon>
+            <ng-container *ngIf="binaryProperties">{{ 'editor.replace_file' | i18n }}</ng-container>
+            <ng-container *ngIf="!binaryProperties">{{ 'editor.select_file' | i18n }}</ng-container>
+        </gtx-file-picker>
+        <gtx-button *ngIf="binaryMediaType === 'image' && !api.readOnly"
+                    size="small"
+                    flat
+                    type="secondary"
+                    class="edit-image"
+                    (click)="editImage(objectUrl)">
+            <icon left>crop</icon> {{ 'editor.edit_image' | i18n }}
+        </gtx-button>
+        <gtx-button *ngIf="binaryProperties"
+                    size="small"
+                    flat
+                    type="secondary"
+                    (click)="deleteBinary()">
+            <icon left>delete</icon> {{ 'editor.remove_file' | i18n }}
+        </gtx-button>
+    </div>
+</div>

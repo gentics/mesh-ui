@@ -11,6 +11,7 @@ import { ListFieldComponent } from '../components/list-field/list-field.componen
 import { MicronodeFieldComponent } from '../components/micronode-field/micronode-field.component';
 import { NodeFieldComponent } from '../components/node-field/node-field.component';
 import { NumberFieldComponent } from '../components/number-field/number-field.component';
+import { S3binaryFieldComponent } from '../components/s3binary-field/s3binary-field.component';
 import { StringFieldComponent } from '../components/string-field/string-field.component';
 
 type TypeComponentMap = { [P in SchemaFieldType]: Type<BaseFieldComponent> | null };
@@ -30,6 +31,7 @@ export function getControlType(field: SchemaField): Type<BaseFieldComponent> | u
         micronode: MicronodeFieldComponent,
         node: NodeFieldComponent,
         number: NumberFieldComponent,
+        s3binary: S3binaryFieldComponent,
         string: StringFieldComponent
     };
 

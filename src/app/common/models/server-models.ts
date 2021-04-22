@@ -2902,6 +2902,53 @@ export interface ApiEndpoints {
                 200: NodeResponse;
             };
         };
+        /** Update the s3binaryfield with the given name. */
+        '/{project}/nodes/{nodeUuid}/s3binary/{fieldName}': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                    /**
+                     * Name of the binary field
+                     * @example "image"
+                     */
+                    fieldName: string;
+                    /**
+                     * Uuid of the node.
+                     * @example "87a6c6088afa4f5fa6c6088afa2f5f33"
+                     */
+                    nodeUuid: string;
+                };
+                queryParams?: {};
+                body: {
+                    /**
+                     * Language of the node content which contains the binary field which should be
+                     * updated.
+                     * @example "en"
+                     */
+                    language: string;
+                    /**
+                     * Version of the node which should be updated. This information is used to
+                     * determine conflicting updates.
+                     * @example "1.0"
+                     */
+                    version: string;
+                    /**
+                     * Name of the file which should be uploaded.
+                     * @example "test.jpg"
+                     */
+                    filename: string;
+                };
+            };
+            responseType: S3BinaryUrlGenerationResponse;
+            responseTypes: {
+                /** The response contains the presigned URL. */
+                302: S3BinaryUrlGenerationResponse;
+            };
+        };
         /**
          * Transform the image with the given field name and overwrite the stored image with
          * the transformation result.
@@ -4813,6 +4860,14 @@ export interface RoleResponse {
 export interface RoleUpdateRequest {
     /** New name of the role */
     readonly name: string;
+}
+
+export interface S3BinaryUrlGenerationResponse {
+    /** Optional migation script */
+    presignedUrl: string;
+    /** Type of operation for this change */
+    httpRequestMethod: string;
+    signedHeaders: any;
 }
 
 export interface SchemaChangeModelFromServer {

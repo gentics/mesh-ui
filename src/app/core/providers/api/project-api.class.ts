@@ -192,6 +192,11 @@ export class ProjectApi {
     // TODO: This is not supported yet by the API service.
     updateBinaryField = apiPost('/{project}/nodes/{nodeUuid}/binary/{fieldName}');
 
+    /** Update the binaryfield with the given name. */
+    // TODO: This is typed wrong in the RAML.
+    // TODO: This is not supported yet by the API service.
+    generateS3Url = apiPost('/{project}/nodes/{nodeUuid}/s3binary/{fieldName}');
+
     /** Update the branch with the given uuid. */
     updateBranch = apiPost('/{project}/branches/{branchUuid}');
 
@@ -216,6 +221,27 @@ export class ProjectApi {
         params: ImageTransformQueryParams = {}
     ): string {
         return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', {
+            project,
+            nodeUuid,
+            name,
+            version,
+            lang: language,
+            ...params
+        });
+    }
+
+    /**
+     * Returns a url to a node s3binary file
+     */
+    getS3BinaryFileUrl(
+        project: string,
+        nodeUuid: string,
+        name: string,
+        language: string,
+        version?: string,
+        params: ImageTransformQueryParams = {}
+    ): string {
+        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/s3binary/{name}', {
             project,
             nodeUuid,
             name,
