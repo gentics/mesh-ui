@@ -539,9 +539,9 @@ export class EditorEffectsService {
         language: string,
         version: string
     ): Promise<any> {
-        return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name)
-            .then(response => this.uploadToS3(response, s3binary))
-            .catch(console.log);
+        return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(response =>
+            this.uploadToS3(response, s3binary)
+        );
     }
 
     private generateS3Url(
@@ -569,8 +569,7 @@ export class EditorEffectsService {
     }
 
     private uploadToS3(properties: S3BinaryUrlGenerationResponse, s3binary: File): any {
-        console.log('uploadToS3');
-
+        console.log(properties);
         const upload = this.http.put(properties.presignedUrl, s3binary).toPromise();
         upload
             .then(data => {
