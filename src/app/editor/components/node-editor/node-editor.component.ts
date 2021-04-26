@@ -6,12 +6,11 @@ import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { MeshPreviewUrl, MeshPreviewUrlResolver } from '../../../common/models/appconfig.model';
 import { MeshNode, ProjectNode } from '../../../common/models/node.model';
-import { Project } from '../../../common/models/project.model';
 import { Schema } from '../../../common/models/schema.model';
 import { GraphQLErrorFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
 import { initializeNode } from '../../../common/util/initialize-node';
 import * as NodeUtil from '../../../common/util/node-util';
-import { getMeshNodeBinaryFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
+import { getSpecificTypeMeshNodeFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -194,7 +193,8 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      * Carries on the saving process and displays a loading overlay if any binary fields has to be uploaded.
      */
     private saveNodeWithProgress(saveFn: Promise<any> | null, node: MeshNode): Promise<any> {
-        const numBinaryFields = Object.keys(getMeshNodeBinaryFields(node)).length;
+        const schema = this.entities.getSchema(node.schema.uuid!);
+        const numBinaryFields = Object.keys(getSpecificTypeMeshNodeFields(node, schema, 'binary')).length;
 
         if (numBinaryFields > 0) {
             return this.modalService

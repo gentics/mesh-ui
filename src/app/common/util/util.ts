@@ -10,6 +10,7 @@ import {
     NodeFieldType,
     ProjectNode
 } from '../models/node.model';
+import { Schema, SchemaField, SchemaFieldType } from '../models/schema.model';
 import { FieldMapFromServer, GraphQLResponse } from '../models/server-models';
 
 type Supplier<T> = () => T;
@@ -219,38 +220,52 @@ export function simpleCloneDeep<T>(target: T): T {
     return JSON.parse(JSON.stringify(target));
 }
 
+// /**
+//  * Filter all the fields from the node with the specified type
+//  */
+// export function getMeshNodeBinaryFields(node: MeshNode): FieldMap {
+//     if (!node.fields) {
+//         return {} as FieldMapFromServer;
+//     }
+//
+//     return Object.keys(node.fields).reduce(
+//         (fields, key) => {
+//             const field = node.fields[key];
+//             if (field && (field.file && field.file instanceof File) === true) {
+//                 fields[key] = field;
+//             }
+//             return fields;
+//         },
+//         {} as FieldMap
+//     );
+// }
+
 /**
- * Filter all the binary fields from the node
+ * Filter all the fields from the node with the specified type
  */
-export function getMeshNodeBinaryFields(node: MeshNode): FieldMap {
+export function getSpecificTypeMeshNodeFields(
+    node: MeshNode,
+    schema: Schema | undefined,
+    type: SchemaFieldType
+): FieldMap {
     if (!node.fields) {
         return {} as FieldMapFromServer;
     }
 
     return Object.keys(node.fields).reduce(
         (fields, key) => {
-            const field = node.fields[key];
-            if (field && (field.file && field.file instanceof File) === true) {
-                fields[key] = field;
+            const nodeField = node.fields[key];
+            if (
+                nodeField &&
+                (type === ('binary' || 's3binary') ? nodeField.file && nodeField.file instanceof File : true) &&
+                schema
+            ) {
+                const schemaField = schema.fields.find(field => field.name === key);
+                if (schemaField && schemaField.type === type) {
+                    fields[key] = nodeField;
+                }
             }
             return fields;
-        },
-        {} as FieldMap
-    );
-}
-
-export function getMeshNodeNonBinaryFields(node: MeshNode): FieldMap {
-    const binaryFields = getMeshNodeBinaryFields(node);
-    return Object.keys(node.fields).reduce(
-        (nonBinaryFields, key) => {
-            if (
-                binaryFields[key] === undefined ||
-                // A binary field should be included if it should be deleted
-                node.fields[key] === null
-            ) {
-                nonBinaryFields[key] = stripNulls(node.fields[key]);
-            }
-            return nonBinaryFields;
         },
         {} as FieldMap
     );

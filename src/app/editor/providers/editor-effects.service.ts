@@ -11,12 +11,7 @@ import {
     S3BinaryUrlGenerationResponse,
     TagReferenceFromServer
 } from '../../common/models/server-models';
-import {
-    getMeshNodeBinaryFields,
-    getMeshNodeNonBinaryFields,
-    promiseConcat,
-    simpleCloneDeep
-} from '../../common/util/util';
+import { getSpecificTypeMeshNodeFields, promiseConcat, simpleCloneDeep, stripNulls } from '../../common/util/util';
 import { ApiService } from '../../core/providers/api/api.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
@@ -84,11 +79,12 @@ export class EditorEffectsService {
      * Save a new node to the api endpoint
      */
     saveNewNode(projectName: string, node: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode | void> {
+        console.log('savenewnode');
         this.state.actions.editor.saveNodeStart();
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const nodeCreateRequest: NodeCreateRequest = {
-            fields: getMeshNodeNonBinaryFields(node),
+            fields: this.getMeshNodeNonBinaryFields(node),
             parentNode: node.parentNode,
             schema: node.schema,
             language: language
@@ -124,6 +120,7 @@ export class EditorEffectsService {
      * Update an existing node
      */
     saveNode(node: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode | void> {
+        console.log('savenode0');
         if (!node.project.name) {
             throw new Error('Project name is not available');
         }
@@ -132,7 +129,7 @@ export class EditorEffectsService {
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
         const updateRequest: NodeUpdateRequest = {
-            fields: getMeshNodeNonBinaryFields(node),
+            fields: this.getMeshNodeNonBinaryFields(node),
             version: node.version,
             language: language
         };
@@ -305,6 +302,25 @@ export class EditorEffectsService {
             );
     }
 
+    getMeshNodeNonBinaryFields(node: MeshNode): FieldMap {
+        const schema = this.entities.getSchema(node.schema.uuid!);
+        const binaryFields = getSpecificTypeMeshNodeFields(node, schema, 'binary');
+        const s3binaryFields = getSpecificTypeMeshNodeFields(node, schema, 's3binary');
+        return Object.keys(node.fields).reduce(
+            (nonBinaryFields, key) => {
+                if (
+                    (binaryFields[key] === undefined && s3binaryFields[key] === undefined) ||
+                    // A binary or s3binary field should be included if it should be deleted
+                    node.fields[key] === null
+                ) {
+                    nonBinaryFields[key] = stripNulls(node.fields[key]);
+                }
+                return nonBinaryFields;
+            },
+            {} as FieldMap
+        );
+    }
+
     closeEditor(): void {
         this.state.actions.editor.closeEditor();
     }
@@ -335,15 +351,15 @@ export class EditorEffectsService {
         updatedNode: MeshNode,
         tags?: TagReferenceFromServer[]
     ): Promise<MeshNode> {
-        if (Object.keys(originalNode.fields).includes('binary')) {
-            return this.assignTagsToNode(updatedNode, tags)
-                .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(originalNode)))
-                .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
-        } else {
-            return this.assignTagsToNode(updatedNode, tags)
-                .then(newNode => this.uploadS3Binaries(newNode, getMeshNodeBinaryFields(originalNode)))
-                .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
-        }
+        const schema = this.entities.getSchema(originalNode.schema.uuid!);
+        return this.assignTagsToNode(updatedNode, tags)
+            .then(newNode =>
+                this.uploadBinaries(newNode, getSpecificTypeMeshNodeFields(originalNode, schema, 'binary'))
+            )
+            .then(newNode =>
+                this.uploadS3Binaries(newNode, getSpecificTypeMeshNodeFields(originalNode, schema, 's3binary'))
+            )
+            .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
     }
 
     private assignTagsToNode(node: NodeResponse, tags?: TagReferenceFromServer[]): Promise<NodeResponse> {
@@ -461,6 +477,9 @@ export class EditorEffectsService {
     }
 
     private uploadBinaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
+        console.log('uploadbinaries');
+        console.log(node, 'node');
+        console.log(fields, 'fields');
         const projectName = node.project.name;
         const language = node.language;
 
@@ -482,10 +501,11 @@ export class EditorEffectsService {
     }
 
     private uploadS3Binaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
+        console.log('uploads3binaries');
         const projectName = node.project.name;
         const language = node.language;
 
-        // if no binaries are present - return the same node
+        // if no s3binaries are present - return the same node
         if (Object.keys(fields).length === 0 || !projectName || !language) {
             return Promise.resolve(node);
         }
@@ -552,10 +572,6 @@ export class EditorEffectsService {
         version: string,
         filename: string
     ): Promise<S3BinaryUrlGenerationResponse> {
-        const formData = new FormData();
-        formData.append('language', language);
-        formData.append('version', version);
-        formData.append('filename', filename);
         return this.api.project
             .generateS3Url(
                 {
@@ -563,7 +579,11 @@ export class EditorEffectsService {
                     nodeUuid,
                     fieldName
                 },
-                formData as any
+                {
+                    language,
+                    version,
+                    filename
+                }
             )
             .toPromise();
     }

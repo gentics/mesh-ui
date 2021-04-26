@@ -1,3 +1,5 @@
+import { HttpHeaders } from '@angular/common/http';
+
 import { ListTypeFieldType } from './schema.model';
 
 // Auto-generated from the RAML for Version 0.22.0-SNAPSHOT of the Gentics Mesh REST API.
@@ -2946,7 +2948,7 @@ export interface ApiEndpoints {
             responseType: S3BinaryUrlGenerationResponse;
             responseTypes: {
                 /** The response contains the presigned URL. */
-                302: S3BinaryUrlGenerationResponse;
+                200: S3BinaryUrlGenerationResponse;
             };
         };
         /**
@@ -4867,7 +4869,7 @@ export interface S3BinaryUrlGenerationResponse {
     presignedUrl: string;
     /** Type of operation for this change */
     httpRequestMethod: string;
-    signedHeaders: any;
+    signedHeaders: HttpHeaders | { [header: string]: string | string[] };
 }
 
 export interface SchemaChangeModelFromServer {
