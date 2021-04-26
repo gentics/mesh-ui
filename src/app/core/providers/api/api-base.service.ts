@@ -209,14 +209,6 @@ export class ApiBase {
                     return observableOf(errorOrResponse);
                 } else if (errorOrResponse instanceof AlreadyHandledError) {
                     return observableThrowError(errorOrResponse);
-                    // TODO: MS3-9: Remove this once fixed on the backend !!!!!!!!!!!!!!!!!!!!!
-                } else if (
-                    errorOrResponse instanceof HttpErrorResponse &&
-                    errorOrResponse.status === 302 &&
-                    errorOrResponse.url &&
-                    errorOrResponse.url.includes('/s3binary/')
-                ) {
-                    return observableOf(errorOrResponse);
                 } else {
                     return observableThrowError(new ApiError({ url, request, originalError: errorOrResponse }));
                 }
@@ -285,9 +277,6 @@ export class ApiBase {
                 map(response => {
                     if (response.ok) {
                         return response.body;
-                        // TODO: MS3-9: Remove url check and use error as body once fixed on the backend !!!!!!!!!!!!!!!!!!!!!
-                    } else if (response.url && response.url.includes('/s3binary/')) {
-                        return (response as any).error;
                     } else {
                         throw new ApiError({ url, request, response });
                     }
