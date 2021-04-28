@@ -45,7 +45,7 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     init(api: MeshFieldControlApi): void {
-        console.log('S2binaryINIT');
+        console.log('S3binaryINIT');
         this.api = api;
         this.valueChange(api.getValue());
         this.api.onFormWidthChange(() => {
@@ -56,8 +56,10 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value?: BinaryField): void {
-        console.log(value, 'valuchangeS3');
+        console.log(value, 'S3valuechange');
         if (value) {
+            // //TODO remove after BE fix
+            // value.mimeType = 'image/png';
             this.binaryProperties = { ...value };
         }
         if (!this.binaryProperties || !this.binaryProperties.mimeType) {
@@ -93,8 +95,6 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     onImageLoad(): void {
-        console.log(this.objectUrl, 'objecturl');
-        console.log(this.binaryProperties, 'onimageload');
         this.loadingPreview = false;
         if (this.binaryProperties && this.binaryProperties.file && this.lastParams) {
             this.scaledTransform = {
@@ -120,8 +120,7 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
                 node.project.name!,
                 node.uuid,
                 this.api.field.name,
-                node.language!,
-                node.version
+                node.language!
             );
         }
 
@@ -217,8 +216,8 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     private getS3BinaryUrl(binaryField: BinaryField): string {
+        console.log(binaryField, 'S3geturl');
         const node = this.api.getNodeValue() as MeshNode;
-        console.log(binaryField, 's3binaryfield');
         if (this.binaryMediaType === 'image' && binaryField.width !== undefined && binaryField.height !== undefined) {
             const { width, height } = getConstrainedDimensions(
                 binaryField.width,
@@ -226,16 +225,15 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
                 this.maxImageWidth,
                 this.maxImageHeight
             );
-            return this.apiService.project.getS3BinaryFileUrl(
+            return this.apiService.project.getBinaryFileUrl(
                 node.project.name!,
                 node.uuid,
                 this.api.field.name,
                 node.language!,
-                undefined,
-                { w: width, h: height }
+                undefined
             );
         } else {
-            return this.apiService.project.getS3BinaryFileUrl(
+            return this.apiService.project.getBinaryFileUrl(
                 node.project.name!,
                 node.uuid,
                 this.api.field.name,

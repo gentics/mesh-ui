@@ -79,7 +79,6 @@ export class EditorEffectsService {
      * Save a new node to the api endpoint
      */
     saveNewNode(projectName: string, node: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode | void> {
-        console.log('savenewnode');
         this.state.actions.editor.saveNodeStart();
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
@@ -120,7 +119,6 @@ export class EditorEffectsService {
      * Update an existing node
      */
     saveNode(node: MeshNode, tags?: TagReferenceFromServer[]): Promise<MeshNode | void> {
-        console.log('savenode0');
         if (!node.project.name) {
             throw new Error('Project name is not available');
         }
@@ -352,6 +350,7 @@ export class EditorEffectsService {
         tags?: TagReferenceFromServer[]
     ): Promise<MeshNode> {
         const schema = this.entities.getSchema(originalNode.schema.uuid!);
+        console.log('HÍVÁS ELÖTT');
         return this.assignTagsToNode(updatedNode, tags)
             .then(newNode =>
                 this.uploadBinaries(newNode, getSpecificTypeMeshNodeFields(originalNode, schema, 'binary'))
@@ -477,11 +476,10 @@ export class EditorEffectsService {
     }
 
     private uploadBinaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
-        console.log('uploadbinaries');
-        console.log(node, 'node');
-        console.log(fields, 'fields');
         const projectName = node.project.name;
         const language = node.language;
+
+        console.log(fields, 'BINARY FIELDS');
 
         // if no binaries are present - return the same node
         if (Object.keys(fields).length === 0 || !projectName || !language) {
@@ -492,7 +490,6 @@ export class EditorEffectsService {
                 throw { field: fields[key], node, error };
             })
         );
-
         return (
             promiseConcat(promiseSuppliers)
                 // return the node from the last successful request
@@ -503,6 +500,7 @@ export class EditorEffectsService {
     private uploadS3Binaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
         const projectName = node.project.name;
         const language = node.language;
+        console.log(fields, 'S3BINARY FIELDS');
 
         // if no s3binaries are present - return the same node
         if (Object.keys(fields).length === 0 || !projectName || !language) {
@@ -514,7 +512,6 @@ export class EditorEffectsService {
                 throw { field: fields[key], node, error };
             })
         );
-
         return (
             promiseConcat(promiseSuppliers)
                 // return the node from the last successful request
@@ -530,6 +527,7 @@ export class EditorEffectsService {
         language: string,
         version: string
     ): Promise<MeshNode> {
+        console.log(version, 'binarynodeversion');
         // TODO: remote lang lang: language from params.
         // It is currently needed to overcome the https://github.com/gentics/mesh/issues/404 issue
         // what it does now, it adds ?lang=language query param
@@ -557,10 +555,17 @@ export class EditorEffectsService {
         s3binary: File,
         language: string,
         version: string
-    ): Promise<any> {
-        return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(response =>
-            this.uploadToS3(response, s3binary)
+    ): Promise<MeshNode> {
+        console.log(version, 's3nodeversion');
+        const toreturn = this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(
+            response =>
+                this.uploadToS3(response, s3binary)
+                    .then(res => this.parseMetadata(project, nodeUuid, fieldName, language, version))
+                    .catch(error => {
+                        throw { s3binary, error };
+                    })
         );
+        return toreturn;
     }
     //
     // return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(response =>
@@ -603,9 +608,8 @@ export class EditorEffectsService {
         language: string,
         version: string
     ): Promise<MeshNode> {
-        const request = new FormData();
-        request.append('language', language);
-        request.append('version', version);
+        version = '0.6';
+        console.log(version, 'metadataversion');
         return this.api.project
             .parseMetadata(
                 {
@@ -613,12 +617,17 @@ export class EditorEffectsService {
                     nodeUuid,
                     fieldName
                 },
-                request as any
+                {
+                    language,
+                    version
+                }
             )
             .toPromise();
     }
 
     private applyBinaryTransforms(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
+        console.log(node, 'node');
+        console.log(fields, 'fields');
         const project = node.project.name;
         const nodeUuid = node.uuid;
         const language = node.language;

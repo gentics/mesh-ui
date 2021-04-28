@@ -45,7 +45,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     init(api: MeshFieldControlApi): void {
-        console.log('binaryINIT');
         this.api = api;
         this.valueChange(api.getValue());
         this.api.onFormWidthChange(() => {
@@ -56,7 +55,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value?: BinaryField): void {
-        console.log('binaryvaluechange');
         if (value) {
             this.binaryProperties = { ...value };
         }
@@ -93,8 +91,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     onImageLoad(): void {
-        console.log(this.objectUrl, 'objecturl');
-        console.log(this.binaryProperties, 'onimageload');
         this.loadingPreview = false;
         if (this.binaryProperties && this.binaryProperties.file && this.lastParams) {
             this.scaledTransform = {
@@ -109,7 +105,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     editImage(): void {
-        console.log('editimagebinary');
         const node = this.api.getNodeValue() as MeshNode;
         const imageField = this.binaryProperties as ImageBinary;
         let imageUrl: string | SafeUrl;
@@ -178,7 +173,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
      * Creates a BinaryField object from a File which is to be uploaded.
      */
     private binaryFieldFromFile(file: File): BinaryField {
-        console.log('binaryfieldfromfile');
         return {
             fileName: file.name,
             fileSize: file.size,
@@ -219,7 +213,6 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     }
 
     private getBinaryUrl(binaryField: BinaryField): string {
-        console.log(binaryField, 'gitbinaryurl');
         const node = this.api.getNodeValue() as MeshNode;
         if (this.binaryMediaType === 'image' && binaryField.width !== undefined && binaryField.height !== undefined) {
             const { width, height } = getConstrainedDimensions(
@@ -233,8 +226,7 @@ export class BinaryFieldComponent extends BaseFieldComponent {
                 node.uuid,
                 this.api.field.name,
                 node.language!,
-                undefined,
-                { w: width, h: height }
+                undefined
             );
         } else {
             return this.apiService.project.getBinaryFileUrl(

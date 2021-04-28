@@ -244,7 +244,7 @@ export class ProjectApi {
         version?: string,
         params: ImageTransformQueryParams = {}
     ): string {
-        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/s3binary/{name}', {
+        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', {
             project,
             nodeUuid,
             name,
