@@ -45,6 +45,7 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     init(api: MeshFieldControlApi): void {
+        console.log('S2binaryINIT');
         this.api = api;
         this.valueChange(api.getValue());
         this.api.onFormWidthChange(() => {
@@ -55,6 +56,7 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value?: BinaryField): void {
+        console.log(value, 'valuchangeS3');
         if (value) {
             this.binaryProperties = { ...value };
         }
@@ -91,6 +93,8 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     onImageLoad(): void {
+        console.log(this.objectUrl, 'objecturl');
+        console.log(this.binaryProperties, 'onimageload');
         this.loadingPreview = false;
         if (this.binaryProperties && this.binaryProperties.file && this.lastParams) {
             this.scaledTransform = {
@@ -214,6 +218,7 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
 
     private getS3BinaryUrl(binaryField: BinaryField): string {
         const node = this.api.getNodeValue() as MeshNode;
+        console.log(binaryField, 's3binaryfield');
         if (this.binaryMediaType === 'image' && binaryField.width !== undefined && binaryField.height !== undefined) {
             const { width, height } = getConstrainedDimensions(
                 binaryField.width,

@@ -501,7 +501,6 @@ export class EditorEffectsService {
     }
 
     private uploadS3Binaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
-        console.log('uploads3binaries');
         const projectName = node.project.name;
         const language = node.language;
 
@@ -563,6 +562,11 @@ export class EditorEffectsService {
             this.uploadToS3(response, s3binary)
         );
     }
+    //
+    // return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(response =>
+    // this.uploadToS3(response, s3binary).then(res =>
+    // this.parseMetadata(project, nodeUuid, fieldName, language, version)).catch(error => {
+    // throw {s3binary, error};
 
     private generateS3Url(
         project: string,
@@ -588,16 +592,30 @@ export class EditorEffectsService {
             .toPromise();
     }
 
-    private uploadToS3(properties: S3BinaryUrlGenerationResponse, s3binary: File): any {
-        console.log(properties);
-        const upload = this.http.put(properties.presignedUrl, s3binary).toPromise();
-        upload
-            .then(data => {
-                console.log('=> ', data);
-            })
-            .catch(err => console.log('error: ', err));
+    private uploadToS3(properties: S3BinaryUrlGenerationResponse, s3binary: File): Promise<any> {
+        return this.http.put(properties.presignedUrl, s3binary).toPromise();
+    }
 
-        return upload;
+    private parseMetadata(
+        project: string,
+        nodeUuid: string,
+        fieldName: string,
+        language: string,
+        version: string
+    ): Promise<MeshNode> {
+        const request = new FormData();
+        request.append('language', language);
+        request.append('version', version);
+        return this.api.project
+            .parseMetadata(
+                {
+                    project,
+                    nodeUuid,
+                    fieldName
+                },
+                request as any
+            )
+            .toPromise();
     }
 
     private applyBinaryTransforms(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
