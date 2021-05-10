@@ -56,7 +56,6 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     valueChange(value?: BinaryField): void {
-        console.log(value, 'S3valuechange');
         if (value) {
             // //TODO remove after BE fix
             // value.mimeType = 'image/png';
@@ -216,7 +215,6 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
     }
 
     private getS3BinaryUrl(binaryField: BinaryField): string {
-        console.log(binaryField, 'S3geturl');
         const node = this.api.getNodeValue() as MeshNode;
         if (this.binaryMediaType === 'image' && binaryField.width !== undefined && binaryField.height !== undefined) {
             const { width, height } = getConstrainedDimensions(
@@ -231,6 +229,7 @@ export class S3binaryFieldComponent extends BaseFieldComponent {
                 this.api.field.name,
                 node.language!,
                 undefined
+                // { w: width, h: height }
             );
         } else {
             return this.apiService.project.getBinaryFileUrl(

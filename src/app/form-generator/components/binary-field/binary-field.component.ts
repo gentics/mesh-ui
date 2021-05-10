@@ -226,7 +226,8 @@ export class BinaryFieldComponent extends BaseFieldComponent {
                 node.uuid,
                 this.api.field.name,
                 node.language!,
-                undefined
+                undefined,
+                { w: width, h: height }
             );
         } else {
             return this.apiService.project.getBinaryFileUrl(

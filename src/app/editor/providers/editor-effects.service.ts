@@ -556,22 +556,14 @@ export class EditorEffectsService {
         language: string,
         version: string
     ): Promise<MeshNode> {
-        console.log(version, 's3nodeversion');
-        const toreturn = this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(
-            response =>
-                this.uploadToS3(response, s3binary)
-                    .then(res => this.parseMetadata(project, nodeUuid, fieldName, language, version))
-                    .catch(error => {
-                        throw { s3binary, error };
-                    })
+        return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(response =>
+            this.uploadToS3(response, s3binary)
+                .then(() => this.parseMetadata(project, nodeUuid, fieldName, language, response.version))
+                .catch(error => {
+                    throw { s3binary, error };
+                })
         );
-        return toreturn;
     }
-    //
-    // return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(response =>
-    // this.uploadToS3(response, s3binary).then(res =>
-    // this.parseMetadata(project, nodeUuid, fieldName, language, version)).catch(error => {
-    // throw {s3binary, error};
 
     private generateS3Url(
         project: string,
@@ -608,8 +600,6 @@ export class EditorEffectsService {
         language: string,
         version: string
     ): Promise<MeshNode> {
-        version = '0.6';
-        console.log(version, 'metadataversion');
         return this.api.project
             .parseMetadata(
                 {

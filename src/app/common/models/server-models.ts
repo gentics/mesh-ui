@@ -4912,6 +4912,7 @@ export interface S3BinaryUrlGenerationResponse {
     /** Type of operation for this change */
     httpRequestMethod: string;
     signedHeaders: HttpHeaders | { [header: string]: string | string[] };
+    version: string;
 }
 
 export interface SchemaChangeModelFromServer {
