@@ -234,27 +234,6 @@ export class ProjectApi {
     }
 
     /**
-     * Returns a url to a node s3binary file
-     */
-    getS3BinaryFileUrl(
-        project: string,
-        nodeUuid: string,
-        name: string,
-        language: string,
-        version?: string,
-        params: ImageTransformQueryParams = {}
-    ): string {
-        return this.apiBase.formatUrl('/{project}/nodes/{nodeUuid}/binary/{name}', {
-            project,
-            nodeUuid,
-            name,
-            version,
-            lang: language,
-            ...params
-        });
-    }
-
-    /**
      * Update the node with the given uuid. It is mandatory to specify the version
      * within the update request. Mesh will automatically check for version conflicts
      * and return a 409 error if a conflict has been detected. Additional conflict

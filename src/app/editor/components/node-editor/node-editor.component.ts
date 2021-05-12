@@ -10,7 +10,7 @@ import { Schema } from '../../../common/models/schema.model';
 import { GraphQLErrorFromServer, NodeResponse, TagReferenceFromServer } from '../../../common/models/server-models';
 import { initializeNode } from '../../../common/util/initialize-node';
 import * as NodeUtil from '../../../common/util/node-util';
-import { getSpecificTypeMeshNodeFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
+import { getBinaryOrS3BinaryTypeMeshNodeFields, notNullOrUndefined, simpleCloneDeep } from '../../../common/util/util';
 import { ApiService } from '../../../core/providers/api/api.service';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -194,7 +194,7 @@ export class NodeEditorComponent implements OnInit, OnDestroy {
      */
     private saveNodeWithProgress(saveFn: Promise<any> | null, node: MeshNode): Promise<any> {
         const schema = this.entities.getSchema(node.schema.uuid!);
-        const numBinaryFields = Object.keys(getSpecificTypeMeshNodeFields(node, schema, 'binary')).length;
+        const numBinaryFields = Object.keys(getBinaryOrS3BinaryTypeMeshNodeFields(node, schema, 'binary')).length;
 
         if (numBinaryFields > 0) {
             return this.modalService

@@ -20,7 +20,6 @@ import { ListFieldComponent } from './components/list-field/list-field.component
 import { MicronodeFieldComponent } from './components/micronode-field/micronode-field.component';
 import { NodeFieldComponent } from './components/node-field/node-field.component';
 import { NumberFieldComponent } from './components/number-field/number-field.component';
-import { S3binaryFieldComponent } from './components/s3binary-field/s3binary-field.component';
 import { StringFieldComponent } from './components/string-field/string-field.component';
 import { MeshControlGroupService } from './providers/field-control-group/mesh-control-group.service';
 import { FieldGeneratorService } from './providers/field-generator/field-generator.service';
@@ -37,7 +36,6 @@ const ENTRY_COMPONENTS = [
     MicronodeFieldComponent,
     NodeFieldComponent,
     NumberFieldComponent,
-    S3binaryFieldComponent,
     StringFieldComponent,
     ImageEditorModalComponent
 ];

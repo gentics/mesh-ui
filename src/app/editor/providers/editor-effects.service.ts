@@ -11,7 +11,12 @@ import {
     S3BinaryUrlGenerationResponse,
     TagReferenceFromServer
 } from '../../common/models/server-models';
-import { getSpecificTypeMeshNodeFields, promiseConcat, simpleCloneDeep, stripNulls } from '../../common/util/util';
+import {
+    getBinaryOrS3BinaryTypeMeshNodeFields,
+    promiseConcat,
+    simpleCloneDeep,
+    stripNulls
+} from '../../common/util/util';
 import { ApiService } from '../../core/providers/api/api.service';
 import { ConfigService } from '../../core/providers/config/config.service';
 import { I18nNotification } from '../../core/providers/i18n-notification/i18n-notification.service';
@@ -302,8 +307,8 @@ export class EditorEffectsService {
 
     getMeshNodeNonBinaryFields(node: MeshNode): FieldMap {
         const schema = this.entities.getSchema(node.schema.uuid!);
-        const binaryFields = getSpecificTypeMeshNodeFields(node, schema, 'binary');
-        const s3binaryFields = getSpecificTypeMeshNodeFields(node, schema, 's3binary');
+        const binaryFields = getBinaryOrS3BinaryTypeMeshNodeFields(node, schema, 'binary');
+        const s3binaryFields = getBinaryOrS3BinaryTypeMeshNodeFields(node, schema, 's3binary');
         return Object.keys(node.fields).reduce(
             (nonBinaryFields, key) => {
                 if (
@@ -350,13 +355,12 @@ export class EditorEffectsService {
         tags?: TagReferenceFromServer[]
     ): Promise<MeshNode> {
         const schema = this.entities.getSchema(originalNode.schema.uuid!);
-        console.log('HÍVÁS ELÖTT');
         return this.assignTagsToNode(updatedNode, tags)
             .then(newNode =>
-                this.uploadBinaries(newNode, getSpecificTypeMeshNodeFields(originalNode, schema, 'binary'))
+                this.uploadBinaries(newNode, getBinaryOrS3BinaryTypeMeshNodeFields(originalNode, schema, 'binary'))
             )
             .then(newNode =>
-                this.uploadS3Binaries(newNode, getSpecificTypeMeshNodeFields(originalNode, schema, 's3binary'))
+                this.uploadS3Binaries(newNode, getBinaryOrS3BinaryTypeMeshNodeFields(originalNode, schema, 's3binary'))
             )
             .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
     }
@@ -479,8 +483,6 @@ export class EditorEffectsService {
         const projectName = node.project.name;
         const language = node.language;
 
-        console.log(fields, 'BINARY FIELDS');
-
         // if no binaries are present - return the same node
         if (Object.keys(fields).length === 0 || !projectName || !language) {
             return Promise.resolve(node);
@@ -500,7 +502,6 @@ export class EditorEffectsService {
     private uploadS3Binaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
         const projectName = node.project.name;
         const language = node.language;
-        console.log(fields, 'S3BINARY FIELDS');
 
         // if no s3binaries are present - return the same node
         if (Object.keys(fields).length === 0 || !projectName || !language) {
@@ -527,7 +528,6 @@ export class EditorEffectsService {
         language: string,
         version: string
     ): Promise<MeshNode> {
-        console.log(version, 'binarynodeversion');
         // TODO: remote lang lang: language from params.
         // It is currently needed to overcome the https://github.com/gentics/mesh/issues/404 issue
         // what it does now, it adds ?lang=language query param
@@ -616,8 +616,6 @@ export class EditorEffectsService {
     }
 
     private applyBinaryTransforms(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
-        console.log(node, 'node');
-        console.log(fields, 'fields');
         const project = node.project.name;
         const nodeUuid = node.uuid;
         const language = node.language;

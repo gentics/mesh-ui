@@ -223,7 +223,7 @@ export function simpleCloneDeep<T>(target: T): T {
 /**
  * Filter all the fields from the node with the specified type
  */
-export function getSpecificTypeMeshNodeFields(
+export function getBinaryOrS3BinaryTypeMeshNodeFields(
     node: MeshNode,
     schema: Schema | undefined,
     type: SchemaFieldType
@@ -247,44 +247,6 @@ export function getSpecificTypeMeshNodeFields(
         {} as FieldMap
     );
 }
-
-// /**
-//  * Filter all the fields from the node with the specified type
-//  */
-// export function getSpecificTypeMeshNodeFields(
-//     node: MeshNode,
-//     schema: Schema | undefined,
-//     type: SchemaFieldType
-// ): FieldMap {
-//     if (!node.fields) {
-//         return {} as FieldMapFromServer;
-//     }
-// const types = ['binary','s3binary'];
-//     return Object.keys(node.fields).reduce(
-//         (fields, key) => {
-//             const nodeField = node.fields[key];
-//             console.log(nodeField ? true : false, 'nodeField');
-//             console.log(nodeField.file ? true : false, 'nodeFieldFile');
-//             console.log(nodeField.file instanceof File ? true : false, 'nodeFieldFileinstanceof');
-//             console.log(schema ? true : false, 'schema');
-//             console.log(type, 'type')
-//             if (
-//                 nodeField &&
-//                 (types.includes(type) ? nodeField.file && nodeField.file instanceof File : true) &&
-//                 schema
-//             ) {
-//                 console.log('1');
-//                 const schemaField = schema.fields.find(field => field.name === key);
-//                 if (schemaField && schemaField.type === type) {
-//                     fields[key] = nodeField;
-//                     console.log('2');
-//                 }
-//             }
-//             return fields;
-//         },
-//         {} as FieldMap
-//     );
-// }
 
 export function stripNulls<T>(arr: T): T {
     // if it's array, delete all the nulls and return array without nulls
