@@ -193,8 +193,6 @@ export class ProjectApi {
     updateBinaryField = apiPost('/{project}/nodes/{nodeUuid}/binary/{fieldName}');
 
     /** Generate URL for the s3binaryfield upload. */
-    // TODO: This is typed wrong in the RAML.
-    // TODO: This is not supported yet by the API service.
     generateS3Url = apiPost('/{project}/nodes/{nodeUuid}/s3binary/{fieldName}');
 
     /** Parse metadata for the s3binaryfield. */

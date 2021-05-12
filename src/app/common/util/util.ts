@@ -221,7 +221,7 @@ export function simpleCloneDeep<T>(target: T): T {
 }
 
 /**
- * Filter all the fields from the node with the specified type
+ * Filter all the binary or s3binary fields from the node
  */
 export function getBinaryOrS3BinaryTypeMeshNodeFields(
     node: MeshNode,

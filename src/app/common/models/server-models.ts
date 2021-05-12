@@ -2951,7 +2951,7 @@ export interface ApiEndpoints {
                 200: S3BinaryUrlGenerationResponse;
             };
         };
-        /** Generate URL for the s3binaryfield upload. */
+        /** Parse metadata for s3binaryfield. */
         '/{project}/nodes/{nodeUuid}/s3binary/{fieldName}/parseMetadata': {
             request: {
                 urlParams: {

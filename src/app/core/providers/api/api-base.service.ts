@@ -194,6 +194,7 @@ export class ApiBase {
             bodyToUse = body;
             headers.append('Content-Type', 'application/json');
         }
+
         const request = new HttpRequest(method, this.formatUrl(url, params), bodyToUse, {
             headers,
             withCredentials: false

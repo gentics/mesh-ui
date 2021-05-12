@@ -487,6 +487,7 @@ export class EditorEffectsService {
         if (Object.keys(fields).length === 0 || !projectName || !language) {
             return Promise.resolve(node);
         }
+
         const promiseSuppliers = Object.keys(fields).map(key => () =>
             this.uploadBinary(projectName, node.uuid, key, fields[key].file, language, node.version).catch(error => {
                 throw { field: fields[key], node, error };
