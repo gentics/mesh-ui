@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
@@ -7,13 +8,14 @@ import {
     NodeCreateRequest,
     NodeResponse,
     NodeUpdateRequest,
+    S3BinaryUrlGenerationResponse,
     TagReferenceFromServer
 } from '../../common/models/server-models';
 import {
-    getMeshNodeBinaryFields,
-    getMeshNodeNonBinaryFields,
+    getBinaryOrS3BinaryTypeMeshNodeFields,
     promiseConcat,
-    simpleCloneDeep
+    simpleCloneDeep,
+    stripNulls
 } from '../../common/util/util';
 import { ApiService } from '../../core/providers/api/api.service';
 import { ConfigService } from '../../core/providers/config/config.service';
@@ -28,7 +30,8 @@ export class EditorEffectsService {
         private entities: EntitiesService,
         private notification: I18nNotification,
         private config: ConfigService,
-        private api: ApiService
+        private api: ApiService,
+        private http: HttpClient
     ) {}
 
     openNode(projectName: string, nodeUuid: string, language?: string): void {
@@ -85,7 +88,7 @@ export class EditorEffectsService {
         const language = node.language || this.config.FALLBACK_LANGUAGE;
 
         const nodeCreateRequest: NodeCreateRequest = {
-            fields: getMeshNodeNonBinaryFields(node),
+            fields: this.getMeshNodeNonBinaryFields(node),
             parentNode: node.parentNode,
             schema: node.schema,
             language: language
@@ -129,7 +132,7 @@ export class EditorEffectsService {
 
         const language = node.language || this.config.FALLBACK_LANGUAGE;
         const updateRequest: NodeUpdateRequest = {
-            fields: getMeshNodeNonBinaryFields(node),
+            fields: this.getMeshNodeNonBinaryFields(node),
             version: node.version,
             language: language
         };
@@ -302,6 +305,25 @@ export class EditorEffectsService {
             );
     }
 
+    getMeshNodeNonBinaryFields(node: MeshNode): FieldMap {
+        const schema = this.entities.getSchema(node.schema.uuid!);
+        const binaryFields = getBinaryOrS3BinaryTypeMeshNodeFields(node, schema, 'binary');
+        const s3binaryFields = getBinaryOrS3BinaryTypeMeshNodeFields(node, schema, 's3binary');
+        return Object.keys(node.fields).reduce(
+            (nonBinaryFields, key) => {
+                if (
+                    (binaryFields[key] === undefined && s3binaryFields[key] === undefined) ||
+                    // A binary or s3binary field should be included if it should be deleted
+                    node.fields[key] === null
+                ) {
+                    nonBinaryFields[key] = stripNulls(node.fields[key]);
+                }
+                return nonBinaryFields;
+            },
+            {} as FieldMap
+        );
+    }
+
     closeEditor(): void {
         this.state.actions.editor.closeEditor();
     }
@@ -332,8 +354,14 @@ export class EditorEffectsService {
         updatedNode: MeshNode,
         tags?: TagReferenceFromServer[]
     ): Promise<MeshNode> {
+        const schema = this.entities.getSchema(originalNode.schema.uuid!);
         return this.assignTagsToNode(updatedNode, tags)
-            .then(newNode => this.uploadBinaries(newNode, getMeshNodeBinaryFields(originalNode)))
+            .then(newNode =>
+                this.uploadBinaries(newNode, getBinaryOrS3BinaryTypeMeshNodeFields(originalNode, schema, 'binary'))
+            )
+            .then(newNode =>
+                this.uploadS3Binaries(newNode, getBinaryOrS3BinaryTypeMeshNodeFields(originalNode, schema, 's3binary'))
+            )
             .then(newNode => newNode && this.applyBinaryTransforms(newNode, originalNode.fields));
     }
 
@@ -465,7 +493,27 @@ export class EditorEffectsService {
                 throw { field: fields[key], node, error };
             })
         );
+        return (
+            promiseConcat(promiseSuppliers)
+                // return the node from the last successful request
+                .then(nodes => nodes[nodes.length - 1])
+        );
+    }
 
+    private uploadS3Binaries(node: MeshNode, fields: FieldMap): Promise<MeshNode> {
+        const projectName = node.project.name;
+        const language = node.language;
+
+        // if no s3binaries are present - return the same node
+        if (Object.keys(fields).length === 0 || !projectName || !language) {
+            return Promise.resolve(node);
+        }
+
+        const promiseSuppliers = Object.keys(fields).map(key => () =>
+            this.uploadS3Binary(projectName, node.uuid, key, fields[key].file, language, node.version).catch(error => {
+                throw { field: fields[key], node, error };
+            })
+        );
         return (
             promiseConcat(promiseSuppliers)
                 // return the node from the last successful request
@@ -494,6 +542,73 @@ export class EditorEffectsService {
                 } as any,
                 {
                     binary,
+                    language,
+                    version
+                }
+            )
+            .toPromise();
+    }
+
+    private uploadS3Binary(
+        project: string,
+        nodeUuid: string,
+        fieldName: string,
+        s3binary: File,
+        language: string,
+        version: string
+    ): Promise<MeshNode> {
+        return this.generateS3Url(project, nodeUuid, fieldName, language, version, s3binary.name).then(response =>
+            this.uploadToS3(response, s3binary)
+                .then(() => this.parseMetadata(project, nodeUuid, fieldName, language, response.version))
+                .catch(error => {
+                    throw { s3binary, error };
+                })
+        );
+    }
+
+    private generateS3Url(
+        project: string,
+        nodeUuid: string,
+        fieldName: string,
+        language: string,
+        version: string,
+        filename: string
+    ): Promise<S3BinaryUrlGenerationResponse> {
+        return this.api.project
+            .generateS3Url(
+                {
+                    project,
+                    nodeUuid,
+                    fieldName
+                },
+                {
+                    language,
+                    version,
+                    filename
+                }
+            )
+            .toPromise();
+    }
+
+    private uploadToS3(properties: S3BinaryUrlGenerationResponse, s3binary: File): Promise<any> {
+        return this.http.put(properties.presignedUrl, s3binary).toPromise();
+    }
+
+    private parseMetadata(
+        project: string,
+        nodeUuid: string,
+        fieldName: string,
+        language: string,
+        version: string
+    ): Promise<MeshNode> {
+        return this.api.project
+            .parseMetadata(
+                {
+                    project,
+                    nodeUuid,
+                    fieldName
+                },
+                {
                     language,
                     version
                 }
