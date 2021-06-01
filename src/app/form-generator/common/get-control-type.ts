@@ -30,6 +30,7 @@ export function getControlType(field: SchemaField): Type<BaseFieldComponent> | u
         micronode: MicronodeFieldComponent,
         node: NodeFieldComponent,
         number: NumberFieldComponent,
+        s3binary: BinaryFieldComponent,
         string: StringFieldComponent
     };
 

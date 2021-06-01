@@ -192,6 +192,12 @@ export class ProjectApi {
     // TODO: This is not supported yet by the API service.
     updateBinaryField = apiPost('/{project}/nodes/{nodeUuid}/binary/{fieldName}');
 
+    /** Generate URL for the s3binaryfield upload. */
+    generateS3Url = apiPost('/{project}/nodes/{nodeUuid}/s3binary/{fieldName}');
+
+    /** Parse metadata for the s3binaryfield. */
+    parseMetadata = apiPost('/{project}/nodes/{nodeUuid}/s3binary/{fieldName}/parseMetadata');
+
     /** Update the branch with the given uuid. */
     updateBranch = apiPost('/{project}/branches/{branchUuid}');
 

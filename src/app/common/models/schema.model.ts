@@ -1,7 +1,7 @@
 import { SchemaResponse } from './server-models';
 
 export type CommonFieldType = 'node' | 'boolean' | 'string' | 'number' | 'date' | 'html';
-export type SchemaFieldType = CommonFieldType | 'micronode' | 'binary' | 'list';
+export type SchemaFieldType = CommonFieldType | 'micronode' | 'binary' | 'list' | 's3binary';
 export type MicroschemaFieldType = CommonFieldType | 'binary' | 'list';
 export type ListTypeFieldType = CommonFieldType | 'micronode';
 

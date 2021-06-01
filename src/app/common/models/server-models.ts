@@ -1,3 +1,5 @@
+import { HttpHeaders } from '@angular/common/http';
+
 import { ListTypeFieldType } from './schema.model';
 
 // Auto-generated from the RAML for Version 0.22.0-SNAPSHOT of the Gentics Mesh REST API.
@@ -2902,6 +2904,95 @@ export interface ApiEndpoints {
                 200: NodeResponse;
             };
         };
+        /** Generate URL for the s3binaryfield upload. */
+        '/{project}/nodes/{nodeUuid}/s3binary/{fieldName}': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                    /**
+                     * Name of the binary field
+                     * @example "image"
+                     */
+                    fieldName: string;
+                    /**
+                     * Uuid of the node.
+                     * @example "87a6c6088afa4f5fa6c6088afa2f5f33"
+                     */
+                    nodeUuid: string;
+                };
+                queryParams?: {};
+                body: {
+                    /**
+                     * Language of the node content which contains the binary field which should be
+                     * updated.
+                     * @example "en"
+                     */
+                    language: string;
+                    /**
+                     * Version of the node which should be updated. This information is used to
+                     * determine conflicting updates.
+                     * @example "1.0"
+                     */
+                    version: string;
+                    /**
+                     * Name of the file which should be uploaded.
+                     * @example "test.jpg"
+                     */
+                    filename: string;
+                };
+            };
+            responseType: S3BinaryUrlGenerationResponse;
+            responseTypes: {
+                /** The response contains the presigned URL. */
+                200: S3BinaryUrlGenerationResponse;
+            };
+        };
+        /** Parse metadata for s3binaryfield. */
+        '/{project}/nodes/{nodeUuid}/s3binary/{fieldName}/parseMetadata': {
+            request: {
+                urlParams: {
+                    /**
+                     * Name of the project.
+                     * @example "demo"
+                     */
+                    project: string;
+                    /**
+                     * Name of the binary field
+                     * @example "image"
+                     */
+                    fieldName: string;
+                    /**
+                     * Uuid of the node.
+                     * @example "87a6c6088afa4f5fa6c6088afa2f5f33"
+                     */
+                    nodeUuid: string;
+                };
+                queryParams?: {};
+                body: {
+                    /**
+                     * Language of the node content which contains the binary field which should be
+                     * updated.
+                     * @example "en"
+                     */
+                    language: string;
+                    /**
+                     * Version of the node which should be updated. This information is used to
+                     * determine conflicting updates.
+                     * @example "1.0"
+                     */
+                    version: string;
+                };
+            };
+            responseType: NodeResponse;
+            responseTypes: {
+                /** The response contains the updated node. */
+                200: NodeResponse;
+            };
+        };
         /**
          * Transform the image with the given field name and overwrite the stored image with
          * the transformation result.
@@ -4813,6 +4904,15 @@ export interface RoleResponse {
 export interface RoleUpdateRequest {
     /** New name of the role */
     readonly name: string;
+}
+
+export interface S3BinaryUrlGenerationResponse {
+    /** Optional migation script */
+    presignedUrl: string;
+    /** Type of operation for this change */
+    httpRequestMethod: string;
+    signedHeaders: HttpHeaders | { [header: string]: string | string[] };
+    version: string;
 }
 
 export interface SchemaChangeModelFromServer {
