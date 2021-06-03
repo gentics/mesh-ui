@@ -84,8 +84,10 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
 
     /** Precondition functions to fill input select dropdown data */
     schemaInputSelectDataConditions: { [key: string]: (field: SchemaField) => boolean } = {
-        displayFields: field => field.name.length > 0 && (field.type === 'binary' || field.type === 'string'),
-        segmentFields: field => field.name.length > 0 && (field.type === 'binary' || field.type === 'string'),
+        displayFields: field =>
+            field.name.length > 0 && (field.type === 'binary' || field.type === 's3binary' || field.type === 'string'),
+        segmentFields: field =>
+            field.name.length > 0 && (field.type === 'binary' || field.type === 's3binary' || field.type === 'string'),
         urlFields: field => field.name.length > 0 && (field.type === 'string' || field.listType === 'string')
     };
 
