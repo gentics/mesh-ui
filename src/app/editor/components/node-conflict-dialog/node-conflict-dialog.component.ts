@@ -154,6 +154,37 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
                 }
                 break;
 
+            case 's3binary':
+                const s3file = (localField as BinaryField).file;
+                conflictedField = {
+                    field: schemaField,
+                    localValue: localField,
+                    remoteValue: remoteField,
+                    localURL: s3file
+                        ? this.blobService.createObjectURL(s3file)
+                        : this.getS3binaryUrl(this.localNode, schemaField.name, localField as BinaryField),
+                    remoteURL: this.getS3binaryUrl(this.remoteNode, schemaField.name, remoteField as BinaryField),
+                    overwrite: true
+                };
+
+                // We preload the old version of the file in case the user desides to overwrite the server version.
+                if (!(localField as BinaryField).file) {
+                    // Only download the server version if the user did NOT actually select a new file
+                    const url = this.apiService.project.getS3binaryFileUrl(
+                        this.localNode.project.name!,
+                        this.localNode.uuid,
+                        schemaField.name,
+                        this.localNode.language!,
+                        this.localNode.version,
+                        { w: 200, h: 200 }
+                    );
+
+                    this.blobService.downloadFile(url, (localField as BinaryField).fileName).then((file: File) => {
+                        (localField as BinaryField).file = file;
+                    });
+                }
+                break;
+
             case 'string':
             case 'number':
             case 'boolean':
@@ -231,6 +262,32 @@ export class NodeConflictDialogComponent implements IModalDialog, OnInit {
             );
         } else {
             return this.apiService.project.getBinaryFileUrl(
+                node.project.name!,
+                node.uuid,
+                schemaFieldName,
+                node.language!,
+                node.version
+            );
+        }
+    }
+
+    private getS3binaryUrl(node: MeshNode, schemaFieldName: string, field: BinaryField): string {
+        if (
+            getFileType(field.mimeType, field.fileName) === 'image' &&
+            field.width !== undefined &&
+            field.height !== undefined
+        ) {
+            const { width, height } = getConstrainedDimensions(field.width, field.height, 500, 270);
+            return this.apiService.project.getS3binaryFileUrl(
+                node.project.name!,
+                node.uuid,
+                schemaFieldName,
+                node.language!,
+                node.version,
+                { w: width, h: height }
+            );
+        } else {
+            return this.apiService.project.getS3binaryFileUrl(
                 node.project.name!,
                 node.uuid,
                 schemaFieldName,
