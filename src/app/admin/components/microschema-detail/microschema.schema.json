@@ -93,6 +93,31 @@
                 }
             ]
         },
+        "s3binaryField": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/baseField"
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "s3binary"
+                            ],
+                            "description": "Type of the field."
+                        },
+                        "allow": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "Allowed mimetypes."
+                        }
+                    }
+                }
+            ]
+        },
         "nodeField": {
             "allOf": [
                 {
