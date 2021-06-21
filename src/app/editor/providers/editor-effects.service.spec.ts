@@ -1,10 +1,10 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { fakeAsync, tick, TestBed } from '@angular/core/testing';
-import { of as observableOf, Observable } from 'rxjs';
+import { of as observableOf } from 'rxjs';
 
-import { mockMeshNode } from '../../../testing/mock-models';
+import { mockMeshNode, mockSchema } from '../../../testing/mock-models';
 import { MeshNode } from '../../common/models/node.model';
-import { FieldMapFromServer } from '../../common/models/server-models';
+import { FieldMapFromServer, S3BinaryUrlGenerationResponse } from '../../common/models/server-models';
 import { MockApiBase } from '../../core/providers/api/api-base.mock';
 import { ApiBase } from '../../core/providers/api/api-base.service';
 import { ApiService } from '../../core/providers/api/api.service';
@@ -19,13 +19,16 @@ import { TestApplicationState } from '../../state/testing/test-application-state
 
 import { EditorEffectsService } from './editor-effects.service';
 
+let state: TestApplicationState;
+
 describe('EditorEffectsService', () => {
     let editorEffectsService: EditorEffectsService;
-    let state: TestApplicationState;
     let api: MockApiService;
+    let backend: HttpTestingController;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
             providers: [
                 EditorEffectsService,
                 { provide: ApplicationStateService, useClass: TestApplicationState },
@@ -35,13 +38,34 @@ describe('EditorEffectsService', () => {
                 { provide: ApiService, useClass: MockApiService },
                 { provide: ApiBase, useClass: MockApiBase }
             ],
-            imports: [HttpClientTestingModule]
         });
 
         editorEffectsService = TestBed.get(EditorEffectsService);
         state = TestBed.get(ApplicationStateService);
         api = TestBed.get(ApiService);
-
+        backend = TestBed.get(HttpTestingController);
+        state.mockState({
+            entities: {
+                schema: {
+                    schema_uuid: mockSchema({
+                        uuid: 'schema_uuid',
+                        version: '0',
+                        fields: [
+                            {
+                                name: 'binary_schema_field_name',
+                                label: 'image',
+                                type: 'binary'
+                            },
+                            {
+                                name: 's3binary_schema_field_name',
+                                label: 'image',
+                                type: 's3binary'
+                            }
+                        ]
+                    })
+                }
+            }
+        });
         state.trackAllActionCalls();
     });
 
@@ -57,7 +81,13 @@ describe('EditorEffectsService', () => {
 
     describe('saving nodes', () => {
         const mockParentNode = { uuid: 'parent_uuid' } as any;
-        const mockSchema = { uuid: 'schema_uuid' } as any;
+        const mockSchema = {
+            uuid: 'schema_uuid',
+            fields: [
+                { name: 'binary_schema_field_name', type: 'binary' },
+                { name: 's3binary_schema_field_name', type: 's3binary' }
+            ]
+        } as any;
         const mockTransform = {
             width: 100,
             height: 100,
@@ -123,7 +153,7 @@ describe('EditorEffectsService', () => {
 
             it('calls api.project.updateBinaryField() with binary fields', fakeAsync(() => {
                 const mockFile = new File([], 'mock-file.jpg');
-                originalNode.fields['image'] = {
+                originalNode.fields['binary_schema_field_name'] = {
                     file: mockFile
                 };
                 editorEffectsService.saveNewNode('project', originalNode);
@@ -133,11 +163,83 @@ describe('EditorEffectsService', () => {
                     {
                         project: createdNode.project.name,
                         nodeUuid: createdNode.uuid,
-                        fieldName: 'image',
+                        fieldName: 'binary_schema_field_name',
                         lang: 'en'
                     },
                     {
                         binary: mockFile,
+                        language: 'en',
+                        version: '1.1'
+                    }
+                );
+            }));
+
+            it('calls api.project.generateS3Url()', fakeAsync(() => {
+                const mockFile = new File([], 'mock-file.jpg');
+                originalNode.fields['s3binary_schema_field_name'] = {
+                    file: mockFile
+                };
+                editorEffectsService.saveNewNode('project', originalNode);
+                tick();
+
+                expect(api.project.generateS3Url).toHaveBeenCalledWith(
+                    {
+                        project: createdNode.project.name,
+                        nodeUuid: createdNode.uuid,
+                        fieldName: 's3binary_schema_field_name'
+                    },
+                    {
+                        language: 'en',
+                        version: '1.1',
+                        filename: 'mock-file.jpg'
+                    }
+                );
+            }));
+
+            it('calls uploadToS3', fakeAsync(() => {
+                const mockS3UrlGenerationResponse: S3BinaryUrlGenerationResponse = {
+                    presignedUrl: 'presignedUrl',
+                    httpRequestMethod: 'PUT',
+                    signedHeaders: {
+                        host: ['host']
+                    },
+                    version: '0.1'
+                };
+                const mockFile = new File([], 'mock-file.jpg');
+                originalNode.fields['s3binary_schema_field_name'] = {
+                    file: mockFile
+                };
+                spyOn<any>(editorEffectsService, 'generateS3Url').and.returnValue(
+                    Promise.resolve(mockS3UrlGenerationResponse)
+                );
+
+                editorEffectsService.saveNewNode('project', originalNode);
+                tick();
+
+                const request = backend.expectOne('presignedUrl').request;
+                expect(request.method).toBe(mockS3UrlGenerationResponse.httpRequestMethod);
+                expect(request.body).toBe(mockFile);
+            }));
+
+            it('calls api.project.parseMetadata()', fakeAsync(() => {
+                const parseMetadataSpy = spyOn<any>(editorEffectsService, 'parseMetadata').and.callThrough();
+                parseMetadataSpy.call(
+                    editorEffectsService,
+                    createdNode.project.name,
+                    createdNode.uuid,
+                    's3binary_schema_field_name',
+                    'en',
+                    '1.1'
+                );
+                tick();
+
+                expect(api.project.parseMetadata).toHaveBeenCalledWith(
+                    {
+                        project: createdNode.project.name,
+                        nodeUuid: createdNode.uuid,
+                        fieldName: 's3binary_schema_field_name'
+                    },
+                    {
                         language: 'en',
                         version: '1.1'
                     }
@@ -209,7 +311,7 @@ describe('EditorEffectsService', () => {
 
             it('calls api.project.updateBinaryField() with binary fields', fakeAsync(() => {
                 const mockFile = new File([], 'mock-file.jpg');
-                originalNode.fields['image'] = {
+                originalNode.fields['binary_schema_field_name'] = {
                     file: mockFile
                 };
                 editorEffectsService.saveNode(originalNode);
@@ -219,7 +321,7 @@ describe('EditorEffectsService', () => {
                     {
                         project: updatedNode.project.name,
                         nodeUuid: updatedNode.uuid,
-                        fieldName: 'image',
+                        fieldName: 'binary_schema_field_name',
                         lang: 'en'
                     },
                     {
@@ -228,6 +330,53 @@ describe('EditorEffectsService', () => {
                         version: '1.1'
                     }
                 );
+            }));
+
+            it('calls api.project.generateS3Url()', fakeAsync(() => {
+                const mockFile = new File([], 'mock-file.jpg');
+                originalNode.fields['s3binary_schema_field_name'] = {
+                    file: mockFile
+                };
+                editorEffectsService.saveNode(originalNode);
+                tick();
+
+                expect(api.project.generateS3Url).toHaveBeenCalledWith(
+                    {
+                        project: updatedNode.project.name,
+                        nodeUuid: updatedNode.uuid,
+                        fieldName: 's3binary_schema_field_name'
+                    },
+                    {
+                        language: 'en',
+                        version: '1.1',
+                        filename: 'mock-file.jpg'
+                    }
+                );
+            }));
+
+            it('calls uploadToS3', fakeAsync(() => {
+                const mockS3UrlGenerationResponse: S3BinaryUrlGenerationResponse = {
+                    presignedUrl: 'presignedUrl',
+                    httpRequestMethod: 'PUT',
+                    signedHeaders: {
+                        host: ['host']
+                    },
+                    version: '0.1'
+                };
+                const mockFile = new File([], 'mock-file.jpg');
+                originalNode.fields['s3binary_schema_field_name'] = {
+                    file: mockFile
+                };
+                spyOn<any>(editorEffectsService, 'generateS3Url').and.returnValue(
+                    Promise.resolve(mockS3UrlGenerationResponse)
+                );
+
+                editorEffectsService.saveNode(originalNode);
+                tick();
+
+                const request = backend.expectOne('presignedUrl').request;
+                expect(request.method).toBe(mockS3UrlGenerationResponse.httpRequestMethod);
+                expect(request.body).toBe(mockFile);
             }));
 
             it('calls api.project.transformBinaryField() with binary transforms', fakeAsync(() => {
@@ -254,4 +403,8 @@ describe('EditorEffectsService', () => {
     });
 });
 
-class MockEntitiesService {}
+class MockEntitiesService {
+    getSchema = (id: string) => {
+        return state.now.entities.schema[id]['0'];
+    };
+}
