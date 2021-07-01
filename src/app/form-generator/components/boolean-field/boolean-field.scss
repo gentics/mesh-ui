@@ -2,6 +2,14 @@
 @import "../../common-styles";
 
 :host.mesh-field {
+    /*
+        position: relative is necessary to provide an anchor-element for the
+        absolute positioned checkbox-element from gtx-checkbox. Without this
+        there will be issues with overflows of static-positioned parent elements.
+        See: https://github.com/gentics/mesh-ui/issues/337
+     */
+    position: relative;
+
     display: flex;
     justify-content: space-between;
     padding-top: 10px;
