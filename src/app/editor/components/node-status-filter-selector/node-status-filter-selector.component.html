@@ -1,0 +1,31 @@
+<gtx-dropdown-list>
+    <gtx-dropdown-trigger>
+        <div class="trigger">
+            {{ 'list.node_status_selected' | i18n }}:
+            <ng-container *ngIf="selectedNodeStatusFilter | isAllNodeStatuses: nodeStatuses; else nodeStatusIcons">
+                {{ 'list.node_status_all' | i18n }}
+            </ng-container>
+            <ng-template #nodeStatusIcons>
+                <div *ngFor="let nodeStatus of selectedNodeStatusFilter"
+                     class="status"
+                     [ngClass]="nodeStatus">
+                    <span class="text-uppercase">{{ 'common.' + nodeStatus | i18n }}</span>
+                </div>
+            </ng-template>
+            <icon>arrow_drop_down</icon>
+        </div>
+    </gtx-dropdown-trigger>
+    <gtx-dropdown-content>
+        <gtx-dropdown-item (click)="itemClick(nodeStatuses)">
+            {{ 'list.node_status_select_switch_to_all' | i18n }}
+        </gtx-dropdown-item>
+        <gtx-dropdown-item *ngFor="let nodeStatus of nodeStatuses"
+                           (click)="itemClick([nodeStatus])">
+            {{ 'list.node_status_select_switch_to_only' | i18n }}
+            <div class="status"
+                 [ngClass]="nodeStatus">
+                <span class="text-uppercase">{{ 'common.' + nodeStatus | i18n }}</span>
+            </div>
+        </gtx-dropdown-item>
+    </gtx-dropdown-content>
+</gtx-dropdown-list>

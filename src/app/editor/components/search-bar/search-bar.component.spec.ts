@@ -1,5 +1,3 @@
-import { of as observableOf, Observable } from 'rxjs';
-
 import { Component, DebugElement } from '@angular/core';
 import { tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { convertToParamMap, ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GenticsUICoreModule, InputField, OverlayHostService } from 'gentics-ui-core';
+import { of as observableOf, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { componentTest } from '../../../../testing/component-test';
@@ -36,6 +35,10 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { ContainerLanguageSwitcherComponent } from '../container-language-switcher/container-language-switcher.component';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
+import {
+    IsAllNodeStatusesPipe,
+    NodeStatusFilterSelectorComponent
+} from '../node-status-filter-selector/node-status-filter-selector.component';
 
 import { SearchBarComponent } from './search-bar.component';
 
@@ -85,7 +88,9 @@ describe('Search-bar component:', () => {
                 TestComponent,
                 SearchBarComponent,
                 ContainerLanguageSwitcherComponent,
+                IsAllNodeStatusesPipe,
                 NodeLanguageLabelComponent,
+                NodeStatusFilterSelectorComponent,
                 BackgroundFromDirective,
                 HighlightPipe,
                 ChipComponent,
@@ -217,7 +222,7 @@ describe('Search-bar component:', () => {
                     tick();
                     expect(MockRouter.navigate).toHaveBeenCalledWith([], {
                         relativeTo: activeRoute,
-                        queryParams: { q: 'some search', t: 'tagUuid,tagUuid2' }
+                        queryParams: { q: 'some search', t: 'tagUuid,tagUuid2', n: '' }
                     });
                 }
             )

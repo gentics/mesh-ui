@@ -20,9 +20,35 @@
 
             ::ng-deep gtx-dropdown-trigger {
                 display: flex;
-    
+
                 & .trigger {
                     display: flex;
+                    align-items: center;
+
+                    icon {
+                        line-height: 1.8;
+                    }
+                }
+            }
+        }
+    }
+
+    ::ng-deep mesh-node-status-filter-selector {
+        display: flex;
+
+        ::ng-deep gtx-dropdown-list {
+            display: flex;
+
+            & div {
+                display: flex;
+            }
+
+            ::ng-deep gtx-dropdown-trigger {
+                display: flex;
+
+                & .trigger {
+                    display: flex;
+                    align-items: center;
 
                     icon {
                         line-height: 1.8;

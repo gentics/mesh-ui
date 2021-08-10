@@ -25,6 +25,10 @@ import { NodeEditorComponent } from './components/node-editor/node-editor.compon
 import { NodeLanguageSwitcherComponent } from './components/node-language-switcher/node-language-switcher.component';
 import { NodePathComponent } from './components/node-path/node-path.component';
 import { NodeRowComponent } from './components/node-row/node-row.component';
+import {
+    IsAllNodeStatusesPipe,
+    NodeStatusFilterSelectorComponent
+} from './components/node-status-filter-selector/node-status-filter-selector.component';
 import { NodeTagsBarComponent } from './components/node-tags-bar/node-tags-bar.component';
 import { ProgressbarModalComponent } from './components/progressbar-modal/progressbar-modal.component';
 import { ProjectSwitcherComponent } from './components/project-switcher/project-switcher.component';
@@ -47,6 +51,7 @@ import { OpenerService } from './providers/opener.service';
         ContainerLanguageSwitcherComponent,
         CreateNodeButtonComponent,
         CreateTagDialogComponent,
+        IsAllNodeStatusesPipe,
         MasterDetailComponent,
         MultiFileUploadDialogComponent,
         NodeConflictDialogComponent,
@@ -54,6 +59,7 @@ import { OpenerService } from './providers/opener.service';
         NodeLanguageLabelComponent,
         NodeLanguageSwitcherComponent,
         NodeRowComponent,
+        NodeStatusFilterSelectorComponent,
         NodeTagsBarComponent,
         ProgressbarModalComponent,
         ProjectSwitcherComponent,

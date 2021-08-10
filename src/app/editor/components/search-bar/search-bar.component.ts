@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
 
 import { Tag } from '../../../common/models/tag.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
@@ -23,6 +24,8 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     displayTagSelection = false;
     searchTags: Tag[] = [];
     filteredTags: Tag[] = [];
+    searchNodeStatusFilter: EMeshNodeStatusStrings[] = [];
+    nodeStatuses: EMeshNodeStatusStrings[] = Object.values(EMeshNodeStatusStrings);
     private destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -66,12 +69,16 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
     onSearchTagSelected(tag: Tag): void {
         this.inputValue = '';
-        this.updateSearchParams(this.searchQuery, [...this.searchTags, tag]);
+        this.updateSearchParams(this.searchQuery, [...this.searchTags, tag], this.searchNodeStatusFilter);
     }
 
     onTagDeleted(tag: Tag): void {
         this.searchTags = this.searchTags.filter(searchTag => searchTag.uuid !== tag.uuid);
-        this.updateSearchParams(this.searchQuery, this.searchTags);
+        this.updateSearchParams(this.searchQuery, this.searchTags, this.searchNodeStatusFilter);
+    }
+
+    onNodeStatusFilterSelected(selectedNodeStatusFilter: EMeshNodeStatusStrings[]): void {
+        this.updateSearchParams(this.searchQuery, this.searchTags, selectedNodeStatusFilter);
     }
 
     searchTermChanged(): void {
@@ -81,7 +88,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.updateSearchParams(this.inputValue, this.searchTags);
+        this.updateSearchParams(this.inputValue, this.searchTags, this.searchNodeStatusFilter);
 
         this.inputValue = '';
         this.listEffects.setFilterTerm(this.inputValue);
@@ -103,9 +110,25 @@ export class SearchBarComponent implements OnInit, OnDestroy {
             .split(',')
             .map(uuid => this.entities.getTag(uuid))
             .filter(notNullOrUndefined);
+        // filter unknown node statuses and remove duplicates
+        this.searchNodeStatusFilter = [
+            ...new Set((params.get('n') || '').split(',').filter(this.isEMeshNodeStatusString))
+        ];
+
+        // if no filters are set, then it is assumed that no nodes should be filtered (e.g. setting all node statuses as filters)
+        if (this.searchNodeStatusFilter.length === 0) {
+            this.searchNodeStatusFilter = Object.values(EMeshNodeStatusStrings);
+        }
 
         // Required if the browser 'back' or 'forward' button was clicked
         this.changeDetectorRef.markForCheck();
+    }
+
+    private isEMeshNodeStatusString(string: string): string is EMeshNodeStatusStrings {
+        return (
+            typeof string === 'string' &&
+            Object.values(EMeshNodeStatusStrings).includes(string as EMeshNodeStatusStrings)
+        );
     }
 
     private filterTags(allTags: Tag[], selectedTags: Tag[], filterTerm: string): Tag[] {
@@ -116,9 +139,14 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         return availableTags.filter(tag => fuzzyMatch(filterTerm, tag.name));
     }
 
-    private updateSearchParams(query: string, tags: Tag[]): void {
+    private updateSearchParams(query: string, tags: Tag[], selectedNodeStatusFilter: EMeshNodeStatusStrings[]): void {
         const q = query.trim();
         const t = tags.map(tag => tag.uuid).join(','); // Tags
-        this.router.navigate([], { relativeTo: this.route, queryParams: { q, t } });
+        let n = selectedNodeStatusFilter.join(','); // Node status filter
+        // if all filters are set, no node statuses have to be specified in the parameter
+        if (this.nodeStatuses.every(nodeStatus => selectedNodeStatusFilter.includes(nodeStatus))) {
+            n = '';
+        }
+        this.router.navigate([], { relativeTo: this.route, queryParams: { q, t, n } });
     }
 }

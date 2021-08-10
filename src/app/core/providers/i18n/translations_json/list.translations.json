@@ -69,6 +69,34 @@
       "pt": "Editar",
       "hu": "Szerkesztés"
     },
+    "node_status_all": {
+        "en": "All",
+        "de": "Alle",
+        "zh": "All",
+        "pt": "All",
+        "hu": "All"
+    },
+    "node_status_selected": {
+        "en": "Node statuses",
+        "de": "Node Status",
+        "zh": "Node statuses",
+        "pt": "Node statuses",
+        "hu": "Node statuses"
+    },
+    "node_status_select_switch_to_all": {
+      "en": "All",
+      "de": "Alle",
+      "zh": "All",
+      "pt": "All",
+      "hu": "All"
+    },
+    "node_status_select_switch_to_only": {
+      "en": "Only",
+      "de": "Nur",
+      "zh": "Only",
+      "pt": "Only",
+      "hu": "Only"
+    },
     "no_results": {
       "en": "No results",
       "de": "Keine Ergebnisse",

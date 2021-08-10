@@ -24,5 +24,9 @@
                        (close)="displayTagSelection = false"
                        (selectTag)="onSearchTagSelected($event)"></mesh-tag-selector>
 
+    <mesh-node-status-filter-selector [nodeStatuses]="nodeStatuses"
+                                      [selectedNodeStatusFilter]="searchNodeStatusFilter"
+                                      (selectedNodeStatusFilterChange)="onNodeStatusFilterSelected($event)"></mesh-node-status-filter-selector>
+
     <mesh-container-language-switcher></mesh-container-language-switcher>
 </div>
