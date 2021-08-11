@@ -9,10 +9,12 @@
                 <div *ngFor="let nodeStatus of selectedNodeStatusFilter"
                      class="status"
                      [ngClass]="nodeStatus">
+                    <icon class="status--published">cloud_upload</icon>
+                    <icon class="status--unpublished">cloud_off</icon>
                     <span class="text-uppercase">{{ 'common.' + nodeStatus | i18n }}</span>
                 </div>
             </ng-template>
-            <icon>arrow_drop_down</icon>
+            <icon class="dropdown-icon">arrow_drop_down</icon>
         </div>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
@@ -24,6 +26,8 @@
             {{ 'list.node_status_select_switch_to_only' | i18n }}
             <div class="status"
                  [ngClass]="nodeStatus">
+                <icon class="status--published">cloud_upload</icon>
+                <icon class="status--unpublished">cloud_off</icon>
                 <span class="text-uppercase">{{ 'common.' + nodeStatus | i18n }}</span>
             </div>
         </gtx-dropdown-item>

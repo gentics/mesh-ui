@@ -1,4 +1,5 @@
-<div class="search-row">
+<div class="search-row"
+     [ngClass]="{ 'search-row--active': !!searchQuery || (searchTags && searchTags.length > 0) || (searchNodeStatusFilter.length < nodeStatuses.length) }">
     <!--<gtx-progress-bar></gtx-progress-bar>-->
     <gtx-search-bar [(ngModel)]="inputValue"
                     [placeholder]="'common.search_placeholder' | i18n"
@@ -28,5 +29,7 @@
                                       [selectedNodeStatusFilter]="searchNodeStatusFilter"
                                       (selectedNodeStatusFilterChange)="onNodeStatusFilterSelected($event)"></mesh-node-status-filter-selector>
 
-    <mesh-container-language-switcher></mesh-container-language-switcher>
+    <div class="language-container">
+        <mesh-container-language-switcher></mesh-container-language-switcher>
+    </div>
 </div>

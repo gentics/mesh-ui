@@ -2,6 +2,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { getNodeStatus } from 'src/app/common/util/node-util';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { PublishStatusModelFromServer } from '../../../common/models/server-models';
@@ -86,6 +87,9 @@ export class NodeStatusComponent implements OnChanges, OnDestroy {
     // Format time string for date pipe
     timeFormat: string;
 
+    // enum of node status strings for use in template
+    nodeStatusStringsEnum: typeof EMeshNodeStatusStrings = EMeshNodeStatusStrings;
+
     /** Component lifecycle indicator */
     private destroy$ = new Subject<void>();
 
@@ -136,41 +140,23 @@ export class NodeStatusComponent implements OnChanges, OnDestroy {
     }
 
     setNodeStatus(): void {
-        if (!this.getNodeHasStatus()) {
+        const nodeStatus: EMeshNodeStatusStrings | null = getNodeStatus(this.node, this.current);
+        if (nodeStatus === null) {
             return;
         }
 
         // get node status information
-        const nodeStatus: PublishStatusModelFromServer = this.node.availableLanguages[this.current];
-        let nodeLabel = '';
-        let cssClass = '';
+        const nodeStatusInformation: PublishStatusModelFromServer = this.node.availableLanguages[this.current];
 
         // set properties
-        this.nodeIsPublished = nodeStatus.published;
-        this.nodePublishDate = nodeStatus.publishDate;
+        this.nodeIsPublished = nodeStatusInformation.published;
+        this.nodePublishDate = nodeStatusInformation.publishDate;
         this.nodeEditedDate = this.node.edited;
 
-        if (!this.nodeIsPublished && this.getNodeHasBeenEdited()) {
-            nodeLabel = EMeshNodeStatusStrings.DRAFT;
-            cssClass = EMeshNodeStatusStrings.DRAFT;
-            // PUBLISHED
-        } else if (this.nodeIsPublished && !this.getNodeHasBeenEdited()) {
-            nodeLabel = EMeshNodeStatusStrings.PUBLISHED;
-            cssClass = EMeshNodeStatusStrings.PUBLISHED;
-
-            // UPDATED
-        } else if (this.nodeIsPublished && this.getNodeHasBeenEdited()) {
-            nodeLabel = EMeshNodeStatusStrings.UPDATED;
-            cssClass = EMeshNodeStatusStrings.UPDATED;
-
-            // ARCHIVED
-        } else if (!this.nodeIsPublished && !this.getNodeHasBeenEdited()) {
-            nodeLabel = EMeshNodeStatusStrings.ARCHIVED;
-            cssClass = EMeshNodeStatusStrings.ARCHIVED;
+        if (nodeStatus !== null) {
+            this.nodeLabel = nodeStatus;
+            this.cssClass = nodeStatus;
         }
-
-        this.nodeLabel = nodeLabel;
-        this.cssClass = cssClass;
     }
 
     private getNodeVersionParsed() {

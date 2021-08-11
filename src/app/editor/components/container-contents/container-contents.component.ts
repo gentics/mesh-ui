@@ -11,10 +11,18 @@ import {
     switchMap,
     switchMapTo,
     takeUntil,
+    tap,
     withLatestFrom
 } from 'rxjs/operators';
-import { QUERY_KEY_KEYWORD, QUERY_KEY_PAGE, QUERY_KEY_PERPAGE, QUERY_KEY_TAGS } from 'src/app/common/constants';
+import {
+    QUERY_KEY_KEYWORD,
+    QUERY_KEY_NODE_STATUS_FILTER,
+    QUERY_KEY_PAGE,
+    QUERY_KEY_PERPAGE,
+    QUERY_KEY_TAGS
+} from 'src/app/common/constants';
 import { ConfigService } from 'src/app/core/providers/config/config.service';
+import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
 
 import { SchemaReference } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
@@ -50,12 +58,21 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     /** Current page of pagination */
     currentPage = 1;
 
+    /** Current node status filter. Does not contain a status twice. */
+    currentNodeStatusFilter: EMeshNodeStatusStrings[] = [];
+
+    /** Current content language */
+    currentLanguage: string;
+
     /** Initial config */
     paginationConfig: PaginationInstance = {
         currentPage: this.currentPage,
         itemsPerPage: this.itemsPerPage,
         totalItems: 0
     };
+
+    nodeStatuses: EMeshNodeStatusStrings[] = Object.values(EMeshNodeStatusStrings);
+    nodeStatusStringsEnum: typeof EMeshNodeStatusStrings = EMeshNodeStatusStrings;
 
     private destroy$ = new Subject<void>();
 
@@ -81,11 +98,18 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 takeUntil(this.destroy$)
             )
             .subscribe(({ containerUuid, projectName, language }) => {
+                this.currentLanguage = language;
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
 
         // get search filter from url parameters
-        const searchParams$ = this.route.queryParamMap.pipe(map(this.extractQueryParams));
+        const searchParams$: Observable<{
+            keyword: string;
+            tags: string;
+            nodeStatusFilter: string;
+            page: string;
+            perPage: string;
+        }> = this.route.queryParamMap.pipe(map(this.extractQueryParams));
 
         // request node children
         this.router.events
@@ -94,6 +118,8 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 const { keyword, tags, page, perPage } = this.extractQueryParams(this.route.snapshot.queryParamMap);
                 const { containerUuid, projectName, language } = this.extractPathParams(this.route.snapshot.paramMap);
+                this.currentLanguage = language;
+
                 if (keyword === '' && tags === '') {
                     this.listEffects
                         .loadChildren(projectName, containerUuid, language, +page, +perPage)
@@ -161,8 +187,28 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             )
         );
 
-        this.searching$ = searchParams$.pipe(map(({ keyword, tags }) => keyword !== '' || tags !== ''));
+        this.searching$ = searchParams$.pipe(
+            tap(({ nodeStatusFilter }) => {
+                // filter unknown node statuses and remove duplicates
+                this.currentNodeStatusFilter = [
+                    ...new Set(nodeStatusFilter.split(',').filter(this.isEMeshNodeStatusString))
+                ];
+
+                // if no filters are set, then it is assumed that no nodes should be filtered (e.g. setting all node statuses as filters)
+                if (this.currentNodeStatusFilter.length === 0) {
+                    this.currentNodeStatusFilter = this.nodeStatuses;
+                }
+            }),
+            map(
+                ({ keyword, tags }) =>
+                    keyword !== '' || tags !== '' || this.currentNodeStatusFilter.length < this.nodeStatuses.length
+            )
+        );
     }
+
+    private isEMeshNodeStatusString = (string: string): string is EMeshNodeStatusStrings => {
+        return typeof string === 'string' && this.nodeStatuses.includes(string as EMeshNodeStatusStrings);
+    };
 
     updatePagination(loadChildrenResponse: NodeListResponse) {
         if (!loadChildrenResponse._metainfo) {
@@ -232,17 +278,21 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         }, []);
     }
 
-    private extractQueryParams(queryParamMap: ParamMap) {
+    private extractQueryParams(
+        queryParamMap: ParamMap
+    ): { keyword: string; tags: string; nodeStatusFilter: string; page: string; perPage: string } {
         // get search query
         const keyword = (queryParamMap.get(QUERY_KEY_KEYWORD) || '').trim();
         // get filter for tags
         const tags = (queryParamMap.get(QUERY_KEY_TAGS) || '').trim();
+        // get node statuses
+        const nodeStatusFilter = (queryParamMap.get(QUERY_KEY_NODE_STATUS_FILTER) || '').trim();
         // get current page
-        const page = queryParamMap.get(QUERY_KEY_PAGE) || this.currentPage;
+        const page = queryParamMap.get(QUERY_KEY_PAGE) || `${this.currentPage}`;
         // get max items per page
-        const perPage = queryParamMap.get(QUERY_KEY_PERPAGE) || this.itemsPerPage;
+        const perPage = queryParamMap.get(QUERY_KEY_PERPAGE) || `${this.itemsPerPage}`;
 
-        return { keyword, tags, page, perPage };
+        return { keyword, tags, nodeStatusFilter, page, perPage };
     }
 
     private extractPathParams(paramMap: ParamMap) {

@@ -6,7 +6,7 @@ $mesh-node-status-font-color: #777;
     cursor: pointer;
     display: flex;
 
-    icon {
+    .dropdown-icon {
         color: $gtx-color-primary;
     }
 }
@@ -26,40 +26,63 @@ gtx-dropdown-item {
     white-space: nowrap;
     border: 1px solid gray;
     border-radius: 3px;
-    margin: 5px 0 5px 5px;
+    margin: 0 0 0 5px;
     padding: 0 5px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    cursor: default;
     transition: all 0.09s ease-in-out;
+    background-color: white;
+    line-height: 1.2rem;
+
+    .status--published, .status--unpublished {
+        display: none;
+        margin: 0;
+        line-height: 1.2rem;
+    }
 
     &.draft {
         color: $mesh-node-status-draft;
         border-color: rgba( $mesh-node-status-draft, 0.4 );
+
+        .status--unpublished {
+            display: block;
+        }
     }
 
     &.published {
         color: $mesh-node-status-published;
         border-color: rgba( $mesh-node-status-published, 0.4 );
+
+        .status--published {
+            display: block;
+        }
     }
 
     &.updated {
         color: $mesh-node-status-updated;
         border-color: rgba( $mesh-node-status-updated, 0.4 );
+
+        .status--published {
+            display: block;
+        }
     }
 
     &.archived {
         color: $mesh-node-status-archived;
         border-color: rgba( $mesh-node-status-archived, 0.4 );
+
+        .status--unpublished {
+            display: block;
+        }
     }
 
-    & > * + * {
+    & > * + * + * {
         margin-left: 4px;
     }
 
     icon {
-        font-size: 14px;
+        font-size: 17px;
     }
 
     p {
