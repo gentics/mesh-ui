@@ -24,9 +24,10 @@ gtx-dropdown-item {
     position: relative;
     font-size: 12px;
     white-space: nowrap;
+    color: gray;
     border: 1px solid gray;
     border-radius: 3px;
-    margin: 0 0 0 5px;
+    margin: 0;
     padding: 0 5px;
     display: flex;
     flex-direction: row;
@@ -34,6 +35,10 @@ gtx-dropdown-item {
     transition: all 0.09s ease-in-out;
     background-color: white;
     line-height: 1.2rem;
+
+    & + .status {
+        margin: 0 0 0 5px;
+    }
 
     .status--published, .status--unpublished {
         display: none;
