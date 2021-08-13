@@ -2,7 +2,7 @@
     <gtx-dropdown-trigger>
         <div class="trigger">
             <ng-container *ngIf="selectedNodeStatusFilter | isAllNodeStatuses: nodeStatuses; else nodeStatusIcons">
-                <div class="status">
+                <div class="status all">
                     <span class="text-uppercase">{{ 'list.node_status_all' | i18n }}</span>
                 </div>
             </ng-container>
@@ -20,7 +20,7 @@
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
         <gtx-dropdown-item (click)="itemClick(nodeStatuses)">
-            <div class="status">
+            <div class="status all">
                 <span class="text-uppercase">{{ 'list.node_status_all' | i18n }}</span>
             </div>
         </gtx-dropdown-item>

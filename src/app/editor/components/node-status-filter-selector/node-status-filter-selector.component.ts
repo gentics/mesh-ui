@@ -19,7 +19,7 @@ export class NodeStatusFilterSelectorComponent {
     /** Fired when a set of node status strings is selected */
     @Output() selectedNodeStatusFilterChange = new EventEmitter<EMeshNodeStatusStrings[]>();
 
-    constructor(private state: ApplicationStateService) {}
+    constructor() {}
 
     itemClick(selectedNodeStatusFilter: EMeshNodeStatusStrings[]): void {
         this.selectedNodeStatusFilterChange.emit(selectedNodeStatusFilter);

@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, tick, TestBed } from '@angular/core/testing';
 import { of as observableOf, Observable } from 'rxjs';
 
@@ -33,7 +34,8 @@ describe('EditorEffectsService', () => {
                 { provide: ConfigService, useClass: MockConfigService },
                 { provide: ApiService, useClass: MockApiService },
                 { provide: ApiBase, useClass: MockApiBase }
-            ]
+            ],
+            imports: [HttpClientTestingModule]
         });
 
         editorEffectsService = TestBed.get(EditorEffectsService);

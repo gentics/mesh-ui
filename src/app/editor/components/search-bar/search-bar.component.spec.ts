@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { GenticsUICoreModule, InputField, OverlayHostService } from 'gentics-ui-core';
 import { of as observableOf, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
 
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
@@ -60,6 +61,7 @@ describe('Search-bar component:', () => {
             uuid: 'demo_uuid'
         }
     });
+    const nodeStatuses: EMeshNodeStatusStrings[] = Object.values(EMeshNodeStatusStrings);
 
     const activeRoute = {
         paramMap: observableOf(
@@ -77,7 +79,8 @@ describe('Search-bar component:', () => {
                 projectName: 'demo_project',
                 language: 'en',
                 q: 'auto',
-                t: 'tagUuid,tagUuid2'
+                t: 'tagUuid,tagUuid2',
+                n: `${nodeStatuses.join(',')},randomStateHopefullyNeverInEMeshNodeStatusStrings,${nodeStatuses[0]}`
             })
         )
     };
@@ -175,6 +178,24 @@ describe('Search-bar component:', () => {
                     fixture.detectChanges();
                     const tagChips: DebugElement[] = fixture.debugElement.queryAll(By.css('mesh-tag'));
                     expect(tagChips.length).toEqual(2); // that's how much we set in the activatedQuery mock config
+                }
+            )
+        );
+
+        it(
+            'selected node status filter correctly and omits duplicates and invalid values',
+            componentTest(
+                () => TestComponent,
+                fixture => {
+                    fixture.detectChanges();
+                    const searchBar: SearchBarComponent = fixture.debugElement.query(By.directive(SearchBarComponent))
+                        .componentInstance;
+                    activeRoute.queryParamMap.pipe(take(1)).subscribe(() => {
+                        expect(searchBar.searchNodeStatusFilter.length).toEqual(nodeStatuses.length);
+                        nodeStatuses.forEach(nodeStatus => {
+                            expect(searchBar.searchNodeStatusFilter.includes(nodeStatus)).toBeTruthy();
+                        });
+                    });
                 }
             )
         );
