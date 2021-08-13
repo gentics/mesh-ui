@@ -1,4 +1,14 @@
-import { concatUnique, filenameExtension, queryString, simpleDeepEquals, simpleMergeDeep } from './util';
+import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
+
+import {
+    concatUnique,
+    filenameExtension,
+    isEMeshNodeStatusString,
+    parseNodeStatusFilterString,
+    queryString,
+    simpleDeepEquals,
+    simpleMergeDeep
+} from './util';
 
 describe('Utility', () => {
     describe('Filename extension', () => {
@@ -32,20 +42,18 @@ describe('Utility', () => {
         it('returns an empty string if all entries are undefined or null', () => {
             const query = {
                 a: undefined,
-                b: null,
+                b: null
             };
             expect(queryString(query)).toBe('');
         });
 
         it('returns an empty string on empty object', () => {
-            const query = {
-            };
+            const query = {};
             expect(queryString(query)).toBe('');
         });
     });
 
     describe('simpleDeepEquals()', () => {
-
         it('works with primitive values', () => {
             expect(simpleDeepEquals(1, 1)).toBe(true, '1, 1');
             expect(simpleDeepEquals(1, 2)).toBe(false, '1, 2');
@@ -56,9 +64,9 @@ describe('Utility', () => {
         });
 
         it('works with 1 level deep objects', () => {
-            expect(simpleDeepEquals({ foo: 1}, { foo: 1})).toBe(true);
-            expect(simpleDeepEquals({ foo: 1, bar: 2}, { foo: 1, bar: 2})).toBe(true);
-            expect(simpleDeepEquals({ foo: 1, bar: 2}, { foo: 1, bar: 3} as any)).toBe(false);
+            expect(simpleDeepEquals({ foo: 1 }, { foo: 1 })).toBe(true);
+            expect(simpleDeepEquals({ foo: 1, bar: 2 }, { foo: 1, bar: 2 })).toBe(true);
+            expect(simpleDeepEquals({ foo: 1, bar: 2 }, { foo: 1, bar: 3 } as any)).toBe(false);
         });
 
         it('works with arrays of primitives', () => {
@@ -73,15 +81,17 @@ describe('Utility', () => {
 
         it('works with arrays of objects', () => {
             expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2] } }, true])).toBe(true);
-            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2] } }, false] as any)).toBe(false);
-            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 5] } }, true] as any)).toBe(false);
+            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2] } }, false] as any)).toBe(
+                false
+            );
+            expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 5] } }, true] as any)).toBe(
+                false
+            );
             expect(simpleDeepEquals([{ foo: { bar: [1, 2] } }, true], [{ foo: { bar: [1, 2, 3] } }, true])).toBe(false);
         });
-
     });
 
     describe('simpleMergeDeep()', () => {
-
         it('merges two simple objects', () => {
             const o1 = { foo: 1 };
             const o2 = { bar: 2 };
@@ -139,11 +149,9 @@ describe('Utility', () => {
                 expect(result.user.friends).not.toBe(o2.user.friends);
             });
         });
-
     });
 
     describe('concatUnique()', () => {
-
         it('works with two arrays', () => {
             expect(concatUnique([1, 2, 4, 6], [2, 4, 0, 7])).toEqual([1, 2, 4, 6, 0, 7]);
         });
@@ -159,6 +167,51 @@ describe('Utility', () => {
         it('works with empty and non-empty arrays', () => {
             expect(concatUnique([4, 34], [], [], [5], [14, 4])).toEqual([4, 34, 5, 14]);
         });
+    });
 
+    describe('parseNodeStatusFilterString()', () => {
+        it('removes strings that are not in EMeshNodeStatusStrings', () => {
+            expect(
+                parseNodeStatusFilterString(
+                    `randomStateHopefullyNeverInEMeshNodeStatusStrings,${
+                        EMeshNodeStatusStrings.DRAFT
+                    },randomStateHopefullyNeverInEMeshNodeStatusStrings2`
+                )
+            ).toEqual([EMeshNodeStatusStrings.DRAFT]);
+        });
+
+        for (let i = 0; i < Object.values(EMeshNodeStatusStrings).length - 1; i++) {
+            const nodeStatuses = Object.values(EMeshNodeStatusStrings);
+            it(`keeps strings that are in EMeshNodeStatusStrings (e.g. ${nodeStatuses[i]} and ${
+                nodeStatuses[i + 1]
+            })`, () => {
+                expect(parseNodeStatusFilterString(`${nodeStatuses[i]},${nodeStatuses[i + 1]}`)).toEqual([
+                    nodeStatuses[i],
+                    nodeStatuses[i + 1]
+                ]);
+            });
+        }
+
+        it('removes duplicates', () => {
+            expect(
+                parseNodeStatusFilterString(`${EMeshNodeStatusStrings.DRAFT},${EMeshNodeStatusStrings.DRAFT}`)
+            ).toEqual([EMeshNodeStatusStrings.DRAFT]);
+        });
+
+        it('maps a node status string that does not contain any valid statuses to an array containing all statuses', () => {
+            expect(parseNodeStatusFilterString('randomStateHopefullyNeverInEMeshNodeStatusStrings')).toEqual(
+                Object.values(EMeshNodeStatusStrings)
+            );
+        });
+    });
+
+    describe('isEMeshNodeStatusString()', () => {
+        it('returns "true" if string is MeshNodeStatusString', () => {
+            expect(isEMeshNodeStatusString(EMeshNodeStatusStrings.DRAFT)).toEqual(true);
+        });
+
+        it('returns "true" if string is MeshNodeStatusString', () => {
+            expect(isEMeshNodeStatusString('randomStateHopefullyNeverInEMeshNodeStatusStrings')).toEqual(false);
+        });
     });
 });

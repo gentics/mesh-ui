@@ -6,7 +6,7 @@ import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/no
 
 import { Tag } from '../../../common/models/tag.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
-import { notNullOrUndefined } from '../../../common/util/util';
+import { notNullOrUndefined, parseNodeStatusFilterString } from '../../../common/util/util';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
@@ -110,15 +110,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
             .split(',')
             .map(uuid => this.entities.getTag(uuid))
             .filter(notNullOrUndefined);
-        // filter unknown node statuses and remove duplicates
-        this.searchNodeStatusFilter = [
-            ...new Set((params.get('n') || '').split(',').filter(this.isEMeshNodeStatusString))
-        ];
-
-        // if no filters are set, then it is assumed that no nodes should be filtered (e.g. setting all node statuses as filters)
-        if (this.searchNodeStatusFilter.length === 0) {
-            this.searchNodeStatusFilter = Object.values(EMeshNodeStatusStrings);
-        }
+        this.searchNodeStatusFilter = parseNodeStatusFilterString(params.get('n') || '');
 
         // Required if the browser 'back' or 'forward' button was clicked
         this.changeDetectorRef.markForCheck();

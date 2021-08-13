@@ -1,4 +1,5 @@
 import { FormControl } from '@angular/forms';
+import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
 
 import {
     BinaryField,
@@ -452,4 +453,29 @@ export function last<T>(arr: T[]): T | undefined {
  */
 export function capitalize(str: string): string {
     return str[0].toUpperCase() + str.substring(1);
+}
+
+/**
+ * Parses a node status filter parameter string and returns a pruned array.
+ */
+export function parseNodeStatusFilterString(nodeStatusFilterString: string): EMeshNodeStatusStrings[] {
+    // filter unknown node statuses and remove duplicates
+    let nodeStatusFilter: EMeshNodeStatusStrings[] = [
+        ...new Set(nodeStatusFilterString.split(',').filter(isEMeshNodeStatusString))
+    ];
+
+    // if no filters are set, then it is assumed that no nodes should be filtered (e.g. setting all node statuses as filters)
+    if (nodeStatusFilter.length === 0) {
+        nodeStatusFilter = Object.values(EMeshNodeStatusStrings);
+    }
+    return nodeStatusFilter;
+}
+
+/**
+ * Type predicate that checks whether a given string is of type EMeshNodeStatusStrings
+ */
+export function isEMeshNodeStatusString(string: string): string is EMeshNodeStatusStrings {
+    return (
+        typeof string === 'string' && Object.values(EMeshNodeStatusStrings).includes(string as EMeshNodeStatusStrings)
+    );
 }

@@ -44,3 +44,11 @@ export interface ConflictedField {
 export interface HasUuid {
     uuid: string;
 }
+
+export interface SearchQueryParameter {
+    keyword: string;
+    tags: string;
+    nodeStatusFilter: string;
+    page: string;
+    perPage: string;
+}

@@ -72,23 +72,27 @@ describe('NodeStatusFilterSelectorComponent:', () => {
     });
 
     describe('Shows a node status badge for', () => {
-        it(
-            'every status provided, if not all are selected',
-            componentTest(
-                () => TestComponent,
-                fixture => {
-                    fixture.componentInstance.nodeStatuses = nodeStatuses;
-                    fixture.componentInstance.searchNodeStatusFilter = [nodeStatuses[0], nodeStatuses[1]];
-                    fixture.detectChanges();
-                    [nodeStatuses[0], nodeStatuses[1]].forEach(nodeStatus => {
-                        const selectedState: DebugElement[] = fixture.debugElement.queryAll(
-                            By.css(`gtx-dropdown-trigger > div.trigger > div.status.${nodeStatus}`)
-                        );
-                        expect(selectedState.length).toEqual(1);
-                    });
-                }
-            )
-        );
+        for (let i = 0; i < nodeStatuses.length - 1; i++) {
+            it(
+                `${nodeStatuses[i]} and ${nodeStatuses[i + 1]} node statuses, if only ${nodeStatuses[i]} and ${
+                    nodeStatuses[i + 1]
+                } are selected`,
+                componentTest(
+                    () => TestComponent,
+                    fixture => {
+                        fixture.componentInstance.nodeStatuses = nodeStatuses;
+                        fixture.componentInstance.searchNodeStatusFilter = [nodeStatuses[i], nodeStatuses[i + 1]];
+                        fixture.detectChanges();
+                        [nodeStatuses[i], nodeStatuses[i + 1]].forEach(nodeStatus => {
+                            const selectedState: DebugElement[] = fixture.debugElement.queryAll(
+                                By.css(`gtx-dropdown-trigger > div.trigger > div.status.${nodeStatus}`)
+                            );
+                            expect(selectedState.length).toEqual(1);
+                        });
+                    }
+                )
+            );
+        }
 
         it(
             'all (and nothing else), if all are selected',
@@ -112,39 +116,41 @@ describe('NodeStatusFilterSelectorComponent:', () => {
     });
 
     describe('Emits a new filter for', () => {
-        it(
-            'a specific node state if clicked on a specific state',
-            componentTest(
-                () => TestComponent,
-                fixture => {
-                    let selectedFilter: EMeshNodeStatusStrings[] = [];
-                    fixture.componentInstance.nodeStatuses = nodeStatuses;
-                    fixture.componentInstance.onNodeStatusFilterSelected = (value: EMeshNodeStatusStrings[]) => {
-                        selectedFilter = value;
-                    };
-                    fixture.detectChanges();
-                    const nodeStatusFilterSelectorComponent: DebugElement = fixture.debugElement.query(
-                        By.directive(NodeStatusFilterSelectorComponent)
-                    );
-                    const dropdownTrigger: HTMLElement = nodeStatusFilterSelectorComponent.query(
-                        By.directive(DropdownTriggerDirective)
-                    ).nativeElement;
-                    dropdownTrigger.click();
-                    fixture.detectChanges();
-                    tick();
-                    const dropdownItem: HTMLElement = fixture.debugElement.query(
-                        By.css(`gtx-dropdown-content gtx-dropdown-item > div.status.${nodeStatuses[0]}`)
-                    ).nativeElement;
-                    dropdownItem.click();
-                    fixture.detectChanges();
-                    tick();
-                    expect(selectedFilter.length).toEqual(1);
-                    if (selectedFilter.length > 0) {
-                        expect(selectedFilter[0]).toEqual(nodeStatuses[0]);
+        for (const nodeStatus of nodeStatuses) {
+            it(
+                `the "${nodeStatus}" node state if clicked on "${nodeStatus}"`,
+                componentTest(
+                    () => TestComponent,
+                    fixture => {
+                        let selectedFilter: EMeshNodeStatusStrings[] = [];
+                        fixture.componentInstance.nodeStatuses = nodeStatuses;
+                        fixture.componentInstance.onNodeStatusFilterSelected = (value: EMeshNodeStatusStrings[]) => {
+                            selectedFilter = value;
+                        };
+                        fixture.detectChanges();
+                        const nodeStatusFilterSelectorComponent: DebugElement = fixture.debugElement.query(
+                            By.directive(NodeStatusFilterSelectorComponent)
+                        );
+                        const dropdownTrigger: HTMLElement = nodeStatusFilterSelectorComponent.query(
+                            By.directive(DropdownTriggerDirective)
+                        ).nativeElement;
+                        dropdownTrigger.click();
+                        fixture.detectChanges();
+                        tick();
+                        const dropdownItem: HTMLElement = fixture.debugElement.query(
+                            By.css(`gtx-dropdown-content gtx-dropdown-item > div.status.${nodeStatus}`)
+                        ).nativeElement;
+                        dropdownItem.click();
+                        fixture.detectChanges();
+                        tick();
+                        expect(selectedFilter.length).toEqual(1);
+                        if (selectedFilter.length > 0) {
+                            expect(selectedFilter[0]).toEqual(nodeStatus);
+                        }
                     }
-                }
-            )
-        );
+                )
+            );
+        }
 
         it(
             'all node states if clicked on "all"',

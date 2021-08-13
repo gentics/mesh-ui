@@ -24,11 +24,11 @@ import {
 import { ConfigService } from 'src/app/core/providers/config/config.service';
 import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
 
-import { SchemaReference } from '../../../common/models/common.model';
+import { SchemaReference, SearchQueryParameter } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
 import { NodeListResponse } from '../../../common/models/server-models';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
-import { notNullOrUndefined } from '../../../common/util/util';
+import { notNullOrUndefined, parseNodeStatusFilterString } from '../../../common/util/util';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { setQueryParams } from '../../../shared/common/set-query-param';
@@ -103,13 +103,9 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             });
 
         // get search filter from url parameters
-        const searchParams$: Observable<{
-            keyword: string;
-            tags: string;
-            nodeStatusFilter: string;
-            page: string;
-            perPage: string;
-        }> = this.route.queryParamMap.pipe(map(this.extractQueryParams));
+        const searchParams$: Observable<SearchQueryParameter> = this.route.queryParamMap.pipe(
+            map(this.extractQueryParams)
+        );
 
         // request node children
         this.router.events
@@ -189,15 +185,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
 
         this.searching$ = searchParams$.pipe(
             tap(({ nodeStatusFilter }) => {
-                // filter unknown node statuses and remove duplicates
-                this.currentNodeStatusFilter = [
-                    ...new Set(nodeStatusFilter.split(',').filter(this.isEMeshNodeStatusString))
-                ];
-
-                // if no filters are set, then it is assumed that no nodes should be filtered (e.g. setting all node statuses as filters)
-                if (this.currentNodeStatusFilter.length === 0) {
-                    this.currentNodeStatusFilter = this.nodeStatuses;
-                }
+                this.currentNodeStatusFilter = parseNodeStatusFilterString(nodeStatusFilter);
             }),
             map(
                 ({ keyword, tags }) =>
@@ -205,10 +193,6 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             )
         );
     }
-
-    private isEMeshNodeStatusString = (string: string): string is EMeshNodeStatusStrings => {
-        return typeof string === 'string' && this.nodeStatuses.includes(string as EMeshNodeStatusStrings);
-    };
 
     updatePagination(loadChildrenResponse: NodeListResponse) {
         if (!loadChildrenResponse._metainfo) {
@@ -278,9 +262,7 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
         }, []);
     }
 
-    private extractQueryParams(
-        queryParamMap: ParamMap
-    ): { keyword: string; tags: string; nodeStatusFilter: string; page: string; perPage: string } {
+    private extractQueryParams(queryParamMap: ParamMap): SearchQueryParameter {
         // get search query
         const keyword = (queryParamMap.get(QUERY_KEY_KEYWORD) || '').trim();
         // get filter for tags
