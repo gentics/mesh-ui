@@ -1,5 +1,4 @@
-import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
-
+import { EMeshNodeStatusStrings } from '../../shared/components/node-status/node-status.component';
 import { MeshNode } from '../models/node.model';
 import { PublishStatusModelFromServer } from '../models/server-models';
 

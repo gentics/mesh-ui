@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
-import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
 
+import { EMeshNodeStatusStrings } from '../../shared/components/node-status/node-status.component';
 import {
     BinaryField,
     FieldMap,

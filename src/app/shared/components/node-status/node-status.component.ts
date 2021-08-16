@@ -2,10 +2,10 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { getNodeStatus } from 'src/app/common/util/node-util';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { PublishStatusModelFromServer } from '../../../common/models/server-models';
+import { getNodeStatus } from '../../../common/util/node-util';
 import { UILanguage } from '../../../core/providers/i18n/i18n.service';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 
