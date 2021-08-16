@@ -31,6 +31,7 @@ import { DisplayFieldPipe } from './pipes/display-field/display-field.pipe';
 import { FileSizePipe } from './pipes/file-size/file-size.pipe';
 import { HighlightPipe } from './pipes/highlight/highlight.pipe';
 import { I18nPipe } from './pipes/i18n/i18n.pipe';
+import { NodeStatusPipe } from './pipes/node-status/node-status.pipe';
 
 const COMPONENTS = [NodeBrowserListComponent];
 
@@ -61,7 +62,7 @@ const SHARED_DIRECTIVES = [
     ProjectContentDirective
 ];
 
-const SHARED_PIPES = [DisplayFieldPipe, FileSizePipe, I18nPipe, HighlightPipe];
+const SHARED_PIPES = [DisplayFieldPipe, FileSizePipe, I18nPipe, HighlightPipe, NodeStatusPipe];
 
 /**
  * Exposes shared components, services and modules. To be imported into the other app modules which require any of

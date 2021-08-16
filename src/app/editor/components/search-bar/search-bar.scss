@@ -7,6 +7,40 @@
 
 .search-row {
     display: flex;
+    transition:
+        background-color 0.1s ease-in-out,
+        padding 0.1s ease-in-out;
+
+    ::ng-deep mesh-node-status-filter-selector {
+        display: flex;
+
+        ::ng-deep gtx-dropdown-list {
+            display: flex;
+
+            & div {
+                display: flex;
+            }
+
+            ::ng-deep gtx-dropdown-trigger {
+                display: flex;
+
+                & .trigger {
+                    display: flex;
+                    align-items: center;
+
+                    icon {
+                        line-height: 1.8;
+                    }
+                }
+            }
+        }
+    }
+
+    .language-container {
+        margin-left: 1rem;
+        padding-left: 1rem;
+        border-left: 1px solid $gtx-color-light-gray;
+    }
 
     ::ng-deep mesh-container-language-switcher {
         display: flex;
@@ -20,9 +54,10 @@
 
             ::ng-deep gtx-dropdown-trigger {
                 display: flex;
-    
+
                 & .trigger {
                     display: flex;
+                    align-items: center;
 
                     icon {
                         line-height: 1.8;
@@ -30,6 +65,11 @@
                 }
             }
         }
+    }
+
+    &.search-row--active {
+        background-color: lighten($gtx-color-warning, 42%);
+        padding: 0.5rem 0;
     }
 }
 

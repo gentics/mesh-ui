@@ -1,5 +1,3 @@
-import { of as observableOf, Observable } from 'rxjs';
-
 import { Component, DebugElement } from '@angular/core';
 import { tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +5,9 @@ import { By } from '@angular/platform-browser';
 import { convertToParamMap, ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GenticsUICoreModule, InputField, OverlayHostService } from 'gentics-ui-core';
+import { of as observableOf, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
 
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
@@ -36,6 +36,10 @@ import { EditorEffectsService } from '../../providers/editor-effects.service';
 import { MockEditorEffectsService } from '../../providers/editor-effects.service.mock';
 import { ContainerLanguageSwitcherComponent } from '../container-language-switcher/container-language-switcher.component';
 import { NodeLanguageLabelComponent } from '../language-label/language-label.component';
+import {
+    IsAllNodeStatusesPipe,
+    NodeStatusFilterSelectorComponent
+} from '../node-status-filter-selector/node-status-filter-selector.component';
 
 import { SearchBarComponent } from './search-bar.component';
 
@@ -57,6 +61,7 @@ describe('Search-bar component:', () => {
             uuid: 'demo_uuid'
         }
     });
+    const nodeStatuses: EMeshNodeStatusStrings[] = Object.values(EMeshNodeStatusStrings);
 
     const activeRoute = {
         paramMap: observableOf(
@@ -74,7 +79,8 @@ describe('Search-bar component:', () => {
                 projectName: 'demo_project',
                 language: 'en',
                 q: 'auto',
-                t: 'tagUuid,tagUuid2'
+                t: 'tagUuid,tagUuid2',
+                n: `${nodeStatuses.join(',')},randomStateHopefullyNeverInEMeshNodeStatusStrings,${nodeStatuses[0]}`
             })
         )
     };
@@ -85,7 +91,9 @@ describe('Search-bar component:', () => {
                 TestComponent,
                 SearchBarComponent,
                 ContainerLanguageSwitcherComponent,
+                IsAllNodeStatusesPipe,
                 NodeLanguageLabelComponent,
+                NodeStatusFilterSelectorComponent,
                 BackgroundFromDirective,
                 HighlightPipe,
                 ChipComponent,
@@ -173,6 +181,24 @@ describe('Search-bar component:', () => {
                 }
             )
         );
+
+        it(
+            'selected node status filter correctly and omits duplicates and invalid values',
+            componentTest(
+                () => TestComponent,
+                fixture => {
+                    fixture.detectChanges();
+                    const searchBar: SearchBarComponent = fixture.debugElement.query(By.directive(SearchBarComponent))
+                        .componentInstance;
+                    activeRoute.queryParamMap.pipe(take(1)).subscribe(() => {
+                        expect(searchBar.searchNodeStatusFilter.length).toEqual(nodeStatuses.length);
+                        nodeStatuses.forEach(nodeStatus => {
+                            expect(searchBar.searchNodeStatusFilter.includes(nodeStatus)).toBeTruthy();
+                        });
+                    });
+                }
+            )
+        );
     });
 
     describe('Start typing', () => {
@@ -217,7 +243,7 @@ describe('Search-bar component:', () => {
                     tick();
                     expect(MockRouter.navigate).toHaveBeenCalledWith([], {
                         relativeTo: activeRoute,
-                        queryParams: { q: 'some search', t: 'tagUuid,tagUuid2' }
+                        queryParams: { q: 'some search', t: 'tagUuid,tagUuid2', n: '' }
                     });
                 }
             )

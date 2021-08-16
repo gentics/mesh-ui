@@ -22,8 +22,12 @@
             <gtx-contents-list-item class="group-header">
                 {{schema.name}}
             </gtx-contents-list-item>
-            <mesh-node-row *ngFor="let child of (childrenBySchema$ | async)[schema.uuid] | paginate: paginationConfig"
-                           [node]="child"></mesh-node-row>
+            <ng-container *ngFor="let child of (childrenBySchema$ | async)[schema.uuid] | paginate: paginationConfig">
+                <!-- show only if status matches filter OR if filter contains all statuses show all nodes (fallback for nodes without status e.g. for unlocalized nodes) -->
+                <mesh-node-row *ngIf="currentNodeStatusFilter.includes(child | nodeStatus: currentLanguage)
+                                        || currentNodeStatusFilter.length >= nodeStatuses.length"
+                               [node]="child"></mesh-node-row>
+            </ng-container>
         </ng-template>
     </ng-template>
 

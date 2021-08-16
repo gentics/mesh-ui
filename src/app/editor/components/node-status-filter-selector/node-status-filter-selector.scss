@@ -1,0 +1,100 @@
+@import 'variables';
+
+$mesh-node-status-font-color: #777;
+
+.trigger {
+    cursor: pointer;
+    display: flex;
+
+    .dropdown-icon {
+        color: $gtx-color-primary;
+    }
+}
+
+gtx-dropdown-item {
+    display: inline-flex;
+    background-color: $gtx-color-white;
+    overflow: hidden;
+    height: 20px;
+    margin: 4px 0;
+    align-items: center;
+}
+
+.status {
+    position: relative;
+    font-size: 12px;
+    white-space: nowrap;
+    color: gray;
+    border: 1px solid gray;
+    border-radius: 3px;
+    margin: 0;
+    padding: 0 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    transition: all 0.09s ease-in-out;
+    background-color: white;
+    line-height: 1.2rem;
+
+    & + .status {
+        margin: 0 0 0 5px;
+    }
+
+    .status--published, .status--unpublished {
+        display: none;
+        margin: 0;
+        line-height: 1.2rem;
+    }
+
+    &.draft {
+        color: $mesh-node-status-draft;
+        border-color: rgba( $mesh-node-status-draft, 0.4 );
+
+        .status--unpublished {
+            display: block;
+        }
+    }
+
+    &.published {
+        color: $mesh-node-status-published;
+        border-color: rgba( $mesh-node-status-published, 0.4 );
+
+        .status--published {
+            display: block;
+        }
+    }
+
+    &.updated {
+        color: $mesh-node-status-updated;
+        border-color: rgba( $mesh-node-status-updated, 0.4 );
+
+        .status--published {
+            display: block;
+        }
+    }
+
+    &.archived {
+        color: $mesh-node-status-archived;
+        border-color: rgba( $mesh-node-status-archived, 0.4 );
+
+        .status--unpublished {
+            display: block;
+        }
+    }
+
+    & > icon + span {
+        margin-left: 4px;
+    }
+
+    icon {
+        font-size: 17px;
+    }
+
+    p {
+        margin: 0;
+    }
+}
+
+*.text-uppercase {
+    text-transform: uppercase;
+}

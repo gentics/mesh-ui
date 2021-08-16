@@ -69,6 +69,13 @@
       "pt": "Editar",
       "hu": "Szerkesztés"
     },
+    "node_status_all": {
+        "en": "All",
+        "de": "Alle",
+        "zh": "全部",
+        "pt": "Todos",
+        "hu": "Összes"
+    },
     "no_results": {
       "en": "No results",
       "de": "Keine Ergebnisse",
