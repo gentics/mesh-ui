@@ -72,9 +72,9 @@
     "node_status_all": {
         "en": "All",
         "de": "Alle",
-        "zh": "All",
-        "pt": "All",
-        "hu": "All"
+        "zh": "全部",
+        "pt": "Todos",
+        "hu": "Összes"
     },
     "no_results": {
       "en": "No results",
