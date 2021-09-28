@@ -2,7 +2,7 @@
                    [disabled]="!availableLanguages || availableLanguages.length === 0">
     <gtx-dropdown-trigger>
         <div class="trigger"
-             [style.cursor]="availableLanguages && availableLanguages.length > 0 ? 'pointer' : 'defaul'">
+             [style.cursor]="availableLanguages && availableLanguages.length > 0 ? 'pointer' : 'default'">
             <mesh-language-label [language]="currentLanguage$ | async"></mesh-language-label>
             <icon [style.visibility]="availableLanguages && availableLanguages.length > 0 ? 'visible' : 'hidden'">arrow_drop_down</icon>
         </div>
