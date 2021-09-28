@@ -1,11 +1,15 @@
-<gtx-dropdown-list>
+<gtx-dropdown-list *ngIf="availableLanguages$ | async as availableLanguages"
+                   [disabled]="!availableLanguages || availableLanguages.length === 0">
     <gtx-dropdown-trigger>
-        <div class="trigger">
-            <mesh-language-label [language]="currentLanguage$ | async"></mesh-language-label> <icon>arrow_drop_down</icon>
+        <div class="trigger"
+             [style.cursor]="availableLanguages && availableLanguages.length > 0 ? 'pointer' : 'default'">
+            <mesh-language-label [language]="currentLanguage$ | async"></mesh-language-label>
+            <icon [style.visibility]="availableLanguages && availableLanguages.length > 0 ? 'visible' : 'hidden'">arrow_drop_down</icon>
         </div>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
-        <gtx-dropdown-item *ngFor="let language of availableLanguages$ | async" (click)="itemClick(language)">
+        <gtx-dropdown-item *ngFor="let language of availableLanguages"
+                           (click)="itemClick(language)">
             {{ 'list.language_select_switch_to' | i18n:{ language: ('lang.' + language | i18n) } }}
         </gtx-dropdown-item>
     </gtx-dropdown-content>
