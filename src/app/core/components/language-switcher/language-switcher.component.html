@@ -8,19 +8,24 @@
         </gtx-button>
     </gtx-dropdown-trigger>
     <gtx-dropdown-content>
-        <gtx-dropdown-item (click)="changeLanguage('de')">
+        <gtx-dropdown-item *ngIf="availableLanguages.includes('de')"
+                           (click)="changeLanguage('de')">
             Deutsch
         </gtx-dropdown-item>
-        <gtx-dropdown-item (click)="changeLanguage('en')">
+        <gtx-dropdown-item *ngIf="availableLanguages.includes('en')"
+                           (click)="changeLanguage('en')">
             English
         </gtx-dropdown-item>
-        <gtx-dropdown-item (click)="changeLanguage('zh')">
+        <gtx-dropdown-item *ngIf="availableLanguages.includes('zh')"
+                           (click)="changeLanguage('zh')">
             Chinese
         </gtx-dropdown-item>
-        <gtx-dropdown-item (click)="changeLanguage('pt')">
+        <gtx-dropdown-item *ngIf="availableLanguages.includes('pt')"
+                           (click)="changeLanguage('pt')">
             Português
         </gtx-dropdown-item>
-        <gtx-dropdown-item (click)="changeLanguage('hu')">
+        <gtx-dropdown-item *ngIf="availableLanguages.includes('hu')"
+                           (click)="changeLanguage('hu')">
             Magyar
         </gtx-dropdown-item>
     </gtx-dropdown-content>
