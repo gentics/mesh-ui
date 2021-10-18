@@ -29,7 +29,15 @@ export class ConfigService {
 
     /** Default Language */
     get DEFAULT_LANGUAGE(): string {
-        return this.getConfigValueFromProperty('defaultLanguage') as string;
+        const uiLanguages: string[] = [...(this.getConfigValueFromProperty('uiLanguages', []) as string[]), 'en'];
+        const defaultLanguage: string = this.getConfigValueFromProperty('defaultLanguage', uiLanguages[0]) as string;
+        if (defaultLanguage) {
+            return defaultLanguage;
+        }
+        if (uiLanguages && uiLanguages.length > 0) {
+            return uiLanguages[0];
+        }
+        return 'en';
     }
 
     /** UI localizations */
