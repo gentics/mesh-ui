@@ -11,7 +11,8 @@ import '../styles/main.scss';
 import { AppComponent } from './app.component';
 import { ROUTER_CONFIG } from './app.routes';
 import { CoreModule } from './core/core.module';
-import { I18nService } from './core/providers/i18n/i18n.service';
+import { ConfigService } from './core/providers/config/config.service';
+import { I18nService, UILanguage } from './core/providers/i18n/i18n.service';
 import { SearchEffectsService } from './core/providers/search/search-effects.service';
 import { httpInterceptorProviders } from './http-interceptors';
 import { AuthEffectsService } from './login/providers/auth-effects.service';
@@ -49,10 +50,13 @@ export class AppModule {
         public appRef: ApplicationRef,
         public i18nService: I18nService,
         public appState: ApplicationStateService,
+        config: ConfigService,
         authEffects: AuthEffectsService,
         searchEffects: SearchEffectsService
     ) {
-        i18nService.setLanguage('en');
+        const defaultLanguage = config.DEFAULT_LANGUAGE as UILanguage;
+        appState.actions.ui.setLanguage(defaultLanguage);
+        i18nService.setLanguage(defaultLanguage);
         authEffects.validateSession();
         searchEffects.checkSearchAvailability();
         // router.events.subscribe(event => console.log(event));

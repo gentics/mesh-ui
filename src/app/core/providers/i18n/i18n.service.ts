@@ -8,7 +8,7 @@ export type UILanguage = 'en' | 'de' | 'zh' | 'pt' | 'hu';
 @Injectable()
 export class I18nService {
     constructor(private ngxTranslate: TranslateService, private config: ConfigService) {
-        ngxTranslate.setDefaultLang(config.FALLBACK_LANGUAGE);
+        ngxTranslate.setDefaultLang(config.DEFAULT_LANGUAGE);
     }
 
     /**

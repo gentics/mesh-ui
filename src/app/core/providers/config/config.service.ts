@@ -27,6 +27,19 @@ export class ConfigService {
         return config;
     }
 
+    /** Default Language */
+    get DEFAULT_LANGUAGE(): string {
+        const uiLanguages: string[] = [...(this.getConfigValueFromProperty('uiLanguages', []) as string[]), 'en'];
+        const defaultLanguage: string = this.getConfigValueFromProperty('defaultLanguage', uiLanguages[0]) as string;
+        if (defaultLanguage) {
+            return defaultLanguage;
+        }
+        if (uiLanguages && uiLanguages.length > 0) {
+            return uiLanguages[0];
+        }
+        return 'en';
+    }
+
     /** UI localizations */
     get UI_LANGUAGES(): string[] {
         return this.getConfigValueFromProperty('uiLanguages') as string[];
@@ -67,7 +80,10 @@ export class ConfigService {
      * @param property key of config object
      * @param fallbackValue key of config object
      */
-    getConfigValueFromProperty<K extends keyof MeshUiAppConfig>(property: K, fallbackValue?: MeshUiAppConfig[K]): MeshUiAppConfig[K] {
+    getConfigValueFromProperty<K extends keyof MeshUiAppConfig>(
+        property: K,
+        fallbackValue?: MeshUiAppConfig[K]
+    ): MeshUiAppConfig[K] {
         const retVal = this.appConfig[property];
         if (retVal) {
             return retVal;
