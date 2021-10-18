@@ -12,13 +12,13 @@ import { I18nService, UILanguage } from '../../providers/i18n/i18n.service';
 })
 export class LanguageSwitcherComponent {
     availableLanguages: string[];
-    currentLanguage$: Observable<UILanguage>;
+    currentLanguage$: Observable<string>;
 
     constructor(config: ConfigService, private appState: ApplicationStateService, private i18n: I18nService) {
         this.availableLanguages = config.UI_LANGUAGES;
         this.currentLanguage$ = appState
             .select(state => state.ui.currentLanguage)
-            .pipe(map(languageCode => `lang.${languageCode}` as UILanguage));
+            .pipe(map(languageCode => `lang.${languageCode}`));
     }
 
     changeLanguage(language: UILanguage): void {
