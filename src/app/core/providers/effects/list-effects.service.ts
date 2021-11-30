@@ -133,6 +133,8 @@ export class ListEffectsService {
     /**
      * Load the published information of children of the opened folder.
      * This request will not alter the state.
+     * Also not that only the uuid, language, availableLanguages, version and project properties
+     * will be set in each node.
      */
     loadPublishInformationForAllChildren(
         projectName: string,

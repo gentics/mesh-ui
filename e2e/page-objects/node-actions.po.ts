@@ -14,7 +14,7 @@ export function publish() {
     return clickOption('publish_button');
 }
 
-export function publishAll() {
+export function publishAllLang() {
     return clickOption('publish_all_lang');
 }
 
@@ -22,7 +22,7 @@ export function unpublish() {
     return clickOption('unpublish');
 }
 
-export function unpublishAll() {
+export function unpublishAllLang() {
     return clickOption('unpublish_all_lang');
 }
 
