@@ -5,6 +5,7 @@ import { ConfigService } from './config.service';
 export class MockConfigService implements ConfigService {
     readonly appConfig: MeshUiAppConfig;
     readonly ANONYMOUS_USER_NAME = 'anonymous';
+    readonly DEFAULT_LANGUAGE = 'en';
     readonly UI_LANGUAGES = ['en', 'de'];
     FALLBACK_LANGUAGE = 'en';
     CONTENT_LANGUAGES = ['en', 'de'];
