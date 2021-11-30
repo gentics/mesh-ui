@@ -26,6 +26,13 @@ export function currentLanguagePublished(node: MeshNode): boolean {
 }
 
 /**
+ * Tests if the current language is published for all nodes.
+ */
+export function currentLanguageOfAllNodesPublished(nodes: MeshNode[]): boolean {
+    return nodes.every(currentLanguagePublished);
+}
+
+/**
  * Tests if all languages are published.
  */
 export function allLanguagesPublished(node: MeshNode): boolean {
@@ -36,6 +43,27 @@ export function allLanguagesPublished(node: MeshNode): boolean {
 }
 
 /**
+ * Tests if the current language is published for all nodes.
+ */
+export function allLanguagesOfAllNodesPublished(nodes: MeshNode[]): boolean {
+    return nodes.every(allLanguagesPublished);
+}
+
+/**
+ * Tests if the node in the current language is unpublished.
+ */
+export function currentLanguageUnpublished(node: MeshNode): boolean {
+    return !currentLanguagePublished(node);
+}
+
+/**
+ * Tests if the current language is unpublished for all nodes.
+ */
+export function currentLanguageOfAllNodesUnpublished(nodes: MeshNode[]): boolean {
+    return nodes.every(currentLanguageUnpublished);
+}
+
+/**
  * Tests if all languages are unpublished.
  */
 export function allLanguagesUnpublished(node: MeshNode): boolean {
@@ -43,6 +71,13 @@ export function allLanguagesUnpublished(node: MeshNode): boolean {
         return false;
     }
     return Object.keys(node.availableLanguages).every(language => !node.availableLanguages[language].published);
+}
+
+/**
+ * Tests if the current language is unpublished for all nodes.
+ */
+export function allLanguagesOfAllNodesUnpublished(nodes: MeshNode[]): boolean {
+    return nodes.every(allLanguagesUnpublished);
 }
 
 /**

@@ -1,0 +1,22 @@
+@import "variables";
+
+.publish {
+  color: $gtx-color-success;
+}
+
+.dangerous {
+  color: $gtx-color-alert;
+}
+
+.placeholder {
+    height: 0;
+    overflow: hidden;
+    min-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    visibility: hidden;
+}
+
+gtx-dropdown-item[disabled] {
+    opacity: 0.2;
+}

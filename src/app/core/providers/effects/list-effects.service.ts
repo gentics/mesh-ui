@@ -130,6 +130,38 @@ export class ListEffectsService {
             .toPromise();
     }
 
+    /**
+     * Load the published information of children of the opened folder.
+     * This request will not alter the state.
+     */
+    loadPublishInformationForAllChildren(
+        projectName: string,
+        containerUuid: string,
+        language: string
+    ): Promise<NodeListResponse> {
+        this.state.actions.list.fetchPublishInformationForChildrenStart();
+        return this.api.project
+            .getNodeChildren({
+                project: projectName,
+                nodeUuid: containerUuid,
+                lang: this.languageWithFallbacks(language),
+                fields: 'uuid,language,languages,version,project'
+            })
+            .pipe(
+                tap(
+                    response => {
+                        this.state.actions.list.fetchPublishInformationForChildrenSuccess();
+                        return response.data;
+                    },
+                    error => {
+                        this.state.actions.list.fetchPublishInformationForChildrenError();
+                        throw new Error('TODO: Error handling');
+                    }
+                )
+            )
+            .toPromise();
+    }
+
     searchNodes(searchTerm: string, tags: Tag[], projectName: string, languageCode: string): void {
         this.state.actions.list.searchNodesStart();
         const hasTags = 0 < tags.length;

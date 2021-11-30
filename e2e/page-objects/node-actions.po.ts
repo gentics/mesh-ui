@@ -15,7 +15,7 @@ export function publish() {
 }
 
 export function publishAll() {
-    return clickOption('publish_all');
+    return clickOption('publish_all_lang');
 }
 
 export function unpublish() {
@@ -23,7 +23,7 @@ export function unpublish() {
 }
 
 export function unpublishAll() {
-    return clickOption('unpublish_all');
+    return clickOption('unpublish_all_lang');
 }
 
 async function clickOption(i18nKey: string) {

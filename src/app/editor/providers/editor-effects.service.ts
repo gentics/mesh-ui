@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { of } from 'ramda';
+import { forkJoin } from 'rxjs';
+import { catchError, filter, switchMap, take, tap } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
 
 import { BinaryField, FieldMap, ImageTransform, MeshNode } from '../../common/models/node.model';
@@ -8,6 +10,8 @@ import {
     NodeCreateRequest,
     NodeResponse,
     NodeUpdateRequest,
+    PublishStatusModelFromServer,
+    PublishStatusResponse,
     S3BinaryUrlGenerationResponse,
     TagReferenceFromServer
 } from '../../common/models/server-models';
@@ -193,6 +197,60 @@ export class EditorEffectsService {
             );
     }
 
+    publishNodes(nodes: MeshNode[]): void {
+        this.state.actions.editor.publishNodesStart();
+        forkJoin(
+            nodes.map((node: MeshNode) => {
+                if (!node.project.name) {
+                    throw new Error('Project name is not available');
+                }
+                this.state.actions.editor.publishNodeStart();
+                return this.api.project.publishNode({ project: node.project.name, nodeUuid: node.uuid }).pipe(
+                    tap((response: PublishStatusResponse) => {
+                        if (!node.language) {
+                            throw new Error('Could not find language of node!');
+                        }
+                        if (
+                            this.state.now.entities.node[node.uuid] &&
+                            this.state.now.entities.node[node.uuid][node.language] &&
+                            this.state.now.entities.node[node.uuid][node.language][node.version]
+                        ) {
+                            const nodeInState = this.state.now.entities.node[node.uuid][node.language][node.version];
+                            const newNode = {
+                                ...nodeInState,
+                                availableLanguages: response.availableLanguages,
+                                version: response.availableLanguages[node.language].version
+                            };
+                            this.state.actions.editor.publishNodeSuccess(newNode);
+                        } else {
+                            this.state.actions.editor.publishNodeSuccess();
+                        }
+                    }),
+                    catchError(error => {
+                        this.state.actions.editor.publishNodeError();
+                        return of(null);
+                    })
+                );
+            })
+        )
+            .pipe(
+                this.notification.rxSuccessNext(
+                    'editor.nodes_published',
+                    (result: (PublishStatusResponse | null)[]) => ({
+                        amount: result.filter(entry => entry !== null).length
+                    })
+                )
+            )
+            .subscribe(
+                (result: (PublishStatusResponse | null)[]) => {
+                    this.state.actions.editor.publishNodesSuccess();
+                },
+                error => {
+                    this.state.actions.editor.publishNodesError();
+                }
+            );
+    }
+
     publishNodeLanguage(node: MeshNode): void {
         if (!node.project.name) {
             throw new Error('Project name is not available');
@@ -225,6 +283,70 @@ export class EditorEffectsService {
                 },
                 error => {
                     this.state.actions.editor.publishNodeError();
+                }
+            );
+    }
+
+    publishNodesLanguage(nodes: MeshNode[]): void {
+        this.state.actions.editor.publishNodesStart();
+        forkJoin(
+            nodes.map((node: MeshNode) => {
+                if (!node.project.name) {
+                    throw new Error('Project name is not available');
+                }
+                if (!node.language) {
+                    throw new Error('Language is node available');
+                }
+                this.state.actions.editor.publishNodeStart();
+                return this.api.project
+                    .publishNodeLanguage({ project: node.project.name, nodeUuid: node.uuid, language: node.language })
+                    .pipe(
+                        tap((response: PublishStatusModelFromServer) => {
+                            if (!node.language) {
+                                throw new Error('Could not find language of node!');
+                            }
+                            if (
+                                this.state.now.entities.node[node.uuid] &&
+                                this.state.now.entities.node[node.uuid][node.language] &&
+                                this.state.now.entities.node[node.uuid][node.language][node.version]
+                            ) {
+                                const nodeInState = this.state.now.entities.node[node.uuid][node.language][
+                                    node.version
+                                ];
+                                const newNode = {
+                                    ...nodeInState,
+                                    availableLanguages: {
+                                        ...nodeInState.availableLanguages,
+                                        [node.language]: response
+                                    },
+                                    version: response.version
+                                };
+                                this.state.actions.editor.publishNodeSuccess(newNode);
+                            } else {
+                                this.state.actions.editor.publishNodeSuccess();
+                            }
+                        }),
+                        catchError(error => {
+                            this.state.actions.editor.publishNodeError();
+                            return of(null);
+                        })
+                    );
+            })
+        )
+            .pipe(
+                this.notification.rxSuccessNext(
+                    'editor.nodes_published',
+                    (result: (PublishStatusModelFromServer | null)[]) => ({
+                        amount: result.filter(entry => entry !== null).length
+                    })
+                )
+            )
+            .subscribe(
+                (result: (PublishStatusModelFromServer | null)[]) => {
+                    this.state.actions.editor.publishNodesSuccess();
+                },
+                error => {
+                    this.state.actions.editor.publishNodesError();
                 }
             );
     }

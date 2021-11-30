@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, ParamMap, Router } from '@angular/router';
+import { DropdownList } from 'gentics-ui-core';
 import { PaginationInstance } from 'ngx-pagination';
 import { combineLatest, from, of, Observable, Subject } from 'rxjs';
 import {
@@ -23,6 +24,7 @@ import {
 } from 'src/app/common/constants';
 import { ConfigService } from 'src/app/core/providers/config/config.service';
 import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
+import { PublishAllOptionsComponent } from 'src/app/shared/components/publish-all-options/publish-all-options.component';
 
 import { SchemaReference, SearchQueryParameter } from '../../../common/models/common.model';
 import { MeshNode } from '../../../common/models/node.model';
@@ -44,6 +46,8 @@ import { ContainerFileDropAreaComponent } from '../container-file-drop-area/cont
 })
 export class ContainerContentsComponent implements OnInit, OnDestroy {
     @ViewChild(ContainerFileDropAreaComponent, { static: true }) fileDropArea: ContainerFileDropAreaComponent;
+    @ViewChild('nodeActionsDropdownList', { static: true }) nodeActionsDropdownList: DropdownList;
+    @ViewChild('publishAllOptionsComponent', { static: true }) publishAllOptionsComponent: PublishAllOptionsComponent;
 
     /** @internal */
     schemas$: Observable<SchemaReference[]>;
@@ -61,6 +65,10 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
     /** Current node status filter. Does not contain a status twice. */
     currentNodeStatusFilter: EMeshNodeStatusStrings[] = [];
 
+    /** Current project name */
+    projectName: string;
+    /** Current container uuid */
+    containerUuid: string;
     /** Current content language */
     currentLanguage: string;
 
@@ -98,6 +106,8 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
                 takeUntil(this.destroy$)
             )
             .subscribe(({ containerUuid, projectName, language }) => {
+                this.projectName = projectName;
+                this.containerUuid = containerUuid;
                 this.currentLanguage = language;
                 this.listEffects.setActiveContainer(projectName, containerUuid, language);
             });
@@ -114,6 +124,8 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                 const { keyword, tags, page, perPage } = this.extractQueryParams(this.route.snapshot.queryParamMap);
                 const { containerUuid, projectName, language } = this.extractPathParams(this.route.snapshot.paramMap);
+                this.projectName = projectName;
+                this.containerUuid = containerUuid;
                 this.currentLanguage = language;
 
                 if (keyword === '' && tags === '') {
@@ -224,6 +236,18 @@ export class ContainerContentsComponent implements OnInit, OnDestroy {
             return false;
         }
         return this.itemsPerPage <= this.paginationConfig.totalItems;
+    }
+
+    nodeActionsModalContentUpdated() {
+        if (!!this.nodeActionsDropdownList) {
+            this.nodeActionsDropdownList.resize();
+        }
+    }
+
+    nodeActionsModalClicked() {
+        if (!!this.publishAllOptionsComponent) {
+            this.publishAllOptionsComponent.markPublishInformationForRefresh();
+        }
     }
 
     private groupNodesBySchema(nodes: MeshNode[]): { [schemaUuid: string]: MeshNode[] } {

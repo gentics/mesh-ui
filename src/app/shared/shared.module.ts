@@ -18,6 +18,7 @@ import { NodeBrowserComponent } from './components/node-browser/node-browser.com
 import { NodeStatusComponent } from './components/node-status/node-status.component';
 import { PaginationControlsComponent } from './components/pagination-controls/pagination-controls.component';
 import { PermissionIconCheckboxComponent } from './components/permission-icon-checkbox/permission-icon-checkbox.component';
+import { PublishAllOptionsComponent } from './components/publish-all-options/publish-all-options.component';
 import { PublishOptionsComponent } from './components/publish-options/publish-options.component';
 import { SchemaLabelComponent } from './components/schema-label/schema-label.component';
 import { ScrollFrameHeadingDirective } from './components/scroll-frame/scroll-frame-heading.directive';
@@ -48,6 +49,7 @@ const SHARED_COMPONENTS = [
     PaginationControlsComponent,
     ContentPortalComponent,
     IconCheckboxComponent,
+    PublishAllOptionsComponent,
     PublishOptionsComponent,
     AvailableLanguagesListComponent,
     PermissionIconCheckboxComponent
