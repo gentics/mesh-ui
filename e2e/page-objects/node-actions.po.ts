@@ -14,16 +14,16 @@ export function publish() {
     return clickOption('publish_button');
 }
 
-export function publishAll() {
-    return clickOption('publish_all');
+export function publishAllLang() {
+    return clickOption('publish_all_lang');
 }
 
 export function unpublish() {
     return clickOption('unpublish');
 }
 
-export function unpublishAll() {
-    return clickOption('unpublish_all');
+export function unpublishAllLang() {
+    return clickOption('unpublish_all_lang');
 }
 
 async function clickOption(i18nKey: string) {

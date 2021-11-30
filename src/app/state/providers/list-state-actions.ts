@@ -65,6 +65,18 @@ export class ListStateActions extends StateActionBranch<AppState> {
         this.list.loadCount--;
     }
 
+    fetchPublishInformationForChildrenStart() {
+        this.list.loadCount++;
+    }
+
+    fetchPublishInformationForChildrenSuccess() {
+        this.list.loadCount--;
+    }
+
+    fetchPublishInformationForChildrenError() {
+        this.list.loadCount--;
+    }
+
     fetchNodeStart() {
         this.list.loadCount++;
     }

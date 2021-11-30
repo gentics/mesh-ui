@@ -1218,6 +1218,10 @@ export interface ApiEndpoints {
                      */
                     resolveLinks?: string;
                     /**
+                     * Parameter which can be used to disable the etag parameter generation and thus increase performance when etags are not needed.
+                     */
+                    fields?: string;
+                    /**
                      * Specifies the branch to be used for loading data. The latest project branch will
                      * be used if this parameter is omitted.
                      * @example "24cf92691c7641158f92691c76c115ef"

@@ -92,9 +92,23 @@ export class EditorStateActions extends StateActionBranch<AppState> {
         this.editor.loadCount--;
     }
 
-    publishNodeSuccess(node: MeshNode): void {
+    publishNodeSuccess(node?: MeshNode): void {
         this.editor.loadCount--;
-        this.updateNodeEntity(node);
+        if (!!node) {
+            this.updateNodeEntity(node);
+        }
+    }
+
+    publishNodesStart(): void {
+        this.editor.loadCount++;
+    }
+
+    publishNodesError(): void {
+        this.editor.loadCount--;
+    }
+
+    publishNodesSuccess(): void {
+        this.editor.loadCount--;
     }
 
     unpublishNodeStart(): void {

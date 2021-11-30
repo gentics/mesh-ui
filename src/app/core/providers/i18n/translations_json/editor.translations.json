@@ -76,6 +76,13 @@
       "pt": "Criar versão {{language}}",
       "hu": "{{language}} verzió létrehozása"
     },
+    "loading_node_information": {
+      "en": "Loading node information ...",
+      "de": "Node-Informationen laden ...",
+      "zh": "加载节点信息 ...",
+      "pt": "Carregando informações do nó ...",
+      "hu": "Csomópont információinak betöltése ..."
+    },
     "node_already_unpublished": {
       "en": "The node is already unpublished",
       "de": "Der Node ist bereits depubliziert",
@@ -89,6 +96,13 @@
       "zh": "节点发布成功",
       "pt": "Nó publicado com sucesso",
       "hu": "A csomópont sikeresen közzétéve"
+    },
+    "nodes_published": {
+      "en": "{{amount}} nodes successfully published",
+      "de": "{{amount}} Nodes erfolgreich veröffentlicht",
+      "zh": "{{amount}} 个节点成功发布",
+      "pt": "{{amount}} nós publicados com sucesso",
+      "hu": "{{amount}} csomópont sikeresen közzétéve"
     },
     "node_language_published": {
       "en": "Node successfully published as version {{version}}",
@@ -125,12 +139,33 @@
       "pt": "Removida a publicação do nó com sucesso",
       "hu": "A csomópont sikeresen visszavonva"
     },
-    "publish_all": {
+    "nodes_unpublished": {
+      "en": "{{amount}} nodes unpublished successfully",
+      "de": "{{amount}} nodes erfolgreich depubliziert",
+      "zh": "{{amount}} 个节点成功取消发布",
+      "pt": "{{amount}} nós de publicação removidos com sucesso",
+      "hu": "{{amount}} csomópont sikeresen visszavonva"
+    },
+    "publish_all_all_lang": {
+      "en": "Publish all (all languages)",
+      "de": "Alles veröffentlichen (alle Sprachen)",
+      "zh": "发布一切 (所有语言)",
+      "pt": "Publicar tudo (todas as línguas)",
+      "hu": "Tegyen közzé mindent (összes nyelv)"
+    },
+    "publish_all_lang": {
       "en": "Publish all languages",
       "de": "Alle Sprachen veröffentlichen",
       "zh": "发布所有语言",
       "pt": "Publicar todas as línguas",
       "hu": "Közzététel az összes nyelven"
+    },
+    "publish_all_button": {
+      "en": "Publish all ({{lang}})",
+      "de": "Alles veröffentlichen ({{lang}})",
+      "zh": "发布一切 ({{lang}})",
+      "pt": "Publicar tudo ({{lang}})",
+      "hu": "Tegyen közzé mindent ({{lang}})"
     },
     "publish_button": {
       "en": "Publish",
@@ -195,6 +230,13 @@
       "pt": "Nome da etiqueta",
       "hu": "Címke neve"
     },
+    "unpublish_all": {
+      "en": "Unpublish all ({{lang}})",
+      "de": "Alles depublizieren ({{lang}})",
+      "zh": "全部取消发布 ({{lang}})",
+      "pt": "Cancelar a publicação de todos ({{lang}})",
+      "hu": "Az összes közzétételének visszavonása ({{lang}})"
+    },
     "unpublish": {
       "en": "Unpublish",
       "de": "Depublizieren",
@@ -202,7 +244,14 @@
       "pt": "Remover publicação",
       "hu": "Közzététel visszavonása"
     },
-    "unpublish_all": {
+    "unpublish_all_all_lang": {
+      "en": "Unpublish all (all languages)",
+      "de": "Alle depublizieren (alle Sprachen)",
+      "zh": "全部取消发布 (所有语言)",
+      "pt": "Cancelar a publicação de todos (todas as línguas)",
+      "hu": "Az összes közzétételének visszavonása (összes nyelv)"
+    },
+    "unpublish_all_lang": {
       "en": "Unpublish all languages",
       "de": "Alle Sprachen depublizieren",
       "zh": "取消发布所有语言",

@@ -8,7 +8,7 @@
                    (click)="publishNode()"
                    *ngIf="node && !nodeUtil.allLanguagesPublished(node)">
     <icon left>cloud_upload</icon>
-    {{ 'editor.publish_all' | i18n }}
+    {{ 'editor.publish_all_lang' | i18n }}
 </gtx-dropdown-item>
 <gtx-dropdown-item class="dangerous"
                    *ngIf="node && nodeUtil.currentLanguagePublished(node)"
@@ -20,5 +20,5 @@
                    *ngIf="node && !nodeUtil.allLanguagesUnpublished(node)"
                    (click)="unpublishNode()">
     <icon left>cloud_off</icon>
-    {{ 'editor.unpublish_all' | i18n }}
+    {{ 'editor.unpublish_all_lang' | i18n }}
 </gtx-dropdown-item>

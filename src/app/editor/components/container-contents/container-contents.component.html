@@ -10,6 +10,26 @@
                     (click)="onFileUploadClicked()">
             <icon left>file_upload</icon> {{ 'list.upload_files' | i18n }}
         </gtx-button>
+        <gtx-dropdown-list #nodeActionsDropdownList
+                           align="right">
+            <gtx-dropdown-trigger>
+                <gtx-button [disabled]="searching$ | async"
+                            size="small"
+                            class="button-upload"
+                            flat
+                            (click)="nodeActionsModalClicked()">
+                    {{ 'list.node_actions' | i18n }}
+                    <icon right>arrow_drop_down</icon>
+                </gtx-button>
+            </gtx-dropdown-trigger>
+            <gtx-dropdown-content>
+                <mesh-publish-all-options #publishAllOptionsComponent
+                                          [projectName]="projectName"
+                                          [containerUuid]="containerUuid"
+                                          [language]="currentLanguage"
+                                          (contentUpdated)="nodeActionsModalContentUpdated()"></mesh-publish-all-options>
+            </gtx-dropdown-content>
+        </gtx-dropdown-list>
     </div>
 </div>
 

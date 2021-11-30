@@ -83,6 +83,13 @@
       "pt": "Nenhum resultado",
       "hu": "Nincs találat"
     },
+    "node_actions": {
+        "en": "Node actions",
+        "de": "Node Aktionen",
+        "zh": "节点动作",
+        "pt": "Ações do nó",
+        "hu": "Csomópont műveletek"
+      },
     "search_error_occured": {
       "en": "An error has occurred while performing search",
       "de": "Ein Fehler ist aufgetreten",

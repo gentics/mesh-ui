@@ -1,0 +1,65 @@
+<ng-container [ngSwitch]="_status">
+    <ng-container *ngSwitchCase="'error'">
+        <gtx-dropdown-item disabled>
+            {{ 'editor.server_error' | i18n }}
+        </gtx-dropdown-item>
+    </ng-container>
+    <ng-container *ngSwitchCase="'loading'">
+        <gtx-dropdown-item disabled>
+            {{ 'editor.loading_node_information' | i18n }}
+        </gtx-dropdown-item>
+    </ng-container>
+    <ng-container *ngSwitchCase="'loaded'">
+        <gtx-dropdown-item class="publish"
+                           (click)="publishAllNodesLanguage()"
+                           *ngIf="!nodeUtil.currentLanguageOfAllNodesPublished(_nodesCurrentLanguage)">
+            <icon left>cloud_upload</icon>
+            {{ 'editor.publish_all_button' | i18n: { lang: _language | uppercase } }}
+        </gtx-dropdown-item>
+        <gtx-dropdown-item class="publish"
+                           (click)="publishAllNodes()"
+                           *ngIf="!nodeUtil.allLanguagesOfAllNodesPublished(_nodes)">
+            <icon left>cloud_upload</icon>
+            {{ 'editor.publish_all_all_lang' | i18n }}
+        </gtx-dropdown-item>
+        <gtx-dropdown-item class="dangerous"
+                           disabled
+                           *ngIf="!nodeUtil.currentLanguageOfAllNodesUnpublished(_nodesCurrentLanguage)"
+                           (click)="unpublishAllNodesLanguage()">
+            <icon left>cloud_off</icon>
+            {{ 'editor.unpublish_all' | i18n: { lang: _language | uppercase } }}
+        </gtx-dropdown-item>
+        <gtx-dropdown-item class="dangerous"
+                           disabled
+                           *ngIf="!nodeUtil.allLanguagesOfAllNodesUnpublished(_nodes)"
+                           (click)="unpublishAllNodes()">
+            <icon left>cloud_off</icon>
+            {{ 'editor.unpublish_all_all_lang' | i18n }}
+        </gtx-dropdown-item>
+    </ng-container>
+</ng-container>
+<!-- needed to ensure that dropdown has proper width (only dropdown height recalculated on resize) -->
+<gtx-dropdown-item class="placeholder"
+                   disabled>
+    {{ 'editor.loading_node_information' | i18n }}
+</gtx-dropdown-item>
+<gtx-dropdown-item class="placeholder"
+                   disabled>
+    <icon left>cloud_upload</icon>
+    {{ 'editor.publish_all_button' | i18n: { lang: _language | uppercase } }}
+</gtx-dropdown-item>
+<gtx-dropdown-item class="placeholder"
+                   disabled>
+    <icon left>cloud_upload</icon>
+    {{ 'editor.publish_all_all_lang' | i18n }}
+</gtx-dropdown-item>
+<gtx-dropdown-item class="placeholder"
+                   disabled>
+    <icon left>cloud_off</icon>
+    {{ 'editor.unpublish_all' | i18n: { lang: _language | uppercase } }}
+</gtx-dropdown-item>
+<gtx-dropdown-item class="placeholder"
+                   disabled>
+    <icon left>cloud_off</icon>
+    {{ 'editor.unpublish_all_all_lang' | i18n }}
+</gtx-dropdown-item>
