@@ -14,6 +14,7 @@ import { ListEffectsService } from 'src/app/core/providers/effects/list-effects.
 import { MeshNode } from '../../../common/models/node.model';
 import * as NodeUtil from '../../../common/util/node-util';
 import { EditorEffectsService } from '../../../editor/providers/editor-effects.service';
+import { EMeshNodeStatusStrings } from '../node-status/node-status.component';
 
 @Component({
     selector: 'mesh-publish-all-options',
@@ -25,7 +26,11 @@ export class PublishAllOptionsComponent implements OnInit, AfterViewChecked {
     _publishInformationNeedsToBeRefreshed = false;
     _contentChanged = false;
     _status: 'error' | 'loading' | 'loaded' = 'loading';
+
+    // all nodes of current language
     _nodesCurrentLanguage: MeshNode[] = [];
+
+    // all nodes
     _nodes: MeshNode[] = [];
 
     _projectName: string | null = null;
@@ -46,10 +51,17 @@ export class PublishAllOptionsComponent implements OnInit, AfterViewChecked {
         this.tryToLoadPublishInformationForAllChildren();
     }
 
+    _nodeStatusesToBeConsidered: EMeshNodeStatusStrings[] = [];
+    @Input() set nodeStatusesToBeConsidered(value: EMeshNodeStatusStrings[]) {
+        this._nodeStatusesToBeConsidered = value;
+        this.tryToLoadPublishInformationForAllChildren();
+    }
+
     @Input() beforePublish: () => Promise<any> | undefined;
 
     @Output() contentUpdated: EventEmitter<void> = new EventEmitter();
 
+    nodeStatuses: EMeshNodeStatusStrings[] = Object.values(EMeshNodeStatusStrings);
     nodeUtil = NodeUtil;
 
     constructor(
@@ -102,21 +114,39 @@ export class PublishAllOptionsComponent implements OnInit, AfterViewChecked {
     }
 
     private tryToLoadPublishInformationForAllChildren(): void {
+        // keep variables available for the time after async call completed
+        const language = this._language;
+        const nodeStatusesToBeConsidered = this._nodeStatusesToBeConsidered;
         if (
             this._publishInformationNeedsToBeRefreshed &&
             !!this._projectName &&
             !!this._containerUuid &&
-            !!this._language
+            !!language &&
+            !!nodeStatusesToBeConsidered
         ) {
             this._publishInformationNeedsToBeRefreshed = false;
             this.listEffects
-                .loadPublishInformationForAllChildren(this._projectName, this._containerUuid, this._language)
+                .loadPublishInformationForAllChildren(this._projectName, this._containerUuid, language)
                 .then(
                     (responseData: NodeListResponse) => {
-                        this._nodesCurrentLanguage = responseData.data.filter(
-                            (node: NodeResponse) => node.language === this._language
+                        const nodesFilteredByStatus: MeshNode[] = responseData.data.filter((node: NodeResponse) => {
+                            const nodeStatus: EMeshNodeStatusStrings | null = this.nodeUtil.getNodeStatus(
+                                node,
+                                language
+                            );
+                            if (!!nodeStatus) {
+                                return nodeStatusesToBeConsidered.includes(nodeStatus);
+                            }
+                            /**
+                             * Fallback like in container-contents.component.html. This allows also considering child nodes
+                             * that do not have a translation for the current language, in case all statuses (i.e. 'all') should be considered.
+                             */
+                            return nodeStatusesToBeConsidered.length >= this.nodeStatuses.length;
+                        });
+                        this._nodesCurrentLanguage = nodesFilteredByStatus.filter(
+                            (node: NodeResponse) => node.language === language
                         );
-                        this._nodes = responseData.data;
+                        this._nodes = nodesFilteredByStatus;
                         this._status = 'loaded';
                         this._contentChanged = true;
                         this.changeDetectionRef.markForCheck();

@@ -83,6 +83,13 @@
       "pt": "Carregando informações do nó ...",
       "hu": "Csomópont információinak betöltése ..."
     },
+    "no_node_actions": {
+        "en": "No node actions",
+        "de": "Keine Node Aktionen",
+        "zh": "无节点操作",
+        "pt": "Sem ações de nó",
+        "hu": "Nincs csomópont művelet"
+    },
     "node_already_unpublished": {
       "en": "The node is already unpublished",
       "de": "Der Node ist bereits depubliziert",

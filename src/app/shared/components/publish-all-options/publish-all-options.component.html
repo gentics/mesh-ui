@@ -36,9 +36,24 @@
             <icon left>cloud_off</icon>
             {{ 'editor.unpublish_all_all_lang' | i18n }}
         </gtx-dropdown-item>
+        <gtx-dropdown-item *ngIf="_nodes?.length === 0"
+                           disabled>
+            <!--
+                In case there is at least one item, then at least one of the 4 conditions above must hold,
+                e.g. a node is published, thus the unpublished actions are shown.
+
+                In case there is no item, then all of the above conditions are true (for an array of 0 items,
+                it holds that all are published, unpublished, etc.).
+                Thus, only in the case of no items there will also be no actions. Therefore, we show an explanatory
+                label to avoid a dropdown of height 0.
+                Since _nodes.length >= _nodesCurrentLanguage.length, we only need to check _nodes.
+            -->
+            {{ 'editor.no_node_actions' | i18n }}
+        </gtx-dropdown-item>
     </ng-container>
 </ng-container>
 <!-- needed to ensure that dropdown has proper width (only dropdown height recalculated on resize) -->
+<!-- since the editor.server_error string is quite long and only shown in edge cases we do not consider it as a placeholder -->
 <gtx-dropdown-item class="placeholder"
                    disabled>
     {{ 'editor.loading_node_information' | i18n }}
@@ -62,4 +77,8 @@
                    disabled>
     <icon left>cloud_off</icon>
     {{ 'editor.unpublish_all_all_lang' | i18n }}
+</gtx-dropdown-item>
+<gtx-dropdown-item class="placeholder"
+                   disabled>
+    {{ 'editor.no_node_actions' | i18n }}
 </gtx-dropdown-item>

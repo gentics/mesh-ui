@@ -13,8 +13,7 @@
         <gtx-dropdown-list #nodeActionsDropdownList
                            align="right">
             <gtx-dropdown-trigger>
-                <gtx-button [disabled]="searching$ | async"
-                            size="small"
+                <gtx-button size="small"
                             class="button-upload"
                             flat
                             (click)="nodeActionsModalClicked()">
@@ -27,6 +26,7 @@
                                           [projectName]="projectName"
                                           [containerUuid]="containerUuid"
                                           [language]="currentLanguage"
+                                          [nodeStatusesToBeConsidered]="currentNodeStatusFilter"
                                           (contentUpdated)="nodeActionsModalContentUpdated()"></mesh-publish-all-options>
             </gtx-dropdown-content>
         </gtx-dropdown-list>
