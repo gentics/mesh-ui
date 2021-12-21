@@ -1,11 +1,19 @@
 @import "variables";
 
 .publish {
-  color: $gtx-color-success;
+    color: $gtx-color-success;
+
+    &[disabled] {
+        opacity: 0.2;
+    }
 }
 
 .dangerous {
-  color: $gtx-color-alert;
+    color: $gtx-color-alert;
+
+    &[disabled] {
+      opacity: 0.2;
+    }
 }
 
 .placeholder {
@@ -15,8 +23,4 @@
     padding-top: 0;
     padding-bottom: 0;
     visibility: hidden;
-}
-
-gtx-dropdown-item[disabled] {
-    opacity: 0.2;
 }
