@@ -101,9 +101,21 @@ export class PublishAllOptionsComponent implements OnInit, AfterViewChecked {
         );
     }
 
-    unpublishAllNodes(): void {}
+    async unpublishAllNodes() {
+        this.editorEffects.unpublishNodes(
+            this._nodes.filter((node: MeshNode) => {
+                return !this.nodeUtil.allLanguagesUnpublished(node);
+            })
+        );
+    }
 
-    unpublishAllNodesLanguage(): void {}
+    async unpublishAllNodesLanguage() {
+        this.editorEffects.unpublishNodesLanguage(
+            this._nodesCurrentLanguage.filter((node: MeshNode) => {
+                return !this.nodeUtil.currentLanguageUnpublished(node);
+            })
+        );
+    }
 
     markPublishInformationForRefresh(): void {
         this._status = 'loading';

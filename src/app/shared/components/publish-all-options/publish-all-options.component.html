@@ -23,14 +23,12 @@
             {{ 'editor.publish_all_all_lang' | i18n }}
         </gtx-dropdown-item>
         <gtx-dropdown-item class="dangerous"
-                           disabled
                            *ngIf="!nodeUtil.currentLanguageOfAllNodesUnpublished(_nodesCurrentLanguage)"
                            (click)="unpublishAllNodesLanguage()">
             <icon left>cloud_off</icon>
             {{ 'editor.unpublish_all' | i18n: { lang: _language | uppercase } }}
         </gtx-dropdown-item>
         <gtx-dropdown-item class="dangerous"
-                           disabled
                            *ngIf="!nodeUtil.allLanguagesOfAllNodesUnpublished(_nodes)"
                            (click)="unpublishAllNodes()">
             <icon left>cloud_off</icon>
