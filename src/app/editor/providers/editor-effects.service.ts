@@ -385,6 +385,66 @@ export class EditorEffectsService {
             );
     }
 
+    unpublishNodes(nodes: MeshNode[]): void {
+        this.state.actions.editor.unpublishNodesStart();
+        forkJoin(
+            nodes.map((node: MeshNode) => {
+                if (!node.project.name) {
+                    throw new Error('Project name is not available');
+                }
+                this.state.actions.editor.unpublishNodeStart();
+                return this.api.project.unpublishNode({ project: node.project.name, nodeUuid: node.uuid }).pipe(
+                    switchMap(() =>
+                        this.api.project.getNodePublishStatus({
+                            project: node.project.name!,
+                            nodeUuid: node.uuid
+                        })
+                    ),
+                    tap((response: PublishStatusResponse) => {
+                        if (!node.language) {
+                            throw new Error('Could not find language of node!');
+                        }
+                        if (
+                            this.state.now.entities.node[node.uuid] &&
+                            this.state.now.entities.node[node.uuid][node.language] &&
+                            this.state.now.entities.node[node.uuid][node.language][node.version]
+                        ) {
+                            const nodeInState = this.state.now.entities.node[node.uuid][node.language][node.version];
+                            const newNode = {
+                                ...nodeInState,
+                                availableLanguages: response.availableLanguages,
+                                version: response.availableLanguages[node.language].version
+                            };
+                            this.state.actions.editor.unpublishNodeSuccess(newNode);
+                        } else {
+                            this.state.actions.editor.unpublishNodeSuccess();
+                        }
+                    }),
+                    catchError(error => {
+                        this.state.actions.editor.unpublishNodeError();
+                        return of(null);
+                    })
+                );
+            })
+        )
+            .pipe(
+                this.notification.rxSuccessNext(
+                    'editor.nodes_unpublished',
+                    (result: (PublishStatusResponse | null)[]) => ({
+                        amount: result.filter(entry => entry !== null).length
+                    })
+                )
+            )
+            .subscribe(
+                (result: (PublishStatusResponse | null)[]) => {
+                    this.state.actions.editor.unpublishNodesSuccess();
+                },
+                error => {
+                    this.state.actions.editor.unpublishNodesError();
+                }
+            );
+    }
+
     unpublishNodeLanguage(node: MeshNode): void {
         this.state.actions.editor.unpublishNodeStart();
         if (!node.project.name) {
@@ -423,6 +483,73 @@ export class EditorEffectsService {
                 },
                 error => {
                     this.state.actions.editor.unpublishNodeError();
+                }
+            );
+    }
+
+    unpublishNodesLanguage(nodes: MeshNode[]): void {
+        this.state.actions.editor.unpublishNodesStart();
+        forkJoin(
+            nodes.map((node: MeshNode) => {
+                if (!node.project.name) {
+                    throw new Error('Project name is not available');
+                }
+                if (!node.language) {
+                    throw new Error('Language is node available');
+                }
+                this.state.actions.editor.unpublishNodeStart();
+                return this.api.project
+                    .unpublishNodeLanguage({ project: node.project.name, nodeUuid: node.uuid, language: node.language })
+                    .pipe(
+                        switchMap(() =>
+                            this.api.project.getNodePublishStatus({
+                                project: node.project.name!,
+                                nodeUuid: node.uuid
+                            })
+                        ),
+                        tap((response: PublishStatusResponse) => {
+                            if (!node.language) {
+                                throw new Error('Could not find language of node!');
+                            }
+                            if (
+                                this.state.now.entities.node[node.uuid] &&
+                                this.state.now.entities.node[node.uuid][node.language] &&
+                                this.state.now.entities.node[node.uuid][node.language][node.version]
+                            ) {
+                                const nodeInState = this.state.now.entities.node[node.uuid][node.language][
+                                    node.version
+                                ];
+                                const newNode = {
+                                    ...nodeInState,
+                                    availableLanguages: response.availableLanguages,
+                                    version: response.availableLanguages[node.language].version
+                                };
+                                this.state.actions.editor.unpublishNodeSuccess(newNode);
+                            } else {
+                                this.state.actions.editor.unpublishNodeSuccess();
+                            }
+                        }),
+                        catchError(error => {
+                            this.state.actions.editor.unpublishNodeError();
+                            return of(null);
+                        })
+                    );
+            })
+        )
+            .pipe(
+                this.notification.rxSuccessNext(
+                    'editor.nodes_unpublished',
+                    (result: (PublishStatusResponse | null)[]) => ({
+                        amount: result.filter(entry => entry !== null).length
+                    })
+                )
+            )
+            .subscribe(
+                (result: (PublishStatusResponse | null)[]) => {
+                    this.state.actions.editor.unpublishNodesSuccess();
+                },
+                error => {
+                    this.state.actions.editor.unpublishNodesError();
                 }
             );
     }
