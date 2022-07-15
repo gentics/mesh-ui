@@ -1,7 +1,9 @@
-<mesh-chip  [removable]="removable"
-            (removeClick)="removeClick.emit()"
-            [editable]="editable"
-            (editClick)="editClick.emit()"
-            [meshBackgroundFrom]="tagFamilyName()">
-    <span class="tag-name" [innerHTML]="tag.name | highlight:filterTerm"></span>
+<mesh-chip [editable]="editable"
+           [removable]="removable"
+           [meshBackgroundFrom]="tagFamilyName()"
+           (editClick)="editClick.emit()"
+           (removeClick)="removeClick.emit()">
+    <mesh-highlight class="tag-name"
+                    [content]="tag.name"
+                    [highlight]="filterTerm"></mesh-highlight>
 </mesh-chip>

@@ -1,4 +1,6 @@
-<gtx-dropdown-list belowTrigger="true" width="trigger" (close)="close.emit()">
+<gtx-dropdown-list belowTrigger="true"
+                   width="trigger"
+                   (close)="close.emit()">
     <gtx-dropdown-trigger>
         <div></div>
     </gtx-dropdown-trigger>
@@ -9,8 +11,11 @@
                            (mouseover)="selectedIndex = i"
                            (click)="selectTag.emit(tag)">
             <span class="tag-family">{{tag.tagFamily.name}}</span>
-            <span class="tag-name" [meshBackgroundFrom]="tag.tagFamily.name || tag.tagFamily">
-                <span [innerHTML]="tag.name | highlight:filterTerm"></span>
+            <span class="tag-name">
+                <mesh-highlight class="tag-name"
+                                [content]="tag.name"
+                                [highlight]="filterTerm"
+                                [meshBackgroundFrom]="tag.tagFamily.name || tag.tagFamily"></mesh-highlight>
             </span>
         </gtx-dropdown-item>
         <gtx-dropdown-item *ngIf="newTagName !== ''"

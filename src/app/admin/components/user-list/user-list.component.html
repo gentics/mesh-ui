@@ -46,11 +46,15 @@
             <a [routerLink]="['/admin/users', user.uuid]">
                 <div class="name"
                      *ngIf="user.firstname || user.lastname">
-                    <span [innerHTML]="user.firstname | highlight:filterTerm "></span>
-                    <span [innerHTML]="user.lastname | highlight:filterTerm "></span>
+                    <mesh-highlight [content]="user.firstname"
+                                    [highlight]="filterTerm"></mesh-highlight>
+                    <mesh-highlight [content]="user.lastname"
+                                    [highlight]="filterTerm"></mesh-highlight>
                 </div>
-                <div class="user-name"
-                     [innerHTML]="user.username | highlight:filterTerm"></div>
+                <div class="user-name">
+                    <mesh-highlight [content]="user.username"
+                                    [highlight]="filterTerm"></mesh-highlight>
+                </div>
             </a>
             <div class="group-wrapper">
                 <ng-container *ngFor="let group of user.groups">

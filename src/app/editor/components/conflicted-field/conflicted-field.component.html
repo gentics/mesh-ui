@@ -1,116 +1,88 @@
 <div class="change-item">
     <div class="path">{{ conflictedField.field.name }}</div>
-    <div [ngSwitch]="conflictedField.field.type" class="diffs">
-        <div *ngSwitchCase="'html'" class='preview-container'>
-            <div
-                class="remote-val html"
-                [class.selected]="conflictedField.overwrite === false"
-                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === true"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+    <div [ngSwitch]="conflictedField.field.type"
+         class="diffs">
+        <div *ngSwitchCase="'html'"
+             class='preview-container'>
+            <div class="remote-val html"
+                 [class.selected]="conflictedField.overwrite === false"
+                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void">
+                <gtx-button *ngIf="conflictedField.overwrite === true"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div
-                    class="val"
-                    [innerHTML]="conflictedField.remoteValue">
-                </div>
+                <div class="val">{{ conflictedField.remoteValue }}</div>
             </div>
-            <div
-                class="local-val html"
-                [class.selected]="conflictedField.overwrite === true"
-                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === false"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+            <div class="local-val html"
+                 [class.selected]="conflictedField.overwrite === true"
+                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void">
+                <gtx-button *ngIf="conflictedField.overwrite === false"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div
-                    class="val"
-                    [innerHTML]="conflictedField.localValue">
-                </div>
+                <div class="val">{{ conflictedField.localValue }}</div>
             </div>
         </div>
 
-        <div *ngSwitchCase="'list'" class='preview-container'>
-            <div
-                class="remote-val"
-                [class.selected]="conflictedField.overwrite === false"
-                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === true"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+        <div *ngSwitchCase="'list'"
+             class='preview-container'>
+            <div class="remote-val"
+                 [class.selected]="conflictedField.overwrite === false"
+                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void">
+                <gtx-button *ngIf="conflictedField.overwrite === true"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div
-                    class="val"
-                    [innerHTML]="conflictedField.remoteValue">
-                </div>
+                <div class="val">{{ conflictedField.remoteValue }}</div>
             </div>
-            <div
-                class="local-val"
-                [class.selected]="conflictedField.overwrite === true"
-                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === false"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+            <div class="local-val"
+                 [class.selected]="conflictedField.overwrite === true"
+                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void">
+                <gtx-button *ngIf="conflictedField.overwrite === false"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div
-                    class="val"
-                    [innerHTML]="conflictedField.localValue">
-                </div>
+                <div class="val">{{ conflictedField.localValue }}</div>
             </div>
         </div>
 
-        <div *ngSwitchCase="'date'" class='preview-container'>
-            <div
-                class="remote-val"
-                [class.selected]="conflictedField.overwrite === false"
-                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === true"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+        <div *ngSwitchCase="'date'"
+             class='preview-container'>
+            <div class="remote-val"
+                 [class.selected]="conflictedField.overwrite === false"
+                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void">
+                <gtx-button *ngIf="conflictedField.overwrite === true"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <div class="val">{{ conflictedField.remoteValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
             </div>
-            <div
-                class="local-val"
-                [class.selected]="conflictedField.overwrite === true"
-                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === false"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+            <div class="local-val"
+                 [class.selected]="conflictedField.overwrite === true"
+                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void">
+                <gtx-button *ngIf="conflictedField.overwrite === false"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <div class="val">{{ conflictedField.localValue | date:'yyyy-MM-dd HH:mm:ss'}}</div>
             </div>
         </div>
 
-        <div *ngSwitchCase="'binary'" class='preview-container'>
-            <div
-                class="remote-val"
-                [class.selected]="conflictedField.overwrite === false"
-                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === true"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+        <div *ngSwitchCase="'binary'"
+             class='preview-container'>
+            <div class="remote-val"
+                 [class.selected]="conflictedField.overwrite === false"
+                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void">
+                <gtx-button *ngIf="conflictedField.overwrite === true"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <div class="val">
                     <mesh-file-preview [mimeType]="conflictedField.remoteValue.mimeType"
@@ -120,58 +92,55 @@
                     {{ conflictedField.remoteValue.fileName }}
                 </div>
             </div>
-            <div
-                class="local-val"
-                [class.selected]="conflictedField.overwrite === true"
-                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === false"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+            <div class="local-val"
+                 [class.selected]="conflictedField.overwrite === true"
+                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void">
+                <gtx-button *ngIf="conflictedField.overwrite === false"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <div class="val">
-                        <mesh-file-preview [mimeType]="conflictedField.localValue.mimeType"
-                                           [fileName]="conflictedField.localValue.fileName"
-                                           [url]="conflictedField.localURL">
-                        </mesh-file-preview>
-                        {{ conflictedField.localValue.fileName }}
+                    <mesh-file-preview [mimeType]="conflictedField.localValue.mimeType"
+                                       [fileName]="conflictedField.localValue.fileName"
+                                       [url]="conflictedField.localURL">
+                    </mesh-file-preview>
+                    {{ conflictedField.localValue.fileName }}
                 </div>
             </div>
         </div>
 
 
-        <div *ngSwitchCase="'boolean'" class='preview-container'>
-            <div
-                class="remote-val"
-                [class.selected]="conflictedField.overwrite === false"
-                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === true"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+        <div *ngSwitchCase="'boolean'"
+             class='preview-container'>
+            <div class="remote-val"
+                 [class.selected]="conflictedField.overwrite === false"
+                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void">
+                <gtx-button *ngIf="conflictedField.overwrite === true"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div class="val"><gtx-checkbox [checked]="conflictedField.remoteValue"></gtx-checkbox></div>
+                <div class="val">
+                    <gtx-checkbox [checked]="conflictedField.remoteValue"></gtx-checkbox>
+                </div>
             </div>
-            <div
-                class="local-val"
-                [class.selected]="conflictedField.overwrite === true"
-                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === false"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+            <div class="local-val"
+                 [class.selected]="conflictedField.overwrite === true"
+                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void">
+                <gtx-button *ngIf="conflictedField.overwrite === false"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
-                <div class="val"><gtx-checkbox [checked]="conflictedField.localValue"></gtx-checkbox></div>
+                <div class="val">
+                    <gtx-checkbox [checked]="conflictedField.localValue"></gtx-checkbox>
+                </div>
             </div>
         </div>
 
-        <div *ngSwitchCase="'micronode'" class="micronode-row preview-container">
+        <div *ngSwitchCase="'micronode'"
+             class="micronode-row preview-container">
             <ul>
                 <li *ngFor="let conflictedMicronodeField of conflictedField.conflictedFields">
                     <mesh-conflicted-field [conflictedField]="conflictedMicronodeField"></mesh-conflicted-field>
@@ -179,30 +148,25 @@
             </ul>
         </div>
 
-        <div *ngSwitchDefault class="preview-container">
-            <div
-                class="remote-val"
-                [class.selected]="conflictedField.overwrite === false"
-                (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === true"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+        <div *ngSwitchDefault
+             class="preview-container">
+            <div class="remote-val"
+                 [class.selected]="conflictedField.overwrite === false"
+                 (click)="conflictedField.overwrite === true ? conflictedField.overwrite = false : void">
+                <gtx-button *ngIf="conflictedField.overwrite === true"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <div class="val">{{ conflictedField.remoteValue }}</div>
             </div>
-            <div
-                class="local-val"
-                [class.selected]="conflictedField.overwrite === true"
-                (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void"
-            >
-                <gtx-button
-                    *ngIf="conflictedField.overwrite === false"
-                    size="small"
-                    class="button-select"
-                    flat>{{ 'modal.use_this_version' | i18n }}
+            <div class="local-val"
+                 [class.selected]="conflictedField.overwrite === true"
+                 (click)="conflictedField.overwrite === false ? conflictedField.overwrite = true : void">
+                <gtx-button *ngIf="conflictedField.overwrite === false"
+                            size="small"
+                            class="button-select"
+                            flat>{{ 'modal.use_this_version' | i18n }}
                 </gtx-button>
                 <div class="val">{{ conflictedField.localValue }}</div>
             </div>

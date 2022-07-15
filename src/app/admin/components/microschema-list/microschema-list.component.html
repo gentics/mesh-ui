@@ -30,8 +30,10 @@
         <div>
             <a [routerLink]="['/admin/microschemas', microschema.uuid]">
                 <gtx-contents-list-item>
-                    <div class="item-primary"
-                         [innerHTML]="microschema.name | highlight:filterTerm"></div>
+                    <div class="item-primary">
+                        <mesh-highlight [content]="microschema.name"
+                                        [highlight]="filterTerm"></mesh-highlight>
+                    </div>
                 </gtx-contents-list-item>
             </a>
         </div>

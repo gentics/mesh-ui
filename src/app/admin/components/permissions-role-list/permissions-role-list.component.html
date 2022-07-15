@@ -14,8 +14,9 @@
     <ng-template let-role="item">
         <div class="item-row">
             <a [routerLink]="['/admin/permissions', role.uuid]">
-                <div class="role-name"
-                     [innerHTML]="role.name"></div>
+                <mesh-highlight class="role-name"
+                                [content]="role.name"
+                                [highlight]="filterTerm"></mesh-highlight>
             </a>
         </div>
     </ng-template>
