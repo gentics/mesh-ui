@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Schema } from '../../../common/models/schema.model';
@@ -41,7 +42,8 @@ export class SchemaListComponent implements OnInit, OnDestroy {
         private router: Router,
         private modalService: ModalService,
         private i18n: I18nService,
-        private config: ConfigService
+        private config: ConfigService,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit(): void {
@@ -108,7 +110,12 @@ export class SchemaListComponent implements OnInit, OnDestroy {
         }
         this.displayDeleteSchemaModal(
             { token: 'admin.delete_schema' },
-            { token: 'admin.delete_schema_confirmation', params: { name: schema.name } }
+            {
+                token: 'admin.delete_schema_confirmation',
+                params: {
+                    name: this.sanitizer.sanitizeHTML(schema.name)
+                }
+            }
         ).then(() => {
             this.adminSchemaEffects.deleteSchema(schema.uuid);
         });

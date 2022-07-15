@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalService } from 'gentics-ui-core';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { ADMIN_GROUP_NAME, ADMIN_USER_NAME } from '../../../common/constants';
 import { Group } from '../../../common/models/group.model';
@@ -11,7 +11,6 @@ import { User } from '../../../common/models/user.model';
 import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -45,7 +44,8 @@ export class UserListComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private meshDialog: MeshDialogsService,
-        private adminUserEffects: AdminUserEffectsService
+        private adminUserEffects: AdminUserEffectsService,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit() {
@@ -126,7 +126,12 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.meshDialog
             .deleteConfirmation(
                 { token: 'admin.delete_user' },
-                { token: 'admin.delete_user_confirmation', params: { username: user.username } }
+                {
+                    token: 'admin.delete_user_confirmation',
+                    params: {
+                        username: this.sanitizer.sanitizeHTML(user.username)
+                    }
+                }
             )
             .then(() => {
                 this.adminUserEffects.deleteUser(user);

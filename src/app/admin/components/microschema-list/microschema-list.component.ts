@@ -1,10 +1,10 @@
-import { combineLatest, empty as observableEmpty, of as observableOf, Observable, Subject } from 'rxjs';
-
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
+import { combineLatest, empty as observableEmpty, of as observableOf, Observable } from 'rxjs';
 import { debounceTime, map, mergeMap } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Microschema } from '../../../common/models/microschema.model';
@@ -42,7 +42,8 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
         private router: Router,
         private modalService: ModalService,
         private i18n: I18nService,
-        private config: ConfigService
+        private config: ConfigService,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit(): void {
@@ -109,7 +110,12 @@ export class MicroschemaListComponent implements OnInit, OnDestroy {
         }
         this.displayDeleteMicroschemaModal(
             { token: 'admin.delete_microschema' },
-            { token: 'admin.delete_microschema_confirmation', params: { name: microschema.name } }
+            {
+                token: 'admin.delete_microschema_confirmation',
+                params: {
+                    name: this.sanitizer.sanitizeHTML(microschema.name)
+                }
+            }
         ).then(() => {
             this.adminSchemaEffects.deleteMicroschema(microschema.uuid);
         });

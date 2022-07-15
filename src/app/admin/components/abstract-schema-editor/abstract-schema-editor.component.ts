@@ -20,9 +20,10 @@ import {
     ValidatorFn
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ModalService, SortableItem } from 'gentics-ui-core';
+import { ModalService } from 'gentics-ui-core';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { ADMIN_USER_NAME } from '../../../common/constants';
 import { Microschema } from '../../../common/models/microschema.model';
@@ -156,7 +157,8 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         protected formBuilder: FormBuilder,
         protected i18n: I18nService,
         protected modalService: ModalService,
-        protected animationBuilder: AnimationBuilder
+        protected animationBuilder: AnimationBuilder,
+        protected sanitizer: SanitizerService
     ) {}
 
     // LIFECYCLE HOOKS //////////////////////////////////////////////////////////////////////////////
@@ -658,7 +660,12 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
             // if no schema, this component is in CREATE mode
             this.displaySaveSchemaModal(
                 { token: 'admin.schema_update' },
-                { token: 'admin.schema_updated_confirmation', params: { name: this.formGroup.value.name } }
+                {
+                    token: 'admin.schema_updated_confirmation',
+                    params: {
+                        name: this.sanitizer.sanitizeHTML(this.formGroup.value.name)
+                    }
+                }
             ).then(() => {
                 this.save.emit();
             });
@@ -686,7 +693,12 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         }
         this.displayDeleteModal(
             { token: 'admin.delete_schema' },
-            { token: 'admin.delete_schema_confirmation', params: { name: (this.schema as any).name } }
+            {
+                token: 'admin.delete_schema_confirmation',
+                params: {
+                    name: this.sanitizer.sanitizeHTML((this.schema as any).name)
+                }
+            }
         ).then(() => {
             this.delete.emit();
         });
@@ -702,7 +714,12 @@ export abstract class AbstractSchemaEditorComponent<SchemaT, SchemaResponseT, Sc
         if (field.valid) {
             this.displayDeleteModal(
                 { token: 'admin.delete_schemafield' },
-                { token: 'admin.schemafield_delete_confirmation', params: { name: field.value.name } }
+                {
+                    token: 'admin.schemafield_delete_confirmation',
+                    params: {
+                        name: this.sanitizer.sanitizeHTML(field.value.name)
+                    }
+                }
             ).then(() => {
                 this.fieldRemoveAtAnim(index);
             });

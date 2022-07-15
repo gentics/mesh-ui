@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { ModalService, Notification } from 'gentics-ui-core';
 import { Subscription } from 'rxjs';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { Project } from '../../../common/models/project.model';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
@@ -27,7 +28,8 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
         private i18n: I18nService,
         private state: ApplicationStateService,
         private entities: EntitiesService,
-        private adminProjectEffects: AdminProjectEffectsService
+        private adminProjectEffects: AdminProjectEffectsService,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit(): void {
@@ -59,7 +61,9 @@ export class ProjectListItemComponent implements OnInit, OnDestroy {
         this.modal
             .dialog({
                 title: this.i18n.translate('modal.delete_project_title'),
-                body: this.i18n.translate('modal.delete_project_body', { name: this.project.name }),
+                body: this.i18n.translate('modal.delete_project_body', {
+                    name: this.sanitizer.sanitizeHTML(this.project.name)
+                }),
                 buttons: [
                     { label: this.i18n.translate('common.cancel_button'), type: 'secondary', shouldReject: true },
                     { label: this.i18n.translate('common.delete_button'), type: 'alert', returnValue: true }

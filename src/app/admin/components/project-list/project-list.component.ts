@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { Project } from '../../../common/models/project.model';
 import { ProjectResponse } from '../../../common/models/server-models';
@@ -38,7 +39,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         private i18n: I18nService,
         private modalService: ModalService,
         public adminProjectEffects: AdminProjectEffectsService,
-        public router: Router
+        public router: Router,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit(): void {
@@ -104,7 +106,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this.modalService
             .dialog({
                 title: this.i18n.translate('modal.delete_project_title'),
-                body: this.i18n.translate('modal.delete_project_body', { name: project.name }),
+                body: this.i18n.translate('modal.delete_project_body', {
+                    name: this.sanitizer.sanitizeHTML(project.name)
+                }),
                 buttons: [
                     { label: this.i18n.translate('common.cancel_button'), type: 'secondary', shouldReject: true },
                     { label: this.i18n.translate('common.delete_button'), type: 'alert', returnValue: true }

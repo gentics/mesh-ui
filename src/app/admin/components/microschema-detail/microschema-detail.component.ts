@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { combineLatest, BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { debounceTime, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
@@ -94,7 +95,8 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
         public adminProjectEffects: AdminProjectEffectsService,
         private schemaEffects: AdminSchemaEffectsService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit() {
@@ -180,7 +182,9 @@ export class MicroschemaDetailComponent implements OnInit, OnDestroy {
                 this.modal
                     .dialog({
                         title: this.i18n.translate('admin.assign_schema') + '?',
-                        body: this.i18n.translate('admin.assign_schema_confirmation', { name: microschema.name }),
+                        body: this.i18n.translate('admin.assign_schema_confirmation', {
+                            name: this.sanitizer.sanitizeHTML(microschema.name)
+                        }),
                         buttons: [
                             {
                                 type: 'secondary',

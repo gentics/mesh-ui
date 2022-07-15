@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalService } from 'gentics-ui-core';
 import { combineLatest, BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, flatMap, takeUntil } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
 import {
@@ -37,7 +36,8 @@ export class PermissionsRoleListComponent implements OnInit, OnDestroy {
         private router: Router,
         private adminRoleEffects: AdminRoleEffectsService,
         private change: ChangeDetectorRef,
-        private meshDialog: MeshDialogsService
+        private meshDialog: MeshDialogsService,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit() {
@@ -110,7 +110,12 @@ export class PermissionsRoleListComponent implements OnInit, OnDestroy {
     async deleteRole(role: AdminRoleResponse) {
         await this.meshDialog.deleteConfirmation(
             { token: 'admin.delete_role' },
-            { token: 'admin.delete_role_confirmation', params: { rolename: role.name } }
+            {
+                token: 'admin.delete_role_confirmation',
+                params: {
+                    rolename: this.sanitizer.sanitizeHTML(role.name)
+                }
+            }
         );
         this.adminRoleEffects.deleteRoles([role]).subscribe(() => {
             this.refetch();

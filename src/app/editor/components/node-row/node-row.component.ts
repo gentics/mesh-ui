@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { IDialogConfig, ModalService } from 'gentics-ui-core';
 import { Observable } from 'rxjs';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -34,7 +35,8 @@ export class NodeRowComponent implements OnInit, OnChanges {
         private navigationService: NavigationService,
         private modalService: ModalService,
         private i18n: I18nService,
-        private listEffects: ListEffectsService
+        private listEffects: ListEffectsService,
+        private sanitizer: SanitizerService
     ) {
         this.currentLanguage$ = this.state.select(state => state.list.language);
     }
@@ -108,7 +110,9 @@ export class NodeRowComponent implements OnInit, OnChanges {
     deleteNode(): void {
         const dialogConfig: IDialogConfig = {
             title: this.i18n.translate('modal.delete_node_title'),
-            body: this.i18n.translate('modal.delete_node_body', { name: this.node.displayName }),
+            body: this.i18n.translate('modal.delete_node_body', {
+                name: this.sanitizer.sanitizeHTML(this.displayName)
+            }),
             buttons: [
                 { label: this.i18n.translate('common.cancel_button'), type: 'secondary', shouldReject: true },
                 { label: this.i18n.translate('common.delete_button'), type: 'alert', returnValue: true }

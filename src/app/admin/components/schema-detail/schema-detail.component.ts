@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { combineLatest, BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { debounceTime, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
@@ -93,7 +94,8 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         protected modal: ModalService,
-        protected i18n: I18nService
+        protected i18n: I18nService,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit() {
@@ -177,7 +179,9 @@ export class SchemaDetailComponent implements OnInit, OnDestroy {
                 this.modal
                     .dialog({
                         title: this.i18n.translate('admin.assign_schema') + '?',
-                        body: this.i18n.translate('admin.assign_schema_confirmation', { name: schema.name }),
+                        body: this.i18n.translate('admin.assign_schema_confirmation', {
+                            name: this.sanitizer.sanitizeHTML(schema.name)
+                        }),
                         buttons: [
                             {
                                 type: 'secondary',
