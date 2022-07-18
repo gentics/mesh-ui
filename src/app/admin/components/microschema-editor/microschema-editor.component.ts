@@ -4,6 +4,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators, ValidatorFn } from
 import { Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { Microschema, MicroschemaField } from '../../../common/models/microschema.model';
 import { MicroschemaFieldType } from '../../../common/models/schema.model';
@@ -119,9 +120,20 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         formBuilder: FormBuilder,
         i18n: I18nService,
         modalService: ModalService,
-        animationBuilder: AnimationBuilder
+        animationBuilder: AnimationBuilder,
+        sanitizer: SanitizerService
     ) {
-        super(router, appState, entities, adminSchemaEffects, formBuilder, i18n, modalService, animationBuilder);
+        super(
+            router,
+            appState,
+            entities,
+            adminSchemaEffects,
+            formBuilder,
+            i18n,
+            modalService,
+            animationBuilder,
+            sanitizer
+        );
     }
 
     // MANAGE FORM //////////////////////////////////////////////////////////////////////////////

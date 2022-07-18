@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from 'gentics-ui-core';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { BREADCRUMBS_BAR_PORTAL_ID } from '../../../common/constants';
 import { Project } from '../../../common/models/project.model';
@@ -14,7 +15,6 @@ import { fuzzyMatch } from '../../../common/util/fuzzy-search';
 import { notNullOrUndefined } from '../../../common/util/util';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { NavigationService } from '../../../core/providers/navigation/navigation.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
@@ -82,7 +82,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         private i18n: I18nService,
         private changeDetector: ChangeDetectorRef,
         private projectEffect: AdminProjectEffectsService,
-        private tagEffects: TagsEffectsService
+        private tagEffects: TagsEffectsService,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit() {
@@ -259,7 +260,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.modalService
             .dialog({
                 title: this.i18n.translate('admin.delete_tag') + '?',
-                body: this.i18n.translate('admin.delete_tag_confirmation', tag.data.name),
+                body: this.i18n.translate('admin.delete_tag_confirmation', this.sanitizer.sanitizeHTML(tag.data.name)),
                 buttons: [
                     {
                         type: 'secondary',
@@ -367,7 +368,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.modalService
             .dialog({
                 title: this.i18n.translate('admin.delete_tag_family') + '?',
-                body: this.i18n.translate('admin.delete_tag_family_confirmation', tagFamily.data.name),
+                body: this.i18n.translate(
+                    'admin.delete_tag_family_confirmation',
+                    this.sanitizer.sanitizeHTML(tagFamily.data.name || '')
+                ),
                 buttons: [
                     {
                         type: 'secondary',

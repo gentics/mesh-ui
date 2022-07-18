@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalService } from 'gentics-ui-core';
 import { combineLatest, BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, flatMap, takeUntil } from 'rxjs/operators';
+import { SanitizerService } from 'src/app/core/providers/sanitizer/sanitizer.service';
 
 import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs.service';
-import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { observeQueryParam } from '../../../shared/common/observe-query-param';
 import { setQueryParams } from '../../../shared/common/set-query-param';
 import {
@@ -38,7 +37,8 @@ export class GroupListComponent implements OnInit, OnDestroy {
         private router: Router,
         private adminGroupEffects: AdminGroupEffectsService,
         private change: ChangeDetectorRef,
-        private meshDialog: MeshDialogsService
+        private meshDialog: MeshDialogsService,
+        private sanitizer: SanitizerService
     ) {}
 
     ngOnInit() {
@@ -127,7 +127,12 @@ export class GroupListComponent implements OnInit, OnDestroy {
     async deleteGroup(group: AdminGroupResponse) {
         await this.meshDialog.deleteConfirmation(
             { token: 'admin.delete_group' },
-            { token: 'admin.delete_group_confirmation', params: { groupname: group.name } }
+            {
+                token: 'admin.delete_group_confirmation',
+                params: {
+                    groupname: this.sanitizer.sanitizeHTML(group.name)
+                }
+            }
         );
         this.adminGroupEffects.deleteGroups([group]).subscribe(() => {
             this.refetch();
