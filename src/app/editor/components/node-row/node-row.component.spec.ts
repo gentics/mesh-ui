@@ -5,6 +5,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DropdownTriggerDirective, GenticsUICoreModule, ModalService, OverlayHostService } from 'gentics-ui-core';
+import { HighlightComponent } from 'src/app/shared/components/highlight/highlight.component';
 
 import { componentTest } from '../../../../testing/component-test';
 import { configureComponentTest } from '../../../../testing/configure-component-test';
@@ -27,7 +28,6 @@ import { NodeStatusComponent } from '../../../shared/components/node-status/node
 import { PublishOptionsComponent } from '../../../shared/components/publish-options/publish-options.component';
 import { TagComponent } from '../../../shared/components/tag/tag.component';
 import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
-import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -46,7 +46,7 @@ xdescribe('NodeRowComponent', () => {
             declarations: [
                 NodeRowComponent,
                 MockDisplayFieldPipe,
-                HighlightPipe,
+                HighlightComponent,
                 AvailableLanguagesListComponent,
                 TestComponent,
                 PublishOptionsComponent,

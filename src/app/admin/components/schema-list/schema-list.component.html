@@ -31,8 +31,10 @@
         <div>
             <a [routerLink]="['/admin/schemas', schema.uuid]">
                 <gtx-contents-list-item>
-                    <div class="item-primary"
-                         [innerHTML]="schema.name | highlight:filterTerm"></div>
+                    <div class="item-primary">
+                        <mesh-highlight [content]="schema.name"
+                                        [highlight]="filterTerm"></mesh-highlight>
+                    </div>
                 </gtx-contents-list-item>
             </a>
         </div>

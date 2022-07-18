@@ -9,18 +9,21 @@
             <a href
                [routerLink]="routerLink"
                [queryParamsHandling]="node.container ? '' : 'preserve'"
-               (click)="focusEditor()"
-               [innerHTML]="displayedName() | highlight:(filterTerm$ | async)"></a>
+               (click)="focusEditor()">
+                <mesh-highlight [content]="displayName"
+                                [highlight]="filterTerm$ | async"></mesh-highlight>
+            </a>
+
             <mesh-node-status [node]="node"
-                              [current]="currentLanguage$ | async">>
-            </mesh-node-status>
+                              [current]="currentLanguage$ | async">&gt;</mesh-node-status>
         </div>
+
         <div class="available-languages">
             <mesh-available-languages-list [node]="node"
-                                           (nodeLanguage)="editNodeTranslation( $event )"
-                                           [current]="currentLanguage$ | async">
-            </mesh-available-languages-list>
+                                           [current]="currentLanguage$ | async"
+                                           (nodeLanguage)="editNodeTranslation($event)"></mesh-available-languages-list>
         </div>
+
         <div class="added-tags">
             <mesh-tag *ngFor="let tag of node.tags;"
                       [tag]="tag"

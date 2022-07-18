@@ -3,7 +3,7 @@ import { GenticsUICoreModule } from 'gentics-ui-core';
 
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { BackgroundFromDirective } from '../../directives/background-from.directive';
-import { HighlightPipe } from '../../pipes/highlight/highlight.pipe';
+import { HighlightComponent } from '../highlight/highlight.component';
 
 import { TagSelectorComponent } from './tag-selector.component';
 
@@ -13,7 +13,7 @@ describe('TagSelectorComponent', () => {
 
     beforeEach(() => {
         configureComponentTest({
-            declarations: [TagSelectorComponent, BackgroundFromDirective, HighlightPipe],
+            declarations: [TagSelectorComponent, BackgroundFromDirective, HighlightComponent],
             imports: [GenticsUICoreModule.forRoot()]
         });
     });

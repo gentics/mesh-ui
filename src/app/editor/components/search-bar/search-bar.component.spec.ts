@@ -5,8 +5,9 @@ import { By } from '@angular/platform-browser';
 import { convertToParamMap, ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GenticsUICoreModule, InputField, OverlayHostService } from 'gentics-ui-core';
-import { of as observableOf, Observable } from 'rxjs';
+import { of as observableOf } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { HighlightComponent } from 'src/app/shared/components/highlight/highlight.component';
 import { EMeshNodeStatusStrings } from 'src/app/shared/components/node-status/node-status.component';
 
 import { componentTest } from '../../../../testing/component-test';
@@ -28,7 +29,6 @@ import { ChipComponent } from '../../../shared/components/chip/chip.component';
 import { MockTagSelectorComponent } from '../../../shared/components/tag-selector/tag-selector.component.mock';
 import { TagComponent } from '../../../shared/components/tag/tag.component';
 import { BackgroundFromDirective } from '../../../shared/directives/background-from.directive';
-import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
@@ -95,7 +95,7 @@ describe('Search-bar component:', () => {
                 NodeLanguageLabelComponent,
                 NodeStatusFilterSelectorComponent,
                 BackgroundFromDirective,
-                HighlightPipe,
+                HighlightComponent,
                 ChipComponent,
                 TagComponent,
                 MockTagSelectorComponent

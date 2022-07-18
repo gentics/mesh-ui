@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { GenticsUICoreModule } from 'gentics-ui-core';
 import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 
@@ -11,6 +11,7 @@ import { AvailableLanguagesListComponent } from './components/available-language
 import { ChipComponent } from './components/chip/chip.component';
 import { ContentPortalComponent } from './components/content-portal/content-portal.component';
 import { FilePreviewComponent } from './components/file-preview/file-preview.component';
+import { HighlightComponent } from './components/highlight/highlight.component';
 import { IconCheckboxComponent } from './components/icon-checkbox/icon-checkbox.component';
 import { NoContentComponent } from './components/no-content/no-content.component';
 import { NodeBrowserListComponent } from './components/node-browser/node-browser-list/node-browser-list.component';
@@ -30,29 +31,29 @@ import { BackgroundFromDirective } from './directives/background-from.directive'
 import { ProjectContentDirective } from './directives/project-content.directive';
 import { DisplayFieldPipe } from './pipes/display-field/display-field.pipe';
 import { FileSizePipe } from './pipes/file-size/file-size.pipe';
-import { HighlightPipe } from './pipes/highlight/highlight.pipe';
 import { I18nPipe } from './pipes/i18n/i18n.pipe';
 import { NodeStatusPipe } from './pipes/node-status/node-status.pipe';
 
 const COMPONENTS = [NodeBrowserListComponent];
 
 const SHARED_COMPONENTS = [
+    AudioPlayButtonComponent,
+    AvailableLanguagesListComponent,
     ChipComponent,
+    ContentPortalComponent,
+    FilePreviewComponent,
+    HighlightComponent,
+    IconCheckboxComponent,
     NoContentComponent,
     NodeStatusComponent,
+    PaginationControlsComponent,
+    PermissionIconCheckboxComponent,
+    PublishAllOptionsComponent,
+    PublishOptionsComponent,
     SchemaLabelComponent,
     TagComponent,
     TagSelectorComponent,
-    ThumbnailComponent,
-    AudioPlayButtonComponent,
-    FilePreviewComponent,
-    PaginationControlsComponent,
-    ContentPortalComponent,
-    IconCheckboxComponent,
-    PublishAllOptionsComponent,
-    PublishOptionsComponent,
-    AvailableLanguagesListComponent,
-    PermissionIconCheckboxComponent
+    ThumbnailComponent
 ];
 
 const ENTRY_COMPONENTS = [NodeBrowserComponent];
@@ -64,7 +65,7 @@ const SHARED_DIRECTIVES = [
     ProjectContentDirective
 ];
 
-const SHARED_PIPES = [DisplayFieldPipe, FileSizePipe, I18nPipe, HighlightPipe, NodeStatusPipe];
+const SHARED_PIPES = [DisplayFieldPipe, FileSizePipe, I18nPipe, NodeStatusPipe];
 
 /**
  * Exposes shared components, services and modules. To be imported into the other app modules which require any of

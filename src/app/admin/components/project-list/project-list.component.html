@@ -1,7 +1,10 @@
 <gtx-progress-bar [for]="projectsLoading$"></gtx-progress-bar>
 
-<div class="not-found" *ngIf="!(projectsLoading$ | async) && (projects$ | async).length === 0">
-    <div><icon>sentiment_very_dissatisfied</icon></div>
+<div class="not-found"
+     *ngIf="!(projectsLoading$ | async) && (projects$ | async).length === 0">
+    <div>
+        <icon>sentiment_very_dissatisfied</icon>
+    </div>
     <p>{{ 'admin.projects_none_found' | i18n }}</p>
 </div>
 
@@ -11,10 +14,11 @@
     <div class="list-controls">
         <div class="filter">
             <gtx-input [label]="'admin.filter_by_name' | i18n"
-                        [formControl]="filterInput"></gtx-input>
+                       [formControl]="filterInput"></gtx-input>
         </div>
 
-        <gtx-button size="regular" (click)="onCreateProjectClick()">
+        <gtx-button size="regular"
+                    (click)="onCreateProjectClick()">
             <icon left>folder</icon>
             <span class="new-item-label">{{ 'admin.projects_create' | i18n }}</span>
         </gtx-button>
@@ -23,18 +27,24 @@
     <ng-template let-project="item">
         <div class="item-row">
             <a [routerLink]="['/admin/projects', project.uuid]">
-                <div class="name" [innerHTML]="project.name | highlight:filterTerm"></div>
+                <div class="name">
+                    <mesh-highlight [content]="project.name"
+                                    [highlight]="filterTerm"></mesh-highlight>
+                </div>
             </a>
 
             <div class="row-actions">
                 <gtx-dropdown-list>
                     <gtx-dropdown-trigger>
-                        <gtx-button icon type="secondary"><icon>more_vert</icon></gtx-button>
+                        <gtx-button icon
+                                    type="secondary">
+                            <icon>more_vert</icon>
+                        </gtx-button>
                     </gtx-dropdown-trigger>
                     <gtx-dropdown-content>
                         <gtx-dropdown-item class="alert"
-                                            [class.disabled]="!project.permissions.delete"
-                                            (click)="deleteProject(project)">
+                                           [class.disabled]="!project.permissions.delete"
+                                           (click)="deleteProject(project)">
                             <icon>delete</icon> {{ 'admin.delete_project' | i18n }}
                         </gtx-dropdown-item>
                     </gtx-dropdown-content>

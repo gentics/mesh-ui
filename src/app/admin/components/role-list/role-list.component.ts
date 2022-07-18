@@ -63,6 +63,7 @@ export class RoleListComponent implements OnInit, OnDestroy {
         observeQueryParam(this.route.queryParamMap, 'q', '')
             .pipe(takeUntil(this.destroy$))
             .subscribe(filterTerm => {
+                this.filterTerm = filterTerm.trim();
                 this.filterInput.setValue(filterTerm, { emitEvent: false });
             });
 

@@ -1,22 +1,21 @@
-import { Pipe, PipeTransform } from '@angular/core';
 import { fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { GenticsUICoreModule, OverlayHostService } from 'gentics-ui-core';
+import { HighlightComponent } from 'src/app/shared/components/highlight/highlight.component';
 
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { ConfigService } from '../../../core/providers/config/config.service';
 import { MockConfigService } from '../../../core/providers/config/config.service.mock';
 import { TagsEffectsService } from '../../../core/providers/effects/tags-effects.service';
+import { MockTagsEffectsService } from '../../../core/providers/effects/tags-effects.service.mock';
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
-import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
+import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { MockI18nPipe } from '../../../shared/pipes/i18n/i18n.pipe.mock';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { EntitiesService } from '../../../state/providers/entities.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 
-import { MockTagsEffectsService } from '../../../core/providers/effects/tags-effects.service.mock';
-import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { CreateTagDialogComponent } from './create-tag-dialog.component';
 
 describe('CreateTagDialogComponent', () => {
@@ -26,7 +25,7 @@ describe('CreateTagDialogComponent', () => {
 
     beforeEach(() => {
         configureComponentTest({
-            declarations: [CreateTagDialogComponent, MockI18nPipe, HighlightPipe],
+            declarations: [CreateTagDialogComponent, MockI18nPipe, HighlightComponent],
             providers: [
                 OverlayHostService,
                 EntitiesService,
@@ -48,30 +47,24 @@ describe('CreateTagDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it(
-        'should create new family',
-        fakeAsync(() => {
-            component.closeFn = jasmine.createSpy('closeFn');
-            fixture.componentInstance.inputTagFamilyValue = 'new family name';
-            fixture.componentInstance.newTagName = 'new name';
+    it('should create new family', fakeAsync(() => {
+        component.closeFn = jasmine.createSpy('closeFn');
+        fixture.componentInstance.inputTagFamilyValue = 'new family name';
+        fixture.componentInstance.newTagName = 'new name';
 
-            const buttonSave = fixture.debugElement.query(By.css('.button_save'));
-            buttonSave.triggerEventHandler('click', null);
-            expect(tagsEffecsService.createTagFamily).toHaveBeenCalled();
-        })
-    );
+        const buttonSave = fixture.debugElement.query(By.css('.button_save'));
+        buttonSave.triggerEventHandler('click', null);
+        expect(tagsEffecsService.createTagFamily).toHaveBeenCalled();
+    }));
 
-    it(
-        'should create new node',
-        fakeAsync(() => {
-            component.closeFn = jasmine.createSpy('closeFn');
-            fixture.componentInstance.inputTagFamilyValue = 'new family name';
-            fixture.componentInstance.newTagName = 'new name';
+    it('should create new node', fakeAsync(() => {
+        component.closeFn = jasmine.createSpy('closeFn');
+        fixture.componentInstance.inputTagFamilyValue = 'new family name';
+        fixture.componentInstance.newTagName = 'new name';
 
-            const buttonSave = fixture.debugElement.query(By.css('.button_save'));
-            buttonSave.triggerEventHandler('click', null);
-            tick();
-            expect(tagsEffecsService.createTag).toHaveBeenCalled();
-        })
-    );
+        const buttonSave = fixture.debugElement.query(By.css('.button_save'));
+        buttonSave.triggerEventHandler('click', null);
+        tick();
+        expect(tagsEffecsService.createTag).toHaveBeenCalled();
+    }));
 });

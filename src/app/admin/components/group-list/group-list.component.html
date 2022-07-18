@@ -45,8 +45,9 @@
     <ng-template let-group="item">
         <div class="item-row">
             <a [routerLink]="['/admin/groups', group.uuid]">
-                <div class="group-name"
-                     [innerHTML]="group.name"></div>
+                <mesh-highlight class="group-name"
+                                [content]="group.name"
+                                [highlight]="filterTerm"></mesh-highlight>
             </a>
             <div class="role-wrapper">
                 <ng-container *ngFor="let role of group.roles.elements">

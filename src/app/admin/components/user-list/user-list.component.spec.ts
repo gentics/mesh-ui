@@ -3,6 +3,7 @@ import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GenticsUICoreModule, ModalService } from 'gentics-ui-core';
+import { HighlightComponent } from 'src/app/shared/components/highlight/highlight.component';
 
 import { configureComponentTest } from '../../../../testing/configure-component-test';
 import { MockModalService } from '../../../../testing/modal.service.mock';
@@ -15,7 +16,6 @@ import { MeshDialogsService } from '../../../core/providers/dialogs/mesh-dialogs
 import { I18nService } from '../../../core/providers/i18n/i18n.service';
 import { MockI18nService } from '../../../core/providers/i18n/i18n.service.mock';
 import { ChipComponent } from '../../../shared/components/chip/chip.component';
-import { HighlightPipe } from '../../../shared/pipes/highlight/highlight.pipe';
 import { ApplicationStateService } from '../../../state/providers/application-state.service';
 import { TestApplicationState } from '../../../state/testing/test-application-state.mock';
 import { TestStateModule } from '../../../state/testing/test-state.module';
@@ -53,7 +53,7 @@ describe('UserListComponent', () => {
                 ChipComponent,
                 MockAdminListComponent,
                 MockMeshUserGroupSelectComponent,
-                HighlightPipe
+                HighlightComponent
             ],
             providers: [
                 { provide: ConfigService, useClass: MockConfigService },
@@ -107,60 +107,48 @@ describe('UserListComponent', () => {
     });
 
     describe('deleteUsers() ', () => {
-        it(
-            'displays a confirmation modal',
-            fakeAsync(() => {
-                setMockState();
-                fixture.detectChanges();
+        it('displays a confirmation modal', fakeAsync(() => {
+            setMockState();
+            fixture.detectChanges();
 
-                instance.deleteUsers([mockUser1 as User, mockUser2 as User]);
-                tick();
+            instance.deleteUsers([mockUser1 as User, mockUser2 as User]);
+            tick();
 
-                expect(mockModalService.dialogSpy).toHaveBeenCalled();
-            })
-        );
+            expect(mockModalService.dialogSpy).toHaveBeenCalled();
+        }));
 
-        it(
-            'does not display a confirmation modal if no users are deletable',
-            fakeAsync(() => {
-                setMockState();
-                fixture.detectChanges();
+        it('does not display a confirmation modal if no users are deletable', fakeAsync(() => {
+            setMockState();
+            fixture.detectChanges();
 
-                instance.deleteUsers([mockAdminUser as User]);
-                tick();
+            instance.deleteUsers([mockAdminUser as User]);
+            tick();
 
-                expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
-            })
-        );
+            expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
+        }));
 
-        it(
-            'does not call adminUserEffects.deleteUser() for admin user',
-            fakeAsync(() => {
-                setMockState();
-                fixture.detectChanges();
+        it('does not call adminUserEffects.deleteUser() for admin user', fakeAsync(() => {
+            setMockState();
+            fixture.detectChanges();
 
-                instance.deleteUsers([mockAdminUser as User]);
-                tick();
-                // no modal will be called as array filtered by permission will be empty and stop method execution
-                expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
-                expect(adminUserEffects.deleteUser).not.toHaveBeenCalled();
-            })
-        );
+            instance.deleteUsers([mockAdminUser as User]);
+            tick();
+            // no modal will be called as array filtered by permission will be empty and stop method execution
+            expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
+            expect(adminUserEffects.deleteUser).not.toHaveBeenCalled();
+        }));
 
-        it(
-            'does not call adminUserEffects.deleteUser() for user for which there is no delete permission',
-            fakeAsync(() => {
-                (mockUser1 as any).permissions = { delete: false };
-                setMockState();
-                fixture.detectChanges();
+        it('does not call adminUserEffects.deleteUser() for user for which there is no delete permission', fakeAsync(() => {
+            (mockUser1 as any).permissions = { delete: false };
+            setMockState();
+            fixture.detectChanges();
 
-                instance.deleteUsers([mockUser1 as User]);
-                tick();
-                // no modal will be called as array filtered by permission will be empty and stop method execution
-                expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
-                expect(adminUserEffects.deleteUser).not.toHaveBeenCalled();
-            })
-        );
+            instance.deleteUsers([mockUser1 as User]);
+            tick();
+            // no modal will be called as array filtered by permission will be empty and stop method execution
+            expect(mockModalService.dialogSpy).not.toHaveBeenCalled();
+            expect(adminUserEffects.deleteUser).not.toHaveBeenCalled();
+        }));
     });
 
     function setMockState(): void {

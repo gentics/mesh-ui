@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { IDialogConfig, ModalService } from 'gentics-ui-core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { MeshNode } from '../../../common/models/node.model';
 import { ListEffectsService } from '../../../core/providers/effects/list-effects.service';
@@ -16,8 +16,9 @@ import { ApplicationStateService } from '../../../state/providers/application-st
     styleUrls: ['./node-row.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NodeRowComponent implements OnInit {
-    @Input() node: MeshNode;
+export class NodeRowComponent implements OnInit, OnChanges {
+    @Input()
+    node: MeshNode;
 
     filterTerm$: Observable<string>;
 
@@ -25,6 +26,8 @@ export class NodeRowComponent implements OnInit {
     currentLanguage$: Observable<string>;
 
     routerLink: any[] | null = null;
+
+    displayName: string;
 
     constructor(
         private state: ApplicationStateService,
@@ -48,6 +51,12 @@ export class NodeRowComponent implements OnInit {
         }
 
         this.filterTerm$ = this.state.select(state => state.list.filterTerm);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.node) {
+            this.updateDisplayName();
+        }
     }
 
     editNode(): void {
@@ -127,7 +136,7 @@ export class NodeRowComponent implements OnInit {
         this.state.actions.editor.focusEditor();
     }
 
-    displayedName() {
-        return this.node.displayName || this.node.uuid;
+    updateDisplayName() {
+        this.displayName = this.node.displayName || this.node.uuid;
     }
 }
