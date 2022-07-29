@@ -217,6 +217,9 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
     }
 
     protected formGroupInit(): void {
+        if (this.formGroup) {
+            return;
+        }
         // build form group from provided input data or empty
         this.formGroup = this.formBuilder.group({
             name: [this._schemaJson.name || this.schemaTitlePrefilled || '', this.formValidators.name],
