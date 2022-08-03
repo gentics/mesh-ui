@@ -405,7 +405,7 @@ function isStringField(fields: SchemaField[], name: string): boolean {
 function isBinaryField(fields: SchemaField[], name: string): boolean {
     for (const field of fields) {
         if (field.name === name) {
-            return field.type === 'binary';
+            return field.type === 'binary' || field.type === 's3binary';
         }
     }
     throw new Error(`Field with name {${name}} could not be found`);
