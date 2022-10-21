@@ -306,8 +306,10 @@ export class ListEffectsService {
         if (displayField && isStringField(fields, displayField)) {
             source.fields[displayField] += ' (copy)';
         }
-        if (segmentField && isStringField(fields, displayField)) {
+        if (segmentField && isStringField(fields, segmentField)) {
             source.fields[segmentField] += '_copy';
+        } else if (segmentField && isBinaryField(fields, segmentField)) {
+            source.fields[segmentField].fileName += '_copy';
         }
 
         const request: NodeCreateRequest = {
@@ -395,6 +397,15 @@ function isStringField(fields: SchemaField[], name: string): boolean {
     for (const field of fields) {
         if (field.name === name) {
             return field.type === 'string';
+        }
+    }
+    throw new Error(`Field with name {${name}} could not be found`);
+}
+
+function isBinaryField(fields: SchemaField[], name: string): boolean {
+    for (const field of fields) {
+        if (field.name === name) {
+            return field.type === 'binary' || field.type === 's3binary';
         }
     }
     throw new Error(`Field with name {${name}} could not be found`);
