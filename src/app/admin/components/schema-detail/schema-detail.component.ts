@@ -251,6 +251,5 @@ const updateFields: Array<keyof SchemaResponse> = [
 ];
 
 function stripSchemaFields(schema: SchemaResponse): any {
-    schema.fields.sort((a: any, b: any) => a.name.localeCompare(b.name));
     return updateFields.reduce((obj, key) => ({ ...obj, [key]: schema[key] || null }), {});
 }
