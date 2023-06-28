@@ -104,7 +104,6 @@ In order to build the bundled static files for a web server to be served:
 
 # Copyright & License
 
-Copyright 2014-2020 APA-IT Informations Technologie GmbH. Licensed under the
-Apache License, Version 2.0.
+Copyright (c) 2014-2023 Gentics Software GmbH. Licensed under the Apache License, Version 2.0.
 
-Gentics is a registered trade mark of APA-IT Informations Technologie GmbH.
+Gentics is a registered trade mark of Gentics Software GmbH.
