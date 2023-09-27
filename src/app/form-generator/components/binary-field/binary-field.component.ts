@@ -93,13 +93,13 @@ export class BinaryFieldComponent extends BaseFieldComponent {
     onImageLoad(): void {
         this.loadingPreview = false;
         if (this.binaryProperties && this.binaryProperties.file && this.lastParams) {
-            this.scaledTransform = {
-                ...this.lastParams,
-                ...{
-                    focalPointX: this.lastParams.focalPointX,
-                    focalPointY: this.lastParams.focalPointY
-                }
-            };
+//            this.scaledTransform = {
+//                ...this.lastParams,
+//                ...{
+//                    focalPointX: this.lastParams.focalPointX,
+//                    focalPointY: this.lastParams.focalPointY
+//                }
+//            };
             this.lastParams = undefined;
         }
     }
@@ -123,16 +123,16 @@ export class BinaryFieldComponent extends BaseFieldComponent {
 
         this.modalService
             .fromComponent(ImageEditorModalComponent, undefined, {
-                imageUrl,
-                params: {
-                    ...this.transformParams,
-                    // set focalpoint data if exist
-                    ...(imageField.focalPoint &&
-                        ({
-                            focalPointX: imageField.focalPoint.x,
-                            focalPointY: imageField.focalPoint.y
-                        } as any))
-                }
+                imageUrl
+//                , params: {
+//                    ...this.transformParams,
+//                    // set focalpoint data if exist
+//                    ...(imageField.focalPoint &&
+//                        ({
+//                            focalPointX: imageField.focalPoint.x,
+//                            focalPointY: imageField.focalPoint.y
+//                        } as any))
+//                }
             })
             .then(modal => modal.open())
             .then(params => {
@@ -145,18 +145,18 @@ export class BinaryFieldComponent extends BaseFieldComponent {
                     this.lastParams = params;
                 } else {
                     const value = this.api.getValue();
-                    this.scaledTransform = this.calculateScaledTransformParams(imageField, params);
+                    //this.scaledTransform = this.calculateScaledTransformParams(imageField, params);
                     this.api.setValue({
-                        ...value,
-                        // update focalpoint data
-                        focalPoint: {
-                            x: params.focalPointX,
-                            y: params.focalPointY
-                        },
-                        transform: params
+                        ...value
+//                        // update focalpoint data
+//                        , focalPoint: {
+//                            x: params.focalPointX,
+//                            y: params.focalPointY
+//                        },
+//                        transform: params
                     });
                 }
-                this.transformParams = params;
+//              this.transformParams = params;
                 this.changeDetector.markForCheck();
             });
     }
