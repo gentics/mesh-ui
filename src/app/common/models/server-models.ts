@@ -4945,6 +4945,10 @@ export interface SchemaCreateRequest {
      */
     readonly autoPurge?: boolean;
     /**
+     * Flag which indicates whether the nodes of this version should be excluded from the indexing.
+     */
+    readonly noIndex?: boolean;
+    /**
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.
      */
@@ -5013,6 +5017,10 @@ export interface SchemaResponse {
      * See Mesh docs: https://getmesh.io/docs/features/#auto-purge
      */
     readonly autoPurge: boolean;
+        /**
+     * Flag which indicates whether the nodes of this version should be excluded from the indexing.
+     */
+    readonly noIndex?: boolean;
     /**
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.
@@ -5069,6 +5077,10 @@ export interface SchemaUpdateRequest {
      * nodes.
      */
     readonly container?: boolean;
+        /**
+     * Flag which indicates whether nodes which use this schema should be excluded from the indexing.
+     */
+    readonly noIndex?: boolean;
     /** New description of the schema. */
     readonly description?: string;
     /** Name of the display field. */

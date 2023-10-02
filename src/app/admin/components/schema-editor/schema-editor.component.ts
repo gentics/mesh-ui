@@ -97,6 +97,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         name: [Validators.required, Validators.pattern(this.allowedCharsRegExp)],
         container: [],
         autoPurge: [],
+        noIndex: [],
         description: [],
         displayField: [],
         segmentField: [],
@@ -116,6 +117,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
         name: property => property.name,
         container: property => property.container,
         autoPurge: property => property.autoPurge,
+        noIndex: property => property.noIndex,
         description: property => property.description.length > 0,
         displayField: () => {
             return (
@@ -225,6 +227,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
             name: [this._schemaJson.name || this.schemaTitlePrefilled || '', this.formValidators.name],
             container: [this._schemaJson.container || false, this.formValidators.container],
             autoPurge: [this._schemaJson.autoPurge || false, this.formValidators.autoPurge],
+            noIndex: [this._schemaJson.noIndex || false, this.formValidators.noIndex],
             description: [this._schemaJson.description || '', this.formValidators.description],
             displayField: [this._schemaJson.displayField || '', this.formValidators.displayField],
             segmentField: [this._schemaJson.segmentField || '', this.formValidators.segmentField],
@@ -260,6 +263,7 @@ export class SchemaEditorComponent extends AbstractSchemaEditorComponent<
                     ...(this.schemaDataConditions.name(value) && ({ name: value.name } as any)),
                     ...({ container: value.container ? true : false } as any),
                     ...({ autoPurge: value.autoPurge ? true : false } as any),
+                    ...({ noIndex: value.noIndex ? true : false } as any),
                     ...(this.schemaDataConditions.description(value) && ({ description: value.description } as any)),
                     // assign data meeting conditions only
                     ...this.displayFieldAssign(value),

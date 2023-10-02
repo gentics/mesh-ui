@@ -949,6 +949,13 @@
       "pt": "Auto-Purge",
       "hu": "Automatikus tisztítás"
     },
+    "schema_editor_inputlabel_noindex": {
+      "en": "No Index",
+      "de": "Kein Index",
+      "zh": "无索引",
+      "pt": "Sem índice",
+      "hu": "Nincs index"
+    },
     "schema_editor_inputlabel_description": {
       "en": "Description",
       "de": "Beschreibung",

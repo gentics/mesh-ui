@@ -103,6 +103,7 @@ const mockSchema: Schema = {
     editor: mockUser,
     edited: '2017-01-19T12:08:05Z',
     autoPurge: false,
+    noIndex: false,
     permissions: {
         create: true,
         read: true,
