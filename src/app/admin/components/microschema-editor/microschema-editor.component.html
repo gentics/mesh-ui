@@ -2,7 +2,7 @@
       class="formgroup row">
 
     <h2 class="section-header medium-12 columns">{{ 'admin.schema_editor_sectionlabel_microschemaproperties' | i18n }}:</h2>
-    <div class="input-container small-12 medium-12 columns">
+    <div class="input-container small-12 medium-10 columns">
         <gtx-input type="text"
                    [label]="'admin.schema_editor_inputlabel_name' | i18n"
                    formControlName="name"></gtx-input>
@@ -13,6 +13,15 @@
                class="invalid">{{ 'admin.schema_editor_validator_pattern' | i18n: { allowedchars: allowedSpecialChars } }}</p>
             <p *ngIf="isformControlTouched('name') && getFormControlErrorOfType('name', 'conflict')"
                class="invalid">{{ 'admin.schema_editor_validator_conflict' | i18n }}</p>
+        </div>
+    </div>
+
+    <div class="small-12 medium-2 columns">
+        <div class="checkbox-wrapper">
+            <div>
+                <gtx-checkbox [label]="'admin.schema_editor_inputlabel_noindex' | i18n"
+                              formControlName="noIndex"></gtx-checkbox>
+            </div>
         </div>
     </div>
 
@@ -91,6 +100,15 @@
                                 <div>
                                     <gtx-checkbox [label]="'admin.schema_editor_inputlabel_required' | i18n"
                                                   formControlName="required"></gtx-checkbox>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="small-12 medium-2 columns">
+                            <div class="checkbox-wrapper">
+                                <div>
+                                    <gtx-checkbox [label]="'admin.schema_editor_inputlabel_noindex' | i18n"
+                                                  formControlName="noIndex"></gtx-checkbox>
                                 </div>
                             </div>
                         </div>

@@ -87,6 +87,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
             name: [Validators.required, Validators.pattern(this.allowedCharsRegExp)],
             type: [Validators.required],
             required: [],
+            noIndex: [],
             listType: []
         }
     };
@@ -107,6 +108,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
         type: () => true,
         label: () => true,
         required: field => field.required === true,
+        noIndex: field => field.noIndex === true,
         listType: field => (field.type === 'list' && field.listType && field.listType.length > 0) || false,
         allow: () => true
     };
@@ -188,6 +190,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
                             ...(this.schemaFieldDataConditions.type(field) && ({ type: field.type } as any)),
                             ...(this.schemaFieldDataConditions.label(field) && ({ label: field.label } as any)),
                             ...({ required: field.required || false } as any),
+                            ...({ noIndex: field.noIndex || false } as any),
                             // check conditions and only assign if type has changed
                             ...(this.schemaFieldDataConditions.listType(field) && ({ listType: field.listType } as any))
                         };
@@ -298,6 +301,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
             label: ['', this.formValidators.fields.label],
             type: ['', this.formValidators.fields.type],
             required: [false, this.formValidators.fields.required],
+            noIndex: [false, this.formValidators.fields.noIndex],
             listType: [null, this.formValidators.fields.listType],
             allow: ['', this.formValidators.fields.allow]
         });
@@ -314,6 +318,7 @@ export class MicroschemaEditorComponent extends AbstractSchemaEditorComponent<
             label: [field.label || '', this.formValidators.fields.label],
             type: [field.type || '', this.formValidators.fields.type],
             required: [field.required || false, this.formValidators.fields.required],
+            noIndex: [field.noIndex || false, this.formValidators.fields.noIndex],
             listType: [field.listType || null, this.formValidators.fields.listType],
             allow: ['', this.formValidators.fields.allow]
         });

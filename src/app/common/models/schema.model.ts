@@ -7,6 +7,7 @@ export type ListTypeFieldType = CommonFieldType | 'micronode';
 
 export interface BaseSchemaField {
     autoPurge?: boolean;
+    noIndex?: boolean;
     name: string;
     type: SchemaFieldType | MicroschemaFieldType;
     allow?: string[];

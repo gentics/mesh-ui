@@ -4153,6 +4153,8 @@ export interface FieldSchemaFromServer {
     /** Name of the field. */
     readonly name: string;
     readonly required?: boolean;
+    /** Omit indexing */
+    readonly noIndex?: boolean;
     /** Type of the field. */
     readonly type: string;
     /** Type of the field. */
@@ -4463,11 +4465,15 @@ export interface MicroschemaResponse {
     readonly uuid: string;
     /** Version of the microschema */
     readonly version: string;
+    /** Exclude micronode entities from indexing */
+    readonly noIndex?: boolean;
 }
 
 export interface MicroschemaUpdateRequest {
     /** Description of the microschema */
     readonly description?: string;
+    /** Exclude the microschema instances from indexing */
+    readonly noIndex?: boolean;
     /**
      * Additional search index configuration. This can be used to setup custom analyzers
      * and filters.
@@ -4945,6 +4951,10 @@ export interface SchemaCreateRequest {
      */
     readonly autoPurge?: boolean;
     /**
+     * Flag which indicates whether the nodes of this version should be excluded from the indexing.
+     */
+    readonly noIndex?: boolean;
+    /**
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.
      */
@@ -5014,6 +5024,10 @@ export interface SchemaResponse {
      */
     readonly autoPurge: boolean;
     /**
+     * Flag which indicates whether the nodes of this version should be excluded from the indexing.
+     */
+    readonly noIndex?: boolean;
+    /**
      * Flag which indicates whether nodes which use this schema store additional child
      * nodes.
      */
@@ -5069,6 +5083,10 @@ export interface SchemaUpdateRequest {
      * nodes.
      */
     readonly container?: boolean;
+    /**
+     * Flag which indicates whether nodes which use this schema should be excluded from the indexing.
+     */
+    readonly noIndex?: boolean;
     /** New description of the schema. */
     readonly description?: string;
     /** Name of the display field. */

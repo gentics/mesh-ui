@@ -2,7 +2,7 @@
       class="formgroup row">
 
     <h2 class="section-header medium-12 columns">{{ 'admin.schema_editor_sectionlabel_schemaproperties' | i18n }}:</h2>
-    <div class="input-container small-12 medium-8 columns">
+    <div class="input-container small-12 medium-6 columns">
         <gtx-input type="text"
                    [label]="'admin.schema_editor_inputlabel_name' | i18n"
                    formControlName="name"></gtx-input>
@@ -30,6 +30,15 @@
             <div>
                 <gtx-checkbox [label]="'admin.schema_editor_inputlabel_autopurge' | i18n"
                               formControlName="autoPurge"></gtx-checkbox>
+            </div>
+        </div>
+    </div>
+
+    <div class="small-12 medium-2 columns">
+        <div class="checkbox-wrapper">
+            <div>
+                <gtx-checkbox [label]="'admin.schema_editor_inputlabel_noindex' | i18n"
+                              formControlName="noIndex"></gtx-checkbox>
             </div>
         </div>
     </div>
@@ -149,6 +158,15 @@
                                 <div>
                                     <gtx-checkbox [label]="'admin.schema_editor_inputlabel_required' | i18n"
                                                   formControlName="required"></gtx-checkbox>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="small-12 medium-2 columns">
+                            <div class="checkbox-wrapper">
+                                <div>
+                                    <gtx-checkbox [label]="'admin.schema_editor_inputlabel_noindex' | i18n"
+                                                  formControlName="noIndex"></gtx-checkbox>
                                 </div>
                             </div>
                         </div>

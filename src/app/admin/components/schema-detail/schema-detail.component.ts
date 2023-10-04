@@ -247,6 +247,7 @@ const updateFields: Array<keyof SchemaResponse> = [
     'urlFields',
     'container',
     'autoPurge',
+    'noIndex',
     'elasticsearch'
 ];
 
