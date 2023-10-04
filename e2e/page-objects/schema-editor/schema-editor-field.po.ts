@@ -30,6 +30,11 @@ export class SchemaEditorField {
             value: () => SchemaEditorUtils.getInputCheckboxValueByFormControlName('required', this.root),
             setValue: (value: boolean) => SchemaEditorUtils.inputCheckboxSetValue(value, 'required', this.root)
         },
+        noIndex: {
+            element: () => SchemaEditorUtils.getInputTextElementByFormControlName('noIndex', this.root),
+            value: () => SchemaEditorUtils.getInputCheckboxValueByFormControlName('noIndex', this.root),
+            setValue: (value: boolean) => SchemaEditorUtils.inputCheckboxSetValue(value, 'noIndex', this.root)
+        },
         listType: {
             element: () => SchemaEditorUtils.getInputSelectElementByFormControlName('listType', this.root),
             value: () => SchemaEditorUtils.getInputSelectSingleValueByFormControlName('listType', this.root),
@@ -91,6 +96,10 @@ export class SchemaEditorField {
         expect(inputCheckboxRequiredElement.isPresent()).toBeTruthy();
         const inputCheckboxRequiredValue = await this.input.required.value();
 
+        const inputCheckboxNoIndexElement = await this.input.noIndex.element();
+        expect(inputCheckboxNoIndexElement.isPresent()).toBeTruthy();
+        const inputCheckboxNoIndexValue = await this.input.noIndex.value();
+
         // provide unconditional values
         const state: any = {
             name: {
@@ -107,6 +116,9 @@ export class SchemaEditorField {
             },
             required: {
                 value: inputCheckboxRequiredValue
+            },
+            noIndex: {
+                value: inputCheckboxNoIndexValue
             }
         };
 
@@ -179,6 +191,7 @@ export class SchemaEditorField {
             name: state.name.value,
             label: state.label.value,
             ...(typeof state.required.value === 'boolean' && ({ required: state.required.value } as any)),
+            ...(typeof state.noIndex.value === 'boolean' && ({ required: state.noIndex.value } as any)),
             ...(state.type &&
                 state.type.value &&
                 this.schemaFieldDataConditions.listType(state.type.value) &&
