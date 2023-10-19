@@ -245,12 +245,7 @@ export class ListEffectsService {
                         }
                     ]
                 }
-            },
-            sort: [
-                {
-                    created: 'asc'
-                }
-            ]
+            }
         };
 
         return this.api.project.searchNodes({ project }, query).pipe(
@@ -273,8 +268,7 @@ export class ListEffectsService {
                 /*match_phrase: {
                     'displayField.value': term,
                 }*/
-            },
-            sort: [{ created: 'asc' }]
+            }
         };
 
         return this.api.project.searchNodes({ project }, query).pipe(
